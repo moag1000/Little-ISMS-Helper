@@ -368,10 +368,18 @@
                 </div>
             {% endif %}
 
+            {# Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation —
+               render freetext affectedSystems read-only as "Legacy" alert
+               ONLY when non-empty. Hidden for all new incidents (use the
+               structured "Affected Assets" section below instead). #}
             {% if incident.affectedSystems %}
                 <div class="detail-section">
-                    <h3 class="h5">{{ 'incident.field.affected_systems'|trans({}, 'incident') }}</h3>
-                    <p>{{ incident.affectedSystems }}</p>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', title: 'incident.section.affected_systems_legacy'|trans({}, 'incident') } } %}
+                        {% block alert_body %}
+                            <p class="mb-1">{{ incident.affectedSystems }}</p>
+                            <small class="text-muted">{{ 'incident.section.affected_systems_legacy_hint'|trans({}, 'incident') }}</small>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             {% endif %}
 

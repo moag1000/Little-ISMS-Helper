@@ -26,6 +26,8 @@ class AutoReactionService
     public const KEY_TRAINING_ASSIGN    = 'training_assign_on_user_create';
     public const KEY_RISK_SKELETON      = 'risk_skeleton_on_high_cvss';
     public const KEY_CA_ON_FINDING      = 'corrective_action_on_major_finding';
+    /** Junior-ISB-Audit-2026-05-22 C2-05 — Incident → CorrectiveAction auto-creation (ADR 2026-05-23). */
+    public const KEY_CA_ON_INCIDENT     = 'corrective_action_on_high_incident';
     public const KEY_ACK_CAMPAIGN       = 'acknowledgement_campaign_on_approval';
 
     public const ALL_KEYS = [
@@ -33,6 +35,7 @@ class AutoReactionService
         self::KEY_TRAINING_ASSIGN,
         self::KEY_RISK_SKELETON,
         self::KEY_CA_ON_FINDING,
+        self::KEY_CA_ON_INCIDENT,
         self::KEY_ACK_CAMPAIGN,
     ];
 

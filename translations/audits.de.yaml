@@ -280,6 +280,8 @@ audit_finding:
         assigned_to: '-- Verantwortliche Person --'
         assigned_person: '-- Person aus Stammdaten --'
         reported_by_person: '-- Person aus Stammdaten --'
+        finding_number: 'z.B. F-2026-001'
+        clause_reference: 'z.B. ISO 27001 A.5.1 / Klausel 9.3'
     help:
         audit: 'Internes Audit, in dem diese Feststellung entstanden ist'
         finding_number: 'Eindeutige Nummer (optional — z.B. F-2026-001)'
@@ -297,8 +299,8 @@ audit_finding:
         linked_requirements: 'Verknüpfung mit ISO/BSI-Anforderungen erstellt automatisch Korrekturmaßnahmen (F15).'
         empty_link: '/de/help/glossary#glossary-audit-finding'
     type:
-        major_nc: 'Hauptabweichung (Major Nonconformity)'
-        minor_nc: 'Nebenabweichung (Minor Nonconformity)'
+        major_nc: 'Wesentliche Nichtkonformität'
+        minor_nc: 'Geringfügige Nichtkonformität'
         observation: 'Beobachtung'
         opportunity: 'Verbesserungspotenzial'
     severity:

@@ -167,14 +167,21 @@ final class IncidentType extends AbstractType
                 'disabled' => true,
                 'choice_translation_domain' => 'incident',
             ])
+            // Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation.
+            // Freetext superseded by structured `affectedAssets` (Asset entity
+            // multi-select). Disabled in the Form; Show-pages render the value
+            // read-only as "Legacy" only when non-empty. Column kept until S14
+            // cleanup migration so Bestandsdaten remain accessible.
             ->add('affectedSystems', TextareaType::class, [
                 'label' => 'incident.field.affected_systems',
                 'required' => false,
+                'disabled' => true,
                 'attr' => [
                     'rows' => 3,
                     'placeholder' => 'incident.placeholder.affected_systems',
+                    'readonly' => true,
                 ],
-                'help' => 'incident.help.affected_systems',
+                'help' => 'incident.help.affected_systems_deprecated',
             ])
             ->add('rootCause', TextareaType::class, [
                 'label' => 'incident.field.root_cause',

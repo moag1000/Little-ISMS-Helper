@@ -62,6 +62,21 @@ repos:
         files: ^(config|translations)/.*\.yaml$
         pass_filenames: true
 
+  # Translation hygiene — hardcoded text / missing |trans domains in Twig
+  # Only runs when templates/ or translations/ files change. The script itself
+  # scans the whole templates/ tree (no per-file args), so we use
+  # pass_filenames: false and gate on file regex to avoid running on every
+  # commit. CI gate (Gate 44 in ci.yml) is the strict baseline-diff version;
+  # this local hook is informational — exit 0 even with pre-existing issues.
+  - repo: local
+    hooks:
+      - id: check-translation-issues
+        name: Translation Issues (hardcoded text / missing |trans domains)
+        entry: python3 scripts/quality/check_translation_issues.py
+        language: system
+        files: ^(templates|translations)/.*\.(twig|yaml)$
+        pass_filenames: false
+
   # Secret scanning — fails on accidentally staged credentials
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.21.2
