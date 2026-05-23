@@ -359,6 +359,10 @@ risk:
       monetary_value_hint: Monetary Value Hint
     location:
       city_country: City Country
+  mini_heatmap:
+    title_inherent: 'Live matrix (Inherent)'
+    title_residual: 'Live matrix (Residual)'
+    score: 'Score'
   matrix:
     title: Title
     back_to_risks: Back To Risks
