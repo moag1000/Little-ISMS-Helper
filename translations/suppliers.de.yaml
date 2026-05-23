@@ -214,7 +214,9 @@ supplier:
         name: Name
         lei: LEI
         country: Land
+        country_placeholder: 'DE'
         service: Dienstleistung
+        service_placeholder: 'Cloud-Hosting'
         criticality: Kritikalität
         critical: 'Kritisch (DORA Art. 28)'
         critical_help: 'Als kritisch im Sinne von DORA Art. 28 markieren — Subunternehmer mit wesentlicher Funktion.'
