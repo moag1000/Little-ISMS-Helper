@@ -509,6 +509,9 @@ compliance:
             fulfilled: __compliance.framework.stats.fulfilled
             compliance: __compliance.framework.stats.compliance
     requirement:
+        aria:
+            current: 'Current maturity'
+            target: 'Target maturity'
         success:
             created: 'Compliance requirement created successfully.'
             updated: 'Compliance requirement updated successfully.'

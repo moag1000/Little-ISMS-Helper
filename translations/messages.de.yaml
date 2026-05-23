@@ -1081,6 +1081,9 @@ action:
 form:
     json:
         invalid: 'Ungültiges JSON. Bitte korrekte JSON-Syntax verwenden (z.B. {"key":"value"} oder [...]).'
+    outline:
+        aria_label: 'Abschnitte'
+        title: 'Abschnitte'
     automatic_value: 'Dieses Feld wurde automatisch von der Cyberpunk Fee ausgefüllt.'
     complete_asset_inventory: 'Asset-Inventar vervollständigen'
     conduct_risk_analysis: 'Risikoanalyse durchführen'

@@ -509,6 +509,9 @@ compliance:
             fulfilled: Erfüllt
             compliance: Compliance-Rate
     requirement:
+        aria:
+            current: 'Ist (aktueller Reifegrad)'
+            target: 'Soll (Ziel-Reifegrad)'
         success:
             created: 'Compliance-Anforderung wurde erstellt.'
             updated: 'Compliance-Anforderung wurde aktualisiert.'

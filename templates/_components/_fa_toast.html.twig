@@ -104,7 +104,7 @@
     <div class="fa-toast-stack {{ positionClass[position]|default('') }}"
          data-controller="fa-toast"
          data-fa-toast-target="stack"
-         aria-label="Notifications">
+         aria-label="{{ 'notifications.aria.toast_stack'|trans({}, 'notifications') }}">
         {% for toast in toasts|default([]) %}
             {{ _self.render(toast) }}
         {% endfor %}
