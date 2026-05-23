@@ -59,6 +59,7 @@ class ComplianceController extends AbstractController
     protected function getTranslator(): TranslatorInterface
     {
         if ($this->translator === null) {
+            // @intentional-assertion: nullable-translator fallback exists only for test ctor compat
             throw new \RuntimeException('TranslatorInterface not injected — flash methods unavailable.');
         }
         return $this->translator;
