@@ -33,10 +33,10 @@ final class FieldCompletionAutoTransitionTest extends TestCase
         $entity = $this->makeEntity('high', 100, ['PII']);
 
         $workflow = $this->createMock(WorkflowInterface::class);
-        $workflow->method('can')->with($entity, 'assess')->willReturn(true);
+        $workflow->expects(self::once())->method('can')->with($entity, 'assess')->willReturn(true);
 
         $registry = $this->createMock(Registry::class);
-        $registry->method('get')->with($entity, 'data_breach_lifecycle')->willReturn($workflow);
+        $registry->expects(self::once())->method('get')->with($entity, 'data_breach_lifecycle')->willReturn($workflow);
 
         $lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
         $lifecycleService->expects(self::once())
@@ -69,7 +69,7 @@ final class FieldCompletionAutoTransitionTest extends TestCase
         $entity = $this->makeEntity('high', 100, ['PII']);
 
         $workflow = $this->createMock(WorkflowInterface::class);
-        $workflow->method('can')->with($entity, 'assess')->willReturn(false);
+        $workflow->expects(self::once())->method('can')->with($entity, 'assess')->willReturn(false);
 
         $registry = $this->createMock(Registry::class);
         $registry->method('get')->willReturn($workflow);

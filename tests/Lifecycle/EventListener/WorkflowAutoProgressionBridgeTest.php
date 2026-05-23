@@ -81,7 +81,7 @@ final class WorkflowAutoProgressionBridgeTest extends TestCase
             );
 
         $em = $this->createMock(EntityManagerInterface::class);
-        $em->method('find')->with(self::ENTITY_CLASS, 7)->willReturn($parentEntity);
+        $em->expects(self::once())->method('find')->with(self::ENTITY_CLASS, 7)->willReturn($parentEntity);
 
         $bridge = $this->makeBridge($lifecycleService);
         $bridge->postUpdate(new PostUpdateEventArgs($instance, $em));
