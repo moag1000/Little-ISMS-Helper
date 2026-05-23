@@ -445,8 +445,10 @@
                                 <strong>{{ asset.name }}</strong>
                                 {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.assetType } %}
                                 <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
-                                {% if asset.monetaryValue %}
-                                    <small class="text-danger">{{ 'incident.bcm.value'|trans({}, 'incident') }}: €{{ asset.monetaryValue }}</small>
+                                {# Junior-ISB-Audit S14#15: prefer canonical currentValue, fall back to legacy monetaryValue. #}
+                                {% set assetVal = asset.currentValue ?? asset.monetaryValue %}
+                                {% if assetVal %}
+                                    <small class="text-danger">{{ 'incident.bcm.value'|trans({}, 'incident') }}: €{{ assetVal }}</small>
                                 {% endif %}
                             </div>
                         {% endfor %}
