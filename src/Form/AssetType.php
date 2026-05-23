@@ -16,6 +16,7 @@ use App\Form\Trait\OwnerPickerFormTrait;
 use App\Form\Type\JsonTagsType;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
@@ -36,7 +37,14 @@ final class AssetType extends AbstractType implements SectionMapInterface
 
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly Security $security,
     ) {
+    }
+
+    // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+    protected function getSecurityForOwnerPicker(): ?Security
+    {
+        return $this->security;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -95,6 +103,8 @@ final class AssetType extends AbstractType implements SectionMapInterface
             'legacy_label'       => 'asset.field.owner_legacy',
             'legacy_help'        => 'asset.help.owner',
             'legacy_placeholder' => 'asset.placeholder.owner',
+            // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+            'default_to_current_user' => true,
         ]);
 
         $builder

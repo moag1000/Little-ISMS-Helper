@@ -11,6 +11,7 @@ use App\Entity\BusinessProcess;
 use App\Entity\Risk;
 use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -38,6 +39,17 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 final class BusinessProcessType extends AbstractType implements SectionMapInterface
 {
     use OwnerPickerFormTrait;
+
+    public function __construct(
+        private readonly Security $security,
+    ) {
+    }
+
+    // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+    protected function getSecurityForOwnerPicker(): ?Security
+    {
+        return $this->security;
+    }
 
     public static function getSectionMap(): array
     {
@@ -83,6 +95,8 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             'deputies_label'     => 'business_process.field.process_owner_deputies',
             'deputies_help'      => 'business_process.help.process_owner_deputies',
             'legacy_label'       => 'business_process.field.process_owner_legacy',
+            // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+            'default_to_current_user' => true,
         ]);
 
         $builder

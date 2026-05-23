@@ -17,6 +17,7 @@ use App\Repository\TenantPolicySettingRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -43,7 +44,14 @@ final class IncidentType extends AbstractType
         private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly TenantContext $tenantContext,
         private readonly TenantPolicySettingRepository $tenantPolicySettingRepository,
+        private readonly Security $security,
     ) {
+    }
+
+    // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+    protected function getSecurityForOwnerPicker(): ?Security
+    {
+        return $this->security;
     }
 
     /**
@@ -176,6 +184,8 @@ final class IncidentType extends AbstractType
             'deputies_help'      => 'incident.help.reported_by_deputies',
             'legacy_label'       => 'incident.field.reported_by_legacy',
             'legacy_placeholder' => 'incident.placeholder.reported_by',
+            // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+            'default_to_current_user' => true,
         ]);
 
         $builder
