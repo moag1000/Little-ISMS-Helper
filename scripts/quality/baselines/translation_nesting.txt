@@ -81,10 +81,12 @@ translations/audits.en.yaml:180:pdf
 translations/audits.en.yaml:219:audit_finding
 translations/audits.en.yaml:316:corrective_action
 translations/audits.en.yaml:384:iso_9001_bridge
-translations/bc_plans.de.yaml:205:bcm
-translations/bc_plans.de.yaml:209:iso_9001_bridge
-translations/bc_plans.en.yaml:203:bcm
-translations/bc_plans.en.yaml:207:iso_9001_bridge
+translations/bc_plans.de.yaml:211:bcm
+translations/bc_plans.de.yaml:218:bc_plan
+translations/bc_plans.de.yaml:227:iso_9001_bridge
+translations/bc_plans.en.yaml:209:bcm
+translations/bc_plans.en.yaml:216:bc_plan
+translations/bc_plans.en.yaml:225:iso_9001_bridge
 translations/bcm.de.yaml:97:business_process
 translations/bcm.de.yaml:195:bc_exercises
 translations/bcm.de.yaml:207:bc_plans
