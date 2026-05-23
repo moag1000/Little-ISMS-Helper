@@ -4,7 +4,7 @@ tests/Controller/AssetControllerTest.php:206
 tests/Controller/CertificationBundleControllerKonzernTest.php:175
 tests/Controller/CertificationBundleControllerKonzernTest.php:194
 tests/Controller/CommentControllerTest.php:182
-tests/Controller/ComplianceControllerTest.php:163
+tests/Controller/ComplianceControllerTest.php:164
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:122
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:152
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:184
