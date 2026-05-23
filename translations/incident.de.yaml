@@ -271,6 +271,10 @@ incident:
     affected_assets: Wählen Sie die vom Vorfall betroffenen Assets aus (Tippen
       zum Suchen, Mehrfachauswahl möglich)
     nis2_category: Kategorie gemäß NIS2-Richtlinie Artikel 23
+    nis2_category_kritis_hint: 'Kategorie gemäß NIS2-Richtlinie Artikel 23. Hinweis:
+      Markieren Sie Ihren Mandanten in den Compliance-Einstellungen als KRITIS-Betreiber
+      (BSI-Kritis-V), damit sektor-spezifische NIS2-Pflichtfeld-Erkennung vollständig
+      funktioniert.'
     early_warning_24h: Frühwarnung muss innerhalb von 24 Stunden nach Erkennung erfolgen
       (NIS2 Art. 23)
     detailed_notification_72h: Detaillierte Meldung innerhalb von 72 Stunden (NIS2
