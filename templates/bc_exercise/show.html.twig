@@ -3,6 +3,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 
 {% block title %}{{ bc_exercise.name }}{% endblock %}
 
@@ -34,6 +35,14 @@
             { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_bc_exercise_edit', {id: bc_exercise.id}) },
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', href: path('app_bc_exercise_index') }
         ]
+    }) }}
+
+    {# 9001-bridge: BC-Exercise = process verification (9001 9.1 evaluation) + 22301 8.5 mandatory test. P-12 show-page mirror of #614. #}
+    {{ _fa_norm_bridge.render({
+        from_norm: 'ISO 22301 8.5',
+        to_norm:   'ISO 9001 6.1 / 9.1',
+        bridge_text: ('iso_9001_bridge.exercise'|trans({}, 'bc_exercises')),
+        prominence: 'subtle'
     }) }}
 
     {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}

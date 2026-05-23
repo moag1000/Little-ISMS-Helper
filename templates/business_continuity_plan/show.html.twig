@@ -2,6 +2,7 @@
 {% trans_default_domain 'bc_plans' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 
 {% block title %}{{ bc_plan.name }}{% endblock %}
 
@@ -32,6 +33,14 @@
             { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_bc_plan_edit', {id: bc_plan.id}) },
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_bc_plan_index') }
         ]
+    }) }}
+
+    {# 9001-bridge: BC-Plan is part of risk treatment (9001 6.1) and mandatory in 22301 8.4. P-12 show-page mirror of #614. #}
+    {{ _fa_norm_bridge.render({
+        from_norm: 'ISO 22301 8.4',
+        to_norm:   'ISO 9001 6.1',
+        bridge_text: ('iso_9001_bridge.bc_plan'|trans({}, 'bc_plans')),
+        prominence: 'subtle'
     }) }}
 
     {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
