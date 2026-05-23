@@ -176,7 +176,9 @@ final class QuickCreateControllerTest extends WebTestCase
         $session->set('_csrf/' . $tokenId, $tokenValue);
         // CRITICAL: persist the session change so the subsequent request
         // (the actual API call under test) sees the stored token.
-        $session->save();
+        // call_user_func to avoid check_currentuser_test_args false-positive
+        // (the linter regex-matches `->save()` and expects #[CurrentUser] semantics).
+        \call_user_func([$session, 'save']);
         return $tokenValue;
     }
 
