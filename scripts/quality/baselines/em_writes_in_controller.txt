@@ -179,8 +179,8 @@ src/Controller/ComplianceController.php:2156
 src/Controller/ComplianceController.php:2225
 src/Controller/ComplianceController.php:2243
 src/Controller/ComplianceController.php:2255
-src/Controller/ComplianceController.php:2507
-src/Controller/ComplianceController.php:2512
+src/Controller/ComplianceController.php:2510
+src/Controller/ComplianceController.php:2515
 src/Controller/ComplianceFrameworkController.php:88
 src/Controller/ComplianceFrameworkController.php:89
 src/Controller/ComplianceFrameworkController.php:177
