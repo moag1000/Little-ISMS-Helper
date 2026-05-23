@@ -237,14 +237,14 @@ asset:
     owner_user: -- Verantwortliche Person --
     owner_person: -- Person aus Stammdaten --
   type:
-    information: Information
-    software: Software
-    hardware: Hardware
-    service: Service
-    personnel: Personal
-    physical: Physisch
-    ai_agent: KI-Agent
-    data: Daten
+    information: 'Information'
+    software: 'Software (Anwendung, Bibliothek, OS)'
+    hardware: 'Hardware (Server, Workstation, Netzwerk)'
+    service: 'Service (Cloud, SaaS, externer Dienstleister)'
+    personnel: 'Personal'
+    physical: 'Physisch (Gebäude, Raum, Schloss)'
+    ai_agent: 'KI-Agent (EU AI Act)'
+    data: 'Daten'
     network: Netzwerk
     facility: Gebäude
     other: Sonstige

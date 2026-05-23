@@ -293,7 +293,7 @@ incident:
       extern gemeldet.
     reported_by_person: 'Person ohne System-Login als Melder wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
     reported_by_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
-    responsible_person: 'Langfristig verantwortliche Person fuer diesen Vorfall (Governance-Sicht). Unabhaengig vom Bearbeiter (Ticket-Assignee) und Melder (Audit-Trail). Kann ein externer CISO/ISB ohne System-Login sein.'
+    responsible_person: 'Verantwortliche Person mit Governance-Sicht auf diesen Vorfall (langfristig, nicht der tägliche Bearbeiter). Unterschied: <strong>Melder</strong> = wer hat es entdeckt (Audit-Trail), <strong>Bearbeiter/Ticket-Assignee</strong> = wer arbeitet aktuell daran, <strong>Verantwortlich</strong> = wem gehört der Vorfall organisatorisch (CISO/ISB, ggf. extern, ggf. ohne System-Login).'
     incident_classification: 'Ereignis (Event) vs. Vorfall (Incident) nach A.5.24 — steuert das Workflow-Routing.'
     containment_actions: 'Kurzfristige Sofortmaßnahmen (Eindämmung) und langfristige Abhilfemaßnahmen (Remediation) nach A.5.26.'
     evidence_preserved: 'Bestätigung, dass digitale Beweise gemäß A.5.28 gesichert und integritätsgeschützt wurden.'
