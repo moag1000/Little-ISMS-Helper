@@ -139,6 +139,7 @@ role:
     templates:
         title: Rollenvorlagen
         description: 'Vordefinierte Rollenvorlagen für typische ISMS-Funktionen'
+        intro: 'Wählen Sie eine vordefinierte Rollenvorlage aus und passen Sie optional den Namen an. Die Vorlage enthält bereits eine sinnvolle Kombination von Berechtigungen für den jeweiligen Anwendungsfall.'
         custom_name: 'Benutzerdefinierter Name'
     field:
         system_role: Systemrolle

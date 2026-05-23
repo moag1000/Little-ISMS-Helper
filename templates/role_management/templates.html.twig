@@ -23,8 +23,7 @@
         {% block alert_body %}
         <strong>{{ 'role.templates.description'|trans({}, 'role_management') }}</strong>
         <p class="mb-0 mt-2">
-            Wählen Sie eine vordefinierte Rollenvorlage aus und passen Sie optional den Namen an.
-            Die Vorlage enthält bereits eine sinnvolle Kombination von Berechtigungen für den jeweiligen Anwendungsfall.
+            {{ 'role.templates.intro'|trans({}, 'role_management') }}
         </p>
         {% endblock %}
     {% endembed %}
