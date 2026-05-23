@@ -25,13 +25,13 @@ policy:
                     Folgende Rollen sind im PIMS verbindlich besetzt und voneinander zu trennen (BSI-Trennungsgebot):
 
                     - **Datenschutzbeauftragter (DSB / DPO)** {{ roles.dpo.fullName }} — gemaess Art. 37-39 DSGVO bestellt, weisungsfrei in Datenschutzfragen, berichtet unmittelbar an die oberste Leitung (Art. 38 Abs. 3 DSGVO), nicht in Personalunion mit dem ISB.
-                    - **Informationssicherheitsbeauftragter (ISB / CISO)** {{ roles.ciso.fullName }} — verantwortlich fuer das ISMS gemaess ISO 27001:2022.
+                    - **Informationssicherheitsbeauftragter (ISB / CISO)** {{ roles.ciso.fullName }} — verantwortlich für das ISMS gemaess ISO 27001:2022.
                     - **Vertretung des Verantwortlichen** {{ roles.controller_repr.fullName }} — Ansprechpartner der federfuehrenden Aufsichtsbehoerde gemaess Art. 56 DSGVO.
-                    - **Oberste Leitung** — verantwortlich fuer die Bereitstellung der Ressourcen, Genehmigung der PIMS-Leitlinie und der Datenschutzziele.
+                    - **Oberste Leitung** — verantwortlich für die Bereitstellung der Ressourcen, Genehmigung der PIMS-Leitlinie und der Datenschutzziele.
 
                     ## 4. Datenschutzziele (ISO 27701:2025 Cl. 6.2)
 
-                    Die Organisation legt jaehrlich messbare Datenschutzziele fest, mindestens fuer die Bereiche:
+                    Die Organisation legt jaehrlich messbare Datenschutzziele fest, mindestens für die Bereiche:
 
                     1. **Vollstaendigkeit des Verarbeitungsverzeichnisses** (Art. 30 DSGVO; ISO 27701 Cl. 7.2.8 / 8.2.6) — Zielwert: 100 % aller Verfahren erfasst, Toleranz 0.
                     2. **DSFA-Abdeckung** (Art. 35 DSGVO) — alle Hochrisiko-Verarbeitungen mit gueltiger DSFA, Toleranz 0.
@@ -42,7 +42,7 @@ policy:
 
                     ## 5. Risikomanagement-Ansatz (ISO 27701:2025 Cl. 6.1.2)
 
-                    Die Organisation erweitert den ISO-27001-Risikomanagement-Prozess um die Dimension "Risiken fuer die Rechte und Freiheiten betroffener Personen" gemaess Erwaegungsgrund 75 DSGVO. Bewertet werden Wahrscheinlichkeit und Schadensschwere fuer die betroffene Person, nicht primaer fuer die Organisation. Der Risiko-Appetit fuer Datenschutzrisiken wird im Risikoappetit-Statement der Organisation separat ausgewiesen. Die Methodik ist im Dokument *PIA/DSFA-Methodik* geregelt.
+                    Die Organisation erweitert den ISO-27001-Risikomanagement-Prozess um die Dimension "Risiken für die Rechte und Freiheiten betroffener Personen" gemaess Erwaegungsgrund 75 DSGVO. Bewertet werden Wahrscheinlichkeit und Schadensschwere für die betroffene Person, nicht primaer für die Organisation. Der Risiko-Appetit für Datenschutzrisiken wird im Risikoappetit-Statement der Organisation separat ausgewiesen. Die Methodik ist im Dokument *PIA/DSFA-Methodik* geregelt.
 
                     ## 6. PIMS-Pflicht-Dokumente (ISO 27701:2025 Anhang A/B Mapping)
 
@@ -66,7 +66,7 @@ policy:
 
                     Die folgenden ISO 27001:2022 Annex-A-Controls werden um Datenschutz-Aspekte erweitert (PIMS-Sicht):
 
-                    - **A.5.34** (Privacy + protection of PII) — Host-Control fuer alle PIMS-Dokumente.
+                    - **A.5.34** (Privacy + protection of PII) — Host-Control für alle PIMS-Dokumente.
                     - **A.5.31** (Legal, statutory, regulatory requirements) — DSGVO + BDSG als zentrale gesetzliche Anforderungen.
                     - **A.5.33** (Protection of records) — RoPA-Pflege gemaess Art. 30 DSGVO.
                     - **A.5.24-A.5.30** (Incident management) — verzahnt mit PII-Breach-Notification gemaess Art. 33/34 DSGVO.
@@ -89,7 +89,7 @@ policy:
 
                     ---
 
-                    *Genehmigt durch DPO {{ roles.dpo.fullName }} am [Datum] — der DSB-Sign-off ist gemaess Art. 38 Abs. 3 DSGVO und ISO 27701:2025 Cl. 5.1 unabhaengig vom CISO-Sign-off zu erteilen.*
+                    *Genehmigt durch DPO {{ roles.dpo.fullName }} am [Datum] — der DSB-Sign-off ist gemaess Art. 38 Abs. 3 DSGVO und ISO 27701:2025 Cl. 5.1 unabhängig vom CISO-Sign-off zu erteilen.*
 
                     *Genehmigungskette: {{ approval.chain }}*
         role_data_controller_responsibilities:
@@ -102,7 +102,7 @@ policy:
 
                     ## 1. Zweck
 
-                    Diese Richtlinie regelt verbindlich die Pflichten der {{ tenant.legal_name }} in der Rolle als Verantwortlicher i.S.v. Art. 4 Nr. 7 DSGVO. Sie operationalisiert ISO 27701:2025 Cl. 7.2 (Conditions for collection and processing) sowie den vollstaendigen Anhang A des Standards (PIMS-spezifische Controls fuer Verantwortliche).
+                    Diese Richtlinie regelt verbindlich die Pflichten der {{ tenant.legal_name }} in der Rolle als Verantwortlicher i.S.v. Art. 4 Nr. 7 DSGVO. Sie operationalisiert ISO 27701:2025 Cl. 7.2 (Conditions for collection and processing) sowie den vollstaendigen Anhang A des Standards (PIMS-spezifische Controls für Verantwortliche).
 
                     ## 2. Definition der Rolle (Art. 4 Nr. 7 DSGVO)
 
@@ -119,7 +119,7 @@ policy:
                     Vor Beginn jeder Verarbeitung dokumentiert die Organisation:
 
                     1. Den **legitimen Zweck** der Verarbeitung (Art. 5 Abs. 1 lit. b DSGVO — Zweckbindung);
-                    2. Die **Rechtsgrundlage** nach Art. 6 Abs. 1 lit. a-f DSGVO; bei besonderen Kategorien zusaetzlich Art. 9 Abs. 2 oder § 22 BDSG-neu;
+                    2. Die **Rechtsgrundlage** nach Art. 6 Abs. 1 lit. a-f DSGVO; bei besonderen Kategorien zusätzlich Art. 9 Abs. 2 oder § 22 BDSG-neu;
                     3. Die **Datenkategorien** und **Betroffenenkategorien** mit Bezug auf den Datenkatalog der Organisation;
                     4. Die **Aufbewahrungsfristen** gemaess Loeschkonzept.
 
@@ -139,7 +139,7 @@ policy:
                     Bei jedem neuen IT-Verfahren wird vor der Inbetriebnahme die Methodik Privacy by Design angewendet:
 
                     - **Datenminimierung** in der Erhebungsmaske (Art. 5 Abs. 1 lit. c);
-                    - **Default-Einstellungen privacy-freundlich** (z. B. Opt-in statt Opt-out fuer optionale Datenfelder);
+                    - **Default-Einstellungen privacy-freundlich** (z. B. Opt-in statt Opt-out für optionale Datenfelder);
                     - **Pseudonymisierung** wo technisch moeglich (Art. 4 Nr. 5);
                     - **Verschluesselung** in Transit und at Rest (Art. 32);
                     - **Berechtigungskonzept** mit Need-to-know (A.5.15-A.5.18 ISO 27001).
@@ -170,7 +170,7 @@ policy:
 
                     ## 10. DSFA (Art. 35 DSGVO + ISO 27701:2025 Cl. 7.2.5)
 
-                    Bei voraussichtlich hohem Risiko fuer Rechte und Freiheiten betroffener Personen ist eine Datenschutz-Folgenabschaetzung gemaess der Methodik *PIA/DSFA* durchzufuehren. Triggerlogik: Profiling mit rechtlicher Wirkung; grossflaechige Verarbeitung besonderer Kategorien; systematische oeffentliche Ueberwachung; Treffer auf Liste der federfuehrenden Aufsichtsbehoerde.
+                    Bei voraussichtlich hohem Risiko für Rechte und Freiheiten betroffener Personen ist eine Datenschutz-Folgenabschaetzung gemaess der Methodik *PIA/DSFA* durchzufuehren. Triggerlogik: Profiling mit rechtlicher Wirkung; grossflaechige Verarbeitung besonderer Kategorien; systematische oeffentliche Ueberwachung; Treffer auf Liste der federfuehrenden Aufsichtsbehoerde.
 
                     ## 11. Drittland-Uebermittlungen (Kapitel V DSGVO + ISO 27701:2025 Cl. 7.5)
 
@@ -201,11 +201,11 @@ policy:
 
                     ## 1. Zweck
 
-                    Diese Richtlinie regelt verbindlich die Pflichten der {{ tenant.legal_name }} in der Rolle als Auftragsverarbeiter i.S.v. Art. 4 Nr. 8 DSGVO. Sie operationalisiert ISO 27701:2025 Cl. 8.2 (Conditions for collection and processing) sowie Anhang B des Standards (PIMS-spezifische Controls fuer Auftragsverarbeiter).
+                    Diese Richtlinie regelt verbindlich die Pflichten der {{ tenant.legal_name }} in der Rolle als Auftragsverarbeiter i.S.v. Art. 4 Nr. 8 DSGVO. Sie operationalisiert ISO 27701:2025 Cl. 8.2 (Conditions for collection and processing) sowie Anhang B des Standards (PIMS-spezifische Controls für Auftragsverarbeiter).
 
                     ## 2. Definition der Rolle (Art. 4 Nr. 8 DSGVO)
 
-                    Auftragsverarbeiter ist die Organisation, sofern sie personenbezogene Daten **im Auftrag** eines Verantwortlichen verarbeitet, ohne ueber Zwecke und Mittel zu entscheiden. Beispiele in der Organisation: SaaS-Bereitstellung fuer Kunden, Hosting-Dienstleistungen, Lohnabrechnung im Auftrag, Kundenservice-Ticketing fuer Kundenmandanten.
+                    Auftragsverarbeiter ist die Organisation, sofern sie personenbezogene Daten **im Auftrag** eines Verantwortlichen verarbeitet, ohne ueber Zwecke und Mittel zu entscheiden. Beispiele in der Organisation: SaaS-Bereitstellung für Kunden, Hosting-Dienstleistungen, Lohnabrechnung im Auftrag, Kundenservice-Ticketing für Kundenmandanten.
 
                     ## 3. Auftragsverarbeitungs-Vertrag (Art. 28 Abs. 3 DSGVO + ISO 27701:2025 Cl. 8.2.2)
 
@@ -228,7 +228,7 @@ policy:
 
                     ## 5. Vertraulichkeit (Art. 28 Abs. 3 lit. b + ISO 27701:2025 Cl. 8.2.2)
 
-                    Alle mit der Verarbeitung befassten Personen werden zur Vertraulichkeit verpflichtet (separates Vertraulichkeitsdokument, Aufnahme im Arbeitsvertrag oder Verpflichtungserklaerung gemaess § 53 BDSG-neu fuer DSB-relevante Funktionen).
+                    Alle mit der Verarbeitung befassten Personen werden zur Vertraulichkeit verpflichtet (separates Vertraulichkeitsdokument, Aufnahme im Arbeitsvertrag oder Verpflichtungserklaerung gemaess § 53 BDSG-neu für DSB-relevante Funktionen).
 
                     ## 6. Sicherheit der Verarbeitung (Art. 28 Abs. 3 lit. c + Art. 32 + ISO 27701:2025 Cl. 8.2.4)
 
@@ -244,7 +244,7 @@ policy:
                     1. Allgemeine schriftliche Genehmigung des Verantwortlichen oder spezifische Genehmigung pro Sub-Verarbeiter;
                     2. Vorabinformation ueber jede beabsichtigte Aenderung mit Einspruchsmoeglichkeit;
                     3. Sub-AVV mit Sub-Verarbeiter mit identischen oder strengeren Pflichten;
-                    4. Vollstaendige Haftung gegenueber Verantwortlichem fuer Sub-Verarbeiter-Verstoesse;
+                    4. Vollstaendige Haftung gegenueber Verantwortlichem für Sub-Verarbeiter-Verstoesse;
                     5. Sub-Verarbeiter-Liste oeffentlich oder Verantwortlichem zugaenglich.
 
                     ## 8. Unterstuetzung bei Betroffenenrechten (Art. 28 Abs. 3 lit. e + ISO 27701:2025 Cl. 8.3)
@@ -272,7 +272,7 @@ policy:
                     Auftragsverarbeiter-RoPA mit:
 
                     - Name und Kontaktdaten der Auftragsverarbeiter und jedes Verantwortlichen;
-                    - Kategorien der im Auftrag durchgefuehrten Verarbeitungen;
+                    - Kategorien der im Auftrag durchgeführten Verarbeitungen;
                     - Drittland-Uebermittlungen mit Garantien;
                     - Allgemeine Beschreibung der TOMs.
 
@@ -304,11 +304,11 @@ policy:
                     - **Verantwortlicher (Art. 30 Abs. 1 + ISO 27701:2025 Cl. 7.2.8)** — Pflichtinhalte (a)-(g): Name und Kontaktdaten des Verantwortlichen, gemeinsam Verantwortlicher und DSB; Verarbeitungszwecke; Kategorien betroffener Personen und personenbezogener Daten; Kategorien von Empfaengern; Drittland-Uebermittlungen mit Garantien; vorgesehene Loeschfristen; allgemeine TOM-Beschreibung.
                     - **Auftragsverarbeiter (Art. 30 Abs. 2 + ISO 27701:2025 Cl. 8.2.6)** — Pflichtinhalte (a)-(d): Name und Kontaktdaten der Auftragsverarbeiter und Verantwortlichen; Kategorien der Verarbeitungen; Drittland-Uebermittlungen; allgemeine TOM-Beschreibung.
 
-                    Die Befreiung des Art. 30 Abs. 5 DSGVO (< 250 Beschaeftigte) wird **nicht in Anspruch genommen**, da die Ausnahmen (regelmaessige Verarbeitung, Risiko fuer Rechte und Freiheiten, besondere Kategorien) praktisch immer greifen.
+                    Die Befreiung des Art. 30 Abs. 5 DSGVO (< 250 Beschaeftigte) wird **nicht in Anspruch genommen**, da die Ausnahmen (regelmaessige Verarbeitung, Risiko für Rechte und Freiheiten, besondere Kategorien) praktisch immer greifen.
 
                     ## 3. PII-Inventar (ISO 27701:2025 Cl. 7.2.1)
 
-                    Das PII-Inventar ist die Bestandsaufnahme aller PII-Datenkategorien, die die Organisation erhebt, speichert oder verarbeitet. Es ist die Basis fuer das RoPA und wird im Modul `DataCategory` gefuehrt:
+                    Das PII-Inventar ist die Bestandsaufnahme aller PII-Datenkategorien, die die Organisation erhebt, speichert oder verarbeitet. Es ist die Basis für das RoPA und wird im Modul `DataCategory` gefuehrt:
 
                     - **Datenkategorie** (z. B. Stammdaten, Kontaktdaten, Bankverbindung, Gesundheitsdaten);
                     - **Klassifikation** (Standard / besondere Kategorie nach Art. 9 / strafrechtlich nach Art. 10);
@@ -317,7 +317,7 @@ policy:
                     - **Loeschfrist** (Default; wird pro Verfahren ueberschrieben);
                     - **TOM-Mindestanforderungen**.
 
-                    ## 4. Trigger fuer einen RoPA-Eintrag
+                    ## 4. Trigger für einen RoPA-Eintrag
 
                     Eine neue RoPA-Eintragung ist verpflichtend bei:
 
@@ -398,20 +398,20 @@ policy:
 
                     ## 1. Zweck
 
-                    Diese Richtlinie regelt verbindlich, welche Rechtsgrundlage gemaess Art. 6 (allgemeine Daten), Art. 9 (besondere Kategorien) bzw. Art. 10 (strafrechtliche Daten) DSGVO fuer welche Verarbeitungstaetigkeit der {{ tenant.legal_name }} herangezogen wird, und stellt das Einwilligungsmanagement gemaess Art. 7 DSGVO sicher.
+                    Diese Richtlinie regelt verbindlich, welche Rechtsgrundlage gemaess Art. 6 (allgemeine Daten), Art. 9 (besondere Kategorien) bzw. Art. 10 (strafrechtliche Daten) DSGVO für welche Verarbeitungstaetigkeit der {{ tenant.legal_name }} herangezogen wird, und stellt das Einwilligungsmanagement gemaess Art. 7 DSGVO sicher.
 
                     ## 2. Hierarchie der Rechtsgrundlagen (Art. 6 Abs. 1 DSGVO)
 
                     Eine Verarbeitung ohne dokumentierte Rechtsgrundlage ist untersagt. Die Festlegung erfolgt vor Beginn der Verarbeitung in folgender Pruefreihenfolge:
 
                     1. **Art. 6 Abs. 1 lit. b — Vertragserfuellung / vorvertragliche Massnahmen**: bevorzugt, wenn die Verarbeitung zur Erfuellung des Vertrags erforderlich ist (kein Pflichtkriterium "absolut notwendig", aber objektiv erforderlich).
-                    2. **Art. 6 Abs. 1 lit. c — Rechtliche Verpflichtung**: bei gesetzlicher Verarbeitungsverpflichtung; konkrete Norm zu zitieren (HGB §§ 238, 257; AO § 147; SGB; GwG; BetrVG; BBG; § 26 BDSG-neu fuer Beschaeftigte).
+                    2. **Art. 6 Abs. 1 lit. c — Rechtliche Verpflichtung**: bei gesetzlicher Verarbeitungsverpflichtung; konkrete Norm zu zitieren (HGB §§ 238, 257; AO § 147; SGB; GwG; BetrVG; BBG; § 26 BDSG-neu für Beschaeftigte).
                     3. **Art. 6 Abs. 1 lit. d — Lebenswichtige Interessen**: enge Auslegung; nur Notlagen.
-                    4. **Art. 6 Abs. 1 lit. e — Oeffentliche Aufgabe / Hoheitsgewalt**: nur fuer oeffentlich-rechtliche Aufgaben oder gesetzliche Hoheitsgewalt.
+                    4. **Art. 6 Abs. 1 lit. e — Oeffentliche Aufgabe / Hoheitsgewalt**: nur für oeffentlich-rechtliche Aufgaben oder gesetzliche Hoheitsgewalt.
                     5. **Art. 6 Abs. 1 lit. f — Berechtigte Interessen**: Drei-Stufen-Pruefung verpflichtend (Vorliegen berechtigtes Interesse, Erforderlichkeit, Abwaegung mit Betroffeneninteressen) — dokumentiert als LIA gemaess Erwaegungsgrund 47.
                     6. **Art. 6 Abs. 1 lit. a — Einwilligung**: nur, wenn keine andere Rechtsgrundlage einschlaegig ist; Einwilligung darf nicht zur Umgehung anderer Rechtsgrundlagen dienen.
 
-                    Standard-Rechtsgrundlage in der Organisation fuer neue Verfahren: {{ gdpr.legal_basis_default }}.
+                    Standard-Rechtsgrundlage in der Organisation für neue Verfahren: {{ gdpr.legal_basis_default }}.
 
                     ## 3. Besondere Kategorien (Art. 9 DSGVO + § 22 BDSG-neu)
 
@@ -431,7 +431,7 @@ policy:
 
                     ## 5. Beschaeftigtendaten (§ 26 BDSG-neu)
 
-                    Verarbeitung von Beschaeftigtendaten erfolgt vorrangig auf Basis § 26 Abs. 1 BDSG-neu (Erforderlichkeit fuer das Beschaeftigungsverhaeltnis). Einwilligung im Beschaeftigungskontext nur dort, wo sie tatsaechlich freiwillig ist (§ 26 Abs. 2 BDSG-neu): wirtschaftlicher / rechtlicher Vorteil fuer Beschaeftigte, keine negativen Konsequenzen bei Verweigerung. Schriftform fuer Einwilligung (§ 26 Abs. 2 Satz 3 BDSG-neu).
+                    Verarbeitung von Beschaeftigtendaten erfolgt vorrangig auf Basis § 26 Abs. 1 BDSG-neu (Erforderlichkeit für das Beschaeftigungsverhaeltnis). Einwilligung im Beschaeftigungskontext nur dort, wo sie tatsächlich freiwillig ist (§ 26 Abs. 2 BDSG-neu): wirtschaftlicher / rechtlicher Vorteil für Beschaeftigte, keine negativen Konsequenzen bei Verweigerung. Schriftform für Einwilligung (§ 26 Abs. 2 Satz 3 BDSG-neu).
 
                     ## 6. Einwilligungsmanagement (Art. 7 + ISO 27701:2025 Cl. 7.2.4)
 
@@ -442,14 +442,14 @@ policy:
                     3. **Frei** — keine Kopplung an Vertragsleistung (Art. 7 Abs. 4) wenn nicht erforderlich.
                     4. **Aktiv** — Opt-in (kein vorangekreuztes Kaestchen, EuGH C-673/17 Planet49).
                     5. **Widerrufbar** — Widerruf so einfach wie Erteilung (Art. 7 Abs. 3); kein Begruendungszwang.
-                    6. **Versioniert** — bei Zweckaenderung neue Einwilligung; alte bleibt fuer Altdaten gueltig.
+                    6. **Versioniert** — bei Zweckaenderung neue Einwilligung; alte bleibt für Altdaten gueltig.
                     7. **Nachweisbar** (Art. 7 Abs. 1) — wer, wann, was, wie eingewilligt; Speicherung im Modul `Consent` mit Zeitstempel, IP-Hash, Versionsnummer.
 
                     Eingesetztes Werkzeug: {{ gdpr.consent_management_tool }}.
 
                     ## 7. Einwilligung Minderjaehriger (Art. 8 + § 8 BDSG-neu)
 
-                    Bei Diensten der Informationsgesellschaft direkt gegenueber Kindern: elterliche Einwilligung bis 16 Jahre (DE-Standard nach § 8 BDSG-neu, Mitgliedstaatenoption Art. 8 Abs. 1 DSGVO). Verifizierungspflicht der Einwilligungsperson "unter Beruecksichtigung der verfuegbaren Technik" (Art. 8 Abs. 2). Werbliche Ansprache Minderjaehriger: zusaetzliche Anforderungen aus UWG.
+                    Bei Diensten der Informationsgesellschaft direkt gegenueber Kindern: elterliche Einwilligung bis 16 Jahre (DE-Standard nach § 8 BDSG-neu, Mitgliedstaatenoption Art. 8 Abs. 1 DSGVO). Verifizierungspflicht der Einwilligungsperson "unter Beruecksichtigung der verfuegbaren Technik" (Art. 8 Abs. 2). Werbliche Ansprache Minderjaehriger: zusätzliche Anforderungen aus UWG.
 
                     ## 8. Legitimate Interest Assessment (LIA)
 
@@ -472,7 +472,7 @@ policy:
 
                     ## 10. ePrivacy-Schnittstelle (TTDSG)
 
-                    Cookies und vergleichbare Speichertechnologien unterliegen § 25 TTDSG (Umsetzung der ePrivacy-Richtlinie). Einwilligung fuer alle nicht-technisch-notwendigen Cookies. Cookie-Banner gemaess BfDI-Leitlinien (klare Auswahl, gleichwertige Alternativen, kein Dark Pattern, granular pro Kategorie).
+                    Cookies und vergleichbare Speichertechnologien unterliegen § 25 TTDSG (Umsetzung der ePrivacy-Richtlinie). Einwilligung für alle nicht-technisch-notwendigen Cookies. Cookie-Banner gemaess BfDI-Leitlinien (klare Auswahl, gleichwertige Alternativen, kein Dark Pattern, granular pro Kategorie).
 
                     ---
 
@@ -523,14 +523,14 @@ policy:
 
                     - **Niedriges Risiko** (Berichtigung der eigenen E-Mail-Adresse im Account): Bestaetigung ueber den Bestandskanal;
                     - **Mittleres Risiko** (Auskunft zu Stammdaten): Klarnameabgleich + Verifizierungs-E-Mail an die im System hinterlegte Adresse;
-                    - **Hohes Risiko** (Auskunft zu besonderen Kategorien, Loeschung umfangreicher Daten): zusaetzliche Identitaetsmerkmale (z. B. Vertragsnummer, Geburtsdatum, Postadresse) oder Video-Ident.
+                    - **Hohes Risiko** (Auskunft zu besonderen Kategorien, Loeschung umfangreicher Daten): zusätzliche Identitaetsmerkmale (z. B. Vertragsnummer, Geburtsdatum, Postadresse) oder Video-Ident.
 
-                    Bei begruendeten Zweifeln darf die Organisation gemaess Art. 12 Abs. 6 DSGVO zusaetzliche Informationen anfordern; die Frist beginnt erst mit Vorlage der Identitaetsnachweise. Aussage **nicht** "ID-Kopie generell anfordern" — DSK-Empfehlung beachten (nur soweit erforderlich, Schwaerzung nicht relevanter Felder).
+                    Bei begruendeten Zweifeln darf die Organisation gemaess Art. 12 Abs. 6 DSGVO zusätzliche Informationen anfordern; die Frist beginnt erst mit Vorlage der Identitaetsnachweise. Aussage **nicht** "ID-Kopie generell anfordern" — DSK-Empfehlung beachten (nur soweit erforderlich, Schwaerzung nicht relevanter Felder).
 
                     ## 5. Bearbeitungsfrist (Art. 12 Abs. 3 DSGVO)
 
                     - **Default**: 30 Kalendertage ab Eingang (bzw. ab Vorlage Identitaetsnachweise);
-                    - **Verlaengerung**: bis zu 60 zusaetzliche Tage (also max. 90) bei Komplexitaet oder hohem Antragsvolumen;
+                    - **Verlaengerung**: bis zu 60 zusätzliche Tage (also max. 90) bei Komplexitaet oder hohem Antragsvolumen;
                     - **Verlaengerungsmitteilung** muss **innerhalb der ersten 30 Tage** an Betroffene erfolgen mit Begruendung;
                     - **Ablehnung** (offensichtlich unbegruendet oder exzessiv, Art. 12 Abs. 5 lit. b): mit Begruendung und Hinweis auf Beschwerderecht (Art. 77) und Klagerecht (Art. 79).
 
@@ -598,7 +598,7 @@ policy:
 
                     ## 2. Pflicht-Auftakt (Art. 35 Abs. 1 DSGVO)
 
-                    Eine DSFA ist verpflichtend, wenn die geplante Verarbeitung **voraussichtlich ein hohes Risiko** fuer die Rechte und Freiheiten betroffener Personen zur Folge hat. Eine DSFA ist **vor** Beginn der Verarbeitung durchzufuehren, nicht nachgelagert.
+                    Eine DSFA ist verpflichtend, wenn die geplante Verarbeitung **voraussichtlich ein hohes Risiko** für die Rechte und Freiheiten betroffener Personen zur Folge hat. Eine DSFA ist **vor** Beginn der Verarbeitung durchzufuehren, nicht nachgelagert.
 
                     ## 3. Triggerlogik (Art. 35 Abs. 3 + EDSA WP248 9-Kriterien-Liste)
 
@@ -614,9 +614,9 @@ policy:
                     8. **Innovative Nutzung neuer technologischer Loesungen** (KI, Biometrie, IoT — EDSA #8);
                     9. **Verhinderung Rechtsausuebung der Betroffenen** (z. B. Krediteinstufungen — EDSA #9).
 
-                    Treffen **2 von 9 Kriterien** zu: DSFA verpflichtend (EDSA-Faustregel). Bei nur 1 Kriterium: Pflichtpruefung des DSB; im Zweifel DSFA durchfuehren.
+                    Treffen **2 von 9 Kriterien** zu: DSFA verpflichtend (EDSA-Faustregel). Bei nur 1 Kriterium: Pflichtpruefung des DSB; im Zweifel DSFA durchführen.
 
-                    Zusaetzlich gilt die DSFA-Pflichtliste der federfuehrenden Aufsichtsbehoerde (Art. 35 Abs. 4); fuer DE: BfDI-Liste bzw. der zustaendigen Landesbehoerde.
+                    Zusaetzlich gilt die DSFA-Pflichtliste der federfuehrenden Aufsichtsbehoerde (Art. 35 Abs. 4); für DE: BfDI-Liste bzw. der zustaendigen Landesbehoerde.
 
                     ## 4. Pflichtinhalte einer DSFA (Art. 35 Abs. 7 + ISO 27701:2025 Cl. 7.2.5)
 
@@ -624,7 +624,7 @@ policy:
 
                     1. **Systematische Beschreibung** der geplanten Verarbeitungsvorgaenge und -zwecke, ggf. inklusive der vom Verantwortlichen verfolgten berechtigten Interessen (Art. 35 Abs. 7 lit. a);
                     2. **Bewertung der Notwendigkeit und Verhaeltnismaessigkeit** der Verarbeitungsvorgaenge in Bezug auf den Zweck (lit. b);
-                    3. **Bewertung der Risiken** fuer die Rechte und Freiheiten der Betroffenen (lit. c) — incl. Wahrscheinlichkeit und Schwere;
+                    3. **Bewertung der Risiken** für die Rechte und Freiheiten der Betroffenen (lit. c) — incl. Wahrscheinlichkeit und Schwere;
                     4. **Geplante Abhilfemassnahmen** (Garantien, Sicherheitsvorkehrungen, Verfahren) zur Bewaeltigung der Risiken und zum Nachweis der Konformitaet (lit. d).
 
                     ## 5. Sechs-Schritt-Workflow (Modul-Implementierung)
@@ -633,7 +633,7 @@ policy:
                     |---|---|---|
                     | 1 — Beschreibung | Verfahrensverantwortlicher | Verarbeitung beschreiben (Datenfluss-Diagramm, Systeme, Beteiligte) |
                     | 2 — Notwendigkeit + Verhaeltnismaessigkeit | DSB + Verfahrensverantwortlicher | Pruefung gegen Datenminimierung, Zweckbindung, milderes Mittel |
-                    | 3 — Risikoanalyse | DSB + ISB | Bewertung Wahrscheinlichkeit + Schwere fuer Betroffene |
+                    | 3 — Risikoanalyse | DSB + ISB | Bewertung Wahrscheinlichkeit + Schwere für Betroffene |
                     | 4 — Abhilfemassnahmen | DSB + ISB | Ableitung TOMs (Pseudonymisierung, Verschluesselung, Zugriffsbeschraenkung, Logging) |
                     | 5 — DPO-Konsultation | DSB ({{ roles.dpo.fullName }}) | **Pflicht** gemaess Art. 35 Abs. 2; auditierbar dokumentiert |
                     | 6 — Bei Restrisiko hoch: Vorabkonsultation | Vertretung des Verantwortlichen | Aufsichtsbehoerde gemaess Art. 36 Abs. 1 |
@@ -710,9 +710,9 @@ policy:
 
                     Frist beginnt **mit Bekanntwerden** des Vorfalls (i. d. R. Abschluss der ersten forensischen Bewertung mit hinreichender Gewissheit, nicht mit Detektion durch Tool-Alert).
 
-                    ## 6. Bewertungskriterien (Risiko fuer Rechte und Freiheiten)
+                    ## 6. Bewertungskriterien (Risiko für Rechte und Freiheiten)
 
-                    Pflicht zur Aufsichtsbehoerden-Meldung **entfaellt nur**, wenn die Verletzung "voraussichtlich nicht zu einem Risiko fuer die Rechte und Freiheiten natuerlicher Personen fuehrt" (Art. 33 Abs. 1). Bewertung gemaess EDSA-WP250-Kriterien:
+                    Pflicht zur Aufsichtsbehoerden-Meldung **entfaellt nur**, wenn die Verletzung "voraussichtlich nicht zu einem Risiko für die Rechte und Freiheiten natuerlicher Personen fuehrt" (Art. 33 Abs. 1). Bewertung gemaess EDSA-WP250-Kriterien:
 
                     - **Datentyp und Sensibilitaet** (besondere Kategorien Art. 9 = sehr hoch);
                     - **Identifizierbarkeit** der Betroffenen;
@@ -745,11 +745,11 @@ policy:
 
                     ## 9. Benachrichtigung Betroffener (Art. 34)
 
-                    Bei voraussichtlich **hohem Risiko** fuer die Rechte und Freiheiten der Betroffenen: zusaetzlich Benachrichtigung der Betroffenen **unverzueglich** in klarer, einfacher Sprache. Mindestinhalte: Beschreibung der Art, Kontaktdaten DSB, wahrscheinliche Folgen, Massnahmen.
+                    Bei voraussichtlich **hohem Risiko** für die Rechte und Freiheiten der Betroffenen: zusätzlich Benachrichtigung der Betroffenen **unverzueglich** in klarer, einfacher Sprache. Mindestinhalte: Beschreibung der Art, Kontaktdaten DSB, wahrscheinliche Folgen, Massnahmen.
 
                     Ausnahmen (Art. 34 Abs. 3): geeignete TOMs (z. B. Verschluesselung) wurden angewendet UND verbleibendes Risiko ausgeschlossen; nachtraegliche Massnahmen schliessen Risiko aus; unverhaeltnismaessiger Aufwand → oeffentliche Bekanntmachung als Ersatz.
 
-                    ## 10. Interne Dokumentation (Art. 33 Abs. 5 — IMMER, unabhaengig von Meldepflicht)
+                    ## 10. Interne Dokumentation (Art. 33 Abs. 5 — IMMER, unabhängig von Meldepflicht)
 
                     Saemtliche Verletzungen sind im `DataBreach`-Modul zu dokumentieren — auch wenn keine Meldung an Aufsichtsbehoerde erfolgt. Pflichtfelder:
 
@@ -821,13 +821,13 @@ policy:
 
                     1. **Angemessenheitsbeschluss** (Art. 45) — bevorzugt;
                     2. **Geeignete Garantien** (Art. 46): SCC, BCR, CoC, Zertifizierung;
-                    3. **Ausnahmen** (Art. 49) — eng auszulegen, nicht fuer dauerhafte Verarbeitung.
+                    3. **Ausnahmen** (Art. 49) — eng auszulegen, nicht für dauerhafte Verarbeitung.
 
                     ## 5. Angemessenheitsbeschluss (Art. 45)
 
                     Aktuelle EU-Kommissions-Beschluesse (Stand: laufend zu verifizieren via EU-Kommissions-Webseite):
 
-                    - **EU-US Data Privacy Framework** (DPF, 2023) — fuer zertifizierte US-Empfaenger; Pruefung: ist Empfaenger im DPF-Register?
+                    - **EU-US Data Privacy Framework** (DPF, 2023) — für zertifizierte US-Empfaenger; Pruefung: ist Empfaenger im DPF-Register?
                     - **Andere Laender mit Angemessenheitsbeschluss** (Andorra, Argentinien, Faroeer, Guernsey, Israel, Isle of Man, Japan, Jersey, Kanada [kommerzielle Organisationen, PIPEDA], Neuseeland, Schweiz, Sued-Korea, Uruguay, UK).
 
                     Bei Vorliegen eines Angemessenheitsbeschlusses: Uebermittlung ohne weitere Genehmigung; **kein TIA erforderlich**.
@@ -861,8 +861,8 @@ policy:
 
                     1. **Schritt 1**: Daten-Mapping (welche Daten, an wen, in welches Drittland, Zweck, Datenkategorien);
                     2. **Schritt 2**: Identifikation des Uebermittlungs-Mechanismus (in der Regel SCC 2021/914);
-                    3. **Schritt 3**: Bewertung der Wirksamkeit des Uebermittlungs-Mechanismus im Drittland-Kontext (Rechtslage des Drittlands, insb. Zugriffsrechte staatlicher Stellen — fuer USA: FISA 702, EO 12333, Cloud Act, ECPA; fuer CN: NSL, DSL, PIPL; fuer RU: SORM);
-                    4. **Schritt 4**: Bei festgestellten Luecken: zusaetzliche Massnahmen (technisch [Verschluesselung mit Schluesseln in EU, Pseudonymisierung], vertraglich [Transparency Reports, Government-Access-Reporting], organisatorisch [Daten-Lokalisierung, Zugriffstrennung]);
+                    3. **Schritt 3**: Bewertung der Wirksamkeit des Uebermittlungs-Mechanismus im Drittland-Kontext (Rechtslage des Drittlands, insb. Zugriffsrechte staatlicher Stellen — für USA: FISA 702, EO 12333, Cloud Act, ECPA; für CN: NSL, DSL, PIPL; für RU: SORM);
+                    4. **Schritt 4**: Bei festgestellten Luecken: zusätzliche Massnahmen (technisch [Verschluesselung mit Schluesseln in EU, Pseudonymisierung], vertraglich [Transparency Reports, Government-Access-Reporting], organisatorisch [Daten-Lokalisierung, Zugriffstrennung]);
                     5. **Schritt 5**: Wiederholte Pruefung der Wirksamkeit nach Massnahmen;
                     6. **Schritt 6**: Dokumentation + DPO-Sign-off + jaehrliche Re-Bewertung.
 
@@ -878,7 +878,7 @@ policy:
                     - **Art. 49 Abs. 1 lit. e — Rechtsverteidigung**;
                     - **Art. 49 Abs. 1 lit. f — Lebenswichtige Interessen**.
 
-                    Ausnahmen sind **nicht** fuer dauerhafte oder strukturelle Uebermittlungen geeignet (EDSA Leitlinien 2/2018).
+                    Ausnahmen sind **nicht** für dauerhafte oder strukturelle Uebermittlungen geeignet (EDSA Leitlinien 2/2018).
 
                     ## 9. Pflicht-Pruefung pro neuem Verfahren
 
@@ -927,7 +927,7 @@ policy:
 
                     ## 2. Grundsaetze
 
-                    1. **Speicherbegrenzung** (Art. 5 Abs. 1 lit. e DSGVO): Aufbewahrung nur, solange fuer den Zweck erforderlich;
+                    1. **Speicherbegrenzung** (Art. 5 Abs. 1 lit. e DSGVO): Aufbewahrung nur, solange für den Zweck erforderlich;
                     2. **Loeschpflicht** (Art. 17 DSGVO): bei Wegfall des Zwecks oder erfolgreichem DSR-Loeschantrag;
                     3. **Aufbewahrungspflicht** geht Loeschpflicht **vor** (Art. 17 Abs. 3 lit. b DSGVO), wenn gesetzliche Aufbewahrung greift — dann **Pseudonymisierung statt Loeschung** und Sperrung weiterer Verarbeitung (§ 35 BDSG-neu);
                     4. **Loeschnachweis**: Loeschung wird im Audit-Log dokumentiert (Loeschprotokoll).
@@ -941,7 +941,7 @@ policy:
                     | Handelsbuecher, Inventare, Eroeffnungsbilanzen, Jahresabschluesse, Lageberichte, Konzernabschluesse, Konzernlageberichte, Arbeitsanweisungen, sonstige Organisationsunterlagen | 10 Jahre | HGB § 257 Abs. 1 Nr. 1 + Abs. 4 |
                     | Empfangene Handels- oder Geschaeftsbriefe | 6 Jahre | HGB § 257 Abs. 1 Nr. 2 + Abs. 4 |
                     | Wiedergaben der abgesandten Handels- oder Geschaeftsbriefe | 6 Jahre | HGB § 257 Abs. 1 Nr. 3 + Abs. 4 |
-                    | Belege fuer Buchungen (Buchungsbelege) | 10 Jahre | HGB § 257 Abs. 1 Nr. 4 + Abs. 4 |
+                    | Belege für Buchungen (Buchungsbelege) | 10 Jahre | HGB § 257 Abs. 1 Nr. 4 + Abs. 4 |
 
                     ### 3.2 Steuerrechtliche Aufbewahrung (AO § 147)
 
@@ -950,7 +950,7 @@ policy:
                     | Buecher und Aufzeichnungen, Inventare, Jahresabschluesse, Lageberichte, Eroeffnungsbilanzen, Buchungsbelege | 10 Jahre | AO § 147 Abs. 3 i.V.m. Abs. 1 Nr. 1, 4, 4a |
                     | Empfangene Handels- und Geschaeftsbriefe | 6 Jahre | AO § 147 Abs. 3 i.V.m. Abs. 1 Nr. 2 |
                     | Wiedergaben abgesandter Handels- und Geschaeftsbriefe | 6 Jahre | AO § 147 Abs. 3 i.V.m. Abs. 1 Nr. 3 |
-                    | Sonstige fuer die Besteuerung bedeutsame Unterlagen | 6 Jahre | AO § 147 Abs. 3 i.V.m. Abs. 1 Nr. 5 |
+                    | Sonstige für die Besteuerung bedeutsame Unterlagen | 6 Jahre | AO § 147 Abs. 3 i.V.m. Abs. 1 Nr. 5 |
 
                     Frist beginnt mit Schluss des Kalenderjahrs der letzten Eintragung / Erstellung (HGB § 257 Abs. 5; AO § 147 Abs. 4).
 
@@ -1004,7 +1004,7 @@ policy:
                     ### 4.2 Loeschungs-Standards
 
                     - **Logische Loeschung** in Datenbanken: Datensatz wird als "geloescht" markiert + nach 30 Tagen Nachfrist physisch entfernt;
-                    - **Physische Loeschung** auf Datentraegern: NIST SP 800-88 "Clear" (Standard-Loeschung); fuer hochsensible Daten "Purge" (Cryptographic Erase) oder "Destroy" (physische Zerstoerung);
+                    - **Physische Loeschung** auf Datentraegern: NIST SP 800-88 "Clear" (Standard-Loeschung); für hochsensible Daten "Purge" (Cryptographic Erase) oder "Destroy" (physische Zerstoerung);
                     - **Backup-Loeschung**: gemaess Backup-Aufbewahrungsfrist; "Right to be forgotten" greift in Backups gemaess EDSA-Empfehlung erst bei naechster Wiederherstellung — Garantie durch dokumentierte Loeschpflicht;
                     - **Cloud-Loeschung**: Tenant-Daten via Provider-API; Loeschnachweis vom Provider einholen;
                     - **Papier-Loeschung**: Schreddern nach DIN 66399 Stufe P-4 (Standard) bzw. P-5 (sensibel) bzw. P-7 (Hochsensibel).
@@ -1023,11 +1023,11 @@ policy:
                     2. Auto-Loeschung wo definiert; **bei sensiblen Datenkategorien Vier-Augen-Loeschung** durch DSB + Datenverantwortlicher;
                     3. Loeschprotokoll mit Datensatzanzahl, Pruefer, Zeitstempel, Hash-Beweis;
                     4. Eintrag im Audit-Log (HMAC-Chain) — Loeschnachweis bleibt 10 Jahre erhalten (auch nach Loeschung der eigentlichen Daten);
-                    5. Quartalsbericht an DSB ueber durchgefuehrte Loeschungen.
+                    5. Quartalsbericht an DSB ueber durchgeführte Loeschungen.
 
                     ## 7. Auftragsverarbeiter-Sicht (ISO 27701:2025 Cl. 8.4.2)
 
-                    Nach Vertragsende: Loeschung oder Rueckgabe **nach Wahl des Verantwortlichen** (Art. 28 Abs. 3 lit. g). Loeschnachweis (Loeschprotokoll mit Hash) wird Verantwortlichem ausgehaendigt. Bei gesetzlicher Aufbewahrungspflicht beim Auftragsverarbeiter (z. B. AO § 147 fuer Rechnungs-Sub-Daten): Information an Verantwortlichen mit Begruendung.
+                    Nach Vertragsende: Loeschung oder Rueckgabe **nach Wahl des Verantwortlichen** (Art. 28 Abs. 3 lit. g). Loeschnachweis (Loeschprotokoll mit Hash) wird Verantwortlichem ausgehaendigt. Bei gesetzlicher Aufbewahrungspflicht beim Auftragsverarbeiter (z. B. AO § 147 für Rechnungs-Sub-Daten): Information an Verantwortlichen mit Begruendung.
 
                     ## 8. Anonymisierung (§ 9 BDSG-neu, Erwaegungsgrund 26)
 

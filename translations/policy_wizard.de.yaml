@@ -14,7 +14,7 @@ policy_wizard:
     # Auditor-External: Approval-Chain im Wizard hatte keine
     # Rollen-Validierung. Wenn ISB einen Risk-Owner Cryptography-Policy
     # zur Freigabe schickt, gibt es keine Pruefung "passt der Approver
-    # fachlich". Audit-Trail "warum DIESER Approver fuer DIESES Topic"
+    # fachlich". Audit-Trail "warum DIESER Approver für DIESES Topic"
     # wird jetzt durch policy_wizard.approver_role_match*-Events erbracht.
     approver_match:
         strict_label: 'Passt'

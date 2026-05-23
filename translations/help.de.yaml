@@ -2,7 +2,7 @@ help:
     badge: "Hilfe"
     iso9001_bridge:
         title: "Von ISO 9001 zu ISO 27001 — Ihr Wegweiser"
-        subtitle: "Nutzen Sie Ihr QM-Wissen fuer den Einstieg in die Informationssicherheit"
+        subtitle: "Nutzen Sie Ihr QM-Wissen für den Einstieg in die Informationssicherheit"
         intro_title: "Sie kennen ISO 9001? Dann kennen Sie schon vieles!"
         intro_text: "ISO 27001 baut auf aehnlichen Prinzipien auf. Beide Normen teilen die High-Level Structure (HLS) und folgen dem PDCA-Zyklus. Hier sehen Sie, wo Ihr vorhandenes Wissen direkt anwendbar ist."
 
@@ -59,7 +59,7 @@ help:
                 module: "Incident-Modul"
 
         new_title: "Was ist NEU in ISO 27001?"
-        new_intro: "Diese Konzepte gibt es so in ISO 9001 nicht — sie sind spezifisch fuer die Informationssicherheit."
+        new_intro: "Diese Konzepte gibt es so in ISO 9001 nicht — sie sind spezifisch für die Informationssicherheit."
 
         new:
             cia:
@@ -73,13 +73,13 @@ help:
                 description: "Wie wichtig ist welche Information? Jedes Asset wird nach Vertraulichkeit, Integritaet und Verfuegbarkeit bewertet."
             bcm:
                 title: "Business Continuity"
-                description: "Was tun, wenn alles ausfaellt? Notfallplaene, Wiederherstellungszeiten und Uebungen — fuer den Ernstfall vorbereitet."
+                description: "Was tun, wenn alles ausfaellt? Notfallplaene, Wiederherstellungszeiten und Uebungen — für den Ernstfall vorbereitet."
             gdpr:
                 title: "Datenschutz (DSGVO)"
-                description: "Ergaenzt ISO 27001 um den Schutz personenbezogener Daten. Besonders relevant fuer Unternehmen in der EU."
+                description: "Ergaenzt ISO 27001 um den Schutz personenbezogener Daten. Besonders relevant für Unternehmen in der EU."
 
-        tip_title: "Tipp fuer den Einstieg"
-        tip_text: "Beginnen Sie mit dem Context-Modul und den Assets — diese Bereiche kennen Sie aus 9001 am besten. Von dort aus erschliessen sich die neuen 27001-Konzepte Schritt fuer Schritt."
+        tip_title: "Tipp für den Einstieg"
+        tip_text: "Beginnen Sie mit dem Context-Modul und den Assets — diese Bereiche kennen Sie aus 9001 am besten. Von dort aus erschliessen sich die neuen 27001-Konzepte Schritt für Schritt."
 
     glossary:
         title: "ISMS Glossar — Begriffe einfach erklaert"
@@ -108,10 +108,10 @@ help:
             isms:
                 name: "ISMS"
                 definition: "Informationssicherheits-Managementsystem. Das Gesamtsystem aus Regeln, Prozessen und Massnahmen zum Schutz von Informationen."
-                analogy: "Wie Ihr QMS, aber fuer Informationssicherheit statt Qualitaet."
+                analogy: "Wie Ihr QMS, aber für Informationssicherheit statt Qualitaet."
             asset:
                 name: "Asset"
-                definition: "Informationswert. Alles was fuer die Organisation schuetzenswert ist: IT-Systeme, Daten, Software, aber auch Personen und Standorte."
+                definition: "Informationswert. Alles was für die Organisation schuetzenswert ist: IT-Systeme, Daten, Software, aber auch Personen und Standorte."
                 analogy: "\"Infrastruktur\" aus Klausel 7.1.3 — nur breiter gefasst."
             control:
                 name: "Control"
@@ -155,7 +155,7 @@ help:
                 analogy: "Managementbewertung aus Klausel 9.3 — praktisch identisch."
             dpia:
                 name: "DPIA / DSFA"
-                definition: "Datenschutz-Folgenabschaetzung. Pflicht bei hohem Risiko fuer personenbezogene Daten (GDPR Art. 35)."
+                definition: "Datenschutz-Folgenabschaetzung. Pflicht bei hohem Risiko für personenbezogene Daten (GDPR Art. 35)."
             vvt:
                 name: "VVT (Verzeichnis von Verarbeitungstaetigkeiten)"
                 definition: "Pflichtdokumentation nach GDPR Art. 30. Dokumentiert welche personenbezogenen Daten wie und warum verarbeitet werden."
@@ -167,7 +167,7 @@ help:
                 definition: "Maximaler tolerierbarer Datenverlust (in Stunden)."
             mtpd:
                 name: "MTPD (Maximum Tolerable Period of Disruption)"
-                definition: "Absolute Schmerzgrenze fuer einen Ausfall."
+                definition: "Absolute Schmerzgrenze für einen Ausfall."
             bia:
                 name: "BIA (Business Impact Analysis)"
                 definition: "Analyse welche Geschaeftsprozesse wie kritisch sind."
@@ -181,20 +181,20 @@ help:
                 analogy: "Identisch mit Klausel 4.1 in ISO 9001 — Sie kennen das bereits."
             annex_a:
                 name: "Annex A (Anhang A)"
-                definition: "Der normative Anhang von ISO 27001 mit 93 Referenz-Controls in 4 Themen: Organisatorisch (A.5), Personell (A.6), Physisch (A.7), Technologisch (A.8). Bildet die Grundlage fuer die SoA."
+                definition: "Der normative Anhang von ISO 27001 mit 93 Referenz-Controls in 4 Themen: Organisatorisch (A.5), Personell (A.6), Physisch (A.7), Technologisch (A.8). Bildet die Grundlage für die SoA."
             tenant:
                 name: "Tenant (Mandant)"
                 definition: "Ein eigenstaendiger Mandant im Tool mit eigenen Assets, Risiken, Controls und Benutzern, strikt getrennt von anderen Mandanten. Ermoeglicht den Betrieb mehrerer ISMS in einer Installation."
             module:
                 name: "Modul"
-                definition: "Funktional abgegrenzter Baustein des Tools der unabhaengig aktiviert/deaktiviert werden kann. Beispiele: Asset Management, Risk Management, BCM, Multi-Framework Compliance. Pflichtmodule (Core ISMS, User Management) immer aktiv. Optionale Module je nach Bedarf."
+                definition: "Funktional abgegrenzter Baustein des Tools der unabhängig aktiviert/deaktiviert werden kann. Beispiele: Asset Management, Risk Management, BCM, Multi-Framework Compliance. Pflichtmodule (Core ISMS, User Management) immer aktiv. Optionale Module je nach Bedarf."
             guided_tour:
                 name: "Gefuehrte Tour"
-                definition: "Interaktive Einfuehrung die wichtige Bereiche Schritt fuer Schritt erklaert. Highlight-Rahmen zeigt auf UI-Elemente mit Erklaertext. Verschiedene Touren je Rolle (Junior, ISB, CISO, Auditor). Jederzeit ueber Benutzermenue neu startbar."
-                analogy: "Wie Erstschulung fuer neue QMS-Software — digital und jederzeit wiederholbar."
+                definition: "Interaktive Einfuehrung die wichtige Bereiche Schritt für Schritt erklaert. Highlight-Rahmen zeigt auf UI-Elemente mit Erklaertext. Verschiedene Touren je Rolle (Junior, ISB, CISO, Auditor). Jederzeit ueber Benutzermenue neu startbar."
+                analogy: "Wie Erstschulung für neue QMS-Software — digital und jederzeit wiederholbar."
             threat:
                 name: "Bedrohung (Threat)"
-                definition: "Eine potenzielle Ursache fuer einen Sicherheitsvorfall. Beispiele: Hackerangriff, Feuer, Mitarbeiterfehler. Bedrohungen nutzen Schwachstellen aus."
+                definition: "Eine potenzielle Ursache für einen Sicherheitsvorfall. Beispiele: Hackerangriff, Feuer, Mitarbeiterfehler. Bedrohungen nutzen Schwachstellen aus."
             vulnerability:
                 name: "Schwachstelle (Vulnerability)"
                 definition: "Eine Schwaeche in einem System oder Prozess, die von einer Bedrohung ausgenutzt werden kann. Beispiele: fehlende Patches, schwache Passwoerter. Risiko = Bedrohung x Schwachstelle x Auswirkung."
@@ -206,13 +206,13 @@ help:
                 definition: "EU-Richtlinie zur Cybersicherheit, in Deutschland umgesetzt durch das NIS2UmsuCG. Betrifft Betreiber wesentlicher und wichtiger Einrichtungen. Verlangt Sicherheitsmassnahmen, Meldepflichten und Risikomanagement."
             dora:
                 name: "DORA (Digital Operational Resilience Act)"
-                definition: "EU-Verordnung fuer die digitale Betriebsstabilitaet des Finanzsektors. Verlangt IT-Risikomanagement, Incident-Meldewesen, Resilienztests und Lieferantensteuerung. Seit Januar 2025 verpflichtend."
+                definition: "EU-Verordnung für die digitale Betriebsstabilitaet des Finanzsektors. Verlangt IT-Risikomanagement, Incident-Meldewesen, Resilienztests und Lieferantensteuerung. Seit Januar 2025 verpflichtend."
             tisax:
                 name: "TISAX"
-                definition: "Branchenstandard der Automobilindustrie fuer Informationssicherheit, basierend auf dem VDA ISA-Fragebogen. Baut auf ISO 27001 auf, ergaenzt automobilspezifische Anforderungen wie Prototypenschutz."
+                definition: "Branchenstandard der Automobilindustrie für Informationssicherheit, basierend auf dem VDA ISA-Fragebogen. Baut auf ISO 27001 auf, ergaenzt automobilspezifische Anforderungen wie Prototypenschutz."
             bsi_grundschutz:
                 name: "BSI IT-Grundschutz"
-                definition: "Deutscher Standard des BSI mit einem Massnahmenkatalog (IT-Grundschutz-Kompendium) fuer typische IT-Szenarien. Komplementaer zu ISO 27001 — viele Massnahmen lassen sich 1:1 mappen."
+                definition: "Deutscher Standard des BSI mit einem Massnahmenkatalog (IT-Grundschutz-Kompendium) für typische IT-Szenarien. Komplementaer zu ISO 27001 — viele Massnahmen lassen sich 1:1 mappen."
             audit_finding:
                 name: "Audit-Feststellung (Audit Finding)"
                 definition: "Ergebnis einer Auditueberpruefung: schwere Nichtkonformitaet (Major NC), leichte Nichtkonformitaet (Minor NC), Beobachtung (Observation) oder Verbesserungsmoeglichkeit."
@@ -233,7 +233,7 @@ help:
                 definition: "Verletzung des Schutzes personenbezogener Daten (DSGVO Art. 4 Nr. 12). Muss innerhalb von 72 Stunden an die Aufsichtsbehoerde gemeldet werden. Nicht jeder Sicherheitsvorfall ist ein Data Breach — nur wenn personenbezogene Daten betroffen sind."
             processing_activity:
                 name: "Verarbeitungstaetigkeit"
-                definition: "Jeder Vorgang der Verarbeitung personenbezogener Daten: Erheben, Speichern, Uebermitteln, Loeschen. Alle muessen im VVT dokumentiert werden (DSGVO Art. 30)."
+                definition: "Jeder Vorgang der Verarbeitung personenbezogener Daten: Erheben, Speichern, Uebermitteln, Loeschen. Alle müssen im VVT dokumentiert werden (DSGVO Art. 30)."
             data_subject_request:
                 name: "Betroffenenanfrage (DSR)"
                 definition: "Anfrage einer betroffenen Person gemaess DSGVO Art. 15-22: Auskunft, Berichtigung, Loeschung, Einschraenkung, Datenuebertragbarkeit oder Widerspruch. Frist: ein Monat."
@@ -250,7 +250,7 @@ help:
                 analogy: "Wie Aenderungsantrag in 9001 (Klausel 6.3) — formalisiert mit Auswirkungsbewertung."
             awareness_training:
                 name: "Sensibilisierung & Schulung"
-                definition: "Massnahmen fuer Mitarbeiter-Wissen ueber Informationssicherheit: Awareness-Schulungen, Phishing-Tests, Richtlinien-Einweisungen. Pflicht nach Klausel 7.2/7.3, operationalisiert durch Annex A.6.3."
+                definition: "Massnahmen für Mitarbeiter-Wissen ueber Informationssicherheit: Awareness-Schulungen, Phishing-Tests, Richtlinien-Einweisungen. Pflicht nach Klausel 7.2/7.3, operationalisiert durch Annex A.6.3."
                 analogy: "Kompetenz und Bewusstsein aus 9001 (Klausel 7.2/7.3) — identische HLS-Anforderung."
             document_control:
                 name: "Dokumentenlenkung"
@@ -277,10 +277,10 @@ help:
                 definition: "Bewertung wie ausgereift ein Prozess umgesetzt ist, typischerweise 0 (nicht vorhanden) bis 5 (optimiert). Hilft dem CISO, den ISMS-Gesamtzustand einzuschaetzen und Prioritaeten zu setzen."
             four_eyes_principle:
                 name: "Vier-Augen-Prinzip"
-                definition: "Sicherheitsprinzip: kritische Aktionen benoetigen die Genehmigung einer zweiten Person. Im Tool als Freigabe-Workflow implementiert, z.B. fuer Risikoakzeptanz oder Control-Aenderungen."
+                definition: "Sicherheitsprinzip: kritische Aktionen benoetigen die Genehmigung einer zweiten Person. Im Tool als Freigabe-Workflow implementiert, z.B. für Risikoakzeptanz oder Control-Aenderungen."
             segregation_of_duties:
                 name: "Funktionstrennung (SoD)"
-                definition: "Keine einzelne Person soll alle Schritte eines kritischen Prozesses allein durchfuehren koennen. Beispiel: Wer eine Aenderung beantragt, darf sie nicht selbst genehmigen (Annex A.5.3)."
+                definition: "Keine einzelne Person soll alle Schritte eines kritischen Prozesses allein durchführen koennen. Beispiel: Wer eine Aenderung beantragt, darf sie nicht selbst genehmigen (Annex A.5.3)."
             least_privilege:
                 name: "Minimale Berechtigung (Least Privilege)"
                 definition: "Jeder Benutzer erhaelt nur die minimal notwendigen Berechtigungen. Zugang zu Informationen nur bei dienstlicher Notwendigkeit (Annex A.5.15, A.8.2)."
@@ -298,13 +298,13 @@ help:
                 definition: "Kernprinzip des Tools: Einmal erfasste Informationen (Assets, Risiken, Controls) werden automatisch in allen relevanten Kontexten wiederverwendet — ohne doppelte Erfassung."
             industry_baseline:
                 name: "Branchen-Baseline"
-                definition: "Vorkonfiguriertes Starter-Paket fuer einen Mandanten basierend auf seiner Branche. Enthaelt typische Assets, Risiken, Controls und Framework-Empfehlungen. ISMS nicht von null aufbauen."
+                definition: "Vorkonfiguriertes Starter-Paket für einen Mandanten basierend auf seiner Branche. Enthaelt typische Assets, Risiken, Controls und Framework-Empfehlungen. ISMS nicht von null aufbauen."
             mttr:
                 name: "MTTR (Mean Time to Resolve)"
                 definition: "Durchschnittliche Zeit von Erkennung eines Vorfalls bis Behebung. Wichtige Management-Kennzahl — zeigt Reaktionsgeschwindigkeit der Organisation."
             compliance_gap:
                 name: "Compliance-Luecke (Gap)"
-                definition: "Differenz zwischen Soll (Framework-Anforderungen) und Ist (umgesetzte Massnahmen). Grundlage fuer Priorisierung und Budgetplanung."
+                definition: "Differenz zwischen Soll (Framework-Anforderungen) und Ist (umgesetzte Massnahmen). Grundlage für Priorisierung und Budgetplanung."
             encryption:
                 name: "Verschluesselung (Encryption)"
                 definition: "Umwandlung von Klartext in unlesbaren Chiffretext. Schuetzt Vertraulichkeit bei Speicherung (at rest) und Uebertragung (in transit). Annex A.8.24."
@@ -328,27 +328,27 @@ help:
                 definition: "Regelmaessige Sicherungskopien und getestete Wiederherstellungsverfahren. Best Practice: 3-2-1-Regel (3 Kopien, 2 Medien, 1 extern)."
             logging_monitoring:
                 name: "Protokollierung & Ueberwachung"
-                definition: "Aufzeichnung sicherheitsrelevanter Ereignisse und laufende Ueberwachung auf Anomalien. Im Tool als Audit-Log implementiert. Unverzichtbar fuer Incident Detection."
+                definition: "Aufzeichnung sicherheitsrelevanter Ereignisse und laufende Ueberwachung auf Anomalien. Im Tool als Audit-Log implementiert. Unverzichtbar für Incident Detection."
                 analogy: "Vergleichbar mit Lenkung von Aufzeichnungen in 9001 (Klausel 7.5) — nur deutlich umfangreicher."
             baustein:
                 name: "Baustein (BSI IT-Grundschutz)"
                 definition: "Modularer Sicherheitsbaustein im BSI IT-Grundschutz-Kompendium. Deckt ein spezifisches Thema ab (z.B. SYS.1.1 Allgemeiner Server). Jeder Baustein enthaelt Anforderungen (MUSS/SOLLTE/KANN)."
             elementare_gefaehrdung:
                 name: "Elementare Gefaehrdung (BSI)"
-                definition: "Eine der 47 grundlegenden Bedrohungen im BSI-Modell (G 0.1 bis G 0.47). Beispiele: G 0.14 Ausspaehen, G 0.28 Software-Schwachstellen. Werden fuer die Risikoanalyse nach BSI 200-3 verwendet."
+                definition: "Eine der 47 grundlegenden Bedrohungen im BSI-Modell (G 0.1 bis G 0.47). Beispiele: G 0.14 Ausspaehen, G 0.28 Software-Schwachstellen. Werden für die Risikoanalyse nach BSI 200-3 verwendet."
             absicherungsstufe:
                 name: "Absicherungsstufe (BSI)"
-                definition: "Drei Stufen im BSI IT-Grundschutz: Basis-Absicherung (nur MUSS), Standard-Absicherung (MUSS + SOLLTE), Kern-Absicherung (hoechster Schutz fuer kritische Assets). Das Tool zeigt Compliance pro Stufe."
+                definition: "Drei Stufen im BSI IT-Grundschutz: Basis-Absicherung (nur MUSS), Standard-Absicherung (MUSS + SOLLTE), Kern-Absicherung (hoechster Schutz für kritische Assets). Das Tool zeigt Compliance pro Stufe."
             schutzbedarfsfeststellung:
                 name: "Schutzbedarfsfeststellung"
-                definition: "Systematische Ermittlung des Schutzbedarfs aller Assets anhand der Grundwerte (C/I/A). Ergebnis: normal, hoch oder sehr hoch. Basis fuer Auswahl passender Bausteine."
+                definition: "Systematische Ermittlung des Schutzbedarfs aller Assets anhand der Grundwerte (C/I/A). Ergebnis: normal, hoch oder sehr hoch. Basis für Auswahl passender Bausteine."
                 analogy: "Wie Risikoanalyse in 9001 (Klausel 6.1) — nur formalisierter mit dreistufiger Bewertung pro Grundwert."
             modellierung:
                 name: "Modellierung (BSI IT-Grundschutz)"
-                definition: "Zuordnung von BSI-Bausteinen zu den tatsaechlichen Zielobjekten (Server, Netze, Anwendungen). Ergibt die individuelle Soll-Konfiguration. Das Tool automatisiert dies teilweise ueber Asset-Typen."
+                definition: "Zuordnung von BSI-Bausteinen zu den tatsächlichen Zielobjekten (Server, Netze, Anwendungen). Ergibt die individuelle Soll-Konfiguration. Das Tool automatisiert dies teilweise ueber Asset-Typen."
             interested_parties:
                 name: "Interessierte Parteien (Stakeholder)"
-                definition: "Personen oder Organisationen die das ISMS beeinflussen oder davon betroffen sind: Kunden, Regulierer, Mitarbeiter, Lieferanten, Gesellschafter. Deren Anforderungen muessen beruecksichtigt werden (Klausel 4.2)."
+                definition: "Personen oder Organisationen die das ISMS beeinflussen oder davon betroffen sind: Kunden, Regulierer, Mitarbeiter, Lieferanten, Gesellschafter. Deren Anforderungen müssen beruecksichtigt werden (Klausel 4.2)."
                 analogy: "Identisch mit 'interessierte Parteien' aus 9001 Klausel 4.2."
             continual_improvement:
                 name: "Kontinuierliche Verbesserung (KVP)"
@@ -359,10 +359,10 @@ help:
                 definition: "Person mit der Befugnis und Verantwortung, ein Risiko zu managen. Typischerweise der Fachbereichsleiter, nicht der ISB. Entscheidet ueber Behandlungsstrategie und akzeptiert das Restrisiko."
             asset_owner:
                 name: "Asset-Eigentuemer (Asset Owner)"
-                definition: "Person die fuer den Schutz eines Informationswerts verantwortlich ist. Bestimmt Klassifizierung und Zugriffsregeln. Muss nicht der technische Betreiber sein (Annex A.5.9)."
+                definition: "Person die für den Schutz eines Informationswerts verantwortlich ist. Bestimmt Klassifizierung und Zugriffsregeln. Muss nicht der technische Betreiber sein (Annex A.5.9)."
             c5:
                 name: "C5 (Cloud Computing Compliance Criteria Catalogue)"
-                definition: "BSI-Standard fuer Cloud-Sicherheit. 17 Bereiche mit Mindestanforderungen an sichere Cloud-Dienste. Fuer oeffentliche Auftraggeber in Deutschland oft verpflichtend."
+                definition: "BSI-Standard für Cloud-Sicherheit. 17 Bereiche mit Mindestanforderungen an sichere Cloud-Dienste. Fuer oeffentliche Auftraggeber in Deutschland oft verpflichtend."
             fulfillment_percentage:
                 name: "Erfuellungsgrad"
                 definition: "Prozentualer Fortschritt (0-100%) der Umsetzung einer Compliance-Anforderung. Im Tool pro Anforderung erfasst und aggregiert zum Framework-Gesamtfortschritt auf dem Dashboard."
@@ -371,13 +371,13 @@ help:
                 definition: "Eine einzelne normative Forderung innerhalb eines Frameworks, z.B. ISO 27001 A.8.1 oder DORA Art. 6. Im Tool global definiert, mandantenspezifischer Umsetzungsstand separat verfolgt. Verknuepfbar mit Controls und Nachweisdokumenten."
             confidence_score:
                 name: "Konfidenzwert (Mapping-Qualitaet)"
-                definition: "Qualitaetsindikator (low/medium/high) fuer Cross-Framework-Mappings. Algorithmisch berechnet aus textueller Aehnlichkeit und Keyword-Ueberlappung. Niedrige Konfidenz → Mapping landet in Review-Queue zur manuellen Pruefung."
+                definition: "Qualitaetsindikator (low/medium/high) für Cross-Framework-Mappings. Algorithmisch berechnet aus textueller Aehnlichkeit und Keyword-Ueberlappung. Niedrige Konfidenz → Mapping landet in Review-Queue zur manuellen Pruefung."
             seed_catalog:
                 name: "Seed-Katalog (vorgefertigte Mappings)"
-                definition: "Vorgefertigte Cross-Framework-Zuordnungen die per Knopfdruck geladen werden. 8 verfuegbar: GDPR, NIS2, DORA, TISAX, BSI, C5:2026, SOC 2, GDPR-ISO27701 — jeweils zu ISO 27001. Idempotent: bereits vorhandene Paare werden uebersprungen. Nach Laden muessen Mappings in der Review-Queue freigegeben werden."
+                definition: "Vorgefertigte Cross-Framework-Zuordnungen die per Knopfdruck geladen werden. 8 verfuegbar: GDPR, NIS2, DORA, TISAX, BSI, C5:2026, SOC 2, GDPR-ISO27701 — jeweils zu ISO 27001. Idempotent: bereits vorhandene Paare werden uebersprungen. Nach Laden müssen Mappings in der Review-Queue freigegeben werden."
             gap_analysis:
                 name: "Gap-Analyse (automatisiert)"
-                definition: "Systematische Identifikation von Luecken: fehlende Controls, Teilabdeckung, Scope-Unterschiede, zusaetzliche Anforderungen, fehlende Nachweise. Jede Luecke erhaelt Prioritaet, geschaetzten Aufwand in Stunden und Handlungsempfehlung."
+                definition: "Systematische Identifikation von Luecken: fehlende Controls, Teilabdeckung, Scope-Unterschiede, zusätzliche Anforderungen, fehlende Nachweise. Jede Luecke erhaelt Prioritaet, geschaetzten Aufwand in Stunden und Handlungsempfehlung."
             surveillance_audit:
                 name: "Ueberwachungsaudit"
                 definition: "Jaehrliches Audit durch Zertifizierungsstelle zwischen drejaehrigen Re-Zertifizierungen. Im Tool als Audit-Freeze-Snapshot gesichert: SoA-Stand, Erfuellungsgrade, Risiken und KPIs werden tamper-evident mit SHA-256-Hash fixiert."
@@ -389,10 +389,10 @@ help:
                 definition: "Dokumentierter Beleg dass eine Anforderung erfuellt ist. Im Tool auf zwei Ebenen: (1) strukturiert ueber Dokumentenverknuepfung, (2) als Freitext-Beschreibung. Fehlende Nachweise werden automatisch als evidence_gap in der Gap-Analyse markiert — haeufiges Audit-Finding."
             compliance_inheritance:
                 name: "Compliance-Vererbung"
-                definition: "Mechanismus durch den Erfuellungsnachweise eines Basis-Frameworks automatisch als Vorschlaege fuer ein Ziel-Framework uebernommen werden. Basiert auf Cross-Framework-Mappings. Vorschlaege landen in Review-Queue — nie automatisch, immer Vier-Augen-Prinzip."
+                definition: "Mechanismus durch den Erfuellungsnachweise eines Basis-Frameworks automatisch als Vorschlaege für ein Ziel-Framework uebernommen werden. Basiert auf Cross-Framework-Mappings. Vorschlaege landen in Review-Queue — nie automatisch, immer Vier-Augen-Prinzip."
             vulnerability_scan:
                 name: "Schwachstellenscan (Vulnerability Scan)"
-                definition: "Automatisierte Pruefung von Systemen auf bekannte Sicherheitsluecken (CVEs). Regelmaessig und nach Aenderungen durchfuehren. Ergebnisse fliessen ins Patch-Management."
+                definition: "Automatisierte Pruefung von Systemen auf bekannte Sicherheitsluecken (CVEs). Regelmaessig und nach Aenderungen durchführen. Ergebnisse fliessen ins Patch-Management."
             penetration_test:
                 name: "Penetrationstest (Pentest)"
                 definition: "Gezielter, autorisierter Angriffsversuch auf IT-Systeme. Manuell und tiefergehend als Vulnerability Scans. Unter DORA als TLPT formalisiert (Art. 26)."
@@ -401,7 +401,7 @@ help:
                 definition: "Strukturierte Weiterleitung an eine hoehere Entscheidungsebene bei Fristueberschreitung oder hohem Schweregrad. Im Tool automatisiert: Severity + Data Breach → Workflow-Eskalation."
             sla_ops:
                 name: "SLA (Service Level Agreement)"
-                definition: "Vereinbarung ueber Leistungskennzahlen: Verfuegbarkeit, Reaktionszeiten, Wiederherstellungszeiten. Im ISMS besonders relevant fuer Cloud-Dienste und ausgelagerte IT (Annex A.5.20)."
+                definition: "Vereinbarung ueber Leistungskennzahlen: Verfuegbarkeit, Reaktionszeiten, Wiederherstellungszeiten. Im ISMS besonders relevant für Cloud-Dienste und ausgelagerte IT (Annex A.5.20)."
             bulk_actions:
                 name: "Massenaktionen (Bulk Actions)"
                 definition: "Mehrere Eintraege per Checkbox markieren und eine Aktion auf alle gleichzeitig ausfuehren: Loeschen, Exportieren, Tag zuweisen. Die Aktionsleiste erscheint erst bei Auswahl."
@@ -409,11 +409,11 @@ help:
             command_palette:
                 name: "Befehlspalette (Cmd+P / Strg+P)"
                 definition: "Schnellsuche per Tastenkuerzel. Tippen Sie einen Begriff und springen Sie direkt zu jeder Seite, Aktion oder Admin-Funktion — schneller als durchs Menue."
-                analogy: "Wie Spotlight auf dem Mac — aber fuer alle Tool-Funktionen."
+                analogy: "Wie Spotlight auf dem Mac — aber für alle Tool-Funktionen."
             audit_trail:
                 name: "Pruefprotokoll (Audit Trail)"
                 definition: "Automatisches lueckenloses Protokoll aller Aenderungen: Wer hat wann was erstellt, geaendert oder geloescht? NICHT zu verwechseln mit einem Audit (= geplante Pruefung nach Klausel 9.2). Kryptographisch gesichert (HMAC-Kette) gegen Manipulation."
-                analogy: "Wie das Aenderungsprotokoll gelenkter Dokumente im QMS — aber automatisch fuer ALLES im System."
+                analogy: "Wie das Aenderungsprotokoll gelenkter Dokumente im QMS — aber automatisch für ALLES im System."
             idempotent:
                 name: "Idempotent"
                 definition: "Eigenschaft einer Admin-Funktion (z.B. Loader-Fixer): Beliebig oft ausfuehrbar, immer gleiches Ergebnis. Erstes Mal ergaenzt fehlende Daten, danach passiert nichts. Keine Angst vor versehentlichem Doppelklick."
@@ -427,14 +427,14 @@ help:
                 definition: "Vorlage definiert Schritte, Rollen, Bedingungen (z.B. 'DSGVO-Datenpanne 6 Schritte'). Instanz ist ein konkreter Durchlauf an einem bestimmten Objekt (z.B. Datenpanne #42) mit eigenem Status, Fristen und Historie."
             completeness_score:
                 name: "Vollstaendigkeits-Score"
-                definition: "Prozentwert (0-100%) der anzeigt wie viele Pflichtfelder eines Objekts ausgefuellt sind. Berechnet fuer ISMS-Kontext, BC-Plaene, DPIAs und VVT. Ergaenzend zum Readiness-Score: Vollstaendigkeit allein bedeutet nicht Einsatzbereitschaft."
+                definition: "Prozentwert (0-100%) der anzeigt wie viele Pflichtfelder eines Objekts ausgefuellt sind. Berechnet für ISMS-Kontext, BC-Plaene, DPIAs und VVT. Ergaenzend zum Readiness-Score: Vollstaendigkeit allein bedeutet nicht Einsatzbereitschaft."
             data_reuse_hub:
                 name: "Wiederverwendungs-Zentrale (Data Reuse Hub)"
-                definition: "Uebersichtsseite die zeigt welche Dokumente und Lieferanten am meisten 'Last tragen' — als Nachweis fuer Anforderungen aus mehreren Frameworks. Zeigt FTE-Einsparung, Top-10 Dokumente/Lieferanten und Heatmap fuer Klumpenrisiken."
+                definition: "Uebersichtsseite die zeigt welche Dokumente und Lieferanten am meisten 'Last tragen' — als Nachweis für Anforderungen aus mehreren Frameworks. Zeigt FTE-Einsparung, Top-10 Dokumente/Lieferanten und Heatmap für Klumpenrisiken."
                 analogy: "Wie ein QM-Handbuch das gleichzeitig ISO 9001, 14001 und 45001 abdeckt — der Hub zeigt welche Dokumente diese Mehrfachnutzung leisten."
             information_security_policy:
                 name: "Informationssicherheitsleitlinie"
-                definition: "Oberstes ISMS-Dokument — von der Geschaeftsleitung verabschiedet. Definiert Ziele, Geltungsbereich und Grundsaetze der Informationssicherheit. Muss fuer alle Mitarbeiter zugaenglich sein."
+                definition: "Oberstes ISMS-Dokument — von der Geschaeftsleitung verabschiedet. Definiert Ziele, Geltungsbereich und Grundsaetze der Informationssicherheit. Muss für alle Mitarbeiter zugaenglich sein."
                 analogy: "Wie die Qualitaetspolitik in 9001 (Klausel 5.2) — gleiche Anforderung, anderer Inhalt."
             certification_audit:
                 name: "Zertifizierungsaudit"
@@ -445,14 +445,14 @@ help:
                 analogy: "Risiken und Chancen aus 9001 (Klausel 6.1) — gleicher Ansatz, aber mit formaler Bewertungsmatrix."
             corporate_structure:
                 name: "Konzernstruktur (Holding / Tochtergesellschaft)"
-                definition: "Hierarchische Tenant-Beziehung: Mutter-Tenant (Holding) mit Tochter-Tenants (Subsidiaries). Drei Governance-Modelle: Hierarchisch, Geteilte Verantwortung, Unabhaengig. Konzern-ISB kann uebergreifend lesen. Richtlinien und Incidents koennen als 'sichtbar fuer Holding' markiert werden."
+                definition: "Hierarchische Tenant-Beziehung: Mutter-Tenant (Holding) mit Tochter-Tenants (Subsidiaries). Drei Governance-Modelle: Hierarchisch, Geteilte Verantwortung, Unabhängig. Konzern-ISB kann uebergreifend lesen. Richtlinien und Incidents koennen als 'sichtbar für Holding' markiert werden."
             delta_assessment:
                 name: "Delta-Bewertung"
-                definition: "Analyse wie weit ein Basis-Framework (z.B. ISO 27001) ein neues Ziel-Framework (z.B. NIS2) bereits abdeckt. Berechnet automatisch: vorhandene Mappings, offene Gaps, FTE-Einsparung. Excel-Export fuer Management-Review."
+                definition: "Analyse wie weit ein Basis-Framework (z.B. ISO 27001) ein neues Ziel-Framework (z.B. NIS2) bereits abdeckt. Berechnet automatisch: vorhandene Mappings, offene Gaps, FTE-Einsparung. Excel-Export für Management-Review."
             bcms:
                 name: "BCMS (Business Continuity Management System)"
-                definition: "Managementsystem fuer Geschaeftskontinuitaet — analog zum ISMS, aber fokussiert auf Aufrechterhaltung kritischer Prozesse bei Stoerungen. Kann eigenstaendig (ISO 22301) oder als Teil des ISMS betrieben werden."
-                analogy: "Wie das QMS fuer Qualitaet ist, ist das BCMS fuer Geschaeftskontinuitaet — gleiche HLS-Struktur."
+                definition: "Managementsystem für Geschaeftskontinuitaet — analog zum ISMS, aber fokussiert auf Aufrechterhaltung kritischer Prozesse bei Stoerungen. Kann eigenstaendig (ISO 22301) oder als Teil des ISMS betrieben werden."
+                analogy: "Wie das QMS für Qualitaet ist, ist das BCMS für Geschaeftskontinuitaet — gleiche HLS-Struktur."
             mbco:
                 name: "MBCO (Minimum Business Continuity Objective)"
                 definition: "Minimal akzeptables Leistungsniveau im Notbetrieb. Beispiel: 'Kundenservice muss mindestens 30% der Anfragen bearbeiten.' Definiert die Untergrenze zwischen tragbar und nicht mehr akzeptabel."
@@ -491,13 +491,13 @@ help:
                 definition: "Alle vorbeugenden Massnahmen VOR einem Notfall: BC-Plaene, Krisenstab, Uebungen, Ausweichstandorte, Backup-Tests. BSI 200-4 spricht vom 'Notfallvorsorgekonzept'."
             tlpt:
                 name: "TLPT (Threat-Led Penetration Testing)"
-                definition: "Bedrohungsgesteuerter Penetrationstest, verpflichtend unter DORA fuer systemrelevante Finanzinstitute. Simuliert realistische Angriffsszenarien. Alle 3 Jahre durch externe Tester."
+                definition: "Bedrohungsgesteuerter Penetrationstest, verpflichtend unter DORA für systemrelevante Finanzinstitute. Simuliert realistische Angriffsszenarien. Alle 3 Jahre durch externe Tester."
             activation_criteria:
                 name: "Aktivierungskriterien"
                 definition: "Vordefinierte Bedingungen bei deren Eintreten ein BC-Plan aktiviert wird (z.B. 'Serverausfall > 4h'). Im Tool Pflichtfeld jedes BC-Plans — ohne Kriterien weiss im Ernstfall niemand ob der Plan greift."
             alternative_site:
                 name: "Alternativstandort"
-                definition: "Ausweichstandort fuer Notbetrieb. Im Tool wird pro BC-Plan Standort, Adresse und Kapazitaet dokumentiert. Varianten: Cold Site (leer, guenstig), Warm Site (teilweise ausgestattet), Hot Site (sofort betriebsbereit)."
+                definition: "Ausweichstandort für Notbetrieb. Im Tool wird pro BC-Plan Standort, Adresse und Kapazitaet dokumentiert. Varianten: Cold Site (leer, guenstig), Warm Site (teilweise ausgestattet), Hot Site (sofort betriebsbereit)."
             process_criticality:
                 name: "Geschaeftsprozess-Kritikalitaet"
                 definition: "Einstufung: Critical, High, Medium, Low. Ergebnis der BIA — bestimmt RTO/RPO-Vorgaben und Wiederanlaufreihenfolge. Im Tool als farbkodierter Filter (Rot = Critical, Gelb = High)."
@@ -509,7 +509,7 @@ help:
                 definition: "Strukturierte Dokumentation einer BC-Uebung: Was lief gut, Verbesserungsbereiche, Feststellungen, Massnahmen, Lessons Learned. Gilt erst als vollstaendig wenn alle Abschnitte befuellt und 'Bericht abgeschlossen' gesetzt ist."
             readiness_score:
                 name: "Bereitschafts-Score"
-                definition: "Automatisch berechneter Wert (0-100) fuer BC-Plan-Einsatzbereitschaft: Pflichtabschnitte (40%), aktuelle Tests (30%), aktuelle Reviews (20%), Status Aktiv (10%). Unter 60% signalisiert dringenden Handlungsbedarf."
+                definition: "Automatisch berechneter Wert (0-100) für BC-Plan-Einsatzbereitschaft: Pflichtabschnitte (40%), aktuelle Tests (30%), aktuelle Reviews (20%), Status Aktiv (10%). Unter 60% signalisiert dringenden Handlungsbedarf."
 
             personal_data:
                 name: "Personenbezogene Daten"
@@ -519,29 +519,29 @@ help:
                 definition: "Jede Verarbeitung personenbezogener Daten braucht eine Rechtsgrundlage aus Art. 6(1) DSGVO: (a) Einwilligung, (b) Vertragerfuellung, (c) rechtliche Verpflichtung, (d) lebenswichtige Interessen, (e) oeffentliches Interesse, (f) berechtigtes Interesse."
             consent_privacy:
                 name: "Einwilligung (Consent)"
-                definition: "Freiwillige, informierte und unmissverstaendliche Willensbekundung fuer einen bestimmten Verarbeitungszweck (DSGVO Art. 7). Muss jederzeit widerrufbar sein. Fuer besondere Datenkategorien (Art. 9) ist ausdrueckliche Einwilligung erforderlich."
+                definition: "Freiwillige, informierte und unmissverstaendliche Willensbekundung für einen bestimmten Verarbeitungszweck (DSGVO Art. 7). Muss jederzeit widerrufbar sein. Fuer besondere Datenkategorien (Art. 9) ist ausdrueckliche Einwilligung erforderlich."
             data_minimization:
                 name: "Datenminimierung"
-                definition: "DSGVO-Grundsatz: Nur personenbezogene Daten erheben die fuer den Zweck tatsaechlich erforderlich sind (Art. 5(1)(c)). Keine Vorratsdatenspeicherung. Eng verbunden mit Zweckbindung."
+                definition: "DSGVO-Grundsatz: Nur personenbezogene Daten erheben die für den Zweck tatsächlich erforderlich sind (Art. 5(1)(c)). Keine Vorratsdatenspeicherung. Eng verbunden mit Zweckbindung."
             tom:
                 name: "TOM (Technische und Organisatorische Massnahmen)"
-                definition: "Schutzmassnahmen nach DSGVO Art. 32: Verschluesselung, Pseudonymisierung, Zugriffskontrolle, Backup, Schulung. Im Tool mit ISO 27001 Controls verknuepft (Data Reuse — keine doppelte Pflege)."
+                definition: "Schutzmassnahmen nach DSGVO Art. 32: Verschluesselung, Pseudonymisierung, Zugriffskontrolle, Backup, Schulung. Im Tool mit ISO 27001 Controls verknüpft (Data Reuse — keine doppelte Pflege)."
                 analogy: "Vergleichbar mit Infrastrukturmassnahmen aus 9001 (Klausel 7.1.3/7.1.4) — nur formalisierter und datenschutzspezifisch."
             pseudonymization:
                 name: "Pseudonymisierung"
-                definition: "Verarbeitung so dass Daten ohne zusaetzliche Informationen nicht mehr einer Person zugeordnet werden koennen (DSGVO Art. 4 Nr. 5). Beispiel: Name durch User-ID ersetzen. Unterschied zur Anonymisierung: Pseudonymisierte Daten bleiben personenbezogen."
+                definition: "Verarbeitung so dass Daten ohne zusätzliche Informationen nicht mehr einer Person zugeordnet werden koennen (DSGVO Art. 4 Nr. 5). Beispiel: Name durch User-ID ersetzen. Unterschied zur Anonymisierung: Pseudonymisierte Daten bleiben personenbezogen."
             anonymization:
                 name: "Anonymisierung"
                 definition: "Irreversible Veraenderung personenbezogener Daten sodass Zuordnung auch mit Zusatzwissen nicht mehr moeglich ist. Anonymisierte Daten fallen NICHT unter die DSGVO. Echte Anonymisierung ist technisch schwierig — oft nur Pseudonymisierung erreichbar."
             privacy_by_design:
                 name: "Privacy by Design / Privacy by Default"
-                definition: "Datenschutz muss von Anfang an in Systeme eingebaut werden (by Design) und datenschutzfreundliche Voreinstellungen muessen Standard sein (by Default). Beispiel: Opt-In statt Opt-Out, Datensparsamkeit als Default."
+                definition: "Datenschutz muss von Anfang an in Systeme eingebaut werden (by Design) und datenschutzfreundliche Voreinstellungen müssen Standard sein (by Default). Beispiel: Opt-In statt Opt-Out, Datensparsamkeit als Default."
             data_processor:
                 name: "Auftragsverarbeiter (Data Processor)"
                 definition: "Organisation die personenbezogene Daten im Auftrag des Verantwortlichen verarbeitet (DSGVO Art. 28). Beispiele: Cloud-Anbieter, Lohnbuero. Braucht einen Auftragsverarbeitungsvertrag (AVV/DPA) mit definierten Weisungen und TOMs."
             data_controller:
                 name: "Verantwortlicher (Data Controller)"
-                definition: "Die Organisation die ueber Zwecke und Mittel der Verarbeitung personenbezogener Daten entscheidet (DSGVO Art. 4 Nr. 7). Traegt die Hauptverantwortung fuer DSGVO-Compliance."
+                definition: "Die Organisation die ueber Zwecke und Mittel der Verarbeitung personenbezogener Daten entscheidet (DSGVO Art. 4 Nr. 7). Traegt die Hauptverantwortung für DSGVO-Compliance."
             joint_controller:
                 name: "Gemeinsam Verantwortliche (Joint Controllers)"
                 definition: "Zwei oder mehr Verantwortliche die gemeinsam ueber Zwecke und Mittel entscheiden (DSGVO Art. 26). Muessen Vereinbarung treffen wer welche Pflichten erfuellt. Betroffene koennen Rechte gegen jeden geltend machen."
@@ -550,7 +550,7 @@ help:
                 definition: "Uebermittlung personenbezogener Daten ausserhalb des EWR (DSGVO Art. 44-49). Nur zulaessig mit Garantien: Angemessenheitsbeschluss (Art. 45), Standardvertragsklauseln/SCCs (Art. 46), Binding Corporate Rules (Art. 47)."
             scc:
                 name: "SCC (Standardvertragsklauseln)"
-                definition: "Von der EU-Kommission vorgegebene Vertragsklauseln fuer Drittlandtransfers (Art. 46(2)(c)). Seit Juni 2021 neue Fassung mit 4 Modulen (C2C, C2P, P2C, P2P). Haeufigstes Instrument fuer US-Transfers seit Schrems II."
+                definition: "Von der EU-Kommission vorgegebene Vertragsklauseln für Drittlandtransfers (Art. 46(2)(c)). Seit Juni 2021 neue Fassung mit 4 Modulen (C2C, C2P, P2C, P2P). Haeufigstes Instrument für US-Transfers seit Schrems II."
             retention_period:
                 name: "Aufbewahrungsfrist / Loeschfrist"
                 definition: "Zeitraum wie lange personenbezogene Daten gespeichert werden duerfen (Art. 5(1)(e)). Nach Ablauf muss geloescht werden. Oft gesetzlich vorgegeben: 10 Jahre HGB, 6 Jahre AO."
@@ -559,10 +559,10 @@ help:
                 definition: "Dokumentiertes Verfahren wann und wie personenbezogene Daten geloescht werden. Definiert Loeschfristen pro Datenart, Loeschmethoden (logisch vs. physisch), Verantwortlichkeiten und Ausnahmen."
             dpo_role:
                 name: "DSB / DPO (Datenschutzbeauftragter)"
-                definition: "Unabhaengige Kontrollinstanz fuer Datenschutz. Pflicht ab 20 Personen mit automatisierter Verarbeitung (§38 BDSG) oder bei umfangreicher Verarbeitung besonderer Kategorien. Beraet, ueberwacht und ist Anlaufstelle fuer Betroffene und Aufsichtsbehoerden."
+                definition: "Unabhängige Kontrollinstanz für Datenschutz. Pflicht ab 20 Personen mit automatisierter Verarbeitung (§38 BDSG) oder bei umfangreicher Verarbeitung besonderer Kategorien. Beraet, ueberwacht und ist Anlaufstelle für Betroffene und Aufsichtsbehoerden."
             supervisory_authority:
                 name: "Datenschutz-Aufsichtsbehoerde"
-                definition: "Staatliche Behoerde die DSGVO-Einhaltung ueberwacht: BfDI (Bund) und 16 Landesdatenschutzbeauftragte (Laender). Zustaendig fuer Beschwerden, Untersuchungen, Bussgelder bis 20 Mio. EUR oder 4% Umsatz."
+                definition: "Staatliche Behoerde die DSGVO-Einhaltung ueberwacht: BfDI (Bund) und 16 Landesdatenschutzbeauftragte (Laender). Zustaendig für Beschwerden, Untersuchungen, Bussgelder bis 20 Mio. EUR oder 4% Umsatz."
             pims:
                 name: "PIMS (Privacy Information Management System)"
                 definition: "Erweiterung des ISMS um datenschutzspezifische Anforderungen nach ISO 27701. Ergaenzt ISO 27001 Controls um Privacy-Controls. Seit ISO 27701:2025 eigenstaendig zertifizierbar."
@@ -580,7 +580,7 @@ help:
                 definition: "Nach Bekanntwerden einer Datenschutzverletzung muss die Aufsichtsbehoerde innerhalb von 72 Stunden informiert werden. Das Tool berechnet die Frist automatisch, zeigt verbleibende Stunden und eskaliert bei Ueberschreitung."
             purpose_limitation:
                 name: "Zweckbindung (Art. 5(1)(b))"
-                definition: "Personenbezogene Daten duerfen nur fuer festgelegte, eindeutige und legitime Zwecke erhoben und nicht zweckwidrig weiterverarbeitet werden. Jede VVT muss mindestens einen Zweck angeben."
+                definition: "Personenbezogene Daten duerfen nur für festgelegte, eindeutige und legitime Zwecke erhoben und nicht zweckwidrig weiterverarbeitet werden. Jede VVT muss mindestens einen Zweck angeben."
             accountability:
                 name: "Rechenschaftspflicht (Art. 5(2))"
                 definition: "Der Verantwortliche muss DSGVO-Einhaltung nicht nur einhalten, sondern belegen koennen. Das Tool unterstuetzt durch Audit-Logs, versionierte Dokumente, exportierbare PDFs und Genehmigungsworkflows."
@@ -596,19 +596,19 @@ help:
                 definition: "5x5-Bewertungsraster: Eintrittswahrscheinlichkeit (Y) gegen Schadensauswirkung (X). Risk Score 1-25 mit Farbcodierung: Gruen (1-3), Gelb (4-9), Orange (10-15), Rot (16-25). Im Tool als interaktive Heatmap mit klickbaren Zellen."
             likelihood:
                 name: "Eintrittswahrscheinlichkeit (Likelihood)"
-                definition: "Wie wahrscheinlich tritt das Risiko ein? Skala 1-5: Selten (1), Unwahrscheinlich (2), Moeglich (3), Wahrscheinlich (4), Fast sicher (5). Das Tool passt die Wahrscheinlichkeit automatisch an wenn verknuepfte Incidents auftreten."
+                definition: "Wie wahrscheinlich tritt das Risiko ein? Skala 1-5: Selten (1), Unwahrscheinlich (2), Moeglich (3), Wahrscheinlich (4), Fast sicher (5). Das Tool passt die Wahrscheinlichkeit automatisch an wenn verknüpfte Incidents auftreten."
             impact_risk:
                 name: "Schadensauswirkung (Impact)"
-                definition: "Wie schwer ist der Schaden bei Risikoeintritt? Skala 1-5: Vernachlaessigbar (1), Gering (2), Moderat (3), Erheblich (4), Kritisch (5). Das Tool leitet den Impact automatisch aus dem Wert verknuepfter Assets ab."
+                definition: "Wie schwer ist der Schaden bei Risikoeintritt? Skala 1-5: Vernachlaessigbar (1), Gering (2), Moderat (3), Erheblich (4), Kritisch (5). Das Tool leitet den Impact automatisch aus dem Wert verknüpfter Assets ab."
             risk_score:
                 name: "Risikobewertungszahl (Risk Score)"
-                definition: "Produkt aus Wahrscheinlichkeit x Auswirkung (1-25). Bestimmt die Position in der Risikomatrix und Dringlichkeit der Behandlung. Wird fuer Brutto- (vor Massnahmen) und Netto-Risiko (nach Massnahmen) berechnet."
+                definition: "Produkt aus Wahrscheinlichkeit x Auswirkung (1-25). Bestimmt die Position in der Risikomatrix und Dringlichkeit der Behandlung. Wird für Brutto- (vor Massnahmen) und Netto-Risiko (nach Massnahmen) berechnet."
             risk_register:
                 name: "Risikoregister"
                 definition: "Zentrale Dokumentation aller identifizierten Risiken mit Bewertung, Behandlungsstatus, Verantwortlichen und Review-Terminen. Im Tool die Hauptansicht unter /risk/ — filterbar nach Status, Kategorie und Schweregrad."
             treatment_plan:
                 name: "Risikobehandlungsplan"
-                definition: "Konkreter Massnahmenplan: Was wird getan, wer ist verantwortlich, bis wann, mit welchem Budget. Enthaelt verknuepfte ISO 27001 Controls. Status: Geplant → In Umsetzung → Abgeschlossen → Verifiziert."
+                definition: "Konkreter Massnahmenplan: Was wird getan, wer ist verantwortlich, bis wann, mit welchem Budget. Enthaelt verknüpfte ISO 27001 Controls. Status: Geplant → In Umsetzung → Abgeschlossen → Verifiziert."
             risk_acceptance_formal:
                 name: "Formale Risikoakzeptanz"
                 definition: "Dokumentierte Entscheidung ein Restrisiko bewusst zu tragen — mit Begruendung, Bedingungen und Genehmigung auf passender Managementebene. Im Tool als Vier-Augen-Workflow. Muss mindestens jaehrlich ueberprueft werden."
@@ -623,7 +623,7 @@ help:
                 definition: "BSI-Prinzip: Wenn Asset A von Asset B abhaengt, erbt A mindestens den Schutzbedarf von B. Das Tool berechnet dies automatisch ueber Asset-Abhaengigkeiten."
             asset_risk_link:
                 name: "Asset-Risiko-Verknuepfung"
-                definition: "Assets werden direkt mit Risiken verknuepft. Ermoeglicht automatische Impact-Berechnung aus Asset-Wert, automatische Schutzbedarfs-Uebernahme und zeigt im Asset-Detail welche Risiken darauf lasten. Data Reuse: einmal erfasst, ueberall sichtbar."
+                definition: "Assets werden direkt mit Risiken verknüpft. Ermoeglicht automatische Impact-Berechnung aus Asset-Wert, automatische Schutzbedarfs-Uebernahme und zeigt im Asset-Detail welche Risiken darauf lasten. Data Reuse: einmal erfasst, ueberall sichtbar."
             kri:
                 name: "KRI (Key Risk Indicator)"
                 definition: "Fruehwarnindikatoren die auf steigende Risiken hinweisen BEVOR sie eintreten. Beispiele: fehlgeschlagene Logins, Patch-Rueckstand, ueberfaellige Behandlungen. Im Tool als Dashboard-Metriken mit Ampelfarben und Trend-Pfeilen."
@@ -644,10 +644,10 @@ help:
                 definition: "Brutto (Inherent Risk) = Wahrscheinlichkeit x Auswirkung OHNE Massnahmen. Netto (Residual Risk) = NACH Wirkung der Controls. Das Tool berechnet die Risikoreduktion automatisch in Prozent."
             risk_landscape:
                 name: "Risikolandschaft (Portfolio-Ansicht)"
-                definition: "Gesamtansicht aller Risiken — aggregiert nach Kategorie, Behandlungsstrategie, Status und Schweregrad. Im Tool als 5x5-Heatmap und Portfolio-Report mit 12-Monats-Trend. Unverzichtbar fuer Management Reviews."
+                definition: "Gesamtansicht aller Risiken — aggregiert nach Kategorie, Behandlungsstrategie, Status und Schweregrad. Im Tool als 5x5-Heatmap und Portfolio-Report mit 12-Monats-Trend. Unverzichtbar für Management Reviews."
             correlated_risks:
                 name: "Korrelierte Risiken (Risikokonzentration)"
-                definition: "Risiken die dasselbe Asset betreffen und sich gegenseitig verstaerken koennen. Faellt ein Asset aus, materialisieren sich alle verknuepften Risiken gleichzeitig. Das Tool erkennt Korrelationen automatisch und berechnet einen kombinierten Score."
+                definition: "Risiken die dasselbe Asset betreffen und sich gegenseitig verstaerken koennen. Faellt ein Asset aus, materialisieren sich alle verknüpften Risiken gleichzeitig. Das Tool erkennt Korrelationen automatisch und berechnet einen kombinierten Score."
             appetite_exceedance:
                 name: "Schwellenwertuberschreitung"
                 definition: "Wenn das Residualrisiko den Risk-Appetite-Schwellenwert uebersteigt. Das Tool berechnet Ueberschreitung in Punkten/Prozent und blockiert die formale Risikoakzeptanz automatisch — weitere Massnahmen erforderlich."
