@@ -383,6 +383,46 @@ jobs:
         run: python3 scripts/quality/check_status_enum_yaml_parity.py --baseline scripts/quality/baselines/status_enum_yaml_parity.txt --quiet
       - name: "Gate 43: Backup entity coverage (every src/Entity/*.php is backed up or has documented exclusion)"
         run: python3 scripts/quality/check_backup_entity_coverage.py --quiet
+      - name: "Gate 44: Translation issues (hardcoded text / missing domains in Twig) — baseline-gated"
+        # check_translation_issues.py has no native --baseline / non-zero exit support;
+        # we wrap it and diff <file>:<line>: <desc> triples against the baseline.
+        # Existing entries are tolerated, NEW entries fail the gate.
+        # S12 item 9 — see scripts/quality/baselines/translation_issues.txt
+        run: |
+          set -euo pipefail
+          BASELINE=scripts/quality/baselines/translation_issues.txt
+          if [ ! -f "$BASELINE" ]; then
+            echo "::error::Baseline file $BASELINE missing"
+            exit 1
+          fi
+          CURRENT=$(python3 scripts/quality/check_translation_issues.py 2>&1 | python3 -c "
+          import sys, re
+          file = None
+          for line in sys.stdin:
+              line = line.rstrip()
+              m = re.match(r'^📄 (.+)$', line)
+              if m:
+                  file = m.group(1)
+                  continue
+              m = re.match(r'^\s+Line (\d+): (.+)$', line)
+              if m and file:
+                  print(f'{file}:{m.group(1)}: {m.group(2)}')
+          " | sort -u)
+          BASELINE_ENTRIES=$(grep -vE '^\s*(#|$)' "$BASELINE" | sort -u || true)
+          NEW=$(comm -23 <(printf '%s\n' "$CURRENT") <(printf '%s\n' "$BASELINE_ENTRIES") || true)
+          # comm prints empty line on empty input; strip blank lines
+          NEW=$(printf '%s\n' "$NEW" | grep -v '^$' || true)
+          if [ -n "$NEW" ]; then
+            echo "::error::Gate 44 FAILED — new translation issues introduced (not in baseline):"
+            printf '%s\n' "$NEW" | sed 's/^/  FAIL /'
+            echo ""
+            echo "Fix: either translate the affected strings, or — only if intentional —"
+            echo "add the entries to scripts/quality/baselines/translation_issues.txt."
+            exit 1
+          fi
+          TOTAL=$(printf '%s\n' "$CURRENT" | grep -c . || true)
+          BASELINED=$(printf '%s\n' "$BASELINE_ENTRIES" | grep -c . || true)
+          echo "Gate 44 OK — $TOTAL translation issue(s), all $BASELINED baselined."
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
