@@ -1,0 +1,122 @@
+# Junior-ISB-Audit Phase-2 Lifecycle — Notification-Delivery state-machine.
+#
+# Notification-Delivery is the hot-path entity that records every fan-out of a
+# NotificationRule to a NotificationChannel. The pipeline is:
+#
+#   pending → sent → delivered → archived
+#                ↘            ↗
+#                  failed → retrying → sent  (transient errors, max N retries)
+#                       ↘
+#                         archived           (terminal failure after retention)
+#
+# Six places extend the legacy four-place enum (`pending|sent|failed|retrying`)
+# with:
+#   - `delivered`: explicit positive ACK from the receiver (webhook 2xx + body,
+#     SMTP 250, in-app read-receipt). `sent` is "handed off to transport",
+#     `delivered` is "transport confirmed end-to-end delivery". This split
+#     matters for ISO 27001 Cl. 7.4 + DORA Art. 19 (incident reporting must
+#     be evidence-backed end-to-end, not just dispatch-logged).
+#   - `archived`: retention-window expired; row stays for forensic-audit but
+#     is excluded from operational dashboards.
+#
+# Backward compatibility: the existing `markSent()`/`markFailed()` helpers on
+# the entity remain in place (hot path — every notification touches them).
+# This YAML adds the *option* to drive the lifecycle through
+# `LifecycleService::transition()` for new flows (read-receipt webhooks,
+# retention-archival cron) without forcing every channel adapter to refactor.
+framework:
+    workflows:
+        notification_delivery_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\Notification\NotificationDelivery
+            initial_marking: pending
+            places:
+                - pending
+                - sent
+                - delivered
+                - failed
+                - retrying
+                - archived
+            transitions:
+                # Channel adapter handed payload to transport (SMTP queued,
+                # webhook POST returned 2xx without ACK body, in-app row
+                # written). Equivalent to the existing `markSent()`.
+                dispatch:
+                    from: pending
+                    to: sent
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: notifications
+                # End-to-end ACK received (read-receipt, webhook ACK body
+                # parsed). Driven by the read-receipt listener / webhook
+                # ACK ingest endpoint — see ISO 27001 Cl. 7.4.
+                confirm_delivery:
+                    from: sent
+                    to: delivered
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: notifications
+                # Transport reported a permanent error (SMTP 5xx, webhook
+                # 4xx/5xx body). Reason is captured in `error_message` on
+                # the entity. `reason_required` is false because the
+                # transport-error string IS the reason — duplicate prompt
+                # would be UX noise on the hot path.
+                fail_from_pending:
+                    from: pending
+                    to: failed
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: notifications
+                fail_from_sent:
+                    from: sent
+                    to: failed
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: notifications
+                # Transient failure → re-queue. Backoff is the worker's
+                # job; the lifecycle just records the state.
+                schedule_retry:
+                    from: failed
+                    to: retrying
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: notifications
+                # Retry kicked off — back to in-flight.
+                resume_after_retry:
+                    from: retrying
+                    to: sent
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: notifications
+                # Retry exhausted attempts → terminal failure path stays
+                # in `failed`. Manager flips to archived only after the
+                # retention window. Reason required — this is the audit
+                # entry the regulator may inspect for a missed SLA.
+                archive_failed:
+                    from: failed
+                    to: archived
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: notifications
+                # Happy-path archival after retention window (cron-driven).
+                archive_delivered:
+                    from: delivered
+                    to: archived
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: notifications
+                # Edge-case: `sent` rows whose receiver never ACK'd within
+                # the SLA — operator manually archives once retention
+                # window passes.
+                archive_sent:
+                    from: sent
+                    to: archived
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: notifications

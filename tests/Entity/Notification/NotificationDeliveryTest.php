@@ -33,11 +33,15 @@ final class NotificationDeliveryTest extends TestCase
     #[Test]
     public function testStatusConstants(): void
     {
-        self::assertSame('pending',  NotificationDelivery::STATUS_PENDING);
-        self::assertSame('sent',     NotificationDelivery::STATUS_SENT);
-        self::assertSame('failed',   NotificationDelivery::STATUS_FAILED);
-        self::assertSame('retrying', NotificationDelivery::STATUS_RETRYING);
-        self::assertCount(4, NotificationDelivery::VALID_STATUSES);
+        // Junior-ISB-Audit Phase-2 Lifecycle — extended from 4 → 6 stages
+        // (added `delivered` end-to-end-ACK + `archived` post-retention).
+        self::assertSame('pending',   NotificationDelivery::STATUS_PENDING);
+        self::assertSame('sent',      NotificationDelivery::STATUS_SENT);
+        self::assertSame('delivered', NotificationDelivery::STATUS_DELIVERED);
+        self::assertSame('failed',    NotificationDelivery::STATUS_FAILED);
+        self::assertSame('retrying',  NotificationDelivery::STATUS_RETRYING);
+        self::assertSame('archived',  NotificationDelivery::STATUS_ARCHIVED);
+        self::assertCount(6, NotificationDelivery::VALID_STATUSES);
     }
 
     #[Test]
