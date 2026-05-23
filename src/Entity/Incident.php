@@ -158,8 +158,24 @@ class Incident
     #[Assert\Length(max: 100, maxMessage: 'Assignee name cannot exceed { limit } characters')]
     private ?string $assignedTo = null;
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation — use $affectedAssets.
+     *
+     * Freetext catalogue of affected systems. Superseded by the structured
+     * {@see self::$affectedAssets} ManyToMany collection (Asset entity) which
+     * satisfies ISO 27001 A.5.26 + DORA Art. 17 structured-incident-asset-linkage
+     * requirements. The column is retained for backward compatibility with
+     * pre-S13 records ("Legacy-Mode für Bestandsdaten"); a cleanup migration
+     * dropping the column is scheduled for S14 after one release cycle.
+     *
+     * Do NOT write to this field in new code. The Form input is `disabled`,
+     * the show-pages render it only when non-empty, and the API exposes it
+     * read-only via the `incident:read` group.
+     *
+     * @deprecated since S13 (2026-05-23) — use {@see self::$affectedAssets}.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['incident:read', 'incident:write'])]
+    #[Groups(['incident:read'])]
     private ?string $affectedSystems = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -512,11 +528,22 @@ class Incident
         return $this;
     }
 
+    /**
+     * @deprecated since S13 (2026-05-23) — use {@see self::getAffectedAssets()}.
+     *             Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation.
+     */
     public function getAffectedSystems(): ?string
     {
         return $this->affectedSystems;
     }
 
+    /**
+     * @deprecated since S13 (2026-05-23) — use {@see self::addAffectedAsset()}.
+     *             Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation.
+     *             Retained for fixture/seed compatibility only — the Form
+     *             input is disabled and Show-pages render the value
+     *             read-only inside a "Legacy"-info alert.
+     */
     public function setAffectedSystems(?string $affectedSystems): static
     {
         $this->affectedSystems = $affectedSystems;
