@@ -134,6 +134,10 @@ class AnalyticsController extends AbstractController
     #[Route('/api/heat-map', name: 'app_analytics_heat_map_data', methods: ['GET'])]
     public function getHeatMapData(): JsonResponse
     {
+        // Junior-ISB-Audit-2026-05-22 Polish: Aurora-rework Risk-Heatmap
+        // Emits `band` (low/medium/high/critical) per cell so the frontend can
+        // drive Aurora .isms-risk-cell[data-level] styling — replaces hand-rolled
+        // hex colors. SSoT: App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
         $risks = $this->riskRepository->findAll();
 
         // Create 5x5 matrix (Probability x Impact)
@@ -156,27 +160,25 @@ class AnalyticsController extends AbstractController
         $heatMapData = [];
         for ($impact = 5; $impact >= 1; $impact--) {
             for ($probability = 1; $probability <= 5; $probability++) {
-                $risks = $matrix[$impact][$probability];
-                $count = count($risks);
+                $cellRisks = $matrix[$impact][$probability];
+                $count = count($cellRisks);
                 $score = $probability * $impact;
-
-                // Determine color based on score
-                $color = $this->getRiskColor($score);
+                $band = RiskMatrixThresholds::classify($score);
 
                 $heatMapData[] = [
                     'x' => $probability,
                     'y' => $impact,
                     'count' => $count,
                     'score' => $score,
-                    'color' => $color,
-                    'risks' => $risks
+                    'band' => $band,
+                    'risks' => $cellRisks,
                 ];
             }
         }
 
         return new JsonResponse([
             'matrix' => $heatMapData,
-            'total_risks' => count($risks)
+            'total_risks' => count($risks),
         ]);
     }
     #[Route('/api/compliance-radar', name: 'app_analytics_compliance_radar_data', methods: ['GET'])]
@@ -378,16 +380,8 @@ class AnalyticsController extends AbstractController
         return $response;
     }
     // Helper methods
-    private function getRiskColor(int $score): string
-    {
-        // Score-bands owned by App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b SSoT).
-        return match (RiskMatrixThresholds::classify($score)) {
-            'critical' => '#fecaca', // Light Red
-            'high'     => '#fed7aa', // Light Orange
-            'medium'   => '#fef3c7', // Light Yellow
-            default    => '#d1fae5', // Light Green (low)
-        };
-    }
+    // Junior-ISB-Audit-2026-05-22 Polish: Aurora-rework Risk-Heatmap removed
+    // getRiskColor() hex helper — frontend now uses Aurora .isms-risk-cell[data-level].
     private function extractAnnex(string $controlId): string
     {
         // Extract annex from control ID (e.g., "A.5.1" -> "A.5")

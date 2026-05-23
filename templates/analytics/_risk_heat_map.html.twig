@@ -1,151 +1,181 @@
-{# Risk Heat Map Component
+{# Risk Heat Map Component (Aurora-rework)
    Usage: {% include 'analytics/_risk_heat_map.html.twig' %}
+          {% include 'analytics/_risk_heat_map.html.twig' with {expanded: true} %}
 
-   Features:
-   - 5x5 Matrix (Probability × Impact)
-   - Color-coded cells
-   - Interactive tooltips
-   - Click to view risks
+   Junior-ISB-Audit-2026-05-22 Polish: Aurora-rework Risk-Heatmap
+
+   Architecture:
+   - Aurora .isms-risk-matrix + .isms-risk-cell[data-level] tokens drive cell color
+   - .isms-risk-legend__chip[data-level] for legend (no raw hex)
+   - fa-filter-chip macro for status/category/time filters
+   - fa-drawer (right) for cell-click → risk list (replaces inline details panel)
+   - fa-empty-state with Alva mood when matrix has no risks
+   - Stimulus heat-map controller renders cells + drives drawer
 #}
 {% trans_default_domain 'analytics' %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
-{% embed '_components/_card.html.twig' with { 'class': 'analytics-card heat-map-card' ~ (expanded is defined and expanded ? ' expanded' : '') } %}
-    {% block card_attrs %}data-controller="heat-map" data-heat-map-url-value="{{ path('app_analytics_heat_map_data') }}"{% endblock %}
-    {% block card_header %}
-        <div class="card-header">
-            <h2 class="card-title">
-                <i class="fa-icon fa-icon--nav-grid text-danger" aria-hidden="true"></i>
-                {{ 'analytics.card.risk_heat_map'|trans({}, 'analytics') }}
-            </h2>
-            <div class="card-actions">
-                <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
-                        data-action="click->heat-map#toggleFilters"
-                        title="{{ 'analytics.action.filter'|trans({}, 'analytics') }}">
-                    <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i>
-                </button>
-                <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
-                        data-action="click->heat-map#refresh"
-                        title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
-                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
-                </button>
-                <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
-                        data-action="click->heat-map#exportImage"
-                        title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
-                    <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
-                </button>
-            </div>
-        </div>
+<section class="fa-section heat-map-section{% if expanded is defined and expanded %} heat-map-section--expanded{% endif %}"
+         data-controller="heat-map"
+         data-heat-map-url-value="{{ path('app_analytics_heat_map_data') }}"
+         data-heat-map-locale-value="{{ app.request.locale|default('de') }}">
 
-        {# Filter Panel #}
-        <div class="heat-map-filters d-none" data-heat-map-target="filters">
-            <div class="filter-group">
-                <label class="filter-label" for="heat-map-status-filter">
-                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'analytics.filter.status'|trans({}, 'analytics') }}
-                </label>
-                <select class="form-select fa-cyber-input__field form-select-sm"
-                        id="heat-map-status-filter"
-                        data-action="change->heat-map#applyFilters"
-                        data-heat-map-target="statusFilter">
-                    <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
-                    <option value="open">{{ 'risk.status.open'|trans({}, 'risk') }}</option>
-                    <option value="in_progress">{{ 'risk.status.in_progress'|trans({}, 'risk') }}</option>
-                    <option value="mitigated">{{ 'risk.status.mitigated'|trans({}, 'risk') }}</option>
-                    <option value="closed">{{ 'risk.status.closed'|trans({}, 'risk') }}</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label" for="heat-map-category-filter">
-                    <i class="fa-icon fa-icon--ui-tag" aria-hidden="true"></i> {{ 'analytics.filter.category'|trans({}, 'analytics') }}
-                </label>
-                <select class="form-select fa-cyber-input__field form-select-sm"
-                        id="heat-map-category-filter"
-                        data-action="change->heat-map#applyFilters"
-                        data-heat-map-target="categoryFilter">
-                    <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
-                    <option value="technical">{{ 'risk.category.technical'|trans({}, 'risk') }}</option>
-                    <option value="organizational">{{ 'risk.category.organizational'|trans({}, 'risk') }}</option>
-                    <option value="physical">{{ 'risk.category.physical'|trans({}, 'risk') }}</option>
-                    <option value="compliance">{{ 'compliance.title.transitive'|trans({}, 'compliance') }}</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label" for="heat-map-time-filter">
-                    <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ 'analytics.filter.time'|trans({}, 'analytics') }}
-                </label>
-                <select class="form-select fa-cyber-input__field form-select-sm"
-                        id="heat-map-time-filter"
-                        data-action="change->heat-map#applyFilters"
-                        data-heat-map-target="timeFilter">
-                    <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
-                    <option value="30">{{ 'common.last_30_days'|trans({}, 'messages') }}</option>
-                    <option value="90">{{ 'common.last_90_days'|trans({}, 'messages') }}</option>
-                    <option value="365">{{ 'common.last_year'|trans({}, 'messages') }}</option>
-                </select>
-            </div>
-            <button class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
-                    data-action="click->heat-map#clearFilters">
-                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'analytics.action.reset_filters'|trans({}, 'analytics') }}
+    <div class="fa-section__header">
+        <h2 class="fa-section__title">
+            <i class="fa-icon fa-icon--heatmap text-primary" aria-hidden="true"></i>
+            {{ 'analytics.card.risk_heat_map'|trans({}, 'analytics') }}
+        </h2>
+        <div class="fa-section__tools">
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                    data-action="click->heat-map#toggleFilters"
+                    title="{{ 'analytics.action.filter'|trans({}, 'analytics') }}"
+                    aria-label="{{ 'analytics.action.filter'|trans({}, 'analytics') }}">
+                <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i>
+            </button>
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                    data-action="click->heat-map#refresh"
+                    title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}"
+                    aria-label="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
+                <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
+            </button>
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                    data-action="click->heat-map#exportImage"
+                    title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}"
+                    aria-label="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
+                <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
             </button>
         </div>
-    {% endblock %}
-    {% block card_body %}
-        {# Loading State #}
-        <div class="heat-map-loading d-none" data-heat-map-target="loading">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">{{ 'analytics.loading.loading'|trans({}, 'analytics') }}</span>
-            </div>
-            <p class="mt-2 text-muted">{{ 'analytics.loading.loading_heat_map'|trans({}, 'analytics') }}</p>
-        </div>
+    </div>
 
-        {# Legend #}
-        <div class="heat-map-legend">
-            <div class="legend-item">
-                <span class="legend-color legend-color-critical"></span>
-                <span class="legend-label">{{ 'analytics.legend.critical'|trans({}, 'analytics') }}</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color legend-color-high"></span>
-                <span class="legend-label">{{ 'analytics.legend.high'|trans({}, 'analytics') }}</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color legend-color-medium"></span>
-                <span class="legend-label">{{ 'analytics.legend.medium'|trans({}, 'analytics') }}</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color legend-color-low"></span>
-                <span class="legend-label">{{ 'analytics.legend.low'|trans({}, 'analytics') }}</span>
-            </div>
-        </div>
+    <div class="fa-section__body">
 
-        {# Heat Map Container #}
-        <div class="heat-map-container" data-heat-map-target="container">
-            {# Axis Labels #}
-            <div class="heat-map-axes">
-                <div class="y-axis-label">
-                    <span>{{ 'analytics.axes.impact'|trans({}, 'analytics') }}</span>
+        {# Filter chip-row — hidden by default #}
+        <div class="heat-map-section__filters d-none" data-heat-map-target="filters">
+            <div class="d-flex flex-wrap gap-3 align-items-end">
+                <div class="d-flex flex-column gap-1">
+                    <label class="filter-label small fw-semibold text-muted" for="heat-map-status-filter">
+                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                        {{ 'analytics.filter.status'|trans({}, 'analytics') }}
+                    </label>
+                    <select class="form-select fa-cyber-input__field form-select-sm"
+                            id="heat-map-status-filter"
+                            data-action="change->heat-map#applyFilters"
+                            data-heat-map-target="statusFilter">
+                        <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
+                        <option value="open">{{ 'risk.status.open'|trans({}, 'risk') }}</option>
+                        <option value="in_progress">{{ 'risk.status.in_progress'|trans({}, 'risk') }}</option>
+                        <option value="mitigated">{{ 'risk.status.mitigated'|trans({}, 'risk') }}</option>
+                        <option value="closed">{{ 'risk.status.closed'|trans({}, 'risk') }}</option>
+                    </select>
                 </div>
-                <div class="x-axis-label">
-                    <span>{{ 'analytics.axes.probability'|trans({}, 'analytics') }}</span>
+                <div class="d-flex flex-column gap-1">
+                    <label class="filter-label small fw-semibold text-muted" for="heat-map-category-filter">
+                        <i class="fa-icon fa-icon--ui-tag" aria-hidden="true"></i>
+                        {{ 'analytics.filter.category'|trans({}, 'analytics') }}
+                    </label>
+                    <select class="form-select fa-cyber-input__field form-select-sm"
+                            id="heat-map-category-filter"
+                            data-action="change->heat-map#applyFilters"
+                            data-heat-map-target="categoryFilter">
+                        <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
+                        <option value="technical">{{ 'risk.category.technical'|trans({}, 'risk') }}</option>
+                        <option value="organizational">{{ 'risk.category.organizational'|trans({}, 'risk') }}</option>
+                        <option value="physical">{{ 'risk.category.physical'|trans({}, 'risk') }}</option>
+                        <option value="compliance">{{ 'compliance.title.transitive'|trans({}, 'compliance') }}</option>
+                    </select>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                    <label class="filter-label small fw-semibold text-muted" for="heat-map-time-filter">
+                        <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
+                        {{ 'analytics.filter.time'|trans({}, 'analytics') }}
+                    </label>
+                    <select class="form-select fa-cyber-input__field form-select-sm"
+                            id="heat-map-time-filter"
+                            data-action="change->heat-map#applyFilters"
+                            data-heat-map-target="timeFilter">
+                        <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
+                        <option value="30">{{ 'common.last_30_days'|trans({}, 'messages') }}</option>
+                        <option value="90">{{ 'common.last_90_days'|trans({}, 'messages') }}</option>
+                        <option value="365">{{ 'common.last_year'|trans({}, 'messages') }}</option>
+                    </select>
+                </div>
+                <button type="button"
+                        class="fa-filter-chip heat-map-section__reset"
+                        data-action="click->heat-map#clearFilters">
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                    {{ 'analytics.action.reset_filters'|trans({}, 'analytics') }}
+                </button>
+            </div>
+        </div>
+
+        {# Loading state — shown while fetching data #}
+        <div class="heat-map-section__loading d-none" data-heat-map-target="loading">
+            <div class="d-flex flex-column align-items-center gap-2 py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">{{ 'analytics.loading.loading'|trans({}, 'analytics') }}</span>
+                </div>
+                <p class="mb-0 text-muted small">{{ 'analytics.loading.loading_heat_map'|trans({}, 'analytics') }}</p>
+            </div>
+        </div>
+
+        {# Aurora Matrix container — populated by Stimulus controller #}
+        <div class="heat-map-section__container" data-heat-map-target="container">
+            <div class="isms-risk-matrix" role="figure"
+                 aria-label="{{ 'analytics.card.risk_heat_map'|trans({}, 'analytics') }}"
+                 data-heat-map-target="matrix">
+                <div class="isms-risk-matrix__y-label">{{ 'analytics.axes.impact'|trans({}, 'analytics') }}</div>
+                <div class="isms-risk-matrix__grid" data-heat-map-target="grid">
+                    {# Cells populated by JS — server renders empty grid skeleton #}
+                </div>
+                <div class="isms-risk-matrix__x-label">{{ 'analytics.axes.probability'|trans({}, 'analytics') }}</div>
+
+                <div class="isms-risk-legend">
+                    <span class="isms-risk-legend__chip" data-level="2">{{ 'risk.heatmap.legend.low'|trans({}, 'risk') }}</span>
+                    <span class="isms-risk-legend__chip" data-level="3">{{ 'risk.heatmap.legend.medium'|trans({}, 'risk') }}</span>
+                    <span class="isms-risk-legend__chip" data-level="4">{{ 'risk.heatmap.legend.high'|trans({}, 'risk') }}</span>
+                    <span class="isms-risk-legend__chip" data-level="5">{{ 'risk.heatmap.legend.critical'|trans({}, 'risk') }}</span>
+                    <span class="ms-auto fa-mono fa-text-muted small" data-heat-map-target="totalLabel"></span>
                 </div>
             </div>
-
-            {# Heat Map Grid #}
-            <div class="heat-map-grid" data-heat-map-target="grid">
-                {# Will be rendered by JavaScript #}
-            </div>
         </div>
 
-        {# Risk Details Modal #}
-        <div class="heat-map-details d-none" data-heat-map-target="details">
-            <div class="details-header">
-                <h3 data-heat-map-target="detailsTitle">{{ 'analytics.details.risks_in_cell'|trans({}, 'analytics') }}</h3>
-                <button class="btn-close btn-sm"
-                        data-action="click->heat-map#closeDetails"
-                        aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
-            </div>
-            <div class="details-body" data-heat-map-target="detailsList">
-                {# Will be populated by JavaScript #}
-            </div>
+        {# Empty state — fa-empty-state with Alva when no risks #}
+        <div class="heat-map-section__empty d-none" data-heat-map-target="empty">
+            {{ _fa_empty_state.render({
+                mood: 'thinking',
+                title: 'risk.heatmap.empty.title'|trans({}, 'risk'),
+                text: 'risk.heatmap.empty.text'|trans({}, 'risk'),
+                alvaSize: 80
+            }) }}
         </div>
-    {% endblock %}
-{% endembed %}
+    </div>
+
+    {# Aurora drawer — slides in from right when a cell is clicked #}
+    <div class="fa-drawer-backdrop" data-heat-map-target="drawerBackdrop"
+         data-action="click->heat-map#closeDetails"></div>
+    <aside class="fa-drawer" data-heat-map-target="drawer" role="dialog"
+           aria-modal="true" aria-labelledby="heat-map-drawer-title" aria-hidden="true">
+        <div class="fa-drawer__header">
+            <div class="fa-drawer__header-icon">
+                <i class="fa-icon fa-icon--heatmap" aria-hidden="true"></i>
+            </div>
+            <div class="fa-drawer__header-text">
+                <span class="fa-drawer__eyebrow">{{ 'risk.heatmap.drawer.eyebrow'|trans({}, 'risk') }}</span>
+                <h2 class="fa-drawer__title" id="heat-map-drawer-title" data-heat-map-target="drawerTitle">
+                    {{ 'risk.heatmap.drawer.title'|trans({}, 'risk') }}
+                </h2>
+            </div>
+            <button type="button" class="fa-drawer__close"
+                    data-action="click->heat-map#closeDetails"
+                    aria-label="{{ 'risk.heatmap.drawer.close'|trans({}, 'risk') }}">
+                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="fa-drawer__body" data-heat-map-target="drawerBody">
+            {# Populated by Stimulus controller #}
+        </div>
+    </aside>
+</section>
