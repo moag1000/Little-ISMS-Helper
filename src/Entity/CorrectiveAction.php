@@ -22,6 +22,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'corrective_actions')]
 #[ORM\Index(name: 'idx_ca_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_ca_finding', columns: ['finding_id'])]
+#[ORM\Index(name: 'idx_ca_source_incident', columns: ['source_incident_id'])]
+#[ORM\Index(name: 'idx_ca_source_type', columns: ['source_type'])]
 #[ORM\Index(name: 'idx_ca_status', columns: ['status'])]
 class CorrectiveAction
 {
@@ -35,6 +37,15 @@ class CorrectiveAction
     public const ACTION_TYPE_PREVENTIVE = 'preventive';
     public const ACTION_TYPE_IMPROVEMENT = 'improvement';
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 M-07 / C2-05 — CAPA-Canonical-Process trigger source.
+     * Identifies which closure-loop produced this CA (per ADR 2026-05-23).
+     */
+    public const SOURCE_TYPE_AUDIT_FINDING = 'audit_finding';
+    public const SOURCE_TYPE_INCIDENT      = 'incident';
+    public const SOURCE_TYPE_MANUAL        = 'manual';
+    public const SOURCE_TYPE_CHANGE_REQUEST = 'change_request';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -44,9 +55,33 @@ class CorrectiveAction
     #[ORM\JoinColumn(nullable: false)]
     private ?Tenant $tenant = null;
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 M-07 / C2-05: now nullable. Was `nullable: false`
+     * before CAPA-Canonical-Process (ADR 2026-05-23). A CorrectiveAction may now
+     * be sourced from an Incident, manual entry, or change-request — see
+     * `sourceType` + `sourceIncident`.
+     */
     #[ORM\ManyToOne(targetEntity: AuditFinding::class, inversedBy: 'correctiveActions')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?AuditFinding $finding = null;
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 C2-05 — Incident source link.
+     * Set when this CA was auto-materialised from a high/critical Incident
+     * with a non-empty root-cause by
+     * {@see \App\Listener\AutoReactionCorrectiveActionListenerForIncident}.
+     */
+    #[ORM\ManyToOne(targetEntity: Incident::class)]
+    #[ORM\JoinColumn(name: 'source_incident_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Incident $sourceIncident = null;
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 C2-05 — Source / trigger type.
+     * One of {@see SOURCE_TYPE_AUDIT_FINDING}, {@see SOURCE_TYPE_INCIDENT},
+     * {@see SOURCE_TYPE_MANUAL}, {@see SOURCE_TYPE_CHANGE_REQUEST}.
+     */
+    #[ORM\Column(name: 'source_type', length: 30, options: ['default' => self::SOURCE_TYPE_AUDIT_FINDING])]
+    private string $sourceType = self::SOURCE_TYPE_AUDIT_FINDING;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
@@ -170,6 +205,28 @@ class CorrectiveAction
     public function setFinding(?AuditFinding $finding): static
     {
         $this->finding = $finding;
+        return $this;
+    }
+
+    public function getSourceIncident(): ?Incident
+    {
+        return $this->sourceIncident;
+    }
+
+    public function setSourceIncident(?Incident $incident): static
+    {
+        $this->sourceIncident = $incident;
+        return $this;
+    }
+
+    public function getSourceType(): string
+    {
+        return $this->sourceType;
+    }
+
+    public function setSourceType(string $sourceType): static
+    {
+        $this->sourceType = $sourceType;
         return $this;
     }
 
