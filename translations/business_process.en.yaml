@@ -129,6 +129,8 @@ business_process:
   action:
     create: Create process
     create_first: Create first business process
+    # S14 Cluster A C1-01 — Asset quick-create in BP form
+    quick_create_asset: Quick-create asset
   impact_level:
     very_low: Very low
     low: Low

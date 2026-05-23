@@ -1,0 +1,23 @@
+quick_create:
+  cta: Schnell anlegen
+  hint:
+    missing_entry: 'Eintrag fehlt im Auswahlfeld?'
+    missing_asset: 'Asset noch nicht angelegt?'
+  modal:
+    title: Neuen Eintrag anlegen
+    subtitle: Nur Name nötig — Details später bearbeiten
+  field:
+    name: Name
+  placeholder:
+    name: 'z. B. CRM-Datenbank, IT-Krisenstab, Order-to-Cash'
+  help:
+    name: Der neue Eintrag wird als Entwurf angelegt und ist sofort im übergeordneten Feld auswählbar.
+  action:
+    create: Anlegen
+    cancel: Abbrechen
+    close: Schließen
+  error:
+    name_required: Bitte einen Namen eingeben.
+    network: Netzwerkfehler. Bitte erneut versuchen.
+  toast:
+    success: 'Angelegt: %label%'

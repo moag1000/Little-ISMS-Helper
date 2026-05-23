@@ -134,6 +134,8 @@ business_process:
   action:
     create: Prozess erstellen
     create_first: Ersten Geschäftsprozess anlegen
+    # S14 Cluster A C1-01 — Asset-Quick-Create im BP-Formular
+    quick_create_asset: Asset schnell anlegen
   impact_level:
     very_low: Sehr niedrig
     low: Niedrig

@@ -44,7 +44,7 @@
                             },
                             'response_team': {
                                 'label': 'bc_plan.section.response_team'|trans({}, 'bc_plans'),
-                                'fields': ['responseTeamMembers', 'crisisTeams', 'bcTeam']
+                                'fields': ['responseTeamMembers', 'crisisTeams', 'criticalAssets', 'bcTeam']
                             },
                             'activation': {
                                 'label': 'bc_plans.section.activation'|trans({}, 'bc_plans'),
@@ -113,6 +113,31 @@
                     </div>
 
                     {{ form_end(form) }}
+
+                    {# S14 Cluster A — Quick-Create empty-state rescue triggers. #}
+                    {# C1-02 CrisisTeam · C1-03 BusinessProcess link (open-in-new-tab). #}
+                    <div class="quick-create-empty-state-row mt-3 d-flex flex-wrap gap-3 align-items-center" aria-label="{{ 'quick_create.cta'|trans({}, 'quick_create') }}">
+                        <span class="text-muted small">{{ 'quick_create.hint.missing_entry'|trans({}, 'quick_create') }}</span>
+
+                        {% include '_components/_quick_create_modal.html.twig' with {
+                            entityType:     'crisis-team',
+                            targetSelectId: 'business_continuity_plan_crisisTeams',
+                            modalId:        'quickCreateCrisisTeamModal',
+                            triggerLabel:   ('bc_plans.action.quick_create_crisis_team'|trans({}, 'bc_plans')),
+                            title:          ('bc_plans.action.quick_create_crisis_team'|trans({}, 'bc_plans')),
+                            placeholder:    ('crisis_team.placeholder.team_name'|trans({}, 'crisis_team')),
+                        } only %}
+
+                        {# C1-03 — Neuen BusinessProcess anlegen (open in new tab, not a modal). #}
+                        <a href="{{ path('app_business_process_new') }}"
+                           target="_blank"
+                           rel="noopener"
+                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--plus-circle" aria-hidden="true"></i>
+                            <span>{{ 'bc_plans.action.new_business_process'|trans({}, 'bc_plans') }}</span>
+                            <i class="fa-icon fa-icon--util-external-link" aria-hidden="true"></i>
+                        </a>
+                    </div>
                 {% endblock %}
             {% endembed %}
         </div>

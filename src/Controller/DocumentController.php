@@ -6,7 +6,9 @@ namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
+use App\Entity\Control;
 use App\Entity\Document;
+use App\Entity\DocumentControlLink;
 use App\Enum\DocumentStatus;
 use App\Form\DocumentType;
 use App\Entity\DocumentVersion;
@@ -785,6 +787,19 @@ class DocumentController extends AbstractController
         $policyBodyBefore = $document->getPolicyBody();
 
         $form = $this->createForm(DocumentType::class, $document, ['is_new' => false]);
+
+        // S14 Cluster A C1-04 — preload existing DocumentControlLink rows
+        // into the unmapped `linkedControls` form field so the user sees
+        // the current linkage on edit. Sync on submit handled below.
+        if ($this->documentControlLinkRepository !== null && $form->has('linkedControls')) {
+            $existingLinks = $this->documentControlLinkRepository->findByDocument($document);
+            $existingControls = array_map(
+                static fn ($link) => $link->getControl(),
+                $existingLinks,
+            );
+            $form->get('linkedControls')->setData($existingControls);
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -805,6 +820,16 @@ class DocumentController extends AbstractController
             }
 
             $this->entityManager->flush();
+
+            // S14 Cluster A C1-04 — sync DocumentControlLink rows from the
+            // unmapped `linkedControls` multi-select. Adds new links + removes
+            // dropped ones. Manual links only — provenance defaults to `manual`.
+            if ($this->documentControlLinkRepository !== null && $form->has('linkedControls')) {
+                $this->syncDocumentControlLinks(
+                    $document,
+                    $form->get('linkedControls')->getData() ?? [],
+                );
+            }
 
             if ($bodyChanged && $this->auditLogger !== null) {
                 $beforeLen = is_string($policyBodyBefore) ? strlen($policyBodyBefore) : 0;
@@ -1180,5 +1205,59 @@ class DocumentController extends AbstractController
             'candidates' => $candidates,
             'already_selected' => $document->getAcknowledgementAudience(),
         ]);
+    }
+
+    /**
+     * S14 Cluster A C1-04 — Reconcile DocumentControlLink rows against the
+     * Controls selected in the form's unmapped `linkedControls` field. Adds
+     * missing rows (source=manual) and removes rows for de-selected Controls.
+     * No-op when documentControlLinkRepository is unavailable.
+     *
+     * @param iterable<int, Control>|array<int, Control> $selectedControls
+     */
+    private function syncDocumentControlLinks(Document $document, iterable $selectedControls): void
+    {
+        if ($this->documentControlLinkRepository === null) {
+            return;
+        }
+
+        $selectedIds = [];
+        $selectedById = [];
+        foreach ($selectedControls as $control) {
+            if (!$control instanceof Control || $control->getId() === null) {
+                continue;
+            }
+            $selectedIds[$control->getId()] = true;
+            $selectedById[$control->getId()] = $control;
+        }
+
+        // Remove links whose Control no longer appears in the selection.
+        $existingLinks = $this->documentControlLinkRepository->findByDocument($document);
+        $existingControlIds = [];
+        foreach ($existingLinks as $link) {
+            $control = $link->getControl();
+            if ($control === null || $control->getId() === null) {
+                continue;
+            }
+            $existingControlIds[$control->getId()] = true;
+            if (!isset($selectedIds[$control->getId()])) {
+                $this->entityManager->remove($link);
+            }
+        }
+
+        // Add links for newly selected Controls.
+        foreach ($selectedById as $controlId => $control) {
+            if (isset($existingControlIds[$controlId])) {
+                continue;
+            }
+            $newLink = new DocumentControlLink(
+                document: $document,
+                control: $control,
+                source: DocumentControlLink::SOURCE_MANUAL,
+            );
+            $this->entityManager->persist($newLink);
+        }
+
+        $this->entityManager->flush();
     }
 }
