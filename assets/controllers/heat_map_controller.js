@@ -3,37 +3,51 @@ import { Controller } from '@hotwired/stimulus';
 /**
  * Heat Map Controller - Risk Heat Map Visualization
  *
+ * Junior-ISB-Audit-2026-05-22 Polish: Aurora-rework Risk-Heatmap
+ *
+ * Renders an Aurora .isms-risk-matrix 5x5 grid populated from
+ * `/analytics/api/heat-map`. Cell colors driven by data-level (low/medium/high/
+ * critical) via Aurora-tokens — NO inline hex. Cell click opens fa-drawer with
+ * the risk-list for that cell.
+ *
  * Features:
- * - 5x5 Matrix rendering
- * - Color-coded cells
- * - Interactive tooltips
- * - Click to view risks in cell
- * - Export as image
+ * - 5x5 Matrix rendering with Aurora data-level cell tokens
+ * - Native HTML title= tooltip (no JS-driven overlay)
+ * - Cell click -> fa-drawer (right) with risk list
+ * - Keyboard navigation (arrow keys + Enter)
+ * - Filter chip-row + refresh + export
  */
 export default class extends Controller {
-    static targets = ['loading', 'container', 'grid', 'details', 'detailsTitle', 'detailsList', 'tooltip', 'filters', 'statusFilter', 'categoryFilter', 'timeFilter'];
+    static targets = [
+        'loading',
+        'container',
+        'matrix',
+        'grid',
+        'totalLabel',
+        'empty',
+        'filters',
+        'statusFilter',
+        'categoryFilter',
+        'timeFilter',
+        'drawer',
+        'drawerBackdrop',
+        'drawerTitle',
+        'drawerBody',
+    ];
     static values = {
         url: String,
-        locale: { type: String, default: 'de' }
+        locale: { type: String, default: 'de' },
     };
 
     connect() {
-        this.loadData();
-        this.createTooltip();
-        this.boundHideTooltip = this.hideTooltip.bind(this);
         this.boundHandleKeyboard = this.handleKeyboard.bind(this);
-        this.rawMatrixData = null;
         this.currentFilters = { status: '', category: '', time: '' };
         this.focusedCellIndex = -1;
-
-        // Enable keyboard navigation
         document.addEventListener('keydown', this.boundHandleKeyboard);
+        this.loadData();
     }
 
     disconnect() {
-        if (this.tooltipElement) {
-            this.tooltipElement.remove();
-        }
         document.removeEventListener('keydown', this.boundHandleKeyboard);
     }
 
@@ -41,155 +55,176 @@ export default class extends Controller {
         this.showLoading();
 
         try {
-            const response = await fetch(this.urlValue);
+            const url = new URL(this.urlValue, window.location.origin);
+            Object.entries(this.currentFilters).forEach(([key, value]) => {
+                if (value) url.searchParams.append(key, value);
+            });
 
+            const response = await fetch(url);
             if (!response.ok) {
                 const msg = response.status === 403
                     ? 'Keine Berechtigung'
                     : `Fehler ${response.status}`;
-                window.faToast(msg, 'danger');
+                if (typeof window.faToast === 'function') {
+                    window.faToast(msg, 'danger');
+                }
                 this.showError();
                 return;
             }
 
             const data = await response.json();
-
-            this.renderHeatMap(data.matrix);
+            this.renderHeatMap(data.matrix || [], data.total_risks || 0);
             this.hideLoading();
-        } catch (error) {
+        } catch (_e) {
             this.showError();
         }
     }
 
-    renderHeatMap(matrix) {
+    renderHeatMap(matrix, totalRisks) {
         if (!this.hasGridTarget) return;
 
-        let html = '<div class="heat-map-matrix">';
+        const totalCount = matrix.reduce((sum, c) => sum + (c.count || 0), 0);
+        const isEmpty = totalCount === 0;
 
-        // Y-axis labels (Impact: 5 -> 1)
-        html += '<div class="heat-map-y-labels">';
-        for (let i = 5; i >= 1; i--) {
-            html += `<div class="y-label">${i}</div>`;
+        if (this.hasEmptyTarget) {
+            this.emptyTarget.classList.toggle('d-none', !isEmpty);
         }
-        html += '</div>';
+        if (this.hasMatrixTarget) {
+            this.matrixTarget.classList.toggle('d-none', isEmpty);
+        }
 
-        // Grid cells
-        html += '<div class="heat-map-cells">';
+        // Build the column-header row (corner + Probability 1..5)
+        let html = '<div></div>';
+        for (let p = 1; p <= 5; p++) {
+            html += `<div class="isms-risk-matrix__hd">${p}<span>P${p}</span></div>`;
+        }
 
-        // Render cells from top-left to bottom-right
+        // Rows: Impact 5..1 (highest on top) × Probability 1..5
         for (let impact = 5; impact >= 1; impact--) {
+            html += `<div class="isms-risk-matrix__hd-y">${impact}</div>`;
             for (let probability = 1; probability <= 5; probability++) {
                 const cell = matrix.find(c => c.x === probability && c.y === impact);
-
-                if (cell) {
-                    const scoreMin = probability * impact;
-                    const riskListHtml = cell.risks.slice(0, 3).map(r =>
-                        `<li><strong>${this.escapeHtml(r.title)}</strong> (${this.getLevelLabel(r.level)})</li>`
-                    ).join('');
-
-                    html += `
-                        <div class="heat-map-cell ${cell.count > 0 ? 'has-risks' : ''}"
-                             data-action="click->heat-map#showDetails mouseenter->heat-map#showTooltip mouseleave->heat-map#hideTooltip"
-                             data-x="${cell.x}"
-                             data-y="${cell.y}"
-                             data-count="${cell.count}"
-                             data-score="${scoreMin}"
-                             data-risks='${JSON.stringify(cell.risks)}'
-                             data-tooltip-content='<div class="tooltip-header"><strong>${cell.count} Risiko${cell.count !== 1 ? 's' : ''}</strong><span class="badge bg-${this.getLevelClass(scoreMin)}">Score: ${scoreMin}</span></div><ul class="tooltip-risk-list">${riskListHtml}${cell.count > 3 ? '<li class="text-muted">+ ' + (cell.count - 3) + ' weitere...</li>' : ''}</ul>'
-                             style="background-color: ${cell.color};"
-                             role="button"
-                             tabindex="0"
-                             aria-label="${cell.count} risk(s) at probability ${probability}, impact ${impact}">
-                            <span class="cell-count">${cell.count > 0 ? cell.count : ''}</span>
-                        </div>
-                    `;
+                if (!cell) {
+                    html += '<div class="isms-risk-cell" data-level="2" aria-hidden="true"></div>';
+                    continue;
                 }
+
+                const score = cell.score;
+                const band = cell.band || this.bandFromScore(score);
+                const level = this.levelFromBand(band);
+                const count = cell.count || 0;
+                const bandLabel = this.getBandLabel(band);
+                const tooltipKey = count === 1 ? 'cell_one' : 'cell';
+                const tooltip = this.formatTooltip(tooltipKey, {
+                    count,
+                    band: bandLabel,
+                    prob: probability,
+                    impact,
+                    score,
+                });
+                const ariaLabel = `${count} ${count === 1 ? 'Risiko' : 'Risiken'} · P${probability} × I${impact}`;
+                const risksJson = this.escapeAttr(JSON.stringify(cell.risks || []));
+
+                html += `
+                    <div class="isms-risk-cell${count > 0 ? ' isms-risk-cell--has-items' : ''}"
+                         data-level="${level}"
+                         data-band="${band}"
+                         data-x="${probability}"
+                         data-y="${impact}"
+                         data-count="${count}"
+                         data-score="${score}"
+                         data-risks='${risksJson}'
+                         title="${this.escapeAttr(tooltip)}"
+                         role="button"
+                         tabindex="0"
+                         aria-label="${this.escapeAttr(ariaLabel)}"
+                         data-action="click->heat-map#showDetails keydown.enter->heat-map#showDetails keydown.space->heat-map#showDetails">
+                        ${count > 0 ? count : ''}
+                    </div>
+                `;
             }
         }
 
-        html += '</div>'; // .heat-map-cells
-
-        // X-axis labels (Probability: 1 -> 5)
-        html += '<div class="heat-map-x-labels">';
-        for (let i = 1; i <= 5; i++) {
-            html += `<div class="x-label">${i}</div>`;
-        }
-        html += '</div>';
-
-        html += '</div>'; // .heat-map-matrix
-
         this.gridTarget.innerHTML = html;
+
+        if (this.hasTotalLabelTarget) {
+            this.totalLabelTarget.textContent = `${totalRisks} ${totalRisks === 1 ? 'Risiko' : 'Risiken'}`;
+        }
     }
 
     showDetails(event) {
         const cell = event.currentTarget;
+        const count = parseInt(cell.dataset.count, 10);
+        if (count === 0) return;
+
+        // Mark active cell visually
+        this.gridTarget.querySelectorAll('.isms-risk-cell--active')
+            .forEach(el => el.classList.remove('isms-risk-cell--active'));
+        cell.classList.add('isms-risk-cell--active');
+
         const x = cell.dataset.x;
         const y = cell.dataset.y;
-        const count = cell.dataset.count;
         const score = cell.dataset.score;
-        const risks = JSON.parse(cell.dataset.risks);
+        const band = cell.dataset.band;
+        let risks = [];
+        try { risks = JSON.parse(cell.dataset.risks); } catch (_e) { risks = []; }
 
-        if (count == 0) return;
+        if (this.hasDrawerTitleTarget) {
+            this.drawerTitleTarget.textContent = `${count} · ${this.getBandLabel(band)} (P${x} × I${y} = ${score})`;
+        }
 
-        // Update title with more context
-        const probabilityLabel = this.getProbabilityLabel(parseInt(x));
-        const impactLabel = this.getImpactLabel(parseInt(y));
+        const locale = this.localeValue || 'de';
+        const openLabel = this.localeValue === 'en' ? 'Open risk' : 'Risiko öffnen';
 
-        this.detailsTitleTarget.innerHTML = `
-            <div class="details-title-content">
-                <h6>${count} Risiko${count !== 1 ? 's' : ''} in dieser Zelle</h6>
-                <div class="cell-context">
-                    <span class="badge bg-info">Wahrscheinlichkeit: ${probabilityLabel}</span>
-                    <span class="badge bg-warning">Auswirkung: ${impactLabel}</span>
-                    <span class="badge bg-${this.getLevelClass(parseInt(score))}">Score: ${score}</span>
-                </div>
-            </div>
-        `;
-
-        // Render enhanced risk list
-        let html = '<ul class="risk-list-enhanced">';
-        risks.forEach(risk => {
-            const locale = this.localeValue || 'de';
-            html += `
-                <li class="risk-item-enhanced">
-                    <div class="risk-header">
-                        <a href="/${locale}/risk/${risk.id}" class="risk-title">
-                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                            <strong>${this.escapeHtml(risk.title)}</strong>
+        let body = '';
+        if (risks.length === 0) {
+            body = `<div class="fa-drawer__desc">${this.localeValue === 'en' ? 'No risks in this cell' : 'Keine Risiken in dieser Zelle'}</div>`;
+        } else {
+            body += '<ul class="fa-drawer__list">';
+            risks.forEach(risk => {
+                const bandSlug = this.levelToBand(risk.level);
+                const link = `/${locale}/risk/${risk.id}`;
+                body += `
+                    <li>
+                        <span class="isms-risk-legend__chip" data-level="${this.levelFromBand(bandSlug)}" style="margin-right:8px;">${this.getBandLabel(bandSlug)}</span>
+                        <a href="${link}" class="fa-drawer__link" title="${openLabel}">
+                            <strong>${this.escapeHtml(risk.title || '')}</strong>
                         </a>
-                        <span class="risk-level badge bg-${this.getLevelClass(risk.level)}">
-                            ${this.getLevelLabel(risk.level)}
-                        </span>
-                    </div>
-                    <div class="risk-meta">
-                        ${risk.status ? `<span class="badge bg-secondary">${risk.status}</span>` : ''}
-                        ${risk.category ? `<span class="badge bg-light text-dark">${risk.category}</span>` : ''}
-                        ${risk.owner ? `<span class="text-muted"><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> ${this.escapeHtml(risk.owner)}</span>` : ''}
-                    </div>
-                    ${risk.description ? `<p class="risk-description">${this.escapeHtml(risk.description.substring(0, 120))}${risk.description.length > 120 ? '...' : ''}</p>` : ''}
-                </li>
-            `;
-        });
-        html += '</ul>';
+                    </li>
+                `;
+            });
+            body += '</ul>';
+        }
 
-        this.detailsListTarget.innerHTML = html;
+        if (this.hasDrawerBodyTarget) {
+            this.drawerBodyTarget.innerHTML = body;
+        }
 
-        // Show details panel with animation
-        this.detailsTarget.classList.remove('d-none');
-        requestAnimationFrame(() => {
-            this.detailsTarget.classList.add('details-visible');
-        });
+        this.openDrawer();
+    }
+
+    openDrawer() {
+        if (this.hasDrawerTarget) {
+            this.drawerTarget.classList.add('is-open');
+            this.drawerTarget.setAttribute('aria-hidden', 'false');
+        }
+        if (this.hasDrawerBackdropTarget) {
+            this.drawerBackdropTarget.classList.add('is-open');
+        }
     }
 
     closeDetails() {
-        this.detailsTarget.classList.add('d-none');
-    }
-
-    getLevelClass(level) {
-        if (level < 4) return 'success';      // Low (1-3)
-        if (level < 8) return 'info';         // Medium (4-7)
-        if (level < 15) return 'warning';     // High (8-14)
-        return 'danger';                       // Critical (15-25)
+        if (this.hasDrawerTarget) {
+            this.drawerTarget.classList.remove('is-open');
+            this.drawerTarget.setAttribute('aria-hidden', 'true');
+        }
+        if (this.hasDrawerBackdropTarget) {
+            this.drawerBackdropTarget.classList.remove('is-open');
+        }
+        if (this.hasGridTarget) {
+            this.gridTarget.querySelectorAll('.isms-risk-cell--active')
+                .forEach(el => el.classList.remove('isms-risk-cell--active'));
+        }
     }
 
     refresh() {
@@ -197,8 +232,6 @@ export default class extends Controller {
     }
 
     exportImage() {
-        // Simple export using html2canvas or similar
-        // For now, just trigger print
         window.print();
     }
 
@@ -207,7 +240,7 @@ export default class extends Controller {
             this.loadingTarget.classList.remove('d-none');
         }
         if (this.hasContainerTarget) {
-            this.containerTarget.style.opacity = '0.3';
+            this.containerTarget.style.opacity = '0.4';
         }
     }
 
@@ -223,109 +256,15 @@ export default class extends Controller {
     showError() {
         this.hideLoading();
         if (this.hasGridTarget) {
+            const msg = this.localeValue === 'en'
+                ? 'Failed to load heat map data. Please try again.'
+                : 'Heatmap konnte nicht geladen werden. Bitte erneut versuchen.';
             this.gridTarget.innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                    Failed to load heat map data. Please try again.
+                <div class="alert alert-danger" style="grid-column:1 / -1;">
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ${msg}
                 </div>
             `;
         }
-    }
-
-    // ========== Enhanced Tooltip Functionality ==========
-
-    createTooltip() {
-        this.tooltipElement = document.createElement('div');
-        this.tooltipElement.className = 'heat-map-tooltip';
-        this.tooltipElement.setAttribute('role', 'tooltip');
-        this.tooltipElement.style.display = 'none';
-        document.body.appendChild(this.tooltipElement);
-    }
-
-    showTooltip(event) {
-        const cell = event.currentTarget;
-        const count = parseInt(cell.dataset.count);
-
-        if (count === 0) return;
-
-        const content = cell.dataset.tooltipContent;
-        this.tooltipElement.innerHTML = content;
-
-        // Position tooltip
-        const rect = cell.getBoundingClientRect();
-        const tooltipRect = this.tooltipElement.getBoundingClientRect();
-
-        // Default: show above the cell
-        let top = rect.top + window.scrollY - tooltipRect.height - 10;
-        let left = rect.left + window.scrollX + (rect.width / 2) - (tooltipRect.width / 2);
-
-        // If tooltip would go off top of screen, show below instead
-        if (top < window.scrollY) {
-            top = rect.bottom + window.scrollY + 10;
-            this.tooltipElement.classList.add('tooltip-below');
-        } else {
-            this.tooltipElement.classList.remove('tooltip-below');
-        }
-
-        // Prevent tooltip from going off left/right edges
-        if (left < 10) {
-            left = 10;
-        } else if (left + tooltipRect.width > window.innerWidth - 10) {
-            left = window.innerWidth - tooltipRect.width - 10;
-        }
-
-        this.tooltipElement.style.top = `${top}px`;
-        this.tooltipElement.style.left = `${left}px`;
-        this.tooltipElement.style.display = 'block';
-
-        // Trigger animation
-        requestAnimationFrame(() => {
-            this.tooltipElement.classList.add('tooltip-visible');
-        });
-    }
-
-    hideTooltip() {
-        if (this.tooltipElement) {
-            this.tooltipElement.classList.remove('tooltip-visible');
-            setTimeout(() => {
-                this.tooltipElement.style.display = 'none';
-            }, 200);
-        }
-    }
-
-    getLevelLabel(level) {
-        if (level < 4) return 'Niedrig';
-        if (level < 8) return 'Mittel';
-        if (level < 15) return 'Hoch';
-        return 'Kritisch';
-    }
-
-    getProbabilityLabel(value) {
-        const labels = {
-            1: 'Sehr selten',
-            2: 'Selten',
-            3: 'Gelegentlich',
-            4: 'Wahrscheinlich',
-            5: 'Sehr wahrscheinlich'
-        };
-        return labels[value] || value;
-    }
-
-    getImpactLabel(value) {
-        const labels = {
-            1: 'Unbedeutend',
-            2: 'Gering',
-            3: 'Moderat',
-            4: 'Hoch',
-            5: 'Kritisch'
-        };
-        return labels[value] || value;
-    }
-
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 
     // ========== Filter Functionality ==========
@@ -338,26 +277,12 @@ export default class extends Controller {
 
     applyFilters() {
         if (!this.hasStatusFilterTarget) return;
-
         this.currentFilters = {
             status: this.statusFilterTarget.value,
             category: this.categoryFilterTarget.value,
-            time: this.timeFilterTarget.value
+            time: this.timeFilterTarget.value,
         };
-
-        // Reload data with filters
-        const url = new URL(this.urlValue, window.location.origin);
-        Object.entries(this.currentFilters).forEach(([key, value]) => {
-            if (value) url.searchParams.append(key, value);
-        });
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                this.rawMatrixData = data.matrix;
-                this.renderHeatMap(data.matrix);
-            })
-            .catch(() => {});
+        this.loadData();
     }
 
     clearFilters() {
@@ -371,62 +296,99 @@ export default class extends Controller {
     // ========== Keyboard Navigation ==========
 
     handleKeyboard(event) {
-        // Only handle keyboard if heat map is visible and no modal is open
-        if (!this.hasGridTarget || this.detailsTarget?.classList.contains('d-none') === false) {
+        // Esc closes the drawer if open
+        if (event.key === 'Escape' && this.hasDrawerTarget && this.drawerTarget.classList.contains('is-open')) {
+            event.preventDefault();
+            this.closeDetails();
             return;
         }
-
-        const cells = Array.from(this.gridTarget.querySelectorAll('.heat-map-cell.has-risks'));
+        if (!this.hasGridTarget) return;
+        const cells = Array.from(this.gridTarget.querySelectorAll('.isms-risk-cell--has-items'));
         if (cells.length === 0) return;
 
-        switch(event.key) {
-            case 'ArrowRight':
-                event.preventDefault();
-                this.navigateCells(cells, 1);
-                break;
-            case 'ArrowLeft':
-                event.preventDefault();
-                this.navigateCells(cells, -1);
-                break;
-            case 'ArrowDown':
-                event.preventDefault();
-                this.navigateCells(cells, 5); // Move down one row (5 cells per row)
-                break;
-            case 'ArrowUp':
-                event.preventDefault();
-                this.navigateCells(cells, -5); // Move up one row
-                break;
-            case 'Enter':
-            case ' ':
-                event.preventDefault();
-                if (this.focusedCellIndex >= 0 && cells[this.focusedCellIndex]) {
-                    cells[this.focusedCellIndex].click();
-                }
-                break;
-            case 'Escape':
-                event.preventDefault();
-                this.closeDetails();
-                break;
+        switch (event.key) {
+            case 'ArrowRight': event.preventDefault(); this.navigateCells(cells, 1); break;
+            case 'ArrowLeft':  event.preventDefault(); this.navigateCells(cells, -1); break;
+            case 'ArrowDown':  event.preventDefault(); this.navigateCells(cells, 5); break;
+            case 'ArrowUp':    event.preventDefault(); this.navigateCells(cells, -5); break;
+            default: break;
         }
     }
 
     navigateCells(cells, direction) {
-        // Initialize focus if not set
         if (this.focusedCellIndex === -1) {
             this.focusedCellIndex = 0;
         } else {
             this.focusedCellIndex += direction;
         }
+        if (this.focusedCellIndex < 0) this.focusedCellIndex = cells.length - 1;
+        else if (this.focusedCellIndex >= cells.length) this.focusedCellIndex = 0;
 
-        // Wrap around
-        if (this.focusedCellIndex < 0) {
-            this.focusedCellIndex = cells.length - 1;
-        } else if (this.focusedCellIndex >= cells.length) {
-            this.focusedCellIndex = 0;
-        }
-
-        // Focus the cell
         cells[this.focusedCellIndex].focus();
         cells[this.focusedCellIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    // ========== Helpers ==========
+
+    // Aurora .isms-risk-cell[data-level] maps:
+    //   level=2 -> low      (cell-2, success tint)
+    //   level=3 -> medium   (cell-3, warning tint)
+    //   level=4 -> high     (cell-4, warning strong)
+    //   level=5 -> critical (cell-5, danger tint)
+    levelFromBand(band) {
+        switch (band) {
+            case 'critical': return 5;
+            case 'high':     return 4;
+            case 'medium':   return 3;
+            default:         return 2; // low
+        }
+    }
+
+    // Map per-risk inherent level (numeric score 1..25) into a band slug.
+    levelToBand(level) {
+        const n = parseInt(level, 10) || 0;
+        return this.bandFromScore(n);
+    }
+
+    bandFromScore(score) {
+        if (score >= 20) return 'critical';
+        if (score >= 12) return 'high';
+        if (score >= 6)  return 'medium';
+        return 'low';
+    }
+
+    getBandLabel(band) {
+        const labels = this.localeValue === 'en'
+            ? { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' }
+            : { low: 'Niedrig', medium: 'Mittel', high: 'Hoch', critical: 'Kritisch' };
+        return labels[band] || band;
+    }
+
+    formatTooltip(key, params) {
+        const tplDe = {
+            cell:     `{count} Risiken — {band} ({prob}×{impact} = {score})`,
+            cell_one: `1 Risiko — {band} ({prob}×{impact} = {score})`,
+        };
+        const tplEn = {
+            cell:     `{count} risks — {band} ({prob}×{impact} = {score})`,
+            cell_one: `1 risk — {band} ({prob}×{impact} = {score})`,
+        };
+        const tpl = (this.localeValue === 'en' ? tplEn : tplDe)[key] || '';
+        return tpl
+            .replace('{count}', params.count)
+            .replace('{band}', params.band)
+            .replace('{prob}', params.prob)
+            .replace('{impact}', params.impact)
+            .replace('{score}', params.score);
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text == null ? '' : String(text);
+        return div.innerHTML;
+    }
+
+    escapeAttr(text) {
+        return this.escapeHtml(text).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
     }
 }

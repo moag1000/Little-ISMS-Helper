@@ -367,6 +367,24 @@ risk:
     title_inherent: 'Live matrix (Inherent)'
     title_residual: 'Live matrix (Residual)'
     score: 'Score'
+  heatmap:
+    legend:
+      low: Low
+      medium: Medium
+      high: High
+      critical: Critical
+    tooltip:
+      cell: '{count} risks — {band} ({prob}×{impact} = {score})'
+      cell_one: '1 risk — {band} ({prob}×{impact} = {score})'
+    drawer:
+      title: 'Risks in this cell'
+      eyebrow: 'Risk Heatmap'
+      empty: 'No risks in this cell'
+      close: 'Close'
+      open_risk: 'Open risk'
+    empty:
+      title: 'No risks recorded yet'
+      text: 'Once risks are captured with probability and impact values, they will appear here in the heatmap.'
   matrix:
     title: Title
     back_to_risks: Back To Risks
