@@ -21,6 +21,15 @@
 {% set automatic_fields = automatic_fields|default([]) %}
 {% set default_col_width = 12 %}
 {% set passed_translation_domain = translation_domain|default(null) %}
+{% set section_intro = section_intro|default(null) %}
+
+{# T6.3 — section-level intro alert (optional). Renders BEFORE the field grid. #}
+{% if section_intro is not null and section_intro is not empty %}
+    <div class="alert alert-info fa-section-intro mb-3" role="note">
+        <i class="fa-icon fa-icon--info" aria-hidden="true"></i>
+        {{ section_intro|raw }}
+    </div>
+{% endif %}
 
 {% set current_row_fields = [] %}
 {% set current_row_width  = 0 %}
