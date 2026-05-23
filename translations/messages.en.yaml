@@ -1854,6 +1854,10 @@ pwa:
 
 # Share Target API - Phase 8A
 share:
+    success:
+        note_saved: 'Note saved successfully.'
+    warning:
+        unknown_action: 'Unknown action.'
     title: 'Share Content'
     content_preview: 'Shared Content'
     select_action: 'What would you like to do?'
