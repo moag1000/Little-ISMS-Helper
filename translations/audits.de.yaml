@@ -287,6 +287,7 @@ audit_finding:
         finding_number: 'Eindeutige Nummer (optional — z.B. F-2026-001)'
         description: 'Ausführliche Beschreibung der Abweichung bzw. Beobachtung'
         type: 'Major-NC = schwerwiegende Abweichung; Minor-NC = geringfügige Abweichung; Observation = Hinweis; Opportunity = Verbesserungschance'
+        severity: 'Severity = Schadensauswirkung (Kritisch/Hoch/Mittel/Niedrig). Type = Befund-Klasse nach ISO 19011 (Major-NC vs. Minor-NC). Typische Kombinationen: Major-NC + Kritisch/Hoch, Minor-NC + Mittel/Niedrig, Observation/Opportunity = Mittel/Niedrig.'
         clause_reference: 'Norm-Referenz (z.B. ISO 27001 A.5.1, Kl. 9.3)'
         evidence: 'Belegmaterial (Interview, Dokument, Screenshot, …)'
         related_controls: 'Mehrere ISO-27001-Controls auswählbar. Findings betreffen oft mehr als ein Control (z.B. Logging-Befund trifft A.8.15 + A.8.16).'
@@ -393,7 +394,7 @@ corrective_action:
         responsible_person: '-- Kontaktperson auswählen --'
     help:
         description: 'Konkrete Maßnahme zur Behebung der Abweichung'
-        root_cause_analysis: 'Warum ist die Abweichung aufgetreten? (5-Why / Ishikawa / FMEA)'
+        root_cause_analysis: 'Warum ist die Abweichung aufgetreten? — Methodenwahl: <strong>5-Why</strong> für lineare Ursachenketten (Standard-CAPA, schnell). <strong>Ishikawa</strong> bei mehreren parallelen Ursachen-Domänen (Mensch/Maschine/Material/Methode/Mitwelt/Messung). <strong>FMEA</strong> bei sicherheitskritischen Prozessen mit Wahrscheinlichkeits-Bewertung (z. B. SIL/ASIL-Umfeld).'
         related_controls: 'Eine Maßnahme kann mehrere ISO-27001-Controls adressieren (z.B. A.8.15 + A.8.16). Mehrfachauswahl möglich.'
         effectiveness_review_date: 'ISO 27001 10.1 fordert Wirksamkeitsbewertung nach Umsetzung'
         effectiveness_notes: 'Ergebnis der Wirksamkeitsprüfung — warum wirksam/unwirksam'
@@ -408,6 +409,9 @@ corrective_action:
     section:
         description: 'Beschreibung & Ursachenanalyse'
         verification: 'Wirksamkeitsbewertung'
+        root_cause_intro: 'Root-Cause-Analyse nach ISO 27001 Kl. 10.1: WARUM ist die Abweichung entstanden? 5-Why-Methode (5× „Warum?" fragen), Ishikawa (Mensch/Maschine/Material/Methode/Mitwelt/Messung) oder FMEA. Reines „User-Fehler" ist KEINE Ursache — drill weiter.'
+        action_plan_intro: 'Maßnahmenplan nach ISO 27001 Kl. 10.1 b/c: WAS wird konkret unternommen (Korrektur + Vorbeugung), WER ist zuständig, BIS WANN? Vertretung nicht vergessen — der Plan muss auch im Urlaub funktionieren.'
+        verification_intro: 'Wirksamkeitsbewertung nach ISO 27001 Kl. 10.1 d: NACH Umsetzung prüfen, ob die Ursache wirklich beseitigt wurde. Belege (Re-Audit, Trend-KPI, Stichprobe) sind Pflicht — ohne Verifizierung ist die CAPA nicht abschließbar.'
     alert:
         overdue: '%count% überfällige Maßnahme(n).'
     message:

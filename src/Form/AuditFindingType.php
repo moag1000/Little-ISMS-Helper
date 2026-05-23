@@ -89,6 +89,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 ],
                 'choice_translation_domain' => 'audits',
                 'required' => true,
+                'help' => 'audit_finding.help.severity',
             ])
             // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
             // Owned by `audit_finding_lifecycle`. Transitions via

@@ -43,6 +43,12 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
                     'interested_party.party_type.customer' => 'customer',
                     'interested_party.party_type.shareholder' => 'shareholder',
                     'interested_party.party_type.employee' => 'employee',
+                    // T3.4 (UX-P2): German co-determination roles (BetrVG / DrittelbG /
+                    // MitbestG) — interested parties that don't fit the generic
+                    // 'employee' bucket and weren't picked up under 'other'.
+                    'interested_party.party_type.works_council' => 'works_council',
+                    'interested_party.party_type.supervisory_board' => 'supervisory_board',
+                    'interested_party.party_type.union' => 'union',
                     'interested_party.party_type.regulator' => 'regulator',
                     'interested_party.party_type.supplier' => 'supplier',
                     'interested_party.party_type.partner' => 'partner',

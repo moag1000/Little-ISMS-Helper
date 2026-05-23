@@ -77,6 +77,9 @@ interested_party:
         customer: Kunde
         shareholder: Anteilseigner
         employee: Mitarbeiter
+        works_council: Betriebsrat
+        supervisory_board: Aufsichtsrat
+        union: Gewerkschaft
         regulator: 'Regulatorische Institution'
         supplier: Lieferant
         partner: Partner

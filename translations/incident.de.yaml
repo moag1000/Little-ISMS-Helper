@@ -288,6 +288,7 @@ incident:
     data_breach_occurred: 'Wenn aktiviert, sollten Sie zusaetzlich eine Datenpanne unter Privacy/GDPR → Datenpannen erfassen. Dies loest KEINE automatische Erstellung aus — Sie muessen die Datenpanne separat melden.'
     resolution_after_investigation: Typischerweise erst nach Abschluss der Untersuchung
       ausfüllen
+    root_cause_vs_corrective: 'Root-Cause = WARUM ist es passiert (Ursachen-Analyse, technisch/organisatorisch). Corrective-Action = WAS unternehmen wir, damit es nicht wieder passiert. Beide Felder gehören zusammen, sind aber nicht austauschbar — bei externen Audits (ISO 27001 Kl. 10.1) werden beide getrennt geprüft.'
     reported_by_user: Meldende Person aus der Benutzerverwaltung. Leer lassen wenn
       extern gemeldet.
     reported_by_person: 'Person ohne System-Login als Melder wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
