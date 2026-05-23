@@ -213,7 +213,9 @@ supplier:
         name: Name
         lei: LEI
         country: Country
+        country_placeholder: 'DE'
         service: Service
+        service_placeholder: 'Cloud hosting'
         criticality: Criticality
         critical: 'Critical (DORA Art. 28)'
         critical_help: 'Flag as DORA Art. 28 critical — subcontractor with material function.'

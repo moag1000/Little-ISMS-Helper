@@ -1191,6 +1191,7 @@ form:
         organization: 'Organisation'
         outputs: 'Ergebnisse'
         ownership: 'Verantwortung'
+        linkage: 'Verknüpfungen'
         protection_requirements: 'Schutzbedarf'
         purposes: 'Zwecke'
         recipients: 'Empfänger'

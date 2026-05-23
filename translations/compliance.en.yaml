@@ -1,4 +1,8 @@
 compliance:
+    auto_mapping:
+        success: 'Successfully created %count% new mappings between %framework1% and %framework2%!'
+        skipped_suffix: '(%count% already existed, skipped)'
+        error: 'Error creating mappings: %reason%'
     heatmap:
         title: 'Compliance Heatmap'
         caption: 'Framework × control-cluster fulfillment heatmap'
@@ -773,6 +777,8 @@ compliance:
         tooltip:
             review_requirements: 'Review each requirement and mark whether it applies to your organization. Non-applicable requirements won''t count towards your compliance score.'
             implement_requirements: 'Link requirements to existing controls or create new controls to implement them. This shows how you''re fulfilling each requirement.'
+        framework_loaded: 'Framework Loaded'
+        loaded_count: '%count% requirements loaded'
         review_applicable: 'Review & Mark Applicable'
         reviewed_count: '%reviewed% of %total% reviewed'
         action:

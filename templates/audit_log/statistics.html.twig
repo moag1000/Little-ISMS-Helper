@@ -1,9 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block admin_title %}Audit Log Statistiken{% endblock %}
+{% block admin_title %}{{ 'audit_log.page.statistics_title'|trans({}, 'audit_log') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">Statistische Auswertung der Protokolleinträge</p>
+    <p class="text-muted">{{ 'audit_log.page.statistics_subtitle'|trans({}, 'audit_log') }}</p>
 {% endblock %}
 
 {% block admin_content %}

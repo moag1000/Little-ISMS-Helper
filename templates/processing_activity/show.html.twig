@@ -61,7 +61,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">Completeness</div>
+                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.kpi.completeness'|trans({}, 'privacy') }}</div>
                         {% set completeness = compliance_report.completeness_percentage %}
                         <div class="fs-2 fw-bold mb-0 {{ completeness == 100 ? 'text-success' : 'text-warning' }}">{{ completeness }}%</div>
                     </div>
@@ -72,7 +72,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">Status</div>
+                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.kpi.status'|trans({}, 'privacy') }}</div>
                         <div class="fs-4 fw-bold mb-0"><span class="{{ badge_status(processing_activity.status) }}">{{ processing_activity.status|upper }}</span></div>
                     </div>
                 {% endblock %}
@@ -82,7 +82,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">Risk Level</div>
+                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.kpi.risk_level'|trans({}, 'privacy') }}</div>
                         {% if processing_activity.riskLevel %}
                             <div class="fs-4 fw-bold mb-0"><span class="{{ badge_risk(processing_activity.riskLevel) }}">{{ processing_activity.riskLevel|upper }}</span></div>
                         {% else %}
@@ -96,17 +96,17 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
                     <div class="text-center">
-                        <div class="text-muted mb-2 fw-semibold">DPIA Status</div>
+                        <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.kpi.dpia_status'|trans({}, 'privacy') }}</div>
                         {% if processing_activity.requiresDPIA %}
                             {% if processing_activity.dpiaCompleted %}
                                 <div class="fs-4 fw-bold mb-0 text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
                                 <small class="text-muted">{{ processing_activity.dpiaDate|date('Y-m-d') }}</small>
                             {% else %}
                                 <div class="fs-4 fw-bold mb-0 text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></div>
-                                <small class="text-danger">Required</small>
+                                <small class="text-danger">{{ 'processing_activity.kpi.required'|trans({}, 'privacy') }}</small>
                             {% endif %}
                         {% else %}
-                            <div class="fs-4 fw-semibold mb-0 text-muted">Not Required</div>
+                            <div class="fs-4 fw-semibold mb-0 text-muted">{{ 'processing_activity.kpi.not_required'|trans({}, 'privacy') }}</div>
                         {% endif %}
                     </div>
                 {% endblock %}
