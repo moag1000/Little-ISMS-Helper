@@ -1,0 +1,21 @@
+parameters:
+    # Argon2 cost overrides for the test environment ONLY.
+    # Backup-code hashing in MfaService uses ~125 ms per hash with PHP's compile-time
+    # Argon2 defaults (memory_cost=65536 KiB, time_cost=4, threads=1). Each generated
+    # TOTP secret hashes 10 backup codes -> ~1.25 s per call. MfaServiceTest exercises
+    # ~20 such generations -> ~25 s wall-clock for a single test class.
+    #
+    # These minimum-cost values reduce hashing to ~0.5 ms per hash while preserving
+    # the algorithm choice (PASSWORD_ARGON2ID) so the test still verifies the
+    # production code-path. NEVER use these values in production environments.
+    app.mfa.password_hash_options.test:
+        memory_cost: 1024  # 1 MiB (PHP minimum is 8 KiB; 1 MiB still fits Argon2 sanity)
+        time_cost:   1     # PHP minimum is 1 iteration
+        threads:     1     # PHP minimum is 1 thread
+
+services:
+    # Override the MfaService binding so the test environment uses cheap Argon2 options.
+    # Production keeps PHP defaults (array() means: use Argon2id compile-time defaults).
+    App\Service\MfaService:
+        arguments:
+            $passwordHashOptions: '%app.mfa.password_hash_options.test%'
