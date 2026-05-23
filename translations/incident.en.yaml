@@ -266,6 +266,9 @@ incident:
     affected_assets: Select assets affected by the incident (type to search,
       multi-select supported)
     nis2_category: Category according to NIS2 Directive Article 23
+    nis2_category_kritis_hint: 'Category according to NIS2 Directive Article 23. Note:
+      Flag your tenant as a KRITIS operator (BSI-Kritis-V) in the compliance settings
+      so sector-specific NIS2 mandatory-field detection works fully.'
     early_warning_24h: Early warning must be submitted within 24 hours of detection
       (NIS2 Art. 23)
     detailed_notification_72h: Detailed notification within 72 hours (NIS2 Art. 23)

@@ -13,6 +13,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\InternalAuditStatus;
 use App\Repository\TenantRepository;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -29,8 +30,36 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class InternalAuditType extends AbstractType
 {
+    public function __construct(
+        private readonly TenantContext $tenantContext,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Junior-ISB-Audit-2026-05-22 Schicht-5: Module-Gate-Polish
+        // Gate corporate-scope choices behind tenant's corporate-structure
+        // membership. There is no dedicated "konzern" feature module — the
+        // holding hierarchy is intrinsic to Tenant.parent / Tenant.subsidiaries.
+        // ISO 19011 Cl. 5.5.2: audit scope must reflect actual organisational
+        // reach; offering "corporate_wide" on a standalone tenant is misleading.
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $isCorporate = $tenant !== null && $tenant->isPartOfCorporateStructure();
+
+        $scopeTypeChoices = [
+            'audit.scope_type.full_isms' => 'full_isms',
+            'audit.scope_type.compliance_framework' => 'compliance_framework',
+            'audit.scope_type.asset' => 'asset',
+            'audit.scope_type.asset_type' => 'asset_type',
+            'audit.scope_type.asset_group' => 'asset_group',
+            'audit.scope_type.location' => 'location',
+            'audit.scope_type.department' => 'department',
+        ];
+        if ($isCorporate) {
+            $scopeTypeChoices['audit.scope_type.corporate_wide'] = 'corporate_wide';
+            $scopeTypeChoices['audit.scope_type.corporate_subsidiaries'] = 'corporate_subsidiaries';
+        }
+
         $builder
             ->add('title', TextType::class, [
                 'label' => 'audit.field.title',
@@ -50,17 +79,7 @@ final class InternalAuditType extends AbstractType
             ])
             ->add('scopeType', ChoiceType::class, [
                 'label' => 'audit.field.scope_type',
-                'choices' => [
-                    'audit.scope_type.full_isms' => 'full_isms',
-                    'audit.scope_type.compliance_framework' => 'compliance_framework',
-                    'audit.scope_type.asset' => 'asset',
-                    'audit.scope_type.asset_type' => 'asset_type',
-                    'audit.scope_type.asset_group' => 'asset_group',
-                    'audit.scope_type.location' => 'location',
-                    'audit.scope_type.department' => 'department',
-                    'audit.scope_type.corporate_wide' => 'corporate_wide',
-                    'audit.scope_type.corporate_subsidiaries' => 'corporate_subsidiaries',
-                ],
+                'choices' => $scopeTypeChoices,
                 'attr' => [
                     'data-corporate-scope' => '1',
                     // C5-04 — Trigger id for the dependent `scopedAssets` field
