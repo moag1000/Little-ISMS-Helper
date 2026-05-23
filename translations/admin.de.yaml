@@ -7,6 +7,14 @@ admin:
     module:
         error:
             invalid_csrf: 'Ungültiges CSRF-Token.'
+    backup:
+        success:
+            uploaded: 'Backup-Datei erfolgreich hochgeladen: %filename%'
+        error:
+            no_file_uploaded: 'Keine Datei hochgeladen.'
+            invalid_file_format: 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.'
+            upload_failed: 'Fehler beim Hochladen der Datei: %message%'
+            no_import_data: 'Keine Importdaten gefunden.'
     sso_provider:
         success:
             deleted: 'SSO-Provider wurde gelöscht.'
