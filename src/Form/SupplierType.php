@@ -344,12 +344,26 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'help' => 'supplier.help.lei_code',
                 'required' => false,
                 'attr' => ['maxlength' => 20, 'placeholder' => 'supplier.placeholder.lei_code'],
+                // T10.10 — LEI: ISO 17442 — 20 chars, [A-Z0-9]{18}[0-9]{2} checksum.
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Regex(
+                        pattern: '/^[A-Z0-9]{18}[0-9]{2}$/',
+                        message: 'supplier.validation.lei_code.format',
+                    ),
+                ],
             ])
             ->add('naceCode', TextType::class, [
                 'label' => 'supplier.field.nace_code',
                 'help' => 'supplier.help.nace_code',
                 'required' => false,
                 'attr' => ['maxlength' => 10, 'placeholder' => 'supplier.placeholder.nace_code'],
+                // T10.10 — NACE Rev.2: 1-2 digits section, optional . + 1-2 digits subclass.
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Regex(
+                        pattern: '/^[0-9]{2}(\.[0-9]{1,2})?$/',
+                        message: 'supplier.validation.nace_code.format',
+                    ),
+                ],
             ])
             ->add('countryOfHeadOffice', TextType::class, [
                 'label' => 'supplier.field.country_of_head_office',

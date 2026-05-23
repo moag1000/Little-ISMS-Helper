@@ -99,6 +99,7 @@ training:
     program_type: '-- Select programme type --'
     recurrence_months: 'e.g. 12 for annually'
   help:
+    status_readonly: 'Status is driven by the lifecycle workflow (planned → scheduled → in_progress → completed/cancelled). Direct edit disabled; use the status actions on the show page.'
     duration: Duration in minutes (15-480)
     participants: Participant names (one per line or comma-separated)
     participants_legacy: 'Legacy free-text list — for migration only. Prefer the "Participants (Users)" multi-select.'

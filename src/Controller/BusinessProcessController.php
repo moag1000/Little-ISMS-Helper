@@ -147,6 +147,11 @@ class BusinessProcessController extends AbstractController
         if ($user instanceof UserInterface && $user->getTenant()) {
             $businessProcess->setTenant($user->getTenant());
         }
+        // UX-P1 T4.11 — pre-fill owner with the current user so the typical
+        // single-tenant single-admin flow doesn't force a re-pick.
+        if ($user instanceof \App\Entity\User && $businessProcess->getProcessOwnerUser() === null) {
+            $businessProcess->setProcessOwnerUser($user);
+        }
 
         $form = $this->createForm(BusinessProcessType::class, $businessProcess);
         $form->handleRequest($request);
