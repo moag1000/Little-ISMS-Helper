@@ -254,6 +254,12 @@ class InternalAudit
     #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
     private int $lockVersion = 0;
 
+    /**
+     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: Doppelpflege-Deprecation —
+     * use AuditFinding entity (structuredFindings collection) instead.
+     * Legacy data preserved for read-only display. Closes data-reuse violation
+     * per ISO 27001 Cl. 9.2 — structured audit-findings with traceability to CAPAs.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
     private ?string $findings = null;
@@ -266,10 +272,22 @@ class InternalAudit
     #[Groups(['audit:read', 'audit:write'])]
     private ?string $observations = null;
 
+    /**
+     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: Doppelpflege-Deprecation —
+     * use AuditFinding entity (structuredFindings collection) instead.
+     * Legacy data preserved for read-only display. Closes data-reuse violation
+     * per ISO 27001 Cl. 9.2 — structured audit-findings with traceability to CAPAs.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
     private ?string $recommendations = null;
 
+    /**
+     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: Doppelpflege-Deprecation —
+     * use AuditFinding entity (structuredFindings collection) instead.
+     * Legacy data preserved for read-only display. Closes data-reuse violation
+     * per ISO 27001 Cl. 9.2 — structured audit-findings with traceability to CAPAs.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
     private ?string $conclusion = null;
@@ -681,11 +699,19 @@ public function __construct()
         return $this->lockVersion;
     }
 
+    /**
+     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity
+     * via getStructuredFindings(). Kept for legacy read-only display.
+     */
     public function getFindings(): ?string
     {
         return $this->findings;
     }
 
+    /**
+     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity
+     * via addStructuredFinding(). Kept for legacy backfill paths only.
+     */
     public function setFindings(?string $findings): static
     {
         $this->findings = $findings;
@@ -714,22 +740,38 @@ public function __construct()
         return $this;
     }
 
+    /**
+     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity
+     * (recommendations attached per-finding). Kept for legacy read-only display.
+     */
     public function getRecommendations(): ?string
     {
         return $this->recommendations;
     }
 
+    /**
+     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity.
+     * Kept for legacy backfill paths only.
+     */
     public function setRecommendations(?string $recommendations): static
     {
         $this->recommendations = $recommendations;
         return $this;
     }
 
+    /**
+     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: conclusion now derived
+     * from AuditFinding rollup. Kept for legacy read-only display.
+     */
     public function getConclusion(): ?string
     {
         return $this->conclusion;
     }
 
+    /**
+     * @deprecated since v3.6 — Junior-ISB-Audit-2026-05-22 C2-04: use AuditFinding entity.
+     * Kept for legacy backfill paths only.
+     */
     public function setConclusion(?string $conclusion): static
     {
         $this->conclusion = $conclusion;

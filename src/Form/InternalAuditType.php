@@ -190,27 +190,38 @@ final class InternalAuditType extends AbstractType
                 ],
                 'help' => 'audit.help.audited_subsidiaries',
             ])
+            // Junior-ISB-Audit-2026-05-22 C2-04: Doppelpflege-Deprecation —
+            // findings/recommendations/conclusion freetext fields are disabled.
+            // Use AuditFinding entity (structuredFindings collection) instead.
+            // Closes data-reuse violation per ISO 27001 Cl. 9.2 — structured
+            // audit-findings with traceability to CAPAs.
             ->add('findings', TextareaType::class, [
                 'label' => 'audit.field.findings',
                 'required' => false,
+                'disabled' => true,
                 'attr' => [
                     'rows' => 6,
+                    'readonly' => 'readonly',
                 ],
                 'help' => 'audit.help.findings',
             ])
             ->add('recommendations', TextareaType::class, [
                 'label' => 'audit.field.recommendations',
                 'required' => false,
+                'disabled' => true,
                 'attr' => [
                     'rows' => 4,
+                    'readonly' => 'readonly',
                 ],
                 'help' => 'audit.help.recommendations',
             ])
             ->add('conclusion', TextareaType::class, [
                 'label' => 'audit.field.conclusion',
                 'required' => false,
+                'disabled' => true,
                 'attr' => [
                     'rows' => 4,
+                    'readonly' => 'readonly',
                 ],
                 'help' => 'audit.help.conclusion',
             ]);
