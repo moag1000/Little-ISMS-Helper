@@ -30,6 +30,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: RiskRepository::class)]
 #[ORM\Index(name: 'idx_risk_status', columns: ['status'])]
@@ -236,12 +237,19 @@ class Risk
      * Risk Owner (ISO 27001:2022 - A.5.1 Policies for information security)
      * Person responsible for managing this risk
      * Phase 6F-B: Changed from string to User entity reference
+     *
+     * Junior-ISB-Audit-2026-05-22 K-05: NotNull replaced by entity-level
+     * Callback validateOwnerEitherOr — either riskOwner (User) OR
+     * riskOwnerPerson (Person from master data) is required. The DB column
+     * was already nullable (Version20251113140643 created it as DEFAULT NULL),
+     * so no migration is needed; this purely relaxes the Symfony-side
+     * assertion so the existing dual-state form-callback can do its work.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'risk_owner_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
-    // Either-or slot: validateRiskOwnerSlot() (RiskType callback) enforces
+    // Either-or slot: validateOwnerEitherOr() (Entity callback) enforces
     // "at least one of riskOwner / riskOwnerPerson". A blanket NotNull would
     // block the Person path, which is the canonical PoC flow for orgs that
     // run master-data Persons without User accounts.
@@ -1275,6 +1283,50 @@ class Risk
             null,
             $this->riskOwnerDeputyPersons,
         );
+    }
+
+    // -------------------------------------------------------------------------
+    // Entity-level validators (Junior-ISB-Audit-2026-05-22)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 K-05: Owner Either-Or — at least one of
+     * riskOwner (User from system login) or riskOwnerPerson (Person from
+     * master data) must be set. Replaces the bare Assert\NotNull on the
+     * riskOwner field which blocked all Person-only assignments even though
+     * the FormType already exposes both slots.
+     */
+    #[Assert\Callback]
+    public function validateOwnerEitherOr(ExecutionContextInterface $context): void
+    {
+        if ($this->riskOwner === null && $this->riskOwnerPerson === null) {
+            $context->buildViolation('risk.validation.risk_owner_required')
+                ->atPath('riskOwner')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 M-02: Subject required — ISO 27001
+     * Cl. 6.1.2 c demands every risk reference at least one of
+     * asset / person / location / supplier. A risk "in general" without a
+     * subject is a textbook Major-NC at external audit. The FormType
+     * already enforces this on submit; this entity-level Callback closes
+     * the same hole for the API Platform write-paths (POST/PUT) and any
+     * future Service-layer writers that bypass the form.
+     */
+    #[Assert\Callback]
+    public function validateSubjectBound(ExecutionContextInterface $context): void
+    {
+        if ($this->asset === null
+            && $this->person === null
+            && $this->location === null
+            && $this->supplier === null
+        ) {
+            $context->buildViolation('risk.validator.subject_required')
+                ->atPath('asset')
+                ->addViolation();
+        }
     }
 
     // -------------------------------------------------------------------------

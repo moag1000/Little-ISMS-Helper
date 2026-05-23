@@ -184,6 +184,7 @@ report.doc.audience	1
 report.doc.chart.type	1
 risk.acceptance.approval_levels	1
 risk.index.treatment	1
+risk.level
 risk.link_incident.link_type	2
 risk.matrix.impact_label	1
 risk.matrix.likelihood	1

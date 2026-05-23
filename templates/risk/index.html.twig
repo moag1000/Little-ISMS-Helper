@@ -131,28 +131,29 @@
                 <div class="col-md-3">
                     <div class="risk-level-card risk-critical">
                         <div class="risk-level-icon"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i></div>
-                        <div class="risk-level-label">{{ 'risk.index.risk_level.critical'|trans({}, 'risk') }} ({{ risk_threshold('critical') }})</div>
+                        {# Junior-ISB-Audit-2026-05-22 M-03: Risk-Schwellen single-source-of-truth via RiskMatrixThresholds #}
+                        <div class="risk-level-label">{{ risk_level_label('critical') }} ({{ risk_threshold('critical') }})</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 20)|length }}</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="risk-level-card risk-high">
                         <div class="risk-level-icon">🟠</div>
-                        <div class="risk-level-label">{{ 'risk.index.risk_level.high'|trans({}, 'risk') }} ({{ risk_threshold('high') }})</div>
+                        <div class="risk-level-label">{{ risk_level_label('high') }} ({{ risk_threshold('high') }})</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 12 and r.getRiskScore() < 20)|length }}</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="risk-level-card risk-medium">
                         <div class="risk-level-icon">🟡</div>
-                        <div class="risk-level-label">{{ 'risk.index.risk_level.medium'|trans({}, 'risk') }} ({{ risk_threshold('medium') }})</div>
+                        <div class="risk-level-label">{{ risk_level_label('medium') }} ({{ risk_threshold('medium') }})</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 6 and r.getRiskScore() < 12)|length }}</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="risk-level-card risk-low">
                         <div class="risk-level-icon">🟢</div>
-                        <div class="risk-level-label">{{ 'risk.index.risk_level.low'|trans({}, 'risk') }} ({{ risk_threshold('low') }})</div>
+                        <div class="risk-level-label">{{ risk_level_label('low') }} ({{ risk_threshold('low') }})</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() < 6)|length }}</div>
                     </div>
                 </div>
@@ -202,12 +203,13 @@
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 {% set _activeLevel = app.request.query.get('level') %}
 {% set _baseUrl = path('app_risk_index') %}
+{# Junior-ISB-Audit-2026-05-22 M-03: chip-row labels now flow through risk_level_label() (SSoT) #}
 {{ _fa_filter_chip.group([
     { label: 'risk.filter.all_risks'|trans({}, 'risk'),     href: _baseUrl },
-    { label: ('risk.filter.level_critical'|trans({}, 'risk')) ~ ' (' ~ risk_threshold('critical') ~ ')', href: _baseUrl ~ '?level=critical' },
-    { label: ('risk.filter.level_high'|trans({}, 'risk')) ~ ' (' ~ risk_threshold('high') ~ ')',         href: _baseUrl ~ '?level=high' },
-    { label: ('risk.filter.level_medium'|trans({}, 'risk')) ~ ' (' ~ risk_threshold('medium') ~ ')',     href: _baseUrl ~ '?level=medium' },
-    { label: ('risk.filter.level_low'|trans({}, 'risk')) ~ ' (' ~ risk_threshold('low') ~ ')',           href: _baseUrl ~ '?level=low' }
+    { label: risk_level_label('critical') ~ ' (' ~ risk_threshold('critical') ~ ')', href: _baseUrl ~ '?level=critical' },
+    { label: risk_level_label('high')     ~ ' (' ~ risk_threshold('high')     ~ ')', href: _baseUrl ~ '?level=high' },
+    { label: risk_level_label('medium')   ~ ' (' ~ risk_threshold('medium')   ~ ')', href: _baseUrl ~ '?level=medium' },
+    { label: risk_level_label('low')      ~ ' (' ~ risk_threshold('low')      ~ ')', href: _baseUrl ~ '?level=low' }
 ],
     _activeLevel == 'critical' ? 1
     : (_activeLevel == 'high' ? 2
@@ -231,10 +233,11 @@
             <label for="filter-level" class="form-label">{{ 'risk.filter.level_label'|trans({}, 'risk') }}</label>
             <select class="form-select fa-cyber-input__field" id="filter-level" name="level">
                 <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
-                <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>{{ 'risk.filter.level_critical'|trans({}, 'risk') }} ({{ risk_threshold('critical') }})</option>
-                <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>{{ 'risk.filter.level_high'|trans({}, 'risk') }} ({{ risk_threshold('high') }})</option>
-                <option value="medium" {{ app.request.query.get('level') == 'medium' ? 'selected' : '' }}>{{ 'risk.filter.level_medium'|trans({}, 'risk') }} ({{ risk_threshold('medium') }})</option>
-                <option value="low" {{ app.request.query.get('level') == 'low' ? 'selected' : '' }}>{{ 'risk.filter.level_low'|trans({}, 'risk') }} ({{ risk_threshold('low') }})</option>
+                {# Junior-ISB-Audit-2026-05-22 M-03: select-options pull labels from risk_level_label() (SSoT) #}
+                <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>{{ risk_level_label('critical') }} ({{ risk_threshold('critical') }})</option>
+                <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>{{ risk_level_label('high') }} ({{ risk_threshold('high') }})</option>
+                <option value="medium" {{ app.request.query.get('level') == 'medium' ? 'selected' : '' }}>{{ risk_level_label('medium') }} ({{ risk_threshold('medium') }})</option>
+                <option value="low" {{ app.request.query.get('level') == 'low' ? 'selected' : '' }}>{{ risk_level_label('low') }} ({{ risk_threshold('low') }})</option>
             </select>
         </div>
         <div class="col-md-3">
