@@ -73,6 +73,8 @@ training:
     covered_controls: Covered ISO 27001 Controls
     compliance_requirements: Compliance Requirements
     materials: Training Materials and Documents
+    materials_legacy: 'Materials (Free Text, Migration)'
+    material_files: 'Training Materials (File Upload)'
     feedback: Participant Feedback and Evaluations
     attendee_count: Attendee Count
     completion_date: Completion Date
@@ -108,6 +110,8 @@ training:
     compliance_requirements: Which compliance requirements are fulfilled by this training?
       (e.g. DORA, TISAX, NIS2)
     materials: Links or descriptions of training materials
+    materials_legacy: 'Legacy free-text field — kept read-only for migration data. Upload new materials via the file picker below.'
+    material_files: 'Upload files (PDF, Office docs, images, archives — max. 10 MB per file). Multi-select supported.'
     feedback: Feedback from participants or trainer notes
     trainer_user: Trainer from user management. Use legacy field for external trainers.
     trainer_person: 'Person without system login as trainer. Order: User > Person > legacy text.'
@@ -165,3 +169,4 @@ training:
   completed_on: Completed on
   error:
     owner_required_user_or_person: 'Trainer: User or master-data Person required (free-text alone is not sufficient).'
+    material_upload_failed: 'File "%file%" could not be uploaded: %reason%'

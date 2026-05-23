@@ -16,12 +16,15 @@ use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -35,10 +38,15 @@ final class TrainingType extends AbstractType implements SectionMapInterface
         return [
             'overview'     => ['title', 'description', 'trainingType', 'deliveryMethod'],
             'schedule'     => ['scheduledDate', 'durationMinutes', 'completionDate', 'recurrenceMonths'],
-            'audience'     => ['targetAudience', 'participantUsers', 'participants', 'attendeeCount'],
+            // Junior-ISB-Audit-2026-05-22 9.7: attendeeCount no longer in form
+            // (derived from participantUsers / TrainingParticipation Collection).
+            'audience'     => ['targetAudience', 'participantUsers', 'participants'],
             'team'         => ['trainerUser', 'trainerPerson', 'trainerDeputyPersons', 'trainer'],
             'verification' => ['status', 'mandatory', 'coveredControls', 'complianceRequirements'],
-            'resources'    => ['materials', 'feedback'],
+            // Junior-ISB-Audit-2026-05-22 9.5: materialFiles (File-Upload) replaces
+            // the verbose Freitext `materials` textarea on the canonical data path.
+            // Legacy `materials` field is kept read-only for migration display.
+            'resources'    => ['materialFiles', 'materials', 'feedback'],
         ];
     }
 
@@ -145,13 +153,11 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'training.help.participants_legacy',
             ])
-            ->add('attendeeCount', IntegerType::class, [
-                'label' => 'training.field.attendee_count',
-                'required' => false,
-                'attr' => [
-                    'min' => 0,
-                ],
-            ])
+            // Junior-ISB-Audit-2026-05-22 9.7: attendeeCount derived from participants Collection.
+            // The integer form field has been removed — the count is now computed
+            // from {@see Training::getParticipations()} (count of TrainingParticipation
+            // rows). The legacy stored column survives in the entity for backfill
+            // backwards compatibility but is no longer user-editable.
             // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
             // Owned by `training_lifecycle`. Transitions via
             // LifecycleService::transition() only.
@@ -205,13 +211,63 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'training.help.compliance_requirements',
             ])
-            ->add('materials', TextareaType::class, [
-                'label' => 'training.field.materials',
+            // Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+            // Multi-file upload widget. Files are validated via
+            // FileUploadSecurityService inside the controller, moved to
+            // public/uploads/training-materials/ and tracked as JSON metadata
+            // in Training.materialFiles. The 'mapped' => false flag keeps the
+            // form clean of Doctrine concerns — the controller is responsible
+            // for invoking ->addMaterialFile() after a successful upload.
+            ->add('materialFiles', FileType::class, [
+                'label' => 'training.field.material_files',
                 'required' => false,
+                'mapped' => false,
+                'multiple' => true,
+                'help' => 'training.help.material_files',
+                'attr' => [
+                    'accept' => '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jpg,.jpeg,.png,.gif,.webp,.zip,.7z',
+                    'multiple' => 'multiple',
+                ],
+                'constraints' => [
+                    new All(constraints: [
+                        new File(
+                            maxSize: '10M',
+                            mimeTypes: [
+                                'application/pdf',
+                                'application/msword',
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                'application/vnd.ms-excel',
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                'application/vnd.ms-powerpoint',
+                                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                                'text/plain',
+                                'text/csv',
+                                'image/jpeg',
+                                'image/png',
+                                'image/gif',
+                                'image/webp',
+                                'application/zip',
+                                'application/x-zip-compressed',
+                                'application/x-7z-compressed',
+                            ],
+                            mimeTypesMessage: 'file_upload.validation.mime_type_invalid',
+                            maxSizeMessage: 'file_upload.validation.max_size_exceeded',
+                        ),
+                    ]),
+                ],
+            ])
+            // Junior-ISB-Audit-2026-05-22 9.5: legacy free-text retained as
+            // read-only migration display. New content MUST land in
+            // `materialFiles` above.
+            ->add('materials', TextareaType::class, [
+                'label' => 'training.field.materials_legacy',
+                'required' => false,
+                'disabled' => true,
                 'attr' => [
                     'rows' => 3,
+                    'readonly' => true,
                 ],
-                'help' => 'training.help.materials',
+                'help' => 'training.help.materials_legacy',
             ])
             ->add('feedback', TextareaType::class, [
                 'label' => 'training.field.feedback',

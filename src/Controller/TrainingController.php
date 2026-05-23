@@ -15,11 +15,14 @@ use App\Repository\TrainingParticipationRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Service\FileUploadSecurityService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,6 +44,9 @@ class TrainingController extends AbstractController
         private readonly ?TrainingParticipationRepository $participationRepository = null,
         private readonly ?UserRepository $userRepository = null,
         private readonly ?AuditLogger $auditLogger = null,
+        // Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+        private readonly ?FileUploadSecurityService $fileUploadSecurityService = null,
+        private readonly ?string $projectDir = null,
     ) {}
     #[Route('/training', name: 'app_training_index', methods: ['GET'])]
     public function index(Request $request): Response
@@ -100,6 +106,9 @@ class TrainingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Junior-ISB-Audit-2026-05-22 9.5: persist uploaded material files.
+            $this->processMaterialFileUploads($training, $form->get('materialFiles')->getData());
+
             $this->entityManager->persist($training);
             $this->entityManager->flush();
 
@@ -200,6 +209,9 @@ class TrainingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Junior-ISB-Audit-2026-05-22 9.5: persist uploaded material files.
+            $this->processMaterialFileUploads($training, $form->get('materialFiles')->getData());
+
             $this->entityManager->flush();
 
             // P-15 DataReuse: sync participantUsers → TrainingParticipation rows.
@@ -213,6 +225,59 @@ class TrainingController extends AbstractController
             'training' => $training,
             'form' => $form,
         ]);
+    }
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+     *
+     * Validate every uploaded file via {@see FileUploadSecurityService}
+     * (MIME / magic-byte / extension / size whitelist), move to
+     * `public/uploads/training-materials/` and append the resulting
+     * metadata entry to {@see Training::$materialFiles}. Invalid files
+     * are silently skipped with a flash-error to avoid aborting the
+     * whole save — the existing entity changes still persist.
+     *
+     * @param iterable<int, UploadedFile|null>|UploadedFile|null $uploaded
+     */
+    private function processMaterialFileUploads(Training $training, mixed $uploaded): void
+    {
+        if ($uploaded === null) {
+            return;
+        }
+        if ($this->fileUploadSecurityService === null || $this->projectDir === null) {
+            return; // Defensive: services not wired (unit-test scenario).
+        }
+        $files = is_iterable($uploaded) ? $uploaded : [$uploaded];
+        $uploadDir = rtrim($this->projectDir, '/') . '/public/uploads/training-materials';
+        foreach ($files as $uploadedFile) {
+            if (!$uploadedFile instanceof UploadedFile) {
+                continue;
+            }
+            try {
+                $this->fileUploadSecurityService->validateUploadedFile($uploadedFile);
+                $safeFilename = $this->fileUploadSecurityService->generateSafeFilename($uploadedFile);
+                $originalName = $uploadedFile->getClientOriginalName();
+                $mimeType = $uploadedFile->getMimeType() ?? 'application/octet-stream';
+                $fileSize = (int) $uploadedFile->getSize();
+                $uploadedFile->move($uploadDir, $safeFilename);
+
+                $training->addMaterialFile([
+                    'filename'     => $safeFilename,
+                    'originalName' => $originalName,
+                    'mimeType'     => $mimeType,
+                    'size'         => $fileSize,
+                    'uploadedAt'   => (new DateTimeImmutable())->format(DATE_ATOM),
+                ]);
+            } catch (FileException $e) {
+                $this->addFlash(
+                    'error',
+                    $this->translator->trans('training.error.material_upload_failed', [
+                        '%file%' => $uploadedFile->getClientOriginalName(),
+                        '%reason%' => $e->getMessage(),
+                    ])
+                );
+            }
+        }
     }
 
     /**
