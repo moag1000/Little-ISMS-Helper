@@ -84,7 +84,7 @@ class Supplier
     private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'suppliers.validation.name.required')]
+    #[Assert\NotBlank(message: 'supplier.validation.name_required')]
     #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $name = null;
 
@@ -97,7 +97,7 @@ class Supplier
     private ?string $contactPerson = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Email(message: 'suppliers.validation.email.invalid')]
+    #[Assert\Email(message: 'supplier.validation.email_invalid')]
     #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $email = null;
 
@@ -113,7 +113,7 @@ class Supplier
      * Service provided by supplier
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'suppliers.validation.service_provided.required')]
+    #[Assert\NotBlank(message: 'supplier.validation.service_description_required')]
     #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $serviceProvided = null;
 
@@ -874,19 +874,19 @@ class Supplier
 
     /** Aggregierter LkSG-Risiko-Score 0-100 (höher = mehr Risiko). */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Assert\Range(min: 0, max: 100, notInRangeMessage: 'LkSG human rights risk score must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(min: 0, max: 100, notInRangeMessage: 'supplier.validation.lksg_human_rights_risk_score_range')]
     private ?int $lksgHumanRightsRiskScore = null;
 
     /** Umweltbezogener Risiko-Score 0-100. */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Assert\Range(min: 0, max: 100, notInRangeMessage: 'LkSG environmental risk score must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(min: 0, max: 100, notInRangeMessage: 'supplier.validation.lksg_environmental_risk_score_range')]
     private ?int $lksgEnvironmentalRiskScore = null;
 
     /** Klassifikation der LkSG-Gesamtrisikolage. */
     #[ORM\Column(length: 20, nullable: true)]
     #[Assert\Choice(
         choices: [null, 'low', 'medium', 'high', 'critical'],
-        message: 'suppliers.validation.lksg_risk_category.choice',
+        message: 'supplier.validation.lksg_risk_category_invalid',
     )]
     private ?string $lksgRiskCategory = null;
 

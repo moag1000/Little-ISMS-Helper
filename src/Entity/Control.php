@@ -82,34 +82,34 @@ class Control
 
     #[ORM\Column(length: 20)]
     #[Groups(['control:read', 'control:write', 'risk:read'])]
-    #[Assert\NotBlank(message: 'control.validation.control_id.required')]
-    #[Assert\Length(max: 20, maxMessage: 'control.validation.control_id.max_length')]
+    #[Assert\NotBlank(message: 'control.validation.control_id_required')]
+    #[Assert\Length(max: 20, maxMessage: 'control.validation.control_id_max_length')]
     #[Assert\Regex(
         pattern: '/^[A-Z]{0,3}\.?\d+\.\d+(\.\d+){0,2}$/',
-        message: 'control.validation.control_id.format'
+        message: 'control.validation.control_id_format'
     )]
     private ?string $controlId = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['control:read', 'control:write'])]
-    #[Assert\NotBlank(message: 'control.validation.name.required')]
-    #[Assert\Length(max: 255, maxMessage: 'control.validation.name.max_length')]
+    #[Assert\NotBlank(message: 'control.validation.name_required')]
+    #[Assert\Length(max: 255, maxMessage: 'control.validation.name_max_length')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['control:read', 'control:write'])]
-    #[Assert\NotBlank(message: 'control.validation.description.required')]
+    #[Assert\NotBlank(message: 'control.validation.description_required')]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['control:read', 'control:write'])]
-    #[Assert\NotBlank(message: 'control.validation.category.required')]
-    #[Assert\Length(max: 100, maxMessage: 'control.validation.category.max_length')]
+    #[Assert\NotBlank(message: 'control.validation.category_required')]
+    #[Assert\Length(max: 100, maxMessage: 'control.validation.category_max_length')]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['control:read', 'control:write'])]
-    #[Assert\NotNull(message: 'control.validation.applicable.required')]
+    #[Assert\NotNull(message: 'control.validation.applicable_required')]
     private ?bool $applicable = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -122,10 +122,10 @@ class Control
 
     #[ORM\Column(length: 50)]
     #[Groups(['control:read', 'control:write'])]
-    #[Assert\NotBlank(message: 'control.validation.implementation_status.required')]
+    #[Assert\NotBlank(message: 'control.validation.implementation_status_required')]
     #[Assert\Choice(
         choices: ['not_started', 'planned', 'in_progress', 'implemented', 'verified'],
-        message: 'control.validation.implementation_status.choice'
+        message: 'control.validation.implementation_status_invalid'
     )]
     private ?string $implementationStatus = 'not_started';
 
@@ -138,7 +138,7 @@ class Control
     #[Groups(['control:read', 'control:write'])]
     #[Assert\Choice(
         choices: [null, 'standfest', 'degradiert', 'reibung', 'nicht_betroffen'],
-        message: 'control.validation.mythos_resilience.choice'
+        message: 'control.validation.mythos_resilience_invalid'
     )]
     private ?string $mythosResilience = null;
 
@@ -152,7 +152,7 @@ class Control
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
     #[Assert\Range(
-        notInRangeMessage: 'Implementation percentage must be between { min } and { max }',
+        notInRangeMessage: 'control.validation.implementation_percentage_range',
         min: 0,
         max: 100
     )]
@@ -160,7 +160,7 @@ class Control
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Responsible person cannot exceed { limit } characters')]
+    #[Assert\Length(max: 100, maxMessage: 'control.validation.responsible_person_max_length')]
     private ?string $responsiblePerson = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]

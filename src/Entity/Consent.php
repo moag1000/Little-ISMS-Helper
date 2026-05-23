@@ -58,18 +58,18 @@ class Consent
      * Examples: email, customer ID, pseudonym, etc.
      */
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'consent.validation.data_subject_identifier.required')]
-    #[Assert\Length(max: 255, maxMessage: 'consent.validation.data_subject_identifier.max_length')]
+    #[Assert\NotBlank(message: 'consent.validation.data_subject_identifier_required')]
+    #[Assert\Length(max: 255, maxMessage: 'consent.validation.data_subject_identifier_max_length')]
     private ?string $dataSubjectIdentifier = null;
 
     /**
      * Type of identifier for documentation purposes
      */
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'consent.validation.identifier_type.required')]
+    #[Assert\NotBlank(message: 'consent.validation.identifier_type_required')]
     #[Assert\Choice(
         choices: ['email', 'customer_id', 'pseudonym', 'phone', 'other'],
-        message: 'consent.validation.identifier_type.choice'
+        message: 'consent.validation.identifier_type_invalid'
     )]
     private ?string $identifierType = null;
 
@@ -83,7 +83,7 @@ class Consent
      */
     #[ORM\ManyToOne(targetEntity: ProcessingActivity::class, inversedBy: 'consents')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    #[Assert\NotNull(message: 'consent.validation.processing_activity.required')]
+    #[Assert\NotNull(message: 'consent.validation.processing_activity_required')]
     private ?ProcessingActivity $processingActivity = null;
 
     /**
@@ -101,17 +101,17 @@ class Consent
      * Date/time when consent was granted by data subject
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Assert\NotNull(message: 'consent.validation.granted_at.required')]
+    #[Assert\NotNull(message: 'consent.validation.granted_at_required')]
     private ?DateTimeImmutable $grantedAt = null;
 
     /**
      * Method of consent
      */
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'consent.validation.consent_method.required')]
+    #[Assert\NotBlank(message: 'consent.validation.consent_method_required')]
     #[Assert\Choice(
         choices: ['double_opt_in', 'written_form', 'checkbox', 'oral', 'email', 'other'],
-        message: 'consent.validation.consent_method.choice'
+        message: 'consent.validation.consent_method_invalid'
     )]
     private ?string $consentMethod = null;
 
@@ -120,7 +120,7 @@ class Consent
      * IMPORTANT: GDPR Art. 7 Abs. 1 - proof requirement
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'consent.validation.consent_text.required')]
+    #[Assert\NotBlank(message: 'consent.validation.consent_text_required')]
     private ?string $consentText = null;
 
     /**
@@ -129,7 +129,7 @@ class Consent
     #[ORM\Column(length: 100, nullable: true)]
     #[Assert\Choice(
         choices: ['website', 'email', 'paper_form', 'phone', 'in_person', 'other'],
-        message: 'consent.validation.consent_channel.choice'
+        message: 'consent.validation.consent_channel_invalid'
     )]
     private ?string $consentChannel = null;
 
@@ -175,7 +175,7 @@ class Consent
     #[ORM\Column(length: 50)]
     #[Assert\Choice(
         choices: ['active', 'revoked', 'expired', 'pending_verification', 'rejected'],
-        message: 'consent.validation.status.choice'
+        message: 'consent.validation.status_invalid'
     )]
     private ?string $status = 'pending_verification';
 
@@ -218,7 +218,7 @@ class Consent
     #[ORM\Column(length: 50, nullable: true)]
     #[Assert\Choice(
         choices: ['email', 'phone', 'letter', 'website', 'in_person', 'other'],
-        message: 'consent.validation.revocation_method.choice'
+        message: 'consent.validation.revocation_method_invalid'
     )]
     private ?string $revocationMethod = null;
 

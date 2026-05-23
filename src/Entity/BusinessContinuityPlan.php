@@ -62,7 +62,7 @@ class BusinessContinuityPlan
     private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'bc_plans.validation.name.required')]
+    #[Assert\NotBlank(message: 'bc_plan.validation.name_required')]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $name = null;
 
@@ -75,7 +75,7 @@ class BusinessContinuityPlan
      */
     #[ORM\ManyToOne(targetEntity: BusinessProcess::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: 'bc_plans.validation.business_process.required')]
+    #[Assert\NotNull(message: 'bc_plan.validation.business_process_required')]
     #[Groups(['bc_plan:read'])]
     private ?BusinessProcess $businessProcess = null;
 
@@ -114,7 +114,7 @@ class BusinessContinuityPlan
      * Activation criteria - when to activate this plan
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'bc_plans.validation.activation_criteria.required')]
+    #[Assert\NotBlank(message: 'bc_plan.validation.activation_criteria_required')]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $activationCriteria = null;
 
@@ -142,7 +142,7 @@ class BusinessContinuityPlan
      * Recovery procedures (step-by-step)
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'bc_plans.validation.recovery_procedures.required')]
+    #[Assert\NotBlank(message: 'bc_plan.validation.recovery_procedures_required')]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $recoveryProcedures = null;
 

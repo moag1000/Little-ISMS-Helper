@@ -66,7 +66,7 @@ class ChangeRequest
     private ?string $changeNumber = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'change_requests.validation.title.required')]
+    #[Assert\NotBlank(message: 'change_request.validation.title_required')]
     #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $title = null;
 
@@ -84,12 +84,12 @@ class ChangeRequest
     private ?string $changeType = 'other';
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'change_requests.validation.description.required')]
+    #[Assert\NotBlank(message: 'change_request.validation.description_required')]
     #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'change_requests.validation.justification.required')]
+    #[Assert\NotBlank(message: 'change_request.validation.justification_required')]
     #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $justification = null;
 

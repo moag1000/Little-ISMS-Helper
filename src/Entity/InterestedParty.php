@@ -57,7 +57,7 @@ class InterestedParty
     private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'interested_parties.validation.name.required')]
+    #[Assert\NotBlank(message: 'interested_party.validation.name_required')]
     #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $name = null;
 
@@ -104,7 +104,7 @@ class InterestedParty
      * Requirements and expectations from this party
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'interested_parties.validation.requirements.required')]
+    #[Assert\NotBlank(message: 'interested_party.validation.requirements_required')]
     #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $requirements = null;
 
