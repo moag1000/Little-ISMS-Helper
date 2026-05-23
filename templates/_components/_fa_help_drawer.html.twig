@@ -1,0 +1,59 @@
+{#
+    _fa_help_drawer.html.twig — Aurora fa-drawer for verbose form-help text.
+
+    Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern.
+
+    Single drawer-element per page, shared by multiple "Mehr Info..." triggers
+    rendered by _form_field.html.twig. Content (title + body HTML) is swapped
+    by the help_drawer Stimulus controller when a trigger is clicked.
+
+    Usage:
+      Mount once at form-level, wrap the whole form in the controller scope:
+
+        <div data-controller="help-drawer">
+            {{ form_start(form) }}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'drawer_keys': { rto: 'business_process.tooltip.rto' }
+            } %}
+            {{ form_end(form) }}
+            {% include '_components/_fa_help_drawer.html.twig' %}
+        </div>
+
+    The drawer markup must live INSIDE the data-controller="help-drawer" scope
+    so Stimulus can find the targets.
+#}
+<div class="fa-drawer-backdrop"
+     data-help-drawer-target="backdrop"
+     data-action="click->help-drawer#close"
+     aria-hidden="true"></div>
+
+<aside class="fa-drawer fa-drawer--right"
+       data-help-drawer-target="drawer"
+       role="dialog"
+       aria-modal="true"
+       aria-hidden="true"
+       aria-labelledby="fa-help-drawer-title">
+    <header class="fa-drawer__header">
+        <div class="fa-drawer__header-icon" aria-hidden="true">
+            <i class="fa-icon fa-icon--status-info"></i>
+        </div>
+        <div class="fa-drawer__header-text">
+            <span class="fa-drawer__eyebrow">{{ 'common.help'|trans({}, 'messages') }}</span>
+            <h2 class="fa-drawer__title"
+                id="fa-help-drawer-title"
+                data-help-drawer-target="title"></h2>
+        </div>
+        <button type="button"
+                class="fa-drawer__close"
+                data-action="click->help-drawer#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--util-x" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+    </header>
+
+    <div class="fa-drawer__body" data-help-drawer-target="body">
+        {# Body HTML injected by Stimulus on open() — initially empty #}
+    </div>
+</aside>

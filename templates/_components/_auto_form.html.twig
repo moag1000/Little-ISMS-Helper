@@ -75,7 +75,12 @@
                           Auto-populated from SectionMapInterface if omitted.
     - col_widths         (map, optional) — field_name → Bootstrap col (1–12)
     - help_texts         (map, optional) — field_name → pre-translated help text
-    - tooltips           (map, optional) — field_name → translation key
+    - tooltips           (map, optional) — field_name → translation key (Bootstrap tooltip-icon)
+    - drawer_keys        (map, optional) — field_name → translation key for the verbose-help
+                          drawer body. Renders a "Mehr Info..." button under the help-line and
+                          opens the page-level fa-drawer (mount `_fa_help_drawer.html.twig`
+                          inside the same `data-controller="help-drawer"` scope).
+                          Junior-ISB-Audit-2026-05-22 S14 #17.
     - exclude            (array, optional) — field names to skip entirely
     - translation_domain (string, optional) — override tooltip translation domain
     - strict_whitelist   (bool, default false) — H-03: suppress catch-all bucket
@@ -109,6 +114,7 @@
 {% set exclude_fields  = exclude|default([]) %}
 {% set help_texts      = help_texts|default({}) %}
 {% set tooltips        = tooltips|default({}) %}
+{% set drawer_keys     = drawer_keys|default({}) %}
 {% set automatic_fields = automatic_fields|default([]) %}
 {% set default_col_width = 12 %}
 {% set passed_translation_domain = translation_domain|default(null) %}
@@ -182,6 +188,7 @@
                 'col_widths':         col_widths|default({}),
                 'help_texts':         help_texts,
                 'tooltips':           tooltips,
+                'drawer_keys':        drawer_keys,
                 'exclude_fields':     exclude_fields,
                 'automatic_fields':   automatic_fields,
                 'translation_domain': passed_translation_domain,
@@ -251,6 +258,7 @@
                 'col_widths':         col_widths|default({}),
                 'help_texts':         help_texts,
                 'tooltips':           tooltips,
+                'drawer_keys':        drawer_keys,
                 'exclude_fields':     exclude_fields,
                 'automatic_fields':   automatic_fields,
                 'translation_domain': passed_translation_domain,
@@ -298,6 +306,7 @@
                     'col_widths':         col_widths|default({}),
                     'help_texts':         help_texts,
                     'tooltips':           tooltips,
+                    'drawer_keys':        drawer_keys,
                     'exclude_fields':     exclude_fields,
                     'automatic_fields':   automatic_fields,
                     'translation_domain': passed_translation_domain
