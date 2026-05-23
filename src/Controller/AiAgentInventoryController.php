@@ -42,7 +42,7 @@ final class AiAgentInventoryController extends AbstractController
 
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
-            $this->addFlash('warning', 'Kein Mandant zugewiesen — AI-Agent-Inventar benötigt einen Mandantenkontext.');
+            $this->addFlash('warning', $this->translator->trans('ai_agent.flash.no_tenant', [], 'asset'));
             return $this->redirectToRoute('app_dashboard');
         }
 

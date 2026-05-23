@@ -53,6 +53,8 @@ mris:
             warning_missing: 'High-risk AI without DPIA — required under GDPR Art. 35 + AI Act Art. 9.'
             create_button: 'Create DPIA'
     audit_report:
+        flash:
+            no_tenant: 'No tenant assigned — MRIS audit report requires a tenant context.'
         title: 'MRIS Audit Report'
         subtitle: 'Myth-Resistant Information Security · v1.5 — Auditor View'
         meta:

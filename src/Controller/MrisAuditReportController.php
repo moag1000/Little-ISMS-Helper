@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Translation\LocaleSwitcher;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Dedizierter MRIS-Audit-Report (PDF) für Auditoren / interne Reviews.
@@ -59,6 +60,7 @@ final class MrisAuditReportController extends AbstractController
         private readonly KpiSnapshotRepository $kpiSnapshotRepository,
         private readonly PdfExportService $pdfExportService,
         private readonly LocaleSwitcher $localeSwitcher,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -67,7 +69,7 @@ final class MrisAuditReportController extends AbstractController
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant instanceof Tenant) {
-            $this->addFlash('warning', 'Kein Mandant zugewiesen — MRIS-Audit-Report benötigt einen Mandantenkontext.');
+            $this->addFlash('warning', $this->translator->trans('mris.audit_report.flash.no_tenant', [], 'mris'));
             return $this->redirectToRoute('app_dashboard');
         }
 
