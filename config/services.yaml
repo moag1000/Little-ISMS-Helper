@@ -471,6 +471,13 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    # Junior-ISB-Audit-2026-05-22 9.5: File-Upload for Training.materialFiles
+    # lands under public/uploads/training-materials/. Controller needs the
+    # absolute projectDir to issue the UploadedFile->move() call.
+    App\Controller\TrainingController:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     # BackupEncryptionService: AES-256-GCM envelope encryption for sensitive backup fields.
     App\Service\BackupEncryptionService:
         arguments:

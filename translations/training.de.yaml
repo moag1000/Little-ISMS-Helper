@@ -71,6 +71,8 @@ training:
     covered_controls: Abgedeckte ISO 27001 Controls
     compliance_requirements: Compliance-Anforderungen
     materials: Schulungsmaterialien und Unterlagen
+    materials_legacy: 'Materialien (Freitext, Migration)'
+    material_files: 'Schulungsmaterialien (Datei-Upload)'
     feedback: Teilnehmer-Feedback und Bewertungen
     attendee_count: Anzahl Teilnehmer
     completion_date: Abschlussdatum
@@ -96,6 +98,8 @@ training:
     compliance_requirements: Welche Compliance-Anforderungen werden durch diese Schulung
       erfüllt? (z.B. DORA, TISAX, NIS2)
     materials: Links oder Beschreibungen von Schulungsmaterialien
+    materials_legacy: 'Veraltetes Freitext-Feld — nur für Migrationsdaten lesbar. Neue Materialien bitte über den Datei-Upload hochladen.'
+    material_files: 'Dateien hochladen (PDF, Office-Dokumente, Bilder, Archive — max. 10 MB pro Datei). Mehrfach-Auswahl möglich.'
     feedback: Feedback von Teilnehmern oder Trainer-Notizen
     trainer_user: Trainer aus der Benutzerverwaltung. Für externe Trainer das Legacy-Feld
       nutzen.
@@ -171,3 +175,4 @@ training:
   completed_on: Abgeschlossen am
   error:
     owner_required_user_or_person: 'Trainer: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+    material_upload_failed: 'Datei „%file%“ konnte nicht hochgeladen werden: %reason%'

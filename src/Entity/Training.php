@@ -113,8 +113,20 @@ class Training
     #[Groups(['training:read', 'training:write'])]
     private ?string $participants = null;
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 9.7: attendeeCount derived from participants Collection.
+     *
+     * Legacy stored column kept for backwards compatibility with historical
+     * imports (pre-P-15 free-text trainings carry a manually-set integer
+     * here). New code MUST NOT rely on this directly — use
+     * {@see Training::getAttendeeCount()} which returns the canonical
+     * derived value (count of {@see TrainingParticipation} rows for this
+     * training). The legacy stored value is returned only when no
+     * structured TrainingParticipation rows exist, so old migration data
+     * remains visible.
+     */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Groups(['training:read', 'training:write'])]
+    #[Groups(['training:read'])]
     #[Assert\PositiveOrZero(message: 'Attendee count must be zero or positive')]
     private ?int $attendeeCount = 0;
 
@@ -147,9 +159,37 @@ class Training
     #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
     private int $lockVersion = 0;
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+     *
+     * Legacy free-text column retained for already-migrated data (URLs /
+     * descriptive paragraphs). New uploads land in {@see $materialFiles}
+     * via the FileType form widget; this column stays read-only on the
+     * Twig show-page for historical content.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
     private ?string $materials = null;
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+     *
+     * Structured list of uploaded training material files. Each entry is
+     * an associative array with the keys:
+     *   - `filename` (safe-renamed on disk)
+     *   - `originalName` (client-supplied display name)
+     *   - `mimeType`
+     *   - `size` (bytes)
+     *   - `uploadedAt` (ISO-8601 string)
+     * Files live under `public/uploads/training-materials/`. Validation
+     * flows through {@see FileUploadSecurityService::validateUploadedFile()}
+     * (MIME / magic-byte / extension / size whitelist).
+     *
+     * @var array<int, array{filename: string, originalName: string, mimeType: string, size: int, uploadedAt: string}>|null
+     */
+    #[ORM\Column(name: 'material_files', type: Types::JSON, nullable: true)]
+    #[Groups(['training:read'])]
+    private ?array $materialFiles = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
@@ -244,13 +284,38 @@ class Training
      */
     private ?Collection $participantUsers = null;
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 9.7: attendeeCount derived from participants Collection.
+     *
+     * Doctrine-managed inverse-side OneToMany to TrainingParticipation. This
+     * is the canonical M:N link Training x User (the transient
+     * `$participantUsers` above is a UI convenience for the multi-select
+     * widget only). {@see Training::getAttendeeCount()} derives its return
+     * value from `count($this->participations)` — Doctrine's lazy
+     * `ExtraLazy` fetch issues a single COUNT(*) query rather than
+     * hydrating all rows.
+     *
+     * @var Collection<int, TrainingParticipation>
+     */
+    #[ORM\OneToMany(mappedBy: 'training', targetEntity: TrainingParticipation::class, fetch: 'EXTRA_LAZY')]
+    private Collection $participations;
+
 public function __construct()
     {
         $this->coveredControls = new ArrayCollection();
         $this->complianceRequirements = new ArrayCollection();
         $this->trainerDeputyPersons = new ArrayCollection();
         $this->participantUsers = new ArrayCollection();
+        $this->participations = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+    }
+
+    /** @return Collection<int, TrainingParticipation> */
+    public function getParticipations(): Collection
+    {
+        // Doctrine bypasses __construct() on hydration; lazy-init keeps
+        // reflection-based readers (AuditLogger, serializer) safe.
+        return $this->participations ??= new ArrayCollection();
     }
 
     /** @return Collection<int, User> */
@@ -380,11 +445,37 @@ public function __construct()
         return $this;
     }
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 9.7: attendeeCount derived from participants Collection.
+     *
+     * Canonical attendee count = number of {@see TrainingParticipation}
+     * rows for this training. Falls back to the legacy stored column when
+     * no structured rows exist (pre-P-15 import data). Doctrine's
+     * EXTRA_LAZY fetch on $participations makes `->count()` a single
+     * COUNT(*) query, so this getter is safe for use in list templates.
+     *
+     * Marked with the API-Platform read group so the JSON API surfaces
+     * the derived value, not the legacy column.
+     */
+    #[Groups(['training:read'])]
     public function getAttendeeCount(): ?int
     {
+        $derived = $this->getParticipations()->count();
+        if ($derived > 0) {
+            return $derived;
+        }
+        // No structured participation rows yet — surface the legacy stored
+        // value so historical migrations stay readable.
         return $this->attendeeCount;
     }
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 9.7: kept for migration backfills only.
+     *
+     * @internal Production code MUST derive the value from
+     * {@see Training::$participations}. This setter survives only so
+     * fixtures / data-import commands can hydrate pre-P-15 records.
+     */
     public function setAttendeeCount(?int $attendeeCount): static
     {
         $this->attendeeCount = $attendeeCount;
@@ -441,6 +532,63 @@ public function __construct()
     {
         $this->materials = $materials;
         return $this;
+    }
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
+     *
+     * @return array<int, array{filename: string, originalName: string, mimeType: string, size: int, uploadedAt: string}>
+     */
+    public function getMaterialFiles(): array
+    {
+        return $this->materialFiles ?? [];
+    }
+
+    /**
+     * @param array<int, array{filename: string, originalName: string, mimeType: string, size: int, uploadedAt: string}>|null $materialFiles
+     */
+    public function setMaterialFiles(?array $materialFiles): static
+    {
+        $this->materialFiles = $materialFiles === null || $materialFiles === [] ? null : array_values($materialFiles);
+        return $this;
+    }
+
+    /**
+     * Append a single material-file metadata entry. Caller is responsible
+     * for moving the physical file to `public/uploads/training-materials/`
+     * and producing the metadata array.
+     *
+     * @param array{filename: string, originalName: string, mimeType: string, size: int, uploadedAt: string} $entry
+     */
+    public function addMaterialFile(array $entry): static
+    {
+        $current = $this->materialFiles ?? [];
+        $current[] = $entry;
+        $this->materialFiles = $current;
+        return $this;
+    }
+
+    /**
+     * Remove a material-file metadata entry by its on-disk filename. Returns
+     * the removed entry or null when no match. Caller is responsible for
+     * unlinking the physical file.
+     *
+     * @return array{filename: string, originalName: string, mimeType: string, size: int, uploadedAt: string}|null
+     */
+    public function removeMaterialFileByFilename(string $filename): ?array
+    {
+        if ($this->materialFiles === null) {
+            return null;
+        }
+        foreach ($this->materialFiles as $idx => $entry) {
+            if (($entry['filename'] ?? null) === $filename) {
+                $removed = $entry;
+                unset($this->materialFiles[$idx]);
+                $this->materialFiles = $this->materialFiles === [] ? null : array_values($this->materialFiles);
+                return $removed;
+            }
+        }
+        return null;
     }
 
     public function getFeedback(): ?string
