@@ -416,3 +416,16 @@ alva_hint:
             title: 'Lifecycle-Übergänge feststeckend'
             body: '%count% Dokument(e) stecken seit über %days% Tagen in einem nicht-terminalen Status (Entwurf, In Prüfung usw.). Bitte überprüfen und den nächsten Schritt einleiten.'
             action: 'Dokumente anzeigen'
+    # P-19 — Form-Step-Inline-Hint Pattern. Inline-Hinweise, die WÄHREND des
+    # Form-Ausfüllens (vor Speichern) erscheinen — neben dem auslösenden Feld.
+    # Kein 72h-SLA, kein Tier-1, keine Dismissal-Persistenz: das sind reine
+    # „Auf-was-du-dich-mit-Speichern-einlässt"-FYIs.
+    form:
+        incident_data_breach:
+            title: 'Datenpanne-Akte wird beim Speichern automatisch angelegt'
+            body: 'Sobald du speicherst, wird eine DataBreach-Akte mit Vorbefüllung aus diesem Vorfall angelegt. Der DSGVO-Art.-33-Countdown (72 h) startet ab dem Erkennungszeitpunkt — plane Aufsichtsbehörden-Meldung + Betroffenen-Information frühzeitig ein.'
+            action: 'Wie die 72-h-Frist abläuft'
+        risk_critical_severity:
+            title: 'Kritisches Risiko (Score %score%) — Board-Approval prüfen'
+            body: 'Dieses Risiko erreicht mit Score %score% das kritische Niveau. ISO 27001 Cl. 5.3 + 6.1.3 f verlangt einen Risk-Owner mit ausreichender Entscheidungskompetenz — bei kritischen Risiken üblicherweise C-Level / Board (ROLE_CISO). Bitte Owner-Eintragung und Behandlungsentscheidung entsprechend planen.'
+            action: 'Risk-Owner-Konvention öffnen'

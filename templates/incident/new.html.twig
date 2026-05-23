@@ -79,7 +79,17 @@
                          level_medium: 'incident.severity.medium'|trans({}, 'incident'),
                          level_low: 'incident.severity.low'|trans({}, 'incident')
                      }|json_encode }}"
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'incident-form'}}) }}
+                    {# P-19 — Form-Step-Inline-Hint controller (see edit.html.twig for full doc). #}
+                    {{ form_start(form, {'attr': {
+                        'novalidate': 'novalidate',
+                        'id': 'incident-form',
+                        'data-controller': 'alva-hint-in-form',
+                        'data-alva-hint-in-form-entity-type-value': 'incident',
+                        'data-alva-hint-in-form-form-name-value': 'incident',
+                        'data-alva-hint-in-form-endpoint-value': path('api_alva_hint_form_evaluate', {'entityType': 'incident'}),
+                        'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
+                        'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate',
+                    }}) }}
 
                     {# Basic Info Section #}
                     <fieldset class="mb-4">
