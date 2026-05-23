@@ -297,6 +297,13 @@ processing_activity:
     error:
         invalid_csrf: 'Ungültiges CSRF-Token.'
     clone_suffix: '(Kopie)'
+    kpi:
+        completeness: 'Vollständigkeit'
+        status: 'Status'
+        risk_level: 'Risikostufe'
+        dpia_status: 'DSFA-Status'
+        required: 'Erforderlich'
+        not_required: 'Nicht erforderlich'
     title: 'VVT - Verzeichnis von Verarbeitungstätigkeiten'
     subtitle: 'Art. 30 DSGVO - Verzeichnis von Verarbeitungstätigkeiten'
     page:
@@ -689,6 +696,15 @@ processing_activity:
     confirm_delete: 'Möchten Sie diese Verarbeitungstätigkeit wirklich löschen?'
     dashboard:
         incomplete_activities: 'Unvollständige Aktivitäten (%count%)'
+        overall_score: 'VVT Compliance Score (gesamt)'
+        activities_complete: '%complete% von %total% Verarbeitungstätigkeiten vollständig'
+        dpias_completed: '%done%/%required% DSFAs abgeschlossen'
+        kpi:
+            total_activities: 'Verarbeitungstätigkeiten gesamt'
+            active: '%count% aktiv'
+            high_risk: 'Hohes Risiko'
+            missing_dpia: '%count% ohne DSFA'
+            completeness_rate: 'Vollständigkeitsquote'
     show:
         linked_controls: 'Verknüpfte ISO-27001-Maßnahmen'
         linked_assets: 'Verknüpfte Assets'

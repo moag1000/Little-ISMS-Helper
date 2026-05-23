@@ -38,7 +38,7 @@
                             <div class="text-center">
                                 <div class="small fw-semibold text-muted mb-1">RTO</div>
                                 <p class="display-4 fw-bold mb-1">{{ bia_data.rto }}h</p>
-                                <small class="text-muted">Recovery Time Objective</small>
+                                <small class="text-muted">{{ 'business_process.bia.rto_long'|trans({}, 'bcm') }}</small>
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -49,7 +49,7 @@
                             <div class="text-center">
                                 <div class="small fw-semibold text-muted mb-1">RPO</div>
                                 <p class="display-4 fw-bold mb-1">{{ bia_data.rpo }}h</p>
-                                <small class="text-muted">Recovery Point Objective</small>
+                                <small class="text-muted">{{ 'business_process.bia.rpo_long'|trans({}, 'bcm') }}</small>
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -60,7 +60,7 @@
                             <div class="text-center">
                                 <div class="small fw-semibold text-muted mb-1">MTPD</div>
                                 <p class="display-4 fw-bold mb-1">{{ bia_data.mtpd }}h</p>
-                                <small class="text-muted">Maximum Tolerable Period</small>
+                                <small class="text-muted">{{ 'business_process.bia.mtpd_long'|trans({}, 'bcm') }}</small>
                             </div>
                         {% endblock %}
                     {% endembed %}

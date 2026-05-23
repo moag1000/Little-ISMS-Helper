@@ -23,7 +23,7 @@
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
         {% block card_body %}
-            <div class="text-muted mb-2 fw-semibold">Overall VVT Compliance Score</div>
+            <div class="text-muted mb-2 fw-semibold">{{ 'processing_activity.dashboard.overall_score'|trans({}, 'privacy') }}</div>
             {% set score = compliance_score.overall_score %}
             <div class="display-1 mb-0
                 {% if score >= 80 %}text-success
@@ -32,9 +32,15 @@
                 {{ score }}%
             </div>
             <p class="text-muted mt-2">
-                {{ compliance_score.complete_activities }} of {{ compliance_score.total_activities }} activities complete
+                {{ 'processing_activity.dashboard.activities_complete'|trans({
+                    '%complete%': compliance_score.complete_activities,
+                    '%total%': compliance_score.total_activities,
+                }, 'privacy') }}
                 {% if compliance_score.dpia_required > 0 %}
-                    · {{ compliance_score.dpia_completed }}/{{ compliance_score.dpia_required }} DPIAs completed
+                    · {{ 'processing_activity.dashboard.dpias_completed'|trans({
+                        '%done%': compliance_score.dpia_completed,
+                        '%required%': compliance_score.dpia_required,
+                    }, 'privacy') }}
                 {% endif %}
             </p>
         {% endblock %}
@@ -45,10 +51,10 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <div class="text-muted fw-semibold">Total Activities</div>
+                    <div class="text-muted fw-semibold">{{ 'processing_activity.dashboard.kpi.total_activities'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
-                        <small class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ statistics.active }} active</small>
+                        <small class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'processing_activity.dashboard.kpi.active'|trans({'%count%': statistics.active}, 'privacy') }}</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -56,10 +62,10 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
-                    <div class="text-muted fw-semibold">High Risk</div>
+                    <div class="text-muted fw-semibold">{{ 'processing_activity.dashboard.kpi.high_risk'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-warning">{{ statistics.high_risk }}</div>
                     <div class="mt-2">
-                        <small class="text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ statistics.missing_dpia }} missing DPIA</small>
+                        <small class="text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'processing_activity.dashboard.kpi.missing_dpia'|trans({'%count%': statistics.missing_dpia}, 'privacy') }}</small>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -68,7 +74,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-                    <div class="text-muted fw-semibold">Completeness Rate</div>
+                    <div class="text-muted fw-semibold">{{ 'processing_activity.dashboard.kpi.completeness_rate'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
                     {{ _fa_progress.render({ value: statistics.completeness_rate, tone: 'success', class: 'mt-2' }) }}
                 {% endblock %}

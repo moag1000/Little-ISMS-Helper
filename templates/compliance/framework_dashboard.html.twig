@@ -104,8 +104,8 @@
                  title="{{ 'common.tooltip.framework_loaded_success'|trans({}, 'messages') }}">
                 <div class="step-icon">{% if dashboard.statistics.total > 0 %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}<span class="step-number">1</span>{% endif %}</div>
                 <div class="step-content">
-                    <p class="fw-bold">Framework Loaded</p>
-                    <p>{{ dashboard.statistics.total }} requirements loaded</p>
+                    <p class="fw-bold">{{ 'compliance.dashboard.framework_loaded'|trans({}, 'compliance') }}</p>
+                    <p>{{ 'compliance.dashboard.loaded_count'|trans({'%count%': dashboard.statistics.total}, 'compliance') }}</p>
                 </div>
             </div>
 

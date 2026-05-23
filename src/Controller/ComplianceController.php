@@ -2254,14 +2254,15 @@ class ComplianceController extends AbstractController
 
             $em->flush();
 
-            $message = sprintf(
-                'Erfolgreich %d neue Mappings zwischen %s und %s erstellt!',
-                $mappingsCreated,
-                $framework1->getName(),
-                $framework2->getName()
-            );
+            $message = $this->getTranslator()->trans('compliance.auto_mapping.success', [
+                '%count%' => $mappingsCreated,
+                '%framework1%' => $framework1->getName(),
+                '%framework2%' => $framework2->getName(),
+            ], 'compliance');
             if ($mappingsSkipped > 0) {
-                $message .= sprintf(' (%d bereits vorhanden, übersprungen)', $mappingsSkipped);
+                $message .= ' ' . $this->getTranslator()->trans('compliance.auto_mapping.skipped_suffix', [
+                    '%count%' => $mappingsSkipped,
+                ], 'compliance');
             }
 
             return new JsonResponse([
@@ -2276,7 +2277,9 @@ class ComplianceController extends AbstractController
         } catch (Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Fehler beim Erstellen der Mappings: ' . $e->getMessage()
+                'message' => $this->getTranslator()->trans('compliance.auto_mapping.error', [
+                    '%reason%' => $e->getMessage(),
+                ], 'compliance'),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

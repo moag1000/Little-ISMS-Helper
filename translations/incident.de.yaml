@@ -420,3 +420,13 @@ incident:
     placeholder:
       risk: 'Risiko auswählen…'
       notes: 'Optionaler Kontext oder Beobachtung…'
+  bcm_impact_page:
+    kpi:
+      affected_processes: 'Betroffene Geschäftsprozesse'
+      critical_suffix: 'kritisch'
+      financial_impact: 'Finanzieller Schaden'
+      per_hour: '€%amount%/Stunde'
+      recovery_priority: 'Wiederherstellungs-Priorität'
+      rto_compliance: 'RTO-Compliance'
+      rto_compliant: 'Konform'
+      rto_violations: '%count% Verstöße'

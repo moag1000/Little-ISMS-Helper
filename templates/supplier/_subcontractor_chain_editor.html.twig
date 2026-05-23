@@ -73,13 +73,13 @@
                 <input type="text" class="form-control form-control-sm text-uppercase fa-cyber-input__field"
                        data-index="__INDEX__" data-field="country"
                        data-action="input->subcontractor-chain-editor#updateField"
-                       value="__COUNTRY__" placeholder="DE" maxlength="2">
+                       value="__COUNTRY__" placeholder="{{ 'supplier.subcontractor.country_placeholder'|trans({}, 'suppliers') }}" maxlength="2">
             </td>
             <td>
                 <input type="text" class="form-control form-control-sm fa-cyber-input__field"
                        data-index="__INDEX__" data-field="service"
                        data-action="input->subcontractor-chain-editor#updateField"
-                       value="__SERVICE__" placeholder="Cloud hosting">
+                       value="__SERVICE__" placeholder="{{ 'supplier.subcontractor.service_placeholder'|trans({}, 'suppliers') }}">
             </td>
             <td>
                 <select class="form-select fa-cyber-input__field form-select-sm"

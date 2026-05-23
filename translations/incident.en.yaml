@@ -409,3 +409,13 @@ incident:
     placeholder:
       risk: 'Select a risk…'
       notes: 'Optional context or observation…'
+  bcm_impact_page:
+    kpi:
+      affected_processes: 'Affected Processes'
+      critical_suffix: 'Critical'
+      financial_impact: 'Financial Impact'
+      per_hour: '€%amount%/hour'
+      recovery_priority: 'Recovery Priority'
+      rto_compliance: 'RTO Compliance'
+      rto_compliant: 'Compliant'
+      rto_violations: '%count% Violations'
