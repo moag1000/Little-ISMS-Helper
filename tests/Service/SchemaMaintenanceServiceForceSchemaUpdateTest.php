@@ -80,6 +80,7 @@ class SchemaMaintenanceServiceForceSchemaUpdateTest extends TestCase
     {
         // Arrange: schemaHealthService returns empty executed_sql (already in sync)
         $this->schemaHealthService
+            ->expects(self::once())
             ->method('applyUpdate')
             ->with('test-actor', true)
             ->willReturn([

@@ -22,7 +22,7 @@ class AvvPickerPreFillerTest extends TestCase
         $s2 = (new Supplier())->setName('Mailgun');
 
         $repo = $this->createMock(SupplierRepository::class);
-        $repo->method('findBy')->with(['tenant' => $tenant])->willReturn([$s1, $s2]);
+        $repo->expects(self::once())->method('findBy')->with(['tenant' => $tenant])->willReturn([$s1, $s2]);
 
         $pa = new ProcessingActivity();
         $candidates = (new AvvPickerPreFiller($repo))->candidatesFor($pa, $tenant);

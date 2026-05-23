@@ -61,7 +61,7 @@ final class StatusEnumDriftCheckerTest extends TestCase
         $metadata = $this->getMockBuilder(\Doctrine\ORM\Mapping\ClassMetadata::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $metadata->method('hasField')->with('status')->willReturn(true);
+        $metadata->expects(self::atLeastOnce())->method('hasField')->with('status')->willReturn(true);
 
         $metadataFactory = $this->getMockBuilder(\Doctrine\ORM\Mapping\ClassMetadataFactory::class)
             ->disableOriginalConstructor()
