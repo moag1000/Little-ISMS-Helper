@@ -215,3 +215,7 @@ business_process:
   validator:
     rpo_greater_than_rto: 'RPO darf nicht größer als RTO sein (Recovery-Kette: RPO ≤ RTO ≤ MTPD)'
     rto_greater_than_mtpd: 'RTO darf nicht größer als MTPD sein (Recovery-Kette: RPO ≤ RTO ≤ MTPD)'
+
+# Junior-ISB-Audit-2026-05-22 P-12 rollout — 9001-bridge keys for BP forms.
+iso_9001_bridge:
+  business_process: 'Identisch mit der "Prozesslandkarte" aus ISO 9001 Klausel 4.4 — Geschäftsprozesse mit Ein-/Ausgängen, Ressourcen (7.1) und Wechselwirkungen. ISO 22301 8.3 ergänzt die quantitativen Recovery-Ziele RTO/RPO/MTPD.'

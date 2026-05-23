@@ -87,10 +87,14 @@ translations/bc_plans.de.yaml:230:iso_9001_bridge
 translations/bc_plans.en.yaml:212:bcm
 translations/bc_plans.en.yaml:219:bc_plan
 translations/bc_plans.en.yaml:228:iso_9001_bridge
+translations/bc_exercises.de.yaml:175:iso_9001_bridge
+translations/bc_exercises.en.yaml:175:iso_9001_bridge
 translations/bcm.de.yaml:97:business_process
 translations/bcm.de.yaml:195:bc_exercises
 translations/bcm.de.yaml:207:bc_plans
 translations/bcm.en.yaml:97:business_process
+translations/business_process.de.yaml:220:iso_9001_bridge
+translations/business_process.en.yaml:215:iso_9001_bridge
 translations/change_requests.de.yaml:1:change_request
 translations/change_requests.en.yaml:1:change_request
 translations/compliance.de.yaml:928:compliance_mapping
