@@ -18,7 +18,21 @@
         badge: { icon: 'plus', label: '' }
     }) }}
 
-    {{ form_start(form) }}
+    {# C5-03 — Severity × Type correlation help (ISO 19011 Cl. 6.4.8). #}
+    {{ form_start(form, {'attr': {'data-controller': 'audit-finding-correlation-help'}}) }}
+    {# Slot consumed by the audit-finding-correlation-help controller. Translated copy
+       travels via data-* attributes so the JS does not need framework access. #}
+    <div data-audit-finding-correlation-help-slot
+         class="form-text small mb-2"
+         hidden
+         data-audit-finding-correlation-critical-to-major-nc-match="{{ 'audit_finding.correlation.critical_to_major_nc.match'|trans({}, 'audits') }}"
+         data-audit-finding-correlation-critical-to-major-nc-suggest="{{ 'audit_finding.correlation.critical_to_major_nc.suggest'|trans({}, 'audits') }}"
+         data-audit-finding-correlation-high-to-major-nc-match="{{ 'audit_finding.correlation.high_to_major_nc.match'|trans({}, 'audits') }}"
+         data-audit-finding-correlation-high-to-major-nc-suggest="{{ 'audit_finding.correlation.high_to_major_nc.suggest'|trans({}, 'audits') }}"
+         data-audit-finding-correlation-medium-to-minor-nc-match="{{ 'audit_finding.correlation.medium_to_minor_nc.match'|trans({}, 'audits') }}"
+         data-audit-finding-correlation-medium-to-minor-nc-suggest="{{ 'audit_finding.correlation.medium_to_minor_nc.suggest'|trans({}, 'audits') }}"
+         data-audit-finding-correlation-low-to-observation-match="{{ 'audit_finding.correlation.low_to_observation.match'|trans({}, 'audits') }}"
+         data-audit-finding-correlation-low-to-observation-suggest="{{ 'audit_finding.correlation.low_to_observation.suggest'|trans({}, 'audits') }}"></div>
     {% include '_components/_auto_form.html.twig' with {
         'form': form,
         'layout': 'outline-rail',

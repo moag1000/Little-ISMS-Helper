@@ -312,6 +312,23 @@ audit_finding:
         created: 'Finding created.'
         updated: 'Finding updated.'
         deleted: 'Finding deleted.'
+    # C5-03 — Severity × Type correlation help (ISO 19011 Cl. 6.4.8).
+    # Pure UX hint, no server-side enforcement: junior implementers see the
+    # conventional type that matches the severity but may deviate based on
+    # the auditor's professional judgement.
+    correlation:
+        critical_to_major_nc:
+            match: 'Convention: Critical findings are typically classified as Major Nonconformities (ISO 19011 Cl. 6.4.8).'
+            suggest: 'Hint: Critical findings are typically classified as Major Nonconformity (ISO 19011 Cl. 6.4.8). Document any deviation in the evidence field.'
+        high_to_major_nc:
+            match: 'Convention: High-severity findings are typically Major Nonconformities.'
+            suggest: 'Hint: High-severity findings are typically classified as Major Nonconformity. Consider this category or document the deviation.'
+        medium_to_minor_nc:
+            match: 'Convention: Medium-severity findings typically map to Minor Nonconformities.'
+            suggest: 'Hint: Medium-severity findings typically map to Minor Nonconformity or Observation.'
+        low_to_observation:
+            match: 'Convention: Low-severity findings are typically Observations or Opportunities for Improvement.'
+            suggest: 'Hint: Low-severity findings are typically documented as Observation or Opportunity for Improvement — Major-NC seems excessive here.'
 
 corrective_action:
     page:
