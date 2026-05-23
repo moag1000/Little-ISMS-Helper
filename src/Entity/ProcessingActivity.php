@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * CRITICAL-06: DSGVO Art. 30 - Verzeichnis von Verarbeitungstätigkeiten
@@ -189,14 +190,21 @@ class ProcessingActivity
     // ============================================================================
 
     /**
-     * General retention period description (e.g., "3 years after contract end")
+     * Justification / reason for the retention duration (free-text).
+     *
+     * Junior-ISB-Audit-2026-05-22 C2-02: dedup with semantic split — `retentionPeriodDays`
+     * is the canonical structured value (numeric days), while this column captures the
+     * qualitative justification (e.g. "HGB §257 - 10 Jahre", "Vertragsdauer + 3 Jahre").
+     * DB column kept (`retention_period`) to preserve data; only labels/help renamed.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\NotBlank]
     private ?string $retentionPeriod = null;
 
     /**
-     * Retention period in days (optional, for automated deletion)
+     * Retention period in days (canonical structured value for automated deletion).
+     *
+     * Junior-ISB-Audit-2026-05-22 C2-02: canonical numeric retention duration.
      */
     #[ORM\Column(nullable: true)]
     private ?int $retentionPeriodDays = null;
@@ -212,14 +220,20 @@ class ProcessingActivity
     // ============================================================================
 
     /**
-     * General description of technical and organizational measures (Art. 32 GDPR)
+     * Qualitative description of technical and organizational measures (Art. 32 GDPR).
+     *
+     * Junior-ISB-Audit-2026-05-22 C2-03: dedup with semantic split (qualitative vs structured).
+     * This free-text field holds the qualitative narrative — for the structured machine-readable
+     * evidence linked to ISO 27001 controls, see {@see $implementedControls}. DSGVO Art. 32
+     * demands evidence; either form counts (see {@see validateTomOrControlsPresent}).
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $technicalOrganizationalMeasures = null;
 
     /**
-     * Reference to implemented controls (ISO 27001 controls)
-     * ManyToMany relationship to Control entity
+     * Structured evidence: ISO 27001 controls implemented for this processing (M:N).
+     *
+     * Junior-ISB-Audit-2026-05-22 C2-03: structured nachweis (vs the qualitative TOM narrative).
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
     #[ORM\JoinTable(name: 'processing_activity_control')]
@@ -1365,5 +1379,34 @@ class ProcessingActivity
                 && $c->isVerifiedByDpo()
                 && !$c->isRevoked()
         )->count();
+    }
+
+    // -------------------------------------------------------------------------
+    // Cross-Field Validators (Junior-ISB-Audit-2026-05-22 C2-03)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 C2-03: DSGVO Art. 32 evidence requirement.
+     *
+     * At least ONE of the two TOM evidence forms must be present:
+     *   - {@see $technicalOrganizationalMeasures}    (qualitative, ≥ 50 chars)
+     *   - {@see $implementedControls}                (structured M:N to ISO 27001 controls, ≥ 1)
+     *
+     * Both forms are valid evidence; the activity is non-compliant only when NEITHER is supplied.
+     * Closes the same hole at API Platform / Service-layer write paths that bypass the FormType.
+     */
+    #[Assert\Callback]
+    public function validateTomOrControlsPresent(ExecutionContextInterface $context): void
+    {
+        $tomLength = $this->technicalOrganizationalMeasures !== null
+            ? mb_strlen(trim($this->technicalOrganizationalMeasures))
+            : 0;
+        $controlsCount = $this->implementedControls->count();
+
+        if ($tomLength < 50 && $controlsCount < 1) {
+            $context->buildViolation('processing_activity.validation.tom_or_controls_required')
+                ->atPath('technicalOrganizationalMeasures')
+                ->addViolation();
+        }
     }
 }

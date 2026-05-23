@@ -424,6 +424,12 @@ processing_activity:
         fail: 'Fail'
     form:
         legal_basis: 'Legal basis (Art. 6 GDPR)'
+        retention_period: 'Retention Period'
+        retention_reason: 'Retention Justification'
+        retention_period_days: 'Retention Period (days)'
+        retention_legal_basis: 'Retention Legal Basis'
+        technical_organizational_measures: 'Technical and Organizational Measures — qualitative description (TOMs, Art. 32 GDPR)'
+        implemented_controls: 'Implemented Controls'
     field:
         name: Name
         status: Status
@@ -444,9 +450,10 @@ processing_activity:
         third_countries: 'Third Countries'
         transfer_safeguards: 'Transfer Safeguards'
         retention_period: 'Retention Period'
+        retention_reason: 'Retention Justification'
         retention_period_days: 'Retention Period Days'
         retention_legal_basis: 'Retention Legal Basis'
-        technical_organizational_measures: 'Technical Organizational Measures'
+        technical_organizational_measures: 'Technical and Organizational Measures — qualitative description'
         implemented_controls: 'Implemented Controls'
         assets: 'Linked Assets'
         responsible_department: 'Responsible Department'
@@ -486,10 +493,11 @@ processing_activity:
         third_countries: 'Which countries receive data?'
         transfer_safeguards: 'Legal basis for third country transfer (Art. 44-49)'
         retention_period: 'Retention period/deletion deadline (Art. 30(1)(f))'
-        retention_period_days: 'Retention period in days (optional, for automated deletion)'
+        retention_reason: 'Justification for the retention duration (e.g. statutory period, contract). For the structured value see "Retention Period (days)". (Art. 30(1)(f) GDPR)'
+        retention_period_days: 'Numeric retention duration in days (canonical, for automated deletion). For the justification see "Retention Justification".'
         retention_legal_basis: 'Legal basis for retention period (e.g., HGB §257, Tax Code)'
-        technical_organizational_measures: 'Description of technical and organizational security measures (Art. 32 GDPR)'
-        implemented_controls: 'Link to ISO 27001 controls (optional)'
+        technical_organizational_measures: 'Technical and organizational measures — qualitative description (Art. 32 GDPR). For structured evidence see "Implemented Controls". At least ONE evidence form is required.'
+        implemented_controls: 'Select ISO 27001 controls protecting this activity (structured evidence). For the qualitative description see the TOMs field.'
         assets: 'Assets (servers, databases, applications) used by this processing activity.
             When a linked asset has data classification "confidential" or "restricted",
             a DPIA suggestion is auto-generated (Art. 35 GDPR).'
@@ -564,6 +572,9 @@ processing_activity:
         art_30_1e: 'Art. 30(1)(e) GDPR - Transfers to Third Countries'
         legal_basis_retention: 'Legal Basis and Retention Periods'
         art_30_1g: 'Art. 30(1)(g) GDPR - Technical and Organizational Measures (TOMs)'
+    # Junior-ISB-Audit-2026-05-22 C2-03: cross-field TOMs OR Controls evidence requirement.
+    validation:
+        tom_or_controls_required: 'At least one form of evidence is required (GDPR Art. 32): either a qualitative TOM description (≥ 50 characters) OR at least one implemented ISO 27001 control.'
 data_breach:
     index:
         view_all_breaches: 'View All Breaches'

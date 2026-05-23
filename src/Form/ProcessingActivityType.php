@@ -260,10 +260,13 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
 
             // ============================================================================
             // Retention Periods (Art. 30(1)(f))
+            // Junior-ISB-Audit-2026-05-22 C2-02: retentionPeriodDays is canonical
+            // (numeric, machine-readable). retentionPeriod is the qualitative
+            // justification (gesetzliche Frist, Vertrag, …).
             // ============================================================================
             ->add('retentionPeriod', TextareaType::class, [
-                'label' => 'processing_activity.form.retention_period',
-                'help' => 'processing_activity.help.retention_period',
+                'label' => 'processing_activity.form.retention_reason',
+                'help' => 'processing_activity.help.retention_reason',
                 'required' => true,
                 'attr' => ['rows' => 2],
             ])
@@ -281,11 +284,14 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
 
             // ============================================================================
             // Technical and Organizational Measures (Art. 30(1)(g))
+            // Junior-ISB-Audit-2026-05-22 C2-03: TOMs textarea = qualitative description,
+            // implementedControls M:N = structured evidence (ISO 27001 controls).
+            // Cross-field validator on the entity ensures at least one form is present.
             // ============================================================================
             ->add('technicalOrganizationalMeasures', TextareaType::class, [
                 'label' => 'processing_activity.form.technical_organizational_measures',
                 'help' => 'processing_activity.help.technical_organizational_measures',
-                'required' => true,
+                'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('implementedControls', EntityType::class, [
