@@ -145,8 +145,8 @@
                 {% endblock %}
             {% endembed %}
 
-            {# Materials Section #}
-            {% if training.materials %}
+            {# Materials Section — Junior-ISB-Audit-2026-05-22 9.5: structured file uploads + legacy free-text #}
+            {% if training.materialFiles or training.materials %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -156,7 +156,28 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <p>{{ training.materials|nl2br }}</p>
+                    {% if training.materialFiles %}
+                        <ul class="list-unstyled mb-0">
+                            {% for file in training.materialFiles %}
+                                <li class="mb-2">
+                                    <a href="{{ asset('uploads/training-materials/' ~ file.filename) }}" target="_blank" rel="noopener">
+                                        <i class="fa-icon fa-icon--document" aria-hidden="true"></i>
+                                        {{ file.originalName }}
+                                    </a>
+                                    <span class="text-muted small">
+                                        ({{ (file.size / 1024)|round(1) }} KB
+                                        {% if file.uploadedAt %} · {{ file.uploadedAt|slice(0, 10) }}{% endif %})
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if training.materials %}
+                        <details {% if training.materialFiles %}class="mt-3"{% endif %}>
+                            <summary class="text-muted small">{{ 'training.field.materials_legacy'|trans({}, 'training') }}</summary>
+                            <p class="mt-2 mb-0">{{ training.materials|nl2br }}</p>
+                        </details>
+                    {% endif %}
                 {% endblock %}
             {% endembed %}
             {% endif %}
@@ -331,7 +352,7 @@
     <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
     <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-trash"></i></span><div class="fa-modal__heading"><h2 class="fa-modal__title" id="deleteModalLabel">
                     {{ 'training.confirm_delete'|trans({}, 'training')}}
-                </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'action.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
             <div class="fa-modal__body">
                 <p>{{ 'training.delete_warning'|trans({'%title%': training.title}, 'training') }}</p>
                 <p class="text-muted"><small>{{ 'common.action_irreversible'|trans({}, 'messages') }}</small></p>

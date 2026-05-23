@@ -145,4 +145,70 @@ final class TrainingTypeTest extends KernelTestCase
         self::assertTrue($form->has('trainerPerson'));
         self::assertTrue($form->has('trainerDeputyPersons'));
     }
+
+    // ── Junior-ISB-Audit-2026-05-22 9.5 + 9.7 polish ─────────────────────
+
+    #[Test]
+    public function materialFilesIsFileTypeMultiUnmapped(): void
+    {
+        $form = $this->formFactory->create(TrainingType::class, new Training());
+
+        self::assertTrue(
+            $form->has('materialFiles'),
+            '9.5 polish: materialFiles FileType must be present on the form.',
+        );
+
+        $cfg = $form->get('materialFiles')->getConfig();
+        self::assertTrue($cfg->getOption('multiple'), 'materialFiles must allow multi-file upload.');
+        self::assertFalse($cfg->getMapped(), 'materialFiles must be mapped=false (controller persists uploads).');
+        self::assertFalse($cfg->getOption('required'));
+    }
+
+    #[Test]
+    public function materialsLegacyFieldIsReadOnly(): void
+    {
+        $form = $this->formFactory->create(TrainingType::class, new Training());
+
+        self::assertTrue(
+            $form->has('materials'),
+            '9.5 polish: legacy materials free-text remains for migration display.',
+        );
+        $cfg = $form->get('materials')->getConfig();
+        self::assertTrue($cfg->getDisabled(), 'Legacy materials field must be disabled (read-only).');
+    }
+
+    #[Test]
+    public function attendeeCountFieldIsRemovedFromForm(): void
+    {
+        $form = $this->formFactory->create(TrainingType::class, new Training());
+
+        self::assertFalse(
+            $form->has('attendeeCount'),
+            '9.7 polish: attendeeCount field must NOT appear in the form (derived from participants Collection).',
+        );
+    }
+
+    #[Test]
+    public function sectionMapReflectsPolishItems(): void
+    {
+        $map = TrainingType::getSectionMap();
+
+        // 9.5: materialFiles must lead the resources section, legacy materials follows.
+        self::assertContains('materialFiles', $map['resources']);
+        self::assertContains('materials', $map['resources']);
+        self::assertSame(
+            ['materialFiles', 'materials', 'feedback'],
+            $map['resources'],
+            'Resources section ordering: new upload widget first, then legacy free-text, then feedback.',
+        );
+
+        // 9.7: attendeeCount must NOT appear anywhere in the section map.
+        foreach ($map as $section => $fields) {
+            self::assertNotContains(
+                'attendeeCount',
+                $fields,
+                sprintf('Section "%s" still references attendeeCount — must be derived only.', $section),
+            );
+        }
+    }
 }
