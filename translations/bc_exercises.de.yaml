@@ -170,3 +170,7 @@ bc_exercises:
         raw_toggle: 'Als JSON bearbeiten'
         raw_label: 'Roh-JSON (Power-User)'
         raw_help: 'Achtung: Roh-Editing kann Daten beschädigen. Schema muss zur Entity-Definition passen.'
+
+# Junior-ISB-Audit-2026-05-22 P-12 rollout — 9001-bridge keys for BC-Exercise forms.
+iso_9001_bridge:
+    exercise: 'In ISO 9001 ist eine BC-Übung Teil der Bewertung der Leistung (Klausel 9.1) und der Behandlung von Chancen/Risiken (6.1). ISO 22301 8.5 fordert explizit periodische Tests des BC-Plans — Lessons-Learned fließen über 10.2 (Nichtkonformität & Korrekturmaßnahme) zurück in die Verbesserung.'
