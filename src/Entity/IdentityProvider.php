@@ -58,7 +58,7 @@ class IdentityProvider
 
     #[ORM\Column(length: 64)]
     #[Assert\NotBlank]
-    #[Assert\Regex('/^[a-z0-9][a-z0-9_-]{1,62}[a-z0-9]$/', message: 'Slug must be lowercase alphanumeric (with dashes/underscores).')]
+    #[Assert\Regex('/^[a-z0-9][a-z0-9_-]{1,62}[a-z0-9]$/', message: 'identity_provider.validation.slug_format')]
     private ?string $slug = null;
 
     #[ORM\Column(length: 128)]

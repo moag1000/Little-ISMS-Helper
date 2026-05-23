@@ -53,7 +53,7 @@ class IdentityProviderRoleMapping
     /** Symfony role assigned when this mapping matches. */
     #[ORM\Column(length: 64)]
     #[Assert\NotBlank]
-    #[Assert\Regex('/^ROLE_[A-Z_]+$/', message: 'Must be a valid ROLE_ constant.')]
+    #[Assert\Regex('/^ROLE_[A-Z_]+$/', message: 'identity_provider_role_mapping.validation.role_format')]
     private string $assignedRole = 'ROLE_USER';
 
     /** @var list<string> Additional permission strings granted alongside the role. */

@@ -76,14 +76,14 @@ class InternalAudit
 
     #[ORM\Column(length: 50)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\NotBlank(message: 'Audit number is required')]
-    #[Assert\Length(max: 50, maxMessage: 'Audit number cannot exceed {{ limit }} characters')]
+    #[Assert\NotBlank(message: 'internal_audit.validation.number_required')]
+    #[Assert\Length(max: 50, maxMessage: 'internal_audit.validation.number_max_length')]
     private ?string $auditNumber = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\NotBlank(message: 'Audit title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
+    #[Assert\NotBlank(message: 'internal_audit.validation.title_required')]
+    #[Assert\Length(max: 255, maxMessage: 'internal_audit.validation.title_max_length')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -106,7 +106,7 @@ class InternalAudit
     #[Groups(['audit:read', 'audit:write'])]
     #[Assert\Choice(
         choices: ['full_isms', 'compliance_framework', 'asset', 'asset_type', 'asset_group', 'location', 'department', 'corporate_wide', 'corporate_subsidiaries'],
-        message: 'Scope type must be one of: {{ choices }}'
+        message: 'internal_audit.validation.scope_type_invalid'
     )]
     private ?string $scopeType = 'full_isms';
 
@@ -164,7 +164,7 @@ class InternalAudit
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\NotNull(message: 'Planned date is required')]
+    #[Assert\NotNull(message: 'internal_audit.validation.planned_date_required')]
     private ?DateTimeInterface $plannedDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -179,7 +179,7 @@ class InternalAudit
      */
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Lead auditor name cannot exceed {{ limit }} characters')]
+    #[Assert\Length(max: 100, maxMessage: 'internal_audit.validation.lead_auditor_max_length')]
     private ?string $leadAuditor = null;
 
     /**
@@ -243,10 +243,10 @@ class InternalAudit
      */
     #[ORM\Column(length: 50)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\NotBlank(message: 'internal_audit.validation.status_required')]
     #[Assert\Choice(
         choices: ['planned', 'conducted', 'reported', 'approved', 'rejected', 'closed', 'cancelled', 'in_progress', 'completed', 'postponed'],
-        message: 'Status must be one of: {{ choices }}'
+        message: 'internal_audit.validation.status_invalid'
     )]
     private ?string $status = 'planned';
 
