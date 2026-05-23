@@ -14,6 +14,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+// Junior-ISB-Audit C4-02 — Control linkage is intentionally multi-valued
+// (ISO 27001 Cl. 10.1; A.8.15 + A.8.16 findings frequently touch >1 control).
+
 /**
  * H-01: Corrective Action for an AuditFinding (ISO 27001 Clause 10.1).
  * Tracks the plan, execution and effectiveness review of a countermeasure.
@@ -175,6 +178,23 @@ class CorrectiveAction
     #[ORM\JoinColumn(name: 'previous_capa_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?CorrectiveAction $previousCapa = null;
 
+    /**
+     * Junior-ISB-Audit C4-02 — multi-control linkage.
+     *
+     * ISO 27001 Cl. 10.1: A finding (and the corrective action that
+     * remediates it) frequently spans multiple Annex-A controls — a
+     * logging gap typically hits A.8.15 + A.8.16; a vendor-onboarding gap
+     * typically hits A.5.19 + A.5.20 + A.5.21. The previous singular
+     * `relatedControl` slot silently forced the user to drop information.
+     *
+     * @var Collection<int, Control>
+     */
+    #[ORM\ManyToMany(targetEntity: Control::class)]
+    #[ORM\JoinTable(name: 'corrective_action_controls')]
+    #[ORM\JoinColumn(name: 'corrective_action_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'control_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $relatedControls;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeInterface $createdAt;
 
@@ -182,6 +202,7 @@ class CorrectiveAction
     {
         $this->createdAt = new DateTimeImmutable();
         $this->responsibleDeputyPersons = new ArrayCollection();
+        $this->relatedControls = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -481,6 +502,30 @@ class CorrectiveAction
     public function isVerifiedIneffective(): bool
     {
         return $this->status === self::STATUS_VERIFIED_INEFFECTIVE;
+    }
+
+    /**
+     * Junior-ISB-Audit C4-02 — related controls (M2M, ISO 27001 Cl. 10.1).
+     *
+     * @return Collection<int, Control>
+     */
+    public function getRelatedControls(): Collection
+    {
+        return $this->relatedControls;
+    }
+
+    public function addRelatedControl(Control $control): static
+    {
+        if (!$this->relatedControls->contains($control)) {
+            $this->relatedControls->add($control);
+        }
+        return $this;
+    }
+
+    public function removeRelatedControl(Control $control): static
+    {
+        $this->relatedControls->removeElement($control);
+        return $this;
     }
 
     /**

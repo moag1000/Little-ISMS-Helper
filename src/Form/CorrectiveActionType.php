@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\AuditFinding;
+use App\Entity\Control;
 use App\Entity\CorrectiveAction;
 use App\Entity\Person;
 use App\Entity\User;
@@ -27,7 +28,7 @@ final class CorrectiveActionType extends AbstractType implements SectionMapInter
     {
         return [
             'overview'       => ['finding', 'title', 'description', 'actionType', 'status'],
-            'root_cause'     => ['rootCauseAnalysis'],
+            'root_cause'     => ['rootCauseAnalysis', 'relatedControls'],
             'action_plan'    => ['responsiblePersonUser', 'responsiblePerson', 'responsibleDeputyPersons', 'plannedCompletionDate', 'actualCompletionDate'],
             'verification'   => ['effectivenessReviewDate', 'effectivenessNotes', 'effectivenessEvidence'],
         ];
@@ -60,6 +61,18 @@ final class CorrectiveActionType extends AbstractType implements SectionMapInter
                 'required' => false,
                 'attr' => ['rows' => 4],
                 'help' => 'corrective_action.help.root_cause_analysis',
+            ])
+            // Junior-ISB-Audit C4-02 — multi-control linkage.
+            // ISO 27001 Cl. 10.1 + A.8.15/A.8.16: a corrective action
+            // routinely touches >1 control. Multiple-EntityType keeps
+            // the user from silently dropping context.
+            ->add('relatedControls', EntityType::class, [
+                'label' => 'corrective_action.field.related_controls',
+                'class' => Control::class,
+                'choice_label' => fn(Control $c): string => ($c->getControlId() ?? '') . ' — ' . ($c->getName() ?? ''),
+                'multiple' => true,
+                'required' => false,
+                'help' => 'corrective_action.help.related_controls',
             ])
             // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
             // Owned by `corrective_action_lifecycle`. YAML 4-eyes on

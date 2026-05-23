@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\AuditFinding;
 use App\Entity\ChangeRequest;
+use App\Entity\CorrectiveAction;
 use App\Form\SectionMapInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -104,6 +107,26 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'required' => false,
                 'attr' => ['maxlength' => 100, 'placeholder' => 'change_request.placeholder.clause_reference'],
                 'help' => 'change_request.help.clause_reference',
+            ])
+            // Junior-ISB-Audit C4-05 — Lineage to upstream artefacts
+            // (AuditFinding / CorrectiveAction). ISO 27001 Cl. 10.1 —
+            // continuous-improvement traceability without parsing the
+            // free-text justification.
+            ->add('relatedFinding', EntityType::class, [
+                'label' => 'change_request.field.related_finding',
+                'class' => AuditFinding::class,
+                'choice_label' => fn(AuditFinding $f): string => ($f->getFindingNumber() ?? '#' . $f->getId()) . ' — ' . ($f->getTitle() ?? ''),
+                'placeholder' => 'change_request.placeholder.related_finding',
+                'required' => false,
+                'help' => 'change_request.help.related_finding',
+            ])
+            ->add('relatedCorrectiveAction', EntityType::class, [
+                'label' => 'change_request.field.related_corrective_action',
+                'class' => CorrectiveAction::class,
+                'choice_label' => fn(CorrectiveAction $c): string => '#' . $c->getId() . ' — ' . ($c->getTitle() ?? ''),
+                'placeholder' => 'change_request.placeholder.related_corrective_action',
+                'required' => false,
+                'help' => 'change_request.help.related_corrective_action',
             ])
             ->add('ismsImpact', TextareaType::class, [
                 'label' => 'change_request.field.isms_impact',
@@ -215,6 +238,13 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 'priority',
                 'status',
                 'clauseReference',
+            ],
+            // Junior-ISB-Audit C4-05 — upstream-lineage section so the
+            // ISB can wire a ChangeRequest back to the AuditFinding /
+            // CorrectiveAction that triggered it (ISO 27001 Cl. 10.1).
+            'lineage' => [
+                'relatedFinding',
+                'relatedCorrectiveAction',
             ],
             'impact_assessment' => [
                 'ismsImpact',

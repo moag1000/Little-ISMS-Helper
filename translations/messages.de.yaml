@@ -1179,6 +1179,7 @@ form:
         layout: 'Layout'
         legal_basis: 'Rechtsgrundlage'
         lifecycle_status: 'Lebenszyklus'
+        lineage: 'Herkunft & Nachverfolgung'
         lksg: 'LkSG'
         marisk: 'MaRisk'
         members: 'Mitglieder'
