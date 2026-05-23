@@ -754,6 +754,33 @@ data_breach:
             affected_subjects: '%count% betroffene Datensubjekte'
         action_items: 'Aktionen erforderlich'
         under_assessment: 'In Bewertung'
+        badge:
+            overdue: 'ÜBERFÄLLIG'
+            urgent: 'DRINGEND'
+            pending: 'OFFEN'
+        action_msg:
+            overdue_authority: 'Aufsichtsbehörden-Meldung hat die 72-Stunden-Frist um %hours% Stunden überschritten.'
+            pending_authority: 'Noch %hours% Stunden bis zur 72-Stunden-Frist.'
+            pending_subject: 'Benachrichtigung der betroffenen Personen erforderlich (Art. 34).'
+            incomplete: 'Datenpannen-Dokumentation unvollständig.'
+        empty_state: '<strong>Alle Aktionen erledigt!</strong> Keine ausstehenden Meldungen oder überfälligen Fristen.'
+        stats_status_title: 'Statistik nach Status'
+        status:
+            draft: 'Entwurf'
+            under_assessment: 'In Bewertung'
+            authority_notified: 'Behörde gemeldet'
+            subjects_notified: 'Personen benachrichtigt'
+            closed: 'Geschlossen'
+        risk_section_title: 'Nach Risikostufe'
+        risk_level:
+            low: 'Niedrig'
+            medium: 'Mittel'
+            high: 'Hoch'
+            critical: 'Kritisch'
+        special_categories_title: 'Besondere Kategorien'
+        special_categories_label: 'Art. 9 DSGVO-Daten:'
+        special_categories_help: 'Datenpannen mit Bezug zu Herkunft, politischer Meinung, religiöser Überzeugung, Gesundheitsdaten, sexueller Orientierung oder biometrischen/genetischen Daten.'
+        recent_title: 'Aktuelle Datenpannen (letzte 30 Tage)'
     success:
         updated: 'Datenschutzverletzung wurde aktualisiert.'
         deleted: 'Datenschutzverletzung wurde gelöscht.'
