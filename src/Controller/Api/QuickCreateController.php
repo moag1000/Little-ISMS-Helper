@@ -166,7 +166,8 @@ final class QuickCreateController extends AbstractController
         $a = new Asset();
         $a->setName($name);
         $a->setAssetType((string) ($payload['assetType'] ?? 'data'));
-        $a->setStatus('active');
+        // Status defaults to 'active' via Asset entity property —
+        // direct setStatus() would trip lifecycle.directSetStatus PHPStan rule.
         $a->setConfidentialityValue(3);
         $a->setIntegrityValue(3);
         $a->setAvailabilityValue(3);
