@@ -32,6 +32,36 @@
                 {% block alert_body %}<div class="fw-bold mb-2"> <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'audit.iso_27001_requirement'|trans({}, 'audit') }} </div> <p class="mb-0 small"> {{ 'audit.iso_27001_clause_info'|trans({}, 'audit') }} </p>{% endblock %}
             {% endembed %}
 
+            {# C5-05 — Audit-Program Templates (ISO 19011 Cl. 5.4). Lets junior
+               implementers start from a standard ISO27001 / GDPR / BCM audit
+               instead of a blank form. Uses the P-14 SystemTemplateRegistry. #}
+            {% set _audit_program_templates = system_templates('App\\Entity\\InternalAudit') %}
+            {% if _audit_program_templates|length > 0 %}
+                <div class="fa-template-cta my-3 p-3 border rounded bg-body-tertiary d-flex flex-wrap align-items-center gap-3">
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">
+                            <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
+                            {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+                        </div>
+                        <div class="small text-body-secondary">
+                            {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary"
+                            data-controller="fa-modal-dispatcher"
+                            data-action="click->fa-modal-dispatcher#open"
+                            data-fa-modal-id="systemTemplateModalAuditNew">
+                        {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+                    </button>
+                </div>
+                {% include '_components/_system_template_selector.html.twig' with {
+                    templates: _audit_program_templates,
+                    entity_class: 'App\\Entity\\InternalAudit',
+                    redirect_to: 'app_audit_index',
+                    modal_id: 'systemTemplateModalAuditNew'
+                } %}
+            {% endif %}
+
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
@@ -39,7 +69,10 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form', 'data-controller': 'audit-subsidiaries'}}) }}
+                    {# C5-04 — `conditional-fields` controller toggles the scoped-assets row
+                       when scopeType=asset (ISO 19011 Cl. 5.5.2). The existing
+                       audit-subsidiaries controller continues to manage subsidiaries. #}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form', 'data-controller': 'audit-subsidiaries conditional-fields'}}) }}
 
                     {# Basic Information Section #}
                     <fieldset class="mb-4">

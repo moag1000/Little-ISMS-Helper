@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use Doctrine\ORM\QueryBuilder;
+use App\Entity\Asset;
 use App\Entity\InternalAudit;
 use App\Entity\ComplianceFramework;
 use App\Entity\Person;
@@ -62,12 +63,35 @@ final class InternalAuditType extends AbstractType
                 ],
                 'attr' => [
                     'data-corporate-scope' => '1',
+                    // C5-04 — Trigger id for the dependent `scopedAssets` field
+                    // wrapped in conditional-fields controller. ISO 19011 Cl. 5.5.2.
+                    'id' => 'internal_audit_scopeType',
                 ],
                 'constraints' => [
                     new NotBlank(),
                 ],
                 'help' => 'audit.help.scope_type',
                     'choice_translation_domain' => 'audit',
+            ])
+            // C5-04 — Scoped Assets multi-select. Only visible when scopeType='asset'.
+            // Toggle handled by the `conditional-fields` Stimulus controller; data-
+            // attributes carry the trigger reference, the controller hides the entire
+            // form-row wrapper when scopeType differs. ISO 19011 Cl. 5.5.2: audit
+            // scope must list the audited objects (here: explicit Asset selection).
+            ->add('scopedAssets', EntityType::class, [
+                'label' => 'audit.field.scoped_assets',
+                'class' => Asset::class,
+                'choice_label' => fn(Asset $a): string => $a->getName() ?? '',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'by_reference' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                    'data-depends-on' => 'internal_audit_scopeType',
+                    'data-depends-on-value' => 'asset',
+                ],
+                'help' => 'audit.help.scoped_assets',
             ])
             ->add('objectives', TextareaType::class, [
                 'label' => 'audit.field.objectives',
