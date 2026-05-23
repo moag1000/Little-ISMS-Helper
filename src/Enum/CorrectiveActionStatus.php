@@ -19,6 +19,10 @@ enum CorrectiveActionStatus: string
     case Planned = 'planned';
     case InProgress = 'in_progress';
     case Completed = 'completed';
+    // Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: NEW intermediate `verified`
+    // state forces the reviewer through a `completed → verified` step
+    // (ISO 27001 Cl. 10.1 d). See config/workflows/corrective_action.yaml.
+    case Verified = 'verified';
     case VerifiedEffective = 'verified_effective';
     case VerifiedIneffective = 'verified_ineffective';
     case Cancelled = 'cancelled';
@@ -34,6 +38,7 @@ enum CorrectiveActionStatus: string
             self::Planned              => 'neutral',
             self::InProgress           => 'info',
             self::Completed            => 'warning',
+            self::Verified             => 'info',
             self::VerifiedEffective    => 'success',
             self::VerifiedIneffective  => 'danger',
             self::Cancelled            => 'neutral',

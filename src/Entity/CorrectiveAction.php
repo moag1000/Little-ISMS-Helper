@@ -30,6 +30,9 @@ class CorrectiveAction
     public const STATUS_PLANNED = 'planned';
     public const STATUS_IN_PROGRESS = 'in_progress';
     public const STATUS_COMPLETED = 'completed';
+    // Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: forced `completed → verified`
+    // intermediate state — ISO 27001 Cl. 10.1 d.
+    public const STATUS_VERIFIED = 'verified';
     public const STATUS_VERIFIED_EFFECTIVE = 'verified_effective';
     public const STATUS_VERIFIED_INEFFECTIVE = 'verified_ineffective';
 
@@ -414,8 +417,12 @@ class CorrectiveAction
 
     public function isOverdue(): bool
     {
+        // Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: `verified` joins the
+        // post-completion set — once verification has opened, the operational
+        // due-date is irrelevant (Cl. 10.1 d evidence-review owns the SLA).
         if ($this->plannedCompletionDate === null
             || $this->status === self::STATUS_COMPLETED
+            || $this->status === self::STATUS_VERIFIED
             || $this->status === self::STATUS_VERIFIED_EFFECTIVE
             || $this->status === self::STATUS_VERIFIED_INEFFECTIVE) {
             return false;
