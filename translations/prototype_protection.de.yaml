@@ -40,6 +40,7 @@ prototype_protection:
         overall_result: 'Gesamtergebnis'
     placeholder:
         assessor_person: '-- Person aus Stammdaten --'
+        title: 'z.B. Neue EV-Plattform Q3 2026'
     help:
         scope: 'Programm, Baureihe, Fahrzeugvariante oder Event, auf das sich dieses Assessment bezieht.'
         required_labels: 'Mehrfachauswahl — alle für den Scope anwendbaren Prototype-Labels.'

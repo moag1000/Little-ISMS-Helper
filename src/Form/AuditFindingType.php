@@ -53,7 +53,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
             ->add('findingNumber', TextType::class, [
                 'label' => 'audit_finding.field.finding_number',
                 'required' => false,
-                'attr' => ['maxlength' => 50, 'placeholder' => 'e.g. F-2026-001'],
+                'attr' => ['maxlength' => 50, 'placeholder' => 'audit_finding.placeholder.finding_number'],
                 'help' => 'audit_finding.help.finding_number',
             ])
             ->add('title', TextType::class, [
@@ -125,7 +125,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
             ->add('clauseReference', TextType::class, [
                 'label' => 'audit_finding.field.clause_reference',
                 'required' => false,
-                'attr' => ['maxlength' => 100, 'placeholder' => 'ISO 27001 A.5.1 / Clause 9.3'],
+                'attr' => ['maxlength' => 100, 'placeholder' => 'audit_finding.placeholder.clause_reference'],
                 'help' => 'audit_finding.help.clause_reference',
             ])
             ->add('evidence', TextareaType::class, [
