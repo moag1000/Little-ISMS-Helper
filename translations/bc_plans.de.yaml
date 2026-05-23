@@ -70,6 +70,7 @@ bc_plans:
     required_resources: 'Erforderliche Ressourcen (strukturiert)'
     escalation_levels: 'Eskalationsstufen'
     crisis_teams: 'Krisenstäbe'
+    crisis_teams_reusable: 'Krisenstäbe (plan-übergreifend wiederverwendbar)'
     rto: 'Recovery Time Objective (Stunden)'
     rpo: 'Recovery Point Objective (Stunden)'
     critical_assets: 'Geschäftskritische Assets'
@@ -80,6 +81,9 @@ bc_plans:
     archived: Archiviert
   badge:
     overdue: ÜBERFÄLLIG
+  legacy:
+    bc_team_title: 'Legacy: BC-Team (Freitext, veraltet)'
+    bc_team_hint: 'Dieses Feld wurde im S13-Audit als veraltet markiert. Das plan-spezifische Team wird ab sofort über den strukturierten Reaktionsteam-Builder (responseTeamMembers) gepflegt; plan-übergreifend wiederverwendbare Krisenstäbe werden über die crisisTeams-Verknüpfung erfasst. Inhalt unten ist nur lesbar.'
   message:
     not_scheduled: Nicht geplant
     never: Nie
@@ -96,6 +100,7 @@ bc_plans:
     status: Aktueller Status des Plans (Entwurf, Aktiv, Archiviert)
     bc_team: Personen, die bei Aktivierung des Plans einbezogen werden (BC-Team gemäß
       ISO 22301)
+    bc_team_deprecated: 'Veraltet — bitte den strukturierten Reaktionsteam-Builder (responseTeamMembers) unten benutzen. Dieses Freitextfeld bleibt nur für Bestandsdaten lesbar erhalten.'
     activation_criteria: Bedingungen, unter denen dieser Plan aktiviert werden soll
       (z.B. Serverausfall > 4h)
     roles_responsibilities: Rollen und Verantwortlichkeiten der Teammitglieder während
@@ -128,6 +133,7 @@ bc_plans:
     required_resources_json: 'JSON-Objekt mit Ressourcenbedarf: {"personnel": [], "equipment": [], "supplies": []}. ISO 22301 §8.1.'
     escalation_levels_json: 'JSON-Array mit Eskalationsstufen gemäß BSI 200-4 §6.2: [{"level":1,"trigger":"...","responder":"...","escalateAfter":"15min"}].'
     crisis_teams: 'Krisenstäbe, die für diesen Plan zuständig sind (ISO 22301 §8.4.2). Mehrfachauswahl möglich.'
+    crisis_teams_reusable: 'Optional — Krisenteam-Verknüpfung für plan-übergreifende Wiederverwendung (ISO 22301 §8.4.2). Das plan-spezifische Team wird oberhalb über den Reaktionsteam-Builder gepflegt.'
     rto: 'ISO 22301 Cl. 8.4.2 — maximal akzeptable Wiederherstellungszeit nach Ausfall, in Stunden. Beispiele: kritisch=1, hoch=4, mittel=24, niedrig=72.'
     rpo: 'ISO 22301 Cl. 8.4.2 — maximal tolerierbarer Datenverlust, gemessen in Stunden zwischen letztem konsistentem Backup und Eintritt der Störung.'
     critical_assets: 'Assets, die für die Wiederherstellung dieses Geschäftsprozesses essentiell sind. Mehrfachauswahl möglich.'
@@ -206,6 +212,18 @@ bcm:
   field:
     activation_criteria: Aktivierungskriterien
     recovery_plan: Wiederherstellung Plan
+# Junior-ISB-Audit-2026-05-22 C2-06: Singular `bc_plan:` namespace for
+# entity-validator messages + form-section labels referencing the canonical
+# BC-Plan concept (mirrors `bc_plan.validation.*` keys on entity attributes).
+bc_plan:
+  section:
+    response_team: 'Plan-spezifisches Team'
+  validation:
+    name_required: 'Name des BC-Plans ist erforderlich.'
+    business_process_required: 'Zugehöriger Geschäftsprozess ist erforderlich.'
+    activation_criteria_required: 'Aktivierungskriterien müssen definiert sein.'
+    recovery_procedures_required: 'Wiederherstellungsverfahren müssen dokumentiert sein.'
+    team_required: 'Für aktive/veröffentlichte BC-Pläne ist mindestens ein Eintrag im Reaktionsteam (responseTeamMembers) oder ein verknüpfter Krisenstab (crisisTeams) erforderlich (ISO 22301 Cl. 8.4.2).'
 iso_9001_bridge:
     recovery: 'In der neuen Edition von ISO 9001 (Entwurf) ist das Klausel 8.5.5 "Notfallplanung". Die quantitativen Recovery-Ziele RTO/RPO werden in der ISO 9001 nicht explizit gefordert — sie sind ISO-22301-spezifisch.'
     bc_plan: 'In ISO 9001 ist BC-Planung Teil der Risikobehandlung (6.1.2). Ein separater Plan ist in der 9001 nicht zwingend, in ISO 22301 schon.'
