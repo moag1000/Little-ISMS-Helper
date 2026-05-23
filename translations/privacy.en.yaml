@@ -595,6 +595,28 @@ processing_activity:
     validation:
         tom_or_controls_required: 'At least one form of evidence is required (GDPR Art. 32): either a qualitative TOM description (≥ 50 characters) OR at least one implemented ISO 27001 control.'
 data_breach:
+    dashboard:
+        title: 'Data Breach Dashboard'
+        subtitle: 'GDPR Art. 33/34 Compliance Overview'
+        overall_score: 'Overall GDPR Art. 33/34 Compliance Score'
+        breadcrumb:
+            privacy: 'Privacy'
+            data_breaches: 'Data Breaches'
+            dashboard: 'Dashboard'
+        action:
+            view_all: 'View All Breaches'
+            new: 'New Data Breach'
+        kpi:
+            notification_compliance: 'Notification Compliance'
+            notified: '%done% / %total% notified'
+            timeliness: 'Timeliness Score (72h Compliance)'
+            overdue_notifications: '%count% overdue notifications'
+            completeness: 'Completeness'
+            avg_completeness: 'Average breach completeness'
+            total_breaches: '%count% total breaches'
+            affected_subjects: '%count% affected data subjects'
+        action_items: 'Action Items'
+        under_assessment: 'Under Assessment'
     success:
         updated: 'Data breach updated successfully.'
         deleted: 'Data breach deleted successfully.'

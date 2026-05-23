@@ -123,7 +123,7 @@ bc_plans:
     restore_procedures: Data restoration procedures (restore process, prioritization)
     version: Current version number of the BC plan
     last_tested: Date of last BC plan test (exercises per ISO 22301:2019 Clause 8.5)
-    next_test_date: Date of next scheduled BC plan test
+    next_test_date: 'Date of next scheduled BC plan test. ISO 22301:2019 Cl. 8.5 requires regular exercises (typical minimum cadence 12 months). Without a verifiable test, an auditor will treat the plan as untested.'
     last_review_date: Date of last plan review
     next_review_date: Date of next scheduled review (at least annually per ISO 22301)
     review_notes: Notes from the last plan review (changes needed, improvements)

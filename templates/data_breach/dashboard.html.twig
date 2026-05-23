@@ -1,32 +1,32 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}Data Breach Dashboard{% endblock %}
+{% block title %}{{ 'data_breach.dashboard.title'|trans({}, 'privacy') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Privacy', icon: 'nav-shield-lock' },
-            { label: 'Data Breaches', url: path('app_data_breach_index') },
-            { label: 'Dashboard' }
+            { label: 'data_breach.dashboard.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'nav-shield-lock' },
+            { label: 'data_breach.dashboard.breadcrumb.data_breaches'|trans({}, 'privacy'), url: path('app_data_breach_index') },
+            { label: 'data_breach.dashboard.breadcrumb.dashboard'|trans({}, 'privacy') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'Data Breach Dashboard',
-        subtitle: 'GDPR Art. 33/34 Compliance Overview',
+        title: 'data_breach.dashboard.title'|trans({}, 'privacy'),
+        subtitle: 'data_breach.dashboard.subtitle'|trans({}, 'privacy'),
         icon: 'nav-dashboard',
         actions: [
-            { label: 'View All Breaches', url: path('app_data_breach_index'), variant: 'primary', icon: 'ui-list' },
-            { label: 'New Data Breach', url: path('app_data_breach_new'), variant: 'danger', icon: 'plus' }
+            { label: 'data_breach.dashboard.action.view_all'|trans({}, 'privacy'), url: path('app_data_breach_index'), variant: 'primary', icon: 'ui-list' },
+            { label: 'data_breach.dashboard.action.new'|trans({}, 'privacy'), url: path('app_data_breach_new'), variant: 'danger', icon: 'plus' }
         ]
     } %}
 
     {# Overall Compliance Score #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
         {% block card_body %}
-            <div class="small fw-semibold text-muted mb-2">Overall GDPR Art. 33/34 Compliance Score</div>
+            <div class="small fw-semibold text-muted mb-2">{{ 'data_breach.dashboard.overall_score'|trans({}, 'privacy') }}</div>
             {% set score = compliance_score.overall_score %}
             <h1 class="display-1 mb-0
                 {% if score >= 80 %}text-success
@@ -36,26 +36,26 @@
             </h1>
             <div class="row mt-4">
                 <div class="col-md-4">
-                    <small class="text-muted">Notification Compliance</small>
+                    <small class="text-muted">{{ 'data_breach.dashboard.kpi.notification_compliance'|trans({}, 'privacy') }}</small>
                     <h4>{{ compliance_score.notification_compliance }}%</h4>
-                    <small class="text-muted">{{ statistics.authority_notified }} / {{ statistics.requires_authority_notification }} notified</small>
+                    <small class="text-muted">{{ 'data_breach.dashboard.kpi.notified'|trans({'%done%': statistics.authority_notified, '%total%': statistics.requires_authority_notification}, 'privacy') }}</small>
                 </div>
                 <div class="col-md-4">
-                    <small class="text-muted">Timeliness Score (72h Compliance)</small>
+                    <small class="text-muted">{{ 'data_breach.dashboard.kpi.timeliness'|trans({}, 'privacy') }}</small>
                     <h4 class="{% if compliance_score.timeliness_score < 80 %}text-danger{% else %}text-success{% endif %}">
                         {{ compliance_score.timeliness_score }}%
                     </h4>
-                    <small class="text-muted">{{ compliance_score.overdue_notifications }} overdue notification{{ compliance_score.overdue_notifications != 1 ? 's' : '' }}</small>
+                    <small class="text-muted">{{ 'data_breach.dashboard.kpi.overdue_notifications'|trans({'%count%': compliance_score.overdue_notifications}, 'privacy') }}</small>
                 </div>
                 <div class="col-md-4">
-                    <small class="text-muted">Completeness</small>
+                    <small class="text-muted">{{ 'data_breach.dashboard.kpi.completeness'|trans({}, 'privacy') }}</small>
                     <h4>{{ compliance_score.completeness_score }}%</h4>
-                    <small class="text-muted">Average breach completeness</small>
+                    <small class="text-muted">{{ 'data_breach.dashboard.kpi.avg_completeness'|trans({}, 'privacy') }}</small>
                 </div>
             </div>
             <p class="text-muted mt-3">
-                {{ statistics.total }} total breach{{ statistics.total != 1 ? 'es' : '' }} ·
-                {{ compliance_score.total_affected_subjects|number_format }} affected data subjects
+                {{ 'data_breach.dashboard.kpi.total_breaches'|trans({'%count%': statistics.total}, 'privacy') }} ·
+                {{ 'data_breach.dashboard.kpi.affected_subjects'|trans({'%count%': compliance_score.total_affected_subjects|number_format}, 'privacy') }}
             </p>
         {% endblock %}
     {% endembed %}
@@ -64,7 +64,7 @@
     {% if action_items|length > 0 %}
         {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
             {% block card_header %}
-                <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Action Items</h2></div>
+                <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'data_breach.dashboard.action_items'|trans({}, 'privacy') }}</h2></div>
             {% endblock %}
             {% block card_body %}
                 <div class="list-group">
@@ -128,7 +128,7 @@
                             <div class="h2">{{ statistics.draft }}</div>
                         </div>
                         <div class="col-md-3">
-                            <div class="text-muted small">Under Assessment</div>
+                            <div class="text-muted small">{{ 'data_breach.dashboard.under_assessment'|trans({}, 'privacy') }}</div>
                             <div class="h3">{{ statistics.under_assessment }}</div>
                         </div>
                         <div class="col-md-3">

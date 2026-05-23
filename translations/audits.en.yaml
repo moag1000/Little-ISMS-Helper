@@ -256,6 +256,7 @@ audit_finding:
         finding_number: 'Unique identifier (optional — e.g. F-2026-001)'
         description: 'Detailed description of the deviation or observation'
         type: 'Major NC = serious; Minor NC = minor; Observation = note; Opportunity = improvement chance'
+        severity: 'Severity = impact magnitude (Critical/High/Medium/Low). Type = finding class per ISO 19011 (Major NC vs. Minor NC). Typical combinations: Major NC + Critical/High, Minor NC + Medium/Low, Observation/Opportunity = Medium/Low.'
         clause_reference: 'Standard reference (e.g. ISO 27001 A.5.1, Clause 9.3)'
         evidence: 'Supporting material (interview, document, screenshot, …)'
         related_controls: 'Multi-select multiple ISO 27001 controls. Findings often hit more than one control (e.g. logging finding touches A.8.15 + A.8.16).'
@@ -362,7 +363,7 @@ corrective_action:
         responsible_person: '-- Select contact person --'
     help:
         description: 'Concrete action to remediate the deviation'
-        root_cause_analysis: 'Why did this happen? (5-Why / Ishikawa / FMEA)'
+        root_cause_analysis: 'Why did this happen? — Method choice: <strong>5-Why</strong> for linear causal chains (standard CAPA, quick). <strong>Ishikawa</strong> when multiple parallel cause-domains exist (people/machine/material/method/environment/measurement). <strong>FMEA</strong> for safety-critical processes with probability scoring (e.g. SIL/ASIL contexts).'
         related_controls: 'A corrective action may address multiple ISO 27001 controls (e.g. A.8.15 + A.8.16). Multi-select supported.'
         effectiveness_review_date: 'ISO 27001 10.1 requires post-implementation effectiveness review'
         effectiveness_notes: 'Outcome of effectiveness review — why it was (in)effective'
@@ -377,6 +378,9 @@ corrective_action:
     section:
         description: 'Description & Root Cause'
         verification: 'Effectiveness Verification'
+        root_cause_intro: 'Root-cause analysis per ISO 27001 Cl. 10.1: WHY did the nonconformity occur? Use 5-Whys (ask "why?" five times), Ishikawa (people/machine/material/method/environment/measurement), or FMEA. Plain "user error" is NOT a root cause — drill deeper.'
+        action_plan_intro: 'Action plan per ISO 27001 Cl. 10.1 b/c: WHAT is concretely done (correction + prevention), WHO owns it, by WHEN? Don''t forget deputies — the plan must survive a holiday.'
+        verification_intro: 'Effectiveness verification per ISO 27001 Cl. 10.1 d: AFTER implementation, confirm the root cause was actually removed. Evidence (re-audit, trend KPI, sample check) is mandatory — without verification the CAPA cannot be closed.'
     alert:
         overdue: '%count% overdue action(s).'
     message:

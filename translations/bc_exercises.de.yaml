@@ -118,8 +118,8 @@ bc_exercises:
         evidence_artifacts_json: 'JSON-Array mit Audit-Nachweisen: [{"type":"photo|log|report|screenshot","reference":"Dateiname/URL","description":"Beschreibung"}].'
     exercise_type:
         tabletop: 'Planübung (Tabletop)'
-        walkthrough: 'Walkthrough-Übung'
-        simulation: Simulation
+        walkthrough: 'Durchgang (Walkthrough)'
+        simulation: 'Simulation'
         full_test: 'Volltest'
         component_test: 'Komponententest'
     status:

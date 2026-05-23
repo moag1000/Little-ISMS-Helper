@@ -225,7 +225,9 @@ final class IncidentType extends AbstractType
                     'rows' => 3,
                     'placeholder' => 'incident.placeholder.root_cause',
                 ],
-                'help' => 'incident.help.resolution_after_investigation',
+                // T11.9 (UX-P1): differentiate root-cause vs corrective-action
+                // help so juniors see the distinction (Doppelpflege-trap).
+                'help' => 'incident.help.root_cause_vs_corrective',
             ])
             ->add('correctiveActions', TextareaType::class, [
                 'label' => 'incident.field.corrective_actions',
