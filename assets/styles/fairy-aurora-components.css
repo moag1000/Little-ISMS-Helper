@@ -8947,3 +8947,87 @@ a.fa-matrix-table__cell:focus-visible {
         padding: var(--space-4) var(--space-3);
     }
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   fa-severity-legend — read-only severity-stage definitions block
+   P-13 SeverityDefinitions (audit-2026-05-22)
+   ───────────────────────────────────────────────────────────────── */
+
+.fa-severity-legend {
+    background: var(--surface-2);
+    border: 1px solid var(--surface-3);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+}
+
+.fa-severity-legend__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-2);
+    margin-bottom: var(--space-2);
+}
+
+.fa-severity-legend__heading { letter-spacing: 0.02em; }
+
+.fa-severity-legend__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.fa-severity-legend--compact .fa-severity-legend__list {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.fa-severity-legend__item {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: start;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    background: var(--surface);
+    border-left: 3px solid var(--fg-3);
+    border-radius: var(--radius-xs);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.fa-severity-legend--compact .fa-severity-legend__item {
+    grid-template-columns: 1fr;
+    text-align: center;
+}
+
+.fa-severity-legend__item--success { border-left-color: var(--success-7); }
+.fa-severity-legend__item--info    { border-left-color: var(--info-7); }
+.fa-severity-legend__item--warning { border-left-color: var(--warning-7); }
+.fa-severity-legend__item--danger  { border-left-color: var(--danger-7); }
+
+.fa-severity-legend__dot {
+    display: inline-block;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    margin-top: 0.35rem;
+    background: var(--fg-3);
+}
+
+.fa-severity-legend__item--success .fa-severity-legend__dot { background: var(--success-7); }
+.fa-severity-legend__item--info    .fa-severity-legend__dot { background: var(--info-7); }
+.fa-severity-legend__item--warning .fa-severity-legend__dot { background: var(--warning-7); }
+.fa-severity-legend__item--danger  .fa-severity-legend__dot { background: var(--danger-7); }
+
+.fa-severity-legend__label {
+    font-weight: 600;
+    color: var(--fg-1);
+    white-space: nowrap;
+}
+
+.fa-severity-legend__definition {
+    color: var(--fg-2);
+}

@@ -1,4 +1,5 @@
 {% import '_components/_fa_severity_choice.html.twig' as _fa_severity_choice %}
+{% import '_components/_fa_severity_legend.html.twig' as _fa_severity_legend %}
 {{ form_start(form) }}
     <div class="row g-3">
         <div class="col-md-6">{{ form_row(form.audit) }}</div>
@@ -17,6 +18,10 @@
             }) }}
             {{ form_errors(form.severity) }}
             {% do form.severity.setRendered %}
+            {{ _fa_severity_legend.render({
+                translation_prefix: 'audit_finding',
+                translation_domain: 'audits',
+            }) }}
         </div>
         <div class="col-md-4">{{ form_row(form.status) }}</div>
         <div class="col-md-4">{{ form_row(form.source) }}</div>

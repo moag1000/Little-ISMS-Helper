@@ -279,6 +279,7 @@ audit_finding:
         low: 'Low'
     severity_choice:
         aria_label: 'Finding severity'
+        legend_title: 'Severity definitions (ISO 19011 Cl. 6.4.8)'
         low:
             label: 'Low'
             definition: 'Minor deviation, no direct compliance breach. Example: typo in a procedure, missing version number.'

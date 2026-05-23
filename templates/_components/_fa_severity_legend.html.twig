@@ -1,0 +1,53 @@
+{#
+ # FairyAurora v4 — Severity Legend (read-only definitions block)
+ #
+ # Renders the 4 severity-stage definitions (low / medium / high / critical) as
+ # a compact info-card with colored stripe + per-stage label + definition. Sits
+ # BELOW the severity form-field (no rendering replacement, no Stimulus
+ # interference). Each domain ships its own `<prefix>.severity_choice.*` keys
+ # — see audit_finding (audits domain), incident (incident domain).
+ #
+ # Usage:
+ #   {% import '_components/_fa_severity_legend.html.twig' as _fa_severity_legend %}
+ #   {{ _fa_severity_legend.render({
+ #       translation_prefix: 'incident',
+ #       translation_domain: 'incident',
+ #   }) }}
+ #
+ # Props:
+ #   translation_prefix  string  — key prefix (e.g. 'incident', 'audit_finding')
+ #   translation_domain  string  — domain (e.g. 'incident', 'audits')
+ #   compact             bool    — single-line strip (default false → 4 rows)
+ #
+ # Norm-Bezug: P-13 SeverityDefinitions (SOLUTIONS_FOUNDATION_2026-05-22.md).
+ #}
+{% macro render(props) %}
+    {%- set _prefix = props.translation_prefix -%}
+    {%- set _domain = props.translation_domain -%}
+    {%- set _compact = props.compact|default(false) -%}
+    {%- set _stages = [
+        { value: 'low',      tone: 'success' },
+        { value: 'medium',   tone: 'info' },
+        { value: 'high',     tone: 'warning' },
+        { value: 'critical', tone: 'danger' },
+    ] -%}
+    <div class="fa-severity-legend mt-2 fa-severity-legend--{{ _compact ? 'compact' : 'expanded' }}">
+        <div class="fa-severity-legend__header">
+            <i class="fa-icon fa-icon--info" aria-hidden="true"></i>
+            <span class="fa-severity-legend__heading">
+                {{ (_prefix ~ '.severity_choice.legend_title')|trans({}, _domain) }}
+            </span>
+        </div>
+        <ul class="fa-severity-legend__list" role="list">
+            {% for stage in _stages %}
+                {%- set _labelKey = _prefix ~ '.severity_choice.' ~ stage.value ~ '.label' -%}
+                {%- set _defKey   = _prefix ~ '.severity_choice.' ~ stage.value ~ '.definition' -%}
+                <li class="fa-severity-legend__item fa-severity-legend__item--{{ stage.tone }}">
+                    <span class="fa-severity-legend__dot" aria-hidden="true"></span>
+                    <span class="fa-severity-legend__label">{{ _labelKey|trans({}, _domain) }}</span>
+                    <span class="fa-severity-legend__definition">{{ _defKey|trans({}, _domain) }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}

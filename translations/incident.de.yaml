@@ -196,6 +196,7 @@ incident:
     critical: Kritisch
   severity_choice:
     aria_label: 'Schweregrad-Auswahl'
+    legend_title: 'Schweregrad-Definitionen (ISO 27001 A.5.24)'
     low:
       label: Niedrig
       definition: 'Lokaler Effekt, manuell handhabbar, keine SLA-Auswirkung. Beispiel: einzelne verschlüsselte Spam-Mail, isolierter Druckerausfall.'

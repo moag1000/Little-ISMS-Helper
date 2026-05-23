@@ -87,6 +87,11 @@
                                         'data-action': 'change->incident-escalation-preview#updatePreview'
                                     }
                                 }) }}
+                                {% import '_components/_fa_severity_legend.html.twig' as _fa_severity_legend %}
+                                {{ _fa_severity_legend.render({
+                                    translation_prefix: 'incident',
+                                    translation_domain: 'incident',
+                                }) }}
                             </div>
                             {% if form.dataBreachOccurred is defined %}
                             <div class="col-md-4" data-incident-escalation-preview-target="breachCheckbox">
