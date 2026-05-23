@@ -95,6 +95,10 @@ bcm:
         standard: Standard
         flexible: Flexibel
 business_process:
+    bia:
+        rto_long: 'Recovery Time Objective'
+        rpo_long: 'Recovery Point Objective'
+        mtpd_long: 'Maximum Tolerable Period of Disruption'
     confirm:
         delete: 'Möchten Sie diesen Geschäftsprozess wirklich löschen?'
     action:
