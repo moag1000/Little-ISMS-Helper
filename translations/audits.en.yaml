@@ -363,7 +363,7 @@ corrective_action:
         responsible_person: '-- Select contact person --'
     help:
         description: 'Concrete action to remediate the deviation'
-        root_cause_analysis: 'Why did this happen? (5-Why / Ishikawa / FMEA)'
+        root_cause_analysis: 'Why did this happen? — Method choice: <strong>5-Why</strong> for linear causal chains (standard CAPA, quick). <strong>Ishikawa</strong> when multiple parallel cause-domains exist (people/machine/material/method/environment/measurement). <strong>FMEA</strong> for safety-critical processes with probability scoring (e.g. SIL/ASIL contexts).'
         related_controls: 'A corrective action may address multiple ISO 27001 controls (e.g. A.8.15 + A.8.16). Multi-select supported.'
         effectiveness_review_date: 'ISO 27001 10.1 requires post-implementation effectiveness review'
         effectiveness_notes: 'Outcome of effectiveness review — why it was (in)effective'
