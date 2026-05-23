@@ -297,6 +297,13 @@ processing_activity:
     error:
         invalid_csrf: 'Ungültiges CSRF-Token.'
     clone_suffix: '(Kopie)'
+    kpi:
+        completeness: 'Vollständigkeit'
+        status: 'Status'
+        risk_level: 'Risikostufe'
+        dpia_status: 'DSFA-Status'
+        required: 'Erforderlich'
+        not_required: 'Nicht erforderlich'
     title: 'VVT - Verzeichnis von Verarbeitungstätigkeiten'
     subtitle: 'Art. 30 DSGVO - Verzeichnis von Verarbeitungstätigkeiten'
     page:

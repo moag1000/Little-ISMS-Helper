@@ -300,6 +300,13 @@ processing_activity:
     error:
         invalid_csrf: 'Invalid CSRF token.'
     clone_suffix: '(Copy)'
+    kpi:
+        completeness: 'Completeness'
+        status: 'Status'
+        risk_level: 'Risk Level'
+        dpia_status: 'DPIA Status'
+        required: 'Required'
+        not_required: 'Not Required'
     title: 'VVT - Record of Processing Activities'
     subtitle: 'Art. 30 GDPR - Record of Processing Activities'
     page:
