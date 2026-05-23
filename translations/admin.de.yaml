@@ -4,6 +4,15 @@ admin:
             not_found: 'Preset wurde nicht gefunden.'
             invalid_csrf: 'Ungültiges CSRF-Token.'
             tenant_required: 'Mandantenkontext erforderlich.'
+    module:
+        error:
+            invalid_csrf: 'Ungültiges CSRF-Token.'
+    sso_provider:
+        success:
+            deleted: 'SSO-Provider wurde gelöscht.'
+            role_mappings_saved: 'Rollen-Mappings gespeichert.'
+        error:
+            discovery_failed: 'Discovery fehlgeschlagen: %message%'
     title: Administration
     cancel: 'Abbrechen'
     tenant_management:
@@ -227,6 +236,12 @@ admin:
             view_all: 'Alle anzeigen'
     licensing:
         attributions_provided: 'Attributionen in der Anwendung bereitstellen (erledigt ✓)'
+        warning:
+            report_not_found: 'Lizenz-Report nicht gefunden. Bitte über den Button unten erstellen.'
+        success:
+            report_generated: 'Lizenz-Report erfolgreich erstellt.'
+        error:
+            report_generation_failed: 'Erstellung des Lizenz-Reports fehlgeschlagen.'
     data_export:
         title: Daten-Export
         format: Export-Format

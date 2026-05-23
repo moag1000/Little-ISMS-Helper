@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Exception;
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\LicenseReportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Admin wrapper for License Management.
@@ -28,6 +30,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class AdminLicensingController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'admin';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
+
+
     /**
      * License Overview - Third-Party Licenses
      */
@@ -64,7 +83,7 @@ class AdminLicensingController extends AbstractController
 
         if (!file_exists($reportFile)) {
             // Try to generate it
-            $this->addFlash('warning', 'License report not found. Please generate it using the button below.');
+            $this->flashWarning('admin.licensing.warning.report_not_found');
             return $this->redirectToRoute('admin_licensing_index');
         }
 
@@ -151,7 +170,7 @@ class AdminLicensingController extends AbstractController
             $result = $licenseReportService->generateReport();
 
             if ($result['success']) {
-                $this->addFlash('success', 'License report generated successfully');
+                $this->flashSuccess('admin.licensing.success.report_generated');
 
                 return $this->json([
                     'success' => true,
@@ -159,7 +178,7 @@ class AdminLicensingController extends AbstractController
                     'report' => $result['report'],
                 ]);
             }
-            $this->addFlash('error', 'License report generation failed');
+            $this->flashError('admin.licensing.error.report_generation_failed');
             return $this->json([
                 'success' => false,
                 'message' => 'License report generation failed',

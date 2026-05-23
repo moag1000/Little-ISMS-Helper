@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\IdentityProvider;
 use App\Entity\IdentityProviderRoleMapping;
@@ -55,7 +56,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class SsoProviderController extends AbstractController
 {
+    use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
+
+    protected function getFlashDomain(): string
+    {
+        return 'admin';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
 
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -132,7 +144,7 @@ final class SsoProviderController extends AbstractController
         $this->em->remove($provider);
         $this->em->flush();
         $this->audit->logCustom('sso.provider.delete', 'IdentityProvider', $providerId, null, ['slug' => $slug]);
-        $this->addFlash('success', 'SSO provider deleted.');
+        $this->flashSuccess('admin.sso_provider.success.deleted');
 
         return $this->redirectToRoute('admin_sso_index');
     }
@@ -173,7 +185,7 @@ final class SsoProviderController extends AbstractController
                 $provider->getName()
             ));
         } catch (\Throwable $e) {
-            $this->addFlash('error', 'Discovery failed: ' . $e->getMessage());
+            $this->addFlash('error', $this->translator->trans('admin.sso_provider.error.discovery_failed', ['%message%' => $e->getMessage()], 'admin'));
         }
 
         return $this->redirectToRoute('admin_sso_edit', ['id' => $provider->getId()]);
@@ -311,7 +323,7 @@ final class SsoProviderController extends AbstractController
             ['action' => 'role_mappings_saved', 'count' => count($data)],
         );
 
-        $this->addFlash('success', 'Role mappings saved.');
+        $this->flashSuccess('admin.sso_provider.success.role_mappings_saved');
 
         return $this->redirectToRoute('admin_sso_show', ['id' => $provider->getId()]);
     }
