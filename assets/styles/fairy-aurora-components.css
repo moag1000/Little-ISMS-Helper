@@ -5279,6 +5279,156 @@ html[data-theme="dark"] .framework-card {
 .isms-risk-legend__chip[data-level="4"]::before { background: var(--cell-4); }
 .isms-risk-legend__chip[data-level="5"]::before { background: var(--cell-5); }
 
+/* ── Risk Mini-Heatmap 5×5 (inline form companion) ────────────────────
+   T6.8 UX-P1 — live mini-matrix that mirrors the probability + impact
+   inputs while the user fills the Risk-form.
+   Cell-band classification is server-rendered through
+   App\Risk\RiskMatrixThresholds (SSoT).
+   Stimulus controller: assets/controllers/risk_mini_heatmap_controller.js
+   Partial:             templates/_components/_fa_risk_mini_heatmap.html.twig
+   ─────────────────────────────────────────────────────────────────── */
+.fa-risk-mini-heatmap {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "grid   grid"
+        "axes   axes";
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    font-family: var(--font-sans);
+    color: var(--fg-1);
+}
+.fa-risk-mini-heatmap--residual {
+    border-style: dashed;
+    border-color: var(--border-2, var(--border));
+}
+
+.fa-risk-mini-heatmap__header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+.fa-risk-mini-heatmap__title {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--fg-2);
+}
+.fa-risk-mini-heatmap__score {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 12px;
+}
+.fa-risk-mini-heatmap__score-label {
+    color: var(--fg-3);
+}
+.fa-risk-mini-heatmap__score-value {
+    font-weight: 700;
+    color: var(--fg-1);
+    font-variant-numeric: tabular-nums;
+    min-width: 1.5em;
+    text-align: right;
+}
+.fa-risk-mini-heatmap__band-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--space-2);
+    border-radius: var(--r-pill);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    background: var(--surface-2);
+    color: var(--fg-2);
+    border: 1px solid var(--border);
+}
+.fa-risk-mini-heatmap__band-badge[data-band="Low"] {
+    background: var(--success-tint);
+    color: var(--success-strong);
+    border-color: rgb(var(--success-rgb), 0.35);
+}
+.fa-risk-mini-heatmap__band-badge[data-band="Medium"] {
+    background: var(--warning-tint);
+    color: var(--warning-strong, var(--warning));
+    border-color: rgb(var(--warning-rgb), 0.35);
+}
+.fa-risk-mini-heatmap__band-badge[data-band="High"] {
+    background: rgb(var(--warning-rgb), 0.18);
+    color: var(--warning-strong, var(--warning));
+    border-color: rgb(var(--warning-rgb), 0.5);
+}
+.fa-risk-mini-heatmap__band-badge[data-band="Critical"] {
+    background: var(--danger-tint);
+    color: var(--danger-strong);
+    border-color: rgb(var(--danger-rgb), 0.45);
+}
+
+.fa-risk-mini-heatmap__grid {
+    grid-area: grid;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+    gap: 3px;
+}
+.fa-risk-mini-heatmap__cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-sm);
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid transparent;
+    transition:
+        transform var(--t-fast, 0.15s) var(--ease-out, ease-out),
+        box-shadow var(--t-fast, 0.15s) var(--ease-out, ease-out),
+        border-color var(--t-fast, 0.15s) var(--ease-out, ease-out);
+}
+.fa-risk-mini-heatmap__cell--low {
+    background: var(--success-tint);
+    color: var(--success-strong);
+}
+.fa-risk-mini-heatmap__cell--medium {
+    background: var(--warning-tint);
+    color: var(--warning-strong, var(--warning));
+}
+.fa-risk-mini-heatmap__cell--high {
+    background: rgb(var(--warning-rgb), 0.35);
+    color: var(--warning-strong, var(--warning));
+}
+.fa-risk-mini-heatmap__cell--critical {
+    background: var(--danger-tint);
+    color: var(--danger-strong);
+}
+.fa-risk-mini-heatmap__cell.is-active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgb(var(--primary-rgb), 0.35);
+    transform: scale(1.08);
+    z-index: 1;
+}
+
+.fa-risk-mini-heatmap__axes {
+    grid-area: axes;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    font-size: 10px;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.fa-risk-mini-heatmap__axis-x,
+.fa-risk-mini-heatmap__axis-y {
+    font-weight: 600;
+}
+
 /* ── Audit-Trail Timeline ─────────────────────────────────────────── */
 .isms-trail {
     position: relative;
