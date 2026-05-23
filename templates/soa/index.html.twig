@@ -113,15 +113,19 @@
 <h2>{{ 'soa.section.by_category'|trans({}, 'soa') }}</h2>
 
 <div class="module-grid">
+    {# T7.7 (UX-P1): canonical category keys match the lowercase values the
+       FormType persists (control.category.{organizational,people,physical,
+       technological}). Comparison is case-insensitive so historical mixed-case
+       rows still surface in the matching tile. #}
     {% set categories = {
-        'Organizational': '🏢',
-        'People': '👥',
-        'Physical': '🏠',
-        'Technological': '💻'
+        'organizational': '🏢',
+        'people': '👥',
+        'physical': '🏠',
+        'technological': '💻'
     } %}
 
     {% for category, icon in categories %}
-        {% set cat_controls = controls|filter(c => c.category == category) %}
+        {% set cat_controls = controls|filter(c => (c.category|default('')|lower) == category) %}
         {% set applicable_controls = cat_controls|filter(c => c.applicable) %}
         {% set implemented_controls = applicable_controls|filter(c => c.implementationStatus == 'implemented') %}
 
@@ -129,7 +133,7 @@
             {% block card_body %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                 <div class="fs-2-mb-sm">{{ icon }}</div>
-                <h2>{{ ('soa.category.' ~ category)|trans({}, 'soa') }} {{ 'soa.label.controls'|trans({}, 'soa') }}</h2>
+                <h2>{{ ('soa.category.' ~ category|capitalize)|trans({}, 'soa') }} {{ 'soa.label.controls'|trans({}, 'soa') }}</h2>
                 <div class="stats-grid mt-2">
                     <div class="stat-item">
                         <strong>{{ cat_controls|length }}</strong>
@@ -233,10 +237,13 @@
             <label for="category-filter" class="form-label">{{ 'soa.filter.category'|trans({}, 'soa') }}</label>
             <select id="category-filter" name="category" class="form-select fa-cyber-input__field">
                 <option value="">{{ 'soa.filter.all_categories'|trans({}, 'soa') }}</option>
-                <option value="Organizational" {{ app.request.query.get('category') == 'Organizational' ? 'selected' : '' }}>{{ 'soa.category.Organizational'|trans({}, 'soa') }}</option>
-                <option value="People" {{ app.request.query.get('category') == 'People' ? 'selected' : '' }}>{{ 'soa.category.People'|trans({}, 'soa') }}</option>
-                <option value="Physical" {{ app.request.query.get('category') == 'Physical' ? 'selected' : '' }}>{{ 'soa.category.Physical'|trans({}, 'soa') }}</option>
-                <option value="Technological" {{ app.request.query.get('category') == 'Technological' ? 'selected' : '' }}>{{ 'soa.category.Technological'|trans({}, 'soa') }}</option>
+                {# T7.7 (UX-P1): values lowercased to match the FormType-persisted
+                   Control.category values; capitalized label key kept for backward
+                   compat with existing soa.category.{Organizational,People,...} entries. #}
+                <option value="organizational" {{ (app.request.query.get('category')|lower) == 'organizational' ? 'selected' : '' }}>{{ 'soa.category.Organizational'|trans({}, 'soa') }}</option>
+                <option value="people" {{ (app.request.query.get('category')|lower) == 'people' ? 'selected' : '' }}>{{ 'soa.category.People'|trans({}, 'soa') }}</option>
+                <option value="physical" {{ (app.request.query.get('category')|lower) == 'physical' ? 'selected' : '' }}>{{ 'soa.category.Physical'|trans({}, 'soa') }}</option>
+                <option value="technological" {{ (app.request.query.get('category')|lower) == 'technological' ? 'selected' : '' }}>{{ 'soa.category.Technological'|trans({}, 'soa') }}</option>
             </select>
         </div>
         <div class="col-md-4">
