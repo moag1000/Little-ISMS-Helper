@@ -74,4 +74,40 @@ final class InternalAuditTypeTest extends KernelTestCase
         $required = $form->get('leadAuditor')->getConfig()->getOption('required');
         self::assertFalse((bool) $required, 'Legacy leadAuditor must not be hard-required — Callback enforces "at least one".');
     }
+
+    /**
+     * C5-04 — `scopedAssets` is exposed as an EntityType multi-select wired
+     * to the `conditional-fields` Stimulus controller (data-depends-on=scopeType,
+     * value=asset). ISO 19011 Cl. 5.5.2: audit scope must enumerate audited
+     * objects when restricted to specific assets.
+     */
+    #[Test]
+    public function scopedAssetsMultiSelectExistsWithConditionalToggle(): void
+    {
+        $form = $this->formFactory->create(InternalAuditType::class, new InternalAudit());
+
+        self::assertTrue($form->has('scopedAssets'), 'C5-04: scopedAssets multi-select must be exposed');
+
+        $cfg = $form->get('scopedAssets')->getConfig();
+        self::assertTrue($cfg->getOption('multiple'), 'scopedAssets must be a multi-select (M2M)');
+
+        $attr = $cfg->getOption('attr');
+        self::assertArrayHasKey('data-depends-on', $attr, 'scopedAssets must carry the conditional-fields depends-on attr');
+        self::assertSame('internal_audit_scopeType', $attr['data-depends-on']);
+        self::assertSame('asset', $attr['data-depends-on-value'], 'Toggle visible only when scopeType=asset');
+    }
+
+    /**
+     * C5-04 — The trigger field `scopeType` must expose the stable id
+     * `internal_audit_scopeType` that the conditional-fields controller uses.
+     */
+    #[Test]
+    public function scopeTypeCarriesStableIdForConditionalFieldsTrigger(): void
+    {
+        $form = $this->formFactory->create(InternalAuditType::class, new InternalAudit());
+
+        $attr = $form->get('scopeType')->getConfig()->getOption('attr');
+        self::assertArrayHasKey('id', $attr, 'scopeType must declare an explicit id for conditional-fields trigger lookup');
+        self::assertSame('internal_audit_scopeType', $attr['id']);
+    }
 }
