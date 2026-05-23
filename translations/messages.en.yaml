@@ -1165,6 +1165,7 @@ form:
         layout: 'Layout'
         legal_basis: 'Legal Basis'
         lifecycle_status: 'Lifecycle Status'
+        lineage: 'Lineage & Traceability'
         lksg: 'LkSG'
         marisk: 'MaRisk'
         members: 'Members'

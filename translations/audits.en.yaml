@@ -337,6 +337,7 @@ corrective_action:
         verified_by: 'Verified by'
         verified_at: 'Verified at'
         previous_capa: 'Follow-up CAPA to ineffective action'
+        related_controls: 'Related Controls'
     placeholder:
         finding: '-- Select finding --'
         responsible_person_user: '-- Select user --'
@@ -344,6 +345,7 @@ corrective_action:
     help:
         description: 'Concrete action to remediate the deviation'
         root_cause_analysis: 'Why did this happen? (5-Why / Ishikawa / FMEA)'
+        related_controls: 'A corrective action may address multiple ISO 27001 controls (e.g. A.8.15 + A.8.16). Multi-select supported.'
         effectiveness_review_date: 'ISO 27001 10.1 requires post-implementation effectiveness review'
         effectiveness_notes: 'Outcome of effectiveness review — why it was (in)effective'
         effectiveness_evidence: 'Mandatory evidence (re-audit report, re-test result, evidence-document ID) — enforced when status switches to verified effective/ineffective.'
@@ -377,6 +379,10 @@ corrective_action:
             title: 'Action ineffective — follow-up CAPA required'
             body: 'ISO 27001 Cl. 10.1 (b): when a corrective action proves ineffective it must be re-assessed and re-treated. Create a follow-up CAPA referencing the original action #%id% (%title%).'
             cta: 'Create follow-up CAPA now'
+        effectiveness_review_due:
+            title: 'Effectiveness review due'
+            body: 'ISO 27001 Cl. 10.1 (d) + Cl. 9.1.1: the effectiveness review for action #%id% (%title%) is scheduled for %date% (in %daysUntil% days). Please document the evidence and transition the status to verified effective/ineffective.'
+            cta: 'Run effectiveness review'
     new:
         followup_banner:
             title: 'Follow-up CAPA for an ineffective action'

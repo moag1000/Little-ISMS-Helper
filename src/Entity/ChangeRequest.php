@@ -24,6 +24,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+// Junior-ISB-Audit C4-05 — Lineage FKs from ChangeRequest back to the
+// AuditFinding / CorrectiveAction that triggered it (ISO 27001 Cl. 10.1).
+
 /**
  * Change Request Entity for ISMS Change Management
  *
@@ -276,6 +279,30 @@ class ChangeRequest
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $closureNotes = null;
+
+    /**
+     * Junior-ISB-Audit C4-05 — Lineage to upstream AuditFinding (nullable).
+     *
+     * Allows reporting "which change requests originated from audit
+     * findings?" without parsing free-text justification — ISO 27001
+     * Cl. 10.1 (continuous improvement traceability).
+     */
+    #[ORM\ManyToOne(targetEntity: AuditFinding::class)]
+    #[ORM\JoinColumn(name: 'related_finding_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['change_request:read', 'change_request:write'])]
+    private ?AuditFinding $relatedFinding = null;
+
+    /**
+     * Junior-ISB-Audit C4-05 — Lineage to upstream CorrectiveAction (nullable).
+     *
+     * When a CAPA's remediation requires an ISMS change (policy/scope/
+     * technology) the change-request is materialised here. The link
+     * preserves the chain "Finding → CAPA → Change → Implementation".
+     */
+    #[ORM\ManyToOne(targetEntity: CorrectiveAction::class)]
+    #[ORM\JoinColumn(name: 'related_corrective_action_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['change_request:read', 'change_request:write'])]
+    private ?CorrectiveAction $relatedCorrectiveAction = null;
 
     /**
      * Documents
@@ -742,6 +769,34 @@ class ChangeRequest
     public function removeDocument(Document $document): static
     {
         $this->documents->removeElement($document);
+        return $this;
+    }
+
+    /**
+     * Junior-ISB-Audit C4-05 — upstream AuditFinding (nullable).
+     */
+    public function getRelatedFinding(): ?AuditFinding
+    {
+        return $this->relatedFinding;
+    }
+
+    public function setRelatedFinding(?AuditFinding $finding): static
+    {
+        $this->relatedFinding = $finding;
+        return $this;
+    }
+
+    /**
+     * Junior-ISB-Audit C4-05 — upstream CorrectiveAction (nullable).
+     */
+    public function getRelatedCorrectiveAction(): ?CorrectiveAction
+    {
+        return $this->relatedCorrectiveAction;
+    }
+
+    public function setRelatedCorrectiveAction(?CorrectiveAction $ca): static
+    {
+        $this->relatedCorrectiveAction = $ca;
         return $this;
     }
 

@@ -91,10 +91,16 @@ change_request:
         verification_date: 'Verification Date'
         results: Results
         clause_reference: 'Clause Reference'
+        related_finding: 'Related Finding'
+        related_corrective_action: 'Related Corrective Action'
     placeholder:
         clause_reference: 'e.g. ISO 27001 §6.3, DORA Art. 6'
+        related_finding: '-- Select finding (optional) --'
+        related_corrective_action: '-- Select corrective action (optional) --'
     help:
         clause_reference: 'Optional ISO 27001 / DORA / NIS2 clause tag for §6.3 planned changes or §8.1 operational control differentiation'
+        related_finding: 'ISO 27001 Cl. 10.1 — lineage to the audit finding that triggered this change request (optional but recommended for the audit trail).'
+        related_corrective_action: 'ISO 27001 Cl. 10.1 — lineage to the corrective action that uses this change request as its implementation vehicle (optional).'
     edit: Edit
     confirm:
         delete: Delete

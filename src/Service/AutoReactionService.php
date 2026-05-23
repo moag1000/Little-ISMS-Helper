@@ -29,6 +29,10 @@ class AutoReactionService
     /** Junior-ISB-Audit-2026-05-22 C2-05 — Incident → CorrectiveAction auto-creation (ADR 2026-05-23). */
     public const KEY_CA_ON_INCIDENT     = 'corrective_action_on_high_incident';
     public const KEY_ACK_CAMPAIGN       = 'acknowledgement_campaign_on_approval';
+    // Junior-ISB-Audit C4-01 — Auto-escalation toggle: when a CAPA is
+    // verified ineffective (ISO 27001 Cl. 10.1 d), auto-spawn a
+    // follow-up CAPA with `previousCapa` set, status=planned.
+    public const KEY_RECAPA_ON_INEFFECTIVE = 'recapa_on_ineffective_verification';
 
     public const ALL_KEYS = [
         self::KEY_DPIA_SUGGEST,
@@ -37,6 +41,7 @@ class AutoReactionService
         self::KEY_CA_ON_FINDING,
         self::KEY_CA_ON_INCIDENT,
         self::KEY_ACK_CAMPAIGN,
+        self::KEY_RECAPA_ON_INEFFECTIVE,
     ];
 
     public function __construct(
