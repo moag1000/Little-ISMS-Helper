@@ -124,6 +124,24 @@
             }
         } %}
 
+{# T6.8 — Live mini-heatmap mirrors current probability + impact selection. #}
+<div class="row mt-3">
+    <div class="col-md-6">
+        {% include '_components/_fa_risk_mini_heatmap.html.twig' with {
+            probability_selector: '#risk_probability',
+            impact_selector: '#risk_impact',
+            residual: false,
+        } %}
+    </div>
+    <div class="col-md-6">
+        {% include '_components/_fa_risk_mini_heatmap.html.twig' with {
+            probability_selector: '#risk_residualProbability',
+            impact_selector: '#risk_residualImpact',
+            residual: true,
+        } %}
+    </div>
+</div>
+
 {{ form_end(form) }}
 
 {# Risk Assessment Guidance Helper — reference card, placed after form #}
