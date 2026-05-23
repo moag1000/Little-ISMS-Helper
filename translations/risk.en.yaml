@@ -16,10 +16,9 @@ risk:
     owner_placeholder: Search for owner...
     level_label: Risk Level
     all_risks: All Risks
-    level_critical: Critical
-    level_high: High
-    level_medium: Medium
-    level_low: Low
+    # Junior-ISB-Audit-2026-05-22 M-03: level_{critical,high,medium,low} removed —
+    # templates now resolve band labels via risk_level_label() (Twig fn) which
+    # reads the canonical risk.level.<band> block. SSoT: App\Risk\RiskMatrixThresholds.
     status_label: Status
     all_status: All Status
     status_identified: Identified
@@ -36,11 +35,9 @@ risk:
     owner_label: Risk Owner
     at_risk: Assets at Risk
   index:
-    risk_level:
-      critical: Critical
-      high: High
-      medium: Medium
-      low: Low
+    # Junior-ISB-Audit-2026-05-22 M-03: risk_level.{critical,high,medium,low} removed —
+    # templates now resolve band labels via risk_level_label() (Twig fn) which
+    # reads the canonical risk.level.<band> block. SSoT: App\Risk\RiskMatrixThresholds.
     treatment_status: Treatment Status
     treatment:
       mitigate: Mitigate
@@ -152,11 +149,13 @@ risk:
     location: Affected Location
     supplier: Affected Supplier
     acceptance_approved_by_legacy: Acceptance approved by (free text, legacy)
-    likelihood_justification: Likelihood Justification
-    impact_justification: Impact Justification
-    decision_approved_by_user: Decision Approved By
-    decision_approval_date: Decision Approval Date
-    decision_rationale: Decision Rationale
+    # Junior-ISB-Audit-2026-05-22 K-06: Decision-Trail labels normalised
+    # to em-dash convention (matches FairyAurora form-label style).
+    likelihood_justification: 'Likelihood — Justification'
+    impact_justification: 'Impact — Justification'
+    decision_rationale: 'Treatment Decision — Rationale'
+    decision_approved_by_user: 'Decision Approved By'
+    decision_approval_date: 'Approval Date'
   confirm:
     delete: Delete
   edit: Edit
@@ -208,6 +207,10 @@ risk:
     residual_risk: Residual Risk
     treatment: Treatment
     acceptance: Acceptance
+    # Junior-ISB-Audit-2026-05-22 K-06: Decision-Trail section groups the 5
+    # previously hidden audit fields (likelihood/impact justification,
+    # decision rationale, approver, approval date). ISO 27001 Cl. 6.1.3.e + 8.3.
+    decision_trail: 'Decision Audit Trail'
     details: Details
     description: Description
     treatment_strategy: Treatment Strategy
@@ -500,6 +503,13 @@ risk:
   validation:
     likelihood_justification_required: 'Likelihood justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
     impact_justification_required: 'Impact justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
+    # Junior-ISB-Audit-2026-05-22 K-05: Risk-Owner Either-Or message
+    # (entity-level Assert\Callback validateOwnerEitherOr).
+    risk_owner_required: 'Risk Owner required: assign a User or a Person from master data (ISO 27001 A.5.1).'
+  # Junior-ISB-Audit-2026-05-22 M-02: Subject-Required block (entity-level
+  # Assert\Callback validateSubjectBound — ISO 27001 Cl. 6.1.2 c).
+  validator:
+    subject_required: 'At least one affected Asset / Person / Location / Supplier is required (ISO 27001 Cl. 6.1.2 c).'
   link_incident:
     section_title: 'Linked Incidents'
     add_link: 'Link Incident'
