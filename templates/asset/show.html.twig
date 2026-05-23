@@ -233,9 +233,10 @@
                     { label: 'asset.label.acquisition_value'|trans({}, 'asset'), value: asset.acquisitionValue ? asset.acquisitionValue ~ ' EUR' : 'N/A' },
                     { label: 'asset.label.current_value'|trans({}, 'asset'), value: asset.currentValue ? asset.currentValue ~ ' EUR' : 'N/A' }
                 ] %}
-                {% if asset.monetaryValue %}
-                    {% set valuationItems = valuationItems|merge([{ label: 'asset.label.monetary_value'|trans({}, 'asset'), value: asset.monetaryValue ~ ' EUR' }]) %}
-                {% endif %}
+                {# T2.13 — monetaryValue is no longer maintained via the form
+                   (deprecated by acquisitionValue + currentValue). Suppress
+                   the show-row so Edit↔Show stay symmetric. The DB column
+                   stays for backwards-compatibility on legacy data. #}
                 {% set valuationItems = valuationItems|merge([
                     { label: 'asset.label.total_value'|trans({}, 'asset'), value: asset.totalValue ~ ' EUR', dataReuse: true },
                     { label: 'asset.label.risks'|trans({}, 'asset'), raw: true, dataReuse: true, value: asset.risks|length > 0
