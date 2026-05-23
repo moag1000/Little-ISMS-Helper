@@ -786,6 +786,15 @@ data_breach:
         action:
             submit: 'Register data breach'
 dpia:
+    error:
+        invalid_csrf: 'Invalid CSRF token.'
+        rejection_reason_required: 'Rejection reason is required.'
+        revision_reason_required: 'Revision reason is required.'
+        dpo_advice_required: 'DPO advice is required.'
+        authority_feedback_required: 'Supervisory authority feedback is required.'
+        review_reason_required: 'Review reason is required.'
+    warning:
+        cannot_edit_in_status: 'Only draft or revision-required DPIAs can be edited.'
     dashboard:
         title: 'DPIA Dashboard'
         subtitle: 'Art. 35 GDPR Compliance Overview'

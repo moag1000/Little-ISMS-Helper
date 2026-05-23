@@ -946,6 +946,15 @@ data_breach:
         action:
             submit: 'Datenpanne registrieren'
 dpia:
+    error:
+        invalid_csrf: 'Ungültiges CSRF-Token.'
+        rejection_reason_required: 'Begründung für Ablehnung ist erforderlich.'
+        revision_reason_required: 'Begründung für Überarbeitung ist erforderlich.'
+        dpo_advice_required: 'DSB-Stellungnahme ist erforderlich.'
+        authority_feedback_required: 'Rückmeldung der Aufsichtsbehörde ist erforderlich.'
+        review_reason_required: 'Begründung für Überprüfung ist erforderlich.'
+    warning:
+        cannot_edit_in_status: 'Nur DSFAs im Status Entwurf oder Überarbeitung erforderlich können bearbeitet werden.'
     dashboard:
         title: 'DSFA Dashboard'
         subtitle: 'Art. 35 DSGVO Compliance-Übersicht'

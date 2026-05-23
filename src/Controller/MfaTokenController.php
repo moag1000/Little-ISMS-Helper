@@ -171,7 +171,7 @@ class MfaTokenController extends AbstractController
     public function regenerateBackupCodes(MfaToken $mfaToken, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('regenerate_backup_' . $mfaToken->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('mfa.token.error.invalid_csrf');
             return $this->redirectToRoute('admin_mfa_show', ['id' => $mfaToken->getId()]);
         }
 
@@ -205,7 +205,7 @@ class MfaTokenController extends AbstractController
     public function disable(MfaToken $mfaToken, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('disable_' . $mfaToken->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('mfa.token.error.invalid_csrf');
             return $this->redirectToRoute('admin_mfa_show', ['id' => $mfaToken->getId()]);
         }
 
@@ -227,7 +227,7 @@ class MfaTokenController extends AbstractController
     public function delete(MfaToken $mfaToken, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('delete_' . $mfaToken->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('mfa.token.error.invalid_csrf');
             return $this->redirectToRoute('admin_mfa_index');
         }
 

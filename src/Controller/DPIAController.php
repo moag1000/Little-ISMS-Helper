@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use RuntimeException;
 use DateTime;
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Asset;
@@ -37,8 +38,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class DPIAController extends AbstractController
 {
+    use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
+
+    protected function getFlashDomain(): string
+    {
+        return 'privacy';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
 
     public function __construct(
         private readonly DataProtectionImpactAssessmentService $dataProtectionImpactAssessmentService,
@@ -152,7 +164,7 @@ class DPIAController extends AbstractController
 
         // Only draft and requires_revision can be edited
         if (!in_array($dataProtectionImpactAssessment->getStatus(), [DpiaStatus::Draft->value, DpiaStatus::RequiresRevision->value], true)) {
-            $this->addFlash('warning', 'Only draft or revision-required DPIAs can be edited');
+            $this->flashWarning('dpia.warning.cannot_edit_in_status');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -203,7 +215,7 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('submit' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -227,7 +239,7 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('approve' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -253,14 +265,14 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('reject' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
         $reason = $request->request->get('rejection_reason');
 
         if (empty($reason)) {
-            $this->addFlash('danger', 'Rejection reason is required');
+            $this->flashError('dpia.error.rejection_reason_required');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -284,14 +296,14 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('revision' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
         $reason = $request->request->get('revision_reason');
 
         if (empty($reason)) {
-            $this->addFlash('danger', 'Revision reason is required');
+            $this->flashError('dpia.error.revision_reason_required');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -314,7 +326,7 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('reopen' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -342,14 +354,14 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('dpo' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
         $advice = $request->request->get('dpo_advice');
 
         if (empty($advice)) {
-            $this->addFlash('danger', 'DPO advice is required');
+            $this->flashError('dpia.error.dpo_advice_required');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -369,14 +381,14 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('supervisory' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
         $feedback = $request->request->get('supervisory_feedback');
 
         if (empty($feedback)) {
-            $this->addFlash('danger', 'Supervisory authority feedback is required');
+            $this->flashError('dpia.error.authority_feedback_required');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -399,7 +411,7 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('review' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -407,7 +419,7 @@ class DPIAController extends AbstractController
         $dueDateStr = $request->request->get('review_due_date');
 
         if (empty($reason)) {
-            $this->addFlash('danger', 'Review reason is required');
+            $this->flashError('dpia.error.review_reason_required');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -429,7 +441,7 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('complete-review' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
@@ -452,7 +464,7 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('clone' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->flashError('dpia.error.invalid_csrf');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
