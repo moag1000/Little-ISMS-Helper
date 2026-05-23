@@ -268,11 +268,11 @@ translations/security.en.yaml:23:reauth
 translations/setup_wizard.de.yaml:1:existing_frameworks
 translations/setup_wizard.en.yaml:1:existing_frameworks
 translations/suppliers.de.yaml:1:supplier
-translations/suppliers.de.yaml:306:corporate
+translations/suppliers.de.yaml:310:corporate
 translations/suppliers.en.yaml:1:supplier
-translations/suppliers.en.yaml:305:corporate
-translations/tenant.de.yaml:200:corporate
-translations/tenant.en.yaml:200:corporate
+translations/suppliers.en.yaml:309:corporate
+translations/tenant.de.yaml:202:corporate
+translations/tenant.en.yaml:202:corporate
 translations/threat.de.yaml:124:field
 translations/threat.de.yaml:144:placeholder
 translations/threat.de.yaml:152:help

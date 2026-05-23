@@ -48,7 +48,7 @@
                                   data-async-job-status-url-value="{{ path('setup_job_status') }}?job=sample_data"
                                   data-async-job-poll-interval-value="2000"
                                   data-async-job-message-running-value="{{ 'setup.alva.busy.sample_data'|trans({}, 'setup') }}"
-                                  data-async-job-message-success-value="Beispieldaten erfolgreich importiert."
+                                  data-async-job-message-success-value="{{ 'setup.alva.success.sample_data'|trans({}, 'setup') }}"
                                   data-async-job-redirect-url-value="{{ path('setup_step11_complete') }}"
                                   data-action="submit->async-job#start">
                                 <input type="hidden" name="_token" value="{{ csrf_token('setup_sample_data') }}">

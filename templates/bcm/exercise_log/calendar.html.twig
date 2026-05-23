@@ -55,7 +55,8 @@
                                     <div class="fw-semibold">{{ exercise.name }}</div>
                                     <small class="text-muted">
                                         {{ exercise.exerciseDate ? exercise.exerciseDate|date('d.m.Y') : '—' }}
-                                        · <span class="badge bg-secondary">{{ exercise.exerciseType }}</span>
+                                        {# Junior-ISB-Audit-2026-05-22 S14: render exerciseType via i18n choice-label, not raw enum value. #}
+                                        · <span class="badge bg-secondary">{{ ('exercise_type.' ~ exercise.exerciseType)|trans({}, 'bsi_200_4_exercise') }}</span>
                                     </small>
                                 </div>
                                 <div class="d-flex flex-column align-items-end gap-1">

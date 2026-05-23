@@ -52,6 +52,8 @@ tenant:
         code_format: 'Der Code darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten'
         azure_tenant_id_format: 'Die Azure Tenant ID muss im UUID-Format vorliegen'
         logo_format: 'Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen'
+        # Junior-ISB-Audit-2026-05-22 S14: NACE Format Validator
+        nace_code_format: 'Ungültiges NACE-Format. EU NACE Rev. 2 erwartet 2 Ziffern, optional Sektionsbuchstabe + .NN (z. B. 62.01 oder J62.01).'
     status:
         active: Aktiv
         inactive: Inaktiv

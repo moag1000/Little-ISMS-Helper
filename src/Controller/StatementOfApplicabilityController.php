@@ -176,6 +176,11 @@ class StatementOfApplicabilityController extends AbstractController
             }
         }
 
+        // Junior-ISB-Audit-2026-05-22 S14: MRIS-Filter gate. MRIS is a tenant-
+        // opt-in custom framework, not a registered module. Filter + column are
+        // hidden when the tenant has disabled MRIS-KPIs (settings.mris.kpis_enabled).
+        $mrisEnabled = (($tenant->getSettings() ?? [])['mris']['kpis_enabled'] ?? true) !== false;
+
         return $this->render('soa/index.html.twig', [
             'controls' => $controls,
             'stats' => $stats,
@@ -186,6 +191,7 @@ class StatementOfApplicabilityController extends AbstractController
             'mrisStats' => $mrisStats,
             'mrisFilter' => $mris,
             'essentialFilter' => $essential,
+            'mrisEnabled' => $mrisEnabled,
         ]);
     }
     #[Route('/soa/category/{category}', name: 'app_soa_by_category', methods: ['GET'])]

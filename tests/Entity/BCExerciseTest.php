@@ -379,24 +379,26 @@ class BCExerciseTest extends TestCase
     #[Test]
     public function testGetExerciseTypeDescription(): void
     {
+        // Junior-ISB-Audit-2026-05-22 Polish-3: getExerciseTypeDescription
+        // returns i18n keys, not hardcoded English literals.
         $exercise = new BCExercise();
 
         $exercise->setExerciseType('tabletop');
-        $this->assertEquals('Tabletop Exercise (Discussion-based)', $exercise->getExerciseTypeDescription());
+        $this->assertEquals('bc_exercises.exercise_type.tabletop', $exercise->getExerciseTypeDescription());
 
         $exercise->setExerciseType('walkthrough');
-        $this->assertEquals('Walkthrough (Step-by-step review)', $exercise->getExerciseTypeDescription());
+        $this->assertEquals('bc_exercises.exercise_type.walkthrough', $exercise->getExerciseTypeDescription());
 
         $exercise->setExerciseType('simulation');
-        $this->assertEquals('Simulation (Simulated incident)', $exercise->getExerciseTypeDescription());
+        $this->assertEquals('bc_exercises.exercise_type.simulation', $exercise->getExerciseTypeDescription());
 
         $exercise->setExerciseType('full_test');
-        $this->assertEquals('Full Test (Complete activation)', $exercise->getExerciseTypeDescription());
+        $this->assertEquals('bc_exercises.exercise_type.full_test', $exercise->getExerciseTypeDescription());
 
         $exercise->setExerciseType('component_test');
-        $this->assertEquals('Component Test (Specific component)', $exercise->getExerciseTypeDescription());
+        $this->assertEquals('bc_exercises.exercise_type.component_test', $exercise->getExerciseTypeDescription());
 
         $exercise->setExerciseType('unknown_type');
-        $this->assertEquals('Unknown', $exercise->getExerciseTypeDescription());
+        $this->assertEquals('bc_exercises.exercise_type.unknown_type', $exercise->getExerciseTypeDescription());
     }
 }
