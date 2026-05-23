@@ -10,6 +10,8 @@
     - col_widths      (array)        — Optional map of field_name → Bootstrap col width (1–12)
     - help_texts      (array)        — Optional map of field_name → pre-translated help text
     - tooltips        (array)        — Optional map of field_name → translation key for tooltip
+    - drawer_keys     (array)        — Optional map of field_name → translation key for the
+                                       verbose-help drawer body (Junior-ISB-Audit S14 #17)
     - exclude_fields  (array)        — Optional list of field names to skip (from parent context)
     - automatic_fields (array)       — Optional list of field names that are auto-populated
     - translation_domain (string|null) — Optional override translation domain for tooltips
@@ -17,6 +19,7 @@
 {% set col_widths       = col_widths|default({}) %}
 {% set help_texts       = help_texts|default({}) %}
 {% set tooltips         = tooltips|default({}) %}
+{% set drawer_keys      = drawer_keys|default({}) %}
 {% set exclude_fields   = exclude_fields|default([]) %}
 {% set automatic_fields = automatic_fields|default([]) %}
 {% set default_col_width = 12 %}
@@ -74,12 +77,14 @@
                 <div class="col-md-{{ col_width }}">
                     {% set help_key    = help_texts[field_name]|default(null) %}
                     {% set tooltip_key = tooltips[field_name]|default(null) %}
+                    {% set drawer_key  = drawer_keys[field_name]|default(null) %}
                     {% set trans_domain = passed_translation_domain ? passed_translation_domain : field.vars.translation_domain|default('messages') %}
                     {% include '_components/_form_field.html.twig' with {
                         'field':              field,
                         'label_key':          field.vars.label,
                         'help_key':           help_key,
                         'tooltip_key':        tooltip_key,
+                        'drawer_key':         drawer_key,
                         'translation_domain': trans_domain,
                         'required':           field.vars.required,
                         'automatic':          field_name in automatic_fields

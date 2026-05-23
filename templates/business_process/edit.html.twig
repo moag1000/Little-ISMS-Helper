@@ -32,6 +32,13 @@
         prominence: 'subtle'
     }) }}
 
+    {#
+        Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern.
+        Wrap form + drawer in `data-controller="help-drawer"` scope so the
+        single page-level fa-drawer can be opened by all "Mehr Info..."
+        triggers rendered next to fields listed in `drawer_keys`.
+    #}
+    <div data-controller="help-drawer">
     {{ form_start(form) }}
     {% include '_components/_auto_form.html.twig' with {
         'form': form,
@@ -86,12 +93,22 @@
             'supportingAssets': 6,
             'identifiedRisks': 6
         },
+        'translation_domain': 'business_process',
+        'drawer_keys': {
+            'criticality':        'business_process.tooltip.criticality',
+            'rto':                'business_process.tooltip.rto',
+            'rpo':                'business_process.tooltip.rpo',
+            'mtpd':               'business_process.tooltip.mtpd',
+            'reputationalImpact': 'business_process.tooltip.reputational_impact'
+        },
         'actions': {
             'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
             'submit': { 'label': 'common.save_changes'|trans({}, 'messages'), 'variant': 'primary' }
         }
     } %}
     {{ form_end(form) }}
+    {% include '_components/_fa_help_drawer.html.twig' %}
+    </div>
 
     {# S14 Cluster A — C1-01 Quick-Create Asset for supportingAssets picker. #}
     <div class="quick-create-empty-state-row mt-3 d-flex flex-wrap gap-3 align-items-center" aria-label="{{ 'quick_create.cta'|trans({}, 'quick_create') }}">

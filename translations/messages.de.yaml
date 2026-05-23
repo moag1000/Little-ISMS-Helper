@@ -137,6 +137,9 @@ common:
     tenant_not_found: 'Kein aktiver Mandant — bitte zuerst in einen Workspace einloggen, bevor diese Funktion genutzt wird.'
     please_select: 'Bitte auswählen...'
     next: Weiter
+    # Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern.
+    more_info: 'Mehr Info...'
+    more_info_aria: 'Vollständige Hilfe zu „%field%" öffnen'
     yes: 'Ja'
     no: 'Nein'
     form:

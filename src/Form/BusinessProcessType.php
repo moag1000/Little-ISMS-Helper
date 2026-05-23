@@ -25,6 +25,16 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
+/**
+ * Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern — UX-Polish.
+ *
+ * The `help.<field>` translation keys hold the 30-sec summaries displayed
+ * inline. The verbose ISO-22301 reference (RPO/RTO/MTPD definitions, BIA
+ * impact tables for criticality + reputational impact) lives in
+ * `business_process.tooltip.<field>` and is opened on demand via the Aurora
+ * `fa-drawer` side-sheet. Wiring lives in `templates/business_process/new.html.twig`
+ * + `edit.html.twig` (`drawer_keys` map on the `_auto_form` include).
+ */
 final class BusinessProcessType extends AbstractType implements SectionMapInterface
 {
     use OwnerPickerFormTrait;
