@@ -382,22 +382,10 @@ risk:
     score: 'Score'
   heatmap:
     legend:
-      low: Niedrig
-      medium: Mittel
-      high: Hoch
-      critical: Kritisch
-    tooltip:
-      cell: '{count} Risiken — {band} ({prob}×{impact} = {score})'
-      cell_one: '1 Risiko — {band} ({prob}×{impact} = {score})'
-    drawer:
-      title: 'Risiken in dieser Zelle'
-      eyebrow: 'Risiko-Heatmap'
-      empty: 'Keine Risiken in dieser Zelle'
-      close: 'Schließen'
-      open_risk: 'Risiko öffnen'
-    empty:
-      title: 'Noch keine Risiken erfasst'
-      text: 'Sobald Risiken mit Eintrittswahrscheinlichkeit und Auswirkung erfasst sind, erscheinen sie hier in der Heatmap.'
+      title: 'Risiko-Heatmap'
+    axis:
+      probability: 'Eintrittswahrscheinlichkeit'
+      impact: 'Auswirkung'
   matrix:
     title: Risikomatrix
     back_to_risks: Zurück zur Risikoliste
