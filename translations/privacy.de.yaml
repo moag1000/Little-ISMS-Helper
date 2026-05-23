@@ -732,6 +732,28 @@ common:
     no: 'Nein'
 
 data_breach:
+    dashboard:
+        title: 'Datenpannen-Dashboard'
+        subtitle: 'DSGVO Art. 33/34 Compliance-Überblick'
+        overall_score: 'Gesamt DSGVO Art. 33/34 Compliance Score'
+        breadcrumb:
+            privacy: 'Datenschutz'
+            data_breaches: 'Datenpannen'
+            dashboard: 'Dashboard'
+        action:
+            view_all: 'Alle Datenpannen ansehen'
+            new: 'Neue Datenpanne'
+        kpi:
+            notification_compliance: 'Meldungs-Compliance'
+            notified: '%done% / %total% gemeldet'
+            timeliness: 'Pünktlichkeit (72h-Frist)'
+            overdue_notifications: '%count% überfällige Meldungen'
+            completeness: 'Vollständigkeit'
+            avg_completeness: 'Durchschnittliche Datenpannen-Vollständigkeit'
+            total_breaches: '%count% Datenpannen gesamt'
+            affected_subjects: '%count% betroffene Datensubjekte'
+        action_items: 'Aktionen erforderlich'
+        under_assessment: 'In Bewertung'
     success:
         updated: 'Datenschutzverletzung wurde aktualisiert.'
         deleted: 'Datenschutzverletzung wurde gelöscht.'
