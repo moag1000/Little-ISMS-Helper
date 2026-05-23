@@ -370,6 +370,8 @@ setup:
         apply_baseline_hint: 'Creates pre-configured risks, assets and marks relevant Annex A controls as applicable. Ideal for small organisations that want to get started quickly.'
         command: 'Command'
         modules: 'Modules'
+        success:
+            master_data_imported: 'Master data imported successfully.'
     can_delete_later: 'Data can be deleted later.'
 
     # Step 10: Sample Data

@@ -282,7 +282,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'label' => 'supplier.field.gdpr_transfer_mechanism',
                 'help' => 'supplier.help.gdpr_transfer_mechanism',
                 'required' => false,
-                'attr' => ['maxlength' => 50, 'placeholder' => 'SCC / Adequacy Decision / BCR'],
+                'attr' => ['maxlength' => 50, 'placeholder' => 'supplier.placeholder.gdpr_transfer_mechanism'],
             ])
             ->add('gdprAvContractSigned', CheckboxType::class, [
                 'label' => 'supplier.field.gdpr_av_contract_signed',
@@ -315,19 +315,19 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'label' => 'supplier.field.lei_code',
                 'help' => 'supplier.help.lei_code',
                 'required' => false,
-                'attr' => ['maxlength' => 20, 'placeholder' => 'LEI (20 chars)'],
+                'attr' => ['maxlength' => 20, 'placeholder' => 'supplier.placeholder.lei_code'],
             ])
             ->add('naceCode', TextType::class, [
                 'label' => 'supplier.field.nace_code',
                 'help' => 'supplier.help.nace_code',
                 'required' => false,
-                'attr' => ['maxlength' => 10, 'placeholder' => 'z.B. 62.01'],
+                'attr' => ['maxlength' => 10, 'placeholder' => 'supplier.placeholder.nace_code'],
             ])
             ->add('countryOfHeadOffice', TextType::class, [
                 'label' => 'supplier.field.country_of_head_office',
                 'help' => 'supplier.help.country_of_head_office',
                 'required' => false,
-                'attr' => ['maxlength' => 2, 'placeholder' => 'DE'],
+                'attr' => ['maxlength' => 2, 'placeholder' => 'supplier.placeholder.country_of_head_office'],
             ])
             ->add('ictCriticality', ChoiceType::class, [
                 'label' => 'supplier.field.ict_criticality',
@@ -345,7 +345,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'label' => 'supplier.field.ict_function_type',
                 'help' => 'supplier.help.ict_function_type',
                 'required' => false,
-                'attr' => ['maxlength' => 100, 'placeholder' => 'Cloud / SaaS / Managed Service'],
+                'attr' => ['maxlength' => 100, 'placeholder' => 'supplier.placeholder.ict_function_type'],
             ])
             ->add('substitutability', ChoiceType::class, [
                 'label' => 'supplier.field.substitutability',
@@ -372,7 +372,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'label' => 'supplier.field.subcontractor_chain',
                 'help' => 'supplier.help.subcontractor_chain',
                 'required' => false,
-                'attr' => ['rows' => 3, 'placeholder' => 'Provider A' . "\n" . 'Provider B' . "\n" . 'Provider C'],
+                'attr' => ['rows' => 3, 'placeholder' => 'supplier.placeholder.subcontractor_chain'],
             ])
             // C-06: mapped JSON field — CommaOrLinesListTransformer handles
             // comma/semicolon/newline-delimited input.
@@ -380,7 +380,7 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'label' => 'supplier.field.processing_locations',
                 'help' => 'supplier.help.processing_locations',
                 'required' => false,
-                'attr' => ['rows' => 2, 'placeholder' => 'DE, IE, US'],
+                'attr' => ['rows' => 2, 'placeholder' => 'supplier.placeholder.processing_locations'],
             ])
             ->add('lastDoraAuditDate', DateType::class, [
                 'label' => 'supplier.field.last_dora_audit_date',

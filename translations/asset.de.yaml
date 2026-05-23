@@ -171,7 +171,7 @@ asset:
     integrity: Integrität
     availability: Verfügbarkeit
     name: Name
-    classification: Classification
+    classification: Klassifizierung
   classification:
     public: Öffentlich
     internal: Intern
@@ -243,7 +243,7 @@ asset:
     service: Service
     personnel: Personal
     physical: Physisch
-    ai_agent: AI-Agent
+    ai_agent: KI-Agent
     data: Daten
     network: Netzwerk
     facility: Gebäude

@@ -192,6 +192,13 @@ supplier:
         security_requirements: 'Define security requirements for the supplier...'
         certifications: 'e.g. SOC 2 Type II, TISAX, etc.'
         lksg_risk_category: '— please select —'
+        gdpr_transfer_mechanism: 'e.g. SCC / Adequacy Decision / BCR'
+        lei_code: 'LEI (20 chars)'
+        nace_code: 'e.g. 62.01'
+        country_of_head_office: 'DE'
+        ict_function_type: 'e.g. Cloud / SaaS / Managed Service'
+        subcontractor_chain: "Provider A\nProvider B\nProvider C"
+        processing_locations: 'DE, IE, US'
     criticality:
         critical: Critical
         high: High

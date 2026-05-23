@@ -55,7 +55,7 @@ final class PrototypeProtectionAssessmentType extends AbstractType implements Se
         $builder
             ->add('title', TextType::class, [
                 'label' => 'prototype_protection.field.title',
-                'attr' => ['maxlength' => 255, 'placeholder' => 'Next-gen EV platform Q3 2026'],
+                'attr' => ['maxlength' => 255, 'placeholder' => 'prototype_protection.placeholder.title'],
             ])
             ->add('scope', TextareaType::class, [
                 'label' => 'prototype_protection.field.scope',
