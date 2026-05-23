@@ -15,9 +15,18 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 #[ORM\Table(name: 'roles')]
+#[ORM\Index(name: 'idx_role_status', columns: ['status'])]
 #[UniqueEntity(fields: ['name'], message: 'role.validation.name_unique')]
 class Role implements Stringable
 {
+    // Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+    // 3-stage lifecycle for a role: drafted → activated → archived.
+    // Archive is irreversible from a 4-eyes perspective: archiving a role
+    // removes it from user-bindings, which is a sensitive RBAC change.
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_ARCHIVED = 'archived';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -31,6 +40,22 @@ class Role implements Stringable
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isSystemRole = false;
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * Owned by `role_lifecycle` — never call setStatus() directly outside the
+     * initial-marking bootstrap; route transitions through LifecycleService::transition().
+     */
+    #[ORM\Column(length: 30, options: ['default' => self::STATUS_DRAFT])]
+    private string $status = self::STATUS_DRAFT;
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * Optimistic-lock guard for concurrent lifecycle transitions.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeImmutable $createdAt = null;
@@ -179,6 +204,33 @@ class Role implements Stringable
             }
         }
         return false;
+    }
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     * Do NOT call directly outside the initial-marking bootstrap; route
+     * transitions through LifecycleService::transition().
+     */
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+     */
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function __toString(): string

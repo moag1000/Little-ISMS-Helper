@@ -133,13 +133,22 @@ final class EntityTypeRegistry
             'workflow' => 'interested_party_lifecycle',
         ],
         // Junior-ISB-Audit Phase-2 Lifecycle — NotificationDelivery 6-stage
-        // delivery pipeline (ISO 27001 Cl. 7.4 + DORA Art. 19 — incident
-        // reporting evidence must be end-to-end-traceable, not just
-        // dispatch-logged). Tenant lifecycle deferred — 78-entity multi-tenancy
-        // core exceeds the foundation-first 5-callsite threshold; see PR body.
+        // delivery pipeline (ISO 27001 Cl. 7.4 + DORA Art. 19).
         'notification-delivery' => [
             'class' => \App\Entity\Notification\NotificationDelivery::class,
             'workflow' => 'notification_delivery_lifecycle',
+        ],
+        // Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities.
+        // Permission catalog (ISO 27001 A.5.15-A.5.16) — 4 stages.
+        'permission' => [
+            'class' => \App\Entity\Permission::class,
+            'workflow' => 'permission_lifecycle',
+        ],
+        // Role catalog (ISO 27001 A.5.15-A.5.18, segregation-of-duties) —
+        // 3 stages, 4-eyes on archive.
+        'role' => [
+            'class' => \App\Entity\Role::class,
+            'workflow' => 'role_lifecycle',
         ],
     ];
 
