@@ -35,6 +35,15 @@ final class PolicyWizardTranslationCompletenessTest extends TestCase
 {
     private const TRANSLATIONS_DIR = __DIR__ . '/../../translations';
 
+    /**
+     * Parsed translation tree cache keyed by "domain.locale". Avoids
+     * re-parsing the same YAML files across multiple #[Test] methods +
+     * data-provider variants in a single test run.
+     *
+     * @var array<string, array<string, mixed>>
+     */
+    private static array $treeCache = [];
+
     /** @return list<string> */
     private const POLICY_WIZARD_DOMAINS = [
         'policy_wizard',
@@ -217,6 +226,11 @@ final class PolicyWizardTranslationCompletenessTest extends TestCase
     /** @return array<string, mixed> */
     private function loadFlattenedTree(string $domain, string $locale): array
     {
+        $cacheKey = $domain . '.' . $locale;
+        if (isset(self::$treeCache[$cacheKey])) {
+            return self::$treeCache[$cacheKey];
+        }
+
         $path = sprintf('%s/%s.%s.yaml', self::TRANSLATIONS_DIR, $domain, $locale);
 
         if (!is_file($path)) {
@@ -229,7 +243,7 @@ final class PolicyWizardTranslationCompletenessTest extends TestCase
             self::fail("YAML root for {$path} is not an array.");
         }
 
-        return $this->flatten($parsed);
+        return self::$treeCache[$cacheKey] = $this->flatten($parsed);
     }
 
     /**

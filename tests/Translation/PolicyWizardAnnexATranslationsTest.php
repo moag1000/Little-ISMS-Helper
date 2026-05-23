@@ -26,6 +26,16 @@ final class PolicyWizardAnnexATranslationsTest extends TestCase
     private const TRANSLATIONS_DIR = __DIR__ . '/../../translations';
     private const DOMAIN = 'policy_wizard';
 
+    /**
+     * Parsed translation tree cache. Each data-provider variant calls
+     * loadFlattenedTree() twice (DE + EN); parsing the 2 YAML files is the
+     * dominant cost. Keying by "domain.locale" keeps this stateless across
+     * tests while paying the parse once per file per process.
+     *
+     * @var array<string, array<string, mixed>>
+     */
+    private static array $treeCache = [];
+
     /** @return list<string> All 93 ISO/IEC 27001:2022 Annex A control refs. */
     public static function annexAControls(): array
     {
@@ -170,6 +180,11 @@ final class PolicyWizardAnnexATranslationsTest extends TestCase
     /** @return array<string, mixed> */
     private function loadFlattenedTree(string $domain, string $locale): array
     {
+        $cacheKey = $domain . '.' . $locale;
+        if (isset(self::$treeCache[$cacheKey])) {
+            return self::$treeCache[$cacheKey];
+        }
+
         $path = sprintf('%s/%s.%s.yaml', self::TRANSLATIONS_DIR, $domain, $locale);
 
         if (!is_file($path)) {
@@ -182,7 +197,7 @@ final class PolicyWizardAnnexATranslationsTest extends TestCase
             self::fail("YAML root for {$path} is not an array.");
         }
 
-        return $this->flatten($parsed);
+        return self::$treeCache[$cacheKey] = $this->flatten($parsed);
     }
 
     /**
