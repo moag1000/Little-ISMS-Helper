@@ -44,10 +44,12 @@
         {% set form_sections = form_sections|merge({
             'inherent_risk': {
                 'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
+                'intro': 'risk.section.inherent_risk_intro'|trans({}, 'risk'),
                 'fields': ['probability', 'impact']
             },
             'residual_risk': {
                 'label': 'risk.section.residual_risk'|trans({}, 'risk'),
+                'intro': 'risk.section.residual_risk_intro'|trans({}, 'risk'),
                 'fields': ['residualProbability', 'residualImpact']
             },
             'treatment': {

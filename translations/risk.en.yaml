@@ -204,7 +204,9 @@ risk:
     basic_info: Basic Information
     gdpr_assessment: GDPR Assessment
     inherent_risk: Inherent Risk
+    inherent_risk_intro: 'Inherent risk = assessment BEFORE controls are applied. Assign probability (1-5) and impact (1-5). The mini-heatmap below shows the band (Low/Medium/High/Critical) your score falls into in real time (ISO 27005 Cl. 8.4).'
     residual_risk: Residual Risk
+    residual_risk_intro: 'Residual risk = assessment AFTER controls are implemented. If your treatment strategy is not yet in place, these fields can stay empty — fill them in later (ISO 27005 Cl. 8.5).'
     treatment: Treatment
     acceptance: Acceptance
     # Junior-ISB-Audit-2026-05-22 K-06: Decision-Trail section groups the 5
