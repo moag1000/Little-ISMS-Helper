@@ -157,6 +157,12 @@ compliance:
     successfully_loaded: 'Framework erfolgreich geladen'
     load_failed: 'Fehler beim Laden des Frameworks'
     error: Fehler
+    # Generic flash-message keys (Controllers via LocalizedFlashTrait)
+    flash:
+        error:
+            invalid_csrf: 'Ungültiges CSRF-Token.'
+            select_two_frameworks: 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.'
+            framework_not_found: 'Ein oder beide Frameworks wurden nicht gefunden.'
     deleting: 'Wird gelöscht...'
     successfully_deleted: 'Framework erfolgreich gelöscht'
     delete_failed: 'Fehler beim Löschen des Frameworks'
@@ -171,6 +177,17 @@ compliance:
         confirm_question: 'Möchten Sie wirklich fortfahren?'
         second_confirm: 'Sind Sie sicher? Framework wird unwiderruflich gelöscht!'
     mapping:
+        quality:
+            no_mappings: 'Keine Mappings gefunden. Bitte erstellen Sie zuerst Compliance-Mappings.'
+            no_analysis: 'Noch keine Analyse durchgeführt. Führen Sie zuerst "php bin/console app:analyze-mapping-quality" aus.'
+            dashboard_load_error: 'Fehler beim Laden des Dashboards: %message%'
+            review_queue_load_error: 'Fehler beim Laden der Review Queue: %message%'
+            gap_load_error: 'Fehler beim Laden der Gap-Übersicht: %message%'
+        success:
+            created: 'Compliance-Mapping wurde erstellt.'
+            updated: 'Compliance-Mapping wurde aktualisiert.'
+            deleted: 'Compliance-Mapping wurde gelöscht.'
+            analysis_completed: 'Mapping-Analyse erfolgreich abgeschlossen.'
         overview: 'Mapping-Übersicht'
         confirm:
             delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
@@ -492,6 +509,17 @@ compliance:
             fulfilled: Erfüllt
             compliance: Compliance-Rate
     requirement:
+        success:
+            created: 'Compliance-Anforderung wurde erstellt.'
+            updated: 'Compliance-Anforderung wurde aktualisiert.'
+            deleted: 'Compliance-Anforderung wurde gelöscht.'
+            mris_saved: 'MRIS-Reifegrad gespeichert.'
+            fulfillment_updated: 'Anforderungs-Erfüllungsstatus wurde für Ihren Mandanten aktualisiert.'
+        error:
+            mris_only: 'Reifegrad ist nur für MRIS-MHC-Requirements verfügbar.'
+            no_tenant: 'Kein Mandant zugewiesen. Bitte wenden Sie sich an einen Administrator.'
+            fulfillment_no_tenant: 'Erfüllungsstatus kann ohne Mandantenzuordnung nicht aktualisiert werden.'
+            inherited_fulfillment_readonly: 'Vererbter Erfüllungsstatus vom übergeordneten Mandanten kann nicht bearbeitet werden.'
         details: 'Anforderungsdetails'
         confirm:
             delete: 'Möchten Sie diese Anforderung wirklich löschen?'

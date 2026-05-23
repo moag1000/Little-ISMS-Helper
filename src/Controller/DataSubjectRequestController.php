@@ -32,8 +32,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class DataSubjectRequestController extends AbstractController
 {
+    use \App\Controller\Trait\LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
+
+    protected function getFlashDomain(): string
+    {
+        return 'data_subject_request';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
 
     public function __construct(
         private readonly DataSubjectRequestService $dataSubjectRequestService,
@@ -100,7 +111,7 @@ class DataSubjectRequestController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->dataSubjectRequestService->create($dsr);
 
-            $this->addFlash('success', 'dsr.flash.created');
+            $this->flashSuccess('data_subject_request.flash.created');
 
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
@@ -140,7 +151,7 @@ class DataSubjectRequestController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (in_array($dsr->getStatus(), [DataSubjectRequestStatus::Completed->value, DataSubjectRequestStatus::Rejected->value], true)) {
-            $this->addFlash('error', 'dsr.flash.cannot_edit_terminal');
+            $this->flashError('data_subject_request.flash.cannot_edit_terminal');
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
@@ -150,7 +161,7 @@ class DataSubjectRequestController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->dataSubjectRequestService->update($dsr);
 
-            $this->addFlash('success', 'dsr.flash.updated');
+            $this->flashSuccess('data_subject_request.flash.updated');
 
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
@@ -171,19 +182,19 @@ class DataSubjectRequestController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('complete' . $dsr->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_subject_request.flash.invalid_csrf');
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
         $responseDescription = $request->request->get('response_description', '');
         if ($responseDescription === '') {
-            $this->addFlash('error', 'dsr.flash.response_required');
+            $this->flashError('data_subject_request.flash.response_required');
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
         try {
             $this->dataSubjectRequestService->complete($dsr, $responseDescription);
-            $this->addFlash('success', 'dsr.flash.completed');
+            $this->flashSuccess('data_subject_request.flash.completed');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -201,19 +212,19 @@ class DataSubjectRequestController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('reject' . $dsr->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_subject_request.flash.invalid_csrf');
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
         $rejectionReason = $request->request->get('rejection_reason', '');
         if ($rejectionReason === '') {
-            $this->addFlash('error', 'dsr.flash.rejection_reason_required');
+            $this->flashError('data_subject_request.flash.rejection_reason_required');
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
         try {
             $this->dataSubjectRequestService->reject($dsr, $rejectionReason);
-            $this->addFlash('success', 'dsr.flash.rejected');
+            $this->flashSuccess('data_subject_request.flash.rejected');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -231,19 +242,19 @@ class DataSubjectRequestController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('extend' . $dsr->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_subject_request.flash.invalid_csrf');
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
         $extensionReason = $request->request->get('extension_reason', '');
         if ($extensionReason === '') {
-            $this->addFlash('error', 'dsr.flash.extension_reason_required');
+            $this->flashError('data_subject_request.flash.extension_reason_required');
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
         try {
             $this->dataSubjectRequestService->extend($dsr, $extensionReason);
-            $this->addFlash('success', 'dsr.flash.extended');
+            $this->flashSuccess('data_subject_request.flash.extended');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -262,13 +273,13 @@ class DataSubjectRequestController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('delete' . $dsr->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_subject_request.flash.invalid_csrf');
             return $this->redirectToRoute('app_data_subject_request_index');
         }
 
         $this->dataSubjectRequestService->delete($dsr);
 
-        $this->addFlash('success', 'dsr.flash.deleted');
+        $this->flashSuccess('data_subject_request.flash.deleted');
 
         return $this->redirectToRoute('app_data_subject_request_index');
     }

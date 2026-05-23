@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use DateTime;
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\AuditLog;
 use App\Repository\AuditLogRepository;
 use App\Service\AuditLogIntegrityService;
@@ -14,14 +15,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_ADMIN')]
 class AuditLogController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly AuditLogRepository $auditLogRepository,
+        private readonly TranslatorInterface $translator,
         private readonly ?AuditLogIntegrityService $integrityService = null,
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'audit_log';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
 
     /**
      * V3 W2-M8 / UF-3: HMAC-Chain Verify endpoint surfaced as Admin button.
@@ -32,13 +47,13 @@ class AuditLogController extends AbstractController
     public function verifyChain(Request $request): Response
     {
         if ($this->integrityService === null || !$this->integrityService->isEnabled()) {
-            $this->addFlash('warning', 'Audit-log integrity verification is disabled (APP_AUDIT_HMAC_KEY missing).');
+            $this->flashWarning('audit_log.integrity.disabled');
             return $this->redirectToRoute('app_audit_log_index');
         }
 
         $issues = $this->integrityService->verifyChain();
         if ($issues === []) {
-            $this->addFlash('success', 'Audit-log chain intact — no tampering detected.');
+            $this->flashSuccess('audit_log.integrity.intact');
         } else {
             $sample = array_slice($issues, 0, 5);
             $msg = sprintf(

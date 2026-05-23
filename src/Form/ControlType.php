@@ -92,7 +92,10 @@ final class ControlType extends AbstractType
                 ],
                 'choice_translation_domain' => 'control',
                 'expanded' => true,
-                'attr' => ['class' => 'form-check'],
+                'attr' => [
+                    'class' => 'form-check',
+                    'data-applicability-toggle-target' => 'trigger',
+                ],
                 'help' => 'control.help.applicable_explained',
             ])
             ->add('justification', TextareaType::class, [
@@ -101,6 +104,7 @@ final class ControlType extends AbstractType
                 'attr' => [
                     'rows' => 3,
                     'placeholder' => 'control.placeholder.justification',
+                    'data-applicability-toggle-target' => 'field',
                 ],
                 'help' => 'control.help.justification',
             ])
@@ -334,6 +338,14 @@ final class ControlType extends AbstractType
             'data_class' => Control::class,
             'allow_control_id_edit' => false, // Default: Control ID kann nicht geändert werden
             'translation_domain' => 'control',
+            // applicability-toggle Stimulus controller toggles the visual *-marker
+            // on the justification field when applicable=no. ISO 27001 Cl. 6.1.3 d
+            // requires a written justification for non-applicable controls — the
+            // server-side validateJustificationWhenNotApplicable() callback enforces
+            // it; this just communicates the requirement *before* form submission.
+            'attr' => [
+                'data-controller' => 'applicability-toggle',
+            ],
             'constraints' => [
                 new Callback([$this, 'validateResponsibleSlot']),
                 new Callback([$this, 'validateJustificationWhenNotApplicable']),

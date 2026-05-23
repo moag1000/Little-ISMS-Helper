@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\LocalizedFlashTrait;
 use Exception;
 use Symfony\Component\Security\Core\User\UserInterface;
 use DateTimeImmutable;
@@ -19,17 +20,31 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
 class MappingQualityController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ComplianceMappingRepository $complianceMappingRepository,
         private readonly MappingGapItemRepository $mappingGapItemRepository,
         private readonly MappingQualityAnalysisService $mappingQualityAnalysisService,
-        private readonly AutomatedGapAnalysisService $automatedGapAnalysisService
+        private readonly AutomatedGapAnalysisService $automatedGapAnalysisService,
+        private readonly TranslatorInterface $translator,
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'compliance';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
 
     /**
      * Dashboard showing mapping quality overview
@@ -41,7 +56,7 @@ class MappingQualityController extends AbstractController
             // Check if any mappings exist
             $totalMappings = $this->complianceMappingRepository->count([]);
             if ($totalMappings === 0) {
-                $this->addFlash('warning', 'Keine Mappings gefunden. Bitte erstellen Sie zuerst Compliance-Mappings.');
+                $this->flashWarning('compliance.mapping.quality.no_mappings');
                 return $this->redirectToRoute('app_compliance_index');
             }
 
@@ -53,7 +68,7 @@ class MappingQualityController extends AbstractController
 
             // Check if analysis has been run
             if ($qualityStats['analyzed_mappings'] === 0) {
-                $this->addFlash('info', 'Noch keine Analyse durchgeführt. Führen Sie zuerst "php bin/console app:analyze-mapping-quality" aus.');
+                $this->flashInfo('compliance.mapping.quality.no_analysis');
             }
 
             return $this->render('compliance/mapping_quality/dashboard.html.twig', [
@@ -64,7 +79,7 @@ class MappingQualityController extends AbstractController
                 'framework_comparison' => $frameworkComparison,
             ]);
         } catch (Exception $e) {
-            $this->addFlash('error', 'Fehler beim Laden des Dashboards: ' . $e->getMessage());
+            $this->addFlash('error', $this->translator->trans('compliance.mapping.quality.dashboard_load_error', ['%message%' => $e->getMessage()], 'compliance'));
             return $this->redirectToRoute('app_compliance_index');
         }
     }
@@ -86,7 +101,7 @@ class MappingQualityController extends AbstractController
                 'discrepancies' => $discrepancies,
             ]);
         } catch (Exception $e) {
-            $this->addFlash('error', 'Fehler beim Laden der Review Queue: ' . $e->getMessage());
+            $this->addFlash('error', $this->translator->trans('compliance.mapping.quality.review_queue_load_error', ['%message%' => $e->getMessage()], 'compliance'));
             return $this->redirectToRoute('app_mapping_quality_dashboard');
         }
     }
@@ -282,7 +297,7 @@ class MappingQualityController extends AbstractController
                 'remediation_effort' => $remediationEffort,
             ]);
         } catch (Exception $e) {
-            $this->addFlash('error', 'Fehler beim Laden der Gap-Übersicht: ' . $e->getMessage());
+            $this->addFlash('error', $this->translator->trans('compliance.mapping.quality.gap_load_error', ['%message%' => $e->getMessage()], 'compliance'));
             return $this->redirectToRoute('app_mapping_quality_dashboard');
         }
     }

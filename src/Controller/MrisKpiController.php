@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Repository\KpiSnapshotRepository;
 use App\Service\MrisKpiService;
 use App\Service\MrisScoreService;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Mythos-relevante KPIs gem. MRIS v1.5 Kap. 10.6.
@@ -24,12 +26,25 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 final class MrisKpiController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly MrisKpiService $kpiService,
         private readonly TenantContext $tenantContext,
         private readonly MrisScoreService $scoreService,
         private readonly KpiSnapshotRepository $kpiSnapshotRepository,
+        private readonly TranslatorInterface $translator,
     ) {
+    }
+
+    protected function getFlashDomain(): string
+    {
+        return 'kpi';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
     }
 
     #[Route('/mris/kpis', name: 'app_mris_kpis', methods: ['GET'])]
@@ -37,7 +52,7 @@ final class MrisKpiController extends AbstractController
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
-            $this->addFlash('warning', 'Kein Mandant zugewiesen — MRIS-KPIs benötigen einen Mandantenkontext.');
+            $this->flashWarning('kpi.mris.no_tenant');
             return $this->redirectToRoute('app_dashboard');
         }
 
@@ -46,7 +61,7 @@ final class MrisKpiController extends AbstractController
         $settings = $tenant->getSettings() ?? [];
         $enabled = $settings['mris']['kpis_enabled'] ?? true;
         if ($enabled === false) {
-            $this->addFlash('info', 'MRIS-KPIs sind für diesen Mandanten deaktiviert. Aktivierung über Mandanten-Einstellungen.');
+            $this->flashInfo('kpi.mris.disabled');
             return $this->redirectToRoute('app_dashboard');
         }
 
@@ -99,7 +114,7 @@ final class MrisKpiController extends AbstractController
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
-            $this->addFlash('warning', 'Kein Mandant zugewiesen.');
+            $this->flashWarning('kpi.mris.no_tenant_short');
             return $this->redirectToRoute('app_dashboard');
         }
 
@@ -109,7 +124,7 @@ final class MrisKpiController extends AbstractController
         }
 
         $this->kpiService->setManualKpis($tenant, $values);
-        $this->addFlash('success', 'Manuelle MRIS-KPI-Werte gespeichert.');
+        $this->flashSuccess('kpi.mris.saved');
         return $this->redirectToRoute('app_mris_kpis');
     }
 }

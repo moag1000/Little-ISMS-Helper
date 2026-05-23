@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Service\TenantContext;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Share Target Controller
@@ -22,12 +24,25 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  */
 class ShareController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly LoggerInterface $logger,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
+        private readonly TranslatorInterface $translator,
     ) {
+    }
+
+    protected function getFlashDomain(): string
+    {
+        return 'messages';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
     }
 
     /**
@@ -86,7 +101,7 @@ class ShareController extends AbstractController
     public function processShare(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('share_process', $request->request->get('_token'))) {
-            $this->addFlash('danger', 'common.csrf_error');
+            $this->flashError('common.csrf_error');
             return $this->redirectToRoute('app_share_target', ['_locale' => $request->getLocale()]);
         }
 
@@ -121,13 +136,13 @@ class ShareController extends AbstractController
 
             case 'note':
                 // Store as a quick note (could be implemented as a simple entity)
-                $this->addFlash('success', 'Note saved successfully');
+                $this->flashSuccess('share.success.note_saved');
                 return $this->redirectToRoute('app_dashboard', [
                     '_locale' => $request->getLocale(),
                 ]);
 
             default:
-                $this->addFlash('warning', 'Unknown action');
+                $this->flashWarning('share.warning.unknown_action');
                 return $this->redirectToRoute('app_dashboard', [
                     '_locale' => $request->getLocale(),
                 ]);

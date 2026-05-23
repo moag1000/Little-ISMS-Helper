@@ -1,4 +1,7 @@
 audit_log:
+    integrity:
+        disabled: 'Audit-Log-Integritätsprüfung ist deaktiviert (APP_AUDIT_HMAC_KEY fehlt).'
+        intact: 'Audit-Log-Kette intakt — keine Manipulationen erkannt.'
     page:
         title: 'Audit Log'
         subtitle: 'Vollständige Protokollierung aller Aktivitäten im ISMS zur Sicherstellung der Revisionssicherheit'

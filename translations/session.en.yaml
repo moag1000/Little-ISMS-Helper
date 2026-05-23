@@ -40,7 +40,14 @@ session:
     unique_devices: 'Unique Devices'
     error:
         invalid_token: 'Invalid CSRF token'
+        user_not_found: 'User not found.'
+    success:
+        terminated_user_sessions: 'Successfully terminated %count% active session(s) for user %user%.'
+        terminated_single: 'Session terminated successfully.'
+    warning:
+        not_found_or_inactive: 'Session not found or already inactive.'
     info:
+        no_active_sessions_for_user: 'No active sessions found for user %user%.'
         termination_not_implemented: 'Session termination requires additional configuration (database session storage)'
     subtitle: Subtitle
     user_activity: 'User Activity'

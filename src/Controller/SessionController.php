@@ -128,7 +128,7 @@ class SessionController extends AbstractController
         // Verify CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('terminate_session_' . $userName, $token)) {
-            $this->addFlash('danger', $translator->trans('session.error.invalid_token')); // @todo H-06 flash-domain
+            $this->addFlash('danger', $translator->trans('session.error.invalid_token', [], 'session'));
             return $this->redirectToRoute('session_index');
         }
 
@@ -136,7 +136,7 @@ class SessionController extends AbstractController
         $user = $userRepository->findOneBy(['email' => $userName]);
 
         if (!$user) {
-            $this->addFlash('danger', 'User not found');
+            $this->addFlash('danger', $translator->trans('session.error.user_not_found', [], 'session'));
             return $this->redirectToRoute('session_index');
         }
 
@@ -145,16 +145,9 @@ class SessionController extends AbstractController
         $count = $sessionManager->terminateUserSessions($user, $adminEmail);
 
         if ($count > 0) {
-            $this->addFlash('success', sprintf(
-                'Successfully terminated %d active session(s) for user %s',
-                $count,
-                $userName
-            ));
+            $this->addFlash('success', $translator->trans('session.success.terminated_user_sessions', ['%count%' => $count, '%user%' => $userName], 'session'));
         } else {
-            $this->addFlash('info', sprintf(
-                'No active sessions found for user %s',
-                $userName
-            ));
+            $this->addFlash('info', $translator->trans('session.info.no_active_sessions_for_user', ['%user%' => $userName], 'session'));
         }
 
         return $this->redirectToRoute('session_index');
@@ -170,7 +163,7 @@ class SessionController extends AbstractController
         // Verify CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('terminate_single_' . $sessionId, $token)) {
-            $this->addFlash('danger', $translator->trans('session.error.invalid_token')); // @todo H-06 flash-domain
+            $this->addFlash('danger', $translator->trans('session.error.invalid_token', [], 'session'));
             return $this->redirectToRoute('session_index');
         }
 
@@ -179,9 +172,9 @@ class SessionController extends AbstractController
         $success = $sessionManager->terminateSession($sessionId, 'forced', $adminEmail);
 
         if ($success) {
-            $this->addFlash('success', 'Session terminated successfully');
+            $this->addFlash('success', $translator->trans('session.success.terminated_single', [], 'session'));
         } else {
-            $this->addFlash('warning', 'Session not found or already inactive');
+            $this->addFlash('warning', $translator->trans('session.warning.not_found_or_inactive', [], 'session'));
         }
 
         return $this->redirectToRoute('session_index');

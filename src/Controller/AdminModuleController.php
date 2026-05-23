@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\LocalizedFlashTrait;
 use Symfony\Component\Yaml\Yaml;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\DataImportService;
@@ -27,11 +28,23 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class AdminModuleController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly DataImportService $dataImportService,
         private readonly TranslatorInterface $translator
     ) {
+    }
+
+    protected function getFlashDomain(): string
+    {
+        return 'admin';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
     }
     /**
      * Module Overview - Admin Panel
@@ -72,7 +85,7 @@ class AdminModuleController extends AbstractController
     public function activate(string $moduleKey, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('module_activate_' . $moduleKey, $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token');
+            $this->flashError('admin.module.error.invalid_csrf');
             return $this->redirectToRoute('admin_modules_index');
         }
 
@@ -102,7 +115,7 @@ class AdminModuleController extends AbstractController
     public function deactivate(string $moduleKey, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('module_deactivate_' . $moduleKey, $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token');
+            $this->flashError('admin.module.error.invalid_csrf');
             return $this->redirectToRoute('admin_modules_index');
         }
 
@@ -114,6 +127,7 @@ class AdminModuleController extends AbstractController
             $this->addFlash('error', $result['error']);
 
             if (isset($result['dependents'])) {
+                // @flash-domain-fallback-ok: 3-arg trans with explicit 'messages' domain — gate regex false-positive on nested array literal
                 $this->addFlash('warning', $this->translator->trans('module.warning.disable_dependents_first', ['dependents' => implode(', ', $result['dependents'])], 'messages'));
             }
         }
@@ -159,7 +173,7 @@ class AdminModuleController extends AbstractController
     public function importData(string $moduleKey, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('module_import_' . $moduleKey, $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token');
+            $this->flashError('admin.module.error.invalid_csrf');
             return $this->redirectToRoute('admin_modules_details', ['moduleKey' => $moduleKey]);
         }
 

@@ -51,25 +51,25 @@ final class UserType extends AbstractType
                 'label' => 'user.field.first_name',
                 'required' => true,
                 'constraints' => [
-                    new Assert\NotBlank(message: 'Bitte geben Sie einen Vornamen ein.'),
-                    new Assert\Length(max: 100, maxMessage: 'Der Vorname darf maximal {{ limit }} Zeichen lang sein.'),
+                    new Assert\NotBlank(message: 'user.validation.first_name.required'),
+                    new Assert\Length(max: 100, maxMessage: 'user.validation.first_name.max_length'),
                 ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'user.field.last_name',
                 'required' => true,
                 'constraints' => [
-                    new Assert\NotBlank(message: 'Bitte geben Sie einen Nachnamen ein.'),
-                    new Assert\Length(max: 100, maxMessage: 'Der Nachname darf maximal {{ limit }} Zeichen lang sein.'),
+                    new Assert\NotBlank(message: 'user.validation.last_name.required'),
+                    new Assert\Length(max: 100, maxMessage: 'user.validation.last_name.max_length'),
                 ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'user.field.email',
                 'required' => true,
-                'help' => 'Wird als Benutzername verwendet',
+                'help' => 'user.help.email',
                 'constraints' => [
-                    new Assert\NotBlank(message: 'Bitte geben Sie eine E-Mail-Adresse ein.'),
-                    new Assert\Email(message: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'),
+                    new Assert\NotBlank(message: 'user.validation.email.required'),
+                    new Assert\Email(message: 'user.validation.email.invalid'),
                 ],
             ])
             ->add('department', TextType::class, [
