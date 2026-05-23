@@ -1,4 +1,8 @@
 compliance:
+    auto_mapping:
+        success: 'Erfolgreich %count% neue Mappings zwischen %framework1% und %framework2% erstellt!'
+        skipped_suffix: '(%count% bereits vorhanden, übersprungen)'
+        error: 'Fehler beim Erstellen der Mappings: %reason%'
     heatmap:
         title: 'Compliance-Heatmap'
         caption: 'Heatmap: Framework × Control-Cluster-Erfüllung'
