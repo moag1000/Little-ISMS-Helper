@@ -188,14 +188,11 @@ class Asset
      * ⚠️ SAFE GUARD: This field must ALWAYS be set manually by users.
      * NEVER auto-calculate from vulnerabilityScore or other sources to prevent circular dependencies.
      *
-     * TODO Junior-ISB-Audit-S14: Audit row #15 labels this a "dead field" because
-     * AssetType form no longer renders it (Finding #9). However, the field is
-     * still actively READ by RiskImpactCalculatorService + 3 show-templates
-     * (asset/incident/risk show). Full removal requires: (1) deprecate
-     * RiskImpactCalculatorService.monetaryValue → migrate to acquisitionValue
-     * /currentValue, (2) replace template renders with currentValue, (3) backfill
-     * migration (copy monetaryValue → currentValue if currentValue is null),
-     * (4) DROP COLUMN migration. Scope > 1h — kept as backlog item.
+     * @deprecated Junior-ISB-Audit-S14 #15 — Use currentValue/acquisitionValue.
+     * AssetType form no longer renders this field (audit Finding #9). Templates
+     * now prefer `currentValue` and fall back to `monetaryValue` for un-migrated
+     * rows. RiskImpactCalculatorService still reads this — backfill+DROP COLUMN
+     * migration deferred to S15 once the calculator is rewired.
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]

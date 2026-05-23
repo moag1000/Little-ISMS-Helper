@@ -105,22 +105,9 @@ business_process:
     mtpd: <strong>MTPD - Maximum Tolerable Period of Disruption</strong><br>⏱️ <em>Eingabe
       in Stunden</em><br><br>Maximale Unterbrechungsdauer bevor irreversible Schäden
       entstehen<br><br><em>Hinweis:</em> MTPD muss &gt; RTO sein!
-    reputational_impact: <strong>Reputationsauswirkung (BIA)</strong><br><table class="table
-      table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine
-      Außenwirkung</td></tr><tr><td><strong>2</strong></td><td>Intern bekannt</td></tr><tr><td><strong>3</strong></td><td>Lokale
-      Medien</td></tr><tr><td><strong>4</strong></td><td>Nationale Medien</td></tr><tr><td><strong>5</strong></td><td>Internationale
-      Aufmerksamkeit</td></tr></table>
-    regulatory_impact: <strong>Regulatorische Auswirkung (BIA)</strong><br><table
-      class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine
-      Aufsicht</td></tr><tr><td><strong>2</strong></td><td>Hinweis/Empfehlung</td></tr><tr><td><strong>3</strong></td><td>Formelle
-      Mängelanzeige</td></tr><tr><td><strong>4</strong></td><td>Bußgeld/Sanktion</td></tr><tr><td><strong>5</strong></td><td>Lizenzentzug
-      möglich</td></tr></table>
-    operational_impact: <strong>Operative Auswirkung (BIA)</strong><br><table class="table
-      table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine
-      anderen Prozesse betroffen</td></tr><tr><td><strong>2</strong></td><td>1-2 Prozesse
-      eingeschränkt</td></tr><tr><td><strong>3</strong></td><td>Abteilung eingeschränkt</td></tr><tr><td><strong>4</strong></td><td>Mehrere
-      Abteilungen betroffen</td></tr><tr><td><strong>5</strong></td><td>Gesamtbetrieb
-      gefährdet</td></tr></table>
+    reputational_impact: '<strong>Reputationsauswirkung (1-5)</strong><br>1=keine Außenwirkung · 2=intern bekannt · 3=lokale Medien · 4=nationale Medien · 5=internationale Aufmerksamkeit'
+    regulatory_impact: '<strong>Regulatorische Auswirkung (1-5)</strong><br>1=keine Aufsicht · 2=Hinweis/Empfehlung · 3=formelle Mängelanzeige · 4=Bußgeld/Sanktion · 5=Lizenzentzug möglich'
+    operational_impact: '<strong>Operative Auswirkung (1-5)</strong><br>1=keine anderen Prozesse betroffen · 2=1-2 Prozesse eingeschränkt · 3=Abteilung eingeschränkt · 4=mehrere Abteilungen · 5=Gesamtbetrieb gefährdet'
   placeholder:
     rto: z.B. 4 (Stunden)
     rpo: z.B. 2 (Stunden)
