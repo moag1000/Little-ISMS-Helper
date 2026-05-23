@@ -104,35 +104,35 @@ class Incident
 
     #[ORM\Column(length: 50)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotBlank(message: 'Incident number is required')]
-    #[Assert\Length(max: 50, maxMessage: 'Incident number cannot exceed { limit } characters')]
+    #[Assert\NotBlank(message: 'incident.validation.number_required')]
+    #[Assert\Length(max: 50, maxMessage: 'incident.validation.number_max_length')]
     private ?string $incidentNumber = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotBlank(message: 'Incident title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed { limit } characters')]
+    #[Assert\NotBlank(message: 'incident.validation.title_required')]
+    #[Assert\Length(max: 255, maxMessage: 'incident.validation.title_max_length')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotBlank(message: 'Incident description is required')]
+    #[Assert\NotBlank(message: 'incident.validation.description_required')]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotBlank(message: 'Incident category is required')]
-    #[Assert\Length(max: 100, maxMessage: 'Category cannot exceed { limit } characters')]
+    #[Assert\NotBlank(message: 'incident.validation.category_required')]
+    #[Assert\Length(max: 100, maxMessage: 'incident.validation.category_max_length')]
     private ?string $category = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true, enumType: IncidentSeverity::class)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotNull(message: 'Severity is required')]
+    #[Assert\NotNull(message: 'incident.validation.severity_required')]
     private ?IncidentSeverity $severity = null;
 
     #[ORM\Column(type: 'string', length: 50, enumType: IncidentStatus::class)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotNull(message: 'Status is required')]
+    #[Assert\NotNull(message: 'incident.validation.status_required')]
     private ?IncidentStatus $status = IncidentStatus::Reported;
 
     #[ORM\Version]
@@ -141,7 +141,7 @@ class Incident
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotNull(message: 'Detection date is required')]
+    #[Assert\NotNull(message: 'incident.validation.detected_at_required')]
     private ?DateTimeInterface $detectedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
@@ -150,12 +150,12 @@ class Incident
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Reporter name cannot exceed { limit } characters')]
+    #[Assert\Length(max: 100, maxMessage: 'incident.validation.reported_by_max_length')]
     private ?string $reportedBy = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Assignee name cannot exceed { limit } characters')]
+    #[Assert\Length(max: 100, maxMessage: 'incident.validation.assigned_to_max_length')]
     private ?string $assignedTo = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -192,12 +192,12 @@ class Incident
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotNull(message: 'Data breach flag is required')]
+    #[Assert\NotNull(message: 'incident.validation.data_breach_flag_required')]
     private ?bool $dataBreachOccurred = false;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotNull(message: 'Notification required flag is required')]
+    #[Assert\NotNull(message: 'incident.validation.notification_required_flag_required')]
     private ?bool $notificationRequired = false;
 
     /**
@@ -232,7 +232,7 @@ class Incident
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\Choice(
         choices: ['operational', 'security', 'privacy', 'availability'],
-        message: 'NIS2 category must be one of: { choices }'
+        message: 'incident.validation.nis2_category_invalid'
     )]
     private ?string $nis2Category = null;
 

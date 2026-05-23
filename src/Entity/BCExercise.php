@@ -63,7 +63,7 @@ class BCExercise
     private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Exercise name is required')]
+    #[Assert\NotBlank(message: 'bc_exercise.validation.name_required')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $name = null;
 
@@ -97,12 +97,12 @@ class BCExercise
      * Scope and objectives
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Scope must be defined')]
+    #[Assert\NotBlank(message: 'bc_exercise.validation.scope_required')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $scope = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Objectives must be defined')]
+    #[Assert\NotBlank(message: 'bc_exercise.validation.objectives_required')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $objectives = null;
 
