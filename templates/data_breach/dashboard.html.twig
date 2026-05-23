@@ -92,17 +92,17 @@
                             </div>
                             <p class="mb-1">
                                 {% if item.type == 'overdue_authority_notification' %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'OVERDUE' } %}
-                                    Supervisory authority notification exceeded 72-hour deadline by {{ item.hours_overdue|number_format }} hours.
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: ('data_breach.dashboard.badge.overdue'|trans({}, 'privacy')) } %}
+                                    {{ 'data_breach.dashboard.action_msg.overdue_authority'|trans({'%hours%': item.hours_overdue|number_format}, 'privacy') }}
                                 {% elseif item.type == 'pending_authority_notification' %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'URGENT' } %}
-                                    {{ item.hours_remaining|number_format }} hours remaining until 72-hour deadline.
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: ('data_breach.dashboard.badge.urgent'|trans({}, 'privacy')) } %}
+                                    {{ 'data_breach.dashboard.action_msg.pending_authority'|trans({'%hours%': item.hours_remaining|number_format}, 'privacy') }}
                                 {% elseif item.type == 'pending_subject_notification' %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: 'PENDING' } %}
-                                    Data subject notification required (Art. 34).
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: ('data_breach.dashboard.badge.pending'|trans({}, 'privacy')) } %}
+                                    {{ 'data_breach.dashboard.action_msg.pending_subject'|trans({}, 'privacy') }}
                                 {% elseif item.type == 'incomplete' %}
                                     {% include '_components/_badge.html.twig' with { variant: 'secondary', content: item.completeness ~ '%' } %}
-                                    Data breach documentation incomplete.
+                                    {{ 'data_breach.dashboard.action_msg.incomplete'|trans({}, 'privacy') }}
                                 {% endif %}
                             </p>
                         </a>
@@ -111,7 +111,7 @@
             {% endblock %}
         {% endembed %}
     {% else %}
-        {{ _fa_alert.render({ variant: 'success', body: '<strong>All action items completed!</strong> No pending notifications or overdue deadlines.' }) }}
+        {{ _fa_alert.render({ variant: 'success', body: 'data_breach.dashboard.empty_state'|trans({}, 'privacy') }) }}
     {% endif %}
 
     {# Statistics by Status #}
@@ -119,12 +119,12 @@
         <div class="col-md-12">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> Breach Statistics by Status</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'data_breach.dashboard.stats_status_title'|trans({}, 'privacy') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <div class="row">
                         <div class="col-md-2">
-                            <div class="text-muted small">Draft</div>
+                            <div class="text-muted small">{{ 'data_breach.dashboard.status.draft'|trans({}, 'privacy') }}</div>
                             <div class="h2">{{ statistics.draft }}</div>
                         </div>
                         <div class="col-md-3">
@@ -154,24 +154,24 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--breach" aria-hidden="true"></i> By Risk Level</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--breach" aria-hidden="true"></i> {{ 'data_breach.dashboard.risk_section_title'|trans({}, 'privacy') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     <div class="row text-center">
                         <div class="col-3">
-                            <div class="text-muted small">Low</div>
+                            <div class="text-muted small">{{ 'data_breach.dashboard.risk_level.low'|trans({}, 'privacy') }}</div>
                             <div class="h3 text-success">{{ statistics.low_risk }}</div>
                         </div>
                         <div class="col-3">
-                            <div class="text-muted small">Medium</div>
+                            <div class="text-muted small">{{ 'data_breach.dashboard.risk_level.medium'|trans({}, 'privacy') }}</div>
                             <div class="h3 text-info">{{ statistics.medium_risk }}</div>
                         </div>
                         <div class="col-3">
-                            <div class="text-muted small">High</div>
+                            <div class="text-muted small">{{ 'data_breach.dashboard.risk_level.high'|trans({}, 'privacy') }}</div>
                             <div class="h3 text-warning">{{ statistics.high_risk }}</div>
                         </div>
                         <div class="col-3">
-                            <div class="text-muted small">Critical</div>
+                            <div class="text-muted small">{{ 'data_breach.dashboard.risk_level.critical'|trans({}, 'privacy') }}</div>
                             <div class="h3 text-danger">{{ statistics.critical_risk }}</div>
                         </div>
                     </div>
@@ -182,14 +182,13 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--control" aria-hidden="true"></i> Special Categories</h2></div>
+                    <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--control" aria-hidden="true"></i> {{ 'data_breach.dashboard.special_categories_title'|trans({}, 'privacy') }}</h2></div>
                 {% endblock %}
                 {% block card_body %}
-                    <p><strong>Art. 9 Data (Special Categories):</strong></p>
+                    <p><strong>{{ 'data_breach.dashboard.special_categories_label'|trans({}, 'privacy') }}</strong></p>
                     <h2 class="text-info">{{ statistics.special_categories_affected }}</h2>
                     <small class="text-muted">
-                        Breaches involving racial/ethnic origin, political opinions, religious beliefs,
-                        health data, sexual orientation, biometric/genetic data
+                        {{ 'data_breach.dashboard.special_categories_help'|trans({}, 'privacy') }}
                     </small>
                 {% endblock %}
             {% endembed %}
@@ -200,7 +199,7 @@
     {% if recent_breaches|length > 0 %}
         {% embed '_components/_card.html.twig' with {class: 'mb-4', noPadding: true} %}
             {% block card_header %}
-                <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> Recent Breaches (Last 30 Days)</h2></div>
+                <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'data_breach.dashboard.recent_title'|trans({}, 'privacy') }}</h2></div>
             {% endblock %}
             {% block card_body %}
                 {% embed '_components/_table.html.twig' with {
@@ -210,12 +209,12 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">Reference</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Detected</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Risk</th>
-                            <th scope="col">Affected Subjects</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.reference'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.title'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.detected'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.status'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.risk'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.affected_subjects'|trans({}, 'privacy') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
