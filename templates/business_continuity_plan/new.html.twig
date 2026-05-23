@@ -27,6 +27,10 @@
                 {% block card_body %}
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
+                    {# Junior-ISB-Audit-2026-05-22 C2-06: 3-team-worlds consolidation.
+                       responseTeamMembers (canonical per-plan), crisisTeams (cross-plan
+                       reusable), bcTeam (deprecated freetext — disabled, kept for legacy
+                       visibility only). #}
                     {% include '_components/_auto_form.html.twig' with {
                         'form': form,
                         'sections': {
@@ -34,9 +38,9 @@
                                 'label': 'bc_plans.section.basic_info'|trans({}, 'bc_plans'),
                                 'fields': ['name', 'businessProcess', 'description', 'planOwner', 'planOwnerUser', 'planOwnerPerson', 'planOwnerDeputyPersons', 'status']
                             },
-                            'team': {
-                                'label': 'bc_plans.section.team'|trans({}, 'bc_plans'),
-                                'fields': ['bcTeam']
+                            'response_team': {
+                                'label': 'bc_plan.section.response_team'|trans({}, 'bc_plans'),
+                                'fields': ['responseTeamMembers', 'crisisTeams', 'bcTeam']
                             },
                             'activation': {
                                 'label': 'bc_plans.section.activation'|trans({}, 'bc_plans'),
@@ -68,6 +72,8 @@
                             'planOwnerPerson': 6,
                             'planOwnerDeputyPersons': 12,
                             'status': 6,
+                            'responseTeamMembers': 12,
+                            'crisisTeams': 12,
                             'bcTeam': 12,
                             'activationCriteria': 12,
                             'rolesAndResponsibilities': 12,

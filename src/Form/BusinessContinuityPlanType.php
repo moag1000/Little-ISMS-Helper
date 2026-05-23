@@ -58,11 +58,22 @@ final class BusinessContinuityPlanType extends AbstractType
                 'attr' => ['rows' => 3],
                 'help' => 'bc_plans.help.description',
             ])
+            // Junior-ISB-Audit-2026-05-22 C2-06: Doppelpflege-Deprecation.
+            // Freetext BC-team superseded by structured `responseTeamMembers`
+            // (ISO 22301 §8.5.3 builder) for per-plan team and `crisisTeams`
+            // (ISO 22301 §8.4.2 M2M) for cross-plan reusable crisis teams.
+            // Disabled in the Form; the show-page renders the value
+            // read-only as "Legacy" only when non-empty. Column kept until S14
+            // cleanup migration so Bestandsdaten remain accessible.
             ->add('bcTeam', TextareaType::class, [
                 'label' => 'bc_plans.field.bc_team',
                 'required' => false,
-                'attr' => ['rows' => 3],
-                'help' => 'bc_plans.help.bc_team',
+                'disabled' => true,
+                'attr' => [
+                    'rows' => 3,
+                    'readonly' => true,
+                ],
+                'help' => 'bc_plans.help.bc_team_deprecated',
             ])
             // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
             // Owned by `business_continuity_plan_lifecycle`. ISO 22301 Cl. 8.4
@@ -230,14 +241,17 @@ final class BusinessContinuityPlanType extends AbstractType
                 'attr' => ['rows' => 5],
                 'help' => 'bc_plans.help.escalation_levels_json',
             ])
+            // Junior-ISB-Audit-2026-05-22 C2-06: 3-team-worlds consolidation —
+            // optional reusable verlinkung for cross-plan crisis teams.
+            // Per-plan team-roster lives in `responseTeamMembers` (canonical).
             ->add('crisisTeams', EntityType::class, [
                 'class' => CrisisTeam::class,
                 'choice_label' => 'teamName',
                 'multiple' => true,
                 'expanded' => false,
                 'required' => false,
-                'label' => 'bc_plans.field.crisis_teams',
-                'help' => 'bc_plans.help.crisis_teams',
+                'label' => 'bc_plans.field.crisis_teams_reusable',
+                'help' => 'bc_plans.help.crisis_teams_reusable',
                 'attr' => [
                     'data-controller' => 'tom-select',
                 ],
@@ -291,6 +305,7 @@ final class BusinessContinuityPlanType extends AbstractType
             'empty_data' => 'new',
             'constraints' => [
                 new Callback([$this, 'validatePlanOwnerSlot']),
+                new Callback([$this, 'validateTeamSlot']),
             ],
         ]);
     }
@@ -303,6 +318,33 @@ final class BusinessContinuityPlanType extends AbstractType
         if ($entity->getPlanOwnerUser() === null && $entity->getPlanOwnerPerson() === null) {
             $context->buildViolation('bc_plans.error.owner_required_user_or_person')
                 ->atPath('planOwnerUser')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 C2-06: Cross-field validator — at least ONE of
+     * (responseTeamMembers non-empty) OR (crisisTeams.count >= 1) is required for
+     * a `published` plan. ISO 22301 Cl. 8.4.2 — a BC plan without an identified
+     * response team is non-conformant.
+     */
+    public function validateTeamSlot(?BusinessContinuityPlan $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        // Only enforce on plans that have moved past draft (published or active
+        // require an identified team). Drafts may still be in the team-design
+        // phase.
+        if (!in_array($entity->getStatus(), ['active', 'under_review', 'published'], true)) {
+            return;
+        }
+        $hasResponseTeam = is_array($entity->getResponseTeamMembers())
+            && count($entity->getResponseTeamMembers()) > 0;
+        $hasCrisisTeams = $entity->getCrisisTeams()->count() >= 1;
+        if (!$hasResponseTeam && !$hasCrisisTeams) {
+            $context->buildViolation('bc_plan.validation.team_required')
+                ->atPath('responseTeamMembers')
                 ->addViolation();
         }
     }
