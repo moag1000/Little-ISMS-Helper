@@ -120,35 +120,35 @@
                     {% embed '_components/_fa_table.html.twig' with { compact: true, hover: false } %}
                         {% block table_body %}
                             <tr class="fa-table__row">
-                                <th scope="row" class="fa-table__cell" style="width: 30%;">Risikoklasse <small class="text-muted">(AI Act Art. 6)</small></th>
+                                <th scope="row" class="fa-table__cell" style="width: 30%;">{{ 'asset.ai_agent.show.classification'|trans({}, 'asset') }} <small class="text-muted">(AI Act Art. 6)</small></th>
                                 <td class="fa-table__cell">
                                     {% if asset.aiAgentClassification %}
                                         <code>{{ asset.aiAgentClassification }}</code>
-                                    {% else %}<span class="text-warning">— nicht klassifiziert —</span>{% endif %}
+                                    {% else %}<span class="text-warning">{{ 'asset.ai_agent.show.classification_unclassified'|trans({}, 'asset') }}</span>{% endif %}
                                 </td>
                             </tr>
                             <tr class="fa-table__row">
-                                <th scope="row" class="fa-table__cell">Anbieter <small class="text-muted">(Art. 16)</small></th>
+                                <th scope="row" class="fa-table__cell">{{ 'asset.ai_agent.show.provider'|trans({}, 'asset') }} <small class="text-muted">(Art. 16)</small></th>
                                 <td class="fa-table__cell">{{ asset.aiAgentProvider|default('—') }}</td>
                             </tr>
                             <tr class="fa-table__row">
-                                <th scope="row" class="fa-table__cell">Modell-Version <small class="text-muted">(ISO 42001)</small></th>
+                                <th scope="row" class="fa-table__cell">{{ 'asset.ai_agent.show.model_version'|trans({}, 'asset') }} <small class="text-muted">(ISO 42001)</small></th>
                                 <td class="fa-table__cell"><code>{{ asset.aiAgentModelVersion|default('—') }}</code></td>
                             </tr>
                             <tr class="fa-table__row">
-                                <th scope="row" class="fa-table__cell">Zweckbestimmung <small class="text-muted">(Art. 11)</small></th>
+                                <th scope="row" class="fa-table__cell">{{ 'asset.ai_agent.show.purpose'|trans({}, 'asset') }} <small class="text-muted">(Art. 11)</small></th>
                                 <td class="fa-table__cell">{{ asset.aiAgentPurpose|default('—')|nl2br }}</td>
                             </tr>
                             <tr class="fa-table__row">
-                                <th scope="row" class="fa-table__cell">Datengovernance <small class="text-muted">(Art. 10)</small></th>
+                                <th scope="row" class="fa-table__cell">{{ 'asset.ai_agent.show.data_sources'|trans({}, 'asset') }} <small class="text-muted">(Art. 10)</small></th>
                                 <td class="fa-table__cell">{{ asset.aiAgentDataSources|default('—')|nl2br }}</td>
                             </tr>
                             <tr class="fa-table__row">
-                                <th scope="row" class="fa-table__cell">Human Oversight <small class="text-muted">(Art. 14)</small></th>
+                                <th scope="row" class="fa-table__cell">{{ 'asset.ai_agent.show.oversight'|trans({}, 'asset') }} <small class="text-muted">(Art. 14)</small></th>
                                 <td class="fa-table__cell">{{ asset.aiAgentOversightMechanism|default('—') }}</td>
                             </tr>
                             <tr class="fa-table__row">
-                                <th scope="row" class="fa-table__cell">Capability-Scope <small class="text-muted">(MHC-13)</small></th>
+                                <th scope="row" class="fa-table__cell">{{ 'asset.ai_agent.show.capability_scope'|trans({}, 'asset') }} <small class="text-muted">(MHC-13)</small></th>
                                 <td class="fa-table__cell">
                                     {% if asset.aiAgentCapabilityScope is not empty %}
                                         {% for cap in asset.aiAgentCapabilityScope %}
@@ -158,15 +158,15 @@
                                 </td>
                             </tr>
                             <tr class="fa-table__row">
-                                <th scope="row" class="fa-table__cell">Bedrohungsmodell-Doc <small class="text-muted">(Art. 9 + MHC-13)</small></th>
+                                <th scope="row" class="fa-table__cell">{{ 'asset.ai_agent.show.threat_model_doc'|trans({}, 'asset') }} <small class="text-muted">(Art. 9 + MHC-13)</small></th>
                                 <td class="fa-table__cell">
                                     {% if asset.aiAgentThreatModelDocId %}
-                                        <a href="{{ path('app_document_show', {id: asset.aiAgentThreatModelDocId}) }}">Dokument #{{ asset.aiAgentThreatModelDocId }}</a>
-                                    {% else %}<span class="text-warning">— nicht hinterlegt —</span>{% endif %}
+                                        <a href="{{ path('app_document_show', {id: asset.aiAgentThreatModelDocId}) }}">{{ 'asset.ai_agent.show.threat_model_link'|trans({'%id%': asset.aiAgentThreatModelDocId}, 'asset') }}</a>
+                                    {% else %}<span class="text-warning">{{ 'asset.ai_agent.show.threat_model_missing'|trans({}, 'asset') }}</span>{% endif %}
                                 </td>
                             </tr>
                             <tr class="fa-table__row">
-                                <th scope="row" class="fa-table__cell">Extension-Allowlist <small class="text-muted">(MHC-13)</small></th>
+                                <th scope="row" class="fa-table__cell">{{ 'asset.ai_agent.show.extension_allowlist'|trans({}, 'asset') }} <small class="text-muted">(MHC-13)</small></th>
                                 <td class="fa-table__cell">
                                     {% if asset.aiAgentExtensionAllowlist is not empty %}
                                         {% for ext in asset.aiAgentExtensionAllowlist %}

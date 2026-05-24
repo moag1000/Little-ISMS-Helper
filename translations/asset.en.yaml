@@ -311,6 +311,19 @@ asset:
   ai_agent:
     flash:
       no_tenant: 'No tenant assigned — AI Agent inventory requires a tenant context.'
+    show:
+      classification: 'Risk classification'
+      classification_unclassified: '— not classified —'
+      provider: 'Provider'
+      model_version: 'Model version'
+      purpose: 'Intended purpose'
+      data_sources: 'Data governance'
+      oversight: 'Human oversight'
+      capability_scope: 'Capability scope'
+      threat_model_doc: 'Threat model doc'
+      threat_model_link: 'Document #%id%'
+      threat_model_missing: '— not on file —'
+      extension_allowlist: 'Extension allowlist'
     section:
       title: AI Agent Inventory
       subtitle: EU AI Act / ISO 42001 / MRIS MHC-13

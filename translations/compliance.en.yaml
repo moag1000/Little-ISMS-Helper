@@ -516,6 +516,11 @@ compliance:
         aria:
             current: 'Current maturity'
             target: 'Target maturity'
+        mapped_col:
+            control_id: 'Control ID'
+            name: 'Name'
+            status: 'Status'
+            progress: 'Progress'
         success:
             created: 'Compliance requirement created successfully.'
             updated: 'Compliance requirement updated successfully.'
