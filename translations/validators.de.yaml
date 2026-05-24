@@ -762,6 +762,18 @@ gstool_import:
 
 # User
 'user.validation.email_unique': 'Es existiert bereits ein Konto mit dieser E-Mail-Adresse.'
+'user.validation.email.required': 'E-Mail-Adresse ist erforderlich.'
+'user.validation.email.invalid': 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'
+'user.validation.first_name.required': 'Vorname ist erforderlich.'
+'user.validation.first_name.max_length': 'Vorname darf höchstens {{ limit }} Zeichen lang sein.'
+'user.validation.last_name.required': 'Nachname ist erforderlich.'
+'user.validation.last_name.max_length': 'Nachname darf höchstens {{ limit }} Zeichen lang sein.'
+
+# Tenant (T10.10 — NACE Rev.2 format)
+'tenant.validation.nace_code_format': 'NACE-Code muss dem Format A.NN.NN entsprechen (NACE Rev.2 Klassifikation).'
+
+# Training
+'training.error.material_upload_failed': 'Fehler beim Hochladen der Schulungsmaterialien: %reason%'
 
 # Supplier (T10.10 — LEI ISO 17442 + NACE Rev.2 format)
 'supplier.validation.lei_code.format': 'LEI-Code muss 20 Zeichen lang sein: 18 alphanumerische + 2 Prüfziffern (ISO 17442).'
