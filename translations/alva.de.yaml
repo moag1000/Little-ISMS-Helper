@@ -429,3 +429,65 @@ alva_hint:
             title: 'Kritisches Risiko (Score %score%) — Board-Approval prüfen'
             body: 'Dieses Risiko erreicht mit Score %score% das kritische Niveau. ISO 27001 Cl. 5.3 + 6.1.3 f verlangt einen Risk-Owner mit ausreichender Entscheidungskompetenz — bei kritischen Risiken üblicherweise C-Level / Board (ROLE_CISO). Bitte Owner-Eintragung und Behandlungsentscheidung entsprechend planen.'
             action: 'Risk-Owner-Konvention öffnen'
+        # ── Form-Coverage-Expansion (P-19 follow-up) ─────────────────────────
+        # Inline-Hints für 9 weitere FormTypes, alle pre-save Warnungen.
+        asset_critical_confidentiality:
+            title: 'Kritische Vertraulichkeit — verschärfte Owner-Pflichten'
+            body: 'Confidentiality-Wert 5 stuft dieses Asset als "kritisch" ein. ISO 27001 A.5.17 + BSI ORP.4.A11 verlangen MFA-Pflicht für den Owner und jährliche Re-Verification (A.5.15 Access-Review). Bitte Access-Control-Plan und Re-Cert-Intervall vorab planen.'
+            action: 'Access-Control-Konvention öffnen'
+        asset_retired_status:
+            title: 'End-of-Life — Disposal-Evidence erforderlich'
+            body: 'Status "retired" / "disposed" zieht eine Pflicht zur dokumentierten sicheren Entsorgung nach ISO 27001 A.7.14 + BSI CON.6 nach sich. Falls das Asset einen kritischen Geschäftsprozess unterstützt hat, sollte zudem ein Replacement-Plan oder ein Verweis im verknüpften BC-Plan dokumentiert werden.'
+            action: 'Disposal-Checkliste öffnen'
+        business_process_recovery_chain_imbalance:
+            title: 'RPO (%rpo% h) > RTO/2 (%rto% h) — Backup-Frequenz prüfen'
+            body: 'Der Recovery-Point-Objective von %rpo% h übersteigt die Hälfte des Recovery-Time-Objective von %rto% h. In der Praxis bedeutet das: die Backup-Frequenz schafft es nicht, vor dem Wiederanlauf-Zeitpunkt einen konsistenten Stand bereitzustellen — die BC-Strategie verfehlt still ihre Ziele. ISO 22301 Cl. 8.2.2 verlangt explizit konsistente Recovery-Targets.'
+            action: 'BIA-Leitfaden öffnen'
+        bcp_stale_exercise:
+            title: 'BC-Plan länger als 12 Monate nicht geübt'
+            body: 'ISO 22301 Cl. 8.5 verlangt eine dokumentierte Übungs-Kadenz — der Audit-Default ist jährlich. Ein BC-Plan ohne Exercise-Eintrag innerhalb der letzten 12 Monate ist ein klassisches Major-NC-Kandidat. Bitte Exercise terminieren und nach Durchführung das Datum hier eintragen.'
+            action: 'BCM-Übungs-Doku öffnen'
+        bcp_no_crisis_team:
+            title: 'Kein Krisenteam definiert — wer aktiviert den Plan?'
+            body: 'Weder responseTeamMembers (plan-spezifisch) noch crisisTeams (übergreifend wiederverwendbar) ist gesetzt. Ein BC-Plan ohne aktivierungsbefugtes Team ist im Ernstfall unbrauchbar — ISO 22301 §8.5.3 verlangt explizit benannte Rollen mit Aktivierungs-Authority.'
+            action: 'Krisenteam-Konvention öffnen'
+        incident_high_severity_no_root_cause:
+            title: 'Hochsicherheits-Vorfall ohne Root-Cause-Analyse'
+            body: 'Severity %severity% in Status %status% ohne dokumentierte rootCause-Analyse. ISO 27001 Cl. 10.1 + 10.2 ("Continual improvement" / "Nonconformity & corrective action") verlangen vor Closure eine dokumentierte Ursachenanalyse — andernfalls gilt die corrective action als nicht-wirksam und der Vorfall wird im Audit beanstandet.'
+            action: 'Root-Cause-Template öffnen'
+        incident_nis2_early_warning_pending:
+            title: 'NIS2 24h-Frühwarnung läuft — earlyWarningReportedAt setzen'
+            body: 'NIS2 Art. 23 (4)(a) verpflichtet wesentliche und wichtige Einrichtungen zur Frühwarnung an die zuständige Behörde innerhalb von 24 Stunden ab Kenntnisnahme. Das Feld earlyWarningReportedAt ist noch leer — bitte Behörden-Kontakt und Frühwarn-Inhalt vorbereiten und Eintrag nach Abgabe zeitnah ergänzen.'
+            action: 'NIS2-Meldepflicht-Guide öffnen'
+        document_review_interval_too_long:
+            title: 'Review-Intervall (%months% Monate) länger als 24 Monate'
+            body: 'Der Industrie-Baseline für ISO 27001 A.5.32 ("Independent review of information security") ist ein jährlicher Review. Intervalle > 24 Monate verlangen von externen Auditoren eine ausdrückliche risikobasierte Begründung. Bitte das Intervall reduzieren oder die Begründung im Approval-Workflow dokumentieren.'
+            action: 'Review-Cadence-Konvention öffnen'
+        document_acknowledgement_without_audience:
+            title: 'Acknowledgement-Pflicht ohne definierte Audience'
+            body: 'Wenn requiresAcknowledgement aktiv ist und acknowledgementAudience leer bleibt, wird die Bestätigungs-Anforderung an alle Tenant-Nutzer ausgerollt — selten der gewünschte Effekt. ISO 27001 A.6.3 erwartet eine zielgerichtete, rollenbasierte Kommunikation. Bitte eine Empfänger-Gruppe auswählen.'
+            action: 'Audience-Picker öffnen'
+        training_mandatory_without_audience:
+            title: 'Pflicht-Training ohne definierte Audience'
+            body: 'mandatory=true ohne targetAudience oder participants/participantUsers verhindert die Auto-Zuweisung und macht die Coverage-Auswertung unmöglich. ISO 27001 A.6.3 verlangt geeignete Awareness/Schulung für all jene, deren Arbeit die InfoSec beeinflussen kann — eine definierte Audience ist Voraussetzung.'
+            action: 'Audience-Konvention öffnen'
+        training_mandatory_without_materials:
+            title: 'Pflicht-Training ohne Materialien'
+            body: 'Ein Pflicht-Training ohne materialFiles und ohne Materials-Beschreibung kann weder selbstgesteuert noch konsistent durchgeführt werden. ISO 27001 A.6.3 erwartet dokumentierte Awareness-Inhalte als Audit-Evidence.'
+            action: 'Training-Material-Template öffnen'
+        corrective_action_effectiveness_review_overdue:
+            title: 'Wirksamkeitsprüfung überfällig'
+            body: 'Das effectivenessReviewDate liegt in der Vergangenheit, der Status ist aber noch nicht verified*. ISO 27001 Cl. 10.1 d ("review the effectiveness of any corrective action taken") macht die Wirksamkeitsverifikation zu einem Audit-kritischen Meilenstein — überfällige Reviews sind ein klassischer Major-NC.'
+            action: 'Wirksamkeitsprüfungs-Leitfaden öffnen'
+        audit_finding_major_nc_requires_capa:
+            title: 'Major-NC verlangt CAPA'
+            body: 'Eine Major-Nonconformity (major_nc) verlangt nach ISO 27001 Cl. 10.1.1 ("Nonconformity and corrective action") eine dokumentierte Reaktion: Bewerten, ob Maßnahmen notwendig sind, und ggf. CAPA umsetzen. In der Audit-Praxis bedeutet das einen verknüpften CorrectiveAction-Datensatz vor Closure des Findings.'
+            action: 'CAPA-Workflow öffnen'
+        risk_acceptance_without_justification:
+            title: 'Risk-Acceptance ohne Begründung'
+            body: 'treatmentStrategy=accept ohne acceptanceJustification ist eines der häufigsten ISO-27001-NCs. Cl. 8.3 + 6.1.3 f verlangen, dass die Akzeptanz-Entscheidung des Risk-Owners dokumentiert begründet wird — Auditoren prüfen explizit, ob der Residual-Risiko-Wert zur dokumentierten Risk-Appetite passt.'
+            action: 'Acceptance-Template öffnen'
+        risk_residual_exceeds_initial:
+            title: 'Residual-Score (%residual%) > Initial-Score (%initial%)'
+            body: 'ISO 27005 Cl. 8.4 definiert Residual-Risiko als "das Risiko, das NACH der Behandlung verbleibt" — also per Definition ≤ Initial. Ein höherer Residual-Wert deutet meist auf vertauschte Achsen oder einen Tippfehler hin. Bitte residualProbability und residualImpact überprüfen.'
+            action: 'Risiko-Matrix-Leitfaden öffnen'

@@ -22,7 +22,15 @@
     ]
 }) }}
 
-{{ form_start(form) }}
+{# P-19 — Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}
+{{ form_start(form, {'attr': {
+    'data-controller': 'alva-hint-in-form',
+    'data-alva-hint-in-form-entity-type-value': 'asset',
+    'data-alva-hint-in-form-form-name-value': 'asset',
+    'data-alva-hint-in-form-endpoint-value': path('api_alva_hint_form_evaluate', {'entityType': 'asset'}),
+    'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
+    'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate',
+}}) }}
 {% include '_components/_auto_form.html.twig' with {
     'form': form,
     'layout': 'outline-rail',
