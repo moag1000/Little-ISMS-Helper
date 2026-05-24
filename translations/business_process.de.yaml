@@ -55,6 +55,7 @@ business_process:
     process_owner_person: 'Prozessverantwortlich (Person aus Stammdaten)'
     process_owner_deputies: 'Vertretungen (Personen)'
   help:
+    bia_optional: 'BIA-Impact-Werte (Reputational/Regulatory/Operational) sind optional — Sie können den Prozess zunächst speichern und die Bewertung später ergänzen. Empfehlung ISO 22301 Cl. 8.2.2: alle drei Dimensionen vor der Abnahme der BIA bewerten.'
     name: Eindeutiger Name des Geschäftsprozesses (z.B. "Kundenauftragsabwicklung")
     process_owner: Verantwortlicher für den Prozess (fachlicher und strategischer
       Eigentümer)
@@ -114,6 +115,7 @@ business_process:
     mtpd: z.B. 24 (Stunden)
     process_owner_user: -- Prozesseigentümer --
     process_owner_person: '-- Person aus Stammdaten --'
+    impact_unset: '— noch nicht bewertet —'
   empty:
     title: Noch keine Geschäftsprozesse vorhanden
     description: Erstellen Sie Ihren ersten Geschäftsprozess, um mit der Business-Impact-Analyse
