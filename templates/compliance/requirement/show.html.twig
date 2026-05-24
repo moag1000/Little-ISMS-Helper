@@ -198,10 +198,10 @@
                         } %}
                             {% block table_head %}
                                 <tr>
-                                    <th scope="col">Control ID</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Progress</th>
+                                    <th scope="col">{{ 'compliance.requirement.mapped_col.control_id'|trans({}, 'compliance') }}</th>
+                                    <th scope="col">{{ 'compliance.requirement.mapped_col.name'|trans({}, 'compliance') }}</th>
+                                    <th scope="col">{{ 'compliance.requirement.mapped_col.status'|trans({}, 'compliance') }}</th>
+                                    <th scope="col">{{ 'compliance.requirement.mapped_col.progress'|trans({}, 'compliance') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}

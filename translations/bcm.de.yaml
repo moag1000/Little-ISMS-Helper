@@ -23,6 +23,14 @@ bcm:
         add_process: 'Prozess hinzufügen'
         data_reuse: 'Daten wiederverwenden'
         view_insights: 'Insights anzeigen'
+    insights_col:
+        business_process: 'Geschäftsprozess'
+        supporting_asset: 'Unterstützendes Asset'
+        rto_mtpd: 'RTO/MTPD'
+        current_availability: 'Aktuelle Verfügbarkeit'
+        suggested_availability: 'Empfohlene Verfügbarkeit'
+        recommendation: 'Empfehlung'
+        confidence: 'Konfidenz'
         view_bia: 'BIA anzeigen'
         export: Exportieren
         plan: Wiederherstellungsplan

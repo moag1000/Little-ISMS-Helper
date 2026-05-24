@@ -314,6 +314,19 @@ asset:
   ai_agent:
     flash:
       no_tenant: 'Kein Mandant zugewiesen — AI-Agent-Inventar benötigt einen Mandantenkontext.'
+    show:
+      classification: 'Risikoklasse'
+      classification_unclassified: '— nicht klassifiziert —'
+      provider: 'Anbieter'
+      model_version: 'Modell-Version'
+      purpose: 'Zweckbestimmung'
+      data_sources: 'Datengovernance'
+      oversight: 'Human Oversight'
+      capability_scope: 'Capability-Scope'
+      threat_model_doc: 'Bedrohungsmodell-Doc'
+      threat_model_link: 'Dokument #%id%'
+      threat_model_missing: '— nicht hinterlegt —'
+      extension_allowlist: 'Extension-Allowlist'
     section:
       title: AI-Agent-Inventar
       subtitle: EU AI Act / ISO 42001 / MRIS MHC-13

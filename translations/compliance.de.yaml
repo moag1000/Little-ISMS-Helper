@@ -516,6 +516,11 @@ compliance:
         aria:
             current: 'Ist (aktueller Reifegrad)'
             target: 'Soll (Ziel-Reifegrad)'
+        mapped_col:
+            control_id: 'Control-ID'
+            name: 'Name'
+            status: 'Status'
+            progress: 'Fortschritt'
         success:
             created: 'Compliance-Anforderung wurde erstellt.'
             updated: 'Compliance-Anforderung wurde aktualisiert.'
