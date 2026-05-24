@@ -46,6 +46,13 @@ final class AlvaHintFormController extends AbstractController
     private const array SUPPORTED_ENTITY_TYPES = [
         'incident',
         'risk',
+        'asset',
+        'business_process',
+        'business_continuity_plan',
+        'document',
+        'training',
+        'corrective_action',
+        'audit_finding',
     ];
 
     public function __construct(

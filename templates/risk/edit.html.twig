@@ -33,7 +33,15 @@
     prominence: 'always_visible'
 }) }}
 
-{{ form_start(form) }}
+{# P-19 — Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}
+{{ form_start(form, {'attr': {
+    'data-controller': 'alva-hint-in-form',
+    'data-alva-hint-in-form-entity-type-value': 'risk',
+    'data-alva-hint-in-form-form-name-value': 'risk',
+    'data-alva-hint-in-form-endpoint-value': path('api_alva_hint_form_evaluate', {'entityType': 'risk'}),
+    'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
+    'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate',
+}}) }}
 
 {# Build sections map dynamically — GDPR section only when 'privacy' module is active (T31/S2-P6). #}
         {% set form_sections = {
