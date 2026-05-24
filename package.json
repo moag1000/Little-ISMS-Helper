@@ -2,14 +2,22 @@
     "name": "little-isms-helper",
     "private": true,
     "devDependencies": {
+        "@playwright/test": "^1.60.0",
+        "@types/node": "^22.10.0",
         "js-yaml": "^4.1.1",
         "playwright": "^1.60.0",
         "stylelint": "^17.11.1",
-        "stylelint-config-standard": "^40.0.0"
+        "stylelint-config-standard": "^40.0.0",
+        "typescript": "^5.7.0"
     },
     "scripts": {
         "stylelint": "stylelint 'assets/styles/**/*.css'",
         "screenshots": "node scripts/screenshots/capture.mjs",
-        "audit:console": "node scripts/screenshots/audit.mjs"
+        "audit:console": "node scripts/screenshots/audit.mjs",
+        "e2e": "playwright test",
+        "e2e:headed": "playwright test --headed",
+        "e2e:debug": "playwright test --debug",
+        "e2e:report": "playwright show-report var/playwright-report",
+        "e2e:list": "playwright test --list"
     }
 }
