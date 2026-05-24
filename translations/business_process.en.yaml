@@ -54,6 +54,7 @@ business_process:
     process_owner_person: 'Process Owner (Person from master data)'
     process_owner_deputies: 'Deputies (Persons)'
   help:
+    bia_optional: 'BIA impact scores (Reputational/Regulatory/Operational) are optional — save the process first and complete the rating later. ISO 22301 Cl. 8.2.2 recommends rating all three dimensions before the BIA is signed off.'
     name: Unique name of the business process
     process_owner: Person responsible for the process
     description: 'Detailed description: What does the process do? What inputs/outputs
@@ -109,6 +110,7 @@ business_process:
     mtpd: e.g. 24 (hours)
     process_owner_user: -- Select process owner --
     process_owner_person: '-- Select Person from master data --'
+    impact_unset: '— not rated yet —'
   empty:
     title: No business processes yet
     description: Create your first business process to start with the business impact

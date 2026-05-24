@@ -54,16 +54,18 @@ class BusinessProcess
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $financialImpactPerDay = null;
 
-    // Reputationsschaden
-    #[ORM\Column(type: Types::INTEGER)]
+    // Reputationsschaden — Junior-ISB-Audit T4.2: nullable for Save-as-Draft
+    // (BIA assessment is incremental work; require completion only when the
+    // process is promoted out of draft, not at first save).
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $reputationalImpact = null; // 1-5 Skala
 
-    // Rechtliche/Regulatorische Auswirkungen
-    #[ORM\Column(type: Types::INTEGER)]
+    // Rechtliche/Regulatorische Auswirkungen — same as above (T4.2 nullable).
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $regulatoryImpact = null; // 1-5 Skala
 
-    // Operationale Auswirkungen
-    #[ORM\Column(type: Types::INTEGER)]
+    // Operationale Auswirkungen — same as above (T4.2 nullable).
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $operationalImpact = null; // 1-5 Skala
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -255,7 +257,7 @@ class BusinessProcess
         return $this->reputationalImpact;
     }
 
-    public function setReputationalImpact(int $reputationalImpact): static
+    public function setReputationalImpact(?int $reputationalImpact): static
     {
         $this->reputationalImpact = $reputationalImpact;
         return $this;
@@ -266,7 +268,7 @@ class BusinessProcess
         return $this->regulatoryImpact;
     }
 
-    public function setRegulatoryImpact(int $regulatoryImpact): static
+    public function setRegulatoryImpact(?int $regulatoryImpact): static
     {
         $this->regulatoryImpact = $regulatoryImpact;
         return $this;
@@ -277,7 +279,7 @@ class BusinessProcess
         return $this->operationalImpact;
     }
 
-    public function setOperationalImpact(int $operationalImpact): static
+    public function setOperationalImpact(?int $operationalImpact): static
     {
         $this->operationalImpact = $operationalImpact;
         return $this;
@@ -361,11 +363,33 @@ class BusinessProcess
     }
 
     /**
-     * Berechnet den aggregierten Business Impact Score (1-5)
+     * Berechnet den aggregierten Business Impact Score (1-5).
+     *
+     * T4.2 Save-as-Draft: Individual impact-dimensions may be unset on a
+     * fresh draft. The score averages only the rated dimensions; returns 0
+     * when none are rated yet.
      */
     public function getBusinessImpactScore(): int
     {
-        return (int) round(($this->reputationalImpact + $this->regulatoryImpact + $this->operationalImpact) / 3);
+        $rated = array_filter(
+            [$this->reputationalImpact, $this->regulatoryImpact, $this->operationalImpact],
+            static fn($v): bool => $v !== null,
+        );
+        if ($rated === []) {
+            return 0;
+        }
+        return (int) round(array_sum($rated) / count($rated));
+    }
+
+    /**
+     * T4.2 — Are all three BIA-impact dimensions rated?
+     * Used by show-page progress indicator + auditors to flag pending BIAs.
+     */
+    public function isBiaComplete(): bool
+    {
+        return $this->reputationalImpact !== null
+            && $this->regulatoryImpact !== null
+            && $this->operationalImpact !== null;
     }
 
     /**

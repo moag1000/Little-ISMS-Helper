@@ -161,6 +161,10 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                 'currency' => 'EUR',
                 'required' => false,
             ])
+            // T4.2 Save-as-Draft: BIA-impact fields are no longer NotBlank.
+            // Juniors can save a process incrementally without all impact ratings.
+            // Completeness is surfaced via the criticality-alignment validator
+            // + show-page progress indicator.
             ->add('reputationalImpact', ChoiceType::class, [
                 'label' => 'business_process.field.reputational_impact',
                 'choices' => [
@@ -171,7 +175,9 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                     'business_process.impact_level.very_high' => 5,
                 ],
                 'choice_translation_domain' => 'business_process',
-                'constraints' => [new NotBlank()],
+                'required' => false,
+                'placeholder' => 'business_process.placeholder.impact_unset',
+                'help' => 'business_process.help.bia_optional',
             ])
             ->add('regulatoryImpact', ChoiceType::class, [
                 'label' => 'business_process.field.regulatory_impact',
@@ -183,7 +189,8 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                     'business_process.impact_level.very_high' => 5,
                 ],
                 'choice_translation_domain' => 'business_process',
-                'constraints' => [new NotBlank()],
+                'required' => false,
+                'placeholder' => 'business_process.placeholder.impact_unset',
             ])
             ->add('operationalImpact', ChoiceType::class, [
                 'label' => 'business_process.field.operational_impact',
@@ -195,7 +202,8 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                     'business_process.impact_level.very_high' => 5,
                 ],
                 'choice_translation_domain' => 'business_process',
-                'constraints' => [new NotBlank()],
+                'required' => false,
+                'placeholder' => 'business_process.placeholder.impact_unset',
             ])
             ->add('dependenciesUpstream', TextareaType::class, [
                 'label' => 'business_process.field.dependencies_upstream',
