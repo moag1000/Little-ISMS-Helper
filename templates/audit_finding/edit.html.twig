@@ -20,7 +20,15 @@
     }) }}
 
     {# C5-03 — Severity × Type correlation help (ISO 19011 Cl. 6.4.8). #}
-    {{ form_start(form, {'attr': {'data-controller': 'audit-finding-correlation-help'}}) }}
+    {# P-19 — Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}
+    {{ form_start(form, {'attr': {
+        'data-controller': 'audit-finding-correlation-help alva-hint-in-form',
+        'data-alva-hint-in-form-entity-type-value': 'audit_finding',
+        'data-alva-hint-in-form-form-name-value': 'audit_finding',
+        'data-alva-hint-in-form-endpoint-value': path('api_alva_hint_form_evaluate', {'entityType': 'audit_finding'}),
+        'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
+        'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate',
+    }}) }}
     {# Slot consumed by the audit-finding-correlation-help controller. Translated copy
        travels via data-* attributes so the JS does not need framework access. #}
     <div data-audit-finding-correlation-help-slot

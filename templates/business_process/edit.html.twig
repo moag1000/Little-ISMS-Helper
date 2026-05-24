@@ -47,7 +47,15 @@
         triggers rendered next to fields listed in `drawer_keys`.
     #}
     <div data-controller="help-drawer">
-    {{ form_start(form) }}
+    {# P-19 — Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}
+    {{ form_start(form, {'attr': {
+        'data-controller': 'alva-hint-in-form',
+        'data-alva-hint-in-form-entity-type-value': 'business_process',
+        'data-alva-hint-in-form-form-name-value': 'business_process',
+        'data-alva-hint-in-form-endpoint-value': path('api_alva_hint_form_evaluate', {'entityType': 'business_process'}),
+        'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
+        'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate',
+    }}) }}
     {% include '_components/_auto_form.html.twig' with {
         'form': form,
         'layout': 'outline-rail',
