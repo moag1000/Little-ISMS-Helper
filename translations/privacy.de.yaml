@@ -99,6 +99,12 @@ privacy:
             subjects: 'Art. 34 - Betroffene Personen'
             nature: 'Art. 33(3) - Art der Verletzung'
             consequences: 'Art. 33(3)(b-d) - Folgen & Maßnahmen'
+            basic_info: 'Grundinformationen'
+            notification_content: 'Art. 33(3) – Inhalt der Meldung'
+            risk_assessment: 'Risikobewertung'
+            notification_requirements: 'Meldepflichten'
+            investigation: 'Untersuchung & Nachverfolgung'
+            responsible_persons: 'Verantwortliche Personen'
         standalone_breach: 'Eigenständige Datenschutzverletzung (kein Sicherheitsvorfall)'
         severity:
             low: 'Niedrig'
