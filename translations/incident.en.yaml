@@ -424,3 +424,7 @@ incident:
       rto_compliance: 'RTO Compliance'
       rto_compliant: 'Compliant'
       rto_violations: '%count% Violations'
+
+# Junior-ISB-Audit P-12 rollout — 9001 bridge for Incident form.
+iso_9001_bridge:
+    incident: 'In ISO 9001 incidents are covered by Clause 8.7 (control of nonconforming outputs) + 10.2 (nonconformity & corrective action). ISO 27001 A.5.24-27 extends the cycle (plan / assess / respond / learn) — same 9001 logic: what happened, what do we do now, what do we learn from it.'
