@@ -42,7 +42,7 @@ final class AiAgentInventoryController extends AbstractController
 
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
-            $this->addFlash('warning', $this->translator->trans('ai_agent.flash.no_tenant', [], 'asset'));
+            $this->addFlash('warning', $this->translator->trans('asset.ai_agent.flash.no_tenant', [], 'asset'));
             return $this->redirectToRoute('app_dashboard');
         }
 
