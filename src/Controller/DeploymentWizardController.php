@@ -2126,6 +2126,12 @@ class DeploymentWizardController extends AbstractController
                 $tenant = new Tenant();
                 $tenant->setCode('default');
                 $tenant->setName($session->get('setup_organisation_name', 'Default Organization'));
+                // Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+                // Setup-wizard bootstraps the first tenant directly into the
+                // operational `active` place; the default initial-marking
+                // `draft` would otherwise block login flows for the wizard
+                // user moments later.
+                $tenant->setStatus(Tenant::STATUS_ACTIVE);
                 $this->entityManager->persist($tenant);
             } else {
                 // Update tenant name if provided

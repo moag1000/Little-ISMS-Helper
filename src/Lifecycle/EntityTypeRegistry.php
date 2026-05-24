@@ -150,6 +150,13 @@ final class EntityTypeRegistry
             'class' => \App\Entity\Role::class,
             'workflow' => 'role_lifecycle',
         ],
+        // Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical,
+        // 30+ isActive callsites preserved via wrapper). 5-stage lifecycle:
+        // draft → active ⇄ suspended → terminated → archived.
+        'tenant' => [
+            'class' => \App\Entity\Tenant::class,
+            'workflow' => 'tenant_lifecycle',
+        ],
     ];
 
     /** @return array{class: class-string, workflow: string}|null */
