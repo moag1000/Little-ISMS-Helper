@@ -99,6 +99,12 @@ privacy:
             subjects: 'Art. 34 - Data Subjects'
             nature: 'Art. 33(3) - Nature of the Breach'
             consequences: 'Art. 33(3)(b-d) - Consequences & Measures'
+            basic_info: 'Basic Information'
+            notification_content: 'Art. 33(3) – Notification Content'
+            risk_assessment: 'Risk Assessment'
+            notification_requirements: 'Notification Requirements'
+            investigation: 'Investigation & Follow-up'
+            responsible_persons: 'Responsible Persons'
         standalone_breach: 'Standalone data breach (no security incident)'
         severity:
             low: 'Low'
