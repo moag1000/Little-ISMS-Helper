@@ -82,13 +82,13 @@
         } %}
             {% block table_head %}
                 <tr>
-                    <th scope="col">Business Process</th>
-                    <th scope="col">Supporting Asset</th>
-                    <th scope="col">RTO/MTPD</th>
-                    <th scope="col">Current Availability</th>
-                    <th scope="col">Suggested Availability</th>
-                    <th scope="col">Recommendation</th>
-                    <th scope="col">Confidence</th>
+                    <th scope="col">{{ 'bcm.insights_col.business_process'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.insights_col.supporting_asset'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.insights_col.rto_mtpd'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.insights_col.current_availability'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.insights_col.suggested_availability'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.insights_col.recommendation'|trans({}, 'bcm') }}</th>
+                    <th scope="col">{{ 'bcm.insights_col.confidence'|trans({}, 'bcm') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}
