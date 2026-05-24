@@ -34,6 +34,8 @@ imports:
     # Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities (Permission + Role)
     - { resource: '../workflows/permission.yaml' }
     - { resource: '../workflows/role.yaml' }
+    # Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper)
+    - { resource: '../workflows/tenant.yaml' }
     # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
     - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }
     - { resource: '../workflows/regulatory/incident_high_severity.yaml' }

@@ -92,6 +92,12 @@ class TenantManagementController extends AbstractController
     public function new(Request $request): Response
     {
         $tenant = new Tenant();
+        // Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+        // Initial-marking bootstrap: tenants created via the admin UI are
+        // operational from day one. Bypass the workflow on create because
+        // the marking-store is not yet wired for an unpersisted entity;
+        // setStatus() mirrors into isActive so legacy readers stay correct.
+        $tenant->setStatus(Tenant::STATUS_ACTIVE);
         $form = $this->createForm(TenantType::class, $tenant);
         $form->handleRequest($request);
 
