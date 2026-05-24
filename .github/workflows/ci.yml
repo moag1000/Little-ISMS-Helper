@@ -428,6 +428,11 @@ jobs:
           TOTAL=$(printf '%s\n' "$CURRENT" | grep -c . || true)
           BASELINED=$(printf '%s\n' "$BASELINE_ENTRIES" | grep -c . || true)
           echo "Gate 44 OK — $TOTAL translation issue(s), all $BASELINED baselined."
+      - name: "Gate 45: FormType <-> Template field-reference drift"
+        # Complements Gate 29 (form_render_completeness): catches templates
+        # referencing form.X when the FormType has no ->add('X', ...) call.
+        # TODO §Implementation-Disziplin (Junior-ISB-Audit 2026-05-22).
+        run: python3 scripts/quality/check_form_template_fields.py --baseline scripts/quality/baselines/form_template_fields.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

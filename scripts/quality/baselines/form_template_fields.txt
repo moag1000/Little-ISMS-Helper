@@ -1,0 +1,5 @@
+# check_form_template_fields.py baseline
+# Format: <template-path> :: <FormTypeName> :: <field-name>
+# Line numbers are intentionally omitted so refactors do not
+# invalidate entries. Add new lines by hand if needed.
+templates/incident/edit.html.twig :: IncidentType :: closedDate
