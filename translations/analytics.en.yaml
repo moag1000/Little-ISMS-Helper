@@ -2,6 +2,10 @@ analytics:
     page:
         title: 'Analytics Dashboard'
         subtitle: 'Advanced data analysis and visualizations'
+    anomaly:
+        risk_spikes: 'Risk Spikes'
+        incident_patterns: 'Incident Patterns'
+        control_drift: 'Control Drift'
     action:
         export: Export
         export_risks_csv: 'Export risks CSV'

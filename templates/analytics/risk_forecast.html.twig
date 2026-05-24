@@ -423,19 +423,19 @@
                         <div class="col-md-4">
                             <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="mb-1">{{ anomalies.by_type.risk_spikes|default(0) }}</h4>
-                                <small class="text-muted">Risk Spikes</small>
+                                <small class="text-muted">{{ 'analytics.anomaly.risk_spikes'|trans({}, 'analytics') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="mb-1">{{ anomalies.by_type.incident_patterns|default(0) }}</h4>
-                                <small class="text-muted">Incident Patterns</small>
+                                <small class="text-muted">{{ 'analytics.anomaly.incident_patterns'|trans({}, 'analytics') }}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="p-3 bg-body-secondary rounded">
                                 <h4 class="mb-1">{{ anomalies.by_type.control_drift|default(0) }}</h4>
-                                <small class="text-muted">Control Drift</small>
+                                <small class="text-muted">{{ 'analytics.anomaly.control_drift'|trans({}, 'analytics') }}</small>
                             </div>
                         </div>
                     </div>
