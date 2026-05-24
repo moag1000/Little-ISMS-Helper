@@ -53,7 +53,9 @@ translations/alva.en.yaml:225:incident
 translations/alva.en.yaml:239:policy_wizard
 translations/alva.en.yaml:383:alva_hint
 translations/asset.de.yaml:390:qr
+translations/asset.de.yaml:410:iso_9001_bridge
 translations/asset.en.yaml:386:qr
+translations/asset.en.yaml:406:iso_9001_bridge
 translations/assets.de.yaml:1:asset
 translations/assets.en.yaml:1:asset
 translations/audit.de.yaml:230:audit_log
@@ -171,8 +173,10 @@ translations/eu_authorities.en.yaml:229:authority
 translations/eu_authorities.en.yaml:303:dora
 translations/incident.de.yaml:1:incident_management
 translations/incident.de.yaml:8:deadline_counter
+translations/incident.de.yaml:440:iso_9001_bridge
 translations/incident.en.yaml:1:incident_management
 translations/incident.en.yaml:7:deadline_counter
+translations/incident.en.yaml:429:iso_9001_bridge
 translations/interested_parties.de.yaml:1:interested_party
 translations/interested_parties.de.yaml:110:iso_9001_bridge
 translations/interested_parties.en.yaml:1:interested_party
@@ -295,6 +299,8 @@ translations/threat.en.yaml:166:type
 translations/threat.en.yaml:179:severity
 translations/threat.en.yaml:186:status_type
 translations/threat.en.yaml:194:threat_intelligence
+translations/training.de.yaml:181:iso_9001_bridge
+translations/training.en.yaml:175:iso_9001_bridge
 translations/user.de.yaml:273:user_management
 translations/user.de.yaml:277:profile
 translations/user.en.yaml:273:user_management
