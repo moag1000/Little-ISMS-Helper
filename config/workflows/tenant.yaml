@@ -1,0 +1,100 @@
+# Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+#
+# Tenant is the multi-tenancy root — 78 entities scope by tenant_id. A
+# Tenant lifecycle is a regulator-visible artifact: the decision to
+# suspend / terminate an organisational unit must be traceable, role-gated,
+# and four-eyes-approved (suspend/reactivate/terminate are irreversible
+# from a customer-contract perspective).
+#
+# 5-stage state-machine:
+#   draft     → active           (activate: SUPER_ADMIN, no 4-eyes — onboarding)
+#   active    → suspended        (suspend: SUPER_ADMIN, 4-eyes + reason — customer-visible)
+#   suspended → active           (reactivate: SUPER_ADMIN, 4-eyes + reason)
+#   active|suspended → terminated (terminate: SUPER_ADMIN, 4-eyes + reason — contract end)
+#   terminated → archived        (archive: SUPER_ADMIN, reason — retention-window cron later)
+#
+# This file is the canonical source of truth. The legacy `isActive` boolean
+# column is preserved on the entity for backward-compat with 30+ readers
+# (Doctrine findBy(['isActive' => true]) hits the column directly, not the
+# method), and is kept in lockstep with `status` by the entity-level
+# wrapper.
+#
+# ADR alignment: docs/decisions/2026-05-17-lifecycle-state-machine.md
+framework:
+    workflows:
+        tenant_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\Tenant
+            initial_marking: draft
+            places:
+                - draft
+                - active
+                - suspended
+                - terminated
+                - archived
+            transitions:
+                # Onboarding finished — the tenant is operational. SUPER_ADMIN
+                # only: tenant creation is a platform-level decision, not
+                # delegable to per-tenant admins.
+                activate:
+                    from: draft
+                    to: active
+                    metadata:
+                        roles: [ROLE_SUPER_ADMIN]
+                        reason_required: false
+                # Customer-visible interruption (billing dispute, security
+                # incident, compliance violation). 4-eyes mandatory — single
+                # SUPER_ADMIN cannot unilaterally cut a customer off.
+                suspend:
+                    from: active
+                    to: suspended
+                    metadata:
+                        roles: [ROLE_SUPER_ADMIN]
+                        four_eyes: true
+                        reason_required: true
+                # Lift the suspension. 4-eyes — restoring access after an
+                # incident must be dual-controlled (else a single rogue
+                # SUPER_ADMIN could suspend+restore to mask data exfil).
+                reactivate:
+                    from: suspended
+                    to: active
+                    metadata:
+                        roles: [ROLE_SUPER_ADMIN]
+                        four_eyes: true
+                        reason_required: true
+                # Contract end / forced termination from operational state.
+                # Irreversible. 4-eyes + reason — auditor expects a paper
+                # trail for every off-boarded customer (GDPR Art. 17 +
+                # ISO 27001 A.8.10 — data deletion / return obligations).
+                terminate_from_active:
+                    from: active
+                    to: terminated
+                    metadata:
+                        roles: [ROLE_SUPER_ADMIN]
+                        four_eyes: true
+                        reason_required: true
+                # Termination while already suspended (e.g. suspension
+                # converted into permanent contract end). Same controls as
+                # terminate_from_active.
+                terminate_from_suspended:
+                    from: suspended
+                    to: terminated
+                    metadata:
+                        roles: [ROLE_SUPER_ADMIN]
+                        four_eyes: true
+                        reason_required: true
+                # Final retention-window step — after the GDPR / contract
+                # retention period expires, the terminated tenant record is
+                # archived (read-only, hidden from operational UI). Driven
+                # by a future cron; manual trigger requires a reason for the
+                # audit trail.
+                archive:
+                    from: terminated
+                    to: archived
+                    metadata:
+                        roles: [ROLE_SUPER_ADMIN]
+                        reason_required: true

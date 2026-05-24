@@ -14,10 +14,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TenantRepository::class)]
+#[ORM\Index(name: 'idx_tenant_status', columns: ['status'])]
 #[UniqueEntity(fields: ['code'], message: 'tenant.validation.code_unique')]
 #[ORM\HasLifecycleCallbacks]
 class Tenant
 {
+    // Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+    // 5-stage lifecycle: draft → active ⇄ suspended → terminated → archived.
+    // SUPER_ADMIN-gated, 4-eyes on suspend/reactivate/terminate.
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_SUSPENDED = 'suspended';
+    public const STATUS_TERMINATED = 'terminated';
+    public const STATUS_ARCHIVED = 'archived';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -39,8 +49,36 @@ class Tenant
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $azureTenantId = null;
 
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     *
+     * Legacy boolean preserved for backward-compat with 30+ readers:
+     *   - Repository::createQueryBuilder()->where('t.isActive = :active')
+     *   - findBy(['isActive' => true])  (Doctrine hits the column directly, NOT the method)
+     *   - Twig templates calling tenant.isActive
+     *
+     * Kept in lockstep with `status` via setStatus(): every status transition
+     * also mutates isActive so the column-level Doctrine queries stay correct.
+     */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $isActive = true;
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     * Owned by `tenant_lifecycle` — never call setStatus() directly outside
+     * the initial-marking bootstrap; route transitions through
+     * LifecycleService::transition().
+     */
+    #[ORM\Column(length: 30, options: ['default' => self::STATUS_DRAFT])]
+    private string $status = self::STATUS_DRAFT;
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     * Optimistic-lock guard for concurrent lifecycle transitions.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $settings = null;
@@ -395,10 +433,64 @@ class Tenant
         return $this->isActive;
     }
 
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     *
+     * Direct setter preserved for backward-compat with 30+ readers. Mirrors
+     * the boolean into `status` so the lifecycle marking stays consistent:
+     *   true  → STATUS_ACTIVE (unless already in a non-active terminal state)
+     *   false → STATUS_SUSPENDED (unless already terminated/archived)
+     *
+     * For new code prefer `LifecycleService::transition($tenant,
+     * 'tenant_lifecycle', 'suspend'|'activate'|...)`.
+     */
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
+        // Mirror into status — but never resurrect a terminal record.
+        if (!in_array($this->status, [self::STATUS_TERMINATED, self::STATUS_ARCHIVED], true)) {
+            $this->status = $isActive ? self::STATUS_ACTIVE : self::STATUS_SUSPENDED;
+        }
+
         return $this;
+    }
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     *
+     * Do NOT call directly outside the initial-marking bootstrap; route
+     * transitions through LifecycleService::transition(). The
+     * Symfony-Workflow marking-store calls this setter to apply state
+     * changes; the boolean `isActive` mirror is kept in lockstep so the
+     * 30+ legacy readers (including Doctrine `findBy(['isActive' => true])`)
+     * stay correct.
+     */
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+        // Mirror status → isActive. Only `active` keeps the legacy boolean
+        // true; every other place (draft / suspended / terminated /
+        // archived) flips it to false so existing voter + repository
+        // filters stay correct.
+        $this->isActive = ($status === self::STATUS_ACTIVE);
+        return $this;
+    }
+
+    /**
+     * Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper).
+     */
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getSettings(): ?array
