@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'assets' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 
 {% block title %}{{ 'asset.title.edit'|trans({}, 'asset') }} - {{ parent() }}{% endblock %}
 
@@ -21,6 +22,13 @@
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_asset_show', {id: asset.id}), variant: 'secondary', icon: 'util-arrow-left' }
     ]
+}) }}
+
+{{ _fa_norm_bridge.render({
+    from_norm: 'ISO 27001 A.5.9-12',
+    to_norm:   'ISO 9001 7.1.3 + 7.5',
+    bridge_text: ('iso_9001_bridge.asset'|trans({}, 'asset')),
+    prominence: 'subtle'
 }) }}
 
 {# P-19 — Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}

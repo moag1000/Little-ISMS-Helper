@@ -405,3 +405,7 @@ qr:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
   validation:
     ai_prohibited_must_be_inactive: 'Verbotene KI-Systeme (EU AI Act Art. 5) dürfen nicht aktiv betrieben werden. Status muss inaktiv oder archiviert sein.'
+
+# Junior-ISB-Audit P-12 rollout — 9001-bridge for Asset form.
+iso_9001_bridge:
+    asset: 'In ISO 9001 sind Assets Teil von Klausel 7.1.3 (Infrastruktur) und 7.5 (Dokumentierte Information). ISO 27001 A.5.9-12 fügt Schutzbedarf (CIA), Klassifizierung und Owner-Verantwortung hinzu — die 9001-Grundlogik (was haben wir, wer kümmert sich) bleibt.'

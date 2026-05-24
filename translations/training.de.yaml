@@ -176,3 +176,7 @@ training:
   error:
     owner_required_user_or_person: 'Trainer: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
     material_upload_failed: 'Datei „%file%“ konnte nicht hochgeladen werden: %reason%'
+
+# Junior-ISB-Audit P-12 rollout — 9001-bridge for Training form.
+iso_9001_bridge:
+    training: 'In ISO 9001 entsprechen Schulungen Klausel 7.2 (Kompetenz) — Sie müssen Kompetenzanforderungen definieren, Kompetenz nachweisen und Lücken schließen. ISO 27001 Cl. 7.2/7.3 + A.6.3 fügt den InfoSec-Bezug hinzu (Awareness, Phishing-Tests, Wiederholungsintervall).'
