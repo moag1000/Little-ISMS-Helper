@@ -35,84 +35,70 @@
         prominence: 'subtle'
     }) }}
 
-    <div class="row">
-        <div class="col-lg-10 col-xl-9 mx-auto">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-
-                    {% include '_components/_auto_form.html.twig' with {
-                        'form': form,
-                        'sections': {
-                            'details': {
-                                'label': 'bc_exercises.section.details'|trans({}, 'bc_exercises'),
-                                'fields': ['name', 'exerciseType', 'status', 'description', 'scope']
-                            },
-                            'planning': {
-                                'label': 'bc_exercises.section.scenario'|trans({}, 'bc_exercises'),
-                                'fields': ['objectives', 'scenario', 'exerciseDate', 'durationHours']
-                            },
-                            'participants': {
-                                'label': 'bc_exercises.section.participants'|trans({}, 'bc_exercises'),
-                                'fields': ['participants', 'facilitator', 'observers']
-                            },
-                            'results': {
-                                'label': 'bc_exercises.section.results'|trans({}, 'bc_exercises'),
-                                'fields': ['results', 'whatWentWell', 'areasForImprovement', 'findings', 'actionItems', 'lessonsLearned', 'planUpdatesRequired']
-                            },
-                            'report': {
-                                'label': 'bc_exercises.section.report'|trans({}, 'bc_exercises'),
-                                'fields': ['successRating', 'reportCompleted', 'reportDate']
-                            }
-                        },
-                        'col_widths': {
-                            'name': 12,
-                            'exerciseType': 6,
-                            'status': 6,
-                            'description': 12,
-                            'scope': 12,
-                            'objectives': 12,
-                            'scenario': 12,
-                            'exerciseDate': 6,
-                            'durationHours': 6,
-                            'participants': 12,
-                            'facilitator': 6,
-                            'observers': 6,
-                            'results': 12,
-                            'whatWentWell': 6,
-                            'areasForImprovement': 6,
-                            'findings': 12,
-                            'actionItems': 12,
-                            'lessonsLearned': 12,
-                            'planUpdatesRequired': 12,
-                            'successRating': 4,
-                            'reportCompleted': 4,
-                            'reportDate': 4
-                        },
-                        'tooltips': {
-                            'scenario': 'bc_exercises.tooltip.scenario',
-                            'exerciseType': 'bc_exercises.tooltip.exercise_type',
-                            'successCriteria': 'bc_exercises.tooltip.success_criteria',
-                            'successRating': 'bc_exercises.tooltip.success_rating'
-                        }
-                    } %}
-
-                    {# Form Actions #}
-                    <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
-                        <a href="{{ path('app_bc_exercise_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                            {{ 'common.cancel'|trans({}, 'messages') }}
-                        </a>
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
-                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
-                            {{ 'common.save'|trans({}, 'messages') }}
-                        </button>
-                    </div>
-
-                    {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'BCM · ISO 22301 Cl. 8.5 · Exercise',
+        'title': 'bc_exercises.action.add_new'|trans({}, 'bc_exercises'),
+        'sections': {
+            'details': {
+                'label': 'bc_exercises.section.details'|trans({}, 'bc_exercises'),
+                'fields': ['name', 'exerciseType', 'status', 'description', 'scope']
+            },
+            'planning': {
+                'label': 'bc_exercises.section.scenario'|trans({}, 'bc_exercises'),
+                'fields': ['objectives', 'scenario', 'exerciseDate', 'durationHours']
+            },
+            'participants': {
+                'label': 'bc_exercises.section.participants'|trans({}, 'bc_exercises'),
+                'fields': ['participants', 'facilitator', 'observers']
+            },
+            'results': {
+                'label': 'bc_exercises.section.results'|trans({}, 'bc_exercises'),
+                'fields': ['results', 'whatWentWell', 'areasForImprovement', 'findings', 'actionItems', 'lessonsLearned', 'planUpdatesRequired']
+            },
+            'report': {
+                'label': 'bc_exercises.section.report'|trans({}, 'bc_exercises'),
+                'fields': ['successRating', 'reportCompleted', 'reportDate']
+            }
+        },
+        'col_widths': {
+            'name': 12,
+            'exerciseType': 6,
+            'status': 6,
+            'description': 12,
+            'scope': 12,
+            'objectives': 12,
+            'scenario': 12,
+            'exerciseDate': 6,
+            'durationHours': 6,
+            'participants': 12,
+            'facilitator': 6,
+            'observers': 6,
+            'results': 12,
+            'whatWentWell': 6,
+            'areasForImprovement': 6,
+            'findings': 12,
+            'actionItems': 12,
+            'lessonsLearned': 12,
+            'planUpdatesRequired': 12,
+            'successRating': 4,
+            'reportCompleted': 4,
+            'reportDate': 4
+        },
+        'tooltips': {
+            'scenario': 'bc_exercises.tooltip.scenario',
+            'exerciseType': 'bc_exercises.tooltip.exercise_type',
+            'successCriteria': 'bc_exercises.tooltip.success_criteria',
+            'successRating': 'bc_exercises.tooltip.success_rating'
+        },
+        'translation_domain': 'bc_exercises',
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
 {% endblock %}
