@@ -33,8 +33,10 @@
     <meta name="theme-color" content="#0284c7" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#38bdf8" media="(prefers-color-scheme: dark)">
 
-    <link rel="preload" href="{{ asset('fonts/inter-500.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ asset('fonts/inter-600.woff2') }}" as="font" type="font/woff2" crossorigin>
+    {# Static paths to match @font-face src in fairy-aurora.css — avoids
+       AssetMapper URL mismatch that triggers "preload but not used" warnings. #}
+    <link rel="preload" href="/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin>
 
     <script>
         (function () {
