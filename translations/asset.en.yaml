@@ -102,6 +102,7 @@ asset:
     handling_instructions: Special instructions for handling this asset
     return_date: Date of planned return (for temporarily assigned assets)
     status: Current usage status of the asset
+    status_readonly: 'Status is managed via the lifecycle (Active → In Use → Returned → Retired → Disposed). Use the status actions on the asset detail page (4-eyes principle for "Disposed").'
     owner_user: Owner from user management. If the person has no system login,
       pick them from the "Person" master-data list or use the legacy free-text field.
     owner_person: Owner from master-data Person records (also external stakeholders
