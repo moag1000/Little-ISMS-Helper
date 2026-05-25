@@ -96,6 +96,12 @@
     - title              (string, optional) — form heading (default 'Form')
     - subtitle           (string, optional) — sub-heading
     - actions            (map, optional) — {close, next, submit} action defs
+    - extras_before_actions (string, optional) — pre-rendered HTML inserted
+                          inside the form scope, directly above the footer
+                          action-bar. Use for in-form CTAs (e.g. Quick-Create
+                          modal triggers) that must remain within <form> but
+                          render last. Modal dialog markup should stay OUTSIDE
+                          the form (nested <form> is invalid HTML).
 
     Note: Labels are taken from field.vars.label which is already translated
           by the FormType. Help texts must be provided pre-translated.
@@ -159,6 +165,37 @@
    ════════════════════════════════════════════════════════════════════════════ #}
 {% if layout == 'outline-rail' %}
     {% import '_components/_fa_form_layout.html.twig' as _fa_form %}
+
+    {# ─── Catch-all for unmapped fields (outline-rail) ────────────────────
+       Without this, Symfony's form_end() auto-renders any unlisted child via
+       form_rest AFTER the macro returned — i.e. AFTER the footer action-bar,
+       so fields visually escape below "Save"/"Cancel".
+
+       Mirror the flat-layout catch-all: collect unmapped + non-hidden + non-
+       excluded fields and append them as a final synthetic section. The
+       fa-form-layout renders one card per section, including this one.
+
+       Suppress via {skip_other: true} (auto-set when strict_whitelist: true).
+       Privilege-escalation considerations apply identically to flat layout. #}
+    {% set _has_section_map = form_section_map(form) is not null %}
+    {% if not skip_other %}
+        {% set other_fields = [] %}
+        {% for child in form %}
+            {% set child_name = child.vars.name %}
+            {% if child_name not in listed_fields and child_name not in exclude_fields and child.vars.block_prefixes[1]|default('') != 'hidden' %}
+                {% set other_fields = other_fields|merge([child_name]) %}
+            {% endif %}
+        {% endfor %}
+        {% if other_fields|length > 0 %}
+            {% set sections = sections|merge({
+                '_other': {
+                    'label':  other_section_label,
+                    'fields': other_fields
+                }
+            }) %}
+            {% set listed_fields = listed_fields|merge(other_fields) %}
+        {% endif %}
+    {% endif %}
 
     {# Build sections array for the macro, computing fill-progress per section #}
     {% set fa_form_sections = [] %}
@@ -240,7 +277,8 @@
             'total': fa_form_sections|length
         },
         'sections':  fa_form_sections,
-        'actions':   _actions
+        'actions':   _actions,
+        'extrasBeforeActions': extras_before_actions|default(null)
     }) }}
 
 {# ════════════════════════════════════════════════════════════════════════════

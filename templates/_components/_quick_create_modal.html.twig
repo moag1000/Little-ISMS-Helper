@@ -1,9 +1,18 @@
 {#
- # S14 Cluster A — Quick-Create Modal Partial
+ # S14 Cluster A — Quick-Create Modal Partial (legacy, single-include shim)
  #
- # Renders the trigger button + Aurora fa-modal settings shell + Stimulus
- # wiring for the Quick-Create Foundation. Used next to EntityType fields
- # on parent forms so the user can stub a missing child entity inline.
+ # @deprecated 2026-05-25 Use the split partials directly:
+ #   - `_quick_create_modal_trigger.html.twig` — render INSIDE the <form>
+ #     (typically via the `extras_before_actions` slot of `_auto_form`)
+ #   - `_quick_create_modal_dialog.html.twig`  — render OUTSIDE the <form>
+ #     (nested <form> in HTML is invalid + breaks the controller)
+ #
+ # This shim keeps the original single-include API working for legacy
+ # callers that render their entire form/modal block outside a parent
+ # <form>, but emits the modal markup adjacent to the trigger — which
+ # produces invalid HTML when included inside a <form>.
+ #
+ # New code MUST use the split partials.
  #
  # Required params:
  #   entityType       string  — slug for /api/quick-create/{entityType}
@@ -14,17 +23,9 @@
  #
  # Optional params:
  #   triggerLabel     string  — label on the trigger button
- #                              (default: 'quick_create.cta'|trans(...))
  #   title            string  — modal title
  #   icon             string  — Aurora icon name (default 'plus-circle')
  #   placeholder      string  — input placeholder
- #
- # Usage:
- #   {% include '_components/_quick_create_modal.html.twig' with {
- #       entityType:     'asset',
- #       targetSelectId: 'business_process_supportingAssets',
- #       modalId:        'quickCreateAssetModal',
- #   } only %}
  #}
 
 {%- set entityType     = entityType|default('asset') -%}
@@ -36,96 +37,19 @@
 {%- set placeholder    = placeholder|default('quick_create.placeholder.name'|trans({}, 'quick_create')) -%}
 {%- set icon           = icon|default('plus-circle') -%}
 
-<div class="quick-create-modal-wrapper"
-     data-controller="quick-create-modal"
-     data-quick-create-modal-entity-type-value="{{ entityType }}"
-     data-quick-create-modal-target-select-value="{{ targetSelectId }}"
-     data-quick-create-modal-modal-id-value="{{ modalId }}"
-     data-quick-create-modal-csrf-value="{{ csrf_token('quick_create') }}"
-     data-quick-create-modal-i18n-quick-create-error-name-required="{{ 'quick_create.error.name_required'|trans({}, 'quick_create') }}"
-     data-quick-create-modal-i18n-quick-create-error-network="{{ 'quick_create.error.network'|trans({}, 'quick_create') }}"
-     data-quick-create-modal-i18n-quick-create-toast-success="{{ 'quick_create.toast.success'|trans({}, 'quick_create') }}">
+{% include '_components/_quick_create_modal_trigger.html.twig' with {
+    entityType:     entityType,
+    targetSelectId: targetSelectId,
+    modalId:        modalId,
+    triggerLabel:   triggerLabel,
+} only %}
 
-    <button type="button"
-            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm quick-create-trigger"
-            data-action="quick-create-modal#openModal"
-            aria-label="{{ triggerLabel }}">
-        <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
-        <span>{{ triggerLabel }}</span>
-    </button>
-
-    {# fa-modal--settings shell, hand-rolled so we can wire the body to the Stimulus controller #}
-    <div id="{{ modalId }}"
-         class="fa-modal fa-modal--settings"
-         role="dialog"
-         aria-modal="true"
-         aria-labelledby="{{ modalId }}-title"
-         inert
-         data-controller="fa-modal"
-         data-fa-modal-mode-value="settings">
-
-        <div class="fa-modal__backdrop"
-             data-fa-modal-target="backdrop"
-             data-action="click->fa-modal#backdropClick"
-             aria-hidden="true"></div>
-
-        <div class="fa-modal__container" data-fa-modal-target="dialog">
-            <header class="fa-modal__header">
-                <span class="fa-modal__icon" aria-hidden="true">
-                    <i class="fa-icon fa-icon--{{ icon }}"></i>
-                </span>
-                <div class="fa-modal__heading">
-                    <h2 class="fa-modal__title" id="{{ modalId }}-title">{{ title }}</h2>
-                    {% if subtitle %}
-                        <p class="fa-modal__sub">{{ subtitle }}</p>
-                    {% endif %}
-                </div>
-                <button type="button"
-                        class="fa-modal__close"
-                        aria-label="{{ 'quick_create.action.close'|trans({}, 'quick_create') }}"
-                        data-action="fa-modal#cancel">
-                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
-                </button>
-            </header>
-
-            <div class="fa-modal__body">
-                <div class="quick-create-form">
-                    <label class="form-label" for="{{ modalId }}-name">
-                        {{ 'quick_create.field.name'|trans({}, 'quick_create') }}
-                    </label>
-                    <input id="{{ modalId }}-name"
-                           type="text"
-                           class="form-control"
-                           placeholder="{{ placeholder }}"
-                           required
-                           data-quick-create-modal-target="nameInput"
-                           data-action="keydown.enter->quick-create-modal#submit">
-
-                    <p class="form-text text-muted mt-1">
-                        {{ 'quick_create.help.name'|trans({}, 'quick_create') }}
-                    </p>
-
-                    <div class="alert alert-danger mt-3"
-                         role="alert"
-                         hidden
-                         data-quick-create-modal-target="errorBox"></div>
-                </div>
-            </div>
-
-            <footer class="fa-modal__footer">
-                <button type="button"
-                        class="fa-cyber-btn fa-cyber-btn--ghost"
-                        data-action="fa-modal#cancel">
-                    {{ 'quick_create.action.cancel'|trans({}, 'quick_create') }}
-                </button>
-                <button type="button"
-                        class="fa-cyber-btn fa-cyber-btn--primary"
-                        data-quick-create-modal-target="submitButton"
-                        data-action="quick-create-modal#submit">
-                    <i class="fa-icon fa-icon--check" aria-hidden="true"></i>
-                    <span>{{ 'quick_create.action.create'|trans({}, 'quick_create') }}</span>
-                </button>
-            </footer>
-        </div>
-    </div>
-</div>
+{% include '_components/_quick_create_modal_dialog.html.twig' with {
+    entityType:     entityType,
+    targetSelectId: targetSelectId,
+    modalId:        modalId,
+    title:          title,
+    subtitle:       subtitle,
+    icon:           icon,
+    placeholder:    placeholder,
+} only %}

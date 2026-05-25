@@ -41,6 +41,30 @@ export default class extends Controller {
 
     static targets = ['nameInput', 'errorBox', 'submitButton'];
 
+    /**
+     * Resolve a controlled DOM element. Prefers the Stimulus target if the
+     * dialog still lives inside the controller subtree (legacy nested
+     * markup). Falls back to a `[data-quick-create-modal-target="<name>"]`
+     * lookup scoped to the dialog (modalIdValue) — required when the trigger
+     * is rendered inside a <form> via `extras_before_actions` and the
+     * dialog is rendered separately at body level.
+     */
+    #findInDialog(targetName) {
+        const modalEl = this.modalIdValue ? document.getElementById(this.modalIdValue) : null;
+        return modalEl
+            ? modalEl.querySelector(`[data-quick-create-modal-target="${targetName}"]`)
+            : null;
+    }
+    get _nameInputEl() {
+        return this.hasNameInputTarget ? this.nameInputTarget : this.#findInDialog('nameInput');
+    }
+    get _errorBoxEl() {
+        return this.hasErrorBoxTarget ? this.errorBoxTarget : this.#findInDialog('errorBox');
+    }
+    get _submitButtonEl() {
+        return this.hasSubmitButtonTarget ? this.submitButtonTarget : this.#findInDialog('submitButton');
+    }
+
     openModal(event) {
         event?.preventDefault();
         if (!this.modalIdValue) {
@@ -55,9 +79,10 @@ export default class extends Controller {
         );
         // Defer focus until the modal opens
         setTimeout(() => {
-            if (this.hasNameInputTarget) {
-                this.nameInputTarget.focus();
-                this.nameInputTarget.select();
+            const nameInput = this._nameInputEl;
+            if (nameInput) {
+                nameInput.focus();
+                nameInput.select();
             }
         }, 80);
     }
@@ -65,7 +90,8 @@ export default class extends Controller {
     async submit(event) {
         event?.preventDefault();
 
-        const name = this.hasNameInputTarget ? this.nameInputTarget.value.trim() : '';
+        const nameInput = this._nameInputEl;
+        const name = nameInput ? nameInput.value.trim() : '';
         if (!name) {
             this.#showError(this.#t('quick_create.error.name_required'));
             return;
@@ -115,7 +141,8 @@ export default class extends Controller {
         this.#injectOption(data.id, data.label);
 
         // Reset modal state
-        if (this.hasNameInputTarget) this.nameInputTarget.value = '';
+        const nameInputReset = this._nameInputEl;
+        if (nameInputReset) nameInputReset.value = '';
         this.#setBusy(false);
 
         // Toast (fa-toast bus listens on window.faToast if present)
@@ -166,28 +193,32 @@ export default class extends Controller {
     }
 
     #showError(msg) {
-        if (this.hasErrorBoxTarget) {
-            this.errorBoxTarget.textContent = msg;
-            this.errorBoxTarget.hidden = false;
+        const errorBox = this._errorBoxEl;
+        if (errorBox) {
+            errorBox.textContent = msg;
+            errorBox.hidden = false;
         } else {
             console.error('[quick-create-modal]', msg);
         }
     }
 
     #clearError() {
-        if (this.hasErrorBoxTarget) {
-            this.errorBoxTarget.textContent = '';
-            this.errorBoxTarget.hidden = true;
+        const errorBox = this._errorBoxEl;
+        if (errorBox) {
+            errorBox.textContent = '';
+            errorBox.hidden = true;
         }
     }
 
     #setBusy(busy) {
-        if (this.hasSubmitButtonTarget) {
-            this.submitButtonTarget.disabled = busy;
-            this.submitButtonTarget.classList.toggle('is-loading', busy);
+        const submitButton = this._submitButtonEl;
+        if (submitButton) {
+            submitButton.disabled = busy;
+            submitButton.classList.toggle('is-loading', busy);
         }
-        if (this.hasNameInputTarget) {
-            this.nameInputTarget.disabled = busy;
+        const nameInput = this._nameInputEl;
+        if (nameInput) {
+            nameInput.disabled = busy;
         }
     }
 

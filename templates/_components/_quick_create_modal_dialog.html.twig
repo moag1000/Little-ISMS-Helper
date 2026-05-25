@@ -1,0 +1,126 @@
+{#
+ # Quick-Create Modal — Dialog Markup
+ #
+ # Renders the fa-modal--settings dialog shell for the Quick-Create
+ # foundation. MUST be rendered OUTSIDE the parent <form> (nested <form>
+ # in HTML is invalid + breaks the Quick-Create Stimulus controller).
+ #
+ # The matching trigger partial (`_quick_create_modal_trigger.html.twig`)
+ # is rendered inside <form> scope (e.g. via `extras_before_actions` on
+ # _auto_form). Each partial wires an independent Stimulus controller
+ # instance with the same `modalId` — the trigger opens by id (document
+ # event), the dialog handles its own submit via local targets.
+ #
+ # Required params:
+ #   entityType       string  — slug for /api/quick-create/{entityType}
+ #                              (allowed: 'asset', 'crisis-team', 'business-process')
+ #   targetSelectId   string  — id of the parent <select> that should receive
+ #                              the new option
+ #   modalId          string  — DOM id (must match the trigger partial)
+ #
+ # Optional params:
+ #   title            string  — modal title
+ #   subtitle         string  — modal sub-heading
+ #   icon             string  — Aurora icon name (default 'plus-circle')
+ #   placeholder      string  — input placeholder
+ #
+ # Usage (paired with trigger partial — place at body level after form_end):
+ #   {% include '_components/_quick_create_modal_dialog.html.twig' with {
+ #       entityType:     'crisis-team',
+ #       targetSelectId: 'business_continuity_plan_crisisTeams',
+ #       modalId:        'quickCreateCrisisTeamModal',
+ #       title:          ('bc_plans.action.quick_create_crisis_team'|trans({}, 'bc_plans')),
+ #   } only %}
+ #}
+
+{%- set entityType     = entityType|default('asset') -%}
+{%- set targetSelectId = targetSelectId|default('') -%}
+{%- set modalId        = modalId|default('quickCreate-' ~ random()) -%}
+{%- set title          = title|default('quick_create.modal.title'|trans({}, 'quick_create')) -%}
+{%- set subtitle       = subtitle|default('quick_create.modal.subtitle'|trans({}, 'quick_create')) -%}
+{%- set placeholder    = placeholder|default('quick_create.placeholder.name'|trans({}, 'quick_create')) -%}
+{%- set icon           = icon|default('plus-circle') -%}
+
+{# fa-modal--settings shell, hand-rolled so we can wire the body to the Stimulus controller.
+   The dialog carries its own `quick-create-modal` controller instance (independent of the
+   trigger's instance) so its submit/cancel actions resolve targets locally. #}
+<div id="{{ modalId }}"
+     class="fa-modal fa-modal--settings"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="{{ modalId }}-title"
+     inert
+     data-controller="fa-modal quick-create-modal"
+     data-fa-modal-mode-value="settings"
+     data-quick-create-modal-entity-type-value="{{ entityType }}"
+     data-quick-create-modal-target-select-value="{{ targetSelectId }}"
+     data-quick-create-modal-modal-id-value="{{ modalId }}"
+     data-quick-create-modal-csrf-value="{{ csrf_token('quick_create') }}"
+     data-quick-create-modal-i18n-quick-create-error-name-required="{{ 'quick_create.error.name_required'|trans({}, 'quick_create') }}"
+     data-quick-create-modal-i18n-quick-create-error-network="{{ 'quick_create.error.network'|trans({}, 'quick_create') }}"
+     data-quick-create-modal-i18n-quick-create-toast-success="{{ 'quick_create.toast.success'|trans({}, 'quick_create') }}">
+
+    <div class="fa-modal__backdrop"
+         data-fa-modal-target="backdrop"
+         data-action="click->fa-modal#backdropClick"
+         aria-hidden="true"></div>
+
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+        <header class="fa-modal__header">
+            <span class="fa-modal__icon" aria-hidden="true">
+                <i class="fa-icon fa-icon--{{ icon }}"></i>
+            </span>
+            <div class="fa-modal__heading">
+                <h2 class="fa-modal__title" id="{{ modalId }}-title">{{ title }}</h2>
+                {% if subtitle %}
+                    <p class="fa-modal__sub">{{ subtitle }}</p>
+                {% endif %}
+            </div>
+            <button type="button"
+                    class="fa-modal__close"
+                    aria-label="{{ 'quick_create.action.close'|trans({}, 'quick_create') }}"
+                    data-action="fa-modal#cancel">
+                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+            </button>
+        </header>
+
+        <div class="fa-modal__body">
+            <div class="quick-create-form">
+                <label class="form-label" for="{{ modalId }}-name">
+                    {{ 'quick_create.field.name'|trans({}, 'quick_create') }}
+                </label>
+                <input id="{{ modalId }}-name"
+                       type="text"
+                       class="form-control"
+                       placeholder="{{ placeholder }}"
+                       required
+                       data-quick-create-modal-target="nameInput"
+                       data-action="keydown.enter->quick-create-modal#submit">
+
+                <p class="form-text text-muted mt-1">
+                    {{ 'quick_create.help.name'|trans({}, 'quick_create') }}
+                </p>
+
+                <div class="alert alert-danger mt-3"
+                     role="alert"
+                     hidden
+                     data-quick-create-modal-target="errorBox"></div>
+            </div>
+        </div>
+
+        <footer class="fa-modal__footer">
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost"
+                    data-action="fa-modal#cancel">
+                {{ 'quick_create.action.cancel'|trans({}, 'quick_create') }}
+            </button>
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--primary"
+                    data-quick-create-modal-target="submitButton"
+                    data-action="quick-create-modal#submit">
+                <i class="fa-icon fa-icon--check" aria-hidden="true"></i>
+                <span>{{ 'quick_create.action.create'|trans({}, 'quick_create') }}</span>
+            </button>
+        </footer>
+    </div>
+</div>
