@@ -1489,7 +1489,7 @@ bsi_check:
         title: 'Keine Anforderungen gefunden'
         message: 'Für die gewählte Absicherungsstufe sind keine BSI-IT-Grundschutz-Anforderungen erfasst. Versuchen Sie einen anderen Filter oder laden Sie den Kompendium-Datenbestand mit app:load-bsi-grundschutz-requirements und app:load-bsi-kompendium-delta.'
 Customer: Kunde
-Shareholder: Shareholder
+Shareholder: Anteilseigner
 Employee: Mitarbeiter
 Regulator: 'Regulatorische Institution'
 Supplier: Lieferant
