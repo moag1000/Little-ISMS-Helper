@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Form\AuditFindingType;
 use App\Repository\AuditFindingRepository;
 use App\Repository\CommentRepository;
+use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Nonconformity\AutoTaskCreator;
 use App\Service\TenantContext;
@@ -37,8 +38,43 @@ class AuditFindingController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly AutoTaskCreator $autoTaskCreator,
         private readonly Security $security,
+        private readonly UserRepository $userRepository,
         private readonly ?CommentRepository $commentRepository = null,
     ) {
+    }
+
+    /**
+     * S17 B4 follow-up — choices payload for the CAPA-Builder owner-picker.
+     * Returns active tenant users as `[{id, label}, ...]` so the Stimulus
+     * controller can hydrate the corrective-action owner dropdown without
+     * an extra XHR roundtrip.
+     *
+     * @return list<array{id: int, label: string}>
+     */
+    private function getNcUserChoices(): array
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant instanceof Tenant) {
+            return [];
+        }
+        $users = $this->userRepository->createQueryBuilder('u')
+            ->andWhere('u.tenant = :tenant')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('active', true)
+            ->orderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->getQuery()
+            ->getResult();
+        $choices = [];
+        foreach ($users as $u) {
+            $id = $u->getId();
+            if ($id === null) {
+                continue;
+            }
+            $choices[] = ['id' => $id, 'label' => $u->getFullName()];
+        }
+        return $choices;
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
@@ -100,7 +136,10 @@ class AuditFindingController extends AbstractController
             return $this->redirectToRoute('app_audit_finding_show', ['id' => $finding->getId()]);
         }
 
-        return $this->render('audit_finding/new.html.twig', ['form' => $form]);
+        return $this->render('audit_finding/new.html.twig', [
+            'form' => $form,
+            'nc_user_choices' => $this->getNcUserChoices(),
+        ]);
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -151,6 +190,7 @@ class AuditFindingController extends AbstractController
         return $this->render('audit_finding/edit.html.twig', [
             'finding' => $finding,
             'form' => $form,
+            'nc_user_choices' => $this->getNcUserChoices(),
         ]);
     }
 

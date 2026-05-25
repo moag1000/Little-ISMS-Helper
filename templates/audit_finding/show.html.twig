@@ -109,22 +109,35 @@
                 </div>
                 {% if finding.nonconformityDetails %}
                 <div class="col-md-12">
-                    <strong>{{ 'audit_finding.field.nonconformity_details'|trans({}, 'audits') }}</strong>
+                    <strong>{{ 'audit_finding.capa_builder.title'|trans({}, 'audits') }}</strong>
                     {% set details = finding.nonconformityDetails %}
-                    <dl class="row mb-0">
-                        {% if details.rootCauseAnalysisMethod is defined %}
-                            <dt class="col-sm-4">{{ 'audit_finding.rca_method.' ~ (details.rootCauseAnalysisMethod|replace({'-': '_'}))|trans({}, 'audits') }}</dt>
-                            <dd class="col-sm-8 text-muted">{{ details.rootCauseAnalysisMethod }}</dd>
+                    <dl class="row mb-2 mt-1">
+                        {% if details.rootCauseAnalysisMethod is defined and details.rootCauseAnalysisMethod %}
+                            <dt class="col-sm-4">{{ 'audit_finding.capa_builder.label.method'|trans({}, 'audits') }}</dt>
+                            <dd class="col-sm-8 text-muted">{{ ('audit_finding.capa_builder.method.' ~ (details.rootCauseAnalysisMethod|replace({'-': '_'})))|trans({}, 'audits') }}</dd>
                         {% endif %}
-                        {% if details.verificationMethod is defined %}
-                            <dt class="col-sm-4">{{ 'audit_finding.verification_method.' ~ (details.verificationMethod|replace({'-': '_'}))|trans({}, 'audits') }}</dt>
-                            <dd class="col-sm-8 text-muted">{{ details.verificationMethod }}</dd>
+                        {% if details.verificationMethod is defined and details.verificationMethod %}
+                            <dt class="col-sm-4">{{ 'audit_finding.capa_builder.label.verification_method'|trans({}, 'audits') }}</dt>
+                            <dd class="col-sm-8 text-muted">{{ ('audit_finding.capa_builder.verification_method.' ~ (details.verificationMethod|replace({'-': '_'})))|trans({}, 'audits') }}</dd>
                         {% endif %}
                         {% if details.verificationEvidence is defined and details.verificationEvidence %}
-                            <dt class="col-sm-4">{{ 'audit_finding.field.evidence'|trans({}, 'audits') }}</dt>
-                            <dd class="col-sm-8">{{ details.verificationEvidence }}</dd>
+                            <dt class="col-sm-4">{{ 'audit_finding.capa_builder.label.verification_evidence'|trans({}, 'audits') }}</dt>
+                            <dd class="col-sm-8">{{ details.verificationEvidence|nl2br }}</dd>
                         {% endif %}
                     </dl>
+                    {% if details.correctiveActions is defined and details.correctiveActions|length > 0 %}
+                        <strong class="d-block mb-1">{{ 'audit_finding.capa_builder.label.corrective_actions'|trans({}, 'audits') }}</strong>
+                        <ul class="list-unstyled mb-0">
+                            {% for action in details.correctiveActions %}
+                                <li class="border-start ps-2 mb-1">
+                                    <span>{{ action.description|default('—') }}</span>
+                                    {% if action.deadline is defined and action.deadline %}
+                                        <small class="text-muted ms-2">({{ 'audit_finding.capa_builder.label.deadline'|trans({}, 'audits') }}: {{ action.deadline }})</small>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>

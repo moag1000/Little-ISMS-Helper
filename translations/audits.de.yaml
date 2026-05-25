@@ -362,6 +362,30 @@ audit_finding:
         walkthrough: 'Walkthrough / Begehung'
         test: 'Test / Stichprobe'
         metrics_monitoring: 'Metriken-Monitoring'
+    # S17 B4 follow-up — CAPA Builder (visual JSON-editor for nonconformityDetails)
+    capa_builder:
+        title: 'CAPA-Builder (ISO 27001 Cl. 10.2 b)+d))'
+        empty: 'Noch keine Korrekturmaßnahmen erfasst.'
+        label:
+            method: 'Methode der Ursachenanalyse'
+            verification_method: 'Wirksamkeits-Methode'
+            verification_evidence: 'Wirksamkeits-Nachweis'
+            corrective_actions: 'Korrekturmaßnahmen'
+            add_correction: '+ Maßnahme hinzufügen'
+            description: 'Beschreibung'
+            owner: 'Verantwortlich'
+            deadline: 'Frist'
+            remove: 'Entfernen'
+        method:
+            '5_why': '5-Why-Analyse'
+            ishikawa: 'Ishikawa-Diagramm'
+            fmea: 'FMEA'
+            other: 'Sonstige'
+        verification_method:
+            document_review: 'Dokumentenprüfung'
+            walkthrough: 'Walkthrough'
+            test: 'Test'
+            metrics_monitoring: 'KPI-Monitoring'
     error:
         nc_root_cause_required: 'Für Nichtkonformitäten ist eine Ursachenanalyse Pflicht (ISO 27001 Cl. 10.2 b)).'
         nc_correction_due_date_required: 'Für Nichtkonformitäten ist eine Frist für die Korrekturmaßnahme Pflicht (ISO 27001 Cl. 10.2 c)).'

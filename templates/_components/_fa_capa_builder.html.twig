@@ -1,0 +1,215 @@
+{#
+ # FairyAurora v4.0 — fa-capa-builder macro (S17 B4 follow-up)
+ #
+ # Visual JSON-Builder for AuditFinding.nonconformityDetails — structured
+ # editor for ISO 27001 Cl. 10.2 b)+d) CAPA sub-schema. Replaces the
+ # raw-JSON-textarea anti-pattern (Gate 34) and the "drop the field
+ # entirely" workaround used right after PR #680.
+ #
+ # Data contract (matches AuditFinding.nonconformityDetails entity JSON):
+ #   {
+ #     "rootCauseAnalysisMethod": "5-why|ishikawa|fmea|other",
+ #     "correctiveActions": [
+ #       { "description": string, "ownerId": int|null, "deadline": "YYYY-MM-DD"|null }, ...
+ #     ],
+ #     "verificationMethod": "document-review|walkthrough|test|metrics-monitoring",
+ #     "verificationEvidence": string
+ #   }
+ #
+ # Usage:
+ #   {% import '_components/_fa_capa_builder.html.twig' as _fa_capa_builder %}
+ #
+ #   {{ _fa_capa_builder.render({
+ #       name: form.nonconformityDetails.vars.full_name,
+ #       value: form.nonconformityDetails.vars.value,
+ #       userChoices: nc_user_choices,
+ #       translationDomain: 'audits',
+ #   }) }}
+ #
+ # Parameters:
+ #   props.name              - hidden-input name for form submission (required)
+ #   props.value             - current map OR JSON-encoded string (optional)
+ #   props.userChoices       - list of {id, label} for the owner-picker (required)
+ #   props.id                - root element id (default 'fa-capa-builder-' ~ random())
+ #   props.translationDomain - domain for labels (default 'audits')
+ #
+ # Stimulus-controller `capa-builder` handles:
+ #   - hydrate UI from initial JSON
+ #   - addCorrection / removeCorrection
+ #   - JSON-serialisation into hidden <input>
+ #   - auto-serialize on every input/change
+ #
+ # Embed-Scope-Reminder (CLAUDE.md Pitfall 10/10b):
+ #   When using this macro inside {% embed %}, RE-import here:
+ #     {% import '_components/_fa_capa_builder.html.twig' as _fa_capa_builder %}
+ #   and RE-declare `{% trans_default_domain 'audits' %}` on first line
+ #   of the embed-block.
+ #}
+
+{% macro render(props = {}) %}
+    {% set name = props.name|default('nonconformityDetails') %}
+    {% set id = props.id|default('fa-capa-builder-' ~ random(99999)) %}
+    {% set translationDomain = props.translationDomain|default('audits') %}
+    {% set userChoices = props.userChoices|default([]) %}
+    {% set rawValue = props.value is defined and props.value is not null
+        ? (props.value is iterable ? props.value|json_encode : props.value)
+        : '' %}
+
+    <div class="fa-json-builder fa-capa-builder"
+         id="{{ id }}"
+         data-controller="capa-builder"
+         data-capa-builder-name-value="{{ name }}"
+         role="region"
+         aria-label="{{ ('audit_finding.capa_builder.title')|trans({}, translationDomain) }}">
+
+        <h3 class="fa-json-builder__title h6 mb-2">
+            <i class="fa-icon fa-icon--ui-checklist" aria-hidden="true"></i>
+            {{ ('audit_finding.capa_builder.title')|trans({}, translationDomain) }}
+        </h3>
+
+        {# Hidden input — bound to FormType (HiddenType + JsonArrayTransformer). #}
+        <input type="hidden"
+               name="{{ name }}"
+               class="fa-json-builder__hidden"
+               value="{{ rawValue }}"
+               data-capa-builder-target="hiddenJsonInput">
+
+        <div class="row g-3">
+            {# ── Left column — methods + evidence ───────────────────────── #}
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ id }}-method" class="form-label">
+                        {{ ('audit_finding.capa_builder.label.method')|trans({}, translationDomain) }}
+                    </label>
+                    <select id="{{ id }}-method"
+                            class="form-select form-select-sm fa-cyber-input__field"
+                            data-capa-builder-target="methodSelect"
+                            data-action="change->capa-builder#serialize"
+                            aria-label="{{ ('audit_finding.capa_builder.label.method')|trans({}, translationDomain) }}">
+                        <option value="">—</option>
+                        <option value="5-why">{{ ('audit_finding.capa_builder.method.5_why')|trans({}, translationDomain) }}</option>
+                        <option value="ishikawa">{{ ('audit_finding.capa_builder.method.ishikawa')|trans({}, translationDomain) }}</option>
+                        <option value="fmea">{{ ('audit_finding.capa_builder.method.fmea')|trans({}, translationDomain) }}</option>
+                        <option value="other">{{ ('audit_finding.capa_builder.method.other')|trans({}, translationDomain) }}</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ id }}-vmethod" class="form-label">
+                        {{ ('audit_finding.capa_builder.label.verification_method')|trans({}, translationDomain) }}
+                    </label>
+                    <select id="{{ id }}-vmethod"
+                            class="form-select form-select-sm fa-cyber-input__field"
+                            data-capa-builder-target="verificationMethodSelect"
+                            data-action="change->capa-builder#serialize"
+                            aria-label="{{ ('audit_finding.capa_builder.label.verification_method')|trans({}, translationDomain) }}">
+                        <option value="">—</option>
+                        <option value="document-review">{{ ('audit_finding.capa_builder.verification_method.document_review')|trans({}, translationDomain) }}</option>
+                        <option value="walkthrough">{{ ('audit_finding.capa_builder.verification_method.walkthrough')|trans({}, translationDomain) }}</option>
+                        <option value="test">{{ ('audit_finding.capa_builder.verification_method.test')|trans({}, translationDomain) }}</option>
+                        <option value="metrics-monitoring">{{ ('audit_finding.capa_builder.verification_method.metrics_monitoring')|trans({}, translationDomain) }}</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ id }}-vevidence" class="form-label">
+                        {{ ('audit_finding.capa_builder.label.verification_evidence')|trans({}, translationDomain) }}
+                    </label>
+                    <textarea id="{{ id }}-vevidence"
+                              class="form-control form-control-sm fa-cyber-input__field"
+                              rows="4"
+                              data-capa-builder-target="verificationEvidenceInput"
+                              data-action="input->capa-builder#serialize"
+                              aria-label="{{ ('audit_finding.capa_builder.label.verification_evidence')|trans({}, translationDomain) }}"></textarea>
+                </div>
+            </div>
+
+            {# ── Right column — corrective actions list ─────────────────── #}
+            <div class="col-md-6">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h4 class="h6 mb-0">
+                        {{ ('audit_finding.capa_builder.label.corrective_actions')|trans({}, translationDomain) }}
+                    </h4>
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                            data-capa-builder-target="addCorrectionBtn"
+                            data-action="click->capa-builder#addCorrection"
+                            aria-label="{{ ('audit_finding.capa_builder.label.add_correction')|trans({}, translationDomain) }}">
+                        <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                        {{ ('audit_finding.capa_builder.label.add_correction')|trans({}, translationDomain) }}
+                    </button>
+                </div>
+
+                <div class="fa-capa-builder__corrections"
+                     data-capa-builder-target="correctionsList"
+                     aria-live="polite"></div>
+
+                <div class="fa-json-builder__empty"
+                     data-capa-builder-target="emptyState">
+                    <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
+                    <span>{{ ('audit_finding.capa_builder.empty')|trans({}, translationDomain) }}</span>
+                </div>
+            </div>
+        </div>
+
+        {# Row-template consumed by the Stimulus controller.
+           Placeholders: __INDEX__, __DESCRIPTION__, __DEADLINE__,
+           __OWNER_OPTIONS__. #}
+        <template data-capa-builder-target="correctionTemplate">
+            <div class="fa-capa-builder__row card card-body p-2 mb-2">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label small text-muted">
+                            {{ ('audit_finding.capa_builder.label.description')|trans({}, translationDomain) }}
+                        </label>
+                        <input type="text"
+                               class="form-control form-control-sm fa-cyber-input__field"
+                               data-index="__INDEX__" data-field="description"
+                               data-action="input->capa-builder#serialize"
+                               value="__DESCRIPTION__"
+                               aria-label="{{ ('audit_finding.capa_builder.label.description')|trans({}, translationDomain) }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small text-muted">
+                            {{ ('audit_finding.capa_builder.label.owner')|trans({}, translationDomain) }}
+                        </label>
+                        <select class="form-select form-select-sm fa-cyber-input__field"
+                                data-index="__INDEX__" data-field="ownerId"
+                                data-action="change->capa-builder#serialize"
+                                aria-label="{{ ('audit_finding.capa_builder.label.owner')|trans({}, translationDomain) }}">
+                            <option value="">—</option>
+                            __OWNER_OPTIONS__
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label small text-muted">
+                            {{ ('audit_finding.capa_builder.label.deadline')|trans({}, translationDomain) }}
+                        </label>
+                        <input type="date"
+                               class="form-control form-control-sm fa-cyber-input__field"
+                               data-index="__INDEX__" data-field="deadline"
+                               data-action="change->capa-builder#serialize"
+                               value="__DEADLINE__"
+                               aria-label="{{ ('audit_finding.capa_builder.label.deadline')|trans({}, translationDomain) }}">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="button"
+                                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger w-100"
+                                data-index="__INDEX__"
+                                data-action="click->capa-builder#removeCorrection"
+                                aria-label="{{ ('audit_finding.capa_builder.label.remove')|trans({}, translationDomain) }}">
+                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        {# Owner-choices payload — read by the controller via JSON parse so
+           the template stays declarative + the controller does not need a
+           DOM-walk to extract user list. #}
+        <script type="application/json" data-capa-builder-target="userChoicesJson">
+            {{ userChoices|json_encode|raw }}
+        </script>
+    </div>
+{% endmacro %}
