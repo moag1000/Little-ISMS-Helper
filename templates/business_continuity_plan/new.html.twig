@@ -87,7 +87,11 @@
             },
             'activation': {
                 'label': 'bc_plans.section.activation'|trans({}, 'bc_plans'),
-                'fields': ['activationCriteria', 'rolesAndResponsibilities', 'recoveryProcedures']
+                'fields': ['activationCriteria', 'escalationLevels', 'rolesAndResponsibilities', 'recoveryProcedures', 'rto', 'rpo']
+            },
+            'resources': {
+                'label': 'bc_plans.section.resources'|trans({}, 'bc_plans'),
+                'fields': ['requiredResources']
             },
             'communication': {
                 'label': 'bc_plans.section.communication'|trans({}, 'bc_plans'),
@@ -119,8 +123,12 @@
             'crisisTeams': 12,
             'bcTeam': 12,
             'activationCriteria': 12,
+            'escalationLevels': 12,
             'rolesAndResponsibilities': 12,
             'recoveryProcedures': 12,
+            'rto': 6,
+            'rpo': 6,
+            'requiredResources': 12,
             'communicationPlan': 12,
             'internalCommunication': 6,
             'externalCommunication': 6,

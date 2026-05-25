@@ -52,15 +52,19 @@
             },
             'participants': {
                 'label': 'bc_exercises.section.participants'|trans({}, 'bc_exercises'),
-                'fields': ['participants', 'facilitator', 'observers']
+                'fields': ['participantPersons', 'participants', 'facilitatorUser', 'facilitatorPerson', 'facilitator', 'exerciseLeaderUser', 'exerciseLeaderPerson', 'observerPersons', 'observers']
             },
             'results': {
                 'label': 'bc_exercises.section.results'|trans({}, 'bc_exercises'),
                 'fields': ['results', 'whatWentWell', 'areasForImprovement', 'findings', 'actionItems', 'lessonsLearned', 'planUpdatesRequired']
             },
+            'targets': {
+                'label': 'bc_exercises.section.targets'|trans({}, 'bc_exercises'),
+                'fields': ['testedPlans', 'successCriteria', 'actualRtoAchieved', 'actualRpoAchieved']
+            },
             'report': {
                 'label': 'bc_exercises.section.report'|trans({}, 'bc_exercises'),
-                'fields': ['successRating', 'reportCompleted', 'reportDate']
+                'fields': ['successRating', 'reportCompleted', 'reportDate', 'evidenceArtifacts']
             }
         },
         'col_widths': {
@@ -73,9 +77,15 @@
             'scenario': 12,
             'exerciseDate': 6,
             'durationHours': 6,
+            'participantPersons': 12,
             'participants': 12,
+            'facilitatorUser': 6,
+            'facilitatorPerson': 6,
             'facilitator': 6,
-            'observers': 6,
+            'exerciseLeaderUser': 6,
+            'exerciseLeaderPerson': 6,
+            'observerPersons': 12,
+            'observers': 12,
             'results': 12,
             'whatWentWell': 6,
             'areasForImprovement': 6,
@@ -83,9 +93,14 @@
             'actionItems': 12,
             'lessonsLearned': 12,
             'planUpdatesRequired': 12,
+            'testedPlans': 12,
+            'successCriteria': 12,
+            'actualRtoAchieved': 6,
+            'actualRpoAchieved': 6,
             'successRating': 4,
             'reportCompleted': 4,
-            'reportDate': 4
+            'reportDate': 4,
+            'evidenceArtifacts': 12
         },
         'tooltips': {
             'scenario': 'bc_exercises.tooltip.scenario',

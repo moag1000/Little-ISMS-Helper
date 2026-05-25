@@ -93,7 +93,7 @@
             },
             'dependencies': {
                 'label': 'form.section.dependencies'|trans({}, 'messages'),
-                'fields': ['dependenciesUpstream', 'dependenciesDownstream', 'recoveryStrategy']
+                'fields': ['upstreamProcesses', 'downstreamProcesses', 'dependenciesUpstream', 'dependenciesDownstream', 'recoveryStrategy']
             },
             'resources': {
                 'label': 'form.section.resources'|trans({}, 'messages'),
@@ -116,6 +116,8 @@
             'rto': 4,
             'rpo': 4,
             'mtpd': 4,
+            'upstreamProcesses': 6,
+            'downstreamProcesses': 6,
             'dependenciesUpstream': 6,
             'dependenciesDownstream': 6,
             'recoveryStrategy': 12,

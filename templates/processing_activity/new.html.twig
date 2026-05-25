@@ -76,7 +76,7 @@
             },
             'recipients': {
                 'label': 'processing_activity.section.recipients_transfers'|trans({}, 'privacy'),
-                'fields': ['recipientCategories', 'recipientDetails', 'hasThirdCountryTransfer', 'thirdCountries', 'transferSafeguards', 'involvesProcessors', 'isJointController']
+                'fields': ['recipientCategories', 'recipientDetails', 'hasThirdCountryTransfer', 'thirdCountries', 'transferSafeguards', 'involvesProcessors', 'processorSuppliers', 'isJointController', 'jointControllerDetails']
             },
             'retention': {
                 'label': 'processing_activity.section.retention'|trans({}, 'privacy'),
@@ -116,7 +116,9 @@
             'thirdCountries': 6,
             'transferSafeguards': 6,
             'involvesProcessors': 6,
+            'processorSuppliers': 6,
             'isJointController': 6,
+            'jointControllerDetails': 12,
             'retentionPeriod': 8,
             'retentionPeriodDays': 4,
             'retentionLegalBasis': 12,

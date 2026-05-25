@@ -42,6 +42,10 @@
         'assignment': {
             'label': 'threat.section.assignment'|trans({}, 'threat'),
             'fields': ['assignedTo', 'assignedPerson', 'assignedDeputyPersons']
+        },
+        'classification': {
+            'label': 'threat.section.classification'|trans({}, 'threat'),
+            'fields': ['tlpClassification', 'confidenceLevel', 'sharedExternally', 'threatActorAttribution', 'mitreAttackTactics', 'mitreAttackTechniques', 'iocsList']
         }
     },
     'col_widths': {
@@ -62,7 +66,14 @@
         'references': 12,
         'assignedTo': 4,
         'assignedPerson': 4,
-        'assignedDeputyPersons': 4
+        'assignedDeputyPersons': 4,
+        'tlpClassification': 6,
+        'confidenceLevel': 6,
+        'sharedExternally': 6,
+        'threatActorAttribution': 12,
+        'mitreAttackTactics': 6,
+        'mitreAttackTechniques': 6,
+        'iocsList': 12
     },
     'translation_domain': 'threat',
     'actions': {
