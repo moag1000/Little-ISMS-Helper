@@ -303,7 +303,7 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                 'data-controller' => 'tom-select',
             ],
             'query_builder' => function (ControlRepository $r) {
-                $qb = $r->createQueryBuilder('c')->orderBy('c.controlNumber', 'ASC');
+                $qb = $r->createQueryBuilder('c')->orderBy('c.controlId', 'ASC');
                 $tenant = $this->tenantContext->getCurrentTenant();
                 if ($tenant !== null) {
                     $qb->andWhere('c.tenant = :tenant OR c.tenant IS NULL')

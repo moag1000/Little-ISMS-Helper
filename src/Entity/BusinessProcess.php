@@ -144,15 +144,6 @@ class BusinessProcess
     private ?string $mbco = null;
 
     /**
-     * @deprecated since 2026-05-14 — no form, template, or query references this field.
-     *             The $mbco text field carries the MBCO narrative. Remove this numeric
-     *             duplicate in next major (v4.0).
-     *             TODO: drop column in migration when confirmed unused post-v4.
-     */
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $mbcoPercentage = null;
-
-    /**
      * @var Collection<int, BusinessProcess>
      */
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'dependentProcesses')]
@@ -794,19 +785,6 @@ class BusinessProcess
     public function setMbco(?string $mbco): static
     {
         $this->mbco = $mbco;
-        return $this;
-    }
-
-    /** @deprecated since 2026-05-14 — see field docblock */
-    public function getMbcoPercentage(): ?int
-    {
-        return $this->mbcoPercentage;
-    }
-
-    /** @deprecated since 2026-05-14 — see field docblock */
-    public function setMbcoPercentage(?int $mbcoPercentage): static
-    {
-        $this->mbcoPercentage = $mbcoPercentage;
         return $this;
     }
 

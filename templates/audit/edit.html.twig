@@ -83,6 +83,14 @@
                                     'label': 'audit.field.audited_subsidiaries'|trans({}, 'audit')
                                 } %}
                             </div>
+                            {# C5-04 — scopedAssets row, toggled by conditional-fields controller when scopeType=asset (ISO 19011 Cl. 5.5.2). #}
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.scopedAssets,
+                                    'label_key': form.scopedAssets.vars.label,
+                                    'translation_domain': 'audit'
+                                } %}
+                            </div>
                         </div>
                     </fieldset>
 
@@ -116,7 +124,7 @@
                             'leadAuditor': 6,
                             'status': 6
                         },
-                        'exclude': ['title', 'scope', 'scopeType', 'scopedFramework', 'auditedSubsidiaries']
+                        'exclude': ['title', 'scope', 'scopeType', 'scopedFramework', 'auditedSubsidiaries', 'scopedAssets']
                     } %}
 
                     {# Form Actions #}
