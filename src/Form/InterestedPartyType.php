@@ -123,16 +123,19 @@ final class InterestedPartyType extends AbstractType implements SectionMapInterf
                 'label' => 'interested_party.field.last_communication',
                 'widget' => 'single_text',
                 'required' => false,
+                'help' => 'interested_party.help.last_communication',
             ])
             ->add('nextCommunication', DateType::class, [
                 'label' => 'interested_party.field.next_communication',
                 'widget' => 'single_text',
                 'required' => false,
+                'help' => 'interested_party.help.next_communication',
             ])
             ->add('feedback', TextareaType::class, [
                 'label' => 'interested_party.field.feedback',
                 'required' => false,
                 'attr' => ['rows' => 3],
+                'help' => 'interested_party.help.feedback',
             ])
             ->add('satisfactionLevel', IntegerType::class, [
                 'label' => 'interested_party.field.satisfaction_level',
