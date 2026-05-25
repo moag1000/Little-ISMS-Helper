@@ -93,8 +93,8 @@ translations/bcm.de.yaml:105:business_process
 translations/bcm.de.yaml:207:bc_exercises
 translations/bcm.de.yaml:219:bc_plans
 translations/bcm.en.yaml:105:business_process
-translations/business_process.de.yaml:210:iso_9001_bridge
-translations/business_process.en.yaml:205:iso_9001_bridge
+translations/business_process.de.yaml:212:iso_9001_bridge
+translations/business_process.en.yaml:207:iso_9001_bridge
 translations/change_requests.de.yaml:1:change_request
 translations/change_requests.en.yaml:1:change_request
 translations/compliance.de.yaml:942:compliance_mapping
