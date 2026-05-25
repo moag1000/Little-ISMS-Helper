@@ -400,6 +400,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
             // @deprecated since 2026-05-25 (S18 B3) — kept for legacy data display only.
             //   Structured FK above is preferred. Will be removed once backfill is done.
+            // @legacy-freetext: deprecation-period; canonical EntityType<Department> above
             ->add('responsibleDepartment', TextType::class, [
                 'label' => 'processing_activity.form.responsible_department',
                 'help' => 'processing_activity.help.responsible_department',

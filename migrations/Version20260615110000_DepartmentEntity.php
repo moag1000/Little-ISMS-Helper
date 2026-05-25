@@ -18,7 +18,7 @@ use Doctrine\Migrations\AbstractMigration;
  * `isTransactional() = false` per CLAUDE.md pitfall #6 (multi-DDL ALTER TABLE
  * + CREATE TABLE in one migration run).
  */
-final class Version20260615100000_DepartmentEntity extends AbstractMigration
+final class Version20260615110000_DepartmentEntity extends AbstractMigration
 {
     public function isTransactional(): bool
     {
