@@ -97,3 +97,9 @@ patch:
         estimated_minutes: 'approx. %minutes% min.'
         linked_vulnerability: 'Linked vulnerability'
         dependencies: Dependencies
+    validation:
+        patch_id_required: 'Please provide a patch ID.'
+        title_required: 'Please provide a patch title.'
+        description_required: 'Please provide a description.'
+        vendor_required: 'Please provide the vendor.'
+        product_required: 'Please provide the affected product.'
