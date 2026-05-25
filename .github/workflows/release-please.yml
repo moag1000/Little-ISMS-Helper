@@ -13,31 +13,50 @@ on:
   # Manueller Trigger noetig wenn Auto-Merge-Workflow den Squash-Commit
   # mit GITHUB_TOKEN gepusht hat — solche Pushes triggern downstream
   # Workflows aus Sicherheitsgruenden nicht automatisch (GitHub-Schutz
-  # vor Infinite-Loops). Workaround bis PAT-basierter Token konfiguriert
-  # ist: Actions-UI → "Release Please" → Run workflow.
+  # vor Infinite-Loops).
   workflow_dispatch:
 
 permissions:
   contents: write
   pull-requests: write
+  actions: write  # Required for `gh workflow run` (workflow_dispatch) of
+                  # ci.yml after tag creation. Without this the tag push
+                  # via GITHUB_TOKEN does not trigger downstream Docker
+                  # build/push (GitHub anti-loop protection), so we need
+                  # to fire ci.yml explicitly.
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v5
+      - id: release
+        uses: googleapis/release-please-action@v5
         with:
           # Pull config + manifest aus Repo-Root.
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
-          # Optional: use a fine-grained PAT instead of GITHUB_TOKEN so
-          # the tag push fires downstream workflows (Docker build/push,
-          # release-asset uploads). With GITHUB_TOKEN, GitHub's loop-
-          # prevention silently drops the tag-push trigger on `ci.yml`
-          # `on.push.tags`, leaving Docker Hub stale until a human
-          # re-pushes the tag (see 3.5.0 release post-mortem).
-          # Set up: Settings → Developer settings → Fine-grained tokens
-          # → Repo-scoped, permissions: contents:write + pull-requests:
-          # write. Store as repo secret `RELEASE_PLEASE_PAT`, then
-          # uncomment:
-          # token: ${{ secrets.RELEASE_PLEASE_PAT }}
+
+      # When release-please created a new tag + GitHub Release, the
+      # `push` event for that tag does NOT trigger ci.yml because the tag
+      # was pushed under GITHUB_TOKEN (GitHub anti-loop protection drops
+      # downstream workflow triggers for token-pushed refs). Workaround:
+      # explicitly dispatch ci.yml against the newly-created tag so the
+      # Docker build job (gated by `startsWith(github.ref, 'refs/tags/v')`)
+      # fires.
+      #
+      # Outputs documented at
+      # https://github.com/googleapis/release-please-action#outputs
+      - name: Trigger ci.yml on new tag
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          echo "Release created: $TAG — dispatching CI/CD Pipeline against the tag ref."
+          # Up to 30s grace so the tag is fully visible in the API.
+          sleep 30
+          gh workflow run "CI/CD Pipeline" \
+            --repo "${{ github.repository }}" \
+            --ref "$TAG"
+          echo "::notice::ci.yml workflow_dispatch fired for $TAG — Docker build/push will run shortly."
