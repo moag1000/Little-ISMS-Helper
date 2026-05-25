@@ -35,18 +35,21 @@ class Patch
      * Patch identifier (e.g., KB5012345, MS24-001)
      */
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'patch.validation.patch_id_required')]
     private ?string $patchId = null;
 
     /**
      * Patch title/name
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'patch.validation.title_required')]
     private ?string $title = null;
 
     /**
      * Detailed description
      */
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'patch.validation.description_required')]
     private ?string $description = null;
 
     /**
@@ -60,12 +63,14 @@ class Patch
      * Vendor/manufacturer
      */
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'patch.validation.vendor_required')]
     private ?string $vendor = null;
 
     /**
      * Affected product/software
      */
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'patch.validation.product_required')]
     private ?string $product = null;
 
     /**
