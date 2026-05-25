@@ -52,8 +52,8 @@ translations/alva.en.yaml:235:dpia
 translations/alva.en.yaml:241:incident
 translations/alva.en.yaml:255:policy_wizard
 translations/alva.en.yaml:399:alva_hint
-translations/asset.de.yaml:383:qr
-translations/asset.en.yaml:380:qr
+translations/asset.de.yaml:384:qr
+translations/asset.en.yaml:381:qr
 translations/assets.de.yaml:1:asset
 translations/assets.en.yaml:1:asset
 translations/audit.de.yaml:230:audit_log
