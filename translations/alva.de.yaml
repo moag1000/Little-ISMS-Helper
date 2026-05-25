@@ -48,6 +48,10 @@ processing_activity:
         title: 'Aufbewahrungsfrist fehlt — DSGVO Art. 5 Abs. 1 lit. e Lücke'
         body: 'Diese Verarbeitungstätigkeit hat keine dokumentierte Aufbewahrungsfrist oder Löschrichtlinie. DSGVO Art. 5 Abs. 1 lit. e Speicherbegrenzungsgrundsatz verlangt, personenbezogene Daten nicht länger als erforderlich aufzubewahren. Aufsichtsbehörden bemängeln fehlende Löschfristen regelmäßig.'
         action: 'Aufbewahrungsfrist setzen'
+    unstructured_department:
+        title: 'Abteilung nur als Freitext erfasst'
+        body: 'Die verantwortliche Abteilung „%department%" ist nur als Freitext gespeichert. Lege eine strukturierte Abteilung in den Stammdaten an, damit ISO 27001 Cl. 5.3 (Rollen/Verantwortlichkeiten) und Cross-Framework-Wiederverwendung (Assets, Risiken, Incidents) sauber abgebildet werden.'
+        action: 'Abteilung anlegen'
 
 vulnerability:
     critical_unpatched:

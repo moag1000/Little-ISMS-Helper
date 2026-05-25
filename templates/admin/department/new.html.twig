@@ -1,0 +1,22 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'department' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block admin_title %}{{ 'department.page.new_title'|trans({}, 'department') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_department_index') }}">{{ 'department.page.title'|trans({}, 'department') }}</a></li>
+    <li class="breadcrumb-item active">{{ 'department.page.new_title'|trans({}, 'department') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'ui-building', label: 'Org' },
+        title: 'department.page.new_title'|trans({}, 'department'),
+        subtitle: 'department.page.subtitle'|trans({}, 'department'),
+    }) }}
+
+    {{ form_start(form) }}
+        {% include 'admin/department/_form.html.twig' %}
+    {{ form_end(form) }}
+{% endblock %}

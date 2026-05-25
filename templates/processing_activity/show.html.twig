@@ -162,7 +162,19 @@
                         </dd>
 
                         <dt class="col-sm-3">{{ 'processing_activity.field.responsible_department'|trans({}, 'privacy') }}:</dt>
-                        <dd class="col-sm-9">{{ processing_activity.responsibleDepartment ?? '—' }}</dd>
+                        <dd class="col-sm-9">
+                            {% if processing_activity.responsibleDepartmentEntity %}
+                                <strong>{{ processing_activity.responsibleDepartmentEntity.name }}</strong>
+                                {% if processing_activity.responsibleDepartmentEntity.code %}
+                                    <span class="text-muted">({{ processing_activity.responsibleDepartmentEntity.code }})</span>
+                                {% endif %}
+                                {% if processing_activity.responsibleDepartment %}
+                                    <br><small class="text-muted">{{ 'processing_activity.field.responsible_department'|trans({}, 'privacy') }} (Legacy): {{ processing_activity.responsibleDepartment }}</small>
+                                {% endif %}
+                            {% else %}
+                                {{ processing_activity.responsibleDepartment ?? '—' }}
+                            {% endif %}
+                        </dd>
 
                         <dt class="col-sm-3">{{ 'processing_activity.field.contact_person'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">{{ processing_activity.effectiveContactPerson ?? (processing_activity.contactPersonUser ? processing_activity.contactPersonUser.userIdentifier : '—') }}</dd>

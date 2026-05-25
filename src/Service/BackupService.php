@@ -51,6 +51,7 @@ class BackupService
         'Location',
         'Supplier',
         'SystemSettings',
+        'Department', // S18 B3: tenant-scoped Abteilung, FK target for responsibleDepartmentEntity
 
         // Tenant-level overrides / branding
         'TenantBranding',           // FK: Tenant, User (has logoPath upload)
