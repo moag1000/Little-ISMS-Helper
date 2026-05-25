@@ -640,3 +640,14 @@ risk_management:
   high_risks: High Risks
   risk_value_threshold: Risk Value Threshold
   total_identified: Total Identified
+
+# ─── Risk-Heatmap Drawer/Legend/Empty (TODO_2026-05-22 S12) ─────
+risk.heatmap.drawer.close: 'Close'
+risk.heatmap.drawer.eyebrow: 'Cell detail'
+risk.heatmap.drawer.title: 'Risks in this cell'
+risk.heatmap.empty.text: 'No risks in the current selection.'
+risk.heatmap.empty.title: 'No risks'
+risk.heatmap.legend.critical: 'Critical'
+risk.heatmap.legend.high: 'High'
+risk.heatmap.legend.low: 'Low'
+risk.heatmap.legend.medium: 'Medium'

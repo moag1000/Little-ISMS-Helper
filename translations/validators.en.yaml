@@ -309,6 +309,8 @@ training:
         title_required: 'Please enter a title.'
         date_required: 'Please select a date.'
         trainer_required: 'Trainer must be selected'
+    error:
+        material_upload_failed: 'Error uploading training materials: %reason%'
 objective:
     validation:
         title_required: 'Title is required'
@@ -343,12 +345,22 @@ tenant:
         code_format: 'Tenant code must match the required format'
         azure_tenant_id_format: 'Azure Tenant ID must be a valid GUID'
         logo_format: 'The logo must be in JPG, PNG, GIF or WebP format'
+        nace_code_format: 'NACE code must match format A.NN.NN (NACE Rev.2 classification).'
     email:
         logo_url:
             https_only: 'HTTPS URLs only (mixed content is blocked by HTML email clients)'
 user:
     validation:
         avatar_format: 'The profile picture must be in JPG, PNG, GIF or WebP format'
+        email:
+            invalid: 'Please enter a valid email address.'
+            required: 'Email address is required.'
+        first_name:
+            max_length: 'First name cannot exceed {{ limit }} characters.'
+            required: 'First name is required.'
+        last_name:
+            max_length: 'Last name cannot exceed {{ limit }} characters.'
+            required: 'Last name is required.'
 context:
     validation:
         organization_name_required: 'Please enter an organization name.'
@@ -730,20 +742,8 @@ gstool_import:
 'training.validation.status_required': 'Status is required.'
 'training.validation.status_invalid': 'Status must be one of: {{ choices }}.'
 
-# User
+# User (email_unique kept as flat — nested forms above)
 'user.validation.email_unique': 'There is already an account with this email.'
-'user.validation.email.required': 'Email address is required.'
-'user.validation.email.invalid': 'Please enter a valid email address.'
-'user.validation.first_name.required': 'First name is required.'
-'user.validation.first_name.max_length': 'First name must not exceed {{ limit }} characters.'
-'user.validation.last_name.required': 'Last name is required.'
-'user.validation.last_name.max_length': 'Last name must not exceed {{ limit }} characters.'
-
-# Tenant (T10.10 — NACE Rev.2 format)
-'tenant.validation.nace_code_format': 'NACE code must follow the A.NN.NN format (NACE Rev.2 classification).'
-
-# Training
-'training.error.material_upload_failed': 'Failed to upload training materials: %reason%'
 
 # Supplier (T10.10 — LEI ISO 17442 + NACE Rev.2 format)
 'supplier.validation.lei_code.format': 'LEI code must be 20 characters: 18 alphanumeric + 2 check digits (ISO 17442).'

@@ -657,3 +657,14 @@ risk_management:
   high_risks: Hohe Risiken
   risk_value_threshold: Risikobewertungs-Schwellenwert
   total_identified: Gesamt identifiziert
+
+# ─── Risk-Heatmap Drawer/Legend/Empty (TODO_2026-05-22 S12) ─────
+risk.heatmap.drawer.close: 'Schließen'
+risk.heatmap.drawer.eyebrow: 'Zellen-Detail'
+risk.heatmap.drawer.title: 'Risiken in dieser Zelle'
+risk.heatmap.empty.text: 'Noch keine Risiken in der aktuellen Auswahl.'
+risk.heatmap.empty.title: 'Keine Risiken'
+risk.heatmap.legend.critical: 'Kritisch'
+risk.heatmap.legend.high: 'Hoch'
+risk.heatmap.legend.low: 'Niedrig'
+risk.heatmap.legend.medium: 'Mittel'

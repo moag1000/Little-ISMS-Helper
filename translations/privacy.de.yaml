@@ -1563,3 +1563,17 @@ dpia:
 'privacy.chart.by_legal_basis': 'Nach Rechtsgrundlage'
 
 # GDPR Breach Wizard
+# ─── DPIA Lifecycle/Event Messages (TODO_2026-05-22 S12) ─────
+dpia.approved: 'DPIA freigegeben.'
+dpia.cloned: 'DPIA dupliziert.'
+dpia.created: 'DPIA angelegt.'
+dpia.deleted: 'DPIA gelöscht.'
+dpia.dpo_consulted: 'DSB-Konsultation dokumentiert.'
+dpia.marked_for_review: 'Für Review markiert.'
+dpia.rejected: 'DPIA abgelehnt.'
+dpia.reopened: 'DPIA wieder geöffnet.'
+dpia.review_completed: 'Review abgeschlossen.'
+dpia.revision_requested: 'Überarbeitung angefordert.'
+dpia.submitted_for_review: 'Zur Prüfung eingereicht.'
+dpia.supervisory_consulted: 'Aufsichtsbehörde konsultiert.'
+dpia.updated: 'DPIA aktualisiert.'
