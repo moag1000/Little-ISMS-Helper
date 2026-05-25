@@ -11,6 +11,7 @@ export default class extends Controller {
     }
 
     filterRows() {
+        if (!this.hasSearchInputTarget) return;
         const searchTerm = this.searchInputTarget.value.toLowerCase();
         let visibleCount = 0;
 

@@ -44,7 +44,7 @@
                     },
                     'impact_assessment': {
                         'label': 'change_request.section.impact_assessment'|trans({}, 'change_requests'),
-                        'fields': ['ismsImpact', 'riskAssessment']
+                        'fields': ['ismsImpact', 'riskAssessment', 'clauseReference', 'relatedFinding', 'relatedCorrectiveAction']
                     },
                     'implementation': {
                         'label': 'change_request.section.implementation'|trans({}, 'change_requests'),
@@ -71,6 +71,9 @@
                     'status': 6,
                     'ismsImpact': 12,
                     'riskAssessment': 12,
+                    'clauseReference': 6,
+                    'relatedFinding': 6,
+                    'relatedCorrectiveAction': 6,
                     'implementationPlan': 12,
                     'rollbackPlan': 12,
                     'testingRequirements': 12,

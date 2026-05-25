@@ -53,6 +53,14 @@
                 'label': 'crisis_team.section.training'|trans({}, 'crisis_team'),
                 'fields': ['trainingSchedule', 'lastTrainingAt', 'nextTrainingAt']
             },
+            'members': {
+                'label': 'crisis_team.section.members'|trans({}, 'crisis_team'),
+                'fields': ['personMembers']
+            },
+            'activation': {
+                'label': 'crisis_team.section.activation'|trans({}, 'crisis_team'),
+                'fields': ['escalationMatrix', 'activationCount', 'lastActivatedAt']
+            },
             'plans': {
                 'label': 'crisis_team.section.plans'|trans({}, 'crisis_team'),
                 'fields': ['businessContinuityPlans', 'notes']
@@ -80,6 +88,10 @@
             'trainingSchedule': 12,
             'lastTrainingAt': 6,
             'nextTrainingAt': 6,
+            'personMembers': 12,
+            'escalationMatrix': 12,
+            'activationCount': 4,
+            'lastActivatedAt': 4,
             'businessContinuityPlans': 12,
             'notes': 12
         },
