@@ -37,7 +37,11 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
             'root_cause'       => ['evidence', 'relatedControls'],
             'corrective_action'=> ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'dueDate'],
             // S17 B4 — CAPA Hybrid JSON fields (ISO 27001 Cl. 10.2 b) + d)).
-            'nc_capa'          => ['ncRootCauseSummary', 'ncCorrectionDueDate', 'ncVerifiedAt', 'ncVerifiedBy', 'nonconformityDetails'],
+            // `nonconformityDetails` (JSON-array column) is intentionally NOT
+            // surfaced in this form yet — Gate 34 (`raw_json_textarea`) bans
+            // raw textareas on JSON columns. v2 will use CollectionType +
+            // dedicated EntryType per the gate's documented fix-path.
+            'nc_capa'          => ['ncRootCauseSummary', 'ncCorrectionDueDate', 'ncVerifiedAt', 'ncVerifiedBy'],
             'verification'     => ['reportedByPerson', 'reportedByDeputyPersons', 'linkedRequirements'],
         ];
     }
@@ -246,15 +250,11 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'help' => 'audit_finding.help.nc_verified_by',
             ])
-            // Structured JSON edited as raw textarea for v1 (mapped → array via
-            // a property-path callback). Future polish: dedicated FormType.
-            ->add('nonconformityDetails', TextareaType::class, [
-                'label' => 'audit_finding.field.nonconformity_details',
-                'required' => false,
-                'mapped' => false,
-                'attr' => ['rows' => 6, 'placeholder' => 'audit_finding.placeholder.nonconformity_details'],
-                'help' => 'audit_finding.help.nonconformity_details',
-            ])
+            // `nonconformityDetails` (JSON array column) is intentionally NOT
+            // wired into the form — Gate 34 bans raw TextareaType on JSON
+            // columns. v2 will introduce a dedicated CollectionType +
+            // EntryType for the corrective-actions list. For now the column
+            // is service-layer / API-only.
         ;
     }
 
