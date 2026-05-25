@@ -176,9 +176,9 @@ translations/incident.en.yaml:1:incident_management
 translations/incident.en.yaml:7:deadline_counter
 translations/incident.en.yaml:429:iso_9001_bridge
 translations/interested_parties.de.yaml:1:interested_party
-translations/interested_parties.de.yaml:110:iso_9001_bridge
+translations/interested_parties.de.yaml:113:iso_9001_bridge
 translations/interested_parties.en.yaml:1:interested_party
-translations/interested_parties.en.yaml:98:iso_9001_bridge
+translations/interested_parties.en.yaml:101:iso_9001_bridge
 translations/journey.de.yaml:46:first_hour
 translations/journey.en.yaml:46:first_hour
 translations/locations.de.yaml:1:location
