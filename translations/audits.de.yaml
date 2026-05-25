@@ -283,6 +283,7 @@ audit_finding:
         finding_number: 'z.B. F-2026-001'
         clause_reference: 'z.B. ISO 27001 A.5.1 / Klausel 9.3'
     help:
+        status_readonly: 'Status wird vom AuditFinding-Lifecycle-Workflow gesteuert (open → in_progress → resolved → verified → closed). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite (LifecycleService::transition).'
         audit: 'Internes Audit, in dem diese Feststellung entstanden ist'
         finding_number: 'Eindeutige Nummer (optional — z.B. F-2026-001)'
         description: 'Ausführliche Beschreibung der Abweichung bzw. Beobachtung'

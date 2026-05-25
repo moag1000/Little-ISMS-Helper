@@ -125,6 +125,7 @@ document:
         confidential: 'Vertraulich'
         strictly_confidential: 'Streng vertraulich'
     help:
+        status_readonly: 'Status wird vom Document-Lifecycle-Workflow gesteuert (draft → in_review → approved → published → archived). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite (LifecycleService::transition).'
         name: 'Eindeutiger Name des Dokuments'
         name_optional: 'Optionaler Name (wird automatisch vom Dateinamen übernommen, falls leer)'
         description: 'Detaillierte Beschreibung des Inhalts und Zwecks'
