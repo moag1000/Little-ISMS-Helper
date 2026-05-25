@@ -46,6 +46,7 @@ class TenantManagementController extends AbstractController
         private readonly MultiTenantCheckService $multiTenantCheckService,
         private readonly ISMSContextService $ismsContextService,
         private readonly ISMSContextRepository $ismsContextRepository,
+        private readonly \App\Service\AssetSubTypeSeeder $assetSubTypeSeeder,
         private readonly string $uploadsDirectory = 'uploads/tenants',
     ) {
     }
@@ -120,6 +121,10 @@ class TenantManagementController extends AbstractController
 
                 $this->entityManager->persist($tenant);
                 $this->entityManager->flush();
+
+                // Seed BSI IT-Grundschutz default asset sub-types so the
+                // sub-type dropdown is not empty for new tenants (Bug S18 B2).
+                $this->assetSubTypeSeeder->applyPreset($tenant, \App\Service\AssetSubTypeSeeder::PRESET_BSI);
 
                 $this->logger->info('Tenant created', [
                     'tenant_id' => $tenant->getId(),
