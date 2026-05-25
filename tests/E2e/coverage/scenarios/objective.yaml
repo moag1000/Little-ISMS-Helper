@@ -1,0 +1,14 @@
+# ISMS-Objective scenarios (ISO 27001 Cl. 6.2).
+
+scenarios:
+  - name: objective_create_minimal
+    label: "ISMS-Ziel anlegen (Minimal)"
+    route: /de/objective/new
+    category: objective
+    fill:
+      'input[name="isms_objective[title]"]': "Smoke-Objective ${random.suffix}"
+      'select[name="isms_objective[status]"]': "in_progress"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '^/de/objective/\d+'

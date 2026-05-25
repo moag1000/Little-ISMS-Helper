@@ -1,0 +1,14 @@
+# Training & Awareness scenarios (ISO 27001 A.6.3).
+
+scenarios:
+  - name: training_create_minimal
+    label: "Training anlegen (Minimal)"
+    route: /de/training/new
+    category: training
+    fill:
+      'input[name="training[title]"]': "Smoke-Training ${random.suffix}"
+      'select[name="training[category]"]': "awareness"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '^/de/training/\d+'

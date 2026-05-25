@@ -1,0 +1,26 @@
+# Risk-Management scenarios (ISO 27001 Cl. 6.1.2 + 6.1.3).
+
+scenarios:
+  - name: risk_create_minimal
+    label: "Risk anlegen (Minimal — Titel + Kategorie)"
+    route: /de/risk/new
+    category: risk
+    fill:
+      'input[name="risk[title]"]': "Smoke-Risk ${random.suffix}"
+      'select[name="risk[category]"]': "operational"
+      'select[name="risk[likelihood]"]': "3"
+      'select[name="risk[impact]"]': "3"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '^/de/risk/\d+'
+
+  - name: risk_quick_create
+    label: "Risk via Quick-Create (S14 Cluster A)"
+    route: /de/risk/new/quick
+    category: risk
+    fill:
+      'input[name="risk[title]"]': "Quick-Risk ${random.suffix}"
+    submit: auto
+    expect:
+      status_lt: 500
