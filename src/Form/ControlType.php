@@ -272,9 +272,15 @@ final class ControlType extends AbstractType
                 'label' => 'control.field.next_effectiveness_test',
                 'required' => false,
             ])
-            // TODO(s5-json-objects): replace with structured map editor
-            // (shape: {iso27001:[...], bsi:[...], nist:[...], dora:[...]}).
-            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
+            // TODO(s5-json-objects): DEFERRED — shape varies, needs schema-discovery
+            // first. Column is `array<string, list<string>>` map keyed by framework
+            // slug (iso27001, bsi, nist, dora, …). CollectionType does not naturally
+            // express variable-key associative maps; a FrameworkRefEntryType
+            // {framework, refs[]} would require reshaping every existing row.
+            // The proper fix is a richer custom Stimulus map-editor (mirroring
+            // _fa_success_criteria.html.twig) — out of scope for S5 Bucket 5.
+            // C-06: JsonStructuredType applies JsonArrayTransformer automatically,
+            // so invalid JSON surfaces as TransformationFailedException meanwhile.
             ->add('frameworkReferences', JsonStructuredType::class, [
                 'label' => 'control.field.framework_references',
                 'required' => false,
