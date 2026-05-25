@@ -111,7 +111,7 @@ context:
         isms_policy: 'Übergeordnete Informationssicherheitsrichtlinie der Organisation...'
         roles_and_responsibilities: 'ISMS-Verantwortlicher, Informationssicherheitsbeauftragter, etc.'
     help:
-        organization_name: 'Dieser Name wird automatisch vom zugeordneten Mandanten übernommen. Um ihn zu ändern, bearbeiten Sie den Mandanten in der Mandantenverwaltung.'
+        organization_name: 'Dieser Name wird automatisch von der zugeordneten Organisation übernommen. Um ihn zu ändern, bearbeiten Sie die Organisation in der Organisationsverwaltung.'
         isms_scope: 'ISO 27001 Clause 4.3: Definieren Sie Grenzen und Anwendbarkeit des ISMS'
         scope_exclusions: 'Begründen Sie, warum bestimmte Bereiche ausgeschlossen werden'
         external_issues: 'ISO 27001 Clause 4.1: Externe Faktoren, die das ISMS beeinflussen'

@@ -30,7 +30,7 @@ delta:
         detail: 'Detail-Delta'
         mapping: 'Mapping-Inventar'
     summary:
-        tenant: 'Mandant'
+        tenant: 'Organisation'
         target: 'Ziel-Framework'
         baseline: 'Baseline-Framework'
         reporting_date: 'Stichtag'
@@ -72,11 +72,11 @@ delta:
         new_assessment: 'Neubewertung erforderlich'
         gap_close: 'Gap schließen'
         download_excel: 'Delta-Assessment exportieren (Excel)'
-        baseline_required: 'Baseline-Framework benötigt (kein anderes aktives Framework im Mandanten)'
+        baseline_required: 'Baseline-Framework benötigt (kein anderes aktives Framework im Organisationen)'
     flash:
         no_baseline_selected: 'Kein Baseline-Framework gewählt — es wird nur der Zustand des Ziel-Frameworks gezeigt.'
 
 # Aliases — einige Aufrufer nutzen den Legacy `compliance_wizard.*`-Flat-Key-Pfad
 'compliance_wizard.delta.summary.pre_fill_rate': 'Pre-Fill-Rate Ziel %target%%%, aktuell %actual%%%'
 'compliance_wizard.delta.action.download_excel': 'Delta-Assessment exportieren (Excel)'
-'compliance_wizard.delta.action.baseline_required': 'Baseline-Framework benötigt (kein anderes aktives Framework im Mandanten)'
+'compliance_wizard.delta.action.baseline_required': 'Baseline-Framework benötigt (kein anderes aktives Framework im Organisationen)'

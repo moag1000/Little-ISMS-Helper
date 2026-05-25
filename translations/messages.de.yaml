@@ -134,7 +134,7 @@ confirm:
 back: Zurück
 common:
     module_not_active: 'Modul "%module%" ist nicht aktiviert. Bitte Setup → Module aktivieren.'
-    tenant_not_found: 'Kein aktiver Mandant — bitte zuerst in einen Workspace einloggen, bevor diese Funktion genutzt wird.'
+    tenant_not_found: 'Kein aktiver Organisation — bitte zuerst in einen Workspace einloggen, bevor diese Funktion genutzt wird.'
     please_select: 'Bitte auswählen...'
     next: Weiter
     # Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern.
@@ -149,7 +149,7 @@ common:
     person_picker:
         placeholder: 'Person auswählen…'
         empty_state:
-            title: 'Keine Personen im Mandanten'
+            title: 'Keine Personen im Organisationen'
             body: 'Bitte zuerst eine Person anlegen, bevor diese Rolle vergeben werden kann.'
     owner_picker:
         section_label: 'Verantwortlich'
@@ -229,7 +229,7 @@ common:
     error: Fehler
     error.invalid_csrf: 'Ungültiges Sicherheitstoken. Bitte laden Sie die Seite neu und versuchen Sie es erneut.'
     error.access_denied: 'Zugriff verweigert.'
-    error.no_tenant: 'Kein Mandant zugeordnet.'
+    error.no_tenant: 'Kein Organisation zugeordnet.'
     csrf_invalid: 'Ungültiges CSRF-Token.'
     none: 'Keine'
     type: 'Typ'
@@ -1219,11 +1219,11 @@ corporate:
         subsidiary: Tochtergesellschaft
     section:
         groups: Konzerngruppen
-        standalone: 'Eigenständige Mandanten'
+        standalone: 'Eigenständige Organisationen'
         structure: Konzernstruktur
     stats:
         standalone: Eigenständig
-        total: 'Gesamt Mandanten'
+        total: 'Gesamt Organisationen'
         own: Eigene
         inherited: Geerbt
         subsidiaries: Tochter
@@ -1237,10 +1237,10 @@ corporate:
         actions: Aktionen
         subsidiaries: Tochtergesellschaften
         parent: Muttergesellschaft
-        parent_help: 'Ordnen Sie diesen Mandanten einer Muttergesellschaft zu, um Konzernstrukturen abzubilden'
+        parent_help: 'Ordnen Sie diese Organisation einer Muttergesellschaft zu, um Konzernstrukturen abzubilden'
         subsidiary: Tochtergesellschaft
         is_corporate_parent: 'Ist Muttergesellschaft'
-        is_corporate_parent_help: 'Aktivieren, wenn dieser Mandant eine Muttergesellschaft mit Tochtergesellschaften ist'
+        is_corporate_parent_help: 'Aktivieren, wenn dieser Organisation eine Muttergesellschaft mit Tochtergesellschaften ist'
         corporate_notes: Konzernnotizen
         corporate_notes_help: 'Zusätzliche Informationen zur Konzernstruktur und Beziehungen'
         governance_model: Governance-Modell
@@ -1255,7 +1255,7 @@ corporate:
         view_structure: 'Struktur anzeigen'
     info:
         title: Konzernstruktur-Informationen
-        text: 'Hier können Sie hierarchische Beziehungen zwischen Mandanten verwalten'
+        text: 'Hier können Sie hierarchische Beziehungen zwischen Organisationen verwalten'
     modal:
         set_parent:
             title: 'Muttergesellschaft zuweisen'
@@ -1264,9 +1264,9 @@ corporate:
     confirm:
         remove_parent: 'Möchten Sie die Verbindung zur Muttergesellschaft wirklich entfernen?'
     single_tenant:
-        title: 'Einzelner Mandant'
-        message: 'Es ist nur ein Mandant im System vorhanden'
-        hint: 'Konzernstrukturen werden erst relevant, wenn Sie mehrere Mandanten verwalten'
+        title: 'Einzelner Organisation'
+        message: 'Es ist nur ein Organisation im System vorhanden'
+        hint: 'Konzernstrukturen werden erst relevant, wenn Sie mehrere Organisationen verwalten'
     flash:
         text: 'Hier können Sie Beziehungen zwischen Muttergesellschaften und Tochtergesellschaften verwalten. Das Governance-Modell bestimmt, wie ISMS-Verantwortlichkeiten zwischen Mutter- und Tochtergesellschaften aufgeteilt werden.'
         error: 'Fehler beim Verarbeiten der Konzernstruktur'
@@ -1274,7 +1274,7 @@ corporate:
     placeholder:
         parent: 'Keine Muttergesellschaft (eigenständig)'
         corporate_notes: 'z.B. Holdingstruktur, Verantwortlichkeiten, etc.'
-        hint: 'Konzernstrukturen werden erst relevant, wenn Sie mehrere Mandanten verwalten.'
+        hint: 'Konzernstrukturen werden erst relevant, wenn Sie mehrere Organisationen verwalten.'
     granular:
         title: 'Granulare Governance-Regeln'
         subtitle: 'Spezifische Governance-Regeln für einzelne Bereiche'
@@ -1309,7 +1309,7 @@ corporate:
             error: 'Fehler beim Speichern der Governance-Regel'
     inheritance:
         title: Vererbung
-        subtitle: 'Effektiver ISMS-Kontext für diesen Mandanten'
+        subtitle: 'Effektiver ISMS-Kontext für diese Organisation'
         organization: Organisation
         propagate: 'An Tochtergesellschaften verteilen'
         from: Von
@@ -1544,7 +1544,7 @@ data_management:
         validation_required: 'Validierung ist erforderlich vor dem Import'
         no_duplicate_detection: 'Keine automatische Duplikatserkennung - Überprüfen Sie manuell'
     export:
-        includes_all_records: 'Export enthält alle Datensätze des Mandanten'
+        includes_all_records: 'Export enthält alle Datensätze der Organisation'
         sensitive_data_warning: 'WARNUNG: Export kann vertrauliche Daten enthalten (DSGVO-relevant)'
         large_exports_warning: 'Große Datenmengen können längere Verarbeitungszeit benötigen'
         relationships_warning: 'Beziehungen zwischen Entitäten werden mit exportiert'
@@ -1751,7 +1751,7 @@ dpia:
     cloned: 'DSFA erfolgreich dupliziert'
 admin:
     data_repair:
-        tenant_not_found: 'Mandant nicht gefunden'
+        tenant_not_found: 'Organisation nicht gefunden'
         invalid_entity_type: 'Ungültiger Entitätstyp'
         assigned_count: '%count% Entitäten zugewiesen'
         entity_not_found: 'Entität nicht gefunden'
@@ -1967,7 +1967,7 @@ compliance_wizard:
             detail: 'Details'
             mapping: 'Mappings'
         summary:
-            tenant: 'Mandant'
+            tenant: 'Organisation'
             target: 'Ziel-Framework'
             baseline: 'Basis-Framework'
             reporting_date: 'Berichtsdatum'
@@ -2183,7 +2183,7 @@ reuse:
     page:
         title: 'Data-Reuse-Hub'
         description: 'Welche Artefakte tragen die größte Last? Die wiederverwendeten Dokumente und Lieferanten über alle Frameworks hinweg.'
-        footer_hint: 'Assets als Top-Liste folgen, wenn die Dependency-Graph-Heuristik ausreichend robust für alle Mandanten ist (Sprint 5).'
+        footer_hint: 'Assets als Top-Liste folgen, wenn die Dependency-Graph-Heuristik ausreichend robust für alle Organisationen ist (Sprint 5).'
     fte:
         title: 'Durch Wiederverwendung eingespart'
         subtitle: 'Mapping-basierte Anforderungs-Vererbung über alle Frameworks'
@@ -2287,7 +2287,7 @@ sso:
         col:
             email: 'E-Mail'
             provider: 'Provider'
-            tenant: 'Mandant'
+            tenant: 'Organisation'
             claims: 'Claims'
             requested_at: 'Beantragt am'
             actions: 'Aktionen'

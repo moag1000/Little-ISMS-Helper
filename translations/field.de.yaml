@@ -8,7 +8,7 @@ field:
     date: Datum
     created_at: 'Erstellt am'
     updated_at: 'Aktualisiert am'
-    tenant: Mandant
+    tenant: Organisation
     user: Benutzer
     location: Standort
     person: Person

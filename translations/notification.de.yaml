@@ -152,7 +152,7 @@ notification:
             gallery: 'Vorlagen-Galerie'
         flash:
             applied: 'Vorlage „%template%" wurde als neue Regel übernommen. Bitte prüfen und aktivieren.'
-            no_tenant: 'Kein Mandant zugeordnet – Vorlage kann nicht übernommen werden.'
+            no_tenant: 'Kein Organisation zugeordnet – Vorlage kann nicht übernommen werden.'
         desc:
             incident_high_severity: 'Löst bei Vorfällen mit Schweregrad Hoch oder Kritisch sofort eine Benachrichtigung aus.'
             data_breach_72h: 'Gemäss Art. 33 DSGVO innerhalb von 72 Stunden nach Entdeckung einer Datenpanne benachrichtigen.'

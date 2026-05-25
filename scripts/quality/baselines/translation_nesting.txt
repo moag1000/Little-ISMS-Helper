@@ -279,7 +279,7 @@ translations/suppliers.de.yaml:395:iso_9001_bridge
 translations/suppliers.en.yaml:1:supplier
 translations/suppliers.en.yaml:317:corporate
 translations/suppliers.en.yaml:394:iso_9001_bridge
-translations/tenant.de.yaml:202:corporate
+translations/tenant.de.yaml:203:corporate
 translations/tenant.en.yaml:202:corporate
 translations/threat.de.yaml:124:field
 translations/threat.de.yaml:144:placeholder
