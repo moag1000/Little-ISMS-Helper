@@ -10,6 +10,8 @@ use App\Entity\User;
 use App\Entity\BusinessProcess;
 use App\Entity\Risk;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Repository\BusinessProcessRepository;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use App\Form\SectionMapInterface;
@@ -42,6 +44,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
 
     public function __construct(
         private readonly Security $security,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -58,7 +61,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             'owner'           => ['processOwnerUser', 'processOwnerPerson', 'processOwnerDeputyPersons', 'processOwner'],
             'criticality'     => ['reputationalImpact', 'regulatoryImpact', 'operationalImpact', 'financialImpactPerHour', 'financialImpactPerDay'],
             'recovery_targets'=> ['rto', 'rpo', 'mtpd'],
-            'dependencies'    => ['dependenciesUpstream', 'dependenciesDownstream', 'recoveryStrategy'],
+            'dependencies'    => ['upstreamProcesses', 'downstreamProcesses', 'dependenciesUpstream', 'dependenciesDownstream', 'recoveryStrategy'],
             'resources'       => ['supportingAssets', 'identifiedRisks'],
         ];
     }
@@ -205,12 +208,65 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                 'required' => false,
                 'placeholder' => 'business_process.placeholder.impact_unset',
             ])
+            // Junior-ISB-Audit TODO_2026-05-22 §17 — Typed M2M dependencies.
+            // Structured Multi-Select replaces free-text textareas. Both
+            // rendered side-by-side during transition; textareas flagged
+            // @deprecated and will be dropped after data backfill.
+            ->add('upstreamProcesses', EntityType::class, [
+                'label' => 'business_process.field.upstream_processes',
+                'class' => BusinessProcess::class,
+                'multiple' => true,
+                'required' => false,
+                'choice_label' => fn(BusinessProcess $p) => $p->getName(),
+                'help' => 'business_process.help.upstream_processes',
+                'attr' => ['data-controller' => 'tom-select'],
+                'query_builder' => function (BusinessProcessRepository $r) use ($options) {
+                    $qb = $r->createQueryBuilder('p');
+                    $selfId = isset($options['data']) && $options['data']?->getId() !== null
+                        ? $options['data']->getId()
+                        : null;
+                    if ($selfId !== null) {
+                        $qb->andWhere('p.id != :selfId')->setParameter('selfId', $selfId);
+                    }
+                    $tenant = $this->tenantContext->getCurrentTenant();
+                    if ($tenant !== null) {
+                        $qb->andWhere('p.tenant = :tenant')->setParameter('tenant', $tenant);
+                    }
+                    return $qb->orderBy('p.name', 'ASC');
+                },
+            ])
+            ->add('downstreamProcesses', EntityType::class, [
+                'label' => 'business_process.field.downstream_processes',
+                'class' => BusinessProcess::class,
+                'multiple' => true,
+                'required' => false,
+                'choice_label' => fn(BusinessProcess $p) => $p->getName(),
+                'help' => 'business_process.help.downstream_processes',
+                'attr' => ['data-controller' => 'tom-select'],
+                'query_builder' => function (BusinessProcessRepository $r) use ($options) {
+                    $qb = $r->createQueryBuilder('p');
+                    $selfId = isset($options['data']) && $options['data']?->getId() !== null
+                        ? $options['data']->getId()
+                        : null;
+                    if ($selfId !== null) {
+                        $qb->andWhere('p.id != :selfId')->setParameter('selfId', $selfId);
+                    }
+                    $tenant = $this->tenantContext->getCurrentTenant();
+                    if ($tenant !== null) {
+                        $qb->andWhere('p.tenant = :tenant')->setParameter('tenant', $tenant);
+                    }
+                    return $qb->orderBy('p.name', 'ASC');
+                },
+            ])
+            // @legacy-freetext: kept during transition while upstream/downstream
+            // free-text data is backfilled into the typed M2M collection above.
             ->add('dependenciesUpstream', TextareaType::class, [
                 'label' => 'business_process.field.dependencies_upstream',
                 'attr' => ['rows' => 3],
                 'help' => 'business_process.help.dependencies_upstream',
                 'required' => false,
             ])
+            // @legacy-freetext: kept during transition (see upstream above)
             ->add('dependenciesDownstream', TextareaType::class, [
                 'label' => 'business_process.field.dependencies_downstream',
                 'attr' => ['rows' => 3],

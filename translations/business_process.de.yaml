@@ -45,6 +45,8 @@ business_process:
     reputational_impact: Auswirkungen auf Reputation und Marke
     regulatory_impact: Regulatorische und Compliance-Auswirkungen
     operational_impact: Operative Auswirkungen auf Geschäftstätigkeit
+    upstream_processes: Upstream-Prozesse
+    downstream_processes: Downstream-Prozesse
     dependencies_upstream: Vorgelagerte Abhängigkeiten (was braucht dieser Prozess?)
     dependencies_downstream: Nachgelagerte Abhängigkeiten (wer ist abhängig von diesem
       Prozess?)
@@ -76,6 +78,10 @@ business_process:
     regulatory_impact: Regulatorische Konsequenzen (Bußgelder, Meldepflichten) bei
       Prozessausfall
     operational_impact: Auswirkungen auf andere Geschäftsprozesse und Betriebsabläufe
+    upstream_processes: 'Prozesse die diesen versorgen (Input). Strukturierte Alternative
+      zum Freitext-Feld unten.'
+    downstream_processes: 'Prozesse die von diesem abhängen (Output). Strukturierte
+      Alternative zum Freitext-Feld unten.'
     dependencies_upstream: Welche Prozesse, Systeme oder Dienstleistungen benötigt
       dieser Prozess zur Funktionsfähigkeit?
     dependencies_downstream: Welche anderen Prozesse oder Bereiche sind von diesem
