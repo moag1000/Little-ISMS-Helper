@@ -1,0 +1,139 @@
+# Persona → Route matrix for the L1 browser-smoke spec.
+#
+# This file declares per-persona expectations for the route-coverage run:
+#   - `expects`        : 200 | 30x | 403 — what the persona should see
+#   - `allow_patterns` : path-fragment allowlist (route is tested only if any matches)
+#   - `deny_patterns`  : path-fragment denylist (overrides allow)
+#   - `extra_routes`   : explicit add-ons (e.g. persona-dashboards)
+#
+# `allow_patterns` and `deny_patterns` are substring matches against the
+# rendered path. The spec iterates the routes.json export and applies these
+# filters per persona so the coverage matrix grows automatically as new
+# controllers land.
+#
+# All personas share the same screenshot-user (SUPER_ADMIN). RBAC-fidelity
+# comes from `expects` + persona-relevant scoping, NOT from per-persona
+# accounts. Once tenant-isolation lands we can split this further.
+
+defaults:
+  # Routes that need a real entity-ID (`/risk/{id}`) cannot be smoke-tested
+  # without seed data. The exporter already drops those, but this denylist
+  # catches edge cases the categoriser misses.
+  global_deny:
+    - "/login"            # already exercised by 01-login.spec.ts
+    - "/logout"
+    - "/setup/install"    # install-wizard mutates state
+    - "/setup/destroy"
+    - "/admin/jobs/"      # async-job polling endpoints
+    - "/dev/"             # design-system playground, dev-only
+    - "/_"                # symfony internals
+    - "/csrf"
+    - "/oauth/"
+    - "/saml/"
+    - ".pdf"              # streamed PDF responses (binary)
+    - ".xlsx"
+    - "/export"           # streamed exports
+    - "/download"
+
+personas:
+
+  # The screenshot-user covers all role-grants, so a broad sweep maps to
+  # the breadth of the application. Persona-specific runs scope down to
+  # match the persona-skill canonical-routes.
+  full-sweep:
+    label: "Full SUPER_ADMIN sweep"
+    expects: 200
+    allow_patterns: ["/"]      # everything
+    extra_routes: []
+
+  isb-practitioner:
+    label: "ISB / Security Officer"
+    expects: 200
+    allow_patterns:
+      - "/dashboard"
+      - "/soa"
+      - "/risk"
+      - "/asset"
+      - "/incident"
+      - "/document"
+      - "/control"
+      - "/audit"
+      - "/analytics"
+      - "/objective"
+      - "/policy"
+      - "/management-review"
+      - "/activity-feed"
+      - "/my-day"
+      - "/training"
+      - "/notification"
+
+  ciso-executive:
+    label: "CISO / Executive"
+    expects: 200
+    allow_patterns:
+      - "/dashboards/"
+      - "/dashboard"
+      - "/analytics"
+      - "/reports"
+      - "/compliance"
+      - "/management-review"
+      - "/risk-appetite"
+      - "/portfolio"
+
+  compliance-manager:
+    label: "Compliance Manager"
+    expects: 200
+    allow_patterns:
+      - "/dashboards/compliance"
+      - "/compliance"
+      - "/audit"
+      - "/objective"
+      - "/policy"
+      - "/document"
+      - "/reports"
+      - "/interested-parties"
+
+  dpo:
+    label: "Data Protection Officer"
+    expects: 200
+    allow_patterns:
+      - "/dashboards/dpo"
+      - "/data-breach"
+      - "/dpia"
+      - "/processing-activity"
+      - "/data-subject-request"
+      - "/consent"
+      - "/privacy"
+
+  risk-owner:
+    label: "Business Risk Owner"
+    expects: 200
+    allow_patterns:
+      - "/risk"
+      - "/risk-treatment"
+      - "/dashboard"
+      - "/my-day"
+
+  implementer-junior:
+    label: "Junior Implementer"
+    expects: 200
+    allow_patterns:
+      - "/dashboard"
+      - "/my-day"
+      - "/document"
+      - "/policy"
+      - "/asset"
+      - "/training"
+      - "/help"
+
+  auditor-external:
+    label: "External Auditor"
+    expects: 200
+    allow_patterns:
+      - "/audit"
+      - "/soa"
+      - "/document"
+      - "/audit-log"
+      - "/control"
+      - "/audit-finding"
+      - "/compliance"
