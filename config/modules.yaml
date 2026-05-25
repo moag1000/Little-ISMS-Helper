@@ -136,8 +136,8 @@ modules:
 
   audit_logging:
     name: 'Audit Logging'
-    description: 'Umfassendes Audit-Logging für alle System-Aktivitäten'
-    required: false
+    description: 'ISO 27001 A.8.15 + A.5.28 — Logging-Pflicht + Forensik-Beweismittel. Required für jedes zertifizierungsfähige ISMS.'
+    required: true
     icon: 'file-lines'
     entities:
       - AuditLog
@@ -259,16 +259,10 @@ modules:
     dependencies:
       - controls
 
-  quantitative_risk:
-    name: 'Quantitative Risk (FAIR/CRQ)'
-    description: 'FAIR-Methodologie mit Monte-Carlo-Simulation, Loss Event Frequency, ALE/SLE — für Board-Reporting + DORA Art. 6(2) Risk-Tolerance-Statement'
-    required: false
-    icon: 'chart-line'
-    entities:
-      - Risk
-    routes: []
-    dependencies:
-      - risks
+  # NOTE: `quantitative_risk` (FAIR/CRQ) previously declared here was orphan.
+  # Risk entity has nullable FAIR columns (lossEventFrequency*, threatEventFrequency*)
+  # but no form/UI exposes them yet. Re-add the module-key once RiskType
+  # gates the FAIR field-group via ModuleAwareFormTrait.
 
   notifications:
     name: 'Notification-Rules + Webhooks'
@@ -300,57 +294,10 @@ modules:
     dependencies:
       - compliance
 
-  tisax_isa:
-    name: 'TISAX-ISA-Self-Assessment'
-    description: 'VDA-ISA-Self-Assessment-Workflow — Q&A pro Reifegrad-Level, Gap-Plan-Generator, TISAX-Label-Vorbereitung für Tier-1/Tier-2-Automotive-Lieferanten'
-    required: false
-    icon: 'clipboard-check'
-    entities:
-      - TisaxAssessment
-      - TisaxAssessmentResponse
-    routes:
-      - tisax_assessment_index
-    dependencies:
-      - tisax
-
-  ai_act:
-    name: 'EU-AI-Act-Klassifizierung'
-    description: 'EU-Verordnung 2024/1689 Hochrisiko-KI-System-Inventar — Art. 6/9 Klassifizierung, Conformity-Assessment-Tracker, Annex III Use-Case-Mapping'
-    required: false
-    icon: 'robot'
-    entities:
-      - AiSystemClassification
-    routes:
-      - ai_system_classification_index
-    dependencies:
-      - assets
-      - ai_governance
-
-  cra_sbom:
-    name: 'EU-Cyber-Resilience-Act SBOM'
-    description: 'CRA-Compliance ab 2027 — SBOM-Inventar (CycloneDX/SPDX), Vulnerability-Mapping, Konformitätsbewertung-Workflow für Produkte mit digitalen Elementen'
-    required: false
-    icon: 'package'
-    entities:
-      - SbomComponent
-      - CraConformityAssessment
-    routes:
-      - cra_sbom_index
-    dependencies:
-      - vulnerability_intel
-
-  procedures:
-    name: 'Verfahrens-Authoring'
-    description: 'Procedures-Editor neben Policies — strukturierte Verfahrensanweisungen mit Step-by-Step-Handbüchern, Owner-Approval-Workflow, ISO 27001 Clause 7.5.3 Documented-Information-Control'
-    required: false
-    icon: 'list-ordered'
-    entities:
-      - Procedure
-      - ProcedureStep
-    routes:
-      - procedure_index
-    dependencies:
-      - core
+  # NOTE: tisax_isa / ai_act / cra_sbom / procedures previously declared here
+  # were vaporware (entities not implemented). Removed 2026-05-25 — see
+  # commit log + docs/MODULE_GATING_GUIDE.md. Re-add once entities + routes
+  # actually exist.
 
   # ─── Operational Modules (2026-05-10 inventory) ─────────────────────────────
   # Added after full controller/entity audit: 14 controllers with live routes
@@ -358,8 +305,8 @@ modules:
 
   documents:
     name: 'Dokumente & Policies'
-    description: 'Policy- und Dokumenten-Bibliothek mit Versions-Kontrolle, Genehmigungsworkflow und Effektivitätsprüfung (ISO 27001 Clause 7.5)'
-    required: false
+    description: 'ISO 27001 Clause 7.5 — dokumentierte Information ist Pflicht. Kein Audit ohne Doku. Policy-Bibliothek mit Versionskontrolle und Genehmigungsworkflow.'
+    required: true
     icon: 'file-earmark-text'
     entities:
       - Document
@@ -486,22 +433,15 @@ modules:
     dependencies:
       - audits
 
-  evidence:
-    name: 'Evidence Management'
-    description: 'Nachweisdokumente für Controls und Audit-Findings — Datei-Upload mit Audit-Trail (ISO 27001 A.5.36)'
-    required: false
-    icon: 'paperclip'
-    entities: []
-    routes:
-      - /evidence
-    dependencies:
-      - audits
-      - controls
+  # NOTE: `evidence` previously declared here was vaporware (entities: []).
+  # File-upload + Audit-Trail today lives in documents + audit_log
+  # (ISO 27001 A.5.36 covered there). Re-add once dedicated Evidence entity
+  # exists.
 
   workflows:
     name: 'Workflow-Automatisierung'
-    description: 'Event-getriebene Genehmigungs-Workflows — GDPR Art. 33, DORA Art. 19, ISO 27001 A.6.8 (Data Breach 72h, Incident-Response, Risk-Treatment, DPIA)'
-    required: false
+    description: 'Event-getriebene Genehmigungs-Workflows — GDPR Art. 33 (72h Data Breach), DORA Art. 19 Incident-Reporting, ISO 27001 A.5.24, Risk-Treatment, DPIA. Required für die Pflicht-SLAs.'
+    required: true
     icon: 'diagram-3'
     entities:
       - Workflow

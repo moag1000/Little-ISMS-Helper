@@ -108,11 +108,11 @@ src/Controller/RiskTreatmentPlanController.php:157
 src/Controller/RoleManagementController.php:54
 src/Controller/RoleManagementController.php:206
 src/Controller/RoleManagementController.php:230
-src/Controller/SupplierController.php:154
-src/Controller/SupplierController.php:280
-src/Controller/SupplierController.php:291
-src/Controller/SupplierController.php:309
-src/Controller/SupplierController.php:317
+src/Controller/SupplierController.php:160
+src/Controller/SupplierController.php:294
+src/Controller/SupplierController.php:305
+src/Controller/SupplierController.php:324
+src/Controller/SupplierController.php:332
 src/Controller/TrainingController.php:118
 src/Controller/TrainingController.php:220
 src/Controller/TrainingController.php:341
