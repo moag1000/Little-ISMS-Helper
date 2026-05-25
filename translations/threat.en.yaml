@@ -221,4 +221,26 @@ threat_intelligence:
         mitre_attack_tactics: 'MITRE ATT&CK Tactic IDs (TA0001–TA0043). Enter JSON array or comma-separated.'
         mitre_attack_techniques: 'MITRE ATT&CK Technique IDs (T1xxx). Enter JSON array or comma-separated.'
         iocs_list_json: 'STIX 2.1 format: [{type: ip|domain|hash|url|email, value: "...", context: "..."}]'
+        iocs_list: 'STIX 2.1 indicators — add one row per IoC (type, value, confidence 1-5).'
         shared_externally: 'Check if this intelligence was shared with a CERT/CSIRT (NIS2 Art. 30 obligation).'
+    ioc:
+        field:
+            type: 'Type'
+            value: 'Value'
+            confidence: 'Confidence'
+        placeholder:
+            type: '-- Select IoC type --'
+            value: 'e.g. 192.0.2.1, evil.example.com, sha256:…'
+            confidence: '-- Confidence (1-5) --'
+        type:
+            ip: 'IP address'
+            domain: 'Domain'
+            hash: 'File hash'
+            url: 'URL'
+            email: 'Email address'
+        confidence:
+            1: '1 — Very low'
+            2: '2 — Low'
+            3: '3 — Medium'
+            4: '4 — High'
+            5: '5 — Very high'
