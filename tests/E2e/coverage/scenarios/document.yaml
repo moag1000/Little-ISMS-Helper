@@ -1,0 +1,14 @@
+# Document/Policy scenarios (ISO 27001 Cl. 7.5).
+
+scenarios:
+  - name: document_create_minimal
+    label: "Dokument anlegen (Minimal — Titel + Typ)"
+    route: /de/document/new
+    category: document
+    fill:
+      'input[name="document[title]"]': "Smoke-Doc ${random.suffix}"
+      'select[name="document[documentType]"]': "policy"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '^/de/document/\d+'

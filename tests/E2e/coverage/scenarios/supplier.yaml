@@ -1,0 +1,15 @@
+# Supplier scenarios (ISO 27001 A.5.19-5.22 + DORA Art. 28).
+
+scenarios:
+  - name: supplier_onboard_minimal
+    label: "Lieferant onboarden (Minimal)"
+    route: /de/supplier/new
+    category: supplier
+    requires_module: suppliers
+    fill:
+      'input[name="supplier[name]"]': "Smoke-Supplier ${random.suffix}"
+      'select[name="supplier[criticality]"]': "medium"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '^/de/supplier/\d+'

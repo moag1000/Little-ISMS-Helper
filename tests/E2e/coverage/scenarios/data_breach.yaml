@@ -1,0 +1,16 @@
+# GDPR Data-Breach scenarios (Art. 33/34 — 72h SLA).
+
+scenarios:
+  - name: databreach_init_minimal
+    label: "DataBreach initial-Meldung (Minimal)"
+    route: /de/data-breach/new
+    category: privacy
+    requires_module: privacy
+    fill:
+      'input[name="data_breach[title]"]': "Smoke-Breach ${random.suffix}"
+      'select[name="data_breach[severity]"]': "medium"
+      'input[name="data_breach[affectedDataSubjectsCount]"]': "100"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '^/de/data-breach/\d+'

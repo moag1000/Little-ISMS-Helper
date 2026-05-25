@@ -97,11 +97,43 @@ on PRs labelled `browser-coverage`. The job is `continue-on-error: true`
   reported but don't block the test. The HTML report makes them visible
   so a human can triage.
 
+## L2 Scenario Form-Fill
+
+`tests/E2e/coverage/scenarios/*.yaml` declares form-submit flows. Each
+scenario navigates, fills declared fields, submits, then asserts the
+post-submit state. Run:
+
+```bash
+npm run e2e:scenarios                      # all personas, all scenarios
+npm run e2e:scenarios -- ciso-executive    # single persona
+open var/browser-coverage/scenario-report.html
+```
+
+Schema reference: `tests/E2e/coverage/scenarios/_schema.yaml`.
+
+Available scenarios:
+| File | Scenarios |
+|---|---|
+| `risk.yaml` | risk_create_minimal, risk_quick_create |
+| `asset.yaml` | asset_create_minimal |
+| `incident.yaml` | incident_report_high_severity |
+| `document.yaml` | document_create_minimal |
+| `supplier.yaml` | supplier_onboard_minimal (gated on `suppliers` module) |
+| `objective.yaml` | objective_create_minimal |
+| `training.yaml` | training_create_minimal |
+| `data_breach.yaml` | databreach_init_minimal (gated on `privacy`) |
+| `audit_finding.yaml` | audit_finding_create_minor |
+| `corrective_action.yaml` | capa_create_minimal |
+
+Adding a scenario: drop a new file under `tests/E2e/coverage/scenarios/`
+following `_schema.yaml`. The spec auto-discovers via `readdirSync`. No
+code changes needed — only YAML.
+
 ## Roadmap
 
-- **L2** (planned): YAML form-fill scenarios for high-value forms
-  (`scenarios/create_risk.yaml`, `scenarios/report_incident.yaml`, …).
 - **L3** (planned): multi-step action-flows (login → create-risk →
   treatment → approve → export) composed from L2 bricks.
 - **PR-comment bot**: posts diff of failing routes between base and HEAD
   on labelled PRs.
+- **Per-persona accounts**: replace shared SUPER_ADMIN once tenant
+  isolation lands so persona-fidelity comes from RBAC, not path-scope.
