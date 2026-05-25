@@ -257,9 +257,9 @@ risk:
     impact: 'Impact: How severe would the consequences be if it occurs? (1-5)'
     residual: The remaining residual risk (net risk) after applying measures
     residual_probability: 'Probability AFTER treatment (residual risk). Example: Inherent=4,
-      after firewall+SIEM=2.'
+      after firewall+SIEM=2. Empty = treatment not yet assessed — Risk KPIs fall back to the inherent score.'
     residual_impact: 'Impact AFTER treatment (residual risk). Example: Inherent=5,
-      after backup+incident response=3.'
+      after backup+incident response=3. Empty = treatment not yet assessed — Risk KPIs fall back to the inherent score.'
     treatment_strategy: Risk treatment strategy (Avoid, Mitigate, Transfer, Accept)
     treatment: Risk treatment strategy
     risk_owner: Person responsible for risk monitoring and treatment

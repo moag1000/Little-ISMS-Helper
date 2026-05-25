@@ -263,9 +263,9 @@ risk:
       (1-5)'
     residual: Das verbleibende Restrisiko (Netto-Risiko) nach Anwendung von Maßnahmen
     residual_probability: 'Wahrscheinlichkeit NACH Maßnahmen (Restrisiko). Beispiel:
-      Inherent=4, nach Firewall+SIEM=2.'
+      Inherent=4, nach Firewall+SIEM=2. Leer = Maßnahmen noch nicht bewertet — Risk-KPIs zeigen dann Inherent-Score.'
     residual_impact: 'Schadensauswirkung NACH Maßnahmen (Restrisiko). Beispiel: Inherent=5,
-      nach Backup+Incident-Response=3.'
+      nach Backup+Incident-Response=3. Leer = Maßnahmen noch nicht bewertet — Risk-KPIs zeigen dann Inherent-Score.'
     treatment_strategy: Strategie zur Risikobehandlung (Vermeiden, Reduzieren, Übertragen,
       Akzeptieren)
     treatment: Strategie zur Risikobehandlung
