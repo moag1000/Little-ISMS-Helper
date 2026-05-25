@@ -290,7 +290,7 @@ class ComplianceMapping
         return $this->mappingType;
     }
 
-    public function setMappingType(string $mappingType): static
+    public function setMappingType(?string $mappingType): static
     {
         $this->mappingType = $mappingType;
         return $this;

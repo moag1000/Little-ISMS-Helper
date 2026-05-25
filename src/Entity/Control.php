@@ -263,7 +263,7 @@ class Control
         return $this->controlId;
     }
 
-    public function setControlId(string $controlId): static
+    public function setControlId(?string $controlId): static
     {
         $this->controlId = $controlId;
         return $this;
@@ -282,7 +282,7 @@ class Control
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -293,7 +293,7 @@ class Control
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
@@ -304,7 +304,7 @@ class Control
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(?string $category): static
     {
         $this->category = $category;
         return $this;
@@ -315,7 +315,7 @@ class Control
         return $this->applicable;
     }
 
-    public function setApplicable(bool $applicable): static
+    public function setApplicable(?bool $applicable): static
     {
         $this->applicable = $applicable;
         return $this;
@@ -348,7 +348,7 @@ class Control
         return $this->implementationStatus;
     }
 
-    public function setImplementationStatus(string $implementationStatus): static
+    public function setImplementationStatus(?string $implementationStatus): static
     {
         $this->implementationStatus = $implementationStatus;
         return $this;

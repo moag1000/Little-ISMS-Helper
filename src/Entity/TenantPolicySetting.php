@@ -101,7 +101,7 @@ class TenantPolicySetting
         return $this->key;
     }
 
-    public function setKey(string $key): static
+    public function setKey(?string $key): static
     {
         $this->key = $key;
         return $this;

@@ -273,7 +273,7 @@ public function __construct()
         return $this->teamName;
     }
 
-    public function setTeamName(string $teamName): static
+    public function setTeamName(?string $teamName): static
     {
         $this->teamName = $teamName;
         return $this;
@@ -295,7 +295,7 @@ public function __construct()
         return $this->teamType;
     }
 
-    public function setTeamType(string $teamType): static
+    public function setTeamType(?string $teamType): static
     {
         $this->teamType = $teamType;
         return $this;

@@ -243,7 +243,7 @@ class ThreatIntelligence
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -254,7 +254,7 @@ class ThreatIntelligence
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
@@ -265,7 +265,7 @@ class ThreatIntelligence
         return $this->threatType;
     }
 
-    public function setThreatType(string $threatType): static
+    public function setThreatType(?string $threatType): static
     {
         $this->threatType = $threatType;
         return $this;
@@ -276,7 +276,7 @@ class ThreatIntelligence
         return $this->severity;
     }
 
-    public function setSeverity(string $severity): static
+    public function setSeverity(?string $severity): static
     {
         $this->severity = $severity;
         return $this;
@@ -447,7 +447,7 @@ class ThreatIntelligence
         return $this->affectsOrganization;
     }
 
-    public function setAffectsOrganization(bool $affectsOrganization): static
+    public function setAffectsOrganization(?bool $affectsOrganization): static
     {
         $this->affectsOrganization = $affectsOrganization;
         return $this;

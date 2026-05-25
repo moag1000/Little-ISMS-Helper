@@ -126,7 +126,7 @@ class CryptographicOperation
         return $this->operationType;
     }
 
-    public function setOperationType(string $operationType): static
+    public function setOperationType(?string $operationType): static
     {
         $this->operationType = $operationType;
         return $this;
@@ -137,7 +137,7 @@ class CryptographicOperation
         return $this->algorithm;
     }
 
-    public function setAlgorithm(string $algorithm): static
+    public function setAlgorithm(?string $algorithm): static
     {
         $this->algorithm = $algorithm;
         return $this;
@@ -277,7 +277,7 @@ class CryptographicOperation
         return $this->complianceRelevant;
     }
 
-    public function setComplianceRelevant(bool $complianceRelevant): static
+    public function setComplianceRelevant(?bool $complianceRelevant): static
     {
         $this->complianceRelevant = $complianceRelevant;
         return $this;

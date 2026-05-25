@@ -168,7 +168,7 @@ class MappingGapItem
         return $this->gapType;
     }
 
-    public function setGapType(string $gapType): static
+    public function setGapType(?string $gapType): static
     {
         $this->gapType = $gapType;
         return $this;
@@ -179,7 +179,7 @@ class MappingGapItem
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;

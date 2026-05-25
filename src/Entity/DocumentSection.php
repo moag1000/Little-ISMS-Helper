@@ -188,7 +188,7 @@ class DocumentSection
         return $this->sectionKey;
     }
 
-    public function setSectionKey(string $sectionKey): static
+    public function setSectionKey(?string $sectionKey): static
     {
         $this->sectionKey = $sectionKey;
         return $this;

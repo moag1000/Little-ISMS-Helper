@@ -644,7 +644,7 @@ class DataProtectionImpactAssessment
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -655,7 +655,7 @@ class DataProtectionImpactAssessment
         return $this->referenceNumber;
     }
 
-    public function setReferenceNumber(string $referenceNumber): static
+    public function setReferenceNumber(?string $referenceNumber): static
     {
         $this->referenceNumber = $referenceNumber;
         return $this;
@@ -677,7 +677,7 @@ class DataProtectionImpactAssessment
         return $this->processingDescription;
     }
 
-    public function setProcessingDescription(string $processingDescription): static
+    public function setProcessingDescription(?string $processingDescription): static
     {
         $this->processingDescription = $processingDescription;
         return $this;
@@ -688,7 +688,7 @@ class DataProtectionImpactAssessment
         return $this->processingPurposes;
     }
 
-    public function setProcessingPurposes(string $processingPurposes): static
+    public function setProcessingPurposes(?string $processingPurposes): static
     {
         $this->processingPurposes = $processingPurposes;
         return $this;
@@ -754,7 +754,7 @@ class DataProtectionImpactAssessment
         return $this->necessityAssessment;
     }
 
-    public function setNecessityAssessment(string $necessityAssessment): static
+    public function setNecessityAssessment(?string $necessityAssessment): static
     {
         $this->necessityAssessment = $necessityAssessment;
         return $this;
@@ -765,7 +765,7 @@ class DataProtectionImpactAssessment
         return $this->proportionalityAssessment;
     }
 
-    public function setProportionalityAssessment(string $proportionalityAssessment): static
+    public function setProportionalityAssessment(?string $proportionalityAssessment): static
     {
         $this->proportionalityAssessment = $proportionalityAssessment;
         return $this;
@@ -776,7 +776,7 @@ class DataProtectionImpactAssessment
         return $this->legalBasis;
     }
 
-    public function setLegalBasis(string $legalBasis): static
+    public function setLegalBasis(?string $legalBasis): static
     {
         $this->legalBasis = $legalBasis;
         return $this;
@@ -809,7 +809,7 @@ class DataProtectionImpactAssessment
         return $this->riskLevel;
     }
 
-    public function setRiskLevel(string $riskLevel): static
+    public function setRiskLevel(?string $riskLevel): static
     {
         $this->riskLevel = $riskLevel;
         return $this;
@@ -853,7 +853,7 @@ class DataProtectionImpactAssessment
         return $this->technicalMeasures;
     }
 
-    public function setTechnicalMeasures(string $technicalMeasures): static
+    public function setTechnicalMeasures(?string $technicalMeasures): static
     {
         $this->technicalMeasures = $technicalMeasures;
         return $this;
@@ -864,7 +864,7 @@ class DataProtectionImpactAssessment
         return $this->organizationalMeasures;
     }
 
-    public function setOrganizationalMeasures(string $organizationalMeasures): static
+    public function setOrganizationalMeasures(?string $organizationalMeasures): static
     {
         $this->organizationalMeasures = $organizationalMeasures;
         return $this;

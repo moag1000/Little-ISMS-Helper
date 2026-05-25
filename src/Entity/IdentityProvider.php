@@ -189,10 +189,10 @@ class IdentityProvider
     public function isGlobal(): bool { return $this->tenant === null; }
 
     public function getSlug(): ?string { return $this->slug; }
-    public function setSlug(string $slug): self { $this->slug = $slug; return $this; }
+    public function setSlug(?string $slug): self { $this->slug = $slug; return $this; }
 
     public function getName(): ?string { return $this->name; }
-    public function setName(string $name): self { $this->name = $name; return $this; }
+    public function setName(?string $name): self { $this->name = $name; return $this; }
 
     public function getType(): string { return $this->type; }
     public function setType(string $type): self { $this->type = $type; return $this; }
@@ -201,7 +201,7 @@ class IdentityProvider
     public function setEnabled(bool $enabled): self { $this->enabled = $enabled; return $this; }
 
     public function getClientId(): ?string { return $this->clientId; }
-    public function setClientId(string $clientId): self { $this->clientId = $clientId; return $this; }
+    public function setClientId(?string $clientId): self { $this->clientId = $clientId; return $this; }
 
     public function getClientSecretEncrypted(): ?string { return $this->clientSecretEncrypted; }
     public function setClientSecretEncrypted(?string $value): self { $this->clientSecretEncrypted = $value; return $this; }

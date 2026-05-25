@@ -511,7 +511,7 @@ public function __construct()
         return $this->auditNumber;
     }
 
-    public function setAuditNumber(string $auditNumber): static
+    public function setAuditNumber(?string $auditNumber): static
     {
         $this->auditNumber = $auditNumber;
         return $this;
@@ -522,7 +522,7 @@ public function __construct()
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;

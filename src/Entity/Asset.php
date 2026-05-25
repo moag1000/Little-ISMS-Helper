@@ -374,7 +374,7 @@ class Asset
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -396,7 +396,7 @@ class Asset
         return $this->assetType;
     }
 
-    public function setAssetType(string $assetType): static
+    public function setAssetType(?string $assetType): static
     {
         $this->assetType = $assetType;
         return $this;
@@ -480,7 +480,7 @@ class Asset
         return $this->owner;
     }
 
-    public function setOwner(string $owner): static
+    public function setOwner(?string $owner): static
     {
         $this->owner = $owner;
         return $this;
@@ -524,7 +524,7 @@ class Asset
         return $this->confidentialityValue;
     }
 
-    public function setConfidentialityValue(int $confidentialityValue): static
+    public function setConfidentialityValue(?int $confidentialityValue): static
     {
         $this->confidentialityValue = $confidentialityValue;
         return $this;
@@ -535,7 +535,7 @@ class Asset
         return $this->integrityValue;
     }
 
-    public function setIntegrityValue(int $integrityValue): static
+    public function setIntegrityValue(?int $integrityValue): static
     {
         $this->integrityValue = $integrityValue;
         return $this;
@@ -546,7 +546,7 @@ class Asset
         return $this->availabilityValue;
     }
 
-    public function setAvailabilityValue(int $availabilityValue): static
+    public function setAvailabilityValue(?int $availabilityValue): static
     {
         $this->availabilityValue = $availabilityValue;
         return $this;

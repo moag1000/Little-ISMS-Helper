@@ -190,7 +190,7 @@ class BusinessProcess
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -212,7 +212,7 @@ class BusinessProcess
         return $this->processOwner;
     }
 
-    public function setProcessOwner(string $processOwner): static
+    public function setProcessOwner(?string $processOwner): static
     {
         $this->processOwner = $processOwner;
         return $this;
@@ -223,7 +223,7 @@ class BusinessProcess
         return $this->criticality;
     }
 
-    public function setCriticality(string $criticality): static
+    public function setCriticality(?string $criticality): static
     {
         $this->criticality = $criticality;
         return $this;
@@ -234,7 +234,7 @@ class BusinessProcess
         return $this->rto;
     }
 
-    public function setRto(int $rto): static
+    public function setRto(?int $rto): static
     {
         $this->rto = $rto;
         return $this;
@@ -245,7 +245,7 @@ class BusinessProcess
         return $this->rpo;
     }
 
-    public function setRpo(int $rpo): static
+    public function setRpo(?int $rpo): static
     {
         $this->rpo = $rpo;
         return $this;
@@ -256,7 +256,7 @@ class BusinessProcess
         return $this->mtpd;
     }
 
-    public function setMtpd(int $mtpd): static
+    public function setMtpd(?int $mtpd): static
     {
         $this->mtpd = $mtpd;
         return $this;

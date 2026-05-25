@@ -392,13 +392,13 @@ class Document
     }
 
     public function getFilename(): ?string { return $this->filename; }
-    public function setFilename(string $filename): static { $this->filename = $filename; return $this; }
+    public function setFilename(?string $filename): static { $this->filename = $filename; return $this; }
     public function getOriginalFilename(): ?string { return $this->originalFilename; }
-    public function setOriginalFilename(string $originalFilename): static { $this->originalFilename = $originalFilename; return $this; }
+    public function setOriginalFilename(?string $originalFilename): static { $this->originalFilename = $originalFilename; return $this; }
     public function getMimeType(): ?string { return $this->mimeType; }
-    public function setMimeType(string $mimeType): static { $this->mimeType = $mimeType; return $this; }
+    public function setMimeType(?string $mimeType): static { $this->mimeType = $mimeType; return $this; }
     public function getFileSize(): ?int { return $this->fileSize; }
-    public function setFileSize(int $fileSize): static { $this->fileSize = $fileSize; return $this; }
+    public function setFileSize(?int $fileSize): static { $this->fileSize = $fileSize; return $this; }
 
     public function getFileSizeFormatted(): string
     {
@@ -413,9 +413,9 @@ class Document
     }
 
     public function getFilePath(): ?string { return $this->filePath; }
-    public function setFilePath(string $filePath): static { $this->filePath = $filePath; return $this; }
+    public function setFilePath(?string $filePath): static { $this->filePath = $filePath; return $this; }
     public function getCategory(): ?string { return $this->category; }
-    public function setCategory(string $category): static { $this->category = $category; return $this; }
+    public function setCategory(?string $category): static { $this->category = $category; return $this; }
     public function getDescription(): ?string { return $this->description; }
     public function setDescription(?string $description): static { $this->description = $description; return $this; }
     public function getEntityType(): ?string { return $this->entityType; }

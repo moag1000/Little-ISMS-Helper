@@ -609,7 +609,7 @@ class DataBreach
         return $this->referenceNumber;
     }
 
-    public function setReferenceNumber(string $referenceNumber): static
+    public function setReferenceNumber(?string $referenceNumber): static
     {
         $this->referenceNumber = $referenceNumber;
         return $this;
@@ -620,7 +620,7 @@ class DataBreach
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -655,7 +655,7 @@ class DataBreach
         return $this->severity;
     }
 
-    public function setSeverity(string $severity): static
+    public function setSeverity(?string $severity): static
     {
         $this->severity = $severity;
         return $this;
@@ -699,7 +699,7 @@ class DataBreach
         return $this->breachNature;
     }
 
-    public function setBreachNature(string $breachNature): static
+    public function setBreachNature(?string $breachNature): static
     {
         $this->breachNature = $breachNature;
         return $this;
@@ -710,7 +710,7 @@ class DataBreach
         return $this->likelyConsequences;
     }
 
-    public function setLikelyConsequences(string $likelyConsequences): static
+    public function setLikelyConsequences(?string $likelyConsequences): static
     {
         $this->likelyConsequences = $likelyConsequences;
         return $this;
@@ -721,7 +721,7 @@ class DataBreach
         return $this->measuresTaken;
     }
 
-    public function setMeasuresTaken(string $measuresTaken): static
+    public function setMeasuresTaken(?string $measuresTaken): static
     {
         $this->measuresTaken = $measuresTaken;
         return $this;

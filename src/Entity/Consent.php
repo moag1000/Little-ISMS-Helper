@@ -318,7 +318,7 @@ class Consent
         return $this->dataSubjectIdentifier;
     }
 
-    public function setDataSubjectIdentifier(string $dataSubjectIdentifier): static
+    public function setDataSubjectIdentifier(?string $dataSubjectIdentifier): static
     {
         $this->dataSubjectIdentifier = $dataSubjectIdentifier;
         return $this;
@@ -329,7 +329,7 @@ class Consent
         return $this->identifierType;
     }
 
-    public function setIdentifierType(string $identifierType): static
+    public function setIdentifierType(?string $identifierType): static
     {
         $this->identifierType = $identifierType;
         return $this;
@@ -373,7 +373,7 @@ class Consent
         return $this->consentMethod;
     }
 
-    public function setConsentMethod(string $consentMethod): static
+    public function setConsentMethod(?string $consentMethod): static
     {
         $this->consentMethod = $consentMethod;
         return $this;
@@ -384,7 +384,7 @@ class Consent
         return $this->consentText;
     }
 
-    public function setConsentText(string $consentText): static
+    public function setConsentText(?string $consentText): static
     {
         $this->consentText = $consentText;
         return $this;

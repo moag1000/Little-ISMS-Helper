@@ -397,7 +397,7 @@ class BusinessContinuityPlan
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -430,7 +430,7 @@ class BusinessContinuityPlan
         return $this->planOwner;
     }
 
-    public function setPlanOwner(string $planOwner): static
+    public function setPlanOwner(?string $planOwner): static
     {
         $this->planOwner = $planOwner;
         return $this;
@@ -482,7 +482,7 @@ class BusinessContinuityPlan
         return $this->activationCriteria;
     }
 
-    public function setActivationCriteria(string $activationCriteria): static
+    public function setActivationCriteria(?string $activationCriteria): static
     {
         $this->activationCriteria = $activationCriteria;
         return $this;
@@ -515,7 +515,7 @@ class BusinessContinuityPlan
         return $this->recoveryProcedures;
     }
 
-    public function setRecoveryProcedures(string $recoveryProcedures): static
+    public function setRecoveryProcedures(?string $recoveryProcedures): static
     {
         $this->recoveryProcedures = $recoveryProcedures;
         return $this;
@@ -724,7 +724,7 @@ class BusinessContinuityPlan
         return $this->version;
     }
 
-    public function setVersion(string $version): static
+    public function setVersion(?string $version): static
     {
         $this->version = $version;
         return $this;

@@ -144,7 +144,7 @@ class ComplianceRequirement
         return $this->requirementId;
     }
 
-    public function setRequirementId(string $requirementId): static
+    public function setRequirementId(?string $requirementId): static
     {
         $this->requirementId = $requirementId;
         return $this;
@@ -155,7 +155,7 @@ class ComplianceRequirement
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -166,7 +166,7 @@ class ComplianceRequirement
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
@@ -188,7 +188,7 @@ class ComplianceRequirement
         return $this->priority;
     }
 
-    public function setPriority(string $priority): static
+    public function setPriority(?string $priority): static
     {
         $this->priority = $priority;
         return $this;

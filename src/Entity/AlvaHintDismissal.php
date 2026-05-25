@@ -90,7 +90,7 @@ class AlvaHintDismissal
     public function setTenant(?Tenant $tenant): self { $this->tenant = $tenant; return $this; }
 
     public function getHintKey(): ?string { return $this->hintKey; }
-    public function setHintKey(string $hintKey): self { $this->hintKey = $hintKey; return $this; }
+    public function setHintKey(?string $hintKey): self { $this->hintKey = $hintKey; return $this; }
 
     public function getEntityType(): string { return $this->entityType; }
     public function setEntityType(string $entityType): self { $this->entityType = $entityType; return $this; }

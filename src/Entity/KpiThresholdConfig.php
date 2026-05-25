@@ -73,7 +73,7 @@ class KpiThresholdConfig
         return $this->kpiKey;
     }
 
-    public function setKpiKey(string $kpiKey): static
+    public function setKpiKey(?string $kpiKey): static
     {
         $this->kpiKey = $kpiKey;
         return $this;
@@ -84,7 +84,7 @@ class KpiThresholdConfig
         return $this->goodThreshold;
     }
 
-    public function setGoodThreshold(int $goodThreshold): static
+    public function setGoodThreshold(?int $goodThreshold): static
     {
         $this->goodThreshold = $goodThreshold;
         return $this;
@@ -95,7 +95,7 @@ class KpiThresholdConfig
         return $this->warningThreshold;
     }
 
-    public function setWarningThreshold(int $warningThreshold): static
+    public function setWarningThreshold(?int $warningThreshold): static
     {
         $this->warningThreshold = $warningThreshold;
         return $this;

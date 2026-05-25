@@ -119,7 +119,7 @@ class UserSession
         return $this->sessionId;
     }
 
-    public function setSessionId(string $sessionId): static
+    public function setSessionId(?string $sessionId): static
     {
         $this->sessionId = $sessionId;
         return $this;

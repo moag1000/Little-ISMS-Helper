@@ -160,7 +160,7 @@ public function __construct()
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -171,7 +171,7 @@ public function __construct()
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
@@ -182,7 +182,7 @@ public function __construct()
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(?string $category): static
     {
         $this->category = $category;
         return $this;
@@ -237,7 +237,7 @@ public function __construct()
         return $this->responsiblePerson;
     }
 
-    public function setResponsiblePerson(string $responsiblePerson): static
+    public function setResponsiblePerson(?string $responsiblePerson): static
     {
         $this->responsiblePerson = $responsiblePerson;
         return $this;

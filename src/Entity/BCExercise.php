@@ -411,7 +411,7 @@ class BCExercise
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -422,7 +422,7 @@ class BCExercise
         return $this->exerciseType;
     }
 
-    public function setExerciseType(string $exerciseType): static
+    public function setExerciseType(?string $exerciseType): static
     {
         $this->exerciseType = $exerciseType;
         return $this;
@@ -466,7 +466,7 @@ class BCExercise
         return $this->scope;
     }
 
-    public function setScope(string $scope): static
+    public function setScope(?string $scope): static
     {
         $this->scope = $scope;
         return $this;
@@ -477,7 +477,7 @@ class BCExercise
         return $this->objectives;
     }
 
-    public function setObjectives(string $objectives): static
+    public function setObjectives(?string $objectives): static
     {
         $this->objectives = $objectives;
         return $this;

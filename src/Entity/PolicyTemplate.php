@@ -296,7 +296,7 @@ class PolicyTemplate
         return $this->key;
     }
 
-    public function setKey(string $key): static
+    public function setKey(?string $key): static
     {
         $this->key = $key;
         return $this;
@@ -307,7 +307,7 @@ class PolicyTemplate
         return $this->standard;
     }
 
-    public function setStandard(string $standard): static
+    public function setStandard(?string $standard): static
     {
         $this->standard = $standard;
         return $this;
@@ -318,7 +318,7 @@ class PolicyTemplate
         return $this->topic;
     }
 
-    public function setTopic(string $topic): static
+    public function setTopic(?string $topic): static
     {
         $this->topic = $topic;
         return $this;
@@ -329,7 +329,7 @@ class PolicyTemplate
         return $this->documentType;
     }
 
-    public function setDocumentType(string $documentType): static
+    public function setDocumentType(?string $documentType): static
     {
         $this->documentType = $documentType;
         return $this;
@@ -351,7 +351,7 @@ class PolicyTemplate
         return $this->titleTranslationKey;
     }
 
-    public function setTitleTranslationKey(string $titleTranslationKey): static
+    public function setTitleTranslationKey(?string $titleTranslationKey): static
     {
         $this->titleTranslationKey = $titleTranslationKey;
         return $this;
@@ -362,7 +362,7 @@ class PolicyTemplate
         return $this->bodyTranslationKey;
     }
 
-    public function setBodyTranslationKey(string $bodyTranslationKey): static
+    public function setBodyTranslationKey(?string $bodyTranslationKey): static
     {
         $this->bodyTranslationKey = $bodyTranslationKey;
         return $this;

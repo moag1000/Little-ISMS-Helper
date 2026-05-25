@@ -170,7 +170,7 @@ class Location
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -181,7 +181,7 @@ class Location
         return $this->locationType;
     }
 
-    public function setLocationType(string $locationType): static
+    public function setLocationType(?string $locationType): static
     {
         $this->locationType = $locationType;
         return $this;
@@ -296,7 +296,7 @@ class Location
         return $this->securityLevel;
     }
 
-    public function setSecurityLevel(string $securityLevel): static
+    public function setSecurityLevel(?string $securityLevel): static
     {
         $this->securityLevel = $securityLevel;
         return $this;
@@ -307,7 +307,7 @@ class Location
         return $this->requiresBadgeAccess;
     }
 
-    public function setRequiresBadgeAccess(bool $requiresBadgeAccess): static
+    public function setRequiresBadgeAccess(?bool $requiresBadgeAccess): static
     {
         $this->requiresBadgeAccess = $requiresBadgeAccess;
         return $this;
@@ -318,7 +318,7 @@ class Location
         return $this->requiresEscort;
     }
 
-    public function setRequiresEscort(bool $requiresEscort): static
+    public function setRequiresEscort(?bool $requiresEscort): static
     {
         $this->requiresEscort = $requiresEscort;
         return $this;
@@ -329,7 +329,7 @@ class Location
         return $this->cameraMonitored;
     }
 
-    public function setCameraMonitored(bool $cameraMonitored): static
+    public function setCameraMonitored(?bool $cameraMonitored): static
     {
         $this->cameraMonitored = $cameraMonitored;
         return $this;
@@ -384,7 +384,7 @@ class Location
         return $this->active;
     }
 
-    public function setActive(bool $active): static
+    public function setActive(?bool $active): static
     {
         $this->active = $active;
         return $this;
