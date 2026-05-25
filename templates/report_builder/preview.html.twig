@@ -14,7 +14,7 @@
 
     {% if render_error is defined and render_error %}
         <div class="alert alert-danger" role="alert">
-            <i class="fa-icon fa-icon--alert-error" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--status-error" aria-hidden="true"></i>
             <strong>{{ 'report_builder.error.preview_failed'|trans({},'report_builder') }}</strong>
             <pre class="mb-0 mt-2 small">{{ render_error }}</pre>
         </div>
