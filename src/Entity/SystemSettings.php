@@ -86,7 +86,7 @@ class SystemSettings
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(?string $category): static
     {
         $this->category = $category;
         return $this;
@@ -97,7 +97,7 @@ class SystemSettings
         return $this->key;
     }
 
-    public function setKey(string $key): static
+    public function setKey(?string $key): static
     {
         $this->key = $key;
         return $this;

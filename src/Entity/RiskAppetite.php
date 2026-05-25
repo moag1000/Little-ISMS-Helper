@@ -139,7 +139,7 @@ class RiskAppetite
         return $this->maxAcceptableRisk;
     }
 
-    public function setMaxAcceptableRisk(int $maxAcceptableRisk): static
+    public function setMaxAcceptableRisk(?int $maxAcceptableRisk): static
     {
         $this->maxAcceptableRisk = $maxAcceptableRisk;
         return $this;
@@ -150,7 +150,7 @@ class RiskAppetite
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;

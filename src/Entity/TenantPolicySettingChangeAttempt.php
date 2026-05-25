@@ -103,7 +103,7 @@ class TenantPolicySettingChangeAttempt
         return $this->key;
     }
 
-    public function setKey(string $key): static
+    public function setKey(?string $key): static
     {
         $this->key = $key;
         return $this;
@@ -125,7 +125,7 @@ class TenantPolicySettingChangeAttempt
         return $this->blockedReason;
     }
 
-    public function setBlockedReason(string $blockedReason): static
+    public function setBlockedReason(?string $blockedReason): static
     {
         $this->blockedReason = $blockedReason;
         return $this;
@@ -136,7 +136,7 @@ class TenantPolicySettingChangeAttempt
         return $this->overrideMode;
     }
 
-    public function setOverrideMode(string $overrideMode): static
+    public function setOverrideMode(?string $overrideMode): static
     {
         $this->overrideMode = $overrideMode;
         return $this;

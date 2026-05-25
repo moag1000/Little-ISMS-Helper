@@ -239,7 +239,7 @@ public function __construct()
         return $this->patchId;
     }
 
-    public function setPatchId(string $patchId): static
+    public function setPatchId(?string $patchId): static
     {
         $this->patchId = $patchId;
         return $this;
@@ -250,7 +250,7 @@ public function __construct()
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -261,7 +261,7 @@ public function __construct()
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
@@ -283,7 +283,7 @@ public function __construct()
         return $this->vendor;
     }
 
-    public function setVendor(string $vendor): static
+    public function setVendor(?string $vendor): static
     {
         $this->vendor = $vendor;
         return $this;
@@ -294,7 +294,7 @@ public function __construct()
         return $this->product;
     }
 
-    public function setProduct(string $product): static
+    public function setProduct(?string $product): static
     {
         $this->product = $product;
         return $this;
@@ -316,7 +316,7 @@ public function __construct()
         return $this->patchType;
     }
 
-    public function setPatchType(string $patchType): static
+    public function setPatchType(?string $patchType): static
     {
         $this->patchType = $patchType;
         return $this;
@@ -327,7 +327,7 @@ public function __construct()
         return $this->priority;
     }
 
-    public function setPriority(string $priority): static
+    public function setPriority(?string $priority): static
     {
         $this->priority = $priority;
         return $this;

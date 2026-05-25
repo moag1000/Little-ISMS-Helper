@@ -300,6 +300,9 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'choice_label' => fn(RiskStatus $s): string => 'risk.status.' . $s->value,
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'choice_translation_domain' => 'risk',
             ])
             ->add('reviewDate', DateType::class, [

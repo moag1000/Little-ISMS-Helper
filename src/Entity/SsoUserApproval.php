@@ -72,9 +72,9 @@ class SsoUserApproval
     public function getProvider(): ?IdentityProvider { return $this->provider; }
     public function setProvider(IdentityProvider $p): self { $this->provider = $p; return $this; }
     public function getEmail(): ?string { return $this->email; }
-    public function setEmail(string $e): self { $this->email = $e; return $this; }
+    public function setEmail(?string $e): self { $this->email = $e; return $this; }
     public function getExternalId(): ?string { return $this->externalId; }
-    public function setExternalId(string $id): self { $this->externalId = $id; return $this; }
+    public function setExternalId(?string $id): self { $this->externalId = $id; return $this; }
     public function getClaims(): array { return $this->claims; }
     public function setClaims(array $c): self { $this->claims = $c; return $this; }
     public function getStatus(): string { return $this->status; }

@@ -199,7 +199,7 @@ class WizardSession
         return $this->wizardType;
     }
 
-    public function setWizardType(string $wizardType): static
+    public function setWizardType(?string $wizardType): static
     {
         $this->wizardType = $wizardType;
         return $this;

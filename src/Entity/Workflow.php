@@ -84,7 +84,7 @@ public function __construct()
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -106,7 +106,7 @@ public function __construct()
         return $this->entityType;
     }
 
-    public function setEntityType(string $entityType): static
+    public function setEntityType(?string $entityType): static
     {
         $this->entityType = $entityType;
         return $this;

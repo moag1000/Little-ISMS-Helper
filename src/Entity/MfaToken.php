@@ -157,7 +157,7 @@ class MfaToken
         return $this->tokenType;
     }
 
-    public function setTokenType(string $tokenType): static
+    public function setTokenType(?string $tokenType): static
     {
         $this->tokenType = $tokenType;
         return $this;

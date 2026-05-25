@@ -125,7 +125,7 @@ class ISMSContext
         return $this->organizationName;
     }
 
-    public function setOrganizationName(string $organizationName): static
+    public function setOrganizationName(?string $organizationName): static
     {
         $this->organizationName = $organizationName;
         return $this;

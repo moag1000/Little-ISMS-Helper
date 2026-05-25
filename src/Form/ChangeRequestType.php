@@ -100,6 +100,9 @@ final class ChangeRequestType extends AbstractType implements SectionMapInterfac
                 ],
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'choice_translation_domain' => 'change_requests',
             ])
             ->add('clauseReference', TextType::class, [

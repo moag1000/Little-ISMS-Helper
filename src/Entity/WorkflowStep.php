@@ -87,7 +87,7 @@ class WorkflowStep
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         if (in_array(trim($name), ['', '0'], true)) {
             throw new \App\Exception\InvalidArgument\InvalidArgumentException('Step name cannot be empty');

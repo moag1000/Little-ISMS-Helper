@@ -149,7 +149,7 @@ class PhysicalAccessLog
         return $this->personName;
     }
 
-    public function setPersonName(string $personName): static
+    public function setPersonName(?string $personName): static
     {
         $this->personName = $personName;
         return $this;
@@ -171,7 +171,7 @@ class PhysicalAccessLog
         return $this->location;
     }
 
-    public function setLocation(string $location): static
+    public function setLocation(?string $location): static
     {
         $this->location = $location;
         return $this;
@@ -182,7 +182,7 @@ class PhysicalAccessLog
         return $this->accessType;
     }
 
-    public function setAccessType(string $accessType): static
+    public function setAccessType(?string $accessType): static
     {
         $this->accessType = $accessType;
         return $this;
@@ -204,7 +204,7 @@ class PhysicalAccessLog
         return $this->authenticationMethod;
     }
 
-    public function setAuthenticationMethod(string $authenticationMethod): static
+    public function setAuthenticationMethod(?string $authenticationMethod): static
     {
         $this->authenticationMethod = $authenticationMethod;
         return $this;
@@ -248,7 +248,7 @@ class PhysicalAccessLog
         return $this->authorized;
     }
 
-    public function setAuthorized(bool $authorized): static
+    public function setAuthorized(?bool $authorized): static
     {
         $this->authorized = $authorized;
         return $this;
@@ -281,7 +281,7 @@ class PhysicalAccessLog
         return $this->afterHours;
     }
 
-    public function setAfterHours(bool $afterHours): static
+    public function setAfterHours(?bool $afterHours): static
     {
         $this->afterHours = $afterHours;
         return $this;

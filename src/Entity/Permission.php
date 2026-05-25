@@ -95,7 +95,7 @@ class Permission implements Stringable
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -117,7 +117,7 @@ class Permission implements Stringable
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(?string $category): static
     {
         $this->category = $category;
         return $this;
@@ -128,7 +128,7 @@ class Permission implements Stringable
         return $this->action;
     }
 
-    public function setAction(string $action): static
+    public function setAction(?string $action): static
     {
         $this->action = $action;
         return $this;

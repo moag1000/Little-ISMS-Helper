@@ -302,6 +302,9 @@ final class AssetType extends AbstractType implements SectionMapInterface
                     $c instanceof AssetStatus ? $c->value : $c,
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'help' => 'asset.help.status_readonly',
                 'choice_translation_domain' => 'asset',
             ])

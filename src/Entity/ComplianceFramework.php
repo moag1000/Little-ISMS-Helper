@@ -150,7 +150,7 @@ class ComplianceFramework
         return $this->code;
     }
 
-    public function setCode(string $code): static
+    public function setCode(?string $code): static
     {
         $this->code = $code;
         return $this;
@@ -161,7 +161,7 @@ class ComplianceFramework
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -183,7 +183,7 @@ class ComplianceFramework
         return $this->version;
     }
 
-    public function setVersion(string $version): static
+    public function setVersion(?string $version): static
     {
         $this->version = $version;
         return $this;
@@ -194,7 +194,7 @@ class ComplianceFramework
         return $this->applicableIndustry;
     }
 
-    public function setApplicableIndustry(string $applicableIndustry): static
+    public function setApplicableIndustry(?string $applicableIndustry): static
     {
         $this->applicableIndustry = $applicableIndustry;
         return $this;
@@ -205,7 +205,7 @@ class ComplianceFramework
         return $this->regulatoryBody;
     }
 
-    public function setRegulatoryBody(string $regulatoryBody): static
+    public function setRegulatoryBody(?string $regulatoryBody): static
     {
         $this->regulatoryBody = $regulatoryBody;
         return $this;
@@ -216,7 +216,7 @@ class ComplianceFramework
         return $this->mandatory;
     }
 
-    public function setMandatory(bool $mandatory): static
+    public function setMandatory(?bool $mandatory): static
     {
         $this->mandatory = $mandatory;
         return $this;
@@ -238,7 +238,7 @@ class ComplianceFramework
         return $this->active;
     }
 
-    public function setActive(bool $active): static
+    public function setActive(?bool $active): static
     {
         $this->active = $active;
         return $this;

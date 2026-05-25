@@ -123,6 +123,9 @@ final class ThreatIntelligenceType extends AbstractType implements SectionMapInt
                 ],
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'choice_translation_domain' => 'threat',
             ])
             ->add('detectionDate', DateType::class, [

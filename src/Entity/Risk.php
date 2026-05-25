@@ -431,7 +431,7 @@ class Risk
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -442,7 +442,7 @@ class Risk
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(?string $category): static
     {
         $this->category = $category;
         return $this;
@@ -453,7 +453,7 @@ class Risk
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
@@ -579,7 +579,7 @@ class Risk
         return $this->probability;
     }
 
-    public function setProbability(int $probability): static
+    public function setProbability(?int $probability): static
     {
         $this->probability = $probability;
         return $this;
@@ -590,7 +590,7 @@ class Risk
         return $this->impact;
     }
 
-    public function setImpact(int $impact): static
+    public function setImpact(?int $impact): static
     {
         $this->impact = $impact;
         return $this;
@@ -601,7 +601,7 @@ class Risk
         return $this->residualProbability;
     }
 
-    public function setResidualProbability(int $residualProbability): static
+    public function setResidualProbability(?int $residualProbability): static
     {
         $this->residualProbability = $residualProbability;
         return $this;
@@ -612,7 +612,7 @@ class Risk
         return $this->residualImpact;
     }
 
-    public function setResidualImpact(int $residualImpact): static
+    public function setResidualImpact(?int $residualImpact): static
     {
         $this->residualImpact = $residualImpact;
         return $this;
