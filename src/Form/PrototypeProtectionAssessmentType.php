@@ -79,6 +79,9 @@ final class PrototypeProtectionAssessmentType extends AbstractType implements Se
                 ],
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
             ])
             // @no-module-gate-required: PrototypeProtectionAssessment form is TISAX-scoped
             //   (only rendered behind prototype_protection module).

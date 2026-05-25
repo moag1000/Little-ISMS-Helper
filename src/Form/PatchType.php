@@ -135,6 +135,9 @@ final class PatchType extends AbstractType implements SectionMapInterface
                 ],
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'choice_translation_domain' => 'patches',
             ])
             ->add('releaseDate', DateType::class, [

@@ -177,6 +177,9 @@ final class BCExerciseType extends AbstractType
                 'choice_translation_domain' => 'bc_exercises',
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
             ])
             ->add('results', TextareaType::class, [
                 'label' => 'bc_exercises.field.results',

@@ -70,6 +70,9 @@ final class WorkflowInstanceType extends AbstractType
                 ],
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'choice_translation_domain' => 'workflows',
             ])
             ->add('initiatedBy', EntityType::class, [

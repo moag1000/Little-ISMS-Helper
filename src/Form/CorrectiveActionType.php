@@ -90,6 +90,9 @@ final class CorrectiveActionType extends AbstractType implements SectionMapInter
                 'choice_translation_domain' => 'audits',
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
             ])
             ->add('actionType', ChoiceType::class, [
                 'label' => 'audits.field.action_type',

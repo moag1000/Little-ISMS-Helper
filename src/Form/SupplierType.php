@@ -129,6 +129,9 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'choice_translation_domain' => 'suppliers',
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
             ])
             ->add('securityScore', IntegerType::class, [
                 'label' => 'supplier.field.security_score',

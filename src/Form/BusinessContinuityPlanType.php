@@ -90,6 +90,9 @@ final class BusinessContinuityPlanType extends AbstractType
                 'choice_translation_domain' => 'bc_plans',
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
             ])
             ->add('activationCriteria', TextareaType::class, [
                 'label' => 'bc_plans.field.activation_criteria',

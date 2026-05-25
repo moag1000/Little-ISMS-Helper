@@ -78,7 +78,11 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                     'processing_activity.purpose.other' => 'other',
                 ],
                 'multiple' => true,
-                'required' => true,
+                // required=false: drops browser HTML5 `required` attr. TomSelect hides
+                // the native <select tabindex="-1"> so the browser cannot focus it for
+                // the error tooltip ("not focusable" console error). Symfony-level
+                // NotBlank constraint on the entity still enforces the requirement.
+                'required' => false,
                 'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
@@ -562,6 +566,9 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 ],
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'choice_translation_domain' => 'privacy',
             ])
             ->add('startDate', DateType::class, [
