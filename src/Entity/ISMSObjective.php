@@ -248,7 +248,7 @@ public function __construct()
         return $this->targetDate;
     }
 
-    public function setTargetDate(DateTimeInterface $targetDate): static
+    public function setTargetDate(?DateTimeInterface $targetDate): static
     {
         $this->targetDate = $targetDate;
         return $this;
@@ -300,7 +300,7 @@ public function __construct()
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;

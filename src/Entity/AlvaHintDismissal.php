@@ -99,7 +99,7 @@ class AlvaHintDismissal
     public function setEntityId(int $entityId): self { $this->entityId = $entityId; return $this; }
 
     public function getDismissedAt(): ?DateTimeInterface { return $this->dismissedAt; }
-    public function setDismissedAt(DateTimeInterface $dismissedAt): self { $this->dismissedAt = $dismissedAt; return $this; }
+    public function setDismissedAt(?DateTimeInterface $dismissedAt): self { $this->dismissedAt = $dismissedAt; return $this; }
 
     public function getDismissedUntil(): ?DateTimeInterface { return $this->dismissedUntil; }
     public function setDismissedUntil(?DateTimeInterface $dismissedUntil): self { $this->dismissedUntil = $dismissedUntil; return $this; }

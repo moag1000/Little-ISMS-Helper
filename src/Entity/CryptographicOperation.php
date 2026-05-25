@@ -244,7 +244,7 @@ class CryptographicOperation
         return $this->timestamp;
     }
 
-    public function setTimestamp(DateTimeInterface $timestamp): static
+    public function setTimestamp(?DateTimeInterface $timestamp): static
     {
         $this->timestamp = $timestamp;
         return $this;

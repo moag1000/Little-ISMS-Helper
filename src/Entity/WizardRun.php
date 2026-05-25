@@ -211,7 +211,7 @@ class WizardRun
         return $this->startedAt;
     }
 
-    public function setStartedAt(DateTimeInterface $startedAt): static
+    public function setStartedAt(?DateTimeInterface $startedAt): static
     {
         $this->startedAt = $startedAt;
         return $this;

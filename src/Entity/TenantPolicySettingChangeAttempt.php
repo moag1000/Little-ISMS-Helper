@@ -147,7 +147,7 @@ class TenantPolicySettingChangeAttempt
         return $this->attemptedAt;
     }
 
-    public function setAttemptedAt(DateTimeInterface $attemptedAt): static
+    public function setAttemptedAt(?DateTimeInterface $attemptedAt): static
     {
         $this->attemptedAt = $attemptedAt;
         return $this;

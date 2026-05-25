@@ -709,7 +709,7 @@ class Risk
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
