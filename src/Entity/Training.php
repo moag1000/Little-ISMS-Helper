@@ -395,7 +395,7 @@ public function __construct()
         return $this->scheduledDate;
     }
 
-    public function setScheduledDate(DateTimeInterface $scheduledDate): static
+    public function setScheduledDate(?DateTimeInterface $scheduledDate): static
     {
         $this->scheduledDate = $scheduledDate;
         return $this;
@@ -618,7 +618,7 @@ public function __construct()
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;

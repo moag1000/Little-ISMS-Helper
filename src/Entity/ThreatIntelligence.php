@@ -361,7 +361,7 @@ class ThreatIntelligence
         return $this->detectionDate;
     }
 
-    public function setDetectionDate(DateTimeInterface $detectionDate): static
+    public function setDetectionDate(?DateTimeInterface $detectionDate): static
     {
         $this->detectionDate = $detectionDate;
         return $this;
@@ -480,7 +480,7 @@ class ThreatIntelligence
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;

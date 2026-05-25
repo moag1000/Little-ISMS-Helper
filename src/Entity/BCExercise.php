@@ -499,7 +499,7 @@ class BCExercise
         return $this->exerciseDate;
     }
 
-    public function setExerciseDate(DateTimeInterface $exerciseDate): static
+    public function setExerciseDate(?DateTimeInterface $exerciseDate): static
     {
         $this->exerciseDate = $exerciseDate;
         return $this;
@@ -831,7 +831,7 @@ class BCExercise
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;

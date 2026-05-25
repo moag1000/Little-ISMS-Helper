@@ -369,7 +369,7 @@ class ComplianceMapping
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
@@ -693,7 +693,7 @@ class ComplianceMapping
         return $this->validFrom;
     }
 
-    public function setValidFrom(DateTimeInterface $validFrom): static
+    public function setValidFrom(?DateTimeInterface $validFrom): static
     {
         $this->validFrom = $validFrom;
         return $this;
