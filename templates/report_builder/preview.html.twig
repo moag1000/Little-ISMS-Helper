@@ -12,6 +12,14 @@
         ]
     } %}
 
+    {% if render_error is defined and render_error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fa-icon fa-icon--alert-error" aria-hidden="true"></i>
+            <strong>{{ 'report_builder.error.preview_failed'|trans({},'report_builder') }}</strong>
+            <pre class="mb-0 mt-2 small">{{ render_error }}</pre>
+        </div>
+    {% endif %}
+
     {# Report Actions #}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2 mb-0">
@@ -32,7 +40,9 @@
         <div class="col">
             <div class="d-flex gap-3 text-muted small">
                 <span><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ report.category }}</span>
+                {% if report_data.report.generated_at is defined %}
                 <span><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ report_data.report.generated_at|date('d.m.Y H:i') }}</span>
+                {% endif %}
                 <span><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ report.owner.fullName }}</span>
             </div>
         </div>
@@ -184,7 +194,9 @@
     <div class="report-footer mt-5 pt-4 border-top text-muted small">
         <div class="d-flex justify-content-between">
             <span>{{ 'report_builder.preview.generated_by'|trans({},'report_builder') }} {{ app.user.fullName }}</span>
+            {% if report_data.report.generated_at is defined %}
             <span>{{ report_data.report.generated_at|date('d.m.Y H:i') }}</span>
+            {% endif %}
         </div>
     </div>
 </div>
