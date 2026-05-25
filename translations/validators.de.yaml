@@ -342,7 +342,7 @@ audit:
         date_required: 'Bitte wählen Sie ein Datum.'
 tenant:
     validation:
-        code_format: 'Der Mandanten-Code muss dem Format entsprechen'
+        code_format: 'Der Organisations-Code muss dem Format entsprechen'
         azure_tenant_id_format: 'Die Azure-Tenant-ID muss eine gültige GUID sein'
         logo_format: 'Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen'
         nace_code_format: 'NACE-Code muss dem Format A.NN.NN entsprechen (NACE Rev.2 Klassifikation).'
@@ -757,7 +757,7 @@ gstool_import:
 'system_settings.validation.category_key_unique': 'Diese Einstellung existiert bereits in dieser Kategorie.'
 
 # Tenant
-'tenant.validation.code_unique': 'Dieser Mandanten-Code wird bereits verwendet.'
+'tenant.validation.code_unique': 'Dieser Organisations-Code wird bereits verwendet.'
 
 # Training (additive)
 'training.validation.title_required': 'Schulungstitel ist erforderlich.'

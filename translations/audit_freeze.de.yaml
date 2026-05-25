@@ -54,7 +54,7 @@ audit_freeze:
         notes: 'Interne Notizen'
         notes_help: 'Optional. Z. B. Kontext zur geplanten Audit-Session'
     flash:
-        no_tenant: 'Kein aktiver Mandant — Audit-Freeze nicht verfügbar.'
+        no_tenant: 'Kein aktiver Organisation — Audit-Freeze nicht verfügbar.'
         created: 'Freeze erfolgreich erstellt und versiegelt.'
         stichtag_future: 'Stichtag darf nicht in der Zukunft liegen.'
         pdf_generated: 'PDF erfolgreich erzeugt.'
@@ -62,7 +62,7 @@ audit_freeze:
         pdf_not_found: 'PDF nicht gefunden. Erzeuge es zuerst.'
         invalid_csrf: 'Ungültiges CSRF-Token.'
     pdf:
-        tenant: 'Mandant'
+        tenant: 'Organisation'
         summary: 'Zusammenfassung'
         soa: 'Anwendbarkeitserklärung (SoA)'
         requirements: 'Anforderungen je Framework'

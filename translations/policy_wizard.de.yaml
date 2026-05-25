@@ -26,7 +26,7 @@ policy_wizard:
     # SoA-Auto-Update bei Dokumentengenerierung — Aurora-Flash + Audit-Trail-Strings.
     soa_auto_update:
         bumped: 'SoA-Eintrag %control% von "%old_status%" auf "%new_status%" angehoben (Policy-Wizard).'
-        self_assessment: 'Selbstbewertung: Einziger Nutzer im Mandanten — Umsetzungsgrad %control% wurde im Audit-Trail als Self-Assessment markiert.'
+        self_assessment: 'Selbstbewertung: Einziger Nutzer in der Organisation — Umsetzungsgrad %control% wurde im Audit-Trail als Self-Assessment markiert.'
 
     # Topic-Schluessel-Uebersetzungen (24 ISO 27002:2022 Topics + Cross-Cutting).
     # Verwendet im Bestandsaufnahme-Picker, im Targeted-Re-Run-Topic-Picker
@@ -265,18 +265,18 @@ policy_wizard:
                     e3: '„Produktionsstätten Maschinenbau in Stuttgart + Karlsruhe; OT-Netze + ERP + Engineering-PCs; ausgenommen Verwaltungssitz Berlin."'
             primary_address_label: 'Hauptadresse (optional)'
             sites_label: 'In-Scope-Standorte'
-            sites_help: 'Wählen Sie die für den Geltungsbereich relevanten Standorte aus. Nur sichtbare Mandanten-Standorte werden angezeigt.'
+            sites_help: 'Wählen Sie die für den Geltungsbereich relevanten Standorte aus. Nur sichtbare Organisations-Standorte werden angezeigt.'
             climate_note: 'ISO 27001:2024 Klausel 4.1 wording zum Klimawandel ist standardmäßig aktiviert (Audit-Defang).'
             field:
                 legal_name:
-                    prefilled_hint: 'Aus Mandant übernommen — überschreibbar'
+                    prefilled_hint: 'Aus Organisation übernommen — überschreibbar'
                 headquarters_address:
-                    prefilled_hint: 'Aus Mandant übernommen — überschreibbar'
+                    prefilled_hint: 'Aus Organisation übernommen — überschreibbar'
                 in_scope_locations:
                     placeholder: 'Standorte auswählen…'
                     empty_state:
                         title: 'Noch keine Standorte hinterlegt'
-                        body: 'Damit Standorte hier zur Auswahl erscheinen, legen Sie zunächst mindestens einen Standort im Mandanten an.'
+                        body: 'Damit Standorte hier zur Auswahl erscheinen, legen Sie zunächst mindestens einen Standort in der Organisation an.'
                         cta_label: 'Standort anlegen'
             help:
                 title: 'Was gehört in den Geltungsbereich?'
@@ -316,7 +316,7 @@ policy_wizard:
             person_picker:
                 intro:
                     title: 'Rollen-Inhaber sind Personen, keine User-Accounts'
-                    body: 'CISO/ISB/DPO/BCM-Officer können auch externe Berater ohne System-Login sein — wählen Sie eine Person aus dem Mandanten-Personenstamm. Die Approval-Chain unten benötigt weiterhin Benutzer mit Login (Sign-Off-Aktion).'
+                    body: 'CISO/ISB/DPO/BCM-Officer können auch externe Berater ohne System-Login sein — wählen Sie eine Person aus dem Organisations-Personenstamm. Die Approval-Chain unten benötigt weiterhin Benutzer mit Login (Sign-Off-Aktion).'
             field:
                 ciso_picker:
                     placeholder: 'CISO auswählen…'
@@ -333,11 +333,11 @@ policy_wizard:
                     placeholder: 'Genehmiger auswählen…'
                     tooltip: 'Approval erfordert ein authentifiziertes Sign-Off — daher Benutzer (mit Login), keine reine Person-Rolle.'
                     help: 'Mehrfachauswahl: jeder Benutzer wird in der angegebenen Reihenfolge zur Freigabe aufgefordert. Der Wizard-Starter darf nicht in der Liste stehen (Selbstgenehmigungs-Verbot).'
-                    empty_state: 'Keine Approver-Benutzer im Mandanten gefunden. Bitte vergeben Sie zunächst die Rollen ROLE_GROUP_CISO, ROLE_DPO oder ROLE_ADMIN an mindestens eine Person mit Login.'
+                    empty_state: 'Keine Approver-Benutzer in der Organisation gefunden. Bitte vergeben Sie zunächst die Rollen ROLE_GROUP_CISO, ROLE_DPO oder ROLE_ADMIN an mindestens eine Person mit Login.'
             empty_state:
                 no_persons:
-                    title: 'Keine Personen im Mandanten'
-                    body: 'Bevor Rollen vergeben werden können, muss mindestens eine Person im Mandanten-Personenstamm existieren.'
+                    title: 'Keine Personen in der Organisation'
+                    body: 'Bevor Rollen vergeben werden können, muss mindestens eine Person im Organisations-Personenstamm existieren.'
                     cta_label: 'Person anlegen'
         risk_classification:
             title: 'Risikoklassifizierung'
@@ -360,8 +360,8 @@ policy_wizard:
             annex_a:
                 when_not_applicable:
                     title: 'Wann ist ein Annex-A-Control NICHT anwendbar?'
-                    reason1: 'Funktion existiert nicht (z. B. A.5.34 „Privacy" bei einem Mandanten ohne Verarbeitung personenbezogener Daten).'
-                    reason2: 'Asset-Typ existiert nicht (z. B. A.5.23 „Cloud Services" bei einem rein on-premise Mandanten).'
+                    reason1: 'Funktion existiert nicht (z. B. A.5.34 „Privacy" bei einer Organisation ohne Verarbeitung personenbezogener Daten).'
+                    reason2: 'Asset-Typ existiert nicht (z. B. A.5.23 „Cloud Services" bei einer rein on-premise Organisation).'
                     reason3: 'Geschäftsmodell schließt es aus (z. B. A.6.4 „Disciplinary Process" bei einer reinen GmbH ohne Mitarbeitende).'
                     reason4: 'Übernommen durch ein externes oder höher gelagertes Control (z. B. Konzernmutter erfüllt das Control für die Tochtergesellschaft).'
                     default_note: 'Default = anwendbar. Bitte nur abwählen, wenn der Ausschluss-Grund auditfest begründbar ist — der Grund wird später im SoA dokumentiert.'
@@ -843,7 +843,7 @@ policy_wizard:
                 reversibility: 'Wichtig: „Erzeugen" persistiert die Dokumente im Tenant. Bei einem produktiven Lauf ist die Generierung NICHT rückgängig, aber jedes Dokument kann ARCHIVIERT (nicht gelöscht) werden. Sandbox-Modus persistiert nichts.'
             sandbox_banner:
                 title: 'Sandbox-Modus aktiv — kein persistierter Output'
-                body: 'Dieser Lauf wurde im Sandbox-Modus gestartet. Beim Klick auf „Erzeugen" werden KEINE Dokumente im Mandanten gespeichert. Verwenden Sie diesen Modus für Probeläufe ohne Audit-Spuren.'
+                body: 'Dieser Lauf wurde im Sandbox-Modus gestartet. Beim Klick auf „Erzeugen" werden KEINE Dokumente in der Organisation gespeichert. Verwenden Sie diesen Modus für Probeläufe ohne Audit-Spuren.'
             audit_trail_hint: 'Diese Generierung wird mit Wizard-Run-ID #%run_id%, den unten gelisteten Approver-Namen und dem Zeitstempel der Bestätigung im Audit-Log erfasst (ISO 27001 Klausel 7.5.3).'
             confirm_box:
                 title: 'Vor dem Erzeugen bestätigen'
@@ -897,7 +897,7 @@ policy_wizard:
                 placeholder: 'z. B. NCR-2026-04'
                 help: 'Wird im Audit-Log dieses Wizard-Laufs gespeichert und in den Approval-Inbox-Eintrag übernommen.'
                 help_picker: 'Aus offenen Audit-Findings auswählen oder externe Referenz eintippen (TAB zum Übernehmen).'
-                no_open_findings: 'Keine offenen Audit-Findings für diesen Mandanten — externe Referenz eintippen oder Audit-Modul nutzen.'
+                no_open_findings: 'Keine offenen Audit-Findings für diese Organisation — externe Referenz eintippen oder Audit-Modul nutzen.'
                 due: 'fällig'
                 help_card:
                     title: 'Warum eine Finding-Referenz?'
@@ -984,7 +984,7 @@ policy_wizard:
             drift: 'Abweichungen'
             acknowledgement: 'Bestätigung'
         empty:
-            not_konzern: 'Diese Mandantenebene ist keine Holding.'
+            not_konzern: 'Diese Organisationsebene ist keine Holding.'
             no_subsidiaries: 'Es sind keine Tochtergesellschaften unterhalb dieses Tenants vorhanden.'
         # CISO Task #130 — Quartals-Trend (Sparkline + Delta) auf Compliance-Tab.
         trend:
@@ -1114,7 +1114,7 @@ policy_wizard:
     # Junior-ISB Wish #6 — clickable warning link CTA on Step 7.
     warning:
         click_to_jump: 'Klicken um zu „%step%" zu springen und zu korrigieren.'
-        self_approval_single_user: 'Selbst-Genehmigung aktiv: dieser Mandant hat nur einen App-User. Im Audit dokumentieren — sobald ein zweiter User existiert, muss die Approval-Chain auf 4-Augen-Prinzip umgestellt werden.'
+        self_approval_single_user: 'Selbst-Genehmigung aktiv: dieser Organisation hat nur einen App-User. Im Audit dokumentieren — sobald ein zweiter User existiert, muss die Approval-Chain auf 4-Augen-Prinzip umgestellt werden.'
 
     # Junior-ISB Wish #5 — Auditor-Score badge / detail section.
     auditor_score:
@@ -1258,7 +1258,7 @@ policy_wizard:
         preset_bundle_unknown: 'Das gewählte Industrie-Preset ist unbekannt oder deaktiviert.'
         finding_reference_invalid: 'Die Audit-Finding-Referenz ist ungültig. Bitte erneut auswählen oder leer lassen.'
         finding_reference_too_long: 'Die Audit-Finding-Referenz darf maximal 100 Zeichen lang sein.'
-        finding_reference_unknown: 'Das ausgewählte Audit-Finding existiert nicht oder gehört zu einem anderen Mandanten.'
+        finding_reference_unknown: 'Das ausgewählte Audit-Finding existiert nicht oder gehört zu einer anderen Organisation.'
         # W6 Gap-E — DPO Charter excluded from bulk-approval (GDPR Art. 38(3)).
         dpo_charter_in_bulk:
             title: 'DPO-Charter nicht bulk-genehmigungsfähig'

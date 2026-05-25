@@ -274,6 +274,12 @@ audit_finding:
         reported_by_deputy_persons: 'Vertretungen Meldender (Personen)'
         due_date: 'Fällig bis'
         linked_requirements: 'Verknüpfte Norm-Anforderungen'
+        # S17 B4 — CAPA / Nonconformity-Details (ISO 27001 Cl. 10.2)
+        nc_root_cause_summary: 'Ursachenanalyse (Zusammenfassung)'
+        nc_correction_due_date: 'Frist Korrekturmaßnahme'
+        nc_verified_at: 'Wirksamkeitsprüfung am'
+        nc_verified_by: 'Wirksamkeit verifiziert durch'
+        nonconformity_details: 'NC-Details (strukturiert)'
     placeholder:
         audit: '-- Audit auswählen --'
         related_control: '-- Control auswählen (optional) --'
@@ -282,6 +288,10 @@ audit_finding:
         reported_by_person: '-- Person aus Stammdaten --'
         finding_number: 'z.B. F-2026-001'
         clause_reference: 'z.B. ISO 27001 A.5.1 / Klausel 9.3'
+        # S17 B4
+        nc_root_cause_summary: 'z.B. „Logging-Konfiguration nicht zentralisiert (5-Why ergab fehlende Build-Stage)“'
+        nc_verified_by: '-- Verifizierende Person (User) --'
+        nonconformity_details: '{"rootCauseAnalysisMethod":"5-why","correctiveActions":[],"verificationMethod":"document-review","verificationEvidence":""}'
     help:
         status_readonly: 'Status wird vom AuditFinding-Lifecycle-Workflow gesteuert (open → in_progress → resolved → verified → closed). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite (LifecycleService::transition).'
         audit: 'Internes Audit, in dem diese Feststellung entstanden ist'
@@ -300,6 +310,12 @@ audit_finding:
         reported_by_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Meldenden.'
         linked_requirements: 'Verknüpfung mit ISO/BSI-Anforderungen erstellt automatisch Korrekturmaßnahmen (F15).'
         empty_link: '/de/help/glossary#glossary-audit-finding'
+        # S17 B4 — CAPA / Nonconformity (ISO 27001 Cl. 10.2)
+        nc_root_cause_summary: 'Ursachenanalyse-Methoden: 5-Why (Ursachenkette), Ishikawa-Diagramm (6M-Fischgräten), FMEA (Fehler-Möglichkeits-Einfluss-Analyse) oder andere. ISO 27001 Cl. 10.2 b) fordert die Bewertung der Ursachen einer Nichtkonformität.'
+        nc_correction_due_date: 'ISO 27001 Cl. 10.2 c) — die Korrekturmaßnahme muss eine nachvollziehbare Frist haben. Major-NCs sollten innerhalb von 30–90 Tagen behoben sein.'
+        nc_verified_at: 'Zeitpunkt der Wirksamkeitsprüfung. Leer lassen bis die Verifizierung erfolgt ist.'
+        nc_verified_by: 'Verantwortliche Person für die unabhängige Verifizierung der Wirksamkeit (Cl. 10.2 d)). Sollte nicht die ausführende Person sein.'
+        nonconformity_details: 'Optionales JSON mit Schema: rootCauseAnalysisMethod (5-why|ishikawa|fmea|other), correctiveActions (Liste), verificationMethod (document-review|walkthrough|test|metrics-monitoring), verificationEvidence (Text). Leer lassen für unstrukturierte Erfassung.'
     type:
         major_nc: 'Wesentliche Nichtkonformität'
         minor_nc: 'Geringfügige Nichtkonformität'
@@ -334,6 +350,21 @@ audit_finding:
     section:
         description: 'Beschreibung'
         linked_requirements: 'Verknüpfte Norm-Anforderungen'
+        nc_capa: 'CAPA (ISO 27001 Cl. 10.2)'
+    # S17 B4 — Root-Cause-Analyse-Methoden (ISO 27001 Cl. 10.2 b))
+    rca_method:
+        '5_why': '5-Why-Analyse'
+        ishikawa: 'Ishikawa-Diagramm (6M)'
+        fmea: 'FMEA'
+        other: 'Andere Methode'
+    verification_method:
+        document_review: 'Dokumenten-Review'
+        walkthrough: 'Walkthrough / Begehung'
+        test: 'Test / Stichprobe'
+        metrics_monitoring: 'Metriken-Monitoring'
+    error:
+        nc_root_cause_required: 'Für Nichtkonformitäten ist eine Ursachenanalyse Pflicht (ISO 27001 Cl. 10.2 b)).'
+        nc_correction_due_date_required: 'Für Nichtkonformitäten ist eine Frist für die Korrekturmaßnahme Pflicht (ISO 27001 Cl. 10.2 c)).'
     alert:
         overdue: '%count% überfällige Feststellung(en) benötigen Aufmerksamkeit.'
     message:

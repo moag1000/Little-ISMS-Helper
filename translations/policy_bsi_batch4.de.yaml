@@ -121,7 +121,7 @@ policy:
                     |---|---|---|
                     | Normal | Public/Private SaaS, IaaS, PaaS | Standard-AVV, EU-Hosting bevorzugt |
                     | Hoch | Public mit C5-Testat oder Private | BYOK, MFA-Pflicht, EU-only, SOC-Anbindung |
-                    | Sehr hoch | Private oder Sovereign Cloud | HYOK, kein Drittland, dediziertes Mandanten-Setup, Pruefung VS-NfD-Faehigkeit |
+                    | Sehr hoch | Private oder Sovereign Cloud | HYOK, kein Drittland, dediziertes Organisations-Setup, Pruefung VS-NfD-Faehigkeit |
 
                     Verarbeitung von Verschlusssachen (VS-NfD und hoeher) in Public Clouds ist grundsaetzlich verboten; Ausnahmen nur mit BSI-Zulassung.
 
@@ -971,7 +971,7 @@ policy:
                     Saemtliche Sicherungen erfolgen schreibgeschuetzt; bei Datentraegern werden bit-genaue Images mit anschliessender Hashbildung (SHA-256 und SHA-512) erzeugt. Die Hash-Werte werden in einem revisionssicheren Beweismittelregister hinterlegt. Originale werden versiegelt und in einem zugriffsbeschraenkten Asservatenraum gemaess INF.1.A4 verwahrt. Die Chain-of-Custody (Datum, Uhrzeit, Person, Massnahme, Ergebnis) wird lueckenlos dokumentiert.
 
                     ## 7. Cloud-Forensik
-                    In Cloud-Umgebungen werden Snapshots ueber API-gestuetzte, signierte Verfahren erstellt. Es ist sicherzustellen, dass die zugrundeliegenden Cloud-Vertraege (Cross-Ref OPS.2.2) Forensik-Klauseln enthalten, die Image-Bezug, Region-Spezifikation und Reaktionszeiten regeln. Auf gemeinsam genutzten Plattformen wird ausschliesslich auf den eigenen Mandanten zugegriffen; Drittmandanten-Daten sind aus dem Beweismaterial zu entfernen.
+                    In Cloud-Umgebungen werden Snapshots ueber API-gestuetzte, signierte Verfahren erstellt. Es ist sicherzustellen, dass die zugrundeliegenden Cloud-Vertraege (Cross-Ref OPS.2.2) Forensik-Klauseln enthalten, die Image-Bezug, Region-Spezifikation und Reaktionszeiten regeln. Auf gemeinsam genutzten Plattformen wird ausschliesslich auf die eigenen Daten zugegriffen; Daten anderer Organisationen sind aus dem Beweismaterial zu entfernen.
 
                     ## 8. Datenschutz und Mitbestimmung
                     Die forensische Analyse personenbezogener Daten erfolgt unter Mitwirkung des Datenschutzbeauftragten {{ roles.dpo.fullName }} und unter Beachtung der Mitbestimmungsrechte des Betriebsrats gemaess BetrVG § 87 Abs. 1 Nr. 6. Die Verhaeltnismaessigkeit ist im Einzelfall zu pruefen und schriftlich zu begruenden; eine Pre-Authorization-Liste mit Standardszenarien ist hinterlegt.

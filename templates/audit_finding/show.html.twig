@@ -83,6 +83,55 @@
     {% endembed %}
     {% endif %}
 
+    {# S17 B4 — CAPA / Nonconformity-Details (ISO 27001 Cl. 10.2 b) + d)). #}
+    {% if finding.type in ['major_nc', 'minor_nc'] %}
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0">{{ 'audit_finding.section.nc_capa'|trans({}, 'audits') }}</h2></div>
+        {% endblock %}
+        {% block card_body %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <strong>{{ 'audit_finding.field.nc_root_cause_summary'|trans({}, 'audits') }}</strong>
+                    <p class="mb-0">{{ finding.ncRootCauseSummary ? finding.ncRootCauseSummary|nl2br : '—' }}</p>
+                </div>
+                <div class="col-md-3">
+                    <strong>{{ 'audit_finding.field.nc_correction_due_date'|trans({}, 'audits') }}</strong>
+                    <p class="mb-0">{{ finding.ncCorrectionDueDate ? finding.ncCorrectionDueDate|date('Y-m-d') : '—' }}</p>
+                </div>
+                <div class="col-md-3">
+                    <strong>{{ 'audit_finding.field.nc_verified_at'|trans({}, 'audits') }}</strong>
+                    <p class="mb-0">{{ finding.ncVerifiedAt ? finding.ncVerifiedAt|date('Y-m-d H:i') : '—' }}</p>
+                </div>
+                <div class="col-md-6">
+                    <strong>{{ 'audit_finding.field.nc_verified_by'|trans({}, 'audits') }}</strong>
+                    <p class="mb-0">{{ finding.ncVerifiedBy ? (finding.ncVerifiedBy.email|default('#' ~ finding.ncVerifiedBy.id)) : '—' }}</p>
+                </div>
+                {% if finding.nonconformityDetails %}
+                <div class="col-md-12">
+                    <strong>{{ 'audit_finding.field.nonconformity_details'|trans({}, 'audits') }}</strong>
+                    {% set details = finding.nonconformityDetails %}
+                    <dl class="row mb-0">
+                        {% if details.rootCauseAnalysisMethod is defined %}
+                            <dt class="col-sm-4">{{ 'audit_finding.rca_method.' ~ (details.rootCauseAnalysisMethod|replace({'-': '_'}))|trans({}, 'audits') }}</dt>
+                            <dd class="col-sm-8 text-muted">{{ details.rootCauseAnalysisMethod }}</dd>
+                        {% endif %}
+                        {% if details.verificationMethod is defined %}
+                            <dt class="col-sm-4">{{ 'audit_finding.verification_method.' ~ (details.verificationMethod|replace({'-': '_'}))|trans({}, 'audits') }}</dt>
+                            <dd class="col-sm-8 text-muted">{{ details.verificationMethod }}</dd>
+                        {% endif %}
+                        {% if details.verificationEvidence is defined and details.verificationEvidence %}
+                            <dt class="col-sm-4">{{ 'audit_finding.field.evidence'|trans({}, 'audits') }}</dt>
+                            <dd class="col-sm-8">{{ details.verificationEvidence }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+                {% endif %}
+            </div>
+        {% endblock %}
+    {% endembed %}
+    {% endif %}
+
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header"><h2 class="h5 mb-0">{{ 'corrective_action.page.title'|trans({}, 'audits') }} ({{ finding.correctiveActions|length }})</h2></div>

@@ -11,9 +11,9 @@ quick_fix:
         reconcile_label: 'Schema reconcilen'
         reconcile_subtitle: 'Gleicht das Live-Datenbank-Schema im Hintergrund mit den Entity-Metadaten ab…'
         repair_orphans_label: 'Verwaiste Einträge reparieren'
-        repair_orphans_subtitle: 'Weist verwaiste Entities im Hintergrund dem Standard-Mandanten zu…'
-        repair_mismatches_label: 'Mandanten-Fehlzuordnungen beheben'
-        repair_mismatches_subtitle: 'Richtet Kind-Mandanten im Hintergrund am Parent (Asset) aus…'
+        repair_orphans_subtitle: 'Weist verwaiste Entities im Hintergrund dem Standard-Organisation zu…'
+        repair_mismatches_label: 'Organisations-Fehlzuordnungen beheben'
+        repair_mismatches_subtitle: 'Richtet Tochter-Organisationen im Hintergrund am Parent (Asset) aus…'
         repair_duplicates_label: 'Duplikate zusammenführen'
         repair_duplicates_subtitle: 'Behält den ältesten Eintrag, entfernt neuere Duplikate im Hintergrund…'
         repair_all_label: 'Alles reparieren'
@@ -61,11 +61,11 @@ quick_fix:
             label: 'Daten-Integritätsprüfung partial — %count% Fehler (Schema unvollständig, einige Prüfungen konnten nicht ausgeführt werden)'
             show: 'Details anzeigen'
         orphans:
-            title: 'Verwaiste Entitäten (ohne Mandant)'
+            title: 'Verwaiste Entitäten (ohne Organisation)'
             button: 'Orphans zuweisen'
             empty: 'Keine Orphans'
         tenant_mismatches:
-            title: 'Mandant-Fehlzuordnungen'
+            title: 'Organisations-Fehlzuordnungen'
             button: 'Mismatches beheben'
             empty: 'Keine Mismatches'
         duplicates:
@@ -76,8 +76,8 @@ quick_fix:
             button: 'Alles sicher reparieren'
             empty: 'Alle Daten-Integritätsprüfungen OK'
         success:
-            orphans: '%count% Orphan(s) dem Standard-Mandanten zugewiesen.'
-            tenant_mismatches: '%count% Mandant-Fehlzuordnung(en) behoben.'
+            orphans: '%count% Orphan(s) dem Standard-Organisation zugewiesen.'
+            tenant_mismatches: '%count% Organisations-Fehlzuordnung(en) behoben.'
             duplicates: '%count% Duplikat(e) aus "%type%" bereinigt.'
             all: 'Alle Repairs abgeschlossen: %orphans% Orphan(s), %mismatches% Mismatch(es), %duplicates% Duplikat(e).'
     apply_failure:

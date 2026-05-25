@@ -1,7 +1,7 @@
 system_templates:
     modal:
         title: 'Aus Vorlage erstellen'
-        intro: 'Wähle eine Vorlage, um typische ISMS-Inhalte mit einem Klick anzulegen. Die Daten werden anschließend deinem Mandanten zugeordnet und können wie gewohnt überarbeitet werden.'
+        intro: 'Wähle eine Vorlage, um typische ISMS-Inhalte mit einem Klick anzulegen. Die Daten werden anschließend deiner Organisation zugeordnet und können wie gewohnt überarbeitet werden.'
         empty: 'Für diesen Bereich sind aktuell keine Vorlagen verfügbar — entweder ist das passende Modul nicht aktiviert oder es gibt noch keine Templates dieses Typs.'
         apply: 'Anwenden'
         bulk_records: '{0}—|{1}1 Datensatz im Bündel|]1,Inf[%count% Datensätze im Bündel'

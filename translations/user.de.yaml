@@ -81,7 +81,7 @@ user:
     create: 'Benutzer erstellen'
     section:
         basic_info: 'Grundinformationen'
-        tenant: Mandant
+        tenant: Organisation
         authentication: Authentifizierung
         roles: 'Rollen & Berechtigungen'
         status: Status
@@ -105,7 +105,7 @@ user:
         phone_number: Telefonnummer
         avatar: Profilbild
         avatar_file: 'Profilbild hochladen'
-        tenant: Mandant
+        tenant: Organisation
         auth_provider: Authentifizierungsmethode
         password: Passwort
         plain_password: 'Neues Passwort'
@@ -122,7 +122,7 @@ user:
         competencies: 'Kompetenzen (§7.2)'
         previous_qms_background: 'Vorherige QM-System-Erfahrung'
     placeholder:
-        tenant: '-- Mandant auswählen --'
+        tenant: '-- Organisation auswählen --'
         competencies_json: '[{"name":"ISO 27001 Grundlagen","category":"compliance","level":3,"certifiedBy":null,"certifiedAt":null,"expiresAt":null}]'
         previous_qms_background: '-- Bitte auswählen --'
     qms_background:
@@ -139,8 +139,8 @@ user:
         phone_number: 'Telefonnummer für Kontaktaufnahme (optional)'
         avatar: 'Profilbild hochladen (empfohlen: quadratisches Format, max. 2MB)'
         avatar_help: 'Empfohlenes Format: quadratisch, max. 2MB (JPEG, PNG, GIF, WebP)'
-        tenant: 'Mandant, dem dieser Benutzer zugeordnet ist (bei Multi-Tenant-Umgebung)'
-        tenant_help: 'Leer lassen für Super-Admin-Benutzer ohne Mandantenbindung'
+        tenant: 'Organisation, der dieser Benutzer zugeordnet ist (bei Multi-Organisationen-Umgebung)'
+        tenant_help: 'Leer lassen für Super-Admin-Benutzer ohne Organisationsbindung'
         password_edit: 'Leer lassen, um das aktuelle Passwort beizubehalten'
         password: 'Mindestens 8 Zeichen, sollte Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen enthalten'
         password_change: 'Mindestens %min% Zeichen. Alle Zeichen erlaubt — Buchstaben, Zahlen, Sonderzeichen, Umlaute, Leerzeichen, Emoji. Leer lassen, um das aktuelle Passwort zu behalten.'
@@ -199,8 +199,8 @@ user:
         user: 'Basis-Zugriff auf ISMS-Module. Kann Daten einsehen und eigene Aufgaben bearbeiten.'
         auditor: 'Erweiterte Leserechte für Audits und Reviews. Kann Audit-Ergebnisse dokumentieren und Compliance prüfen.'
         manager: 'Vollzugriff auf ISMS-Daten. Kann Reports erstellen, Workflows genehmigen und Compliance-Wizards nutzen. KEIN Zugriff auf Benutzerverwaltung.'
-        admin: 'Mandanten-Administrator. Verwaltet Benutzer, Rollen und Tenant-Einstellungen. Vollzugriff auf alle ISMS-Funktionen innerhalb seines Mandanten.'
-        super_admin: 'System-Administrator. Mandanten-übergreifender Zugriff, kann Benutzer wechseln (impersonieren) und globale Einstellungen verwalten.'
+        admin: 'Organisations-Administrator. Verwaltet Benutzer, Rollen und Tenant-Einstellungen. Vollzugriff auf alle ISMS-Funktionen innerhalb seiner Organisation.'
+        super_admin: 'System-Administrator. Organisationsübergreifender Zugriff, kann Benutzer wechseln (impersonieren) und globale Einstellungen verwalten.'
         ciso: 'Chief Information Security Officer. Strategische Sicht auf Compliance, Risiko-Posture und Genehmigungs-Pipeline. Schaltet das CISO-/Board-Dashboard frei.'
         risk_manager: 'Risiko-Manager. Operative Sicht auf Risiko-Pipeline, Risk-Appetite-Monitoring und Mitigation-Effektivität. Schaltet das Risk-Manager-Dashboard frei.'
         dpo: 'Datenschutzbeauftragter (DPO). Sieht eigene zugewiesene DSAR-Vorgänge in Mein-Tag und das Compliance-Manager-Dashboard. KEIN See-All-Zugriff auf Datenbetroffenen-Anfragen.'

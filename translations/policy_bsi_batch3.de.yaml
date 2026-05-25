@@ -339,7 +339,7 @@ policy:
                     - **DORA-Klauseln** (Art. 30) bei Finanzbranche.
 
                     ## 6. Mandantenfaehigkeit (OPS.2.3.A4)
-                    Bei mandantenfaehigen Diensten wird die saubere Trennung zwischen Mandanten dokumentiert und auditiert; bei sehr hohem Schutzbedarf wird Single-Tenancy bevorzugt.
+                    Bei mandantenfaehigen Diensten wird die saubere Trennung zwischen Organisationen dokumentiert und auditiert; bei sehr hohem Schutzbedarf wird Single-Tenancy bevorzugt.
 
                     ## 7. Laufendes Monitoring
                     - KPI-basiertes Monitoring (Verfuegbarkeit, Vorfaelle);
