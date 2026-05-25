@@ -254,6 +254,7 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
             'translation_domain' => 'business_process',
             'constraints' => [
                 new Callback([$this, 'validateProcessOwnerSlot']),
+                new Callback([$this, 'validateRecoveryChain']),
             ],
         ]);
     }
@@ -266,6 +267,40 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
         if ($entity->getProcessOwnerUser() === null && $entity->getProcessOwnerPerson() === null) {
             $context->buildViolation('business_process.error.owner_required_user_or_person')
                 ->atPath('processOwnerUser')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * S11 §1 (M-01) — ISO 22301 Cl. 8.2.2 / 8.3.2 recovery chain monotonicity.
+     *
+     * The three BCM windows must satisfy:  RPO ≤ RTO ≤ MTPD
+     *   RPO  — maximum acceptable data loss (since last good backup)
+     *   RTO  — maximum acceptable downtime (until service is back)
+     *   MTPD — maximum tolerable period of disruption (until org failure)
+     *
+     * Any window may be NULL (not yet measured) — only enforce when both
+     * sides of a comparison are set.
+     */
+    public function validateRecoveryChain(?BusinessProcess $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+
+        $rpo  = $entity->getRpo();
+        $rto  = $entity->getRto();
+        $mtpd = $entity->getMtpd();
+
+        if ($rpo !== null && $rto !== null && $rpo > $rto) {
+            $context->buildViolation('business_process.error.recovery_chain_rpo_gt_rto')
+                ->atPath('rpo')
+                ->addViolation();
+        }
+
+        if ($rto !== null && $mtpd !== null && $rto > $mtpd) {
+            $context->buildViolation('business_process.error.recovery_chain_rto_gt_mtpd')
+                ->atPath('rto')
                 ->addViolation();
         }
     }
