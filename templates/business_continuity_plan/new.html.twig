@@ -45,6 +45,32 @@
         'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
         'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate',
     }}) }}
+    {# S15 A1 + A2 — Quick-Create empty-state rescue triggers (modals for both).
+       C1-02 CrisisTeam · C1-03 BusinessProcess. Triggers render INSIDE the form
+       via extras_before_actions; dialog markup lives OUTSIDE the form (after
+       form_end) so the nested-<form> HTML-invalidity trap is avoided. #}
+    {% set _bc_quick_create_triggers %}
+        <div class="quick-create-empty-state-row mt-3 d-flex flex-wrap gap-3 align-items-center" aria-label="{{ 'quick_create.cta'|trans({}, 'quick_create') }}">
+            <div class="d-flex flex-column gap-2">
+                <span class="text-muted small">{{ 'quick_create.hint.missing_crisis_team'|trans({}, 'quick_create') }}</span>
+                {% include '_components/_quick_create_modal_trigger.html.twig' with {
+                    entityType:     'crisis-team',
+                    targetSelectId: 'business_continuity_plan_crisisTeams',
+                    modalId:        'quickCreateCrisisTeamModal',
+                    triggerLabel:   ('bc_plans.action.quick_create_crisis_team'|trans({}, 'bc_plans')),
+                } only %}
+            </div>
+            <div class="d-flex flex-column gap-2">
+                <span class="text-muted small">{{ 'quick_create.hint.missing_business_process'|trans({}, 'quick_create') }}</span>
+                {% include '_components/_quick_create_modal_trigger.html.twig' with {
+                    entityType:     'business-process',
+                    targetSelectId: 'business_continuity_plan_businessProcess',
+                    modalId:        'quickCreateBusinessProcessModal',
+                    triggerLabel:   ('bc_plans.action.quick_create_business_process'|trans({}, 'bc_plans')),
+                } only %}
+            </div>
+        </div>
+    {% endset %}
     {% include '_components/_auto_form.html.twig' with {
         'form': form,
         'layout': 'outline-rail',
@@ -121,36 +147,27 @@
         'actions': {
             'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
             'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
-        }
+        },
+        'extras_before_actions': _bc_quick_create_triggers
     } %}
     {{ form_end(form) }}
 
-    {# S15 A1 + A2 — Quick-Create empty-state rescue triggers (modals for both). #}
-    {# C1-02 CrisisTeam · C1-03 BusinessProcess — both via _quick_create_modal. #}
-    <div class="quick-create-empty-state-row mt-3 d-flex flex-wrap gap-3 align-items-center" aria-label="{{ 'quick_create.cta'|trans({}, 'quick_create') }}">
-        <div class="d-flex flex-column gap-2">
-            <span class="text-muted small">{{ 'quick_create.hint.missing_crisis_team'|trans({}, 'quick_create') }}</span>
-            {% include '_components/_quick_create_modal.html.twig' with {
-                entityType:     'crisis-team',
-                targetSelectId: 'business_continuity_plan_crisisTeams',
-                modalId:        'quickCreateCrisisTeamModal',
-                triggerLabel:   ('bc_plans.action.quick_create_crisis_team'|trans({}, 'bc_plans')),
-                title:          ('bc_plans.action.quick_create_crisis_team'|trans({}, 'bc_plans')),
-                placeholder:    ('crisis_team.placeholder.team_name'|trans({}, 'crisis_team')),
-            } only %}
-        </div>
-
-        <div class="d-flex flex-column gap-2">
-            <span class="text-muted small">{{ 'quick_create.hint.missing_business_process'|trans({}, 'quick_create') }}</span>
-            {% include '_components/_quick_create_modal.html.twig' with {
-                entityType:     'business-process',
-                targetSelectId: 'business_continuity_plan_businessProcess',
-                modalId:        'quickCreateBusinessProcessModal',
-                triggerLabel:   ('bc_plans.action.quick_create_business_process'|trans({}, 'bc_plans')),
-                title:          ('bc_plans.action.quick_create_business_process'|trans({}, 'bc_plans')),
-                placeholder:    ('business_process.placeholder.name'|trans({}, 'business_process')),
-            } only %}
-        </div>
-    </div>
+    {# Quick-Create modal dialogs — body-level (OUTSIDE the form) so the
+       nested-<form> HTML-invalidity is avoided. Triggers were rendered
+       inside the form via extras_before_actions above. #}
+    {% include '_components/_quick_create_modal_dialog.html.twig' with {
+        entityType:     'crisis-team',
+        targetSelectId: 'business_continuity_plan_crisisTeams',
+        modalId:        'quickCreateCrisisTeamModal',
+        title:          ('bc_plans.action.quick_create_crisis_team'|trans({}, 'bc_plans')),
+        placeholder:    ('crisis_team.placeholder.team_name'|trans({}, 'crisis_team')),
+    } only %}
+    {% include '_components/_quick_create_modal_dialog.html.twig' with {
+        entityType:     'business-process',
+        targetSelectId: 'business_continuity_plan_businessProcess',
+        modalId:        'quickCreateBusinessProcessModal',
+        title:          ('bc_plans.action.quick_create_business_process'|trans({}, 'bc_plans')),
+        placeholder:    ('business_process.placeholder.name'|trans({}, 'business_process')),
+    } only %}
 </div>
 {% endblock %}

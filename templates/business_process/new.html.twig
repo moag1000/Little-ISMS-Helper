@@ -55,6 +55,20 @@
         'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
         'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate',
     }}) }}
+    {# S14 Cluster A C1-01 — Quick-Create Asset trigger renders INSIDE the form
+       via extras_before_actions; dialog markup lives OUTSIDE the form to
+       avoid nested-<form> HTML-invalidity. #}
+    {% set _bp_quick_create_triggers %}
+        <div class="quick-create-empty-state-row mt-3 d-flex flex-wrap gap-3 align-items-center" aria-label="{{ 'quick_create.cta'|trans({}, 'quick_create') }}">
+            <span class="text-muted small">{{ 'quick_create.hint.missing_asset'|trans({}, 'quick_create') }}</span>
+            {% include '_components/_quick_create_modal_trigger.html.twig' with {
+                entityType:     'asset',
+                targetSelectId: 'business_process_supportingAssets',
+                modalId:        'quickCreateAssetModal',
+                triggerLabel:   ('business_process.action.quick_create_asset'|trans({}, 'business_process')),
+            } only %}
+        </div>
+    {% endset %}
     {% include '_components/_auto_form.html.twig' with {
         'form': form,
         'layout': 'outline-rail',
@@ -121,22 +135,19 @@
         'actions': {
             'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
             'submit': { 'label': 'common.create'|trans({}, 'messages'), 'variant': 'primary' }
-        }
+        },
+        'extras_before_actions': _bp_quick_create_triggers
     } %}
     {{ form_end(form) }}
     {% include '_components/_fa_help_drawer.html.twig' %}
     </div>
 
-    {# S14 Cluster A — C1-01 Quick-Create Asset for supportingAssets picker. #}
-    <div class="quick-create-empty-state-row mt-3 d-flex flex-wrap gap-3 align-items-center" aria-label="{{ 'quick_create.cta'|trans({}, 'quick_create') }}">
-        <span class="text-muted small">{{ 'quick_create.hint.missing_asset'|trans({}, 'quick_create') }}</span>
-        {% include '_components/_quick_create_modal.html.twig' with {
-            entityType:     'asset',
-            targetSelectId: 'business_process_supportingAssets',
-            modalId:        'quickCreateAssetModal',
-            triggerLabel:   ('business_process.action.quick_create_asset'|trans({}, 'business_process')),
-            title:          ('business_process.action.quick_create_asset'|trans({}, 'business_process')),
-        } only %}
-    </div>
+    {# S14 Cluster A C1-01 — Quick-Create Asset dialog. Body-level (OUTSIDE the form). #}
+    {% include '_components/_quick_create_modal_dialog.html.twig' with {
+        entityType:     'asset',
+        targetSelectId: 'business_process_supportingAssets',
+        modalId:        'quickCreateAssetModal',
+        title:          ('business_process.action.quick_create_asset'|trans({}, 'business_process')),
+    } only %}
 </div>
 {% endblock %}
