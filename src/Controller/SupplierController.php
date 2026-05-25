@@ -8,12 +8,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
 use DateTimeImmutable;
 use App\Controller\Trait\BulkActionTrait;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Supplier;
 use App\Form\SupplierType;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\SupplierRepository;
 use App\Service\AuditLogger;
 use App\Service\InverseCoverageService;
+use App\Service\ModuleConfigurationService;
 use App\Service\SupplierService;
 use App\Service\TagFilterService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SupplierController extends AbstractController
 {
     use BulkActionTrait;
+    use ModuleGatedControllerTrait;
 
     public function __construct(
         private readonly SupplierRepository $supplierRepository,
@@ -39,6 +42,7 @@ class SupplierController extends AbstractController
         private readonly Security $security,
         private readonly TagFilterService $tagFilterService,
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly ModuleConfigurationService $moduleService,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?AuditLogger $auditLogger = null,
     ) {}
@@ -46,6 +50,7 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         // Get current tenant
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
@@ -136,6 +141,7 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         $supplier = new Supplier();
 
         // Set tenant from current user
@@ -168,6 +174,9 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
     {
+        if (!$this->moduleService->isModuleActive('suppliers')) {
+            return new JsonResponse(['error' => 'module_inactive'], 403);
+        }
         $data = json_decode($request->getContent(), true) ?? [];
         $ids = (array) ($data['ids'] ?? []);
         return new JsonResponse(['dependencies' => [], 'checked_count' => count($ids)]);
@@ -177,6 +186,9 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
     {
+        if (!$this->moduleService->isModuleActive('suppliers')) {
+            return $this->json(['error' => 'module_inactive'], 403);
+        }
         $data = json_decode($request->getContent(), true);
         $ids = $data['ids'] ?? [];
 
@@ -234,6 +246,7 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Supplier $supplier): Response
     {
+        if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
@@ -272,6 +285,7 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Supplier $supplier): Response
     {
+        if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
@@ -301,6 +315,7 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Supplier $supplier): Response
     {
+        if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
@@ -369,6 +384,7 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
+        if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
             return $this->json(['error' => 'Invalid CSRF token'], 403);

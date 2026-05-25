@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ReuseTrendSnapshotRepository;
 use App\Service\CompliancePolicyService;
 use App\Service\ExcelExportService;
 use App\Service\InheritanceMetricsService;
+use App\Service\ModuleConfigurationService;
 use App\Service\PortfolioReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -22,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Portfolio Report Controller
@@ -37,6 +40,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_MANAGER')]
 class PortfolioReportController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly PortfolioReportService $portfolioReportService,
         private readonly TenantContext $tenantContext,
@@ -45,6 +50,8 @@ class PortfolioReportController extends AbstractController
         private readonly InheritanceMetricsService $inheritanceMetricsService,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly ModuleConfigurationService $moduleService,
+        private readonly TranslatorInterface $translator,
         private readonly ?ReuseTrendSnapshotRepository $reuseTrendRepository = null,
     ) {
     }
@@ -63,6 +70,7 @@ class PortfolioReportController extends AbstractController
     #[Route('', name: 'app_management_reports_portfolio', methods: ['GET'])]
     public function index(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('portfolio_reports')) return $redirect;
         $tenant = $this->tenantContext->getCurrentTenant();
 
         if ($tenant === null) {
@@ -108,6 +116,7 @@ class PortfolioReportController extends AbstractController
     #[Route('/pdf', name: 'app_management_reports_portfolio_pdf', methods: ['GET'])]
     public function pdf(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('portfolio_reports')) return $redirect;
         $tenant = $this->tenantContext->getCurrentTenant();
 
         if ($tenant === null) {
@@ -137,6 +146,7 @@ class PortfolioReportController extends AbstractController
     #[Route('/excel', name: 'app_management_reports_portfolio_excel', methods: ['GET'])]
     public function excel(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('portfolio_reports')) return $redirect;
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             $this->addFlash('warning', 'portfolio_report.flash.no_tenant');
@@ -247,6 +257,7 @@ class PortfolioReportController extends AbstractController
     )]
     public function drill(Request $request, string $frameworkCode, string $category): Response
     {
+        if ($redirect = $this->checkModuleActive('portfolio_reports')) return $redirect;
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             $this->addFlash('warning', 'portfolio_report.flash.no_tenant');
