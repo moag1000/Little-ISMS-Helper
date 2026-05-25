@@ -447,6 +447,14 @@ jobs:
         # Doctrine quotes them in CREATE TABLE but not in DML → INSERT/UPDATE
         # blows up. Use `#[ORM\Column(name: 'safe_name')]` or rename the property.
         run: python3 scripts/quality/check_entity_reserved_words.py --baseline scripts/quality/baselines/entity_reserved_words.txt --quiet
+      - name: "Gate 50: disabled FormField without mapped=>false"
+        # `'disabled' => true` without `'mapped' => false` lets Symfony bind
+        # empty POST values to the entity on submit → NOT NULL constraint
+        # violation (422). Fixed in bulk in PR #707 and PR #712 Pattern A.
+        # New occurrences are blocked here; 6 legacy fields are baselined for
+        # cleanup in Sprint S14. Add `// @intentional-bind: <reason>` if the
+        # bind is truly intentional.
+        run: python3 scripts/quality/check_disabled_mapped_pair.py --baseline scripts/quality/baselines/disabled_mapped_pair.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
