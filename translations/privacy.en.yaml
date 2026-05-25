@@ -600,6 +600,7 @@ processing_activity:
     # Junior-ISB-Audit-2026-05-22 C2-03: cross-field TOMs OR Controls evidence requirement.
     validation:
         tom_or_controls_required: 'At least one form of evidence is required (GDPR Art. 32): either a qualitative TOM description (≥ 50 characters) OR at least one implemented ISO 27001 control.'
+        processor_suppliers_required: 'At least one Auftragsverarbeiter must be linked as a typed entity (GDPR Art. 28(1) + Art. 30(1)(d)). When "involves processors" is checked, the concrete suppliers are mandatory for the recipients-disclosure duty.'
 data_breach:
     dashboard:
         title: 'Data Breach Dashboard'

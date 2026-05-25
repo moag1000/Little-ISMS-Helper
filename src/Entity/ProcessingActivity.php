@@ -1409,4 +1409,23 @@ class ProcessingActivity
                 ->addViolation();
         }
     }
+
+    /**
+     * CS-P0 #12.2 — GDPR Art. 28(1) AVV gate.
+     *
+     * When `involvesProcessors=true`, at least one Auftragsverarbeiter must be
+     * named via the structured `processorSuppliers` M2M. Without that link the
+     * VVT-record is non-defensible against the GDPR Art. 30(1)(d) recipients
+     * disclosure duty: the audit can only know WHO processes the data if it
+     * is a typed link, not a free-text mention.
+     */
+    #[Assert\Callback]
+    public function validateProcessorSuppliers(ExecutionContextInterface $context): void
+    {
+        if ($this->involvesProcessors && $this->processorSuppliers->isEmpty()) {
+            $context->buildViolation('processing_activity.validation.processor_suppliers_required')
+                ->atPath('processorSuppliers')
+                ->addViolation();
+        }
+    }
 }
