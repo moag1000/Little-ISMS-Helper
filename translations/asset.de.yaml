@@ -102,6 +102,7 @@ asset:
     handling_instructions: Besondere Anweisungen für den Umgang mit diesem Asset
     return_date: Datum der geplanten Rückgabe (bei temporär zugewiesenen Assets)
     status: Aktueller Nutzungsstatus des Assets
+    status_readonly: 'Status wird über den Lifecycle (Aktiv → In Nutzung → Zurückgegeben → Ausgemustert → Entsorgt) geändert. Status-Aktionen auf der Asset-Detailseite (4-Augen-Prinzip bei „Entsorgt").'
     owner_user: Verantwortliche Person aus der Benutzerverwaltung. Wenn die Person
       keinen System-Login hat, im "Person"-Feld auswählen oder ggf. das Legacy-Freitext-Feld nutzen.
     owner_person: Verantwortliche Person aus den Stammdaten (auch externe Stakeholder
