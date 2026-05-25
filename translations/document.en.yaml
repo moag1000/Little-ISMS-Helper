@@ -125,6 +125,7 @@ document:
         confidential: 'Confidential'
         strictly_confidential: 'Strictly Confidential'
     help:
+        status_readonly: 'Status is driven by the Document lifecycle workflow (draft → in_review → approved → published → archived). Direct edit disabled; use the status actions on the show page (LifecycleService::transition).'
         name: 'Unique name of the document'
         description: 'Detailed description of the content and purpose'
         document_type: 'Category of the document (e.g. policy, procedure)'

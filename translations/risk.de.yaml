@@ -232,6 +232,7 @@ risk:
     all_linked_assets: Alle verknüpften Assets
     all_linked_assets_help: 'Vereinte Übersicht aus primärem Risikogegenstand und ICT-Asset-Abhängigkeiten — inkl. Maximum-CIA-Schutzbedarf je Asset.'
   help:
+    status_readonly: 'Status wird vom Risk-Lifecycle-Workflow gesteuert (identified → assessed → in_treatment → treated/accepted/closed). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite (LifecycleService::transition).'
     title: Eindeutige Bezeichnung des Risikos für interne Referenzierung
     category: Kategorisierung des Risikos (finanziell, operativ, compliance, etc.)
     asset: Das von diesem Risiko betroffene Asset (Hardware, Software, Daten, Prozess)

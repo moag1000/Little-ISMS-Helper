@@ -391,3 +391,6 @@ corporate:
         outsourcing_classification:
             substantial: Wesentliche Auslagerung
             non_substantial: Nicht-wesentliche Auslagerung
+
+iso_9001_bridge:
+  supplier: 'In ISO 9001 sind Lieferanten externe Anbieter im Sinne Klausel 8.4 (Steuerung extern bereitgestellter Prozesse, Produkte, Dienstleistungen). ISO 27001 A.5.19 und A.5.20 erweitern um Informationssicherheits-Anforderungen + Vertragspflichten; DORA Art. 28 ergänzt für ICT-Drittdienstleister.'

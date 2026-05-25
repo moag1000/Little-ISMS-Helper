@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'suppliers' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 {% form_theme form 'supplier/_supplier_form_theme.html.twig' %}
 
 {% block title %}{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers') }}{% endblock %}
@@ -22,6 +23,14 @@
         { label: 'supplier.action.view'|trans({}, 'suppliers'), href: path('app_supplier_show', {id: supplier.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
+
+    {# S15 A4 — 9001-bridge for Supplier form (8.4 external providers). #}
+    {{ _fa_norm_bridge.render({
+        from_norm: 'ISO 27001 A.5.19',
+        to_norm:   'ISO 9001 Cl. 8.4',
+        bridge_text: ('iso_9001_bridge.supplier'|trans({}, 'suppliers')),
+        prominence: 'subtle'
+    }) }}
 
     {{ form_start(form) }}
     {% include '_components/_auto_form.html.twig' with {
