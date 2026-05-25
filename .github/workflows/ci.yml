@@ -13,6 +13,7 @@ permissions:
   contents: read
   security-events: write  # Required for Trivy SARIF upload
   actions: read
+  packages: write  # Required for ghcr.io push on tag releases
 
 env:
   # Opt into Node.js 24 for all actions that haven't migrated yet.
@@ -490,11 +491,22 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/little-isms-helper
+          # Dual-registry push: Docker Hub (canonical) + ghcr.io (OSS mirror,
+          # zero pull-rate-limit for GitHub Actions consumers).
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/little-isms-helper
+            ghcr.io/${{ github.repository_owner }}/little-isms-helper
           # Tagging strategy:
           #   Stable tag (e.g. v3.4.0)        → :3.4.0, :3.4, :latest
           #   Dev tag    (e.g. v3.4.0-dev.1)  → :3.4.0-dev.1, :dev   (NO :latest, NO :3.4)
