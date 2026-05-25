@@ -660,7 +660,7 @@ class ProcessingActivity
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -904,7 +904,7 @@ class ProcessingActivity
         return $this->legalBasis;
     }
 
-    public function setLegalBasis(string $legalBasis): static
+    public function setLegalBasis(?string $legalBasis): static
     {
         $this->legalBasis = $legalBasis;
         return $this;

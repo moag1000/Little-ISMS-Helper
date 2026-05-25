@@ -92,6 +92,9 @@ final class RiskTreatmentPlanType extends AbstractType implements SectionMapInte
                 ],
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'choice_translation_domain' => 'risk_treatment_plan',
             ])
             ->add('priority', ChoiceType::class, [

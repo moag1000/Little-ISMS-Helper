@@ -226,7 +226,7 @@ class PolicyAcknowledgement
         return $this->documentVersion;
     }
 
-    public function setDocumentVersion(string $documentVersion): static
+    public function setDocumentVersion(?string $documentVersion): static
     {
         $this->documentVersion = $documentVersion;
         return $this;

@@ -116,6 +116,9 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 'choice_translation_domain' => 'audits',
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
             ])
             ->add('source', ChoiceType::class, [
                 'label' => 'audits.field.finding_source',

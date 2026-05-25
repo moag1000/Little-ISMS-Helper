@@ -104,7 +104,7 @@ class IncidentSlaConfig
     public function setTenant(?Tenant $t): static { $this->tenant = $t; return $this; }
 
     public function getSeverity(): ?string { return $this->severity; }
-    public function setSeverity(string $s): static { $this->severity = $s; return $this; }
+    public function setSeverity(?string $s): static { $this->severity = $s; return $this; }
 
     public function getResponseHours(): int { return $this->responseHours; }
     public function setResponseHours(int $h): static { $this->responseHours = $h; return $this; }

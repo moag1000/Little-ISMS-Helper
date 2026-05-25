@@ -236,7 +236,7 @@ class InterestedParty
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -247,7 +247,7 @@ class InterestedParty
         return $this->partyType;
     }
 
-    public function setPartyType(string $partyType): static
+    public function setPartyType(?string $partyType): static
     {
         $this->partyType = $partyType;
         return $this;
@@ -302,7 +302,7 @@ class InterestedParty
         return $this->importance;
     }
 
-    public function setImportance(string $importance): static
+    public function setImportance(?string $importance): static
     {
         $this->importance = $importance;
         return $this;
@@ -313,7 +313,7 @@ class InterestedParty
         return $this->requirements;
     }
 
-    public function setRequirements(string $requirements): static
+    public function setRequirements(?string $requirements): static
     {
         $this->requirements = $requirements;
         return $this;

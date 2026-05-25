@@ -212,7 +212,7 @@ class CustomReport
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -452,7 +452,7 @@ class CustomReport
         return $this->tenantId;
     }
 
-    public function setTenantId(int $tenantId): static
+    public function setTenantId(?int $tenantId): static
     {
         $this->tenantId = $tenantId;
         return $this;

@@ -210,6 +210,9 @@ final class IncidentType extends AbstractType
                 'choice_label' => fn(IncidentStatus $s): string => 'incident.status.' . $s->value,
                 'required' => false,
                 'disabled' => true,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'choice_translation_domain' => 'incident',
             ])
             // Junior-ISB-Audit-2026-05-22 C2-01: Doppelpflege-Deprecation.

@@ -138,7 +138,7 @@ class Person
         return $this->fullName;
     }
 
-    public function setFullName(string $fullName): static
+    public function setFullName(?string $fullName): static
     {
         $this->fullName = $fullName;
         return $this;
@@ -149,7 +149,7 @@ class Person
         return $this->personType;
     }
 
-    public function setPersonType(string $personType): static
+    public function setPersonType(?string $personType): static
     {
         $this->personType = $personType;
         return $this;
@@ -237,7 +237,7 @@ class Person
         return $this->active;
     }
 
-    public function setActive(bool $active): static
+    public function setActive(?bool $active): static
     {
         $this->active = $active;
         return $this;

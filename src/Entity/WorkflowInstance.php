@@ -125,7 +125,7 @@ class WorkflowInstance
         return $this->entityType;
     }
 
-    public function setEntityType(string $entityType): static
+    public function setEntityType(?string $entityType): static
     {
         $this->entityType = $entityType;
         return $this;
@@ -136,7 +136,7 @@ class WorkflowInstance
         return $this->entityId;
     }
 
-    public function setEntityId(int $entityId): static
+    public function setEntityId(?int $entityId): static
     {
         $this->entityId = $entityId;
         return $this;

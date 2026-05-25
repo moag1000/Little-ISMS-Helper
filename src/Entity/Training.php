@@ -362,7 +362,7 @@ public function __construct()
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -384,7 +384,7 @@ public function __construct()
         return $this->trainingType;
     }
 
-    public function setTrainingType(string $trainingType): static
+    public function setTrainingType(?string $trainingType): static
     {
         $this->trainingType = $trainingType;
         return $this;
@@ -417,7 +417,7 @@ public function __construct()
         return $this->trainer;
     }
 
-    public function setTrainer(string $trainer): static
+    public function setTrainer(?string $trainer): static
     {
         $this->trainer = $trainer;
         return $this;

@@ -294,7 +294,7 @@ class Supplier
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -360,7 +360,7 @@ class Supplier
         return $this->serviceProvided;
     }
 
-    public function setServiceProvided(string $serviceProvided): static
+    public function setServiceProvided(?string $serviceProvided): static
     {
         $this->serviceProvided = $serviceProvided;
         return $this;
@@ -371,7 +371,7 @@ class Supplier
         return $this->criticality;
     }
 
-    public function setCriticality(string $criticality): static
+    public function setCriticality(?string $criticality): static
     {
         $this->criticality = $criticality;
         return $this;

@@ -132,7 +132,7 @@ class PushSubscription
         return $this->endpoint;
     }
 
-    public function setEndpoint(string $endpoint): static
+    public function setEndpoint(?string $endpoint): static
     {
         $this->endpoint = $endpoint;
         $this->endpointHash = hash('sha256', $endpoint);
@@ -149,7 +149,7 @@ class PushSubscription
         return $this->publicKey;
     }
 
-    public function setPublicKey(string $publicKey): static
+    public function setPublicKey(?string $publicKey): static
     {
         $this->publicKey = $publicKey;
         return $this;
@@ -160,7 +160,7 @@ class PushSubscription
         return $this->authToken;
     }
 
-    public function setAuthToken(string $authToken): static
+    public function setAuthToken(?string $authToken): static
     {
         $this->authToken = $authToken;
         return $this;

@@ -45,7 +45,7 @@ class AlvaHintRenderCount
     public function getTenant(): ?Tenant { return $this->tenant; }
     public function setTenant(?Tenant $tenant): self { $this->tenant = $tenant; return $this; }
     public function getHintKey(): ?string { return $this->hintKey; }
-    public function setHintKey(string $hintKey): self { $this->hintKey = $hintKey; return $this; }
+    public function setHintKey(?string $hintKey): self { $this->hintKey = $hintKey; return $this; }
     public function getRenderCount(): int { return $this->renderCount; }
     public function setRenderCount(int $renderCount): self { $this->renderCount = $renderCount; return $this; }
 }

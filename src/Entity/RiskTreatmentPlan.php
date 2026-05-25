@@ -239,7 +239,7 @@ class RiskTreatmentPlan
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -250,7 +250,7 @@ class RiskTreatmentPlan
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
@@ -280,7 +280,7 @@ class RiskTreatmentPlan
         return $this->priority;
     }
 
-    public function setPriority(string $priority): static
+    public function setPriority(?string $priority): static
     {
         $this->priority = $priority;
         return $this;

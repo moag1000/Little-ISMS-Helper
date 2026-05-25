@@ -111,7 +111,7 @@ class SupplierCriticalityLevel
         return $this->code;
     }
 
-    public function setCode(string $code): static
+    public function setCode(?string $code): static
     {
         $this->code = $code;
         return $this;
@@ -122,7 +122,7 @@ class SupplierCriticalityLevel
         return $this->labelDe;
     }
 
-    public function setLabelDe(string $labelDe): static
+    public function setLabelDe(?string $labelDe): static
     {
         $this->labelDe = $labelDe;
         return $this;
@@ -133,7 +133,7 @@ class SupplierCriticalityLevel
         return $this->labelEn;
     }
 
-    public function setLabelEn(string $labelEn): static
+    public function setLabelEn(?string $labelEn): static
     {
         $this->labelEn = $labelEn;
         return $this;

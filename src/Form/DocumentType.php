@@ -134,6 +134,9 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'disabled' => true,
                 'placeholder' => false,
+                // mapped=false: entity status stays untouched regardless of POST value.
+                // Status transitions are owned exclusively by LifecycleService.
+                'mapped' => false,
                 'choice_translation_domain' => 'document',
             ])
             // V3 W2-Bug2 — version label + acknowledgement-requirement.

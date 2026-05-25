@@ -105,7 +105,7 @@ class CorporateGovernance
         return $this->scope;
     }
 
-    public function setScope(string $scope): static
+    public function setScope(?string $scope): static
     {
         $this->scope = $scope;
         return $this;

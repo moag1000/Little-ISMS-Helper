@@ -156,7 +156,7 @@ class ScheduledReport
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -167,7 +167,7 @@ class ScheduledReport
         return $this->reportType;
     }
 
-    public function setReportType(string $reportType): static
+    public function setReportType(?string $reportType): static
     {
         $this->reportType = $reportType;
         return $this;
@@ -178,7 +178,7 @@ class ScheduledReport
         return $this->schedule;
     }
 
-    public function setSchedule(string $schedule): static
+    public function setSchedule(?string $schedule): static
     {
         $this->schedule = $schedule;
         return $this;
@@ -189,7 +189,7 @@ class ScheduledReport
         return $this->format;
     }
 
-    public function setFormat(string $format): static
+    public function setFormat(?string $format): static
     {
         $this->format = $format;
         return $this;
@@ -346,7 +346,7 @@ class ScheduledReport
         return $this->tenantId;
     }
 
-    public function setTenantId(int $tenantId): static
+    public function setTenantId(?int $tenantId): static
     {
         $this->tenantId = $tenantId;
         return $this;

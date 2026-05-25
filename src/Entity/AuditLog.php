@@ -109,7 +109,7 @@ class AuditLog
         return $this->entityType;
     }
 
-    public function setEntityType(string $entityType): static
+    public function setEntityType(?string $entityType): static
     {
         $this->entityType = $entityType;
         return $this;
@@ -131,7 +131,7 @@ class AuditLog
         return $this->action;
     }
 
-    public function setAction(string $action): static
+    public function setAction(?string $action): static
     {
         $this->action = $action;
         return $this;
@@ -142,7 +142,7 @@ class AuditLog
         return $this->userName;
     }
 
-    public function setUserName(string $userName): static
+    public function setUserName(?string $userName): static
     {
         $this->userName = $userName;
         return $this;

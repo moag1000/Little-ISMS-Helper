@@ -362,7 +362,7 @@ class ChangeRequest
         return $this->changeNumber;
     }
 
-    public function setChangeNumber(string $changeNumber): static
+    public function setChangeNumber(?string $changeNumber): static
     {
         $this->changeNumber = $changeNumber;
         return $this;
@@ -373,7 +373,7 @@ class ChangeRequest
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -384,7 +384,7 @@ class ChangeRequest
         return $this->changeType;
     }
 
-    public function setChangeType(string $changeType): static
+    public function setChangeType(?string $changeType): static
     {
         $this->changeType = $changeType;
         return $this;
@@ -395,7 +395,7 @@ class ChangeRequest
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
@@ -406,7 +406,7 @@ class ChangeRequest
         return $this->justification;
     }
 
-    public function setJustification(string $justification): static
+    public function setJustification(?string $justification): static
     {
         $this->justification = $justification;
         return $this;
@@ -417,7 +417,7 @@ class ChangeRequest
         return $this->requestedBy;
     }
 
-    public function setRequestedBy(string $requestedBy): static
+    public function setRequestedBy(?string $requestedBy): static
     {
         $this->requestedBy = $requestedBy;
         return $this;
@@ -439,7 +439,7 @@ class ChangeRequest
         return $this->priority;
     }
 
-    public function setPriority(string $priority): static
+    public function setPriority(?string $priority): static
     {
         $this->priority = $priority;
         return $this;

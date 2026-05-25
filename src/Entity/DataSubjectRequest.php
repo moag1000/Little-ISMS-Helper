@@ -456,7 +456,7 @@ class DataSubjectRequest
         return $this->requestType;
     }
 
-    public function setRequestType(string $requestType): static
+    public function setRequestType(?string $requestType): static
     {
         $this->requestType = $requestType;
         return $this;
@@ -491,7 +491,7 @@ class DataSubjectRequest
         return $this->dataSubjectName;
     }
 
-    public function setDataSubjectName(string $dataSubjectName): static
+    public function setDataSubjectName(?string $dataSubjectName): static
     {
         $this->dataSubjectName = $dataSubjectName;
         return $this;
@@ -524,7 +524,7 @@ class DataSubjectRequest
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;

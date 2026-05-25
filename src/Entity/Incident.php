@@ -420,7 +420,7 @@ class Incident
         return $this->incidentNumber;
     }
 
-    public function setIncidentNumber(string $incidentNumber): static
+    public function setIncidentNumber(?string $incidentNumber): static
     {
         $this->incidentNumber = $incidentNumber;
         return $this;
@@ -431,7 +431,7 @@ class Incident
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -442,7 +442,7 @@ class Incident
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;
@@ -453,7 +453,7 @@ class Incident
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(?string $category): static
     {
         $this->category = $category;
         return $this;
@@ -529,7 +529,7 @@ class Incident
         return $this->reportedBy;
     }
 
-    public function setReportedBy(string $reportedBy): static
+    public function setReportedBy(?string $reportedBy): static
     {
         $this->reportedBy = $reportedBy;
         return $this;
@@ -650,7 +650,7 @@ class Incident
         return $this->dataBreachOccurred;
     }
 
-    public function setDataBreachOccurred(bool $dataBreachOccurred): static
+    public function setDataBreachOccurred(?bool $dataBreachOccurred): static
     {
         $this->dataBreachOccurred = $dataBreachOccurred;
         return $this;
@@ -661,7 +661,7 @@ class Incident
         return $this->notificationRequired;
     }
 
-    public function setNotificationRequired(bool $notificationRequired): static
+    public function setNotificationRequired(?bool $notificationRequired): static
     {
         $this->notificationRequired = $notificationRequired;
         return $this;
