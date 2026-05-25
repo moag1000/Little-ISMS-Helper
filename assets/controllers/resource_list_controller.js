@@ -9,6 +9,9 @@ import { Controller } from '@hotwired/stimulus';
  * Backward compat:
  *   - legacy {"personnel": 10, ...} (numeric) becomes ["10"]
  *   - legacy [] flat list (no categories) lands in "personnel"
+ *
+ * Note: internal state uses this._data (not this.data) because Stimulus 3.x
+ * makes Controller#data a getter-only DataMap — writing to it throws a TypeError.
  */
 export default class extends Controller {
     static targets = ['hidden', 'tab', 'panel', 'chips', 'count', 'emptyState', 'addInput', 'addForm', 'rawPanel', 'rawTextarea'];
@@ -17,7 +20,7 @@ export default class extends Controller {
     static CATEGORIES = ['personnel', 'equipment', 'supplies'];
 
     connect() {
-        this.data = this.parseValue(this.hiddenTarget.value || '');
+        this._data = this.parseValue(this.hiddenTarget.value || '');
         this.render();
     }
 
@@ -76,8 +79,8 @@ export default class extends Controller {
         if (!input) return;
         const value = input.value.trim();
         if (value === '') return;
-        if (!this.data[category]) this.data[category] = [];
-        this.data[category].push(value);
+        if (!this._data[category]) this._data[category] = [];
+        this._data[category].push(value);
         input.value = '';
         this.render();
     }
@@ -86,8 +89,8 @@ export default class extends Controller {
         event.preventDefault();
         const category = event.currentTarget.dataset.category;
         const idx = parseInt(event.currentTarget.dataset.index, 10);
-        if (!Number.isNaN(idx) && this.data[category] && this.data[category][idx] !== undefined) {
-            this.data[category].splice(idx, 1);
+        if (!Number.isNaN(idx) && this._data[category] && this._data[category][idx] !== undefined) {
+            this._data[category].splice(idx, 1);
             this.render();
         }
     }
@@ -100,7 +103,7 @@ export default class extends Controller {
             this.rawPanelTarget.classList.add('d-none');
             btn.setAttribute('aria-pressed', 'false');
         } else {
-            this.rawTextareaTarget.value = JSON.stringify(this.data, null, 2);
+            this.rawTextareaTarget.value = JSON.stringify(this._data, null, 2);
             this.rawPanelTarget.classList.remove('d-none');
             btn.setAttribute('aria-pressed', 'true');
         }
@@ -108,8 +111,7 @@ export default class extends Controller {
 
     syncFromRaw(event) {
         const raw = event.currentTarget.value;
-        const parsed = this.parseValue(raw);
-        this.data = parsed;
+        this._data = this.parseValue(raw);
         this.render();
     }
 
@@ -119,7 +121,7 @@ export default class extends Controller {
             const empty = this.emptyStateTargets.find((e) => e.dataset.category === category);
             if (!chipsBox) return;
             chipsBox.innerHTML = '';
-            const entries = this.data[category] || [];
+            const entries = this._data[category] || [];
             entries.forEach((entry, idx) => {
                 chipsBox.insertAdjacentHTML('beforeend', this.chipHtml(entry, category, idx));
             });
@@ -148,8 +150,8 @@ export default class extends Controller {
     }
 
     sync() {
-        const allEmpty = this.constructor.CATEGORIES.every((c) => (this.data[c] || []).length === 0);
-        this.hiddenTarget.value = allEmpty ? '' : JSON.stringify(this.data);
+        const allEmpty = this.constructor.CATEGORIES.every((c) => (this._data[c] || []).length === 0);
+        this.hiddenTarget.value = allEmpty ? '' : JSON.stringify(this._data);
     }
 
     escapeHtml(value) {

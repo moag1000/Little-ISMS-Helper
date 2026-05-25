@@ -34,9 +34,12 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="{{ asset('og-image.png') }}">
 
-    {# FairyAurora v3.0 — Font-Preload (above-the-fold weights only) #}
-    <link rel="preload" href="{{ asset('fonts/inter-500.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ asset('fonts/inter-600.woff2') }}" as="font" type="font/woff2" crossorigin>
+    {# FairyAurora v3.0 — Font-Preload (above-the-fold weights only).
+       Use static paths to match the @font-face src in fairy-aurora.css —
+       AssetMapper would produce a different hashed URL and trigger
+       "preload but not used" browser console warnings. #}
+    <link rel="preload" href="/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin>
 
     {# FairyAurora v3.0 — Theme-Init (prevent Flash-of-Wrong-Theme) #}
     <script>
