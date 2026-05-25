@@ -21,16 +21,18 @@
     ]
 } %}
 
+{# Direct download / preview actions opt out of Turbo via attrs.data-turbo: 'false'
+   so the browser keeps the binary/PDF stream instead of letting Turbo swallow it. #}
 {{ _fa_page_header.render({
     badge: { icon: 'shield-check', label: 'nav.soa'|trans({}, 'nav') },
     title: 'soa.page.title'|trans({}, 'soa'),
     subtitle: 'soa.page.subtitle'|trans({}, 'soa'),
     actions: [
-        { label: 'soa.action.export_html'|trans({}, 'soa'), variant: 'ghost', icon: 'nav-file-earmark-text', href: path('app_soa_export') },
-        { label: 'soa.action.export_pdf'|trans({}, 'soa'), variant: 'secondary', icon: 'nav-file-pdf', href: path('app_soa_export_pdf') },
-        { label: 'soa.action.preview_pdf'|trans({}, 'soa'), variant: 'ghost', icon: 'ui-eye', href: path('app_soa_preview_pdf') }
-    ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_index') }] : [])
-     |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'control', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
+        { label: 'soa.action.export_html'|trans({}, 'soa'), variant: 'ghost', icon: 'nav-file-earmark-text', href: path('app_soa_export'), attrs: { 'data-turbo': 'false' } },
+        { label: 'soa.action.export_pdf'|trans({}, 'soa'), variant: 'secondary', icon: 'nav-file-pdf', href: path('app_soa_export_pdf'), attrs: { 'data-turbo': 'false' } },
+        { label: 'soa.action.preview_pdf'|trans({}, 'soa'), variant: 'ghost', icon: 'ui-eye', href: path('app_soa_preview_pdf'), attrs: { 'data-turbo': 'false' } }
+    ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_index'), attrs: { 'data-turbo': 'false' } }] : [])
+     |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'control', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet', attrs: { 'data-turbo': 'false' } }] : [])
 }) }}
 {% set _global_hints = alva_hints('soa_index') %}
 {% if _global_hints|length > 0 %}
@@ -39,7 +41,6 @@
     {% endfor %}
 {% endif %}
 
-{# TODO: export/preview actions above use Turbo navigation; add data-turbo="false" via custom markup if full-page download is required #}
 <p class="text-muted small mb-3"><a href="{{ path('app_help_glossary') }}#glossary-soa" class="text-muted" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i> {{ 'common.glossary_link'|trans({}, 'messages') }}</a></p>
 
 {# 9001-bridge: SoA ↔ Prozesslandkarte. P-12 rollout. #}

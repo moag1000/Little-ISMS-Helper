@@ -412,6 +412,11 @@ alva_hint:
         body: 'Wizard run carrying finding reference "%finding_ref%" has been open for %age_days% days (threshold: %threshold_days% days). The auditor expects either a completed re-run with refreshed policy or a documented justification. Inaction creates a non-conformity.'
         cta_label: 'Start targeted re-run'
         dismiss_label: 'Not now'
+    document_split_needed:
+        title: 'Legacy document still awaiting manual split'
+        body: 'Topic "%topic%" carries a stocktake decision "split_to_topics" that needs manual handling (targets: %target_topics%). %count% such splits are currently open in this tenant. The Policy Wizard cannot auto-split a legacy document into multiple topic documents — switch the decision to merge_into_topic / replace, or launch one targeted re-run per target topic.'
+        cta_label: 'Open stocktake step'
+        dismiss_label: 'Remind me later'
     training_coverage_gap:
         title: 'Policy acknowledgement coverage below threshold'
         body: 'Policy "%document_title%" is acknowledged by only %coverage_percent% % of the workforce audience (threshold: %threshold_percent% %). ISO 27001 Cl. 7.3 awareness requires demonstrable communication and acknowledgement — open the acknowledgement inbox and chase outstanding records.'

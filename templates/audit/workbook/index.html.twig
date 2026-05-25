@@ -81,6 +81,7 @@
                             </div>
                             <a href="{{ path('app_audit_workbook_control_implementation') }}"
                                class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                               data-alva-celebrate="control-implementation"
                                aria-label="{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}">
                                 <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                                 <span class="fa-cyber-btn__label">{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}</span>
@@ -96,6 +97,7 @@
                             </div>
                             <a href="{{ path('app_audit_workbook_risk_register') }}"
                                class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                               data-alva-celebrate="risk-register"
                                aria-label="{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}">
                                 <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                                 <span class="fa-cyber-btn__label">{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}</span>
@@ -155,12 +157,14 @@
                                     <div class="d-flex gap-2 justify-content-end">
                                         <a href="{{ path('app_audit_workbook_soa', { frameworkId: framework.id }) }}"
                                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                           data-alva-celebrate="soa-export"
                                            aria-label="{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}">
                                             <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                                             <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}</span>
                                         </a>
                                         <a href="{{ path('app_audit_workbook_compliance', { frameworkId: framework.id }) }}"
                                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                           data-alva-celebrate="compliance-fulfillment"
                                            aria-label="{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}">
                                             <i class="fa-icon fa-icon--nav-patch-check" aria-hidden="true"></i>
                                             <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}</span>
@@ -175,13 +179,26 @@
             </div>
         </section>
 
-        {# ── Alva mood hint — TODO F40.4: wire alvaBus celebrate on click #}
-        {#
-            data-controller="alva-celebrate" data-action="click->alva-celebrate#trigger"
-            can be added to download buttons once the alva-celebrate Stimulus controller
-            is available. For now the page uses the 'working' mood in the empty state.
-        #}
-
     </main>
 </div>
+
+{# F40.4 — emit Alva 'celebrating' mood when an audit-workbook download is initiated.
+   Buttons opt in via [data-alva-celebrate="<reason-suffix>"]. The handler is attached
+   on `turbo:load` so it survives SPA-style navigation (same pattern as
+   templates/import/wizard/preview.html.twig). #}
+<script>
+    document.addEventListener('turbo:load', function () {
+        var buttons = document.querySelectorAll('[data-alva-celebrate]');
+        buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var suffix = btn.getAttribute('data-alva-celebrate') || 'download';
+                window.alvaBus && window.alvaBus.emit && window.alvaBus.emit({
+                    mood: 'celebrating',
+                    reason: 'audit-workbook-' + suffix,
+                    ttlMs: 5000
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}
