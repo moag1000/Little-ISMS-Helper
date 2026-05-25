@@ -439,7 +439,7 @@ class Document
             ?? $this->uploadedBy?->getFullName();
     }
     public function getUploadedAt(): ?DateTimeInterface { return $this->uploadedAt; }
-    public function setUploadedAt(DateTimeInterface $uploadedAt): static { $this->uploadedAt = $uploadedAt; return $this; }
+    public function setUploadedAt(?DateTimeInterface $uploadedAt): static { $this->uploadedAt = $uploadedAt; return $this; }
     public function getUpdatedAt(): ?DateTimeInterface { return $this->updatedAt; }
     public function setUpdatedAt(?DateTimeInterface $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
     public function getSha256Hash(): ?string { return $this->sha256Hash; }

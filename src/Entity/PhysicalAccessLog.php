@@ -193,7 +193,7 @@ class PhysicalAccessLog
         return $this->accessTime;
     }
 
-    public function setAccessTime(DateTimeInterface $accessTime): static
+    public function setAccessTime(?DateTimeInterface $accessTime): static
     {
         $this->accessTime = $accessTime;
         return $this;
@@ -336,7 +336,7 @@ class PhysicalAccessLog
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;

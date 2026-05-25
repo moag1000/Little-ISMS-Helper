@@ -193,7 +193,7 @@ class PolicyAcknowledgement
         return $this->requestedAt;
     }
 
-    public function setRequestedAt(DateTimeInterface $requestedAt): static
+    public function setRequestedAt(?DateTimeInterface $requestedAt): static
     {
         $this->requestedAt = $requestedAt;
         return $this;

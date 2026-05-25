@@ -428,7 +428,7 @@ class ChangeRequest
         return $this->requestedDate;
     }
 
-    public function setRequestedDate(DateTimeInterface $requestedDate): static
+    public function setRequestedDate(?DateTimeInterface $requestedDate): static
     {
         $this->requestedDate = $requestedDate;
         return $this;
@@ -805,7 +805,7 @@ class ChangeRequest
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;

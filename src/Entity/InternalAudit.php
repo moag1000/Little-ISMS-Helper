@@ -555,7 +555,7 @@ public function __construct()
         return $this->plannedDate;
     }
 
-    public function setPlannedDate(DateTimeInterface $plannedDate): static
+    public function setPlannedDate(?DateTimeInterface $plannedDate): static
     {
         $this->plannedDate = $plannedDate;
         return $this;
@@ -794,7 +794,7 @@ public function __construct()
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;

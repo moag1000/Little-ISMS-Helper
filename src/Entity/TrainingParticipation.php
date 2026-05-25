@@ -168,7 +168,7 @@ class TrainingParticipation
         return $this->assignedAt;
     }
 
-    public function setAssignedAt(DateTimeInterface $assignedAt): static
+    public function setAssignedAt(?DateTimeInterface $assignedAt): static
     {
         $this->assignedAt = $assignedAt;
         return $this;

@@ -507,7 +507,7 @@ class Incident
         return $this->detectedAt;
     }
 
-    public function setDetectedAt(DateTimeInterface $detectedAt): static
+    public function setDetectedAt(?DateTimeInterface $detectedAt): static
     {
         $this->detectedAt = $detectedAt;
         return $this;
@@ -672,7 +672,7 @@ class Incident
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): static
+    public function setCreatedAt(?DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
