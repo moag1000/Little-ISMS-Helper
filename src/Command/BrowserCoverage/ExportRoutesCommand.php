@@ -7,6 +7,7 @@ namespace App\Command\BrowserCoverage;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -48,6 +49,7 @@ class ExportRoutesCommand
 
     public function __construct(
         private readonly RouterInterface $router,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
     }
