@@ -282,11 +282,6 @@ wizard:
         incident_management_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
         business_continuity_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
         business_continuity_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
-        # Policy-Wizard integration categories (ISO 27001 Cl. 5.2 + topic policies)
-        policies_top_level: 'Top-Level-ISMS-Leitlinie (Cl. 5.2)'
-        policies_top_level_desc: 'Überprüft, ob eine veröffentlichte Top-Level-ISMS-Leitlinie aus dem Policy-Wizard vorliegt (ISO 27001 Cl. 5.2).'
-        policies_topic_coverage: 'Topic-Policies (ISO 27002 Annex-A-Abdeckung)'
-        policies_topic_coverage_desc: 'Prüft die 24 ISO 27002 Topic-Policies sowie 4 Querschnitts-Checks (Approval-Chain, Acknowledgement, Review-Kadenz, Tailoring) aus dem Policy-Wizard.'
 
     # NIS2 Categories
     nis2:
