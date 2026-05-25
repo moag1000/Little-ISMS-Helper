@@ -274,9 +274,9 @@ translations/security.en.yaml:23:reauth
 translations/setup_wizard.de.yaml:1:existing_frameworks
 translations/setup_wizard.en.yaml:1:existing_frameworks
 translations/suppliers.de.yaml:1:supplier
-translations/suppliers.de.yaml:316:corporate
+translations/suppliers.de.yaml:318:corporate
 translations/suppliers.en.yaml:1:supplier
-translations/suppliers.en.yaml:315:corporate
+translations/suppliers.en.yaml:317:corporate
 translations/tenant.de.yaml:202:corporate
 translations/tenant.en.yaml:202:corporate
 translations/threat.de.yaml:124:field
