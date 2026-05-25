@@ -24,13 +24,12 @@
         </div>
     </div>
     <div class="widget-body p-3">
-        {# Define KPI sections with their metadata #}
-        {# TODO(aurora-migration): kpi_sections icons are Twig-embedded strings used in `bi {{ section.icon }}` loop — migrate after extracting to Aurora mask-icons #}
+        {# KPI sections with Aurora mask-icon names (see assets/icons/*.svg). #}
         {% set kpi_sections = [
-            { key: 'core', icon: 'shield-check', title_key: 'dashboard.management_kpis.core.title', route: 'app_soa_index', col_class: 'col-6' },
+            { key: 'core', icon: 'nav-shield-check', title_key: 'dashboard.management_kpis.core.title', route: 'app_soa_index', col_class: 'col-6' },
             { key: 'risk_management', icon: 'status-warning', title_key: 'dashboard.management_kpis.risk_management.title', route: 'app_risk_index', col_class: 'col-6 col-md-4' },
             { key: 'asset_management', icon: 'asset-server', title_key: 'dashboard.management_kpis.asset_management.title', route: 'app_asset_index', col_class: 'col-6 col-md-4' },
-            { key: 'incident_management', icon: 'fire', title_key: 'dashboard.management_kpis.incident_management.title', route: 'app_incident_index', col_class: 'col-6 col-md-3' },
+            { key: 'incident_management', icon: 'status-fire', title_key: 'dashboard.management_kpis.incident_management.title', route: 'app_incident_index', col_class: 'col-6 col-md-3' },
             { key: 'business_continuity', icon: 'nav-workflow', title_key: 'dashboard.management_kpis.business_continuity.title', route: 'app_bcm_index', col_class: 'col-6 col-md-3' },
             { key: 'training', icon: 'nav-mortarboard', title_key: 'dashboard.management_kpis.training.title', route: 'app_training_index', col_class: 'col-6' },
             { key: 'audits', icon: 'nav-clipboard-check', title_key: 'dashboard.management_kpis.audits.title', route: 'app_audit_index', col_class: 'col-6 col-md-4' },
@@ -60,8 +59,7 @@
                                     data-bs-target="#kpi-{{ section.key }}"
                                     aria-expanded="{{ hasDanger ? 'true' : 'false' }}"
                                     aria-controls="kpi-{{ section.key }}">
-                                {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
-                                <i class="fa-icon fa-icon--{{ (section.icon starts with 'bi-') ? section.icon[3:] : section.icon }} me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--{{ section.icon }} me-2" aria-hidden="true"></i>
                                 {{ section.title_key|trans({}, 'dashboard') }}
                                 {% if hasDanger %}
                                     <span class="fa-status-pill fa-status-pill--danger ms-2">!</span>

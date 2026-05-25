@@ -228,7 +228,6 @@
             'priority': 'medium'
         } %}
     {% elseif dashboard.gaps.total > 0 %}
-        {# TODO(aurora-v4-icons): icon string in dict — bi-exclamation-triangle; migrate when template refactored to avoid inline HTML strings #}
         {% set next_action = {
             'title': 'Fill Compliance Gaps',
             'description': dashboard.gaps.total ~ ' requirements need controls or improved implementation',
