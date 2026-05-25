@@ -1,33 +1,61 @@
 {#
- # Aurora v4 — fa-matrix-table · Risk-Heatmap (5 × N)
+ # Aurora v4 — fa-matrix-table · Risk-Heatmap & RAG-Compliance-Heatmap
  #
- # ISO-27005-style heatmap. Y-axis = probability rows, X-axis = impact cols.
- # Severity is auto-derived from cell.score (≤3 low · ≤6 moderate · ≤9 medium
- # · ≤16 high · >16 critical). Override per cell via cell.severity.
- # Count-pill rendered when cell.count > 0. Cell becomes a link when cell.href
- # is set.
+ # Two-mode multi-axis table macro:
+ #
+ #   mode: 'severity' (default) — ISO-27005-style risk heatmap. Y-axis =
+ #     probability rows, X-axis = impact cols. Severity is auto-derived from
+ #     cell.score (≤3 low · ≤6 moderate · ≤9 medium · ≤16 high · >16 critical).
+ #     Override per cell via cell.severity. Count-pill rendered when
+ #     cell.count > 0. Cell becomes a link when cell.href is set.
+ #
+ #   mode: 'rag' — RAG/percentage compliance heatmap. Cells use cell.status
+ #     ('green' | 'amber' | 'red' | 'none') instead of numeric score. Each
+ #     cell can carry a percentage label via cell.rate (0-1 float, rendered
+ #     as N%) and an Aurora status icon. Best for framework × cluster grids
+ #     where coverage is shown as RAG.
  #
  # Outer element emits BOTH .fa-matrix-table (Aurora-primary) AND
  # .isms-risk-matrix (BC-shim) so legacy CSS keeps working.
  #
- # Props:
+ # Common props:
+ #   mode    : 'severity'|'rag'       — rendering mode (default 'severity')
  #   title   : string                 — figure caption (also aria-labelledby)
+ #   caption : string                 — visually-hidden long caption for
+ #                                      screen readers (optional, defaults
+ #                                      to title)
  #   rows    : [string]               — Y-axis row labels (top → bottom)
  #   cols    : [string]               — X-axis column labels (left → right)
- #   cells   : array[row][col]        — { score, severity?, count?, href? }
- #                                      Keyed by row-index then col-index
  #   yLabel  : string                 — vertical axis label (optional)
  #   xLabel  : string                 — horizontal axis label (optional)
- #   legend  : bool                   — show severity legend (default false)
+ #   legend  : bool                   — show severity/RAG legend (default false)
  #
- # Severity-mapping (auto from score, override via cell.severity):
- #   score ≤  3  → low
+ # Severity-mode cells:
+ #   cells   : array[row][col]        — { score, severity?, count?, href? }
+ #                                      Keyed by row-index then col-index
+ #
+ # RAG-mode cells:
+ #   cells   : array[row][col]        — { status, rate?, label?, href?, hint? }
+ #                                      Keyed by row-index then col-index
+ #                                      status: 'green'|'amber'|'red'|'none'
+ #                                      rate:   float 0-1 (rendered as N%)
+ #                                      label:  cell label (e.g. row × col)
+ #                                      hint:   tooltip text (overrides default)
+ #
+ # Severity-mapping (severity mode, auto from score):
+ #   score ≤  3  → low (green)
  #   score ≤  6  → moderate
  #   score ≤  9  → medium
- #   score ≤ 16  → high
- #   score >  16 → critical
+ #   score ≤ 16  → high (amber)
+ #   score >  16 → critical (red)
  #
- # Usage:
+ # RAG-mapping (rag mode):
+ #   status='green' → low      (success palette)
+ #   status='amber' → medium   (warning palette)
+ #   status='red'   → critical (danger palette)
+ #   status='none'  → empty     (no fill)
+ #
+ # Usage (severity-mode, risk-heatmap):
  #   {% import '_components/_fa_matrix_table.html.twig' as _fa_matrix %}
  #   {{ _fa_matrix.render({
  #       title:  'Risk-Heatmap · Q2 2026',
@@ -37,6 +65,16 @@
  #       yLabel: 'Wahrscheinlichkeit',
  #       xLabel: 'Auswirkung',
  #       legend: true
+ #   }) }}
+ #
+ # Usage (rag-mode, compliance-heatmap):
+ #   {{ _fa_matrix.render({
+ #       mode:    'rag',
+ #       title:   'Framework × Cluster',
+ #       rows:    framework_names,
+ #       cols:    cluster_labels,
+ #       cells:   rag_cells,   {* [{status,rate}, ...] per row *}
+ #       legend:  true
  #   }) }}
  #}
 
@@ -49,9 +87,20 @@
     {%- endif -%}
 {% endmacro %}
 
+{# Map RAG status → fa-matrix-table severity class (reuses Aurora token palette). #}
+{% macro _ragSeverity(status) -%}
+    {%- if status == 'green' %}low
+    {%- elseif status == 'amber' %}medium
+    {%- elseif status == 'red' %}critical
+    {%- else %}none
+    {%- endif -%}
+{% endmacro %}
+
 {% macro render(props = {}) %}
     {%- import _self as _self -%}
+    {%- set mode    = props.mode|default('severity') -%}
     {%- set title   = props.title|default('') -%}
+    {%- set caption = props.caption|default(title) -%}
     {%- set rows    = props.rows|default([]) -%}
     {%- set cols    = props.cols|default([]) -%}
     {%- set cells   = props.cells|default({}) -%}
@@ -62,14 +111,18 @@
     {%- set legendId = figId ~ '-legend' -%}
     {%- set titleId  = figId ~ '-title' -%}
     {%- set colCount = cols|length -%}
+    {%- set isRag    = mode == 'rag' -%}
 
-    <figure class="fa-matrix-table isms-risk-matrix"
+    <figure class="fa-matrix-table isms-risk-matrix{% if isRag %} fa-matrix-table--rag{% endif %}"
             role="img"
             aria-labelledby="{{ titleId }}"
             {% if showLegend %}aria-describedby="{{ legendId }}"{% endif %}
             id="{{ figId }}">
-        {%- if title %}
-            <figcaption class="fa-matrix-table__caption" id="{{ titleId }}">{{ title }}</figcaption>
+        {%- if title or caption %}
+            <figcaption class="fa-matrix-table__caption" id="{{ titleId }}">
+                {%- if title %}{{ title }}{% endif -%}
+                {%- if caption and caption != title %}<span class="visually-hidden">{{ caption }}</span>{% endif -%}
+            </figcaption>
         {%- endif %}
 
         <div class="fa-matrix-table__layout">
@@ -104,27 +157,63 @@
 
                         {% for colIdx, colLabel in cols %}
                             {%- set cell    = cells[rowIdx][colIdx]|default({}) -%}
-                            {%- set score   = cell.score|default(0) -%}
-                            {%- set sev     = cell.severity|default(_self._severity(score)|trim) -%}
-                            {%- set count   = cell.count|default(0) -%}
-                            {%- set href    = cell.href|default(null) -%}
-                            {%- set cellLabel = rowLabel ~ ' × ' ~ colLabel ~ (count > 0 ? ' (' ~ count ~ ')' : '') -%}
+                            {%- if isRag -%}
+                                {%- set status  = cell.status|default('none') -%}
+                                {%- set sev     = _self._ragSeverity(status)|trim -%}
+                                {%- set rate    = cell.rate is defined ? cell.rate : null -%}
+                                {%- set ratePct = rate is not null ? (rate * 100)|number_format(0) ~ '%' : 'N/A' -%}
+                                {%- set href    = cell.href|default(null) -%}
+                                {%- set count   = 0 -%}
+                                {%- set cellLabel = cell.label|default(rowLabel ~ ' × ' ~ colLabel) -%}
+                                {%- set hint    = cell.hint|default(cellLabel ~ ' — ' ~ ratePct) -%}
+                                {%- set icon    = (status == 'green') ? 'status-ok'
+                                                : (status == 'amber') ? 'status-warning'
+                                                : (status == 'red') ? 'status-critical'
+                                                : null -%}
+                                {%- set iconTone = (status == 'green') ? 'success'
+                                                 : (status == 'amber') ? 'warning'
+                                                 : (status == 'red') ? 'danger'
+                                                 : 'muted' -%}
+                            {%- else -%}
+                                {%- set score   = cell.score|default(0) -%}
+                                {%- set sev     = cell.severity|default(_self._severity(score)|trim) -%}
+                                {%- set count   = cell.count|default(0) -%}
+                                {%- set href    = cell.href|default(null) -%}
+                                {%- set cellLabel = rowLabel ~ ' × ' ~ colLabel ~ (count > 0 ? ' (' ~ count ~ ')' : '') -%}
+                                {%- set hint    = cellLabel -%}
+                            {%- endif %}
 
                             {% if href %}
                                 <a class="fa-matrix-table__cell fa-matrix-table__cell--{{ sev }}"
                                    href="{{ href }}"
-                                   title="{{ cellLabel }}"
+                                   title="{{ hint }}"
                                    aria-label="{{ cellLabel }}">
-                                    {% if count > 0 %}
+                                    {% if isRag and icon %}
+                                        <i class="fa-icon fa-icon--{{ icon }} fa-icon--{{ iconTone }}" aria-hidden="true"></i>
+                                    {% endif %}
+                                    {% if isRag and rate is not null %}
+                                        <span class="fa-matrix-table__rate" aria-hidden="true">{{ ratePct }}</span>
+                                        <span class="visually-hidden">{{ ratePct }}</span>
+                                    {% endif %}
+                                    {% if not isRag and count > 0 %}
                                         <span class="fa-matrix-table__count" aria-hidden="true">{{ count }}</span>
                                     {% endif %}
                                 </a>
                             {% else %}
                                 <div class="fa-matrix-table__cell fa-matrix-table__cell--{{ sev }}"
-                                     title="{{ cellLabel }}"
+                                     title="{{ hint }}"
                                      aria-label="{{ cellLabel }}"
                                      role="cell">
-                                    {% if count > 0 %}
+                                    {% if isRag and icon %}
+                                        <i class="fa-icon fa-icon--{{ icon }} fa-icon--{{ iconTone }}" aria-hidden="true"></i>
+                                    {% elseif isRag %}
+                                        <span class="text-muted" aria-hidden="true">—</span>
+                                    {% endif %}
+                                    {% if isRag and rate is not null %}
+                                        <span class="fa-matrix-table__rate" aria-hidden="true">{{ ratePct }}</span>
+                                        <span class="visually-hidden">{{ ratePct }}</span>
+                                    {% endif %}
+                                    {% if not isRag and count > 0 %}
                                         <span class="fa-matrix-table__count" aria-hidden="true">{{ count }}</span>
                                     {% endif %}
                                 </div>
@@ -140,28 +229,45 @@
         </div>{# /.fa-matrix-table__layout #}
 
         {%- if showLegend %}
-            <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="Severity legend">
-                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--low">
-                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                    Low (≤3)
-                </span>
-                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--moderate">
-                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                    Moderate (≤6)
-                </span>
-                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--medium">
-                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                    Medium (≤9)
-                </span>
-                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--high">
-                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                    High (≤16)
-                </span>
-                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--critical">
-                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
-                    Critical (&gt;16)
-                </span>
-            </div>
+            {% if isRag %}
+                <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="RAG legend">
+                    <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--low">
+                        <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                        Green (≥80%)
+                    </span>
+                    <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--medium">
+                        <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                        Amber (40–79%)
+                    </span>
+                    <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--critical">
+                        <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                        Red (&lt;40%)
+                    </span>
+                </div>
+            {% else %}
+                <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="Severity legend">
+                    <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--low">
+                        <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                        Low (≤3)
+                    </span>
+                    <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--moderate">
+                        <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                        Moderate (≤6)
+                    </span>
+                    <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--medium">
+                        <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                        Medium (≤9)
+                    </span>
+                    <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--high">
+                        <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                        High (≤16)
+                    </span>
+                    <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--critical">
+                        <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                        Critical (&gt;16)
+                    </span>
+                </div>
+            {% endif %}
         {%- endif %}
     </figure>
 {% endmacro %}
