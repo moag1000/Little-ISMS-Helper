@@ -399,6 +399,10 @@ class DataBreach
         $this->assessorDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
+        // CS-P0 #11.3: GDPR Art. 33 72h-SLA start time unambiguous when
+        // detectedAt is pre-filled. Explicit overrides on existing rows
+        // remain untouched (only new instances affected).
+        $this->detectedAt = new DateTimeImmutable();
     }
 
     // ============================================================================

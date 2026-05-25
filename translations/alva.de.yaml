@@ -193,6 +193,14 @@ bc_exercise:
         title: 'Abgeschlossene BC-Übung ohne dokumentierte Erkenntnisse'
         body: 'ISO 22301 Cl. 8.6 erwartet von jeder Übung mindestens eine dokumentierte Feststellung oder einen Verbesserungsbereich. Ein Übungsbericht ohne Beobachtungen hat begrenzten Audit-Wert — Regulatoren und Zertifizierungsstellen werden dies bemerken.'
         action: 'Erkenntnisse ergänzen'
+    actual_exceeds_plan:
+        action: 'Übung prüfen und Plan anpassen'
+        rto:
+            title: 'Gemessene RTO überschreitet die Plan-Vorgabe'
+            body: 'Die in dieser Übung erreichte tatsächliche Wiederanlaufzeit (RTO) liegt über dem Zielwert mindestens eines getesteten BC-Plans. ISO 22301 Cl. 8.5.3 verlangt eine Lessons-Learned-Schleife: Entweder den Plan an die Realität anpassen oder eine dokumentierte Abweichungsbegründung hinterlegen.'
+        rpo:
+            title: 'Gemessener RPO überschreitet die Plan-Vorgabe'
+            body: 'Der in dieser Übung erreichte Datenverlust (RPO) liegt über dem Zielwert mindestens eines getesteten BC-Plans. ISO 22301 Cl. 8.5.3 verlangt eine Lessons-Learned-Schleife: Entweder das Backup-Intervall verbessern oder die Abweichung dokumentieren.'
     target_missed:
         title: 'Übungsziel verfehlt — geplanter RTO nicht erreicht'
         body: 'Die Übung hat den geplanten RTO (%planRto% h) des Plans „%planTitle%" nicht erreicht — actualRTO %actualRto% h. ISO 22301 Cl. 8.5.3 + 9.1.1 (Lessons-Learned) und BSI 200-4 ÜP-9 fordern, dass dieses Ergebnis in eine Plan-Korrektur überführt wird. Eine Anpassung des Plans wird empfohlen.'
