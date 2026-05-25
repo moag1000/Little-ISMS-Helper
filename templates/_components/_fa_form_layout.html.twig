@@ -121,7 +121,7 @@
                                         {{ loop_index }}
                                     {%- endif -%}
                                 </span>
-                                <span class="fa-form-layout__outline-label">{{ section.title }}</span>
+                                <span class="fa-form-layout__outline-label">{{ section.title|raw }}</span>
                                 <span class="fa-form-layout__outline-count"
                                       data-section-count="{{ section.id }}">{{ sectionFilled }}/{{ sectionFields }}</span>
                             </a>
@@ -157,7 +157,7 @@
                                 {%- endif -%}
                             </span>
                             <div class="fa-form-section__heading">
-                                <h3 class="fa-form-section__title">{{ loop.index }} · {{ section.title }}</h3>
+                                <h3 class="fa-form-section__title">{{ loop.index }} · {{ section.title|raw }}</h3>
                                 <span class="fa-form-section__meta"
                                       data-section-meta="{{ section.id }}"
                                       {% if sectionStatus == 'error' %}style="color: var(--danger);"{% endif %}>

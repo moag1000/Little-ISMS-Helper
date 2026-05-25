@@ -81,8 +81,8 @@ translations/audits.en.yaml:180:pdf
 translations/audits.en.yaml:219:audit_finding
 translations/audits.en.yaml:391:corrective_action
 translations/audits.en.yaml:477:iso_9001_bridge
-translations/bc_exercises.de.yaml:175:iso_9001_bridge
-translations/bc_exercises.en.yaml:175:iso_9001_bridge
+translations/bc_exercises.de.yaml:176:iso_9001_bridge
+translations/bc_exercises.en.yaml:176:iso_9001_bridge
 translations/bc_plans.de.yaml:215:bcm
 translations/bc_plans.de.yaml:222:bc_plan
 translations/bc_plans.de.yaml:231:iso_9001_bridge
@@ -237,8 +237,8 @@ translations/policy_wizard.de.yaml:1479:policy_ack
 translations/policy_wizard.de.yaml:1501:compliance_check
 translations/policy_wizard.en.yaml:1476:policy_ack
 translations/policy_wizard.en.yaml:1498:compliance_check
-translations/privacy.de.yaml:1053:dpia
-translations/privacy.en.yaml:901:dpia
+translations/privacy.de.yaml:1073:dpia
+translations/privacy.en.yaml:921:dpia
 translations/report_builder.de.yaml:290:settings
 translations/report_builder.en.yaml:290:settings
 translations/reports.de.yaml:106:security_reports

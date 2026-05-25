@@ -240,7 +240,7 @@ common:
     filters: Filter
     clear: Zurücksetzen
     from: Von
-    help: Hilfe
+    help_label: Hilfe
     history: Verlauf
     id: ID
     inactive: Inaktiv
@@ -327,6 +327,8 @@ common:
         case_number_from_authority: 'Aktenzeichen der Aufsichtsbehörde (z.B. AZ-2024-123)'
         explain_deadline_exceeded: 'Erläutern Sie, warum die 72-Stunden-Frist überschritten wurde (Art. 33 Abs. 1 DSGVO)'
         explain_breach_reopened: 'Begründen Sie, warum die Datenschutzverletzung wiedereröffnet werden muss'
+        owner_user: '-- User wählen --'
+        owner_person: '-- Person wählen --'
     reset_all_filters: 'Alle Filter zurücksetzen'
     time_savings: Zeitersparnis
     consistency: Konsistenz
@@ -338,6 +340,15 @@ common:
     roles_and_responsibilities: 'Rollen und Verantwortlichkeiten'
     team_members: Teammitglieder
     observers: Beobachter
+    notes: Notizen
+    field:
+        owner_user: 'Verantwortlich (System-User)'
+        owner_person: 'Verantwortlich (Person)'
+        owner_deputies: Stellvertreter
+    help:
+        owner_user: 'System-User mit Login als Verantwortliche Person.'
+        owner_person: 'Person ohne Login als Verantwortliche (Reihenfolge: User > Person).'
+        owner_deputies: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
 person:
     title: Person
     titles:
