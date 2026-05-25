@@ -240,7 +240,7 @@ common:
     filters: Filters
     clear: Clear
     from: From
-    help: Help
+    help_label: Help
     history: History
     id: ID
     inactive: Inactive
@@ -321,6 +321,8 @@ common:
         case_number_from_authority: ''
         explain_deadline_exceeded: ''
         explain_breach_reopened: ''
+        owner_user: '-- Select user --'
+        owner_person: '-- Select person --'
     reset_all_filters: ''
     time_savings: ''
     consistency: ''
@@ -332,6 +334,15 @@ common:
     roles_and_responsibilities: ''
     team_members: ''
     observers: ''
+    notes: Notes
+    field:
+        owner_user: 'Owner (System User)'
+        owner_person: 'Owner (Person)'
+        owner_deputies: Deputies
+    help:
+        owner_user: 'System user with login as the responsible owner.'
+        owner_person: 'Person without login as owner (priority: User > Person).'
+        owner_deputies: 'Additional persons sharing ownership or deputising.'
 framework: Framework
 requirement: Requirement
 bia: 'Business Impact Analysis'

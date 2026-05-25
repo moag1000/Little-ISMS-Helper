@@ -25,6 +25,7 @@ bc_exercises:
         plan_updates_required: 'Plan Updates Required'
         related_plans: 'Related BC Plans'
         report: Report
+        targets: 'Recovery Targets (RTO/RPO/MTPD)'
     table:
         name: Name
         type: Type

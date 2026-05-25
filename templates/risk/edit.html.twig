@@ -78,12 +78,32 @@
                 'fields': ['acceptanceApprovedByUser', 'acceptanceApprovedBy', 'acceptanceApprovedAt', 'acceptanceExpiryDate', 'acceptanceJustification', 'decisionRationale', 'decisionApprovedByUser', 'decisionApprovalDate', 'status', 'reviewDate']
             }
         }) %}
+        {# T6.8 — Live mini-heatmap; rendered here so it can be passed via extras_before_actions #}
+        {% set _risk_live_matrix %}
+        <div class="row mt-3">
+            <div class="col-md-6">
+                {% include '_components/_fa_risk_mini_heatmap.html.twig' with {
+                    probability_selector: '#risk_probability',
+                    impact_selector: '#risk_impact',
+                    residual: false,
+                } %}
+            </div>
+            <div class="col-md-6">
+                {% include '_components/_fa_risk_mini_heatmap.html.twig' with {
+                    probability_selector: '#risk_residualProbability',
+                    impact_selector: '#risk_residualImpact',
+                    residual: true,
+                } %}
+            </div>
+        </div>
+        {% endset %}
         {% include '_components/_auto_form.html.twig' with {
             'form': form,
             'layout': 'outline-rail',
             'eyebrow': 'ISO 27001 Cl. 6.1.2 · Risk Assessment',
             'title': risk.title,
             'sections': form_sections,
+            'extras_before_actions': _risk_live_matrix,
             'col_widths': {
                 'title': 6,
                 'asset': 6,
@@ -143,24 +163,6 @@
                 'submit': { 'label': 'risk.update'|trans({}, 'risk'), 'variant': 'primary' }
             }
         } %}
-
-{# T6.8 — Live mini-heatmap mirrors current probability + impact selection. #}
-<div class="row mt-3">
-    <div class="col-md-6">
-        {% include '_components/_fa_risk_mini_heatmap.html.twig' with {
-            probability_selector: '#risk_probability',
-            impact_selector: '#risk_impact',
-            residual: false,
-        } %}
-    </div>
-    <div class="col-md-6">
-        {% include '_components/_fa_risk_mini_heatmap.html.twig' with {
-            probability_selector: '#risk_residualProbability',
-            impact_selector: '#risk_residualImpact',
-            residual: true,
-        } %}
-    </div>
-</div>
 
 {{ form_end(form) }}
 
