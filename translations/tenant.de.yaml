@@ -48,8 +48,6 @@ tenant:
         lei_code_help: 'ISO 17442 — 20-stelliger LEI, ausgestellt von einem GLEIF-akkreditierten LOU. Pflicht für DORA-Art.-28-RoI-Meldungen (B_01.01.0020).'
         reporting_currency: 'Berichtswährung (ISO 4217)'
         reporting_currency_help: 'Standardwährung für regulatorische Berichte (DORA RoI B_01.01.0040). Default: EUR.'
-    help:
-        lei_code_format: 'Format: 18 Stellen Präfix [A-Z0-9] + 2 Prüfziffern (z. B. 529900T8BM49AURSDO55).'
     placeholder:
         code: 'z.B. acme-corp'
         name: 'z.B. ACME Corporation'
@@ -190,6 +188,8 @@ tenant:
         corporate_notes: Konzernhinweise
         azure_tenant_id: 'Azure Tenant Id'
         settings: Einstellungen
+        # Bucket-6a (DORA RoI Sprint 9)
+        lei_code_format: 'Format: 18 Stellen Präfix [A-Z0-9] + 2 Prüfziffern (z. B. 529900T8BM49AURSDO55).'
     settings:
         example_title: 'Beispiel JSON-Struktur'
     title.edit: Bearbeiten
