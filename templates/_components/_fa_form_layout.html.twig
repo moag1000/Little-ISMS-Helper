@@ -25,6 +25,11 @@
  *     next:   { label, variant: 'secondary' }
  *     submit: { label, variant: 'primary' }
  *   }
+ *   extrasBeforeActions (string|null) — pre-rendered HTML rendered inside the
+ *                                       form scope, directly above the footer
+ *                                       action-bar. Use for in-form CTAs such
+ *                                       as Quick-Create-Modal triggers that
+ *                                       must remain within the <form> wrapper.
  *   stimulusController (string|null, default 'form-layout')
  #}
 
@@ -36,6 +41,7 @@
     {%- set draftSavedAt     = config.draftSavedAt ?? null -%}
     {%- set sections         = config.sections ?? [] -%}
     {%- set actions          = config.actions ?? {} -%}
+    {%- set extrasBeforeActions = config.extrasBeforeActions ?? null -%}
     {%- set controller       = config.stimulusController ?? 'form-layout' -%}
 
     {%- set progressPercent  = (progress and progress.total > 0) ? ((progress.done / progress.total) * 100)|round : 0 -%}
@@ -178,6 +184,18 @@
             </div>
 
         </div>{# /.fa-form-layout__body #}
+
+        {# ── Extras (in-form CTAs, e.g. Quick-Create-Modal triggers) ────────
+           Rendered inside the .fa-form-layout wrapper but BEFORE the footer
+           action-bar. Lives within the parent <form> so any buttons here
+           inherit the form scope (and must therefore use type="button" to
+           avoid submitting). Modal markup itself should remain at body level
+           OUTSIDE the form (nested <form> is invalid HTML). #}
+        {% if extrasBeforeActions %}
+            <div class="fa-form-layout__extras">
+                {{ extrasBeforeActions|raw }}
+            </div>
+        {% endif %}
 
         {# ── Footer ───────────────────────────────────────────────────────── #}
         <footer class="fa-form-layout__footer">

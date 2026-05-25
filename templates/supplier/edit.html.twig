@@ -58,6 +58,14 @@
             'contract_info': {
                 'label': 'supplier.section.contract_info'|trans({}, 'suppliers'),
                 'fields': ['contractStartDate', 'contractEndDate']
+            },
+            'linkage': {
+                'label': 'supplier.section.linkage'|trans({}, 'suppliers'),
+                'fields': ['supportedAssets']
+            },
+            'privacy': {
+                'label': 'supplier.section.privacy'|trans({}, 'suppliers'),
+                'fields': ['gdprProcessorStatus', 'gdprTransferMechanism', 'gdprAvContractSigned', 'gdprAvContractDate']
             }
         },
         'col_widths': {

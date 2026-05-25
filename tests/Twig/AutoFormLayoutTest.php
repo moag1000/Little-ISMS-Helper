@@ -218,6 +218,97 @@ final class AutoFormLayoutTest extends KernelTestCase
         self::assertStringContainsString('Confirm submit', $output);
     }
 
+    // ── Outline-rail catch-all for unmapped fields ───────────────────────
+
+    #[Test]
+    public function outlineRailRendersCatchAllSectionForUnmappedFields(): void
+    {
+        // `lastName` is intentionally NOT listed in any section. Without the
+        // catch-all, form_end() would render it via form_rest AFTER the
+        // footer action-bar — escaping outside the section cards.
+        $form   = $this->buildSimpleForm(['firstName', 'lastName']);
+        $output = $this->renderAutoForm($form, [
+            'layout'   => 'outline-rail',
+            'title'    => 'Catch-all test',
+            'sections' => [
+                'core' => ['label' => 'Core fields', 'fields' => ['firstName']],
+            ],
+        ]);
+
+        // Catch-all section must appear in the outline (Weitere Felder / Other)
+        self::assertMatchesRegularExpression(
+            '/(Weitere Felder|Other|Sonstige)/u',
+            $output,
+            'outline-rail must render a catch-all section labelled with the default other_section_label',
+        );
+        // The unmapped field must be rendered inside the section cards, not by form_rest
+        self::assertStringContainsString('LastName', $output,
+            'unmapped field label must appear via the catch-all section');
+        // Sanity-check: the catch-all section must appear AFTER the explicit
+        // section in the markup (so unmapped fields trail mapped ones).
+        $corePos    = strpos($output, 'Core fields');
+        $catchPos   = strpos($output, 'Weitere Felder');
+        self::assertNotFalse($corePos);
+        self::assertNotFalse($catchPos);
+        self::assertLessThan($catchPos, $corePos,
+            'catch-all section must render after the explicit sections');
+    }
+
+    #[Test]
+    public function outlineRailCatchAllRespectsSkipOther(): void
+    {
+        $form   = $this->buildSimpleForm(['firstName', 'lastName']);
+        $output = $this->renderAutoForm($form, [
+            'layout'     => 'outline-rail',
+            'title'      => 'Skip-other test',
+            'skip_other' => true,
+            'sections'   => [
+                'core' => ['label' => 'Core', 'fields' => ['firstName']],
+            ],
+        ]);
+
+        // No catch-all section header when skip_other=true
+        self::assertStringNotContainsString('Weitere Felder', $output,
+            'skip_other=true must suppress the outline-rail catch-all');
+        // The unmapped field is also not rendered inside any section
+        // (this is the legacy behaviour — caller is expected to handle it
+        // outside _auto_form when skip_other is opted-in).
+    }
+
+    // ── extras_before_actions slot ───────────────────────────────────────
+
+    #[Test]
+    public function outlineRailRendersExtrasBeforeActions(): void
+    {
+        $form   = $this->buildSimpleForm(['firstName']);
+        $extras = '<div class="my-test-extras"><button type="button">In-form CTA</button></div>';
+        $output = $this->renderAutoForm($form, [
+            'layout'   => 'outline-rail',
+            'title'    => 'Extras slot test',
+            'sections' => [
+                'core' => ['label' => 'Core', 'fields' => ['firstName']],
+            ],
+            'extras_before_actions' => $extras,
+        ]);
+
+        // Extras must be rendered (raw) inside the layout
+        self::assertStringContainsString('my-test-extras', $output,
+            'extras_before_actions HTML must be emitted inside the layout');
+        self::assertStringContainsString('In-form CTA', $output,
+            'extras_before_actions content must be visible');
+
+        // Extras must appear BEFORE the footer action-bar in the markup
+        $extrasPos = strpos($output, 'my-test-extras');
+        $footerPos = strpos($output, 'fa-form-layout__footer');
+        self::assertNotFalse($extrasPos, 'extras marker must be in output');
+        self::assertNotFalse($footerPos, 'footer marker must be in output');
+        self::assertLessThan(
+            $footerPos,
+            $extrasPos,
+            'extras_before_actions must render BEFORE the footer action-bar',
+        );
+    }
+
     // ── strict_whitelist in both layouts ─────────────────────────────────
 
     #[Test]
