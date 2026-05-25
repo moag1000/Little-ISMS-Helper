@@ -1,0 +1,26 @@
+{# AuditFinding form theme — extends Aurora cyber-input theme; overrides
+   the `nonconformityDetails` JSON field with the visual CAPA-Builder
+   macro (S17 B4 follow-up — ISO 27001 Cl. 10.2 b)+d)). #}
+{% use "form/fa_cyber_input.html.twig" %}
+
+{%- block _audit_finding_nonconformityDetails_row -%}
+    {% import '_components/_fa_capa_builder.html.twig' as _fa_capa_builder %}
+    <div class="fa-cyber-input">
+        <div class="fa-cyber-input__header">
+            {{ form_label(form) }}
+        </div>
+        {{ _fa_capa_builder.render({
+            name: form.vars.full_name,
+            value: form.vars.value,
+            id: form.vars.id ~ '-builder',
+            userChoices: nc_user_choices|default([]),
+            translationDomain: 'audits',
+        }) }}
+        {% if form.vars.help %}
+            <small class="fa-cyber-input__hint">
+                {{ form.vars.help|trans({}, form.vars.help_translation_domain|default('audits')) }}
+            </small>
+        {% endif %}
+        {{ form_errors(form) }}
+    </div>
+{%- endblock -%}

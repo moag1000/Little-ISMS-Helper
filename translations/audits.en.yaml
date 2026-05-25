@@ -331,6 +331,30 @@ audit_finding:
         walkthrough: 'Walkthrough / Site Visit'
         test: 'Test / Sample'
         metrics_monitoring: 'Metrics Monitoring'
+    # S17 B4 follow-up — CAPA Builder (visual JSON-editor for nonconformityDetails)
+    capa_builder:
+        title: 'CAPA Builder (ISO 27001 Cl. 10.2 b)+d))'
+        empty: 'No corrective actions captured yet.'
+        label:
+            method: 'Root-cause analysis method'
+            verification_method: 'Verification method'
+            verification_evidence: 'Verification evidence'
+            corrective_actions: 'Corrective actions'
+            add_correction: '+ Add action'
+            description: 'Description'
+            owner: 'Owner'
+            deadline: 'Deadline'
+            remove: 'Remove'
+        method:
+            '5_why': '5-Why Analysis'
+            ishikawa: 'Ishikawa Diagram'
+            fmea: 'FMEA'
+            other: 'Other'
+        verification_method:
+            document_review: 'Document Review'
+            walkthrough: 'Walkthrough'
+            test: 'Test'
+            metrics_monitoring: 'KPI Monitoring'
     error:
         nc_root_cause_required: 'For nonconformities a root-cause analysis is mandatory (ISO 27001 Cl. 10.2 b)).'
         nc_correction_due_date_required: 'For nonconformities a corrective-action deadline is mandatory (ISO 27001 Cl. 10.2 c)).'
