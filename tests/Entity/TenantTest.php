@@ -45,6 +45,37 @@ class TenantTest extends TestCase
     }
 
     #[Test]
+    public function testLeiCodeRoundTripIsUppercased(): void
+    {
+        $tenant = new Tenant();
+
+        $this->assertNull($tenant->getLeiCode());
+
+        // Lower-case + whitespace input — setter normalises.
+        $tenant->setLeiCode(' 529900t8bm49aursdo55 ');
+        $this->assertSame('529900T8BM49AURSDO55', $tenant->getLeiCode());
+
+        $tenant->setLeiCode(null);
+        $this->assertNull($tenant->getLeiCode());
+    }
+
+    #[Test]
+    public function testReportingCurrencyDefaultsToEur(): void
+    {
+        $tenant = new Tenant();
+
+        // Default ctor — column-level default is EUR.
+        $this->assertSame('EUR', $tenant->getReportingCurrency());
+
+        $tenant->setReportingCurrency('chf');
+        $this->assertSame('CHF', $tenant->getReportingCurrency());
+
+        // Null-fallback in getter (defensive — never breaks XBRL emit).
+        $tenant->setReportingCurrency(null);
+        $this->assertSame('EUR', $tenant->getReportingCurrency());
+    }
+
+    #[Test]
     public function testIsActiveDefault(): void
     {
         $tenant = new Tenant();
