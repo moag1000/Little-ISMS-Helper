@@ -11,7 +11,7 @@
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'admin.dashboard.title'|trans({}, 'admin'), url: path('admin_dashboard') },
-        { label: 'admin.tenant_management.title'|trans({}, 'admin'), url: path('admin_tenant_management_index') },
+        { label: 'admin.tenant_management.title'|trans({}, 'admin'), url: path('tenant_management_index') },
         { label: 'admin.tenant_settings.title'|trans }
     ]
 } %}
@@ -84,7 +84,7 @@
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="fa-icon fa-icon--ui-check me-1"></i>{{ 'admin.tenant_settings.save'|trans }}
                     </button>
-                    <a href="{{ path('admin_tenant_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <a href="{{ path('tenant_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         {{ 'admin.cancel'|trans }}
                     </a>
                 </div>
