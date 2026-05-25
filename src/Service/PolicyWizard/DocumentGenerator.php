@@ -298,13 +298,8 @@ final class DocumentGenerator implements DocumentGeneratorInterface
                 $this->mergeLegacySection($document, $bestandsDecision['document_id'], $tenant);
             }
 
-            // W4-C — action='split_to_topics': not auto-handled by the wizard.
-            // Emit a warning log entry; the persisted decision inside
-            // {@see WizardRun::$inputs}['bestandsaufnahme'] is also the signal
-            // {@see \App\AlvaHint\Rule\PolicyWizard\DocumentSplitNeededRule}
-            // picks up to surface a Tier-2 Alva-Hint until the operator
-            // resolves the split (re-classifies the legacy document or runs
-            // a follow-up targeted wizard run).
+            // W4-C — action='split_to_topics': not auto-handled. Emit a warning;
+            // DocumentSplitNeededRule surfaces a Tier-2 Alva-Hint until resolved.
             if ($bestandsDecision !== null && $bestandsDecision['action'] === 'split_to_topics') {
                 $this->logger->warning('PolicyWizard W4-C: split_to_topics requires manual handling', [
                     'wizard_run_id' => $run->getId(),
