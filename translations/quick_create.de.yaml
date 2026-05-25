@@ -3,6 +3,8 @@ quick_create:
   hint:
     missing_entry: 'Eintrag fehlt im Auswahlfeld?'
     missing_asset: 'Asset noch nicht angelegt?'
+    missing_crisis_team: 'Krisenstab fehlt? Direkt anlegen.'
+    missing_business_process: 'Geschäftsprozess fehlt? Direkt anlegen.'
   modal:
     title: Neuen Eintrag anlegen
     subtitle: Nur Name nötig — Details später bearbeiten
