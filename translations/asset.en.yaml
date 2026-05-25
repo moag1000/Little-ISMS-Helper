@@ -405,3 +405,5 @@ qr:
 # Junior-ISB-Audit P-12 rollout — 9001 bridge for Asset form.
 iso_9001_bridge:
     asset: 'In ISO 9001 assets are covered by Clause 7.1.3 (Infrastructure) and 7.5 (Documented information). ISO 27001 A.5.9-12 adds protection requirements (CIA), classification, and owner accountability — the 9001 base logic (what do we have, who looks after it) stays the same.'
+
+ai_agent.flash.no_tenant: 'No active tenant — please select a tenant first.'

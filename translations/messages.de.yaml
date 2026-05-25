@@ -2391,3 +2391,7 @@ owner_picker:
 'supplier.subcontractor_chain.raw_label': 'Roh-JSON (Power-User)'
 'supplier.subcontractor_chain.raw_toggle': 'Als JSON bearbeiten'
 'supplier.subcontractor_chain.remove': 'Subunternehmer entfernen'
+
+# Junior-ISB-Audit-2026-05-22 S12 §4-6 — truly-missing flat-domain keys
+'supplier.subcontractor.country_placeholder': 'z.B. DE'
+'training.error.material_upload_failed': 'Material-Upload fehlgeschlagen.'

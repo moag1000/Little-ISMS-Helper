@@ -508,3 +508,6 @@ setup:
             soc2: 'US/SaaS market standard — often contractually required by US customers.'
             nist_csf: 'US framework — primarily relevant for US federal contract suppliers or international reports.'
             cis_controls: 'Implementation-Group-based operationalization aid — good tooling, no formal requirement.'
+
+setup.alva.success.restore: 'Restore completed successfully.'
+setup.alva.success.sample_data: 'Sample data created successfully.'
