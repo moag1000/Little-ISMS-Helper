@@ -166,7 +166,8 @@
 {# framework-card styles live in assets/styles/fairy-aurora-components.css #}
 
 <script>
-{# TODO(aurora-migration): bi-check-circle icons in JS strings below — migrate separately #}
+{# Aurora migration complete: JS template-literals below use `fa-icon fa-icon--*` markup
+   (status-ok / status-critical / nav-download / ui-refresh) — no bi-* remnants. #}
 function initializeFrameworkButtons() {
     const loadButtons = document.querySelectorAll('.load-framework-btn');
     const csrfToken = '{{ csrf_token('load_framework') }}';

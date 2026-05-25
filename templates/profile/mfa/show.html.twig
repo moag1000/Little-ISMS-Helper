@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_icon.html.twig' as _fa_icon %}
 
 {% block title %}{{ 'mfa.token_details'|trans({}, 'mfa') }}{% endblock %}
 
@@ -27,6 +28,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_icon.html.twig' as _fa_icon %}
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa.field.token_type'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
@@ -35,8 +37,9 @@
 
                         <dt class="col-sm-4">{{ 'mfa.field.device_name'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
-                            {# TODO(aurora-migration): dynamic MFA token type icon — keep bi-* #}
-                            <i class="fa-icon fa-icon--{{ mfa_token.tokenType == 'totp' ? 'phone' : 'ui-key' }}" aria-hidden="true"></i>
+                            {# Dynamic token-type icon — Aurora mask-icons (phone = TOTP-app, ui-key = WebAuthn). #}
+                            {% set tokenTypeIcon = mfa_token.tokenType == 'totp' ? 'phone' : 'ui-key' %}
+                            {{ _fa_icon.render(tokenTypeIcon) }}
                             {{ mfa_token.deviceName ?? 'N/A' }}
                         </dd>
 

@@ -9,9 +9,9 @@
 #
 # Remediation policy: shrink this file over time. Do NOT extend it without
 # explicit ADR-level justification.
-dev/design_system.html.twig:166: Hardcoded text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula mauris in erat accumsan, vel varius odio lacinia. Suspendisse potenti.'
-dev/design_system.html.twig:361: Hardcoded text: 'Chip group with hrefs:'
-dev/design_system.html.twig:936: Untranslated placeholder: 'Was ist passiert? Welche Daten sind betroffen?'
+dev/design_system.html.twig:207: Hardcoded text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula mauris in erat accumsan, vel varius odio lacinia. Suspendisse potenti.'
+dev/design_system.html.twig:402: Hardcoded text: 'Chip group with hrefs:'
+dev/design_system.html.twig:977: Untranslated placeholder: 'Was ist passiert? Welche Daten sind betroffen?'
 incident/_gdpr_breach_wizard_modal.html.twig:320: Hardcoded text: 'GDPR Art. 33 (Notification to supervisory authority)'
 incident/_gdpr_breach_wizard_modal.html.twig:321: Hardcoded text: 'GDPR Art. 34 (Communication to data subjects)'
 incident/_gdpr_breach_wizard_modal.html.twig:322: Hardcoded text: 'ISO 27001 A.16.1.6 (Learning from information security incidents)'

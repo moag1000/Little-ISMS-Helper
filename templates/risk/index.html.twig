@@ -170,7 +170,7 @@
 } %}
     {% block card_body %}
         <div class="row">
-            {# TODO(aurora-v4-icons): treatment icon dict — bi-shield-check/bi-check-circle/bi-x-circle inline dict, migrate when Twig allows fa-icon class construction #}
+            {# ISO 27001 Cl. 6.1.3 treatment strategies → Aurora mask-icon mapping. #}
             {% set treatments = {
                 'mitigate': { label: 'risk.index.treatment.mitigate'|trans({}, 'risk'), icon: 'shield-check', color: 'success' },
                 'accept': { label: 'risk.index.treatment.accept'|trans({}, 'risk'), icon: 'status-ok', color: 'info' },
@@ -182,8 +182,7 @@
                 <div class="col-md-3 mb-3">
                     <div class="treatment-stat">
                         <div class="treatment-icon text-{{ data.color }}" aria-hidden="true">
-                            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
-                            <i class="fa-icon fa-icon--{{ (data.icon starts with 'bi-') ? data.icon[3:] : data.icon }}" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--{{ data.icon }}" aria-hidden="true"></i>
                         </div>
                         <div class="treatment-info">
                             <div class="treatment-label">{{ data.label }}</div>

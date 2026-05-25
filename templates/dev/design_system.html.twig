@@ -1,8 +1,7 @@
-{# TODO(aurora-v4-h): wire dev/design-system to spec sections in docs/design_system/sections/*.html
-   Currently shows live macro demos only. Sections like docs/design_system/sections/alva.html
-   contain canonical spec content that should be referenced here for a single source of truth.
-   See AURORA_v4_FULL_MIGRATION_PLAN.md § 11.3 Living-Doc-Page einbinden.
-#}
+{# Living Styleguide — live macro demos PLUS the canonical spec sections
+   shipped under docs/design_system/sections/*.html (loaded by
+   DevDesignSystemController::loadSpecSections()). Single source of truth
+   per AURORA_v4_FULL_MIGRATION_PLAN.md § 11.3 Living-Doc-Page. #}
 {% extends 'base.html.twig' %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -30,6 +29,7 @@
         {# ── Top navigation ────────────────────────────────────────────── #}
         <nav class="d-flex flex-wrap gap-2 mb-4 p-3" style="background:var(--surface-2); border-radius:var(--radius-lg,8px); border:1px solid var(--border);">
             <span style="color:var(--fg-2); font-size:.75rem; align-self:center; margin-right:.5rem;">Jump to:</span>
+            <a href="#sec-spec-sections" class="fa-filter-chip">Living Spec</a>
             <a href="#sec-surface"      class="fa-filter-chip">Aurora Surfaces</a>
             <a href="#sec-page-header"  class="fa-filter-chip">fa-page-header</a>
             <a href="#sec-section"      class="fa-filter-chip">fa-section</a>
@@ -63,6 +63,47 @@
                 { label: 'Phase 5',  variant: 'primary',  icon: 'ui-stars',     href: '#' }
             ]
         }) }}
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# 0. LIVING SPEC SECTIONS                                          #}
+        {#    Canonical HTML fragments from docs/design_system/sections/.   #}
+        {#    Each section is collapsed by default — live demos below       #}
+        {#    remain the primary navigation, spec is reference material.    #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {% if spec_sections|default([])|length > 0 %}
+        <section class="fa-section mb-5" id="sec-spec-sections">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">
+                    <i class="fa-icon fa-icon--nav-book me-2" aria-hidden="true"></i>
+                    Living Spec Sections
+                </h2>
+                <p class="fa-section__subtitle" style="margin:.25rem 0 0; color:var(--fg-2); font-size:.8rem;">
+                    Canonical Aurora v4 reference material — collapsed by default.
+                    Source: <code>docs/design_system/sections/*.html</code>.
+                </p>
+            </div>
+            <div class="fa-section__body">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    {% for sec in spec_sections %}
+                        <a href="#spec-{{ sec.key }}" class="fa-filter-chip">{{ sec.title }}</a>
+                    {% endfor %}
+                </div>
+                {% for sec in spec_sections %}
+                    <details id="spec-{{ sec.key }}" class="mb-2" style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md,6px); padding:.75rem 1rem;">
+                        <summary style="cursor:pointer; color:var(--primary); font-weight:600;">
+                            {{ sec.title }}
+                            <span style="color:var(--fg-3); font-weight:400; font-size:.8rem; margin-left:.5rem;">
+                                ({{ sec.key }}.html)
+                            </span>
+                        </summary>
+                        <div class="spec-section-body mt-3">
+                            {{ sec.html|raw }}
+                        </div>
+                    </details>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
 
         {# ═══════════════════════════════════════════════════════════════ #}
         {# 1. AURORA SURFACE VARIANTS                                      #}
