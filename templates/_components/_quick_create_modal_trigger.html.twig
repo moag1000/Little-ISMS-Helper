@@ -1,0 +1,53 @@
+{#
+ # Quick-Create Modal — Trigger Button (in-form variant)
+ #
+ # Renders ONLY the trigger button + Stimulus wrapper. Use this partial
+ # inside <form> scope (e.g. via `extras_before_actions` on _auto_form).
+ # The matching modal dialog markup MUST be rendered OUTSIDE the form via
+ # `_quick_create_modal_dialog.html.twig` (nested <form> is invalid HTML).
+ #
+ # The Stimulus controller `quick-create-modal` looks up the dialog by
+ # `modalId` at runtime — split rendering does not affect wiring.
+ #
+ # Required params:
+ #   entityType       string  — slug for /api/quick-create/{entityType}
+ #                              (allowed: 'asset', 'crisis-team', 'business-process')
+ #   targetSelectId   string  — id of the parent <select> that should receive
+ #                              the new option
+ #   modalId          string  — DOM id of the matching dialog partial
+ #
+ # Optional params:
+ #   triggerLabel     string  — label on the trigger button
+ #                              (default: 'quick_create.cta'|trans(...))
+ #
+ # Usage (paired with dialog partial — render dialog OUTSIDE the form):
+ #   {% include '_components/_quick_create_modal_trigger.html.twig' with {
+ #       entityType:     'crisis-team',
+ #       targetSelectId: 'business_continuity_plan_crisisTeams',
+ #       modalId:        'quickCreateCrisisTeamModal',
+ #   } only %}
+ #}
+
+{%- set entityType     = entityType|default('asset') -%}
+{%- set targetSelectId = targetSelectId|default('') -%}
+{%- set modalId        = modalId|default('quickCreate-' ~ random()) -%}
+{%- set triggerLabel   = triggerLabel|default('quick_create.cta'|trans({}, 'quick_create')) -%}
+
+<div class="quick-create-modal-wrapper"
+     data-controller="quick-create-modal"
+     data-quick-create-modal-entity-type-value="{{ entityType }}"
+     data-quick-create-modal-target-select-value="{{ targetSelectId }}"
+     data-quick-create-modal-modal-id-value="{{ modalId }}"
+     data-quick-create-modal-csrf-value="{{ csrf_token('quick_create') }}"
+     data-quick-create-modal-i18n-quick-create-error-name-required="{{ 'quick_create.error.name_required'|trans({}, 'quick_create') }}"
+     data-quick-create-modal-i18n-quick-create-error-network="{{ 'quick_create.error.network'|trans({}, 'quick_create') }}"
+     data-quick-create-modal-i18n-quick-create-toast-success="{{ 'quick_create.toast.success'|trans({}, 'quick_create') }}">
+
+    <button type="button"
+            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm quick-create-trigger"
+            data-action="quick-create-modal#openModal"
+            aria-label="{{ triggerLabel }}">
+        <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+        <span>{{ triggerLabel }}</span>
+    </button>
+</div>
