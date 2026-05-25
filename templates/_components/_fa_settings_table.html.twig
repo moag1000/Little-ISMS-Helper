@@ -11,10 +11,15 @@
  # Props (top-level):
  #   title   : string          — section title (optional, rendered in <caption>)
  #   meta    : string          — small meta text next to title (optional)
+ #   headers : [{label, scope?, class?}] — optional <thead> row above body
+ #             rows. When omitted, table uses the implicit
+ #             label/control/status three-column layout. When provided, the
+ #             status column is suppressed unless rows opt in via status.
  #   rows    : [row, ...]
+ #   wrapperClass : string     — extra class on outer <table>
  #
  # Per-row props:
- #   kind    : 'text'|'email'|'number'|'select'|'chips'|'toggle'|'textarea'
+ #   kind    : 'text'|'email'|'number'|'select'|'chips'|'toggle'|'textarea'|'widget'
  #   label   : string          — visible label (already translated)
  #   hint    : string          — small help text below label (optional)
  #   name    : string          — input name attribute
@@ -22,10 +27,17 @@
  #   options : [{value, label}, ...]  — required for kind='select'
  #   values  : [string, ...]   — current selected values for kind='chips'
  #   options : [string, ...]   — available chip options for kind='chips'
+ #   widget  : string (HTML)   — required for kind='widget' — pre-rendered HTML
+ #             (e.g. {{ form_widget(form[fieldName])|e('html') }} OR raw passthrough).
+ #             Use this to plug in Symfony FormType controls whose markup
+ #             cannot be reproduced by the macro (CSRF tokens, validation
+ #             errors, dynamic field names).
+ #   trailing : string (HTML)  — optional trailing cell HTML (e.g. confidence
+ #             badge in import column-mapping)
  #   span    : int             — colspan for control cell (default 1)
  #   attrs   : {}              — extra HTML attrs on the control element
  #   status  : { label: string, tone: 'success'|'warning'|'danger'|'neutral' }
- #             — optional status pill in the third column
+ #             — optional status pill in the third column (implicit-layout mode)
  #
  # Row-Kind 'toggle':
  #   Renders a Bootstrap form-switch. value: true|false.
@@ -58,7 +70,13 @@
     {%- set attrs  = row.attrs|default({}) -%}
     {%- set fieldId = 'fst-' ~ name -%}
 
-    {% if kind == 'toggle' %}
+    {% if kind == 'widget' %}
+        {# Raw HTML passthrough — for pre-rendered Symfony FormType widgets,
+           CSRF tokens, validation errors. Trust contract: caller is
+           responsible for escaping. #}
+        {{ row.widget|default('')|raw }}
+
+    {% elseif kind == 'toggle' %}
         <div class="form-check form-switch mb-0">
             <input class="form-check-input"
                    type="checkbox"
@@ -172,11 +190,14 @@
 
 {% macro render(props = {}) %}
     {%- import _self as _self -%}
-    {%- set title = props.title|default('') -%}
-    {%- set meta  = props.meta|default('') -%}
-    {%- set rows  = props.rows|default([]) -%}
+    {%- set title    = props.title|default('') -%}
+    {%- set meta     = props.meta|default('') -%}
+    {%- set rows     = props.rows|default([]) -%}
+    {%- set headers  = props.headers|default([]) -%}
+    {%- set hasExplicitHeaders = headers|length > 0 -%}
+    {%- set wrapperClass = props.wrapperClass|default('') -%}
 
-    <table class="fa-settings-table" role="grid">
+    <table class="fa-settings-table{% if wrapperClass %} {{ wrapperClass }}{% endif %}" role="grid">
         {% if title %}
             <caption class="fa-settings-table__caption">
                 <span class="fa-settings-table__caption-title">{{ title }}</span>
@@ -185,15 +206,29 @@
                 {% endif %}
             </caption>
         {% endif %}
-        <colgroup>
-            <col class="fa-settings-table__col--label">
-            <col class="fa-settings-table__col--control">
-            <col class="fa-settings-table__col--status">
-        </colgroup>
+        {% if hasExplicitHeaders %}
+            <thead class="fa-settings-table__head">
+                <tr>
+                    {% for h in headers %}
+                        <th scope="{{ h.scope|default('col') }}"
+                            class="fa-settings-table__th{% if h.class is defined %} {{ h.class }}{% endif %}">
+                            {{ h.label|default('') }}
+                        </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+        {% else %}
+            <colgroup>
+                <col class="fa-settings-table__col--label">
+                <col class="fa-settings-table__col--control">
+                <col class="fa-settings-table__col--status">
+            </colgroup>
+        {% endif %}
         <tbody>
             {% for row in rows %}
-                {%- set hasStatus = row.status is defined and row.status -%}
-                {%- set span      = row.span|default(1) -%}
+                {%- set hasStatus   = row.status is defined and row.status -%}
+                {%- set hasTrailing = row.trailing is defined and row.trailing -%}
+                {%- set span        = row.span|default(1) -%}
                 <tr class="fa-settings-table__row">
                     <th class="fa-settings-table__label-cell" scope="row">
                         <label for="fst-{{ row.name|default('') }}" class="fa-settings-table__label">
@@ -207,14 +242,23 @@
                         {{ _self._control(row) }}
                     </td>
                     {% if span <= 1 %}
-                        <td class="fa-settings-table__status-cell">
-                            {% if hasStatus %}
-                                <span class="fa-status-pill fa-status-pill--sm fa-status-pill--{{ row.status.tone|default('neutral') }}">
-                                    <span class="fa-status-pill__dot" aria-hidden="true"></span>
-                                    {{ row.status.label|default('') }}
-                                </span>
+                        {% if hasExplicitHeaders %}
+                            {# Explicit-headers mode: render trailing cell as-is. #}
+                            {% if hasTrailing or headers|length >= 3 %}
+                                <td class="fa-settings-table__trailing-cell">
+                                    {{ row.trailing|default('')|raw }}
+                                </td>
                             {% endif %}
-                        </td>
+                        {% else %}
+                            <td class="fa-settings-table__status-cell">
+                                {% if hasStatus %}
+                                    <span class="fa-status-pill fa-status-pill--sm fa-status-pill--{{ row.status.tone|default('neutral') }}">
+                                        <span class="fa-status-pill__dot" aria-hidden="true"></span>
+                                        {{ row.status.label|default('') }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                        {% endif %}
                     {% endif %}
                 </tr>
             {% endfor %}
