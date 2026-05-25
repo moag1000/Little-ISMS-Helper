@@ -8,7 +8,7 @@ src/Service/PolicyWizard/DocumentGenerator.php:LOC=1869 deps=15
 src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php:LOC=1837 deps=4
 src/Service/DashboardStatisticsService.php:LOC=1808 deps=25
 src/Service/DataIntegrityService.php:LOC=1687 deps=28
-src/Service/Export/CertificationBundleExporter.php:LOC=1581 deps=19
+src/Service/Export/CertificationBundleExporter.php:LOC=1586 deps=19
 src/Controller/RiskController.php:LOC=1574 deps=0
 src/Controller/PolicyWizardController.php:LOC=1420 deps=0
 src/Controller/ManagementReportController.php:LOC=1294 deps=0
