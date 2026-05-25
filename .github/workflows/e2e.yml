@@ -99,22 +99,32 @@ jobs:
           php bin/console doctrine:migrations:version --add --all --no-interaction
           touch config/setup_complete.lock
           cp config/active_modules.yaml.dist config/active_modules.yaml
-          # Persist env to .env.dev.local so it survives container-cache
-          # warmup and PHP-built-in-server process spawns. The job-level
-          # `env:` block alone is unreliable for kernel.secret derivation —
-          # SsoSecretEncryption needs a non-empty %kernel.secret% or login
-          # returns 500 ("Kernel secret must not be empty").
+          # The repo's .env has APP_SECRET= (empty) so the secret cannot be
+          # resolved via the job-level env block alone — Symfony's dotenv
+          # `overrideExistingVars=false` means an empty .env literal can
+          # still shadow shell env in some load orders. Hard-set the
+          # secret in .env itself to remove any ambiguity. SsoSecretEncryption
+          # then receives a non-empty %kernel.secret% deterministically.
+          sed -i "s|^APP_SECRET=.*|APP_SECRET=$APP_SECRET|" .env
+          # Per-env DB url + mailer overrides go into .env.dev.local
+          # (loaded last in dev chain). We do NOT repeat APP_SECRET here —
+          # .env already has the right value.
           cat > .env.dev.local <<EOF
           DATABASE_URL=$DATABASE_URL
-          APP_SECRET=$APP_SECRET
           MAILER_DSN=$MAILER_DSN
           MESSENGER_TRANSPORT_DSN=$MESSENGER_TRANSPORT_DSN
           EOF
+          # Debug: surface what was written so failures are diagnosable.
+          echo "--- .env (APP_SECRET line) ---"
+          grep '^APP_SECRET' .env
+          echo "--- .env.dev.local ---"
+          cat .env.dev.local
 
       - name: Warm cache with final env
         run: |
           rm -rf var/cache/*
           php bin/console cache:warmup --env=dev
+          php bin/console debug:dotenv | head -30
 
       - name: Seed screenshot/E2E user
         run: php bin/console app:create-screenshot-user --force
