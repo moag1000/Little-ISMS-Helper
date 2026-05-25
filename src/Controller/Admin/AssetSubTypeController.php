@@ -1,5 +1,10 @@
 <?php
 
+// @em-write-allowed: Tenant-scoped admin CRUD for a simple master-data entity
+// (AssetSubType) — wrapping persist/flush in a separate service would be
+// over-engineering for a 6-field config-grade entity with no domain logic.
+// Mirrors the QuickCreateController pattern (S14 Cluster A).
+
 declare(strict_types=1);
 
 namespace App\Controller\Admin;
