@@ -71,6 +71,9 @@ interested_party:
         body: 'Capture customers, regulators, suppliers, and other stakeholders whose requirements you must account for in your ISMS. Each party documents requirements, communication frequency, and an engagement score.'
     help:
         empty_link: '/en/help/glossary#glossary-interested-parties'
+        last_communication: 'When you last actively communicated with this party (meeting, call, email). Empty = never documented.'
+        next_communication: 'Planned next contact. Empty = no follow-up scheduled — risk of stakeholder drift.'
+        feedback: 'Latest written feedback from the party (content, sentiment, trend). Supports the satisfaction estimate (1-5 below).'
     confirm:
         delete: 'Are you sure you want to delete this interested party?'
     hint:

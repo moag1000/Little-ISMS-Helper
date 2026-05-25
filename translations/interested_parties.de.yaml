@@ -71,6 +71,9 @@ interested_party:
         body: 'Erfassen Sie Kunden, Aufsichtsbehörden, Lieferanten und andere Stakeholder, deren Anforderungen Sie im ISMS berücksichtigen müssen. Pro Partei dokumentieren Sie Anforderungen, Kommunikationsfrequenz und Engagement-Score.'
     help:
         empty_link: '/de/help/glossary#glossary-interested-parties'
+        last_communication: 'Wann zuletzt aktiv mit dieser Partei kommuniziert wurde (Meeting, Anruf, E-Mail). Leer = noch nie dokumentiert.'
+        next_communication: 'Geplanter nächster Kontakt. Leer = keine Folgekommunikation eingeplant — Risiko für Stakeholder-Drift.'
+        feedback: 'Letzte schriftliche Rückmeldung der Partei (Inhalte, Stimmung, Tendenz). Stützt die Einschätzung der Zufriedenheit (1-5 unten).'
     confirm:
         delete: 'Möchten Sie diese interessierte Partei wirklich löschen?'
     party_type:
