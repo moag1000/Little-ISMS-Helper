@@ -69,7 +69,6 @@ asset:
     rpo: RPO (Recovery Point Objective)
     recovery_strategy: Recovery Strategy
     avg_rto: Average RTO
-    monetary_value: Monetary Value
     classification: Classification
     data_classification: Data Classification
     acceptable_use_policy: Acceptable Use Policy
@@ -98,7 +97,6 @@ asset:
       3=high, 4=very high, 5=critical — e.g. financial data, medical records)'
     availability: 'Availability: reachability when needed (1=>24h downtime tolerable,
       2=8h, 3=4h, 4=1h, 5=<15 min / 24×7)'
-    monetary_value: Estimated monetary value of the asset in EUR
     data_classification: Classification of data by protection requirements
     acceptable_use_policy: Guidelines for acceptable use of this asset
     handling_instructions: Special instructions for handling this asset
@@ -131,10 +129,6 @@ asset:
     current_value: '<strong>Current Book Value</strong><br>What is the asset worth
       today? (after depreciation)<br><br><em>Examples:</em><br>• 3-year-old server:
       ~€3,000<br>• Fully depreciated hardware: €1'
-    monetary_value: <strong>💰 Damage Value (IMPORTANT!)</strong><br>What would it
-      cost if this asset fails or is compromised?<br><br><em>Consider:</em><br>• Production
-      loss per hour<br>• Data loss costs<br>• Reputation damage<br>• Contract penalties<br><br><em>This
-      value is used for risk assessment!</em>
     confidentiality: '<strong>🔒 Confidentiality</strong><br><em>Question: Who may
       see this data?</em><br><br><strong>1</strong> = Public (website, press releases)<br><strong>2</strong>
       = Internal (all employees)<br><strong>3</strong> = Confidential (specific departments
@@ -401,9 +395,3 @@ qr:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
   validation:
     ai_prohibited_must_be_inactive: 'Prohibited AI systems (EU AI Act Art. 5) must not be in operational use. Status must be inactive or archived.'
-
-# Junior-ISB-Audit P-12 rollout — 9001 bridge for Asset form.
-iso_9001_bridge:
-    asset: 'In ISO 9001 assets are covered by Clause 7.1.3 (Infrastructure) and 7.5 (Documented information). ISO 27001 A.5.9-12 adds protection requirements (CIA), classification, and owner accountability — the 9001 base logic (what do we have, who looks after it) stays the same.'
-
-ai_agent.flash.no_tenant: 'No active tenant — please select a tenant first.'

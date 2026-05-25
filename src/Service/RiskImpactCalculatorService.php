@@ -13,7 +13,8 @@ use Psr\Log\LoggerInterface;
  * RiskImpactCalculatorService
  *
  * Phase 6F-D: Data Reuse Integration
- * Auto-calculates Risk.impact from Asset.monetaryValue
+ * Auto-calculates Risk.impact from Asset valuation fields (currentValue,
+ * fall-back acquisitionValue).
  *
  * Data Reuse Benefit:
  * - ~15 Min saved per Risk Assessment
@@ -21,9 +22,15 @@ use Psr\Log\LoggerInterface;
  * - Asset monetary value directly influences risk prioritization
  *
  * Safe Guards:
- * - Asset.monetaryValue is ALWAYS manually set (never auto-calculated)
+ * - Asset valuation fields are ALWAYS manually set (never auto-calculated)
  * - Calculation is suggestion-only, user can override
  * - Audit log tracks all changes
+ *
+ * Junior-ISB-Audit S14+ #15 (2026-05): switched from the deprecated
+ * `Asset.monetaryValue` field to the canonical AssetType form fields
+ * `currentValue` (preferred) / `acquisitionValue` (fallback). The
+ * `monetary_value` column was dropped in
+ * Version20260612100000_DropAssetMonetaryValue.
  */
 final class RiskImpactCalculatorService
 {
@@ -33,7 +40,32 @@ final class RiskImpactCalculatorService
     ) {}
 
     /**
-     * Calculate suggested impact level based on asset monetary value
+     * Resolve an asset's effective valuation for impact calculation.
+     *
+     * Preference order: currentValue → acquisitionValue.
+     * Returns null when neither is set or both resolve to 0.
+     */
+    private function resolveAssetValue(?Asset $asset): ?string
+    {
+        if (!$asset instanceof Asset) {
+            return null;
+        }
+
+        foreach ([$asset->getCurrentValue(), $asset->getAcquisitionValue()] as $candidate) {
+            if ($candidate === null) {
+                continue;
+            }
+            if ((float) $candidate <= 0.0) {
+                continue;
+            }
+            return $candidate;
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculate suggested impact level based on asset valuation.
      *
      * Impact Scale (1-5):
      * - 1 (Negligible): Loss < €10,000
@@ -43,7 +75,7 @@ final class RiskImpactCalculatorService
      * - 5 (Catastrophic): Loss > €1,000,000
      *
      * @param Risk $risk The risk to calculate impact for
-     * @return int|null Suggested impact level (1-5) or null if no asset with monetary value
+     * @return int|null Suggested impact level (1-5) or null if no asset valuation available
      */
     public function calculateSuggestedImpact(Risk $risk): ?int
     {
@@ -54,17 +86,17 @@ final class RiskImpactCalculatorService
             return null;
         }
 
-        $monetaryValue = $asset->getMonetaryValue();
+        $assetValue = $this->resolveAssetValue($asset);
 
-        if ($monetaryValue === null || $monetaryValue === '0.00') {
-            $this->logger->debug('Asset has no monetary value set', [
+        if ($assetValue === null) {
+            $this->logger->debug('Asset has no monetary valuation set', [
                 'risk_id' => $risk->getId(),
                 'asset_id' => $asset->getId()
             ]);
             return null;
         }
 
-        $value = (float) $monetaryValue;
+        $value = (float) $assetValue;
 
         // Calculate impact based on monetary value thresholds
         if ($value >= 1000000) {
@@ -83,26 +115,26 @@ final class RiskImpactCalculatorService
     /**
      * Get detailed impact calculation breakdown
      *
-     * @return array{suggested_impact: int|null, current_impact: int|null, monetary_value: string|null, rationale: string, should_update: bool}
+     * @return array{suggested_impact: int|null, current_impact: int|null, asset_value: string|null, rationale: string, should_update: bool}
      */
     public function getImpactCalculationDetails(Risk $risk): array
     {
         $suggestedImpact = $this->calculateSuggestedImpact($risk);
         $currentImpact = $risk->getImpact();
         $asset = $risk->getAsset();
-        $monetaryValue = $asset?->getMonetaryValue();
+        $assetValue = $this->resolveAssetValue($asset);
 
         $details = [
             'suggested_impact' => $suggestedImpact,
             'current_impact' => $currentImpact,
-            'monetary_value' => $monetaryValue,
+            'asset_value' => $assetValue,
             'rationale' => '',
             'should_update' => false,
             'difference' => null
         ];
 
         if ($suggestedImpact === null) {
-            $details['rationale'] = 'No monetary value available for impact calculation';
+            $details['rationale'] = 'No asset valuation available for impact calculation';
             return $details;
         }
 
@@ -111,23 +143,23 @@ final class RiskImpactCalculatorService
 
         if ($suggestedImpact > $currentImpact) {
             $details['rationale'] = sprintf(
-                'Asset monetary value (€%s) suggests higher impact level (%d vs current %d)',
-                number_format((float) $monetaryValue, 2),
+                'Asset valuation (€%s) suggests higher impact level (%d vs current %d)',
+                number_format((float) $assetValue, 2),
                 $suggestedImpact,
                 $currentImpact
             );
         } elseif ($suggestedImpact < $currentImpact) {
             $details['rationale'] = sprintf(
-                'Asset monetary value (€%s) suggests lower impact level (%d vs current %d)',
-                number_format((float) $monetaryValue, 2),
+                'Asset valuation (€%s) suggests lower impact level (%d vs current %d)',
+                number_format((float) $assetValue, 2),
                 $suggestedImpact,
                 $currentImpact
             );
         } else {
             $details['rationale'] = sprintf(
-                'Current impact level (%d) aligns with asset monetary value (€%s)',
+                'Current impact level (%d) aligns with asset valuation (€%s)',
                 $currentImpact,
-                number_format((float) $monetaryValue, 2)
+                number_format((float) $assetValue, 2)
             );
         }
 
@@ -152,7 +184,7 @@ final class RiskImpactCalculatorService
                 'risk_title' => $risk->getTitle(),
                 'suggested_impact' => $details['suggested_impact'],
                 'current_impact' => $details['current_impact'],
-                'monetary_value' => $details['monetary_value'],
+                'asset_value' => $details['asset_value'],
                 'should_update' => $details['should_update'],
                 'difference' => $details['difference'],
                 'rationale' => $details['rationale']
@@ -210,7 +242,7 @@ final class RiskImpactCalculatorService
         if ($suggestedImpact === null) {
             return [
                 'success' => false,
-                'message' => 'No monetary value available for suggestion',
+                'message' => 'No asset valuation available for suggestion',
                 'old_impact' => $currentImpact,
                 'new_impact' => null
             ];
@@ -219,7 +251,7 @@ final class RiskImpactCalculatorService
         if ($suggestedImpact === $currentImpact) {
             return [
                 'success' => false,
-                'message' => 'Current impact already matches asset monetary value',
+                'message' => 'Current impact already matches asset valuation',
                 'old_impact' => $currentImpact,
                 'new_impact' => $suggestedImpact
             ];
@@ -230,7 +262,7 @@ final class RiskImpactCalculatorService
             'message' => sprintf(
                 'Suggested impact: %d (based on asset value €%s)',
                 $suggestedImpact,
-                $risk->getAsset()?->getMonetaryValue() ?? '0'
+                $this->resolveAssetValue($risk->getAsset()) ?? '0'
             ),
             'old_impact' => $currentImpact,
             'new_impact' => $suggestedImpact
@@ -276,11 +308,11 @@ final class RiskImpactCalculatorService
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
 
-        $this->logger->info('Risk impact updated based on asset monetary value', [
+        $this->logger->info('Risk impact updated based on asset valuation', [
             'risk_id' => $risk->getId(),
             'old_impact' => $oldImpact,
             'new_impact' => $newImpact,
-            'monetary_value' => $risk->getAsset()?->getMonetaryValue()
+            'asset_value' => $this->resolveAssetValue($risk->getAsset())
         ]);
 
         return [

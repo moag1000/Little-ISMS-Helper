@@ -69,7 +69,6 @@ asset:
     rpo: RPO (Recovery Point Objective)
     recovery_strategy: Wiederherstellungsstrategie
     avg_rto: Durchschnittliche RTO
-    monetary_value: Geldwert
     classification: Klassifizierung
     data_classification: Datenklassifizierung
     acceptable_use_policy: Richtlinie zur akzeptablen Nutzung
@@ -98,7 +97,6 @@ asset:
       3=hoch, 4=sehr hoch, 5=kritisch — z.B. Finanzdaten, Patientenakten)'
     availability: 'Verfügbarkeit: Erreichbarkeit wenn gebraucht (1=>24h Ausfall tolerabel,
       2=8h, 3=4h, 4=1h, 5=<15 Min / 24×7)'
-    monetary_value: Geschätzter monetärer Wert des Assets in EUR
     data_classification: Klassifizierung der Daten nach Schutzbedarf
     acceptable_use_policy: Richtlinien zur akzeptablen Nutzung dieses Assets
     handling_instructions: Besondere Anweisungen für den Umgang mit diesem Asset
@@ -131,10 +129,6 @@ asset:
     current_value: '<strong>Aktueller Buchwert</strong><br>Was ist das Asset heute
       noch wert? (nach Abschreibung)<br><br><em>Beispiele:</em><br>• 3 Jahre alter
       Server: ~3.000€<br>• Abgeschriebene Hardware: 1€'
-    monetary_value: <strong>💰 Schadenswert (WICHTIG!)</strong><br>Was kostet es, wenn
-      dieses Asset ausfällt oder kompromittiert wird?<br><br><em>Denken Sie an:</em><br>•
-      Produktionsausfall pro Stunde<br>• Datenverlust-Kosten<br>• Reputationsschaden<br>•
-      Vertragsstrafen<br><br><em>Dieser Wert wird für die Risikobewertung verwendet!</em>
     confidentiality: '<strong>🔒 Vertraulichkeit</strong><br><em>Frage: Wer darf diese
       Daten sehen?</em><br><br><strong>1</strong> = Öffentlich (Website, Pressemitteilungen)<br><strong>2</strong>
       = Intern (alle Mitarbeiter)<br><strong>3</strong> = Vertraulich (nur bestimmte
@@ -162,7 +156,6 @@ asset:
     risk_level: Risikoniveau
     acquisition_value: Anschaffungswert
     current_value: Aktueller Wert
-    monetary_value: Monetärer Wert
     total_value: Gesamtwert
     risks: Risiken
     data_classification: Datenklassifizierung
@@ -405,9 +398,3 @@ qr:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
   validation:
     ai_prohibited_must_be_inactive: 'Verbotene KI-Systeme (EU AI Act Art. 5) dürfen nicht aktiv betrieben werden. Status muss inaktiv oder archiviert sein.'
-
-# Junior-ISB-Audit P-12 rollout — 9001-bridge for Asset form.
-iso_9001_bridge:
-    asset: 'In ISO 9001 sind Assets Teil von Klausel 7.1.3 (Infrastruktur) und 7.5 (Dokumentierte Information). ISO 27001 A.5.9-12 fügt Schutzbedarf (CIA), Klassifizierung und Owner-Verantwortung hinzu — die 9001-Grundlogik (was haben wir, wer kümmert sich) bleibt.'
-
-ai_agent.flash.no_tenant: 'Kein aktiver Mandant — bitte zuerst Mandant auswählen.'
