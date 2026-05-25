@@ -5,7 +5,7 @@ gap_report:
     unit:
         person_days: 'Personentage'
     error:
-        no_tenant: 'Kein Mandant zugeordnet — Gap-Report nicht verfügbar.'
+        no_tenant: 'Kein Organisation zugeordnet — Gap-Report nicht verfügbar.'
     info:
         no_estimates: 'Für dieses Framework liegen noch keine Consultant-Aufwandsschätzungen vor. Bitte führen Sie `app:compliance:seed-efforts` aus oder pflegen Sie die Werte manuell.'
     sort:

@@ -268,7 +268,7 @@ policy:
                     | Asset-Typ | Compute, Storage, Identity, Schluessel, Daten, SBOM-Komponente, IaC-Template |
                     | Eigentuemer | Person + Rolle |
                     | Service-Owner-Rolle | Bezug zur Organisationsstruktur |
-                    | Mandant / Geschaeftsbereich | Multi-Tenancy-Zuordnung |
+                    | Organisation / Geschaeftsbereich | Multi-Tenancy-Zuordnung |
                     | Cloud-Provider und Region | inkl. EU/EWR-Pruefung |
                     | Schutzbedarf | C/I/V mit Begruendung |
                     | Datenklassifikation | oeffentlich / intern / vertraulich / streng vertraulich / VS-NfD |
@@ -485,10 +485,10 @@ policy:
                     - Kubernetes-Hardening gemaess CIS-Benchmark, Pod-Security-Standards Restricted;
                     - Network-Policies pro Namespace, Service-Mesh mit mTLS;
                     - Container-Registry mit RBAC und Image-Signatur-Verifikation;
-                    - Container-Isolation: separate Worker-Pools für Mandanten, dedicated Nodes für sehr hohen Schutzbedarf.
+                    - Container-Isolation: separate Worker-Pools je Mandant, dedicated Nodes für sehr hohen Schutzbedarf.
 
                     ## 12. Service-Trennung und Multi-Tenancy (OPS-13)
-                    Produktive Mandantendaten werden durch IAM-Policies, Network-Segmentierung, dedizierte KMS-Schluessel pro Mandant und gegebenenfalls dedizierte Compute-Pools getrennt. Multi-Tenancy-Tests werden im Penetrationstest-Programm verankert.
+                    Produktive Organisationsdaten werden durch IAM-Policies, Network-Segmentierung, dedizierte KMS-Schluessel pro Organisation und gegebenenfalls dedizierte Compute-Pools getrennt. Multi-Tenancy-Tests werden im Penetrationstest-Programm verankert.
 
                     ## 13. Pruefintervall und Genehmigung
                     Diese Richtlinie wird mindestens alle 12 Monate ueberprueft. Genehmigung: CSO. Genehmigungskette: {{ approval.chain }}.
@@ -709,7 +709,7 @@ policy:
                     |---|---|
                     | Umgebung | prod / staging / dev / sandbox |
                     | Funktion | Web-Tier / App-Tier / Data-Tier / Management-Tier |
-                    | Mandant | dedizierte VPC oder Subnetz pro Mandant bei sehr hohem Schutzbedarf |
+                    | Organisation | dedizierte VPC oder Subnetz pro Organisation bei sehr hohem Schutzbedarf |
 
                     Inter-Segment-Verkehr wird ueber explizite Network-Policies erlaubt.
 

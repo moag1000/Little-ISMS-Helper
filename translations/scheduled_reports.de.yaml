@@ -179,9 +179,9 @@ email:
 form:
     recipient:
         role_too_low: 'Empfänger {email} besitzt nicht die Mindestrolle ROLE_MANAGER.'
-        cross_tenant_forbidden: 'Empfänger {email} gehört nicht zum aktuellen Mandanten.'
+        cross_tenant_forbidden: 'Empfänger {email} gehört nicht zur aktuellen Organisation.'
         unknown_user: 'Empfänger {email} existiert nicht als Benutzer im System.'
         inactive: 'Empfänger {email} ist deaktiviert.'
 
 flash:
-    no_qualifying_recipients: 'Keine Empfänger erfüllen die Rolle-/Mandantenvorgabe. Report wurde nicht versendet.'
+    no_qualifying_recipients: 'Keine Empfänger erfüllen die Rolle-/Organisationsvorgabe. Report wurde nicht versendet.'

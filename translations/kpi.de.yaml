@@ -3,9 +3,9 @@
 
 kpi:
     mris:
-        no_tenant: "Kein Mandant zugewiesen — MRIS-KPIs benötigen einen Mandantenkontext."
-        no_tenant_short: "Kein Mandant zugewiesen."
-        disabled: "MRIS-KPIs sind für diesen Mandanten deaktiviert. Aktivierung über Mandanten-Einstellungen."
+        no_tenant: "Kein Organisation zugewiesen — MRIS-KPIs benötigen einen Organisationskontext."
+        no_tenant_short: "Kein Organisation zugewiesen."
+        disabled: "MRIS-KPIs sind für diese Organisation deaktiviert. Aktivierung über die Organisations-Einstellungen."
         saved: "Manuelle MRIS-KPI-Werte gespeichert."
     # Core KPIs
     control_compliance: "Control-Compliance"

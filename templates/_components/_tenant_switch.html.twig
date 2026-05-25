@@ -26,7 +26,7 @@
             aria-expanded="false">
         <span class="fa-tenant-switch__initials" aria-hidden="true">{{ currentTenant.initials|default('??') }}</span>
         <span class="fa-tenant-switch__body">
-            <span class="fa-tenant-switch__name">{{ currentTenant.name|default('Tenant') }}</span>
+            <span class="fa-tenant-switch__name">{{ currentTenant.name|default('Organisation') }}</span>
             <span class="fa-tenant-switch__hint">{{ 'tenant.switch_hint'|trans({}, 'tenant')|default('Wechseln') }}</span>
         </span>
         <i class="fa-icon fa-icon--util-chevron-down fa-tenant-switch__chevron" aria-hidden="true"></i>
@@ -37,7 +37,7 @@
          data-aurora-dropdown-target="panel"
          hidden>
         <div class="fa-dropdown-panel__header">
-            {{ 'tenant.switch_header'|trans({}, 'tenant')|default('Tenant wechseln') }}
+            {{ 'tenant.switch_header'|trans({}, 'tenant')|default('Organisation wechseln') }}
         </div>
         <div class="fa-dropdown-panel__body">
             {% for t in availableTenants %}
@@ -58,6 +58,11 @@
                     {% endif %}
                 </a>
             {% endfor %}
+        </div>
+        {# Junior-friendly glossary hint — bridges "Organisation" (ISO 27001 Cl. 4.1) to legacy term "Mandant" #}
+        <div class="fa-dropdown-panel__footer" style="cursor: default; text-decoration: none; color: var(--fg-3); font-style: italic; text-transform: none; letter-spacing: 0; font-family: var(--font-sans); font-size: 11px;">
+            <i class="fa-icon fa-icon--ui-info" aria-hidden="true" style="margin-right: 4px;"></i>
+            {{ 'tenant.switch_glossary_hint'|trans({}, 'tenant')|default('Organisation = Ihr Mandant in der ISO-Terminologie (ISO 27001 Cl. 4.1).') }}
         </div>
     </div>
 </div>

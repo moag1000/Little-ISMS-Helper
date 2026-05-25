@@ -40,7 +40,7 @@ processing_activity:
         picker_subtitle: 'Wähle die Lieferanten aus dem Lieferantenregister, die als Auftragsverarbeiter für diese Verarbeitungstätigkeit fungieren.'
         picker_breadcrumb: 'AVV-Auswahl'
         picker_section_title: 'Verfügbare Lieferanten'
-        no_candidates: 'Es sind noch keine Lieferanten in diesem Mandanten erfasst. Bitte zunächst einen Lieferanten anlegen.'
+        no_candidates: 'Es sind noch keine Lieferanten in dieser Organisation erfasst. Bitte zunächst einen Lieferanten anlegen.'
         create_supplier: 'Lieferant anlegen'
         save: 'Auswahl speichern'
         flash_saved: 'AVV-Lieferanten gespeichert.'
@@ -127,16 +127,16 @@ crisis_team:
 document:
     acknowledgement_audience:
         title: 'Wer muss diese Dokumenten-Kenntnisnahme bestätigen?'
-        body: 'Dieses Dokument fordert eine Mitarbeiter-Bestätigung (ISO 27001 A.6.3), aber keine explizite Audience ist hinterlegt. Standardmäßig wird an alle aktiven Mandanten-Nutzer gestreut — eine gezielte Audience macht die Awareness-Evidenz Audit-fit.'
+        body: 'Dieses Dokument fordert eine Mitarbeiter-Bestätigung (ISO 27001 A.6.3), aber keine explizite Audience ist hinterlegt. Standardmäßig wird an alle aktiven Organisations-Nutzer gestreut — eine gezielte Audience macht die Awareness-Evidenz Audit-fit.'
         action: 'Audience festlegen'
         picker_title: 'Acknowledgement-Audience festlegen'
         picker_subtitle: 'Wähle die Mitarbeitenden, die dieses Dokument bestätigen müssen. Bei leerer Auswahl wird wie bisher an alle aktiven Nutzer gestreut.'
         picker_breadcrumb: 'Audience festlegen'
-        picker_section_title: 'Verfügbare Nutzer im Mandanten'
-        no_candidates: 'Keine aktiven Nutzer in diesem Mandanten gefunden.'
+        picker_section_title: 'Verfügbare Nutzer im Organisationen'
+        no_candidates: 'Keine aktiven Nutzer in dieser Organisation gefunden.'
         filter_placeholder: 'Nach E-Mail oder Name suchen…'
         save: 'Audience speichern'
-        empty_means_all: 'Hinweis: leere Auswahl behält das Standard-Verhalten "alle aktiven Mandanten-Nutzer".'
+        empty_means_all: 'Hinweis: leere Auswahl behält das Standard-Verhalten "alle aktiven Organisations-Nutzer".'
         flash_saved: 'Acknowledgement-Audience gespeichert.'
         flash_not_required: 'Dokument fordert keine Bestätigung — Audience-Picker übersprungen.'
     review_overdue:
@@ -152,8 +152,8 @@ training:
         picker_title: 'Pflichtteilnehmer auswählen'
         picker_subtitle: 'Wähle die Mitarbeitenden, die dieses Pflichttraining absolvieren müssen. Schon zugewiesene Personen sind grau hinterlegt.'
         picker_breadcrumb: 'Audience-Auswahl'
-        picker_section_title: 'Verfügbare Nutzer im Mandanten'
-        no_candidates: 'Keine aktiven Nutzer in diesem Mandanten gefunden.'
+        picker_section_title: 'Verfügbare Nutzer im Organisationen'
+        no_candidates: 'Keine aktiven Nutzer in dieser Organisation gefunden.'
         filter_placeholder: 'Nach E-Mail oder Name suchen…'
         already_assigned: 'Bereits zugewiesen'
         save: 'Audience speichern'
@@ -341,7 +341,7 @@ global:
         action: 'Prüf-Queue öffnen'
     no_notification_channel:
         title: 'Keine aktiven Benachrichtigungskanäle konfiguriert'
-        body: 'Das Benachrichtigungsmodul ist aktiv, aber für diesen Mandanten sind keine aktiven Kanäle (E-Mail / Webhook / In-App) eingerichtet. Ohne Kanal werden alle Benachrichtigungsregeln lautlos ausgeführt — kein Alert erreicht die Empfänger. ISO 27001 Kl. 9.1 erfordert überwachungsfähige Prozesse.'
+        body: 'Das Benachrichtigungsmodul ist aktiv, aber für diese Organisation sind keine aktiven Kanäle (E-Mail / Webhook / In-App) eingerichtet. Ohne Kanal werden alle Benachrichtigungsregeln lautlos ausgeführt — kein Alert erreicht die Empfänger. ISO 27001 Kl. 9.1 erfordert überwachungsfähige Prozesse.'
         action: 'Kanal anlegen'
     overdue_authority_report:
         title: 'EU-Behörden-Meldung überfällig'
@@ -353,11 +353,11 @@ global:
         action: 'DORA RoI öffnen'
     dora_category_unset:
         title: 'DORA-Verpflichtungsstatus nicht gesetzt — Widerspruch erkannt'
-        body: '%count% Lieferant(en)/Asset(s) sind als DORA-relevant markiert, aber der Mandant ist nicht als DORA-pflichtig eingestuft. Bitte DORA-Verpflichtungsstatus in den Mandanten-Einstellungen prüfen.'
-        action: 'Mandanten-Einstellungen öffnen'
+        body: '%count% Lieferant(en)/Asset(s) sind als DORA-relevant markiert, aber die Organisation ist nicht als DORA-pflichtig eingestuft. Bitte DORA-Verpflichtungsstatus in die Organisation-Einstellungen prüfen.'
+        action: 'Organisations-Einstellungen öffnen'
     fte_savings_milestone:
         title: 'Meilenstein erreicht — %hours% FTE-Stunden eingespart!'
-        body: 'Das System hat für diesen Mandanten bereits %minutes% Minuten (%hours% Stunden) manuellen Aufwand eingespart — durch SSO-JIT-Provisioning, Bulk-Import und Evidence-Wiederverwendung. Weiter so!'
+        body: 'Das System hat für diese Organisation bereits %minutes% Minuten (%hours% Stunden) manuellen Aufwand eingespart — durch SSO-JIT-Provisioning, Bulk-Import und Evidence-Wiederverwendung. Weiter so!'
         action: 'FTE-Dashboard öffnen'
     risks_linked_to_open_incidents:
         title: 'Offene Vorfälle halten Risikodruck aufrecht — Überprüfung empfohlen'

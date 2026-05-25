@@ -2,7 +2,7 @@ portfolio_report:
     title: 'Cross-Framework Portfolio'
 
     header:
-        tenant: 'Mandant'
+        tenant: 'Organisation'
         stichtag: 'Stichtag'
         vorperiode: 'Vorperiode'
         generated_at: 'Erstellt am'
@@ -45,7 +45,7 @@ portfolio_report:
         footer: 'Vertraulich – Cross-Framework Portfolio Report | Little ISMS Helper'
 
     flash:
-        no_tenant: 'Es ist kein Mandant für den Portfolio-Report aktiv.'
+        no_tenant: 'Es ist kein Organisation für den Portfolio-Report aktiv.'
 
     inheritance:
         title: 'Inheritance-Rate pro Framework (WS-1)'

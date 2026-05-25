@@ -1,6 +1,6 @@
 risk_approval_config:
     title: 'Risk-Approval-Schwellwerte'
-    subtitle: 'Bis zu welchem Risk-Score automatisch akzeptiert, Manager-Approval oder Executive-Approval erforderlich ist. Gilt pro Mandant.'
+    subtitle: 'Bis zu welchem Risk-Score automatisch akzeptiert, Manager-Approval oder Executive-Approval erforderlich ist. Gilt pro Organisation.'
     section:
         thresholds: 'Schwellwerte (Risk-Score Likelihood × Impact)'
         last_change: 'Letzte Änderung'

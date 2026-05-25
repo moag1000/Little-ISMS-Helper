@@ -205,7 +205,7 @@ policy:
 
                     ## 2. Definition der Rolle (Art. 4 Nr. 8 DSGVO)
 
-                    Auftragsverarbeiter ist die Organisation, sofern sie personenbezogene Daten **im Auftrag** eines Verantwortlichen verarbeitet, ohne ueber Zwecke und Mittel zu entscheiden. Beispiele in der Organisation: SaaS-Bereitstellung für Kunden, Hosting-Dienstleistungen, Lohnabrechnung im Auftrag, Kundenservice-Ticketing für Kundenmandanten.
+                    Auftragsverarbeiter ist die Organisation, sofern sie personenbezogene Daten **im Auftrag** eines Verantwortlichen verarbeitet, ohne ueber Zwecke und Mittel zu entscheiden. Beispiele in der Organisation: SaaS-Bereitstellung für Kunden, Hosting-Dienstleistungen, Lohnabrechnung im Auftrag, Kundenservice-Ticketing für Kunden-Organisationen.
 
                     ## 3. Auftragsverarbeitungs-Vertrag (Art. 28 Abs. 3 DSGVO + ISO 27701:2025 Cl. 8.2.2)
 
