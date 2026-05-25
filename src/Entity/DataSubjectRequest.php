@@ -535,7 +535,7 @@ class DataSubjectRequest
         return $this->receivedAt;
     }
 
-    public function setReceivedAt(DateTimeImmutable $receivedAt): static
+    public function setReceivedAt(?DateTimeImmutable $receivedAt): static
     {
         $this->receivedAt = $receivedAt;
         return $this;
