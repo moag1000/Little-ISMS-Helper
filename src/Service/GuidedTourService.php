@@ -193,16 +193,7 @@ final class GuidedTourService
         }
 
         $addons = [];
-        if ($this->moduleConfig->isModuleActive('bsi_grundschutz')) {
-            $addons[] = [
-                'id' => 'module-bsi', 'icon' => 'nav-building-shield', 'target' => null,
-                'title_key' => 'guided_tour.modules.bsi.title', 'body_key' => 'guided_tour.modules.bsi.body',
-                'url' => null, 'placement' => 'center',
-            ];
-        }
-        if ($this->moduleConfig->isModuleActive('privacy')
-            || $this->moduleConfig->isModuleActive('gdpr')
-        ) {
+        if ($this->moduleConfig->isModuleActive('privacy')) {
             $addons[] = [
                 'id' => 'module-gdpr', 'icon' => 'nav-people', 'target' => null,
                 'title_key' => 'guided_tour.modules.gdpr.title', 'body_key' => 'guided_tour.modules.gdpr.body',

@@ -440,8 +440,8 @@ modules:
 
   objectives:
     name: 'ISMS-Ziele'
-    description: 'ISO 27001 Clause 6.2 — messbare Informationssicherheitsziele mit KPI-Tracking und Fortschrittsüberwachung'
-    required: false
+    description: 'ISO 27001 Clause 6.2 — messbare Informationssicherheitsziele mit KPI-Tracking und Fortschrittsüberwachung. Pflicht für jedes zertifizierungsfähige ISMS.'
+    required: true
     icon: 'bullseye'
     entities:
       - ISMSObjective
