@@ -23,6 +23,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Routes: NOT prefixed with `/{_locale<...>}` because the global routing config
  * already handles locale prefixing (see TagController pattern).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/departments', name: 'admin_department_')]
 #[IsGranted('ROLE_ADMIN')]
 final class DepartmentController extends AbstractController
