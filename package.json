@@ -18,6 +18,8 @@
         "e2e:headed": "playwright test --headed",
         "e2e:debug": "playwright test --debug",
         "e2e:report": "playwright show-report var/playwright-report",
-        "e2e:list": "playwright test --list"
+        "e2e:list": "playwright test --list",
+        "e2e:smoke": "bash scripts/browser-coverage/run.sh",
+        "e2e:smoke:report": "node scripts/browser-coverage/generate-report.mjs"
     }
 }

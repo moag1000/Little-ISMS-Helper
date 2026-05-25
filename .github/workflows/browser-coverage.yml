@@ -1,0 +1,135 @@
+name: Browser Coverage (L1 Smoke)
+
+# Persona-driven route-smoke navigation. Hits every GET-able route per
+# persona and uploads an HTML report. Non-blocking — informational only —
+# so a flaky route doesn't block PRs. The PR-comment-bot consumes the JSON
+# results to surface regressions inline.
+#
+# Triggers:
+#   - nightly at 02:00 UTC (full sweep across all personas)
+#   - manual dispatch (pick persona + base URL)
+#   - PR labelled `browser-coverage` (one-shot smoke on the PR's HEAD)
+
+on:
+    schedule:
+        - cron: '0 2 * * *'
+    workflow_dispatch:
+        inputs:
+            persona:
+                description: 'Persona key (or "all")'
+                required: false
+                default: 'all'
+                type: string
+    pull_request:
+        types: [labeled]
+
+permissions:
+    contents: read
+
+env:
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+    smoke:
+        if: github.event_name != 'pull_request' || github.event.label.name == 'browser-coverage'
+        name: L1 Browser-Smoke
+        runs-on: ubuntu-latest
+        continue-on-error: true
+        timeout-minutes: 45
+
+        services:
+            mariadb:
+                image: mariadb:11
+                env:
+                    MARIADB_ROOT_PASSWORD: root
+                    MARIADB_DATABASE: isms
+                    MARIADB_USER: app
+                    MARIADB_PASSWORD: app
+                ports: ['3306:3306']
+                options: >-
+                    --health-cmd="healthcheck.sh --connect --innodb_initialized"
+                    --health-interval=10s --health-timeout=5s --health-retries=10
+
+        env:
+            DATABASE_URL: 'mysql://app:app@127.0.0.1:3306/isms?serverVersion=mariadb-11.0.0&charset=utf8mb4'
+            APP_ENV: dev
+            APP_SECRET: smoke_secret
+            E2E_BASE_URL: http://127.0.0.1:8000
+            E2E_NO_WEBSERVER: '1'
+            MAILER_DSN: 'null://null'
+            MESSENGER_TRANSPORT_DSN: 'sync://'
+
+        steps:
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: '20'
+
+            - name: Checkout
+              uses: actions/checkout@v5
+
+            - name: Install PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.4'
+                  coverage: none
+
+            - name: Composer install
+              run: composer install --no-interaction --no-progress --prefer-dist
+
+            - name: NPM install
+              run: npm ci
+
+            - name: Cache Playwright browsers
+              uses: actions/cache@v4
+              id: playwright-cache
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+            - name: Install Playwright (chromium)
+              if: steps.playwright-cache.outputs.cache-hit != 'true'
+              run: npx playwright install --with-deps chromium
+
+            - name: Install Playwright system deps
+              if: steps.playwright-cache.outputs.cache-hit == 'true'
+              run: npx playwright install-deps chromium
+
+            - name: Database setup
+              run: |
+                  php bin/console doctrine:database:create --if-not-exists --no-interaction
+                  php bin/console doctrine:migrations:migrate --no-interaction
+                  php bin/console app:create-screenshot-user
+
+            - name: Start Symfony web server
+              run: |
+                  php -S 127.0.0.1:8000 -t public > var/server.log 2>&1 &
+                  sleep 3
+                  curl -sf http://127.0.0.1:8000/de/login -o /dev/null
+
+            - name: Export routes
+              run: php bin/console app:browser-coverage:export-routes
+
+            - name: Run L1 smoke
+              run: |
+                  persona='${{ inputs.persona || 'all' }}'
+                  if [ "$persona" = "all" ]; then
+                      bash scripts/browser-coverage/run.sh
+                  else
+                      BROWSER_COVERAGE_SKIP_EXPORT=1 bash scripts/browser-coverage/run.sh "$persona"
+                  fi
+
+            - name: Upload HTML report
+              if: always()
+              uses: actions/upload-artifact@v7
+              with:
+                  name: browser-coverage-report
+                  path: var/browser-coverage/
+                  retention-days: 14
+
+            - name: Upload server log
+              if: failure()
+              uses: actions/upload-artifact@v7
+              with:
+                  name: server-log
+                  path: var/server.log
+                  retention-days: 7
