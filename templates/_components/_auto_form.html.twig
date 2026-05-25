@@ -216,45 +216,45 @@
         {% endfor %}
         {% set section_field_count = _present_fields|length %}
 
-        {# Skip whole section if no fields present (all module-gated away,
-           conditional builder branch not taken, etc.). #}
-        {% if section_field_count == 0 %}
-            {% continue %}
+        {# Only emit the section if at least one field is present on the form
+           (i.e. not all module-gated away or skipped by a conditional builder
+           branch). Twig has no `{% continue %}` tag, so wrap the body in an
+           if-block. #}
+        {% if section_field_count > 0 %}
+            {# Derive status from fill ratio #}
+            {% if section_filled == section_field_count %}
+                {% set section_status = 'done' %}
+            {% elseif section_filled > 0 %}
+                {% set section_status = 'current' %}
+            {% else %}
+                {% set section_status = 'pending' %}
+            {% endif %}
+
+            {# Render section body via the shared partial #}
+            {% set section_body %}
+                {% include '_components/_auto_form_section_body.html.twig' with {
+                    'form':               form,
+                    'section_fields':     section_def.fields,
+                    'col_widths':         col_widths|default({}),
+                    'help_texts':         help_texts,
+                    'tooltips':           tooltips,
+                    'drawer_keys':        drawer_keys,
+                    'exclude_fields':     exclude_fields,
+                    'automatic_fields':   automatic_fields,
+                    'translation_domain': passed_translation_domain,
+                    'section_intro':      section_def.intro|default(null)
+                } %}
+            {% endset %}
+
+            {% set fa_form_sections = fa_form_sections|merge([{
+                'id':     'sec-' ~ section_key,
+                'title':  section_def.label,
+                'status': section_status,
+                'fields': section_field_count,
+                'filled': section_filled,
+                'body':   section_body
+            }]) %}
         {% endif %}
-
-        {# Derive status from fill ratio #}
-        {% if section_filled == section_field_count and section_field_count > 0 %}
-            {% set section_status = 'done' %}
-        {% elseif section_filled > 0 %}
-            {% set section_status = 'current' %}
-        {% else %}
-            {% set section_status = 'pending' %}
-        {% endif %}
-
-        {# Render section body via the shared partial #}
-        {% set section_body %}
-            {% include '_components/_auto_form_section_body.html.twig' with {
-                'form':               form,
-                'section_fields':     section_def.fields,
-                'col_widths':         col_widths|default({}),
-                'help_texts':         help_texts,
-                'tooltips':           tooltips,
-                'drawer_keys':        drawer_keys,
-                'exclude_fields':     exclude_fields,
-                'automatic_fields':   automatic_fields,
-                'translation_domain': passed_translation_domain,
-                'section_intro':      section_def.intro|default(null)
-            } %}
-        {% endset %}
-
-        {% set fa_form_sections = fa_form_sections|merge([{
-            'id':     'sec-' ~ section_key,
-            'title':  section_def.label,
-            'status': section_status,
-            'fields': section_field_count,
-            'filled': section_filled,
-            'body':   section_body
-        }]) %}
     {% endfor %}
 
     {# Count done sections for progress bar #}
@@ -301,34 +301,33 @@
 {% else %}
 
     {% for section_key, section in sections %}
-        {# Skip section if all fields are absent (module-gated away or builder
-           branch not taken). Mirrors the outline-rail layout skip. #}
+        {# Only emit section if at least one of its fields is present on the
+           form. Mirrors the outline-rail layout skip. Twig has no
+           `{% continue %}` so wrap in an if-block. #}
         {% set _present_section_fields = [] %}
         {% for field_name in section.fields %}
             {% if form[field_name] is defined %}
                 {% set _present_section_fields = _present_section_fields|merge([field_name]) %}
             {% endif %}
         {% endfor %}
-        {% if _present_section_fields|length == 0 %}
-            {% continue %}
+        {% if _present_section_fields|length > 0 %}
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">{{ section.label|raw }}</legend>
+
+                {% include '_components/_auto_form_section_body.html.twig' with {
+                    'form':               form,
+                    'section_fields':     section.fields,
+                    'col_widths':         col_widths|default({}),
+                    'help_texts':         help_texts,
+                    'tooltips':           tooltips,
+                    'drawer_keys':        drawer_keys,
+                    'exclude_fields':     exclude_fields,
+                    'automatic_fields':   automatic_fields,
+                    'translation_domain': passed_translation_domain,
+                    'section_intro':      section.intro|default(null)
+                } %}
+            </fieldset>
         {% endif %}
-
-        <fieldset class="mb-4">
-            <legend class="h5 mb-3">{{ section.label|raw }}</legend>
-
-            {% include '_components/_auto_form_section_body.html.twig' with {
-                'form':               form,
-                'section_fields':     section.fields,
-                'col_widths':         col_widths|default({}),
-                'help_texts':         help_texts,
-                'tooltips':           tooltips,
-                'drawer_keys':        drawer_keys,
-                'exclude_fields':     exclude_fields,
-                'automatic_fields':   automatic_fields,
-                'translation_domain': passed_translation_domain,
-                'section_intro':      section.intro|default(null)
-            } %}
-        </fieldset>
     {% endfor %}
 
     {# ─── Catch-all: render any form-field NOT listed in sections ─────────────
