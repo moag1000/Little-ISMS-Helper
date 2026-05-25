@@ -222,4 +222,26 @@ threat_intelligence:
         mitre_attack_tactics: 'MITRE ATT&CK Taktik-IDs (TA0001–TA0043). JSON-Array oder kommagetrennt.'
         mitre_attack_techniques: 'MITRE ATT&CK Technik-IDs (T1xxx). JSON-Array oder kommagetrennt.'
         iocs_list_json: 'STIX 2.1-Format: [{type: ip|domain|hash|url|email, value: "...", context: "..."}]'
+        iocs_list: 'STIX 2.1-Indikatoren — eine Zeile pro IoC (Typ, Wert, Vertrauensgrad 1-5).'
         shared_externally: 'Gesetzt wenn diese Information an ein CERT/CSIRT weitergegeben wurde (NIS2 Art. 30).'
+    ioc:
+        field:
+            type: 'Typ'
+            value: 'Wert'
+            confidence: 'Vertrauensgrad'
+        placeholder:
+            type: '-- IoC-Typ wählen --'
+            value: 'z.B. 192.0.2.1, evil.example.com, sha256:…'
+            confidence: '-- Vertrauensgrad (1-5) --'
+        type:
+            ip: 'IP-Adresse'
+            domain: 'Domain'
+            hash: 'Datei-Hash'
+            url: 'URL'
+            email: 'E-Mail-Adresse'
+        confidence:
+            1: '1 — Sehr gering'
+            2: '2 — Gering'
+            3: '3 — Mittel'
+            4: '4 — Hoch'
+            5: '5 — Sehr hoch'

@@ -8,11 +8,13 @@ use App\Entity\BCExercise;
 use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\BusinessContinuityPlan;
+use App\Form\Entry\EvidenceArtifactEntryType;
 use App\Form\Type\JsonStructuredType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -235,9 +237,17 @@ final class BCExerciseType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
             ])
-            // TODO(s5-json-objects): replace with CollectionType + SuccessCriterionEntryType
-            // (shape: {rtoMet, rpoMet, communicationEffective, teamPrepared}).
-            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
+            // TODO(s5-json-objects): DEFERRED — shape varies, needs schema-discovery
+            // first. Two shapes co-exist in production rows: legacy flat map
+            // {rtoMet:bool, rpoMet:bool, communicationEffective:bool, teamPrepared:bool}
+            // (ISO 22301 §8.6 c example) and the richer list shape
+            // [{criterion, target, actual, met}]. The custom Stimulus-driven
+            // JsonBuilder UI in templates/_components/_fa_success_criteria.html.twig
+            // auto-detects both, supports prefill from tested BCPlan RTO/RPO,
+            // and exposes a raw-JSON-toggle escape hatch. A plain CollectionType
+            // would be a UX regression — re-evaluate after running a column-shape
+            // audit (`grep -c '"criterion"' bc_exercises_dump.json`) and
+            // migrating legacy flat rows to Shape A.
             ->add('successCriteria', JsonStructuredType::class, [
                 'label' => 'bc_exercises.field.success_criteria',
                 'required' => false,
@@ -270,18 +280,27 @@ final class BCExerciseType extends AbstractType
                     'data-controller' => 'tom-select',
                 ],
             ])
-            // TODO(s5-json-objects): replace with CollectionType + EvidenceArtifactEntryType
-            // (shape: [{type:photo|log|report|screenshot, reference, description}]).
-            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
-            ->add('evidenceArtifacts', JsonStructuredType::class, [
+            // S5 Bucket 5 — structured per-row evidence artifacts.
+            // Shape: {type, name, url, capturedAt}. Legacy keys
+            // (reference, description) survive on round-trip via
+            // data_class=null PropertyAccess merging.
+            ->add('evidenceArtifacts', CollectionType::class, [
                 'label' => 'bc_exercises.field.evidence_artifacts',
                 'required' => false,
-                'attr' => ['rows' => 4],
-                'help' => 'bc_exercises.help.evidence_artifacts_json',
+                'entry_type' => EvidenceArtifactEntryType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
+                'prototype_name' => '__evidence_index__',
+                'attr' => [
+                    'class' => 'fa-collection fa-collection--evidence',
+                    'data-collection-prototype-name' => '__evidence_index__',
+                ],
+                'help' => 'bc_exercises.help.evidence_artifacts',
             ])
         ;
-
-        // JsonArrayTransformer now applied automatically by JsonStructuredType.
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -81,8 +81,8 @@ translations/audits.en.yaml:180:pdf
 translations/audits.en.yaml:219:audit_finding
 translations/audits.en.yaml:391:corrective_action
 translations/audits.en.yaml:477:iso_9001_bridge
-translations/bc_exercises.de.yaml:176:iso_9001_bridge
-translations/bc_exercises.en.yaml:176:iso_9001_bridge
+translations/bc_exercises.de.yaml:196:iso_9001_bridge
+translations/bc_exercises.en.yaml:196:iso_9001_bridge
 translations/bc_plans.de.yaml:215:bcm
 translations/bc_plans.de.yaml:222:bc_plan
 translations/bc_plans.de.yaml:231:iso_9001_bridge
@@ -301,10 +301,10 @@ translations/threat.en.yaml:187:status_type
 translations/threat.en.yaml:195:threat_intelligence
 translations/training.de.yaml:181:iso_9001_bridge
 translations/training.en.yaml:175:iso_9001_bridge
-translations/user.de.yaml:273:user_management
-translations/user.de.yaml:277:profile
-translations/user.en.yaml:273:user_management
-translations/user.en.yaml:277:profile
+translations/user.de.yaml:298:user_management
+translations/user.de.yaml:302:profile
+translations/user.en.yaml:298:user_management
+translations/user.en.yaml:302:profile
 translations/validators.de.yaml:110:Error
 translations/validators.de.yaml:224:setup
 translations/validators.de.yaml:244:document

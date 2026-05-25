@@ -117,6 +117,26 @@ bc_exercises:
         actual_rpo_achieved: 'Actual measured data loss period in hours (ISO 22301 §8.6 d). Compare with target RPO.'
         bc_plans_tested: 'BC plans tested in this exercise (ISO 22301 §8.6 a). Multiple selection possible.'
         evidence_artifacts_json: 'JSON array of audit evidence: [{"type":"photo|log|report|screenshot","reference":"filename/URL","description":"Description"}].'
+        evidence_artifacts: 'Audit evidence per ISO 22301 §8.6 — add one row per artifact (type, name, URL/reference, capture date).'
+    evidence:
+        field:
+            type: 'Type'
+            name: 'Name'
+            url: 'URL / reference'
+            captured_at: 'Captured at'
+        placeholder:
+            type: '-- Select artifact type --'
+            name: 'e.g. Recovery-test signoff'
+            url: 'https://… or filename'
+        type:
+            photo: 'Photo'
+            log: 'Log file'
+            report: 'Report'
+            screenshot: 'Screenshot'
+            video: 'Video recording'
+            transcript: 'Transcript'
+            signoff: 'Signoff document'
+            other: 'Other'
     exercise_type:
         tabletop: 'Tabletop Exercise'
         walkthrough: 'Walkthrough Exercise'
