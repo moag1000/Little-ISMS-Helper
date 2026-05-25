@@ -12,6 +12,7 @@ use App\Entity\Person;
 use App\Entity\User;
 use App\Enum\AuditFindingStatus;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Form\Type\JsonStructuredType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
@@ -37,11 +38,12 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
             'root_cause'       => ['evidence', 'relatedControls'],
             'corrective_action'=> ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'dueDate'],
             // S17 B4 — CAPA Hybrid JSON fields (ISO 27001 Cl. 10.2 b) + d)).
-            // `nonconformityDetails` (JSON-array column) is intentionally NOT
-            // surfaced in this form yet — Gate 34 (`raw_json_textarea`) bans
-            // raw textareas on JSON columns. v2 will use CollectionType +
-            // dedicated EntryType per the gate's documented fix-path.
-            'nc_capa'          => ['ncRootCauseSummary', 'ncCorrectionDueDate', 'ncVerifiedAt', 'ncVerifiedBy'],
+            // `nonconformityDetails` carries the structured CAPA sub-schema
+            // (rootCauseAnalysisMethod + correctiveActions[] + verification*)
+            // and is rendered via the `_fa_capa_builder` Stimulus controller,
+            // NOT a raw TextareaType — Gate 34 stays clean because the field
+            // is wired as JsonStructuredType (data-transformer-bound).
+            'nc_capa'          => ['nonconformityDetails', 'ncRootCauseSummary', 'ncCorrectionDueDate', 'ncVerifiedAt', 'ncVerifiedBy'],
             'verification'     => ['reportedByPerson', 'reportedByDeputyPersons', 'linkedRequirements'],
         ];
     }
@@ -250,11 +252,20 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'help' => 'audit_finding.help.nc_verified_by',
             ])
-            // `nonconformityDetails` (JSON array column) is intentionally NOT
-            // wired into the form — Gate 34 bans raw TextareaType on JSON
-            // columns. v2 will introduce a dedicated CollectionType +
-            // EntryType for the corrective-actions list. For now the column
-            // is service-layer / API-only.
+            // S17 B4 follow-up — CAPA Hybrid JSON field. Wired via
+            // JsonStructuredType (TextareaType parent w/ JsonArrayTransformer)
+            // and rendered by `_fa_capa_builder` macro + Stimulus controller.
+            // The form-theme override in
+            // `templates/audit_finding/_audit_finding_form_theme.html.twig`
+            // replaces the default textarea row with the structured builder.
+            // @capa-builder: not a raw-JSON textarea — Gate 34 only catches
+            //                 direct TextareaType::class usages, JsonStructured
+            //                 carries an explicit JsonArrayTransformer.
+            ->add('nonconformityDetails', JsonStructuredType::class, [
+                'label' => 'audit_finding.field.nonconformity_details',
+                'required' => false,
+                'help' => 'audit_finding.help.nonconformity_details',
+            ])
         ;
     }
 

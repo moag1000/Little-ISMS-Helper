@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
+{% form_theme form 'audit_finding/_audit_finding_form_theme.html.twig' %}
+
 {% block title %}{{ 'audit_finding.page.edit'|trans({}, 'audits') }}: {{ finding.title }}{% endblock %}
 
 {% block body %}
@@ -64,6 +66,10 @@
                 'label': 'form.section.corrective_action'|trans({}, 'messages'),
                 'fields': ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'dueDate']
             },
+            'nc_capa': {
+                'label': 'audit_finding.section.nc_capa'|trans({}, 'audits'),
+                'fields': ['nonconformityDetails', 'ncRootCauseSummary', 'ncCorrectionDueDate', 'ncVerifiedAt', 'ncVerifiedBy']
+            },
             'verification': {
                 'label': 'form.section.verification'|trans({}, 'messages'),
                 'fields': ['reportedByPerson', 'reportedByDeputyPersons', 'linkedRequirements']
@@ -85,6 +91,11 @@
             'assignedPerson': 6,
             'assignedDeputyPersons': 12,
             'dueDate': 6,
+            'nonconformityDetails': 12,
+            'ncRootCauseSummary': 12,
+            'ncCorrectionDueDate': 6,
+            'ncVerifiedAt': 6,
+            'ncVerifiedBy': 6,
             'reportedByPerson': 6,
             'reportedByDeputyPersons': 12,
             'linkedRequirements': 12
