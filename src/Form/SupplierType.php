@@ -343,7 +343,16 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'label' => 'supplier.field.lei_code',
                 'help' => 'supplier.help.lei_code',
                 'required' => false,
-                'attr' => ['maxlength' => 20, 'placeholder' => 'supplier.placeholder.lei_code'],
+                // S14+ §19: HTML5 `pattern` + `title` give browser-native inline
+                // validation tooltip on hover and block submission with the
+                // native message. Server-side Regex below is the authoritative
+                // gate; pattern attr is a UX enhancement only.
+                'attr' => [
+                    'maxlength' => 20,
+                    'placeholder' => 'supplier.placeholder.lei_code',
+                    'pattern' => '[A-Z0-9]{18}[0-9]{2}',
+                    'title' => 'supplier.help.lei_code_format',
+                ],
                 // T10.10 — LEI: ISO 17442 — 20 chars, [A-Z0-9]{18}[0-9]{2} checksum.
                 'constraints' => [
                     new \Symfony\Component\Validator\Constraints\Regex(
@@ -356,7 +365,12 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'label' => 'supplier.field.nace_code',
                 'help' => 'supplier.help.nace_code',
                 'required' => false,
-                'attr' => ['maxlength' => 10, 'placeholder' => 'supplier.placeholder.nace_code'],
+                'attr' => [
+                    'maxlength' => 10,
+                    'placeholder' => 'supplier.placeholder.nace_code',
+                    'pattern' => '[0-9]{2}(\.[0-9]{1,2})?',
+                    'title' => 'supplier.help.nace_code_format',
+                ],
                 // T10.10 — NACE Rev.2: 1-2 digits section, optional . + 1-2 digits subclass.
                 'constraints' => [
                     new \Symfony\Component\Validator\Constraints\Regex(
