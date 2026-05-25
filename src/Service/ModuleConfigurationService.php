@@ -182,19 +182,24 @@ class ModuleConfigurationService
     }
 
     /**
-     * Lädt aktive Module
+     * Lädt aktive Module. Required-Module (z.B. core, authentication, objectives)
+     * werden immer als aktiv betrachtet — auch wenn sie in active_modules.yaml
+     * fehlen (z.B. weil die Prod-Konfiguration vor Aufnahme des Required-Flags
+     * deployed wurde).
      */
     public function getActiveModules(): array
     {
+        $required = array_keys($this->getRequiredModules());
         $configPath = $this->projectDir . '/config/active_modules.yaml';
 
         if (!file_exists($configPath)) {
-            // Standard: nur Core-Module
-            return array_keys($this->getRequiredModules());
+            return $required;
         }
 
         $config = Yaml::parseFile($configPath);
-        return $config['active_modules'] ?? [];
+        $active = $config['active_modules'] ?? [];
+
+        return array_values(array_unique(array_merge($required, $active)));
     }
 
     /**
