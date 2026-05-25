@@ -130,10 +130,13 @@ class BCExercise
     private ?int $durationHours = null;
 
     /**
-     * Legacy free-text participants list. P-15 DataReuse: kept read-only for
-     * migration display once the typed `participantPersons` collection is
-     * populated. No longer NotBlank — the form validator enforces that at
-     * least one of legacy/typed is provided.
+     * @deprecated since 2026-05-25 — use participantPersons (typed M2M collection).
+     *             Junior-ISB-Audit RAW_FINDINGS_2026-05-24 [MAJOR]: free-text
+     *             participant lists had no referential integrity, no link to
+     *             Person stammdaten, no audit trail. Kept as legacy fallback
+     *             during transition; will be dropped once data is backfilled.
+     *             No longer NotBlank — the form validator enforces that at
+     *             least one of legacy/typed is provided.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
@@ -199,8 +202,10 @@ class BCExercise
     private ?Person $exerciseLeaderPerson = null;
 
     /**
-     * Legacy free-text observers list. P-15 DataReuse: kept read-only for
-     * migration display once `observerPersons` is populated.
+     * @deprecated since 2026-05-25 — use observerPersons (typed M2M collection).
+     *             See $participants docblock for rationale. Kept as legacy
+     *             fallback during transition; will be dropped once data is
+     *             backfilled.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
@@ -511,11 +516,13 @@ class BCExercise
         return $this;
     }
 
+    /** @deprecated since 2026-05-25 — use getParticipantPersons() */
     public function getParticipants(): ?string
     {
         return $this->participants;
     }
 
+    /** @deprecated since 2026-05-25 — use addParticipantPerson() / removeParticipantPerson() */
     public function setParticipants(?string $participants): static
     {
         $this->participants = $participants;
@@ -624,11 +631,13 @@ class BCExercise
         );
     }
 
+    /** @deprecated since 2026-05-25 — use getObserverPersons() */
     public function getObservers(): ?string
     {
         return $this->observers;
     }
 
+    /** @deprecated since 2026-05-25 — use addObserverPerson() / removeObserverPerson() */
     public function setObservers(?string $observers): static
     {
         $this->observers = $observers;
