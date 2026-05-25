@@ -412,6 +412,11 @@ alva_hint:
         body: 'Wizard-Run mit Finding-Referenz "%finding_ref%" ist seit %age_days% Tagen offen (Schwelle: %threshold_days% Tage). Auditor erwartet entweder einen abgeschlossenen Re-Run mit aktualisierter Policy oder eine dokumentierte Begründung. Ohne Reaktion entsteht eine Nichtkonformität.'
         cta_label: 'Targeted Re-Run starten'
         dismiss_label: 'Nicht jetzt'
+    document_split_needed:
+        title: 'Legacy-Dokument noch nicht aufgeteilt'
+        body: 'Im Topic "%topic%" wartet eine Bestandsaufnahme-Entscheidung "split_to_topics" auf manuelle Bearbeitung (Ziele: %target_topics%). Insgesamt sind %count% solcher Splits im Tenant offen. Der Policy-Wizard kann ein Legacy-Dokument nicht automatisch in mehrere Topic-Dokumente aufteilen — entweder Entscheidung auf merge_into_topic / replace umstellen oder einen Targeted-Re-Run pro Zieltopic anstoßen.'
+        cta_label: 'Bestandsaufnahme öffnen'
+        dismiss_label: 'Später erinnern'
     training_coverage_gap:
         title: 'Policy-Bestätigungsquote unter Schwelle'
         body: 'Die Policy "%document_title%" ist nur zu %coverage_percent% % von der Mitarbeiter-Audience bestätigt (Schwelle: %threshold_percent% %). ISO 27001 Cl. 7.3 Awareness fordert nachweisbare Kommunikation und Bestätigung — bitte Bestätigungs-Inbox prüfen und ausstehende Acknowledgements anstoßen.'

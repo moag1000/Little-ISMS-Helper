@@ -73,20 +73,26 @@
     {% for w in consistency_warnings %}
         {% set target = w.target_step|default('review_generate') %}
         {% set step_title = ('policy_wizard.step.' ~ target ~ '.title')|trans %}
-        {# TODO: refactor alert-link pattern #}
-        <a href="{{ path('app_policy_wizard_step_show', {runId: run.id, step: target}) }}"
-           class="d-block fa-alert fa-alert--warning text-decoration-none mb-2"
-           data-target-step="{{ target }}">
-            <div class="d-flex align-items-start gap-2">
-                <i class="fa-icon fa-icon--util-arrow-right mt-1 flex-shrink-0" aria-hidden="true"></i>
-                <div>
-                    <div>{{ w.message_key|trans(w.params|default({})) }}</div>
-                    <small class="text-muted d-block mt-1">
-                        {{ 'policy_wizard.warning.click_to_jump'|trans({'%step%': step_title}, 'policy_wizard') }}
-                    </small>
-                </div>
-            </div>
-        </a>
+        {% set jump_href = path('app_policy_wizard_step_show', {runId: run.id, step: target}) %}
+        {# Aurora alert-as-link: wrap the _fa_alert macro body in a click-to-jump anchor
+           (cta:-prop not part of the macro API yet — embed-block keeps full a11y semantics). #}
+        {% embed '_components/_fa_alert.html.twig' with { props: {
+            variant: 'warning',
+            icon: 'util-arrow-right',
+            class: 'mb-2'
+        } } %}
+            {% block alert_body %}
+                {% trans_default_domain 'policy_wizard' %}
+                <a href="{{ jump_href }}"
+                   class="fa-alert__title text-decoration-none d-block"
+                   data-target-step="{{ target }}">
+                    {{ w.message_key|trans(w.params|default({})) }}
+                </a>
+                <small class="text-muted d-block mt-1">
+                    {{ 'policy_wizard.warning.click_to_jump'|trans({'%step%': step_title}, 'policy_wizard') }}
+                </small>
+            {% endblock %}
+        {% endembed %}
     {% endfor %}
 {% endif %}
 
