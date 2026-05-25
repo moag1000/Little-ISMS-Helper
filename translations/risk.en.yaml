@@ -229,6 +229,7 @@ risk:
     all_linked_assets: All linked assets
     all_linked_assets_help: 'Unified overview combining the primary risk subject with ICT asset dependencies, including each asset’s maximum CIA protection requirement.'
   help:
+    status_readonly: 'Status is driven by the Risk lifecycle workflow (identified → assessed → in_treatment → treated/accepted/closed). Direct edit disabled; use the status actions on the show page (LifecycleService::transition).'
     title: Unique designation of the risk for internal reference
     category: Categorization of the risk (financial, operational, compliance, etc.)
     asset: The asset affected by this risk (hardware, software, data, process)

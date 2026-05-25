@@ -261,6 +261,7 @@ incident:
     economic_impact: '0.00'
     reputational_impact: -- Assess reputational impact --
   help:
+    status_readonly: 'Status is driven by the Incident lifecycle workflow (detected → analyzed → contained → resolved → closed). Direct edit disabled; use the status actions on the show page (LifecycleService::transition).'
     visible_to_holding: 'Default on: holding / group CISO can see this incident to coordinate group-level response. Disable only for confidential cases (e.g. HR).'
     severity: Assess severity based on impact and scope (ISO 27001 A.16.1.4)
     affected_systems: List all affected systems, applications and infrastructure
