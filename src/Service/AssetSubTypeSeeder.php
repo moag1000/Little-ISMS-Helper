@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\AssetSubType;
 use App\Entity\Tenant;
+use App\Exception\InvalidArgument\InvalidArgumentException;
 use App\Repository\AssetSubTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -102,11 +103,12 @@ final class AssetSubTypeSeeder
             self::PRESET_BSI => $this->bsiGrundschutzEntries(),
             self::PRESET_TISAX => $this->tisaxEntries(),
             self::PRESET_PRODUCTION_DE => $this->productionDeEntries(),
-            default => throw new \InvalidArgumentException(sprintf(
+            // @intentional-assertion: uses App\Exception\InvalidArgument\InvalidArgumentException (not SPL)
+            default => throw new InvalidArgumentException(sprintf(
                 'Unknown preset "%s". Available: %s',
                 $preset,
                 implode(', ', self::PRESETS),
-            )),
+            ), 'preset'),
         };
     }
 
