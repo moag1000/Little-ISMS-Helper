@@ -169,7 +169,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $this->assertNull($result['suggested_impact']);
         $this->assertEquals(3, $result['current_impact']);
         $this->assertFalse($result['should_update']);
-        $this->assertStringContainsString('No monetary value', $result['rationale']);
+        $this->assertStringContainsString('No asset valuation', $result['rationale']);
     }
 
     #[Test]
@@ -265,7 +265,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
         $result = $this->service->getSuggestion($risk);
 
         $this->assertFalse($result['success']);
-        $this->assertStringContainsString('No monetary value', $result['message']);
+        $this->assertStringContainsString('No asset valuation', $result['message']);
         $this->assertEquals(3, $result['old_impact']);
         $this->assertNull($result['new_impact']);
     }
