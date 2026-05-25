@@ -1,0 +1,38 @@
+department:
+    page:
+        title: 'Abteilungen'
+        subtitle: 'Strukturierte Organisations- und Abteilungsstammdaten — ersetzt Freitextfelder in Verarbeitungstätigkeiten, Assets und weiteren Entitäten.'
+        new_title: 'Neue Abteilung'
+        edit_title: 'Abteilung bearbeiten'
+    field:
+        name: 'Name'
+        code: 'Kostenstelle / Kürzel'
+        description: 'Beschreibung'
+        parent: 'Übergeordnete Abteilung'
+        is_active: 'Aktiv'
+    help:
+        name: 'Eindeutiger Name innerhalb des Mandanten (max. 100 Zeichen).'
+        code: 'Optionale Kostenstelle oder Kurz-ID (z. B. „IT-01", „HR-CSC"). Max. 20 Zeichen.'
+        parent: 'Wenn diese Abteilung Teil einer übergeordneten Organisationseinheit ist, hier auswählen.'
+        is_active: 'Inaktive Abteilungen erscheinen nicht mehr in Auswahllisten neuer Datensätze.'
+    action:
+        new: 'Neue Abteilung'
+        edit: 'Bearbeiten'
+        delete: 'Löschen'
+        save: 'Speichern'
+        cancel: 'Abbrechen'
+    column:
+        actions: 'Aktionen'
+    status:
+        active: 'Aktiv'
+        inactive: 'Inaktiv'
+    empty:
+        title: 'Noch keine Abteilungen erfasst'
+        description: 'Lege Abteilungen an, um Verantwortlichkeiten in VVT, Assets und weiteren ISMS-Entitäten strukturiert zu erfassen.'
+    confirm:
+        delete: 'Abteilung wirklich löschen? Vorhandene Verknüpfungen werden auf „leer" gesetzt.'
+    flash:
+        created: 'Abteilung wurde angelegt.'
+        updated: 'Abteilung wurde aktualisiert.'
+        deleted: 'Abteilung wurde gelöscht.'
+        csrf_invalid: 'Sicherheitstoken ungültig — bitte erneut versuchen.'

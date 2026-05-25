@@ -1,0 +1,38 @@
+department:
+    page:
+        title: 'Departments'
+        subtitle: 'Structured organizational / department master data — replaces freetext fields across Processing Activities, Assets, and other entities.'
+        new_title: 'New Department'
+        edit_title: 'Edit Department'
+    field:
+        name: 'Name'
+        code: 'Cost center / Code'
+        description: 'Description'
+        parent: 'Parent department'
+        is_active: 'Active'
+    help:
+        name: 'Unique name within the tenant (max. 100 characters).'
+        code: 'Optional cost-center or short ID (e.g. "IT-01", "HR-CSC"). Max. 20 characters.'
+        parent: 'If this department is part of a higher-level unit, select it here.'
+        is_active: 'Inactive departments are excluded from new-record selection lists.'
+    action:
+        new: 'New Department'
+        edit: 'Edit'
+        delete: 'Delete'
+        save: 'Save'
+        cancel: 'Cancel'
+    column:
+        actions: 'Actions'
+    status:
+        active: 'Active'
+        inactive: 'Inactive'
+    empty:
+        title: 'No departments yet'
+        description: 'Create departments to track structured ownership across Processing Activities, Assets, and other ISMS entities.'
+    confirm:
+        delete: 'Delete this department? Existing references will be set to empty.'
+    flash:
+        created: 'Department was created.'
+        updated: 'Department was updated.'
+        deleted: 'Department was deleted.'
+        csrf_invalid: 'Security token invalid — please try again.'
