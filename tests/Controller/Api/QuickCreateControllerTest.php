@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller\Api;
 
 use App\Entity\Asset;
+use App\Entity\BusinessProcess;
 use App\Entity\CrisisTeam;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -160,6 +161,43 @@ final class QuickCreateControllerTest extends WebTestCase
         self::assertNotNull($team);
         self::assertSame('operational', $team->getTeamType());
         self::assertTrue($team->isActive());
+    }
+
+    #[Test]
+    public function createsMinimalBusinessProcess(): void
+    {
+        // S15 A2 — BusinessProcess Quick-Create wired into BCP-form
+        // (businessProcess EntityType-select). Tenant-scoped, defaults
+        // criticality=medium + RTO/RPO/MTPD placeholders so NotBlank passes.
+        $client = static::createClient();
+        $user = $this->getOrCreateUser($client);
+        $client->loginUser($user);
+        $token = $this->csrfToken($client, 'quick_create');
+
+        $name = 'QC-BP-' . uniqid();
+        $client->request(
+            'POST',
+            '/de/api/quick-create/business-process',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['name' => $name, '_token' => $token])
+        );
+
+        self::assertResponseStatusCodeSame(201);
+        $data = json_decode((string) $client->getResponse()->getContent(), true);
+        self::assertTrue($data['ok']);
+        self::assertSame($name, $data['label']);
+        self::assertIsInt($data['id']);
+
+        $em = $client->getContainer()->get(EntityManagerInterface::class);
+        $bp = $em->getRepository(BusinessProcess::class)->find($data['id']);
+        self::assertNotNull($bp);
+        self::assertSame($user->getTenant()?->getId(), $bp->getTenant()?->getId());
+        self::assertSame('medium', $bp->getCriticality());
+        self::assertSame(24, $bp->getRto());
+        self::assertSame(24, $bp->getRpo());
+        self::assertSame(48, $bp->getMtpd());
     }
 
     private function csrfToken(KernelBrowser $client, string $tokenId): string
