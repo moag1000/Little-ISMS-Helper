@@ -3,6 +3,8 @@ quick_create:
   hint:
     missing_entry: 'Entry missing from the picker?'
     missing_asset: 'Asset not created yet?'
+    missing_crisis_team: 'Crisis team missing? Add inline.'
+    missing_business_process: 'Business process missing? Add inline.'
   modal:
     title: Create new entry
     subtitle: Name only — refine details later

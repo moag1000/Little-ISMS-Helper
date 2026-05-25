@@ -111,6 +111,7 @@ business_process:
     regulatory_impact: '<strong>Regulatory Impact (1-5)</strong><br>1=no regulatory concern · 2=advisory · 3=formal deficiency notice · 4=fine/sanction · 5=licence revocation possible'
     operational_impact: '<strong>Operational Impact (1-5)</strong><br>1=no other processes affected · 2=1-2 processes impaired · 3=department impaired · 4=multiple departments · 5=entire operation at risk'
   placeholder:
+    name: 'e.g. Order Fulfillment, Order-to-Cash, Payment Processing'
     rto: e.g. 4 (hours)
     rpo: e.g. 2 (hours)
     mtpd: e.g. 24 (hours)
