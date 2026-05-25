@@ -423,30 +423,6 @@ class ComplianceRequirement
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $absicherungsStufe = null;
 
-    /**
-     * TISAX VDA ISA Assessment Level tag ('AL1' | 'AL2' | 'AL3').
-     * Null for non-TISAX requirements.
-     *
-     * @deprecated since 2026-05-14 — no form, template, or query references this field.
-     *             Column preserved (data-safe); remove in next major (v4.0).
-     *             TODO: drop column in migration when confirmed unused post-v4.
-     */
-    #[ORM\Column(length: 10, nullable: true)]
-    private ?string $assessmentLevel = null;
-
-    /** @deprecated since 2026-05-14 — see field docblock */
-    public function getAssessmentLevel(): ?string
-    {
-        return $this->assessmentLevel;
-    }
-
-    /** @deprecated since 2026-05-14 — see field docblock */
-    public function setAssessmentLevel(?string $assessmentLevel): static
-    {
-        $this->assessmentLevel = $assessmentLevel;
-        return $this;
-    }
-
     // ── WS-6: consultant-seeded baseline effort in FTE-days (0..999) ───────
     #[ORM\Column(nullable: true)]
     private ?int $baseEffortDays = null;

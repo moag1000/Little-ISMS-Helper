@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
 
 {% block admin_title %}{{ 'data_management.backup.title'|trans({}, 'admin') }}{% endblock %}
 {% block admin_subtitle %}
@@ -316,6 +317,34 @@
                             </div>
                         </div>
                     </div>
+
+                    {# Server-rendered Aurora table shell + row template — populated
+                       by the backup-preview JS below from the JSON preview response.
+                       Avoids the previous raw-<table>-in-JS-template-literal anti-pattern
+                       so the markup stays in sync with `_fa_table.html.twig` styling. #}
+                    <template id="previewTableTemplate">
+                        {% embed '_components/_fa_table.html.twig' with { compact: true, hover: true, id: 'previewTable' } %}
+                            {% block table_head %}
+                                <tr>
+                                    <th scope="col" class="fa-table__th">{{ 'data_management.backup.preview.entity'|trans({}, 'admin') }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'data_management.backup.preview.to_restore'|trans({}, 'admin') }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'data_management.backup.preview.existing'|trans({}, 'admin') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'data_management.backup.preview.sample_data'|trans({}, 'admin') }}</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {# Body cloned from previewRowTemplate per entity. #}
+                            {% endblock %}
+                        {% endembed %}
+                    </template>
+                    <template id="previewRowTemplate">
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell"><strong data-preview-field="entity"></strong></td>
+                            <td class="fa-table__cell fa-table__cell--num" data-preview-field="toRestore"></td>
+                            <td class="fa-table__cell fa-table__cell--num" data-preview-field="existing"></td>
+                            <td class="fa-table__cell"><small data-preview-field="sample"></small></td>
+                        </tr>
+                    </template>
                 </div>
                 <div class="fa-modal__footer">
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.close'|trans({}, 'messages') }}</button>
@@ -652,23 +681,51 @@
                         const result = await response.json();
 
                         if (result.success) {
-                            // TODO: fa-table migration — JS innerHTML template literal, needs dedicated JS component
-                            let html = '<div class="table-responsive"><table class="table table-sm">';
-                            html += '<thead><tr><th scope="col">{{ 'data_management.backup.preview.entity'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.preview.to_restore'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.preview.existing'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.preview.sample_data'|trans({}, 'admin') }}</th></tr></thead><tbody>';
+                            // Clone the server-rendered fa-table shell + row template
+                            // (defined in #previewTableTemplate / #previewRowTemplate).
+                            // Replaces the prior innerHTML template-literal that hand-rolled
+                            // raw <table class="table"> markup and bypassed Aurora styling.
+                            previewContent.innerHTML = '';
 
-                            for (const [entity, data] of Object.entries(result.preview.entities)) {
-                                html += `<tr><td><strong>${entity}</strong></td><td>${data.to_restore}</td><td>${data.existing}</td>`;
-                                html += '<td><small>' + JSON.stringify(data.sample[0] || {}, null, 2).substring(0, 100) + '...</small></td></tr>';
+                            const tableTpl = document.getElementById('previewTableTemplate');
+                            const rowTpl   = document.getElementById('previewRowTemplate');
+
+                            if (tableTpl && rowTpl) {
+                                const tableNode = tableTpl.content.firstElementChild.cloneNode(true);
+                                const tbody = tableNode.querySelector('tbody.fa-table__body');
+
+                                for (const [entity, data] of Object.entries(result.preview.entities)) {
+                                    const rowNode = rowTpl.content.firstElementChild.cloneNode(true);
+                                    rowNode.querySelector('[data-preview-field="entity"]').textContent = entity;
+                                    rowNode.querySelector('[data-preview-field="toRestore"]').textContent = data.to_restore;
+                                    rowNode.querySelector('[data-preview-field="existing"]').textContent = data.existing;
+                                    const sampleJson = JSON.stringify(data.sample[0] || {}, null, 2);
+                                    rowNode.querySelector('[data-preview-field="sample"]').textContent =
+                                        sampleJson.substring(0, 100) + (sampleJson.length > 100 ? '...' : '');
+                                    tbody.appendChild(rowNode);
+                                }
+                                previewContent.appendChild(tableNode);
                             }
 
-                            html += '</tbody></table></div>';
-                            html += _t.previewTotalRecordsAlert(result.preview.total_records);
+                            previewContent.insertAdjacentHTML(
+                                'beforeend',
+                                _t.previewTotalRecordsAlert(result.preview.total_records)
+                            );
 
                             if (result.preview.metadata) {
-                                html += `<div class="card fa-section"><div class="card-body"><h4>{{ 'data_management.backup.preview.metadata'|trans({}, 'admin') }}:</h4><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
+                                const metaSection = document.createElement('div');
+                                metaSection.className = 'card fa-section mt-3';
+                                const metaBody = document.createElement('div');
+                                metaBody.className = 'card-body';
+                                const metaTitle = document.createElement('h4');
+                                metaTitle.textContent = '{{ 'data_management.backup.preview.metadata'|trans({}, 'admin') }}:';
+                                const metaPre = document.createElement('pre');
+                                metaPre.textContent = JSON.stringify(result.preview.metadata, null, 2);
+                                metaBody.appendChild(metaTitle);
+                                metaBody.appendChild(metaPre);
+                                metaSection.appendChild(metaBody);
+                                previewContent.appendChild(metaSection);
                             }
-
-                            previewContent.innerHTML = html;
                         } else {
                             previewContent.innerHTML = `{{ _fa_alert.render({ variant: 'danger', body: '${result.message}' }) }}`;
                         }

@@ -7405,6 +7405,22 @@ a.fa-matrix-table__cell:focus-visible {
     color: inherit;
 }
 
+/* RAG-mode percentage label (mode='rag') */
+.fa-matrix-table--rag .fa-matrix-table__cell {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 60px;
+}
+.fa-matrix-table__rate {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    opacity: 0.85;
+}
+
 /* X-axis label */
 .fa-matrix-table__x-label {
     text-align: center;
