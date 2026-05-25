@@ -31,7 +31,7 @@ class BusinessProcess
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $processOwner = null;
 
     #[ORM\Column(length: 50)]
@@ -212,7 +212,7 @@ class BusinessProcess
         return $this->processOwner;
     }
 
-    public function setProcessOwner(string $processOwner): static
+    public function setProcessOwner(?string $processOwner): static
     {
         $this->processOwner = $processOwner;
         return $this;
