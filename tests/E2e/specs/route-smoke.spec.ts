@@ -67,6 +67,7 @@ interface RouteResult {
     durationMs: number;
     consoleErrors: string[];
     pageErrors: string[];
+    failedRequests: string[];   // sub-resource (asset/AJAX) 4xx/5xx hits
     bannerSeen: boolean;
     ok: boolean;
     reason?: string;
@@ -116,6 +117,7 @@ function applyPersonaFilter(routes: RouteEntry[], persona: PersonaSpec, globalDe
 async function probeOne(page: Page, route: RouteEntry): Promise<RouteResult> {
     const consoleErrors: string[] = [];
     const pageErrors: string[] = [];
+    const failedRequests: string[] = [];
 
     const consoleHandler = (msg: { type(): string; text(): string }): void => {
         if (msg.type() === 'error') {
@@ -125,38 +127,74 @@ async function probeOne(page: Page, route: RouteEntry): Promise<RouteResult> {
     const pageErrorHandler = (err: Error): void => {
         pageErrors.push(err.message);
     };
+    // Catch sub-resource failures (CSS/JS/AJAX 4xx/5xx). These surface as
+    // broken UI / missing icons / dead Stimulus controllers even when the
+    // page itself returns 200. Skip the navigation response itself, dev-tool
+    // sidecar URLs, and well-known harmless 404s (favicon).
+    const responseHandler = (resp: { status(): number; url(): string; request(): { resourceType(): string } }): void => {
+        const code = resp.status();
+        if (code < 400) return;
+        const url = resp.url();
+        if (url.endsWith(route.path)) return;
+        if (url.startsWith('chrome-extension://') || url.startsWith('devtools://')) return;
+        if (url.endsWith('/favicon.ico')) return;
+        failedRequests.push(`[${code}] ${resp.request().resourceType()} ${url}`);
+    };
 
     page.on('console', consoleHandler);
     page.on('pageerror', pageErrorHandler);
+    page.on('response', responseHandler);
 
     const t0 = Date.now();
     let status: number | null = null;
     let reason: string | undefined;
+    let isDownload = false;
 
     try {
         const response = await page.goto(route.path, { waitUntil: 'domcontentloaded', timeout: 20_000 });
         status = response?.status() ?? null;
     } catch (err) {
-        reason = (err as Error).message;
+        const msg = (err as Error).message;
+        // Playwright throws "Download is starting" when navigating to a route
+        // that serves a streamed file (PDF/Excel/CSV/ZIP). Counts as success —
+        // the server did NOT 5xx, it just returned a non-HTML body.
+        if (msg.includes('Download is starting')) {
+            isDownload = true;
+            status = 200;
+        } else {
+            reason = msg;
+        }
     } finally {
         page.off('console', consoleHandler);
         page.off('pageerror', pageErrorHandler);
+        page.off('response', responseHandler);
     }
 
     const durationMs = Date.now() - t0;
 
     // Detect "Module inactive" banner — when persona expected 200 but the
     // module is off, the route returns 200 with the inactive-banner. That
-    // is a coverage signal, not a hard failure.
+    // is a coverage signal, not a hard failure. Skip on download routes
+    // where the page has no DOM to inspect.
     let bannerSeen = false;
-    try {
-        bannerSeen = await page.locator('text=ist nicht aktiviert').first().isVisible({ timeout: 250 });
-    } catch {
-        bannerSeen = false;
+    if (!isDownload) {
+        try {
+            bannerSeen = await page.locator('text=ist nicht aktiviert').first().isVisible({ timeout: 250 });
+        } catch {
+            bannerSeen = false;
+        }
     }
 
     const is5xx = status !== null && status >= 500;
-    const ok = status !== null && status < 500 && pageErrors.length === 0;
+    const ok = status !== null
+        && status < 500
+        && pageErrors.length === 0
+        && failedRequests.length === 0;
+
+    const reasonParts: string[] = [];
+    if (reason) reasonParts.push(reason);
+    if (is5xx) reasonParts.push(`HTTP ${status}`);
+    if (failedRequests.length > 0) reasonParts.push(`${failedRequests.length} sub-request fail`);
 
     return {
         persona: DEFAULT_PERSONA,
@@ -167,9 +205,10 @@ async function probeOne(page: Page, route: RouteEntry): Promise<RouteResult> {
         durationMs,
         consoleErrors,
         pageErrors,
+        failedRequests,
         bannerSeen,
         ok,
-        reason: reason ?? (is5xx ? `HTTP ${status}` : undefined),
+        reason: reasonParts.length > 0 ? reasonParts.join('; ') : undefined,
     };
 }
 
@@ -234,6 +273,10 @@ test.describe(`L1 Browser-Smoke — ${DEFAULT_PERSONA}`, () => {
             // Console errors / banners surface in the report but don't block.
             expect.soft(result.status, `HTTP status for ${route.path}`).not.toBe(500);
             expect.soft(result.pageErrors, `Page errors on ${route.path}`).toEqual([]);
+            expect.soft(
+                result.failedRequests,
+                `Sub-resource fails on ${route.path}`,
+            ).toEqual([]);
         });
     }
 });

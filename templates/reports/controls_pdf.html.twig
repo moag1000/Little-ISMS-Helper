@@ -95,7 +95,7 @@
 {# ── Build table rows with inline HTML for progress bars + applicability ── #}
 {% set _control_rows = [] %}
 {% for control in controls %}
-    {% set _applicable_html = control.applicability == 'applicable'
+    {% set _applicable_html = control.applicable
         ? '<span class="applicable">' ~ ('soa.value.yes'|trans({}, 'soa')) ~ '</span>'
         : '<span class="not-applicable">' ~ ('soa.value.no'|trans({}, 'soa')) ~ '</span>' %}
     {% set _progress_html = '<div class="progress-bar"><div class="progress-fill" style="width: ' ~ control.implementationProgress ~ '%;"></div></div> ' ~ control.implementationProgress ~ '%' %}

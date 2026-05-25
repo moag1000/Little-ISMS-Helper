@@ -34,6 +34,9 @@ defaults:
     - ".xlsx"
     - "/export"           # streamed exports
     - "/download"
+    - "/excel"            # excel download endpoints (no .xlsx suffix in path)
+    - "/pdf"              # pdf download endpoints (no .pdf suffix in path)
+    - ".csv"               # streamed CSV responses
 
 personas:
 
