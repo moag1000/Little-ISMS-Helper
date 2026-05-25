@@ -48,6 +48,10 @@ processing_activity:
         title: 'Retention period not set — GDPR Art. 5(1)(e) gap'
         body: 'This processing activity has no documented retention period or erasure policy. GDPR Art. 5(1)(e) storage-limitation principle requires personal data to be kept no longer than necessary. Supervisory authorities routinely cite missing retention schedules as findings.'
         action: 'Set retention period'
+    unstructured_department:
+        title: 'Department only stored as freetext'
+        body: 'The responsible department "%department%" is only stored as freetext. Create a structured Department record so ISO 27001 Cl. 5.3 (roles/responsibilities) and cross-framework reuse (Assets, Risks, Incidents) work properly.'
+        action: 'Create department'
 
 vulnerability:
     critical_unpatched:

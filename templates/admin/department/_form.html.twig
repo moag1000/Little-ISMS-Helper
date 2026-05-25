@@ -1,0 +1,19 @@
+{% trans_default_domain 'department' %}
+<section class="fa-section">
+    <div class="fa-section__body">
+        {{ form_row(form.name) }}
+        {{ form_row(form.code) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.parent) }}
+        {{ form_row(form.isActive) }}
+    </div>
+    <div class="fa-section__footer d-flex gap-2">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+            {{ 'department.action.save'|trans({}, 'department') }}
+        </button>
+        <a href="{{ path('admin_department_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+            {{ 'department.action.cancel'|trans({}, 'department') }}
+        </a>
+    </div>
+</section>

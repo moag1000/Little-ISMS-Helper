@@ -1,0 +1,79 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'department' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block admin_title %}{{ 'department.page.title'|trans({}, 'department') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'department.page.title'|trans({}, 'department') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'ui-building', label: 'Org' },
+        title: 'department.page.title'|trans({}, 'department'),
+        subtitle: 'department.page.subtitle'|trans({}, 'department'),
+        actions: [
+            { label: 'department.action.new'|trans({}, 'department'), variant: 'primary', icon: 'plus', href: path('admin_department_new') }
+        ]
+    }) }}
+
+    {% if departments|length == 0 %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'department.empty.title'|trans({}, 'department'),
+            description: 'department.empty.description'|trans({}, 'department')
+        }) }}
+    {% else %}
+        {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
+            {% block table_head %}
+                <tr>
+                    <th class="fa-table__th">{{ 'department.field.name'|trans({}, 'department') }}</th>
+                    <th class="fa-table__th">{{ 'department.field.code'|trans({}, 'department') }}</th>
+                    <th class="fa-table__th">{{ 'department.field.parent'|trans({}, 'department') }}</th>
+                    <th class="fa-table__th">{{ 'department.field.is_active'|trans({}, 'department') }}</th>
+                    <th class="fa-table__th fa-table__th--actions">{{ 'department.column.actions'|trans({}, 'department') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for dept in departments %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">
+                            <strong>{{ dept.name }}</strong>
+                            {% if dept.description %}
+                                <br><small class="text-muted">{{ dept.description|u.truncate(80, '…') }}</small>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell">{{ dept.code ?: '—' }}</td>
+                        <td class="fa-table__cell">{{ dept.parent ? dept.parent.name : '—' }}</td>
+                        <td class="fa-table__cell">
+                            {% if dept.active %}
+                                <span class="fa-status-pill fa-status-pill--success">{{ 'department.status.active'|trans({}, 'department') }}</span>
+                            {% else %}
+                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'department.status.inactive'|trans({}, 'department') }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell fa-table__cell--actions">
+                            <a href="{{ path('admin_department_edit', {id: dept.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                               aria-label="{{ 'department.action.edit'|trans({}, 'department') }}">
+                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                            </a>
+                            <form method="post" action="{{ path('admin_department_delete', {id: dept.id}) }}" class="d-inline"
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#confirm"
+                                  data-ui-actions-message-param="{{ 'department.confirm.delete'|trans({}, 'department') }}"
+                                  data-ui-actions-tone-param="danger">
+                                <input type="hidden" name="_token" value="{{ csrf_token('department_delete_' ~ dept.id) }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
+                                        aria-label="{{ 'department.action.delete'|trans({}, 'department') }}">
+                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+{% endblock %}

@@ -311,10 +311,25 @@ class ProcessingActivity
     // ============================================================================
 
     /**
-     * Department/Unit responsible for this processing activity
+     * Department/Unit responsible for this processing activity (LEGACY freetext).
+     *
+     * @deprecated since 2026-05-25 (S18 B3) — use {@see self::$responsibleDepartmentEntity}.
+     *             Kept for zero-data-loss migration; remove in follow-up sprint once
+     *             backfill is complete.
      */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $responsibleDepartment = null;
+
+    /**
+     * Structured FK to Department master-data (S18 B3).
+     *
+     * Replaces freetext $responsibleDepartment. The legacy field above stays
+     * populated until the org-data-import in a later sprint promotes all
+     * freetext values to Department rows.
+     */
+    #[ORM\ManyToOne(targetEntity: Department::class)]
+    #[ORM\JoinColumn(name: 'responsible_department_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Department $responsibleDepartmentEntity = null;
 
     /**
      * Contact person for this processing activity (legacy User slot).
@@ -925,6 +940,17 @@ class ProcessingActivity
     public function setResponsibleDepartment(?string $responsibleDepartment): static
     {
         $this->responsibleDepartment = $responsibleDepartment;
+        return $this;
+    }
+
+    public function getResponsibleDepartmentEntity(): ?Department
+    {
+        return $this->responsibleDepartmentEntity;
+    }
+
+    public function setResponsibleDepartmentEntity(?Department $department): static
+    {
+        $this->responsibleDepartmentEntity = $department;
         return $this;
     }
 

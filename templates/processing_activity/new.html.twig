@@ -60,7 +60,7 @@
         'sections': {
             'overview': {
                 'label': 'processing_activity.section.basic_info'|trans({}, 'privacy'),
-                'fields': ['name', 'status', 'description', 'responsibleDepartment']
+                'fields': ['name', 'status', 'description', 'responsibleDepartmentEntity', 'responsibleDepartment']
             },
             'purposes': {
                 'label': 'processing_activity.section.additional'|trans({}, 'privacy'),
@@ -95,7 +95,8 @@
             'name': 6,
             'status': 6,
             'description': 12,
-            'responsibleDepartment': 12,
+            'responsibleDepartmentEntity': 6,
+            'responsibleDepartment': 6,
             'purposes': 6,
             'dataSources': 6,
             'startDate': 4,

@@ -6,8 +6,10 @@ namespace App\Form;
 
 use App\Entity\Asset;
 use App\Entity\Control;
+use App\Entity\Department;
 use App\Entity\ProcessingActivity;
 use App\Entity\Supplier;
+use App\Repository\DepartmentRepository;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
 use App\Form\Type\JsonStructuredType;
@@ -371,8 +373,33 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             // ============================================================================
             // Organizational Details
             // ============================================================================
-            // @legacy-freetext: no Department entity exists yet — Department/OrgUnit
-            //   refactor is its own backlog item. Free-text acceptable until then.
+            // S18 B3: structured FK to Department master-data — preferred over legacy freetext.
+            ->add('responsibleDepartmentEntity', EntityType::class, [
+                'class' => Department::class,
+                'label' => 'processing_activity.field.responsible_department_entity',
+                'help' => 'processing_activity.help.responsible_department_entity',
+                'required' => false,
+                'placeholder' => '—',
+                'choice_label' => function (Department $d): string {
+                    return $d->getCode() !== null && $d->getCode() !== ''
+                        ? sprintf('%s (%s)', (string) $d->getName(), $d->getCode())
+                        : (string) $d->getName();
+                },
+                'query_builder' => function (DepartmentRepository $repo) {
+                    $tenant = $this->tenantContext->getCurrentTenant();
+                    $queryBuilder = $repo->createQueryBuilder('d')
+                        ->andWhere('d.isActive = :active')
+                        ->setParameter('active', true)
+                        ->orderBy('d.name', 'ASC');
+                    if ($tenant !== null) {
+                        $queryBuilder->andWhere('d.tenant = :tenant')->setParameter('tenant', $tenant);
+                    }
+                    return $queryBuilder;
+                },
+                'attr' => ['data-controller' => 'tom-select'],
+            ])
+            // @deprecated since 2026-05-25 (S18 B3) — kept for legacy data display only.
+            //   Structured FK above is preferred. Will be removed once backfill is done.
             ->add('responsibleDepartment', TextType::class, [
                 'label' => 'processing_activity.form.responsible_department',
                 'help' => 'processing_activity.help.responsible_department',
@@ -651,6 +678,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'name',
                 'status',
                 'description',
+                'responsibleDepartmentEntity',
                 'responsibleDepartment',
             ],
             'purposes' => [

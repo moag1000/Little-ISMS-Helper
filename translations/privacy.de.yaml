@@ -462,6 +462,7 @@ processing_activity:
         implemented_controls: 'Implementierte Kontrollen'
         assets: 'Verknüpfte Assets'
         responsible_department: 'Verantwortliche Abteilung'
+        responsible_department_entity: 'Verantwortliche Abteilung (strukturiert)'
         contact_person: Ansprechperson
         contact_person_person: 'Ansprechperson (Personenstammdaten)'
         contact_deputies: 'Ansprechperson-Vertretungen'
@@ -520,6 +521,7 @@ processing_activity:
         implemented_controls: 'Implementierte Kontrollen'
         assets: 'Verknüpfte Assets'
         responsible_department: 'Verantwortliche Abteilung'
+        responsible_department_entity: 'Verantwortliche Abteilung (strukturiert)'
         contact_person: Ansprechperson
         data_protection_officer: 'Datenschutzbeauftragter (DSB)'
         involves_processors: 'Auftragsverarbeiter eingebunden (Art. 28 DSGVO)'
@@ -564,6 +566,7 @@ processing_activity:
         legal_basis_details: 'Detaillierte Erläuterung (obligatorisch bei berechtigtem Interesse)'
         legal_basis_special_categories: 'Rechtsgrundlage für Verarbeitung besonderer Kategorien (Art. 9(2) DSGVO)'
         responsible_department: 'Abteilung/Einheit, die für diese Verarbeitung verantwortlich ist'
+        responsible_department_entity: 'Strukturierte Auswahl aus den Abteilungsstammdaten — das Freitextfeld darunter ist veraltet und nur noch für Altdaten sichtbar.'
         contact_person: 'Ansprechperson für diese Verarbeitungstätigkeit'
         contact_person_person: 'Ansprechperson aus Personenstammdaten (alternativ zum Benutzerkonto)'
         contact_deputies: 'Stellvertretende Personen für den Ansprechperson-Slot'
