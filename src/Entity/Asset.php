@@ -97,6 +97,15 @@ class Asset
     #[Assert\Length(max: 100, maxMessage: 'asset.validation.asset_type_max_length')]
     private ?string $assetType = null;
 
+    /**
+     * Tenant-konfigurierbarer Sub-Type (S18 B2). Additiv zu $assetType (Top-Level)
+     * — bestehende Daten bleiben unverändert, sub_type ist nullable.
+     */
+    #[ORM\ManyToOne(targetEntity: AssetSubType::class)]
+    #[ORM\JoinColumn(name: 'sub_type_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?AssetSubType $subType = null;
+
     // ── AI-Agent-Inventar (Asset-Subtyp 'ai_agent') ───────────────────────
     // Erfüllt EU AI Act Art. 6/9-16, ISO 42001 Annex A, MRIS MHC-13
     // (Peddi 2026, CC BY 4.0), ISO 27001 A.5.16/A.8.27.
@@ -391,6 +400,28 @@ class Asset
     {
         $this->assetType = $assetType;
         return $this;
+    }
+
+    public function getSubType(): ?AssetSubType
+    {
+        return $this->subType;
+    }
+
+    public function setSubType(?AssetSubType $subType): static
+    {
+        $this->subType = $subType;
+        return $this;
+    }
+
+    /**
+     * Convenience display: "[Top-Level] → Sub-Type" — falls back to plain top-level.
+     */
+    public function getTypeDisplay(): string
+    {
+        if ($this->subType !== null) {
+            return sprintf('%s → %s', (string) $this->assetType, $this->subType->getName());
+        }
+        return (string) $this->assetType;
     }
 
     public function isAiAgent(): bool

@@ -1,0 +1,41 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'asset_sub_type' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block admin_title %}{{ 'asset_sub_type.action.edit'|trans({}, 'asset_sub_type') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_asset_sub_type_index') }}">{{ 'asset_sub_type.admin.page.title'|trans({}, 'asset_sub_type') }}</a></li>
+    <li class="breadcrumb-item active">{{ sub_type.name }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'ui-list', label: 'Asset Sub-Type' },
+        title: 'asset_sub_type.action.edit'|trans({}, 'asset_sub_type') ~ ': ' ~ sub_type.name,
+        subtitle: ('asset_sub_type.top_type.' ~ sub_type.topType)|trans({}, 'asset_sub_type'),
+    }) }}
+
+    {{ form_start(form) }}
+        <section class="fa-section">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'asset_sub_type.action.edit'|trans({}, 'asset_sub_type') }}</h2>
+            </div>
+            <div class="fa-section__body">
+                {{ form_row(form.topType) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.isActive) }}
+            </div>
+            <div class="fa-section__footer d-flex gap-2">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                    {{ 'asset_sub_type.action.save'|trans({}, 'asset_sub_type') }}
+                </button>
+                <a href="{{ path('admin_asset_sub_type_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    {{ 'asset_sub_type.action.cancel'|trans({}, 'asset_sub_type') }}
+                </a>
+            </div>
+        </section>
+    {{ form_end(form) }}
+{% endblock %}

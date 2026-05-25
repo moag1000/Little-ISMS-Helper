@@ -82,7 +82,7 @@
             {# Phase 8H.1: standardised via _detail_group component #}
             {% include '_components/_detail_group.html.twig' with {
                 items: [
-                    { label: 'asset.label.type'|trans({}, 'asset'), value: asset.assetType },
+                    { label: 'asset.label.type'|trans({}, 'asset'), value: asset.typeDisplay },
                     { label: 'asset.label.owner'|trans({}, 'asset'), value: asset.effectiveOwner, dataReuse: true },
                     { label: 'asset.label.location'|trans({}, 'asset'), value: asset.location },
                     { label: 'asset.label.status'|trans({}, 'asset'), value: asset.status|upper }
