@@ -146,7 +146,32 @@ user:
         password_change: 'Minimum %min% characters. All characters allowed — letters, digits, symbols, umlauts, spaces, emoji. Leave empty to keep the current password.'
         password_create: 'Minimum %min% characters. All characters allowed — letters, digits, symbols, umlauts, spaces, emoji. Optional with Azure authentication.'
         competencies_json: 'JSON array of competencies per ISO 27001 §7.2. Fields: name, category (security|compliance|technical|leadership), level (1–5), certifiedBy, certifiedAt, expiresAt.'
+        competencies: 'ISO 27001 §7.2 Competence — add one row per documented competency (framework, level, certification date).'
         previous_qms_background: 'Enables Norm-Bridges — e.g. shows "Interested Party → Stakeholder" underneath the field if ISO 9001 is selected.'
+    competency:
+        field:
+            name: 'Competency name'
+            framework: 'Framework'
+            level: 'Level'
+            certified_at: 'Certified at'
+        placeholder:
+            name: 'e.g. ISO 27001 Lead Auditor'
+            framework: '-- Select framework --'
+            level: '-- Select level --'
+        framework:
+            iso27001: 'ISO/IEC 27001'
+            iso27701: 'ISO/IEC 27701'
+            iso22301: 'ISO 22301'
+            iso31000: 'ISO 31000'
+            nis2: 'NIS2 Directive'
+            dora: 'DORA Regulation'
+            bsi: 'BSI IT-Grundschutz'
+            gdpr: 'GDPR / DSGVO'
+            other: 'Other'
+        level:
+            basic: 'Basic'
+            intermediate: 'Intermediate'
+            expert: 'Expert'
     validation:
         avatar_format: 'Please upload a valid image (JPEG, PNG, GIF or WebP)'
         password_min_length: 'The password must be at least {{ limit }} characters long.'
