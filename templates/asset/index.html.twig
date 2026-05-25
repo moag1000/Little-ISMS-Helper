@@ -338,7 +338,12 @@
                         <br><small class="text-muted">{{ asset.description|length > 60 ? asset.description|slice(0, 60) ~ '...' : asset.description }}</small>
                     {% endif %}
                 </td>
-                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.assetType } %}</td>
+                <td>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.assetType } %}
+                    {% if asset.subType %}
+                        <br><small class="text-muted">{{ asset.subType.name }}</small>
+                    {% endif %}
+                </td>
                 <td>{{ asset.effectiveOwner }}</td>
                 <td class="text-center">
                     {% if asset.dataClassification %}

@@ -13,8 +13,8 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_owner_picker.html.twig' as _fa_owner_picker %}
 
-{# Basic Information Section #}
-<fieldset class="mb-4">
+{# Basic Information Section — wrapped with asset-sub-type Stimulus controller (S18 B2) #}
+<fieldset class="mb-4" data-controller="asset-sub-type">
     <legend class="h5 mb-3">
         <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
         {{ 'asset.section.basic_info'|trans({}, 'asset') }}
@@ -41,6 +41,22 @@
             } %}
         </div>
     </div>
+
+    {# S18 B2: Sub-Type dependent dropdown — filtered client-side by asset-sub-type Stimulus controller #}
+    {% if form.subType is defined %}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_label(form.subType) }}
+                {{ form_widget(form.subType, {
+                    attr: form.subType.vars.attr|merge({
+                        'data-empty-hint': 'asset_sub_type.asset_form.none_for_top_type'|trans({}, 'asset_sub_type'),
+                        'class': (form.subType.vars.attr.class|default('')) ~ ' form-select'
+                    })
+                }) }}
+                {{ form_errors(form.subType) }}
+            </div>
+        </div>
+    {% endif %}
 
     <div class="row">
         <div class="col-12">

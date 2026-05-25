@@ -487,6 +487,30 @@
                 </div>
             </section>
         </div>
+
+        {# Asset Sub-Types (S18 B2) #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--primary-tint); border: 1px solid var(--primary);">
+                            <i class="fa-icon fa-icon--ui-list text-primary fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'asset_sub_type.admin.page.title'|trans({}, 'asset_sub_type') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'asset_sub_type.admin.page.lead'|trans({}, 'asset_sub_type') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_asset_sub_type_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
     </div>
 
     {# ── Integration & Operations ─────────────────────────────────────── #}
