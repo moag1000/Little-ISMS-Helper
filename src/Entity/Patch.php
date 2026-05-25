@@ -385,7 +385,7 @@ public function __construct()
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(DateTimeImmutable $releaseDate): static
+    public function setReleaseDate(?DateTimeImmutable $releaseDate): static
     {
         $this->releaseDate = $releaseDate;
         return $this;
