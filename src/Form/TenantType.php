@@ -156,6 +156,49 @@ final class TenantType extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength' => 50, 'placeholder' => 'GmbH / AG / SE / ...'],
             ])
+            // Bucket-6a (DORA RoI Sprint 9) — ISO 17442 Legal Entity Identifier.
+            //
+            // @no-module-gate-required: LEI is used by multiple regulations beyond
+            //   DORA (NIS2 supplier register, MiFID II, etc.) and several auditors
+            //   request it pre-emptively even when DORA itself is dormant. Always-on.
+            ->add('leiCode', TextType::class, [
+                'label' => 'tenant.field.lei_code',
+                'help' => 'tenant.field.lei_code_help',
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 20,
+                    'placeholder' => 'tenant.placeholder.lei_code',
+                    // ISO 17442: 18 LOU-prefix [A-Z0-9] + 2 ISO checksum digits.
+                    'pattern' => '[A-Z0-9]{18}[0-9]{2}',
+                    'title' => 'tenant.help.lei_code_format',
+                    'style' => 'text-transform: uppercase;',
+                ],
+                'constraints' => [
+                    new Assert\Length(max: 20),
+                    new Assert\Regex(
+                        pattern: '/^[A-Z0-9]{18}\d{2}$/',
+                        message: 'tenant.validation.lei_code_format',
+                    ),
+                ],
+            ])
+            // Bucket-6a — ISO 4217 reporting currency for DORA RoI XBRL.
+            ->add('reportingCurrency', ChoiceType::class, [
+                'label' => 'tenant.field.reporting_currency',
+                'help' => 'tenant.field.reporting_currency_help',
+                'required' => false,
+                'placeholder' => false,
+                'choices' => [
+                    'EUR — Euro' => 'EUR',
+                    'USD — US Dollar' => 'USD',
+                    'GBP — Pound Sterling' => 'GBP',
+                    'CHF — Swiss Franc' => 'CHF',
+                    'SEK — Swedish Krona' => 'SEK',
+                    'NOK — Norwegian Krone' => 'NOK',
+                    'DKK — Danish Krone' => 'DKK',
+                    'PLN — Polish Złoty' => 'PLN',
+                    'CZK — Czech Koruna' => 'CZK',
+                ],
+            ])
             // @no-module-gate-required: NACE-Code is a general industry classifier (EU NACE Rev. 2).
             //   It is used to *infer* whether NIS-2 applies — so it must be visible BEFORE the
             //   nis2_dora module is activated.

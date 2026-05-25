@@ -43,18 +43,30 @@ tenant:
         updated: Aktualisiert
         parent: Muttergesellschaft
         corporate_notes: Konzernhinweise
+        # Bucket-6a (DORA RoI Sprint 9) — LEI + reporting-currency
+        lei_code: 'LEI (Legal Entity Identifier)'
+        lei_code_help: 'ISO 17442 — 20-stelliger LEI, ausgestellt von einem GLEIF-akkreditierten LOU. Pflicht für DORA-Art.-28-RoI-Meldungen (B_01.01.0020).'
+        reporting_currency: 'Berichtswährung (ISO 4217)'
+        reporting_currency_help: 'Standardwährung für regulatorische Berichte (DORA RoI B_01.01.0040). Default: EUR.'
+    help:
+        lei_code_format: 'Format: 18 Stellen Präfix [A-Z0-9] + 2 Prüfziffern (z. B. 529900T8BM49AURSDO55).'
     placeholder:
         code: 'z.B. acme-corp'
         name: 'z.B. ACME Corporation'
         description: 'Beschreibung der Organisation...'
         azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
         settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
+        # Bucket-6a (DORA RoI Sprint 9)
+        lei_code: '529900T8BM49AURSDO55'
     validation:
         code_format: 'Der Code darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten'
         azure_tenant_id_format: 'Die Azure Tenant ID muss im UUID-Format vorliegen'
         logo_format: 'Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen'
         # Junior-ISB-Audit-2026-05-22 S14: NACE Format Validator
         nace_code_format: 'Ungültiges NACE-Format. EU NACE Rev. 2 erwartet 2 Ziffern, optional Sektionsbuchstabe + .NN (z. B. 62.01 oder J62.01).'
+        # Bucket-6a (DORA RoI Sprint 9)
+        lei_code_format: 'Ungültiges LEI-Format. ISO 17442 erwartet 20 Zeichen: 18 alphanumerische Stellen + 2 Ziffern Prüfsumme.'
+        reporting_currency_format: 'Ungültiger ISO-4217-Währungscode. Erwartet werden drei Großbuchstaben (z. B. EUR, USD, GBP).'
     status:
         active: Aktiv
         inactive: Inaktiv
