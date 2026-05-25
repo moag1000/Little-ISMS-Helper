@@ -2,20 +2,15 @@
 {% trans_default_domain 'data_import' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% import '_components/_fa_settings_table.html.twig' as _fa_settings %}
 {#
- # TODO(fa-settings-table migration): The column-mapping table below uses
- # Symfony form_widget() per row ({{ form_widget(form[fieldName], ...) }}).
- # This is bound to a FormType with dynamic fields (one per CSV column),
- # CSRF token validation, and Symfony validation errors rendered via
- # form_errors(). The fa-settings-table macro renders plain <select> controls
- # and cannot re-create the FormView hierarchy or preserve CSRF/validation.
+ # Column-mapping wizard step.
  #
- # Migration requires:
- #   1. Keep form_start()/form_end() and form_widget()/form_errors() intact.
- #   2. A custom kind (e.g. 'symfony_widget') in fa-settings-table, OR
- #      wrapping this table in a plain include that uses the existing
- #      form_widget() pattern — which is the recommended approach.
- # Migration is SKIPPED to avoid breaking the FormType binding.
+ # Bound to a Symfony FormType with one dynamic field per CSV column. We use
+ # the fa-settings-table macro with kind='widget' to pass through the
+ # pre-rendered form_widget() output — this keeps CSRF token / validation
+ # error wiring intact while still adopting Aurora styling. Confidence
+ # badges land in the row's trailing cell.
  #}
 
 
@@ -64,55 +59,53 @@
 
                 {{ form_start(form) }}
 
+                    {% set _mapRows = [] %}
+                    {% for index, header in headers %}
+                        {% set fieldName  = 'column_' ~ index %}
+                        {% set suggestion = autoMappings[header] ?? null %}
+                        {% set conf       = suggestion ? (suggestion.confidence)|default(0) : 0 %}
+                        {% set chipVariant = conf >= 0.9 ? 'success' : (conf >= 0.6 ? 'warning' : 'danger') %}
+                        {% set widgetHtml = form_widget(form[fieldName], { attr: {
+                            'data-column-mapping-target': 'dropdown',
+                            'data-action': 'change->column-mapping#onSelect',
+                            'data-source-column': header,
+                            'class': 'form-select form-select-sm'
+                        }}) ~ form_errors(form[fieldName]) %}
+                        {% set trailingHtml %}
+                            {% if suggestion %}
+                                <span data-column-mapping-target="confidenceBadge"
+                                      data-auto-confidence="{{ conf }}">
+                                    {{ _fa_filter_chip.render(
+                                        (conf * 100)|round ~ '%',
+                                        { class: 'fa-filter-chip--' ~ chipVariant }
+                                    ) }}
+                                </span>
+                            {% else %}
+                                <span data-column-mapping-target="confidenceBadge"
+                                      data-auto-confidence="0">
+                                    {{ _fa_filter_chip.render('—', { class: 'fa-filter-chip--neutral' }) }}
+                                </span>
+                            {% endif %}
+                        {% endset %}
+                        {% set _mapRows = _mapRows|merge([{
+                            kind:     'widget',
+                            label:    header,
+                            name:     fieldName,
+                            widget:   '<div style="min-width:220px;">' ~ widgetHtml ~ '</div>',
+                            trailing: trailingHtml,
+                        }]) %}
+                    {% endfor %}
+
                     <div class="table-responsive mb-4">
-                        {# TODO: fa-table migration — fa-settings-table needed: inline form_widget(<select>) per row via Symfony FormView #}
-                        <table class="table align-middle" aria-label="{{ 'import.wizard.step.map.title'|trans({}, 'data_import') }}">
-                            <thead>
-                                <tr>
-                                    <th scope="col">{{ 'import.mapping.col_source'|trans({}, 'data_import') }}</th>
-                                    <th scope="col">{{ 'import.mapping.col_target'|trans({}, 'data_import') }}</th>
-                                    <th scope="col">{{ 'import.mapping.col_confidence'|trans({}, 'data_import') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for index, header in headers %}
-                                    {% set fieldName = 'column_' ~ index %}
-                                    {% set suggestion = autoMappings[header] ?? null %}
-                                    {% set conf = suggestion ? (suggestion.confidence)|default(0) : 0 %}
-                                    {% set chipVariant = conf >= 0.9 ? 'success' : (conf >= 0.6 ? 'warning' : 'danger') %}
-                                    <tr>
-                                        <td class="fw-semibold">{{ header }}</td>
-                                        <td>
-                                            <div style="min-width: 220px;">
-                                                {{ form_widget(form[fieldName], { attr: {
-                                                    'data-column-mapping-target': 'dropdown',
-                                                    'data-action': 'change->column-mapping#onSelect',
-                                                    'data-source-column': header,
-                                                    'class': 'form-select form-select-sm'
-                                                }}) }}
-                                                {{ form_errors(form[fieldName]) }}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {% if suggestion %}
-                                                <span data-column-mapping-target="confidenceBadge"
-                                                      data-auto-confidence="{{ conf }}">
-                                                    {{ _fa_filter_chip.render(
-                                                        (conf * 100)|round ~ '%',
-                                                        { class: 'fa-filter-chip--' ~ chipVariant }
-                                                    ) }}
-                                                </span>
-                                            {% else %}
-                                                <span data-column-mapping-target="confidenceBadge"
-                                                      data-auto-confidence="0">
-                                                    {{ _fa_filter_chip.render('—', { class: 'fa-filter-chip--neutral' }) }}
-                                                </span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                        {{ _fa_settings.render({
+                            wrapperClass: 'fa-settings-table--import-mapping',
+                            headers: [
+                                { label: 'import.mapping.col_source'|trans({}, 'data_import') },
+                                { label: 'import.mapping.col_target'|trans({}, 'data_import') },
+                                { label: 'import.mapping.col_confidence'|trans({}, 'data_import') }
+                            ],
+                            rows: _mapRows
+                        }) }}
                     </div>
 
                     <div class="d-flex gap-2 mt-4">

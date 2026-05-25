@@ -159,7 +159,12 @@ class SupplierCriticalityController extends AbstractController
 
     private function requireTenant(Request $request): Tenant
     {
-        $tenant = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
+        // GET (index / hover-prefetch) carries no `tenant_id` POST param; for
+        // SUPER_ADMIN resolveAdminScope(null) returns null (global scope) and
+        // would 404 the tenant-scoped index. Fall back to active tenant — POST
+        // callers may still override via `tenant_id` body param.
+        $requested = $request->request->get('tenant_id') ?? $this->tenantContext->getCurrentTenantId();
+        $tenant = $this->tenantContext->resolveAdminScope($requested);
         if (!$tenant instanceof Tenant) {
             throw $this->createNotFoundException('No tenant context.');
         }

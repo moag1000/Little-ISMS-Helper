@@ -28,6 +28,7 @@ threat:
         resulting_incidents: 'Resulting Incidents'
         overview: Overview
         intelligence_source: 'Source & CVE Details'
+        classification: 'Classification & Source'
         threat_classification: 'Classification & MITRE'
         affected_assets: 'Affected Assets'
         mitigations: 'Mitigations & Recommendations'
