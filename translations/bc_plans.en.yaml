@@ -8,6 +8,7 @@ bc_plans:
     create_first: Create first BC plan
     # S14 Cluster A — Quick-Create triggers in BC plan form
     quick_create_crisis_team: Quick-create crisis team
+    quick_create_business_process: Quick-create business process
     new_business_process: Create new business process
   empty:
     title: No business continuity plans yet

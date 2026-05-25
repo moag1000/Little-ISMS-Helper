@@ -8,6 +8,7 @@ bc_plans:
     create_first: Ersten BC‑Plan anlegen
     # S14 Cluster A — Quick-Create-Trigger im BC-Plan-Formular
     quick_create_crisis_team: Krisenstab schnell anlegen
+    quick_create_business_process: Geschäftsprozess schnell anlegen
     new_business_process: Neuen Geschäftsprozess anlegen
   empty:
     title: Noch keine Business-Continuity-Pläne hinterlegt
