@@ -53,13 +53,17 @@
             'label': 'asset.section.assignment'|trans({}, 'asset'),
             'fields': ['ownerUser', 'ownerPerson', 'ownerDeputyPersons', 'owner', 'physicalLocation', 'dependsOn']
         },
+        'processing_activities': {
+            'label': 'asset.section.processing_activities'|trans({}, 'asset'),
+            'fields': ['processingActivities']
+        },
         'financial': {
             'label': 'asset.section.financial'|trans({}, 'asset'),
             'fields': ['acquisitionValue', 'currentValue']
         },
         'classification': {
             'label': 'asset.section.classification'|trans({}, 'asset'),
-            'fields': ['dataClassification', 'status', 'returnDate']
+            'fields': ['dataClassification', 'status', 'returnDate', 'isDoraRelevant', 'tisaxInformationClassification']
         },
         'cia_values': {
             'label': 'asset.section.cia_values'|trans({}, 'asset'),
@@ -84,6 +88,9 @@
         'owner': 6,
         'physicalLocation': 6,
         'dependsOn': 12,
+        'processingActivities': 12,
+        'isDoraRelevant': 12,
+        'tisaxInformationClassification': 12,
         'acquisitionValue': 6,
         'currentValue': 6,
         'dataClassification': 4,
