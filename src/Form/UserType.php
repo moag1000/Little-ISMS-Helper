@@ -13,6 +13,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -21,7 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Form\Type\JsonStructuredType;
+use App\Form\Entry\CompetencyEntryType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -240,16 +241,25 @@ final class UserType extends AbstractType
             ]);
         }
 
-        // ISO 27001 §7.2 Competence — list of structured competency objects
-        // {name, category, level, certifiedBy, certifiedAt, expiresAt}.
-        // TODO(s5-json-objects): replace with CollectionType + CompetencyEntryType.
-        // C-06: JsonStructuredType applies JsonArrayTransformer automatically so
-        // invalid JSON surfaces as TransformationFailedException.
-        $builder->add('competencies', JsonStructuredType::class, [
+        // ISO 27001 §7.2 Competence — structured per-row sub-form (S5 Bucket 5).
+        // {name, framework, level, certifiedAt} — additional legacy keys
+        // (category, certifiedBy, expiresAt) are preserved by data_class=null
+        // round-tripping the column as a plain associative array.
+        $builder->add('competencies', CollectionType::class, [
             'label' => 'user.field.competencies',
             'required' => false,
-            'attr' => ['rows' => 6, 'placeholder' => 'user.placeholder.competencies_json'],
-            'help' => 'user.help.competencies_json',
+            'entry_type' => CompetencyEntryType::class,
+            'entry_options' => ['label' => false],
+            'allow_add' => true,
+            'allow_delete' => true,
+            'by_reference' => false,
+            'prototype' => true,
+            'prototype_name' => '__competency_index__',
+            'attr' => [
+                'class' => 'fa-collection fa-collection--competencies',
+                'data-collection-prototype-name' => '__competency_index__',
+            ],
+            'help' => 'user.help.competencies',
         ]);
 
         // Audit-S5 P-12 — Previous QM-System background (drives Norm-Bridge visibility).

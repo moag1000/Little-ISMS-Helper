@@ -8,15 +8,16 @@ use App\Entity\Asset;
 use App\Entity\Person;
 use App\Entity\ThreatIntelligence;
 use App\Entity\User;
+use App\Form\Entry\IocEntryType;
 use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
-use App\Form\Type\JsonStructuredType;
 use App\Form\Type\JsonTagsType;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -248,14 +249,23 @@ final class ThreatIntelligenceType extends AbstractType implements SectionMapInt
                     'placeholder' => 'threat_intelligence.placeholder.mitre_attack_techniques',
                     'help' => 'threat_intelligence.help.mitre_attack_techniques',
                 ])
-                // TODO(s5-json-objects): replace with CollectionType + IocEntryType
-                // (STIX 2.1 shape: [{type:ip|domain|hash|url|email, value, context}]).
-                // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
-                ->add('iocsList', JsonStructuredType::class, [
+                // S5 Bucket 5 — structured per-row entry via IocEntryType
+                // (STIX 2.1 shape: [{type:ip|domain|hash|url|email, value, confidence}]).
+                ->add('iocsList', CollectionType::class, [
                     'label' => 'threat_intelligence.field.iocs_list',
                     'required' => false,
-                    'attr' => ['rows' => 5],
-                    'help' => 'threat_intelligence.help.iocs_list_json',
+                    'entry_type' => IocEntryType::class,
+                    'entry_options' => ['label' => false],
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'by_reference' => false,
+                    'prototype' => true,
+                    'prototype_name' => '__ioc_index__',
+                    'attr' => [
+                        'class' => 'fa-collection fa-collection--iocs',
+                        'data-collection-prototype-name' => '__ioc_index__',
+                    ],
+                    'help' => 'threat_intelligence.help.iocs_list',
                 ])
                 ->add('confidenceLevel', ChoiceType::class, [
                     'label' => 'threat_intelligence.field.confidence_level',
@@ -273,8 +283,6 @@ final class ThreatIntelligenceType extends AbstractType implements SectionMapInt
                     'help' => 'threat_intelligence.help.shared_externally',
                 ])
             ;
-
-            // JsonArrayTransformer now applied automatically by JsonStructuredType.
         }
     }
 
