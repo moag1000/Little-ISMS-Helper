@@ -1,27 +1,9 @@
 {#
- # TODO(fa-matrix-table migration): This partial uses a frameworks × clusters
- # RAG-status data shape (heatmap_data.frameworks, heatmap_data.clusters,
- # heatmap_data.cells keyed by `<fw_id>_<cluster_key>` with rate+status).
- # The fa-matrix-table macro (Aurora v4) expects a score-based cells[row][col]
- # array with numeric scores for severity auto-mapping, which is incompatible
- # with this RAG/percentage model.
- #
- # PHP refactoring required before migration:
- #   1. In the controller(s) supplying `heatmap_data` (compliance manager
- #      dashboard + cm_heatmap_drill), add a transformer that converts the
- #      existing heatmap_data structure into cells[rowIdx][colIdx] = {score, count, href}.
- #   2. Map RAG status → numeric score (e.g. green=1, amber=6, red=18, none=0)
- #      OR extend fa-matrix-table macro to accept a `severity` override per cell
- #      (already supported in the macro spec) and pass 'low'/'moderate'/'high'
- #      for green/amber/red directly from the controller.
- #   3. Pass rows = framework names, cols = cluster labels.
- #
- # Until then this partial keeps its own RAG markup and inline <style>.
- #
  # Cross-Framework Gap Heatmap — reusable partial.
  #
  # Renders a Frameworks × Requirement-Cluster × Ampel (RAG) grid showing
- # compliance coverage at a glance. Each cell is colour-coded:
+ # compliance coverage at a glance via Aurora-v4 `fa-matrix-table` (mode=rag).
+ # Each cell is colour-coded:
  #   green  (rag-green)  = 80%+ requirements fulfilled
  #   amber  (rag-amber)  = 40–79% fulfilled
  #   red    (rag-red)    = <40% fulfilled
@@ -38,74 +20,58 @@
  #   {% include 'compliance/_heatmap.html.twig' with { heatmap_data: myData } %}
  #}
 {% trans_default_domain 'compliance' %}
+{% import '_components/_fa_matrix_table.html.twig' as _fa_matrix %}
 
-<div class="table-responsive" role="region" aria-label="{{ 'compliance.heatmap.title'|trans({}, 'compliance') }}">
-    {# TODO: fa-table migration — fa-matrix-table needed: <caption>, colspan, <th scope="row"> per row (multi-axis heatmap) #}
-    <table class="table table-bordered table-sm fte-heatmap" aria-live="polite">
-        <caption class="visually-hidden">{{ 'compliance.heatmap.caption'|trans({}, 'compliance') }}</caption>
-        <thead>
-            <tr>
-                <th scope="col" class="fte-heatmap__corner">
-                    {{ 'compliance.heatmap.col_framework'|trans({}, 'compliance') }}
-                    / {{ 'compliance.heatmap.col_cluster'|trans({}, 'compliance') }}
-                </th>
-                {% for cluster in heatmap_data.clusters %}
-                <th scope="col" class="fte-heatmap__cluster-header text-center" title="{{ cluster.label }}">
-                    <span class="fte-heatmap__cluster-abbrev" aria-label="{{ cluster.label }}">
-                        {{ cluster.label|slice(0, 8) }}
-                    </span>
-                </th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for framework in heatmap_data.frameworks %}
-            <tr>
-                <th scope="row" class="fte-heatmap__framework-label">
-                    {{ framework.name }}
-                </th>
-                {% for cluster in heatmap_data.clusters %}
-                    {% set cell_key = framework.id ~ '_' ~ cluster.key %}
-                    {% set cell = heatmap_data.cells[cell_key] ?? {rate: null, status: 'none'} %}
-                    <td class="fte-heatmap__cell fte-heatmap__cell--{{ cell.status }} text-center"
-                        title="{{ framework.name }}: {{ cluster.label }} — {{ cell.rate is not null ? (cell.rate * 100)|number_format(0) ~ '%' : 'N/A' }}"
-                        aria-label="{{ framework.name }}, {{ cluster.label }}: {{ cell.status }}">
-                        {% if cell.status == 'green' %}
-                            <i class="fa-icon fa-icon--status-ok fa-icon--success" aria-hidden="true"></i>
-                        {% elseif cell.status == 'amber' %}
-                            <i class="fa-icon fa-icon--status-warning fa-icon--warning" aria-hidden="true"></i>
-                        {% elseif cell.status == 'red' %}
-                            <i class="fa-icon fa-icon--status-critical fa-icon--danger" aria-hidden="true"></i>
-                        {% else %}
-                            <span class="text-muted" aria-hidden="true">—</span>
-                        {% endif %}
-                        {% if cell.rate is not null %}
-                        <span class="visually-hidden">{{ (cell.rate * 100)|number_format(0) }}%</span>
-                        <div class="fte-heatmap__rate small text-muted">{{ (cell.rate * 100)|number_format(0) }}%</div>
-                        {% endif %}
-                    </td>
-                {% endfor %}
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="{{ heatmap_data.clusters|length + 1 }}" class="text-center text-muted py-4">
-                    {{ 'compliance.heatmap.no_data'|trans({}, 'compliance') }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{#
+ # Adapt the controller-supplied { frameworks[], clusters[], cells{key} } shape
+ # into the fa-matrix-table row/col/cells[rowIdx][colIdx] structure.
+ # Cluster labels are abbreviated to 8 chars in the header (full label retained
+ # in the cell title attribute via cell.hint).
+ #}
+{% set _rowLabels = [] %}
+{% for framework in heatmap_data.frameworks %}
+    {% set _rowLabels = _rowLabels|merge([framework.name]) %}
+{% endfor %}
+
+{% set _colLabels = [] %}
+{% for cluster in heatmap_data.clusters %}
+    {% set _colLabels = _colLabels|merge([cluster.label|slice(0, 8)]) %}
+{% endfor %}
+
+{% set _cells = [] %}
+{% for framework in heatmap_data.frameworks %}
+    {% set _rowCells = [] %}
+    {% for cluster in heatmap_data.clusters %}
+        {% set _cellKey = framework.id ~ '_' ~ cluster.key %}
+        {% set _cell    = heatmap_data.cells[_cellKey] ?? {rate: null, status: 'none'} %}
+        {% set _rate    = _cell.rate is defined ? _cell.rate : null %}
+        {% set _pctText = _rate is not null ? (_rate * 100)|number_format(0) ~ '%' : 'N/A' %}
+        {% set _rowCells = _rowCells|merge([{
+            status: _cell.status|default('none'),
+            rate:   _rate,
+            label:  framework.name ~ ', ' ~ cluster.label ~ ': ' ~ _cell.status|default('none'),
+            hint:   framework.name ~ ': ' ~ cluster.label ~ ' — ' ~ _pctText,
+        }]) %}
+    {% endfor %}
+    {% set _cells = _cells|merge([_rowCells]) %}
+{% endfor %}
+
+<div role="region" aria-label="{{ 'compliance.heatmap.title'|trans({}, 'compliance') }}" aria-live="polite">
+    {% if heatmap_data.frameworks|length > 0 %}
+        {{ _fa_matrix.render({
+            mode:    'rag',
+            title:   'compliance.heatmap.title'|trans({}, 'compliance'),
+            caption: 'compliance.heatmap.caption'|trans({}, 'compliance'),
+            rows:    _rowLabels,
+            cols:    _colLabels,
+            cells:   _cells,
+            xLabel:  'compliance.heatmap.col_cluster'|trans({}, 'compliance'),
+            yLabel:  'compliance.heatmap.col_framework'|trans({}, 'compliance'),
+            legend:  true
+        }) }}
+    {% else %}
+        <p class="text-center text-muted py-4">
+            {{ 'compliance.heatmap.no_data'|trans({}, 'compliance') }}
+        </p>
+    {% endif %}
 </div>
-
-<style>
-.fte-heatmap__cell { min-width: 60px; vertical-align: middle; }
-.fte-heatmap__cell--green { background-color: rgba(25, 135, 84, 0.12); }
-.fte-heatmap__cell--amber { background-color: rgba(255, 193, 7, 0.18); }
-.fte-heatmap__cell--red   { background-color: rgba(220, 53, 69, 0.12); }
-.fte-heatmap__cell--none  { background-color: transparent; }
-.fte-heatmap__rate        { font-size: 0.7rem; line-height: 1; margin-top: 2px; }
-.fte-heatmap__corner      { white-space: nowrap; }
-.fte-heatmap__cluster-header { white-space: nowrap; max-width: 100px; overflow: hidden; }
-.fte-heatmap__cluster-abbrev { font-size: 0.75rem; }
-.fte-heatmap__framework-label { font-size: 0.875rem; max-width: 160px; }
-</style>

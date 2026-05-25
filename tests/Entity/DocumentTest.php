@@ -31,7 +31,6 @@ class DocumentTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $document->getUploadedAt());
         $this->assertNull($document->getUpdatedAt());
         $this->assertNull($document->getSha256Hash());
-        $this->assertFalse($document->isPublic());
         $this->assertFalse($document->isArchived());
         $this->assertEquals('draft', $document->getStatus());
     }
@@ -153,20 +152,6 @@ class DocumentTest extends TestCase
         $document->setSha256Hash($hash);
 
         $this->assertEquals($hash, $document->getSha256Hash());
-    }
-
-    #[Test]
-    public function testSetAndGetIsPublic(): void
-    {
-        $document = new Document();
-
-        $this->assertFalse($document->isPublic());
-
-        $document->setIsPublic(true);
-        $this->assertTrue($document->isPublic());
-
-        $document->setIsPublic(false);
-        $this->assertFalse($document->isPublic());
     }
 
     #[Test]
@@ -300,7 +285,6 @@ class DocumentTest extends TestCase
         $document->setEntityId(5);
         $document->setUploadedBy($user);
         $document->setSha256Hash(hash('sha256', 'policy content'));
-        $document->setIsPublic(false);
         $document->setStatus('published');
 
         $this->assertEquals('abc123.pdf', $document->getFilename());
@@ -314,7 +298,6 @@ class DocumentTest extends TestCase
         $this->assertEquals('ComplianceFramework', $document->getEntityType());
         $this->assertEquals(5, $document->getEntityId());
         $this->assertSame($user, $document->getUploadedBy());
-        $this->assertFalse($document->isPublic());
         $this->assertFalse($document->isArchived());
         $this->assertEquals('published', $document->getStatus());
         $this->assertTrue($document->isPdf());
