@@ -99,24 +99,24 @@ jobs:
           php bin/console doctrine:migrations:version --add --all --no-interaction
           touch config/setup_complete.lock
           cp config/active_modules.yaml.dist config/active_modules.yaml
-          # The repo's .env has APP_SECRET= (empty) so the secret cannot be
-          # resolved via the job-level env block alone — Symfony's dotenv
-          # `overrideExistingVars=false` means an empty .env literal can
-          # still shadow shell env in some load orders. Hard-set the
-          # secret in .env itself to remove any ambiguity. SsoSecretEncryption
-          # then receives a non-empty %kernel.secret% deterministically.
+          # The repo's .env has APP_SECRET= (empty) and DATABASE_URL composed
+          # from DB_* placeholders (default user "app"). Symfony's dotenv
+          # `overrideExistingVars=false` should let the job-env block win,
+          # but empirically the .env values shadow shell env under PHP-S
+          # in CI. Hard-write the resolved values directly into .env so
+          # there is exactly one source of truth.
           sed -i "s|^APP_SECRET=.*|APP_SECRET=$APP_SECRET|" .env
-          # Per-env DB url + mailer overrides go into .env.dev.local
-          # (loaded last in dev chain). We do NOT repeat APP_SECRET here —
-          # .env already has the right value.
+          sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"$DATABASE_URL\"|" .env
+          sed -i "s|^DB_USER=.*|DB_USER=isms_user|" .env
+          sed -i "s|^DB_PASS=.*|DB_PASS=isms_password|" .env
+          sed -i "s|^DB_NAME=.*|DB_NAME=isms|" .env
           cat > .env.dev.local <<EOF
-          DATABASE_URL=$DATABASE_URL
           MAILER_DSN=$MAILER_DSN
           MESSENGER_TRANSPORT_DSN=$MESSENGER_TRANSPORT_DSN
           EOF
           # Debug: surface what was written so failures are diagnosable.
-          echo "--- .env (APP_SECRET line) ---"
-          grep '^APP_SECRET' .env
+          echo "--- .env (key lines) ---"
+          grep -E '^(APP_SECRET|DATABASE_URL|DB_USER|DB_PASS|DB_NAME)' .env
           echo "--- .env.dev.local ---"
           cat .env.dev.local
 

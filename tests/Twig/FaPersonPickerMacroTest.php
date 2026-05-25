@@ -62,7 +62,7 @@ final class FaPersonPickerMacroTest extends KernelTestCase
         // Default empty-state pulls the messages-domain string. Match
         // either locale (DE is default in this kernel, EN is fallback).
         self::assertMatchesRegularExpression(
-            '/(No persons in tenant|Keine Personen im Mandanten)/',
+            '/(No persons in tenant|Keine Personen im (Mandanten|Organisationen))/',
             $output,
         );
     }
