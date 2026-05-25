@@ -395,9 +395,8 @@
 </div>
 
 {# GDPR Breach Wizard - placed outside all containers for proper modal positioning #}
-<div data-controller="gdpr-breach-wizard"
-     data-gdpr-breach-wizard-assessment-url-value="{{ path('app_incident_gdpr_wizard_result') }}">
-    {% include 'incident/_gdpr_breach_wizard_modal.html.twig' %}
+<div>
+    {% include 'incident/_gdpr_breach_wizard_modal.html.twig' with { assessmentUrl: path('app_incident_gdpr_wizard_result') } %}
 </div>
 
 {% endblock %}

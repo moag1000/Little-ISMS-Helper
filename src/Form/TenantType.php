@@ -42,7 +42,7 @@ final class TenantType extends AbstractType
                 'attr' => [
                     'placeholder' => 'tenant.placeholder.code',
                     'maxlength' => 100,
-                    'pattern' => '[a-zA-Z0-9_-]+',
+                    'pattern' => '[a-zA-Z0-9_\-]+',
                     'id' => 'tenant_code',
                     'class' => 'bg-light',
                 ],
