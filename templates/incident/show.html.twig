@@ -468,8 +468,8 @@
                                 <strong>{{ asset.name }}</strong>
                                 {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.assetType } %}
                                 <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
-                                {# Junior-ISB-Audit S14#15: prefer canonical currentValue, fall back to legacy monetaryValue. #}
-                                {% set assetVal = asset.currentValue ?? asset.monetaryValue %}
+                                {# Junior-ISB-Audit S14+ #15: legacy monetaryValue column dropped — currentValue is canonical. Pre-migration rows were backfilled in Version20260612100000_DropAssetMonetaryValue. #}
+                                {% set assetVal = asset.currentValue %}
                                 {% if assetVal %}
                                     <small class="text-danger">{{ 'incident.bcm.value'|trans({}, 'incident') }}: €{{ assetVal }}</small>
                                 {% endif %}

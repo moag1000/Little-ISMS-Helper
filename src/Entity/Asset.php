@@ -182,22 +182,12 @@ class Asset
     private ?int $availabilityValue = null;
 
     // Phase 6F: ISO 27001 Compliance Fields
-
-    /**
-     * Monetary value of the asset for risk impact calculation.
-     * ⚠️ SAFE GUARD: This field must ALWAYS be set manually by users.
-     * NEVER auto-calculate from vulnerabilityScore or other sources to prevent circular dependencies.
-     *
-     * @deprecated Junior-ISB-Audit-S14 #15 — Use currentValue/acquisitionValue.
-     * AssetType form no longer renders this field (audit Finding #9). Templates
-     * now prefer `currentValue` and fall back to `monetaryValue` for un-migrated
-     * rows. RiskImpactCalculatorService still reads this — backfill+DROP COLUMN
-     * migration deferred to S15 once the calculator is rewired.
-     */
-    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
-    #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\PositiveOrZero(message: 'asset.validation.monetary_value_positive')]
-    private ?string $monetaryValue = null;
+    //
+    // Junior-ISB-Audit S14+ #15 (2026-05): the legacy `monetaryValue` /
+    // `monetary_value` column was removed. Asset valuation now lives in the
+    // canonical `acquisitionValue` + `currentValue` fields. Legacy column
+    // data was backfilled into `current_value` during
+    // Version20260612100000_DropAssetMonetaryValue.
 
     /**
      * Data classification level for the asset.
@@ -705,17 +695,8 @@ class Asset
     }
 
     // Getter/Setter for Phase 6F ISO 27001 Compliance Fields
-
-    public function getMonetaryValue(): ?string
-    {
-        return $this->monetaryValue;
-    }
-
-    public function setMonetaryValue(?string $monetaryValue): static
-    {
-        $this->monetaryValue = $monetaryValue;
-        return $this;
-    }
+    // (Junior-ISB-Audit S14+ #15: getMonetaryValue/setMonetaryValue removed —
+    // see Asset valuation block above.)
 
     public function getDataClassification(): ?string
     {
