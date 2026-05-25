@@ -3,12 +3,6 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 
-{#
-    Field renamed: 'duration' -> 'durationMinutes' to match TrainingType.
-    TODO: SOLUTIONS_P0 P0-11 — re-add 'location' to schedule-section once the
-    field is added to TrainingType. Translation keys retained as anchors.
-#}
-
 {% block title %}{{ 'training.new'|trans({}, 'training') }}{% endblock %}
 
 {% block body %}

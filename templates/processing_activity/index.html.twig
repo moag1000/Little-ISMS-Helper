@@ -15,16 +15,19 @@
         ]
     } %}
 
-    {# TODO: export actions (PDF/CSV) use plain href links; data-turbo-disabled is not available in fa-cyber-btn.
-       CSV export is now async (Phase 3 async-jobs) — opens dispatch modal that POSTs to job dispatch route. #}
+    {# fa-page-header `attrs:` on each action forwards arbitrary HTML attributes.
+       Direct-download links MUST opt out of Turbo so the browser keeps the
+       binary response stream (otherwise Turbo intercepts and yields a blank page).
+       CSV export is async (Phase 3 async-jobs) — opens dispatch modal that POSTs
+       to job dispatch route, so Turbo handling there is on the inner <form>. #}
     {{ _fa_page_header.render({
         badge: { icon: 'nav-file-earmark-text', label: 'processing_activity.breadcrumb.vvt'|trans({}, 'privacy') },
         title: 'processing_activity.title'|trans({}, 'privacy'),
         subtitle: 'processing_activity.subtitle'|trans({}, 'privacy'),
         actions: [
             { label: 'processing_activity.button.dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-dashboard', href: path('app_processing_activity_dashboard') },
-            { label: 'processing_activity.button.export_pdf'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-file-pdf', href: path('app_processing_activity_export_pdf') },
-            { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), variant: 'ghost', icon: 'filetype-csv', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#vvtExportModal' } },
+            { label: 'processing_activity.button.export_pdf'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-file-pdf', href: path('app_processing_activity_export_pdf'), attrs: { 'data-turbo': 'false' } },
+            { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), variant: 'ghost', icon: 'filetype-csv', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#vvtExportModal', 'data-turbo': 'false' } },
             { label: 'processing_activity.button.new'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_processing_activity_new') }
         ]
     }) }}
