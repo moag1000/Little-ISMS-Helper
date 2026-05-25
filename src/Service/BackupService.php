@@ -51,7 +51,6 @@ class BackupService
         'Location',
         'Supplier',
         'SystemSettings',
-        'AssetSubType', // S18 B2: tenant-scoped Asset Sub-Type Layer, FK target for Asset.subType
 
         // Tenant-level overrides / branding
         'TenantBranding',           // FK: Tenant, User (has logoPath upload)
@@ -72,6 +71,7 @@ class BackupService
         'KpiThresholdConfig',       // FK: Tenant
         'Tag',                      // FK: Tenant
         'EntityTag',                // FK: Tag, User
+        'AssetSubType',             // S18 B2 — FK: Tenant — tenant-konfigurierbare Asset-Sub-Types
 
         // ISMS Core
         'Asset',
