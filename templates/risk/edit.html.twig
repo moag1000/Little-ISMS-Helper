@@ -47,7 +47,7 @@
         {% set form_sections = {
             'basic_info': {
                 'label': 'risk.section.basic_info'|trans({}, 'risk'),
-                'fields': ['title', 'asset', 'description', 'threat', 'vulnerability', 'category', 'person', 'location', 'supplier']
+                'fields': ['title', 'asset', 'description', 'threat', 'vulnerability', 'category', 'person', 'location', 'supplier', 'threatIntelligence', 'linkedVulnerability']
             }
         } %}
         {% if is_module_active('privacy') %}
@@ -62,7 +62,7 @@
             'inherent_risk': {
                 'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
                 'intro': 'risk.section.inherent_risk_intro'|trans({}, 'risk'),
-                'fields': ['probability', 'impact']
+                'fields': ['probability', 'impact', 'likelihoodJustification', 'impactJustification']
             },
             'residual_risk': {
                 'label': 'risk.section.residual_risk'|trans({}, 'risk'),
@@ -75,7 +75,7 @@
             },
             'acceptance': {
                 'label': 'risk.section.acceptance'|trans({}, 'risk'),
-                'fields': ['acceptanceApprovedByUser', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
+                'fields': ['acceptanceApprovedByUser', 'acceptanceApprovedBy', 'acceptanceApprovedAt', 'acceptanceExpiryDate', 'acceptanceJustification', 'decisionRationale', 'decisionApprovedByUser', 'decisionApprovalDate', 'status', 'reviewDate']
             }
         }) %}
         {% include '_components/_auto_form.html.twig' with {
@@ -94,6 +94,8 @@
                 'person': 6,
                 'location': 6,
                 'supplier': 6,
+                'threatIntelligence': 6,
+                'linkedVulnerability': 6,
                 'involvesPersonalData': 6,
                 'involvesSpecialCategoryData': 6,
                 'legalBasis': 6,
@@ -102,6 +104,8 @@
                 'dataSubjectImpact': 12,
                 'probability': 6,
                 'impact': 6,
+                'likelihoodJustification': 12,
+                'impactJustification': 12,
                 'residualProbability': 6,
                 'residualImpact': 6,
                 'treatmentStrategy': 6,
@@ -110,8 +114,13 @@
                 'riskOwnerDeputyPersons': 12,
                 'treatmentDescription': 12,
                 'acceptanceApprovedByUser': 6,
+                'acceptanceApprovedBy': 6,
                 'acceptanceApprovedAt': 6,
+                'acceptanceExpiryDate': 6,
                 'acceptanceJustification': 12,
+                'decisionRationale': 12,
+                'decisionApprovedByUser': 6,
+                'decisionApprovalDate': 6,
                 'status': 6,
                 'reviewDate': 6
             },

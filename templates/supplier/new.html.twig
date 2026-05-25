@@ -95,6 +95,18 @@
             'privacy': {
                 'label': 'supplier.section.privacy'|trans({}, 'suppliers'),
                 'fields': ['gdprProcessorStatus', 'gdprTransferMechanism', 'gdprAvContractSigned', 'gdprAvContractDate']
+            },
+            'tier_classification': {
+                'label': 'supplier.section.tier_classification'|trans({}, 'suppliers'),
+                'fields': ['isDoraRelevant', 'leiCode', 'naceCode', 'countryOfHeadOffice', 'ictCriticality', 'ictFunctionType', 'substitutability', 'hasSubcontractors', 'subcontractorChain', 'processingLocations', 'lastDoraAuditDate', 'hasExitStrategy']
+            },
+            'lksg': {
+                'label': 'supplier.section.lksg'|trans({}, 'suppliers'),
+                'fields': ['lksgReportingObligation', 'lksgRiskCategory', 'lksgHumanRightsRiskScore', 'lksgEnvironmentalRiskScore', 'lksgRiskAnalysisDate', 'lksgComplaintMechanism', 'lksgPreventionMeasures']
+            },
+            'marisk': {
+                'label': 'supplier.section.marisk'|trans({}, 'suppliers'),
+                'fields': ['outsourcingClassification', 'outsourcingDueDiligenceCompleted', 'outsourcingDueDiligenceDate', 'outsourcingExitStrategy', 'bafinNotificationRequired', 'bafinNotificationDate', 'riskBearingCapacityImpact', 'boardLevelRiskAcceptance', 'complianceFunctionInvolvement', 'internalAuditFunctionInvolvement']
             }
         },
         'col_widths': {
@@ -116,7 +128,41 @@
             'dpaSignedDate': 6,
             'certifications': 6,
             'contractStartDate': 6,
-            'contractEndDate': 6
+            'contractEndDate': 6,
+            'supportedAssets': 12,
+            'gdprProcessorStatus': 6,
+            'gdprTransferMechanism': 6,
+            'gdprAvContractSigned': 6,
+            'gdprAvContractDate': 6,
+            'isDoraRelevant': 4,
+            'leiCode': 4,
+            'naceCode': 4,
+            'countryOfHeadOffice': 6,
+            'ictCriticality': 6,
+            'ictFunctionType': 6,
+            'substitutability': 6,
+            'hasSubcontractors': 6,
+            'subcontractorChain': 12,
+            'processingLocations': 12,
+            'lastDoraAuditDate': 6,
+            'hasExitStrategy': 6,
+            'lksgReportingObligation': 6,
+            'lksgRiskCategory': 6,
+            'lksgHumanRightsRiskScore': 4,
+            'lksgEnvironmentalRiskScore': 4,
+            'lksgRiskAnalysisDate': 4,
+            'lksgComplaintMechanism': 12,
+            'lksgPreventionMeasures': 12,
+            'outsourcingClassification': 6,
+            'outsourcingDueDiligenceCompleted': 6,
+            'outsourcingDueDiligenceDate': 6,
+            'outsourcingExitStrategy': 6,
+            'bafinNotificationRequired': 6,
+            'bafinNotificationDate': 6,
+            'riskBearingCapacityImpact': 6,
+            'boardLevelRiskAcceptance': 6,
+            'complianceFunctionInvolvement': 6,
+            'internalAuditFunctionInvolvement': 6
         },
         'tooltips': {
             'securityScore': 'supplier.tooltip.security_score',
