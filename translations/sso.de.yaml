@@ -7,7 +7,7 @@ sso:
         approvals: 'Freigabe-Warteschlange'
         empty: 'Noch keine SSO-Provider konfiguriert. Lege einen an, um den Login-Button anzuzeigen.'
         help: |
-            <strong>Globale Provider</strong> (nur SUPER_ADMIN) gelten mandantenübergreifend. <strong>Mandanten-Provider</strong> sind nur in ihrem Mandanten sichtbar.
+            <strong>Globale Provider</strong> (nur SUPER_ADMIN) gelten organisationsübergreifend. <strong>Organisations-Provider</strong> sind nur in ihrer Organisation sichtbar.
             <strong>Domain-Bindung</strong>: <code>optional</code> — Button immer sichtbar, <code>enforce</code> — nur für matchende Email-Domains, <code>disabled</code> — keine Domain-Prüfung.
         col:
             name: 'Name'
@@ -61,7 +61,7 @@ sso:
         button_icon: 'Beispiel: bi-google, bi-microsoft, bi-shield-lock'
         domain_bindings: 'z. B. acme.com, acme.de — leer = keine Bindung.'
         auto_approve: 'Wenn aus → neue User landen in der Freigabe-Warteschlange.'
-        scope: 'Leer = global (alle Mandanten sehen den Button).'
+        scope: 'Leer = global (alle Organisationen sehen den Button).'
         default_fallback_role: 'Rolle für neu per JIT provisionierte Benutzer, wenn kein Rollen-Mapping greift.'
         mfa_inheritance: 'Steuert, ob Benutzer bei diesem IdP-Login zusätzlich eine eigene MFA durchführen müssen.'
     type:
@@ -92,7 +92,7 @@ sso:
         col:
             email: 'Email'
             provider: 'Provider'
-            tenant: 'Mandant'
+            tenant: 'Organisation'
             requested_at: 'Angefragt am'
             claims: 'Claims (vom IdP)'
             actions: 'Aktionen'
@@ -143,7 +143,7 @@ sso:
     voter:
         error:
             not_authenticated: 'Sie müssen angemeldet sein, um auf SSO-Provider zuzugreifen.'
-            wrong_tenant: 'Sie haben keinen Zugriff auf diesen SSO-Provider (falscher Mandant).'
+            wrong_tenant: 'Sie haben keinen Zugriff auf diesen SSO-Provider (falscher Organisation).'
             admin_required: 'Nur Administratoren können SSO-Konfigurationen ändern.'
     wizard:
         title: 'SSO-Einrichtungsassistent'

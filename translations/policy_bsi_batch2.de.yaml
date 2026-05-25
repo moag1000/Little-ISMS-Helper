@@ -388,7 +388,7 @@ policy:
 
                     ## 4. Zugriffskontrolle (CON.10.A2)
                     - Function-Level-Authorisation: Pruefung jeder Funktion auf Berechtigung;
-                    - Object-Level-Authorisation: Pruefung jeder Datenobjekt-Zugehoerigkeit (insbesondere bei Mandanten-Trennung);
+                    - Object-Level-Authorisation: Pruefung jeder Datenobjekt-Zugehoerigkeit (insbesondere bei Organisations-Trennung);
                     - Server-seitige Validierung saemtlicher Autorisierungs-Entscheidungen;
                     - Schutz vor IDOR (Insecure Direct Object References).
 

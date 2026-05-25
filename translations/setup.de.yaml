@@ -191,15 +191,15 @@ setup:
             error: 'Fehler bei der Wiederherstellung:'
         orphaned:
             title: 'Verwaiste Entitäten gefunden'
-            description: 'Nach der Wiederherstellung wurden <strong>%count%</strong> Entitäten ohne Mandanten-Zuordnung gefunden:'
+            description: 'Nach der Wiederherstellung wurden <strong>%count%</strong> Entitäten ohne Organisations-Zuordnung gefunden:'
             assets: 'Assets'
             risks: 'Risiken'
             incidents: 'Vorfälle'
             repair:
                 title: 'Verwaiste Entitäten reparieren'
-                description: 'Wählen Sie einen Mandanten, dem die verwaisten Entitäten zugewiesen werden sollen:'
-                target_tenant: 'Ziel-Mandant'
-                select_tenant: 'Bitte Mandanten auswählen...'
+                description: 'Wählen Sie eine Organisation, der die verwaisten Entitäten zugewiesen werden sollen:'
+                target_tenant: 'Ziel-Organisation'
+                select_tenant: 'Bitte Organisation auswählen...'
                 submit: 'Jetzt reparieren'
         asset_links:
             title: 'Asset-Zuordnungen reparieren'

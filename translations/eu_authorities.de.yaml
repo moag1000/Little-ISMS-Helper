@@ -74,7 +74,7 @@ eu_authorities:
             turnover: 'Jährlicher Umsatz in EUR — relevant für Schwellenwertprüfung'
             ict_dependency: 'Kurzbeschreibung der kritischen IKT-Abhängigkeiten (max. 5 Sätze)'
             nace_codes: 'NACE-Rev.2-Codes Ihrer Haupttätigkeit'
-            nace_codes_detail: 'NACE-Codes werden aus den Mandanten-Stammdaten übernommen und können dort aktualisiert werden.'
+            nace_codes_detail: 'NACE-Codes werden aus den Organisations-Stammdaten übernommen und können dort aktualisiert werden.'
         action:
             edit: 'Profil bearbeiten'
             export_json: 'BSI-Portal-JSON herunterladen'
@@ -134,7 +134,7 @@ eu_authorities:
     hub:
         page:
             title: 'EU-Behörden-Reporting-Hub'
-            subtitle: 'Übersicht aller EU-Behörden-Meldepflichten für Ihren Mandanten'
+            subtitle: 'Übersicht aller EU-Behörden-Meldepflichten für Ihre Organisation'
         summary:
             current: 'Aktuell / Verfügbar'
             due_soon: 'Bald fällig'
@@ -207,7 +207,7 @@ eu_authorities:
         success:
             submitted: 'DORA RoI als eingereicht markiert. Bestätigungsnummer: %number%'
         info:
-            not_applicable_to_tenant: 'DORA ist für diesen Mandanten nicht einschlägig. Setzen Sie den DORA-Verpflichtungsstatus unter Mandanten-Einstellungen.'
+            not_applicable_to_tenant: 'DORA ist für diese Organisation nicht einschlägig. Setzen Sie den DORA-Verpflichtungsstatus unter den Organisations-Einstellungen.'
         alva:
             overdue_authority_report:
                 title: 'EU-Behörden-Meldung überfällig'
@@ -301,4 +301,4 @@ global:
 
 # Top-level Flash für DORA-Anwendbarkeits-Gate (genutzt von DoraComplianceController / DoraRoiController)
 dora:
-    not_applicable_to_tenant: 'DORA gilt für diesen Mandanten nicht. Den DORA-Verpflichtungsstatus unter Mandanten-Einstellungen setzen.'
+    not_applicable_to_tenant: 'DORA gilt für diese Organisation nicht. Den DORA-Verpflichtungsstatus unter den Organisations-Einstellungen setzen.'

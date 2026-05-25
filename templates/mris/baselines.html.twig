@@ -44,7 +44,7 @@
     {% if tenant is null %}
         <div class="fa-alert fa-alert--warning small">
             <strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></strong>
-            Kein Mandant zugewiesen — Baselines benötigen einen Mandantenkontext zum Anwenden.
+            Keine Organisation zugewiesen — Baselines benötigen einen Organisationskontext zum Anwenden.
         </div>
     {% endif %}
 
@@ -80,7 +80,7 @@
                                     </button>
                                     <button type="submit"
                                             class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
-                                            data-confirm="Baseline '{{ baseline.name }}' wirklich auf Mandant '{{ tenant.name }}' anwenden? Bestehende Soll-Stufen werden überschrieben.">
+                                            data-confirm="Baseline '{{ baseline.name }}' wirklich auf Organisation '{{ tenant.name }}' anwenden? Bestehende Soll-Stufen werden überschrieben.">
                                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         Anwenden
                                     </button>
@@ -88,7 +88,7 @@
                             {% else %}
                                 <p class="small text-muted fst-italic mb-0">
                                     {% if tenant is null %}
-                                        Mandantenkontext erforderlich.
+                                        Organisationskontext erforderlich.
                                     {% else %}
                                         Anwenden erfordert Rolle Manager (ROLE_MANAGER).
                                     {% endif %}

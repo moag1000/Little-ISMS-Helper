@@ -3,7 +3,7 @@ admin:
         error:
             not_found: 'Preset wurde nicht gefunden.'
             invalid_csrf: 'Ungültiges CSRF-Token.'
-            tenant_required: 'Mandantenkontext erforderlich.'
+            tenant_required: 'Organisationskontext erforderlich.'
     module:
         error:
             invalid_csrf: 'Ungültiges CSRF-Token.'
@@ -24,20 +24,20 @@ admin:
     title: Administration
     cancel: 'Abbrechen'
     tenant_management:
-        title: 'Mandanten-Verwaltung'
+        title: 'Organisations-Verwaltung'
     breadcrumb:
         home: 'Admin Dashboard'
     hub:
         title: 'Admin Panel'
         subtitle: '%count% Module in 8 Bereichen — gefiltert via Suche, geöffnet als fokussierte Detail-Seiten.'
-        search_placeholder: 'Modul suchen … (z. B. Mandanten, Audit-Log, SSO)'
+        search_placeholder: 'Modul suchen … (z. B. Organisationen, Audit-Log, SSO)'
         search_label: 'Module durchsuchen'
         no_results: 'Keine Module gefunden — Suchbegriff anpassen.'
         coming_soon: 'in Vorbereitung'
         group:
             organisation:
                 label: 'Organisation'
-                desc: 'Mandanten, Konzernstruktur, Standorte'
+                desc: 'Organisationen, Konzernstruktur, Standorte'
             identity:
                 label: 'Zugriff & Identität'
                 desc: 'Benutzer, Rollen, Berechtigungen, SSO, Sitzungen, MFA'
@@ -60,13 +60,13 @@ admin:
                 label: 'Benachrichtigungen'
                 desc: 'Regeln, Kanäle, Vorlagen und Präferenzen für ausgehende Benachrichtigungen'
         module:
-            tenants: { label: 'Mandanten', desc: 'Kunden-Organisationen verwalten' }
+            tenants: { label: 'Organisationen', desc: 'Kunden-Organisationen verwalten' }
             corporate_structure: { label: 'Konzernstruktur', desc: 'Hierarchie aus Mutter- und Tochtergesellschaften' }
             locations: { label: 'Standorte', desc: 'Physische Locations für Asset-Zuordnung' }
-            tenant_branding: { label: 'Mandanten-Branding', desc: 'E-Mail-Logos und Absender pro Mandant' }
+            tenant_branding: { label: 'Organisations-Branding', desc: 'E-Mail-Logos und Absender pro Organisation' }
             tenant_compliance_settings: { label: 'Compliance-Einstellungen', desc: 'Locale, TLP, DPO, Risk-Methodik, Eskalation, JSON-Defaults' }
             policy_style: { label: 'Policy-Optik', desc: 'Layout, Wasserzeichen und Typografie für Richtlinien-Dokumente' }
-            report_style: { label: 'Report-Optik', desc: 'Cover-Muster, Audience-Default, Watermark, Diagramm-Farben pro Mandant' }
+            report_style: { label: 'Report-Optik', desc: 'Cover-Muster, Audience-Default, Watermark, Diagramm-Farben pro Organisation' }
             users: { label: 'Benutzer', desc: 'Konten, Status, Sperrungen' }
             roles: { label: 'Rollen', desc: 'Tenant-Rollen und Vorlagen' }
             permissions: { label: 'Berechtigungen', desc: 'Permission-Matrix Modul × Rolle' }
@@ -107,8 +107,8 @@ admin:
             monitoring_errors: { label: 'Fehler-Monitoring', desc: 'Application-Errors, Stacktraces, Häufigkeiten' }
             api_doc: { label: 'API-Dokumentation', desc: 'OpenAPI / Swagger-UI für integrationen' }
             setup_wizard: { label: 'Setup-Wizard', desc: 'Erst-Einrichtung erneut durchlaufen' }
-            lifecycle_overrides: { label: 'Lifecycle-Overrides', desc: 'Workflow-Transition-Metadaten mandantenspezifisch konfigurieren' }
-            workflow_overlay: { label: 'Workflow-Schritt-Editor', desc: 'Mandantenspezifische Schritt-Overrides für regulatorische Genehmigungs-Lifecycles bearbeiten' }
+            lifecycle_overrides: { label: 'Lifecycle-Overrides', desc: 'Workflow-Transition-Metadaten organisationsspezifisch konfigurieren' }
+            workflow_overlay: { label: 'Workflow-Schritt-Editor', desc: 'Organisationsspezifische Schritt-Overrides für regulatorische Genehmigungs-Lifecycles bearbeiten' }
             supplier_criticality: { label: 'Lieferanten-Kritikalitäten', desc: 'Eigene Levels für Supplier-Klassifikation' }
             tour_content: { label: 'Guided-Tour-Inhalte', desc: 'Schritt-Texte und Reihenfolge bearbeiten' }
             tour_completion: { label: 'Tour-Completion', desc: 'Abschluss-Quoten + Reset-Werkzeuge' }
@@ -154,7 +154,7 @@ admin:
             settings: Settings
     nav:
         admin: Administration
-        tenants: Mandanten
+        tenants: Organisationen
         users: Benutzer
         roles: Rollen
         settings: Einstellungen
@@ -234,7 +234,7 @@ admin:
             add_role: 'Rolle hinzufügen'
             view_logs: 'Logs ansehen'
             manage_compliance: 'Compliance verwalten'
-            manage_tenants: 'Mandanten verwalten'
+            manage_tenants: 'Organisationen verwalten'
             review_seeds: '%count% Seed-Mappings prüfen'
             load_frameworks: '%count% Frameworks fehlen — jetzt laden'
             review_inactive_users: '%count% inaktive Benutzer ansehen'
@@ -293,7 +293,7 @@ admin:
             date_format_help: 'Format für Datumsanzeigen (z.B. d.m.Y für 31.12.2024)'
             datetime_format: Datum-/Zeitformat
             datetime_format_help: 'Format für Datum und Uhrzeit (z.B. d.m.Y H:i für 31.12.2024 14:30)'
-            help_text: 'Diese Einstellungen wirken sich global auf alle Mandanten und Benutzer aus'
+            help_text: 'Diese Einstellungen wirken sich global auf alle Organisationen und Benutzer aus'
         configure: 'Einstellungen konfigurieren'
         security:
             title: Sicherheitseinstellungen
@@ -332,7 +332,7 @@ admin:
             audit_log_help: 'Audit-Protokollierung aller Benutzeraktionen (ISO 27001 Anhang A 8.15)'
             info_text: 'Feature-Flags ermöglichen das selektive Aktivieren von Funktionalitäten'
         info_title: 'Systemeinstellungen Hilfe'
-        info_text: 'Änderungen werden sofort wirksam und betreffen alle Mandanten'
+        info_text: 'Änderungen werden sofort wirksam und betreffen alle Organisationen'
         info: Information
         help: Hilfe
         sso:
@@ -340,7 +340,7 @@ admin:
             description: 'OIDC/SAML-Provider, Auto-Provisionierung, Domain-Bindungen und Freigabe-Queue'
         email_branding:
             title: 'E-Mail-Branding'
-            description: 'Mandanten-Logo, Absendername und Fußzeile für alle ausgehenden E-Mails'
+            description: 'Organisations-Logo, Absendername und Fußzeile für alle ausgehenden E-Mails'
         report_style:
             title: 'Berichtsdarstellung'
             description: 'Deckblatt-Muster, Standard-Zielgruppe, Wasserzeichen und Diagrammfarben'
@@ -354,8 +354,8 @@ admin:
             title: 'Compliance-Richtlinie'
             description: 'Vererbungsregeln, Prüfungspflichten und Eskalationsstandards'
         tenant_compliance:
-            title: 'Mandanten-Compliance-Einstellungen'
-            description: 'Locale, TLP-Einstufung, DSB-Kontakt, Risiko-Methodik und JSON-Standardwerte je Mandant'
+            title: 'Organisations-Compliance-Einstellungen'
+            description: 'Locale, TLP-Einstufung, DSB-Kontakt, Risiko-Methodik und JSON-Standardwerte je Organisation'
         risk_approval:
             title: 'Risikogenehmigungsschwellen'
             description: 'Eskalationsstufen und Akzeptanzschwellen für Risk-Governance (ISO 27001 Kap. 6.1.3)'
@@ -392,9 +392,9 @@ admin:
         title: Admin-Panel
     tour_content:
         title: 'Tour-Texte anpassen'
-        description: 'Default-Texte der Einweisungs-Touren liegen in <code>translations/guided_tour.*.yaml</code>. Hier können Admins pro Tour + Step + Sprache einen <strong>Mandanten-spezifischen Override</strong> setzen — z.B. „Hier finden Sie IHRE Asset-Kategorien" statt der generischen Formulierung. Leeres Feld = Default wird verwendet.'
-        scope_tenant_hint: 'Änderungen gelten nur für Mandant <strong>%tenant%</strong>.'
-        scope_global: 'Als System-Default speichern (alle Mandanten)'
+        description: 'Default-Texte der Einweisungs-Touren liegen in <code>translations/guided_tour.*.yaml</code>. Hier können Admins pro Tour + Step + Sprache einen <strong>organisationsspezifischen Override</strong> setzen — z.B. „Hier finden Sie IHRE Asset-Kategorien" statt der generischen Formulierung. Leeres Feld = Default wird verwendet.'
+        scope_tenant_hint: 'Änderungen gelten nur für Organisation <strong>%tenant%</strong>.'
+        scope_global: 'Als System-Default speichern (alle Organisationen)'
         scope_global_hint: 'Nur SUPER_ADMIN. Global gespeicherte Overrides gelten wenn kein tenant-spezifischer Override existiert.'
         global_hint: 'Als SUPER_ADMIN können Sie pro Tour einen System-Default-Override als Checkbox auf der Edit-Seite anlegen.'
         edit_description: 'Pro Step ein Block mit zwei Zeilen (DE + EN). Feld leer lassen = Default aus Translation-File nutzen.'
@@ -490,8 +490,8 @@ admin:
 
     sample_data:
         title: 'Beispieldaten'
-        description: 'Demo-Datensätze (Assets, Risiken, Geschäftsprozesse …) für den aktuellen Mandanten importieren oder wieder entfernen.'
-        tenant_label: 'Aktueller Mandant'
+        description: 'Demo-Datensätze (Assets, Risiken, Geschäftsprozesse …) für die aktuelle Organisation importieren oder wieder entfernen.'
+        tenant_label: 'Aktueller Organisation'
         total_imported: '%count% Beispiel-Einträge insgesamt importiert'
         import_section: 'Verfügbare Datensätze'
         select_all: 'Alle auswählen'
@@ -510,13 +510,13 @@ admin:
         removed: '%count% Einträge aus „%key%" entfernt.'
         remove_partial: '%count% Einträge entfernt, %errors% Fehler. Details in den folgenden Meldungen.'
         nothing_selected: 'Keine Datensätze ausgewählt.'
-        no_tenant: 'Kein Mandanten-Kontext verfügbar — bitte vorher einen Mandanten auswählen.'
+        no_tenant: 'Kein Organisations-Kontext verfügbar — bitte vorher eine Organisation auswählen.'
         note_title: 'Hinweis'
-        note_message: 'Beispieldaten werden gezielt mit dem aktuellen Mandanten verknüpft und lassen sich später nur hier wieder entfernen (Ausnahme: command-basierte Imports wie TISAX/DORA, die über die CLI rückgängig gemacht werden müssen).'
+        note_message: 'Beispieldaten werden gezielt mit der aktuellen Organisation verknüpft und lassen sich später nur hier wieder entfernen (Ausnahme: command-basierte Imports wie TISAX/DORA, die über die CLI rückgängig gemacht werden müssen).'
 
     data_repair:
         title: 'Daten-Reparatur & Integrität'
-        description: 'Datenintegritätsprobleme, Mandantenzuweisungen und defekte Referenzen erkennen und beheben'
+        description: 'Datenintegritätsprobleme, Organisationszuweisungen und defekte Referenzen erkennen und beheben'
         additional_orphans: 'Weitere Entity-Typen mit tenant-losen Einträgen'
         additional_orphans_hint: 'Werden automatisch erkannt, sobald sie einer Doctrine-Entity mit tenant-Assoziation angehören. „Alle Orphans zuweisen" oben reassigniert auch diese.'
         total_orphans: 'insgesamt %count% Einträge über alle Entity-Typen'
@@ -540,35 +540,35 @@ admin:
         issue: Problem
         orphaned_entities: 'Verwaiste Entities'
         no_orphans: 'Keine verwaisten Entities gefunden - alle Daten korrekt zugewiesen!'
-        orphans_found: 'Entities ohne Mandantenzuordnung gefunden, die behoben werden müssen'
+        orphans_found: 'Entities ohne Organisationszuordnung gefunden, die behoben werden müssen'
         orphaned_assets: 'Verwaiste Assets'
         orphaned_risks: 'Verwaiste Risiken'
         orphaned_incidents: 'Verwaiste Vorfälle'
-        assign_to_tenant: 'Mandanten zuweisen'
-        select_tenant: 'Mandant auswählen'
+        assign_to_tenant: 'Organisationen zuweisen'
+        select_tenant: 'Organisation auswählen'
         all_orphans: 'Alle verwaisten'
         assets_only: 'Nur Assets'
         risks_only: 'Nur Risiken'
         incidents_only: 'Nur Vorfälle'
         assign_orphans: 'Verwaiste zuweisen'
         assigned_count: '%count% Entities erfolgreich %tenant% zugewiesen'
-        partial_assignment: 'Teilzuordnung abgeschlossen — %count% Entities Mandant %tenant% zugewiesen. Der Entity-Manager wurde nach einem Fehler geschlossen; bitte die Seite neu laden, um den finalen Stand zu prüfen.'
+        partial_assignment: 'Teilzuordnung abgeschlossen — %count% Entities Organisation %tenant% zugewiesen. Der Entity-Manager wurde nach einem Fehler geschlossen; bitte die Seite neu laden, um den finalen Stand zu prüfen.'
         fixed_all_orphans: '%count% verwaiste Entities erfolgreich %tenant% zugewiesen'
         orphans_skipped: '%count% Entities übersprungen (Constraint-Violation o.ä.)'
-        bulk_blocked_multi_tenant: 'Bulk-Zuweisung blockiert: %count% Mandanten in dieser Instanz. In Multi-Tenant-Setups darf keine einzige Aktion Entitäten mandantenübergreifend umhängen. Bitte die Einzel-Zuweisungen pro Entity-Typ nutzen.'
+        bulk_blocked_multi_tenant: 'Bulk-Zuweisung blockiert: %count% Organisationen in dieser Instanz. In Multi-Organisations-Setups darf keine einzige Aktion Entitäten organisationsübergreifend umhängen. Bitte die Einzel-Zuweisungen pro Entity-Typ nutzen.'
         bulk_confirm_hash_mismatch: 'Bulk-Zuweisung abgebrochen: Anzahl der verwaisten Entitäten hat sich geändert, seit die Vorschau gezeigt wurde (erwartet: %expected%). Seite neu laden und erneut bestätigen.'
-        fixed_mismatches: '%count% Mandanten-Diskrepanzen erfolgreich behoben'
-        reason_required: 'Mandanten-Diskrepanz-Fix abgelehnt: Begründung mit mindestens %min% Zeichen ist Pflicht (aktuell %actual%).'
-        reason_label: 'Begründung für Mandanten-Zuweisung'
+        fixed_mismatches: '%count% Organisations-Diskrepanzen erfolgreich behoben'
+        reason_required: 'Organisations-Diskrepanz-Fix abgelehnt: Begründung mit mindestens %min% Zeichen ist Pflicht (aktuell %actual%).'
+        reason_label: 'Begründung für Organisations-Zuweisung'
         reason_help: 'Mindestens 20 Zeichen. Wird im Audit-Log pro betroffenem Datensatz gespeichert.'
-        tenant_not_found: 'Gewählter Mandant nicht gefunden'
+        tenant_not_found: 'Gewählter Organisation nicht gefunden'
         entity_not_found: 'Entity nicht gefunden'
         entity_reassigned: '%entity% erfolgreich %tenant% zugewiesen'
         asset_not_found: 'Asset nicht gefunden'
         orphaned_assets_list: 'Liste verwaister Assets'
         orphaned_risks_list: 'Liste verwaister Risiken'
         orphaned_incidents_list: 'Liste verwaister Vorfälle'
-        tenant_statistics: Mandanten-Statistiken
+        tenant_statistics: Organisations-Statistiken
         risk_asset_assignment: Risiko-Asset-Zuordnung
         risk_asset_assignment_desc: 'Diese Risiken haben kein Asset zugewiesen. Risiken müssen mit Assets verknüpft sein für korrektes Tracking.'
         incident_asset_assignment: Vorfall-Asset-Zuordnung
@@ -606,7 +606,7 @@ admin:
         duplicates_merged: '%count% doppelter %type%-Datensatz/-Datensätze entfernt (ältester behalten).'
         duplicates:
             title: 'Duplikat-Reparatur'
-            description: 'Folgende Entity-Typen enthalten innerhalb desselben Mandanten doppelte Einträge. Über die Merge-Schaltflächen wird jeweils der älteste Eintrag behalten und alle neueren Duplikate dauerhaft gelöscht.'
+            description: 'Folgende Entity-Typen enthalten innerhalb derselben Organisation doppelte Einträge. Über die Merge-Schaltflächen wird jeweils der älteste Eintrag behalten und alle neueren Duplikate dauerhaft gelöscht.'
             group_count: 'Gruppe(n)'
             group_info: '%groups% Gruppe(n) — %items% Einträge gesamt'
             merge_hint: 'Behält den Eintrag mit der niedrigsten ID (ältester). Alle anderen Duplikate werden dauerhaft gelöscht.'
@@ -739,8 +739,8 @@ admin:
             generic_subtitle: 'Läuft im Hintergrund, damit PHP-FPM antwortbereit bleibt.'
             fix_all_orphans_label: 'Alle Orphans zuweisen'
             fix_all_orphans_subtitle: 'Weist alle verwaisten Entities (tenant_id IS NULL) dem Standard-Tenant im Hintergrund zu…'
-            fix_tenant_mismatches_label: 'Mandanten-Fehlzuordnungen beheben'
-            fix_tenant_mismatches_subtitle: 'Richtet Kind-Mandanten im Hintergrund am Parent (Asset) aus…'
+            fix_tenant_mismatches_label: 'Organisations-Fehlzuordnungen beheben'
+            fix_tenant_mismatches_subtitle: 'Richtet Tochter-Organisationen im Hintergrund am Parent (Asset) aus…'
             merge_duplicates_label: 'Duplikate zusammenführen — %type%'
             merge_duplicates_subtitle: 'Behält den ältesten Eintrag, entfernt neuere Duplikate im Hintergrund…'
             execute_migrations_label: 'Ausstehende Migrationen anwenden'
@@ -758,9 +758,9 @@ admin:
             scan_health_label: 'Health-Issues scannen'
             scan_health_subtitle: 'Führt im Hintergrund die vier Health-Checks (Risk / Compliance / Operational / Data-Quality) aus…'
             assign_orphans_label: 'Verwaiste Entities zuweisen → %tenant%'
-            assign_orphans_subtitle: 'Weist verwaiste Entities (tenant_id IS NULL) im Hintergrund dem Ziel-Mandanten zu. Audit-Log wird je Entity geschrieben, Flushes laufen in Batches.'
+            assign_orphans_subtitle: 'Weist verwaiste Entities (tenant_id IS NULL) im Hintergrund dem Ziel-Organisation zu. Audit-Log wird je Entity geschrieben, Flushes laufen in Batches.'
             reassign_entity_label: 'Reassign %type%#%id%'
-            reassign_entity_subtitle: 'Weist die Entity im Hintergrund dem Mandanten "%tenant%" zu und aktualisiert anschließend den Orphan-Cache.'
+            reassign_entity_subtitle: 'Weist die Entity im Hintergrund der Organisation "%tenant%" zu und aktualisiert anschließend den Orphan-Cache.'
         # Inventur-Vorschau auf der Übersichtsseite (Cache-getrieben, kein DB-Roundtrip)
         inventory:
             title: 'Was kann bereinigt werden?'
@@ -804,8 +804,8 @@ admin:
             fix_tenant_mismatches: 'Tenant-Mismatches beheben'
             tip: 'Jeder Bereich hat seinen eigenen Hintergrund-Scan. Die Übersichtsseite liest nur Cache-Werte — sie bleibt schnell, egal wie viele Entities Sie haben. Reparatur-Aktionen lesen weiterhin Live-Daten, wenn sie ausgeführt werden.'
         tenant_card:
-            title: 'Mandanten'
-            tenant_count: '%count% Mandant(en) registriert'
+            title: 'Organisationen'
+            tenant_count: '%count% Organisation(en) registriert'
             description: 'Günstige COUNT(*)-Abfrage — startet keinen vollständigen Scan.'
         integrity_check:
             title: 'Asynchroner Integritäts-Scan'
@@ -850,7 +850,7 @@ admin:
             modules: Module
             contact: Kontakt
             advanced: Erweitert
-        no_tenant_in_context: 'Kein Mandanten-Kontext aktiv — bitte zuerst Mandant in der Liste wählen.'
+        no_tenant_in_context: 'Kein Organisations-Kontext aktiv — bitte zuerst Organisation in der Liste wählen.'
         section_tenant: 'Tenant-spezifisch'
         section_global: 'System-Default (alle Tenants)'
         global_help: 'Globale Sicherheits-Defaults — Aenderung via System-Settings.'
@@ -887,9 +887,9 @@ admin:
         section_json: 'Strukturierte JSON-Felder (Aufsichtsbehoerden / Aufbewahrung / Notifications / CSIRT / Krisenstab-Rotation)'
         json_help: 'Eingabe als JSON-Objekt. Leer = Default. Beispiel-Templates in der Doku.'
         api_rate_limit: 'API-Rate-Limit (Requests/Minute)'
-        api_rate_limit_help: '0 = unlimitiert. 600 = 10/Sek. Default für fairen Multi-Tenant-Betrieb.'
+        api_rate_limit_help: '0 = unlimitiert. 600 = 10/Sek. Default für fairen Multi-Organisationen-Betrieb.'
         dora_entity_category: 'DORA-Verpflichtungsstatus (Art. 2)'
-        dora_entity_category_help: 'Bestimmt, ob dieser Mandant der EU-DORA-Verordnung unterliegt. Blendet DORA-spezifische Funktionen ein oder aus.'
+        dora_entity_category_help: 'Bestimmt, ob dieser Organisation der EU-DORA-Verordnung unterliegt. Blendet DORA-spezifische Funktionen ein oder aus.'
         dora_entity_category.none: 'Nicht DORA-pflichtig (Standard)'
         dora_entity_category.financial_entity: 'Finanzunternehmen (DORA Art. 2 Abs. 2) — Bank / Versicherer / Investment-Firm'
         dora_entity_category.critical_ict_third_party: 'Kritischer IKT-Drittanbieter (CTPP per ESAs, DORA Art. 31)'
@@ -911,10 +911,10 @@ admin:
     # ── Notification Preferences ─────────────────────────────────────────────────
     notification_preferences:
         title: 'Benachrichtigungseinstellungen'
-        subtitle: 'Mandantenweite Benachrichtigungsstandards und Zustellungseinstellungen konfigurieren.'
+        subtitle: 'Organisationsweite Benachrichtigungsstandards und Zustellungseinstellungen konfigurieren.'
         saved: 'Benachrichtigungseinstellungen erfolgreich gespeichert.'
         csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
-        help_text: 'Diese Einstellungen legen fest, wie und wann Benachrichtigungen an Benutzer in diesem Mandanten zugestellt werden. Einzelne Benutzer können ihre eigenen Präferenzen in ihrem Profil anpassen.'
+        help_text: 'Diese Einstellungen legen fest, wie und wann Benachrichtigungen an Benutzer in dieser Organisation zugestellt werden. Einzelne Benutzer können ihre eigenen Präferenzen in ihrem Profil anpassen.'
         digest_enabled:
             label: 'Benachrichtigungs-Digest aktivieren'
             help: 'Mehrere Benachrichtigungen zu periodischen Zusammenfassungen bündeln, statt jede einzeln zu senden.'
@@ -934,7 +934,7 @@ admin:
     # ── API Rate Limits ───────────────────────────────────────────────────────────
     api_rate_limits:
         title: 'API-Ratenbegrenzung'
-        subtitle: 'Maximale API-Anfragen pro Minute für diesen Mandanten steuern.'
+        subtitle: 'Maximale API-Anfragen pro Minute für diese Organisation steuern.'
         saved: 'API-Ratenbegrenzung erfolgreich gespeichert.'
         csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Ratenbegrenzungen schützen die Plattform vor Missbrauch und sichern faire Ressourcenteilung. 0 = unbegrenzt (in der Produktion nicht empfohlen).'
@@ -975,7 +975,7 @@ admin:
     # ── Fiscal Year ───────────────────────────────────────────────────────────────
     fiscal_year:
         title: 'Geschäftsjahrs-Konfiguration'
-        subtitle: 'Startmonat des Geschäftsjahres und Berichts-Rhythmus für diesen Mandanten festlegen.'
+        subtitle: 'Startmonat des Geschäftsjahres und Berichts-Rhythmus für diese Organisation festlegen.'
         saved: 'Geschäftsjahrs-Konfiguration erfolgreich gespeichert.'
         csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Der Startmonat des Geschäftsjahres steuert, wie KPI-Dashboards, Management-Berichte und Compliance-Reviews gruppiert werden. Änderungen wirken sich bei der nächsten Berichtsgenerierung aus.'
@@ -1147,7 +1147,7 @@ admin:
 
     report_style:
         title: 'Report-Optik'
-        subtitle: 'Layout, Watermark und Audience-Defaults für generierte Reports — pro Mandant. Live-Vorschau rechts.'
+        subtitle: 'Layout, Watermark und Audience-Defaults für generierte Reports — pro Organisation. Live-Vorschau rechts.'
         tab:
             general: Allgemein
             branding: Branding
@@ -1197,11 +1197,11 @@ admin:
             show_exec_summary: 'Vorstand-Reports haben sie typischerweise; Auditor-Reports nicht zwingend.'
             show_appendix: 'Detail-Tabellen, Methodik-Hinweise. Aufsichts-Reports brauchen sie meistens.'
             show_distribution_list: 'Im Anhang. Pflicht für Aufsichtsbehörden, optional für interne Reports.'
-            footer_disclaimer: 'Überschreibt den Default-Footer mit Mandant-Name. Max. 1.000 Zeichen.'
+            footer_disclaimer: 'Überschreibt den Default-Footer mit Organisations-Name. Max. 1.000 Zeichen.'
             custom_css: 'Wird im Export per |raw eingebettet. Vorsicht: Layout kann brechen. Nur ROLE_ADMIN.'
         cover:
             minimal: 'Minimal (clean, keine Akzente)'
-            branded: 'Branded (Mandant-Primary-Color)'
+            branded: 'Branded (Organisations-Primary-Color)'
             board_formal: 'Vorstand-formal (zentriert, Serif-Titel)'
             auditor_formal: 'Auditor-formal (Serif, Uppercase-Headings)'
         audience:
@@ -1234,8 +1234,8 @@ admin:
             custom_css_inert: 'Custom-CSS (nur im Export aktiv — Vorschau bleibt unangetastet)'
     lifecycle_overrides:
         title: 'Lifecycle-Konfiguration'
-        subtitle: 'Workflow-Transition-Metadaten mandantenspezifisch überschreiben'
-        no_tenant: 'Kein Mandanten-Kontext gefunden. Bitte Tenant wechseln.'
+        subtitle: 'Workflow-Transition-Metadaten organisationsspezifisch überschreiben'
+        no_tenant: 'Kein Organisations-Kontext gefunden. Bitte Tenant wechseln.'
         no_workflows: 'Keine Workflow-Konfigurationsdateien gefunden.'
         no_transitions: 'Keine Transitionen in diesem Workflow gefunden.'
         yaml_baseline: 'YAML-Standard'
@@ -1287,7 +1287,7 @@ admin:
                 body: 'Wenn aktiviert, muss eine zweite Person die Transition bestätigen (4-Augen-Prinzip).'
             module:
                 title: 'Modul-Gate'
-                body: 'Schränkt die Transition auf Mandanten ein, bei denen das angegebene Modul aktiv ist.'
+                body: 'Schränkt die Transition auf Organisationen ein, bei denen das angegebene Modul aktiv ist.'
         hint:
             yaml_baseline: 'Fehlende Overrides verwenden automatisch den YAML-Baseline-Wert aus der Workflow-Konfiguration.'
 
@@ -1311,7 +1311,7 @@ admin:
 
     workflows:
         title: 'Workflow-Schritt-Editor'
-        subtitle: 'Mandantenspezifische Schritt-Overrides für regulatorische Genehmigungs-Lifecycles und Lifecycle-Konfigurationen bearbeiten'
+        subtitle: 'Organisationsspezifische Schritt-Overrides für regulatorische Genehmigungs-Lifecycles und Lifecycle-Konfigurationen bearbeiten'
         no_regulatory: 'Keine regulatorischen Workflow-Konfigurationsdateien gefunden.'
         no_lifecycle: 'Keine Lifecycle-Konfigurationsdateien gefunden.'
         no_steps: 'Für diesen Workflow sind keine Schritte definiert. Lifecycle-Konfigurationen verwenden Transitions-Overrides.'
@@ -1346,7 +1346,7 @@ admin:
             override_active: 'Override aktiv'
         show:
             title: 'Workflow: %workflow%'
-            subtitle: 'Schrittstruktur und Mandanten-Overrides'
+            subtitle: 'Schrittstruktur und Organisations-Overrides'
         edit:
             title: 'Schritt %step% bearbeiten — %workflow%'
             breadcrumb: 'Schritt %step%'
@@ -1640,7 +1640,7 @@ setup:
 kpi_threshold:
     page:
         title: 'KPI-Schwellwerte'
-        subtitle: 'Mandantenspezifische Good/Warning-Grenzen für KPI-Statusfarben (überschreibt Defaults).'
+        subtitle: 'Organisationsspezifische Good/Warning-Grenzen für KPI-Statusfarben (überschreibt Defaults).'
         new: 'Neuer Schwellwert'
         edit: 'Schwellwert bearbeiten'
     action:
@@ -1674,7 +1674,7 @@ kpi_threshold:
         deleted: 'Schwellwert gelöscht.'
         duplicate_key: 'Für diesen KPI existiert bereits ein Schwellwert.'
         good_below_warning: 'Good-Schwelle muss ≥ Warning-Schwelle sein.'
-        no_tenant: 'Kein Mandant zugeordnet.'
+        no_tenant: 'Kein Organisation zugeordnet.'
     message:
         no_configs: 'Keine Schwellwerte konfiguriert — Defaults werden verwendet.'
     confirm:
