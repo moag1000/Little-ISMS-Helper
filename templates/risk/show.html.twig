@@ -281,8 +281,8 @@
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.asset.name }}</div>
                                 <p><strong>{{ 'asset.field.type'|trans({}, 'asset') }}:</strong> {{ risk.asset.assetType }}</p>
-                                {# Junior-ISB-Audit S14#15: prefer currentValue (form-maintained, AssetType S14 canonical) and fall back to legacy monetaryValue for un-migrated rows. #}
-                                {% set assetValue = risk.asset.currentValue ?? risk.asset.monetaryValue %}
+                                {# Junior-ISB-Audit S14+ #15: legacy monetaryValue column dropped — currentValue is canonical (form-maintained via AssetType). Pre-migration rows were backfilled in Version20260612100000_DropAssetMonetaryValue. #}
+                                {% set assetValue = risk.asset.currentValue %}
                                 {% if assetValue %}
                                     <p><strong>{{ 'asset.field.current_value'|trans({}, 'asset') }}:</strong> €{{ assetValue|number_format(2, ',', '.') }}</p>
                                     {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: '<small>' ~ 'risk.subject.asset.monetary_value_hint'|trans({}, 'risk') ~ '</small>' }) }}

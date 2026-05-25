@@ -42,7 +42,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
     public function testCalculateSuggestedImpactReturnsNullWhenNoMonetaryValue(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getMonetaryValue')->willReturn(null);
+        $asset->method('getCurrentValue')->willReturn(null);
 
         $risk = $this->createMock(Risk::class);
         $risk->method('getAsset')->willReturn($asset);
@@ -56,7 +56,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
     public function testCalculateSuggestedImpactReturnsNullWhenMonetaryValueIsZero(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getMonetaryValue')->willReturn('0.00');
+        $asset->method('getCurrentValue')->willReturn('0.00');
 
         $risk = $this->createMock(Risk::class);
         $risk->method('getAsset')->willReturn($asset);
@@ -71,7 +71,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
     {
         // Loss < €10,000 = Impact 1 (Negligible)
         $asset = $this->createMock(Asset::class);
-        $asset->method('getMonetaryValue')->willReturn('5000.00');
+        $asset->method('getCurrentValue')->willReturn('5000.00');
 
         $risk = $this->createMock(Risk::class);
         $risk->method('getAsset')->willReturn($asset);
@@ -89,7 +89,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
 
         foreach ($testCases as $value) {
             $asset = $this->createMock(Asset::class);
-            $asset->method('getMonetaryValue')->willReturn($value);
+            $asset->method('getCurrentValue')->willReturn($value);
 
             $risk = $this->createMock(Risk::class);
             $risk->method('getAsset')->willReturn($asset);
@@ -108,7 +108,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
 
         foreach ($testCases as $value) {
             $asset = $this->createMock(Asset::class);
-            $asset->method('getMonetaryValue')->willReturn($value);
+            $asset->method('getCurrentValue')->willReturn($value);
 
             $risk = $this->createMock(Risk::class);
             $risk->method('getAsset')->willReturn($asset);
@@ -127,7 +127,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
 
         foreach ($testCases as $value) {
             $asset = $this->createMock(Asset::class);
-            $asset->method('getMonetaryValue')->willReturn($value);
+            $asset->method('getCurrentValue')->willReturn($value);
 
             $risk = $this->createMock(Risk::class);
             $risk->method('getAsset')->willReturn($asset);
@@ -146,7 +146,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
 
         foreach ($testCases as $value) {
             $asset = $this->createMock(Asset::class);
-            $asset->method('getMonetaryValue')->willReturn($value);
+            $asset->method('getCurrentValue')->willReturn($value);
 
             $risk = $this->createMock(Risk::class);
             $risk->method('getAsset')->willReturn($asset);
@@ -176,7 +176,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
     public function testGetImpactCalculationDetailsWhenAligned(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getMonetaryValue')->willReturn('100000.00'); // Should suggest impact 3
+        $asset->method('getCurrentValue')->willReturn('100000.00'); // Should suggest impact 3
 
         $risk = $this->createMock(Risk::class);
         $risk->method('getAsset')->willReturn($asset);
@@ -195,7 +195,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
     public function testGetImpactCalculationDetailsSuggestsHigher(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getMonetaryValue')->willReturn('1500000.00'); // Should suggest impact 5
+        $asset->method('getCurrentValue')->willReturn('1500000.00'); // Should suggest impact 5
 
         $risk = $this->createMock(Risk::class);
         $risk->method('getAsset')->willReturn($asset);
@@ -214,7 +214,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
     public function testGetImpactCalculationDetailsSuggestsLower(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getMonetaryValue')->willReturn('5000.00'); // Should suggest impact 1
+        $asset->method('getCurrentValue')->willReturn('5000.00'); // Should suggest impact 1
 
         $risk = $this->createMock(Risk::class);
         $risk->method('getAsset')->willReturn($asset);
@@ -234,7 +234,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
     {
         // Difference of 1 should NOT trigger update
         $asset1 = $this->createMock(Asset::class);
-        $asset1->method('getMonetaryValue')->willReturn('60000.00'); // Impact 3
+        $asset1->method('getCurrentValue')->willReturn('60000.00'); // Impact 3
 
         $risk1 = $this->createMock(Risk::class);
         $risk1->method('getAsset')->willReturn($asset1);
@@ -245,7 +245,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
 
         // Difference of 2 SHOULD trigger update
         $asset2 = $this->createMock(Asset::class);
-        $asset2->method('getMonetaryValue')->willReturn('300000.00'); // Impact 4
+        $asset2->method('getCurrentValue')->willReturn('300000.00'); // Impact 4
 
         $risk2 = $this->createMock(Risk::class);
         $risk2->method('getAsset')->willReturn($asset2);
@@ -274,7 +274,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
     public function testGetSuggestionReturnsFailureWhenAlreadyAligned(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getMonetaryValue')->willReturn('100000.00'); // Suggests 3
+        $asset->method('getCurrentValue')->willReturn('100000.00'); // Suggests 3
 
         $risk = $this->createMock(Risk::class);
         $risk->method('getAsset')->willReturn($asset);
@@ -290,7 +290,7 @@ class RiskImpactCalculatorServiceTest extends TestCase
     public function testGetSuggestionReturnsSuccessWithNewValue(): void
     {
         $asset = $this->createMock(Asset::class);
-        $asset->method('getMonetaryValue')->willReturn('500000.00'); // Suggests 4
+        $asset->method('getCurrentValue')->willReturn('500000.00'); // Suggests 4
 
         $risk = $this->createMock(Risk::class);
         $risk->method('getAsset')->willReturn($asset);
@@ -391,14 +391,14 @@ class RiskImpactCalculatorServiceTest extends TestCase
     {
         // €9,999.99 should be impact 1
         $asset1 = $this->createMock(Asset::class);
-        $asset1->method('getMonetaryValue')->willReturn('9999.99');
+        $asset1->method('getCurrentValue')->willReturn('9999.99');
         $risk1 = $this->createMock(Risk::class);
         $risk1->method('getAsset')->willReturn($asset1);
         $this->assertEquals(1, $this->service->calculateSuggestedImpact($risk1));
 
         // €10,000.00 should be impact 2
         $asset2 = $this->createMock(Asset::class);
-        $asset2->method('getMonetaryValue')->willReturn('10000.00');
+        $asset2->method('getCurrentValue')->willReturn('10000.00');
         $risk2 = $this->createMock(Risk::class);
         $risk2->method('getAsset')->willReturn($asset2);
         $this->assertEquals(2, $this->service->calculateSuggestedImpact($risk2));
@@ -409,14 +409,14 @@ class RiskImpactCalculatorServiceTest extends TestCase
     {
         // €999,999.99 should be impact 4
         $asset1 = $this->createMock(Asset::class);
-        $asset1->method('getMonetaryValue')->willReturn('999999.99');
+        $asset1->method('getCurrentValue')->willReturn('999999.99');
         $risk1 = $this->createMock(Risk::class);
         $risk1->method('getAsset')->willReturn($asset1);
         $this->assertEquals(4, $this->service->calculateSuggestedImpact($risk1));
 
         // €1,000,000.00 should be impact 5
         $asset2 = $this->createMock(Asset::class);
-        $asset2->method('getMonetaryValue')->willReturn('1000000.00');
+        $asset2->method('getCurrentValue')->willReturn('1000000.00');
         $risk2 = $this->createMock(Risk::class);
         $risk2->method('getAsset')->willReturn($asset2);
         $this->assertEquals(5, $this->service->calculateSuggestedImpact($risk2));

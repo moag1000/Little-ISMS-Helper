@@ -198,10 +198,10 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'asset.help.availability',
             ])
-            // monetaryValue removed from form (Junior-Finding #9): redundant to
-            // acquisitionValue + currentValue. DB column preserved for
-            // backwards compatibility; existing values surface via asset.show
-            // if ever needed, but not maintained through the form anymore.
+            // monetaryValue removed (Junior-Finding #9 form-removal,
+            // S14+ #15 DB-column drop in Version20260612100000): replaced
+            // by acquisitionValue + currentValue. Legacy column-data was
+            // backfilled into current_value during the drop migration.
             ->add('dataClassification', ChoiceType::class, [
                 'label' => 'asset.field.data_classification',
                 'choices' => [
