@@ -46,6 +46,18 @@
         <div class="col-12">{{ form_row(form.reportedByDeputyPersons) }}</div>
         <div class="col-12">{{ form_row(form.linkedRequirements) }}</div>
     </div>
+
+    {# S17 B4 — CAPA / Nonconformity-Details (ISO 27001 Cl. 10.2 b) + d)). #}
+    <fieldset class="mt-4">
+        <legend class="h6">{{ 'audit_finding.section.nc_capa'|trans({}, 'audits') }}</legend>
+        <div class="row g-3">
+            <div class="col-12">{{ form_row(form.ncRootCauseSummary) }}</div>
+            <div class="col-md-4">{{ form_row(form.ncCorrectionDueDate) }}</div>
+            <div class="col-md-4">{{ form_row(form.ncVerifiedAt) }}</div>
+            <div class="col-md-4">{{ form_row(form.ncVerifiedBy) }}</div>
+        </div>
+    </fieldset>
+
     <div class="mt-4">
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
             <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
