@@ -147,7 +147,10 @@ class ThreatIntelligence
     #[Groups(['threat:read', 'threat:write'])]
     private ?int $cvssScore = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    // Column name `references` is a MariaDB/MySQL reserved keyword and breaks
+    // unquoted INSERT/UPDATE — explicit `name: 'threat_references'` mirrors the
+    // earlier rename for the `vulnerabilities.references` column.
+    #[ORM\Column(name: 'threat_references', type: Types::TEXT, nullable: true)]
     #[Groups(['threat:read', 'threat:write'])]
     private ?string $references = null;
 
