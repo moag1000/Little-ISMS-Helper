@@ -18,9 +18,6 @@ active_modules:
     - tisax
     - nis2_dora
     - marisk
-    - quantitative_risk
-    - ai_act
-    - cra_sbom
     - documents
     - suppliers
     - locations
@@ -30,7 +27,6 @@ active_modules:
     - change_requests
     - patches
     - corrective_actions
-    - evidence
     - workflows
     - risk_appetite
     - risk_treatment_plans
@@ -38,5 +34,4 @@ active_modules:
     - report_builder
     - scheduled_reports
     - portfolio_reports
-    - procedures
     - notifications

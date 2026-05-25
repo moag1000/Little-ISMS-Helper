@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\CustomReport;
 use App\Entity\User;
 use App\Form\CustomReportType;
 use App\Repository\CustomReportRepository;
 use App\Repository\UserRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\ReportBuilderService;
 use App\Service\TenantContext;
 use App\Service\PdfExportService;
@@ -32,6 +34,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class ReportBuilderController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly ReportBuilderService $reportBuilderService,
         private readonly CustomReportRepository $customReportRepository,
@@ -40,7 +44,27 @@ class ReportBuilderController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly UserRepository $userRepository,
         private readonly PdfExportService $pdfExportService,
+        private readonly ModuleConfigurationService $moduleService,
     ) {
+    }
+
+    /**
+     * Module-gate guard for browser-navigation actions (returns Response/redirect).
+     */
+    private function gate(): ?Response
+    {
+        return $this->checkModuleActive('report_builder');
+    }
+
+    /**
+     * Module-gate guard for JSON/AJAX actions — returns 403 JSON envelope so
+     * the Stimulus controller does not chase a 302 redirect into HTML.
+     */
+    private function gateJson(): ?JsonResponse
+    {
+        return $this->moduleService->isModuleActive('report_builder')
+            ? null
+            : new JsonResponse(['error' => 'module_inactive', 'module' => 'report_builder'], 403);
     }
 
     /**
@@ -49,6 +73,7 @@ class ReportBuilderController extends AbstractController
     #[Route('', name: 'report_builder_index', methods: ['GET'])]
     public function index(): Response
     {
+        if ($r = $this->gate()) return $r;
         $user = $this->getUser();
         $tenantId = $this->tenantContext->getCurrentTenantId();
 
@@ -74,6 +99,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/new', name: 'report_builder_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        if ($r = $this->gate()) return $r;
         $user = $this->getUser();
         $tenantId = $this->tenantContext->getCurrentTenantId();
 
@@ -113,6 +139,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/from-template/{templateKey}', name: 'report_builder_from_template', methods: ['GET'])]
     public function createFromTemplate(string $templateKey): Response
     {
+        if ($r = $this->gate()) return $r;
         $user = $this->getUser();
         $tenantId = $this->tenantContext->getCurrentTenantId();
 
@@ -137,6 +164,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/{id}/clone', name: 'report_builder_clone', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function clone(CustomReport $report): Response
     {
+        if ($r = $this->gate()) return $r;
         $user = $this->getUser();
 
         if (!$report->canAccess($user)) {
@@ -158,6 +186,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/{id}/edit', name: 'report_builder_edit', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function edit(CustomReport $report): Response
     {
+        if ($r = $this->gate()) return $r;
         $user = $this->getUser();
 
         if (!$report->canAccess($user) && $report->getOwner() !== $user) {
@@ -180,6 +209,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/{id}/save', name: 'report_builder_save', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function save(CustomReport $report, Request $request): JsonResponse
     {
+        if ($r = $this->gateJson()) return $r;
         $user = $this->getUser();
 
         if ($report->getOwner() !== $user) {
@@ -226,6 +256,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/{id}/preview', name: 'report_builder_preview', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function preview(CustomReport $report): Response
     {
+        if ($r = $this->gate()) return $r;
         $user = $this->getUser();
 
         if (!$report->canAccess($user) && $report->getOwner() !== $user) {
@@ -248,6 +279,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/{id}/export/pdf', name: 'report_builder_export_pdf', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function exportPdf(CustomReport $report): Response
     {
+        if ($r = $this->gate()) return $r;
         $user = $this->getUser();
 
         if (!$report->canAccess($user) && $report->getOwner() !== $user) {
@@ -282,6 +314,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/api/widget-data', name: 'report_builder_widget_data', methods: ['POST'])]
     public function getWidgetData(Request $request): JsonResponse
     {
+        if ($r = $this->gateJson()) return $r;
         $data = json_decode($request->getContent(), true);
 
         $widgetType = $data['type'] ?? '';
@@ -299,6 +332,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/api/widget-library', name: 'report_builder_widget_library', methods: ['GET'])]
     public function getWidgetLibrary(): JsonResponse
     {
+        if ($r = $this->gateJson()) return $r;
         $library = $this->reportBuilderService->getWidgetLibrary();
         return new JsonResponse($library);
     }
@@ -309,6 +343,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/{id}/favorite', name: 'report_builder_toggle_favorite', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function toggleFavorite(CustomReport $report): JsonResponse
     {
+        if ($r = $this->gateJson()) return $r;
         $user = $this->getUser();
 
         if ($report->getOwner() !== $user) {
@@ -330,6 +365,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/{id}/share', name: 'report_builder_share', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function share(CustomReport $report, Request $request): JsonResponse
     {
+        if ($r = $this->gateJson()) return $r;
         $user = $this->getUser();
 
         if ($report->getOwner() !== $user) {
@@ -356,6 +392,7 @@ class ReportBuilderController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function saveAsTemplate(CustomReport $report, Request $request): JsonResponse
     {
+        if ($r = $this->gateJson()) return $r;
         $user = $this->getUser();
 
         if ($report->getOwner() !== $user) {
@@ -387,6 +424,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/{id}/settings', name: 'report_builder_settings_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function settingsEdit(CustomReport $report, Request $request): Response
     {
+        if ($r = $this->gate()) return $r;
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
@@ -417,6 +455,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/{id}/delete', name: 'report_builder_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(CustomReport $report): Response
     {
+        if ($r = $this->gate()) return $r;
         $user = $this->getUser();
 
         if ($report->getOwner() !== $user) {
@@ -437,6 +476,7 @@ class ReportBuilderController extends AbstractController
     #[Route('/api/users', name: 'report_builder_users', methods: ['GET'])]
     public function getUsers(): JsonResponse
     {
+        if ($r = $this->gateJson()) return $r;
         $tenantId = $this->tenantContext->getCurrentTenantId();
         $currentUser = $this->getUser();
 

@@ -443,7 +443,7 @@ Do not add DORA fields to forms without `nis2_dora` gate, do not add GDPR fields
 Full reference: [`docs/MODULE_GATING_GUIDE.md`](docs/MODULE_GATING_GUIDE.md)
 
 **Key artifacts:**
-- `config/modules.yaml` — 21 module keys + metadata
+- `config/modules.yaml` — 40 module keys + metadata (6 required: core, authentication, documents, audit_logging, workflows, objectives)
 - `config/active_modules.yaml` — per-tenant activation overrides
 - `src/Form/Trait/ModuleAwareFormTrait.php` — FormType helper (`isModuleActive()`)
 - `src/Controller/Trait/ModuleGatedControllerTrait.php` — Controller helper (`checkModuleActive()`)
