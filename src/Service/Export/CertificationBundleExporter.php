@@ -824,9 +824,14 @@ final class CertificationBundleExporter
     /**
      * Render the placeholder RACI markdown. When the holding has no
      * configured RACI metadata (current state — no DB field exists yet),
-     * we emit an explicit TODO so the auditor sees the gap rather than a
-     * silent fallback. A future Tenant.holdingRaci field can replace the
-     * placeholder block without changing the surrounding API.
+     * we emit an explicit audit-gap marker so the auditor sees the gap
+     * rather than a silent fallback. A future Tenant.holdingRaci field
+     * can replace the placeholder block without changing the surrounding
+     * API.
+     *
+     * TODO(audit-gap): emitted by design — see docs/CERTIFICATION_BUNDLE.md
+     * "Intentional auditor-gap markers". Do not silence this without
+     * implementing the Tenant.holdingRaci backing field.
      *
      * @param list<Tenant> $allTenants
      * @param list<string> $frameworks
@@ -834,7 +839,7 @@ final class CertificationBundleExporter
     private function buildKonzernRaciMarkdown(Tenant $holding, array $allTenants, array $frameworks): string
     {
         $out = "# Konzern RACI — " . ($holding->getName() ?? 'Holding') . "\n\n";
-        $out .= "_TODO: Holding-RACI nicht konfiguriert. "
+        $out .= "_TODO(audit-gap): Holding-RACI nicht konfiguriert. "
               . "Diese Datei dokumentiert die geplante R/A/C/I-Verteilung pro Framework über die Konzern-Töchter — "
               . "sobald `Tenant.holdingRaci` (oder vergleichbares Metadatenfeld) gepflegt ist, "
               . "wird hier die effektive Verteilung gerendert._\n\n";

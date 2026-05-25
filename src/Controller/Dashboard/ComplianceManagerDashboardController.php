@@ -143,8 +143,9 @@ class ComplianceManagerDashboardController extends AbstractController
     /**
      * V4-EF-5: Heatmap drill-down page.
      *
-     * Renders covered controls (with status), gap requirements (TODO) and
-     * open AuditFindings for a given framework + section (category).
+     * Renders covered controls (with status), gap requirements (uncovered
+     * by implemented controls) and open AuditFindings for a given
+     * framework + section (category).
      *
      * Route: GET /dashboards/cm-heatmap-drill?framework=ISO27001&section=A.5
      */
