@@ -45,6 +45,8 @@ business_process:
     reputational_impact: Reputational Impact
     regulatory_impact: Regulatory Impact
     operational_impact: Operational Impact
+    upstream_processes: Upstream processes
+    downstream_processes: Downstream processes
     dependencies_upstream: Dependencies Upstream
     dependencies_downstream: Dependencies Downstream
     recovery_strategy: Recovery Strategy
@@ -75,6 +77,10 @@ business_process:
     regulatory_impact: Regulatory consequences (fines, reporting obligations) in case
       of process failure
     operational_impact: Impact on other business processes and operations
+    upstream_processes: 'Processes that feed into this one (input). Structured replacement
+      for the free-text field below.'
+    downstream_processes: "Processes that consume this one's output. Structured replacement
+      for the free-text field below."
     dependencies_upstream: Which processes/systems is this process dependent on?
     dependencies_downstream: Which processes/systems depend on this process?
     recovery_strategy: Recovery strategy according to ISO 22301:2019 (e.g. backup

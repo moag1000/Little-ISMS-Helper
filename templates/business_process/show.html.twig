@@ -162,6 +162,30 @@
                             <td>{{ business_process.description ?? '-' }}</td>
                         </tr>
                         <tr>
+                            <th scope="row">{{ 'business_process.field.upstream_processes'|trans({}, 'business_process') }}</th>
+                            <td>
+                                {% if business_process.upstreamProcesses|length > 0 %}
+                                    {% for upstream in business_process.upstreamProcesses %}
+                                        <a href="{{ path('app_business_process_show', { _locale: app.request.locale, id: upstream.id }) }}" class="badge bg-secondary text-decoration-none me-1">{{ upstream.name }}</a>
+                                    {% endfor %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{{ 'business_process.field.downstream_processes'|trans({}, 'business_process') }}</th>
+                            <td>
+                                {% if business_process.downstreamProcesses|length > 0 %}
+                                    {% for downstream in business_process.downstreamProcesses %}
+                                        <a href="{{ path('app_business_process_show', { _locale: app.request.locale, id: downstream.id }) }}" class="badge bg-secondary text-decoration-none me-1">{{ downstream.name }}</a>
+                                    {% endfor %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
                             <th scope="row">{{ 'business_process.field.dependencies_upstream'|trans({}, 'business_process') }}</th>
                             <td>{{ business_process.dependenciesUpstream ?? '-' }}</td>
                         </tr>

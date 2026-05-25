@@ -68,11 +68,50 @@ class BusinessProcess
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $operationalImpact = null; // 1-5 Skala
 
+    /**
+     * @deprecated since 2026-05-25 — use upstreamProcesses (typed M2M collection).
+     *             Junior-ISB-Audit TODO_2026-05-22 §17: free-text dependency
+     *             names had no referential integrity, no graph visualization,
+     *             no search. Kept as legacy fallback during transition; will
+     *             be dropped in a future migration once data is backfilled.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $dependenciesUpstream = null;
 
+    /**
+     * @deprecated since 2026-05-25 — use downstreamProcesses (typed M2M collection).
+     *             See $dependenciesUpstream docblock for rationale.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $dependenciesDownstream = null;
+
+    /**
+     * Typed upstream-process dependencies — processes that feed into this one.
+     * Replaces the legacy free-text `$dependenciesUpstream` field.
+     * Junior-ISB-Audit TODO_2026-05-22 §17.
+     *
+     * @var Collection<int, BusinessProcess>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class)]
+    #[ORM\JoinTable(name: 'business_process_dependencies_upstream',
+        joinColumns: [new ORM\JoinColumn(name: 'process_id', referencedColumnName: 'id', onDelete: 'CASCADE')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'upstream_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    )]
+    private Collection $upstreamProcesses;
+
+    /**
+     * Typed downstream-process dependencies — processes that consume this one's
+     * output. Replaces the legacy free-text `$dependenciesDownstream` field.
+     * Junior-ISB-Audit TODO_2026-05-22 §17.
+     *
+     * @var Collection<int, BusinessProcess>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class)]
+    #[ORM\JoinTable(name: 'business_process_dependencies_downstream',
+        joinColumns: [new ORM\JoinColumn(name: 'process_id', referencedColumnName: 'id', onDelete: 'CASCADE')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'downstream_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    )]
+    private Collection $downstreamProcesses;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $recoveryStrategy = null;
@@ -144,6 +183,8 @@ class BusinessProcess
         $this->incidents = new ArrayCollection();
         $this->upstreamDependencies = new ArrayCollection();
         $this->dependentProcesses = new ArrayCollection();
+        $this->upstreamProcesses = new ArrayCollection();
+        $this->downstreamProcesses = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->processOwnerDeputyPersons = new ArrayCollection();
     }
@@ -285,25 +326,73 @@ class BusinessProcess
         return $this;
     }
 
+    /** @deprecated since 2026-05-25 — use getUpstreamProcesses() */
     public function getDependenciesUpstream(): ?string
     {
         return $this->dependenciesUpstream;
     }
 
+    /** @deprecated since 2026-05-25 — use addUpstreamProcess() / removeUpstreamProcess() */
     public function setDependenciesUpstream(?string $dependenciesUpstream): static
     {
         $this->dependenciesUpstream = $dependenciesUpstream;
         return $this;
     }
 
+    /** @deprecated since 2026-05-25 — use getDownstreamProcesses() */
     public function getDependenciesDownstream(): ?string
     {
         return $this->dependenciesDownstream;
     }
 
+    /** @deprecated since 2026-05-25 — use addDownstreamProcess() / removeDownstreamProcess() */
     public function setDependenciesDownstream(?string $dependenciesDownstream): static
     {
         $this->dependenciesDownstream = $dependenciesDownstream;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BusinessProcess>
+     */
+    public function getUpstreamProcesses(): Collection
+    {
+        return $this->upstreamProcesses;
+    }
+
+    public function addUpstreamProcess(self $process): static
+    {
+        if ($process !== $this && !$this->upstreamProcesses->contains($process)) {
+            $this->upstreamProcesses->add($process);
+        }
+        return $this;
+    }
+
+    public function removeUpstreamProcess(self $process): static
+    {
+        $this->upstreamProcesses->removeElement($process);
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BusinessProcess>
+     */
+    public function getDownstreamProcesses(): Collection
+    {
+        return $this->downstreamProcesses;
+    }
+
+    public function addDownstreamProcess(self $process): static
+    {
+        if ($process !== $this && !$this->downstreamProcesses->contains($process)) {
+            $this->downstreamProcesses->add($process);
+        }
+        return $this;
+    }
+
+    public function removeDownstreamProcess(self $process): static
+    {
+        $this->downstreamProcesses->removeElement($process);
         return $this;
     }
 

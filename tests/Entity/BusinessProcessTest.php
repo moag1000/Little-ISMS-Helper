@@ -176,6 +176,67 @@ class BusinessProcessTest extends TestCase
         $this->assertCount(1, $process->getSupportingAssets());
     }
 
+    // Junior-ISB-Audit TODO_2026-05-22 §17 — Typed M2M dependencies
+    #[Test]
+    public function testNewBusinessProcessHasEmptyDependencyCollections(): void
+    {
+        $process = new BusinessProcess();
+
+        $this->assertCount(0, $process->getUpstreamProcesses());
+        $this->assertCount(0, $process->getDownstreamProcesses());
+    }
+
+    #[Test]
+    public function testAddAndRemoveUpstreamProcess(): void
+    {
+        $process = new BusinessProcess();
+        $upstream = new BusinessProcess();
+        $upstream->setName('Upstream Supplier Process');
+
+        $process->addUpstreamProcess($upstream);
+        $this->assertCount(1, $process->getUpstreamProcesses());
+        $this->assertTrue($process->getUpstreamProcesses()->contains($upstream));
+
+        // Idempotent add
+        $process->addUpstreamProcess($upstream);
+        $this->assertCount(1, $process->getUpstreamProcesses());
+
+        $process->removeUpstreamProcess($upstream);
+        $this->assertCount(0, $process->getUpstreamProcesses());
+    }
+
+    #[Test]
+    public function testAddAndRemoveDownstreamProcess(): void
+    {
+        $process = new BusinessProcess();
+        $downstream = new BusinessProcess();
+        $downstream->setName('Downstream Consumer Process');
+
+        $process->addDownstreamProcess($downstream);
+        $this->assertCount(1, $process->getDownstreamProcesses());
+        $this->assertTrue($process->getDownstreamProcesses()->contains($downstream));
+
+        // Idempotent add
+        $process->addDownstreamProcess($downstream);
+        $this->assertCount(1, $process->getDownstreamProcesses());
+
+        $process->removeDownstreamProcess($downstream);
+        $this->assertCount(0, $process->getDownstreamProcesses());
+    }
+
+    #[Test]
+    public function testCannotAddSelfAsUpstreamOrDownstream(): void
+    {
+        $process = new BusinessProcess();
+        $process->setName('Self-Reference Test');
+
+        $process->addUpstreamProcess($process);
+        $process->addDownstreamProcess($process);
+
+        $this->assertCount(0, $process->getUpstreamProcesses());
+        $this->assertCount(0, $process->getDownstreamProcesses());
+    }
+
     #[Test]
     public function testAddAndRemoveIdentifiedRisk(): void
     {
