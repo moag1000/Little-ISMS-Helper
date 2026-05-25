@@ -590,6 +590,18 @@ modules:
     dependencies:
       - core
 
+  mris:
+    name: 'MRIS — Mythos-resistente Informationssicherheit'
+    description: 'Tenant-scoped Custom-Framework nach Peddi 2026, MRIS v1.5: Standfest/Degradiert/Reibung-Klassifikation für SoA-Controls. Off-by-default — Nische.'
+    required: false
+    icon: 'shield-shaded'
+    entities: []
+    routes:
+      - /soa
+    dependencies:
+      - core
+      - controls
+
 # Basis-Daten die immer importiert werden
 base_data:
   - name: 'ISO 27001 Annex A Controls'
