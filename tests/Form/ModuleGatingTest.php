@@ -169,11 +169,14 @@ final class ModuleGatingTest extends TestCase
             $source,
             'DocumentType must gate tisaxInformationClassification on tisax module'
         );
-        // Holding flags carry an explicit TODO until the holding module-key is registered.
+        // Holding flags (`inheritable`, `overrideAllowed`) are gated by tenant-graph,
+        // not by a module key — per PR #665, no future `holding` module is planned.
+        // The comment block above the fields must explain this design intent so
+        // future readers don't reintroduce a phantom module gate.
         self::assertStringContainsString(
-            'TODO(S2-P6 module-key)',
+            'isPartOfCorporateStructure',
             $source,
-            'DocumentType must annotate inheritable/overrideAllowed with the holding-module TODO anchor'
+            'DocumentType must gate inheritable/overrideAllowed on tenant-graph (Tenant::isPartOfCorporateStructure), not on a module key (per PR #665)'
         );
     }
 
