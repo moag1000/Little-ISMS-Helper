@@ -173,7 +173,9 @@ async function probeOne(page: Page, route: RouteEntry): Promise<RouteResult> {
     };
 }
 
-test.describe.configure({ mode: 'serial' });
+// Do NOT use `serial` describe-mode — it bails the run on first failure
+// and skips every subsequent route, defeating the broad-coverage purpose.
+// `workers=1` in playwright.config.ts already keeps execution sequential.
 
 // Skip the entire describe-block in regular `npm run e2e` runs — the smoke
 // spec only fires when the route-export has run or the operator opted in
