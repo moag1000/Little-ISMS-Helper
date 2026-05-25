@@ -46,7 +46,12 @@ class RiskApprovalConfigController extends AbstractController
     #[Route('', name: 'app_admin_risk_approval_config', methods: ['GET', 'POST'])]
     public function edit(Request $request): Response
     {
-        $tenant = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
+        // GET (page-render / hover-prefetch) has no `tenant_id` POST param; for
+        // SUPER_ADMIN the resolveAdminScope(null)-branch returns null which would
+        // 404. Fall back to active tenant context — POST callers may still
+        // override via `tenant_id` body param.
+        $requested = $request->request->get('tenant_id') ?? $this->tenantContext->getCurrentTenantId();
+        $tenant = $this->tenantContext->resolveAdminScope($requested);
         if (!$tenant instanceof Tenant) {
             throw $this->createNotFoundException('No tenant context.');
         }
