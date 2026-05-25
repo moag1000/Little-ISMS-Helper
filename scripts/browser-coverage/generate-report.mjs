@@ -41,6 +41,7 @@ function escape(s) {
 function statusBadge(r) {
     if (!r.ok) return `<span class="badge fail">${r.status ?? '✕'}</span>`;
     if (r.bannerSeen) return `<span class="badge warn">${r.status} module-off</span>`;
+    if ((r.failedRequests || []).length > 0) return `<span class="badge warn">${r.status} subreq</span>`;
     if (r.consoleErrors.length > 0) return `<span class="badge warn">${r.status} console</span>`;
     return `<span class="badge ok">${r.status}</span>`;
 }
@@ -62,13 +63,14 @@ function renderPersonaSection(p) {
         <td>${escape(r.name)}</td>
         <td>${r.durationMs} ms</td>
         <td>${r.consoleErrors.length > 0 ? `<details><summary>${r.consoleErrors.length}</summary><pre>${escape(r.consoleErrors.join('\n'))}</pre></details>` : ''}</td>
+        <td>${(r.failedRequests || []).length > 0 ? `<details><summary>${r.failedRequests.length}</summary><pre>${escape(r.failedRequests.join('\n'))}</pre></details>` : ''}</td>
         <td>${r.reason ? escape(r.reason) : ''}</td>
     </tr>`,
                 )
                 .join('');
             return `<h3 class="cat">${escape(cat)} <small>(${rowsByCategory[cat].length})</small></h3>
 <table class="routes">
-    <thead><tr><th>Status</th><th>Path</th><th>Route name</th><th>Latency</th><th>JS errors</th><th>Reason</th></tr></thead>
+    <thead><tr><th>Status</th><th>Path</th><th>Route name</th><th>Latency</th><th>JS errors</th><th>Sub-req fail</th><th>Reason</th></tr></thead>
     <tbody>${rows}</tbody>
 </table>`;
         })
