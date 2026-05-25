@@ -206,13 +206,11 @@ final class DocumentType extends AbstractType implements SectionMapInterface
             // them at all (Junior-ISB-Audit T8.7 — gating instead of
             // perma-visible + perma-default).
             //
-            // TODO(S2-P6 module-key): no 'holding' module exists in
-            // config/modules.yaml — the Holding-CISO concept is wired through
-            // tenant.parentTenantId + ROLE_GROUP_CISO. Today we gate on the
-            // tenant graph itself (Tenant::isPartOfCorporateStructure); once
-            // a 'holding' module is registered (S2-A scope), swap the
-            // tenant-graph gate for $this->isModuleActive('holding') here +
-            // on AssetType::tisaxInformationClassification for symmetry.
+            // Holding-CISO is wired through tenant.parentTenantId +
+            // ROLE_GROUP_CISO, gated on the tenant graph itself
+            // (Tenant::isPartOfCorporateStructure). Intentionally not a
+            // module-key gate — module activation is per-tenant, but
+            // holding-membership is a tenant-graph property.
         ;
         $currentTenant = $this->tenantContext->getCurrentTenant();
         $isCorporate = $currentTenant !== null && $currentTenant->isPartOfCorporateStructure();
