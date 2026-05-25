@@ -119,9 +119,33 @@
 
             <div class="detail-section">
                 <h3>{{ 'bc_exercises.section.participants'|trans({}, 'bc_exercises') }}</h3>
-                <p>{{ bc_exercise.participants|nl2br }}</p>
+
+                {# P-15 DataReuse: typed Person M2M collections (canonical). Render
+                   as linked badges so users navigate to the master-data record. #}
+                {% if bc_exercise.participantPersons|length > 0 %}
+                    <p><strong>{{ 'bc_exercises.field.participant_persons'|trans({}, 'bc_exercises') }}:</strong>
+                        {% for person in bc_exercise.participantPersons %}
+                            <a href="{{ path('app_person_show', { _locale: app.request.locale, id: person.id }) }}"
+                               class="badge bg-secondary text-decoration-none me-1">{{ person.fullName }}</a>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if bc_exercise.observerPersons|length > 0 %}
+                    <p><strong>{{ 'bc_exercises.field.observer_persons'|trans({}, 'bc_exercises') }}:</strong>
+                        {% for person in bc_exercise.observerPersons %}
+                            <a href="{{ path('app_person_show', { _locale: app.request.locale, id: person.id }) }}"
+                               class="badge bg-secondary text-decoration-none me-1">{{ person.fullName }}</a>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+
+                {# Legacy free-text fallbacks — @deprecated since 2026-05-25,
+                   rendered for migration display only. #}
+                {% if bc_exercise.participants %}
+                <p><strong>{{ 'bc_exercises.field.participants_legacy'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.participants|nl2br }}</p>
+                {% endif %}
                 {% if bc_exercise.observers %}
-                <p><strong>{{ 'common.observers'|trans({}, 'messages') }}:</strong> {{ bc_exercise.observers|nl2br }}</p>
+                <p><strong>{{ 'bc_exercises.field.observers_legacy'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.observers|nl2br }}</p>
                 {% endif %}
             </div>
 
