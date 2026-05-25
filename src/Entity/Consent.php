@@ -362,7 +362,7 @@ class Consent
         return $this->grantedAt;
     }
 
-    public function setGrantedAt(DateTimeImmutable $grantedAt): static
+    public function setGrantedAt(?DateTimeImmutable $grantedAt): static
     {
         $this->grantedAt = $grantedAt;
         return $this;
