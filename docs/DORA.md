@@ -172,12 +172,91 @@ Generiert ueber `src/Command/SeedDoraPolicyTemplatesCommand.php`.
 
 DORA Art. 28 Abs. 3 lit. a verlangt ein Register der IKT-Drittdienstleister.
 
+Zwei Export-Pfade stehen parallel zur Verfuegung:
+
+### 9.1 XLSX/CSV/PDF (ITS-Vorlage)
+
 ```
 src/Controller/DoraRegisterExportController.php
 src/Service/Export/DoraRegisterOfInformationExporter.php
 ```
 
-Export: XLSX/CSV/PDF nach ITS-Vorlage CIR (EU) 2024/2956.
+Export nach ITS-Vorlage CIR (EU) 2024/2956. Geeignet fuer manuelle Sichtung
+oder Vorbereitung der Meldung.
+
+### 9.2 XBRL (Sprint 8 + Sprint 9 — Bundesbank/BaFin-Submission)
+
+```
+src/Controller/Authority/DoraRoiController.php
+src/Service/Authority/DoraRoiXbrlExporter.php
+tests/Service/Authority/DoraRoiXbrlExporterTest.php
+scripts/validate-dora-xbrl.sh
+```
+
+XBRL-Output nach ESA Joint RoI Taxonomy (Art. 28 Abs. 9 DORA i.V.m.
+CIR (EU) 2024/2956). Wird ueber `/authority/dora-roi` ausgeloest und liefert
+ein well-formed XBRL-Dokument mit den folgenden ESA-Taxonomie-Elementen:
+
+| Element | Quelle | Sprint |
+|---|---|---|
+| `B_01.01.0010` (Reporting-Entity-Name) | `Tenant.legalName \|\| Tenant.name` | 8 |
+| `B_01.01.0020` (Reporting-Entity-LEI) | `Tenant.leiCode` (ISO 17442) | **9 / 6b** |
+| `B_01.01.0030` (Reporting Reference Date) | Stichtag (Jahresende) | 8 |
+| `B_01.01.0040` (Reporting-Currency) | `Tenant.reportingCurrency` (ISO 4217) | **9 / 6b** |
+| `B_02.01.0010` (Anzahl ICT-Drittdienstleister) | `count($suppliers)` | 8 |
+| `B_02.02.0010-0050` (Provider-Stammdaten) | Supplier | 8 |
+| `B_02.02.0020` (Provider-LEI) | `Supplier.leiCode` | 8 |
+| `B_02.02.0060` (Contract Start Date) | `Supplier.contractStartDate` | **9 / 6c** |
+| `B_02.02.0070` (Contract End Date) | `Supplier.contractEndDate` | **9 / 6c** |
+| `B_02.02.0080` (Substitutability) | `Supplier.substitutability` | **9 / 6c** |
+| `B_02.02.0090` (Exit Strategy Present) | `Supplier.hasExitStrategy` | **9 / 6c** |
+| `B_02.02.0100` (Data Location EEA/non-EEA) | abgeleitet aus `Supplier.countryOfHeadOffice` | **9 / 6c** |
+| `B_02.02.0110` (Processing Locations) | `Supplier.processingLocations` (JSON) | **9 / 6c** |
+| `B_02.02.0120` (Certifications) | `hasISO27001 \|\| hasISO22301 \|\| certifications` | **9 / 6c** |
+| `B_02.02.0130` (Audit Rights Clause) | abgeleitet aus `Supplier.securityRequirements` | **9 / 6c** |
+| `B_03.01.0010` (Total ICT Assets) | `count($assets)` | 8 |
+| `B_03.02.0010-0100` (Per-Asset Detail) | `Asset` (id, name, type, classification, CIA, owner, location, status) | **9 / 6c** |
+
+**Noch nicht implementiert (deferred):**
+- `B_02.02.0140-0999` + RT_03 (Data-Flow-Sub-Table) + RT_04 (Subcontractor-Chain-Sub-Table)
+- RT_05 (Asset-Dependency-Graph) + RT_06 (Decommission-Plan)
+
+Beide ESA-Taxonomie-Bereiche benoetigen dedizierte Sub-Entities, die bisher nicht im
+Datenmodell vorhanden sind (Subcontractor-Chain hat eine JSON-Spalte, ist aber nicht
+auf die Tiefe der ESA-Taxonomie modelliert). Markiert via `TODO`-Kommentar im Output.
+
+### 9.3 Pre-Submission XBRL-Validierung (Arelle)
+
+Vor der Einreichung beim Bundesbank/BaFin-Portal sollte der XBRL-Output gegen
+die ESA-Taxonomie validiert werden:
+
+```bash
+# Lokales Tool — nicht (noch) im CI verdrahtet
+./scripts/validate-dora-xbrl.sh /tmp/exported-roi.xbrl
+```
+
+Das Skript prueft zwei Stufen:
+
+1. **XML-Well-Formedness** via `xmllint` (immer verfuegbar)
+2. **XBRL-Taxonomie-Validierung** via `arelle` (optional, `pip install arelle-release`)
+
+Bei fehlender Arelle-Installation beendet das Skript mit Exit-Code 0 nach erfolgreicher
+XML-Pruefung und gibt eine Installationsanleitung aus. Die ESA hat den finalen
+Taxonomie-Namespace zum jetzigen Stand noch nicht veroeffentlicht — sobald das ITS
+verabschiedet ist, wird der Namespace in `DoraRoiXbrlExporter::NS_ESA_ROI` aktualisiert
+und das Arelle-Plugin verdrahtet.
+
+### 9.4 LEI-Verwaltung
+
+Tenant-LEI wird in `TenantType` als Pflichtfeld fuer DORA-obligated Tenants gefuehrt:
+
+- Validierung: `/^[A-Z0-9]{18}\d{2}$/` (ISO 17442)
+- Speicherung: `tenant.lei_code` (VARCHAR 20 NULL)
+- Beispiel: `529900T8BM49AURSDO55`
+- Bezugsquelle: jeder GLEIF-akkreditierte LOU (Local Operating Unit)
+
+Supplier-LEI: identisches Format, gespeichert in `supplier.lei_code`. Beide Felder
+sind nullable; fehlender LEI im Export erzeugt den ESA-Sentinel `N/A`.
 
 ---
 

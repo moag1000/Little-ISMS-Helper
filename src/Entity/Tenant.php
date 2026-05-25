@@ -177,6 +177,36 @@ class Tenant
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $legalForm = null;
 
+    /**
+     * Bucket-6a (DORA RoI Sprint 9) — Legal Entity Identifier per ISO 17442.
+     * 20-character alphanumeric LEI as issued by a GLEIF-accredited LOU.
+     * Required for DORA Art. 28 ROI XBRL export — wired into B_01.01.0020
+     * (reporting-entity-LEI). Nullable to keep non-DORA-obligated tenants
+     * working without forced migration of pre-existing rows.
+     *
+     * Format: [A-Z0-9]{18}\d{2} (18 LOU-prefix + 2 ISO 17442 checksum digits).
+     */
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
+    #[Assert\Regex(
+        pattern: '/^[A-Z0-9]{18}\d{2}$/',
+        message: 'tenant.validation.lei_code_format',
+    )]
+    private ?string $leiCode = null;
+
+    /**
+     * Bucket-6a (DORA RoI Sprint 9) — ISO 4217 reporting currency for DORA
+     * Art. 28 RoI XBRL output (B_01.01.0040). EUR default; tenants reporting
+     * in other currencies (CHF, GBP, USD) override here.
+     */
+    #[ORM\Column(length: 3, nullable: true, options: ['default' => 'EUR'])]
+    #[Assert\Length(min: 3, max: 3)]
+    #[Assert\Regex(
+        pattern: '/^[A-Z]{3}$/',
+        message: 'tenant.validation.reporting_currency_format',
+    )]
+    private ?string $reportingCurrency = 'EUR';
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nis2ContactPoint = null;
 
@@ -323,6 +353,36 @@ class Tenant
     public function setLegalForm(?string $value): static
     {
         $this->legalForm = $value;
+        return $this;
+    }
+
+    /**
+     * Bucket-6a — ISO 17442 Legal Entity Identifier. Wired into DORA RoI
+     * XBRL export (B_01.01.0020). Null when the tenant is not DORA-obligated.
+     */
+    public function getLeiCode(): ?string
+    {
+        return $this->leiCode;
+    }
+
+    public function setLeiCode(?string $value): static
+    {
+        $this->leiCode = $value !== null ? strtoupper(trim($value)) : null;
+        return $this;
+    }
+
+    /**
+     * Bucket-6a — ISO 4217 reporting currency. EUR default. Wired into DORA
+     * RoI XBRL export (B_01.01.0040) and the iso4217:* unit measure.
+     */
+    public function getReportingCurrency(): ?string
+    {
+        return $this->reportingCurrency ?? 'EUR';
+    }
+
+    public function setReportingCurrency(?string $value): static
+    {
+        $this->reportingCurrency = $value !== null ? strtoupper(trim($value)) : null;
         return $this;
     }
 
