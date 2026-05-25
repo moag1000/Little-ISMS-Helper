@@ -2332,3 +2332,7 @@ owner_picker:
 'supplier.subcontractor_chain.raw_label': 'Raw JSON (power-user)'
 'supplier.subcontractor_chain.raw_toggle': 'Edit as JSON'
 'supplier.subcontractor_chain.remove': 'Remove subcontractor'
+
+# Junior-ISB-Audit-2026-05-22 S12 §4-6 — truly-missing flat-domain keys
+'supplier.subcontractor.country_placeholder': 'e.g. DE'
+'training.error.material_upload_failed': 'Material upload failed.'
