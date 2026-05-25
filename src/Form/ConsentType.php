@@ -187,6 +187,7 @@ final class ConsentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Consent::class,
+            'translation_domain' => 'consent',
         ]);
     }
 }
