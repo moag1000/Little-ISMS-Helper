@@ -752,7 +752,7 @@ class RoleDashboardService
                 'id' => $a->getId(),
                 'title' => $a->getTitle(),
                 'planned_date' => $a->getPlannedDate(),
-                'type' => $a->getType(),
+                'type' => $a->getScopeType(),
             ], array_slice($upcoming, 0, 5)),
         ];
     }
