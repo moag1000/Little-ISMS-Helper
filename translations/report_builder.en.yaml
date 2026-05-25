@@ -270,6 +270,7 @@ report_builder:
 
     error:
         owner_required_user_or_person: 'At least one of Owner (User) or Owner (Person) must be set.'
+        preview_failed: 'Preview could not be generated. Please check the widget configuration.'
 
     choice:
         yes: 'Yes'

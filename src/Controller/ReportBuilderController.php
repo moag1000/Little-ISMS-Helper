@@ -263,13 +263,20 @@ class ReportBuilderController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $reportData = $this->reportBuilderService->generateReportData($report);
-        $report->incrementUsageCount();
-        $this->entityManager->flush();
+        $renderError = null;
+        try {
+            $reportData = $this->reportBuilderService->generateReportData($report);
+            $report->incrementUsageCount();
+            $this->entityManager->flush();
+        } catch (\Throwable $e) {
+            $renderError = $e->getMessage();
+            $reportData = ['report' => [], 'widgets' => [], 'filters' => []];
+        }
 
         return $this->render('report_builder/preview.html.twig', [
             'report' => $report,
             'report_data' => $reportData,
+            'render_error' => $renderError,
         ]);
     }
 
@@ -321,7 +328,14 @@ class ReportBuilderController extends AbstractController
         $config = $data['config'] ?? [];
         $filters = $data['filters'] ?? [];
 
-        $widgetData = $this->reportBuilderService->getWidgetData($widgetType, $config, $filters);
+        try {
+            $widgetData = $this->reportBuilderService->getWidgetData($widgetType, $config, $filters);
+        } catch (\Throwable $e) {
+            return new JsonResponse([
+                'error' => 'widget_data_error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
 
         return new JsonResponse($widgetData);
     }

@@ -75,6 +75,7 @@ class DeploymentWizardController extends AbstractController
         private readonly IndustryBaselineRepository $industryBaselineRepository,
         private readonly IndustryBaselineApplier $industryBaselineApplier,
         private readonly SetupIndustryPresetService $industryPresetService,
+        private readonly \App\Service\AssetSubTypeSeeder $assetSubTypeSeeder,
     ) {
     }
     /**
@@ -2170,6 +2171,10 @@ class DeploymentWizardController extends AbstractController
             // empty even though the user already provided org-name + scope-
             // adjacent data in step 6 — duplicate data entry, junior frustration.
             $this->seedISMSContextFromWizard($tenant, $session);
+
+            // Seed BSI IT-Grundschutz default asset sub-types so the sub-type
+            // dropdown is not empty for freshly provisioned tenants (Bug S18 B2).
+            $this->assetSubTypeSeeder->applyPreset($tenant, \App\Service\AssetSubTypeSeeder::PRESET_BSI);
 
             $this->entityManager->flush();
         } catch (Exception) {
