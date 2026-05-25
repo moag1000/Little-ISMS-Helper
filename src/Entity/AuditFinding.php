@@ -181,6 +181,48 @@ class AuditFinding
     #[ORM\InverseJoinColumn(name: 'compliance_requirement_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $linkedRequirements;
 
+    // ── S17 B4 — Hybrid JSON Nonconformity details (ISO 27001 Cl. 10.2 b) + d)) ──
+    /**
+     * Structured nonconformity details (Root-Cause-Analysis method, corrective
+     * actions, verification evidence). Only populated when type ∈ {major_nc, minor_nc}.
+     * Schema:
+     *   - rootCauseAnalysisMethod: '5-why' | 'ishikawa' | 'fmea' | 'other'
+     *   - correctiveActions: list<{description: string, owner_id: ?int, deadline: ?string}>
+     *   - verificationMethod: 'document-review' | 'walkthrough' | 'test' | 'metrics-monitoring'
+     *   - verificationEvidence: string
+     *
+     * @var array<string, mixed>|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $nonconformityDetails = null;
+
+    /** Short narrative summary of the root-cause analysis result. */
+    #[ORM\Column(name: 'nc_root_cause_summary', type: Types::TEXT, nullable: true)]
+    private ?string $ncRootCauseSummary = null;
+
+    /** ISO 27001 Cl. 10.2 c) — auditable deadline for the corrective measure. */
+    #[ORM\Column(name: 'nc_correction_due_date', type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $ncCorrectionDueDate = null;
+
+    /** Timestamp when verification of effectiveness was completed. */
+    #[ORM\Column(name: 'nc_verified_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $ncVerifiedAt = null;
+
+    /** Verifier (auditor or independent reviewer). */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'nc_verified_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $ncVerifiedBy = null;
+
+    public const RCA_METHOD_5_WHY = '5-why';
+    public const RCA_METHOD_ISHIKAWA = 'ishikawa';
+    public const RCA_METHOD_FMEA = 'fmea';
+    public const RCA_METHOD_OTHER = 'other';
+
+    public const VERIFICATION_DOCUMENT_REVIEW = 'document-review';
+    public const VERIFICATION_WALKTHROUGH = 'walkthrough';
+    public const VERIFICATION_TEST = 'test';
+    public const VERIFICATION_METRICS_MONITORING = 'metrics-monitoring';
+
     public function __construct()
     {
         $this->correctiveActions = new ArrayCollection();
@@ -568,5 +610,70 @@ class AuditFinding
     {
         $this->linkedRequirements->removeElement($requirement);
         return $this;
+    }
+
+    // ── S17 B4 — Nonconformity Hybrid JSON accessors ──────────────────────────
+
+    /** @return array<string, mixed>|null */
+    public function getNonconformityDetails(): ?array
+    {
+        return $this->nonconformityDetails;
+    }
+
+    /** @param array<string, mixed>|null $nonconformityDetails */
+    public function setNonconformityDetails(?array $nonconformityDetails): static
+    {
+        $this->nonconformityDetails = $nonconformityDetails;
+        return $this;
+    }
+
+    public function getNcRootCauseSummary(): ?string
+    {
+        return $this->ncRootCauseSummary;
+    }
+
+    public function setNcRootCauseSummary(?string $ncRootCauseSummary): static
+    {
+        $this->ncRootCauseSummary = $ncRootCauseSummary;
+        return $this;
+    }
+
+    public function getNcCorrectionDueDate(): ?DateTimeImmutable
+    {
+        return $this->ncCorrectionDueDate;
+    }
+
+    public function setNcCorrectionDueDate(?DateTimeImmutable $ncCorrectionDueDate): static
+    {
+        $this->ncCorrectionDueDate = $ncCorrectionDueDate;
+        return $this;
+    }
+
+    public function getNcVerifiedAt(): ?DateTimeImmutable
+    {
+        return $this->ncVerifiedAt;
+    }
+
+    public function setNcVerifiedAt(?DateTimeImmutable $ncVerifiedAt): static
+    {
+        $this->ncVerifiedAt = $ncVerifiedAt;
+        return $this;
+    }
+
+    public function getNcVerifiedBy(): ?User
+    {
+        return $this->ncVerifiedBy;
+    }
+
+    public function setNcVerifiedBy(?User $ncVerifiedBy): static
+    {
+        $this->ncVerifiedBy = $ncVerifiedBy;
+        return $this;
+    }
+
+    /** True when finding is classified as a nonconformity (major or minor). */
+    public function isNonconformity(): bool
+    {
+        return in_array($this->type, [self::TYPE_MAJOR_NC, self::TYPE_MINOR_NC], true);
     }
 }

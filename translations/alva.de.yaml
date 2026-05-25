@@ -100,6 +100,10 @@ audit_finding:
         title: 'Critical Finding ohne Korrekturmaßnahme'
         body: '%severity%-Finding ohne CAPA. ISO 27001 Cl. 10.1 fordert dokumentierte Korrektur und Wirksamkeitskontrolle.'
         action: 'CAPA anlegen'
+    nc_without_root_cause:
+        title: 'NC ohne Ursachenanalyse seit %days% Tagen offen'
+        body: 'ISO 27001 Cl. 10.2 b) verlangt die Bewertung der Ursachen jeder Nichtkonformität. Bitte tragen Sie die Root-Cause-Zusammenfassung (z.B. 5-Why / Ishikawa / FMEA) nach.'
+        action: 'Ursachenanalyse erfassen'
 
 consent:
     expiring_soon:
