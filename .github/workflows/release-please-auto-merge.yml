@@ -27,6 +27,10 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write  # Required for `gh workflow run` (workflow_dispatch) to
+                  # kick off Release Please post-merge — without this the
+                  # final step fails with HTTP 403 and no tag/release is
+                  # created (broke 2026-05-25 v3.8.0 release).
 
 jobs:
   auto-merge:
