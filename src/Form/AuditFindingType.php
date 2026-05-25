@@ -16,6 +16,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -35,6 +36,8 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
             'classification'   => ['type', 'severity', 'status', 'source', 'clauseReference'],
             'root_cause'       => ['evidence', 'relatedControls'],
             'corrective_action'=> ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'dueDate'],
+            // S17 B4 — CAPA Hybrid JSON fields (ISO 27001 Cl. 10.2 b) + d)).
+            'nc_capa'          => ['ncRootCauseSummary', 'ncCorrectionDueDate', 'ncVerifiedAt', 'ncVerifiedBy', 'nonconformityDetails'],
             'verification'     => ['reportedByPerson', 'reportedByDeputyPersons', 'linkedRequirements'],
         ];
     }
@@ -211,6 +214,47 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 ],
                 'help' => 'audit_finding.help.linked_requirements',
             ])
+            // ── S17 B4 — CAPA / NC details (ISO 27001 Cl. 10.2 b) + d)) ─────
+            // Required for NC types but enforced server-side via validateNcSlot()
+            // so non-NC finding types stay lean. Frontend `data-ui-show-if`
+            // gating left to a future polish pass.
+            ->add('ncRootCauseSummary', TextareaType::class, [
+                'label' => 'audit_finding.field.nc_root_cause_summary',
+                'required' => false,
+                'attr' => ['rows' => 4, 'placeholder' => 'audit_finding.placeholder.nc_root_cause_summary'],
+                'help' => 'audit_finding.help.nc_root_cause_summary',
+            ])
+            ->add('ncCorrectionDueDate', DateType::class, [
+                'label' => 'audit_finding.field.nc_correction_due_date',
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
+                'required' => false,
+                'help' => 'audit_finding.help.nc_correction_due_date',
+            ])
+            ->add('ncVerifiedAt', DateTimeType::class, [
+                'label' => 'audit_finding.field.nc_verified_at',
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
+                'required' => false,
+                'help' => 'audit_finding.help.nc_verified_at',
+            ])
+            ->add('ncVerifiedBy', EntityType::class, [
+                'label' => 'audit_finding.field.nc_verified_by',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getEmail() ?? (string) $u->getId(),
+                'placeholder' => 'audit_finding.placeholder.nc_verified_by',
+                'required' => false,
+                'help' => 'audit_finding.help.nc_verified_by',
+            ])
+            // Structured JSON edited as raw textarea for v1 (mapped → array via
+            // a property-path callback). Future polish: dedicated FormType.
+            ->add('nonconformityDetails', TextareaType::class, [
+                'label' => 'audit_finding.field.nonconformity_details',
+                'required' => false,
+                'mapped' => false,
+                'attr' => ['rows' => 6, 'placeholder' => 'audit_finding.placeholder.nonconformity_details'],
+                'help' => 'audit_finding.help.nonconformity_details',
+            ])
         ;
     }
 
@@ -221,6 +265,7 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
             'translation_domain' => 'audits',
             'constraints' => [
                 new Callback([$this, 'validateAssignedSlot']),
+                new Callback([$this, 'validateNcSlot']),
             ],
         ]);
     }
@@ -233,6 +278,28 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
         if ($entity->getAssignedTo() === null && $entity->getAssignedPerson() === null) {
             $context->buildViolation('audits.error.owner_required_user_or_person')
                 ->atPath('assignedTo')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * S17 B4 — NC findings (ISO 27001 Cl. 10.2) MUST have a root-cause summary
+     * and a correction deadline. We do NOT validate observations / opportunities
+     * — those are awareness-only.
+     */
+    public function validateNcSlot(?AuditFinding $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null || !$entity->isNonconformity()) {
+            return;
+        }
+        if ($entity->getNcRootCauseSummary() === null || trim($entity->getNcRootCauseSummary()) === '') {
+            $context->buildViolation('audit_finding.error.nc_root_cause_required')
+                ->atPath('ncRootCauseSummary')
+                ->addViolation();
+        }
+        if ($entity->getNcCorrectionDueDate() === null) {
+            $context->buildViolation('audit_finding.error.nc_correction_due_date_required')
+                ->atPath('ncCorrectionDueDate')
                 ->addViolation();
         }
     }
