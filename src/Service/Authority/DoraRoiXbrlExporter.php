@@ -124,10 +124,19 @@ final class DoraRoiXbrlExporter
         $entityContext = $this->buildEntityContext($dom, $tenant);
         $root->appendChild($entityContext);
 
-        // ─── Element 3: Unit (monetary — EUR) ─────────────────────────────────
+        // ─── Element 3: Unit (monetary — tenant reporting currency) ───────────
+        // Sprint-9 Bucket-6b: wire Tenant.reportingCurrency (defaults to EUR
+        // when unset). The xbrli:unit id MUST equal the unitRef on monetary
+        // facts (B_01.01.0040 below).
+        $currency = strtoupper((string) ($tenant->getReportingCurrency() ?? 'EUR'));
+        // Defensive: only accept ISO-4217-shaped codes; fall back to EUR
+        // otherwise so the XBRL stays valid.
+        if (!preg_match('/^[A-Z]{3}$/', $currency)) {
+            $currency = 'EUR';
+        }
         $unit = $dom->createElementNS(self::NS_XBRLI, 'xbrli:unit');
-        $unit->setAttribute('id', 'EUR');
-        $measure = $dom->createElementNS(self::NS_XBRLI, 'xbrli:measure', 'iso4217:EUR');
+        $unit->setAttribute('id', $currency);
+        $measure = $dom->createElementNS(self::NS_XBRLI, 'xbrli:measure', 'iso4217:' . $currency);
         $unit->appendChild($measure);
         $root->appendChild($unit);
 
@@ -139,13 +148,14 @@ final class DoraRoiXbrlExporter
         $root->appendChild($dom->createComment(' B_01.01.0010: Reporting entity legal name — ESA RoI Art. 28(3)(a) '));
 
         // ─── Element 5: Reporting entity LEI (B_01.01.0020) ───────────────────
-        // TODO: ESA taxonomy element B_01.01.0020 — LEI of reporting entity
-        // Wire Tenant.leiCode (or derive from Tenant.registrationNumber) when available
+        // Sprint-9 Bucket-6b: wired to Tenant.leiCode (ISO 17442 — 20 char).
+        // When the operator has not yet entered a LEI the element carries the
+        // ESA-defined sentinel "N/A" so the document still validates.
         $el = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_01.01.0020');
         $el->setAttribute('contextRef', 'ctx_entity');
-        $el->textContent = 'N/A'; // TODO: Tenant::getLeiCode() — add field in Sprint 9
+        $el->textContent = $tenant->getLeiCode() ?? 'N/A';
         $root->appendChild($el);
-        $root->appendChild($dom->createComment(' B_01.01.0020: Reporting entity LEI — TODO: wire Tenant.leiCode (Sprint 9) '));
+        $root->appendChild($dom->createComment(' B_01.01.0020: Reporting entity LEI — ISO 17442 / GLEIF — sourced from Tenant.leiCode '));
 
         // ─── Element 6: Report reference date (B_01.01.0030) ──────────────────
         $el = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_01.01.0030');
@@ -155,13 +165,15 @@ final class DoraRoiXbrlExporter
         $root->appendChild($dom->createComment(' B_01.01.0030: Report reference date — end of reporting year '));
 
         // ─── Element 7: Currency (B_01.01.0040) ───────────────────────────────
-        // TODO: ESA taxonomy element B_01.01.0040 — reporting currency
+        // Sprint-9 Bucket-6b: wired to Tenant.reportingCurrency (ISO 4217).
+        // The `$currency` variable was already validated and uppercase-folded
+        // when the xbrli:unit was emitted above.
         $el = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_01.01.0040');
         $el->setAttribute('contextRef', 'ctx_period');
-        $el->setAttribute('unitRef', 'EUR');
-        $el->textContent = 'EUR';
+        $el->setAttribute('unitRef', $currency);
+        $el->textContent = $currency;
         $root->appendChild($el);
-        $root->appendChild($dom->createComment(' B_01.01.0040: Reporting currency — EUR default '));
+        $root->appendChild($dom->createComment(' B_01.01.0040: Reporting currency — ISO 4217 — sourced from Tenant.reportingCurrency '));
 
         // ─── Element 8: Total count of ICT third-party providers (B_02.01.0010) ─
         $el = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_02.01.0010');
@@ -181,7 +193,9 @@ final class DoraRoiXbrlExporter
             $nameEl->textContent = $supplier->getName() ?? 'Unknown Provider';
             $providerEl->appendChild($nameEl);
 
-            // B_02.02.0020: Provider LEI — TODO: wire Supplier.leiCode
+            // B_02.02.0020: Provider LEI (ISO 17442) — wired to Supplier.leiCode
+            // (Sprint-9 Bucket-6b). Sentinel "N/A" when the operator has not
+            // yet captured the GLEIF LEI for this provider.
             $leiEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_02.02.0020');
             $leiEl->setAttribute('contextRef', 'ctx_period');
             $leiEl->textContent = $supplier->getLeiCode() ?? 'N/A';
