@@ -270,6 +270,7 @@ report_builder:
 
     error:
         owner_required_user_or_person: 'Mindestens einer von Eigentümer (Benutzer) oder Eigentümer (Person) muss gesetzt sein.'
+        preview_failed: 'Vorschau konnte nicht generiert werden. Bitte prüfen Sie die Widget-Konfiguration.'
 
     choice:
         yes: 'Ja'

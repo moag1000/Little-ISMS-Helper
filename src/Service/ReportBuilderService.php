@@ -920,7 +920,7 @@ final class ReportBuilderService
                 'name' => $risk->getName(),
                 'category' => $risk->getCategory(),
                 'score' => $risk->getRiskScore(),
-                'status' => $risk->getStatus(),
+                'status' => $risk->getStatus()?->value,
                 'owner' => $risk->getRiskOwner()?->getFullName(),
             ];
         }
@@ -997,7 +997,7 @@ final class ReportBuilderService
             $rows[] = [
                 'id' => $asset->getId(),
                 'name' => $asset->getName(),
-                'type' => $asset->getType(),
+                'type' => $asset->getAssetType(),
                 'c' => $asset->getConfidentiality(),
                 'i' => $asset->getIntegrity(),
                 'a' => $asset->getAvailability(),
