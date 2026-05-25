@@ -1,0 +1,66 @@
+asset_sub_type:
+  admin:
+    page:
+      title: 'Asset Sub-Types'
+      lead: 'Tenant-configurable sub-types for asset inventory (e.g. Server under Hardware). Industry seed presets accelerate the inventory workshop.'
+    seed:
+      title: 'Apply industry preset'
+      lead: 'Imports a predefined sub-type catalogue for an industry. Duplicates are skipped.'
+    empty:
+      title: 'No sub-types defined yet'
+      subtitle: 'Apply an industry preset or create custom sub-types.'
+  preset:
+    bsi-grundschutz: 'BSI IT-Grundschutz'
+    tisax: 'TISAX (Automotive)'
+    production-de-mittelstand: 'Production (DE Mittelstand)'
+  source:
+    custom: 'Custom'
+    seed-bsi-grundschutz: 'BSI seed'
+    seed-tisax: 'TISAX seed'
+    seed-production-de-mittelstand: 'Production-DE seed'
+  top_type:
+    Hardware: 'Hardware'
+    Software: 'Software'
+    Datenbank: 'Database / Information'
+    Personal: 'Personnel'
+    Standort: 'Location'
+    Dienstleistung: 'Service'
+  status:
+    active: 'Active'
+    inactive: 'Inactive'
+  field:
+    top_type: 'Top-level type'
+    name: 'Name'
+    description: 'Description'
+    source: 'Source'
+    is_active: 'Active'
+    actions: 'Actions'
+  help:
+    top_type: 'One of the 6 ISO-compliant top-level classes. Sub-type is filtered against this level.'
+  action:
+    new: 'New sub-type'
+    edit: 'Edit'
+    save: 'Save'
+    cancel: 'Cancel'
+    delete: 'Delete'
+  flash:
+    created: 'Sub-type created.'
+    updated: 'Sub-type updated.'
+    deleted: 'Sub-type deleted.'
+    tenant_required: 'Tenant context required.'
+    csrf_invalid: 'Security error. Please retry.'
+    preset_invalid: 'Unknown preset: %preset%.'
+    seeded: 'Preset "%preset%" applied: %created% created, %skipped% skipped (of %total% total).'
+  confirm:
+    delete: 'Really delete sub-type "%name%"? Existing assets will lose the sub-type assignment (SET NULL).'
+    seed: 'Apply industry preset "%preset%"? Existing entries will be skipped.'
+  aria:
+    edit: 'Edit sub-type %name%'
+    delete: 'Delete sub-type %name%'
+  validation:
+    top_type_invalid: 'Invalid top-level type. Allowed: Hardware, Software, Datenbank, Personal, Standort, Dienstleistung.'
+    source_invalid: 'Invalid source.'
+  asset_form:
+    label: 'Sub-type (optional)'
+    placeholder: '— please choose —'
+    none_for_top_type: 'No sub-types defined for this top-level. Tip: apply an industry preset in the admin area.'

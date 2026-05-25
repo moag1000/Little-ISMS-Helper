@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Asset;
+use App\Entity\AssetSubType;
 use App\Entity\Location;
 use App\Form\SectionMapInterface;
 use App\Entity\Person;
@@ -15,6 +16,7 @@ use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
 use App\Form\Type\JsonTagsType;
 use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
@@ -38,6 +40,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly Security $security,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -83,9 +86,47 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 'attr' => [
                     'id' => 'asset_form_assetType',
                     'data-asset-form-target' => 'assetTypeSelect',
+                    'data-asset-sub-type-target' => 'topType',
+                    'data-action' => 'change->asset-sub-type#topTypeChanged',
                 ],
             ])
         ;
+
+        // S18 B2: tenant-konfigurierbarer Sub-Type. Dependent-select gefiltert
+        // via Stimulus-Controller (asset-sub-type) + JSON-Endpoint. Bei jedem
+        // Initialladen werden ALLE Tenant-Sub-Types geliefert; das JS filtert
+        // clientseitig (Form-Render) + lädt frisch beim topType-Wechsel.
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $builder->add('subType', EntityType::class, [
+            'class' => AssetSubType::class,
+            'choice_label' => static fn (AssetSubType $s): string => $s->getName(),
+            'group_by' => static fn (AssetSubType $s): string => $s->getTopType(),
+            'required' => false,
+            'placeholder' => 'asset_sub_type.asset_form.placeholder',
+            'label' => 'asset_sub_type.asset_form.label',
+            'choice_translation_domain' => 'asset_sub_type',
+            'translation_domain' => 'asset_sub_type',
+            'query_builder' => static function ($repo) use ($tenant) {
+                $qb = $repo->createQueryBuilder('s')
+                    ->andWhere('s.isActive = :a')
+                    ->setParameter('a', true)
+                    ->orderBy('s.topType', 'ASC')
+                    ->addOrderBy('s.name', 'ASC');
+                if ($tenant !== null) {
+                    $qb->andWhere('s.tenant = :t')->setParameter('t', $tenant);
+                } else {
+                    // Defensive: no tenant context → return empty set.
+                    $qb->andWhere('1 = 0');
+                }
+                return $qb;
+            },
+            'choice_attr' => static fn (AssetSubType $s): array => [
+                'data-top-type' => $s->getTopType(),
+            ],
+            'attr' => [
+                'data-asset-sub-type-target' => 'subType',
+            ],
+        ]);
 
         // ── Owner cluster (audit-s4 P-1) ────────────────────────────────────
         // Replaces 4 hand-rolled add() calls (ownerUser/ownerPerson/
@@ -449,6 +490,7 @@ final class AssetType extends AbstractType implements SectionMapInterface
                 'name',
                 'description',
                 'assetType',
+                'subType',
             ],
             'ownership' => [
                 'ownerUser',

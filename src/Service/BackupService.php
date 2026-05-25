@@ -71,6 +71,7 @@ class BackupService
         'KpiThresholdConfig',       // FK: Tenant
         'Tag',                      // FK: Tenant
         'EntityTag',                // FK: Tag, User
+        'AssetSubType',             // S18 B2 — FK: Tenant — tenant-konfigurierbare Asset-Sub-Types
 
         // ISMS Core
         'Asset',

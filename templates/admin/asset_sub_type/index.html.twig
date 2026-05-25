@@ -1,0 +1,123 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'asset_sub_type' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_status_pill.html.twig' as pill %}
+
+{% block admin_title %}{{ 'asset_sub_type.admin.page.title'|trans({}, 'asset_sub_type') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'asset_sub_type.admin.page.title'|trans({}, 'asset_sub_type') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'ui-list', label: 'Asset Sub-Type' },
+        title: 'asset_sub_type.admin.page.title'|trans({}, 'asset_sub_type'),
+        subtitle: 'asset_sub_type.admin.page.lead'|trans({}, 'asset_sub_type'),
+        actions: [
+            { label: 'asset_sub_type.action.new'|trans({}, 'asset_sub_type'), variant: 'primary', icon: 'plus', href: path('admin_asset_sub_type_new') }
+        ]
+    }) }}
+
+    {# Seed Preset Section #}
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'asset_sub_type.admin.seed.title'|trans({}, 'asset_sub_type') }}</h2>
+            <p class="fa-section__subtitle">{{ 'asset_sub_type.admin.seed.lead'|trans({}, 'asset_sub_type') }}</p>
+        </div>
+        <div class="fa-section__body">
+            <div class="d-flex flex-wrap gap-3">
+                {% for preset in presets %}
+                    <form method="post" action="{{ path('admin_asset_sub_type_seed') }}"
+                          data-controller="ui-actions"
+                          data-action="submit->ui-actions#confirm"
+                          data-ui-actions-message-param="{{ 'asset_sub_type.confirm.seed'|trans({'%preset%': preset}, 'asset_sub_type') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('asset_sub_type_seed') }}">
+                        <input type="hidden" name="preset" value="{{ preset }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <i class="fa-icon fa-icon--plus" aria-hidden="true"></i>
+                            {{ ('asset_sub_type.preset.' ~ preset)|trans({}, 'asset_sub_type') }}
+                        </button>
+                    </form>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# KPI strip showing counts per top-type #}
+    {% if counts_by_top_type|length > 0 %}
+        <div class="row g-2 mb-4">
+            {% for top_type in top_types %}
+                {% set cnt = counts_by_top_type[top_type] ?? 0 %}
+                <div class="col-6 col-md-2">
+                    <div class="fa-stat-card">
+                        <div class="fa-stat-card__label">{{ ('asset_sub_type.top_type.' ~ top_type)|trans({}, 'asset_sub_type') }}</div>
+                        <div class="fa-stat-card__value">{{ cnt }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if sub_types|length == 0 %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'asset_sub_type.admin.empty.title'|trans({}, 'asset_sub_type'),
+            subtitle: 'asset_sub_type.admin.empty.subtitle'|trans({}, 'asset_sub_type')
+        }) }}
+    {% else %}
+        {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
+            {% trans_default_domain 'asset_sub_type' %}
+            {% block table_head %}
+                <tr>
+                    <th class="fa-table__th">{{ 'asset_sub_type.field.top_type'|trans({}, 'asset_sub_type') }}</th>
+                    <th class="fa-table__th">{{ 'asset_sub_type.field.name'|trans({}, 'asset_sub_type') }}</th>
+                    <th class="fa-table__th">{{ 'asset_sub_type.field.description'|trans({}, 'asset_sub_type') }}</th>
+                    <th class="fa-table__th">{{ 'asset_sub_type.field.source'|trans({}, 'asset_sub_type') }}</th>
+                    <th class="fa-table__th">{{ 'asset_sub_type.field.is_active'|trans({}, 'asset_sub_type') }}</th>
+                    <th class="fa-table__th fa-table__th--actions">{{ 'asset_sub_type.field.actions'|trans({}, 'asset_sub_type') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% import '_components/_status_pill.html.twig' as pill %}
+                {% for st in sub_types %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">{{ ('asset_sub_type.top_type.' ~ st.topType)|trans({}, 'asset_sub_type') }}</td>
+                        <td class="fa-table__cell"><strong>{{ st.name }}</strong></td>
+                        <td class="fa-table__cell">{{ st.description ?: '—' }}</td>
+                        <td class="fa-table__cell">
+                            {% set src = st.source ?? 'custom' %}
+                            {% set tone = src == 'custom' ? 'neutral' : 'primary' %}
+                            {{ pill.render(('asset_sub_type.source.' ~ src)|trans({}, 'asset_sub_type'), tone, {size: 'sm'}) }}
+                        </td>
+                        <td class="fa-table__cell">
+                            {% if st.isActive %}
+                                {{ pill.render('asset_sub_type.status.active'|trans({}, 'asset_sub_type'), 'success', {size: 'sm'}) }}
+                            {% else %}
+                                {{ pill.render('asset_sub_type.status.inactive'|trans({}, 'asset_sub_type'), 'neutral', {size: 'sm'}) }}
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell fa-table__cell--actions">
+                            <a href="{{ path('admin_asset_sub_type_edit', {id: st.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                               aria-label="{{ 'asset_sub_type.aria.edit'|trans({'%name%': st.name}, 'asset_sub_type') }}">
+                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                            </a>
+                            <form method="post" action="{{ path('admin_asset_sub_type_delete', {id: st.id}) }}" class="d-inline"
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#confirm"
+                                  data-ui-actions-message-param="{{ 'asset_sub_type.confirm.delete'|trans({'%name%': st.name}, 'asset_sub_type') }}"
+                                  data-ui-actions-tone-param="danger">
+                                <input type="hidden" name="_token" value="{{ csrf_token('asset_sub_type_delete_' ~ st.id) }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
+                                        aria-label="{{ 'asset_sub_type.aria.delete'|trans({'%name%': st.name}, 'asset_sub_type') }}">
+                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+{% endblock %}
