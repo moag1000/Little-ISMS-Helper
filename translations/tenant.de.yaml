@@ -1,12 +1,13 @@
 tenant:
-    title: Mandantenverwaltung
-    subtitle: 'Verwalten Sie Ihre Mandanten (entspricht der Organisation oder Tochtergesellschaft im ISMS-Scope nach ISO 27001 Kl. 4.3).'
-    empty: 'Keine Mandanten vorhanden'
+    title: Organisationsverwaltung
+    subtitle: 'Verwalten Sie Ihre Organisationen (entspricht der Organisation oder Tochtergesellschaft im ISMS-Scope nach ISO 27001 Kl. 4.3).'
+    empty: 'Keine Organisationen vorhanden'
     switch_hint: 'Wechseln'
-    switch_header: 'Organisation/Mandant wechseln'
+    switch_header: 'Organisation wechseln'
+    switch_glossary_hint: 'Organisation = Ihr Mandant in der ISO-Terminologie (ISO 27001 Cl. 4.1).'
     orphan_users:
-        title: '%count% Benutzerkonto/-konten ohne Mandantenzuweisung'
-        body: 'Diese Konten können sich anmelden, sehen aber keine ISMS-Daten (Controls, Risiken, VVT-Einträge), weil jede Abfrage an einen Mandanten gekoppelt ist. Bitte den Mandanten in der Benutzerverwaltung setzen oder die Daten-Reparatur im Bulk-Modus nutzen.'
+        title: '%count% Benutzerkonto/-konten ohne Organisationszuweisung'
+        body: 'Diese Konten können sich anmelden, sehen aber keine ISMS-Daten (Controls, Risiken, VVT-Einträge), weil jede Abfrage an eine Organisation gekoppelt ist. Bitte die Organisation in der Benutzerverwaltung setzen oder die Daten-Reparatur im Bulk-Modus nutzen.'
         cta_user_management: 'Benutzerverwaltung öffnen'
         cta_data_repair: 'Daten-Reparatur öffnen'
     stats:
@@ -21,21 +22,21 @@ tenant:
         active: Aktiv
         inactive: Inaktiv
     field:
-        code: Mandanten-Code
+        code: Organisations-Code
         code_help: 'Eindeutiger alphanumerischer Code (nur a-z, 0-9, _, -)'
         code_auto_generated: 'Wird automatisch aus dem Namen generiert'
         name: Name
         name_help: 'Vollständiger Name der Organisation'
         description: Beschreibung
-        description_help: 'Optionale Beschreibung des Mandanten'
+        description_help: 'Optionale Beschreibung der Organisation'
         logo: Logo
-        logo_help: 'Mandanten-Logo (max. 2MB, JPG/PNG/GIF/WebP)'
-        azure_tenant_id: Azure-Mandanten-ID
+        logo_help: 'Organisations-Logo (max. 2MB, JPG/PNG/GIF/WebP)'
+        azure_tenant_id: Azure Tenant ID
         azure_tenant_id_help: 'Azure AD Tenant ID (UUID-Format) für SSO-Integration'
         is_active: Aktiv
-        is_active_help: 'Nur aktive Mandanten können sich anmelden'
+        is_active_help: 'Nur aktive Organisationen können sich anmelden'
         settings: 'Einstellungen (JSON)'
-        settings_help: 'Mandantenspezifische Einstellungen im JSON-Format'
+        settings_help: 'Organisationsspezifische Einstellungen im JSON-Format'
         users: Benutzer
         status: Status
         created: Erstellt
@@ -45,7 +46,7 @@ tenant:
     placeholder:
         code: 'z.B. acme-corp'
         name: 'z.B. ACME Corporation'
-        description: 'Beschreibung des Mandanten...'
+        description: 'Beschreibung der Organisation...'
         azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
         settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
     validation:
@@ -58,56 +59,56 @@ tenant:
         active: Aktiv
         inactive: Inaktiv
     action:
-        create: 'Neuen Mandanten erstellen'
-        create_first: 'Ersten Mandanten erstellen'
+        create: 'Neue Organisation erstellen'
+        create_first: 'Erste Organisation erstellen'
         edit: Bearbeiten
         delete: Löschen
         activate: Aktivieren
         deactivate: Deaktivieren
     section:
-        information: Mandanten-Informationen
+        information: Organisations-Informationen
         users: Benutzer
         basic_info: Grundinformationen
         azure_integration: Azure-Integration
         settings: Einstellungen
         danger_zone: Gefahrenbereich
     users:
-        empty: 'Keine Benutzer in diesem Mandanten'
+        empty: 'Keine Benutzer in dieser Organisation'
         showing: 'Zeige %count% von %total% Benutzern'
         manage: 'Benutzer verwalten'
         manage_title: 'Benutzer verwalten'
         add_user: 'Benutzer hinzufügen'
         enter_email: 'E-Mail-Adresse des Benutzers eingeben'
         add: Hinzufügen
-        add_help: 'Geben Sie die E-Mail-Adresse eines existierenden Benutzers ein, um ihn diesem Mandanten zuzuordnen'
+        add_help: 'Geben Sie die E-Mail-Adresse eines existierenden Benutzers ein, um ihn dieser Organisation zuzuordnen'
         current_users: 'Aktuelle Benutzer'
-        confirm_remove: 'Möchten Sie den Benutzer %email% wirklich aus diesem Mandanten entfernen?'
+        confirm_remove: 'Möchten Sie den Benutzer %email% wirklich aus dieser Organisation entfernen?'
         flash:
             email_required: 'E-Mail-Adresse ist erforderlich'
             user_not_found: 'Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden'
-            already_assigned: 'Benutzer ist bereits diesem Mandanten zugeordnet'
-            user_added: 'Benutzer erfolgreich zum Mandanten hinzugefügt'
-            user_removed: 'Benutzer erfolgreich vom Mandanten entfernt'
-            not_assigned: 'Benutzer ist nicht diesem Mandanten zugeordnet'
+            already_assigned: 'Benutzer ist bereits dieser Organisation zugeordnet'
+            user_added: 'Benutzer erfolgreich zur Organisation hinzugefügt'
+            user_removed: 'Benutzer erfolgreich von der Organisation entfernt'
+            not_assigned: 'Benutzer ist nicht dieser Organisation zugeordnet'
             error: 'Fehler bei der Benutzer-Verwaltung'
     form:
-        create_title: 'Neuen Mandanten anlegen'
-        edit_title: 'Mandant bearbeiten'
+        create_title: 'Neue Organisation anlegen'
+        edit_title: 'Organisation bearbeiten'
     flash:
-        created: 'Mandant erfolgreich erstellt'
-        updated: 'Mandant erfolgreich aktualisiert'
-        deleted: 'Mandant erfolgreich gelöscht'
-        activated: 'Mandant erfolgreich aktiviert'
-        deactivated: 'Mandant erfolgreich deaktiviert'
-        error: 'Fehler beim Speichern des Mandanten'
-        has_users: 'Mandant kann nicht gelöscht werden, da er noch Benutzer hat'
+        created: 'Organisation erfolgreich erstellt'
+        updated: 'Organisation erfolgreich aktualisiert'
+        deleted: 'Organisation erfolgreich gelöscht'
+        activated: 'Organisation erfolgreich aktiviert'
+        deactivated: 'Organisation erfolgreich deaktiviert'
+        error: 'Fehler beim Speichern der Organisation'
+        has_users: 'Organisation kann nicht gelöscht werden, da sie noch Benutzer hat'
         organisation_context_updated: 'Organisationsprofil erfolgreich aktualisiert'
         organisation_context_error: 'Fehler beim Aktualisieren des Organisationsprofils'
     confirm:
-        delete: 'Sind Sie sicher, dass Sie diesen Mandanten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.'
-        toggle: 'Möchten Sie den Status dieses Mandanten wirklich ändern?'
+        delete: 'Sind Sie sicher, dass Sie diese Organisation löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.'
+        toggle: 'Möchten Sie den Status dieser Organisation wirklich ändern?'
     delete:
-        warning: 'Mandanten können nur gelöscht werden, wenn sie keine zugewiesenen Benutzer mehr haben.'
+        warning: 'Organisationen können nur gelöscht werden, wenn sie keine zugewiesenen Benutzer mehr haben.'
     tabs:
         details: Details
         isms_context: 'ISMS Kontext'
@@ -119,16 +120,16 @@ tenant:
         settings: Einstellungen
     isms_context:
         not_configured: 'ISMS Kontext nicht konfiguriert'
-        configure_prompt: 'Konfigurieren Sie den ISMS Kontext für diesen Mandanten.'
+        configure_prompt: 'Konfigurieren Sie den ISMS Kontext für diese Organisation.'
         configure_now: 'Jetzt konfigurieren'
         load_error: 'Fehler beim Laden des ISMS Kontexts'
         view_full: 'Vollständigen ISMS Kontext anzeigen'
-        linked_to: 'Verknüpft mit Mandant'
+        linked_to: 'Verknüpft mit Organisation'
     organisation_context:
         title: Organisationsprofil
         header: 'Organisationsprofil bearbeiten'
         description: 'Bearbeiten Sie die Branchenzuordnung, Unternehmensgröße und Standort Ihrer Organisation. Diese Daten beeinflussen Compliance-Empfehlungen.'
-        name_info: 'Der Organisationsname wird aus der Mandanten-Konfiguration übernommen.'
+        name_info: 'Der Organisationsname wird aus der Organisations-Konfiguration übernommen.'
         current_config: 'Aktuelle Konfiguration'
         active_modules: 'Aktive Module'
         active_frameworks: 'Aktive Frameworks'
@@ -155,21 +156,21 @@ tenant:
         isms_context: 'ISMS-Kontext angelegt'
         context_complete: 'ISMS-Kontext mindestens 50% ausgefuellt'
     link:
-        view: 'Mandant anzeigen'
-        back_to_tenant: 'Zurück zum Mandanten'
+        view: 'Organisation anzeigen'
+        back_to_tenant: 'Zurück zur Organisation'
     info:
-        title: 'Über Mandanten'
-        text: 'Mandanten ermöglichen es, mehrere Organisationen in einer Instanz zu verwalten. Jeder Benutzer gehört zu einem Mandanten.'
+        title: 'Über Organisationen'
+        text: 'Organisationen ermöglichen es, mehrere Organisationen in einer Instanz zu verwalten. Jeder Benutzer gehört zu einer Organisation.'
         metadata: Metadaten
     no_logo: 'Kein Logo vorhanden'
     help:
         title: Hilfe
-        code_title: Mandanten-Code
+        code_title: Organisations-Code
         code_text: 'Der Code ist ein eindeutiger Identifier und kann nach der Erstellung nicht mehr geändert werden. Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche.'
         azure_title: Azure-Integration
-        azure_text: 'Wenn Sie Azure AD SSO verwenden, können Sie hier die Azure Tenant ID hinterlegen für mandantenspezifische Authentifizierung.'
+        azure_text: 'Wenn Sie Azure AD SSO verwenden, können Sie hier die Azure Tenant ID hinterlegen für organisationsspezifische Authentifizierung.'
         settings_title: Einstellungen
-        settings_text: 'Mandantenspezifische Einstellungen im JSON-Format können individuelle Konfigurationen wie Branding, Features oder Limits enthalten.'
+        settings_text: 'Organisationsspezifische Einstellungen im JSON-Format können individuelle Konfigurationen wie Branding, Features oder Limits enthalten.'
         name: Name
         description: Beschreibung
         logo: Logo
@@ -184,13 +185,13 @@ tenant:
     name: Name
     email:
         title: 'E-Mail-Branding'
-        subtitle: 'Absender, Logo und Footer für ausgehende E-Mails. Leere Felder werden aus Parent-Mandant oder SystemSettings geerbt.'
+        subtitle: 'Absender, Logo und Footer für ausgehende E-Mails. Leere Felder werden aus Parent-Organisation oder SystemSettings geerbt.'
         section:
             branding: 'Branding-Einstellungen'
             effective: 'Effektive Werte (nach Fallback-Kaskade)'
-        effective_hint: 'Diese Werte werden beim E-Mail-Versand verwendet — leere Felder werden aus dem Parent-Mandanten oder den SystemSettings übernommen.'
+        effective_hint: 'Diese Werte werden beim E-Mail-Versand verwendet — leere Felder werden aus dem Parent-Organisation oder den SystemSettings übernommen.'
         hint:
-            fallback: 'Leeres Feld → Parent-Mandant → SystemSettings (category=email) → Hardcoded-Default.'
+            fallback: 'Leeres Feld → Parent-Organisation → SystemSettings (category=email) → Hardcoded-Default.'
         field:
             from_name: 'Absender-Name'
             from_address: 'Absender-E-Mail-Adresse'
@@ -269,22 +270,22 @@ corporate:
         remove_parent: 'Muttergesellschaft entfernen'
         view_structure: 'Unternehmensstruktur anzeigen'
     title: Konzernstruktur
-    subtitle: Mandantenverwaltung
+    subtitle: Organisationsverwaltung
     single_tenant:
-        title: Einzelmandanten-Modus
-        message: 'Diese Installation ist für einen einzelnen Mandanten konfiguriert'
-        hint: 'Multi-Mandanten-Funktionen sind deaktiviert'
+        title: Einzel-Organisations-Modus
+        message: 'Diese Installation ist für eine einzelne Organisation konfiguriert'
+        hint: 'Multi-Organisationen-Funktionen sind deaktiviert'
     section:
-        groups: Mandantengruppen
-        standalone: 'Eigenständiger Mandant'
+        groups: Organisationsgruppen
+        standalone: 'Eigenständige Organisation'
         structure: Unternehmensstruktur
         legal: Rechtsperson
         nis2: 'NIS2 / Regulierung'
     role:
         parent: Muttergesellschaft
     info:
-        title: Mandanteninformationen
-        text: Mandantendetails
+        title: Organisationsinformationen
+        text: Organisationsdetails
     modal:
         set_parent:
             title: Titel
@@ -317,15 +318,15 @@ corporate:
             error: Fehler
         confirm:
             delete: Löschen
-    title.edit: 'Mandant bearbeiten'
-    title.create: 'Neuer Mandant'
+    title.edit: 'Organisation bearbeiten'
+    title.create: 'Neuer Organisation'
     email:
         title: 'E-Mail-Branding'
-        subtitle: 'Absender, Logo und Footer für E-Mails pro Mandant. Leere Felder erben vom Holding-Parent, dann SystemSettings, dann Default.'
+        subtitle: 'Absender, Logo und Footer für E-Mails pro Organisation. Leere Felder erben vom Holding-Parent, dann SystemSettings, dann Default.'
         section:
             branding: 'Branding-Einstellungen'
             effective: 'Effektive Werte (nach Fallback-Kaskade)'
-        effective_hint: 'Diese Werte werden aktuell beim Versand verwendet — wenn eigene Felder leer sind, kommen sie aus Parent-Mandant oder SystemSettings.'
+        effective_hint: 'Diese Werte werden aktuell beim Versand verwendet — wenn eigene Felder leer sind, kommen sie aus Parent-Organisation oder SystemSettings.'
         field:
             from_name: 'Absender-Name'
             from_address: 'Absender-E-Mail-Adresse'
@@ -339,7 +340,7 @@ corporate:
             footer_text: 'Rechtliche Hinweise / Unterschrift unter der E-Mail. Max. 2000 Zeichen, einfacher Text.'
             support_address: 'Reply-To bzw. Support-Kontakt — kann sich von Absender unterscheiden.'
         hint:
-            fallback: 'Leeres Feld → Parent-Mandant → SystemSettings (category=email) → Hardcoded-Default.'
+            fallback: 'Leeres Feld → Parent-Organisation → SystemSettings (category=email) → Hardcoded-Default.'
         logo_url:
             https_only: 'Nur HTTPS-URLs erlaubt (sonst Mixed-Content in HTML-E-Mails).'
         saved: 'E-Mail-Branding gespeichert.'

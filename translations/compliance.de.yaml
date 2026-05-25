@@ -526,12 +526,12 @@ compliance:
             updated: 'Compliance-Anforderung wurde aktualisiert.'
             deleted: 'Compliance-Anforderung wurde gelöscht.'
             mris_saved: 'MRIS-Reifegrad gespeichert.'
-            fulfillment_updated: 'Anforderungs-Erfüllungsstatus wurde für Ihren Mandanten aktualisiert.'
+            fulfillment_updated: 'Anforderungs-Erfüllungsstatus wurde für Ihre Organisation aktualisiert.'
         error:
             mris_only: 'Reifegrad ist nur für MRIS-MHC-Requirements verfügbar.'
-            no_tenant: 'Kein Mandant zugewiesen. Bitte wenden Sie sich an einen Administrator.'
-            fulfillment_no_tenant: 'Erfüllungsstatus kann ohne Mandantenzuordnung nicht aktualisiert werden.'
-            inherited_fulfillment_readonly: 'Vererbter Erfüllungsstatus vom übergeordneten Mandanten kann nicht bearbeitet werden.'
+            no_tenant: 'Kein Organisation zugewiesen. Bitte wenden Sie sich an einen Administrator.'
+            fulfillment_no_tenant: 'Erfüllungsstatus kann ohne Organisationszuordnung nicht aktualisiert werden.'
+            inherited_fulfillment_readonly: 'Vererbter Erfüllungsstatus von der übergeordneten Organisation kann nicht bearbeitet werden.'
         details: 'Anforderungsdetails'
         confirm:
             delete: 'Möchten Sie diese Anforderung wirklich löschen?'

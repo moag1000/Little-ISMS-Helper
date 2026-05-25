@@ -184,7 +184,7 @@ policy:
                     - **Immutable Backups:** WORM/Object-Lock für mindestens eine Kopie zur Ransomware-Resilienz; Mindest-Sperrfrist gemaess Aufbewahrungsstufe.
                     - **Verschluesselung:** Backup-Daten in transit und at rest gemaess Krypto-Richtlinie (A.8.24); Schluesselverwaltung getrennt von Backup-Daten.
                     - **Trennung der Pflichten:** Backup-Operatoren haben keine Loesch- oder Schluessel-Hoheit; Vier-Augen-Prinzip für destruktive Operationen.
-                    - **Mandanten-Trennung:** kein Cross-Tenant-Restore; tenant_id-basierte Isolation auch im Backup-System.
+                    - **Organisations-Trennung:** kein Cross-Tenant-Restore; tenant_id-basierte Isolation auch im Backup-System.
 
                     ## 4. RPO, RTO und Klassifizierung
                     Die Recovery Point Objectives (RPO) und Recovery Time Objectives (RTO) leiten sich aus der BIA (BSI 200-4) und der ISMS-Risikobeurteilung ab und werden je System dokumentiert. Default-Klassen:
@@ -192,7 +192,7 @@ policy:
                     | Klasse | RPO | RTO | Beispiel |
                     |---|---|---|---|
                     | Tier 0 (mission-critical) | {{ backup.rpo_hours }} h (z. B. 1 h) | {{ backup.rto_hours_tier0 }} h (z. B. 4 h) | Kernbankensystem, Order-Management |
-                    | Tier 1 (business-critical) | 4 h | 8 h | CRM, Mandanten-Portal |
+                    | Tier 1 (business-critical) | 4 h | 8 h | CRM, Organisations-Portal |
                     | Tier 2 (operational) | 24 h | 24 h | Intranet, interne Tools |
                     | Tier 3 (archival) | 7 d | 72 h | Archiv-Systeme |
 

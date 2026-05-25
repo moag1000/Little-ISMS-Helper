@@ -306,7 +306,7 @@ asset:
     driven_by: Getrieben durch
   ai_agent:
     flash:
-      no_tenant: 'Kein Mandant zugewiesen — AI-Agent-Inventar benötigt einen Mandantenkontext.'
+      no_tenant: 'Kein Organisation zugewiesen — AI-Agent-Inventar benötigt einen Organisationskontext.'
     show:
       classification: 'Risikoklasse'
       classification_unclassified: '— nicht klassifiziert —'
