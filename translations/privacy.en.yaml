@@ -517,7 +517,7 @@ processing_activity:
         assets: 'Assets (servers, databases, applications) used by this processing activity.
             When a linked asset has data classification "confidential" or "restricted",
             a DPIA suggestion is auto-generated (Art. 35 GDPR).'
-        legal_basis: 'Legal basis for processing (Art. 6(1) GDPR)'
+        legal_basis: 'Legal basis for processing (Art. 6(1) GDPR). Values: a) Consent — data subject actively consents. b) Contract — required for contract performance. c) Legal obligation — required by law. d) Vital interests — protect life/health. e) Public task — exercise of official authority. f) Legitimate interests — controller-vs-subject balancing test (details field below mandatory).'
         legal_basis_details: 'Detailed explanation (mandatory for legitimate interests)'
         legal_basis_special_categories: 'Legal basis for processing special categories (Art. 9(2) GDPR)'
         responsible_department: 'Department/unit responsible for this processing'

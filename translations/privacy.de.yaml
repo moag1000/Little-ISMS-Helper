@@ -560,7 +560,7 @@ processing_activity:
         assets: 'Assets, die diese Verarbeitungstätigkeit nutzt (Server, Datenbanken,
             Anwendungen). Bei Datenklassifizierung „vertraulich"/„restricted" eines
             verknüpften Assets wird automatisch eine DSFA-Empfehlung ausgelöst (Art. 35 DSGVO).'
-        legal_basis: 'Rechtsgrundlage für die Verarbeitung (Art. 6(1) DSGVO)'
+        legal_basis: 'Rechtsgrundlage für die Verarbeitung (Art. 6(1) DSGVO). Werte: a) Einwilligung — Betroffener willigt aktiv ein. b) Vertrag — Verarbeitung zur Vertragserfüllung erforderlich. c) Rechtliche Verpflichtung — gesetzlich vorgeschrieben. d) Lebenswichtige Interessen — Schutz von Leben/Gesundheit. e) Öffentliche Aufgabe — Wahrnehmung hoheitlicher Befugnisse. f) Berechtigtes Interesse — Abwägung Verantwortlicher vs. Betroffener (Details-Feld unten obligatorisch).'
         legal_basis_details: 'Detaillierte Erläuterung (obligatorisch bei berechtigtem Interesse)'
         legal_basis_special_categories: 'Rechtsgrundlage für Verarbeitung besonderer Kategorien (Art. 9(2) DSGVO)'
         responsible_department: 'Abteilung/Einheit, die für diese Verarbeitung verantwortlich ist'
