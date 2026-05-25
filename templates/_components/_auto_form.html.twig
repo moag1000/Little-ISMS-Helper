@@ -197,16 +197,30 @@
         {% endif %}
     {% endif %}
 
-    {# Build sections array for the macro, computing fill-progress per section #}
+    {# Build sections array for the macro, computing fill-progress per section.
+       Only count fields that are actually present on the form. Module-gated
+       fields that the FormType skipped at build-time must not inflate the
+       section's field-count nor render a phantom "0 / N ausstehend" tile
+       in the outline-rail when the gating module is inactive. #}
     {% set fa_form_sections = [] %}
     {% for section_key, section_def in sections %}
-        {% set section_field_count = section_def.fields|length %}
+        {% set _present_fields = [] %}
         {% set section_filled = 0 %}
         {% for field_name in section_def.fields %}
-            {% if form[field_name] is defined and form[field_name].vars.value is not empty %}
-                {% set section_filled = section_filled + 1 %}
+            {% if form[field_name] is defined %}
+                {% set _present_fields = _present_fields|merge([field_name]) %}
+                {% if form[field_name].vars.value is not empty %}
+                    {% set section_filled = section_filled + 1 %}
+                {% endif %}
             {% endif %}
         {% endfor %}
+        {% set section_field_count = _present_fields|length %}
+
+        {# Skip whole section if no fields present (all module-gated away,
+           conditional builder branch not taken, etc.). #}
+        {% if section_field_count == 0 %}
+            {% continue %}
+        {% endif %}
 
         {# Derive status from fill ratio #}
         {% if section_filled == section_field_count and section_field_count > 0 %}
@@ -287,6 +301,18 @@
 {% else %}
 
     {% for section_key, section in sections %}
+        {# Skip section if all fields are absent (module-gated away or builder
+           branch not taken). Mirrors the outline-rail layout skip. #}
+        {% set _present_section_fields = [] %}
+        {% for field_name in section.fields %}
+            {% if form[field_name] is defined %}
+                {% set _present_section_fields = _present_section_fields|merge([field_name]) %}
+            {% endif %}
+        {% endfor %}
+        {% if _present_section_fields|length == 0 %}
+            {% continue %}
+        {% endif %}
+
         <fieldset class="mb-4">
             <legend class="h5 mb-3">{{ section.label|raw }}</legend>
 
