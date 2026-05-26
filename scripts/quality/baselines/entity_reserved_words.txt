@@ -1,0 +1,2 @@
+# check_entity_reserved_words.py baseline
+# Format: <relative-path>:<line>  <signature>

@@ -434,6 +434,19 @@ jobs:
         # referencing form.X when the FormType has no ->add('X', ...) call.
         # TODO §Implementation-Disziplin (Junior-ISB-Audit 2026-05-22).
         run: python3 scripts/quality/check_form_template_fields.py --baseline scripts/quality/baselines/form_template_fields.txt --quiet
+      - name: "Gate 46: Entity setter param nullability matches property"
+        # Prevents InvalidTypeException 500 on form-bind: `private ?T $foo`
+        # must have `setFoo(?T $foo)`. Sweeps in #706 + #707 fixed history.
+        run: python3 scripts/quality/check_setter_nullability.py --baseline scripts/quality/baselines/setter_nullability.txt --quiet
+      - name: "Gate 47: NotBlank/NotNull Assert on NOT NULL scalar columns"
+        # Prevents NotNullConstraintViolationException 500 on flush. Without
+        # NotBlank, empty form submit bypasses validation and crashes at DB.
+        run: python3 scripts/quality/check_notblank_on_not_null.py --baseline scripts/quality/baselines/notblank_on_not_null.txt --quiet
+      - name: "Gate 48: No SQL reserved-keyword column names in entities"
+        # MariaDB/MySQL reserves words like `references`, `order`, `key`.
+        # Doctrine quotes them in CREATE TABLE but not in DML → INSERT/UPDATE
+        # blows up. Use `#[ORM\Column(name: 'safe_name')]` or rename the property.
+        run: python3 scripts/quality/check_entity_reserved_words.py --baseline scripts/quality/baselines/entity_reserved_words.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
