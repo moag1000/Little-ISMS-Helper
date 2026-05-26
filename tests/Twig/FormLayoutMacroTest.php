@@ -30,7 +30,9 @@ final class FormLayoutMacroTest extends KernelTestCase
         $output = $this->renderMacro($this->fullConfig());
 
         self::assertStringContainsString('class="fa-form-layout"', $output);
-        self::assertStringContainsString('data-controller="form-layout"', $output);
+        // form-validation controller is composed alongside form-layout so the
+        // collapsed-section-reveal pattern works on validation errors (PR #718).
+        self::assertStringContainsString('data-controller="form-layout form-validation"', $output);
     }
 
     #[Test]
@@ -231,7 +233,7 @@ final class FormLayoutMacroTest extends KernelTestCase
 
         $output = $this->renderMacro($config);
 
-        self::assertStringContainsString('data-controller="my-custom-form"', $output);
+        self::assertStringContainsString('data-controller="my-custom-form form-validation"', $output);
         self::assertStringContainsString('data-my-custom-form-target="section"', $output);
     }
 
