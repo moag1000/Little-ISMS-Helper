@@ -89,6 +89,9 @@ final class DoraSubcontractorType extends AbstractType implements SectionMapInte
                 ],
                 'help' => 'dora_subcontractor.help.tier',
             ])
+            // @no-module-gate-required: DoraSubcontractor form is DORA-scoped end-to-end —
+            //   controller (DoraSubcontractorController) gates `nis2_dora` on every action,
+            //   the entity exists exclusively for DORA RT_04 subcontractor-chain reporting.
             ->add('leiCode', TextType::class, [
                 'label' => 'dora_subcontractor.field.lei_code',
                 'required' => false,
@@ -99,6 +102,9 @@ final class DoraSubcontractorType extends AbstractType implements SectionMapInte
                 ],
                 'help' => 'dora_subcontractor.help.lei_code',
             ])
+            // @legacy-freetext: ISO-3166-1 alpha-2 country code — kept as TextType in line with
+            //   SupplierType.countryOfHeadOffice / LocationType.country (both baselined).
+            //   Migration to CountryType deferred to a cross-cutting i18n-country sweep.
             ->add('country', TextType::class, [
                 'label' => 'dora_subcontractor.field.country',
                 'required' => false,
