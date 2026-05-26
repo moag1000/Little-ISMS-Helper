@@ -13,6 +13,8 @@ admin.workflow_slas.basis	1
 admin.workflow_slas.event	1
 alva.mood	1
 asset.classification	6
+asset.dependency.criticality_impact	1
+asset.dependency.type	1
 asset.field	1
 asset.status	3
 asset.type	2

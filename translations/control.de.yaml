@@ -54,6 +54,7 @@ control:
     responsible_person_contact: 'Person ohne System-Login als Verantwortliche wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
     responsible_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
     framework_references_json: 'JSON-Format: {"iso27001":["A.5.1"],"bsi":["ORP.1.A1"],"nist":["AC-1"],"dora":["Art. 6"]}'
+    framework_references_chip: 'Eine Zeile pro Framework. Mehrere Referenzen mit Komma trennen (z. B. A.5.1, A.5.2). Wird in Audit-Mapping und Multi-Framework-Coverage genutzt.'
     iso_27017: ISO 27017 Cloud-Control-Referenz (z. B. CLD.9.5.1)
     iso_27018: ISO 27018 Cloud-Privacy-Referenz (z. B. CLD.6.3.1)
     iso_27701: ISO 27701 PIMS-Referenz (z. B. 6.4.1.2)
@@ -70,6 +71,7 @@ control:
     automation_level: -- Automatisierungsgrad wählen --
     control_maturity: -- Reifegrad wählen --
     responsibility: -- Verantwortlichkeit wählen --
+    framework_reference: 'z. B. A.5.1, A.5.2 (Komma-getrennt)'
   status:
     implemented: Implementiert
     in_progress: In Bearbeitung
@@ -167,3 +169,20 @@ iso_9001_bridge:
     soa: 'Konzeptionell vergleichbar mit der Prozesslandkarte aus ISO 9001 Klausel 4.4 — die Statement of Applicability listet auf, welche Maßnahmen aus Annex A gelten und ist damit das Gegenstück zur 9001-Prozessübersicht.'
     control: 'In ISO 9001 entspricht das einer "Beherrschung eines Prozesses" (Klausel 8.1) — Maßnahmen sind die operative Steuerung, die Risiken adressieren.'
     objective: 'Identisch mit "Qualitätszielen" (ISO 9001 6.2) — messbare Ziele auf Prozess- bzw. Maßnahmen-Ebene.'
+
+# Framework labels for Control.frameworkReferences chip-rows (Bucket 5 item 5.5).
+framework:
+    label:
+        iso27001: 'ISO 27001:2022 Annex A'
+        iso27017: 'ISO 27017 Cloud Controls'
+        iso27018: 'ISO 27018 Cloud Privacy'
+        iso27701: 'ISO 27701 PIMS'
+        iso22301: 'ISO 22301 BCM'
+        bsi: 'BSI IT-Grundschutz'
+        bsi_c5: 'BSI C5 Cloud Security'
+        nist: 'NIST 800-53'
+        nist_csf: 'NIST Cybersecurity Framework'
+        dora: 'EU-DORA'
+        nis2: 'EU-NIS2'
+        tisax: 'TISAX'
+        soc2: 'SOC 2'

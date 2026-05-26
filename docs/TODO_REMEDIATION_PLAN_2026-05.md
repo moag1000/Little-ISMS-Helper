@@ -103,13 +103,20 @@ abgewartet. Jetzt: confirm-unused + drop.
 `JsonStructuredType` (textarea mit JSON-blob) → dedizierte `CollectionType` mit
 `EntryType` pro Eintrag. Markt-Standard für strukturierte Sub-Forms.
 
+> **Status update 2026-05-26:** Items 5.3 (BCExercise.successCriteria) and
+> 5.5 (Control.frameworkReferences) closed as proper FormTypes (not
+> CollectionType) because their backing-data shapes (heterogeneous shape
+> variance / variable-key associative map) genuinely require shape-
+> normalising DataTransformers behind a custom widget — see closure notes
+> per item below.
+
 | # | Form | Json-Feld | Neue EntryType |
 |---|---|---|---|
 | 5.1 | `ThreatIntelligenceType:251` | indicators-of-compromise (IoC) | `IocEntryType` mit type + value + confidence |
 | 5.2 | `UserType:245` | competencies | `CompetencyEntryType` mit framework + level + cert |
-| 5.3 | `BCExerciseType:238` | success-criteria | `SuccessCriterionEntryType` mit measurable + actual + met-flag |
+| 5.3 | ~~`BCExerciseType:238`~~ | ~~success-criteria~~ | ~~`SuccessCriterionEntryType` mit measurable + actual + met-flag~~ — **CLOSED in PR #723**: `BcExerciseSuccessCriteriaType` wraps the existing Stimulus `_fa_success_criteria.html.twig` builder behind a proper FormType. `SuccessCriteriaShapeTransformer` auto-normalises Shape A (rich list of objects) and Shape B (legacy flat bool map) without requiring a data migration. CollectionType would have been a UX regression (loses prefill + raw-toggle escape hatch). |
 | 5.4 | `BCExerciseType:273` | evidence-artifacts | `EvidenceArtifactEntryType` mit type + name + url |
-| 5.5 | `ControlType:275` | implementation-map | strukturierter map-editor (key=phase, value=narrative) |
+| 5.5 | ~~`ControlType:275`~~ | ~~implementation-map~~ | ~~strukturierter map-editor (key=phase, value=narrative)~~ — **CLOSED in PR #723**: `ControlFrameworkReferencesType` renders one labelled chip-row per known framework slug (13 canonical). Legacy custom slugs surfaced dynamically via PRE_SET_DATA/PRE_SUBMIT so tenant-specific keys round-trip. `FrameworkReferencesTransformer` handles the `array<slug, list<ref>>` ↔ CSV-per-slug shape conversion. Custom form-theme template at `templates/form/control_framework_references.html.twig`. |
 
 **Pro Refactor**:
 1. Neuer EntryType in `src/Form/Entry/`
@@ -143,7 +150,7 @@ Aktuelle Implementation = nur Skelett für Sprint 8 prototype.
 | 6.8 | XBRL-Validierung — Arelle-CLI in CI integrieren (verify against ESA taxonomy schema) |
 | 6.9 | ~~ESA Taxonomie RT_03 (data-flow) — DoraDataFlow entity + CRUD + per-provider XBRL emission~~ **closed in PR #725** |
 | 6.10 | ESA Taxonomie RT_04 (subcontractor-chain) — sub-entities + per-provider XBRL emission *(deferred — backlog)* |
-| 6.11 | ESA Taxonomie RT_05 (asset-dependency-graph) — Asset-dependency-relation emission *(deferred — backlog)* |
+| ~~6.11 RT_05~~ | ~~ESA Taxonomie B_03.03 (Asset-Dependency-Graph, RT_05) — pro-Edge dependencyType + criticalityImpact via neuer `AssetDependency` Join-Entity (Migration `20260617100000`).~~ **Erledigt** in PR #724 `feat/dora-rt05-asset-dependency-bucket-6-close` (2026-05-26): neue `AssetDependency`-Entity + Repository + 2 Enums (`AssetDependencyType`, `AssetDependencyCriticalityImpact`) + Exporter-Helper `emitAssetDependencyGraph()` (emittiert `roi:B_03.03.0010` Count + `roi:B_03.03_dependency` Wrapper mit Source/Target IDs + Names + Type + Cascade + Notes) + Show-Template Tree-Renderer + 8 neue Tests. Legacy `Asset.dependsOn` ManyToMany bleibt unangetastet (BSI 3.6 Schutzbedarfsvererbung BC). |
 | 6.12 | ~~ESA Taxonomie RT_06 (Decommission/Exit-Plan) — DoraExitPlan-Entity + CRUD + RT_06-Emit + Rehearsal-Overdue Alva-Hint~~ **closed in PR #727** |
 
 **Risk**: Hoch — regulatorisch verbindlich, ESA-Taxonomie strikt validiert.

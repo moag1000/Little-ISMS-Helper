@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace App\Tests\Service\Authority;
 
 use App\Entity\Asset;
+use App\Entity\AssetDependency;
 use App\Entity\DoraDataFlow;
 use App\Entity\DoraExitPlan;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
+use App\Enum\AssetDependencyCriticalityImpact;
+use App\Enum\AssetDependencyType;
+use App\Repository\AssetDependencyRepository;
 use App\Repository\AssetRepository;
 use App\Repository\DoraDataFlowRepository;
 use App\Repository\DoraExitPlanRepository;
@@ -48,7 +52,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $this->exporter = new DoraRoiXbrlExporter(
             $this->supplierRepo,
             $this->assetRepo,
-            $this->exitPlanRepo,
+            exitPlanRepository: $this->exitPlanRepo,
         );
     }
 
@@ -171,7 +175,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
 
         $exitPlanRepo = $this->createMock(DoraExitPlanRepository::class);
         $exitPlanRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $exitPlanRepo);
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, exitPlanRepository: $exitPlanRepo);
         $xml = $exporter->generate($this->tenant);
 
         self::assertStringContainsString('Acme ICT GmbH', $xml);
@@ -196,7 +200,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
 
         $exitPlanRepo = $this->createMock(DoraExitPlanRepository::class);
         $exitPlanRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $exitPlanRepo);
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, exitPlanRepository: $exitPlanRepo);
         $xml = $exporter->generate($this->tenant);
 
         // The B_02.01.0010 element should contain "3"
@@ -260,7 +264,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
 
         $exitPlanRepo = $this->createMock(DoraExitPlanRepository::class);
         $exitPlanRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $exitPlanRepo);
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, exitPlanRepository: $exitPlanRepo);
         $xml = $exporter->generate($this->tenant);
 
         self::assertMatchesRegularExpression('/<roi:B_02\.02\.0060[^>]*>2024-01-15</', $xml);
@@ -292,7 +296,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
 
         $exitPlanRepo = $this->createMock(DoraExitPlanRepository::class);
         $exitPlanRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $exitPlanRepo);
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, exitPlanRepository: $exitPlanRepo);
         $xml = $exporter->generate($this->tenant);
 
         self::assertMatchesRegularExpression('/<roi:B_02\.02\.0100[^>]*>non_EEA</', $xml);
@@ -320,7 +324,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
 
         $exitPlanRepo = $this->createMock(DoraExitPlanRepository::class);
         $exitPlanRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $exitPlanRepo);
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, exitPlanRepository: $exitPlanRepo);
         $xml = $exporter->generate($this->tenant);
 
         self::assertStringContainsString('B_03.02_asset', $xml);
@@ -372,7 +376,11 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $flowRepo = $this->createMock(DoraDataFlowRepository::class);
         $flowRepo->method('findByTenant')->willReturn([$flow1, $flow2]);
 
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, null, $flowRepo);
+        $exporter = new DoraRoiXbrlExporter(
+            $supplierRepo,
+            $assetRepo,
+            dataFlowRepository: $flowRepo,
+        );
         $xml = $exporter->generate($this->tenant);
 
         // RT_03 wrapper present
@@ -426,7 +434,11 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $flowRepo = $this->createMock(DoraDataFlowRepository::class);
         $flowRepo->method('findByTenant')->willReturn([$flow]);
 
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, null, $flowRepo);
+        $exporter = new DoraRoiXbrlExporter(
+            $supplierRepo,
+            $assetRepo,
+            dataFlowRepository: $flowRepo,
+        );
         $xml = $exporter->generate($this->tenant);
 
         self::assertMatchesRegularExpression('/<roi:RT_03\.0060[^>]*>false</', $xml);
@@ -471,6 +483,126 @@ final class DoraRoiXbrlExporterTest extends TestCase
     }
 
     #[Test]
+    public function generateEmitsRt05DependencyCountElement(): void
+    {
+        $xml = $this->exporter->generate($this->tenant);
+        // B_03.03.0010 — total ICT asset-dependency edges (RT_05)
+        self::assertStringContainsString('B_03.03.0010', $xml);
+        // Empty assets list → zero edges
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0010[^>]*>0</', $xml);
+    }
+
+    #[Test]
+    public function generateEmitsRt05DependencyEdgesForBasicAdjacencyList(): void
+    {
+        // Two DORA-relevant assets where assetA depends on assetB. No
+        // AssetDependency metadata configured — exporter must still emit
+        // the edge with default classification (requires / cascade).
+        $assetA = new Asset();
+        $assetA->setName('App Server');
+        $assetA->setIsDoraRelevant(true);
+
+        $assetB = new Asset();
+        $assetB->setName('Database');
+        $assetB->setIsDoraRelevant(true);
+
+        $assetA->addDependsOn($assetB);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([$assetA, $assetB]);
+        $depRepo = $this->createMock(AssetDependencyRepository::class);
+        $depRepo->method('findByTenantKeyed')->willReturn([]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $depRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertStringContainsString('B_03.03_dependency', $xml);
+        // Edge count must be 1
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0010[^>]*>1</', $xml);
+        // Defaults applied — requires + cascade
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0040[^>]*>requires</', $xml);
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0050[^>]*>cascade</', $xml);
+        // Denormalised names emitted for auditor readability
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0060[^>]*>App Server</', $xml);
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0070[^>]*>Database</', $xml);
+    }
+
+    #[Test]
+    public function generateEmitsRt05WithEnrichedMetadataWhenAssetDependencyPresent(): void
+    {
+        $assetA = new Asset();
+        $assetA->setName('Trading Frontend');
+        $assetA->setIsDoraRelevant(true);
+
+        $assetB = new Asset();
+        $assetB->setName('Market Data Feed');
+        $assetB->setIsDoraRelevant(true);
+
+        $assetA->addDependsOn($assetB);
+
+        // Use Reflection-style id injection via setter pattern: real ids
+        // come from the DB, but the exporter uses Asset::getId() which
+        // returns null until persistence. To exercise the
+        // `findByTenantKeyed` lookup we need both endpoints to have ids.
+        $this->setEntityId($assetA, 101);
+        $this->setEntityId($assetB, 202);
+
+        $dep = new AssetDependency();
+        $dep->setSourceAsset($assetA);
+        $dep->setTargetAsset($assetB);
+        $dep->setDependencyType(AssetDependencyType::SharesData);
+        $dep->setCriticalityImpact(AssetDependencyCriticalityImpact::Partial);
+        $dep->setNotes('Multicast UDP feed via NIC2');
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([$assetA, $assetB]);
+        $depRepo = $this->createMock(AssetDependencyRepository::class);
+        $depRepo->method('findByTenantKeyed')->willReturn(['101:202' => $dep]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $depRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0040[^>]*>shares_data</', $xml);
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0050[^>]*>partial</', $xml);
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0080[^>]*>Multicast UDP feed via NIC2</', $xml);
+    }
+
+    #[Test]
+    public function generateEmitsRt05ZeroEdgesWhenNoDependenciesDeclared(): void
+    {
+        $asset = new Asset();
+        $asset->setName('Standalone server');
+        $asset->setIsDoraRelevant(true);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([$asset]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0010[^>]*>0</', $xml);
+        self::assertStringNotContainsString('B_03.03_dependency', $xml);
+    }
+
+    /**
+     * Helper — inject a synthetic id into an Asset entity for unit tests
+     * (Doctrine normally assigns ids on persist; reflection is the
+     * pragmatic workaround in unit tests that bypass the entity manager).
+     */
+    private function setEntityId(Asset $asset, int $id): void
+    {
+        // PHP 8.1+: ReflectionProperty is accessible by default — no
+        // setAccessible() call needed (deprecated since 8.5).
+        (new \ReflectionProperty(Asset::class, 'id'))->setValue($asset, $id);
+    }
+
+    #[Test]
     public function exporterFiltersToDoraRelevantSuppliersOnly(): void
     {
         // 3 suppliers total: 2 DORA-relevant, 1 not
@@ -492,7 +624,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
 
         $exitPlanRepo = $this->createMock(DoraExitPlanRepository::class);
         $exitPlanRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $exitPlanRepo);
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, exitPlanRepository: $exitPlanRepo);
         $xml = $exporter->generate($this->tenant);
 
         // Exactly 2 providers must appear in the export
@@ -527,7 +659,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $exitPlanRepo = $this->createMock(DoraExitPlanRepository::class);
         $exitPlanRepo->method('findByTenantAndDoraRelevant')->willReturn([$plan]);
 
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $exitPlanRepo);
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, exitPlanRepository: $exitPlanRepo);
         $xml = $exporter->generate($this->tenant);
 
         self::assertStringContainsString('RT_06_exit_plan', $xml);
@@ -555,7 +687,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $assetRepo = $this->createMock(AssetRepository::class);
         $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
 
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $exitPlanRepo);
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, exitPlanRepository: $exitPlanRepo);
         $xml = $exporter->generate($this->tenant);
 
         self::assertStringNotContainsString('RT_06_exit_plan', $xml);
@@ -580,7 +712,7 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $exitPlanRepo = $this->createMock(DoraExitPlanRepository::class);
         $exitPlanRepo->method('findByTenantAndDoraRelevant')->willReturn([$plan]);
 
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $exitPlanRepo);
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, exitPlanRepository: $exitPlanRepo);
         $xml = $exporter->generate($this->tenant);
 
         // RT_06.0060 element exists but is empty — Arelle accepts the empty
@@ -589,10 +721,13 @@ final class DoraRoiXbrlExporterTest extends TestCase
     }
 
     #[Test]
-    public function rt05GapMarkerSurvivesWhileRt06IsResolved(): void
+    public function rt04GapMarkerSurvivesWhileRt05AndRt06AreResolved(): void
     {
+        // After PR #724 (RT_05) + PR #727 (RT_06), only RT_04 (subcontractor-
+        // chain) remains deferred as an explicit audit-gap marker.
         $xml = $this->exporter->generate($this->tenant);
-        self::assertStringContainsString('TODO: RT_05 asset-dependency-graph', $xml);
-        self::assertStringNotContainsString('TODO: RT_05 asset-dependency-graph + RT_06', $xml);
+        self::assertStringContainsString('TODO: RT_04 subcontractor-chain', $xml);
+        self::assertStringNotContainsString('TODO: RT_05 asset-dependency-graph', $xml);
+        self::assertStringNotContainsString('TODO: RT_06 decommission-plan', $xml);
     }
 }
