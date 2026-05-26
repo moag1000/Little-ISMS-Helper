@@ -55,7 +55,7 @@
     {%- endfor -%}
 
     <div class="fa-form-layout"
-         data-controller="{{ controller }}"
+         data-controller="{{ controller }} form-validation"
          data-{{ controller }}-sections-state-value="{{ sectionsState|json_encode }}"
          {% if draftSavedAt %}data-{{ controller }}-draft-saved-at-value="{{ draftSavedAt|date('c') }}"{% endif %}>
 

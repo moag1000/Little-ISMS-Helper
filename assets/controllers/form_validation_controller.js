@@ -58,9 +58,63 @@ export default class extends Controller {
         const firstError = this.findFirstError();
 
         if (firstError) {
-            this.scrollToError(firstError);
-            this.focusErrorField(firstError);
+            // Reveal collapsed section / inactive tab BEFORE scroll+focus,
+            // otherwise the field is hidden and scroll-into-view jumps to a
+            // collapsed container (user sees nothing actionable).
+            this.revealHiddenAncestors(firstError);
+            // Give the reveal animation a frame to start, then scroll+focus.
+            requestAnimationFrame(() => {
+                this.scrollToError(firstError);
+                this.focusErrorField(firstError);
+            });
             this.announceErrors();
+        }
+    }
+
+    /**
+     * Walk up the DOM from the first error and open any closed container that
+     * hides it:
+     *   - fa-form-layout sections (`.fa-form-section--collapsed`) — click head
+     *     to delegate to `form-layout#toggleSection`
+     *   - fa-tabs panels (`[role="tabpanel"]` not `.is-active`) — find the
+     *     matching nav-item button and click it (delegates to `tabs#switchTo`)
+     *   - Bootstrap-style `[hidden]` / `.d-none` ancestors — clear so the field
+     *     becomes layout-visible (last resort; safest before scrolling)
+     */
+    revealHiddenAncestors(errorElement) {
+        let node = errorElement;
+        let safety = 20;
+        while (node && node !== this.element && safety-- > 0) {
+            // 1. fa-form-section collapsed → click head to toggle open
+            if (node.classList && node.classList.contains('fa-form-section--collapsed')) {
+                const head = node.querySelector('.fa-form-section__head');
+                if (head) head.click();
+            }
+
+            // 2. Inactive tab panel → find nav-item with matching tab-id and click
+            if (node.matches && node.matches('[role="tabpanel"]') && !node.classList.contains('is-active')) {
+                const tabId = node.dataset.tabId;
+                if (tabId) {
+                    const navItem = document.querySelector(
+                        `[role="tab"][data-tab-id="${tabId}"]`
+                    );
+                    if (navItem) navItem.click();
+                }
+            }
+
+            // 3. Bootstrap accordion: collapsed `.collapse` without `.show`
+            if (node.classList && node.classList.contains('collapse') && !node.classList.contains('show')) {
+                // Find the toggle button targeting this collapse, click it
+                const id = node.id;
+                if (id) {
+                    const toggle = document.querySelector(
+                        `[data-bs-toggle="collapse"][data-bs-target="#${id}"], [aria-controls="${id}"]`
+                    );
+                    if (toggle) toggle.click();
+                }
+            }
+
+            node = node.parentElement;
         }
     }
 
