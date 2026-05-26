@@ -463,6 +463,11 @@ jobs:
         # pre-existing items are baselined (string-returning getters flagged
         # by heuristic). Add `// @allow-raw-enum` to suppress if intentional.
         run: python3 scripts/quality/check_enum_to_json_unwrap.py --baseline scripts/quality/baselines/enum_to_json_unwrap.txt --quiet
+      - name: "Gate 52: unsupported Twig 3.x tags (continue / break)"
+        # Twig 3.x has no {% continue %} or {% break %} tags. Using them
+        # throws a SyntaxError at runtime — caused 67+ test failures in
+        # PR #689. Replace with {% if condition %}...{% endif %} in the loop.
+        run: python3 scripts/quality/check_twig_unsupported_tags.py --baseline scripts/quality/baselines/twig_unsupported_tags.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
