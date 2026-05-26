@@ -10,6 +10,7 @@ use App\Entity\Asset;
 use App\Enum\AssetStatus;
 use App\Form\AssetQuickType;
 use App\Form\AssetType;
+use App\Repository\AssetDependencyRepository;
 use App\Repository\AssetRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\BusinessProcessRepository;
@@ -61,6 +62,7 @@ class AssetController extends AbstractController
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?UserRepository $userRepository = null,
+        private readonly ?AssetDependencyRepository $assetDependencyRepository = null,
     ) {}
 
     protected function getFlashDomain(): string
@@ -398,6 +400,19 @@ class AssetController extends AbstractController
 
         $inheritedProtection = $this->assetDependencyService?->calculateInheritedProtectionNeed($asset);
 
+        // Bucket-6 RT_05: enriched dependency edges (dependencyType +
+        // criticalityImpact). Keyed by upstream-asset id so the show
+        // template can decorate the legacy adjacency-list entries.
+        $assetDependencyEdges = [];
+        if ($this->assetDependencyRepository !== null) {
+            foreach ($this->assetDependencyRepository->findOutgoingFor($asset) as $edge) {
+                $targetId = $edge->getTargetAsset()?->getId();
+                if ($targetId !== null) {
+                    $assetDependencyEdges[$targetId] = $edge;
+                }
+            }
+        }
+
         // Hochrisiko-AI-Agents: verknüpfte DPIAs für Audit-Sicht (Soft-Failure: null = Modul/Schema fehlt)
         $linkedDpias = ($asset->isAiAgent() && $this->aiAgentInventoryService !== null)
             ? $this->aiAgentInventoryService->findLinkedDpias($asset)
@@ -423,6 +438,7 @@ class AssetController extends AbstractController
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
             'inheritedProtection' => $inheritedProtection,
+            'assetDependencyEdges' => $assetDependencyEdges,
             'linkedDpias' => $linkedDpias,
             'impact_coverage' => $impactCoverage,
             'comments' => $comments,
