@@ -206,6 +206,7 @@ class BackupService
      */
     private const array EXCLUDED_FROM_BACKUP = [
         // Global seeded catalogues (re-loadable via App\Command\Load*Command)
+        'UserTenantAssignment' => 'stub for multi-tenant spec (Option A), schema migration deferred',
         'IndustryBaseline'      => 'global seeded catalogue, re-loadable via LoadIndustryBaseline commands',
         'IndustryPresetBundle'  => 'global seeded catalogue (no tenant_id) — wizard W4-B preset bundles',
         'ElementaryThreat'      => 'global BSI threat catalogue, re-loadable via LoadElementaryThreats command',
