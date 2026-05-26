@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dora_data_flow' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'dora_data_flow.title.list'|trans({}, 'dora_data_flow') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dora_compliance'|trans({}, 'nav'), url: path('app_dora_compliance_dashboard') },
+            { label: 'dora_data_flow.title.list'|trans({}, 'dora_data_flow') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield', label: 'DORA Art. 28 · RT_03' },
+        title: 'dora_data_flow.title.list'|trans({}, 'dora_data_flow'),
+        subtitle: 'dora_data_flow.description.overview'|trans({}, 'dora_data_flow'),
+        actions: [
+            { label: 'dora_data_flow.action.create'|trans({}, 'dora_data_flow'), variant: 'primary', icon: 'plus', href: path('app_dora_data_flow_new') }
+        ]
+    }) }}
+</div>
+
+<main class="fa-aurora-surface">
+    {% embed '_components/_table.html.twig' with {
+        'wrapperClass': 'table-container'
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col">{{ 'dora_data_flow.field.supplier'|trans({}, 'dora_data_flow') }}</th>
+                <th scope="col">{{ 'dora_data_flow.field.direction'|trans({}, 'dora_data_flow') }}</th>
+                <th scope="col">{{ 'dora_data_flow.field.data_categories'|trans({}, 'dora_data_flow') }}</th>
+                <th scope="col">{{ 'dora_data_flow.field.cross_border'|trans({}, 'dora_data_flow') }}</th>
+                <th scope="col">{{ 'dora_data_flow.field.receiving_country'|trans({}, 'dora_data_flow') }}</th>
+                <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for flow in flows %}
+            <tr>
+                <td>
+                    {% if flow.supplier %}
+                        <strong>{{ flow.supplier.name }}</strong>
+                    {% else %}
+                        <span class="text-muted-color">-</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% include '_components/_badge.html.twig' with {
+                        variant: 'info',
+                        content: ('dora_data_flow.direction.' ~ flow.direction)|trans({}, 'dora_data_flow')
+                    } %}
+                </td>
+                <td>
+                    {% for cat in flow.dataCategories %}
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: cat } %}
+                    {% else %}
+                        <span class="text-muted-color">-</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if flow.crossBorder %}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'common.yes'|trans({}, 'messages') } %}
+                    {% else %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.no'|trans({}, 'messages') } %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if flow.receivingCountry %}<code>{{ flow.receivingCountry }}</code>{% else %}<span class="text-muted-color">-</span>{% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="{{ path('app_dora_data_flow_show', {id: flow.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{ path('app_dora_data_flow_edit', {id: flow.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center-p-xl-muted">
+                    {{ 'dora_data_flow.message.no_flows'|trans({}, 'dora_data_flow') }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+</main>
+{% endblock %}

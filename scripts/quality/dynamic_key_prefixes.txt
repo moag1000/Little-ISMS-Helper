@@ -78,6 +78,7 @@ document.evidence.source	1
 document.evidence.type	1
 document.status	3
 dora.status	1
+dora_data_flow.direction	2
 dpia.risk_level	2
 dpia.status	2
 dsr.response_method	1
