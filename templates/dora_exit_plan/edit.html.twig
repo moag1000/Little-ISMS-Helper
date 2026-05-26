@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dora_exit_plan' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'dora_exit_plan.action.edit'|trans({}, 'dora_exit_plan') }}: {{ plan.supplier ? plan.supplier.name : '' }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'dora_exit_plan.title'|trans({}, 'dora_exit_plan'), url: path('app_dora_exit_plan_index') },
+            { label: plan.supplier ? plan.supplier.name : '—', url: path('app_dora_exit_plan_show', {id: plan.id}) },
+            { label: 'common.edit'|trans({}, 'messages') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: ('dora_exit_plan.action.edit'|trans({}, 'dora_exit_plan')) ~ ': ' ~ (plan.supplier ? plan.supplier.name : ''),
+        badge: { icon: 'ui-edit', label: '' },
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_dora_exit_plan_show', {id: plan.id}), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
+
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'DORA Art. 28(8) RT_06 · Exit Plan',
+        'title': plan.supplier ? plan.supplier.name : '',
+        'sections': {
+            'overview': {
+                'label': 'dora_exit_plan.section.overview'|trans({}, 'dora_exit_plan'),
+                'fields': ['supplier', 'exitTrigger']
+            },
+            'recovery': {
+                'label': 'dora_exit_plan.section.recovery'|trans({}, 'dora_exit_plan'),
+                'fields': ['dataReturnFormat', 'dataDeletionConfirmation', 'deletionCertificateDoc', 'migrationPath']
+            },
+            'testing': {
+                'label': 'dora_exit_plan.section.testing'|trans({}, 'dora_exit_plan'),
+                'fields': ['testedAt']
+            },
+            'resources': {
+                'label': 'dora_exit_plan.section.resources'|trans({}, 'dora_exit_plan'),
+                'fields': ['estimatedDurationDays', 'estimatedCost']
+            }
+        },
+        'col_widths': {
+            'supplier': 8,
+            'exitTrigger': 4,
+            'dataReturnFormat': 12,
+            'dataDeletionConfirmation': 6,
+            'deletionCertificateDoc': 6,
+            'migrationPath': 12,
+            'testedAt': 6,
+            'estimatedDurationDays': 6,
+            'estimatedCost': 6
+        },
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save_changes'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</div>
+{% endblock %}
