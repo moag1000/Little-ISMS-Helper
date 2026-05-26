@@ -1,9 +1,9 @@
 # check_freetext_legacy.py baseline — generated snapshot.
 # Format: <relative-path>:<line>:<field-name>
 # Remove an entry once the field is migrated to an EntityType.
-src/Form/BCExerciseType.php:102:participants
-src/Form/BCExerciseType.php:126:facilitator
-src/Form/BCExerciseType.php:159:observers
+src/Form/BCExerciseType.php:104:participants
+src/Form/BCExerciseType.php:128:facilitator
+src/Form/BCExerciseType.php:161:observers
 src/Form/DataSubjectRequestType.php:75:dataSubjectEmail
 src/Form/IncidentType.php:223:affectedSystems
 src/Form/InterestedPartyType.php:69:contactPerson

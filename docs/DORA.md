@@ -218,14 +218,22 @@ ein well-formed XBRL-Dokument mit den folgenden ESA-Taxonomie-Elementen:
 | `B_03.02.0010-0100` (Per-Asset Detail) | `Asset` (id, name, type, classification, CIA, owner, location, status) | **9 / 6c** |
 | `B_03.03.0010` (Total Dependency Edges) | `count($edges)` über alle DORA-relevanten `Asset.dependsOn` Kanten | **9 / 6 close (RT_05)** |
 | `B_03.03.0020-0080` (Per-Edge Asset-Dependency-Graph, RT_05) | `Asset.dependsOn` + optional `AssetDependency` Join-Entity (Type + Cascade + Notes) | **9 / 6 close (RT_05)** |
+| `RT_03.0010-0070` (Data-Flow-Sub-Table) | `DoraDataFlow` (supplier, direction, categories, purpose, security, volume, cross-border, country) | **9 / 6.9** |
 
 **Noch nicht implementiert (deferred):**
-- `B_02.02.0140-0999` + RT_03 (Data-Flow-Sub-Table) + RT_04 (Subcontractor-Chain-Sub-Table)
+- `B_02.02.0140-0999` + RT_04 (Subcontractor-Chain-Sub-Table)
 - RT_06 (Decommission-Plan)
 
 Diese ESA-Taxonomie-Bereiche benoetigen dedizierte Sub-Entities, die bisher nicht im
 Datenmodell vorhanden sind (Subcontractor-Chain hat eine JSON-Spalte, ist aber nicht
 auf die Tiefe der ESA-Taxonomie modelliert). Markiert via `TODO`-Kommentar im Output.
+
+**RT_03 (Data-Flow) — closed:**
+`DoraDataFlow` Entity + CRUD unter `/dora/data-flow/*` + automatische
+RT_03-Emission per Provider via {@see DoraRoiXbrlExporter}. Module-gated
+auf `nis2_dora`. Pro Datenfluss werden RT_03.0010-0070 (Richtung,
+Kategorien, Zweck, Sicherheitsmaßnahmen, Volumen, Cross-Border-Flag,
+Empfängerland) emittiert.
 
 **RT_05 Asset-Dependency-Graph (seit Bucket-6 close 2026-05-26):** Die neue
 `AssetDependency`-Join-Entity (Migration `Version20260617100000_AssetDependencyEnrichedEdges`)
