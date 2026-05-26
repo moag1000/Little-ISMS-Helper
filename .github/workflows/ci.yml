@@ -455,6 +455,14 @@ jobs:
         # cleanup in Sprint S14. Add `// @intentional-bind: <reason>` if the
         # bind is truly intentional.
         run: python3 scripts/quality/check_disabled_mapped_pair.py --baseline scripts/quality/baselines/disabled_mapped_pair.txt --quiet
+      - name: "Gate 51: raw backed-enum in JsonResponse array"
+        # Returning a PHP backed-enum directly in a JSON array causes
+        # json_encode to return false → HTTP 500. Use ->getStatus()?->value
+        # to serialize the backing string.  Fixed in PR #705 and PR #712.
+        # Discovers enum-returning getters via entity return-type hints; 5
+        # pre-existing items are baselined (string-returning getters flagged
+        # by heuristic). Add `// @allow-raw-enum` to suppress if intentional.
+        run: python3 scripts/quality/check_enum_to_json_unwrap.py --baseline scripts/quality/baselines/enum_to_json_unwrap.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
