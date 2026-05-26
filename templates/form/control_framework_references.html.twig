@@ -1,0 +1,58 @@
+{#
+ # Form theme block for ControlFrameworkReferencesType.
+ #
+ # Renders one labelled chip-row per framework slug. The hidden TextType
+ # input behind each row is a comma-separated tag list (`A.5.1,A.5.2`)
+ # picked up by the `tom-select` Stimulus controller with `create=true`,
+ # so the user can both pick from prior values AND type free references.
+ #
+ # Wire-up — globally registered in config/packages/twig.yaml form_themes,
+ # or include via {% form_theme form _self %} locally.
+ #
+ # Backing entity: Control.frameworkReferences =
+ #   array<framework_slug, list<reference_id>>
+ # transformed to/from `array<slug, csv>` by FrameworkReferencesTransformer.
+ #
+ # ISO 27001 Annex A / BSI IT-Grundschutz / NIST 800-53 / DORA RTS / NIS2
+ # cross-mapping evidence — the underlying data is consumed by
+ # `DocumentReuseAnalyticsService` to compute multi-framework coverage.
+ #}
+
+{%- block control_framework_references_widget -%}
+    <div class="fa-framework-refs"
+         data-controller="framework-refs"
+         role="group"
+         aria-label="{{ 'control.field.framework_references'|trans({}, 'control') }}">
+        {%- for child in form.children -%}
+            <div class="fa-framework-refs__row">
+                <label for="{{ child.vars.id }}" class="fa-framework-refs__label">
+                    {{ child.vars.label|trans({}, 'control') }}
+                </label>
+                <div class="fa-framework-refs__input-wrap">
+                    {{ form_widget(child, { attr: child.vars.attr|merge({
+                        'class': (child.vars.attr.class|default('')) ~ ' form-control form-control-sm fa-framework-refs__input'
+                    }) }) }}
+                </div>
+            </div>
+            {%- if not form_errors(child) is empty -%}
+                {{ form_errors(child) }}
+            {%- endif -%}
+        {%- endfor -%}
+    </div>
+{%- endblock -%}
+
+{%- block control_framework_references_row -%}
+    {% set widget_attr = {} %}
+    <div class="fa-cyber-input">
+        <div class="fa-cyber-input__header">
+            {{ form_label(form) }}
+        </div>
+        {{ form_widget(form, widget_attr) }}
+        {% if form.vars.help %}
+            <small class="fa-cyber-input__hint">
+                {{ form.vars.help|trans({}, form.vars.help_translation_domain|default('control')) }}
+            </small>
+        {% endif %}
+        {{ form_errors(form) }}
+    </div>
+{%- endblock -%}
