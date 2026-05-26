@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\Service\Authority;
 
 use App\Entity\Asset;
+use App\Entity\AssetDependency;
 use App\Entity\DoraDataFlow;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
+use App\Enum\AssetDependencyCriticalityImpact;
+use App\Enum\AssetDependencyType;
+use App\Repository\AssetDependencyRepository;
 use App\Repository\AssetRepository;
 use App\Repository\DoraDataFlowRepository;
 use App\Repository\SupplierRepository;
@@ -353,7 +357,11 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $flowRepo = $this->createMock(DoraDataFlowRepository::class);
         $flowRepo->method('findByTenant')->willReturn([$flow1, $flow2]);
 
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $flowRepo);
+        $exporter = new DoraRoiXbrlExporter(
+            $supplierRepo,
+            $assetRepo,
+            dataFlowRepository: $flowRepo,
+        );
         $xml = $exporter->generate($this->tenant);
 
         // RT_03 wrapper present
@@ -407,7 +415,11 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $flowRepo = $this->createMock(DoraDataFlowRepository::class);
         $flowRepo->method('findByTenant')->willReturn([$flow]);
 
-        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $flowRepo);
+        $exporter = new DoraRoiXbrlExporter(
+            $supplierRepo,
+            $assetRepo,
+            dataFlowRepository: $flowRepo,
+        );
         $xml = $exporter->generate($this->tenant);
 
         self::assertMatchesRegularExpression('/<roi:RT_03\.0060[^>]*>false</', $xml);
@@ -449,6 +461,126 @@ final class DoraRoiXbrlExporterTest extends TestCase
         $prop->setValue($supplier, $id);
 
         return $supplier;
+    }
+
+    #[Test]
+    public function generateEmitsRt05DependencyCountElement(): void
+    {
+        $xml = $this->exporter->generate($this->tenant);
+        // B_03.03.0010 — total ICT asset-dependency edges (RT_05)
+        self::assertStringContainsString('B_03.03.0010', $xml);
+        // Empty assets list → zero edges
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0010[^>]*>0</', $xml);
+    }
+
+    #[Test]
+    public function generateEmitsRt05DependencyEdgesForBasicAdjacencyList(): void
+    {
+        // Two DORA-relevant assets where assetA depends on assetB. No
+        // AssetDependency metadata configured — exporter must still emit
+        // the edge with default classification (requires / cascade).
+        $assetA = new Asset();
+        $assetA->setName('App Server');
+        $assetA->setIsDoraRelevant(true);
+
+        $assetB = new Asset();
+        $assetB->setName('Database');
+        $assetB->setIsDoraRelevant(true);
+
+        $assetA->addDependsOn($assetB);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([$assetA, $assetB]);
+        $depRepo = $this->createMock(AssetDependencyRepository::class);
+        $depRepo->method('findByTenantKeyed')->willReturn([]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $depRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertStringContainsString('B_03.03_dependency', $xml);
+        // Edge count must be 1
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0010[^>]*>1</', $xml);
+        // Defaults applied — requires + cascade
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0040[^>]*>requires</', $xml);
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0050[^>]*>cascade</', $xml);
+        // Denormalised names emitted for auditor readability
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0060[^>]*>App Server</', $xml);
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0070[^>]*>Database</', $xml);
+    }
+
+    #[Test]
+    public function generateEmitsRt05WithEnrichedMetadataWhenAssetDependencyPresent(): void
+    {
+        $assetA = new Asset();
+        $assetA->setName('Trading Frontend');
+        $assetA->setIsDoraRelevant(true);
+
+        $assetB = new Asset();
+        $assetB->setName('Market Data Feed');
+        $assetB->setIsDoraRelevant(true);
+
+        $assetA->addDependsOn($assetB);
+
+        // Use Reflection-style id injection via setter pattern: real ids
+        // come from the DB, but the exporter uses Asset::getId() which
+        // returns null until persistence. To exercise the
+        // `findByTenantKeyed` lookup we need both endpoints to have ids.
+        $this->setEntityId($assetA, 101);
+        $this->setEntityId($assetB, 202);
+
+        $dep = new AssetDependency();
+        $dep->setSourceAsset($assetA);
+        $dep->setTargetAsset($assetB);
+        $dep->setDependencyType(AssetDependencyType::SharesData);
+        $dep->setCriticalityImpact(AssetDependencyCriticalityImpact::Partial);
+        $dep->setNotes('Multicast UDP feed via NIC2');
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([$assetA, $assetB]);
+        $depRepo = $this->createMock(AssetDependencyRepository::class);
+        $depRepo->method('findByTenantKeyed')->willReturn(['101:202' => $dep]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $depRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0040[^>]*>shares_data</', $xml);
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0050[^>]*>partial</', $xml);
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0080[^>]*>Multicast UDP feed via NIC2</', $xml);
+    }
+
+    #[Test]
+    public function generateEmitsRt05ZeroEdgesWhenNoDependenciesDeclared(): void
+    {
+        $asset = new Asset();
+        $asset->setName('Standalone server');
+        $asset->setIsDoraRelevant(true);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([$asset]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertMatchesRegularExpression('/<roi:B_03\.03\.0010[^>]*>0</', $xml);
+        self::assertStringNotContainsString('B_03.03_dependency', $xml);
+    }
+
+    /**
+     * Helper — inject a synthetic id into an Asset entity for unit tests
+     * (Doctrine normally assigns ids on persist; reflection is the
+     * pragmatic workaround in unit tests that bypass the entity manager).
+     */
+    private function setEntityId(Asset $asset, int $id): void
+    {
+        // PHP 8.1+: ReflectionProperty is accessible by default — no
+        // setAccessible() call needed (deprecated since 8.5).
+        (new \ReflectionProperty(Asset::class, 'id'))->setValue($asset, $id);
     }
 
     #[Test]

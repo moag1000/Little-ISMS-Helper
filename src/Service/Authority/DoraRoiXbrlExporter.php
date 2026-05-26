@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service\Authority;
 
+use App\Entity\Asset;
+use App\Entity\AssetDependency;
 use App\Entity\DoraDataFlow;
 use App\Entity\Tenant;
+use App\Repository\AssetDependencyRepository;
 use App\Repository\AssetRepository;
 use App\Repository\DoraDataFlowRepository;
 use App\Repository\SupplierRepository;
@@ -45,6 +48,7 @@ final class DoraRoiXbrlExporter
     public function __construct(
         private readonly SupplierRepository $supplierRepository,
         private readonly AssetRepository $assetRepository,
+        private readonly ?AssetDependencyRepository $assetDependencyRepository = null,
         private readonly ?DoraDataFlowRepository $dataFlowRepository = null,
     ) {
     }
@@ -345,8 +349,9 @@ final class DoraRoiXbrlExporter
         // ─── B_03.02 — ICT asset detail table (Sprint-9 Bucket-6c) ───────────
         // One <roi:B_03.02_asset> wrapper per DORA-relevant Asset, carrying
         // the mandatory ESA per-asset fields: identifier, name, type,
-        // classification, CIA scoring, owner. RT_05 / RT_06 sub-tables
-        // (dependency-graph, decommission-plan) remain deferred.
+        // classification, CIA scoring, owner. RT_05 sub-table
+        // (asset-dependency-graph) is emitted below; RT_06 (decommission-plan)
+        // remains deferred.
         foreach ($assets as $j => $asset) {
             $assetEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.02_asset');
             $assetEl->setAttribute('id', sprintf('asset_%d', $j + 1));
@@ -417,10 +422,25 @@ final class DoraRoiXbrlExporter
             $root->appendChild($assetEl);
         }
 
-        // Explicit-gap marker for RT_05 dependency-graph + RT_06
-        // decommission-plan — those require dedicated supporting entities.
+        // ─── B_03.03 — RT_05 asset-dependency-graph (Bucket-6 close) ─────────
+        // DORA Art. 28(3)(c) requires a register of dependencies between
+        // ICT assets — which support which business processes, which back
+        // up which, etc. We walk the Asset.dependsOn adjacency list (BSI
+        // 3.6 Schutzbedarfsvererbung graph) and emit one
+        // <roi:B_03.03_dependency> wrapper per edge.
+        //
+        // Per-edge enrichment (dependencyType, criticalityImpact, notes)
+        // is sourced from the AssetDependency join entity when present;
+        // edges without enriched-metadata fall back to safe defaults
+        // (requires / cascade) so an operator who only declared the raw
+        // adjacency list still gets a valid export.
+        //
+        // RT_06 (decommission-plan) remains deferred — needs dedicated
+        // decommission-plan entity not yet in the model.
+        $this->emitAssetDependencyGraph($dom, $root, $assets, $tenant);
+
         $root->appendChild($dom->createComment(
-            ' TODO: RT_05 asset-dependency-graph + RT_06 decommission-plan — pending dedicated entities '
+            ' TODO: RT_06 decommission-plan — pending dedicated decommission-plan entity '
         ));
 
         $xml = $dom->saveXML();
@@ -492,6 +512,129 @@ final class DoraRoiXbrlExporter
         $context->appendChild($period);
 
         return $context;
+    }
+
+    /**
+     * Emits the RT_05 asset-dependency-graph (DORA Art. 28(3)(c)).
+     *
+     * Walks the Asset.dependsOn adjacency list and emits one
+     * <roi:B_03.03_dependency> wrapper per edge. The set of source-assets
+     * is restricted to the DORA-relevant assets that already appear in the
+     * B_03.02 table (otherwise the export would leak non-RoI assets into
+     * the dependency graph). Target-side assets are emitted regardless of
+     * their DORA-relevance flag so that upstream non-DORA-tagged ICT
+     * services (e.g. internal datacentre power) still appear as drivers
+     * of DORA-relevant asset criticality.
+     *
+     * Per-edge enrichment (dependencyType, criticalityImpact, notes) is
+     * sourced from the AssetDependency join entity when available; edges
+     * without enriched-metadata fall back to safe defaults (requires /
+     * cascade) so an operator who only declared the raw adjacency list
+     * still gets a valid export.
+     *
+     * @param Asset[] $assets DORA-relevant assets already in scope for B_03.02
+     */
+    private function emitAssetDependencyGraph(
+        DOMDocument $dom,
+        DOMElement $root,
+        array $assets,
+        Tenant $tenant,
+    ): void {
+        // Index enriched edges by "{sourceId}:{targetId}" for O(1) lookup.
+        /** @var array<string, AssetDependency> $enriched */
+        $enriched = $this->assetDependencyRepository?->findByTenantKeyed($tenant) ?? [];
+
+        // Collect edges from the legacy ManyToMany so an operator who only
+        // entered the basic adjacency list still gets emitted. Real-world
+        // assets always have a non-null id at this point (they came back
+        // from findByTenantAndDoraRelevant). Unit tests sometimes pass
+        // in-memory entities with null ids — the per-edge XML still
+        // renders (id falls back to "0") which keeps the cardinality
+        // assertion honest.
+        $edges = [];
+        foreach ($assets as $source) {
+            foreach ($source->getDependsOn() as $target) {
+                $edges[] = ['source' => $source, 'target' => $target];
+            }
+        }
+
+        // Wrapper + count element so the regulator can audit the cardinality
+        // at a glance without iterating the per-edge rows.
+        $countEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.03.0010');
+        $countEl->setAttribute('contextRef', 'ctx_period');
+        $countEl->textContent = (string) count($edges);
+        $root->appendChild($countEl);
+        $root->appendChild($dom->createComment(
+            ' B_03.03.0010: Total ICT asset-dependency edges (RT_05) — DORA Art. 28(3)(c) '
+        ));
+
+        foreach ($edges as $i => $edge) {
+            /** @var Asset $source */
+            $source = $edge['source'];
+            /** @var Asset $target */
+            $target = $edge['target'];
+
+            $key = $source->getId() . ':' . $target->getId();
+            $meta = $enriched[$key] ?? null;
+            $type = $meta?->getDependencyType()->value ?? 'requires';
+            $impact = $meta?->getCriticalityImpact()->value ?? 'cascade';
+            $notes = $meta?->getNotes() ?? '';
+
+            $edgeEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.03_dependency');
+            $edgeEl->setAttribute('id', sprintf('dependency_%d', $i + 1));
+
+            // B_03.03.0020: Source asset identifier (downstream — the asset
+            // whose criticality is potentially elevated by the relation).
+            $srcEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.03.0020');
+            $srcEl->setAttribute('contextRef', 'ctx_period');
+            $srcEl->textContent = (string) ($source->getId() ?? 0);
+            $edgeEl->appendChild($srcEl);
+
+            // B_03.03.0030: Target asset identifier (upstream — the asset
+            // that the source depends on).
+            $tgtEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.03.0030');
+            $tgtEl->setAttribute('contextRef', 'ctx_period');
+            $tgtEl->textContent = (string) ($target->getId() ?? 0);
+            $edgeEl->appendChild($tgtEl);
+
+            // B_03.03.0040: Dependency type — requires | backs_up |
+            // shares_data | redundant_with.
+            $typeEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.03.0040');
+            $typeEl->setAttribute('contextRef', 'ctx_period');
+            $typeEl->textContent = $type;
+            $edgeEl->appendChild($typeEl);
+
+            // B_03.03.0050: Criticality cascade behaviour — cascade |
+            // isolated | partial.
+            $impactEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.03.0050');
+            $impactEl->setAttribute('contextRef', 'ctx_period');
+            $impactEl->textContent = $impact;
+            $edgeEl->appendChild($impactEl);
+
+            // B_03.03.0060: Source asset name (denormalised for auditor
+            // readability — saves an asset-id ↔ asset-name join).
+            $srcNameEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.03.0060');
+            $srcNameEl->setAttribute('contextRef', 'ctx_period');
+            $srcNameEl->textContent = (string) ($source->getName() ?? '');
+            $edgeEl->appendChild($srcNameEl);
+
+            // B_03.03.0070: Target asset name (denormalised — see above).
+            $tgtNameEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.03.0070');
+            $tgtNameEl->setAttribute('contextRef', 'ctx_period');
+            $tgtNameEl->textContent = (string) ($target->getName() ?? '');
+            $edgeEl->appendChild($tgtNameEl);
+
+            // B_03.03.0080: Optional free-text notes (e.g. "DB connection
+            // via VPN"). Empty when no AssetDependency metadata exists.
+            if ($notes !== '') {
+                $notesEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_03.03.0080');
+                $notesEl->setAttribute('contextRef', 'ctx_period');
+                $notesEl->textContent = $notes;
+                $edgeEl->appendChild($notesEl);
+            }
+
+            $root->appendChild($edgeEl);
+        }
     }
 
     /**

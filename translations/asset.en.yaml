@@ -49,6 +49,7 @@ asset:
     critical_assets: Critical Assets
     dependency_insights: Dependency Insights
     inherited_protection: Inherited protection need (BSI 3.6)
+    dependency_graph: Dependency graph (DORA RT_05)
   field:
     name: Name
     type: Asset type
@@ -169,6 +170,27 @@ asset:
     internal: Internal
     confidential: Confidential
     restricted: Restricted
+  dependency:
+    type:
+      requires: Requires
+      backs_up: Backs up
+      shares_data: Shares data
+      redundant_with: Redundant with
+    criticality_impact:
+      cascade: Full (cascade)
+      isolated: Isolated
+      partial: Partial
+    section:
+      title: Asset dependency graph (DORA RT_05)
+      subtitle: Upstream assets this asset depends on. Edge classification (type +
+        cascade behaviour) feeds the DORA RoI XBRL export (B_03.03).
+      no_dependencies: No upstream dependencies recorded.
+      column:
+        target: Upstream asset
+        type: Dependency type
+        criticality_impact: Cascade behaviour
+        notes: Notes
+      default_classification: Default (requires / cascade)
   confirm:
     delete: Really delete this asset?
   warning:

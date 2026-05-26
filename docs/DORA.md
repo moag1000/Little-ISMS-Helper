@@ -216,11 +216,13 @@ ein well-formed XBRL-Dokument mit den folgenden ESA-Taxonomie-Elementen:
 | `B_02.02.0130` (Audit Rights Clause) | abgeleitet aus `Supplier.securityRequirements` | **9 / 6c** |
 | `B_03.01.0010` (Total ICT Assets) | `count($assets)` | 8 |
 | `B_03.02.0010-0100` (Per-Asset Detail) | `Asset` (id, name, type, classification, CIA, owner, location, status) | **9 / 6c** |
+| `B_03.03.0010` (Total Dependency Edges) | `count($edges)` über alle DORA-relevanten `Asset.dependsOn` Kanten | **9 / 6 close (RT_05)** |
+| `B_03.03.0020-0080` (Per-Edge Asset-Dependency-Graph, RT_05) | `Asset.dependsOn` + optional `AssetDependency` Join-Entity (Type + Cascade + Notes) | **9 / 6 close (RT_05)** |
 | `RT_03.0010-0070` (Data-Flow-Sub-Table) | `DoraDataFlow` (supplier, direction, categories, purpose, security, volume, cross-border, country) | **9 / 6.9** |
 
 **Noch nicht implementiert (deferred):**
 - `B_02.02.0140-0999` + RT_04 (Subcontractor-Chain-Sub-Table)
-- RT_05 (Asset-Dependency-Graph) + RT_06 (Decommission-Plan)
+- RT_06 (Decommission-Plan)
 
 Diese ESA-Taxonomie-Bereiche benoetigen dedizierte Sub-Entities, die bisher nicht im
 Datenmodell vorhanden sind (Subcontractor-Chain hat eine JSON-Spalte, ist aber nicht
@@ -232,6 +234,19 @@ RT_03-Emission per Provider via {@see DoraRoiXbrlExporter}. Module-gated
 auf `nis2_dora`. Pro Datenfluss werden RT_03.0010-0070 (Richtung,
 Kategorien, Zweck, Sicherheitsmaßnahmen, Volumen, Cross-Border-Flag,
 Empfängerland) emittiert.
+
+**RT_05 Asset-Dependency-Graph (seit Bucket-6 close 2026-05-26):** Die neue
+`AssetDependency`-Join-Entity (Migration `Version20260617100000_AssetDependencyEnrichedEdges`)
+sitzt neben der bestehenden `asset_dependencies` ManyToMany-Tabelle (die fuer BSI 3.6
+Schutzbedarfsvererbung und den GstoolXmlImporter unveraendert bleibt) und traegt
+pro Kante:
+- `dependency_type` — `requires` | `backs_up` | `shares_data` | `redundant_with`
+- `criticality_impact` — `cascade` | `isolated` | `partial`
+- `notes` — Freitext (z.B. "DB-Verbindung via VPN")
+
+Edges ohne `AssetDependency`-Eintrag bekommen im Export die Default-Klassifizierung
+`requires` / `cascade`. Eine Tree-Renderer-Sektion auf `templates/asset/show.html.twig`
+visualisiert den Graphen pro Asset.
 
 ### 9.3 Pre-Submission XBRL-Validierung (Arelle)
 
