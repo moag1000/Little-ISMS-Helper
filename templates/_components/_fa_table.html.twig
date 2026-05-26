@@ -80,6 +80,8 @@
 {% set fa_hover     = hover is defined ? hover : true %}
 {% set fa_sortable  = sortable|default(false) %}
 {% set fa_bulkSelect = bulkSelect|default(false) %}
+{# row-click → show is the default since 2026-05-26 — opt out via `rowClick: false` #}
+{% set fa_rowClick  = rowClick is defined ? rowClick : true %}
 
 {% set _classes = ['fa-table'] %}
 {% if fa_striped    %}{% set _classes = _classes|merge(['fa-table--striped']) %}{% endif %}
@@ -91,8 +93,9 @@
 {% set _ctrls = [] %}
 {% if fa_sortable   %}{% set _ctrls = _ctrls|merge(['fa-table-sort']) %}{% endif %}
 {% if fa_bulkSelect %}{% set _ctrls = _ctrls|merge(['fa-bulk-select']) %}{% endif %}
+{% if fa_rowClick   %}{% set _ctrls = _ctrls|merge(['row-click']) %}{% endif %}
 
-{% if fa_wrap %}<div class="fa-table-wrap"{% if _ctrls|length > 0 %} data-controller="{{ _ctrls|join(' ') }}"{% endif %}{% if fa_wrapStyle %} style="{{ fa_wrapStyle }}"{% endif %}>{% endif %}
+{% if fa_wrap %}<div class="fa-table-wrap"{% if _ctrls|length > 0 %} data-controller="{{ _ctrls|join(' ') }}"{% endif %}{% if fa_rowClick %} data-action="click->row-click#navigate"{% endif %}{% if fa_wrapStyle %} style="{{ fa_wrapStyle }}"{% endif %}>{% endif %}
     <table class="{{ _classes|join(' ') }}"{% if fa_id %} id="{{ fa_id }}"{% endif %}>
         {% if block('table_head') is defined %}
             <thead class="fa-table__head">
