@@ -191,6 +191,8 @@ bc_exercises:
         raw_toggle: 'Edit as JSON'
         raw_label: 'Raw JSON (power-user)'
         raw_help: 'Warning: raw editing can corrupt data. Schema must match entity definition.'
+    error:
+        facilitator_required_user_or_person: 'Please select a facilitator (user OR person). ISO 22301 Cl. 8.5 requires every BC exercise to have a named responsible.'
 
 # Junior-ISB-Audit-2026-05-22 P-12 rollout — 9001-bridge keys for BC-Exercise forms.
 iso_9001_bridge:
