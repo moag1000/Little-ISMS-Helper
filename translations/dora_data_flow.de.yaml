@@ -1,0 +1,76 @@
+dora_data_flow:
+    title:
+        list: "DORA Datenflüsse"
+        create: "Datenfluss anlegen"
+        edit: "Datenfluss bearbeiten"
+        show: "Datenfluss"
+    description:
+        overview: "Datenflüsse zwischen Finanzunternehmen und IKT-Drittanbietern gemäß DORA Art. 28 (RT_03)."
+    action:
+        create: "Neuer Datenfluss"
+    field:
+        supplier: "IKT-Dienstleister"
+        direction: "Richtung"
+        processing_purpose: "Verarbeitungszweck"
+        data_categories: "Datenkategorien"
+        data_volume: "Datenvolumen"
+        security_measures: "Sicherheitsmaßnahmen"
+        cross_border: "Drittlandtransfer"
+        receiving_country: "Empfängerland (ISO 3166-1 alpha-2)"
+        created_at: "Erstellt am"
+        updated_at: "Aktualisiert am"
+    help:
+        supplier: "Der vertraglich gebundene IKT-Drittdienstleister."
+        direction: "Inbound (Anbieter → Finanzunternehmen), Outbound (umgekehrt) oder Bidirectional."
+        processing_purpose: "Kurze Beschreibung des Verarbeitungszwecks (max. 500 Zeichen)."
+        data_categories: "Mindestens eine Datenkategorie. Über Komma oder Eingabetaste eigene Werte ergänzen."
+        data_volume: "Frei wählbar, z. B. '10 GB/Monat' oder '~1k Transaktionen/Tag'."
+        security_measures: "Eingesetzte Schutzmaßnahmen (mehrere wählbar)."
+        cross_border: "Aktivieren wenn Daten in ein Land außerhalb des EWR übertragen werden."
+        receiving_country: "Nur erforderlich bei Drittlandtransfer. ISO 3166-1 alpha-2 (z. B. US, GB, CH)."
+    placeholder:
+        supplier: "Bitte Dienstleister wählen"
+        processing_purpose: "z. B. Bonitätsprüfung für Kreditanträge"
+        data_volume: "z. B. 10 GB/Monat"
+    direction:
+        inbound: "Eingehend (Anbieter → Finanzunternehmen)"
+        outbound: "Ausgehend (Finanzunternehmen → Anbieter)"
+        bidirectional: "Bidirektional"
+    category:
+        pii: "Personenbezogene Daten"
+        financial: "Finanzdaten"
+        health: "Gesundheitsdaten"
+        authentication: "Authentifizierungsdaten"
+        transactional: "Transaktionsdaten"
+        metadata: "Metadaten"
+        logs: "Logs"
+        backup: "Backup-Daten"
+    security:
+        encryption_in_transit: "Verschlüsselung in Transit"
+        encryption_at_rest: "Verschlüsselung at Rest"
+        tokenisation: "Tokenisierung"
+        pseudonymisation: "Pseudonymisierung"
+        anonymisation: "Anonymisierung"
+        mfa: "Multi-Faktor-Authentifizierung"
+        vpn: "VPN"
+        mtls: "Mutual TLS"
+        access_control: "Zugriffskontrolle"
+    validation:
+        supplier_required: "Bitte einen Dienstleister auswählen."
+        data_categories_required: "Mindestens eine Datenkategorie erforderlich."
+        direction_required: "Richtung ist erforderlich."
+        direction_invalid: "Ungültige Richtung."
+        processing_purpose_too_long: "Verarbeitungszweck darf maximal 500 Zeichen umfassen."
+        data_volume_too_long: "Datenvolumen darf maximal 100 Zeichen umfassen."
+        receiving_country_format: "ISO 3166-1 alpha-2 Format erwartet (2 Großbuchstaben)."
+    section:
+        overview: "Übersicht"
+        data_categories: "Datenkategorien"
+        security: "Sicherheit"
+        transfer: "Transfer"
+    message:
+        no_flows: "Noch keine Datenflüsse erfasst."
+    success:
+        created: "Datenfluss wurde erfolgreich angelegt."
+        updated: "Datenfluss wurde aktualisiert."
+        deleted: "Datenfluss wurde gelöscht."

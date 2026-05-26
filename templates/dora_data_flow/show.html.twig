@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dora_data_flow' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ flow.displayLabel }} - {{ 'dora_data_flow.title.show'|trans({}, 'dora_data_flow') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dora_compliance'|trans({}, 'nav'), url: path('app_dora_compliance_dashboard') },
+            { label: 'dora_data_flow.title.list'|trans({}, 'dora_data_flow'), url: path('app_dora_data_flow_index') },
+            { label: flow.displayLabel }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield', label: 'DORA Art. 28 · RT_03' },
+        title: 'dora_data_flow.title.show'|trans({}, 'dora_data_flow'),
+        subtitle: flow.displayLabel,
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_dora_data_flow_edit', {id: flow.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_dora_data_flow_index') }
+        ]
+    }) }}
+</div>
+
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_body %}
+    <h2>{{ 'dora_data_flow.section.overview'|trans({}, 'dora_data_flow') }}</h2>
+    <div class="stats-grid mt-3 grid-responsive-250">
+        <div class="stat-item">
+            <strong>
+                {% if flow.supplier %}
+                    <a href="{{ path('app_supplier_show', {id: flow.supplier.id}) }}">{{ flow.supplier.name }}</a>
+                {% else %}-{% endif %}
+            </strong>
+            <span>{{ 'dora_data_flow.field.supplier'|trans({}, 'dora_data_flow') }}</span>
+        </div>
+        <div class="stat-item">
+            <strong>
+                {% include '_components/_badge.html.twig' with {
+                    variant: 'info',
+                    content: ('dora_data_flow.direction.' ~ flow.direction)|trans({}, 'dora_data_flow')
+                } %}
+            </strong>
+            <span>{{ 'dora_data_flow.field.direction'|trans({}, 'dora_data_flow') }}</span>
+        </div>
+        {% if flow.dataVolume %}
+        <div class="stat-item">
+            <strong>{{ flow.dataVolume }}</strong>
+            <span>{{ 'dora_data_flow.field.data_volume'|trans({}, 'dora_data_flow') }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if flow.processingPurpose %}
+    <div class="form-group mt-3">
+        <label class="form-label">{{ 'dora_data_flow.field.processing_purpose'|trans({}, 'dora_data_flow') }}</label>
+        <p class="text-light-pre-wrap">{{ flow.processingPurpose }}</p>
+    </div>
+    {% endif %}
+    {% endblock %}
+{% endembed %}
+
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_body %}
+    <h2>{{ 'dora_data_flow.section.data_categories'|trans({}, 'dora_data_flow') }}</h2>
+    <div class="mt-3">
+        {% for cat in flow.dataCategories %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: cat } %}
+        {% else %}
+            <span class="text-muted-color">-</span>
+        {% endfor %}
+    </div>
+    {% endblock %}
+{% endembed %}
+
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_body %}
+    <h2>{{ 'dora_data_flow.section.security'|trans({}, 'dora_data_flow') }}</h2>
+    <div class="mt-3">
+        {% for measure in flow.securityMeasures %}
+            {% include '_components/_badge.html.twig' with { variant: 'success', content: measure } %}
+        {% else %}
+            <span class="text-muted-color">-</span>
+        {% endfor %}
+    </div>
+    {% endblock %}
+{% endembed %}
+
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_body %}
+    <h2>{{ 'dora_data_flow.section.transfer'|trans({}, 'dora_data_flow') }}</h2>
+    <div class="stats-grid mt-3 grid-responsive-250">
+        <div class="stat-item">
+            <strong>
+                {% if flow.crossBorder %}
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'common.yes'|trans({}, 'messages') } %}
+                {% else %}
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.no'|trans({}, 'messages') } %}
+                {% endif %}
+            </strong>
+            <span>{{ 'dora_data_flow.field.cross_border'|trans({}, 'dora_data_flow') }}</span>
+        </div>
+        {% if flow.receivingCountry %}
+        <div class="stat-item">
+            <strong><code>{{ flow.receivingCountry }}</code></strong>
+            <span>{{ 'dora_data_flow.field.receiving_country'|trans({}, 'dora_data_flow') }}</span>
+        </div>
+        {% endif %}
+    </div>
+    {% endblock %}
+{% endembed %}
+
+<div class="button-group mt-xl">
+    <a href="{{ path('app_dora_data_flow_edit', {id: flow.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
+        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+    </a>
+    <a href="{{ path('app_dora_data_flow_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+    </a>
+    {% if is_granted('ROLE_ADMIN') %}
+    <form method="post" action="{{ path('app_dora_data_flow_delete', {id: flow.id}) }}" class="d-inline"
+          data-controller="ui-actions"
+          data-action="submit->ui-actions#confirm"
+          data-ui-actions-message-param="{{ 'common.confirm_delete'|trans({}, 'messages') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ flow.id) }}">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
+            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+        </button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
