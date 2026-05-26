@@ -292,7 +292,7 @@ final class DocumentType extends AbstractType implements SectionMapInterface
         $builder->add('linkedControls', EntityType::class, [
             'class'         => Control::class,
             'choice_label'  => function (Control $c): string {
-                $code = $c->getControlNumber() ?? '';
+                $code = $c->getControlId() ?? '';
                 $name = $c->getName() ?? '';
                 return trim($code . ' — ' . $name, ' —');
             },
