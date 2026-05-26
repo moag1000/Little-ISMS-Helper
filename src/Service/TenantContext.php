@@ -272,9 +272,26 @@ class TenantContext
             throw new AccessDeniedException('Authenticated user required to resolve admin scope.');
         }
 
-        // Global / no-scope request
-        if ($requested === null || $requested === '' || $requested === 'global') {
+        // Global / no-scope request — explicit `'global'` opts into the
+        // null branch; bare null / '' uses the SUPER_ADMIN's current
+        // tenant so tenant-scoped admin pages (KPI thresholds, lifecycle
+        // overrides, sample data, …) work out of the box. Single-tenant
+        // installs additionally fall back to the only active tenant when
+        // no current is bound — historically the most common shape.
+        $explicitGlobal = ($requested === 'global');
+        if ($requested === null || $requested === '' || $explicitGlobal) {
             if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
+                if ($explicitGlobal) {
+                    return null;
+                }
+                $current = $this->getCurrentTenant();
+                if ($current instanceof Tenant) {
+                    return $current;
+                }
+                $tenants = $this->tenantRepository->findBy(['isActive' => true]);
+                if (count($tenants) === 1) {
+                    return $tenants[0];
+                }
                 return null;
             }
             if ($this->security->isGranted('ROLE_ADMIN')) {

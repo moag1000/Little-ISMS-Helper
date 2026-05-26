@@ -21,6 +21,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 // SectionMap not applicable — templates (new.html.twig, edit.html.twig) pass
 // their own 'sections' data directly to _auto_form, overriding any SectionMap.
@@ -304,7 +306,25 @@ final class BCExerciseType extends AbstractType
         $resolver->setDefaults([
             'data_class' => BCExercise::class,
             'translation_domain' => 'bc_exercises',
+            'constraints' => [
+                // TODO-BCE-01 (Junior-ISB form audit 2026-05-26):
+                // ISO 22301 Cl. 8.5 — every BC-exercise needs a named
+                // facilitator. Pattern A dual-state means EITHER
+                // facilitatorUser OR facilitatorPerson must be set.
+                new Callback([$this, 'validateFacilitatorSlot']),
+            ],
         ]);
     }
 
+    public function validateFacilitatorSlot(?BCExercise $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getFacilitatorUser() === null && $entity->getFacilitatorPerson() === null) {
+            $context->buildViolation('bc_exercises.error.facilitator_required_user_or_person')
+                ->atPath('facilitatorUser')
+                ->addViolation();
+        }
+    }
 }

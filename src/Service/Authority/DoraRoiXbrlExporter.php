@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\Authority;
 
+use App\Entity\DoraDataFlow;
 use App\Entity\Tenant;
 use App\Repository\AssetRepository;
+use App\Repository\DoraDataFlowRepository;
 use App\Repository\SupplierRepository;
 use DateTimeImmutable;
 use DOMDocument;
@@ -43,6 +45,7 @@ final class DoraRoiXbrlExporter
     public function __construct(
         private readonly SupplierRepository $supplierRepository,
         private readonly AssetRepository $assetRepository,
+        private readonly ?DoraDataFlowRepository $dataFlowRepository = null,
     ) {
     }
 
@@ -65,6 +68,13 @@ final class DoraRoiXbrlExporter
         // Operators flag entities explicitly; untagged entries are NOT exported.
         $suppliers = $this->supplierRepository->findByTenantAndDoraRelevant($tenant);
         $assets = $this->assetRepository->findByTenantAndDoraRelevant($tenant);
+        // RT_03 (data-flow) sub-table: tenant-scoped flows grouped by
+        // supplier id for per-provider nesting below. NULL repo (legacy
+        // call-sites that have not been re-autowired yet) degrades to an
+        // empty map, preserving prior behaviour.
+        $flowsBySupplierId = $this->groupFlowsBySupplierId(
+            $this->dataFlowRepository?->findByTenant($tenant) ?? []
+        );
 
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
@@ -224,11 +234,12 @@ final class DoraRoiXbrlExporter
             // processing locations, certifications, audit rights, jurisdiction.
             //
             // Beyond 0130 the ESA taxonomy nests into RT_03/RT_04 sub-tables
-            // (data-flow, function-mapping, subcontractor-chain) — those are
-            // intentionally not emitted here yet. They require dedicated
-            // sub-Supplier entities (subcontractor join-table is in place but
-            // function-mapping isn't), and we'd rather defer cleanly than emit
-            // stub rows that get rejected by Arelle.
+            // (data-flow, function-mapping, subcontractor-chain). RT_03
+            // (data-flow) is wired below via {@see App\Entity\DoraDataFlow}.
+            // RT_04 (subcontractor-chain) + function-mapping remain deferred —
+            // they need richer sub-entities (subcontractor join-table is in
+            // place but function-mapping isn't), and we'd rather defer
+            // cleanly than emit stub rows that get rejected by Arelle.
 
             // B_02.02.0060: Contract start date
             $contractStartEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_02.02.0060');
@@ -299,13 +310,24 @@ final class DoraRoiXbrlExporter
             $auditEl->textContent = trim((string) $supplier->getSecurityRequirements()) !== '' ? 'true' : 'false';
             $providerEl->appendChild($auditEl);
 
-            // Deferred / explicit-gap marker — RT_03 (data-flow) + RT_04
-            // (subcontractor-chain detail tables) require richer
-            // sub-entities and are tracked as the remaining ESA-taxonomy
-            // backlog. Comment kept so the gap stays surveyable by auditors
-            // and lints.
+            // ─── RT_03 sub-table — data-flow rows per provider ────────────
+            // ESA Joint ITS on RoI Art. 28 / RT_03: each <roi:RT_03_data_flow>
+            // entry describes a single data-flow between the financial
+            // entity and the ICT third-party (this provider). Wired to
+            // {@see App\Entity\DoraDataFlow}.
+            $supplierId = $supplier->getId();
+            $flowsForSupplier = $supplierId !== null
+                ? ($flowsBySupplierId[$supplierId] ?? [])
+                : [];
+
+            foreach ($flowsForSupplier as $k => $flow) {
+                $providerEl->appendChild($this->buildDataFlowElement($dom, $flow, $i + 1, $k + 1));
+            }
+
+            // RT_04 (subcontractor-chain) still deferred — kept as audit-gap
+            // marker. RT_03 has moved from this comment to the loop above.
             $providerEl->appendChild($dom->createComment(
-                ' TODO: B_02.02.0140–0999 + RT_03 data-flow + RT_04 subcontractor-chain — pending dedicated sub-entities '
+                ' TODO: B_02.02.0140–0999 + RT_04 subcontractor-chain — pending dedicated sub-entities '
             ));
 
             $root->appendChild($providerEl);
@@ -484,6 +506,106 @@ final class DoraRoiXbrlExporter
             'medium', 'mittel', 'important' => 'important',
             default => 'other',
         };
+    }
+
+    /**
+     * Groups DORA data-flows by their supplier id for O(1) per-provider
+     * lookup in the main generate() loop. Flows with a null supplier are
+     * silently skipped — the entity enforces NOT NULL at DB level, this
+     * guard handles in-memory test stubs only.
+     *
+     * @param iterable<DoraDataFlow> $flows
+     * @return array<int, list<DoraDataFlow>>
+     */
+    private function groupFlowsBySupplierId(iterable $flows): array
+    {
+        $out = [];
+        foreach ($flows as $flow) {
+            $sid = $flow->getSupplier()?->getId();
+            if ($sid === null) {
+                continue;
+            }
+            $out[$sid] ??= [];
+            $out[$sid][] = $flow;
+        }
+
+        return $out;
+    }
+
+    /**
+     * Builds one <roi:RT_03_data_flow> element for the ESA Joint ITS RT_03
+     * sub-table. Field-level child elements follow the same B_xx naming
+     * convention as the parent provider rows so Arelle taxonomy validation
+     * stays consistent.
+     *
+     * Sub-elements emitted:
+     *  - RT_03.0010 — direction (inbound/outbound/bidirectional)
+     *  - RT_03.0020 — data categories (comma-joined)
+     *  - RT_03.0030 — processing purpose (text, max 500)
+     *  - RT_03.0040 — security measures (comma-joined)
+     *  - RT_03.0050 — data volume (free text)
+     *  - RT_03.0060 — cross-border indicator (true/false)
+     *  - RT_03.0070 — receiving country (ISO 3166-1 alpha-2, only if set)
+     */
+    private function buildDataFlowElement(
+        DOMDocument $dom,
+        DoraDataFlow $flow,
+        int $providerIndex,
+        int $flowIndex,
+    ): DOMElement {
+        $flowEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_03_data_flow');
+        $flowEl->setAttribute('id', sprintf('provider_%d_flow_%d', $providerIndex, $flowIndex));
+
+        // RT_03.0010 — direction
+        $dirEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_03.0010');
+        $dirEl->setAttribute('contextRef', 'ctx_period');
+        $dirEl->textContent = (string) ($flow->getDirection() ?? '');
+        $flowEl->appendChild($dirEl);
+
+        // RT_03.0020 — data categories (flat comma-joined string; ESA's
+        // nested-element variant is deferred until the cardinality contract
+        // is locked, mirrors how B_02.02.0110 handles processing-locations).
+        $catEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_03.0020');
+        $catEl->setAttribute('contextRef', 'ctx_period');
+        $catEl->textContent = implode(',', array_map('strval', $flow->getDataCategories()));
+        $flowEl->appendChild($catEl);
+
+        // RT_03.0030 — processing purpose
+        $purposeEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_03.0030');
+        $purposeEl->setAttribute('contextRef', 'ctx_period');
+        $purposeEl->textContent = (string) ($flow->getProcessingPurpose() ?? '');
+        $flowEl->appendChild($purposeEl);
+
+        // RT_03.0040 — security measures (comma-joined)
+        $secEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_03.0040');
+        $secEl->setAttribute('contextRef', 'ctx_period');
+        $secEl->textContent = implode(',', array_map('strval', $flow->getSecurityMeasures()));
+        $flowEl->appendChild($secEl);
+
+        // RT_03.0050 — data volume
+        $volEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_03.0050');
+        $volEl->setAttribute('contextRef', 'ctx_period');
+        $volEl->textContent = (string) ($flow->getDataVolume() ?? '');
+        $flowEl->appendChild($volEl);
+
+        // RT_03.0060 — cross-border boolean
+        $cbEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_03.0060');
+        $cbEl->setAttribute('contextRef', 'ctx_period');
+        $cbEl->textContent = $flow->isCrossBorder() ? 'true' : 'false';
+        $flowEl->appendChild($cbEl);
+
+        // RT_03.0070 — receiving country (only emit when cross-border &
+        // country is set; otherwise the element is suppressed so Arelle does
+        // not flag an empty ISO-3166 alpha-2 value).
+        $recv = $flow->getReceivingCountry();
+        if ($flow->isCrossBorder() && $recv !== null && $recv !== '') {
+            $recvEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_03.0070');
+            $recvEl->setAttribute('contextRef', 'ctx_period');
+            $recvEl->textContent = strtoupper($recv);
+            $flowEl->appendChild($recvEl);
+        }
+
+        return $flowEl;
     }
 
     /**
