@@ -81,8 +81,8 @@ translations/audits.en.yaml:180:pdf
 translations/audits.en.yaml:219:audit_finding
 translations/audits.en.yaml:391:corrective_action
 translations/audits.en.yaml:477:iso_9001_bridge
-translations/bc_exercises.de.yaml:196:iso_9001_bridge
-translations/bc_exercises.en.yaml:196:iso_9001_bridge
+translations/bc_exercises.de.yaml:198:iso_9001_bridge
+translations/bc_exercises.en.yaml:198:iso_9001_bridge
 translations/bc_plans.de.yaml:215:bcm
 translations/bc_plans.de.yaml:222:bc_plan
 translations/bc_plans.de.yaml:231:iso_9001_bridge
@@ -165,6 +165,8 @@ translations/document.de.yaml:284:evidence_reverification
 translations/document.de.yaml:318:iso_9001_bridge
 translations/document.en.yaml:281:evidence_reverification
 translations/document.en.yaml:315:iso_9001_bridge
+translations/dora.de.yaml:175:dora_subcontractor
+translations/dora.en.yaml:175:dora_subcontractor
 translations/eu_authorities.de.yaml:229:authority
 translations/eu_authorities.de.yaml:303:dora
 translations/eu_authorities.en.yaml:229:authority
