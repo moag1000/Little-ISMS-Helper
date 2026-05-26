@@ -141,7 +141,7 @@ Aktuelle Implementation = nur Skelett für Sprint 8 prototype.
 | 6.6 | ESA Taxonomie B_02.02.0060-9999 (Provider-Details: addresses, registration, certifications) |
 | 6.7 | ESA Taxonomie B_03.02 (ICT-Asset-Detail-Table) — Asset.doraRelevant entities aggregieren |
 | 6.8 | XBRL-Validierung — Arelle-CLI in CI integrieren (verify against ESA taxonomy schema) |
-| 6.9 | ~~ESA Taxonomie RT_03 (data-flow) — DoraDataFlow entity + CRUD + per-provider XBRL emission~~ **closed in PR #TBD** |
+| 6.9 | ~~ESA Taxonomie RT_03 (data-flow) — DoraDataFlow entity + CRUD + per-provider XBRL emission~~ **closed in PR #725** |
 | 6.10 | ESA Taxonomie RT_04 (subcontractor-chain) — sub-entities + per-provider XBRL emission *(deferred — backlog)* |
 | 6.11 | ESA Taxonomie RT_05 (asset-dependency-graph) — Asset-dependency-relation emission *(deferred — backlog)* |
 | 6.12 | ESA Taxonomie RT_06 (decommission-plan) — decommission-plan sub-entity + emission *(deferred — backlog)* |
