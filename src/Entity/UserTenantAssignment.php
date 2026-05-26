@@ -222,7 +222,7 @@ class UserTenantAssignment
         return $this->validFrom;
     }
 
-    public function setValidFrom(DateTimeImmutable $validFrom): static
+    public function setValidFrom(?DateTimeImmutable $validFrom): static
     {
         $this->validFrom = $validFrom;
         return $this;
@@ -255,7 +255,7 @@ class UserTenantAssignment
         return $this->grantedAt;
     }
 
-    public function setGrantedAt(DateTimeImmutable $grantedAt): static
+    public function setGrantedAt(?DateTimeImmutable $grantedAt): static
     {
         $this->grantedAt = $grantedAt;
         return $this;
