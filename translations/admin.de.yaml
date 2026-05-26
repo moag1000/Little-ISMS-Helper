@@ -1674,7 +1674,7 @@ kpi_threshold:
         deleted: 'Schwellwert gelöscht.'
         duplicate_key: 'Für diesen KPI existiert bereits ein Schwellwert.'
         good_below_warning: 'Good-Schwelle muss ≥ Warning-Schwelle sein.'
-        no_tenant: 'Kein Organisation zugeordnet.'
+        no_tenant: 'Keine Organisation zugeordnet — bitte zuerst eine spezifische Organisation auswählen, um KPI-Schwellwerte anzulegen.'
     message:
         no_configs: 'Keine Schwellwerte konfiguriert — Defaults werden verwendet.'
     confirm:

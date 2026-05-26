@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
@@ -34,7 +35,21 @@ class KpiThresholdConfigController extends AbstractController
         private readonly KpiThresholdConfigRepository $repository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
+        private readonly TranslatorInterface $translator,
     ) {
+    }
+
+    /**
+     * Pre-translate a flash message using the `admin` domain.
+     *
+     * The base.html.twig flash renderer prints messages verbatim (no |trans
+     * filter), so controllers must translate keys before calling addFlash().
+     * Bug-fix 2026-05-26: L2 sweep surfaced `kpi_threshold.flash.no_tenant`
+     * appearing untranslated on `/de/admin/kpi-thresholds/new` for SUPER_ADMIN.
+     */
+    private function flashTrans(string $key): string
+    {
+        return $this->translator->trans($key, [], 'admin');
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
@@ -61,9 +76,15 @@ class KpiThresholdConfigController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        // SUPER_ADMIN visiting /new without a tenant_id falls through here
+        // (resolveAdminScope() returns null for global scope). They must pick
+        // a specific tenant before creating a tenant-scoped threshold —
+        // a `KpiThresholdConfig` row has NOT NULL `tenant_id`.
+        // For ROLE_ADMIN this branch is unreachable: their current tenant is
+        // always returned by resolveAdminScope().
         $tenant = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
         if (!$tenant instanceof Tenant) {
-            $this->addFlash('error', 'kpi_threshold.flash.no_tenant');
+            $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.no_tenant'));
             return $this->redirectToRoute('admin_kpi_threshold_index');
         }
 
@@ -75,16 +96,16 @@ class KpiThresholdConfigController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($config->getGoodThreshold() < $config->getWarningThreshold()) {
-                $this->addFlash('error', 'kpi_threshold.flash.good_below_warning');
+                $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.good_below_warning'));
                 return $this->render('admin/kpi_threshold/new.html.twig', ['form' => $form]);
             }
             try {
                 $this->entityManager->persist($config);
                 $this->entityManager->flush();
-                $this->addFlash('success', 'kpi_threshold.flash.created');
+                $this->addFlash('success', $this->flashTrans('kpi_threshold.flash.created'));
                 return $this->redirectToRoute('admin_kpi_threshold_index');
             } catch (UniqueConstraintViolationException) {
-                $this->addFlash('error', 'kpi_threshold.flash.duplicate_key');
+                $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.duplicate_key'));
             }
         }
 
@@ -101,12 +122,12 @@ class KpiThresholdConfigController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($config->getGoodThreshold() < $config->getWarningThreshold()) {
-                $this->addFlash('error', 'kpi_threshold.flash.good_below_warning');
+                $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.good_below_warning'));
                 return $this->render('admin/kpi_threshold/edit.html.twig', ['form' => $form, 'config' => $config]);
             }
             $config->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
-            $this->addFlash('success', 'kpi_threshold.flash.updated');
+            $this->addFlash('success', $this->flashTrans('kpi_threshold.flash.updated'));
             return $this->redirectToRoute('admin_kpi_threshold_index');
         }
 
@@ -127,7 +148,7 @@ class KpiThresholdConfigController extends AbstractController
 
         $this->entityManager->remove($config);
         $this->entityManager->flush();
-        $this->addFlash('success', 'kpi_threshold.flash.deleted');
+        $this->addFlash('success', $this->flashTrans('kpi_threshold.flash.deleted'));
 
         return $this->redirectToRoute('admin_kpi_threshold_index');
     }
