@@ -23,11 +23,11 @@ src/Controller/Admin/IndustryPresetController.php:147
 src/Controller/Admin/IndustryPresetController.php:179
 src/Controller/Admin/IndustryPresetController.php:207
 src/Controller/Admin/IndustryPresetController.php:211
-src/Controller/Admin/KpiThresholdConfigController.php:82
-src/Controller/Admin/KpiThresholdConfigController.php:83
-src/Controller/Admin/KpiThresholdConfigController.php:108
-src/Controller/Admin/KpiThresholdConfigController.php:128
+src/Controller/Admin/KpiThresholdConfigController.php:103
+src/Controller/Admin/KpiThresholdConfigController.php:104
 src/Controller/Admin/KpiThresholdConfigController.php:129
+src/Controller/Admin/KpiThresholdConfigController.php:149
+src/Controller/Admin/KpiThresholdConfigController.php:150
 src/Controller/Admin/LifecycleOverridesController.php:182
 src/Controller/Admin/LifecycleOverridesController.php:268
 src/Controller/Admin/LifecycleOverridesController.php:286

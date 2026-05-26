@@ -1659,7 +1659,7 @@ kpi_threshold:
         deleted: 'Threshold deleted.'
         duplicate_key: 'A threshold already exists for this KPI.'
         good_below_warning: 'Good threshold must be ≥ warning threshold.'
-        no_tenant: 'No tenant assigned.'
+        no_tenant: 'No tenant assigned — please select a specific tenant first to configure KPI thresholds.'
     message:
         no_configs: 'No thresholds configured — defaults apply.'
     confirm:
