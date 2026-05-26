@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Service\Authority;
 
 use App\Entity\Asset;
+use App\Entity\DoraSubcontractor;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Repository\AssetRepository;
+use App\Repository\DoraSubcontractorRepository;
 use App\Repository\SupplierRepository;
 use App\Service\Authority\DoraRoiXbrlExporter;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -340,5 +342,142 @@ final class DoraRoiXbrlExporterTest extends TestCase
         self::assertMatchesRegularExpression('/<roi:B_02\.01\.0010[^>]*>2</', $xml);
         self::assertStringContainsString('DORA Supplier Alpha', $xml);
         self::assertStringContainsString('DORA Supplier Beta', $xml);
+    }
+
+    // ─── RT_04 subcontractor-chain (Bucket-6 close) ──────────────────────────
+
+    #[Test]
+    public function rt04WrapperEmittedWhenSubcontractorsExist(): void
+    {
+        $supplier = new Supplier();
+        $supplier->setName('Prime ICT');
+        $supplier->setIsDoraRelevant(true);
+
+        $sub = new DoraSubcontractor();
+        $sub->setName('SubCloud GmbH');
+        $sub->setParentSupplier($supplier);
+        $sub->setTier(2);
+        $sub->setCriticality('important');
+        $sub->setSubstitutability('medium');
+        $sub->setCountry('DE');
+        $sub->setLeiCode('529900T8BM49AURSDO55');
+        $sub->setServiceDescription('Managed Kubernetes hosting');
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $subRepo = $this->createMock(DoraSubcontractorRepository::class);
+        $subRepo->method('findDirectChildrenOfSupplier')->willReturn([$sub]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $subRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertStringContainsString('RT_04_subcontractor_chain', $xml);
+        self::assertStringContainsString('RT_04_subcontractor', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0010[^>]*>SubCloud GmbH</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0020[^>]*>529900T8BM49AURSDO55</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0030[^>]*>DE</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0040[^>]*>2</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0050[^>]*>important</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0060[^>]*>medium</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0070[^>]*>Managed Kubernetes hosting</', $xml);
+    }
+
+    #[Test]
+    public function rt04EmitsNestedChildrenRecursively(): void
+    {
+        $supplier = new Supplier();
+        $supplier->setName('Prime ICT');
+        $supplier->setIsDoraRelevant(true);
+
+        // Build a 3-level chain: SubA (tier 2) → SubB (tier 3) → SubC (tier 4).
+        $subA = new DoraSubcontractor();
+        $subA->setName('SubA Hosting');
+        $subA->setParentSupplier($supplier);
+        $subA->setTier(2);
+
+        $subB = new DoraSubcontractor();
+        $subB->setName('SubB Storage');
+        $subB->setParentSupplier($supplier);
+        $subB->setTier(3);
+
+        $subC = new DoraSubcontractor();
+        $subC->setName('SubC Edge Cache');
+        $subC->setParentSupplier($supplier);
+        $subC->setTier(4);
+
+        // Wire children via addChild — establishes parentSubcontractor too.
+        $subA->addChild($subB);
+        $subB->addChild($subC);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $subRepo = $this->createMock(DoraSubcontractorRepository::class);
+        // Only the direct root (tier 2) is returned by findDirectChildrenOfSupplier —
+        // the recursive walker descends from there via $node->getChildren().
+        $subRepo->method('findDirectChildrenOfSupplier')->willReturn([$subA]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $subRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertStringContainsString('SubA Hosting', $xml);
+        self::assertStringContainsString('SubB Storage', $xml);
+        self::assertStringContainsString('SubC Edge Cache', $xml);
+        self::assertStringContainsString('RT_04_children', $xml);
+        // All three tiers should appear in RT_04.0040
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0040[^>]*>2</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0040[^>]*>3</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_04\.0040[^>]*>4</', $xml);
+    }
+
+    #[Test]
+    public function rt04PlaceholderCommentWhenNoSubcontractors(): void
+    {
+        $supplier = new Supplier();
+        $supplier->setName('Prime With No Subs');
+        $supplier->setIsDoraRelevant(true);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $subRepo = $this->createMock(DoraSubcontractorRepository::class);
+        $subRepo->method('findDirectChildrenOfSupplier')->willReturn([]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, $subRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertStringContainsString('RT_04 subcontractor-chain: no sub-providers', $xml);
+        self::assertStringNotContainsString('RT_04_subcontractor_chain', $xml);
+    }
+
+    #[Test]
+    public function rt04GapMarkerRemovedFromDeferredTodoComment(): void
+    {
+        // The historical "TODO: …RT_04…" comment must no longer mention RT_04
+        // (RT_04 is now wired); RT_03 remains in the deferred comment.
+        $supplier = new Supplier();
+        $supplier->setName('Prime ICT');
+        $supplier->setIsDoraRelevant(true);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+
+        // No subcontractorRepository injected — backward-compat path.
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        // The provider-level TODO comment must reference RT_03 only.
+        self::assertStringContainsString('RT_03 data-flow', $xml);
+        self::assertStringNotContainsString(
+            'RT_04 subcontractor-chain — pending dedicated sub-entities',
+            $xml,
+            'RT_04 must no longer appear as a deferred-pending item in the provider TODO marker.'
+        );
     }
 }
