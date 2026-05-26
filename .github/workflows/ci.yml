@@ -447,6 +447,27 @@ jobs:
         # Doctrine quotes them in CREATE TABLE but not in DML → INSERT/UPDATE
         # blows up. Use `#[ORM\Column(name: 'safe_name')]` or rename the property.
         run: python3 scripts/quality/check_entity_reserved_words.py --baseline scripts/quality/baselines/entity_reserved_words.txt --quiet
+      - name: "Gate 50: disabled FormField without mapped=>false"
+        # `'disabled' => true` without `'mapped' => false` lets Symfony bind
+        # empty POST values to the entity on submit → NOT NULL constraint
+        # violation (422). Fixed in bulk in PR #707 and PR #712 Pattern A.
+        # New occurrences are blocked here; 6 legacy fields are baselined for
+        # cleanup in Sprint S14. Add `// @intentional-bind: <reason>` if the
+        # bind is truly intentional.
+        run: python3 scripts/quality/check_disabled_mapped_pair.py --baseline scripts/quality/baselines/disabled_mapped_pair.txt --quiet
+      - name: "Gate 51: raw backed-enum in JsonResponse array"
+        # Returning a PHP backed-enum directly in a JSON array causes
+        # json_encode to return false → HTTP 500. Use ->getStatus()?->value
+        # to serialize the backing string.  Fixed in PR #705 and PR #712.
+        # Discovers enum-returning getters via entity return-type hints; 5
+        # pre-existing items are baselined (string-returning getters flagged
+        # by heuristic). Add `// @allow-raw-enum` to suppress if intentional.
+        run: python3 scripts/quality/check_enum_to_json_unwrap.py --baseline scripts/quality/baselines/enum_to_json_unwrap.txt --quiet
+      - name: "Gate 52: unsupported Twig 3.x tags (continue / break)"
+        # Twig 3.x has no {% continue %} or {% break %} tags. Using them
+        # throws a SyntaxError at runtime — caused 67+ test failures in
+        # PR #689. Replace with {% if condition %}...{% endif %} in the loop.
+        run: python3 scripts/quality/check_twig_unsupported_tags.py --baseline scripts/quality/baselines/twig_unsupported_tags.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
