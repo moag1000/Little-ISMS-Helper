@@ -23,10 +23,10 @@ src/Controller/Admin/ComplianceImportController.php:LOC=923 deps=0
 src/Controller/TenantManagementController.php:LOC=923 deps=0
 src/Controller/ProcessingActivityController.php:LOC=843 deps=0
 src/Controller/AdminBackupController.php:LOC=816 deps=0
+src/Controller/AssetController.php:LOC=764 deps=0
 src/Controller/ComplianceWizardController.php:LOC=762 deps=0
 src/Controller/AnalyticsController.php:LOC=756 deps=0
 src/Controller/DPIAController.php:LOC=753 deps=0
-src/Controller/AssetController.php:LOC=748 deps=0
 src/Controller/MonitoringController.php:LOC=727 deps=0
 src/Controller/QuickFixController.php:LOC=678 deps=0
 src/Controller/AuditController.php:LOC=667 deps=0

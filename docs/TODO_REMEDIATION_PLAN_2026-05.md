@@ -150,7 +150,7 @@ Aktuelle Implementation = nur Skelett für Sprint 8 prototype.
 | 6.8 | XBRL-Validierung — Arelle-CLI in CI integrieren (verify against ESA taxonomy schema) |
 | 6.9 | ~~ESA Taxonomie RT_03 (data-flow) — DoraDataFlow entity + CRUD + per-provider XBRL emission~~ **closed in PR #725** |
 | 6.10 | ESA Taxonomie RT_04 (subcontractor-chain) — sub-entities + per-provider XBRL emission *(deferred — backlog)* |
-| 6.11 | ESA Taxonomie RT_05 (asset-dependency-graph) — Asset-dependency-relation emission *(deferred — backlog)* |
+| ~~6.11 RT_05~~ | ~~ESA Taxonomie B_03.03 (Asset-Dependency-Graph, RT_05) — pro-Edge dependencyType + criticalityImpact via neuer `AssetDependency` Join-Entity (Migration `20260617100000`).~~ **Erledigt** in PR `feat/dora-rt05-asset-dependency-bucket-6-close` (2026-05-26): neue `AssetDependency`-Entity + Repository + 2 Enums (`AssetDependencyType`, `AssetDependencyCriticalityImpact`) + Exporter-Helper `emitAssetDependencyGraph()` (emittiert `roi:B_03.03.0010` Count + `roi:B_03.03_dependency` Wrapper mit Source/Target IDs + Names + Type + Cascade + Notes) + Show-Template Tree-Renderer + 8 neue Tests. Legacy `Asset.dependsOn` ManyToMany bleibt unangetastet (BSI 3.6 Schutzbedarfsvererbung BC). RT_06 Decommission-Plan bleibt deferred. |
 | 6.12 | ESA Taxonomie RT_06 (decommission-plan) — decommission-plan sub-entity + emission *(deferred — backlog)* |
 
 **Risk**: Hoch — regulatorisch verbindlich, ESA-Taxonomie strikt validiert.
