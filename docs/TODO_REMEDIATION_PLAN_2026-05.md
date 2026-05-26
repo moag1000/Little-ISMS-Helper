@@ -103,13 +103,20 @@ abgewartet. Jetzt: confirm-unused + drop.
 `JsonStructuredType` (textarea mit JSON-blob) → dedizierte `CollectionType` mit
 `EntryType` pro Eintrag. Markt-Standard für strukturierte Sub-Forms.
 
+> **Status update 2026-05-26:** Items 5.3 (BCExercise.successCriteria) and
+> 5.5 (Control.frameworkReferences) closed as proper FormTypes (not
+> CollectionType) because their backing-data shapes (heterogeneous shape
+> variance / variable-key associative map) genuinely require shape-
+> normalising DataTransformers behind a custom widget — see closure notes
+> per item below.
+
 | # | Form | Json-Feld | Neue EntryType |
 |---|---|---|---|
 | 5.1 | `ThreatIntelligenceType:251` | indicators-of-compromise (IoC) | `IocEntryType` mit type + value + confidence |
 | 5.2 | `UserType:245` | competencies | `CompetencyEntryType` mit framework + level + cert |
-| 5.3 | `BCExerciseType:238` | success-criteria | `SuccessCriterionEntryType` mit measurable + actual + met-flag |
+| 5.3 | ~~`BCExerciseType:238`~~ | ~~success-criteria~~ | ~~`SuccessCriterionEntryType` mit measurable + actual + met-flag~~ — **CLOSED**: `BcExerciseSuccessCriteriaType` wraps the existing Stimulus `_fa_success_criteria.html.twig` builder behind a proper FormType. `SuccessCriteriaShapeTransformer` auto-normalises Shape A (rich list of objects) and Shape B (legacy flat bool map) without requiring a data migration. CollectionType would have been a UX regression (loses prefill + raw-toggle escape hatch). |
 | 5.4 | `BCExerciseType:273` | evidence-artifacts | `EvidenceArtifactEntryType` mit type + name + url |
-| 5.5 | `ControlType:275` | implementation-map | strukturierter map-editor (key=phase, value=narrative) |
+| 5.5 | ~~`ControlType:275`~~ | ~~implementation-map~~ | ~~strukturierter map-editor (key=phase, value=narrative)~~ — **CLOSED**: `ControlFrameworkReferencesType` renders one labelled chip-row per known framework slug (13 canonical). Legacy custom slugs surfaced dynamically via PRE_SET_DATA/PRE_SUBMIT so tenant-specific keys round-trip. `FrameworkReferencesTransformer` handles the `array<slug, list<ref>>` ↔ CSV-per-slug shape conversion. Custom form-theme template at `templates/form/control_framework_references.html.twig`. |
 
 **Pro Refactor**:
 1. Neuer EntryType in `src/Form/Entry/`
