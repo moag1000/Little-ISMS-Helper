@@ -9,7 +9,6 @@ use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\BusinessContinuityPlan;
 use App\Form\Entry\EvidenceArtifactEntryType;
-use App\Form\Type\JsonStructuredType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -242,21 +241,15 @@ final class BCExerciseType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
             ])
-            // TODO(s5-json-objects): DEFERRED — shape varies, needs schema-discovery
-            // first. Two shapes co-exist in production rows: legacy flat map
-            // {rtoMet:bool, rpoMet:bool, communicationEffective:bool, teamPrepared:bool}
-            // (ISO 22301 §8.6 c example) and the richer list shape
-            // [{criterion, target, actual, met}]. The custom Stimulus-driven
-            // JsonBuilder UI in templates/_components/_fa_success_criteria.html.twig
-            // auto-detects both, supports prefill from tested BCPlan RTO/RPO,
-            // and exposes a raw-JSON-toggle escape hatch. A plain CollectionType
-            // would be a UX regression — re-evaluate after running a column-shape
-            // audit (`grep -c '"criterion"' bc_exercises_dump.json`) and
-            // migrating legacy flat rows to Shape A.
-            ->add('successCriteria', JsonStructuredType::class, [
+            // S5 Bucket 5 (item 5.3) — proper FormType wraps the Stimulus
+            // JsonBuilder. Shape-normalisation moved into
+            // `SuccessCriteriaShapeTransformer` so call-sites no longer have
+            // to know about the legacy flat map vs rich list shapes (ISO
+            // 22301 §8.6 c). The visual builder stays (UX win), but is now
+            // behind a real FormType.
+            ->add('successCriteria', BcExerciseSuccessCriteriaType::class, [
                 'label' => 'bc_exercises.field.success_criteria',
                 'required' => false,
-                'attr' => ['rows' => 4],
                 'help' => 'bc_exercises.help.success_criteria_json',
             ])
             ->add('actualRtoAchieved', NumberType::class, [

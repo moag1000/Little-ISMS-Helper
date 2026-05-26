@@ -10,7 +10,6 @@ use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Asset;
 use App\Form\Trait\ModuleAwareFormTrait;
-use App\Form\Type\JsonStructuredType;
 use App\Repository\RiskRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -272,20 +271,16 @@ final class ControlType extends AbstractType
                 'label' => 'control.field.next_effectiveness_test',
                 'required' => false,
             ])
-            // TODO(s5-json-objects): DEFERRED — shape varies, needs schema-discovery
-            // first. Column is `array<string, list<string>>` map keyed by framework
-            // slug (iso27001, bsi, nist, dora, …). CollectionType does not naturally
-            // express variable-key associative maps; a FrameworkRefEntryType
-            // {framework, refs[]} would require reshaping every existing row.
-            // The proper fix is a richer custom Stimulus map-editor (mirroring
-            // _fa_success_criteria.html.twig) — out of scope for S5 Bucket 5.
-            // C-06: JsonStructuredType applies JsonArrayTransformer automatically,
-            // so invalid JSON surfaces as TransformationFailedException meanwhile.
-            ->add('frameworkReferences', JsonStructuredType::class, [
+            // S5 Bucket 5 (item 5.5) — proper FormType for the variable-key
+            // associative map `array<framework_slug, list<reference_id>>`.
+            // One labelled chip-row per known framework slug; legacy custom
+            // slugs are surfaced dynamically via PRE_SET_DATA so they survive
+            // round-trips. Backed by FrameworkReferencesTransformer for the
+            // CSV ↔ list-per-slug shape conversion.
+            ->add('frameworkReferences', ControlFrameworkReferencesType::class, [
                 'label' => 'control.field.framework_references',
                 'required' => false,
-                'attr' => ['rows' => 4],
-                'help' => 'control.help.framework_references_json',
+                'help' => 'control.help.framework_references_chip',
             ])
             ->add('risks', EntityType::class, [
                 'class' => Risk::class,
@@ -307,7 +302,8 @@ final class ControlType extends AbstractType
                 },
             ]);
 
-        // JsonArrayTransformer now applied automatically by JsonStructuredType.
+        // frameworkReferences shape conversion now lives inside
+        // ControlFrameworkReferencesType via FrameworkReferencesTransformer.
 
         // ── Cloud-fields gated by 'cloud_security' module ─────────────────────
         if ($this->isModuleActive('cloud_security')) {

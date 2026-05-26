@@ -346,6 +346,63 @@
                 {% endif %}
             {% endif %}
 
+            {# Bucket-6 RT_05: Asset-dependency-graph tree-renderer.
+               Walks asset.dependsOn (legacy ManyToMany) and decorates with
+               enriched-edge metadata when available via assetDependencyEdges
+               (keyed by upstream asset id). Feeds the DORA RoI XBRL export. #}
+            {% if asset.dependsOn|length > 0 %}
+                <div class="detail-section">
+                    <h3>
+                        <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
+                        {{ 'asset.dependency.section.title'|trans({}, 'asset') }}
+                    </h3>
+                    <p class="text-muted small mb-3">
+                        {{ 'asset.dependency.section.subtitle'|trans({}, 'asset') }}
+                    </p>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'asset.dependency.section.column.target'|trans({}, 'asset') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'asset.dependency.section.column.type'|trans({}, 'asset') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'asset.dependency.section.column.criticality_impact'|trans({}, 'asset') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'asset.dependency.section.column.notes'|trans({}, 'asset') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for upstream in asset.dependsOn %}
+                                {% set edge = (assetDependencyEdges is defined and assetDependencyEdges[upstream.id] is defined) ? assetDependencyEdges[upstream.id] : null %}
+                                {% set typeValue = edge ? edge.dependencyType.value : 'requires' %}
+                                {% set impactValue = edge ? edge.criticalityImpact.value : 'cascade' %}
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell">
+                                        <a href="{{ path('app_asset_show', {id: upstream.id}) }}">{{ upstream.name }}</a>
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        <span class="fa-status-pill fa-status-pill--neutral">
+                                            {{ ('asset.dependency.type.' ~ typeValue)|trans({}, 'asset') }}
+                                        </span>
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        <span class="fa-status-pill {% if impactValue == 'cascade' %}fa-status-pill--danger{% elseif impactValue == 'partial' %}fa-status-pill--warning{% else %}fa-status-pill--success{% endif %}">
+                                            {{ ('asset.dependency.criticality_impact.' ~ impactValue)|trans({}, 'asset') }}
+                                        </span>
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        {% if edge and edge.notes %}
+                                            {{ edge.notes }}
+                                        {% elseif not edge %}
+                                            <span class="text-muted small">{{ 'asset.dependency.section.default_classification'|trans({}, 'asset') }}</span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            {% endif %}
+
             {% if asset.handlingInstructions %}
                 <div class="detail-section">
                     <h3>{{ 'asset.section.handling_instructions'|trans({}, 'asset') }}</h3>
