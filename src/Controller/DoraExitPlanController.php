@@ -26,6 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * activated the DORA module. One plan per supplier (DB-unique).
  */
 #[IsGranted('ROLE_USER')]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dora/exit-plan', name: 'app_dora_exit_plan_')]
 class DoraExitPlanController extends AbstractController
 {
