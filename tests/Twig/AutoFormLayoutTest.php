@@ -98,8 +98,10 @@ final class AutoFormLayoutTest extends KernelTestCase
 
         self::assertStringContainsString('fa-form-layout', $output,
             'outline-rail must emit .fa-form-layout wrapper');
-        self::assertStringContainsString('data-controller="form-layout"', $output,
-            'outline-rail must emit Stimulus form-layout controller attribute');
+        // form-validation controller is composed alongside form-layout so the
+        // collapsed-section-reveal pattern works on validation errors (PR #718).
+        self::assertStringContainsString('data-controller="form-layout form-validation"', $output,
+            'outline-rail must emit Stimulus form-layout + form-validation controller attributes');
     }
 
     #[Test]

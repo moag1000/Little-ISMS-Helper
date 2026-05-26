@@ -5,16 +5,19 @@ declare(strict_types=1);
 namespace App\Tests\Service\Authority;
 
 use App\Entity\Asset;
+use App\Entity\DoraDataFlow;
 use App\Entity\DoraExitPlan;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Repository\AssetRepository;
+use App\Repository\DoraDataFlowRepository;
 use App\Repository\DoraExitPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Service\Authority\DoraRoiXbrlExporter;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 /**
  * Unit tests for DoraRoiXbrlExporter.
@@ -330,6 +333,141 @@ final class DoraRoiXbrlExporterTest extends TestCase
         self::assertMatchesRegularExpression('/<roi:B_03\.02\.0080[^>]*>CIO Office</', $xml);
         self::assertMatchesRegularExpression('/<roi:B_03\.02\.0090[^>]*>Frankfurt DC</', $xml);
         self::assertMatchesRegularExpression('/<roi:B_03\.02\.0100[^>]*>active</', $xml);
+    }
+
+    // ─── RT_03 (data-flow) — Bucket-6 close ─────────────────────────────
+
+    #[Test]
+    public function generateEmitsRt03ElementsForSampleDataFlows(): void
+    {
+        // Two suppliers, each with one data-flow — verifies that flows
+        // are grouped per-supplier and nested inside the matching provider.
+        $supplierA = $this->makeSupplier(101, 'Acme Cloud Ltd');
+        $supplierB = $this->makeSupplier(202, 'Beta Payments AG');
+
+        $flow1 = new DoraDataFlow();
+        $flow1->setSupplier($supplierA)
+            ->setDirection(DoraDataFlow::DIRECTION_OUTBOUND)
+            ->setDataCategories(['PII', 'financial'])
+            ->setProcessingPurpose('Credit-scoring for loan applications.')
+            ->setSecurityMeasures(['encryption_in_transit', 'mtls'])
+            ->setDataVolume('10 GB/month')
+            ->setCrossBorder(true)
+            ->setReceivingCountry('US');
+
+        $flow2 = new DoraDataFlow();
+        $flow2->setSupplier($supplierB)
+            ->setDirection(DoraDataFlow::DIRECTION_INBOUND)
+            ->setDataCategories(['transactional'])
+            ->setProcessingPurpose('Real-time payment reconciliation.')
+            ->setSecurityMeasures(['encryption_at_rest', 'access_control'])
+            ->setDataVolume('~1k transactions/day')
+            ->setCrossBorder(false);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')
+            ->willReturn([$supplierA, $supplierB]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $flowRepo = $this->createMock(DoraDataFlowRepository::class);
+        $flowRepo->method('findByTenant')->willReturn([$flow1, $flow2]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, null, $flowRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        // RT_03 wrapper present
+        self::assertStringContainsString('RT_03_data_flow', $xml);
+
+        // RT_03.0010 — direction for both flows
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0010[^>]*>outbound</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0010[^>]*>inbound</', $xml);
+
+        // RT_03.0020 — data categories (comma-joined)
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0020[^>]*>PII,financial</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0020[^>]*>transactional</', $xml);
+
+        // RT_03.0030 — processing purpose
+        self::assertStringContainsString('Credit-scoring for loan applications.', $xml);
+        self::assertStringContainsString('Real-time payment reconciliation.', $xml);
+
+        // RT_03.0040 — security measures
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0040[^>]*>encryption_in_transit,mtls</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0040[^>]*>encryption_at_rest,access_control</', $xml);
+
+        // RT_03.0050 — data volume
+        self::assertStringContainsString('10 GB/month', $xml);
+
+        // RT_03.0060 — cross-border flags
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0060[^>]*>true</', $xml);
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0060[^>]*>false</', $xml);
+
+        // RT_03.0070 — receiving country only for cross-border flow
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0070[^>]*>US</', $xml);
+
+        // XML must still be well-formed
+        $dom = new \DOMDocument();
+        self::assertTrue($dom->loadXML($xml), 'XBRL must remain well-formed after RT_03 emission.');
+    }
+
+    #[Test]
+    public function generateSuppressesReceivingCountryForNonCrossBorderFlow(): void
+    {
+        $supplier = $this->makeSupplier(303, 'Internal Vendor');
+        $flow = new DoraDataFlow();
+        $flow->setSupplier($supplier)
+            ->setDirection(DoraDataFlow::DIRECTION_OUTBOUND)
+            ->setDataCategories(['metadata'])
+            ->setCrossBorder(false);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $flowRepo = $this->createMock(DoraDataFlowRepository::class);
+        $flowRepo->method('findByTenant')->willReturn([$flow]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo, null, $flowRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertMatchesRegularExpression('/<roi:RT_03\.0060[^>]*>false</', $xml);
+        self::assertStringNotContainsString('<roi:RT_03.0070', $xml, 'RT_03.0070 must be suppressed for non-cross-border flows.');
+    }
+
+    #[Test]
+    public function generateOmitsRt03MarkerNoteWhenDataFlowRepoIsAbsent(): void
+    {
+        // Default ctor (no $dataFlowRepository) must continue to work and
+        // simply emit zero RT_03 rows. Construct with at least one supplier
+        // so the per-provider RT_04 deferred-marker is exercised.
+        $supplier = $this->makeSupplier(404, 'Solo Vendor');
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+
+        // No $dataFlowRepository — degrades gracefully to empty flow set.
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        self::assertStringNotContainsString('RT_03_data_flow', $xml);
+        self::assertStringContainsString('RT_04', $xml, 'RT_04 deferred-marker should still be present.');
+    }
+
+    /**
+     * Helper — create a Supplier with a deterministic id via reflection
+     * (Supplier::$id is normally Doctrine-managed and lacks a setter).
+     */
+    private function makeSupplier(int $id, string $name): Supplier
+    {
+        $supplier = new Supplier();
+        $supplier->setName($name);
+        $supplier->setIsDoraRelevant(true);
+
+        $ref = new ReflectionClass(Supplier::class);
+        $prop = $ref->getProperty('id');
+        $prop->setValue($supplier, $id);
+
+        return $supplier;
     }
 
     #[Test]

@@ -132,9 +132,15 @@
     {% endif %}
 {% endif %}
 
+{# row-click → show as default since 2026-05-26 — same UX as fa-table (#722).
+   Opt out by passing rowClick=false to the embed call. #}
+{% set legacyRowClick = rowClick is defined ? rowClick : true %}
+
 {# Render table #}
 {% if isResponsive %}
-<div class="{{ wrapperClasses|join(' ') }}">
+<div class="{{ wrapperClasses|join(' ') }}"{% if legacyRowClick %} data-controller="row-click" data-action="click->row-click#navigate"{% endif %}>
+{% else %}
+{% if legacyRowClick %}<div data-controller="row-click" data-action="click->row-click#navigate">{% endif %}
 {% endif %}
     <table class="{{ tableClasses|join(' ') }}"{% if id is defined %} id="{{ id }}"{% endif %}>
         {% if block('table_head') is defined %}
@@ -153,4 +159,6 @@
     </table>
 {% if isResponsive %}
 </div>
+{% else %}
+{% if legacyRowClick %}</div>{% endif %}
 {% endif %}
