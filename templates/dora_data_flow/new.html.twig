@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dora_data_flow' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'dora_data_flow.title.create'|trans({}, 'dora_data_flow') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dora_compliance'|trans({}, 'nav'), url: path('app_dora_compliance_dashboard') },
+            { label: 'dora_data_flow.title.list'|trans({}, 'dora_data_flow'), url: path('app_dora_data_flow_index') },
+            { label: 'dora_data_flow.title.create'|trans({}, 'dora_data_flow') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'plus', label: 'DORA Art. 28 · RT_03' },
+        title: 'dora_data_flow.title.create'|trans({}, 'dora_data_flow'),
+        actions: [
+            { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_dora_data_flow_index'), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
+
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'DORA Art. 28 · Register of Information · RT_03',
+        'title': 'dora_data_flow.title.create'|trans({}, 'dora_data_flow'),
+        'sections': {
+            'overview': {
+                'label': 'dora_data_flow.section.overview'|trans({}, 'dora_data_flow'),
+                'fields': ['supplier', 'direction', 'processingPurpose']
+            },
+            'data_categories': {
+                'label': 'dora_data_flow.section.data_categories'|trans({}, 'dora_data_flow'),
+                'fields': ['dataCategories', 'dataVolume']
+            },
+            'security': {
+                'label': 'dora_data_flow.section.security'|trans({}, 'dora_data_flow'),
+                'fields': ['securityMeasures']
+            },
+            'transfer': {
+                'label': 'dora_data_flow.section.transfer'|trans({}, 'dora_data_flow'),
+                'fields': ['crossBorder', 'receivingCountry']
+            }
+        },
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.create'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</div>
+{% endblock %}

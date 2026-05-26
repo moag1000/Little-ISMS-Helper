@@ -216,14 +216,22 @@ ein well-formed XBRL-Dokument mit den folgenden ESA-Taxonomie-Elementen:
 | `B_02.02.0130` (Audit Rights Clause) | abgeleitet aus `Supplier.securityRequirements` | **9 / 6c** |
 | `B_03.01.0010` (Total ICT Assets) | `count($assets)` | 8 |
 | `B_03.02.0010-0100` (Per-Asset Detail) | `Asset` (id, name, type, classification, CIA, owner, location, status) | **9 / 6c** |
+| `RT_03.0010-0070` (Data-Flow-Sub-Table) | `DoraDataFlow` (supplier, direction, categories, purpose, security, volume, cross-border, country) | **9 / 6.9** |
 
 **Noch nicht implementiert (deferred):**
-- `B_02.02.0140-0999` + RT_03 (Data-Flow-Sub-Table) + RT_04 (Subcontractor-Chain-Sub-Table)
+- `B_02.02.0140-0999` + RT_04 (Subcontractor-Chain-Sub-Table)
 - RT_05 (Asset-Dependency-Graph) + RT_06 (Decommission-Plan)
 
-Beide ESA-Taxonomie-Bereiche benoetigen dedizierte Sub-Entities, die bisher nicht im
+Diese ESA-Taxonomie-Bereiche benoetigen dedizierte Sub-Entities, die bisher nicht im
 Datenmodell vorhanden sind (Subcontractor-Chain hat eine JSON-Spalte, ist aber nicht
 auf die Tiefe der ESA-Taxonomie modelliert). Markiert via `TODO`-Kommentar im Output.
+
+**RT_03 (Data-Flow) — closed:**
+`DoraDataFlow` Entity + CRUD unter `/dora/data-flow/*` + automatische
+RT_03-Emission per Provider via {@see DoraRoiXbrlExporter}. Module-gated
+auf `nis2_dora`. Pro Datenfluss werden RT_03.0010-0070 (Richtung,
+Kategorien, Zweck, Sicherheitsmaßnahmen, Volumen, Cross-Border-Flag,
+Empfängerland) emittiert.
 
 ### 9.3 Pre-Submission XBRL-Validierung (Arelle)
 

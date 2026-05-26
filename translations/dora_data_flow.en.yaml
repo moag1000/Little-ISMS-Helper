@@ -1,0 +1,76 @@
+dora_data_flow:
+    title:
+        list: "DORA Data Flows"
+        create: "Create Data Flow"
+        edit: "Edit Data Flow"
+        show: "Data Flow"
+    description:
+        overview: "Data flows between the financial entity and ICT third-party providers per DORA Art. 28 (RT_03)."
+    action:
+        create: "New Data Flow"
+    field:
+        supplier: "ICT Provider"
+        direction: "Direction"
+        processing_purpose: "Processing Purpose"
+        data_categories: "Data Categories"
+        data_volume: "Data Volume"
+        security_measures: "Security Measures"
+        cross_border: "Cross-border Transfer"
+        receiving_country: "Receiving Country (ISO 3166-1 alpha-2)"
+        created_at: "Created at"
+        updated_at: "Updated at"
+    help:
+        supplier: "The contracted ICT third-party service provider."
+        direction: "Inbound (provider → entity), Outbound (entity → provider) or Bidirectional."
+        processing_purpose: "Short description of the processing purpose (max 500 chars)."
+        data_categories: "At least one data category. Add free-form values via comma or Enter."
+        data_volume: "Free text — e.g. '10 GB/month' or '~1k transactions/day'."
+        security_measures: "Applied protection measures (multi-select)."
+        cross_border: "Tick when data is transferred outside the EEA."
+        receiving_country: "Only required for cross-border transfers. ISO 3166-1 alpha-2 (e.g. US, GB, CH)."
+    placeholder:
+        supplier: "Please select a provider"
+        processing_purpose: "e.g. Credit-scoring for loan applications"
+        data_volume: "e.g. 10 GB/month"
+    direction:
+        inbound: "Inbound (provider → entity)"
+        outbound: "Outbound (entity → provider)"
+        bidirectional: "Bidirectional"
+    category:
+        pii: "Personal data (PII)"
+        financial: "Financial data"
+        health: "Health data"
+        authentication: "Authentication data"
+        transactional: "Transactional data"
+        metadata: "Metadata"
+        logs: "Logs"
+        backup: "Backup data"
+    security:
+        encryption_in_transit: "Encryption in transit"
+        encryption_at_rest: "Encryption at rest"
+        tokenisation: "Tokenisation"
+        pseudonymisation: "Pseudonymisation"
+        anonymisation: "Anonymisation"
+        mfa: "Multi-factor authentication"
+        vpn: "VPN"
+        mtls: "Mutual TLS"
+        access_control: "Access control"
+    validation:
+        supplier_required: "Please select a provider."
+        data_categories_required: "At least one data category is required."
+        direction_required: "Direction is required."
+        direction_invalid: "Invalid direction."
+        processing_purpose_too_long: "Processing purpose may not exceed 500 characters."
+        data_volume_too_long: "Data volume may not exceed 100 characters."
+        receiving_country_format: "ISO 3166-1 alpha-2 format expected (2 uppercase letters)."
+    section:
+        overview: "Overview"
+        data_categories: "Data Categories"
+        security: "Security"
+        transfer: "Transfer"
+    message:
+        no_flows: "No data flows recorded yet."
+    success:
+        created: "Data flow created successfully."
+        updated: "Data flow updated successfully."
+        deleted: "Data flow deleted successfully."
