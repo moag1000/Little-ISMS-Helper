@@ -6212,6 +6212,10 @@ html[data-theme="dark"] .framework-card {
     background: var(--primary-tint);
 }
 .fa-table__row--clickable { cursor: pointer; }
+/* row-click controller sets data-row-clickable="true" on rows whose first
+   non-action anchor it can navigate to. Pointer cursor signals to the user
+   that the whole row is the show-shortcut, not just the eye-icon button. */
+tr.fa-table__row[data-row-clickable="true"] { cursor: pointer; }
 
 .fa-table__cell {
     padding: var(--space-3) var(--space-4);
