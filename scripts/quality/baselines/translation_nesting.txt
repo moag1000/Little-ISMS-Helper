@@ -29,7 +29,8 @@ translations/alva.de.yaml:229:management_review
 translations/alva.de.yaml:235:dpia
 translations/alva.de.yaml:241:incident
 translations/alva.de.yaml:255:policy_wizard
-translations/alva.de.yaml:399:alva_hint
+translations/alva.de.yaml:261:dora_exit_plan
+translations/alva.de.yaml:406:alva_hint
 translations/alva.en.yaml:56:vulnerability
 translations/alva.en.yaml:62:data_subject_request
 translations/alva.en.yaml:68:asset
@@ -51,7 +52,8 @@ translations/alva.en.yaml:229:management_review
 translations/alva.en.yaml:235:dpia
 translations/alva.en.yaml:241:incident
 translations/alva.en.yaml:255:policy_wizard
-translations/alva.en.yaml:399:alva_hint
+translations/alva.en.yaml:261:dora_exit_plan
+translations/alva.en.yaml:406:alva_hint
 translations/asset.de.yaml:384:qr
 translations/asset.en.yaml:381:qr
 translations/assets.de.yaml:1:asset
