@@ -53,6 +53,7 @@ final class AssetCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): Asset
     {
         if (!$source instanceof Asset) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'AssetCloner expects %s, got %s',
                 Asset::class,
