@@ -208,10 +208,10 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                 'required' => false,
                 'placeholder' => 'business_process.placeholder.impact_unset',
             ])
-            // Junior-ISB-Audit TODO_2026-05-22 §17 — Typed M2M dependencies.
-            // Structured Multi-Select replaces free-text textareas. Both
-            // rendered side-by-side during transition; textareas flagged
-            // @deprecated and will be dropped after data backfill.
+            // Typed M2M dependencies — structured Multi-Select replaces
+            // free-text textareas. Both rendered side-by-side during
+            // transition; textareas flagged @deprecated and will be dropped
+            // after data backfill.
             ->add('upstreamProcesses', EntityType::class, [
                 'label' => 'business_process.field.upstream_processes',
                 'class' => BusinessProcess::class,
