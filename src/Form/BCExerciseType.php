@@ -307,10 +307,10 @@ final class BCExerciseType extends AbstractType
             'data_class' => BCExercise::class,
             'translation_domain' => 'bc_exercises',
             'constraints' => [
-                // TODO-BCE-01 (Junior-ISB form audit 2026-05-26):
                 // ISO 22301 Cl. 8.5 — every BC-exercise needs a named
                 // facilitator. Pattern A dual-state means EITHER
                 // facilitatorUser OR facilitatorPerson must be set.
+                // Implemented via the validateFacilitatorSlot callback below.
                 new Callback([$this, 'validateFacilitatorSlot']),
             ],
         ]);
