@@ -25,6 +25,9 @@ quick_fix:
         body: 'This instance has been upgraded but the database schema is still at the previous version. Apply with one click:'
         count_label: 'pending migration(s)'
         button: 'Apply migrations now'
+        phantom_skip_show: 'Advanced: skip phantom migrations…'
+        phantom_skip_body: 'If the normal apply already fails on a phantom migration (column/table already exists in the schema), you can mark ALL pending migrations as executed without re-running DDL. Only use when you are certain the schema is already in the target state.'
+        phantom_skip_button: 'Mark all pending as executed (phantom bypass)'
     drift:
         title: 'Schema drift detected'
         body: 'All migrations applied, but the database schema differs from the entity definition. Reconcile with one click:'
