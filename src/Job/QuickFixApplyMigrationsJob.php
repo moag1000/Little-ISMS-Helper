@@ -37,6 +37,26 @@ final class QuickFixApplyMigrationsJob implements AsyncJobInterface
                 )
                 : 'Migration failed: ' . ((string) ($migrationResult['error'] ?? 'unknown error'));
 
+            // Async-job split: the job runs detached and CANNOT write Symfony
+            // Session. The old sync controller stashed structured diagnosis
+            // into `quick_fix.last_apply_failure` so the index page could
+            // render a recovery card (mark-as-executed, repair-all, …).
+            // Without this payload write the diagnosis disappears when the
+            // user clicks "back to overview" — user-reported "phantom fails
+            // die ich nicht mehr beheben kann durch die Job-Trennung".
+            // Persist diagnosis on the JOB-STATUS payload; QuickFix index
+            // reads it back via `?failed_job_id=<id>`.
+            if (is_array($diagnosis) && isset($diagnosis['offending_version'])) {
+                $ctx->updatePayload([
+                    'apply_failure' => [
+                        'version' => (string) $diagnosis['offending_version'],
+                        'category' => (string) ($diagnosis['category'] ?? 'unknown'),
+                        'message' => (string) ($diagnosis['message'] ?? ''),
+                        'suggested_action' => (string) ($diagnosis['suggested_action'] ?? ''),
+                    ],
+                ]);
+            }
+
             // @intentional-assertion: surface migration failure to QuickFix operator
             throw new \RuntimeException($message);
         }

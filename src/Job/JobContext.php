@@ -84,4 +84,23 @@ final class JobContext
     {
         $this->statusService->heartbeat($this->jobId);
     }
+
+    /**
+     * Merge keys into the job's payload record. Jobs cannot reach Symfony
+     * Session (request-scoped, gone post-detach per CLAUDE.md async-job
+     * note), so structured failure/result data has to ride along on the
+     * job-status payload. The controller that re-renders after the job
+     * completes can then read it back via JobStatusService::read().
+     *
+     * Use case: QuickFix apply-migrations job catches a diagnosed failure
+     * (phantom-diff, NOT NULL violation, …) and stashes the structured
+     * diagnosis here so the QuickFix index page can surface the recovery
+     * card after the user clicks "back to overview".
+     *
+     * @param array<string, mixed> $patch
+     */
+    public function updatePayload(array $patch): void
+    {
+        $this->statusService->updatePayload($this->jobId, $patch);
+    }
 }

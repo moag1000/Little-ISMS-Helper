@@ -46,6 +46,21 @@ final class QuickFixReconcileSchemaJob implements AsyncJobInterface
                     ? sprintf('[%s] %s', $diagnosis['category'], $diagnosis['suggested_action'] ?? $diagnosis['message'] ?? '')
                     : ((string) ($applyResult['error'] ?? 'unknown error'));
 
+                // Async-job split — stash structured diagnosis on the
+                // job-status payload so the QuickFix index can render the
+                // same recovery card as ApplyMigrations
+                // (mark-as-executed, repair-all, …).
+                if (is_array($diagnosis) && isset($diagnosis['offending_version'])) {
+                    $ctx->updatePayload([
+                        'apply_failure' => [
+                            'version' => (string) $diagnosis['offending_version'],
+                            'category' => (string) ($diagnosis['category'] ?? 'unknown'),
+                            'message' => (string) ($diagnosis['message'] ?? ''),
+                            'suggested_action' => (string) ($diagnosis['suggested_action'] ?? ''),
+                        ],
+                    ]);
+                }
+
                 // @intentional-assertion: surface auto-recovery failure to operator
                 throw new \RuntimeException(sprintf(
                     'Reconcile blocked: pending migration(s) — apply failed: %s',
@@ -55,6 +70,16 @@ final class QuickFixReconcileSchemaJob implements AsyncJobInterface
         }
 
         if (!$result['success']) {
+            // Pure reconcile failure (no auto-recovery path). Surface the
+            // blocked-reason for the index page so the operator sees more
+            // than just "unknown error".
+            $ctx->updatePayload([
+                'reconcile_failure' => [
+                    'error' => (string) ($result['error'] ?? ''),
+                    'blocked' => (string) ($result['blocked'] ?? ''),
+                ],
+            ]);
+
             // @intentional-assertion: surface reconcile failure to operator
             throw new \RuntimeException(sprintf(
                 'Schema reconcile failed: %s',

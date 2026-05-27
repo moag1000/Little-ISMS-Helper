@@ -155,6 +155,19 @@ final class QuickFixRepairAllJob implements AsyncJobInterface
                 $totalDuplicates,
                 $totalSkippedGlobal > 0 ? sprintf(', %d global rows skipped', $totalSkippedGlobal) : '',
             ));
+
+            // Persist per-step counts on the job payload so the progress
+            // page renders a structured breakdown instead of only the
+            // status string. Survives worker/FPM-detach where Session is
+            // unreachable.
+            $ctx->updatePayload([
+                'repair_summary' => [
+                    'orphans_assigned' => $totalOrphans,
+                    'tenant_mismatches_fixed' => $totalMismatches,
+                    'duplicates_merged' => $totalDuplicates,
+                    'global_rows_skipped' => $totalSkippedGlobal,
+                ],
+            ]);
         } finally {
             if ($wasEnabled && $this->entityManager->isOpen()) {
                 $this->entityManager->getFilters()->enable('tenant_filter');
