@@ -79,6 +79,80 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Batch-load outbound mappings for a list of source requirements in a
+     * single query. Eager-fetches the target requirement + its framework so
+     * downstream code can read framework metadata without further round-trips.
+     *
+     * Returns rows grouped by source-requirement-id for O(1) lookup in the
+     * caller's loop — kills the N+1 query risk in
+     * {@see \App\Service\Audit\CrossFrameworkCoverageService} when an audit
+     * has many findings with many linked requirements.
+     *
+     * @param list<ComplianceRequirement> $requirements
+     * @return array<int, list<ComplianceMapping>> keyed by source requirement id
+     */
+    public function findMappingsBySourceRequirements(array $requirements): array
+    {
+        if ($requirements === []) {
+            return [];
+        }
+
+        $mappings = $this->createQueryBuilder('cm')
+            ->select('cm', 'tr', 'tf')
+            ->leftJoin('cm.targetRequirement', 'tr')
+            ->leftJoin('tr.framework', 'tf')
+            ->where('cm.sourceRequirement IN (:requirements)')
+            ->setParameter('requirements', $requirements)
+            ->orderBy('cm.mappingPercentage', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $byId = [];
+        foreach ($mappings as $mapping) {
+            $source = $mapping->getSourceRequirement();
+            if ($source === null) {
+                continue;
+            }
+            $byId[(int) $source->getId()][] = $mapping;
+        }
+        return $byId;
+    }
+
+    /**
+     * Batch counterpart of {@see findMappingsToRequirement()} — for the inbound
+     * (bidirectional) edge walk inside the cross-framework coverage service.
+     *
+     * @param list<ComplianceRequirement> $requirements
+     * @return array<int, list<ComplianceMapping>> keyed by target requirement id
+     */
+    public function findMappingsByTargetRequirements(array $requirements): array
+    {
+        if ($requirements === []) {
+            return [];
+        }
+
+        $mappings = $this->createQueryBuilder('cm')
+            ->select('cm', 'sr', 'sf')
+            ->leftJoin('cm.sourceRequirement', 'sr')
+            ->leftJoin('sr.framework', 'sf')
+            ->where('cm.targetRequirement IN (:requirements)')
+            ->setParameter('requirements', $requirements)
+            ->orderBy('cm.mappingPercentage', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $byId = [];
+        foreach ($mappings as $mapping) {
+            $target = $mapping->getTargetRequirement();
+            if ($target === null) {
+                continue;
+            }
+            $byId[(int) $target->getId()][] = $mapping;
+        }
+        return $byId;
+    }
+
+    /**
      * Find all cross-framework mappings between two compliance frameworks.
      *
      * @param ComplianceFramework $sourceFramework Source framework (e.g., ISO 27001)
