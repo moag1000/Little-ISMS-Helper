@@ -152,6 +152,20 @@ audit:
         # S3 P0-26 — Approval workflow
         approval_workflow: 'Berichts-Freigabe (4-Augen-Prinzip)'
         approval_meta: 'Freigabe-Metadaten'
+    cross_framework_coverage:
+        title: 'Framework-übergreifende Abdeckung'
+        frameworks: 'Frameworks'
+        help: 'Dieses Audit deckt mehrere Compliance-Frameworks ab. Findings werden direkt auf das jeweils verknüpfte Framework und transitiv über die Cross-Framework-Mappings (mit ≥ 50 %% Stärke) auf weitere Frameworks abgebildet — ein Finding kann so mehrere Norm-Anforderungen gleichzeitig schließen.'
+        fte_saving: 'Geschätzte Einsparung: %days% FTE-Tage gegenüber separaten Audits pro Framework.'
+        transitive_for: 'Transitive Abdeckung für %framework% (%count%)'
+        col:
+            framework: 'Framework'
+            direct: 'Direkt'
+            transitive: 'Transitiv'
+            total: 'Gesamt'
+            finding: 'Finding'
+            target_requirement: 'Ziel-Anforderung'
+            mapping_strength: 'Mapping-Stärke'
     message:
         corporate_subsidiaries_info: 'Dieses Konzernaudit umfasst %count% Tochtergesellschaft(en)'
         corporate_audit_note_title: Konzernaudit
@@ -268,6 +282,7 @@ pdf:
         schedule: 'Zeitplan'
         scope_objectives: 'Geltungsbereich und Ziele'
         compliance_framework: 'Compliance-Framework'
+        cross_framework_coverage: 'Framework-übergreifende Abdeckung'
         audited_assets: 'Auditierte Assets'
         audit_findings: 'Audit-Feststellungen'
         conclusion: 'Fazit'
@@ -286,6 +301,7 @@ pdf:
         objectives: 'Ziele'
         audited_departments: 'Auditierte Abteilungen'
         framework: 'Framework'
+        additional_frameworks: 'Zusätzlich abgedeckte Frameworks'
         version: 'Version'
         asset_name: 'Asset-Name'
         type: 'Typ'

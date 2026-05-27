@@ -153,6 +153,20 @@ audit:
         approval_workflow: 'ISO 27001 Cl. 9.2.2 d requires a documented approval process for audit reports. The approver must differ from the person who submitted the report.'
         rejection_reason: 'Describe which points need rework before the report can be resubmitted.'
     scope: Scope
+    cross_framework_coverage:
+        title: 'Cross-Framework Coverage'
+        frameworks: 'frameworks'
+        help: 'This audit covers multiple compliance frameworks. Findings map directly to the framework they are linked to and transitively to other frameworks via cross-framework mappings (≥ 50%% strength) — one finding can close requirements across several frameworks at once.'
+        fte_saving: 'Estimated saving: %days% FTE-days versus running separate audits per framework.'
+        transitive_for: 'Transitive coverage for %framework% (%count%)'
+        col:
+            framework: 'Framework'
+            direct: 'Direct'
+            transitive: 'Transitive'
+            total: 'Total'
+            finding: 'Finding'
+            target_requirement: 'Target requirement'
+            mapping_strength: 'Mapping strength'
     message:
         corporate_subsidiaries_info: 'Corporate Subsidiaries Info'
     framework: Framework
@@ -241,6 +255,7 @@ pdf:
         schedule: 'Schedule'
         scope_objectives: 'Scope and Objectives'
         compliance_framework: 'Compliance Framework'
+        cross_framework_coverage: 'Cross-Framework Coverage'
         audited_assets: 'Audited Assets'
         audit_findings: 'Audit Findings'
         conclusion: 'Conclusion'
@@ -259,6 +274,7 @@ pdf:
         objectives: 'Objectives'
         audited_departments: 'Audited Departments'
         framework: 'Framework'
+        additional_frameworks: 'Additional covered frameworks'
         version: 'Version'
         asset_name: 'Asset Name'
         type: 'Type'
