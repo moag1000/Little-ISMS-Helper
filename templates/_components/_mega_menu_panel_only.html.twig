@@ -752,7 +752,9 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {% if is_granted('PERSONA_CISO') %}
+                        {# Board-Dashboard: CM-V4 fix (2026-05-27) — PERSONA_COMPLIANCE added.
+                           CM prepares board-reports and must see the board view (ISO 27001 Cl. 9.3). #}
+                        {% if is_granted('PERSONA_CISO') or is_granted('PERSONA_COMPLIANCE') %}
                         <li><a href="{{ path('app_dashboard_board') }}" class="{% if current_route == 'app_dashboard_board' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -984,7 +986,10 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {% if is_module_active('compliance') %}
+                        {# MRIS-gate fix (2026-05-27): was is_module_active('compliance') — should be
+                           is_module_active('mris'). MRIS is an optional niche module (off by default)
+                           that must not pollute non-MRIS PoCs. Consultant-V4 + K5. #}
+                        {% if is_module_active('mris') %}
                         <li><a href="{{ path('app_mris_kpis') }}" class="{% if current_route == 'app_mris_kpis' or current_route == 'app_mris_kpis_manual_save' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -1007,7 +1012,7 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {% if is_granted('ROLE_AUDITOR') %}
+                        {% if is_module_active('mris') and is_granted('ROLE_AUDITOR') %}
                         <li><a href="{{ path('app_mris_audit_report') }}" class="{% if current_route == 'app_mris_audit_report' %}active{% endif %}" data-turbo="false" data-turbo-prefetch="false">
                             <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
