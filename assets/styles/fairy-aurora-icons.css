@@ -422,36 +422,35 @@
 .fa-icon--x-circle { --fa-icon: url("../icons/ui-close.svg"); }
 
 /* Lifecycle + admin/lifecycle-overrides aliases (H-01 re-application — audit 2026-05-20) */
-.fa-icon--nav-flow { --fa-icon: url("../icons/nav-workflow.svg"); }
-.fa-icon--nav-chat-quote { --fa-icon: url("../icons/ui-chat.svg"); }
-.fa-icon--nav-eye { --fa-icon: url("../icons/ui-eye.svg"); }
-.fa-icon--ui-chevron-down { --fa-icon: url("../icons/util-chevron-down.svg"); }
-.fa-icon--ui-arrows-expand-vertical { --fa-icon: url("../icons/util-drag-handle.svg"); }
+.fa-icon--nav-flow                   { --fa-icon: url("../icons/nav-flow.svg"); }
+.fa-icon--nav-chat-quote             { --fa-icon: url("../icons/nav-chat-quote.svg"); }
+.fa-icon--nav-eye                    { --fa-icon: url("../icons/ui-eye.svg"); }
+.fa-icon--ui-chevron-down            { --fa-icon: url("../icons/util-chevron-down.svg"); }
+.fa-icon--ui-arrows-expand-vertical  { --fa-icon: url("../icons/ui-arrows-expand-vertical.svg"); }
 
-/* Aurora v4 Extension — Welle 2/3/4 Icons (2026-05-27)
-   B.1–B.20: all alias to nearest existing SVG until custom artwork lands.
-   TODO items track missing custom SVGs. */
-.fa-icon--persona-isb        { --fa-icon: url("../icons/nav-people.svg"); }   /* TODO: custom ISB-shield-overlay */
-.fa-icon--persona-bcm        { --fa-icon: url("../icons/control.svg"); }      /* TODO: custom BCM recovery-arrow */
-.fa-icon--persona-ciso       { --fa-icon: url("../icons/nav-people.svg"); }   /* TODO: custom CISO crown */
-.fa-icon--persona-dpo        { --fa-icon: url("../icons/nav-people.svg"); }   /* TODO: custom DPO lock-overlay */
-.fa-icon--persona-risk       { --fa-icon: url("../icons/nav-people.svg"); }   /* TODO: custom risk scale */
-.fa-icon--persona-compliance { --fa-icon: url("../icons/nav-people.svg"); }   /* TODO: custom compliance clipboard */
-.fa-icon--persona-auditor    { --fa-icon: url("../icons/nav-people.svg"); }   /* TODO: custom auditor magnifier */
-.fa-icon--persona-board      { --fa-icon: url("../icons/nav-people.svg"); }   /* TODO: custom board crown */
-.fa-icon--audit-log          { --fa-icon: url("../icons/audit-trail.svg"); }  /* TODO: custom doc+pulse-ring */
-.fa-icon--audit-program      { --fa-icon: url("../icons/nav-calendar-check.svg"); } /* TODO: 3yr-calendar-pin */
-.fa-icon--coverage-matrix    { --fa-icon: url("../icons/nav-grid.svg"); }     /* TODO: custom heat-grid */
-.fa-icon--reuse-roi          { --fa-icon: url("../icons/ui-refresh.svg"); }   /* TODO: custom recycle+spark */
-.fa-icon--density-1          { --fa-icon: url("../icons/nav-sliders.svg"); }  /* TODO: custom sparse-bars */
-.fa-icon--density-2          { --fa-icon: url("../icons/nav-sliders.svg"); }  /* TODO: custom balanced-bars */
-.fa-icon--density-3          { --fa-icon: url("../icons/nav-sliders.svg"); }  /* TODO: custom dense-bars */
-.fa-icon--glossary           { --fa-icon: url("../icons/ui-help.svg"); }      /* TODO: custom book+? */
-.fa-icon--industry-baseline  { --fa-icon: url("../icons/nav-building.svg"); } /* TODO: custom building+stamp */
-.fa-icon--onboarding-tour    { --fa-icon: url("../icons/ui-help.svg"); }      /* TODO: custom compass-arrow */
-.fa-icon--maturity-heatmap   { --fa-icon: url("../icons/nav-grid.svg"); }     /* TODO: custom 5-dot-row */
-.fa-icon--isms-foundation    { --fa-icon: url("../icons/compliance-shield.svg"); } /* TODO: custom pillar */
-.fa-icon--portfolio          { --fa-icon: url("../icons/nav-collection.svg"); } /* TODO: custom multi-sheet */
-.fa-icon--persona            { --fa-icon: url("../icons/nav-people.svg"); }   /* TODO: custom avatar+bubble */
-.fa-icon--workspace          { --fa-icon: url("../icons/nav-tools.svg"); }    /* TODO: custom desk+tools */
-.fa-icon--checklist-stamped  { --fa-icon: url("../icons/nav-file-check.svg"); } /* TODO: custom checklist+stamp */
+/* Aurora v4 Extension — Wave 5 Icons (2026-05-28)
+   All aliases now point to the custom SVGs delivered by the Designer. */
+.fa-icon--persona-isb        { --fa-icon: url("../icons/persona-isb.svg"); }
+.fa-icon--persona-bcm        { --fa-icon: url("../icons/persona-bcm.svg"); }
+.fa-icon--persona-ciso       { --fa-icon: url("../icons/persona-ciso.svg"); }
+.fa-icon--persona-dpo        { --fa-icon: url("../icons/persona-dpo.svg"); }
+.fa-icon--persona-risk       { --fa-icon: url("../icons/persona-risk.svg"); }
+.fa-icon--persona-compliance { --fa-icon: url("../icons/persona-compliance.svg"); }
+.fa-icon--persona-auditor    { --fa-icon: url("../icons/persona-isb.svg"); }
+.fa-icon--persona-board      { --fa-icon: url("../icons/persona-ciso.svg"); }
+.fa-icon--audit-log          { --fa-icon: url("../icons/audit-log.svg"); }
+.fa-icon--audit-program      { --fa-icon: url("../icons/audit-program.svg"); }
+.fa-icon--coverage-matrix    { --fa-icon: url("../icons/coverage-matrix.svg"); }
+.fa-icon--reuse-roi          { --fa-icon: url("../icons/reuse-roi.svg"); }
+.fa-icon--density-1          { --fa-icon: url("../icons/density-1.svg"); }
+.fa-icon--density-2          { --fa-icon: url("../icons/density-2.svg"); }
+.fa-icon--density-3          { --fa-icon: url("../icons/density-3.svg"); }
+.fa-icon--glossary           { --fa-icon: url("../icons/glossary.svg"); }
+.fa-icon--industry-baseline  { --fa-icon: url("../icons/industry-baseline.svg"); }
+.fa-icon--onboarding-tour    { --fa-icon: url("../icons/onboarding-tour.svg"); }
+.fa-icon--maturity-heatmap   { --fa-icon: url("../icons/maturity-heatmap.svg"); }
+.fa-icon--isms-foundation    { --fa-icon: url("../icons/isms-foundation.svg"); }
+.fa-icon--portfolio          { --fa-icon: url("../icons/portfolio.svg"); }
+.fa-icon--persona            { --fa-icon: url("../icons/persona.svg"); }
+.fa-icon--workspace          { --fa-icon: url("../icons/workspace.svg"); }
+.fa-icon--checklist-stamped  { --fa-icon: url("../icons/checklist-stamped.svg"); }
