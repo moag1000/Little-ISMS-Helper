@@ -47,7 +47,12 @@
             {% endif %}
 
             {# Portfolio — Coverage-Matrix + Konzern-Sicht (Aurora v4 Phase 2) #}
-            {% if is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN') %}
+            {# Gate fix 2026-05-27: Portfolio is multi-tenant only — single-tenant ROLE_ADMIN
+               must not see this tab. isPartOfCorporateStructure() == true means the tenant
+               is either a parent or a child in a corporate hierarchy. ROLE_ADMIN alone is
+               insufficient; the tenant must actually be part of a holding structure. #}
+            {% set _is_corporate = app.user and app.user.tenant and app.user.tenant.isPartOfCorporateStructure() %}
+            {% if _is_corporate and (is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN')) %}
             <li class="mega-menu-category" role="none">
                 <button class="mega-menu-trigger {% if current_route starts with 'app_portfolio_' or current_route starts with 'app_group_report_' %}active{% endif %}"
                         data-mega-menu-target="trigger"
