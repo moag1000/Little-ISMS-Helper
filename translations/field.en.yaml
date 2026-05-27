@@ -8,7 +8,7 @@ field:
     date: Date
     created_at: 'Created At'
     updated_at: 'Updated At'
-    tenant: Tenant
+    tenant: Organization
     user: User
     location: Location
     person: Person

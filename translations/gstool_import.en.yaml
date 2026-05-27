@@ -36,7 +36,7 @@ gstool_import:
         preview_ok: Preview generated — no data written.
         commit_ok: Import committed successfully.
     error:
-        no_tenant: No tenant active. Please select a tenant first.
+        no_tenant: No organization active. Please select an organization first.
         upload_failed: Upload failed.
     tab:
         assets: Zielobjekte → Assets

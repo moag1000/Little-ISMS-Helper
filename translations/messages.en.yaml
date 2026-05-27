@@ -1216,11 +1216,11 @@ corporate:
         subsidiary: Subsidiary
     section:
         groups: 'Corporate Groups'
-        standalone: 'Standalone Tenants'
+        standalone: 'Standalone Organizations'
         structure: 'Corporate Structure'
     stats:
         standalone: Standalone
-        total: 'Total Tenants'
+        total: 'Total Organizations'
         own: Own
         inherited: Inherited
         subsidiaries: Subsidiaries
@@ -1261,7 +1261,7 @@ corporate:
     confirm:
         remove_parent: 'Do you really want to remove the connection to the parent company?'
     single_tenant:
-        title: 'Single Tenant'
+        title: 'Single Organization'
         message: 'There is only one tenant in the system'
         hint: 'Corporate structures only become relevant when you manage multiple tenants'
     flash:
@@ -1919,7 +1919,7 @@ compliance_wizard:
             detail: 'Details'
             mapping: 'Mappings'
         summary:
-            tenant: 'Tenant'
+            tenant: 'Organization'
             target: 'Target Framework'
             baseline: 'Baseline Framework'
             reporting_date: 'Reporting Date'
@@ -2239,7 +2239,7 @@ sso:
         col:
             email: 'Email'
             provider: 'Provider'
-            tenant: 'Tenant'
+            tenant: 'Organization'
             claims: 'Claims'
             requested_at: 'Requested at'
             actions: 'Actions'

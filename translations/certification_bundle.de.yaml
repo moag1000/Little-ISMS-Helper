@@ -49,7 +49,7 @@ certification_bundle:
         note: 'Generierung kann je nach Konzerngröße länger dauern (1 Bundle pro Tochter).'
         success: 'Konzern-Zertifizierungs-Bundle wurde erfolgreich generiert.'
         error:
-            not_a_holding: 'Aktueller Tenant hat keine Töchter — kein Konzern-Bundle möglich.'
+            not_a_holding: 'Aktuelle Organisation hat keine Töchter — kein Konzern-Bundle möglich.'
 
     # PDF-spezifische Übersetzungen
     pdf:

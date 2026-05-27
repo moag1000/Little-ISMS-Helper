@@ -12,7 +12,7 @@ audit_workbook:
         title: 'Audit Workbooks for Auditor Handover'
         subtitle: 'XLSX exports for ISO 27001-compliant auditor handover and chain-of-custody'
         section:
-            tenant_wide: 'Tenant-Wide Exports'
+            tenant_wide: 'Organization-Wide Exports'
             framework_bound: 'Framework-Bound Exports'
         table:
             framework: 'Compliance Framework'
@@ -45,7 +45,7 @@ audit_workbook:
         export_xlsx: 'Export audit workbook (.xlsx)'
 
     error:
-        no_tenant: 'No tenant context active. Please log in again.'
+        no_tenant: 'No organization context active. Please log in again.'
         framework_not_found: 'The requested compliance framework was not found or is not active.'
         generation_failed: 'Workbook generation failed. Please try again.'
 

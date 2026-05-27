@@ -152,7 +152,7 @@ notification:
             gallery: 'Template Gallery'
         flash:
             applied: 'Template "%template%" has been applied as a new rule. Please review and enable it.'
-            no_tenant: 'No tenant assigned — template cannot be applied.'
+            no_tenant: 'No organization assigned — template cannot be applied.'
         desc:
             incident_high_severity: 'Fires immediately for incidents with High or Critical severity.'
             data_breach_72h: 'Notifies within 72 hours of a data breach discovery per GDPR Art. 33.'

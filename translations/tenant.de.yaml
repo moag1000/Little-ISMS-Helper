@@ -4,7 +4,7 @@ tenant:
     empty: 'Keine Organisationen vorhanden'
     switch_hint: 'Wechseln'
     switch_header: 'Organisation wechseln'
-    switch_glossary_hint: 'Organisation = Ihr Mandant in der ISO-Terminologie (ISO 27001 Cl. 4.1).'
+    switch_glossary_hint: 'Organisation gemäß ISO 27001 Cl. 4.1 — die eigenständige Einheit mit eigenen Assets, Risiken und Benutzern.'
     orphan_users:
         title: '%count% Benutzerkonto/-konten ohne Organisationszuweisung'
         body: 'Diese Konten können sich anmelden, sehen aber keine ISMS-Daten (Controls, Risiken, VVT-Einträge), weil jede Abfrage an eine Organisation gekoppelt ist. Bitte die Organisation in der Benutzerverwaltung setzen oder die Daten-Reparatur im Bulk-Modus nutzen.'
@@ -217,8 +217,8 @@ corporate:
         own_only: 'Nur eigene'
         including_inherited: 'Inkl. geerbte'
         including_subsidiaries: 'Inkl. Tochtergesellschaften'
-        orphaned: 'Nur unzugeordnete (ohne Tenant)'
-        all_tenants: 'Über alle Tenants'
+        orphaned: 'Nur unzugeordnete (ohne Organisation)'
+        all_tenants: 'Über alle Organisationen'
     stats:
         breakdown: Aufschlüsselung
         groups: Gruppen
@@ -245,12 +245,12 @@ corporate:
         actions: Aktionen
         subsidiary: Tochtergesellschaft
         parent: Muttergesellschaft
-        parent_help: 'Übergeordnete Muttergesellschaft (Holding). Frei lassen für Einzel-Tenants.'
+        parent_help: 'Übergeordnete Muttergesellschaft (Holding). Frei lassen für Einzel-Organisationen.'
         governance_model: Governance-Modell
         hierarchy_depth: Hierarchietiefe
         subsidiaries: Tochtergesellschaften
-        is_corporate_parent: 'Holding-Tenant (Konzern-Wurzel)'
-        is_corporate_parent_help: 'Markiert diesen Tenant als Holding-Knoten für Group-CISO-Sichten und Baseline-Vererbung.'
+        is_corporate_parent: 'Holding-Organisation (Konzern-Wurzel)'
+        is_corporate_parent_help: 'Markiert diese Organisation als Holding-Knoten für Group-CISO-Sichten und Baseline-Vererbung.'
         corporate_notes: 'Konzern-Notizen'
         corporate_notes_help: 'Optionale Freitext-Hinweise zur Konzernstruktur.'
         legal_name: 'Rechtspersonenname'

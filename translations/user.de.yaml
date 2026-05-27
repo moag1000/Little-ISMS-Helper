@@ -224,7 +224,7 @@ user:
         user: 'Basis-Zugriff auf ISMS-Module. Kann Daten einsehen und eigene Aufgaben bearbeiten.'
         auditor: 'Erweiterte Leserechte für Audits und Reviews. Kann Audit-Ergebnisse dokumentieren und Compliance prüfen.'
         manager: 'Vollzugriff auf ISMS-Daten. Kann Reports erstellen, Workflows genehmigen und Compliance-Wizards nutzen. KEIN Zugriff auf Benutzerverwaltung.'
-        admin: 'Organisations-Administrator. Verwaltet Benutzer, Rollen und Tenant-Einstellungen. Vollzugriff auf alle ISMS-Funktionen innerhalb seiner Organisation.'
+        admin: 'Organisations-Administrator. Verwaltet Benutzer, Rollen und Organisations-Einstellungen. Vollzugriff auf alle ISMS-Funktionen innerhalb seiner Organisation.'
         super_admin: 'System-Administrator. Organisationsübergreifender Zugriff, kann Benutzer wechseln (impersonieren) und globale Einstellungen verwalten.'
         ciso: 'Chief Information Security Officer. Strategische Sicht auf Compliance, Risiko-Posture und Genehmigungs-Pipeline. Schaltet das CISO-/Board-Dashboard frei.'
         risk_manager: 'Risiko-Manager. Operative Sicht auf Risiko-Pipeline, Risk-Appetite-Monitoring und Mitigation-Effektivität. Schaltet das Risk-Manager-Dashboard frei.'

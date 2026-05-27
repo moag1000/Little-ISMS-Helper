@@ -453,7 +453,7 @@ policy:
                         label: 'Preferred data-collection method'
                         placeholder: 'Example: "Tier 1 + 2: full-day facilitated workshops with process owner + 2 deputies + IT owner + risk liaison. Tier 3: 2-hour interviews. Tier 4: validated online questionnaire with mandatory plausibility review by BIA Lead. All workshops minuted and audio-recorded (GDPR-compliant, 90-day retention)."'
                     bia_review_cycle:
-                        label: 'Tenant-specific BIA review cycle and triggers'
+                        label: 'Organization-specific BIA review cycle and triggers'
                         placeholder: 'Example: "Default re-BIA every 24 months, but every 12 months for Tier-1 processes. Triggers: every newly integrated subsidiary, every newly-classified critical or important function (e.g. new DORA CIF), every serious BC activation (yellow or higher), every full-scale exercise with target-actual deviation > 30 %."'
         risk_assessment_methodology_bcm:
             v1:
@@ -588,10 +588,10 @@ policy:
                             BCM risks kept in central register with filter `bcm=true`. ISMS methodology may be reused if delta is documented.
                 tailoring_field:
                     bcm_threat_catalogue:
-                        label: 'Tenant-specific BCM threat catalogue'
+                        label: 'Organization-specific BCM threat catalogue'
                         placeholder: 'Example: "Extension by (a) financial-market stress scenarios (bank run, liquidity crisis) per BaFin stress-test methodology; (b) FX-shock scenarios for international subsidiaries; (c) DORA-relevant critical-third-party concentration; (d) sector-specific cyber threats from threat-intelligence feeds."'
                     bcm_likelihood_calibration:
-                        label: 'Tenant-specific likelihood calibration'
+                        label: 'Organization-specific likelihood calibration'
                         placeholder: 'Example: "Level 4 (Likely, 5y) is calibrated to 3 years for cyber risks based on industry incident rates. Level 3 (Possible, 10y) is shortened to 7 years for flooding following the 2026 climate-risk reassessment. Key-person risk uses a separate scale aligned with bench-strength analysis."'
                     isms_reuse_decision:
                         label: 'Decision to reuse ISMS methodology (yes/no) including delta'
@@ -980,7 +980,7 @@ policy:
                     Out-of-band channels are tested at least semi-annually (frequency: {{ bcm.exercise_frequency }}).
 
                     ## 9. Spokesperson rule
-                    External statements are made exclusively by designated spokespeople (press office / crisis-communications lead). Tenant rule: the only authorised spokespeople are the executive board ({{ approval.chain }}) and the designated press officer. No Crisis Team member issues unauthorised statements; any media contact is escalated immediately to the press office.
+                    External statements are made exclusively by designated spokespeople (press office / crisis-communications lead). Organization rule: the only authorised spokespeople are the executive board ({{ approval.chain }}) and the designated press officer. No Crisis Team member issues unauthorised statements; any media contact is escalated immediately to the press office.
 
                     ## 10. Documentation and evidence preservation
                     During an activation a binding timeline log is maintained: timestamp, decision, decision-maker, action, outcome. Accountability: Crisis-Team Records Keeper. The documentation serves regulatory traceability, lessons-learned and, where applicable, civil/criminal evidence preservation. Retention per the Retention Policy, in any event at least 7 years.
@@ -1054,7 +1054,7 @@ policy:
                     regulators:
                         title: 'Regulatory notification duties'
                         body: |-
-                            DORA Article 19 (4h/24-72h/1mo), NIS2 Article 23 (24h/72h/1mo), BSI-KritisV without undue delay, GDPR Articles 33/34. Tenant list {{ regulators_list }}.
+                            DORA Article 19 (4h/24-72h/1mo), NIS2 Article 23 (24h/72h/1mo), BSI-KritisV without undue delay, GDPR Articles 33/34. Organization list {{ regulators_list }}.
                     out_of_band:
                         title: 'Out-of-band channels'
                         body: |-
@@ -1065,10 +1065,10 @@ policy:
                             Timeline log by Records Keeper; retention min. 7 years. External statements exclusively via press office / executive board.
                 tailoring_field:
                     detection_channels:
-                        label: 'Tenant-specific detection and alerting channels'
+                        label: 'Organization-specific detection and alerting channels'
                         placeholder: 'Example: "24/7 NOC with SIEM (Splunk Cloud) and SOC outsourcing partner; internal hotline +49-69-XXXX-911 (24/7); emergency mailbox bcm@example.com with PagerDuty escalation; synthetic monitoring (Datadog) for Tier-1 services; CSIRT-Bund threat feed via STIX/TAXII; customer service desk (Zendesk) auto-escalates P1."'
                     regulator_notification_matrix:
-                        label: 'Tenant-specific regulator notification matrix'
+                        label: 'Organization-specific regulator notification matrix'
                         placeholder: 'Example: "As a German BaFin-regulated financial entity: DORA Article 19 (Major ICT Incident, 4h Initial, 72h Intermediate, 1mo Final, to BaFin/Bundesbank); BSI-KritisV (KRITIS-relevant disruption, without undue delay); GDPR Article 33 (72h, BfDI/state DPA); MaRisk AT 7.3 (supervisor notification on material disruptions). Consolidated matrix in compliance annex."'
                     out_of_band_channels:
                         label: 'Out-of-band channels and test frequency'

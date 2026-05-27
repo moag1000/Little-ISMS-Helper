@@ -133,7 +133,7 @@ policy:
                         label: 'Local Crisis Team composition with deputies'
                         placeholder: 'Example: "Chair: COO Dr. Schmidt; Deputy: CFO Mr. Mueller. BCM Officer: Ms. Wagner, Deputy: Mr. Bauer. ISB: Mr. Schulze, Deputy: Ms. Becker. Communications Lead: Ms. Klein. IT Lead: Mr. Fischer. HR Lead: Ms. Hoffmann. Legal Lead: external firm XYZ. Records Keeper: Ms. Schneider."'
                     activation_thresholds_local:
-                        label: 'Tenant-specific activation thresholds for the Crisis Team'
+                        label: 'Organization-specific activation thresholds for the Crisis Team'
                         placeholder: 'Example: "Activation mandatory in case of core-banking-system outage > 2h, in case of personal-data breach with > 1000 affected data subjects, in case of cyber-incident with suspected data exfiltration, in case of regional newspaper coverage with circulation > 50,000."'
                     out_of_band_channels:
                         label: 'Out-of-band communication channels in case of primary ICT outage'

@@ -2,7 +2,7 @@ asset_sub_type:
   admin:
     page:
       title: 'Asset-Sub-Typen'
-      lead: 'Tenant-konfigurierbare Sub-Typen für Asset-Inventur (z.B. Server unter Hardware). Branchen-Seeds beschleunigen den Inventur-Workshop.'
+      lead: 'Organisations-konfigurierbare Sub-Typen für Asset-Inventur (z.B. Server unter Hardware). Branchen-Seeds beschleunigen den Inventur-Workshop.'
     seed:
       title: 'Branchen-Preset anwenden'
       lead: 'Importiert vordefinierte Sub-Typen für eine Branche. Duplikate werden übersprungen.'
@@ -47,7 +47,7 @@ asset_sub_type:
     created: 'Sub-Typ wurde angelegt.'
     updated: 'Sub-Typ wurde aktualisiert.'
     deleted: 'Sub-Typ wurde gelöscht.'
-    tenant_required: 'Mandantenkontext erforderlich.'
+    tenant_required: 'Organisations-Kontext erforderlich.'
     csrf_invalid: 'Sicherheitsfehler. Bitte erneut versuchen.'
     preset_invalid: 'Unbekanntes Preset: %preset%.'
     seeded: 'Preset "%preset%" angewendet: %created% angelegt, %skipped% übersprungen (von %total% Einträgen).'

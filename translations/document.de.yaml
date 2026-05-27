@@ -245,7 +245,7 @@ document:
         source:
             manual: 'Manuell verknüpft'
             policy_wizard: 'Policy-Wizard (automatisch bei Genehmigung)'
-            inheritance: 'Vom Eltern-Tenant geerbt'
+            inheritance: 'Von der Eltern-Organisation geerbt'
         type:
             policy_document: 'Richtlinie'
             procedure_document: 'Verfahrensanweisung'

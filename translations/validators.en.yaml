@@ -342,7 +342,7 @@ audit:
         date_required: 'Please select a date.'
 tenant:
     validation:
-        code_format: 'Tenant code must match the required format'
+        code_format: 'Organization code must match the required format'
         azure_tenant_id_format: 'Azure Tenant ID must be a valid GUID'
         logo_format: 'The logo must be in JPG, PNG, GIF or WebP format'
         nace_code_format: 'NACE code must match format A.NN.NN (NACE Rev.2 classification).'

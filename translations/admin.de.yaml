@@ -68,7 +68,7 @@ admin:
             policy_style: { label: 'Policy-Optik', desc: 'Layout, Wasserzeichen und Typografie für Richtlinien-Dokumente' }
             report_style: { label: 'Report-Optik', desc: 'Cover-Muster, Audience-Default, Watermark, Diagramm-Farben pro Organisation' }
             users: { label: 'Benutzer', desc: 'Konten, Status, Sperrungen' }
-            roles: { label: 'Rollen', desc: 'Tenant-Rollen und Vorlagen' }
+            roles: { label: 'Rollen', desc: 'Organisations-Rollen und Vorlagen' }
             permissions: { label: 'Berechtigungen', desc: 'Permission-Matrix Modul × Rolle' }
             sso: { label: 'SSO', desc: 'OIDC-Provider, Approvals, Domain-Bindings' }
             sessions: { label: 'Sitzungen', desc: 'Aktive Sessions, Force-Logout' }
@@ -77,7 +77,7 @@ admin:
             mappings: { label: 'Cross-Framework-Mappings', desc: 'Anforderungs-Verknüpfungen zwischen Frameworks' }
             mapping_quality: { label: 'Mapping-Quality-Score', desc: 'Review-Pipeline für Mapping-Vorschläge' }
             industry_baselines: { label: 'Branchen-Baselines', desc: 'Vorbefüllte Risk-/Asset-/Control-Sets pro NACE' }
-            industry_preset: { label: 'Branchen-Presets', desc: 'Demo-Tenant aus Branchen-Bundle erstellen' }
+            industry_preset: { label: 'Branchen-Presets', desc: 'Demo-Organisation aus Branchen-Bundle erstellen' }
             compliance_mapping_seeds: { label: 'Mapping-Seeds', desc: 'Vorbefüllte Cross-Framework-Mapping-Vorschläge' }
             tags: { label: 'Tags', desc: 'Framework-Tags + Bulk-Apply-Aktionen' }
             audit_log: { label: 'Audit-Log', desc: 'Tamper-evident Activity-Trail' }
@@ -95,7 +95,7 @@ admin:
             library_importer: { label: 'BSI / TISAX Library', desc: 'Frameworks aus YAML-Fixtures importieren und exportieren (BSI Kompendium 2024, TISAX ISA 6.0)' }
             system_health: { label: 'System-Health', desc: 'Service-Status, Disk, Cache, Logs' }
             modules: { label: 'Module', desc: 'Aktive ISMS-Module verwalten' }
-            data_repair: { label: 'Daten-Reparatur', desc: 'Orphans, Tenant-Mismatches, Schema-Reconcile' }
+            data_repair: { label: 'Daten-Reparatur', desc: 'Orphans, Organisations-Mismatches, Schema-Reconcile' }
             quick_fix_settings: { label: 'Quick-Fix-Settings', desc: 'Auto-Fallback-UI Konfiguration' }
             kpi_threshold: { label: 'KPI-Schwellen', desc: 'Ampel-Grenzen für Dashboard-KPIs' }
             fte_tracking: { label: 'FTE-Tracking', desc: 'Aufwands-Einsparungen durch Automatisierung messen und berichten' }
@@ -149,7 +149,7 @@ admin:
         # Full directory lives in AdminHubCatalog.
         quick:
             user_mgmt: 'User-Mgmt'
-            tenant_mgmt: 'Tenant-Mgmt'
+            tenant_mgmt: 'Organisations-Mgmt'
             module_config: 'Module-Config'
             settings: Settings
     nav:
@@ -190,7 +190,7 @@ admin:
         inactive_users: 'Inaktive Benutzer'
         unverified_users: 'Unverifizierte Benutzer'
         large_database: 'Datenbank-Größe (GB)'
-        annex_a_missing: 'ISO 27001 Annex A Controls fehlen für diesen Tenant'
+        annex_a_missing: 'ISO 27001 Annex A Controls fehlen für diese Organisation'
         annex_a_missing_fix: 'Jetzt laden'
     dashboard:
         title: 'Admin Dashboard'
@@ -524,7 +524,7 @@ admin:
             title: 'Achtung — Live-Daten-Änderungen'
             lead: 'Alle Buttons auf dieser Seite schreiben direkt in die Produktions-Datenbank. Es gibt keinen Dry-Run-Modus. Bitte vorher prüfen:'
             point_audit_log: 'Jede Reparatur wird im Audit-Log (tamper-evident HMAC-SHA256-Chain) protokolliert und ist damit nachvollziehbar.'
-            point_backup: 'Vor Massen-Reparaturen (Fix-all-Orphans, Fix-Tenant-Mismatches) ein aktuelles Backup sicherstellen.'
+            point_backup: 'Vor Massen-Reparaturen (Fix-all-Orphans, Fix-Organisations-Mismatches) ein aktuelles Backup sicherstellen.'
             point_confirm: 'Jeder Button zeigt einen Bestätigungs-Dialog — bitte sorgfältig lesen, bevor Sie „OK" klicken.'
             action_backup: 'Backup prüfen'
             action_audit_log: 'Audit-Log ansehen'
@@ -721,7 +721,7 @@ admin:
                 workflow_step_metadata: 'WorkflowStep.metadata (Objekt, opt. auto_progression)'
         audit_integrity:
             title: 'Audit-Log-Integrität'
-            description: 'Strukturelle Anomalien, die die HMAC-Chain alleine nicht erkennt: Bulk-Batch-Mismatches, Tages-Lücken, NULL-Tenant-Einträge.'
+            description: 'Strukturelle Anomalien, die die HMAC-Chain alleine nicht erkennt: Bulk-Batch-Mismatches, Tages-Lücken, NULL-Organisations-Einträge.'
             all_ok: 'Audit-Log-Integrität OK — keine Bulk-Mismatches, Tages-Lücken oder NULL-Tenants.'
             bulk_mismatches: 'Bulk-Batch-Mismatches (per_entity_count > tatsächlich)'
             day_gaps: 'Tages-Lücken (letzte 30 Tage)'
@@ -738,7 +738,7 @@ admin:
             badge: 'Datenreparatur'
             generic_subtitle: 'Läuft im Hintergrund, damit PHP-FPM antwortbereit bleibt.'
             fix_all_orphans_label: 'Alle Orphans zuweisen'
-            fix_all_orphans_subtitle: 'Weist alle verwaisten Entities (tenant_id IS NULL) dem Standard-Tenant im Hintergrund zu…'
+            fix_all_orphans_subtitle: 'Weist alle verwaisten Entities (tenant_id IS NULL) der Standard-Organisation im Hintergrund zu…'
             fix_tenant_mismatches_label: 'Organisations-Fehlzuordnungen beheben'
             fix_tenant_mismatches_subtitle: 'Richtet Tochter-Organisationen im Hintergrund am Parent (Asset) aus…'
             merge_duplicates_label: 'Duplikate zusammenführen — %type%'
@@ -752,7 +752,7 @@ admin:
             scan_orphans_label: 'Orphans scannen'
             scan_orphans_subtitle: 'Sucht im Hintergrund nach verwaisten Entities (tenant_id IS NULL)…'
             scan_duplicates_label: 'Duplikate scannen'
-            scan_duplicates_subtitle: 'Sucht im Hintergrund nach Duplikaten pro Entity-Typ und Tenant…'
+            scan_duplicates_subtitle: 'Sucht im Hintergrund nach Duplikaten pro Entity-Typ und Organisation…'
             scan_broken_refs_label: 'Defekte Referenzen scannen'
             scan_broken_refs_subtitle: 'Sucht im Hintergrund nach defekten FK-Referenzen, Cascade-Orphans und verwaisten Upload-Dateien…'
             scan_health_label: 'Health-Issues scannen'
@@ -779,7 +779,7 @@ admin:
         section:
             badge: 'Daten-Reparatur'
             orphans: 'Orphans'
-            orphans_description: 'Entities ohne Tenant-Zuordnung. Können einzeln oder als Bulk-Aktion einem Tenant zugewiesen werden.'
+            orphans_description: 'Entities ohne Organisations-Zuordnung. Können einzeln oder als Bulk-Aktion einer Organisation zugewiesen werden.'
             duplicates: 'Duplikate'
             duplicates_description: 'Duplikate innerhalb eines Tenants. Beim Merge bleibt die niedrigste ID erhalten, neuere Kopien werden gelöscht.'
             broken_references: 'Defekte Referenzen'
@@ -801,7 +801,7 @@ admin:
             health_all_ok: 'Alle vier Health-Check-Buckets sind sauber.'
             health_bucket_count: '%count% Issue(s) in diesem Bucket erkannt'
             no_broken_refs: 'Keine defekten Referenzen erkannt.'
-            fix_tenant_mismatches: 'Tenant-Mismatches beheben'
+            fix_tenant_mismatches: 'Organisations-Mismatches beheben'
             tip: 'Jeder Bereich hat seinen eigenen Hintergrund-Scan. Die Übersichtsseite liest nur Cache-Werte — sie bleibt schnell, egal wie viele Entities Sie haben. Reparatur-Aktionen lesen weiterhin Live-Daten, wenn sie ausgeführt werden.'
         tenant_card:
             title: 'Organisationen'
@@ -851,8 +851,8 @@ admin:
             contact: Kontakt
             advanced: Erweitert
         no_tenant_in_context: 'Kein Organisations-Kontext aktiv — bitte zuerst Organisation in der Liste wählen.'
-        section_tenant: 'Tenant-spezifisch'
-        section_global: 'System-Default (alle Tenants)'
+        section_tenant: 'Organisations-spezifisch'
+        section_global: 'System-Default (alle Organisationen)'
         global_help: 'Globale Sicherheits-Defaults — Aenderung via System-Settings.'
         locale: 'Sprache + Region'
         timezone: 'Zeitzone'
@@ -1081,7 +1081,7 @@ admin:
             form: 'Konfiguration'
             form_subtitle: 'Änderungen werden live in der Vorschau rechts angezeigt. Speichern persistiert die Werte für alle künftigen Policy-Dokumente.'
             preview: 'Live-Vorschau'
-            preview_subtitle: 'Beispiel-Richtlinie mit aktuellen Einstellungen — Sample-Daten, kein Tenant-Inhalt.'
+            preview_subtitle: 'Beispiel-Richtlinie mit aktuellen Einstellungen — Sample-Daten, kein Organisations-Inhalt.'
         group:
             cover: 'Deckblatt'
             typography: 'Typografie & Layout'
@@ -1109,7 +1109,7 @@ admin:
             watermark_enabled: 'Wenn aktiv, wird die Klassifizierung diagonal als Wasserzeichen über jeder Seite gerendert.'
             watermark_opacity: '0 % unsichtbar, 8 % ist Default, > 25 % stört das Lesen.'
             signature_lines: 'Anzahl der vorbereiteten Unterschriftsfelder auf der Signatur-Seite (1–6).'
-            footer_text: 'Wenn leer, wird der Default-Footer mit Tenant-Name + Klassifikation verwendet.'
+            footer_text: 'Wenn leer, wird der Default-Footer mit Organisations-Name + Klassifikation verwendet.'
             custom_css: 'Wird |raw in <style>-Block des Policy-Doc gerendert. Nur ROLE_ADMIN. Falsches CSS kann die PDF-Generierung brechen.'
         cover:
             minimal: 'Minimal — Cover ohne Logo-Flächen, neutraler Look'
@@ -1235,7 +1235,7 @@ admin:
     lifecycle_overrides:
         title: 'Lifecycle-Konfiguration'
         subtitle: 'Workflow-Transition-Metadaten organisationsspezifisch überschreiben'
-        no_tenant: 'Kein Organisations-Kontext gefunden. Bitte Tenant wechseln.'
+        no_tenant: 'Kein Organisations-Kontext gefunden. Bitte Organisation wechseln.'
         no_workflows: 'Keine Workflow-Konfigurationsdateien gefunden.'
         no_transitions: 'Keine Transitionen in diesem Workflow gefunden.'
         yaml_baseline: 'YAML-Standard'

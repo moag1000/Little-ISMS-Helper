@@ -2,7 +2,7 @@ asset_sub_type:
   admin:
     page:
       title: 'Asset Sub-Types'
-      lead: 'Tenant-configurable sub-types for asset inventory (e.g. Server under Hardware). Industry seed presets accelerate the inventory workshop.'
+      lead: 'Organization-configurable sub-types for asset inventory (e.g. Server under Hardware). Industry seed presets accelerate the inventory workshop.'
     seed:
       title: 'Apply industry preset'
       lead: 'Imports a predefined sub-type catalogue for an industry. Duplicates are skipped.'
@@ -47,7 +47,7 @@ asset_sub_type:
     created: 'Sub-type created.'
     updated: 'Sub-type updated.'
     deleted: 'Sub-type deleted.'
-    tenant_required: 'Tenant context required.'
+    tenant_required: 'Organization context required.'
     csrf_invalid: 'Security error. Please retry.'
     preset_invalid: 'Unknown preset: %preset%.'
     seeded: 'Preset "%preset%" applied: %created% created, %skipped% skipped (of %total% total).'

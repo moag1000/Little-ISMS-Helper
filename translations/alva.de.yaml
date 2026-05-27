@@ -255,7 +255,7 @@ incident:
 policy_wizard:
     settings_drift:
         title: 'Konzern-Vorgabe verschärft — Re-Run nötig'
-        body: 'Konzern-CISO von %konzern_name% hat Setting "%setting_key%" von %old_value% auf %new_value% angehoben. Betroffene Einstellungen in deinem Tenant: %affected_count%. Wizard im Targeted-Modus erneut ausführen, um die Policies anzugleichen.'
+        body: 'Konzern-CISO von %konzern_name% hat Setting "%setting_key%" von %old_value% auf %new_value% angehoben. Betroffene Einstellungen in deiner Organisation: %affected_count%. Wizard im Targeted-Modus erneut ausführen, um die Policies anzugleichen.'
         action: 'Wizard neu starten'
 
 dora_exit_plan:
@@ -328,11 +328,11 @@ global:
         action: 'Überfällige Datenpannen anzeigen'
     konzern_settings_drift:
         title: 'Abweichung von Konzern-Baseline (%konzern_name%)'
-        body: '%count% Compliance-Framework-Differenz(en) zwischen diesem Tenant und dem übergeordneten Konzern (%konzern_name%). ISB-Abstimmung empfohlen vor dem nächsten Audit.'
+        body: '%count% Compliance-Framework-Differenz(en) zwischen dieser Organisation und dem übergeordneten Konzern (%konzern_name%). ISB-Abstimmung empfohlen vor dem nächsten Audit.'
         action: 'Compliance prüfen'
     missing_sso_for_enterprise:
         title: 'Kein SSO für %count% Benutzer — Authentifizierungslücke'
-        body: 'Dieser Tenant hat %count% aktive Benutzer, aber keinen SSO-Identity-Provider konfiguriert. ISO 27001:2022 A.5.17 und A.8.5 empfehlen zentralisierte Authentifizierung für größere Teams zur Durchsetzung starker Passwörter, MFA und Account-Lifecycle-Management.'
+        body: 'Diese Organisation hat %count% aktive Benutzer, aber keinen SSO-Identity-Provider konfiguriert. ISO 27001:2022 A.5.17 und A.8.5 empfehlen zentralisierte Authentifizierung für größere Teams zur Durchsetzung starker Passwörter, MFA und Account-Lifecycle-Management.'
         action: 'SSO einrichten'
     missed_sla_deadline:
         title: '%count% SLA-Frist(en) versäumt — regulatorische Haftung'
@@ -385,9 +385,9 @@ global:
 
 inbox:
     title: 'Alva-Inbox'
-    subtitle: 'Alle aktiven Alva-Tipps für deinen Tenant — priorisiert nach Tier'
+    subtitle: 'Alle aktiven Alva-Tipps für deine Organisation — priorisiert nach Tier'
     empty_title: 'Keine aktiven Hinweise'
-    empty_body: 'Alva hat aktuell keine offenen Empfehlungen für deinen Tenant. Gut gemacht!'
+    empty_body: 'Alva hat aktuell keine offenen Empfehlungen für deine Organisation. Gut gemacht!'
     badge: 'Alva-Inbox'
     filter:
         all: 'Alle'
@@ -411,7 +411,7 @@ alva_hint:
         dismiss_label: 'Nicht jetzt'
     konzern_ciso_drift_alert:
         title: 'Tochter weicht von Konzern-Vorgabe ab'
-        body: 'Im Konzern %konzern_name% verletzen %affected_count% Tochter-Einstellungen verbindliche Konzern-Vorgaben (nicht-änderbar / nicht-lockerbar). Erstes Beispiel: Tenant "%first_tenant_name%", Einstellung "%first_setting_key%". Bitte im Konzern-Rollup unter "Abweichungen" prüfen und die Tochter zur Korrektur auffordern, bevor das Audit es findet.'
+        body: 'Im Konzern %konzern_name% verletzen %affected_count% Tochter-Einstellungen verbindliche Konzern-Vorgaben (nicht-änderbar / nicht-lockerbar). Erstes Beispiel: Organisation "%first_tenant_name%", Einstellung "%first_setting_key%". Bitte im Konzern-Rollup unter "Abweichungen" prüfen und die Tochter zur Korrektur auffordern, bevor das Audit es findet.'
         cta_label: 'Abweichungen öffnen'
         dismiss_label: 'Später erinnern'
     open_finding_reference:
@@ -421,7 +421,7 @@ alva_hint:
         dismiss_label: 'Nicht jetzt'
     document_split_needed:
         title: 'Legacy-Dokument noch nicht aufgeteilt'
-        body: 'Im Topic "%topic%" wartet eine Bestandsaufnahme-Entscheidung "split_to_topics" auf manuelle Bearbeitung (Ziele: %target_topics%). Insgesamt sind %count% solcher Splits im Tenant offen. Der Policy-Wizard kann ein Legacy-Dokument nicht automatisch in mehrere Topic-Dokumente aufteilen — entweder Entscheidung auf merge_into_topic / replace umstellen oder einen Targeted-Re-Run pro Zieltopic anstoßen.'
+        body: 'Im Topic "%topic%" wartet eine Bestandsaufnahme-Entscheidung "split_to_topics" auf manuelle Bearbeitung (Ziele: %target_topics%). Insgesamt sind %count% solcher Splits in der Organisation offen. Der Policy-Wizard kann ein Legacy-Dokument nicht automatisch in mehrere Topic-Dokumente aufteilen — entweder Entscheidung auf merge_into_topic / replace umstellen oder einen Targeted-Re-Run pro Zieltopic anstoßen.'
         cta_label: 'Bestandsaufnahme öffnen'
         dismiss_label: 'Später erinnern'
     training_coverage_gap:
@@ -493,7 +493,7 @@ alva_hint:
             action: 'Review-Cadence-Konvention öffnen'
         document_acknowledgement_without_audience:
             title: 'Acknowledgement-Pflicht ohne definierte Audience'
-            body: 'Wenn requiresAcknowledgement aktiv ist und acknowledgementAudience leer bleibt, wird die Bestätigungs-Anforderung an alle Tenant-Nutzer ausgerollt — selten der gewünschte Effekt. ISO 27001 A.6.3 erwartet eine zielgerichtete, rollenbasierte Kommunikation. Bitte eine Empfänger-Gruppe auswählen.'
+            body: 'Wenn requiresAcknowledgement aktiv ist und acknowledgementAudience leer bleibt, wird die Bestätigungs-Anforderung an alle Organisations-Nutzer ausgerollt — selten der gewünschte Effekt. ISO 27001 A.6.3 erwartet eine zielgerichtete, rollenbasierte Kommunikation. Bitte eine Empfänger-Gruppe auswählen.'
             action: 'Audience-Picker öffnen'
         training_mandatory_without_audience:
             title: 'Pflicht-Training ohne definierte Audience'

@@ -1,6 +1,6 @@
 supplier_criticality:
     title: 'Lieferanten-Kritikalitätsstufen'
-    subtitle: 'Tenant-spezifische Kritikalitätsskala für Lieferantenbewertungen'
+    subtitle: 'Organisations-spezifische Kritikalitätsskala für Lieferantenbewertungen'
     action:
         new: 'Neue Stufe anlegen'
         edit: 'Stufe bearbeiten'

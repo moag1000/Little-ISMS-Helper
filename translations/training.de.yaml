@@ -64,7 +64,7 @@ training:
     target_audience: Zielgruppe
     participants: Teilnehmende
     participants_legacy: Teilnehmende (Freitext, Migration)
-    participant_users: 'Teilnehmende (Benutzer aus Tenant)'
+    participant_users: 'Teilnehmende (Benutzer aus Organisation)'
     status: Status
     mandatory: Verpflichtend
     related_controls: Zugeordnete Maßnahmen

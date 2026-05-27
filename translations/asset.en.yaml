@@ -327,7 +327,7 @@ asset:
     driven_by: Driven by
   ai_agent:
     flash:
-      no_tenant: 'No tenant assigned — AI Agent inventory requires a tenant context.'
+      no_tenant: 'No organization assigned — AI Agent inventory requires an organization context.'
     show:
       classification: 'Risk classification'
       classification_unclassified: '— not classified —'

@@ -508,7 +508,7 @@ policy:
 
                     Antraege werden ueber folgende Kanaele angenommen:
 
-                    1. dediziertes Web-Formular auf der Tenant-Website (barrierefrei nach BITV 2.0);
+                    1. dediziertes Web-Formular auf der Organisations-Website (barrierefrei nach BITV 2.0);
                     2. dedizierte E-Mail-Adresse `datenschutz@<tenant-domain>` (DSB-Postfach von {{ roles.dpo.fullName }});
                     3. postalische Anschrift gemaess Datenschutzhinweis (Art. 37 Abs. 7 DSGVO);
                     4. telefonischer Erstkontakt mit Schriftform-Folgeschritt;
@@ -913,10 +913,10 @@ policy:
                 tailoring_field:
                     standalone_documents_listed:
                         label: 'Liste der nachgelagerten Datenschutz-Dokumente'
-                        placeholder: 'Beispiel: "Vollstaendige Liste gemaess Abschnitt 4 wird waehrend des Wizard-Durchlaufs automatisch aus dem aktivierten Datenschutz-Programm der Organisation generiert; konditionale Dokumente (Kinder / Special-Cat) erscheinen nur, wenn die jeweiligen Tenant-Settings gesetzt sind."'
+                        placeholder: 'Beispiel: "Vollstaendige Liste gemaess Abschnitt 4 wird waehrend des Wizard-Durchlaufs automatisch aus dem aktivierten Datenschutz-Programm der Organisation generiert; konditionale Dokumente (Kinder / Special-Cat) erscheinen nur, wenn die jeweiligen Organisations-Settings gesetzt sind."'
                     iso27701_version_used:
                         label: 'Verwendete ISO-27701-Version'
-                        placeholder: 'Beispiel: "ISO/IEC 27701:2025 (Standard); Tenant kann auf :2019 wechseln, falls aktiver Audit-Zyklus dies erfordert; Klausel-Mapping wird automatisch im jeweiligen Tag-Set des Dokuments umgeschaltet."'
+                        placeholder: 'Beispiel: "ISO/IEC 27701:2025 (Standard); Organisation kann auf :2019 wechseln, falls aktiver Audit-Zyklus dies erfordert; Klausel-Mapping wird automatisch im jeweiligen Tag-Set des Dokuments umgeschaltet."'
                     a534_audit_evidence_pointer:
                         label: 'Audit-Evidence-Pointer für A.5.34'
                         placeholder: 'Beispiel: "Im SoA-Eintrag A.5.34 wird dieses Verweis-Dokument als zentrales Audit-Evidence-Artefakt genannt; ergaenzend werden im Audit die in Abschnitt 4 verlinkten Dokumente sowie das DSB-Sign-off-Log aus dem `audit_log`-Modul vorgelegt."'

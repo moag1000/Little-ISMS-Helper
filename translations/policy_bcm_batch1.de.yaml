@@ -453,7 +453,7 @@ policy:
                         label: 'Praeferierte Datenerhebungs-Methode'
                         placeholder: 'Beispiel: "Tier 1 + 2: ganztaegige moderierte Workshops mit Process Owner + 2 Stellvertretern + IT-Owner + Risk-Liaison. Tier 3: 2-stuendige Interviews. Tier 4: validierter Online-Fragebogen mit verbindlicher Plausibilitaetspruefung durch BIA-Lead. Alle Workshops mit Protokollpflicht und Audio-Mitschnitt (DSGVO-konform, 90 Tage Aufbewahrung)."'
                     bia_review_cycle:
-                        label: 'Tenant-spezifischer BIA-Wiederholungszyklus und Trigger'
+                        label: 'Organisations-spezifischer BIA-Wiederholungszyklus und Trigger'
                         placeholder: 'Beispiel: "Standard-Re-BIA alle 24 Monate, jedoch für Tier-1-Prozesse alle 12 Monate. Trigger: jede neu integrierte Tochtergesellschaft, jede neue regulatorisch-kritische Funktion (z. B. neue DORA-CIF), jede schwerwiegende BC-Aktivierung (Krisengrad gelb oder roeter), jede Vollscale-Uebung mit Soll-Ist-Abweichung > 30 %."'
         risk_assessment_methodology_bcm:
             v1:
@@ -588,10 +588,10 @@ policy:
                             BCM-Risiken in zentralem Register mit Filter `bcm=true`. Reuse der ISMS-Methodik moeglich, sofern Delta dokumentiert.
                 tailoring_field:
                     bcm_threat_catalogue:
-                        label: 'Tenant-spezifischer BCM-Bedrohungskatalog'
+                        label: 'Organisations-spezifischer BCM-Bedrohungskatalog'
                         placeholder: 'Beispiel: "Erweiterung um (a) Finanzmarkt-Stress-Szenarien (Bank Run, Liquiditaetskrise) gemaess BaFin-Stresstest-Methodik; (b) FX-Schock-Szenarien für internationale Toechter; (c) DORA-relevante kritische ICT-Drittparteien-Konzentration; (d) sektorspezifische Cyber-Bedrohungen aus Threat-Intelligence-Feed."'
                     bcm_likelihood_calibration:
-                        label: 'Tenant-spezifische Wahrscheinlichkeits-Kalibrierung'
+                        label: 'Organisations-spezifische Wahrscheinlichkeits-Kalibrierung'
                         placeholder: 'Beispiel: "Stufe 4 (Wahrscheinlich, 5J) wird angepasst auf 3 Jahre für Cyber-Risiken (basierend auf branchenweiter Vorfallrate). Stufe 3 (Moeglich, 10J) wird auf 7 Jahre für Hochwasser nach Klima-Risikoanalyse 2026 verkuerzt. Schluesselpersonen-Risiko hat Spezialskala anhand Bench-Strength."'
                     isms_reuse_decision:
                         label: 'Entscheidung Reuse ISMS-Methodik (ja/nein) inkl. Delta'
@@ -733,7 +733,7 @@ policy:
                             Jaehrlich; ausserordentlich bei BIA-Update, Architektur-Aenderung, RTC-Abweichung. Verantwortet durch {{ roles.bcm_officer.fullName }}; genehmigt durch {{ approval.chain }}.
                 tailoring_field:
                     tier_strategy_assignment:
-                        label: 'Tier-Strategie-Zuordnung (Tenant-spezifisch)'
+                        label: 'Tier-Strategie-Zuordnung (Organisations-spezifisch)'
                         placeholder: 'Beispiel: "Tier 1: Online-Banking → Active-Active-Cloud (Region eu-central-1 + eu-west-1) mit RPO 0; Tier 1: Kartenautorisierung → Hot-Standby On-Premise + DR-Standort (synchrone Replikation, RPO ≤ 5 min); Tier 2: Filialbetrieb → Warm-Standby (Coworking-Standort vertraglich gesichert); Tier 3: Reporting → Cold-Standby + Excel-Workaround mit dokumentierten Vorlagen."'
                     rtc_gap_status:
                         label: 'Aktuelle RTC-Soll-Ist-Bewertung und Investitions-Roadmap'
@@ -753,13 +753,13 @@ policy:
                     Dieses Dokument definiert verbindlich die Struktur, Inhalte und Qualitaetsanforderungen aller Business-Continuity-Plaene (BC-Plaene) der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 8.4.4 und BSI 200-4 Kap. 6. Einzelne BC-Plaene werden pro in-scope Geschaeftsprozess durch Process Owner erstellt und nutzen diese Vorlage verbindlich. Pro BC-Plan wird ein eigener Record erzeugt; Pflege und Genehmigung erfolgen ueber den BC-Plan-Workflow.
 
                     ## 2. Verhaeltnis zu BSI 200-4-Plan-Typen
-                    BSI 200-4 unterscheidet drei Plan-Typen, ISO 22301 fasst sie zu "BC Plans" zusammen. Fuer Tenants mit BSI-Adoption gelten **alle drei Plan-Typen** als verbindlich:
+                    BSI 200-4 unterscheidet drei Plan-Typen, ISO 22301 fasst sie zu "BC Plans" zusammen. Fuer Organisationen mit BSI-Adoption gelten **alle drei Plan-Typen** als verbindlich:
 
                     - **Geschaeftsfortfuehrungsplan (Business Continuation Plan)** — fokussiert auf Aufrechterhaltung des Geschaeftsbetriebs durch Workarounds und reduzierte Verfahren waehrend einer Stoerung;
                     - **Wiederanlaufplan (Recovery / Resumption Plan)** — bringt Ressourcen in einen (ggf. reduzierten) Betriebszustand zurueck;
                     - **Wiederherstellungsplan (Restoration Plan)** — stellt langfristig den vollen Vor-Stoerungs-Zustand wieder her.
 
-                    Fuer Tenants ohne BSI-Adoption wird ein **integrierter BC-Plan** mit allen drei Aspekten in einer Vorlage gepflegt.
+                    Fuer Organisationen ohne BSI-Adoption wird ein **integrierter BC-Plan** mit allen drei Aspekten in einer Vorlage gepflegt.
 
                     ## 3. Verbindliche Inhaltsabschnitte (jeder BC-Plan)
                     ### 3.1 Plan-Identifikation
@@ -859,7 +859,7 @@ policy:
                     plan_types:
                         title: 'BSI-Drei-Plan-Modell vs. ISO-Einzel-Plan'
                         body: |-
-                            BSI 200-4: Geschaeftsfortfuehrungs-, Wiederanlauf-, Wiederherstellungsplan getrennt. Fuer Nicht-BSI-Tenants integrierter BC-Plan mit allen drei Aspekten.
+                            BSI 200-4: Geschaeftsfortfuehrungs-, Wiederanlauf-, Wiederherstellungsplan getrennt. Fuer Nicht-BSI-Organisationen integrierter BC-Plan mit allen drei Aspekten.
                     identification:
                         title: 'Plan-Identifikation'
                         body: |-
@@ -954,7 +954,7 @@ policy:
                     - **Medien** — ausschliesslich ueber benannte Pressestelle; ohne deren Freigabe keinerlei externe Aeusserungen.
                     - **Lieferanten und Dienstleister** — soweit Mitwirkung zur Wiederherstellung erforderlich.
 
-                    Pro Stakeholder werden Kommunikationsvorlagen vorgehalten (Mindest-Sprachversionen DE/EN; weitere Sprachen je nach Tenant-Standorten).
+                    Pro Stakeholder werden Kommunikationsvorlagen vorgehalten (Mindest-Sprachversionen DE/EN; weitere Sprachen je nach Organisations-Standorten).
 
                     ## 7. Regulatorische Meldepflichten
                     Folgende Meldepflichten sind je nach Anwendbarkeit zu beachten:
@@ -980,7 +980,7 @@ policy:
                     Out-of-Band-Kanaele werden mindestens halbjaehrlich getestet (Frequenz: {{ bcm.exercise_frequency }}).
 
                     ## 9. Sprecher-Regelung
-                    Externe Aeusserungen erfolgen ausschliesslich ueber benannte Sprecher (Pressestelle / Krisenkommunikations-Lead). Tenant-Vorgabe: einzige autorisierte Sprecher sind Geschaeftsfuehrung ({{ approval.chain }}) und benannte/r Pressesprecher/in. Kein Krisenstabs-Mitglied gibt unautorisierte Statements; jeder Kontakt mit Medien wird unmittelbar an die Pressestelle weitergeleitet.
+                    Externe Aeusserungen erfolgen ausschliesslich ueber benannte Sprecher (Pressestelle / Krisenkommunikations-Lead). Organisations-Vorgabe: einzige autorisierte Sprecher sind Geschaeftsfuehrung ({{ approval.chain }}) und benannte/r Pressesprecher/in. Kein Krisenstabs-Mitglied gibt unautorisierte Statements; jeder Kontakt mit Medien wird unmittelbar an die Pressestelle weitergeleitet.
 
                     ## 10. Dokumentations- und Beweissicherungspflicht
                     Waehrend einer Aktivierung wird ein verbindliches Zeitachsen-Protokoll gefuehrt: Zeitstempel, Entscheidung, Entscheider, Aktion, Ergebnis. Verantwortlich: Krisenstabs-Records-Keeper. Die Dokumentation dient regulatorischer Nachvollziehbarkeit, Lessons-Learned und ggf. zivil-/strafrechtlicher Beweissicherung. Aufbewahrung gemaess Aufbewahrungs-Richtlinie, mindestens jedoch 7 Jahre.
@@ -1054,7 +1054,7 @@ policy:
                     regulators:
                         title: 'Regulatorische Meldepflichten'
                         body: |-
-                            DORA Art. 19 (4h/24-72h/1mo), NIS2 Art. 23 (24h/72h/1mo), BSI-KritisV unverzueglich, DSGVO Art. 33/34. Tenant-Liste {{ regulators_list }}.
+                            DORA Art. 19 (4h/24-72h/1mo), NIS2 Art. 23 (24h/72h/1mo), BSI-KritisV unverzueglich, DSGVO Art. 33/34. Organisations-Liste {{ regulators_list }}.
                     out_of_band:
                         title: 'Out-of-Band-Kanaele'
                         body: |-
@@ -1065,10 +1065,10 @@ policy:
                             Zeitachsen-Protokoll durch Records-Keeper; Aufbewahrung min. 7 Jahre. Externe Aeusserungen nur durch Pressestelle/Geschaeftsfuehrung.
                 tailoring_field:
                     detection_channels:
-                        label: 'Tenant-spezifische Erkennungs- und Alarmierungs-Kanaele'
+                        label: 'Organisations-spezifische Erkennungs- und Alarmierungs-Kanaele'
                         placeholder: 'Beispiel: "24/7-NOC mit SIEM (Splunk Cloud) und SOC-Outsourcing-Partner; interne Hotline +49-69-XXXX-911 (24/7); Notfall-E-Mail bcm@example.com mit PagerDuty-Eskalation; Synthetic-Monitoring (Datadog) für Tier-1-Services; CSIRT-Bund-Threat-Feed via STIX/TAXII; Kunden-Service-Desk (Zendesk) eskaliert P1 automatisch."'
                     regulator_notification_matrix:
-                        label: 'Tenant-spezifische Aufsichts-Meldepflichten-Matrix'
+                        label: 'Organisations-spezifische Aufsichts-Meldepflichten-Matrix'
                         placeholder: 'Beispiel: "Als deutsches BaFin-reguliertes Finanzunternehmen: DORA Art. 19 (Major ICT Incident, 4h Initial, 72h Intermediate, 1mo Final, an BaFin/Bundesbank); BSI-KritisV (KRITIS-relevante Stoerung, unverzueglich); DSGVO Art. 33 (72h, BfDI/Landesdatenschutz); MaRisk AT 7.3 (Aufsichtsanzeige bei wesentlichen Stoerungen). Konsolidierte Matrix in Compliance-Anhang."'
                     out_of_band_channels:
                         label: 'Out-of-Band-Kanaele und Test-Frequenz'

@@ -22,7 +22,7 @@ group_report:
         matrix:
             title: 'Matrix per legal entity'
         col:
-            tenant: 'Tenant'
+            tenant: 'Organization'
             legal: 'Legal entity'
             classification: 'NIS2 classification'
             sector: 'Sector'
@@ -35,27 +35,27 @@ group_report:
         title: 'Group top risks'
         subtitle: 'Top 10 risks across all subsidiaries of %root% — %count% risks total.'
         top10: 'Top 10 risks (by residual; falls back to inherent)'
-        distribution: 'Distribution per tenant'
+        distribution: 'Distribution per organization'
         total: 'Group total'
         none: 'No risks in scope.'
         col:
             title: 'Risk'
-            tenant: 'Tenant'
+            tenant: 'Organization'
             inherent: 'Inherent'
             residual: 'Residual'
             count: 'Count'
     kpi:
         title: 'Framework maturity matrix'
-        subtitle: 'NIS2 / DORA / ISO 27001 / ... per tenant in %root% — cell = fulfilled / applicable percent.'
-        intro: 'Rows = tenants in the subtree. Columns = available compliance frameworks. Cell value matches the per-tenant dashboard (fulfilled / applicable). Empty cell means no applicable requirements for that tenant.'
+        subtitle: 'NIS2 / DORA / ISO 27001 / ... per organization in %root% — cell = fulfilled / applicable percent.'
+        intro: 'Rows = organizations in the subtree. Columns = available compliance frameworks. Cell value matches the per-organization dashboard (fulfilled / applicable). Empty cell means no applicable requirements for that organization.'
         holding: 'Holding'
         requirements: 'requirements'
-        n_a_help: 'No applicable requirements in this tenant.'
+        n_a_help: 'No applicable requirements in this organization.'
         col:
-            tenant: 'Tenant'
+            tenant: 'Organization'
     soa:
         title: 'Group SoA matrix'
-        subtitle: 'Annex A controls × tenants — %controls% controls over %tenants% tenants.'
+        subtitle: 'Annex A controls × organizations — %controls% controls over %tenants% organizations.'
         stat:
             cells: 'Total cells'
             applicable: 'Applicable'
@@ -73,7 +73,7 @@ group_report:
             not_applicable: 'not applicable'
     incidents:
         title: 'Group incidents'
-        subtitle: 'Cross-posted from subsidiaries of %root% — tenants with opt-out stay hidden.'
+        subtitle: 'Cross-posted from subsidiaries of %root% — organizations with opt-out stay hidden.'
         intro: 'Default: subsidiary incidents are <strong>visible</strong> to the group crisis team. A subsidiary may set <code>visible_to_holding = false</code> (e.g. an HR case that must not surface to the parent). Those rows do not appear here — the opt-out count is deliberately <strong>not</strong> disclosed so that the confidentiality of the subsidiary is preserved.'
         own: 'own'
         none: 'No incidents in the visible scope.'
@@ -87,7 +87,7 @@ group_report:
         col:
             detected_at: 'Detected'
             incident: 'Incident'
-            tenant: 'Tenant'
+            tenant: 'Organization'
             severity: 'Severity'
             status: 'Status'
     audit_program:

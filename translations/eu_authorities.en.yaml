@@ -74,7 +74,7 @@ eu_authorities:
             turnover: 'Annual turnover in EUR — relevant for threshold assessment'
             ict_dependency: 'Brief description of critical ICT dependencies (max. 5 sentences)'
             nace_codes: 'NACE Rev.2 codes for your primary business activity'
-            nace_codes_detail: 'NACE codes are derived from tenant master data and can be updated there.'
+            nace_codes_detail: 'NACE codes are derived from organization master data and can be updated there.'
         action:
             edit: 'Edit Profile'
             export_json: 'Download BSI Portal JSON'
@@ -134,7 +134,7 @@ eu_authorities:
     hub:
         page:
             title: 'EU Authority Reporting Hub'
-            subtitle: 'Overview of all EU authority reporting obligations for your tenant'
+            subtitle: 'Overview of all EU authority reporting obligations for your organization'
         summary:
             current: 'Current / Available'
             due_soon: 'Due Soon'
@@ -207,7 +207,7 @@ eu_authorities:
         success:
             submitted: 'DORA RoI marked as submitted. Confirmation number: %number%'
         info:
-            not_applicable_to_tenant: 'DORA does not apply to this tenant. Set the DORA obligation status under Tenant Settings.'
+            not_applicable_to_tenant: 'DORA does not apply to this organization. Set the DORA obligation status under Organization Settings.'
         alva:
             overdue_authority_report:
                 title: 'EU Authority Report Overdue'
@@ -301,4 +301,4 @@ global:
 
 # Top-level flash for DORA applicability gate (used by DoraComplianceController / DoraRoiController)
 dora:
-    not_applicable_to_tenant: 'DORA does not apply to this tenant. Set the DORA obligation status under Tenant Settings.'
+    not_applicable_to_tenant: 'DORA does not apply to this organization. Set the DORA obligation status under Organization Settings.'

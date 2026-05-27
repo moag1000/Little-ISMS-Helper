@@ -133,7 +133,7 @@ policy:
                         label: 'Lokale Krisenstab-Zusammensetzung mit Stellvertretungen'
                         placeholder: 'Beispiel: "Vorsitz: COO Frau Dr. Schmidt; Stellvertretung: CFO Herr Mueller. Notfallbeauftragte/r: Frau Wagner, Stellvertretung: Herr Bauer. ISB: Herr Schulze, Stellvertretung: Frau Becker. Comms-Lead: Frau Klein. IT-Lead: Herr Fischer. HR-Lead: Frau Hoffmann. Legal-Lead: extern Kanzlei XYZ. Records-Keeper: Frau Schneider."'
                     activation_thresholds_local:
-                        label: 'Tenant-spezifische Schwellenwerte für Krisenstabs-Aktivierung'
+                        label: 'Organisations-spezifische Schwellenwerte für Krisenstabs-Aktivierung'
                         placeholder: 'Beispiel: "Aktivierung verbindlich bei Ausfall des Kernbankensystems > 2h, bei Datenschutzvorfall mit > 1000 Betroffenen, bei Cyber-Vorfall mit Verdacht auf Datenexfiltration, bei Reputationsmeldung in regionaler Tageszeitung Auflage > 50.000."'
                     out_of_band_channels:
                         label: 'Out-of-Band-Kommunikationskanaele bei Ausfall der Primaer-IKT'
@@ -149,16 +149,16 @@ policy:
                     ## 1. Zweck und Verbindlichkeit
                     Dieser Standard definiert die verbindliche Struktur, die Mindestinhalte sowie die Validierungsregeln für alle Wiederanlauf- und Wiederherstellungsplaene der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 8.4.5. Er ist anwendbar auf alle als kritisch oder hoch eingestuften Assets im Sinne der separaten Asset-Klassifikationsleitlinie, insbesondere auf alle als "Kronjuwelen" identifizierten Assets der ISMS-Schutzbedarfsanalyse.
 
-                    Fuer Tenants mit BSI-200-4-Adoption ist die in Kapitel 6 vorgenommene Differenzierung zwischen Geschaeftsfortfuehrungsplan, Wiederanlaufplan und Wiederherstellungsplan verbindlich. Fuer Tenants ausschliesslich nach ISO 22301 wird der zusammenfassende Recovery-Plan-Begriff verwendet.
+                    Fuer Organisationen mit BSI-200-4-Adoption ist die in Kapitel 6 vorgenommene Differenzierung zwischen Geschaeftsfortfuehrungsplan, Wiederanlaufplan und Wiederherstellungsplan verbindlich. Fuer Organisationen ausschliesslich nach ISO 22301 wird der zusammenfassende Recovery-Plan-Begriff verwendet.
 
                     ## 2. Begrifflichkeiten gemaess BSI 200-4 Kap. 6
-                    Die Differenzierung gemaess BSI 200-4 ist verbindlich für den Wiederanlaufprozess deutscher Tenants:
+                    Die Differenzierung gemaess BSI 200-4 ist verbindlich für den Wiederanlaufprozess deutscher Organisationen:
 
                     - **Geschaeftsfortfuehrungsplan** – beschreibt, wie der Geschaeftsbetrieb durch Workarounds und Notbetrieb aufrechterhalten wird, waehrend die zugrunde liegenden Ressourcen ausgefallen sind.
                     - **Wiederanlaufplan** – beschreibt, wie ausgefallene Ressourcen in einen funktionsfaehigen, ggf. degradierten Zustand zurueckversetzt werden.
                     - **Wiederherstellungsplan** – beschreibt die langfristige Rueckkehr zum vollstaendigen Vor-Vorfall-Zustand inklusive Datenkonsistenz, kapazitiver Skalierung und vollstaendiger Funktionsabdeckung.
 
-                    Die englischsprachige ISO 22301 fasst die ersten beiden Begriffe als "Business Continuity Plan" zusammen und differenziert davon den "Recovery Plan". Fuer dual-zertifizierte Tenants gilt: bei BSI-Adoption werden alle drei Plantypen verbindlich, bei reiner ISO-22301-Zertifizierung kann der Geschaeftsfortfuehrungsplan im BC-Plan-Standard aufgehen.
+                    Die englischsprachige ISO 22301 fasst die ersten beiden Begriffe als "Business Continuity Plan" zusammen und differenziert davon den "Recovery Plan". Fuer dual-zertifizierte Organisationen gilt: bei BSI-Adoption werden alle drei Plantypen verbindlich, bei reiner ISO-22301-Zertifizierung kann der Geschaeftsfortfuehrungsplan im BC-Plan-Standard aufgehen.
 
                     ## 3. Geltungsbereich und Pflicht-Erfassung
                     Pflicht zur Erstellung eines Wiederanlauf- und Wiederherstellungsplans besteht fuer:
@@ -393,7 +393,7 @@ policy:
                     ## 2. Geltungsbereich
                     Dieses Programm umfasst alle Komponenten des BCMS der {{ tenant.legal_name }}: die Notfallleitlinie, den BCMS-Geltungsbereich, BIA-Methodik, BCM-Risikoanalyse-Methodik, BC-Strategie, BC-Plaene, Wiederanlaufplaene, Wiederherstellungsplaene, Krisenstabsordnung, Notfallhandbuch sowie alle BCMS-Aufzeichnungen (Uebungsberichte, BIA-Ergebnisse, Notfallaufzeichnungen).
 
-                    Bei Tenants mit gemeinsamem Audit-Programm für ISMS und BCMS (Empfehlung gemaess Effizienz-Kriterien) wird ein konsolidiertes Audit durchgeführt; die Klausel-Abdeckung beider Normen ist nachweisbar getrennt zu dokumentieren.
+                    Bei Organisationen mit gemeinsamem Audit-Programm für ISMS und BCMS (Empfehlung gemaess Effizienz-Kriterien) wird ein konsolidiertes Audit durchgeführt; die Klausel-Abdeckung beider Normen ist nachweisbar getrennt zu dokumentieren.
 
                     ## 3. Audit-Programm-Ziele
                     Gemaess ISO 22301 Klausel 9.2.2 verfolgt das Audit-Programm folgende Ziele:
@@ -416,7 +416,7 @@ policy:
                     Auditoren werden gemaess ISO 19011:2018 ausgewaehlt. Mindestkompetenzen:
 
                     - Kenntnis ISO 22301:2019 Anforderungen, vorzugsweise mit personenzertifizierter Auditor-Qualifikation;
-                    - Kenntnis BSI 200-4 für Tenants mit BSI-Adoption;
+                    - Kenntnis BSI 200-4 für Organisationen mit BSI-Adoption;
                     - Auditierungs-Methodik gemaess ISO 19011 (Vorbereitung, Vor-Ort-Pruefung, Berichterstellung);
                     - Branchenkenntnis und Verstaendnis der Geschaeftsprozesse der {{ tenant.legal_name }};
                     - Unabhängigkeit vom Pruefgegenstand: Auditoren duerfen das von ihnen geprueften Bereich nicht im taeglichen Betrieb verantworten;
@@ -726,7 +726,7 @@ policy:
                     ## 1. Zweck und Verbindlichkeit
                     Das Notfallhandbuch buendelt saemtliche Architektur-, Governance- und Verfahrensdokumente des Notfallmanagements der {{ tenant.legal_name }} in einem konsolidierten Referenzdokument gemaess BSI 200-4:2023 Kapitel 7. Es ist die zentrale Anlaufstelle für alle im Notfall- oder Krisenfall handelnden Personen, für Aufsichtsbehoerden und für interne und externe Auditoren.
 
-                    Fuer Tenants mit BSI-200-4-Adoption ist das Notfallhandbuch verbindlich. Fuer KRITIS-Betreiber im Sinne des KRITIS-Dachgesetzes (KRITIS-DachG) erfuellt das Notfallhandbuch zusammen mit dem KRITIS-Stufenmodell-2023 des Bundesamtes für Bevoelkerungsschutz und Katastrophenhilfe (BBK) die Nachweispflicht der resilienzorientierten Stabsorganisation gemaess §§ 11–13 KRITIS-DachG.
+                    Fuer Organisationen mit BSI-200-4-Adoption ist das Notfallhandbuch verbindlich. Fuer KRITIS-Betreiber im Sinne des KRITIS-Dachgesetzes (KRITIS-DachG) erfuellt das Notfallhandbuch zusammen mit dem KRITIS-Stufenmodell-2023 des Bundesamtes für Bevoelkerungsschutz und Katastrophenhilfe (BBK) die Nachweispflicht der resilienzorientierten Stabsorganisation gemaess §§ 11–13 KRITIS-DachG.
 
                     Das Notfallhandbuch ersetzt nicht die im BCMS getrennt zu fuehrenden Einzeldokumente; es buendelt sie und stellt deren Zusammenwirken nachvollziehbar dar.
 

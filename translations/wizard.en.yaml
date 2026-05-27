@@ -962,7 +962,7 @@ wizard:
         shared_responsibility_desc: 'Security responsibilities between cloud provider and customer documented.'
         cloud_asset_inventory: 'Cloud Asset Inventory'
         cloud_asset_inventory_desc: 'Complete inventory of cloud services and components in use.'
-        customer_separation: 'Customer/Tenant Separation'
+        customer_separation: 'Customer/Organization Separation'
         customer_separation_desc: 'Technical separation between different customers in the cloud environment.'
         vm_hardening: 'VM/Container Hardening'
         vm_hardening_desc: 'Virtual machines and containers hardened according to best practices.'
