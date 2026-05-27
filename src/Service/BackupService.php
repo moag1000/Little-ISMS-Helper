@@ -188,6 +188,7 @@ class BackupService
         'GuidedTourStepOverride',   // FK: Tenant — tour customizations
         'AssetDependency',
         'DoraDataFlow',
+        'DoraSubcontractor',
     ];
 
     /**

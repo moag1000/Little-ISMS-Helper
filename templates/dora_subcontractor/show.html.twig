@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dora' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+
+{% block title %}{{ subcontractor.name }} - {{ 'dora_subcontractor.title.show'|trans({}, 'dora') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dora_compliance'|trans({}, 'nav'), url: path('app_dora_compliance_dashboard') },
+            { label: 'dora_subcontractor.title.list'|trans({}, 'dora'), url: path('app_dora_subcontractor_index') },
+            { label: subcontractor.name }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'diagram-3', label: ('dora_subcontractor.tier_label'|trans({'%tier%': subcontractor.tier}, 'dora')) },
+        title: subcontractor.name,
+        subtitle: subcontractor.parentSupplier ? subcontractor.parentSupplier.name : '',
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_dora_subcontractor_edit', {id: subcontractor.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_dora_subcontractor_index') }
+        ]
+    }) }}
+</div>
+
+<main class="fa-aurora-surface">
+    <div class="container">
+        {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+            {% block card_body %}
+                <h2>{{ 'dora_subcontractor.section.identification'|trans({}, 'dora') }}</h2>
+                <dl class="row mt-3">
+                    <dt class="col-sm-3">{{ 'dora_subcontractor.field.parent_supplier'|trans({}, 'dora') }}</dt>
+                    <dd class="col-sm-9">
+                        {% if subcontractor.parentSupplier %}
+                            <a href="{{ path('app_supplier_show', {id: subcontractor.parentSupplier.id}) }}">
+                                {{ subcontractor.parentSupplier.name }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted-color">—</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">{{ 'dora_subcontractor.field.parent_subcontractor'|trans({}, 'dora') }}</dt>
+                    <dd class="col-sm-9">
+                        {% if subcontractor.parentSubcontractor %}
+                            <a href="{{ path('app_dora_subcontractor_show', {id: subcontractor.parentSubcontractor.id}) }}">
+                                {{ subcontractor.parentSubcontractor.name }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted-color">{{ 'dora_subcontractor.tier_root'|trans({}, 'dora') }}</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">{{ 'dora_subcontractor.field.tier'|trans({}, 'dora') }}</dt>
+                    <dd class="col-sm-9">{{ subcontractor.tier }}</dd>
+
+                    <dt class="col-sm-3">{{ 'dora_subcontractor.field.lei_code'|trans({}, 'dora') }}</dt>
+                    <dd class="col-sm-9">
+                        {% if subcontractor.leiCode %}<code>{{ subcontractor.leiCode }}</code>{% else %}<span class="text-muted-color">—</span>{% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">{{ 'dora_subcontractor.field.country'|trans({}, 'dora') }}</dt>
+                    <dd class="col-sm-9">
+                        {% if subcontractor.country %}{{ subcontractor.country }}{% else %}<span class="text-muted-color">—</span>{% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">{{ 'dora_subcontractor.field.criticality'|trans({}, 'dora') }}</dt>
+                    <dd class="col-sm-9">
+                        {% set critVariant = subcontractor.criticality == 'critical' ? 'danger' : (subcontractor.criticality == 'important' ? 'warning' : 'info') %}
+                        <span class="badge bg-{{ critVariant }}">{{ ('dora_subcontractor.criticality.' ~ subcontractor.criticality)|trans({}, 'dora') }}</span>
+                    </dd>
+
+                    <dt class="col-sm-3">{{ 'dora_subcontractor.field.substitutability'|trans({}, 'dora') }}</dt>
+                    <dd class="col-sm-9">
+                        {% set substVariant = subcontractor.substitutability == 'low' ? 'danger' : (subcontractor.substitutability == 'medium' ? 'warning' : 'success') %}
+                        <span class="badge bg-{{ substVariant }}">{{ ('dora_subcontractor.substitutability.' ~ subcontractor.substitutability)|trans({}, 'dora') }}</span>
+                    </dd>
+
+                    {% if subcontractor.serviceDescription %}
+                        <dt class="col-sm-3">{{ 'dora_subcontractor.field.service_description'|trans({}, 'dora') }}</dt>
+                        <dd class="col-sm-9 text-light-pre-wrap">{{ subcontractor.serviceDescription }}</dd>
+                    {% endif %}
+                </dl>
+
+                <form method="post" action="{{ path('app_dora_subcontractor_delete', {id: subcontractor.id}) }}" class="mt-4" onsubmit="return confirm('{{ 'common.confirm_delete'|trans({}, 'messages')|e('js') }}');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ subcontractor.id) }}">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash" aria-hidden="true"></i>
+                        {{ 'common.delete'|trans({}, 'messages') }}
+                    </button>
+                </form>
+            {% endblock %}
+        {% endembed %}
+    </div>
+</main>
+{% endblock %}

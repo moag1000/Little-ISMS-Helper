@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dora' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'dora_subcontractor.title.create'|trans({}, 'dora') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dora_compliance'|trans({}, 'nav'), url: path('app_dora_compliance_dashboard') },
+            { label: 'dora_subcontractor.title.list'|trans({}, 'dora'), url: path('app_dora_subcontractor_index') },
+            { label: 'dora_subcontractor.title.create'|trans({}, 'dora') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: 'dora_subcontractor.title.create'|trans({}, 'dora'),
+        badge: { icon: 'plus', label: '' },
+        actions: [
+            { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_dora_subcontractor_index'), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
+
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'DORA Art. 28 · RT_04 Subcontractor Chain',
+        'title': 'dora_subcontractor.title.create'|trans({}, 'dora'),
+        'sections': {
+            'overview': {
+                'label': 'form.section.overview'|trans({}, 'messages'),
+                'fields': ['name', 'parentSupplier', 'parentSubcontractor', 'tier']
+            },
+            'identification': {
+                'label': 'dora_subcontractor.section.identification'|trans({}, 'dora'),
+                'fields': ['leiCode', 'country', 'serviceDescription']
+            },
+            'risk': {
+                'label': 'dora_subcontractor.section.risk'|trans({}, 'dora'),
+                'fields': ['criticality', 'substitutability']
+            }
+        },
+        'col_widths': {
+            'name': 6,
+            'parentSupplier': 6,
+            'parentSubcontractor': 6,
+            'tier': 6,
+            'leiCode': 6,
+            'country': 6,
+            'serviceDescription': 12,
+            'criticality': 6,
+            'substitutability': 6
+        },
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.create'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</div>
+{% endblock %}

@@ -170,3 +170,73 @@ dora:
         # Footer
         footer: "Confidential - DORA Art. 19 ICT Incident Report"
         page: "Page"
+
+# RT_04 — Subcontractor Chain (DORA Art. 28)
+dora_subcontractor:
+    badge: "RT_04 Chain"
+    subtitle: "Track 4th- and 5th-party subcontractors that primary ICT providers rely on (DORA Art. 28(2))."
+    tier_label: "Tier %tier%"
+    tier_root: "Direct subcontractor of prime"
+    title:
+        list: "DORA Subcontractor Chain"
+        show: "Subcontractor Details"
+        create: "New Subcontractor"
+        edit: "Edit Subcontractor: %name%"
+    action:
+        create: "Add Subcontractor"
+        view: "View"
+        edit: "Edit"
+        delete: "Delete"
+    empty:
+        title: "No subcontractor-chain entries yet"
+        body: "Capture the prime providers' subcontractor relationships to satisfy DORA Art. 28(2) sub-outsourcing transparency."
+    section:
+        identification: "Identification"
+        risk: "Risk Classification"
+    field:
+        name: "Name"
+        parent_supplier: "Prime Supplier"
+        parent_subcontractor: "Parent Subcontractor"
+        tier: "Tier (2 = direct, 3+ = nested)"
+        lei_code: "LEI Code (ISO 17442)"
+        country: "Country (ISO 3166-1 alpha-2)"
+        service_description: "Service Description"
+        criticality: "Criticality"
+        substitutability: "Substitutability"
+    placeholder:
+        name: "e.g. SubCloud Hosting GmbH"
+        parent_supplier: "Select prime supplier"
+        parent_subcontractor: "Optional — leave blank if directly under the prime"
+        lei_code: "20-character LEI from GLEIF"
+        country: "DE"
+        service_description: "What service does this subcontractor deliver?"
+    help:
+        parent_supplier: "The 1st-party ICT provider that this subcontractor sits under."
+        parent_subcontractor: "Leave empty if this is a direct subcontractor (tier 2)."
+        tier: "2 = direct subcontractor, 3 = sub-sub, 4 = 5th party, 5 = even deeper."
+        lei_code: "Optional but strongly recommended. 20-character GLEIF Legal Entity Identifier."
+        country: "ISO 3166-1 alpha-2 jurisdiction code of the head office (e.g. DE, FR, US)."
+        criticality: "Mirrors the prime-supplier criticality scale (DORA Art. 30(2)(g))."
+        substitutability: "How easily this subcontractor could be replaced. Low = lock-in risk."
+    criticality:
+        critical: "Critical"
+        important: "Important"
+        standard: "Standard"
+    substitutability:
+        high: "High (easy to replace)"
+        medium: "Medium"
+        low: "Low (lock-in risk)"
+    success:
+        created: "Subcontractor created."
+        updated: "Subcontractor updated."
+        deleted: "Subcontractor deleted."
+    validation:
+        parent_supplier_required: "Prime supplier is required."
+        name_required: "Name is required."
+        lei_length: "LEI Code must be exactly 20 characters."
+        lei_format: "LEI Code must contain only uppercase letters and digits (ISO 17442)."
+        country_length: "Country code must be exactly 2 characters."
+        country_format: "Country code must be a 2-letter ISO 3166-1 alpha-2 code."
+        tier_range: "Tier must be between {{ min }} and {{ max }}."
+        criticality_invalid: "Invalid criticality value."
+        substitutability_invalid: "Invalid substitutability value."
