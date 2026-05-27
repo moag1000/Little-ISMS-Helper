@@ -35,6 +35,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *  - PERSONA_RISK        Holder of ROLE_RISK_MANAGER
  *  - PERSONA_DPO         Holder of ROLE_DPO
  *  - PERSONA_COMPLIANCE  Holder of ROLE_COMPLIANCE_MANAGER
+ *  - PERSONA_ISB         Holder of ROLE_ISB
+ *  - PERSONA_BCM         Holder of ROLE_BCM_OFFICER
  *
  * Subjects that resolve to a tenant:
  *  - Tenant instance     used as-is
@@ -61,6 +63,9 @@ final class TenantScopedAdminVoter extends Voter
     public const string PERSONA_RISK       = 'PERSONA_RISK';
     public const string PERSONA_DPO        = 'PERSONA_DPO';
     public const string PERSONA_COMPLIANCE = 'PERSONA_COMPLIANCE';
+    // Wave 5 / Part 2 — ISB + BCM-Officer personas
+    public const string PERSONA_ISB        = 'PERSONA_ISB';
+    public const string PERSONA_BCM        = 'PERSONA_BCM';
 
     private const array SUPPORTED_ATTRIBUTES = [
         self::ADMIN_OWN_TENANT,
@@ -71,6 +76,8 @@ final class TenantScopedAdminVoter extends Voter
         self::PERSONA_RISK,
         self::PERSONA_DPO,
         self::PERSONA_COMPLIANCE,
+        self::PERSONA_ISB,
+        self::PERSONA_BCM,
     ];
 
     public function __construct(
@@ -100,6 +107,8 @@ final class TenantScopedAdminVoter extends Voter
             self::PERSONA_RISK       => $this->security->isGranted('ROLE_RISK_MANAGER'),
             self::PERSONA_DPO        => $this->security->isGranted('ROLE_DPO'),
             self::PERSONA_COMPLIANCE => $this->security->isGranted('ROLE_COMPLIANCE_MANAGER'),
+            self::PERSONA_ISB        => $this->security->isGranted('ROLE_ISB'),
+            self::PERSONA_BCM        => $this->security->isGranted('ROLE_BCM_OFFICER'),
             default                  => false,
         };
     }

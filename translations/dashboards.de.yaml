@@ -314,3 +314,37 @@ dpo:
         report_breach: 'Datenpanne melden'
         new_activity: 'Verfahren anlegen'
         vvt_export: 'VVT exportieren (XLSX)'
+
+# ── ISB Dashboard (Wave 5) ──────────────────────────────────
+isb:
+    badge: 'ISB · ISO 27001'
+    title: 'ISB-Dashboard'
+    subtitle: 'Informationssicherheitsbeauftragter — ISMS-Betrieb und Kontrolle'
+    action:
+        controls: 'Maßnahmen'
+        incidents: 'Vorfälle'
+        audits: 'Audits'
+    section:
+        pending_approvals: 'Ausstehende Freigaben'
+        lifecycle_stuck: 'Überfällige Lifecycles'
+        quick_actions: 'Schnellzugriff'
+    empty:
+        no_approvals_title: 'Keine offenen Freigaben'
+        no_approvals_text: 'Alle Freigabeanfragen sind bearbeitet.'
+
+# ── BCM-Officer Dashboard (Wave 5) ─────────────────────────
+bcm_officer:
+    badge: 'BCM · ISO 22301'
+    title: 'BCM-Officer-Dashboard'
+    subtitle: 'Business-Continuity-Manager — Betrieb und Planung'
+    action:
+        bc_plans: 'BC-Pläne'
+        exercises: 'Übungen'
+        crisis_team: 'Krisenstab'
+    section:
+        pending_approvals: 'Ausstehende Freigaben'
+        lifecycle_stuck: 'Überfällige Lifecycles'
+        quick_actions: 'Schnellzugriff'
+    empty:
+        no_approvals_title: 'Keine offenen Freigaben'
+        no_approvals_text: 'Alle Freigabeanfragen sind bearbeitet.'

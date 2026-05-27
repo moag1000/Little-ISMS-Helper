@@ -143,6 +143,8 @@ translations/dashboards.de.yaml:105:auditor
 translations/dashboards.de.yaml:144:compliance_manager
 translations/dashboards.de.yaml:237:board
 translations/dashboards.de.yaml:279:dpo
+translations/dashboards.de.yaml:319:isb
+translations/dashboards.de.yaml:336:bcm_officer
 translations/dashboards.en.yaml:5:action
 translations/dashboards.en.yaml:15:status
 translations/dashboards.en.yaml:20:trend
@@ -157,6 +159,8 @@ translations/dashboards.en.yaml:105:auditor
 translations/dashboards.en.yaml:144:compliance_manager
 translations/dashboards.en.yaml:237:board
 translations/dashboards.en.yaml:279:dpo
+translations/dashboards.en.yaml:319:isb
+translations/dashboards.en.yaml:336:bcm_officer
 translations/data_import.de.yaml:1:nav
 translations/data_import.de.yaml:14:import
 translations/data_import.en.yaml:1:nav
