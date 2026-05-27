@@ -1,0 +1,86 @@
+{#
+ # fa-audit-program-timeline — Aurora v4 Welle 3 (2026-05-27)
+ # ISO-19011-conformant 3-year horizontal audit plan timeline.
+ #
+ # Usage:
+ #   {% from '_components/_fa_audit_program_timeline.html.twig' import fa_audit_program_timeline %}
+ #   {{ fa_audit_program_timeline({
+ #       audits: program.audits,
+ #       years: [2026, 2027, 2028],
+ #       today: 'now'|date('Y-m-d')
+ #   }) }}
+ #
+ # Each audit item:
+ #   {id, title, plannedDate (YYYY-MM-DD), lane, persona, status, isCert: bool}
+ #   lane: 'internal'|'external'|'security-review'|'cert'
+ #   status: 'planned'|'in-progress'|'completed'|'overdue'
+ #   persona: persona key (sets pin color)
+ #
+ # Params:
+ #   audits  (array, required)
+ #   years   (array of int, required)
+ #   today   (string YYYY-MM-DD, required)
+ #}
+{% macro fa_audit_program_timeline(config) %}
+    {% set lanes = [
+        {key: 'internal',        label: 'Intern'},
+        {key: 'external',        label: 'Extern'},
+        {key: 'security-review', label: 'Sicherheits-Review'},
+        {key: 'cert',            label: 'Zertifizierung'},
+    ] %}
+    <div class="fa-audit-program-timeline"
+         data-controller="audit-timeline"
+         role="region"
+         aria-label="Audit-Programm Timeline">
+        {# Quarter headers #}
+        <div class="fa-audit-program-timeline__header">
+            <div class="fa-audit-program-timeline__col-label" style="width: 8rem;">Audittyp</div>
+            {% for year in config.years|default([]) %}
+                {% for q in 1..4 %}
+                    <div class="fa-audit-program-timeline__col-label">{{ year }}/Q{{ q }}</div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <div class="fa-audit-program-timeline__track">
+            {# Today line — Stimulus controller positions this #}
+            <div class="fa-audit-program-timeline__today-line"
+                 data-audit-timeline-target="todayLine"
+                 data-date="{{ config.today }}"
+                 aria-hidden="true"></div>
+
+            {% for lane in lanes %}
+                {% set laneAudits = config.audits|default([])|filter(a => a.lane == lane.key) %}
+                <div class="fa-audit-program-timeline__lane" data-lane="{{ lane.key }}">
+                    <div class="fa-audit-program-timeline__lane-label">{{ lane.label }}</div>
+                    <div class="fa-audit-program-timeline__cells"
+                         data-audit-timeline-target="cells"
+                         data-years="{{ config.years|join(',') }}">
+                        {% for audit in laneAudits %}
+                            {% if audit.isCert is defined and audit.isCert %}
+                                <div class="fa-audit-program-timeline__milestone"
+                                     tabindex="0"
+                                     role="button"
+                                     aria-label="{{ audit.title }} · {{ audit.plannedDate }} · Zertifizierungsmeilenstein"
+                                     data-date="{{ audit.plannedDate }}"
+                                     data-audit-timeline-target="milestone"
+                                     data-audit-id="{{ audit.id }}">
+                                </div>
+                            {% else %}
+                                <div class="fa-audit-program-timeline__pin{% if audit.status == 'overdue' %} fa-audit-program-timeline__pin--overdue{% endif %}"
+                                     tabindex="0"
+                                     role="button"
+                                     aria-label="{{ audit.title }} · {{ audit.plannedDate }} · {{ audit.status }}"
+                                     data-date="{{ audit.plannedDate }}"
+                                     data-audit-timeline-target="pin"
+                                     data-audit-id="{{ audit.id }}"
+                                     style="--persona-color: var(--persona-{{ audit.persona|default('auditor') }})">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endmacro %}

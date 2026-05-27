@@ -29,6 +29,40 @@
                 </a>
             </li>
 
+            {# Mein Cockpit — Persona-Dashboard-Eingang (Aurora v4 Phase 2) #}
+            {% if is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('PERSONA_DPO') or is_granted('PERSONA_COMPLIANCE') or is_granted('ROLE_AUDITOR') %}
+            <li class="mega-menu-category" role="none">
+                <button class="mega-menu-trigger {% if current_route starts with 'app_dashboard_' %}active{% endif %}"
+                        data-mega-menu-target="trigger"
+                        data-category="cockpit"
+                        data-action="click->mega-menu#toggle"
+                        role="menuitem"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    <i class="fa-icon fa-icon--persona" aria-hidden="true"></i>
+                    <span>{{ 'nav.mega.category.cockpit'|trans({}, 'nav') }}</span>
+                    <i class="fa-icon fa-icon--util-chevron-right mega-menu-arrow" aria-hidden="true"></i>
+                </button>
+            </li>
+            {% endif %}
+
+            {# Portfolio — Coverage-Matrix + Konzern-Sicht (Aurora v4 Phase 2) #}
+            {% if is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN') %}
+            <li class="mega-menu-category" role="none">
+                <button class="mega-menu-trigger {% if current_route starts with 'app_portfolio_' or current_route starts with 'app_group_report_' %}active{% endif %}"
+                        data-mega-menu-target="trigger"
+                        data-category="portfolio"
+                        data-action="click->mega-menu#toggle"
+                        role="menuitem"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    <i class="fa-icon fa-icon--portfolio" aria-hidden="true"></i>
+                    <span>{{ 'nav.mega.category.portfolio'|trans({}, 'nav') }}</span>
+                    <i class="fa-icon fa-icon--util-chevron-right mega-menu-arrow" aria-hidden="true"></i>
+                </button>
+            </li>
+            {% endif %}
+
             {# Dashboard Category #}
             <li class="mega-menu-category" role="none">
                 <button class="mega-menu-trigger {% if current_route starts with 'app_home' or current_route starts with 'app_dashboard' or current_route starts with 'app_analytics_' %}active{% endif %}"
@@ -122,8 +156,8 @@
                         role="menuitem"
                         aria-haspopup="true"
                         aria-expanded="false">
-                    <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i>
-                    <span>{{ 'nav.mega.category.operations'|trans({}, 'nav') }}</span>
+                    <i class="fa-icon fa-icon--workspace" aria-hidden="true"></i>
+                    <span>{{ 'nav.mega.category.daily_work'|trans({}, 'nav') }}</span>
                     <i class="fa-icon fa-icon--util-chevron-right mega-menu-arrow" aria-hidden="true"></i>
                 </button>
             </li>

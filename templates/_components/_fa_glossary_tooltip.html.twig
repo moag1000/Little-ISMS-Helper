@@ -1,0 +1,48 @@
+{#
+ # fa-glossary-tooltip — Aurora v4 Welle 2 (2026-05-27)
+ # Inline acronym with hover/focus definition popover.
+ # Uses Stimulus glossary-tooltip controller for keyboard + touch support.
+ #
+ # Usage (inline):
+ #   {% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
+ #   Erstelle eine {{ fa_glossary_tooltip({
+ #       acronym: 'SoA',
+ #       fullText: 'Anwendbarkeitserklärung',
+ #       normRef: 'Cl. 6.1.3.d',
+ #       glossaryHref: path('app_help_glossary', {anchor: 'soa'})
+ #   }) }} für dein ISMS.
+ #
+ # Params:
+ #   acronym      (string, required)
+ #   fullText     (string, required)
+ #   normRef      (string, optional)   e.g. "Cl. 6.1.3.d"
+ #   definition   (string, optional)   inline definition; if absent, Stimulus lazy-loads from /api/glossary/{acronym}
+ #   glossaryHref (url, optional)
+ #}
+{% macro fa_glossary_tooltip(config) %}
+    <span class="fa-glossary-tooltip"
+          data-controller="glossary-tooltip"
+          data-glossary-tooltip-acronym-value="{{ config.acronym }}">
+        <abbr title="{{ config.fullText }}{% if config.normRef is defined and config.normRef %} ({{ config.normRef }}){% endif %}">{{ config.acronym }}</abbr><sup class="fa-glossary-tooltip__indicator"
+             tabindex="0"
+             role="button"
+             aria-label="Definition: {{ config.fullText }}"
+             data-glossary-tooltip-target="indicator">?</sup>
+        <span class="fa-glossary-tooltip__popover"
+              role="tooltip"
+              data-glossary-tooltip-target="popover">
+            <strong class="fa-glossary-tooltip__title">{{ config.fullText }}</strong>
+            {% if config.normRef is defined and config.normRef %}
+                <span class="fa-glossary-tooltip__norm">{{ config.normRef }}</span>
+            {% endif %}
+            {% if config.definition is defined and config.definition %}
+                <p class="fa-glossary-tooltip__def">{{ config.definition }}</p>
+            {% else %}
+                <p class="fa-glossary-tooltip__def" data-glossary-tooltip-target="def">…</p>
+            {% endif %}
+            {% if config.glossaryHref is defined and config.glossaryHref %}
+                <a href="{{ config.glossaryHref }}" class="fa-glossary-tooltip__link">Im Glossar öffnen →</a>
+            {% endif %}
+        </span>
+    </span>
+{% endmacro %}
