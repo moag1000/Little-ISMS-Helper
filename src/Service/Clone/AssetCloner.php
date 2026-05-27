@@ -108,7 +108,7 @@ final class AssetCloner implements EntityClonerInterface
         }
 
         // Reset lifecycle to active; clear return-date.
-        $clone->setStatus('active');
+        $clone->setStatus('active'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setReturnDate(null);
 
         $clone->setCreatedAt(new DateTimeImmutable());

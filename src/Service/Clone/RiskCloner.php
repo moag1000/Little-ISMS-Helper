@@ -101,7 +101,7 @@ final class RiskCloner implements EntityClonerInterface
         $clone->setDataSubjectImpact($source->getDataSubjectImpact());
 
         // Reset lifecycle to initial marking; clear approval audit fields.
-        $clone->setStatus(RiskStatus::Identified);
+        $clone->setStatus(RiskStatus::Identified); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setReviewDate(null);
         $clone->setAcceptanceApprovedBy(null);
         $clone->setAcceptanceApprovedAt(null);

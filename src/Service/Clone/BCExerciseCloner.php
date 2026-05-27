@@ -107,7 +107,7 @@ final class BCExerciseCloner implements EntityClonerInterface
         $clone->setSuccessCriteria($source->getSuccessCriteria());
 
         // Reset execution + results
-        $clone->setStatus('planned');
+        $clone->setStatus('planned'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setExerciseDate(null);
         $clone->setResults(null);
         $clone->setWhatWentWell(null);

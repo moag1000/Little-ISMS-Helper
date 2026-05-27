@@ -120,7 +120,7 @@ final class BusinessContinuityPlanCloner implements EntityClonerInterface
         }
 
         // Reset lifecycle + test/review cadence (must be re-planned).
-        $clone->setStatus('draft');
+        $clone->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setVersion('1.0');
         $clone->setLastTested(null);
         $clone->setNextTestDate(null);

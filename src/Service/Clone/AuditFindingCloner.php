@@ -103,7 +103,7 @@ final class AuditFindingCloner implements EntityClonerInterface
         }
 
         // Reset lifecycle to 'open'; clear all per-execution audit data.
-        $clone->setStatus('open');
+        $clone->setStatus('open'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setFindingNumber(null);
         $clone->setDueDate(null);
         $clone->setClosedAt(null);
