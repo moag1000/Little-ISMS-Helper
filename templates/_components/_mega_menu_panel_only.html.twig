@@ -247,7 +247,13 @@
         </div>
         {% endif %}
 
-        {# BCM Panel #}
+        {# BCM Panel
+           Gap C decision (2026-05-27): UX_REDESIGN_2026-05-27.md proposed merging BCM + Privacy into
+           "Frameworks & Audits" as sub-sections. Deferred: BCM and Privacy remain separate L1 anchors.
+           Rationale: power-users (BCM officers, DPOs) rely on direct L1 access; merging into Compliance
+           would bury 12+ BCM items under 4 existing compliance sub-sections, harming discoverability.
+           Revisit in Phase 2 when super-panel tab navigation (scrollable L2 sub-tabs) is implemented.
+           See: var/mega-menu-audit/UX_REDESIGN_2026-05-27.md §"L1 Structure" + §"BCM/Privacy Merger". #}
         {% if is_module_active('bcm') %}
         <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="bcm" role="menu" aria-label="{{ 'nav.mega.category.bcm'|trans({}, 'nav') }}">
             <div class="mega-menu-panel-content">
@@ -474,7 +480,7 @@
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.coverage'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
                         {% if is_granted('ROLE_GROUP_CISO') %}
-                        <li><a href="{{ path('app_group_report_index', {_locale: app.request.locale}) }}" class="{% if current_route starts with 'app_group_report_' %}active{% endif %}" data-turbo-action="advance">
+                        <li><a href="{{ path('app_group_report_tree', {_locale: app.request.locale}) }}" class="{% if current_route starts with 'app_group_report_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--coverage-matrix" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.group_report'|trans({}, 'nav') }}</span>
@@ -591,6 +597,12 @@
                     </ul>
                 </div>
                 {% endif %}
+                {# Gap A fix (2026-05-27): Audit-Log surfaced here — Senior-ISB P0 (ISO 27001 Cl. 7.5.3).
+                   Route: app_audit_log_index. Gate: ROLE_AUDITOR or ROLE_ADMIN (not PERSONA_ISB — not yet implemented).
+                   UX-Decision Gap B (2026-05-27): "Tägliche Arbeit" (operations) is the primary inbox L1 anchor.
+                   "Aktivität" is a direct link (app_activity_feed) in _mega_menu.html.twig L1 bar.
+                   No new L1 tab added — option (b) retained per task spec.
+                   #}
                 {# Audit-V3 ME-8/ME-9: User-Inboxen (PolicyAck + FourEyes).
                    Visibility tied to authenticated session — these are
                    personal worklists, not module features. #}
@@ -612,6 +624,17 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.four_eyes_inbox'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {# Gap A (2026-05-27): Audit-Log — Senior-ISB P0. ISO 27001 Cl. 7.5.3 täglich blockierend.
+                           Gate: ROLE_AUDITOR or ROLE_ADMIN. PERSONA_ISB pending backend implementation. #}
+                        {% if is_granted('ROLE_AUDITOR') or is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-clipboard-data" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.audit_log'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.audit_log'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                         <li><a href="{{ path('app_alva_hint_inbox') }}" class="{% if current_route starts with 'app_alva_hint_inbox' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--ui-stars" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
