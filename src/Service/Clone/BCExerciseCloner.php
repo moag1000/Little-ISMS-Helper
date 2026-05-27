@@ -59,6 +59,7 @@ final class BCExerciseCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): BCExercise
     {
         if (!$source instanceof BCExercise) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'BCExerciseCloner expects %s, got %s',
                 BCExercise::class,
@@ -106,7 +107,7 @@ final class BCExerciseCloner implements EntityClonerInterface
         $clone->setSuccessCriteria($source->getSuccessCriteria());
 
         // Reset execution + results
-        $clone->setStatus('planned');
+        $clone->setStatus('planned'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setExerciseDate(null);
         $clone->setResults(null);
         $clone->setWhatWentWell(null);

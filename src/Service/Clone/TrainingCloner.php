@@ -57,6 +57,7 @@ final class TrainingCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): Training
     {
         if (!$source instanceof Training) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'TrainingCloner expects %s, got %s',
                 Training::class,
@@ -104,7 +105,7 @@ final class TrainingCloner implements EntityClonerInterface
         }
 
         // Reset lifecycle to 'planned'; clear per-session execution data.
-        $clone->setStatus('planned');
+        $clone->setStatus('planned'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setScheduledDate(null);
         $clone->setCompletionDate(null);
         $clone->setAttendeeCount(0);

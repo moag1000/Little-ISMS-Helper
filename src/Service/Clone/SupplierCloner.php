@@ -53,6 +53,7 @@ final class SupplierCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): Supplier
     {
         if (!$source instanceof Supplier) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'SupplierCloner expects %s, got %s',
                 Supplier::class,
@@ -91,7 +92,7 @@ final class SupplierCloner implements EntityClonerInterface
         $clone->setHasDPA($source->isHasDPA());
 
         // Reset evaluation state.
-        $clone->setStatus('evaluation');
+        $clone->setStatus('evaluation'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setSecurityScore(null);
         $clone->setLastSecurityAssessment(null);
         $clone->setNextAssessmentDate(null);
