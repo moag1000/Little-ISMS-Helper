@@ -70,10 +70,10 @@ class BusinessProcess
 
     /**
      * @deprecated since 2026-05-25 — use upstreamProcesses (typed M2M collection).
-     *             Junior-ISB-Audit TODO_2026-05-22 §17: free-text dependency
-     *             names had no referential integrity, no graph visualization,
-     *             no search. Kept as legacy fallback during transition; will
-     *             be dropped in a future migration once data is backfilled.
+     *             Free-text dependency names had no referential integrity, no
+     *             graph visualization, no search. Kept as legacy fallback
+     *             during transition; will be dropped in a future migration
+     *             once data is backfilled.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $dependenciesUpstream = null;
@@ -88,7 +88,6 @@ class BusinessProcess
     /**
      * Typed upstream-process dependencies — processes that feed into this one.
      * Replaces the legacy free-text `$dependenciesUpstream` field.
-     * Junior-ISB-Audit TODO_2026-05-22 §17.
      *
      * @var Collection<int, BusinessProcess>
      */
@@ -102,7 +101,6 @@ class BusinessProcess
     /**
      * Typed downstream-process dependencies — processes that consume this one's
      * output. Replaces the legacy free-text `$dependenciesDownstream` field.
-     * Junior-ISB-Audit TODO_2026-05-22 §17.
      *
      * @var Collection<int, BusinessProcess>
      */
