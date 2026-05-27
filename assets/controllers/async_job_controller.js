@@ -178,8 +178,34 @@ export default class extends Controller {
             this.errorTraceTarget.textContent = message;
         }
 
+        // Append `?failed_job_id=<id>` to the back-link so the destination
+        // page can pick up structured failure payload via JobStatusService
+        // (jobs cannot write Session — see JobContext::updatePayload).
+        this._appendFailedJobIdToBackLink();
         this._showBackLink();
         window.alvaBus?.emit({ mood: 'warning', reason: 'async-job-failed' });
+    }
+
+    _appendFailedJobIdToBackLink() {
+        if (!this.hasBackLinkTarget) return;
+        const jobId = this._extractJobIdFromStatusUrl();
+        if (!jobId) return;
+        const href = this.backLinkTarget.getAttribute('href');
+        if (!href) return;
+        try {
+            const url = new URL(href, window.location.origin);
+            url.searchParams.set('failed_job_id', jobId);
+            this.backLinkTarget.setAttribute('href', url.pathname + url.search + url.hash);
+        } catch (_) {
+            // Bad href — leave it untouched rather than navigate to about:blank.
+        }
+    }
+
+    _extractJobIdFromStatusUrl() {
+        if (!this.statusUrlValue) return null;
+        // statusUrl is shaped like `/admin/jobs/{uuid}/status` (or quick-fix variant).
+        const m = /\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\//.exec(this.statusUrlValue);
+        return m ? m[1] : null;
     }
 
     _showBackLink() {

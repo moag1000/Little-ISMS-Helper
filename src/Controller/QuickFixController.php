@@ -41,6 +41,7 @@ class QuickFixController extends AbstractController
         QuickFixGuard $guard,
         SchemaMaintenanceService $maintenance,
         DataIntegrityService $dataIntegrity,
+        JobStatusService $jobStatusService,
     ): Response {
         if (!$guard->mayAccess($request)) {
             return $this->render('quick_fix/locked.html.twig', [
@@ -139,6 +140,39 @@ class QuickFixController extends AbstractController
             $failureData = $session->get('quick_fix.last_apply_failure');
             if (is_array($failureData) && isset($failureData['version'])) {
                 $applyFailure = $failureData;
+            }
+        }
+
+        // Async-job recovery path (post job-split): the async ApplyMigrations
+        // job cannot write Session, so on failure it stashes the structured
+        // diagnosis into its job-status payload. The progress-page back-link
+        // appends `?failed_job_id=<uuid>` so we can look that payload up here
+        // and render the recovery card. This is the canonical source since
+        // PR fixing "phantom fails I can no longer fix due to job-split".
+        if ($applyFailure === null) {
+            $failedJobId = (string) ($request->query->get('failed_job_id') ?? '');
+            if ($failedJobId !== ''
+                && preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $failedJobId)
+                && $jobStatusService->exists($failedJobId)
+            ) {
+                $jobRecord = $jobStatusService->read($failedJobId);
+                $jobPayload = is_array($jobRecord['payload'] ?? null) ? $jobRecord['payload'] : [];
+                $failureFromPayload = $jobPayload['apply_failure'] ?? null;
+                if (is_array($failureFromPayload) && isset($failureFromPayload['version'])) {
+                    $applyFailure = [
+                        'version' => (string) $failureFromPayload['version'],
+                        'category' => (string) ($failureFromPayload['category'] ?? 'unknown'),
+                        'message' => (string) ($failureFromPayload['message'] ?? ''),
+                        'suggested_action' => (string) ($failureFromPayload['suggested_action'] ?? ''),
+                    ];
+                    if ($applyFailure['category'] === 'phantom_diff_migration') {
+                        $errorDiagnosis = [
+                            'category' => 'phantom_diff_migration',
+                            'offending_version' => $applyFailure['version'],
+                            'message' => $applyFailure['message'],
+                        ];
+                    }
+                }
             }
         }
 
