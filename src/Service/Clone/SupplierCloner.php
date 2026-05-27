@@ -53,6 +53,7 @@ final class SupplierCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): Supplier
     {
         if (!$source instanceof Supplier) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'SupplierCloner expects %s, got %s',
                 Supplier::class,

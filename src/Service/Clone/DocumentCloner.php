@@ -50,6 +50,7 @@ final class DocumentCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): Document
     {
         if (!$source instanceof Document) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'DocumentCloner expects %s, got %s',
                 Document::class,

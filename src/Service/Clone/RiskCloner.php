@@ -47,6 +47,7 @@ final class RiskCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): Risk
     {
         if (!$source instanceof Risk) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'RiskCloner expects %s, got %s',
                 Risk::class,

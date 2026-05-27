@@ -56,6 +56,7 @@ final class AuditFindingCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): AuditFinding
     {
         if (!$source instanceof AuditFinding) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'AuditFindingCloner expects %s, got %s',
                 AuditFinding::class,
