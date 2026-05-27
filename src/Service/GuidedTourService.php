@@ -177,6 +177,19 @@ final class GuidedTourService
             $base = array_merge($base, $this->moduleAddonSteps());
         }
 
+        // Concern C fix (2026-05-27): Filter out steps that require a module
+        // which is not active for this tenant.  Steps declare an optional
+        // `module` key — if the module key is present and the module is NOT
+        // active, the step is silently dropped.  This prevents the tour from
+        // pointing at empty-state pages or "access denied" screens.
+        if ($this->moduleConfig !== null) {
+            $base = array_values(array_filter(
+                $base,
+                fn(array $step): bool =>
+                    !isset($step['module']) || $this->moduleConfig->isModuleActive($step['module'])
+            ));
+        }
+
         return $base;
     }
 
@@ -234,9 +247,12 @@ final class GuidedTourService
         $reuse = $this->urlFor('app_data_reuse_hub');
         return [
             ['id' => 'welcome', 'icon' => 'ui-stars', 'target' => null, 'title_key' => 'guided_tour.cm.step.welcome.title', 'body_key' => 'guided_tour.cm.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
-            ['id' => 'framework-dashboard', 'icon' => 'nav-dashboard', 'target' => null, 'title_key' => 'guided_tour.cm.step.framework_dashboard.title', 'body_key' => 'guided_tour.cm.step.framework_dashboard.body', 'url' => $dashboard, 'placement' => 'center'],
-            ['id' => 'mapping-hub', 'icon' => 'nav-process', 'target' => null, 'title_key' => 'guided_tour.cm.step.mapping_hub.title', 'body_key' => 'guided_tour.cm.step.mapping_hub.body', 'url' => $mapping, 'placement' => 'center'],
-            ['id' => 'reuse-hub', 'icon' => 'util-refresh', 'target' => null, 'title_key' => 'guided_tour.cm.step.reuse_hub.title', 'body_key' => 'guided_tour.cm.step.reuse_hub.body', 'url' => $reuse, 'placement' => 'center'],
+            // module: compliance — framework-dashboard only meaningful when compliance module active
+            ['id' => 'framework-dashboard', 'module' => 'compliance', 'icon' => 'nav-dashboard', 'target' => null, 'title_key' => 'guided_tour.cm.step.framework_dashboard.title', 'body_key' => 'guided_tour.cm.step.framework_dashboard.body', 'url' => $dashboard, 'placement' => 'center'],
+            // module: compliance — mapping-hub requires compliance module
+            ['id' => 'mapping-hub', 'module' => 'compliance', 'icon' => 'nav-process', 'target' => null, 'title_key' => 'guided_tour.cm.step.mapping_hub.title', 'body_key' => 'guided_tour.cm.step.mapping_hub.body', 'url' => $mapping, 'placement' => 'center'],
+            // module: compliance — data-reuse-hub requires compliance module
+            ['id' => 'reuse-hub', 'module' => 'compliance', 'icon' => 'util-refresh', 'target' => null, 'title_key' => 'guided_tour.cm.step.reuse_hub.title', 'body_key' => 'guided_tour.cm.step.reuse_hub.body', 'url' => $reuse, 'placement' => 'center'],
             ['id' => 'seed-review', 'icon' => 'status-ok', 'target' => null, 'title_key' => 'guided_tour.cm.step.seed_review.title', 'body_key' => 'guided_tour.cm.step.seed_review.body', 'url' => $dashboard, 'placement' => 'center'],
         ];
     }
@@ -251,7 +267,8 @@ final class GuidedTourService
             ['id' => 'welcome', 'icon' => 'nav-shield-lock', 'target' => null, 'title_key' => 'guided_tour.ciso.step.welcome.title', 'body_key' => 'guided_tour.ciso.step.welcome.body', 'url' => $cisoDash, 'placement' => 'center'],
             ['id' => 'board-export', 'icon' => 'nav-file-earmark-text', 'target' => null, 'title_key' => 'guided_tour.ciso.step.board_export.title', 'body_key' => 'guided_tour.ciso.step.board_export.body', 'url' => $managementReports, 'placement' => 'center'],
             ['id' => 'health-score', 'icon' => 'nav-heart-pulse', 'target' => null, 'title_key' => 'guided_tour.ciso.step.health_score.title', 'body_key' => 'guided_tour.ciso.step.health_score.body', 'url' => $cisoDash, 'placement' => 'center'],
-            ['id' => 'framework-matrix', 'icon' => 'nav-grid', 'target' => null, 'title_key' => 'guided_tour.ciso.step.framework_matrix.title', 'body_key' => 'guided_tour.ciso.step.framework_matrix.body', 'url' => $frameworks, 'placement' => 'center'],
+            // module: analytics — framework matrix is gated behind the analytics module
+            ['id' => 'framework-matrix', 'module' => 'analytics', 'icon' => 'nav-grid', 'target' => null, 'title_key' => 'guided_tour.ciso.step.framework_matrix.title', 'body_key' => 'guided_tour.ciso.step.framework_matrix.body', 'url' => $frameworks, 'placement' => 'center'],
         ];
     }
 
@@ -265,9 +282,13 @@ final class GuidedTourService
         $auditLog = $this->urlFor('app_audit_log_index');
         return [
             ['id' => 'welcome', 'icon' => 'ui-stars', 'target' => null, 'title_key' => 'guided_tour.isb.step.welcome.title', 'body_key' => 'guided_tour.isb.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
-            ['id' => 'soa', 'icon' => 'nav-clipboard-check', 'target' => null, 'title_key' => 'guided_tour.isb.step.soa.title', 'body_key' => 'guided_tour.isb.step.soa.body', 'url' => $soa, 'placement' => 'center'],
-            ['id' => 'incidents', 'icon' => 'status-warning', 'target' => null, 'title_key' => 'guided_tour.isb.step.incidents.title', 'body_key' => 'guided_tour.isb.step.incidents.body', 'url' => $incidents, 'placement' => 'center'],
-            ['id' => 'workflows', 'icon' => 'nav-process', 'target' => null, 'title_key' => 'guided_tour.isb.step.workflows.title', 'body_key' => 'guided_tour.isb.step.workflows.body', 'url' => $workflows, 'placement' => 'center'],
+            // module: controls — SoA requires the controls module
+            ['id' => 'soa', 'module' => 'controls', 'icon' => 'nav-clipboard-check', 'target' => null, 'title_key' => 'guided_tour.isb.step.soa.title', 'body_key' => 'guided_tour.isb.step.soa.body', 'url' => $soa, 'placement' => 'center'],
+            // module: incidents — incident management requires the incidents module
+            ['id' => 'incidents', 'module' => 'incidents', 'icon' => 'status-warning', 'target' => null, 'title_key' => 'guided_tour.isb.step.incidents.title', 'body_key' => 'guided_tour.isb.step.incidents.body', 'url' => $incidents, 'placement' => 'center'],
+            // workflows module: core (workflows are always available with core)
+            ['id' => 'workflows', 'module' => 'core', 'icon' => 'nav-process', 'target' => null, 'title_key' => 'guided_tour.isb.step.workflows.title', 'body_key' => 'guided_tour.isb.step.workflows.body', 'url' => $workflows, 'placement' => 'center'],
+            // audit-log: no module gate (access is role-gated ROLE_AUDITOR/ROLE_ADMIN, not module-gated)
             ['id' => 'audit-log', 'icon' => 'nav-journal-text', 'target' => null, 'title_key' => 'guided_tour.isb.step.audit_log.title', 'body_key' => 'guided_tour.isb.step.audit_log.body', 'url' => $auditLog, 'placement' => 'center'],
         ];
     }
@@ -315,9 +336,11 @@ final class GuidedTourService
         $aiAgents = $this->urlFor('app_ai_agents_index');
         $glossar = $this->urlFor('app_mris_glossar');
 
+        // All MRIS steps are gated behind the 'mris' module (off by default).
+        // The stepsFor() filter will drop these when mris module is inactive.
         return [
             [
-                'id' => 'soa-mris-column', 'icon' => 'nav-grid',
+                'id' => 'soa-mris-column', 'module' => 'mris', 'icon' => 'nav-grid',
                 'target' => '#mris-filter, [data-tour="mris-soa-column"]',
                 'title_key' => 'guided_tour.mris.step.soa_column.title',
                 'body_key' => 'guided_tour.mris.step.soa_column.body',
