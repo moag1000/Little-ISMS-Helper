@@ -132,10 +132,18 @@ final class DoraRoiXbrlExporterTest extends TestCase
     }
 
     #[Test]
-    public function generateContainsDeferredTodoCommentsForFullTaxonomy(): void
+    public function generateNoLongerEmitsLegacyTodoCommentsAfterFullTaxonomyWiring(): void
     {
+        // Sprint-9 Bucket-6 wired B_02.02.0140-0180 + RT_03-RT_06 sub-tables;
+        // the old "Deferred elements marked with TODO" assertion is inverted
+        // — the XBRL output is now positive (resolved) rather than carrying
+        // open-issue TODO breadcrumbs that auditors would flag.
         $xml = $this->exporter->generate($this->tenant);
-        self::assertStringContainsString('TODO', $xml, 'Deferred elements must be marked with TODO comments');
+        self::assertStringNotContainsString(
+            'TODO:',
+            $xml,
+            'Legacy TODO breadcrumbs were removed once RT_xx + B_02.02.0140-0180 fields were wired.'
+        );
     }
 
     #[Test]
@@ -876,5 +884,100 @@ final class DoraRoiXbrlExporterTest extends TestCase
             $xml,
             'RT_06 must no longer appear as a deferred-pending item.'
         );
+    }
+
+    // ─── B_02.02.0140-0180 — supplier SLA + audit detail fields ──────────────
+
+    #[Test]
+    public function b02SlaAndAuditFieldsAreEmittedPerProvider(): void
+    {
+        $supplier = new Supplier();
+        $supplier->setName('Prime SLA Provider');
+        $supplier->setIsDoraRelevant(true);
+        $supplier->setContractualSLAs([
+            'penalties' => true,
+            'kpis' => ['uptime', 'mttr', 'response_time'],
+            'notificationHours' => 4,
+        ]);
+        $supplier->setSecurityRequirements('Audit access to all provider sites at least once per year.');
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        // 0140 SLA penalties → 'true' / 'false' boolean
+        self::assertMatchesRegularExpression('/<roi:B_02\.02\.0140[^>]*>true</', $xml);
+
+        // 0150 KPI count — 3 KPI entries
+        self::assertMatchesRegularExpression('/<roi:B_02\.02\.0150[^>]*>3</', $xml);
+
+        // 0160 Notification SLA hours
+        self::assertMatchesRegularExpression('/<roi:B_02\.02\.0160[^>]*>4</', $xml);
+
+        // 0170 Sub-outsourcing — false when no DoraSubcontractor entries
+        self::assertMatchesRegularExpression('/<roi:B_02\.02\.0170[^>]*>false</', $xml);
+
+        // 0180 audit-rights scope text
+        self::assertStringContainsString('Audit access to all provider sites', $xml);
+    }
+
+    #[Test]
+    public function b02NotificationHoursEmitsXsiNilWhenAbsent(): void
+    {
+        $supplier = new Supplier();
+        $supplier->setName('No SLA Provider');
+        $supplier->setIsDoraRelevant(true);
+        $supplier->setContractualSLAs([
+            'penalties' => false,
+            'kpis' => [],
+            // notificationHours intentionally absent
+        ]);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        // 0160 must emit xsi:nil when notificationHours is missing
+        self::assertMatchesRegularExpression(
+            '/<roi:B_02\.02\.0160[^>]*xsi:nil="true"/',
+            $xml,
+            'Missing notificationHours must render as xsi:nil for schema validity.'
+        );
+        // 0150 KPI count = 0 when array is empty
+        self::assertMatchesRegularExpression('/<roi:B_02\.02\.0150[^>]*>0</', $xml);
+    }
+
+    #[Test]
+    public function b02AuditScopeTruncatesWithEllipsisBeyond500Chars(): void
+    {
+        $longText = str_repeat('A', 600); // 600-char input
+        $supplier = new Supplier();
+        $supplier->setName('Verbose SOW Provider');
+        $supplier->setIsDoraRelevant(true);
+        $supplier->setSecurityRequirements($longText);
+
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        // Extract B_02.02.0180 content
+        preg_match('/<roi:B_02\.02\.0180[^>]*>([^<]*)</', $xml, $matches);
+        self::assertNotEmpty($matches, 'B_02.02.0180 element expected.');
+
+        $emitted = $matches[1];
+        self::assertSame(500, mb_strlen($emitted), 'Audit scope must be capped at 500 chars total.');
+        self::assertStringEndsWith('…', $emitted, 'Truncated audit scope must end with ellipsis.');
     }
 }

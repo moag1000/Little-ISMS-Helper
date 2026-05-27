@@ -44,6 +44,10 @@ final readonly class CrossFrameworkCoverageService
      * Walks each linked requirement on every finding, follows outbound (and
      * bidirectional inbound) ComplianceMappings, and collects the set of
      * transitively-covered requirements per framework in scope.
+     *
+     * Performance: ComplianceMappings are batch-loaded once for the full set
+     * of linked requirements (two queries total, not 2 × N) — see the
+     * `findMappingsBy{Source,Target}Requirements` batch helpers.
      */
     public function buildReport(InternalAudit $audit): CoverageReport
     {
@@ -57,6 +61,22 @@ final readonly class CrossFrameworkCoverageService
         foreach ($frameworksInScope as $framework) {
             $frameworksById[(int) $framework->id] = $framework;
         }
+
+        // Collect every distinct linked requirement once so we can batch-load
+        // mappings ahead of the per-finding loop.
+        /** @var array<int, ComplianceRequirement> $requirementsById */
+        $requirementsById = [];
+        foreach ($audit->getStructuredFindings() as $finding) {
+            foreach ($finding->getLinkedRequirements() as $requirement) {
+                if ($requirement instanceof ComplianceRequirement && $requirement->getId() !== null) {
+                    $requirementsById[(int) $requirement->getId()] = $requirement;
+                }
+            }
+        }
+        $requirementList = array_values($requirementsById);
+
+        $outboundByReqId = $this->mappingRepository->findMappingsBySourceRequirements($requirementList);
+        $inboundByReqId = $this->mappingRepository->findMappingsByTargetRequirements($requirementList);
 
         // direct[frameworkId][requirementId] = list<AuditFinding>
         $direct = [];
@@ -77,7 +97,7 @@ final readonly class CrossFrameworkCoverageService
 
                 $direct[$fwId][$reqId][] = $finding;
 
-                foreach ($this->resolveTransitiveCoverage($requirement, $frameworksById) as $coverage) {
+                foreach ($this->resolveTransitiveCoverage($requirement, $frameworksById, $outboundByReqId, $inboundByReqId) as $coverage) {
                     $targetFwId = (int) $coverage->targetFramework->id;
                     $targetReqId = (int) $coverage->targetRequirement->getId();
                     $coverage->finding = $finding;
@@ -98,16 +118,21 @@ final readonly class CrossFrameworkCoverageService
      * into another framework in scope. Honours bidirectional mappings and the
      * {@see MIN_MAPPING_PERCENTAGE} cut-off.
      *
-     * @param array<int, ComplianceFramework> $frameworksById
+     * @param array<int, ComplianceFramework>           $frameworksById
+     * @param array<int, list<ComplianceMapping>>       $outboundByReqId  pre-loaded outbound mappings keyed by source-req id
+     * @param array<int, list<ComplianceMapping>>       $inboundByReqId   pre-loaded inbound  mappings keyed by target-req id
      * @return list<TransitiveCoverage>
      */
     private function resolveTransitiveCoverage(
         ComplianceRequirement $source,
         array $frameworksById,
+        array $outboundByReqId,
+        array $inboundByReqId,
     ): array {
         $out = [];
+        $sourceId = (int) $source->getId();
 
-        foreach ($this->mappingRepository->findMappingsFromRequirement($source) as $mapping) {
+        foreach ($outboundByReqId[$sourceId] ?? [] as $mapping) {
             $coverage = $this->buildCoverage(
                 mapping: $mapping,
                 target: $mapping->getTargetRequirement(),
@@ -121,7 +146,7 @@ final readonly class CrossFrameworkCoverageService
 
         // Inbound edges where the source happens to be the target of a
         // bidirectional mapping — they let coverage flow the other way.
-        foreach ($this->mappingRepository->findMappingsToRequirement($source) as $mapping) {
+        foreach ($inboundByReqId[$sourceId] ?? [] as $mapping) {
             if (!$mapping->isBidirectional()) {
                 continue;
             }

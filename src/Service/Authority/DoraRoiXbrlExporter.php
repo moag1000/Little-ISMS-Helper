@@ -398,11 +398,20 @@ final class DoraRoiXbrlExporter
             $subOutEl->textContent = $chainRoots !== [] ? 'true' : 'false';
             $providerEl->appendChild($subOutEl);
 
-            // 0180 audit-rights scope — first 500 chars of securityRequirements
+            // 0180 audit-rights scope — first 500 chars of securityRequirements.
+            // ESA-RoI text fields cap at 500 chars; if the source exceeds the
+            // limit we emit an explicit "…" suffix so auditors see truncation
+            // and can pull the full text from the SoA / contract attachment.
             $auditScopeEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:B_02.02.0180');
             $auditScopeEl->setAttribute('contextRef', 'ctx_period');
             $auditScopeText = trim((string) $supplier->getSecurityRequirements());
-            $auditScopeEl->textContent = mb_substr($auditScopeText, 0, 500);
+            if (mb_strlen($auditScopeText) > 500) {
+                // Reserve 1 char for the ellipsis so the final element value
+                // stays exactly within the 500-char schema bound.
+                $auditScopeEl->textContent = mb_substr($auditScopeText, 0, 499) . '…';
+            } else {
+                $auditScopeEl->textContent = $auditScopeText;
+            }
             $providerEl->appendChild($auditScopeEl);
 
             // ─── B_02.02.0190–0999 — extended supplier detail rows ─────────

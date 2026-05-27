@@ -277,6 +277,30 @@ final class CrossFrameworkCoverageServiceTest extends TestCase
             {
                 return $this->inbound[(int) $complianceRequirement->getId()] ?? [];
             }
+
+            public function findMappingsBySourceRequirements(array $requirements): array
+            {
+                $out = [];
+                foreach ($requirements as $req) {
+                    $id = (int) $req->getId();
+                    if (isset($this->outbound[$id])) {
+                        $out[$id] = $this->outbound[$id];
+                    }
+                }
+                return $out;
+            }
+
+            public function findMappingsByTargetRequirements(array $requirements): array
+            {
+                $out = [];
+                foreach ($requirements as $req) {
+                    $id = (int) $req->getId();
+                    if (isset($this->inbound[$id])) {
+                        $out[$id] = $this->inbound[$id];
+                    }
+                }
+                return $out;
+            }
         };
     }
 }
