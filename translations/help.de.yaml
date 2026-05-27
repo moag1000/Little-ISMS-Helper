@@ -445,7 +445,7 @@ help:
                 analogy: "Risiken und Chancen aus 9001 (Klausel 6.1) — gleicher Ansatz, aber mit formaler Bewertungsmatrix."
             corporate_structure:
                 name: "Konzernstruktur (Holding / Tochtergesellschaft)"
-                definition: "Hierarchische Tenant-Beziehung: Mutter-Tenant (Holding) mit Tochter-Tenants (Subsidiaries). Drei Governance-Modelle: Hierarchisch, Geteilte Verantwortung, Unabhängig. Konzern-ISB kann uebergreifend lesen. Richtlinien und Incidents koennen als 'sichtbar für Holding' markiert werden."
+                definition: "Hierarchische Organisations-Beziehung: Mutter-Organisation (Holding) mit Tochter-Organisationen (Subsidiaries). Drei Governance-Modelle: Hierarchisch, Geteilte Verantwortung, Unabhängig. Konzern-ISB kann uebergreifend lesen. Richtlinien und Incidents koennen als 'sichtbar für Holding' markiert werden."
             delta_assessment:
                 name: "Delta-Bewertung"
                 definition: "Analyse wie weit ein Basis-Framework (z.B. ISO 27001) ein neues Ziel-Framework (z.B. NIS2) bereits abdeckt. Berechnet automatisch: vorhandene Mappings, offene Gaps, FTE-Einsparung. Excel-Export für Management-Review."
@@ -635,7 +635,7 @@ help:
                 definition: "Wie gut reduziert eine Massnahme das Risiko (0-100%)? Das Tool berechnet daraus automatisch das Restrisiko. Muss nach jedem Vorfall und Audit ueberprueft werden."
             risk_appetite_statement:
                 name: "Risikoappetit-Erklaerung"
-                definition: "Formales Dokument der Geschaeftsleitung: Wie viel Risiko pro Kategorie tragbar? Definiert Schwellenwerte auf der Risikomatrix. Im Tool pro Tenant konfigurierbar mit automatischer Pruefung bei jeder Bewertung."
+                definition: "Formales Dokument der Geschaeftsleitung: Wie viel Risiko pro Kategorie tragbar? Definiert Schwellenwerte auf der Risikomatrix. Im Tool pro Organisation konfigurierbar mit automatischer Pruefung bei jeder Bewertung."
             risk_lifecycle_status:
                 name: "Risikostatus (Lebenszyklus)"
                 definition: "Jedes Risiko durchlaeuft sechs Status: Identifiziert → Bewertet → Behandelt → Ueberwacht → Geschlossen oder Akzeptiert. Bestimmt welche Aktionen moeglich sind. Im Risikoregister filterbar."

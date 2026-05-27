@@ -142,7 +142,7 @@ guided_tour:
     modules:
         bsi:
             title: 'BSI IT-Grundschutz (optional, weil Modul aktiv)'
-            body: 'Unter /bsi-grundschutz-check sehen Sie die Absicherungsstufen-Filter (Basis / Standard / Kern) plus Anforderungstypen (MUSS / SOLLTE / KANN). Wenn Ihr Tenant nur Basis-Absicherung braucht, reduziert das den SoA-Aufwand erheblich.'
+            body: 'Unter /bsi-grundschutz-check sehen Sie die Absicherungsstufen-Filter (Basis / Standard / Kern) plus Anforderungstypen (MUSS / SOLLTE / KANN). Wenn Ihre Organisation nur Basis-Absicherung braucht, reduziert das den SoA-Aufwand erheblich.'
         gdpr:
             title: 'Datenschutz (optional, weil DSGVO-Modul aktiv)'
             body: 'Drei Bereiche unter „Datenschutz & DSGVO": Verarbeitungstätigkeiten (Art. 30), Datenschutz-Folgenabschätzung (Art. 35 DSFA) und Datenpannen (Art. 33 mit 72h-Timer). Der Timer läuft automatisch und benachrichtigt den ISB.'

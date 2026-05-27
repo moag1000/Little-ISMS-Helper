@@ -224,7 +224,7 @@ nav:
             threat_intelligence: 'Bedrohungsinformationen sammeln und mit Risiken verknüpfen (A.5.7)'
             policy_ack_inbox: 'Eigene noch zu bestätigende Richtlinien'
             four_eyes_inbox: 'Funktionstrennung — meine offenen Genehmigungen'
-            alva_inbox: 'Alle aktiven Alva-Tipps für deinen Tenant'
+            alva_inbox: 'Alle aktiven Alva-Tipps für deine Organisation'
             dora_compliance: 'EU-DORA Übersicht für ICT-Risk-Management und Drittanbieter'
             scheduled_reports: 'Wiederkehrende Berichte (PDF/CSV) planen und versenden'
             report_builder: 'Eigene Reports aus Widget-Bibliothek zusammenstellen'

@@ -112,7 +112,7 @@ policy:
                         label: 'Approving Top Management Signatory'
                         placeholder: 'Example: "CEO Dr Erika Mustermann; for public administration: head of authority / president."'
                     tenant_specific_threats:
-                        label: 'Tenant-specific Threats / Context'
+                        label: 'Organization-specific Threats / Context'
                         placeholder: 'Example: "As a critical-infrastructure operator in the energy sector we are particularly exposed to ransomware and supply-chain attacks; resulting focus areas: rigorous network segmentation per NET, detection per DER.1 with 24/7 SOC, emergency exercises per DER.4."'
 
         isms_concept:

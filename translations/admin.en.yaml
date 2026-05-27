@@ -3,7 +3,7 @@ admin:
         error:
             not_found: 'Preset not found.'
             invalid_csrf: 'Invalid CSRF token.'
-            tenant_required: 'Tenant context required.'
+            tenant_required: 'Organization context required.'
     module:
         error:
             invalid_csrf: 'Invalid CSRF token.'
@@ -24,7 +24,7 @@ admin:
     title: Administration
     cancel: 'Cancel'
     tenant_management:
-        title: 'Tenant management'
+        title: 'Organization management'
     breadcrumb:
         home: 'Admin Dashboard'
     hub:
@@ -35,7 +35,7 @@ admin:
         no_results: 'No modules found — adjust the search term.'
         coming_soon: 'coming soon'
         group:
-            organisation: { label: 'Organisation', desc: 'Tenants, group structure, locations' }
+            organisation: { label: 'Organisation', desc: 'Organizations, group structure, locations' }
             identity: { label: 'Access & Identity', desc: 'Users, roles, permissions, SSO, sessions, MFA' }
             isms_data: { label: 'ISMS data', desc: 'Frameworks, mappings, industry baselines, tags' }
             audit_compliance: { label: 'Audit & Compliance', desc: 'Audit log, retention, compliance policy, risk-approval thresholds' }
@@ -44,15 +44,15 @@ admin:
             branding_ux: { label: 'Branding & UX', desc: 'Supplier criticality, tour content, Alva-hint statistics' }
             notifications: { label: 'Notifications', desc: 'Rules, channels, templates and preferences for outgoing notifications' }
         module:
-            tenants: { label: 'Tenants', desc: 'Manage customer organisations' }
+            tenants: { label: 'Organizations', desc: 'Manage customer organizations' }
             corporate_structure: { label: 'Corporate structure', desc: 'Parent / subsidiary hierarchy' }
             locations: { label: 'Locations', desc: 'Physical sites for asset assignment' }
-            tenant_branding: { label: 'Tenant branding', desc: 'Per-tenant email logos and senders' }
+            tenant_branding: { label: 'Organization branding', desc: 'Per-organization email logos and senders' }
             tenant_compliance_settings: { label: 'Compliance settings', desc: 'Locale, TLP, DPO, risk methodology, escalation, JSON defaults' }
             policy_style: { label: 'Policy appearance', desc: 'Layout, watermark and typography for policy documents' }
             report_style: { label: 'Report look', desc: 'Cover pattern, audience default, watermark, chart colors per tenant' }
             users: { label: 'Users', desc: 'Accounts, status, lockouts' }
-            roles: { label: 'Roles', desc: 'Tenant roles and templates' }
+            roles: { label: 'Roles', desc: 'Organization roles and templates' }
             permissions: { label: 'Permissions', desc: 'Module × role permission matrix' }
             sso: { label: 'SSO', desc: 'OIDC providers, approvals, domain bindings' }
             sessions: { label: 'Sessions', desc: 'Active sessions, force logout' }
@@ -133,12 +133,12 @@ admin:
         # Full directory lives in AdminHubCatalog.
         quick:
             user_mgmt: 'User-Mgmt'
-            tenant_mgmt: 'Tenant-Mgmt'
+            tenant_mgmt: 'Organization Mgmt'
             module_config: 'Module-Config'
             settings: Settings
     nav:
         admin: Administration
-        tenants: Tenants
+        tenants: Organizations
         users: Users
         roles: Roles
         settings: Settings
@@ -338,7 +338,7 @@ admin:
             title: 'Compliance Policy'
             description: 'Inheritance rules, review obligations and escalation defaults'
         tenant_compliance:
-            title: 'Tenant Compliance Settings'
+            title: 'Organization Compliance Settings'
             description: 'Locale, TLP classification, DPO contact, risk methodology and JSON defaults per tenant'
         risk_approval:
             title: 'Risk Approval Thresholds'
@@ -494,9 +494,9 @@ admin:
         removed: '%count% records from "%key%" removed.'
         remove_partial: '%count% records removed, %errors% errors. See subsequent messages for details.'
         nothing_selected: 'No datasets selected.'
-        no_tenant: 'No tenant context available — please select a tenant first.'
+        no_tenant: 'No organization context available — please select an organization first.'
         note_title: 'Note'
-        note_message: 'Sample data is linked to the current tenant and can only be removed here (exception: command-based imports like TISAX/DORA, which need CLI rollback).'
+        note_message: 'Sample data is linked to the current organization and can only be removed here (exception: command-based imports like TISAX/DORA, which need CLI rollback).'
 
     data_repair:
         title: 'Data Repair & Integrity'
@@ -508,7 +508,7 @@ admin:
             title: 'Caution — live data changes'
             lead: 'Every button on this page writes directly to the production database. No dry-run mode is available. Please verify first:'
             point_audit_log: 'Every repair is recorded in the audit log (tamper-evident HMAC-SHA256 chain) and remains traceable.'
-            point_backup: 'Before bulk repairs (Fix-all-Orphans, Fix-Tenant-Mismatches) ensure a recent backup exists.'
+            point_backup: 'Before bulk repairs (Fix-all-Orphans, Fix-Organization-Mismatches) ensure a recent backup exists.'
             point_confirm: 'Every button shows a confirmation dialog — please read it carefully before clicking "OK".'
             action_backup: 'Check backup'
             action_audit_log: 'View audit log'
@@ -528,8 +528,8 @@ admin:
         orphaned_assets: 'Orphaned Assets'
         orphaned_risks: 'Orphaned Risks'
         orphaned_incidents: 'Orphaned Incidents'
-        assign_to_tenant: 'Assign To Tenant'
-        select_tenant: 'Select Tenant'
+        assign_to_tenant: 'Assign To Organization'
+        select_tenant: 'Select Organization'
         all_orphans: 'All Orphans'
         assets_only: 'Assets Only'
         risks_only: 'Risks Only'
@@ -542,7 +542,7 @@ admin:
         bulk_blocked_multi_tenant: 'Bulk assign blocked: %count% tenants exist in this instance. In multi-tenant deployments no single action may cross-reassign orphans. Please use the per-entity routes instead.'
         bulk_confirm_hash_mismatch: 'Bulk assign aborted: orphan count changed since preview (expected %expected%). Reload the page and confirm again.'
         fixed_mismatches: '%count% tenant mismatches successfully fixed'
-        reason_required: 'Tenant-mismatch fix rejected: reason with at least %min% characters is mandatory (currently %actual%).'
+        reason_required: 'Organization-mismatch fix rejected: reason with at least %min% characters is mandatory (currently %actual%).'
         reason_label: 'Reason for tenant reassignment'
         reason_help: 'Minimum 20 characters. Stored in the audit log for every affected record.'
         tenant_not_found: 'Selected tenant not found'
@@ -552,7 +552,7 @@ admin:
         orphaned_assets_list: 'Orphaned Assets List'
         orphaned_risks_list: 'Orphaned Risks List'
         orphaned_incidents_list: 'Orphaned Incidents List'
-        tenant_statistics: 'Tenant Statistics'
+        tenant_statistics: 'Organization Statistics'
         risk_asset_assignment: 'Risk Asset Assignment'
         risk_asset_assignment_desc: 'These risks do not have an asset assigned. Risks must be associated with assets for proper tracking.'
         incident_asset_assignment: 'Incident Asset Assignment'
@@ -723,7 +723,7 @@ admin:
             generic_subtitle: 'Running in the background to keep PHP-FPM responsive.'
             fix_all_orphans_label: 'Assign all orphans'
             fix_all_orphans_subtitle: 'Assigns all orphaned entities (tenant_id IS NULL) to the default tenant in the background…'
-            fix_tenant_mismatches_label: 'Fix Tenant Mismatches'
+            fix_tenant_mismatches_label: 'Fix Organization Mismatches'
             fix_tenant_mismatches_subtitle: 'Aligning child entity tenants with their parent (Asset) in the background…'
             merge_duplicates_label: 'Merge Duplicates — %type%'
             merge_duplicates_subtitle: 'Keeping the oldest entry, deleting newer duplicates in the background…'
@@ -785,10 +785,10 @@ admin:
             health_all_ok: 'All four health-check buckets are clean.'
             health_bucket_count: '%count% issue(s) detected in this bucket'
             no_broken_refs: 'No broken references detected.'
-            fix_tenant_mismatches: 'Fix Tenant Mismatches'
+            fix_tenant_mismatches: 'Fix Organization Mismatches'
             tip: 'Each section runs its own background scan. The index page reads only cached counts, so it stays fast regardless of how many entities you have. Repair actions still read live data when applied.'
         tenant_card:
-            title: 'Tenants'
+            title: 'Organizations'
             tenant_count: '%count% tenant(s) registered'
             description: 'Cheap COUNT(*) — does not trigger a full scan.'
         integrity_check:
@@ -834,9 +834,9 @@ admin:
             modules: Modules
             contact: Contact
             advanced: Advanced
-        no_tenant_in_context: 'No tenant context active — please pick a tenant from the list first.'
-        section_tenant: 'Tenant-specific'
-        section_global: 'System defaults (all tenants)'
+        no_tenant_in_context: 'No organization context active — please pick an organization from the list first.'
+        section_tenant: 'Organization-specific'
+        section_global: 'System defaults (all organizations)'
         global_help: 'Global security defaults — change via System Settings page.'
         locale: 'Language + region'
         timezone: 'Timezone'
@@ -1218,8 +1218,8 @@ admin:
             custom_css_inert: 'Custom CSS (only active on export — preview stays unaffected)'
     lifecycle_overrides:
         title: 'Lifecycle Configuration'
-        subtitle: 'Override workflow transition metadata per tenant'
-        no_tenant: 'No tenant context found. Please switch tenant.'
+        subtitle: 'Override workflow transition metadata per organization'
+        no_tenant: 'No organization context found. Please switch organization.'
         no_workflows: 'No workflow configuration files found.'
         no_transitions: 'No transitions found in this workflow.'
         yaml_baseline: 'YAML baseline'
@@ -1625,7 +1625,7 @@ setup:
 kpi_threshold:
     page:
         title: 'KPI Thresholds'
-        subtitle: 'Tenant-specific good/warning cut-offs for KPI status colours (overrides defaults).'
+        subtitle: 'Organization-specific good/warning cut-offs for KPI status colours (overrides defaults).'
         new: 'New threshold'
         edit: 'Edit threshold'
     action:
@@ -1659,7 +1659,7 @@ kpi_threshold:
         deleted: 'Threshold deleted.'
         duplicate_key: 'A threshold already exists for this KPI.'
         good_below_warning: 'Good threshold must be ≥ warning threshold.'
-        no_tenant: 'No tenant assigned — please select a specific tenant first to configure KPI thresholds.'
+        no_tenant: 'No organization assigned — please select a specific organization first to configure KPI thresholds.'
     message:
         no_configs: 'No thresholds configured — defaults apply.'
     confirm:

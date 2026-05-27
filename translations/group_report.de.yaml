@@ -3,16 +3,16 @@ group_report:
     root_marker: 'Konzern-Wurzel'
     tree:
         title: 'Konzern-Struktur'
-        subtitle: 'Read-only Übersicht aller Tenants im Konzern — nur für ROLE_GROUP_CISO.'
-        holding_marker: 'Holding-Tenant'
-        you_are_here: 'Dein Tenant'
+        subtitle: 'Read-only Übersicht aller Organisationen im Konzern — nur für ROLE_GROUP_CISO.'
+        holding_marker: 'Holding-Organisation'
+        you_are_here: 'Deine Organisation'
     nis2:
         title: 'NIS2-Registrierungsmatrix'
         subtitle: 'Pro Rechtsperson in %root% — Klassifizierung und BSI-Meldestatus.'
-        intro: 'NIS2 (BSIG §28) reguliert <strong>einzelne Rechtspersonen</strong>, nicht Konzerne. Diese Matrix zeigt je Tochter: Klassifizierung (besonders wichtig / wichtig / nicht reguliert / unbekannt), Branchen-Sektor, NACE-Code, registrierter Meldekontakt und Registrierungsdatum. Pflegen im Tenant-Edit.'
+        intro: 'NIS2 (BSIG §28) reguliert <strong>einzelne Rechtspersonen</strong>, nicht Konzerne. Diese Matrix zeigt je Tochter: Klassifizierung (besonders wichtig / wichtig / nicht reguliert / unbekannt), Branchen-Sektor, NACE-Code, registrierter Meldekontakt und Registrierungsdatum. Pflegen im Organisations-Edit.'
         methodology: '<p>NIS2-Klassifizierung gemäß EU-Richtlinie 2022/2555 Art. 3. Besonders wichtig = große Einheit in kritischen Sektoren; Wichtig = mittlere Einheit oder spezifische Sektoren. Registrierung verpflichtend gemäß Art. 3(3).</p>'
         stat:
-            total: 'Tenants'
+            total: 'Organisationen'
             registered: 'Beim BSI registriert'
         class:
             essential: 'Besonders wichtig'
@@ -22,7 +22,7 @@ group_report:
         matrix:
             title: 'Matrix pro Rechtsperson'
         col:
-            tenant: 'Tenant'
+            tenant: 'Organisation'
             legal: 'Rechtsperson'
             classification: 'NIS2-Klassifikation'
             sector: 'Sektor'
@@ -35,27 +35,27 @@ group_report:
         title: 'Konzern-Top-Risiken'
         subtitle: 'Top 10 Risiken über alle Töchter von %root% — %count% Risiken insgesamt.'
         top10: 'Top 10 Risiken (Residualwert, Fallback inherent)'
-        distribution: 'Verteilung pro Tenant'
+        distribution: 'Verteilung pro Organisation'
         total: 'Summe Konzern'
         none: 'Keine Risiken im Scope.'
         col:
             title: 'Risiko'
-            tenant: 'Tenant'
+            tenant: 'Organisation'
             inherent: 'Inhärent'
             residual: 'Residual'
             count: 'Anzahl'
     kpi:
         title: 'Framework-Reifegrad-Matrix'
-        subtitle: 'NIS2 / DORA / ISO 27001 / ... pro Tenant in %root% — Zelle = erfüllt / anwendbar Prozent.'
-        intro: 'Zeilen = Tenants im Subtree. Spalten = verfügbare Compliance-Frameworks. Zellenwert ist identisch mit dem Per-Tenant-Dashboard (fulfilled / applicable). Leere Zelle bedeutet: Framework im Tenant nicht anwendbar markiert.'
+        subtitle: 'NIS2 / DORA / ISO 27001 / ... pro Organisation in %root% — Zelle = erfüllt / anwendbar Prozent.'
+        intro: 'Zeilen = Organisationen im Subtree. Spalten = verfügbare Compliance-Frameworks. Zellenwert ist identisch mit dem Per-Organisations-Dashboard (fulfilled / applicable). Leere Zelle bedeutet: Framework in der Organisation nicht anwendbar markiert.'
         holding: 'Holding'
         requirements: 'Anforderungen'
-        n_a_help: 'Keine anwendbaren Anforderungen in diesem Tenant.'
+        n_a_help: 'Keine anwendbaren Anforderungen in dieser Organisation.'
         col:
-            tenant: 'Tenant'
+            tenant: 'Organisation'
     soa:
         title: 'Konzern-SoA-Matrix'
-        subtitle: 'Annex-A-Controls × Tenants — %controls% Controls über %tenants% Tenants.'
+        subtitle: 'Annex-A-Controls × Organisationen — %controls% Controls über %tenants% Organisationen.'
         stat:
             cells: 'Zellen gesamt'
             applicable: 'Anwendbar'
@@ -87,15 +87,15 @@ group_report:
         col:
             detected_at: 'Erkannt'
             incident: 'Vorfall'
-            tenant: 'Tenant'
+            tenant: 'Organisation'
             severity: 'Severity'
             status: 'Status'
     audit_program:
         title: 'Konzern-Audit-Programm'
         subtitle: 'Ein Audit-Plan → N Tochter-Audits. Stand pro Tochter in %root%.'
         intro: 'Erstelle einen Audit in der Holding (z. B. "ISO 27001 Surveillance Q2 2026"). Mit <strong>Derive</strong> legt das System ein eigenes Audit pro Tochter an, identischer Scope, Audit-Nummer mit Tochter-Suffix, Status <code>planned</code>. Bereits vorhandene Ableitungen werden übersprungen (idempotent). Parent-Link bleibt erhalten, Findings laufen später im Parent-Roll-up zusammen.'
-        empty: 'Noch keine Audit-Programme in der Holding angelegt. Lege einen Audit auf diesem Tenant an und kehre hierher zurück.'
-        no_subsidiaries: 'Der aktuelle Tenant hat keine Töchter — nichts abzuleiten.'
+        empty: 'Noch keine Audit-Programme in der Holding angelegt. Lege einen Audit auf dieser Organisation an und kehre hierher zurück.'
+        no_subsidiaries: 'Die aktuelle Organisation hat keine Töchter — nichts abzuleiten.'
         col:
             program: 'Programm'
             actions: 'Aktionen'
@@ -111,7 +111,7 @@ group_report:
             missing: 'noch nicht abgeleitet'
         flash:
             invalid_csrf: 'Ungültiges CSRF-Token.'
-            no_subsidiaries: 'Der aktuelle Tenant hat keine Töchter — keine Ableitung möglich.'
+            no_subsidiaries: 'Die aktuelle Organisation hat keine Töchter — keine Ableitung möglich.'
             derived: 'Programm %program%: %derived% Tochter-Audits abgeleitet, %skipped% übersprungen (bereits vorhanden).'
     suppliers:
         title: 'Konzern-Lieferantenverzeichnis'

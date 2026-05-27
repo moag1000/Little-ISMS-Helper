@@ -30,7 +30,7 @@ delta:
         detail: 'Detailed Delta'
         mapping: 'Mapping Inventory'
     summary:
-        tenant: 'Tenant'
+        tenant: 'Organization'
         target: 'Target Framework'
         baseline: 'Baseline Framework'
         reporting_date: 'Reporting Date'

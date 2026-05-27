@@ -3,7 +3,7 @@ mris:
         cc_by_40: "CC BY 4.0"
     baseline:
         flash:
-            no_tenant: 'No tenant assigned — baselines require a tenant context.'
+            no_tenant: 'No organization assigned — baselines require an organization context.'
             none_selected: 'No baseline selected.'
             apply_failed: 'Baseline "%baseline%" could not be applied: %reason%'
             applied_summary: '%prefix%Baseline "%baseline%": %applied% target levels %verb%, %skipped% skipped.'
@@ -16,7 +16,7 @@ mris:
             summary: 'What does an MRIS baseline do?'
             intro: |
                 An MRIS baseline is an <strong>industry-specific preset of maturity targets</strong>
-                for the 13 Myth-Hardening Controls (MHC-01..13). Applied to a tenant it sets:
+                for the 13 Myth-Hardening Controls (MHC-01..13). Applied to an organization it sets:
             point_target: 'a <strong>target maturity level</strong> per MHC (<code>initial</code> / <code>defined</code> / <code>managed</code>) — what the industry needs at minimum,'
             point_reason: 'a <strong>rationale</strong> why this level is relevant (regulation, risk landscape, typical threats),'
             point_preserve: '<strong>existing maturity assessments are preserved</strong> (<code>maturity_current</code> values are never overwritten).'
@@ -25,7 +25,7 @@ mris:
         kpi_title: 'Mythos-relevant KPIs'
         kpi_intro: |
             Eight KPIs from MRIS v1.5 Ch. 10.6. Three are computed automatically
-            from existing data, five require manual entry per tenant.
+            from existing data, five require manual entry per organization.
         source: 'Source: Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. License: CC BY 4.0.'
     badge:
         auto: auto
@@ -54,11 +54,11 @@ mris:
             create_button: 'Create DPIA'
     audit_report:
         flash:
-            no_tenant: 'No tenant assigned — MRIS audit report requires a tenant context.'
+            no_tenant: 'No organization assigned — MRIS audit report requires an organization context.'
         title: 'MRIS Audit Report'
         subtitle: 'Myth-Resistant Information Security · v1.5 — Auditor View'
         meta:
-            tenant: 'Tenant'
+            tenant: 'Organization'
             created_at: 'Created at'
             created_by: 'Created by'
             report_type: 'Report type'

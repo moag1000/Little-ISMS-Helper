@@ -11,7 +11,7 @@ department:
         parent: 'Übergeordnete Abteilung'
         is_active: 'Aktiv'
     help:
-        name: 'Eindeutiger Name innerhalb des Mandanten (max. 100 Zeichen).'
+        name: 'Eindeutiger Name innerhalb der Organisation (max. 100 Zeichen).'
         code: 'Optionale Kostenstelle oder Kurz-ID (z. B. „IT-01", „HR-CSC"). Max. 20 Zeichen.'
         parent: 'Wenn diese Abteilung Teil einer übergeordneten Organisationseinheit ist, hier auswählen.'
         is_active: 'Inaktive Abteilungen erscheinen nicht mehr in Auswahllisten neuer Datensätze.'

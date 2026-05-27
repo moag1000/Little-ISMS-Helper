@@ -177,7 +177,7 @@ supplier:
         gdpr_transfer_mechanism: 'Rechtlicher Mechanismus für Datentransfer in Drittland (SCC, Angemessenheitsbeschluss, BCR).'
         gdpr_av_contract_signed: 'Ist ein Auftragsverarbeitungsvertrag nach DSGVO Art. 28.3 unterzeichnet?'
         gdpr_av_contract_date: 'Datum der Unterzeichnung des Auftragsverarbeitungsvertrags.'
-        lksg_reporting_obligation: 'Lieferant fällt in Sorgfaltspflicht des LkSG (Tenant ≥ 1000 MA, ab 2024 ≥ 250 MA absehbar).'
+        lksg_reporting_obligation: 'Lieferant fällt in Sorgfaltspflicht des LkSG (Organisation ≥ 1000 MA, ab 2024 ≥ 250 MA absehbar).'
         lksg_risk_category: 'Aggregierte LkSG-Risikoklasse (low/medium/high/critical) — Ergebnis der Risikoanalyse.'
         lksg_human_rights_risk_score: 'Menschenrechtsbezogener Risiko-Score 0–100 (höher = mehr Risiko).'
         lksg_environmental_risk_score: 'Umweltbezogener Risiko-Score 0–100 (höher = mehr Risiko).'

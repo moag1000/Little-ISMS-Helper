@@ -197,9 +197,9 @@ setup:
             incidents: 'Incidents'
             repair:
                 title: 'Repair Orphaned Entities'
-                description: 'Select a tenant to assign the orphaned entities to:'
-                target_tenant: 'Target Tenant'
-                select_tenant: 'Please select tenant...'
+                description: 'Select an organization to assign the orphaned entities to:'
+                target_tenant: 'Target Organization'
+                select_tenant: 'Please select organization...'
                 submit: 'Repair Now'
         asset_links:
             title: 'Repair Asset Assignments'

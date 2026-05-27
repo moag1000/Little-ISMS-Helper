@@ -1244,9 +1244,9 @@ policy_wizard:
         run_already_completed: 'This wizard run is already completed.'
         invalid_step: 'The requested step is invalid.'
         access_denied: 'You are not allowed to access this wizard run.'
-        no_tenant: 'No tenant context available.'
+        no_tenant: 'No organization context available.'
         bestandsaufnahme:
-            unknown_document: 'This document does not belong to your tenant or no longer exists.'
+            unknown_document: 'This document does not belong to your organization or no longer exists.'
             action_invalid: 'Please pick a valid action (replace, keep, merge or split).'
             target_topic_required: 'When merging into a wizard topic you must pick a target topic.'
             target_topics_required: 'When splitting you must pick at least two target topics.'

@@ -92,7 +92,7 @@ sso:
         col:
             email: 'Email'
             provider: 'Provider'
-            tenant: 'Tenant'
+            tenant: 'Organization'
             requested_at: 'Requested at'
             claims: 'Claims (from IdP)'
             actions: 'Actions'
@@ -143,7 +143,7 @@ sso:
     voter:
         error:
             not_authenticated: 'You must be logged in to access SSO providers.'
-            wrong_tenant: 'You do not have access to this SSO provider (wrong tenant).'
+            wrong_tenant: 'You do not have access to this SSO provider (wrong organization).'
             admin_required: 'Only administrators can change SSO configuration.'
     wizard:
         title: 'SSO Setup Wizard'

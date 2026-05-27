@@ -5,7 +5,7 @@ gap_report:
     unit:
         person_days: 'Person-days'
     error:
-        no_tenant: 'No tenant assigned — Gap Report not available.'
+        no_tenant: 'No organization assigned — Gap Report not available.'
     info:
         no_estimates: 'No consultant effort estimations have been seeded for this framework yet. Run `app:compliance:seed-efforts` or edit values manually.'
     sort:
@@ -32,7 +32,7 @@ gap_report:
         remaining_effort: 'Remaining (PD)'
         quick_win: 'Quick Win'
         quick_win_badge: 'Quick Win'
-        override_hint: 'Tenant-specific override active'
+        override_hint: 'Organization-specific override active'
         not_estimated: 'not estimated'
         empty: 'No requirements exist for this framework.'
     override:

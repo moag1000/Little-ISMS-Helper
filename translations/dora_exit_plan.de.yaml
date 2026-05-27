@@ -39,7 +39,7 @@ dora_exit_plan:
         migration_path: 'Alternativ-Anbieter oder Inhouse-Lösung skizzieren. ≤1000 Zeichen.'
         tested_at: 'Wann wurde die Exit-Strategie zuletzt geprüft (Table-Top oder Live-Übung)? ESA-Leitlinien erwarten jährliche Tests.'
         estimated_duration_days: 'Erwartete Dauer der vollständigen Migration in Werktagen.'
-        estimated_cost: 'Einmalige geschätzte Migrationskosten (Reporting-Currency des Mandanten).'
+        estimated_cost: 'Einmalige geschätzte Migrationskosten (Reporting-Currency der Organisation).'
 
     trigger:
         planned-renewal: 'Geplante Vertragsverlängerung'

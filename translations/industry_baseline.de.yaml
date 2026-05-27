@@ -1,7 +1,7 @@
 industry_baseline:
     title: 'Branchen-Baselines'
-    subtitle: 'Starter-Pakete pro Branche — Rüste deinen Tenant nicht aus dem Nichts aus.'
-    intro: 'Eine <strong>Branchen-Baseline</strong> ist ein geprüftes Starter-Paket: typische Risiken, Kern-Assets, Pflicht-Controls und Framework-Empfehlungen für eine bestimmte Branche. Ein Klick → dein Tenant hat die Basis-Dokumentation. Danach individuell nachschärfen.'
+    subtitle: 'Starter-Pakete pro Branche — Rüste deine Organisation nicht aus dem Nichts aus.'
+    intro: 'Eine <strong>Branchen-Baseline</strong> ist ein geprüftes Starter-Paket: typische Risiken, Kern-Assets, Pflicht-Controls und Framework-Empfehlungen für eine bestimmte Branche. Ein Klick → deine Organisation hat die Basis-Dokumentation. Danach individuell nachschärfen.'
     empty: 'Noch keine Branchen-Baselines geladen.'
     seed:
         button: 'Standard-Baselines jetzt laden'
@@ -37,10 +37,10 @@ industry_baseline:
         details: 'Details ansehen'
         apply: 'Baseline anwenden'
         apply_locally: 'Lokal zusätzlich anwenden'
-        apply_recursive: 'Auf %count% Tenants im Konzern anwenden'
+        apply_recursive: 'Auf %count% Organisationen im Konzern anwenden'
     confirm_apply: 'Baseline wird auf deine aktuelle Organisation angewendet. Bereits vorhandene Daten (nach Titel/Name) werden nicht überschrieben. Fortfahren?'
-    confirm_apply_over_inherited: 'Diese Baseline ist bereits aus der übergeordneten Konzernstruktur sichtbar. Ein lokaler Apply erzeugt zusätzlich einen eigenen Datenstamm im aktuellen Tenant. Fortfahren?'
-    confirm_apply_recursive: 'Baseline wird auf %count% Tenants (aktueller Tenant + alle Töchter) angewendet. Bereits versorgte Tenants werden übersprungen. Fortfahren?'
+    confirm_apply_over_inherited: 'Diese Baseline ist bereits aus der übergeordneten Konzernstruktur sichtbar. Ein lokaler Apply erzeugt zusätzlich einen eigenen Datenstamm in der aktuellen Organisation. Fortfahren?'
+    confirm_apply_recursive: 'Baseline wird auf %count% Organisationen (aktuelle Organisation + alle Töchter) angewendet. Bereits versorgte Organisationen werden übersprungen. Fortfahren?'
     risk:
         title: 'Risiko'
         category: 'Kategorie'
@@ -57,8 +57,8 @@ industry_baseline:
     flash:
         invalid_csrf: 'Ungültiges CSRF-Token.'
         no_tenant: 'Kein aktiver Organisation — Baseline-Anwendung nicht möglich.'
-        no_subsidiaries: 'Der aktuelle Tenant hat keine Töchter — rekursive Anwendung nicht möglich.'
+        no_subsidiaries: 'Die aktuelle Organisation hat keine Töchter — rekursive Anwendung nicht möglich.'
         already_applied: 'Baseline wurde bereits auf diese Organisation angewendet. Keine erneute Anwendung nötig.'
         applied_summary: 'Baseline angewendet: %risks% Risiken, %assets% Assets, %controls% Controls als anwendbar markiert.'
-        applied_recursive_summary: 'Rekursive Anwendung abgeschlossen: %applied% neu versorgt, %skipped% bereits vorhanden, %total% Tenants insgesamt.'
+        applied_recursive_summary: 'Rekursive Anwendung abgeschlossen: %applied% neu versorgt, %skipped% bereits vorhanden, %total% Organisationen insgesamt.'
         frameworks_missing: 'Hinweis: Folgende erforderliche Frameworks sind in der Organisation noch nicht geladen: %frameworks%. Vor der weiteren Pflege sollten diese über den Compliance-Wizard aktiviert werden.'

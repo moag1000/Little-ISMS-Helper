@@ -1,6 +1,6 @@
 supplier_criticality:
     title: 'Supplier Criticality Levels'
-    subtitle: 'Tenant-specific criticality scale for supplier assessments'
+    subtitle: 'Organization-specific criticality scale for supplier assessments'
     action:
         new: 'Add new level'
         edit: 'Edit level'

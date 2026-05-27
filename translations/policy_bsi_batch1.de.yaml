@@ -112,7 +112,7 @@ policy:
                         label: 'Genehmigender der Leitungsebene'
                         placeholder: 'Beispiel: "Vorsitzender der Geschaeftsfuehrung Dr. Erika Mustermann; bei Behoerden: Hausleitung / Praesidentin / Praesident."'
                     tenant_specific_threats:
-                        label: 'Tenant-spezifische Bedrohungen / Anlass'
+                        label: 'Organisations-spezifische Bedrohungen / Anlass'
                         placeholder: 'Beispiel: "Als KRITIS-Betreiber im Sektor Energie sind wir verstaerkt durch Ransomware und Supply-Chain-Angriffe bedroht; daraus abgeleiteter Schwerpunkt: konsequente Netzsegmentierung gemaess NET, Detektion gemaess DER.1 mit 24/7-SOC, Notfallueben gemaess DER.4."'
 
         isms_concept:

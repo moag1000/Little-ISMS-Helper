@@ -3,9 +3,9 @@
 
 kpi:
     mris:
-        no_tenant: "No tenant assigned — MRIS KPIs require a tenant context."
-        no_tenant_short: "No tenant assigned."
-        disabled: "MRIS KPIs are disabled for this tenant. Activate via tenant settings."
+        no_tenant: "No organization assigned — MRIS KPIs require an organization context."
+        no_tenant_short: "No organization assigned."
+        disabled: "MRIS KPIs are disabled for this organization. Activate via organization settings."
         saved: "Manual MRIS KPI values saved."
     # Core KPIs
     control_compliance: "Control Compliance"
