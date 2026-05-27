@@ -198,7 +198,7 @@ class QuickFixControllerTest extends WebTestCase
         $this->assertResponseRedirects();
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('body', 'Repair Tenant Mismatches');
+        $this->assertSelectorTextContains('body', 'Repair Organization Mismatches');
     }
 
     // =========================================================================
