@@ -4,6 +4,8 @@ risk:
     created: 'Risk has been created.'
     updated: 'Risk has been updated.'
     deleted: 'Risk has been deleted.'
+  clone:
+    success: 'Risk has been duplicated. Please re-assess the residual risk.'
   prefill:
     title_from_vulnerability: 'Risk derived from vulnerability: %title%'
     title_from_incident: 'Risk derived from incident: %title%'

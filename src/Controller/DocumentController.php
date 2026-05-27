@@ -28,6 +28,7 @@ use App\Service\TenantContext;
 use App\Repository\UserRepository;
 use App\Entity\User;
 use App\Service\AuditLogger;
+use App\Service\Clone\DocumentCloner;
 use App\Service\PolicyWizard\AuditorScoreCalculator;
 use App\Service\PolicyWizard\Diff\SettingsDriftDetector;
 use App\Lifecycle\LifecycleService;
@@ -74,6 +75,7 @@ class DocumentController extends AbstractController
         private readonly ?UserRepository $userRepository = null,
         private readonly ?TenantContext $tenantContext = null,
         private readonly ?LifecycleService $lifecycleService = null,
+        private readonly ?DocumentCloner $documentCloner = null,
     ) {}
 
     #[Route('/document', name: 'app_document_index', methods: ['GET'])]
@@ -765,6 +767,41 @@ class DocumentController extends AbstractController
         );
 
         return $binaryFileResponse;
+    }
+
+    /**
+     * Clone a Document (C4-C1 — Klon-Funktionen). Open to ROLE_USER. The
+     * clone keeps the policy body, review cadence, classification and
+     * metadata; file binary, version history and provenance refs are
+     * intentionally NOT carried over.
+     */
+    #[Route('/document/{id}/clone', name: 'app_document_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function clone(Request $request, Document $document): Response
+    {
+        if (!$this->isCsrfTokenValid('clone_document_' . $document->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        if ($this->documentCloner === null) {
+            throw $this->createNotFoundException('Document clone service is not available.');
+        }
+
+        $clone = $this->documentCloner->clone(
+            $document,
+            null,
+            trim((string) $request->request->get('title_override', '')) ?: null,
+        );
+        $this->entityManager->flush();
+
+        $this->auditLogger?->logCreate(
+            entityType: 'Document',
+            entityId: $clone->getId(),
+            newValues: ['cloned_from_id' => $document->getId(), 'originalFilename' => $clone->getOriginalFilename()],
+            description: 'Cloned from Document #' . $document->getId(),
+        );
+
+        $this->addFlash('success', $this->translator->trans('document.clone.success', [], 'document'));
+        return $this->redirectToRoute('app_document_edit', ['id' => $clone->getId()]);
     }
 
     #[Route('/document/{id}/edit', name: 'app_document_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

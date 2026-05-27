@@ -25,6 +25,7 @@ use App\Service\ProtectionRequirementService;
 use App\Service\TagFilterService;
 use App\Service\TenantContext;
 use App\Service\AuditLogger;
+use App\Service\Clone\AssetCloner;
 use App\Repository\UserRepository;
 use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,6 +64,7 @@ class AssetController extends AbstractController
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?UserRepository $userRepository = null,
         private readonly ?AssetDependencyRepository $assetDependencyRepository = null,
+        private readonly ?AssetCloner $assetCloner = null,
     ) {}
 
     protected function getFlashDomain(): string
@@ -444,6 +446,40 @@ class AssetController extends AbstractController
             'comments' => $comments,
         ]);
     }
+    /**
+     * Clone an Asset (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * configuration (type/sub-type/location/CIA/AI metadata), resets
+     * lifecycle to active, omits M2M cascades (risks/incidents/controls).
+     */
+    #[Route('/asset/{id}/clone', name: 'app_asset_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function clone(Request $request, Asset $asset): Response
+    {
+        if (!$this->isCsrfTokenValid('clone_asset_' . $asset->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        if ($this->assetCloner === null) {
+            throw $this->createNotFoundException('Asset clone service is not available.');
+        }
+
+        $clone = $this->assetCloner->clone(
+            $asset,
+            null,
+            trim((string) $request->request->get('title_override', '')) ?: null,
+        );
+        $this->entityManager->flush();
+
+        $this->auditLogger?->logCreate(
+            entityType: 'Asset',
+            entityId: $clone->getId(),
+            newValues: ['cloned_from_id' => $asset->getId(), 'name' => $clone->getName()],
+            description: 'Cloned from Asset #' . $asset->getId(),
+        );
+
+        $this->addFlash('success', $this->translator->trans('asset.clone.success', [], 'asset'));
+        return $this->redirectToRoute('app_asset_edit', ['id' => $clone->getId()]);
+    }
+
     #[Route('/asset/{id}/edit', name: 'app_asset_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Asset $asset): Response

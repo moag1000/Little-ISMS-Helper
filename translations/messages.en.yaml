@@ -209,6 +209,9 @@ common:
     view_details: 'View Details'
     view_all: 'View All'
     edit: Edit
+    clone:
+        label: 'Duplicate'
+        help: 'Create an editable copy with status / execution fields reset. Useful for recurring cycles, templates, and multi-site rollouts.'
     show_all: 'Show All'
     active: Active
     not_active: 'Not Active'

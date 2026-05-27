@@ -4,6 +4,8 @@ risk:
     created: 'Risiko wurde angelegt.'
     updated: 'Risiko wurde aktualisiert.'
     deleted: 'Risiko wurde gelöscht.'
+  clone:
+    success: 'Risiko wurde dupliziert. Bitte Restrisiko neu bewerten.'
   prefill:
     title_from_vulnerability: 'Risiko aus Schwachstelle: %title%'
     title_from_incident: 'Risiko aus Vorfall: %title%'

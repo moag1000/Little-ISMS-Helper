@@ -14,6 +14,7 @@ use App\Form\SupplierType;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\SupplierRepository;
 use App\Service\AuditLogger;
+use App\Service\Clone\SupplierCloner;
 use App\Service\InverseCoverageService;
 use App\Service\ModuleConfigurationService;
 use App\Service\SupplierService;
@@ -45,6 +46,7 @@ class SupplierController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?SupplierCloner $supplierCloner = null,
     ) {}
     #[Route('/supplier', name: 'app_supplier_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -281,6 +283,41 @@ class SupplierController extends AbstractController
             'inverse_coverage' => $inverseCoverage,
         ]);
     }
+    /**
+     * Clone a Supplier (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * description, service-type, security requirements, certification flags;
+     * resets evaluation state + contract dates.
+     */
+    #[Route('/supplier/{id}/clone', name: 'app_supplier_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function clone(Request $request, Supplier $supplier): Response
+    {
+        if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
+        if (!$this->isCsrfTokenValid('clone_supplier_' . $supplier->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        if ($this->supplierCloner === null) {
+            throw $this->createNotFoundException('Supplier clone service is not available.');
+        }
+
+        $clone = $this->supplierCloner->clone(
+            $supplier,
+            null,
+            trim((string) $request->request->get('title_override', '')) ?: null,
+        );
+        $this->entityManager->flush();
+
+        $this->auditLogger?->logCreate(
+            entityType: 'Supplier',
+            entityId: $clone->getId(),
+            newValues: ['cloned_from_id' => $supplier->getId(), 'name' => $clone->getName()],
+            description: 'Cloned from Supplier #' . $supplier->getId(),
+        );
+
+        $this->addFlash('success', $this->translator->trans('supplier.clone.success', [], 'suppliers'));
+        return $this->redirectToRoute('app_supplier_edit', ['id' => $clone->getId()]);
+    }
+
     #[Route('/supplier/{id}/edit', name: 'app_supplier_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Supplier $supplier): Response

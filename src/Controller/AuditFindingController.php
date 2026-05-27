@@ -11,6 +11,7 @@ use App\Repository\AuditFindingRepository;
 use App\Repository\CommentRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Service\Clone\AuditFindingCloner;
 use App\Service\Nonconformity\AutoTaskCreator;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,6 +41,7 @@ class AuditFindingController extends AbstractController
         private readonly Security $security,
         private readonly UserRepository $userRepository,
         private readonly ?CommentRepository $commentRepository = null,
+        private readonly ?AuditFindingCloner $auditFindingCloner = null,
     ) {
     }
 
@@ -159,6 +161,41 @@ class AuditFindingController extends AbstractController
             // V3 W2-H3: Comments thread + form action
             'comments' => $comments,
         ]);
+    }
+
+    /**
+     * Clone an AuditFinding (C4-C1 — Klon-Funktionen). Open to ROLE_USER.
+     * Keeps finding template (type, severity, clause reference, related
+     * controls, linked requirements), resets lifecycle + nc-verification.
+     */
+    #[Route('/{id}/clone', name: 'clone', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function clone(Request $request, AuditFinding $finding): Response
+    {
+        $this->denyIfWrongTenant($finding);
+
+        if (!$this->isCsrfTokenValid('clone_audit_finding_' . $finding->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        if ($this->auditFindingCloner === null) {
+            throw $this->createNotFoundException('AuditFinding clone service is not available.');
+        }
+
+        $clone = $this->auditFindingCloner->clone(
+            $finding,
+            null,
+            trim((string) $request->request->get('title_override', '')) ?: null,
+        );
+        $this->entityManager->flush();
+
+        $this->auditLogger->logCreate(
+            entityType: 'AuditFinding',
+            entityId: $clone->getId(),
+            newValues: ['cloned_from_id' => $finding->getId(), 'title' => $clone->getTitle()],
+            description: 'Cloned from AuditFinding #' . $finding->getId(),
+        );
+
+        $this->addFlash('success', 'audit_finding.clone.success');
+        return $this->redirectToRoute('app_audit_finding_edit', ['id' => $clone->getId()]);
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]

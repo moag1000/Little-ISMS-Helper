@@ -15,6 +15,7 @@ use App\Repository\TrainingParticipationRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Service\Clone\TrainingCloner;
 use App\Service\FileUploadSecurityService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -47,6 +48,7 @@ class TrainingController extends AbstractController
         // Junior-ISB-Audit-2026-05-22 9.5: File-Upload statt Freitext-Pfade.
         private readonly ?FileUploadSecurityService $fileUploadSecurityService = null,
         private readonly ?string $projectDir = null,
+        private readonly ?TrainingCloner $trainingCloner = null,
     ) {}
     #[Route('/training', name: 'app_training_index', methods: ['GET'])]
     public function index(Request $request): Response
@@ -201,6 +203,40 @@ class TrainingController extends AbstractController
             'training' => $training,
         ]);
     }
+    /**
+     * Clone a Training (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * content template (trainer, materials, control/requirement coverage),
+     * resets schedule + attendance data.
+     */
+    #[Route('/training/{id}/clone', name: 'app_training_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function clone(Request $request, Training $training): Response
+    {
+        if (!$this->isCsrfTokenValid('clone_training_' . $training->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        if ($this->trainingCloner === null) {
+            throw $this->createNotFoundException('Training clone service is not available.');
+        }
+
+        $clone = $this->trainingCloner->clone(
+            $training,
+            null,
+            trim((string) $request->request->get('title_override', '')) ?: null,
+        );
+        $this->entityManager->flush();
+
+        $this->auditLogger?->logCreate(
+            entityType: 'Training',
+            entityId: $clone->getId(),
+            newValues: ['cloned_from_id' => $training->getId(), 'title' => $clone->getTitle()],
+            description: 'Cloned from Training #' . $training->getId(),
+        );
+
+        $this->addFlash('success', $this->translator->trans('training.clone.success', [], 'training'));
+        return $this->redirectToRoute('app_training_edit', ['id' => $clone->getId()]);
+    }
+
     #[Route('/training/{id}/edit', name: 'app_training_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Training $training): Response

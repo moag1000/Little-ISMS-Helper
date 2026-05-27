@@ -45,16 +45,24 @@
         prominence: 'subtle'
     }) }}
 
-    {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
-    {% if is_granted('ROLE_ADMIN') %}
-        <div class="d-flex justify-content-end mb-3">
-            <form method="post" action="{{ path('app_bc_exercise_delete', {id: bc_exercise.id}) }}" class="d-inline"
-                  data-controller="ui-actions"
-                  data-action="submit->ui-actions#confirm"
-                  data-ui-actions-message-param="{{ 'bc_exercises.message.confirm_delete'|trans({}, 'bc_exercises') }}">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bc_exercise.id) }}">
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+    {# Inline POST-delete + clone kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
+    {% if is_granted('ROLE_USER') %}
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            <form method="post" action="{{ path('app_bc_exercise_clone', {id: bc_exercise.id}) }}" class="d-inline" data-turbo="false">
+                <input type="hidden" name="_token" value="{{ csrf_token('clone_bc_exercise_' ~ bc_exercise.id) }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success" title="{{ 'common.clone.help'|trans({}, 'messages') }}">
+                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> {{ 'common.clone.label'|trans({}, 'messages') }}
+                </button>
             </form>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_bc_exercise_delete', {id: bc_exercise.id}) }}" class="d-inline"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'bc_exercises.message.confirm_delete'|trans({}, 'bc_exercises') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bc_exercise.id) }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
+                </form>
+            {% endif %}
         </div>
     {% endif %}
 

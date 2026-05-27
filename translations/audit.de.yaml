@@ -322,3 +322,5 @@ audit_finding:
     auto_task:
         preview: 'Automatische Korrektur-Tasks werden für %count% Anforderung(en) erstellt.'
         created: 'Automatisch %count% Korrektur-Task(s) für verknüpfte Anforderungen erstellt.'
+    clone:
+        success: 'Finding wurde dupliziert. NC-Verifikation muss neu durchgeführt werden.'

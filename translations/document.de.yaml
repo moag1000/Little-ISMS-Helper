@@ -281,6 +281,8 @@ document:
     reuse:
         used_by: 'Verwendet von'
 # Nachweis-Reverifikation — ISO 27001 Kl. 9.1 (Sind Nachweise noch gültig?)
+    clone:
+        success: 'Dokument wurde dupliziert. Datei-Binary nicht mitkopiert — bitte ggf. neu hochladen.'
 evidence_reverification:
     title: 'Nachweis-Reverifikation'
     badge: 'Kl. 9.1'
