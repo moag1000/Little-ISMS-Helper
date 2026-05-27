@@ -99,6 +99,19 @@ final class GroupReportController extends AbstractController
             throw $this->createAccessDeniedException('No active tenant');
         }
 
+        // Concern B fix (2026-05-27): Konzern-Reports are only meaningful for
+        // tenants that are part of a corporate structure (parent + at least one
+        // subsidiary, or is itself a subsidiary).  A single standalone tenant
+        // would render "Organisation: 0" and empty framework tables — confusing
+        // and purposeless.  Redirect to dashboard with an explanatory flash.
+        if (!$root->isPartOfCorporateStructure()) {
+            $this->addFlash(
+                'info',
+                $this->translator->trans('group_report.tree.flash.holding_only', [], 'group_report')
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
         // Intentionally NOT getRootParent(): a Group-CISO sitting on a
         // mid-tree tenant (e.g. a regional holding) must see only their
         // subtree — lateral access to sibling subsidiaries and upward

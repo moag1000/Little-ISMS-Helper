@@ -6,6 +6,8 @@ group_report:
         subtitle: 'Read-only overview of every tenant in the group — ROLE_GROUP_CISO only.'
         holding_marker: 'Holding tenant'
         you_are_here: 'Your tenant'
+        flash:
+            holding_only: 'Group reports are only available for corporate holding structures. This organisation is not a holding and has no subsidiaries.'
     nis2:
         title: 'NIS2 registration matrix'
         subtitle: 'Per legal entity in %root% — classification and BSI registration status.'

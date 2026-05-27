@@ -6,6 +6,8 @@ group_report:
         subtitle: 'Read-only Übersicht aller Organisationen im Konzern — nur für ROLE_GROUP_CISO.'
         holding_marker: 'Holding-Organisation'
         you_are_here: 'Deine Organisation'
+        flash:
+            holding_only: 'Konzern-Reports sind nur für Holding-Strukturen verfügbar. Diese Organisation ist keine Holding und hat keine Tochtergesellschaften.'
     nis2:
         title: 'NIS2-Registrierungsmatrix'
         subtitle: 'Pro Rechtsperson in %root% — Klassifizierung und BSI-Meldestatus.'
