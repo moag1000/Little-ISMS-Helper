@@ -17,6 +17,12 @@
  # - Role gates: 9 is_granted() roles — ROLE_ADMIN, ROLE_AUDITOR, ROLE_MANAGER, ROLE_GROUP_CISO,
  #   PERSONA_CISO, PERSONA_RISK, PERSONA_DPO, PERSONA_COMPLIANCE, ADMIN_OWN_TENANT.
  #   All defined in TenantScopedAdminVoter + security.yaml. No pseudo-roles.
+ # - Holding-structure gates (2026-05-27 gate-audit fix):
+ #   Portfolio panel outer wrapper + Konzern-Reports link in Compliance panel now require
+ #   app.user.tenant.isPartOfCorporateStructure() == true in addition to their role gate.
+ #   Rationale: ROLE_ADMIN exists on single-tenant installs; ROLE_SUPER_ADMIN inherits
+ #   ROLE_GROUP_CISO (security.yaml L89). Without the tenant-graph check both roles leaked
+ #   the Portfolio L1 tab and group_report links onto solo installations.
  # - Macro signatures: fa_persona_cockpit_card({persona, name, href}), fa_quick_action_button({verb, href,
  #   shortcut?, module?, persona?}) — all callers pass required keys.
  #}
@@ -490,7 +496,11 @@
         {% endif %}
 
         {# Portfolio Panel (Aurora v4 Phase 2, 2026-05-27) #}
-        {% if is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN') %}
+        {# Gate fix 2026-05-27: Portfolio is multi-tenant only. Mirror the L1 trigger gate.
+           _is_corporate is set in _mega_menu.html.twig; re-declare here for panel-only render
+           path (this file may be included independently). #}
+        {% set _is_corporate = app.user and app.user.tenant and app.user.tenant.isPartOfCorporateStructure() %}
+        {% if _is_corporate and (is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN')) %}
         <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="portfolio" role="menu" aria-label="{{ 'nav.mega.category.portfolio'|trans({}, 'nav') }}">
             <div class="mega-menu-panel-content">
                 <div class="mega-menu-section">
@@ -1025,7 +1035,13 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {% if is_granted('ROLE_GROUP_CISO') %}
+                        {# Gate fix 2026-05-27: group_report is multi-tenant only — guard with
+                           isPartOfCorporateStructure() in addition to ROLE_GROUP_CISO.
+                           ROLE_SUPER_ADMIN inherits ROLE_GROUP_CISO (security.yaml L89) so
+                           without the tenant-graph check a superadmin on a solo installation
+                           would see this link. #}
+                        {% set _is_corporate_compliance = app.user and app.user.tenant and app.user.tenant.isPartOfCorporateStructure() %}
+                        {% if _is_corporate_compliance and is_granted('ROLE_GROUP_CISO') %}
                         <li><a href="{{ path('app_group_report_tree') }}" class="{% if current_route starts with 'app_group_report_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
