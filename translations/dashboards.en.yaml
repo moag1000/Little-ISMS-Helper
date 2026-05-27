@@ -314,3 +314,37 @@ dpo:
         report_breach: 'Report Breach'
         new_activity: 'New Processing Activity'
         vvt_export: 'Export VVT (XLSX)'
+
+# ── ISB Dashboard (Wave 5) ──────────────────────────────────
+isb:
+    badge: 'ISB · ISO 27001'
+    title: 'ISB Dashboard'
+    subtitle: 'Information Security Officer — ISMS Operations and Control'
+    action:
+        controls: 'Controls'
+        incidents: 'Incidents'
+        audits: 'Audits'
+    section:
+        pending_approvals: 'Pending Approvals'
+        lifecycle_stuck: 'Overdue Lifecycles'
+        quick_actions: 'Quick Access'
+    empty:
+        no_approvals_title: 'No open approvals'
+        no_approvals_text: 'All approval requests have been processed.'
+
+# ── BCM-Officer Dashboard (Wave 5) ─────────────────────────
+bcm_officer:
+    badge: 'BCM · ISO 22301'
+    title: 'BCM Officer Dashboard'
+    subtitle: 'Business Continuity Manager — Operations and Planning'
+    action:
+        bc_plans: 'BC Plans'
+        exercises: 'Exercises'
+        crisis_team: 'Crisis Team'
+    section:
+        pending_approvals: 'Pending Approvals'
+        lifecycle_stuck: 'Overdue Lifecycles'
+        quick_actions: 'Quick Access'
+    empty:
+        no_approvals_title: 'No open approvals'
+        no_approvals_text: 'All approval requests have been processed.'

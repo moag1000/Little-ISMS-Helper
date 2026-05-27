@@ -85,7 +85,16 @@ security:
         ROLE_RISK_MANAGER:          ROLE_MANAGER
         ROLE_DPO:                   ROLE_MANAGER
         ROLE_COMPLIANCE_MANAGER:    ROLE_MANAGER
-        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER]
+        # Wave 5 / Part 2 — ISB + BCM-Officer persona-roles.
+        # ROLE_ISB: Informationssicherheitsbeauftragter (operational security officer).
+        #   Primary user of ISMS core, controls, incidents, audits.
+        #   Inherits ROLE_MANAGER — full read+write ISMS operational scope.
+        ROLE_ISB:                   ROLE_MANAGER
+        # ROLE_BCM_OFFICER: Business Continuity Manager (per-tenant, not Konzern).
+        #   Steers BCM module: BC-Plans, Crisis-Team, BC-Exercises, Business-Processes.
+        #   Inherits ROLE_MANAGER — BCM operational scope.
+        ROLE_BCM_OFFICER:           ROLE_MANAGER
+        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER, ROLE_ISB, ROLE_BCM_OFFICER]
         ROLE_SUPER_ADMIN:       [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH, ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR]
         # Phase 8M.5 / 9.P1.6 — Holding-Rollen für Konzern-Strukturen.
         #

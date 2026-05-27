@@ -494,7 +494,12 @@
                 {% if is_granted('ROLE_AUDITOR') %}
                 <div class="col-6">{{ fa_persona_cockpit_card({persona: 'auditor', name: 'Auditor-Dashboard', href: path('app_dashboard_auditor', {_locale: _locale})}) }}</div>
                 {% endif %}
-                {# TODO Backend: PERSONA_ISB + PERSONA_BCM_OFFICER role needed for ISB/BCM cockpit cards #}
+                {% if is_granted('PERSONA_ISB') %}
+                <div class="col-6">{{ fa_persona_cockpit_card({persona: 'isb', name: 'ISB-Dashboard', href: path('app_dashboard_isb', {_locale: _locale})}) }}</div>
+                {% endif %}
+                {% if is_granted('PERSONA_BCM') %}
+                <div class="col-6">{{ fa_persona_cockpit_card({persona: 'bcm', name: 'BCM-Officer-Dashboard', href: path('app_dashboard_bcm', {_locale: _locale})}) }}</div>
+                {% endif %}
             </div>
         </div>
     </div>

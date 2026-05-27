@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dashboards' %}
+
+{% block title %}{{ 'bcm_officer.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block body %}
+<main class="fa-aurora-surface role-dashboard bcm-officer-dashboard">
+    {{ _fa_page_header.render({
+        badge:    { icon: 'nav-workflow', label: 'bcm_officer.badge'|trans },
+        title:    'bcm_officer.title'|trans,
+        subtitle: 'bcm_officer.subtitle'|trans,
+        actions: [
+            { label: 'action.standard_dashboard'|trans,    variant: 'ghost',   icon: 'nav-home',     href: path('app_dashboard') },
+            { label: 'bcm_officer.action.bc_plans'|trans,  variant: 'ghost',   icon: 'nav-workflow', href: path('app_bc_plan_index') },
+            { label: 'bcm_officer.action.exercises'|trans, variant: 'ghost',   icon: 'nav-stars',    href: path('app_bc_exercise_index') },
+            { label: 'bcm_officer.action.crisis_team'|trans, variant: 'primary', icon: 'ui-people', href: path('app_crisis_team_index') }
+        ]
+    }) }}
+
+    {# ── Workflow Transparency (Pending Approvals + Lifecycle Stuck) ── #}
+    <div class="row g-4 mt-2">
+
+        {# Pending Approvals #}
+        <div class="col-12 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
+                    <strong>{{ 'bcm_officer.section.pending_approvals'|trans }}</strong>
+                    {% if dashboard.pending_approvals|length > 0 %}
+                    <span class="badge bg-warning text-dark ms-auto">{{ dashboard.pending_approvals|length }}</span>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    {% if dashboard.pending_approvals|length > 0 %}
+                    <ul class="list-group list-group-flush">
+                        {% for approval in dashboard.pending_approvals|slice(0, 10) %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="text-truncate me-2">{{ approval.label|default('—') }}</span>
+                            {% if approval.href is defined %}
+                            <a href="{{ approval.href }}" class="btn btn-sm btn-ghost">
+                                {{ 'action.view_details'|trans }}
+                            </a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    {{ _fa_empty_state.render({
+                        icon:  'nav-workflow',
+                        title: 'bcm_officer.empty.no_approvals_title'|trans,
+                        text:  'bcm_officer.empty.no_approvals_text'|trans
+                    }) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Lifecycle Stuck #}
+        <div class="col-12 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="fa-icon fa-icon--nav-clock-history" aria-hidden="true"></i>
+                    <strong>{{ 'bcm_officer.section.lifecycle_stuck'|trans }}</strong>
+                    {% if dashboard.lifecycle_stuck|length > 0 %}
+                    <span class="badge bg-danger ms-auto">{{ dashboard.lifecycle_stuck|length }}</span>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    {% if dashboard.lifecycle_stuck|length > 0 %}
+                    <ul class="list-group list-group-flush">
+                        {% for item in dashboard.lifecycle_stuck|slice(0, 10) %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="text-truncate me-2">{{ item.label|default('—') }}</span>
+                            {% if item.href is defined %}
+                            <a href="{{ item.href }}" class="btn btn-sm btn-ghost">
+                                {{ 'action.view_details'|trans }}
+                            </a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    {{ _fa_empty_state.render({
+                        icon:  'nav-clock-history',
+                        title: 'bcm_officer.empty.no_approvals_title'|trans,
+                        text:  'bcm_officer.empty.no_approvals_text'|trans
+                    }) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>{# /row #}
+
+</main>
+{% endblock %}

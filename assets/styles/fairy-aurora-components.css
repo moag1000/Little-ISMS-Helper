@@ -9827,6 +9827,64 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     width: 1px; height: 1px; overflow: hidden; white-space: nowrap;
 }
 
+/* ── App-Header: Status-Pill ─────────────────────────────── */
+.h-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 11px;
+    background: color-mix(in oklab, var(--success) 14%, transparent);
+    color: var(--success);
+    border: 1px solid color-mix(in oklab, var(--success) 30%, transparent);
+    border-radius: var(--r-pill);
+    font: 600 10px var(--font-mono); letter-spacing: 0.06em;
+}
+.h-status::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success); box-shadow: 0 0 8px var(--success);
+    animation: h-status-pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes h-status-pulse { 50% { opacity: 0.5; } }
+
+/* ── App-Header: Language-Switch ─────────────────────────── */
+.h-lang {
+    display: flex; gap: 2px; padding: 2px;
+    background: var(--surface-2); border-radius: var(--r-pill);
+    border: 1px solid var(--border);
+}
+.h-lang button {
+    border: 0; background: transparent;
+    padding: 5px 12px; border-radius: var(--r-pill);
+    font: 700 10.5px var(--font-mono); color: var(--fg-3); cursor: pointer;
+    transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out);
+}
+.h-lang button.is-active {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: var(--on-primary); box-shadow: 0 0 8px var(--primary-glow);
+}
+.h-lang button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* ── App-Header: Avatar ──────────────────────────────────── */
+.h-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg,
+        color-mix(in oklab, var(--accent) 60%, transparent),
+        color-mix(in oklab, var(--primary) 60%, transparent));
+    color: var(--on-primary);
+    display: flex; align-items: center; justify-content: center;
+    font: 700 12px var(--font-mono);
+    border: 1.5px solid color-mix(in oklab, var(--accent) 40%, transparent);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.h-avatar:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
 /* ── Sidebar ─────────────────────────────────────────────── */
 .app__sidebar {
     grid-area: sidebar;
