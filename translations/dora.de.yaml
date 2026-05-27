@@ -170,3 +170,73 @@ dora:
         # Footer
         footer: "Vertraulich - DORA Art. 19 IKT-Vorfall-Bericht"
         page: "Seite"
+
+# RT_04 — Subdienstleisterkette (DORA Art. 28)
+dora_subcontractor:
+    badge: "RT_04 Kette"
+    subtitle: "Erfasse 4th- und 5th-Party-Subdienstleister, auf die primäre IKT-Anbieter zurückgreifen (DORA Art. 28(2))."
+    tier_label: "Tier %tier%"
+    tier_root: "Direkter Subdienstleister des Primärlieferanten"
+    title:
+        list: "DORA Subdienstleister-Kette"
+        show: "Details Subdienstleister"
+        create: "Neuer Subdienstleister"
+        edit: "Subdienstleister bearbeiten: %name%"
+    action:
+        create: "Subdienstleister anlegen"
+        view: "Anzeigen"
+        edit: "Bearbeiten"
+        delete: "Löschen"
+    empty:
+        title: "Noch keine Einträge zur Subdienstleister-Kette"
+        body: "Erfasse die Subdienstleister-Beziehungen der Primärlieferanten, um die Transparenzpflicht nach DORA Art. 28(2) zur Unterauslagerung zu erfüllen."
+    section:
+        identification: "Identifikation"
+        risk: "Risiko-Klassifikation"
+    field:
+        name: "Name"
+        parent_supplier: "Primärlieferant"
+        parent_subcontractor: "Übergeordneter Subdienstleister"
+        tier: "Tier (2 = direkt, 3+ = verschachtelt)"
+        lei_code: "LEI-Code (ISO 17442)"
+        country: "Land (ISO 3166-1 alpha-2)"
+        service_description: "Leistungsbeschreibung"
+        criticality: "Kritikalität"
+        substitutability: "Ersetzbarkeit"
+    placeholder:
+        name: "z. B. SubCloud Hosting GmbH"
+        parent_supplier: "Primärlieferant auswählen"
+        parent_subcontractor: "Optional — leer lassen, wenn direkt unter dem Primärlieferanten"
+        lei_code: "20-stelliger LEI von GLEIF"
+        country: "DE"
+        service_description: "Welche Leistung erbringt dieser Subdienstleister?"
+    help:
+        parent_supplier: "Der 1st-Party-IKT-Anbieter, unter dem dieser Subdienstleister steht."
+        parent_subcontractor: "Leer lassen, wenn dies ein direkter Subdienstleister (Tier 2) ist."
+        tier: "2 = direkter Subdienstleister, 3 = Sub-Sub, 4 = 5th Party, 5 = noch tiefer."
+        lei_code: "Optional, aber dringend empfohlen. 20-stelliger GLEIF Legal Entity Identifier."
+        country: "ISO 3166-1 alpha-2 Code des Hauptsitzes (z. B. DE, FR, US)."
+        criticality: "Spiegelt die Kritikalitäts-Skala des Primärlieferanten (DORA Art. 30(2)(g))."
+        substitutability: "Wie einfach lässt sich dieser Subdienstleister ersetzen? Low = Lock-in-Risiko."
+    criticality:
+        critical: "Kritisch"
+        important: "Wichtig"
+        standard: "Standard"
+    substitutability:
+        high: "Hoch (leicht ersetzbar)"
+        medium: "Mittel"
+        low: "Niedrig (Lock-in-Risiko)"
+    success:
+        created: "Subdienstleister angelegt."
+        updated: "Subdienstleister aktualisiert."
+        deleted: "Subdienstleister gelöscht."
+    validation:
+        parent_supplier_required: "Primärlieferant ist erforderlich."
+        name_required: "Name ist erforderlich."
+        lei_length: "LEI-Code muss exakt 20 Zeichen lang sein."
+        lei_format: "LEI-Code darf nur Großbuchstaben und Ziffern enthalten (ISO 17442)."
+        country_length: "Ländercode muss exakt 2 Zeichen lang sein."
+        country_format: "Ländercode muss ein 2-stelliger ISO 3166-1 alpha-2 Code sein."
+        tier_range: "Tier muss zwischen {{ min }} und {{ max }} liegen."
+        criticality_invalid: "Ungültiger Kritikalitäts-Wert."
+        substitutability_invalid: "Ungültiger Ersetzbarkeits-Wert."

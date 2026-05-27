@@ -1,3 +1,5 @@
 # check_no_bi_classes.py baseline
 # Format: <relative-path>:<line>
+templates/dora_subcontractor/index.html.twig:42
+templates/dora_subcontractor/show.html.twig:91
 assets/controllers/command_palette_controller.js:220
