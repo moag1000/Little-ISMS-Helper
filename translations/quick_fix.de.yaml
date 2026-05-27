@@ -25,6 +25,9 @@ quick_fix:
         body: 'Diese Instanz wurde aktualisiert, das Datenbank-Schema ist aber noch auf dem alten Stand. Mit einem Klick anwenden:'
         count_label: 'ausstehende Migration(en)'
         button: 'Migrationen jetzt anwenden'
+        phantom_skip_show: 'Erweitert: Phantom-Migrationen überspringen…'
+        phantom_skip_body: 'Wenn das normale Anwenden bereits an einer Phantom-Migration scheitert (Spalte/Tabelle existiert schon im Schema), kannst du ALLE ausstehenden Migrationen als ausgeführt markieren ohne DDL erneut zu fahren. Nur nutzen wenn du sicher bist, dass das Schema bereits den Ziel-Zustand hat.'
+        phantom_skip_button: 'Alle ausstehenden als ausgeführt markieren (Phantom-Bypass)'
     drift:
         title: 'Schema-Drift erkannt'
         body: 'Alle Migrationen sind angewendet, aber das Datenbank-Schema weicht von der Entity-Definition ab. Mit einem Klick reconcilen:'
