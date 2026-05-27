@@ -153,11 +153,35 @@
             const $errBox   = document.getElementById('job-error-trace');
             const $backLink = document.getElementById('job-back-link');
 
+            // Extract the job UUID from the polling URL so we can pass it on
+            // to the back-link's `?failed_job_id=` query — the QuickFix index
+            // looks the structured payload up via JobStatusService and renders
+            // the recovery card (see QuickFixController::index + JobContext::updatePayload).
+            function extractJobIdFromStatusUrl(url) {
+                const m = /\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\//.exec(url || '');
+                return m ? m[1] : null;
+            }
+
+            function appendFailedJobIdToBackLink() {
+                const href = $backLink.getAttribute('href');
+                if (!href) return;
+                const jobId = extractJobIdFromStatusUrl(statusUrl);
+                if (!jobId) return;
+                try {
+                    const url = new URL(href, window.location.origin);
+                    url.searchParams.set('failed_job_id', jobId);
+                    $backLink.setAttribute('href', url.pathname + url.search + url.hash);
+                } catch (_) { /* keep original */ }
+            }
+
             function applyTerminal(klass) {
                 terminal = true;
                 if (timer) { clearInterval(timer); timer = null; }
                 $status.classList.add(klass);
                 $bar.classList.add(klass);
+                if (klass === 'failed') {
+                    appendFailedJobIdToBackLink();
+                }
                 $backLink.style.display = '';
             }
 
