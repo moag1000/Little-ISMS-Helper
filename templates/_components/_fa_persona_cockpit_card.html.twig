@@ -1,0 +1,58 @@
+{#
+ # fa-persona-cockpit-card — Aurora v4 Welle 3 (2026-05-27)
+ # Persona dashboard entry card with KPI snippet + CTA.
+ #
+ # Usage:
+ #   {% from '_components/_fa_persona_cockpit_card.html.twig' import fa_persona_cockpit_card %}
+ #   {{ fa_persona_cockpit_card({
+ #       persona: 'isb',
+ #       name: 'Senior ISB',
+ #       kpis: [
+ #           {label: 'Offene Tasks', value: 7, tone: 'warning'},
+ #           {label: 'Überfällige Risiken', value: 2, tone: 'danger'},
+ #           {label: 'NCs offen', value: 1, tone: 'info'}
+ #       ],
+ #       href: path('app_dashboard_isb', {_locale: app.request.locale})
+ #   }) }}
+ #
+ # Params:
+ #   persona               (string: ciso|isb|dpo|risk|compliance|bcm|auditor|board, required)
+ #   name                  (string, required)
+ #   role                  (string, optional)  subtitle
+ #   kpis                  (array of {label, value, tone: warning|danger|info|success}, max 3)
+ #   href                  (url, required)
+ #   loading               (bool, default false)
+ #}
+{% macro fa_persona_cockpit_card(config) %}
+    {% set persona = config.persona|default('isb') %}
+    <a href="{{ config.href }}"
+       class="fa-persona-cockpit-card fa-persona-cockpit-card--{{ persona }}"
+       aria-label="{{ config.name }}{% if config.role is defined and config.role %} · {{ config.role }}{% endif %} Cockpit öffnen">
+        <div class="fa-persona-cockpit-card__icon">
+            <i class="fa-icon fa-icon--persona-{{ persona }}" aria-hidden="true"></i>
+        </div>
+
+        <div>
+            <p class="fa-persona-cockpit-card__name">{{ config.name }}</p>
+            {% if config.role is defined and config.role %}
+                <p class="fa-persona-cockpit-card__role">{{ config.role }}</p>
+            {% endif %}
+        </div>
+
+        {% if config.kpis is defined and config.kpis %}
+            <div class="fa-persona-cockpit-card__kpis">
+                {% for kpi in config.kpis|slice(0, 3) %}
+                    <div class="fa-persona-cockpit-card__kpi">
+                        <span class="fa-persona-cockpit-card__kpi-value{% if kpi.tone is defined and kpi.tone %} fa-persona-cockpit-card__kpi-value--{{ kpi.tone }}{% endif %}"
+                              aria-label="{{ kpi.value }} {{ kpi.label }}">
+                            {{- kpi.value -}}
+                        </span>
+                        <span class="fa-persona-cockpit-card__kpi-label">{{ kpi.label }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <span class="fa-persona-cockpit-card__cta">Zum Cockpit →</span>
+    </a>
+{% endmacro %}

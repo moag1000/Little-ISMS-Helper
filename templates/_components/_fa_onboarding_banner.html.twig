@@ -1,0 +1,68 @@
+{#
+ # fa-onboarding-banner — Aurora v4 Welle 2 (2026-05-27)
+ # Welcome banner for new tenants (assetCount < 5, createdAt < 30d).
+ # Dismissable via POST /preferences/dismiss/{key}.
+ #
+ # Usage:
+ #   {% from '_components/_fa_onboarding_banner.html.twig' import fa_onboarding_banner %}
+ #   {{ fa_onboarding_banner({
+ #       mood: 'happy',
+ #       title: 'Neu bei Informationssicherheit?',
+ #       body: 'Du kommst aus dem QM/9001-Umfeld?...',
+ #       ctas: [
+ #           {label: 'ISO 9001 → 27001 Brücke', href: path('app_help_iso_bridge', {_locale: app.request.locale}), variant: 'primary'},
+ #           {label: 'Erste Schritte', href: path('app_help_onboarding_tour', {_locale: app.request.locale}), variant: 'secondary'}
+ #       ],
+ #       dismissKey: 'iso9001_bridge'
+ #   }) }}
+ #
+ # Params:
+ #   mood        (string, default 'happy') — Alva mood
+ #   title       (string, required)
+ #   body        (string, required)
+ #   ctas        (array of {label, href, variant})
+ #   dismissKey  (string, required) — used in POST /preferences/dismiss/{key}
+ #}
+{% macro fa_onboarding_banner(config) %}
+    {% set mood = config.mood|default('happy') %}
+    <div class="fa-onboarding-banner" role="region" aria-labelledby="onboarding-banner-title-{{ config.dismissKey|default('default') }}">
+        <div class="fa-onboarding-banner__alva" aria-hidden="true">
+            {% include '_alva/alva-' ~ mood ~ '.html.twig' ignore missing %}
+        </div>
+
+        <div class="fa-onboarding-banner__content">
+            <h2 class="fa-onboarding-banner__title" id="onboarding-banner-title-{{ config.dismissKey|default('default') }}">
+                {{ config.title }}
+            </h2>
+            <p class="fa-onboarding-banner__body">{{ config.body }}</p>
+
+            <div class="fa-onboarding-banner__actions">
+                {% for cta in config.ctas|default([]) %}
+                    <a href="{{ cta.href }}"
+                       class="btn btn-{{ cta.variant|default('secondary') }} btn-sm">
+                        {{ cta.label }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if config.dismissKey is defined and config.dismissKey %}
+            <div class="fa-onboarding-banner__dismiss-group">
+                <form method="post"
+                      action="{{ path('app_preferences_dismiss', {key: config.dismissKey}) }}"
+                      data-turbo="true">
+                    <input type="hidden" name="_token" value="{{ csrf_token('dismiss_' ~ config.dismissKey) }}">
+                    <input type="hidden" name="permanent" value="1">
+                    <button type="submit" class="fa-onboarding-banner__dismiss">Ausblenden</button>
+                </form>
+                <form method="post"
+                      action="{{ path('app_preferences_dismiss', {key: config.dismissKey}) }}"
+                      data-turbo="true">
+                    <input type="hidden" name="_token" value="{{ csrf_token('dismiss_' ~ config.dismissKey) }}">
+                    <input type="hidden" name="permanent" value="0">
+                    <button type="submit" class="fa-onboarding-banner__dismiss">Später</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}

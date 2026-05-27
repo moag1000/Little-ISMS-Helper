@@ -660,6 +660,17 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `isms-comment-thread` | Comment-thread for Show-Pages (10 entities whitelisted by CommentController) | `_isms_comment_thread.html.twig` |
 | `isms-approval-stages` | Multi-stage approval visualization (workflow instances) | `_isms_approval_stages.html.twig` |
 | `.fa-aurora-surface` | Opt-in page-level Aurora atmosphere (CSS utility, not macro) | — |
+| `fa-mega-menu-section-header` | Section header inside mega-menu panel (title + norm-ref badge + density-hint + view-all link + count chip) | `_fa_mega_menu_section_header.html.twig` |
+| `fa-quick-action-button` | Pill-style quick-action button for mega-menu Schnellaktionen grid; gates on `module` + `persona` | `_fa_quick_action_button.html.twig` |
+| `fa-onboarding-banner` | New-tenant welcome banner (Alva mood + title + body + CTA row + dismiss form). Requires `app_preferences_dismiss` route. | `_fa_onboarding_banner.html.twig` |
+| `fa-glossary-tooltip` | Acronym tooltip with inline or async-loaded definition (`/api/glossary/{acronym}`). Stimulus: `glossary-tooltip`. | `_fa_glossary_tooltip.html.twig` |
+| `fa-industry-baseline-chip` | Industry-baseline chip showing sector icon, name, desc, linked frameworks. Used in coverage wizard. | `_fa_industry_baseline_chip.html.twig` |
+| `fa-density-toggle` | Compact/Standard/Expert UI-density radio fieldset. Stimulus: `density-toggle`. Persists via `POST /preferences/density`. | `_fa_density_toggle.html.twig` |
+| `fa-persona-cockpit-card` | Persona dashboard entry-card (`--{persona}` BEM modifier, `--persona-color` CSS var, KPI slots). | `_fa_persona_cockpit_card.html.twig` |
+| `fa-coverage-matrix` | Framework × control-domain heat-grid table (`__cell--heat-{0-4}`, trend arrows). | `_fa_coverage_matrix.html.twig` |
+| `fa-reuse-roi-counter` | Animated count-up ROI counter (IntersectionObserver, `prefers-reduced-motion`). Stimulus: `reuse-roi-counter`. | `_fa_reuse_roi_counter.html.twig` |
+| `fa-audit-program-timeline` | Horizontal Gantt-style audit-program timeline (today-line, overdue pulse, milestone pins). | `_fa_audit_program_timeline.html.twig` |
+| `fa-maturity-heat-map` | Inline maturity score widget (0–5 dot row with heat-level BEM modifier). | `_fa_maturity_heat_map.html.twig` |
 
 Import pattern for macros: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
 For the bulk-action bar use `{% include '_components/_bulk_action_bar.html.twig' with { actions: [...], variant: 'neutral' } %}` (it is a plain include, not a macro). `variant: 'brand'` for hero lists (risk, document). The canonical CSS class set is `.fa-bulk-bar*` (BEM); the old `.bulk-action-bar*` is a deprecated shim.

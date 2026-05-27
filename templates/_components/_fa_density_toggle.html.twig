@@ -1,0 +1,51 @@
+{#
+ # fa-density-toggle — Aurora v4 Welle 3 (2026-05-27)
+ # 3-segment density picker. Setzt data-density auf <body> per Stimulus.
+ #
+ # Usage:
+ #   {% from '_components/_fa_density_toggle.html.twig' import fa_density_toggle %}
+ #   {{ fa_density_toggle({
+ #       current: app.user.menuDensity|default('standard'),
+ #       formAction: path('app_profile_density_set')
+ #   }) }}
+ #
+ # Params:
+ #   current       (string: basic|standard|expert, required)
+ #   personaDefault (string, optional)  e.g. "Senior-ISB → Standard"
+ #   lockedBy      (string|null, optional)  disables toggle if set
+ #   formAction    (url, required)
+ #}
+{% macro fa_density_toggle(config) %}
+    {% set current = config.current|default('standard') %}
+    {% set locked = config.lockedBy is defined and config.lockedBy %}
+    <fieldset class="fa-density-toggle"
+              data-controller="density-toggle"
+              data-density-toggle-endpoint-value="{{ config.formAction }}">
+        <legend class="visually-hidden">Menü-Dichte wählen</legend>
+        <div class="fa-density-toggle__group" role="radiogroup">
+            {% set options = [
+                {value: 'basic',    icon: 'density-1', label: 'Basic',    hint: '5–7 Items · Akronyme erklärt'},
+                {value: 'standard', icon: 'density-2', label: 'Standard', hint: '10–12 Items · ausgewogen'},
+                {value: 'expert',   icon: 'density-3', label: 'Expert',   hint: 'Alle Items · Maturity-Scores'},
+            ] %}
+            {% for opt in options %}
+                <label class="fa-density-toggle__opt fa-density-toggle__opt--{{ opt.value }}{% if current == opt.value %} is-active{% endif %}"
+                       {% if locked %}title="Gesperrt durch: {{ config.lockedBy }}"{% endif %}
+                       aria-describedby="density-hint-{{ opt.value }}">
+                    <input type="radio"
+                           name="density"
+                           value="{{ opt.value }}"
+                           {% if current == opt.value %}checked{% endif %}
+                           {% if locked %}disabled{% endif %}
+                           data-action="change->density-toggle#submit">
+                    <i class="fa-icon fa-icon--{{ opt.icon }}" aria-hidden="true"></i>
+                    <span class="fa-density-toggle__label">{{ opt.label }}</span>
+                    <span class="fa-density-toggle__hint" id="density-hint-{{ opt.value }}">{{ opt.hint }}</span>
+                    {% if config.personaDefault is defined and config.personaDefault and opt.value == 'standard' %}
+                        <span class="fa-density-toggle__badge">{{ config.personaDefault }}</span>
+                    {% endif %}
+                </label>
+            {% endfor %}
+        </div>
+    </fieldset>
+{% endmacro %}

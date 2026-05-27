@@ -1,0 +1,60 @@
+{#
+ # fa-industry-baseline-chip — Aurora v4 Welle 2 (2026-05-27)
+ # Selectable industry profile chip for onboarding wizard.
+ # Wrap chips in .fa-industry-chip-grid container.
+ #
+ # Usage:
+ #   {% from '_components/_fa_industry_baseline_chip.html.twig' import fa_industry_baseline_chip %}
+ #   <div class="fa-industry-chip-grid" role="group" aria-label="Branche wählen">
+ #       {{ fa_industry_baseline_chip({
+ #           industry: 'finance',
+ #           name: 'Finanzdienstleister',
+ #           description: 'BaFin · DORA · MaRisk',
+ #           frameworks: ['dora', 'nis2'],
+ #           templateCount: {controls: 38, risks: 12},
+ #           selected: false
+ #       }) }}
+ #   </div>
+ #
+ # Params:
+ #   industry       (string, required)
+ #   name           (string, required)
+ #   description    (string, optional)
+ #   frameworks     (array of strings, optional)
+ #   templateCount  (object: {controls, risks, suppliers}, optional)
+ #   selected       (bool, default false)
+ #   disabled       (bool, default false)
+ #}
+{% macro fa_industry_baseline_chip(config) %}
+    {% set selected = config.selected|default(false) %}
+    {% set disabled = config.disabled|default(false) %}
+    <button type="button"
+            class="fa-industry-chip{% if selected %} is-selected{% endif %}"
+            role="checkbox"
+            aria-checked="{{ selected ? 'true' : 'false' }}"
+            {% if disabled %}disabled aria-disabled="true"{% endif %}
+            data-industry="{{ config.industry }}">
+        <i class="fa-icon fa-icon--industry-baseline fa-industry-chip__icon" aria-hidden="true"></i>
+        <span class="fa-industry-chip__body">
+            <strong class="fa-industry-chip__name">{{ config.name }}</strong>
+            {% if config.description is defined and config.description %}
+                <span class="fa-industry-chip__desc">{{ config.description }}</span>
+            {% endif %}
+            {% if config.templateCount is defined %}
+                <span class="fa-industry-chip__desc">
+                    {%- if config.templateCount.controls is defined %}~{{ config.templateCount.controls }} Controls{% endif %}
+                    {%- if config.templateCount.risks is defined %} · {{ config.templateCount.risks }} Risiken{% endif %}
+                    {%- if config.templateCount.suppliers is defined %} · {{ config.templateCount.suppliers }} Lieferanten{% endif %}
+                </span>
+            {% endif %}
+        </span>
+        {% if config.frameworks is defined and config.frameworks %}
+            <span class="fa-industry-chip__frameworks">
+                {% for fw in config.frameworks %}
+                    <span class="fa-industry-chip__framework-badge">{{ fw|upper }}</span>
+                {% endfor %}
+            </span>
+        {% endif %}
+        <i class="fa-icon fa-icon--status-ok fa-industry-chip__check" aria-hidden="true"></i>
+    </button>
+{% endmacro %}

@@ -6,7 +6,7 @@ nav:
     analytics: Analytics
     fte_tracking: 'FTE Tracking'
     interested_parties: 'Interested Parties'
-    soa: SoA
+    soa: 'SoA (Statement of Applicability)'
     assets: Assets
     suppliers: Suppliers
     risks: Risks
@@ -72,8 +72,8 @@ nav:
     management_review: 'Management Review'
     admin_portal: 'Admin Portal'
     privacy_hub: 'Privacy Hub'
-    vvt: 'RoPA (Art. 30)'
-    dpia: 'DPIA (Art. 35)'
+    vvt: 'RoPA – Records of Processing Activities (Art. 30)'
+    dpia: 'DPIA – Data Protection Impact Assessment (Art. 35)'
     data_breaches: 'Data Breaches (Art. 33/34)'
     consents: 'Consents (Art. 7)'
     # Audit-V3 ME-1..ME-12: Module discoverability fix.
@@ -105,6 +105,13 @@ nav:
             compliance: Compliance
             admin: Administration
             help: 'Help & Resources'
+            # Aurora v4 Welle 2 — new categories (2026-05-27)
+            cockpit: 'My Cockpit'
+            portfolio: Portfolio
+            isms_foundation: 'ISMS Foundation'
+            daily_work: 'Daily Work'
+            compliance_audits: 'Compliance & Audits'
+            help_onboarding: 'Help & Onboarding'
 
         section:
             overview: Overview
@@ -132,6 +139,16 @@ nav:
             specialized_tools: 'DORA / NIS2 / MRIS / AI'
             # V3 W2-H2: Persona dashboards (Compliance-Manager dashboard)
             persona_dashboards: 'Persona Dashboards'
+            # Aurora v4 Welle 2 — new sections (2026-05-27)
+            quick_actions: 'Quick Actions'
+            cockpit_personas: 'Persona Overview'
+            coverage: 'Framework Coverage'
+            eu_regulatory: 'EU Regulation & GDPR'
+            bcm_continuity: 'Business Continuity'
+            audits_reviews: 'Audits & Reviews'
+            onboarding: 'Getting Started'
+            learning_paths: 'Learning Paths'
+            reference: Reference
 
         dashboard:
             compliance_manager: 'Compliance Manager Dashboard'
@@ -231,6 +248,13 @@ nav:
             scheduled_reports: 'Schedule recurring report dispatch (PDF/CSV)'
             report_builder: 'Compose custom reports from the widget library'
             evidence_reviewer_queue: 'Review evidence documents and mark as re-verified (ISO 27001 Cl. 7.5.3)'
+
+        # Aurora v4 Phase 2 — Onboarding Banner (2026-05-27)
+        onboarding:
+            title: 'New to information security?'
+            body: 'Start with the guided tour or check your open tasks in "My Day".'
+            cta_tour: 'Start guided tour'
+            cta_checklist: 'Open My Day'
 
     evidence_reviewer_queue: 'Evidence Reviewer Queue'
 
