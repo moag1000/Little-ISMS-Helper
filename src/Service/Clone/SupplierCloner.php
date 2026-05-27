@@ -91,7 +91,7 @@ final class SupplierCloner implements EntityClonerInterface
         $clone->setHasDPA($source->isHasDPA());
 
         // Reset evaluation state.
-        $clone->setStatus('evaluation');
+        $clone->setStatus('evaluation'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setSecurityScore(null);
         $clone->setLastSecurityAssessment(null);
         $clone->setNextAssessmentDate(null);

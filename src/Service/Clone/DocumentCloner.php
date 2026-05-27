@@ -87,7 +87,7 @@ final class DocumentCloner implements EntityClonerInterface
         $clone->setRequiresAcknowledgement($source->isRequiresAcknowledgement());
 
         // Reset lifecycle to draft; clone starts editable.
-        $clone->setStatus('draft');
+        $clone->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setIsArchived(false);
         $clone->setIsImmutable(false);
         $clone->setVersion('1.0');

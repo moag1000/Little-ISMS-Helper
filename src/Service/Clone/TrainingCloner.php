@@ -104,7 +104,7 @@ final class TrainingCloner implements EntityClonerInterface
         }
 
         // Reset lifecycle to 'planned'; clear per-session execution data.
-        $clone->setStatus('planned');
+        $clone->setStatus('planned'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setScheduledDate(null);
         $clone->setCompletionDate(null);
         $clone->setAttendeeCount(0);
