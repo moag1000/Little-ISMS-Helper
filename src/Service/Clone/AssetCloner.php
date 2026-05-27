@@ -53,6 +53,7 @@ final class AssetCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): Asset
     {
         if (!$source instanceof Asset) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'AssetCloner expects %s, got %s',
                 Asset::class,
@@ -107,7 +108,7 @@ final class AssetCloner implements EntityClonerInterface
         }
 
         // Reset lifecycle to active; clear return-date.
-        $clone->setStatus('active');
+        $clone->setStatus('active'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setReturnDate(null);
 
         $clone->setCreatedAt(new DateTimeImmutable());

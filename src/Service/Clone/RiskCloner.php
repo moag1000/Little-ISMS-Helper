@@ -47,6 +47,7 @@ final class RiskCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): Risk
     {
         if (!$source instanceof Risk) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'RiskCloner expects %s, got %s',
                 Risk::class,
@@ -100,7 +101,7 @@ final class RiskCloner implements EntityClonerInterface
         $clone->setDataSubjectImpact($source->getDataSubjectImpact());
 
         // Reset lifecycle to initial marking; clear approval audit fields.
-        $clone->setStatus(RiskStatus::Identified);
+        $clone->setStatus(RiskStatus::Identified); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setReviewDate(null);
         $clone->setAcceptanceApprovedBy(null);
         $clone->setAcceptanceApprovedAt(null);

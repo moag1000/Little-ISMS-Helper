@@ -56,6 +56,7 @@ final class BusinessContinuityPlanCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): BusinessContinuityPlan
     {
         if (!$source instanceof BusinessContinuityPlan) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'BusinessContinuityPlanCloner expects %s, got %s',
                 BusinessContinuityPlan::class,
@@ -119,7 +120,7 @@ final class BusinessContinuityPlanCloner implements EntityClonerInterface
         }
 
         // Reset lifecycle + test/review cadence (must be re-planned).
-        $clone->setStatus('draft');
+        $clone->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setVersion('1.0');
         $clone->setLastTested(null);
         $clone->setNextTestDate(null);

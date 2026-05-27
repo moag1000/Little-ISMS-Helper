@@ -56,6 +56,7 @@ final class AuditFindingCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): AuditFinding
     {
         if (!$source instanceof AuditFinding) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'AuditFindingCloner expects %s, got %s',
                 AuditFinding::class,
@@ -102,7 +103,7 @@ final class AuditFindingCloner implements EntityClonerInterface
         }
 
         // Reset lifecycle to 'open'; clear all per-execution audit data.
-        $clone->setStatus('open');
+        $clone->setStatus('open'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setFindingNumber(null);
         $clone->setDueDate(null);
         $clone->setClosedAt(null);

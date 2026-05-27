@@ -50,6 +50,7 @@ final class DocumentCloner implements EntityClonerInterface
     public function clone(object $source, ?Tenant $targetTenant = null, ?string $titleOverride = null): Document
     {
         if (!$source instanceof Document) {
+            // @intentional-assertion: programmer error — wrong entity passed to cloner
             throw new \InvalidArgumentException(sprintf(
                 'DocumentCloner expects %s, got %s',
                 Document::class,
@@ -87,7 +88,7 @@ final class DocumentCloner implements EntityClonerInterface
         $clone->setRequiresAcknowledgement($source->isRequiresAcknowledgement());
 
         // Reset lifecycle to draft; clone starts editable.
-        $clone->setStatus('draft');
+        $clone->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
         $clone->setIsArchived(false);
         $clone->setIsImmutable(false);
         $clone->setVersion('1.0');
