@@ -189,6 +189,7 @@ class BackupService
         'AssetDependency',
         'DoraDataFlow',
         'DoraExitPlan',
+        'DoraSubcontractor',
     ];
 
     /**

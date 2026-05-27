@@ -149,9 +149,9 @@ Aktuelle Implementation = nur Skelett für Sprint 8 prototype.
 | 6.7 | ESA Taxonomie B_03.02 (ICT-Asset-Detail-Table) — Asset.doraRelevant entities aggregieren |
 | 6.8 | XBRL-Validierung — Arelle-CLI in CI integrieren (verify against ESA taxonomy schema) |
 | 6.9 | ~~ESA Taxonomie RT_03 (data-flow) — DoraDataFlow entity + CRUD + per-provider XBRL emission~~ **closed in PR #725** |
-| 6.10 | ESA Taxonomie RT_04 (subcontractor-chain) — sub-entities + per-provider XBRL emission *(deferred — backlog)* |
+| ~~6.10~~ | ~~ESA Taxonomie RT_04 (Subcontractor-Chain) — dedizierte `DoraSubcontractor`-Entity + rekursiver Chain-Walker im Exporter~~ — **CLOSED 2026-05-26 in PR #726** (`feat/dora-rt04-subcontractor-chain-bucket-6-close`) |
 | ~~6.11 RT_05~~ | ~~ESA Taxonomie B_03.03 (Asset-Dependency-Graph, RT_05) — pro-Edge dependencyType + criticalityImpact via neuer `AssetDependency` Join-Entity (Migration `20260617100000`).~~ **Erledigt** in PR #724 `feat/dora-rt05-asset-dependency-bucket-6-close` (2026-05-26): neue `AssetDependency`-Entity + Repository + 2 Enums (`AssetDependencyType`, `AssetDependencyCriticalityImpact`) + Exporter-Helper `emitAssetDependencyGraph()` (emittiert `roi:B_03.03.0010` Count + `roi:B_03.03_dependency` Wrapper mit Source/Target IDs + Names + Type + Cascade + Notes) + Show-Template Tree-Renderer + 8 neue Tests. Legacy `Asset.dependsOn` ManyToMany bleibt unangetastet (BSI 3.6 Schutzbedarfsvererbung BC). |
-| 6.12 | ~~ESA Taxonomie RT_06 (Decommission/Exit-Plan) — DoraExitPlan-Entity + CRUD + RT_06-Emit + Rehearsal-Overdue Alva-Hint~~ **closed in PR #727** |
+| ~~6.12~~ | ~~ESA Taxonomie RT_06 (Decommission/Exit-Plan) — DoraExitPlan-Entity + CRUD + RT_06-Emit + Rehearsal-Overdue Alva-Hint~~ **CLOSED in PR #727** (`feat/dora-rt06-exit-plan-bucket-6-close`) |
 
 **Risk**: Hoch — regulatorisch verbindlich, ESA-Taxonomie strikt validiert.
 **Effort**: 5-8 Tage. PR 6a (LEI-Felder), PR 6b (B_01/B_02 wiring), PR 6c (B_02.0060+ + B_03.02 + Arelle).

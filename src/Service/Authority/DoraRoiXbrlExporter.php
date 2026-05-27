@@ -7,11 +7,14 @@ namespace App\Service\Authority;
 use App\Entity\Asset;
 use App\Entity\AssetDependency;
 use App\Entity\DoraDataFlow;
+use App\Entity\DoraSubcontractor;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Repository\AssetDependencyRepository;
 use App\Repository\AssetRepository;
 use App\Repository\DoraDataFlowRepository;
 use App\Repository\DoraExitPlanRepository;
+use App\Repository\DoraSubcontractorRepository;
 use App\Repository\SupplierRepository;
 use DateTimeImmutable;
 use DOMDocument;
@@ -52,6 +55,7 @@ final class DoraRoiXbrlExporter
         private readonly ?AssetDependencyRepository $assetDependencyRepository = null,
         private readonly ?DoraExitPlanRepository $exitPlanRepository = null,
         private readonly ?DoraDataFlowRepository $dataFlowRepository = null,
+        private readonly ?DoraSubcontractorRepository $subcontractorRepository = null,
     ) {
     }
 
@@ -330,10 +334,33 @@ final class DoraRoiXbrlExporter
                 $providerEl->appendChild($this->buildDataFlowElement($dom, $flow, $i + 1, $k + 1));
             }
 
-            // RT_04 (subcontractor-chain) still deferred — kept as audit-gap
-            // marker. RT_03 has moved from this comment to the loop above.
+            // ─── RT_04 — Subcontractor-chain (Bucket-6 close, 2026-05-26) ─────
+            // Walks the DoraSubcontractor tree rooted at this prime supplier
+            // and emits one <roi:RT_04_subcontractor> wrapper per node,
+            // recursively. Each node carries the mandatory chain-row fields
+            // (name, LEI, country, tier, criticality, substitutability,
+            // service description). The tree is materialised on the
+            // controller / form side; here we just walk the
+            // `parentSubcontractor` graph rooted at `$supplier`.
+            $chainRoots = $this->subcontractorRepository?->findDirectChildrenOfSupplier($supplier) ?? [];
+            if ($chainRoots !== []) {
+                $rt04Wrapper = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04_subcontractor_chain');
+                foreach ($chainRoots as $rootSub) {
+                    $rt04Wrapper->appendChild($this->buildSubcontractorElement($dom, $rootSub));
+                }
+                $providerEl->appendChild($rt04Wrapper);
+            } else {
+                $providerEl->appendChild($dom->createComment(
+                    ' RT_04 subcontractor-chain: no sub-providers registered for this prime '
+                ));
+            }
+
+            // Remaining deferred-gap marker — only the residual B_02.02
+            // field-level rows (0140–0999) remain pending. RT_03 (data-flow),
+            // RT_04 (subcontractor-chain), RT_05 (asset-dependency-graph),
+            // and RT_06 (decommission/exit-plan) are all now wired.
             $providerEl->appendChild($dom->createComment(
-                ' TODO: B_02.02.0140–0999 + RT_04 subcontractor-chain — pending dedicated sub-entities '
+                ' TODO: B_02.02.0140–0999 — pending dedicated sub-entities '
             ));
 
             $root->appendChild($providerEl);
@@ -514,12 +541,12 @@ final class DoraRoiXbrlExporter
             $root->appendChild($planEl);
         }
 
-        // Only RT_04 (subcontractor-chain) remains deferred — needs richer
-        // sub-entities (subcontractor join-table is in place but function-
-        // mapping isn't), and we'd rather defer cleanly than emit stub rows
-        // that get rejected by Arelle.
+        // All major RT_xx sub-tables (RT_03 data-flow, RT_04 subcontractor-
+        // chain, RT_05 asset-dependency-graph, RT_06 exit-plan) are now wired.
+        // Residual gaps are field-level — see the per-provider TODO comment
+        // emitted inside the B_02.02 loop.
         $root->appendChild($dom->createComment(
-            ' TODO: RT_04 subcontractor-chain — pending dedicated function-mapping sub-entities '
+            ' NOTE: RT_03–RT_06 wired; residual B_02.02.0140–0999 field-level gaps tracked per-provider '
         ));
 
         $xml = $dom->saveXML();
@@ -828,6 +855,74 @@ final class DoraRoiXbrlExporter
         }
 
         return $flowEl;
+    }
+
+    /**
+     * Recursively materialises a `<roi:RT_04_subcontractor>` element for a
+     * subcontractor node + each of its children (sub-sub-contractors etc.).
+     *
+     * Emits these fields per node:
+     *  - RT_04.0010 — Name
+     *  - RT_04.0020 — LEI (ISO 17442) — "N/A" sentinel when unset
+     *  - RT_04.0030 — Country (ISO 3166-1 alpha-2)
+     *  - RT_04.0040 — Tier (2 = direct sub of prime, 3+ = nested)
+     *  - RT_04.0050 — Criticality (critical/important/standard)
+     *  - RT_04.0060 — Substitutability (high/medium/low)
+     *  - RT_04.0070 — Service description (free text)
+     *
+     * Children are nested inside a `<roi:RT_04_children>` wrapper so the
+     * tree shape is preserved verbatim when consumers walk the XBRL.
+     */
+    private function buildSubcontractorElement(DOMDocument $dom, DoraSubcontractor $sub): DOMElement
+    {
+        $wrapper = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04_subcontractor');
+        $wrapper->setAttribute('id', sprintf('rt04_sub_%d', $sub->getId() ?? 0));
+
+        $name = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04.0010');
+        $name->setAttribute('contextRef', 'ctx_period');
+        $name->textContent = (string) ($sub->getName() ?? 'Unknown Subcontractor');
+        $wrapper->appendChild($name);
+
+        $lei = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04.0020');
+        $lei->setAttribute('contextRef', 'ctx_period');
+        $lei->textContent = $sub->getLeiCode() ?? 'N/A';
+        $wrapper->appendChild($lei);
+
+        $country = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04.0030');
+        $country->setAttribute('contextRef', 'ctx_period');
+        $country->textContent = $sub->getCountry() ?? '';
+        $wrapper->appendChild($country);
+
+        $tier = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04.0040');
+        $tier->setAttribute('contextRef', 'ctx_period');
+        $tier->textContent = (string) $sub->getTier();
+        $wrapper->appendChild($tier);
+
+        $crit = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04.0050');
+        $crit->setAttribute('contextRef', 'ctx_period');
+        $crit->textContent = $sub->getCriticality();
+        $wrapper->appendChild($crit);
+
+        $subst = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04.0060');
+        $subst->setAttribute('contextRef', 'ctx_period');
+        $subst->textContent = $sub->getSubstitutability();
+        $wrapper->appendChild($subst);
+
+        $svc = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04.0070');
+        $svc->setAttribute('contextRef', 'ctx_period');
+        $svc->textContent = (string) ($sub->getServiceDescription() ?? '');
+        $wrapper->appendChild($svc);
+
+        $children = $sub->getChildren();
+        if ($children->count() > 0) {
+            $childrenWrapper = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_04_children');
+            foreach ($children as $child) {
+                $childrenWrapper->appendChild($this->buildSubcontractorElement($dom, $child));
+            }
+            $wrapper->appendChild($childrenWrapper);
+        }
+
+        return $wrapper;
     }
 
     /**

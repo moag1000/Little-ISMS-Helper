@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dora' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'dora_subcontractor.title.list'|trans({}, 'dora') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dora_compliance'|trans({}, 'nav'), url: path('app_dora_compliance_dashboard') },
+            { label: 'dora_subcontractor.title.list'|trans({}, 'dora') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'diagram-3', label: 'dora_subcontractor.badge'|trans({}, 'dora') },
+        title: 'dora_subcontractor.title.list'|trans({}, 'dora'),
+        subtitle: 'dora_subcontractor.subtitle'|trans({}, 'dora'),
+        actions: [
+            { label: 'dora_subcontractor.action.create'|trans({}, 'dora'), variant: 'primary', icon: 'plus', href: path('app_dora_subcontractor_new') }
+        ]
+    }) }}
+</div>
+
+<main class="fa-aurora-surface">
+    <div class="container">
+    {% if tree is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'curious',
+            title: 'dora_subcontractor.empty.title'|trans({}, 'dora'),
+            body: 'dora_subcontractor.empty.body'|trans({}, 'dora'),
+            primary: { label: 'dora_subcontractor.action.create'|trans({}, 'dora'), href: path('app_dora_subcontractor_new'), icon: 'plus' }
+        }) }}
+    {% else %}
+        {% for bucket in tree %}
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="bi bi-building me-2" aria-hidden="true"></i>
+                        {{ bucket.supplier.name }}
+                        {% if bucket.supplier.leiCode %}
+                            <small class="text-muted-color">({{ bucket.supplier.leiCode }})</small>
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    <ul class="list-unstyled dora-subcontractor-tree">
+                        {% for root in bucket.roots %}
+                            {{ _self.render_node(root) }}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+        {% endfor %}
+    {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+{% macro render_node(item) %}
+    {% set sub = item.node %}
+    <li class="dora-subcontractor-tree__item">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-secondary">T{{ sub.tier }}</span>
+            <a href="{{ path('app_dora_subcontractor_show', {id: sub.id}) }}">
+                <strong>{{ sub.name }}</strong>
+            </a>
+            {% if sub.country %}
+                <span class="badge bg-light text-dark">{{ sub.country }}</span>
+            {% endif %}
+            {% set critVariant = sub.criticality == 'critical' ? 'danger' : (sub.criticality == 'important' ? 'warning' : 'info') %}
+            <span class="badge bg-{{ critVariant }}">{{ ('dora_subcontractor.criticality.' ~ sub.criticality)|trans({}, 'dora') }}</span>
+            {% set substVariant = sub.substitutability == 'low' ? 'danger' : (sub.substitutability == 'medium' ? 'warning' : 'success') %}
+            <span class="badge bg-{{ substVariant }}">
+                {{ 'dora_subcontractor.field.substitutability'|trans({}, 'dora') }}:
+                {{ ('dora_subcontractor.substitutability.' ~ sub.substitutability)|trans({}, 'dora') }}
+            </span>
+        </div>
+        {% if item.children|length > 0 %}
+            <ul class="dora-subcontractor-tree__children ms-4 ps-3 border-start">
+                {% for child in item.children %}
+                    {{ _self.render_node(child) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}

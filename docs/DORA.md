@@ -220,13 +220,19 @@ ein well-formed XBRL-Dokument mit den folgenden ESA-Taxonomie-Elementen:
 | `B_03.03.0020-0080` (Per-Edge Asset-Dependency-Graph, RT_05) | `Asset.dependsOn` + optional `AssetDependency` Join-Entity (Type + Cascade + Notes) | **9 / 6 close (RT_05)** |
 | `RT_03.0010-0070` (Data-Flow-Sub-Table) | `DoraDataFlow` (supplier, direction, categories, purpose, security, volume, cross-border, country) | **9 / 6.9** |
 
+**Implementiert (Bucket-6 close, 2026-05-26):**
+- ~~RT_04 (Subcontractor-Chain-Sub-Table)~~ — `DoraSubcontractor`-Entity (tier 2-5) +
+  CRUD unter `/dora/subcontractor` + rekursiver Chain-Walker im XBRL-Exporter
+  (`<roi:RT_04_subcontractor_chain>` → `<roi:RT_04_subcontractor>` → `RT_04.0010-0070` +
+  geschachtelte `<roi:RT_04_children>` für tier ≥ 3). Migration:
+  `Version20260617100000_DoraSubcontractorRt04Chain`.
+
 **Noch nicht implementiert (deferred):**
-- `B_02.02.0140-0999` + RT_04 (Subcontractor-Chain-Sub-Table)
+- `B_02.02.0140-0999` (verbleibende Provider-Stammdaten-Felder)
 - RT_06 (Decommission-Plan)
 
 Diese ESA-Taxonomie-Bereiche benoetigen dedizierte Sub-Entities, die bisher nicht im
-Datenmodell vorhanden sind (Subcontractor-Chain hat eine JSON-Spalte, ist aber nicht
-auf die Tiefe der ESA-Taxonomie modelliert). Markiert via `TODO`-Kommentar im Output.
+Datenmodell vorhanden sind. Markiert via `TODO`-Kommentar im Output.
 
 **RT_03 (Data-Flow) — closed:**
 `DoraDataFlow` Entity + CRUD unter `/dora/data-flow/*` + automatische
