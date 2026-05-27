@@ -118,7 +118,7 @@
                     </div>
                     <hr>
 
-                    {# Framework & Objectives #}
+                    {# Framework & Objectives — primary + additional (C4-B4 multi-framework audits) #}
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">
@@ -130,6 +130,9 @@
                                 {% else %}
                                     <span class="text-muted">-</span>
                                 {% endif %}
+                                {% for fw in audit.additionalScopedFrameworks %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', size: 'lg', content: fw.name } %}
+                                {% endfor %}
                             </p>
                         </div>
                         <div class="col-md-6">
@@ -181,6 +184,105 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+
+            {# C4-B4 — Cross-Framework Coverage Matrix (shown when audit covers >1 framework) #}
+            {% if coverageReport is defined and coverageReport.multiFramework %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-info' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="mb-0">
+                                <i class="fa-icon fa-icon--compliance-shield text-info" aria-hidden="true"></i>
+                                {{ 'audit.cross_framework_coverage.title'|trans({}, 'audit') }}
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: 'info',
+                                    content: coverageReport.frameworks|length ~ ' ' ~ 'audit.cross_framework_coverage.frameworks'|trans({}, 'audit')
+                                } %}
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <p class="text-muted small mb-3">
+                            {{ 'audit.cross_framework_coverage.help'|trans({}, 'audit') }}
+                        </p>
+                        {% set _saving = coverageReport.estimatedFteDaySaving %}
+                        {% if _saving > 0 %}
+                            <div class="alert alert-success small mb-3" role="status">
+                                <i class="fa-icon fa-icon--ui-trending-up" aria-hidden="true"></i>
+                                {{ 'audit.cross_framework_coverage.fte_saving'|trans({'%days%': _saving}, 'audit') }}
+                            </div>
+                        {% endif %}
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{{ 'audit.cross_framework_coverage.col.framework'|trans({}, 'audit') }}</th>
+                                        <th scope="col" class="text-end">{{ 'audit.cross_framework_coverage.col.direct'|trans({}, 'audit') }}</th>
+                                        <th scope="col" class="text-end">{{ 'audit.cross_framework_coverage.col.transitive'|trans({}, 'audit') }}</th>
+                                        <th scope="col" class="text-end">{{ 'audit.cross_framework_coverage.col.total'|trans({}, 'audit') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in coverageReport.summaryRows %}
+                                        <tr>
+                                            <td>
+                                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: row.framework.name } %}
+                                            </td>
+                                            <td class="text-end">{{ row.direct }}</td>
+                                            <td class="text-end">
+                                                {% if row.transitive > 0 %}
+                                                    <span class="badge bg-info-subtle text-info-emphasis">+{{ row.transitive }}</span>
+                                                {% else %}
+                                                    <span class="text-muted">0</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end fw-semibold">{{ row.total }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {# Transitive-coverage finding list per framework #}
+                        {% for fw in coverageReport.frameworks %}
+                            {% set _transitive_rows = coverageReport.transitiveRowsFor(fw) %}
+                            {% if _transitive_rows|length > 0 %}
+                                <details class="mt-3">
+                                    <summary class="fw-semibold small">
+                                        {{ 'audit.cross_framework_coverage.transitive_for'|trans({'%framework%': fw.name, '%count%': _transitive_rows|length}, 'audit') }}
+                                    </summary>
+                                    <div class="table-responsive mt-2">
+                                        <table class="table table-sm small">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">{{ 'audit.cross_framework_coverage.col.finding'|trans({}, 'audit') }}</th>
+                                                    <th scope="col">{{ 'audit.cross_framework_coverage.col.target_requirement'|trans({}, 'audit') }}</th>
+                                                    <th scope="col" class="text-end">{{ 'audit.cross_framework_coverage.col.mapping_strength'|trans({}, 'audit') }}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for row in _transitive_rows %}
+                                                    <tr>
+                                                        <td>
+                                                            <a href="{{ path('app_audit_finding_show', { id: row.finding.id }) }}">
+                                                                {{ row.finding.findingNumber|default('#' ~ row.finding.id) }}
+                                                            </a>
+                                                            <span class="text-muted">— {{ row.finding.title|u.truncate(60, '…', false) }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <code class="small">{{ row.target_requirement.requirementId }}</code>
+                                                            <span class="text-muted">— {{ row.target_requirement.title|u.truncate(60, '…', false) }}</span>
+                                                        </td>
+                                                        <td class="text-end">{{ row.mapping_percentage }}%</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </details>
+                            {% endif %}
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
 
             {# Findings Section #}
             {# V3 B3: Structured Findings (preferred over free-text) #}

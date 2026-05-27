@@ -198,7 +198,49 @@
                 <div class="info-value">{{ audit.scopedFramework.version }}</div>
             </div>
             {% endif %}
+            {% if audit.additionalScopedFrameworks|length > 0 %}
+            <div class="info-row">
+                <div class="info-label">{{ 'pdf.label.additional_frameworks'|trans({}, 'audit') }}</div>
+                <div class="info-value">
+                    {% for fw in audit.additionalScopedFrameworks %}
+                        {{ fw.name }}{% if fw.version %} ({{ fw.version }}){% endif %}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
         </div>
+    </div>
+    {% endif %}
+
+    {# C4-B4 — Cross-Framework Coverage Matrix (PDF, shown when audit covers >1 framework) #}
+    {% if coverageReport is defined and coverageReport.multiFramework %}
+    <div class="section">
+        <div class="section-title">{{ 'pdf.section.cross_framework_coverage'|trans({}, 'audit') }}</div>
+        <p>{{ 'audit.cross_framework_coverage.help'|trans({}, 'audit') }}</p>
+        {% set _saving = coverageReport.estimatedFteDaySaving %}
+        {% if _saving > 0 %}
+            <p><strong>{{ 'audit.cross_framework_coverage.fte_saving'|trans({'%days%': _saving}, 'audit') }}</strong></p>
+        {% endif %}
+        <table class="assets-table">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'audit.cross_framework_coverage.col.framework'|trans({}, 'audit') }}</th>
+                    <th scope="col">{{ 'audit.cross_framework_coverage.col.direct'|trans({}, 'audit') }}</th>
+                    <th scope="col">{{ 'audit.cross_framework_coverage.col.transitive'|trans({}, 'audit') }}</th>
+                    <th scope="col">{{ 'audit.cross_framework_coverage.col.total'|trans({}, 'audit') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in coverageReport.summaryRows %}
+                    <tr>
+                        <td>{{ row.framework.name }}</td>
+                        <td>{{ row.direct }}</td>
+                        <td>{{ row.transitive > 0 ? '+' ~ row.transitive : '0' }}</td>
+                        <td>{{ row.total }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% endif %}
 

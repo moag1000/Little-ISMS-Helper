@@ -14,6 +14,7 @@ use App\Lifecycle\LifecycleService;
 use App\Repository\AuditChecklistRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\InternalAuditRepository;
+use App\Service\Audit\CrossFrameworkCoverageService;
 use App\Service\AuditLogger;
 use App\Service\ExcelExportService;
 use App\Service\InternalAuditCloner;
@@ -42,6 +43,7 @@ class AuditController extends AbstractController
         private readonly AuditChecklistRepository $auditChecklistRepository,
         private readonly AuditLogger $auditLogger,
         private readonly LifecycleService $lifecycleService,
+        private readonly CrossFrameworkCoverageService $crossFrameworkCoverage,
         private readonly ?InternalAuditCloner $internalAuditCloner = null,
     ) {}
     #[Route('/audit', name: 'app_audit_index', methods: ['GET'])]
@@ -209,10 +211,14 @@ class AuditController extends AbstractController
         $totalAuditLogs = count($auditLogs);
         $auditLogs = array_slice($auditLogs, 0, 10);
 
+        // C4-B4 — cross-framework coverage analysis for multi-framework audits
+        $coverageReport = $this->crossFrameworkCoverage->buildReport($internalAudit);
+
         return $this->render('audit/show.html.twig', [
             'audit' => $internalAudit,
             'auditLogs' => $auditLogs,
             'totalAuditLogs' => $totalAuditLogs,
+            'coverageReport' => $coverageReport,
         ]);
     }
     #[Route('/audit/{id}/edit', name: 'app_audit_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -629,6 +635,7 @@ class AuditController extends AbstractController
 
         $pdf = $this->pdfExportService->generatePdf('audit/export_pdf.html.twig', [
             'audit' => $internalAudit,
+            'coverageReport' => $this->crossFrameworkCoverage->buildReport($internalAudit),
         ]);
 
         return new Response($pdf, Response::HTTP_OK, [
