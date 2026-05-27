@@ -9271,13 +9271,16 @@ a.fa-matrix-table__cell:focus-visible {
     box-shadow: var(--onboarding-banner-glow);
     position: relative;
 }
+
 @media (prefers-reduced-motion: no-preference) {
     .fa-onboarding-banner { animation: fa-onboarding-slide-in var(--t-base) var(--ease-out) both; }
+
     @keyframes fa-onboarding-slide-in {
         from { opacity: 0; transform: translateY(-8px); }
         to   { opacity: 1; transform: translateY(0); }
     }
 }
+
 @media (max-width: 767.98px) {
     .fa-onboarding-banner { flex-direction: column; align-items: stretch; }
     .fa-onboarding-banner__alva { width: 2rem; height: 2rem; }
@@ -9303,6 +9306,7 @@ a.fa-matrix-table__cell:focus-visible {
 
 /* ─── A.7 fa-quick-action-btn ─────────────────────────────────────── */
 .fa-quick-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
 @media (max-width: 767.98px) {
     .fa-quick-actions { display: grid; grid-template-columns: 1fr 1fr; }
 }
@@ -9342,6 +9346,7 @@ a.fa-matrix-table__cell:focus-visible {
     padding: 0 3px;
     margin-left: 0.25rem;
 }
+
 @media (max-width: 767.98px) { .fa-quick-action-btn__kbd { display: none; } }
 
 /* ─── A.8 fa-glossary-tooltip ─────────────────────────────────────── */
@@ -9366,13 +9371,13 @@ abbr.fa-glossary-tooltip,
     cursor: help;
     transition: background var(--t-fast);
 }
-.fa-glossary-tooltip__indicator:hover { background: var(--primary); color: #fff; }
+.fa-glossary-tooltip__indicator:hover { background: var(--primary); color: var(--on-primary); }
 .fa-glossary-tooltip__popover {
     position: absolute;
     bottom: calc(100% + 0.5rem);
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1080;
+    z-index: var(--z-modal); /* Bootstrap modal-level popover */
     min-width: 220px;
     max-width: 320px;
     background: var(--glossary-tooltip-bg);
@@ -9487,7 +9492,7 @@ abbr.fa-glossary-tooltip,
     font-size: 0.5rem;
     font-family: var(--font-mono);
     background: var(--primary);
-    color: #fff;
+    color: var(--on-primary);
     border-radius: var(--r-pill);
     padding: 0.0625rem 0.25rem;
     line-height: 1.2;
@@ -9508,7 +9513,7 @@ abbr.fa-glossary-tooltip,
     cursor: pointer;
 }
 .fa-persona-cockpit-card:hover {
-    box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px var(--border-strong);
+    box-shadow: 0 4px 24px rgb(0 0 0 / 0.12), 0 0 0 1px var(--border-strong);
     text-decoration: none;
     color: inherit;
 }
@@ -9593,6 +9598,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 .fa-coverage-matrix__trend--up   { color: var(--success); }
 .fa-coverage-matrix__trend--flat { color: var(--fg-3); }
 .fa-coverage-matrix__trend--down { color: var(--danger); }
+
 @media (max-width: 767.98px) {
     .fa-coverage-matrix-wrap { overflow-x: visible; }
     table.fa-coverage-matrix,
@@ -9631,6 +9637,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     transition: text-shadow var(--t-magic);
 }
 .fa-reuse-roi-counter__value.is-complete { text-shadow: var(--reuse-roi-glow); }
+
 @media (prefers-reduced-motion: reduce) { .fa-reuse-roi-counter__value.is-complete { text-shadow: none; } }
 .fa-reuse-roi-counter__unit { font-size: 0.8125rem; color: var(--fg-2); display: block; margin-top: 0.125rem; }
 .fa-reuse-roi-counter__secondary { margin-top: 0.5rem; font-size: 0.875rem; color: var(--fg-2); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
@@ -9688,8 +9695,10 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     outline: none;
 }
 .fa-audit-program-timeline__pin--overdue { background: var(--audit-timeline-overdue); box-shadow: var(--audit-timeline-overdue-glow); }
+
 @media (prefers-reduced-motion: no-preference) {
     .fa-audit-program-timeline__pin--overdue { animation: fa-audit-pin-pulse 1.5s ease-in-out infinite; }
+
     @keyframes fa-audit-pin-pulse {
         0%, 100% { box-shadow: var(--audit-timeline-overdue-glow); }
         50%       { box-shadow: 0 0 16px var(--audit-timeline-overdue); }
@@ -9705,6 +9714,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     border: 2px solid var(--surface);
     z-index: 3;
 }
+
 @media (max-width: 767.98px) {
     .fa-audit-program-timeline { overflow-x: hidden; }
     .fa-audit-program-timeline__header { display: none; }
@@ -9805,7 +9815,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 .h-icon-btn__badge {
     position: absolute; top: -2px; right: -2px;
     width: 16px; height: 16px; border-radius: 50%;
-    background: var(--danger); color: #fff;
+    background: var(--danger); color: var(--on-primary);
     font: 700 9px var(--font-mono);
     display: flex; align-items: center; justify-content: center;
     border: 2px solid var(--bg);
@@ -9914,6 +9924,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     box-shadow: 0 0 10px color-mix(in oklab, var(--danger) 35%, transparent);
     animation: sb-badge-pulse 1.8s ease-in-out infinite;
 }
+
 @keyframes sb-badge-pulse {
     50% { box-shadow: 0 0 16px color-mix(in oklab, var(--danger) 55%, transparent); }
 }
@@ -10003,7 +10014,7 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 .sb-density__opt:hover { color: var(--fg); }
 .sb-density__opt.is-active {
     background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: #fff;
+    color: var(--on-primary);
     box-shadow: 0 0 12px var(--primary-glow);
 }
 .sb-density__opt:focus-visible {
@@ -10022,11 +10033,11 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
         radial-gradient(circle at 0% 100%, color-mix(in oklab, var(--primary) 6%, transparent), transparent 45%),
         var(--surface);
     border-right: 1px solid color-mix(in oklab, var(--primary) 22%, var(--border));
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.25),
+    box-shadow: 12px 0 32px rgb(0 0 0 / 0.25),
                 inset 1px 0 0 color-mix(in oklab, var(--accent) 30%, transparent);
     padding: 24px 32px;
     overflow-y: auto;
-    z-index: 50;
+    z-index: var(--z-popover); /* 50 — flyout above sidebar, below modals */
     opacity: 0;
     transform: translateX(-12px);
     pointer-events: none;

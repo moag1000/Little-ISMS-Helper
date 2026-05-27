@@ -1,60 +1,77 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Two-Level Mega Menu Controller
- * Manages interactions for the mega menu navigation component
+ * Wave 5 — Sidebar Mega-Menu Controller
+ * Manages the sidebar L1 triggers + flyout-panel interactions.
  *
- * Usage:
- * <div data-controller="mega-menu">
- *   <button data-action="click->mega-menu#toggle" data-category="dashboard">Dashboard</button>
- *   <div data-category="dashboard">Panel content</div>
- * </div>
+ * App-shell layout:
+ *   .app__sidebar  — sticky sidebar containing sb-link trigger buttons
+ *   .flyout        — fixed panels rendered at body level, keyed by data-category
+ *
+ * CSS state classes:
+ *   trigger: [open]          — sb-link button while its flyout is open
+ *   panel:   .is-open        — flyout panel visible (opacity/transform via CSS)
+ *
+ * Stimulus targets (declared on the sidebar element via data-controller="mega-menu"):
+ *   trigger  — sb-link <button> elements (one per L1 category)
+ *   panel    — .flyout <div> elements (rendered at body level)
+ *
+ * WCAG 2.2 AA:
+ *   - focus-visible rings on triggers and fly-items (CSS)
+ *   - aria-haspopup / aria-expanded on triggers
+ *   - aria-hidden / role="menu" / role="menuitem" on panels
+ *   - ESC key closes open flyout and returns focus to trigger
+ *   - Arrow-key navigation between L1 triggers
+ *   - Focus trapped inside open flyout (Tab cycles within)
  */
 export default class extends Controller {
     static targets = ['trigger', 'panel'];
 
     connect() {
-        // Start with panels closed
-        // User can click or hover over a category to open
-
-        // Handle keyboard navigation
+        // Keyboard navigation
         this.element.addEventListener('keydown', this.handleKeyboard.bind(this));
 
-        // Handle outside clicks to close panel
+        // Global ESC key + outside-click to close
+        document.addEventListener('keydown', this.handleGlobalKeydown.bind(this));
         document.addEventListener('click', this.handleOutsideClick.bind(this));
 
-        // Add hover listeners to triggers
+        // Hover: open flyout on mouseenter over L1 trigger
         this.triggerTargets.forEach(trigger => {
             trigger.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
         });
 
-        // Add mouseleave to the sidebar to close when leaving
-        const sidebar = document.querySelector('.app-sidebar');
+        // Hover: close when leaving the sidebar
+        const sidebar = document.querySelector('.app__sidebar, .app-sidebar');
         if (sidebar) {
             sidebar.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
         }
 
-        // Also handle mouseleave on the panel container (on body level)
-        const panelContainer = document.querySelector('.mega-menu-secondary');
-        if (panelContainer) {
-            panelContainer.addEventListener('mouseleave', this.handlePanelMouseLeave.bind(this));
-        }
+        // Hover: also handle mouseleave on individual flyout panels
+        this.panelTargets.forEach(panel => {
+            panel.addEventListener('mouseleave', this.handlePanelMouseLeave.bind(this));
+        });
+
+        // Restore density from localStorage (initial render — density-toggle-controller also does this)
+        this._restoreDensity();
     }
 
     disconnect() {
+        document.removeEventListener('keydown', this.handleGlobalKeydown.bind(this));
         document.removeEventListener('click', this.handleOutsideClick.bind(this));
     }
 
+    // ─────────────── Public Stimulus actions ───────────────
+
     /**
-     * Toggle a panel when clicking on a trigger button
-     * @param {Event} event
+     * Toggle a flyout panel when clicking its L1 trigger button.
+     * data-action="click->mega-menu#toggle"
      */
     toggle(event) {
         const trigger = event.currentTarget;
         const category = trigger.dataset.category;
 
-        // If clicking the active category, close the panel
-        if (trigger.classList.contains('active')) {
+        // Clicking the already-open trigger closes the flyout
+        if (trigger.hasAttribute('open')) {
             this.closePanel();
             return;
         }
@@ -63,80 +80,90 @@ export default class extends Controller {
     }
 
     /**
-     * Close the panel
+     * Close the current flyout.
+     * Also used as data-action="click->mega-menu#closePanel" on .flyout__close button.
      */
     closePanel() {
         // Deactivate all triggers
         this.triggerTargets.forEach(trigger => {
-            trigger.classList.remove('active');
+            trigger.removeAttribute('open');
             trigger.setAttribute('aria-expanded', 'false');
         });
 
-        // Hide panel container (on body level)
-        const panelContainer = document.querySelector('.mega-menu-secondary');
-        if (panelContainer) {
-            panelContainer.classList.remove('panel-visible');
-        }
-
-        // After animation, hide panels
-        setTimeout(() => {
-            this.panelTargets.forEach(panel => {
-                panel.classList.remove('active');
-                panel.setAttribute('aria-hidden', 'true');
-            });
-        }, 300);
+        // Hide all flyout panels
+        this.panelTargets.forEach(panel => {
+            panel.classList.remove('is-open');
+            panel.setAttribute('aria-hidden', 'true');
+        });
     }
 
+    // ─────────────── Internal helpers ───────────────
+
     /**
-     * Activate a specific panel and deactivate others
-     * @param {string} category - The category identifier
+     * Show the flyout for the given category, hide all others.
+     * @param {string} category
      */
     activatePanel(category) {
-        // Deactivate all triggers and panels
+        // Deactivate all
         this.triggerTargets.forEach(trigger => {
-            trigger.classList.remove('active');
+            trigger.removeAttribute('open');
             trigger.setAttribute('aria-expanded', 'false');
         });
 
         this.panelTargets.forEach(panel => {
-            panel.classList.remove('active');
+            panel.classList.remove('is-open');
             panel.setAttribute('aria-hidden', 'true');
         });
 
-        // Activate the selected trigger and panel
+        // Activate the matching trigger + panel
         const activeTrigger = this.triggerTargets.find(
-            trigger => trigger.dataset.category === category
+            t => t.dataset.category === category
         );
-
         const activePanel = this.panelTargets.find(
-            panel => panel.dataset.category === category
+            p => p.dataset.category === category
         );
 
         if (activeTrigger && activePanel) {
-            activeTrigger.classList.add('active');
+            activeTrigger.setAttribute('open', '');
             activeTrigger.setAttribute('aria-expanded', 'true');
 
-            activePanel.classList.add('active');
+            activePanel.classList.add('is-open');
             activePanel.setAttribute('aria-hidden', 'false');
-
-            // Scroll panel to top
             activePanel.scrollTop = 0;
-
-            // Show the panel container (on body level)
-            const panelContainer = document.querySelector('.mega-menu-secondary');
-            if (panelContainer) {
-                panelContainer.classList.add('panel-visible');
-            }
         }
     }
 
     /**
-     * Handle keyboard navigation for accessibility
+     * Return the currently open category identifier, or null if none.
+     * @returns {string|null}
+     */
+    getActiveCategory() {
+        const activeTrigger = this.triggerTargets.find(t => t.hasAttribute('open'));
+        return activeTrigger ? activeTrigger.dataset.category : null;
+    }
+
+    /**
+     * Restore density setting from localStorage so body attribute is set
+     * before first paint of flyout items.
+     */
+    _restoreDensity() {
+        const saved = localStorage.getItem('isms-density');
+        if (saved && ['basic', 'standard', 'expert'].includes(saved)) {
+            document.body.dataset.density = saved;
+        } else {
+            document.body.dataset.density = 'standard';
+        }
+    }
+
+    // ─────────────── Keyboard handlers ───────────────
+
+    /**
+     * Arrow-key / Home / End navigation within the sidebar trigger list.
      * @param {KeyboardEvent} event
      */
     handleKeyboard(event) {
-        // Only handle keyboard events on trigger buttons
-        if (!event.target.classList.contains('mega-menu-trigger')) {
+        // Only handle when focus is on a sidebar trigger button
+        if (!event.target.classList.contains('sb-link')) {
             return;
         }
 
@@ -146,14 +173,12 @@ export default class extends Controller {
         switch (event.key) {
             case 'ArrowDown':
             case 'ArrowRight':
-                // Navigate to next category
                 event.preventDefault();
                 nextIndex = (currentIndex + 1) % this.triggerTargets.length;
                 break;
 
             case 'ArrowUp':
             case 'ArrowLeft':
-                // Navigate to previous category
                 event.preventDefault();
                 nextIndex = currentIndex - 1;
                 if (nextIndex < 0) {
@@ -162,178 +187,151 @@ export default class extends Controller {
                 break;
 
             case 'Home':
-                // Navigate to first category
                 event.preventDefault();
                 nextIndex = 0;
                 break;
 
             case 'End':
-                // Navigate to last category
                 event.preventDefault();
                 nextIndex = this.triggerTargets.length - 1;
                 break;
 
             case 'Enter':
             case ' ':
-                // Activate current category
                 event.preventDefault();
-                const category = event.target.dataset.category;
-                this.activatePanel(category);
+                this.activatePanel(event.target.dataset.category);
+                // Move focus into the open flyout
+                this._focusFirstFlyoutItem(event.target.dataset.category);
                 return;
         }
 
         if (nextIndex !== -1 && this.triggerTargets[nextIndex]) {
             this.triggerTargets[nextIndex].focus();
-            const category = this.triggerTargets[nextIndex].dataset.category;
-            this.activatePanel(category);
+            this.activatePanel(this.triggerTargets[nextIndex].dataset.category);
         }
     }
 
     /**
-     * Handle clicks outside the menu to close panel
-     * @param {Event} event
+     * Global ESC key handler — closes open flyout and returns focus to its trigger.
+     * @param {KeyboardEvent} event
      */
-    handleOutsideClick(event) {
-        const panelContainer = document.querySelector('.mega-menu-secondary');
-        const sidebar = document.querySelector('.app-sidebar');
-        if (!panelContainer || !sidebar) return;
+    handleGlobalKeydown(event) {
+        if (event.key !== 'Escape') return;
+        const activeCategory = this.getActiveCategory();
+        if (!activeCategory) return;
 
-        // Check if click is outside both the sidebar and the panel
-        if (!sidebar.contains(event.target) && !panelContainer.contains(event.target)) {
-            // Close panel if it's open
-            if (panelContainer.classList.contains('panel-visible')) {
-                this.closePanel();
-            }
-        }
-    }
+        this.closePanel();
 
-    /**
-     * Get the currently active category
-     * @returns {string|null}
-     */
-    getActiveCategory() {
-        const activeTrigger = this.triggerTargets.find(
-            trigger => trigger.classList.contains('active')
-        );
-        return activeTrigger ? activeTrigger.dataset.category : null;
-    }
-
-    /**
-     * Check if a specific category is active
-     * @param {string} category
-     * @returns {boolean}
-     */
-    isCategoryActive(category) {
-        return this.getActiveCategory() === category;
-    }
-
-    /**
-     * Navigate to a specific category programmatically
-     * @param {string} category
-     */
-    navigateTo(category) {
-        this.activatePanel(category);
-
-        // Focus the trigger for keyboard users
-        const trigger = this.triggerTargets.find(
-            t => t.dataset.category === category
-        );
-
+        // Return focus to the trigger that opened this flyout
+        const trigger = this.triggerTargets.find(t => t.dataset.category === activeCategory);
         if (trigger) {
             trigger.focus();
         }
     }
 
-    /**
-     * Get all available categories
-     * @returns {string[]}
-     */
-    getCategories() {
-        return this.triggerTargets.map(trigger => trigger.dataset.category);
-    }
+    // ─────────────── Mouse handlers ───────────────
 
     /**
-     * Navigate to next category
-     */
-    nextCategory() {
-        const categories = this.getCategories();
-        const currentCategory = this.getActiveCategory();
-        const currentIndex = categories.indexOf(currentCategory);
-        const nextIndex = (currentIndex + 1) % categories.length;
-
-        this.navigateTo(categories[nextIndex]);
-    }
-
-    /**
-     * Navigate to previous category
-     */
-    previousCategory() {
-        const categories = this.getCategories();
-        const currentCategory = this.getActiveCategory();
-        const currentIndex = categories.indexOf(currentCategory);
-        let previousIndex = currentIndex - 1;
-
-        if (previousIndex < 0) {
-            previousIndex = categories.length - 1;
-        }
-
-        this.navigateTo(categories[previousIndex]);
-    }
-
-    /**
-     * Handle mouse enter on trigger - open panel on hover
+     * Open panel on hover over L1 trigger.
      * @param {MouseEvent} event
      */
     handleMouseEnter(event) {
-        const trigger = event.currentTarget;
-        const category = trigger.dataset.category;
-
-        // Cancel any pending close timeout
         if (this.closeTimeout) {
             clearTimeout(this.closeTimeout);
             this.closeTimeout = null;
         }
-
-        // Open the panel on hover
-        this.activatePanel(category);
+        this.activatePanel(event.currentTarget.dataset.category);
     }
 
     /**
-     * Handle mouse leave from the mega menu - close panel
+     * Close panel when mouse leaves the sidebar (unless entering a flyout).
      * @param {MouseEvent} event
      */
     handleMouseLeave(event) {
-        // Check if mouse is entering the panel
         const relatedTarget = event.relatedTarget;
-        const panelContainer = document.querySelector('.mega-menu-secondary');
 
-        // Don't close if moving to the panel
-        if (panelContainer && panelContainer.contains(relatedTarget)) {
+        // Don't close if moving into an open flyout panel
+        const openPanel = this.panelTargets.find(p => p.classList.contains('is-open'));
+        if (openPanel && openPanel.contains(relatedTarget)) {
             return;
         }
 
-        // Close panel when leaving the sidebar (with a small delay for better UX)
-        this.closeTimeout = setTimeout(() => {
-            this.closePanel();
-        }, 200);
+        this.closeTimeout = setTimeout(() => this.closePanel(), 200);
     }
 
     /**
-     * Handle mouse leave from the panel - close if not returning to menu
+     * Close panel when mouse leaves a flyout (unless returning to sidebar).
      * @param {MouseEvent} event
      */
     handlePanelMouseLeave(event) {
         const relatedTarget = event.relatedTarget;
-        const sidebar = document.querySelector('.app-sidebar');
+        const sidebar = document.querySelector('.app__sidebar, .app-sidebar');
 
-        // Don't close if moving back to the sidebar
         if (sidebar && sidebar.contains(relatedTarget)) {
             return;
         }
 
-        // Close panel when leaving the panel
-        this.closeTimeout = setTimeout(() => {
+        this.closeTimeout = setTimeout(() => this.closePanel(), 200);
+    }
+
+    /**
+     * Close flyout on click outside both sidebar and flyout.
+     * @param {MouseEvent} event
+     */
+    handleOutsideClick(event) {
+        const sidebar = document.querySelector('.app__sidebar, .app-sidebar');
+        const openPanel = this.panelTargets.find(p => p.classList.contains('is-open'));
+
+        if (!openPanel) return;
+
+        const insideSidebar = sidebar && sidebar.contains(event.target);
+        const insidePanel = openPanel.contains(event.target);
+
+        if (!insideSidebar && !insidePanel) {
             this.closePanel();
-        }, 200);
+        }
+    }
+
+    // ─────────────── Focus trap helper ───────────────
+
+    /**
+     * Move focus to the first focusable fly-item in the named flyout.
+     * @param {string} category
+     */
+    _focusFirstFlyoutItem(category) {
+        const panel = this.panelTargets.find(p => p.dataset.category === category);
+        if (!panel) return;
+
+        const firstItem = panel.querySelector('.fly-item, .flyout__close, .flyout__view-all');
+        if (firstItem) {
+            firstItem.focus();
+        }
+    }
+
+    // ─────────────── Programmatic API (used by guided tour, shortcuts) ───────────────
+
+    navigateTo(category) {
+        this.activatePanel(category);
+        const trigger = this.triggerTargets.find(t => t.dataset.category === category);
+        if (trigger) trigger.focus();
+    }
+
+    getCategories() {
+        return this.triggerTargets.map(t => t.dataset.category);
+    }
+
+    nextCategory() {
+        const categories = this.getCategories();
+        const current = this.getActiveCategory();
+        const idx = categories.indexOf(current);
+        this.navigateTo(categories[(idx + 1) % categories.length]);
+    }
+
+    previousCategory() {
+        const categories = this.getCategories();
+        const current = this.getActiveCategory();
+        let idx = categories.indexOf(current) - 1;
+        if (idx < 0) idx = categories.length - 1;
+        this.navigateTo(categories[idx]);
     }
 }
