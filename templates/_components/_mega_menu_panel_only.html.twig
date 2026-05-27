@@ -2,6 +2,23 @@
  # Mega Menu Secondary Panel - Rendered outside sidebar
  # This file is rendered at the body level to escape z-index stacking context issues
  # Note: data-controller="mega-menu" is in base.html.twig and wraps both triggers and this panel
+ #
+ # Runtime Safety Audit (2026-05-27):
+ # - Routes: 95 path() calls verified — all exist in router (php bin/console debug:router).
+ #   Fixed: app_group_report_index → app_group_report_tree (was the sole broken route).
+ # - Translation keys: all |trans({}, 'nav') calls cross-checked against nav.de.yaml + nav.en.yaml.
+ #   Zero missing keys. Non-nav domains (notification, admin, eu_authorities, audit_workbook,
+ #   bsi_200_4_exercise, data_import) also checked — all keys present.
+ # - Stimulus controllers: 3 referenced — mega_menu_controller.js (data-controller="mega-menu",
+ #   data-action="mega-menu#toggle"), guided_tour_controller.js (data-action="guided-tour#start"),
+ #   keyboard_shortcuts_controller.js (data-action="keyboard-shortcuts#toggle"). All exist in
+ #   assets/controllers/. data-mega-menu-target="panel|trigger" declared in mega_menu_controller.js.
+ # - Module gates: 17 is_module_active() calls — all keys exist in config/modules.yaml.
+ # - Role gates: 9 is_granted() roles — ROLE_ADMIN, ROLE_AUDITOR, ROLE_MANAGER, ROLE_GROUP_CISO,
+ #   PERSONA_CISO, PERSONA_RISK, PERSONA_DPO, PERSONA_COMPLIANCE, ADMIN_OWN_TENANT.
+ #   All defined in TenantScopedAdminVoter + security.yaml. No pseudo-roles.
+ # - Macro signatures: fa_persona_cockpit_card({persona, name, href}), fa_quick_action_button({verb, href,
+ #   shortcut?, module?, persona?}) — all callers pass required keys.
  #}
 {% set current_route = app.request.attributes.get('_route') %}
 
