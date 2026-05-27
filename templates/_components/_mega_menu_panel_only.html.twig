@@ -661,9 +661,11 @@
         </div>
         {% endif %}
 
-        {# Compliance Panel #}
+        {# Compliance & Audits Panel — Phase 2 (2026-05-27): renamed to compliance_audits.
+           TODO Phase 2: Split into "Frameworks & Mapping" sub-panel + "Audits & Reviews" sub-panel
+           once super-panel tab navigation is implemented. Currently all in one panel. #}
         {% if is_module_active('audits') or is_module_active('compliance') %}
-        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="compliance" role="menu" aria-label="{{ 'nav.mega.category.compliance'|trans({}, 'nav') }}">
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="compliance" role="menu" aria-label="{{ 'nav.mega.category.compliance_audits'|trans({}, 'nav') }}">
             <div class="mega-menu-panel-content">
                 {# V3 W2-H2: Compliance-Manager-Dashboard (C2) — was implemented but
                    never linked from the mega-menu. Surfaced here behind the
@@ -731,8 +733,9 @@
                     </ul>
                 </div>
                 {% endif %}
+                {# Phase 2 (2026-05-27): auditing section renamed to audits_reviews #}
                 <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.auditing'|trans({}, 'nav') }}</h3>
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.audits_reviews'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
                         {% if is_module_active('audits') %}
                         <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' %}active{% endif %}" data-turbo-action="advance">
@@ -1079,9 +1082,40 @@
         </div>
         {% endif %}
 
-        {# Help & Resources Panel #}
+        {# Help & Resources Panel — Phase 2 (2026-05-27): onboarding banner slot reserved #}
+        {# TODO Backend: app_preferences_dismiss route + dismissed_banners user-preference field needed.
+           Once implemented, replace the static banner below with:
+           {% from '_components/_fa_onboarding_banner.html.twig' import fa_onboarding_banner %}
+           {{ fa_onboarding_banner({mood:'happy', title:'nav.mega.onboarding.title'|trans({},'nav'),
+               body:'nav.mega.onboarding.body'|trans({},'nav'),
+               ctas:[{label:'nav.mega.onboarding.cta_tour'|trans({},'nav'),href:'#',variant:'primary'},
+                     {label:'nav.mega.onboarding.cta_checklist'|trans({},'nav'),href:path('app_my_day',{_locale:app.request.locale}),variant:'secondary'}],
+               dismissKey:'mega_menu_help_onboarding'}) }}
+        #}
         <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="help" role="menu" aria-label="{{ 'nav.mega.category.help'|trans({}, 'nav') }}">
             <div class="mega-menu-panel-content">
+                {# Phase 2 onboarding banner — rendered without dismiss until app_preferences_dismiss lands #}
+                <div class="fa-onboarding-banner mb-3" role="region" aria-labelledby="onboarding-banner-title-help">
+                    <div class="fa-onboarding-banner__content">
+                        <h2 class="fa-onboarding-banner__title" id="onboarding-banner-title-help">
+                            {{ 'nav.mega.onboarding.title'|trans({}, 'nav') }}
+                        </h2>
+                        <p class="fa-onboarding-banner__body">{{ 'nav.mega.onboarding.body'|trans({}, 'nav') }}</p>
+                        <div class="fa-onboarding-banner__actions">
+                            <a href="#"
+                               class="btn btn-primary btn-sm"
+                               data-action="click->guided-tour#start"
+                               data-guided-tour-role-param="mris"
+                               data-turbo="false">
+                                {{ 'nav.mega.onboarding.cta_tour'|trans({}, 'nav') }}
+                            </a>
+                            <a href="{{ path('app_my_day', {_locale: app.request.locale}) }}"
+                               class="btn btn-secondary btn-sm">
+                                {{ 'nav.mega.onboarding.cta_checklist'|trans({}, 'nav') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.help_resources'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">

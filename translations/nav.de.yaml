@@ -249,6 +249,13 @@ nav:
             workflow_definitions: 'Workflow-Vorlagen und Schritte verwalten'
             workflow_overlay: 'Organisationsspezifische Workflow-Schritt-Overrides für regulatorische und Lifecycle-Konfigurationen'
 
+        # Aurora v4 Phase 2 — Onboarding-Banner (2026-05-27)
+        onboarding:
+            title: 'Neu bei Informationssicherheit?'
+            body: 'Starte mit der geführten Tour oder prüfe deine offenen Aufgaben auf „Mein Tag".'
+            cta_tour: 'Geführte Tour starten'
+            cta_checklist: 'Mein Tag öffnen'
+
     evidence_reviewer_queue: 'Nachweise-Prüf-Queue'
 
     section:
