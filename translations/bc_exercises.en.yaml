@@ -195,5 +195,7 @@ bc_exercises:
         facilitator_required_user_or_person: 'Please select a facilitator (user OR person). ISO 22301 Cl. 8.5 requires every BC exercise to have a named responsible.'
 
 # Junior-ISB-Audit-2026-05-22 P-12 rollout — 9001-bridge keys for BC-Exercise forms.
+    clone:
+        success: 'BC-Exercise has been duplicated. Reschedule.'
 iso_9001_bridge:
     exercise: 'In ISO 9001 a BC exercise is part of performance evaluation (Clause 9.1) and the treatment of risks/opportunities (6.1). ISO 22301 8.5 explicitly requires periodic testing of the BC plan — Lessons-Learned feed back into improvement via 10.2 (Nonconformity & Corrective Action).'

@@ -566,7 +566,7 @@
                             {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_audit_export_pdf', route_params: {id: audit.id}} only %}
                         </div>
 
-                        {% if is_granted('ROLE_MANAGER') %}
+                        {% if is_granted('ROLE_USER') %}
                             <form method="post" action="{{ path('app_audit_clone', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('clone_audit_' ~ audit.id) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">

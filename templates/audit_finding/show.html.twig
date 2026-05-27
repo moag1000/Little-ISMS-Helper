@@ -195,16 +195,26 @@
         csrfToken: csrf_token('isms-comment')
     } only %}
 
-    <form method="post" action="{{ path('app_audit_finding_delete', {id: finding.id}) }}" class="mt-4"
-          data-controller="ui-actions"
-          data-action="submit->ui-actions#confirm"
-          data-ui-actions-message-param="{{ 'audit_finding.confirm.delete'|trans({}, 'audits') }}"
-          data-ui-actions-tone-param="danger">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete_af_' ~ finding.id) }}">
-        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
-        </button>
-    </form>
+    <div class="d-flex gap-2 mt-4">
+        {% if is_granted('ROLE_USER') %}
+            <form method="post" action="{{ path('app_audit_finding_clone', {id: finding.id}) }}" class="d-inline" data-turbo="false">
+                <input type="hidden" name="_token" value="{{ csrf_token('clone_audit_finding_' ~ finding.id) }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm" title="{{ 'common.clone.help'|trans({}, 'messages') }}">
+                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> {{ 'common.clone.label'|trans({}, 'messages') }}
+                </button>
+            </form>
+        {% endif %}
+        <form method="post" action="{{ path('app_audit_finding_delete', {id: finding.id}) }}" class="d-inline"
+              data-controller="ui-actions"
+              data-action="submit->ui-actions#confirm"
+              data-ui-actions-message-param="{{ 'audit_finding.confirm.delete'|trans({}, 'audits') }}"
+              data-ui-actions-tone-param="danger">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete_af_' ~ finding.id) }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
+                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+            </button>
+        </form>
+    </div>
 
     {# Lifecycle X.3b — transition history tab #}
     {{ _lifecycle_history.history('audit-finding', finding.id) }}

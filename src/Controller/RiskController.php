@@ -37,6 +37,7 @@ use App\Service\Risk\RiskIncidentLinkService;
 use App\Repository\RiskIncidentLinkRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Service\Clone\RiskCloner;
 use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -76,6 +77,7 @@ class RiskController extends AbstractController
         private readonly ?RoleDashboardService $roleDashboardService = null,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?UserRepository $userRepository = null,
+        private readonly ?RiskCloner $riskCloner = null,
     ) {}
 
     protected function getFlashDomain(): string
@@ -1210,6 +1212,40 @@ class RiskController extends AbstractController
 
         $this->flashSuccess('risk.link_incident.unlinked');
         return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+    }
+
+    /**
+     * Clone a Risk (C4-C1 — Klon-Funktionen). Open to any ROLE_USER so
+     * every ISMS-user can template their own risks. The clone preserves
+     * the assessment scaffolding and resets lifecycle state.
+     */
+    #[Route('/risk/{id}/clone', name: 'app_risk_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function clone(Request $request, Risk $risk): Response
+    {
+        if (!$this->isCsrfTokenValid('clone_risk_' . $risk->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        if ($this->riskCloner === null) {
+            throw $this->createNotFoundException('Risk clone service is not available.');
+        }
+
+        $clone = $this->riskCloner->clone(
+            $risk,
+            null,
+            trim((string) $request->request->get('title_override', '')) ?: null,
+        );
+        $this->entityManager->flush();
+
+        $this->auditLogger?->logCreate(
+            entityType: 'Risk',
+            entityId: $clone->getId(),
+            newValues: ['cloned_from_id' => $risk->getId(), 'title' => $clone->getTitle()],
+            description: 'Cloned from Risk #' . $risk->getId(),
+        );
+
+        $this->addFlash('success', $this->translator->trans('risk.clone.success', [], 'risk'));
+        return $this->redirectToRoute('app_risk_edit', ['id' => $clone->getId()]);
     }
 
     #[Route('/risk/{id}/edit', name: 'app_risk_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

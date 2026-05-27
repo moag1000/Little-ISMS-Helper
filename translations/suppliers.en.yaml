@@ -393,3 +393,5 @@ corporate:
 
 iso_9001_bridge:
   supplier: 'ISO 9001 frames suppliers as external providers under Clause 8.4 (control of externally provided processes, products, services). ISO 27001 A.5.19 and A.5.20 add information-security requirements + contractual obligations; DORA Art. 28 extends this for ICT third-party providers.'
+  clone:
+    success: 'Supplier has been duplicated. Re-enter contract data.'

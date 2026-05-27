@@ -11,6 +11,7 @@ use App\Entity\BCExercise;
 use App\Form\BCExerciseType;
 use App\Repository\BCExerciseRepository;
 use App\Service\AuditLogger;
+use App\Service\Clone\BCExerciseCloner;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,6 +39,7 @@ class BCExerciseController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?BCExerciseCloner $bcExerciseCloner = null,
     ) {}
     #[Route('/bc-exercise', name: 'app_bc_exercise_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -95,6 +97,41 @@ class BCExerciseController extends AbstractController
             'bc_exercise' => $bcExercise,
         ]);
     }
+    /**
+     * Clone a BC-Exercise (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * planning template (scope, objectives, scenario, facilitator dual-state,
+     * tested BC-Plans, success criteria), resets execution + results.
+     */
+    #[Route('/bc-exercise/{id}/clone', name: 'app_bc_exercise_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function clone(Request $request, BCExercise $bcExercise): Response
+    {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+        if (!$this->isCsrfTokenValid('clone_bc_exercise_' . $bcExercise->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        if ($this->bcExerciseCloner === null) {
+            throw $this->createNotFoundException('BC-Exercise clone service is not available.');
+        }
+
+        $clone = $this->bcExerciseCloner->clone(
+            $bcExercise,
+            null,
+            trim((string) $request->request->get('title_override', '')) ?: null,
+        );
+        $this->entityManager->flush();
+
+        $this->auditLogger?->logCreate(
+            entityType: 'BCExercise',
+            entityId: $clone->getId(),
+            newValues: ['cloned_from_id' => $bcExercise->getId(), 'name' => $clone->getName()],
+            description: 'Cloned from BC-Exercise #' . $bcExercise->getId(),
+        );
+
+        $this->addFlash('success', $this->translator->trans('bc_exercises.clone.success', [], 'bc_exercises'));
+        return $this->redirectToRoute('app_bc_exercise_edit', ['id' => $clone->getId()]);
+    }
+
     #[Route('/bc-exercise/{id}/edit', name: 'app_bc_exercise_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, BCExercise $bcExercise): Response

@@ -212,6 +212,8 @@ bc_plans:
     raw_toggle: 'Als JSON bearbeiten'
     raw_label: 'Roh-JSON (Power-User)'
     raw_help: 'Achtung: Roh-Editing kann Daten beschädigen. Schema muss zur Entity-Definition passen.'
+  clone:
+    success: 'BC-Plan wurde dupliziert. Test-/Review-Zyklus neu planen.'
 bcm:
   field:
     activation_criteria: Aktivierungskriterien

@@ -215,6 +215,12 @@
                            data-turbo-action="advance">
                             <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
+                        <form method="post" action="{{ path('app_training_clone', {id: training.id}) }}" data-turbo="false">
+                            <input type="hidden" name="_token" value="{{ csrf_token('clone_training_' ~ training.id) }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success w-100" title="{{ 'common.clone.help'|trans({}, 'messages') }}">
+                                <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> {{ 'common.clone.label'|trans({}, 'messages') }}
+                            </button>
+                        </form>
                         {% endif %}
 
                         <a href="{{ path('app_training_index') }}"

@@ -38,12 +38,20 @@
     }) }}
 
     {# Inline POST-delete and disabled-edit kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
-    {% if (canEdit is defined and not canEdit) or (is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit)) %}
+    {% if (canEdit is defined and not canEdit) or (is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit)) or is_granted('ROLE_USER') %}
         <div class="d-flex justify-content-end gap-2 mb-3">
             {% if canEdit is defined and not canEdit %}
                 <button class="fa-cyber-btn fa-cyber-btn--primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
                     <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </button>
+            {% endif %}
+            {% if is_granted('ROLE_USER') %}
+                <form method="post" action="{{ path('app_asset_clone', {id: asset.id}) }}" class="d-inline" data-turbo="false">
+                    <input type="hidden" name="_token" value="{{ csrf_token('clone_asset_' ~ asset.id) }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success" title="{{ 'common.clone.help'|trans({}, 'messages') }}">
+                        <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> {{ 'common.clone.label'|trans({}, 'messages') }}
+                    </button>
+                </form>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
                 <form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" class="d-inline"

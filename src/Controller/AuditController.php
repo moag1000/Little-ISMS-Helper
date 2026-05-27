@@ -247,7 +247,7 @@ class AuditController extends AbstractController
      * must stay intact).
      */
     #[Route('/audit/{id}/clone', name: 'app_audit_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('ROLE_USER')]
     public function clone(Request $request, InternalAudit $internalAudit): Response
     {
         if (!$this->isCsrfTokenValid('clone_audit_' . $internalAudit->getId(), (string) $request->request->get('_token'))) {

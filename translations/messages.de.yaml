@@ -209,6 +209,9 @@ common:
     view_details: 'Details ansehen'
     view_all: 'Alle anzeigen'
     edit: Bearbeiten
+    clone:
+        label: 'Duplizieren'
+        help: 'Erzeugt eine bearbeitbare Kopie mit zurückgesetzten Status-/Ausführungsfeldern. Nützlich für wiederkehrende Zyklen, Vorlagen und Multi-Site-Rollouts.'
     show_all: 'Alle anzeigen'
     active: Aktiv
     not_active: 'Nicht aktiv'

@@ -210,6 +210,8 @@ bc_plans:
     raw_toggle: 'Edit as JSON'
     raw_label: 'Raw JSON (power-user)'
     raw_help: 'Warning: raw editing can corrupt data. Schema must match entity definition.'
+  clone:
+    success: 'BC-Plan has been duplicated. Reschedule test/review cycle.'
 bcm:
   field:
     activation_criteria: Activation Criteria

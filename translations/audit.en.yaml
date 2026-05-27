@@ -295,3 +295,5 @@ audit_finding:
     auto_task:
         preview: 'Automatic corrective tasks will be created for %count% requirement(s).'
         created: 'Automatically created %count% corrective task(s) for linked requirements.'
+    clone:
+        success: 'Finding has been duplicated. NC verification must be re-performed.'

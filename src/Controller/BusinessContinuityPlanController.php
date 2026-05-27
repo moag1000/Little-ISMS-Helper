@@ -11,6 +11,7 @@ use App\Entity\BusinessContinuityPlan;
 use App\Form\BusinessContinuityPlanType;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Service\AuditLogger;
+use App\Service\Clone\BusinessContinuityPlanCloner;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,6 +39,7 @@ class BusinessContinuityPlanController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?BusinessContinuityPlanCloner $bcPlanCloner = null,
     ) {}
     #[Route('/business-continuity-plan', name: 'app_bc_plan_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -93,6 +95,41 @@ class BusinessContinuityPlanController extends AbstractController
             'bc_plan' => $businessContinuityPlan,
         ]);
     }
+    /**
+     * Clone a BC-Plan (C4-C1 — Klon-Funktionen). Open to ROLE_USER. Keeps
+     * operational template (RTO/RPO, procedures, response team, M2M
+     * crisis teams + critical suppliers/assets), resets test/review state.
+     */
+    #[Route('/business-continuity-plan/{id}/clone', name: 'app_bc_plan_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function clone(Request $request, BusinessContinuityPlan $businessContinuityPlan): Response
+    {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+        if (!$this->isCsrfTokenValid('clone_bc_plan_' . $businessContinuityPlan->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+        if ($this->bcPlanCloner === null) {
+            throw $this->createNotFoundException('BC-Plan clone service is not available.');
+        }
+
+        $clone = $this->bcPlanCloner->clone(
+            $businessContinuityPlan,
+            null,
+            trim((string) $request->request->get('title_override', '')) ?: null,
+        );
+        $this->entityManager->flush();
+
+        $this->auditLogger?->logCreate(
+            entityType: 'BusinessContinuityPlan',
+            entityId: $clone->getId(),
+            newValues: ['cloned_from_id' => $businessContinuityPlan->getId(), 'name' => $clone->getName()],
+            description: 'Cloned from BC-Plan #' . $businessContinuityPlan->getId(),
+        );
+
+        $this->addFlash('success', $this->translator->trans('bc_plans.clone.success', [], 'bc_plans'));
+        return $this->redirectToRoute('app_bc_plan_edit', ['id' => $clone->getId()]);
+    }
+
     #[Route('/business-continuity-plan/{id}/edit', name: 'app_bc_plan_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, BusinessContinuityPlan $businessContinuityPlan): Response

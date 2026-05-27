@@ -172,5 +172,7 @@ training:
     material_upload_failed: 'File "%file%" could not be uploaded: %reason%'
 
 # Junior-ISB-Audit P-12 rollout — 9001 bridge for Training form.
+  clone:
+    success: 'Training has been duplicated. Please reschedule.'
 iso_9001_bridge:
     training: 'In ISO 9001 training maps to Clause 7.2 (Competence) — you must define competence requirements, verify competence, and close gaps. ISO 27001 Cl. 7.2/7.3 + A.6.3 adds the InfoSec angle (awareness, phishing tests, repeat interval).'
