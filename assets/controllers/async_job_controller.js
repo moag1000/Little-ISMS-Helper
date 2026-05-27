@@ -33,6 +33,10 @@ export default class extends Controller {
         'errorBox', 'errorTrace',
         'successBox', 'successMessage',
         'backLink',
+        // Optional — rendered with structured payload via _renderPayloadDetails.
+        // Jobs that emit `repair_summary` / `restore_result` / `apply_failure` /
+        // `reconcile_failure` via JobContext::updatePayload populate this.
+        'resultDetails',
     ];
 
     static values = {
@@ -139,13 +143,13 @@ export default class extends Controller {
 
         // Terminal states
         if (status === 'succeeded') {
-            this._applyTerminalSuccess(data.message);
+            this._applyTerminalSuccess(data.message, data.payload);
         } else if (status === 'failed') {
             this._applyTerminalFailure(data.message, data.error_trace);
         }
     }
 
-    _applyTerminalSuccess(message) {
+    _applyTerminalSuccess(message, payload) {
         this._terminal = true;
         this._stopPolling();
 
@@ -161,8 +165,59 @@ export default class extends Controller {
             this.successMessageTarget.textContent = message;
         }
 
+        // Optional: render structured payload (repair_summary, restore_result,
+        // …) into a definition-list inside the resultDetails target. Jobs
+        // write these via JobContext::updatePayload — see RestoreBackupJob /
+        // QuickFixRepairAllJob.
+        this._renderPayloadDetails(payload);
+
         this._showBackLink();
         window.alvaBus?.emit({ mood: 'celebrating', reason: 'async-job-succeeded', ttlMs: 5000 });
+    }
+
+    _renderPayloadDetails(payload) {
+        if (!this.hasResultDetailsTarget || !payload || typeof payload !== 'object') return;
+        // Whitelisted payload keys that carry post-completion structured
+        // result data. `_label` / `_subtitle` are UI-metadata, skip them.
+        const keys = ['repair_summary', 'restore_result', 'apply_failure', 'reconcile_failure'];
+        const fragments = [];
+        for (const key of keys) {
+            const block = payload[key];
+            if (!block || typeof block !== 'object') continue;
+            fragments.push(this._renderPayloadBlock(key, block));
+        }
+        if (fragments.length === 0) return;
+        this.resultDetailsTarget.innerHTML = fragments.join('');
+        this.resultDetailsTarget.classList.remove('d-none');
+    }
+
+    _renderPayloadBlock(key, block) {
+        const rows = [];
+        for (const [k, v] of Object.entries(block)) {
+            const label = k.replace(/_/g, ' ');
+            let value;
+            if (Array.isArray(v)) {
+                value = v.length === 0 ? '—' : `${v.length} item(s)`;
+            } else if (v && typeof v === 'object') {
+                value = `<code>${this._escapeHtml(JSON.stringify(v))}</code>`;
+            } else {
+                value = this._escapeHtml(String(v));
+            }
+            rows.push(`<dt class="col-sm-4">${this._escapeHtml(label)}</dt><dd class="col-sm-8">${value}</dd>`);
+        }
+        return `<div class="async-job-result-block mb-2">
+            <h6 class="async-job-result-block__title">${this._escapeHtml(key.replace(/_/g, ' '))}</h6>
+            <dl class="row mb-0 small">${rows.join('')}</dl>
+        </div>`;
+    }
+
+    _escapeHtml(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
     _applyTerminalFailure(message, trace) {

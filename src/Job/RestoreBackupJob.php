@@ -89,6 +89,24 @@ final class RestoreBackupJob implements AsyncJobInterface
 
         $ctx->progress($totalRestored, $totalRestored + $totalFailed, $message);
 
+        // Persist the full restore breakdown on the job-status payload so the
+        // progress page can render a per-entity-type table on completion.
+        // Restore runs detached — Session is unreachable; payload is the only
+        // surface that survives the worker boundary. First 20 warnings are
+        // kept to avoid bloating the status file.
+        $warningSample = is_array($warnings) ? array_slice($warnings, 0, 20) : [];
+        $ctx->updatePayload([
+            'restore_result' => [
+                'success' => (bool) ($result['success'] ?? false),
+                'dry_run' => $isDryRun,
+                'total_restored' => $totalRestored,
+                'total_failed' => $totalFailed,
+                'warning_count' => $warningCount,
+                'statistics' => is_array($stats) ? $stats : [],
+                'warning_sample' => $warningSample,
+            ],
+        ]);
+
         if (!($result['success'] ?? false) && !$isDryRun) {
             // @intentional-assertion: surface restore-flag failure to operator
             throw new \RuntimeException('Restore reported success=false — review warnings / failures.');

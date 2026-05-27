@@ -96,6 +96,10 @@
                     </a>
                 </div>
             {% endif %}
+            {# Structured payload-rendered details (repair_summary, restore_result, …).
+               JS controller fills + un-hides this on terminal-success when the job
+               wrote a recognized payload block via JobContext::updatePayload. #}
+            <div class="async-job-result-details d-none mt-3" data-async-job-target="resultDetails"></div>
         </div>
     </div>
 
