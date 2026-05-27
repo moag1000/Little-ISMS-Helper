@@ -1,0 +1,86 @@
+# DORA Art. 28 RT_06 — Exit-Plan (Translations DE)
+# Domain: dora_exit_plan
+
+dora_exit_plan:
+    title: 'DORA Exit-Pläne'
+    subtitle: 'Art. 28(8) Ausstiegsstrategien für ICT-kritische Drittanbieter'
+
+    section:
+        overview: 'Überblick'
+        recovery: 'Daten-Rückgabe & Migration'
+        testing: 'Rehearsal'
+        resources: 'Aufwand & Kosten'
+
+    field:
+        supplier: 'Lieferant'
+        exit_trigger: 'Auslöser'
+        data_return_format: 'Daten-Rückgabe (Format / Kanal)'
+        data_deletion_confirmation: 'Datenlöschung vertraglich bestätigt'
+        deletion_certificate_doc: 'Löschnachweis (Dokument)'
+        migration_path: 'Migrationspfad'
+        tested_at: 'Zuletzt getestet'
+        estimated_duration_days: 'Geschätzte Dauer (Tage)'
+        estimated_cost: 'Geschätzte Kosten'
+
+    placeholder:
+        supplier: 'Lieferant wählen…'
+        deletion_certificate_doc: 'Optionales Löschzertifikat anhängen…'
+        data_return_format: 'z. B. „CSV via SFTP innerhalb 30 Tage, GPG-verschlüsselt"'
+        migration_path: 'Alternativer Anbieter oder Inhouse-Ramp-up beschreiben…'
+        estimated_duration_days: 'z. B. 90'
+        estimated_cost: 'z. B. 75000'
+
+    help:
+        supplier: 'Nur ICT-kritische oder DORA-relevante Lieferanten sind wählbar. Pro Lieferant maximal ein Exit-Plan.'
+        exit_trigger: 'Welcher Auslöser triggert den Ausstieg? Insolvenz / Force-Majeure benötigen typischerweise schnellere Migration.'
+        data_return_format: 'Wie kommen die Daten zurück? Format, Kanal, Frequenz, Verschlüsselung. ≤500 Zeichen.'
+        data_deletion_confirmation: 'Hat der Lieferant vertraglich zugesichert, alle Daten nach Vertragsende zu löschen? DORA Art. 28(8).'
+        deletion_certificate_doc: 'Vertragsbestandteil oder Löschbestätigung als Dokument verlinken.'
+        migration_path: 'Alternativ-Anbieter oder Inhouse-Lösung skizzieren. ≤1000 Zeichen.'
+        tested_at: 'Wann wurde die Exit-Strategie zuletzt geprüft (Table-Top oder Live-Übung)? ESA-Leitlinien erwarten jährliche Tests.'
+        estimated_duration_days: 'Erwartete Dauer der vollständigen Migration in Werktagen.'
+        estimated_cost: 'Einmalige geschätzte Migrationskosten (Reporting-Currency des Mandanten).'
+
+    trigger:
+        planned-renewal: 'Geplante Vertragsverlängerung'
+        concentration-risk: 'Konzentrationsrisiko'
+        force-majeure: 'Höhere Gewalt'
+        breach: 'Vertragsbruch'
+        insolvency: 'Insolvenz'
+
+    kpi:
+        total: 'Aktive Exit-Pläne'
+        overdue: 'Rehearsal überfällig'
+
+    badge:
+        overdue: 'überfällig'
+        never_tested: 'nie getestet'
+
+    action:
+        new: 'Neuer Exit-Plan'
+        edit: 'Exit-Plan bearbeiten'
+
+    empty:
+        title: 'Noch keine Exit-Pläne hinterlegt'
+        body: 'DORA Art. 28(8) verlangt für jeden ICT-kritischen Lieferanten einen dokumentierten Ausstiegsplan.'
+
+    flash:
+        created: 'Exit-Plan angelegt.'
+        updated: 'Exit-Plan aktualisiert.'
+        deleted: 'Exit-Plan gelöscht.'
+        duplicate_supplier: 'Für diesen Lieferanten existiert bereits ein Exit-Plan. Bitte den bestehenden bearbeiten.'
+
+    validation:
+        supplier_required: 'Lieferant ist Pflichtfeld.'
+        trigger_required: 'Auslöser ist Pflichtfeld.'
+        trigger_invalid: 'Auslöser ist ungültig.'
+        data_return_format_max: 'Daten-Rückgabe-Beschreibung darf maximal 500 Zeichen enthalten.'
+        migration_path_max: 'Migrationspfad darf maximal 1000 Zeichen enthalten.'
+        duration_non_negative: 'Geschätzte Dauer muss ≥ 0 sein.'
+        cost_non_negative: 'Geschätzte Kosten müssen ≥ 0 sein.'
+
+    rehearsal_overdue:
+        title: 'Exit-Plan Rehearsal überfällig'
+        body_overdue: 'Letzter Test der Exit-Strategie für %supplier% liegt über 12 Monate zurück. ESA-Leitlinien zu DORA Art. 28(8) erwarten jährliche Rehearsals.'
+        body_never: 'Exit-Strategie für %supplier% wurde noch nie getestet. DORA Art. 28(8) verlangt erprobte Ausstiegspläne.'
+        action: 'Rehearsal-Datum aktualisieren'

@@ -1,0 +1,86 @@
+# DORA Art. 28 RT_06 — Exit-Plan (Translations EN)
+# Domain: dora_exit_plan
+
+dora_exit_plan:
+    title: 'DORA Exit Plans'
+    subtitle: 'Art. 28(8) exit strategies for ICT-critical third-party providers'
+
+    section:
+        overview: 'Overview'
+        recovery: 'Data Return & Migration'
+        testing: 'Rehearsal'
+        resources: 'Effort & Cost'
+
+    field:
+        supplier: 'Supplier'
+        exit_trigger: 'Trigger'
+        data_return_format: 'Data return (format / channel)'
+        data_deletion_confirmation: 'Data deletion contractually confirmed'
+        deletion_certificate_doc: 'Deletion certificate (document)'
+        migration_path: 'Migration path'
+        tested_at: 'Last rehearsal'
+        estimated_duration_days: 'Estimated duration (days)'
+        estimated_cost: 'Estimated cost'
+
+    placeholder:
+        supplier: 'Select supplier…'
+        deletion_certificate_doc: 'Attach optional deletion certificate…'
+        data_return_format: 'e.g. "CSV via SFTP within 30 days, GPG-encrypted"'
+        migration_path: 'Describe alternative provider or in-house ramp-up…'
+        estimated_duration_days: 'e.g. 90'
+        estimated_cost: 'e.g. 75000'
+
+    help:
+        supplier: 'Only ICT-critical or DORA-relevant suppliers are selectable. At most one exit plan per supplier.'
+        exit_trigger: 'Which trigger fires the exit? Insolvency / force-majeure typically demand faster migration.'
+        data_return_format: 'How does the data come back? Format, channel, frequency, encryption. ≤500 chars.'
+        data_deletion_confirmation: 'Has the supplier contractually committed to deleting all data after contract end? DORA Art. 28(8).'
+        deletion_certificate_doc: 'Link the contract section or destruction confirmation as a document.'
+        migration_path: 'Sketch the alternative provider or in-house solution. ≤1000 chars.'
+        tested_at: 'When was the exit strategy last tested (tabletop or live)? ESA guidelines expect annual rehearsals.'
+        estimated_duration_days: 'Expected duration of full migration in business days.'
+        estimated_cost: 'One-off estimated migration cost (tenant reporting currency).'
+
+    trigger:
+        planned-renewal: 'Planned contract renewal'
+        concentration-risk: 'Concentration risk'
+        force-majeure: 'Force majeure'
+        breach: 'Contract breach'
+        insolvency: 'Insolvency'
+
+    kpi:
+        total: 'Active exit plans'
+        overdue: 'Rehearsal overdue'
+
+    badge:
+        overdue: 'overdue'
+        never_tested: 'never tested'
+
+    action:
+        new: 'New Exit Plan'
+        edit: 'Edit Exit Plan'
+
+    empty:
+        title: 'No exit plans on record yet'
+        body: 'DORA Art. 28(8) requires a documented exit plan for every ICT-critical supplier.'
+
+    flash:
+        created: 'Exit plan created.'
+        updated: 'Exit plan updated.'
+        deleted: 'Exit plan deleted.'
+        duplicate_supplier: 'An exit plan already exists for this supplier. Edit the existing one instead.'
+
+    validation:
+        supplier_required: 'Supplier is required.'
+        trigger_required: 'Trigger is required.'
+        trigger_invalid: 'Trigger is invalid.'
+        data_return_format_max: 'Data-return description must be at most 500 characters.'
+        migration_path_max: 'Migration path must be at most 1000 characters.'
+        duration_non_negative: 'Estimated duration must be ≥ 0.'
+        cost_non_negative: 'Estimated cost must be ≥ 0.'
+
+    rehearsal_overdue:
+        title: 'Exit-plan rehearsal overdue'
+        body_overdue: 'Last exit-strategy test for %supplier% was more than 12 months ago. ESA guidelines on DORA Art. 28(8) expect annual rehearsals.'
+        body_never: 'Exit strategy for %supplier% has never been tested. DORA Art. 28(8) requires rehearsed exit plans.'
+        action: 'Update rehearsal date'

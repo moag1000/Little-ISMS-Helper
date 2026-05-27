@@ -258,6 +258,13 @@ policy_wizard:
         body: 'Konzern-CISO von %konzern_name% hat Setting "%setting_key%" von %old_value% auf %new_value% angehoben. Betroffene Einstellungen in deinem Tenant: %affected_count%. Wizard im Targeted-Modus erneut ausführen, um die Policies anzugleichen.'
         action: 'Wizard neu starten'
 
+dora_exit_plan:
+    rehearsal_overdue:
+        title: 'Exit-Plan Rehearsal überfällig'
+        body_overdue: 'Letzter Test der Exit-Strategie für %supplier% liegt über 12 Monate zurück. ESA-Leitlinien zu DORA Art. 28(8) erwarten jährliche Rehearsals.'
+        body_never: 'Exit-Strategie für %supplier% wurde noch nie getestet. DORA Art. 28(8) verlangt erprobte Ausstiegspläne.'
+        action: 'Rehearsal-Datum aktualisieren'
+
 global:
     risk_bulk_import_tip:
         title: 'Risikoregister wächst — Bulk-Import verfügbar'

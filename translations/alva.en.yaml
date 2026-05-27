@@ -258,6 +258,13 @@ policy_wizard:
         body: 'Konzern CISO of %konzern_name% raised setting "%setting_key%" from %old_value% to %new_value%. Affected settings in your tenant: %affected_count%. Re-run the wizard in targeted mode to realign the policies.'
         action: 'Re-run wizard'
 
+dora_exit_plan:
+    rehearsal_overdue:
+        title: 'Exit-plan rehearsal overdue'
+        body_overdue: 'Last exit-strategy test for %supplier% was more than 12 months ago. ESA guidelines on DORA Art. 28(8) expect annual rehearsals.'
+        body_never: 'Exit strategy for %supplier% has never been tested. DORA Art. 28(8) requires rehearsed exit plans.'
+        action: 'Update rehearsal date'
+
 global:
     risk_bulk_import_tip:
         title: 'Risk register growing — bulk import available'

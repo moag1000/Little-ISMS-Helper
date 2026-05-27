@@ -13,6 +13,7 @@ use App\Entity\Tenant;
 use App\Repository\AssetDependencyRepository;
 use App\Repository\AssetRepository;
 use App\Repository\DoraDataFlowRepository;
+use App\Repository\DoraExitPlanRepository;
 use App\Repository\DoraSubcontractorRepository;
 use App\Repository\SupplierRepository;
 use DateTimeImmutable;
@@ -52,6 +53,7 @@ final class DoraRoiXbrlExporter
         private readonly SupplierRepository $supplierRepository,
         private readonly AssetRepository $assetRepository,
         private readonly ?AssetDependencyRepository $assetDependencyRepository = null,
+        private readonly ?DoraExitPlanRepository $exitPlanRepository = null,
         private readonly ?DoraDataFlowRepository $dataFlowRepository = null,
         private readonly ?DoraSubcontractorRepository $subcontractorRepository = null,
     ) {
@@ -353,11 +355,12 @@ final class DoraRoiXbrlExporter
                 ));
             }
 
-            // Remaining deferred-gap marker — RT_05/RT_06 detail tables
-            // (asset-dependency-graph, decommission-plan) still pending dedicated
-            // entities. RT_03 and RT_04 are now wired above.
+            // Remaining deferred-gap marker — only the residual B_02.02
+            // field-level rows (0140–0999) remain pending. RT_03 (data-flow),
+            // RT_04 (subcontractor-chain), RT_05 (asset-dependency-graph),
+            // and RT_06 (decommission/exit-plan) are all now wired.
             $providerEl->appendChild($dom->createComment(
-                ' TODO: B_02.02.0140–0999 + RT_05/RT_06 — pending dedicated sub-entities '
+                ' TODO: B_02.02.0140–0999 — pending dedicated sub-entities '
             ));
 
             $root->appendChild($providerEl);
@@ -448,7 +451,7 @@ final class DoraRoiXbrlExporter
             $root->appendChild($assetEl);
         }
 
-        // ─── B_03.03 — RT_05 asset-dependency-graph (Bucket-6 close) ─────────
+        // ─── B_03.03 — RT_05 asset-dependency-graph (Bucket-6 close, PR #724) ──
         // DORA Art. 28(3)(c) requires a register of dependencies between
         // ICT assets — which support which business processes, which back
         // up which, etc. We walk the Asset.dependsOn adjacency list (BSI
@@ -460,13 +463,90 @@ final class DoraRoiXbrlExporter
         // edges without enriched-metadata fall back to safe defaults
         // (requires / cascade) so an operator who only declared the raw
         // adjacency list still gets a valid export.
-        //
-        // RT_06 (decommission-plan) remains deferred — needs dedicated
-        // decommission-plan entity not yet in the model.
         $this->emitAssetDependencyGraph($dom, $root, $assets, $tenant);
 
+        // ─── RT_06 — Decommission / Exit-Plan table (Bucket-6 close, PR #727) ──
+        // One <roi:RT_06_exit_plan> wrapper per critical-Supplier exit plan.
+        // Carries the mandatory ESA RT_06 fields: provider-link, trigger,
+        // data-return + deletion confirmation, migration path, rehearsal
+        // date, estimated duration + cost. Mirrors the DORA Art. 28(8)
+        // exit-strategy requirement.
+        $exitPlans = $this->exitPlanRepository?->findByTenantAndDoraRelevant($tenant) ?? [];
+        foreach ($exitPlans as $k => $plan) {
+            $supplier = $plan->getSupplier();
+            if ($supplier === null) {
+                // Defensive: orphan plans should not happen (FK NOT NULL),
+                // but skip rather than emit a half-row that breaks Arelle.
+                continue;
+            }
+
+            $planEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_06_exit_plan');
+            $planEl->setAttribute('id', sprintf('exit_plan_%d', $k + 1));
+
+            // RT_06.0010: Linked provider name (cross-ref to B_02.02.0010).
+            $linkEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_06.0010');
+            $linkEl->setAttribute('contextRef', 'ctx_period');
+            $linkEl->textContent = $supplier->getName() ?? 'Unknown Provider';
+            $planEl->appendChild($linkEl);
+
+            // RT_06.0020: Exit trigger (planned-renewal | concentration-risk
+            // | force-majeure | breach | insolvency).
+            $trigEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_06.0020');
+            $trigEl->setAttribute('contextRef', 'ctx_period');
+            $trigEl->textContent = (string) ($plan->getExitTrigger() ?? '');
+            $planEl->appendChild($trigEl);
+
+            // RT_06.0030: Data-return format (free text, ≤500 chars).
+            $drEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_06.0030');
+            $drEl->setAttribute('contextRef', 'ctx_period');
+            $drEl->textContent = (string) ($plan->getDataReturnFormat() ?? '');
+            $planEl->appendChild($drEl);
+
+            // RT_06.0040: Data-deletion confirmation flag (DORA Art. 28(8)).
+            $ddcEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_06.0040');
+            $ddcEl->setAttribute('contextRef', 'ctx_period');
+            $ddcEl->textContent = $plan->isDataDeletionConfirmation() ? 'true' : 'false';
+            $planEl->appendChild($ddcEl);
+
+            // RT_06.0050: Migration path (alt-provider or in-house ramp-up).
+            $mpEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_06.0050');
+            $mpEl->setAttribute('contextRef', 'ctx_period');
+            $mpEl->textContent = (string) ($plan->getMigrationPath() ?? '');
+            $planEl->appendChild($mpEl);
+
+            // RT_06.0060: Last rehearsal date (empty when never tested —
+            // surfaces via ExitPlanRehearsalOverdueRule Alva-Hint).
+            $tEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_06.0060');
+            $tEl->setAttribute('contextRef', 'ctx_period');
+            $tEl->textContent = $plan->getTestedAt()?->format('Y-m-d') ?? '';
+            $planEl->appendChild($tEl);
+
+            // RT_06.0070: Estimated duration in days.
+            $durEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_06.0070');
+            $durEl->setAttribute('contextRef', 'ctx_period');
+            $durEl->textContent = (string) ($plan->getEstimatedDurationDays() ?? '');
+            $planEl->appendChild($durEl);
+
+            // RT_06.0080: Estimated cost (tenant reporting currency, mapped
+            // via the xbrli:unit declared above).
+            $costEl = $dom->createElementNS(self::NS_ESA_ROI, 'roi:RT_06.0080');
+            $costEl->setAttribute('contextRef', 'ctx_period');
+            if ($plan->getEstimatedCost() !== null) {
+                $costEl->setAttribute('unitRef', $currency);
+                $costEl->setAttribute('decimals', '2');
+            }
+            $costEl->textContent = (string) ($plan->getEstimatedCost() ?? '');
+            $planEl->appendChild($costEl);
+
+            $root->appendChild($planEl);
+        }
+
+        // All major RT_xx sub-tables (RT_03 data-flow, RT_04 subcontractor-
+        // chain, RT_05 asset-dependency-graph, RT_06 exit-plan) are now wired.
+        // Residual gaps are field-level — see the per-provider TODO comment
+        // emitted inside the B_02.02 loop.
         $root->appendChild($dom->createComment(
-            ' TODO: RT_06 decommission-plan — pending dedicated decommission-plan entity '
+            ' NOTE: RT_03–RT_06 wired; residual B_02.02.0140–0999 field-level gaps tracked per-provider '
         ));
 
         $xml = $dom->saveXML();
