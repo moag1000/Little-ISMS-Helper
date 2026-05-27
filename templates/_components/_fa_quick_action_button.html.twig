@@ -1,0 +1,33 @@
+{#
+ # fa-quick-action-btn — Aurora v4 Welle 2 (2026-05-27)
+ # Verb-based pill action button for "Mein Tag" quick actions.
+ # Wraps in .fa-quick-actions container.
+ #
+ # Usage:
+ #   {% from '_components/_fa_quick_action_button.html.twig' import fa_quick_action_button %}
+ #   <div class="fa-quick-actions">
+ #       {{ fa_quick_action_button({verb: 'Asset anlegen', href: path('app_asset_new', {_locale: app.request.locale}), shortcut: 'Alt+A', module: 'assets'}) }}
+ #   </div>
+ #
+ # Params:
+ #   verb     (string, required)  — button label
+ #   href     (string, required)  — locale-prefixed URL
+ #   icon     (string, default 'ui-plus') — Aurora icon key
+ #   shortcut (string, optional)  — e.g. "Alt+A"
+ #   module   (string, optional)  — hide if module not active
+ #   persona  (string, optional)  — hide if persona not granted
+ #}
+{% macro fa_quick_action_button(config) %}
+    {%- if (config.module is not defined or is_module_active(config.module)) and
+           (config.persona is not defined or is_granted(config.persona)) -%}
+        <a href="{{ config.href }}"
+           class="fa-quick-action-btn"
+           {% if config.shortcut is defined and config.shortcut %}aria-keyshortcuts="{{ config.shortcut }}"{% endif %}>
+            <i class="fa-icon fa-icon--{{ config.icon|default('ui-plus') }}" aria-hidden="true"></i>
+            <span>{{ config.verb }}</span>
+            {% if config.shortcut is defined and config.shortcut %}
+                <kbd class="fa-quick-action-btn__kbd">{{ config.shortcut }}</kbd>
+            {% endif %}
+        </a>
+    {%- endif -%}
+{% endmacro %}

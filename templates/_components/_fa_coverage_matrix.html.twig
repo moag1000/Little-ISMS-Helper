@@ -1,0 +1,104 @@
+{#
+ # fa-coverage-matrix — Aurora v4 Welle 3 (2026-05-27)
+ # Cross-framework heat grid. Each cell click opens fa-drawer with detail.
+ #
+ # Usage:
+ #   {% from '_components/_fa_coverage_matrix.html.twig' import fa_coverage_matrix %}
+ #   {{ fa_coverage_matrix({
+ #       frameworks: portfolio.frameworks,
+ #       filters: ['active'],
+ #       snapshotAt: 'now'|date,
+ #       actions: [{label: 'PDF Export', href: '...', variant: 'secondary'}]
+ #   }) }}
+ #
+ # Each framework item:
+ #   {key, name, cells: {implemented: {heat, dots, trend, trendDir}, effective: {...}, ...}}
+ #   heat: 0-4 (maps to --coverage-heat-* token)
+ #   dots: string e.g. "●●●○○"
+ #   trend: '+0.3' | '→' | '-0.1'
+ #   trendDir: 'up' | 'flat' | 'down'
+ #
+ # Params:
+ #   frameworks  (array, required)
+ #   filters     (array of strings, optional)
+ #   snapshotAt  (string, optional)
+ #   actions     (array of {label, href, variant}, optional)
+ #}
+{% macro fa_coverage_matrix(config) %}
+    {% set dimensions = [
+        {key: 'implemented', label: 'Implementiert'},
+        {key: 'effective',   label: 'Wirksam'},
+        {key: 'maturity',    label: 'Reifegrad'},
+        {key: 'gaps',        label: 'Lücken'},
+        {key: 'recert',      label: 'Re-Cert'},
+        {key: 'trend',       label: 'Trend'},
+    ] %}
+    <div class="fa-coverage-matrix-wrap">
+        <div class="fa-coverage-matrix-wrap__head">
+            <h3 class="fa-coverage-matrix-wrap__title">Framework-Coverage-Matrix</h3>
+            {% if config.filters is defined and config.filters %}
+                <div class="ms-3 d-flex gap-1">
+                    {% for f in config.filters %}
+                        <span class="badge bg-primary-subtle text-primary-emphasis">{{ f }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if config.snapshotAt is defined and config.snapshotAt %}
+                <span class="fa-coverage-matrix-wrap__snapshot">Stand: {{ config.snapshotAt }}</span>
+            {% endif %}
+        </div>
+
+        <table class="fa-coverage-matrix" role="grid">
+            <thead>
+                <tr>
+                    <th scope="col">Framework</th>
+                    {% for dim in dimensions %}
+                        <th scope="col">{{ dim.label }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for fw in config.frameworks|default([]) %}
+                    <tr>
+                        <td data-label="Framework"><strong>{{ fw.name }}</strong></td>
+                        {% for dim in dimensions %}
+                            {% set cell = fw.cells[dim.key]|default({}) %}
+                            {% set heat = cell.heat|default(0) %}
+                            <td class="fa-coverage-matrix__cell fa-coverage-matrix__cell--heat-{{ heat }}"
+                                tabindex="0"
+                                role="gridcell"
+                                data-label="{{ dim.label }}"
+                                aria-label="{{ fw.name }} · {{ dim.label }} · Stufe {{ heat }} von 4">
+                                {% if cell.dots is defined %}
+                                    <span class="fa-coverage-matrix__dots"
+                                          aria-hidden="true">{{- cell.dots -}}</span>
+                                {% endif %}
+                                {% if cell.trend is defined %}
+                                    {% set trendDir = cell.trendDir|default('flat') %}
+                                    <span class="fa-coverage-matrix__trend fa-coverage-matrix__trend--{{ trendDir }}"
+                                          aria-hidden="true">{{- cell.trend -}}</span>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="{{ dimensions|length + 1 }}" class="text-center py-4 text-muted">
+                            Keine Frameworks aktiv — im Compliance-Bereich aktivieren.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if config.actions is defined and config.actions %}
+            <div class="p-3 d-flex gap-2 border-top">
+                {% for action in config.actions %}
+                    <a href="{{ action.href }}" class="btn btn-{{ action.variant|default('secondary') }} btn-sm">
+                        {{ action.label }}
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}

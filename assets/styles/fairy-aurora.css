@@ -785,3 +785,150 @@ html {
 code, kbd, samp, pre {
     font-family: var(--font-mono);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Aurora v4 Extension — Welle 2/3/4 Tokens (2026-05-27)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* C.1 — Density-spezifische Padding-Tokens */
+:root {
+    --density-padding-x-basic:    1rem;
+    --density-padding-y-basic:    0.75rem;
+    --density-padding-x-standard: 0.75rem;
+    --density-padding-y-standard: 0.5rem;
+    --density-padding-x-expert:   0.5rem;
+    --density-padding-y-expert:   0.375rem;
+}
+
+/* C.2 — Persona-Cockpit-Accent-Tokens */
+:root {
+    --persona-ciso:       #6d28d9;
+    --persona-isb:        #0891b2;
+    --persona-dpo:        #be185d;
+    --persona-risk:       #c2410c;
+    --persona-compliance: #15803d;
+    --persona-bcm:        #b45309;
+    --persona-auditor:    #525252;
+    --persona-board:      #1e40af;
+}
+html[data-theme="dark"] {
+    --persona-ciso:       #a78bfa;
+    --persona-isb:        #22d3ee;
+    --persona-dpo:        #f472b6;
+    --persona-risk:       #fb923c;
+    --persona-compliance: #4ade80;
+    --persona-bcm:        #fbbf24;
+    --persona-auditor:    #a3a3a3;
+    --persona-board:      #60a5fa;
+}
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+        --persona-ciso:       #a78bfa;
+        --persona-isb:        #22d3ee;
+        --persona-dpo:        #f472b6;
+        --persona-risk:       #fb923c;
+        --persona-compliance: #4ade80;
+        --persona-bcm:        #fbbf24;
+        --persona-auditor:    #a3a3a3;
+        --persona-board:      #60a5fa;
+    }
+}
+
+/* C.3 — Coverage-Matrix Heat-Grid (5-Stufen, colorblind-safe) */
+:root {
+    --coverage-heat-0: #e4e4e7;
+    --coverage-heat-1: #fda4af;
+    --coverage-heat-2: #fde68a;
+    --coverage-heat-3: #bbf7d0;
+    --coverage-heat-4: #4ade80;
+}
+html[data-theme="dark"] {
+    --coverage-heat-0: #3f3f46;
+    --coverage-heat-1: #be123c;
+    --coverage-heat-2: #b45309;
+    --coverage-heat-3: #15803d;
+    --coverage-heat-4: #22c55e;
+}
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+        --coverage-heat-0: #3f3f46;
+        --coverage-heat-1: #be123c;
+        --coverage-heat-2: #b45309;
+        --coverage-heat-3: #15803d;
+        --coverage-heat-4: #22c55e;
+    }
+}
+
+/* C.4 — Reuse-ROI-Counter-Glow */
+:root {
+    --reuse-roi-glow:        0 0 24px rgba(99, 102, 241, 0.4);
+    --reuse-roi-glow-strong: 0 0 32px rgba(99, 102, 241, 0.6);
+}
+html[data-theme="dark"] {
+    --reuse-roi-glow:        0 0 32px rgba(167, 139, 250, 0.5);
+    --reuse-roi-glow-strong: 0 0 48px rgba(167, 139, 250, 0.7);
+}
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+        --reuse-roi-glow:        0 0 32px rgba(167, 139, 250, 0.5);
+        --reuse-roi-glow-strong: 0 0 48px rgba(167, 139, 250, 0.7);
+    }
+}
+
+/* C.5 — Mega-Menu Tenant-Stempel-Background */
+:root {
+    --mega-menu-header-bg:       var(--surface-2);
+    --mega-menu-header-fg:       var(--fg-2);
+    --mega-menu-header-border:   var(--border);
+    --mega-menu-tenant-stamp-bg: var(--primary-tint);
+    --mega-menu-tenant-stamp-fg: var(--primary-strong);
+}
+
+/* C.6 — Quick-Action-Button-Shadow */
+:root {
+    --quick-action-shadow:       0 1px 3px rgba(0,0,0,0.1);
+    --quick-action-shadow-hover: 0 4px 12px rgba(0,0,0,0.15), 0 0 16px rgba(6, 182, 212, 0.2);
+}
+html[data-theme="dark"] {
+    --quick-action-shadow:       0 1px 3px rgba(0,0,0,0.4);
+    --quick-action-shadow-hover: 0 4px 12px rgba(0,0,0,0.6), 0 0 16px rgba(34, 211, 238, 0.3);
+}
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+        --quick-action-shadow:       0 1px 3px rgba(0,0,0,0.4);
+        --quick-action-shadow-hover: 0 4px 12px rgba(0,0,0,0.6), 0 0 16px rgba(34, 211, 238, 0.3);
+    }
+}
+
+/* C.7 — Onboarding-Banner-Surface */
+:root {
+    --onboarding-banner-bg:     linear-gradient(135deg, var(--primary-tint), var(--accent-tint));
+    --onboarding-banner-border: var(--primary);
+    --onboarding-banner-glow:   0 0 32px rgba(6, 182, 212, 0.15);
+}
+html[data-theme="dark"] {
+    --onboarding-banner-glow:   0 0 32px rgba(34, 211, 238, 0.25);
+}
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+        --onboarding-banner-glow:   0 0 32px rgba(34, 211, 238, 0.25);
+    }
+}
+
+/* C.8 — Audit-Program-Timeline-Today-Line */
+:root {
+    --audit-timeline-today:        var(--accent);
+    --audit-timeline-today-glow:   0 0 8px var(--accent-glow);
+    --audit-timeline-overdue:      var(--danger);
+    --audit-timeline-overdue-glow: 0 0 8px var(--danger-glow);
+    --audit-timeline-pin-radius:   12px;
+}
+
+/* C.9 — Glossary-Tooltip-Indicator */
+:root {
+    --glossary-indicator-bg:    var(--primary-tint);
+    --glossary-indicator-fg:    var(--primary-strong);
+    --glossary-tooltip-bg:      var(--surface-3);
+    --glossary-tooltip-border:  var(--border-strong);
+    --glossary-tooltip-shadow:  0 8px 24px rgba(0,0,0,0.15);
+}

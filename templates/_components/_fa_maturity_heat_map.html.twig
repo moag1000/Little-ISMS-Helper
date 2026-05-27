@@ -1,0 +1,56 @@
+{#
+ # fa-maturity-heat-map — Aurora v4 Welle 3 (2026-05-27)
+ # Expert-density inline score badge: [3/5 ●●●○○ +0.3]
+ # Only render when density == expert (caller gates, macro does not).
+ #
+ # Usage:
+ #   {% from '_components/_fa_maturity_heat_map.html.twig' import fa_maturity_heat_map %}
+ #   {# Caller gates on density #}
+ #   {%- from '_components/_fa_maturity_heat_map.html.twig' import fa_maturity_heat_map -%}
+ #   fa_maturity_heat_map({score: 4, trend: 0.3, reasoning: 'Datenvollständigkeit 92%'})
+ #
+ # Params:
+ #   score      (int 0-5, required)
+ #   trend      (float, optional)  e.g. 0.3 or -0.1 or 0
+ #   reasoning  (string, optional) shown as title attribute
+ #}
+{% macro fa_maturity_heat_map(config) %}
+    {% set rawScore = config.score|default(0)|number_format(0) %}
+    {% set score = rawScore > 5 ? 5 : (rawScore < 0 ? 0 : rawScore) %}
+    {% set trend = config.trend is defined ? config.trend : null %}
+    {% if trend is not null %}
+        {% if trend > 0 %}
+            {% set trendStr = '+' ~ trend %}
+            {% set trendDir = 'up' %}
+        {% elseif trend < 0 %}
+            {% set trendStr = trend %}
+            {% set trendDir = 'down' %}
+        {% else %}
+            {% set trendStr = '→' %}
+            {% set trendDir = 'flat' %}
+        {% endif %}
+    {% endif %}
+
+    {# Map score to heat level: 0→0, 1-2→1, 3→2, 4→3, 5→4 #}
+    {% if score == 0 %}{% set heatLevel = 0 %}
+    {% elseif score <= 2 %}{% set heatLevel = 1 %}
+    {% elseif score == 3 %}{% set heatLevel = 2 %}
+    {% elseif score == 4 %}{% set heatLevel = 3 %}
+    {% else %}{% set heatLevel = 4 %}{% endif %}
+
+    <span class="fa-maturity-heat-map"
+          {% if config.reasoning is defined and config.reasoning %}
+              title="{{ config.reasoning }}{% if trend is not null %} · Trend {{ trendStr }} zum Vormonat{% endif %}"
+          {% endif %}
+          aria-label="{{ score }} von 5 erreicht{% if trend is not null %}, Trend {{ trendStr }} zum Vormonat{% endif %}">
+        <span class="fa-maturity-heat-map__score" aria-hidden="true">{{ score }}/5</span>
+        <span class="fa-maturity-heat-map__dots" aria-hidden="true">
+            {% for i in 1..5 %}
+                <span class="fa-maturity-heat-map__dot{% if i <= score %} fa-maturity-heat-map__dot--filled-{{ heatLevel }}{% endif %}"></span>
+            {% endfor %}
+        </span>
+        {% if trend is not null %}
+            <span class="fa-maturity-heat-map__trend fa-maturity-heat-map__trend--{{ trendDir }}" aria-hidden="true">{{ trendStr }}</span>
+        {% endif %}
+    </span>
+{% endmacro %}

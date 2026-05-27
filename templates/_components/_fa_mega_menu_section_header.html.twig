@@ -1,0 +1,44 @@
+{#
+ # fa-mega-menu-section-header — Aurora v4 Welle 2 (2026-05-27)
+ # Section title inside mega-menu panels with optional norm ref + density hint.
+ #
+ # Usage:
+ #   {% from '_components/_fa_mega_menu_section_header.html.twig' import fa_mega_menu_section_header %}
+ #   {{ fa_mega_menu_section_header({title: 'Dokumentenlenkung', normRef: 'Cl. 7.5', viewAllHref: path('app_document_index', {_locale: app.request.locale}), viewAllCount: 12}) }}
+ #
+ # Params:
+ #   title        (string, required)
+ #   normRef      (string, optional)  e.g. "Cl. 7.5"
+ #   densityHint  (string, optional)  e.g. "expert-only"
+ #   viewAllHref  (url, optional)
+ #   viewAllCount (int, optional)
+ #}
+{% macro fa_mega_menu_section_header(config) %}
+    <div class="fa-mega-menu-section-header">
+        <h3 class="fa-mega-menu-section-header__title">{{ config.title }}</h3>
+
+        {% if config.normRef is defined and config.normRef %}
+            {% if config.viewAllHref is defined and config.viewAllHref %}
+                <a href="{{ config.viewAllHref }}" class="fa-mega-menu-section-header__norm">
+                    {{- config.normRef -}}
+                </a>
+            {% else %}
+                <span class="fa-mega-menu-section-header__norm">{{ config.normRef }}</span>
+            {% endif %}
+        {% endif %}
+
+        {% if config.densityHint is defined and config.densityHint %}
+            <span class="fa-mega-menu-section-header__density-hint">{{ config.densityHint }}</span>
+        {% endif %}
+
+        {% if config.viewAllHref is defined and config.viewAllHref and not (config.normRef is defined and config.normRef) %}
+            <a href="{{ config.viewAllHref }}" class="fa-mega-menu-section-header__view-all">
+                {%- if config.viewAllCount is defined and config.viewAllCount -%}
+                    Alle <span class="fa-mega-menu-section-header__count">{{ config.viewAllCount }}</span> anzeigen →
+                {%- else -%}
+                    Alle anzeigen →
+                {%- endif -%}
+            </a>
+        {% endif %}
+    </div>
+{% endmacro %}

@@ -1,0 +1,59 @@
+{#
+ # fa-reuse-roi-counter — Aurora v4 Welle 3 (2026-05-27)
+ # Animated number counter. Animation runs on viewport-enter via Stimulus.
+ #
+ # Usage:
+ #   {% from '_components/_fa_reuse_roi_counter.html.twig' import fa_reuse_roi_counter %}
+ #   {{ fa_reuse_roi_counter({
+ #       value: 147,
+ #       unit: 'Doppel-Erfassungen vermieden',
+ #       secondary: {value: 22, unit: 'FTE-Tage gespart'},
+ #       period: 'letzte 30 Tage',
+ #       href: path('app_data_reuse_hub', {_locale: app.request.locale})
+ #   }) }}
+ #
+ # Params:
+ #   value     (int, required)
+ #   unit      (string, required)
+ #   secondary (object: {value, unit}, optional)
+ #   period    (string, optional)
+ #   href      (url, optional)
+ #   variant   (string: inline|card-footer|standalone, default standalone)
+ #   icon      (string, optional)  emoji or icon key
+ #}
+{% macro fa_reuse_roi_counter(config) %}
+    {% set variant = config.variant|default('standalone') %}
+    <div class="fa-reuse-roi-counter fa-reuse-roi-counter--{{ variant }}"
+         data-controller="reuse-roi-counter"
+         data-reuse-roi-counter-target-value="{{ config.value }}">
+        {% if config.icon is defined and config.icon %}
+            <div class="fa-reuse-roi-counter__icon" aria-hidden="true">
+                {{ config.icon }}
+            </div>
+        {% endif %}
+
+        <div class="fa-reuse-roi-counter__main">
+            <span class="fa-reuse-roi-counter__value"
+                  data-reuse-roi-counter-target="number"
+                  aria-live="polite"
+                  aria-atomic="true">0</span>
+            <span class="fa-reuse-roi-counter__unit">{{ config.unit }}</span>
+
+            {% if config.secondary is defined and config.secondary %}
+                <div class="fa-reuse-roi-counter__secondary">
+                    ≈ {{ config.secondary.value }} {{ config.secondary.unit }}
+                </div>
+            {% endif %}
+
+            {% if config.period is defined and config.period %}
+                <span class="fa-reuse-roi-counter__period">{{ config.period }}</span>
+            {% endif %}
+
+            {% if config.href is defined and config.href %}
+                <a href="{{ config.href }}" class="fa-reuse-roi-counter__cta">
+                    Mehr im Reuse-Cockpit →
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
