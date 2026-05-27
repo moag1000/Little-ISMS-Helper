@@ -6,7 +6,7 @@ nav:
     analytics: Analytics
     fte_tracking: 'FTE-Tracking'
     interested_parties: 'Interessierte Parteien'
-    soa: SoA
+    soa: 'SoA (Anwendbarkeitserklärung)'
     assets: Assets
     suppliers: Lieferanten
     risks: Risiken
@@ -72,8 +72,8 @@ nav:
     management_review: Managementbewertung
     admin_portal: 'Admin Portal'
     privacy_hub: Datenschutz-Kern
-    vvt: 'VVT (Art. 30)'
-    dpia: 'DSFA (Art. 35)'
+    vvt: 'VVT – Verarbeitungsverzeichnis (Art. 30)'
+    dpia: 'DSFA – Datenschutz-Folgenabschätzung (Art. 35)'
     data_breaches: 'Datenschutzverletzungen (Art. 33/34)'
     consents: 'Einwilligungen (Art. 7)'
     # Audit-V3 ME-1..ME-12: Module discoverability fix.
@@ -105,6 +105,13 @@ nav:
             compliance: Compliance
             admin: Administration
             help: 'Hilfe & Ressourcen'
+            # Aurora v4 Welle 2 — neue Kategorien (2026-05-27)
+            cockpit: 'Mein Cockpit'
+            portfolio: Portfolio
+            isms_foundation: 'ISMS-Grundlagen'
+            daily_work: 'Tägliche Arbeit'
+            compliance_audits: 'Compliance & Audits'
+            help_onboarding: 'Hilfe & Onboarding'
 
         help:
             iso9001_bridge: 'ISO 9001 → 27001 Brücke'
@@ -138,6 +145,16 @@ nav:
             specialized_tools: 'DORA / NIS2 / MRIS / AI'
             # V3 W2-H2: Persona-Dashboards (Compliance-Manager-Dashboard)
             persona_dashboards: 'Persona-Dashboards'
+            # Aurora v4 Welle 2 — neue Sektionen (2026-05-27)
+            quick_actions: 'Schnellaktionen'
+            cockpit_personas: 'Persona-Übersicht'
+            coverage: 'Framework-Abdeckung'
+            eu_regulatory: 'EU-Regulatorik & DSGVO'
+            bcm_continuity: 'Business Continuity'
+            audits_reviews: 'Audits & Reviews'
+            onboarding: 'Erste Schritte'
+            learning_paths: Lernpfade
+            reference: Referenz
 
         dashboard:
             compliance_manager: 'Compliance-Manager-Dashboard'

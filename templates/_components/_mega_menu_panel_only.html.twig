@@ -436,10 +436,74 @@
         </div>
         {% endif %}
 
-        {# Operations Panel #}
-        {% if is_module_active('core') or is_module_active('incidents') or is_module_active('vulnerability_intel') %}
-        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="operations" role="menu" aria-label="{{ 'nav.mega.category.operations'|trans({}, 'nav') }}">
+        {# Mein Cockpit Panel (Aurora v4 Phase 2, 2026-05-27) #}
+        {% from '_components/_fa_persona_cockpit_card.html.twig' import fa_persona_cockpit_card %}
+        {% if is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('PERSONA_DPO') or is_granted('PERSONA_COMPLIANCE') or is_granted('ROLE_AUDITOR') %}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="cockpit" role="menu" aria-label="{{ 'nav.mega.category.cockpit'|trans({}, 'nav') }}">
             <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.cockpit_personas'|trans({}, 'nav') }}</h3>
+                    <div class="row g-2 mt-1">
+                        {% if is_granted('PERSONA_CISO') %}
+                        <div class="col-6">{{ fa_persona_cockpit_card({persona: 'ciso', name: 'CISO-Dashboard', href: path('app_dashboard_ciso', {_locale: app.request.locale})}) }}</div>
+                        {% endif %}
+                        {% if is_granted('PERSONA_RISK') %}
+                        <div class="col-6">{{ fa_persona_cockpit_card({persona: 'risk', name: 'Risk-Manager-Dashboard', href: path('app_dashboard_risk_manager', {_locale: app.request.locale})}) }}</div>
+                        {% endif %}
+                        {% if is_granted('PERSONA_DPO') %}
+                        <div class="col-6">{{ fa_persona_cockpit_card({persona: 'dpo', name: 'DSB-Dashboard', href: path('app_dashboard_dpo', {_locale: app.request.locale})}) }}</div>
+                        {% endif %}
+                        {% if is_granted('PERSONA_COMPLIANCE') %}
+                        <div class="col-6">{{ fa_persona_cockpit_card({persona: 'compliance', name: 'Compliance-Manager', href: path('app_dashboard_compliance_manager', {_locale: app.request.locale})}) }}</div>
+                        {% endif %}
+                        {% if is_granted('ROLE_AUDITOR') %}
+                        <div class="col-6">{{ fa_persona_cockpit_card({persona: 'auditor', name: 'Auditor-Dashboard', href: path('app_dashboard_auditor', {_locale: app.request.locale})}) }}</div>
+                        {% endif %}
+                        {# TODO Backend: PERSONA_ISB role + PERSONA_BCM_OFFICER role needed for ISB/BCM cockpit cards #}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Portfolio Panel (Aurora v4 Phase 2, 2026-05-27) #}
+        {% if is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN') %}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="portfolio" role="menu" aria-label="{{ 'nav.mega.category.portfolio'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.coverage'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        {% if is_granted('ROLE_GROUP_CISO') %}
+                        <li><a href="{{ path('app_group_report_index', {_locale: app.request.locale}) }}" class="{% if current_route starts with 'app_group_report_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--coverage-matrix" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.group_report'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# TODO Phase 2: Coverage-Matrix standalone page once app_portfolio_coverage route exists #}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Operations Panel (renamed Tägliche Arbeit in nav label, Aurora v4 2026-05-27) #}
+        {% if is_module_active('core') or is_module_active('incidents') or is_module_active('vulnerability_intel') %}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="operations" role="menu" aria-label="{{ 'nav.mega.category.daily_work'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                {# Schnellaktionen (Aurora v4 Phase 1, 2026-05-27) #}
+                {% from '_components/_fa_quick_action_button.html.twig' import fa_quick_action_button %}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.quick_actions'|trans({}, 'nav') }}</h3>
+                    <div class="fa-quick-actions mb-2">
+                        {{ fa_quick_action_button({verb: 'Asset anlegen', href: path('app_asset_new', {_locale: app.request.locale}), shortcut: 'Alt+A', module: 'assets'}) }}
+                        {{ fa_quick_action_button({verb: 'Vorfall melden', href: path('app_incident_new', {_locale: app.request.locale}), shortcut: 'Alt+V', module: 'incidents'}) }}
+                        {{ fa_quick_action_button({verb: 'Risiko erfassen', href: path('app_risk_new', {_locale: app.request.locale}), shortcut: 'Alt+R', module: 'risks'}) }}
+                        {{ fa_quick_action_button({verb: 'Datenpanne melden', href: path('app_data_breach_new', {_locale: app.request.locale}), module: 'privacy', persona: 'PERSONA_DPO'}) }}
+                        {{ fa_quick_action_button({verb: 'Audit anlegen', href: path('app_audit_new', {_locale: app.request.locale}), module: 'audits'}) }}
+                    </div>
+                </div>
                 {% if is_module_active('core') %}
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.documents'|trans({}, 'nav') }}</h3>
@@ -604,7 +668,9 @@
                 {# V3 W2-H2: Compliance-Manager-Dashboard (C2) — was implemented but
                    never linked from the mega-menu. Surfaced here behind the
                    compliance-module-gate. #}
-                {% if is_module_active('compliance') or is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('ROLE_AUDITOR') %}
+                {# Gate Z.607 fix (2026-05-27): added PERSONA_DPO, PERSONA_COMPLIANCE, PERSONA_BCM_OFFICER #}
+                {# TODO Backend: PERSONA_ISB role needed for full ISB persona gating #}
+                {% if is_module_active('compliance') or is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('PERSONA_DPO') or is_granted('PERSONA_COMPLIANCE') or is_granted('ROLE_AUDITOR') %}
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.persona_dashboards'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
@@ -849,7 +915,10 @@
                 </div>
                 {% endif %}
 
-                {# Sub-Sektion 3: Specialized Tools (DORA / NIS2 / MRIS / AI) #}
+                {# Sub-Sektion 3: EU-Regulatorik & Specialized Tools
+                   Phase 1 (2026-05-27): NIS2/DORA links remain here.
+                   TODO Phase 2: Move NIS2/DORA into dedicated "EU-Regulatorik & DSGVO" section
+                   and merge Privacy panel content here under "Compliance & Audits" super-panel. #}
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.specialized_tools'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
