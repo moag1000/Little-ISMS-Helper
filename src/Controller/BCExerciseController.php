@@ -82,10 +82,14 @@ class BCExerciseController extends AbstractController
             return $this->redirectToRoute('app_bc_exercise_show', ['id' => $bcExercise->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('bc_exercise/new.html.twig', [
             'bc_exercise' => $bcExercise,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/bc-exercise/{id}', name: 'app_bc_exercise_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -149,10 +153,14 @@ class BCExerciseController extends AbstractController
             return $this->redirectToRoute('app_bc_exercise_show', ['id' => $bcExercise->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('bc_exercise/edit.html.twig', [
             'bc_exercise' => $bcExercise,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/bc-exercise/{id}/delete', name: 'app_bc_exercise_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
