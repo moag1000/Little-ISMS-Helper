@@ -103,6 +103,7 @@ Key ADRs for new contributors:
 - [ADR-0002](docs/adr/0002-multi-tenant-tenant-id-pattern.md) — Multi-tenancy: every entity has `tenant_id`
 - [ADR-0003](docs/adr/0003-fairyaurora-v4-design-system.md) — FairyAurora v4: why a custom design system
 - [ADR-0007](docs/adr/0007-module-gating-pattern.md) — 40+ module gates: why features are opt-in per tenant
+- [ADR-0010](docs/adr/0010-tisax-byo-vs-pre-seeded.md) — TISAX BYO-Wizard: why VDA-ISA content is never shipped; see also [ENX VDA-ISA Licensing Analysis](docs/tisax/ENX_VDA_ISA_LICENSING_ANALYSIS.md)
 - [ADR-0011](docs/adr/0011-hmac-chained-audit-log.md) — HMAC-chained audit log: tamper evidence for ISO 27001
 
 ## Glossary
