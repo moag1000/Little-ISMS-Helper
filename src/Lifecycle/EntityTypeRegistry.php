@@ -43,6 +43,12 @@ final class EntityTypeRegistry
             'class' => \App\Entity\AuditFinding::class,
             'workflow' => 'audit_finding_lifecycle',
         ],
+
+        // Phase 2.5 — AuditProgram ISO 19011 §5.4 programme lifecycle.
+        'audit-program' => [
+            'class' => \App\Entity\AuditProgram::class,
+            'workflow' => 'audit_program_lifecycle',
+        ],
         'consent' => [
             'class' => \App\Entity\Consent::class,
             'workflow' => 'consent_lifecycle',

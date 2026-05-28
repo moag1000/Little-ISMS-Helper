@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'audit_program' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ program.name }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.audit_programs'|trans({}, 'nav'), url: path('app_audit_program_index', {_locale: app.request.locale}) },
+        { label: program.name }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'nav-clipboard-check', label: 'audit_program.page.title'|trans },
+    title: program.name,
+    subtitle: program.startDate|date('d.m.Y') ~ ' – ' ~ program.endDate|date('d.m.Y'),
+    actions: is_granted('ROLE_MANAGER') ? [
+        { label: 'audit_program.action.edit'|trans, href: path('app_audit_program_edit', {_locale: app.request.locale, id: program.id}), variant: 'secondary', icon: 'pencil' }
+    ] : []
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container-fluid py-4">
+    <div class="row g-4">
+        <div class="col-lg-8">
+
+            <div class="card mb-4">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <strong>{{ program.name }}</strong>
+                    <span class="badge bg-{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'secondary') }}">
+                        {{ ('audit_program.status.' ~ program.status)|trans }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    {% if program.description %}<p class="text-muted mb-3">{{ program.description }}</p>{% endif %}
+                    <div class="row g-3">
+                        {% if program.objectives %}
+                        <div class="col-md-6">
+                            <dt class="small text-muted">{{ 'audit_program.field.objectives'|trans }}</dt>
+                            <dd>{{ program.objectives }}</dd>
+                        </div>
+                        {% endif %}
+                        {% if program.scope %}
+                        <div class="col-md-6">
+                            <dt class="small text-muted">{{ 'audit_program.field.scope'|trans }}</dt>
+                            <dd>{{ program.scope }}</dd>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>{{ 'audit_program.show.linked_audits'|trans }}</strong>
+                    <span class="badge bg-secondary ms-2">{{ program.auditCount }}</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if program.internalAudits is empty %}
+                        <div class="p-4 text-center text-muted small">{{ 'audit_program.show.no_audits'|trans }}</div>
+                    {% else %}
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ 'audits.field.audit_number'|trans({}, 'audits') }}</th>
+                                    <th>{{ 'audits.field.title'|trans({}, 'audits') }}</th>
+                                    <th>{{ 'audits.field.planned_date'|trans({}, 'audits') }}</th>
+                                    <th>{{ 'audits.field.status'|trans({}, 'audits') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for audit in program.internalAudits %}
+                                <tr>
+                                    <td><a href="{{ path('app_audit_show', {_locale: app.request.locale, id: audit.id}) }}">{{ audit.auditNumber }}</a></td>
+                                    <td>{{ audit.title }}</td>
+                                    <td>{{ audit.plannedDate|date('d.m.Y') }}</td>
+                                    <td><span class="badge bg-secondary">{{ audit.status }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-header"><strong>{{ 'audit_program.show.responsibility'|trans }}</strong></div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        <dt class="small text-muted">{{ 'audit_program.show.programme_owner'|trans }}</dt>
+                        <dd>{{ program.effectiveOwnerName ?? ('audit_program.show.not_assigned'|trans) }}</dd>
+                        {% if program.frequency %}
+                        <dt class="small text-muted mt-2">{{ 'audit_program.field.frequency'|trans }}</dt>
+                        <dd>{{ ('audit_program.frequency.' ~ program.frequency)|trans }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header"><strong>{{ 'audit_program.show.metadata'|trans }}</strong></div>
+                <div class="card-body">
+                    <dl class="mb-0 small">
+                        <dt class="text-muted">{{ 'audit_program.show.created_at'|trans }}</dt>
+                        <dd>{{ program.createdAt|date('d.m.Y H:i') }}</dd>
+                        {% if program.createdBy %}
+                        <dt class="text-muted mt-1">{{ 'audit_program.show.created_by'|trans }}</dt>
+                        <dd>{{ program.createdBy.fullName }}</dd>
+                        {% endif %}
+                        {% if program.updatedAt %}
+                        <dt class="text-muted mt-1">{{ 'audit_program.show.updated_at'|trans }}</dt>
+                        <dd>{{ program.updatedAt|date('d.m.Y H:i') }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            {% if is_granted('ROLE_ADMIN') %}
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white"><strong>{{ 'audit_program.show.danger_zone'|trans }}</strong></div>
+                <div class="card-body">
+                    {% if program.status != 'archived' and is_granted('ROLE_MANAGER') %}
+                    <form method="post" action="{{ path('app_audit_program_archive', {_locale: app.request.locale, id: program.id}) }}" class="mb-2">
+                        <input type="hidden" name="_token" value="{{ csrf_token('archive-audit-program-' ~ program.id) }}">
+                        <button type="submit" class="btn btn-sm btn-outline-warning w-100" onclick="return confirm('{{ 'audit_program.show.archive_confirm'|trans }}')">{{ 'audit_program.action.archive'|trans }}</button>
+                    </form>
+                    {% endif %}
+                    <form method="post" action="{{ path('app_audit_program_delete', {_locale: app.request.locale, id: program.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-audit-program-' ~ program.id) }}">
+                        <button type="submit" class="btn btn-sm btn-danger w-100" onclick="return confirm('{{ 'audit_program.show.delete_confirm'|trans }}')">{{ 'audit_program.action.delete'|trans }}</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</main>
+{% endblock %}
