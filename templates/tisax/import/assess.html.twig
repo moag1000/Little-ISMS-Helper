@@ -41,7 +41,7 @@
     ], 5) }}
 
     <div class="mt-4">
-        {# Aggregate KPI tiles #}
+        {# Aggregate KPI tiles — per-tier model aware #}
         <div class="row mb-4">
             <div class="col-md-3">
                 {{ _fa_feature_card.render({
@@ -61,12 +61,28 @@
             </div>
             {% for tier, tierData in aggregate.byTier %}
             <div class="col-md-3">
-                {{ _fa_feature_card.render({
-                    label: tier|replace({'_': ' '})|title,
-                    value: tierData.average ~ ' / 5',
-                    variant: 'info',
-                    icon: 'nav-collection'
-                }) }}
+                {% if tierData.model == 'information_security' %}
+                    {{ _fa_feature_card.render({
+                        label: ('tisax.import.assess.tier.' ~ tier)|trans({}, 'tisax_isa'),
+                        value: 'tisax.import.assess.tier_is_value'|trans({'%avg%': tierData.average, '%target%': 3}, 'tisax_isa'),
+                        variant: 'info',
+                        icon: 'status-gauge'
+                    }) }}
+                {% elseif tierData.model == 'prototype_protection' %}
+                    {{ _fa_feature_card.render({
+                        label: ('tisax.import.assess.tier.' ~ tier)|trans({}, 'tisax_isa'),
+                        value: 'tisax.import.assess.tier_pp_value'|trans({'%compliant%': tierData.compliant, '%total%': tierData.total}, 'tisax_isa'),
+                        variant: tierData.total > 0 and tierData.compliant == tierData.total ? 'success' : 'warning',
+                        icon: 'status-ok'
+                    }) }}
+                {% elseif tierData.model == 'data_protection' %}
+                    {{ _fa_feature_card.render({
+                        label: ('tisax.import.assess.tier.' ~ tier)|trans({}, 'tisax_isa'),
+                        value: 'tisax.import.assess.tier_dp_value'|trans({'%in_place%': tierData.in_place, '%total%': tierData.total}, 'tisax_isa'),
+                        variant: tierData.total > 0 and tierData.in_place == tierData.total ? 'success' : 'warning',
+                        icon: 'nav-shield-alert'
+                    }) }}
+                {% endif %}
             </div>
             {% endfor %}
         </div>
@@ -106,6 +122,41 @@
                                     </span>
                                 </td>
                                 <td>
+                                    {% set _category = req.category ?? 'information_security' %}
+                                    {% if _category == 'prototype_protection' %}
+                                    {# Tier 2: binary compliance radio #}
+                                    <div class="d-flex gap-2 flex-wrap" role="group" aria-label="{{ 'tisax.import.assess.col.compliance'|trans({}, 'tisax_isa') }}">
+                                        {% for val in ['compliant', 'not_compliant', 'na'] %}
+                                        <div class="form-check form-check-inline mb-0">
+                                            <input class="form-check-input" type="radio"
+                                                name="compliance_pp[{{ req.id }}]"
+                                                id="pp_{{ req.id }}_{{ val }}"
+                                                value="{{ val }}"
+                                                {% if req.assessmentValue == val %}checked{% endif %}>
+                                            <label class="form-check-label small" for="pp_{{ req.id }}_{{ val }}">
+                                                {{ ('tisax.import.assess.pp.' ~ val)|trans({}, 'tisax_isa') }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% elseif _category == 'data_protection' %}
+                                    {# Tier 3: GDPR conformance radio #}
+                                    <div class="d-flex gap-2 flex-wrap" role="group" aria-label="{{ 'tisax.import.assess.col.conformance'|trans({}, 'tisax_isa') }}">
+                                        {% for val in ['in_place', 'partial', 'not_in_place', 'na'] %}
+                                        <div class="form-check form-check-inline mb-0">
+                                            <input class="form-check-input" type="radio"
+                                                name="compliance_dp[{{ req.id }}]"
+                                                id="dp_{{ req.id }}_{{ val }}"
+                                                value="{{ val }}"
+                                                {% if req.assessmentValue == val %}checked{% endif %}>
+                                            <label class="form-check-label small" for="dp_{{ req.id }}_{{ val }}">
+                                                {{ ('tisax.import.assess.dp.' ~ val)|trans({}, 'tisax_isa') }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {# Tier 1: Reifegrad 0-5 select (default / information_security) #}
                                     <select name="reifegrad[{{ req.id }}]" class="form-select form-select-sm" style="width:auto">
                                         {% for levelInt, levelStr in levels %}
                                         <option value="{{ levelInt }}"
@@ -114,6 +165,7 @@
                                         </option>
                                         {% endfor %}
                                     </select>
+                                    {% endif %}
                                 </td>
                                 <td>
                                     {% if req.maturityTarget %}

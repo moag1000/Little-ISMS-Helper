@@ -140,3 +140,42 @@ tisax:
         established: 'Established — standardised'
         predictable: 'Predictable — measured'
         optimising: 'Optimising — continuously improving'
+
+      # Tier KPI short labels (assess page)
+      tier:
+        information_security: 'Information Security'
+        prototype_protection: 'Prototype Protection'
+        data_protection: 'Data Protection'
+
+      # IS-tier KPI value template (assess page)
+      tier_is_value: 'Avg. %avg% / Target AL3: 3.0'
+      # PP-tier KPI value template (assess page)
+      tier_pp_value: '%compliant% / %total% compliant'
+      # DP-tier KPI value template (assess page)
+      tier_dp_value: '%in_place% / %total% in place'
+
+      # Tier 2 — Prototype Protection assessment options (binary)
+      col:
+        compliance: 'Compliance'
+        conformance: 'GDPR Conformance'
+
+      pp:
+        compliant: 'Compliant'
+        not_compliant: 'Not Compliant'
+        na: 'Not Applicable'
+
+      # Tier 3 — Data Protection / GDPR conformance options
+      dp:
+        in_place: 'Measure in place'
+        partial: 'Partially in place'
+        not_in_place: 'Not in place'
+        na: 'Not applicable'
+
+  # Assessment model labels (public-knowledge facts, not ENX licensed text)
+  assessment_model:
+    information_security:
+      label: 'Information Security (ISO/IEC 33020 Process Capability 0–5)'
+    prototype_protection:
+      label: 'Prototype Protection (Binary Compliance)'
+    data_protection:
+      label: 'Data Protection (GDPR Art. 28 Conformance)'
