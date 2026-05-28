@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Patch Entity for NIS2 Compliance (Art. 21.2.d)
+ * Patch Entity for NIS2 Compliance (Art. 21.2.e — security in development, acquisition, maintenance incl. vulnerability handling)
  * Patch Management and Remediation Tracking
  */
 #[ORM\Entity(repositoryClass: PatchRepository::class)]
