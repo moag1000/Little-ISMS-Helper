@@ -9997,6 +9997,9 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     align-items: center;
     padding: 11px 10px;
     border-radius: var(--r-md);
+    /* Reset browser <button> defaults — prevents gray ButtonFace in dark mode */
+    background: transparent;
+    border: none;
     text-decoration: none; color: var(--fg-2);
     font: 600 14px var(--font-sans);
     cursor: pointer; position: relative;
@@ -10083,9 +10086,9 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 /* ── Flyout panel ────────────────────────────────────────── */
 .flyout {
     position: fixed;
-    top: 64px; left: 264px;
+    top: 52px; left: 224px; /* header min-height=52px, sidebar width=224px (app.css) */
     width: 720px;
-    height: calc(100vh - 64px);
+    height: calc(100vh - 52px);
     background:
         radial-gradient(circle at 100% 0%, color-mix(in oklab, var(--accent) 8%, transparent), transparent 50%),
         radial-gradient(circle at 0% 100%, color-mix(in oklab, var(--primary) 6%, transparent), transparent 45%),
