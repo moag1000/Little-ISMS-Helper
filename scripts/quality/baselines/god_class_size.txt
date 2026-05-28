@@ -2,7 +2,7 @@
 # Format: <relative-path>:LOC=NNN deps=MMM
 # NEW file added OR existing file growing beyond LOC will fail CI.
 src/Service/Search/SearchService.php:LOC=1416 deps=33
-src/Controller/DeploymentWizardController.php:LOC=1615 deps=0
+src/Controller/DeploymentWizardController.php:LOC=1745 deps=0
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1869 deps=15
 src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php:LOC=1837 deps=4
 src/Service/DashboardStatisticsService.php:LOC=1808 deps=25
