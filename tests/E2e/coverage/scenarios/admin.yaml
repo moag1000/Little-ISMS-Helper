@@ -1,9 +1,10 @@
 # Admin-Panel form-fill scenarios (ROLE_ADMIN / ROLE_SUPER_ADMIN actions).
 #
-# Covers the most common admin form-submit flows: KPI thresholds, lifecycle
-# overrides, supplier criticality, quick-fix settings, audit-retention,
-# tags, data-retention, notification rules. Excludes destructive actions
-# (bulk-delete, async-job triggers, setup-wizard).
+# Form block-prefixes use the FQCN→snake-case convention WITHOUT the
+# `_type` suffix (Symfony Form\Util\StringUtil::fqcnToBlockPrefix).
+# E.g. KpiThresholdConfigType → `kpi_threshold_config[<field>]`.
+#
+# Excludes destructive actions (bulk-delete, async-job triggers, setup-wizard).
 
 scenarios:
   - name: admin_kpi_threshold_new
@@ -11,9 +12,9 @@ scenarios:
     route: /de/admin/kpi-thresholds/new
     category: admin
     fill:
-      'input[name="kpi_threshold_config_type[kpiKey]"]': "TEST_KPI_${random.suffix}"
-      'input[name="kpi_threshold_config_type[goodThreshold]"]': "80"
-      'input[name="kpi_threshold_config_type[warningThreshold]"]': "60"
+      'select[name="kpi_threshold_config[kpiKey]"]': "control_compliance"
+      'input[name="kpi_threshold_config[goodThreshold]"]': "80"
+      'input[name="kpi_threshold_config[warningThreshold]"]': "60"
     submit: auto
     expect:
       status_lt: 500
@@ -24,10 +25,10 @@ scenarios:
     route: /de/admin/supplier-criticality/new
     category: admin
     fill:
-      'input[name="supplier_criticality_level_type[code]"]': "CRIT_${random.suffix}"
-      'input[name="supplier_criticality_level_type[labelDe]"]': "Kritisch Test"
-      'input[name="supplier_criticality_level_type[labelEn]"]': "Critical Test"
-      'input[name="supplier_criticality_level_type[sortOrder]"]': "10"
+      'input[name="supplier_criticality_level[code]"]': "CRIT_${random.suffix}"
+      'input[name="supplier_criticality_level[labelDe]"]': "Kritisch Test"
+      'input[name="supplier_criticality_level[labelEn]"]': "Critical Test"
+      'input[name="supplier_criticality_level[sortOrder]"]': "10"
     submit: auto
     expect:
       status_lt: 500
@@ -38,9 +39,9 @@ scenarios:
     route: /de/admin/tags/new
     category: admin
     fill:
-      'input[name="tag_type[name]"]': "review-${random.suffix}"
-      'select[name="tag_type[type]"]': "control"
-      'input[name="tag_type[color]"]': "#FF5733"
+      'input[name="tag[name]"]': "review-${random.suffix}"
+      'select[name="tag[type]"]': "custom"
+      'select[name="tag[color]"]': "primary"
     submit: auto
     expect:
       status_lt: 500
@@ -51,8 +52,8 @@ scenarios:
     route: /de/admin/notification/rule/new
     category: admin
     fill:
-      'input[name="notification_rule_type[name]"]': "alert-${random.suffix}"
-      'select[name="notification_rule_type[eventType]"]': "risk.created"
+      'input[name="notification_rule[name]"]': "alert-${random.suffix}"
+      'select[name="notification_rule[eventType]"]': "risk.created"
     submit: auto
     expect:
       status_lt: 500
@@ -85,7 +86,7 @@ scenarios:
     route: /de/admin/settings/data-retention
     category: admin
     fill:
-      'input[name="retention_days_asset"]': "730"
+      'input[name="retention_days_risk"]': "730"
     submit: auto
     expect:
       status_lt: 500
@@ -93,10 +94,10 @@ scenarios:
 
   - name: admin_lifecycle_override_edit
     label: "Lifecycle-Override bearbeiten"
-    route: /de/admin/lifecycle-overrides/document_lifecycle/draft_to_review/edit
+    route: /de/admin/lifecycle-overrides/document_lifecycle/submit_for_review/edit
     category: admin
     fill:
-      'input[name="lifecycle_override_type[roles_raw]"]': "ROLE_ADMIN, ROLE_MANAGER"
+      'input[name="lifecycle_override[roles_raw]"]': "ROLE_ADMIN, ROLE_MANAGER"
     submit: auto
     expect:
       status_lt: 500
