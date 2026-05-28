@@ -44,7 +44,7 @@ tisax:
       bullet_1: 'You hold a valid, current ENX membership or licence that entitles you to use the VDA-ISA workbook.'
       bullet_2: 'The workbook has been obtained through official ENX channels and has not been modified in a manner that violates the licence.'
       bullet_3: 'You accept sole responsibility for ensuring your organisation''s licence compliance.'
-      body_3: 'Your confirmation will be recorded with timestamp and IP address as part of your audit trail (ISO 27001 Clause 7.5.3).'
+      body_3: 'Your confirmation will be recorded with timestamp and IP address as part of your audit trail (ISO 27001 Clause 7.5.3). The IP address is automatically anonymised after 365 days (GDPR Art. 5(1)(e)).'
       checkbox_label: 'I confirm that I hold a valid ENX licence for the VDA-ISA workbook I am about to upload.'
       must_confirm: 'You must confirm licence compliance before proceeding.'
       confirm_button: 'Confirm and Continue'
