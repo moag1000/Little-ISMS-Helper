@@ -139,7 +139,7 @@ dashboard:
   kpi:
     control_compliance: Control-Compliance
     control_compliance_weighted: Control-Compliance (gewichtet)
-    controls_implemented: Controls implementiert
+    controls_implemented: Maßnahmen umgesetzt
     residual_risk_exposure: Residual Risk Exposure
     isms_health_score: ISMS Health Score
     risk_appetite_compliance: Risiko-Appetit Compliance
@@ -245,7 +245,7 @@ dashboard:
   # Legacy first_steps keys removed — replaced by journey.{de,en}.yaml (AP 1/AP 2)
   create_first_asset: Erstes Asset anlegen
   create_first_risk: Erstes Risiko erfassen
-  review_controls: Controls pruefen
+  review_controls: Maßnahmen prüfen
   report_first_incident: Ersten Vorfall melden
   quick_actions:
     title: Schnellaktionen

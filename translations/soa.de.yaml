@@ -51,7 +51,7 @@ soa:
         control_effectiveness: 'Control-Wirksamkeit'
     category:
         Organizational: Organisatorische
-        People: Menschen
+        People: Personenbezogene
         Physical: Physische
         Technological: Technologische
     table:
