@@ -16,24 +16,32 @@ import { Controller } from '@hotwired/stimulus';
  *   trigger  — sb-link <button> elements (one per L1 category)
  *   panel    — .flyout <div> elements (rendered at body level)
  *
- * WCAG 2.2 AA:
- *   - focus-visible rings on triggers and fly-items (CSS)
- *   - aria-haspopup / aria-expanded on triggers
- *   - aria-hidden / role="menu" / role="menuitem" on panels
- *   - ESC key closes open flyout and returns focus to trigger
- *   - Arrow-key navigation between L1 triggers
+ * WCAG 2.2 AA (Phase 4.1):
+ *   - focus-visible rings: 3px solid outline + glow shadow on triggers and fly-items (CSS)
+ *   - role="menubar" aria-orientation="vertical" on nav container (template)
+ *   - role="menuitem" aria-haspopup="menu" aria-expanded on trigger buttons (template)
+ *   - role="menu" / role="menuitem" on panels (template)
+ *   - ESC key closes open flyout and returns focus to trigger (Phase 4.1)
+ *   - ArrowDown on trigger opens panel and focuses first item (Phase 4.1)
+ *   - ArrowRight/Left between L1 triggers cycles focus + opens panel (Phase 4.1)
+ *   - ArrowUp/Down within open panel navigates fly-items (Phase 4.1)
+ *   - Tab within open panel cycles focusable items; Shift+Tab on first item returns to trigger
  *   - Focus trapped inside open flyout (Tab cycles within)
  */
 export default class extends Controller {
     static targets = ['trigger', 'panel'];
 
     connect() {
-        // Keyboard navigation
+        // Keyboard navigation on sidebar triggers (ArrowUp/Down/Left/Right, Home, End, Enter, Space)
         this.element.addEventListener('keydown', this.handleKeyboard.bind(this));
 
         // Global ESC key + outside-click to close
         document.addEventListener('keydown', this.handleGlobalKeydown.bind(this));
         document.addEventListener('click', this.handleOutsideClick.bind(this));
+
+        // Phase 4.1: Keyboard navigation inside open flyout panels (ArrowUp/Down within sub-panel)
+        this._handlePanelKeyboardBound = this.handlePanelKeyboard.bind(this);
+        document.addEventListener('keydown', this._handlePanelKeyboardBound);
 
         // Hover: open flyout on mouseenter over L1 trigger
         this.triggerTargets.forEach(trigger => {
@@ -58,6 +66,9 @@ export default class extends Controller {
     disconnect() {
         document.removeEventListener('keydown', this.handleGlobalKeydown.bind(this));
         document.removeEventListener('click', this.handleOutsideClick.bind(this));
+        if (this._handlePanelKeyboardBound) {
+            document.removeEventListener('keydown', this._handlePanelKeyboardBound);
+        }
     }
 
     // ─────────────── Public Stimulus actions ───────────────
@@ -158,7 +169,15 @@ export default class extends Controller {
     // ─────────────── Keyboard handlers ───────────────
 
     /**
-     * Arrow-key / Home / End navigation within the sidebar trigger list.
+     * Phase 4.1 — Arrow-key / Home / End navigation within the sidebar trigger list.
+     * WAI-ARIA Authoring Practices §3.15 (Menubar):
+     *   - ArrowRight: move focus to next menuitem (wrap), open panel
+     *   - ArrowLeft: move focus to previous menuitem (wrap), open panel
+     *   - ArrowDown: open submenu and focus first item
+     *   - ArrowUp: move focus to previous menuitem
+     *   - Home: focus first trigger
+     *   - End: focus last trigger
+     *   - Enter / Space: open panel and move focus to first item
      * @param {KeyboardEvent} event
      */
     handleKeyboard(event) {
@@ -171,14 +190,30 @@ export default class extends Controller {
         let nextIndex = -1;
 
         switch (event.key) {
-            case 'ArrowDown':
             case 'ArrowRight':
+                // WAI-ARIA §3.15: ArrowRight on vertical menubar moves to next menuitem
                 event.preventDefault();
                 nextIndex = (currentIndex + 1) % this.triggerTargets.length;
                 break;
 
-            case 'ArrowUp':
             case 'ArrowLeft':
+                // WAI-ARIA §3.15: ArrowLeft on vertical menubar moves to previous menuitem
+                event.preventDefault();
+                nextIndex = currentIndex - 1;
+                if (nextIndex < 0) {
+                    nextIndex = this.triggerTargets.length - 1;
+                }
+                break;
+
+            case 'ArrowDown':
+                // ArrowDown on a trigger: open its submenu and focus first item
+                event.preventDefault();
+                this.activatePanel(event.target.dataset.category);
+                this._focusFirstFlyoutItem(event.target.dataset.category);
+                return;
+
+            case 'ArrowUp':
+                // ArrowUp on trigger: move to previous trigger
                 event.preventDefault();
                 nextIndex = currentIndex - 1;
                 if (nextIndex < 0) {
@@ -200,7 +235,7 @@ export default class extends Controller {
             case ' ':
                 event.preventDefault();
                 this.activatePanel(event.target.dataset.category);
-                // Move focus into the open flyout
+                // Phase 4.1: Move focus into the open flyout's first item
                 this._focusFirstFlyoutItem(event.target.dataset.category);
                 return;
         }
@@ -208,6 +243,65 @@ export default class extends Controller {
         if (nextIndex !== -1 && this.triggerTargets[nextIndex]) {
             this.triggerTargets[nextIndex].focus();
             this.activatePanel(this.triggerTargets[nextIndex].dataset.category);
+        }
+    }
+
+    /**
+     * Phase 4.1 — ArrowUp/Down navigation within an open flyout sub-panel.
+     * WAI-ARIA Authoring Practices §3.15 (Menu):
+     *   - ArrowDown: focus next focusable fly-item
+     *   - ArrowUp: focus previous fly-item (on first: return focus to trigger)
+     *   - Tab: cycle forward within panel (Tab on last → first)
+     *   - Shift+Tab on first item: return focus to trigger
+     * @param {KeyboardEvent} event
+     */
+    handlePanelKeyboard(event) {
+        const openPanel = this.panelTargets.find(p => p.classList.contains('is-open'));
+        if (!openPanel) return;
+
+        const focusableSelector = '.fly-item, .flyout__close, .flyout__view-all, a[href], button:not([disabled])';
+        const items = Array.from(openPanel.querySelectorAll(focusableSelector)).filter(
+            el => !el.closest('[hidden]') && el.offsetParent !== null
+        );
+        if (items.length === 0) return;
+
+        const focusedInPanel = openPanel.contains(document.activeElement);
+        if (!focusedInPanel) return;
+
+        const currentIdx = items.indexOf(document.activeElement);
+
+        switch (event.key) {
+            case 'ArrowDown': {
+                event.preventDefault();
+                const nextIdx = (currentIdx + 1) % items.length;
+                items[nextIdx].focus();
+                break;
+            }
+            case 'ArrowUp': {
+                event.preventDefault();
+                if (currentIdx <= 0) {
+                    // Return focus to the triggering L1 button
+                    const activeCategory = this.getActiveCategory();
+                    const trigger = this.triggerTargets.find(t => t.dataset.category === activeCategory);
+                    if (trigger) trigger.focus();
+                } else {
+                    items[currentIdx - 1].focus();
+                }
+                break;
+            }
+            case 'Tab': {
+                // Tab on last item wraps to first; Shift+Tab on first returns to trigger
+                if (!event.shiftKey && currentIdx === items.length - 1) {
+                    event.preventDefault();
+                    items[0].focus();
+                } else if (event.shiftKey && currentIdx === 0) {
+                    event.preventDefault();
+                    const activeCategory = this.getActiveCategory();
+                    const trigger = this.triggerTargets.find(t => t.dataset.category === activeCategory);
+                    if (trigger) trigger.focus();
+                }
+                break;
+            }
         }
     }
 
