@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Enum\IncidentStatus;
 use App\Enum\InternalAuditStatus;
 use App\Enum\TreatmentStrategy;
+use App\Service\DataIntegrity\DuplicateFinder;
 use App\Service\DataIntegrity\OrphanFinder;
 use App\Service\DataIntegrity\StatusEnumDriftChecker;
 use App\Service\DataIntegrity\UploadOrphanChecker;
@@ -110,6 +111,11 @@ final class DataIntegrityService
          * unit-test setUp() that constructs without the new dep.
          */
         private readonly ?OrphanFinder $orphanFinder = null,
+        /**
+         * Duplicate entity finder + merger. Optional for backward-compat with
+         * unit-test setUp() that constructs without the new dep.
+         */
+        private readonly ?DuplicateFinder $duplicateFinder = null,
     ) {
     }
 
@@ -232,11 +238,17 @@ final class DataIntegrityService
     }
 
     /**
-     * Find duplicate entities within the same tenant
-     * (e.g., same audit number, same asset name)
+     * Find duplicate entities within the same tenant.
+     * Delegates to {@see DuplicateFinder} when available.
+     * Falls back to inline implementation for unit-test backward-compat.
      */
     public function findDuplicateEntities(): array
     {
+        if ($this->duplicateFinder !== null) {
+            return $this->duplicateFinder->findDuplicateEntities();
+        }
+
+        // Fallback inline implementation for unit tests that do not inject DuplicateFinder.
         $duplicates = [];
 
         // Find audits with duplicate audit numbers within same tenant
@@ -1041,11 +1053,17 @@ final class DataIntegrityService
      * with the lowest ID (oldest) and removing the rest.
      *
      * Returns the number of deleted duplicate entities.
+     * Delegates to {@see DuplicateFinder} when available.
      *
      * Supported entity types: audits, assets, risks, incidents, documents
      */
     public function mergeDuplicates(string $entityType): int
     {
+        if ($this->duplicateFinder !== null) {
+            return $this->duplicateFinder->mergeDuplicates($entityType);
+        }
+
+        // Fallback inline implementation for unit tests without DuplicateFinder dep.
         $duplicates = $this->findDuplicateEntities();
 
         if (!isset($duplicates[$entityType]) || count($duplicates[$entityType]) === 0) {
