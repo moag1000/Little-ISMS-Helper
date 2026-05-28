@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'tisax_isa' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block title %}{{ 'tisax.import.preview.title'|trans({}, 'tisax_isa') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'tisax.import.nav.title'|trans({}, 'tisax_isa'), href: path('app_tisax_import_disclaimer', { _locale: app.request.locale }) },
+            { label: 'tisax.import.preview.title'|trans({}, 'tisax_isa') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-collection', label: 'TISAX' },
+        title: 'tisax.import.preview.title'|trans({}, 'tisax_isa'),
+        subtitle: 'tisax.import.preview.subtitle'|trans({}, 'tisax_isa')
+    }) }}
+
+    {{ _fa_stepper.render([
+        { label: 'tisax.import.step.disclaimer'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.upload'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.validate'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.preview'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.commit'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.assess'|trans({}, 'tisax_isa') }
+    ], 3) }}
+
+    <div class="mt-4">
+        {# Delta KPI tiles #}
+        <div class="row mb-4">
+            <div class="col-md-4">
+                {{ _fa_feature_card.render({
+                    label: 'tisax.import.preview.delta.total'|trans({}, 'tisax_isa'),
+                    value: delta.total,
+                    variant: 'primary',
+                    icon: 'nav-collection'
+                }) }}
+            </div>
+            <div class="col-md-4">
+                {{ _fa_feature_card.render({
+                    label: 'tisax.import.preview.delta.new'|trans({}, 'tisax_isa'),
+                    value: delta.new,
+                    variant: 'success',
+                    icon: 'action-add'
+                }) }}
+            </div>
+            <div class="col-md-4">
+                {{ _fa_feature_card.render({
+                    label: 'tisax.import.preview.delta.existing'|trans({}, 'tisax_isa'),
+                    value: delta.existing,
+                    variant: 'info',
+                    icon: 'action-edit'
+                }) }}
+            </div>
+        </div>
+
+        {# Preview table (first 20 rows) #}
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    {{ 'tisax.import.preview.sample_heading'|trans({}, 'tisax_isa') }}
+                    <span class="badge bg-secondary ms-1">{{ totalRows }}</span>
+                </h6>
+            </div>
+            <div class="card-body p-0">
+                {{ _fa_table.render({
+                    headers: [
+                        'tisax.import.preview.col.id'|trans({}, 'tisax_isa'),
+                        'tisax.import.preview.col.title'|trans({}, 'tisax_isa'),
+                        'tisax.import.preview.col.iso_ref'|trans({}, 'tisax_isa')
+                    ],
+                    rows: controls|map(ctrl => [
+                        ctrl.controlId,
+                        ctrl.title|length > 120 ? ctrl.title|slice(0, 120) ~ '…' : ctrl.title,
+                        ctrl.iso27001Ref ?: '—'
+                    ])
+                }) }}
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+            <form method="post" action="{{ path('app_tisax_import_preview', { _locale: app.request.locale }) }}">
+                <button type="submit" class="btn btn-primary">
+                    {{ 'tisax.import.preview.proceed'|trans({}, 'tisax_isa') }}
+                    <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </form>
+            <a href="{{ path('app_tisax_import_validate', { _locale: app.request.locale }) }}" class="btn btn-outline-secondary">
+                {{ 'common.back'|trans({}, 'messages') }}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

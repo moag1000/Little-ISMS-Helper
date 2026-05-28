@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'tisax_isa' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
+
+{% block title %}{{ 'tisax.import.assess.title'|trans({}, 'tisax_isa') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'tisax.import.nav.title'|trans({}, 'tisax_isa'), href: path('app_tisax_import_disclaimer', { _locale: app.request.locale }) },
+            { label: 'tisax.import.assess.title'|trans({}, 'tisax_isa') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'status-gauge', label: 'TISAX' },
+        title: 'tisax.import.assess.title'|trans({}, 'tisax_isa'),
+        subtitle: 'tisax.import.assess.subtitle'|trans({}, 'tisax_isa'),
+        actions: [
+            {
+                label: 'tisax.import.assess.export_enx'|trans({}, 'tisax_isa'),
+                href: path('app_tisax_import_export_enx', { _locale: app.request.locale, frameworkId: framework.id }),
+                variant: 'outline-secondary',
+                icon: 'ui-download'
+            }
+        ]
+    }) }}
+
+    {{ _fa_stepper.render([
+        { label: 'tisax.import.step.disclaimer'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.upload'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.validate'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.preview'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.commit'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.assess'|trans({}, 'tisax_isa') }
+    ], 5) }}
+
+    <div class="mt-4">
+        {# Aggregate KPI tiles #}
+        <div class="row mb-4">
+            <div class="col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'tisax.import.assess.avg_reifegrad'|trans({}, 'tisax_isa'),
+                    value: aggregate.average ~ ' / 5',
+                    variant: 'primary',
+                    icon: 'status-gauge'
+                }) }}
+            </div>
+            <div class="col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'tisax.import.assess.assessed'|trans({}, 'tisax_isa'),
+                    value: aggregate.assessed ~ ' / ' ~ aggregate.total,
+                    variant: 'success',
+                    icon: 'status-ok'
+                }) }}
+            </div>
+            {% for tier, tierData in aggregate.byTier %}
+            <div class="col-md-3">
+                {{ _fa_feature_card.render({
+                    label: tier|replace({'_': ' '})|title,
+                    value: tierData.average ~ ' / 5',
+                    variant: 'info',
+                    icon: 'nav-collection'
+                }) }}
+            </div>
+            {% endfor %}
+        </div>
+
+        {# Reifegrad assessment form #}
+        <form method="post" action="{{ path('app_tisax_import_assess', { _locale: app.request.locale, frameworkId: framework.id }) }}">
+            <input type="hidden" name="_token" value="{{ token }}">
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">{{ 'tisax.import.assess.requirements_heading'|trans({}, 'tisax_isa') }}</h6>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-floppy me-1"></i>
+                        {{ 'tisax.import.assess.save_button'|trans({}, 'tisax_isa') }}
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>{{ 'tisax.import.assess.col.id'|trans({}, 'tisax_isa') }}</th>
+                                <th>{{ 'tisax.import.assess.col.title'|trans({}, 'tisax_isa') }}</th>
+                                <th>{{ 'tisax.import.assess.col.tier'|trans({}, 'tisax_isa') }}</th>
+                                <th>{{ 'tisax.import.assess.col.reifegrad'|trans({}, 'tisax_isa') }}</th>
+                                <th>{{ 'tisax.import.assess.col.target'|trans({}, 'tisax_isa') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in requirements %}
+                            {% set currentLevel = req.maturityCurrent %}
+                            <tr>
+                                <td><code>{{ req.requirementId }}</code></td>
+                                <td class="text-truncate" style="max-width:300px" title="{{ req.title }}">{{ req.title }}</td>
+                                <td>
+                                    <span class="badge bg-secondary text-capitalize">
+                                        {{ req.category|replace({'_': ' '}) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <select name="reifegrad[{{ req.id }}]" class="form-select form-select-sm" style="width:auto">
+                                        {% for levelInt, levelStr in levels %}
+                                        <option value="{{ levelInt }}"
+                                            {% if currentLevel == levelStr %}selected{% endif %}>
+                                            {{ levelInt }} — {{ ('tisax.import.assess.level.' ~ levelStr)|trans({}, 'tisax_isa') }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    {% if req.maturityTarget %}
+                                        <span class="text-muted">{{ req.maturityTarget }}</span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    {{ 'tisax.import.assess.no_requirements'|trans({}, 'tisax_isa') }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if requirements|length > 0 %}
+                <div class="card-footer text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-floppy me-1"></i>
+                        {{ 'tisax.import.assess.save_button'|trans({}, 'tisax_isa') }}
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

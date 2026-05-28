@@ -1,0 +1,464 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller\Tisax;
+
+use App\Entity\TisaxLicenseConfirmation;
+use App\Form\Tisax\TisaxLegalConfirmationType;
+use App\Form\Tisax\VdaIsaUploadType;
+use App\Repository\TisaxLicenseConfirmationRepository;
+use App\Service\AuditLogger;
+use App\Service\FileUploadSecurityService;
+use App\Service\Import\Mapper\TisaxRequirementMapper;
+use App\Service\TenantContext;
+use App\Service\Tisax\EnxScheduleExporter;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
+use App\Service\Tisax\VdaIsaWorkbookParser;
+use App\Service\Tisax\VdaIsaWorkbookValidator;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+/**
+ * TISAX BYO VDA-ISA Import Wizard
+ *
+ * 6-step wizard (Step 0–5) allowing tenants to upload their own
+ * ENX-licensed VDA-ISA workbook and assess Reifegrad 0-5.
+ *
+ * All steps are gated behind ROLE_MANAGER.
+ *
+ * Step flow:
+ *   0 — Legal disclaimer (TisaxLegalConfirmationType)
+ *   1 — Upload workbook (VdaIsaUploadType + FileUploadSecurityService)
+ *   2 — Validate   (VdaIsaWorkbookValidator — header + row sanity)
+ *   3 — Preview    (TisaxRequirementMapper::computeDelta)
+ *   4 — Commit     (TisaxRequirementMapper::mapRows → flush)
+ *   5 — Assess     (TisaxMaturityAssessmentService — Reifegrad 0-5)
+ */
+#[IsGranted('ROLE_MANAGER')]
+#[Route('/tisax-import', name: 'app_tisax_import_')]
+final class TisaxImportWizardController extends AbstractController
+{
+    /** Session key for the parsed workbook temp-file path */
+    private const SESSION_WORKBOOK_PATH = 'tisax_import.workbook_path';
+
+    /** Session key for parsed controls (serialised JSON) */
+    private const SESSION_PARSED_CONTROLS = 'tisax_import.parsed_controls';
+
+    /** Session key for validation result */
+    private const SESSION_VALIDATION = 'tisax_import.validation';
+
+    /** Temp upload subdirectory */
+    private const UPLOAD_SUBDIR = 'tisax_workbooks';
+
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly TenantContext $tenantContext,
+        private readonly VdaIsaWorkbookParser $parser,
+        private readonly VdaIsaWorkbookValidator $validator,
+        private readonly TisaxRequirementMapper $mapper,
+        private readonly TisaxMaturityAssessmentService $maturityService,
+        private readonly EnxScheduleExporter $enxExporter,
+        private readonly FileUploadSecurityService $uploadSecurity,
+        private readonly AuditLogger $auditLogger,
+        private readonly TisaxLicenseConfirmationRepository $confirmationRepo,
+        private readonly string $uploadDir,
+    ) {}
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Step 0 — Legal disclaimer
+    // ──────────────────────────────────────────────────────────────────────────
+
+    #[Route('/disclaimer', name: 'disclaimer', methods: ['GET', 'POST'])]
+    public function disclaimer(Request $request): Response
+    {
+        $form = $this->createForm(TisaxLegalConfirmationType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tenant = $this->tenantContext->getCurrentTenant();
+            /** @var \App\Entity\User $user */
+            $user   = $this->getUser();
+
+            // Persist licence confirmation record
+            $confirmation = new TisaxLicenseConfirmation();
+            $confirmation->setTenant($tenant);
+            $confirmation->setUser($user);
+            $confirmation->setWorkbookFilename('(pending upload)');
+            $confirmation->setIpAddress($request->getClientIp() ?? '');
+            $confirmation->setSessionToken(hash('sha256', $request->getSession()->getId()));
+            $this->em->persist($confirmation);
+            $this->em->flush();
+
+            // Store confirmation ID in session so upload step can verify
+            $request->getSession()->set('tisax_import.confirmation_id', $confirmation->getId());
+
+            $this->addFlash('success', 'tisax.import.disclaimer.confirmed');
+
+            return $this->redirectToRoute('app_tisax_import_upload', [
+                '_locale' => $request->getLocale(),
+            ]);
+        }
+
+        return $this->render('tisax/import/disclaimer.html.twig', [
+            'form'     => $form->createView(),
+            'stepIndex' => 0,
+        ]);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Step 1 — Upload
+    // ──────────────────────────────────────────────────────────────────────────
+
+    #[Route('/upload', name: 'upload', methods: ['GET', 'POST'])]
+    public function upload(Request $request): Response
+    {
+        // Guard: must have a valid disclaimer confirmation
+        if (!$this->hasValidConfirmation($request)) {
+            $this->addFlash('warning', 'tisax.import.upload.disclaimer_required');
+            return $this->redirectToRoute('app_tisax_import_disclaimer', ['_locale' => $request->getLocale()]);
+        }
+
+        $form = $this->createForm(VdaIsaUploadType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $file */
+            $file = $form->get('workbook')->getData();
+
+            // Security: MIME + magic-byte validation
+            try {
+                $this->uploadSecurity->validateUpload($file);
+            } catch (\Exception $e) {
+                $this->addFlash('danger', 'tisax.import.upload.security_rejected');
+                return $this->render('tisax/import/upload.html.twig', [
+                    'form'      => $form->createView(),
+                    'stepIndex' => 1,
+                ]);
+            }
+
+            // Store workbook to temp directory
+            $uploadPath = $this->getUploadDir();
+            $newFilename = sprintf('vda_isa_%s_%s.xlsx', uniqid('', true), date('Ymd'));
+            $file->move($uploadPath, $newFilename);
+
+            $fullPath = $uploadPath . '/' . $newFilename;
+            $request->getSession()->set(self::SESSION_WORKBOOK_PATH, $fullPath);
+
+            // Update confirmation record with actual filename
+            $this->updateConfirmationFilename($request, $file->getClientOriginalName() ?? $newFilename);
+
+            return $this->redirectToRoute('app_tisax_import_validate', [
+                '_locale' => $request->getLocale(),
+            ]);
+        }
+
+        return $this->render('tisax/import/upload.html.twig', [
+            'form'      => $form->createView(),
+            'stepIndex' => 1,
+        ]);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Step 2 — Validate
+    // ──────────────────────────────────────────────────────────────────────────
+
+    #[Route('/validate', name: 'validate', methods: ['GET', 'POST'])]
+    public function validate(Request $request): Response
+    {
+        $workbookPath = $request->getSession()->get(self::SESSION_WORKBOOK_PATH);
+        if ($workbookPath === null || !file_exists($workbookPath)) {
+            $this->addFlash('warning', 'tisax.import.validate.no_workbook');
+            return $this->redirectToRoute('app_tisax_import_upload', ['_locale' => $request->getLocale()]);
+        }
+
+        try {
+            $parsed = $this->parser->parse($workbookPath);
+        } catch (\ErrorException $e) {
+            $this->addFlash('danger', $e->getMessage());
+            return $this->redirectToRoute('app_tisax_import_upload', ['_locale' => $request->getLocale()]);
+        }
+
+        $validation = $this->validator->validate($parsed);
+
+        // Serialise parsed controls into session for next step
+        $serialisedControls = array_map(
+            static fn ($ctrl): array => [
+                'controlId'        => $ctrl->controlId,
+                'title'            => $ctrl->title,
+                'titleEn'          => $ctrl->titleEn,
+                'description'      => $ctrl->description,
+                'mustLevel'        => $ctrl->mustLevel,
+                'shouldLevel'      => $ctrl->shouldLevel,
+                'highLevel'        => $ctrl->highLevel,
+                'veryHighLevel'    => $ctrl->veryHighLevel,
+                'iso27001Ref'      => $ctrl->iso27001Ref,
+                'auditEvidenceHint' => $ctrl->auditEvidenceHint,
+                'rawRowIndex'      => $ctrl->rawRowIndex,
+            ],
+            $parsed->controls,
+        );
+        $request->getSession()->set(self::SESSION_PARSED_CONTROLS, $serialisedControls);
+        $request->getSession()->set(self::SESSION_VALIDATION, $validation);
+
+        if ($request->isMethod('POST') && $validation['ok']) {
+            return $this->redirectToRoute('app_tisax_import_preview', ['_locale' => $request->getLocale()]);
+        }
+
+        return $this->render('tisax/import/validate.html.twig', [
+            'validation'  => $validation,
+            'controlCount' => $parsed->getControlCount(),
+            'sheetName'   => $parsed->sheetName,
+            'columnMap'   => $parsed->detectedColumnMap,
+            'stepIndex'   => 2,
+            'canProceed'  => $validation['ok'],
+        ]);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Step 3 — Preview
+    // ──────────────────────────────────────────────────────────────────────────
+
+    #[Route('/preview', name: 'preview', methods: ['GET', 'POST'])]
+    public function preview(Request $request): Response
+    {
+        $controls = $this->getSessionControls($request);
+        if ($controls === null) {
+            return $this->redirectToRoute('app_tisax_import_validate', ['_locale' => $request->getLocale()]);
+        }
+
+        $tenant    = $this->tenantContext->getCurrentTenant();
+        $framework = $this->mapper->findOrCreateFramework();
+        $delta     = $this->mapper->computeDelta($controls, $framework, $tenant);
+
+        if ($request->isMethod('POST')) {
+            return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
+        }
+
+        return $this->render('tisax/import/preview.html.twig', [
+            'delta'     => $delta,
+            'controls'  => array_slice($controls, 0, 20), // show first 20 as preview
+            'totalRows' => count($controls),
+            'framework' => $framework,
+            'stepIndex' => 3,
+        ]);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Step 4 — Commit
+    // ──────────────────────────────────────────────────────────────────────────
+
+    #[Route('/commit', name: 'commit', methods: ['GET', 'POST'])]
+    public function commit(Request $request): Response
+    {
+        $controls = $this->getSessionControls($request);
+        if ($controls === null) {
+            return $this->redirectToRoute('app_tisax_import_validate', ['_locale' => $request->getLocale()]);
+        }
+
+        $tenant    = $this->tenantContext->getCurrentTenant();
+        $framework = $this->mapper->findOrCreateFramework();
+
+        if ($request->isMethod('POST')) {
+            // CSRF protection
+            if (!$this->isCsrfTokenValid('tisax_commit', $request->request->get('_token'))) {
+                $this->addFlash('danger', 'common.csrf_invalid');
+                return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
+            }
+
+            $result = $this->mapper->mapRows($controls, $framework, $tenant);
+
+            $this->auditLogger->logImport(
+                'ComplianceRequirement',
+                $result['created'] + $result['updated'],
+                sprintf(
+                    'TISAX BYO import: %d created, %d updated — framework %s',
+                    $result['created'],
+                    $result['updated'],
+                    $framework->getCode(),
+                ),
+            );
+
+            // Clean up workbook temp file
+            $workbookPath = $request->getSession()->get(self::SESSION_WORKBOOK_PATH);
+            if ($workbookPath !== null && file_exists($workbookPath)) {
+                @unlink($workbookPath);
+            }
+            $request->getSession()->remove(self::SESSION_WORKBOOK_PATH);
+            $request->getSession()->remove(self::SESSION_PARSED_CONTROLS);
+            $request->getSession()->remove(self::SESSION_VALIDATION);
+
+            $this->addFlash('success', 'tisax.import.commit.success');
+
+            return $this->redirectToRoute('app_tisax_import_assess', [
+                '_locale'     => $request->getLocale(),
+                'frameworkId' => $framework->getId(),
+            ]);
+        }
+
+        $delta = $this->mapper->computeDelta($controls, $framework, $tenant);
+
+        return $this->render('tisax/import/commit.html.twig', [
+            'delta'     => $delta,
+            'framework' => $framework,
+            'stepIndex' => 4,
+            'token'     => $this->generateCsrfToken('tisax_commit'),
+        ]);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Step 5 — Assess (Reifegrad 0-5)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    #[Route('/assess/{frameworkId}', name: 'assess', methods: ['GET', 'POST'], requirements: ['frameworkId' => '\d+'])]
+    public function assess(Request $request, int $frameworkId): Response
+    {
+        $tenant    = $this->tenantContext->getCurrentTenant();
+        $framework = $this->em->getRepository(\App\Entity\ComplianceFramework::class)->find($frameworkId);
+
+        if ($framework === null) {
+            throw $this->createNotFoundException('Framework not found.');
+        }
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('tisax_assess', $request->request->get('_token'))) {
+                $this->addFlash('danger', 'common.csrf_invalid');
+                return $this->redirectToRoute('app_tisax_import_assess', [
+                    '_locale'     => $request->getLocale(),
+                    'frameworkId' => $frameworkId,
+                ]);
+            }
+
+            /** @var array<string, string> $levels */
+            $levels    = (array) $request->request->all('reifegrad');
+            $levelMap  = array_map('intval', $levels);
+
+            $updated = $this->maturityService->bulkSetReifegrad($levelMap, $user);
+
+            $this->addFlash('success', 'tisax.import.assess.saved');
+
+            return $this->redirectToRoute('app_tisax_import_assess', [
+                '_locale'     => $request->getLocale(),
+                'frameworkId' => $frameworkId,
+            ]);
+        }
+
+        $aggregate = $this->maturityService->computeAggregate($framework, $tenant);
+
+        $requirements = $this->em->getRepository(\App\Entity\ComplianceRequirement::class)->findBy([
+            'framework'         => $framework,
+            'uploadTenant'      => $tenant,
+            'requirementSource' => 'tenant_upload',
+        ]);
+
+        return $this->render('tisax/import/assess.html.twig', [
+            'framework'    => $framework,
+            'requirements' => $requirements,
+            'aggregate'    => $aggregate,
+            'levels'       => TisaxMaturityAssessmentService::LEVEL_MAP,
+            'stepIndex'    => 5,
+            'token'        => $this->generateCsrfToken('tisax_assess'),
+        ]);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // ENX Schedule export (non-wizard route)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    #[Route('/assess/{frameworkId}/export-enx', name: 'export_enx', methods: ['GET'], requirements: ['frameworkId' => '\d+'])]
+    public function exportEnx(int $frameworkId): Response
+    {
+        $tenant    = $this->tenantContext->getCurrentTenant();
+        $framework = $this->em->getRepository(\App\Entity\ComplianceFramework::class)->find($frameworkId);
+
+        if ($framework === null) {
+            throw $this->createNotFoundException('Framework not found.');
+        }
+
+        return $this->enxExporter->exportAsResponse($framework, $tenant);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Private helpers
+    // ──────────────────────────────────────────────────────────────────────────
+
+    private function hasValidConfirmation(Request $request): bool
+    {
+        $confirmationId = $request->getSession()->get('tisax_import.confirmation_id');
+        if ($confirmationId === null) {
+            return false;
+        }
+
+        $confirmation = $this->confirmationRepo->find($confirmationId);
+        if ($confirmation === null) {
+            return false;
+        }
+
+        return $confirmation->isValid();
+    }
+
+    private function updateConfirmationFilename(Request $request, string $filename): void
+    {
+        $confirmationId = $request->getSession()->get('tisax_import.confirmation_id');
+        if ($confirmationId === null) {
+            return;
+        }
+
+        $confirmation = $this->confirmationRepo->find($confirmationId);
+        if ($confirmation === null) {
+            return;
+        }
+
+        $confirmation->setWorkbookFilename($filename);
+        $this->em->flush();
+    }
+
+    /**
+     * Deserialise VdaIsaControlRow DTOs from the session.
+     *
+     * @return list<\App\Service\Tisax\Dto\VdaIsaControlRow>|null
+     */
+    private function getSessionControls(Request $request): ?array
+    {
+        $serialised = $request->getSession()->get(self::SESSION_PARSED_CONTROLS);
+        if ($serialised === null || !is_array($serialised)) {
+            return null;
+        }
+
+        return array_map(
+            static fn (array $d): \App\Service\Tisax\Dto\VdaIsaControlRow =>
+                new \App\Service\Tisax\Dto\VdaIsaControlRow(
+                    controlId: $d['controlId'],
+                    title: $d['title'],
+                    titleEn: $d['titleEn'] ?? null,
+                    description: $d['description'] ?? null,
+                    mustLevel: $d['mustLevel'] ?? null,
+                    shouldLevel: $d['shouldLevel'] ?? null,
+                    highLevel: $d['highLevel'] ?? null,
+                    veryHighLevel: $d['veryHighLevel'] ?? null,
+                    iso27001Ref: $d['iso27001Ref'] ?? null,
+                    auditEvidenceHint: $d['auditEvidenceHint'] ?? null,
+                    rawRowIndex: $d['rawRowIndex'] ?? 0,
+                ),
+            $serialised,
+        );
+    }
+
+    private function getUploadDir(): string
+    {
+        $dir = rtrim($this->uploadDir, '/') . '/' . self::UPLOAD_SUBDIR;
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        return $dir;
+    }
+}

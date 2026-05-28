@@ -590,6 +590,11 @@ services:
         arguments:
             $uploadDir: '%kernel.project_dir%/var/import-uploads'
 
+    # ── TISAX BYO Import Wizard ──────────────────────────────────────────────
+    App\Controller\Tisax\TisaxImportWizardController:
+        arguments:
+            $uploadDir: '%kernel.project_dir%/var/import-uploads'
+
     # ── Sprint 10A — F5b Library importers + roundtrip ───────────────────────
     App\Service\Library\BsiKompendiumImporter:
         arguments:

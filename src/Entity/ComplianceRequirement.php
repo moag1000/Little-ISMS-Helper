@@ -487,6 +487,45 @@ class ComplianceRequirement
         return $this;
     }
 
+    // ── TISAX BYO VDA-ISA import ─────────────────────────────────────────────
+
+    /**
+     * Discriminator: 'system' (shipped with the app) or 'tenant_upload' (parsed
+     * from a customer-supplied VDA-ISA workbook).
+     */
+    #[ORM\Column(name: 'requirement_source', length: 20, nullable: true, options: ['default' => 'system'])]
+    private ?string $requirementSource = 'system';
+
+    /**
+     * Tenant that uploaded this requirement.
+     * NULL for global system rows; always set for tenant_upload rows.
+     */
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(name: 'upload_tenant_id', nullable: true, onDelete: 'SET NULL')]
+    private ?Tenant $uploadTenant = null;
+
+    public function getRequirementSource(): ?string
+    {
+        return $this->requirementSource;
+    }
+
+    public function setRequirementSource(?string $requirementSource): static
+    {
+        $this->requirementSource = $requirementSource;
+        return $this;
+    }
+
+    public function getUploadTenant(): ?Tenant
+    {
+        return $this->uploadTenant;
+    }
+
+    public function setUploadTenant(?Tenant $uploadTenant): static
+    {
+        $this->uploadTenant = $uploadTenant;
+        return $this;
+    }
+
     // BSI IT-Grundschutz fields
 
     public function getAnforderungsTyp(): ?string
