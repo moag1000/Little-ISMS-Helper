@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Dashboard;
 
+use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -40,6 +42,8 @@ final class DpoDashboardController extends AbstractController
         private readonly DataProtectionImpactAssessmentRepository $dpiaRepo,
         private readonly ProcessingActivityRepository $processingActivityRepo,
         private readonly RoleDashboardService $roleDashboardService,
+        private readonly TisaxMaturityAssessmentService $tisaxAssessment,
+        private readonly ComplianceFrameworkRepository $frameworkRepository,
     ) {
     }
 
@@ -75,6 +79,20 @@ final class DpoDashboardController extends AbstractController
         $pendingApprovals = $this->roleDashboardService->getPendingApprovals();
         $lifecycleStuck   = $this->roleDashboardService->getLifecycleStuck();
 
+        // TISAX DP-tier aggregate — DPO sees data_protection chapter 9 compliance only
+        $tisaxDpAggregate = null;
+        $settings = $tenant->getSettings() ?? [];
+        if ($settings['modules']['tisax'] ?? true) {
+            $framework = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);
+            if ($framework !== null) {
+                $agg = $this->tisaxAssessment->computeAggregate($framework, $tenant);
+                $dp  = $agg['byTier']['data_protection'] ?? null;
+                if ($dp !== null && ($dp['total'] ?? 0) > 0) {
+                    $tisaxDpAggregate = $dp;
+                }
+            }
+        }
+
         return $this->render('dashboards/dpo.html.twig', [
             'dashboard' => [
                 'open_breaches'            => $openBreaches,
@@ -87,6 +105,7 @@ final class DpoDashboardController extends AbstractController
                 'third_country_transfers'  => $thirdCountryTransfers,
                 'pending_approvals'        => $pendingApprovals,
                 'lifecycle_stuck'          => $lifecycleStuck,
+                'tisax_dp_aggregate'       => $tisaxDpAggregate,
             ],
         ]);
     }

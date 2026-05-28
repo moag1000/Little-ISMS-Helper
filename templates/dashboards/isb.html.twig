@@ -96,5 +96,32 @@
 
     </div>{# /row #}
 
+    {# TISAX IS-Tier Maturity — ISB scope: information_security chapters 1-6 only #}
+    {% if is_module_active('tisax') and dashboard.tisax_aggregate is defined and dashboard.tisax_aggregate is not null %}
+    <section class="fa-section mb-4 mt-4" id="tisax-is-maturity">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'tisax.section.title'|trans }}</h2>
+            <small class="text-muted">{{ 'tisax.tier.information_security'|trans }}</small>
+        </div>
+        <div class="fa-section__body">
+            <div class="kpi-grid d-grid grid-responsive-250 gap-4">
+                {% for tierKey, tier in dashboard.tisax_aggregate.byTier %}
+                    {% if tierKey == 'information_security' and tier.model == 'reifegrad' %}
+                        {% set avg = tier.average %}
+                        {% set variant = avg < 2 ? 'danger' : (avg < 3 ? 'warning' : 'success') %}
+                        {{ _fa_feature_card.render({
+                            icon:    'compliance-shield',
+                            label:   'tisax.label.avg_maturity'|trans,
+                            value:   avg ~ ' / 5',
+                            variant: variant,
+                            href:    path('app_compliance_wizard_assess', {wizard: 'tisax', _locale: app.request.locale})
+                        }) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
 </main>
 {% endblock %}
