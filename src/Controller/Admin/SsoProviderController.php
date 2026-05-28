@@ -223,7 +223,7 @@ final class SsoProviderController extends AbstractController
                         'form' => $form->createView(),
                         'provider' => $provider,
                         'is_new' => $isNew,
-                    ]);
+                    ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
                 }
             }
 
@@ -252,11 +252,15 @@ final class SsoProviderController extends AbstractController
             return $this->redirectToRoute('admin_sso_edit', ['id' => $provider->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/sso/form.html.twig', [
             'form' => $form->createView(),
             'provider' => $provider,
             'is_new' => $isNew,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
