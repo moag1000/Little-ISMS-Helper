@@ -10,6 +10,7 @@ use App\Enum\IncidentStatus;
 use App\Enum\InternalAuditStatus;
 use App\Enum\TreatmentStrategy;
 use App\Service\DataIntegrity\DuplicateFinder;
+use App\Service\DataIntegrity\HealthIssueAggregator;
 use App\Service\DataIntegrity\OrphanFinder;
 use App\Service\DataIntegrity\ReferenceIntegrityChecker;
 use App\Service\DataIntegrity\StatusEnumDriftChecker;
@@ -122,6 +123,11 @@ final class DataIntegrityService
          * Optional for backward-compat with unit-test setUp() without the new dep.
          */
         private readonly ?ReferenceIntegrityChecker $referenceIntegrityChecker = null,
+        /**
+         * Health issue aggregator (risk, compliance, operational, data-quality checks).
+         * Optional for backward-compat with unit-test setUp() without the new dep.
+         */
+        private readonly ?HealthIssueAggregator $healthIssueAggregator = null,
     ) {
     }
 
@@ -675,6 +681,7 @@ final class DataIntegrityService
 
     /**
      * Risk-specific health checks (ISO 27005 / ISO 27001 Clause 6.1.2).
+     * Delegates to {@see HealthIssueAggregator} when available.
      *
      * Returns four keyed arrays, each an array of Risk objects:
      *   - 'risks_missing_treatment_strategy': status not 'identified' but no treatment strategy set
@@ -684,6 +691,10 @@ final class DataIntegrityService
      */
     public function findRiskHealthIssues(): array
     {
+        if ($this->healthIssueAggregator !== null) {
+            return $this->healthIssueAggregator->findRiskHealthIssues();
+        }
+
         $issues = [];
         $now = new \DateTimeImmutable();
 
@@ -755,6 +766,7 @@ final class DataIntegrityService
 
     /**
      * Compliance-specific health checks (GDPR / ISO 27001 privacy extensions).
+     * Delegates to {@see HealthIssueAggregator} when available.
      *
      * Returns five keyed arrays:
      *   - 'assets_without_cia'    : Asset objects where all three CIA values are NULL or 0
@@ -765,6 +777,10 @@ final class DataIntegrityService
      */
     public function findComplianceHealthIssues(): array
     {
+        if ($this->healthIssueAggregator !== null) {
+            return $this->healthIssueAggregator->findComplianceHealthIssues();
+        }
+
         $issues = [];
 
         // Check 1: Assets without CIA values (all three NULL or 0 = no classification)
@@ -861,6 +877,7 @@ final class DataIntegrityService
 
     /**
      * Operational health checks (ISO 27001 Tier 2 operational gaps).
+     * Delegates to {@see HealthIssueAggregator} when available.
      *
      * Returns up to 7 keyed arrays:
      *   - 'suppliers_unassessed'  : Supplier with criticality='critical' and no security assessment
@@ -873,6 +890,10 @@ final class DataIntegrityService
      */
     public function findOperationalHealthIssues(): array
     {
+        if ($this->healthIssueAggregator !== null) {
+            return $this->healthIssueAggregator->findOperationalHealthIssues();
+        }
+
         $issues = [];
         $now = new \DateTimeImmutable();
 
@@ -995,6 +1016,7 @@ final class DataIntegrityService
     /**
      * Tier 3 data quality checks — business-process issues that go beyond
      * structural integrity and compliance but indicate operational gaps.
+     * Delegates to {@see HealthIssueAggregator} when available.
      *
      * Returns up to four keyed arrays:
      *   - 'workflows_stuck'       : WorkflowInstance in_progress for > 30 days
@@ -1004,6 +1026,10 @@ final class DataIntegrityService
      */
     public function findDataQualityIssues(): array
     {
+        if ($this->healthIssueAggregator !== null) {
+            return $this->healthIssueAggregator->findDataQualityIssues();
+        }
+
         $issues = [];
 
         // Check 1: Workflow instances stuck in progress for more than 30 days
