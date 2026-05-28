@@ -109,10 +109,14 @@ class PatchController extends AbstractController
             return $this->redirectToRoute('app_patch_show', ['id' => $patch->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('patch/new.html.twig', [
             'patch' => $patch,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/patch/{id}', name: 'app_patch_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -136,10 +140,14 @@ class PatchController extends AbstractController
             return $this->redirectToRoute('app_patch_show', ['id' => $patch->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('patch/edit.html.twig', [
             'patch' => $patch,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/patch/{id}/delete', name: 'app_patch_delete', methods: ['POST'])]
