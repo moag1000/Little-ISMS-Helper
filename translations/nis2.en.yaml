@@ -6,6 +6,11 @@ nis2:
     not_installed: "NIS2 framework is not installed. If your organization is subject to NIS2, please load the framework from the compliance frameworks page."
     not_active: "NIS2 framework is deactivated. This indicates that NIS2 is not relevant for your organization. Activate it in compliance frameworks if needed."
 
+    # Dashboard quick-actions
+    dashboard:
+        actions:
+            view_art21_requirements: "Art. 21(2) Measures Catalogue"
+
     # Incident Report PDF
     incident_report:
         title: "NIS2 Art. 23 Incident Notification Report"
