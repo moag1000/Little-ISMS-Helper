@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'audit_program' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'audit_program.page.index.title'|trans({}, 'audit_program') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard') },
+            { label: 'audit_program.page.index.title'|trans({}, 'audit_program') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-clipboard-check', label: 'audit_program.page.index.badge'|trans({}, 'audit_program') },
+        title: 'audit_program.page.index.title'|trans({}, 'audit_program'),
+        subtitle: 'audit_program.page.index.subtitle'|trans({}, 'audit_program'),
+        actions: [
+            {
+                label: 'audit_program.action.new'|trans({}, 'audit_program'),
+                href: path('app_audit_program_new', {_locale: app.request.locale}),
+                variant: 'primary',
+                icon: 'plus'
+            }
+        ]
+    }) }}
+
+    <main class="fa-aurora-surface">
+
+        {# KPI row #}
+        {% set totalPrograms = programs|length %}
+        {% set activePrograms = programs|filter(p => p.status == 'active')|length %}
+        {% set draftPrograms = programs|filter(p => p.status == 'draft')|length %}
+        {% set completedPrograms = programs|filter(p => p.status == 'completed')|length %}
+
+        <div class="kpi-grid mb-4">
+            {{ _fa_feature_card.render({
+                icon: 'nav-clipboard-check',
+                label: 'audit_program.kpi.total'|trans({}, 'audit_program'),
+                value: totalPrograms,
+                variant: 'primary'
+            }) }}
+            {{ _fa_feature_card.render({
+                icon: 'status-ok',
+                label: 'audit_program.kpi.active'|trans({}, 'audit_program'),
+                value: activePrograms,
+                variant: 'success'
+            }) }}
+            {{ _fa_feature_card.render({
+                icon: 'ui-pencil',
+                label: 'audit_program.kpi.draft'|trans({}, 'audit_program'),
+                value: draftPrograms,
+                variant: 'neutral'
+            }) }}
+            {{ _fa_feature_card.render({
+                icon: 'nav-clipboard-data',
+                label: 'audit_program.kpi.completed'|trans({}, 'audit_program'),
+                value: completedPrograms,
+                variant: 'info'
+            }) }}
+        </div>
+
+        {% if programs|length == 0 %}
+            {{ _fa_empty_state.render({
+                icon: 'nav-clipboard-check',
+                title: 'audit_program.empty.title'|trans({}, 'audit_program'),
+                description: 'audit_program.empty.description'|trans({}, 'audit_program'),
+                action: {
+                    label: 'audit_program.action.new'|trans({}, 'audit_program'),
+                    url: path('app_audit_program_new', {_locale: app.request.locale}),
+                    icon: 'plus'
+                }
+            }) }}
+        {% else %}
+            {% for year, yearPrograms in byYear %}
+            <section class="mb-4">
+                <h2 class="h5 mb-3">
+                    <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
+                    {{ year }}
+                </h2>
+                <div class="row g-3">
+                    {% for program in yearPrograms %}
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h3 class="h6 mb-0">
+                                        <a href="{{ path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) }}"
+                                           class="text-decoration-none stretched-link">
+                                            {{ program.name }}
+                                        </a>
+                                    </h3>
+                                    <span class="badge ms-2 badge-{{ program.statusTone }}">
+                                        {{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}
+                                    </span>
+                                </div>
+                                {% if program.effectiveResponsibleName %}
+                                <p class="text-muted small mb-1">
+                                    <i class="fa-icon fa-icon--nav-person" aria-hidden="true"></i>
+                                    {{ program.effectiveResponsibleName }}
+                                </p>
+                                {% endif %}
+                                <p class="text-muted small mb-2">
+                                    <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
+                                    {{ 'audit_program.label.audit_count'|trans({'%count%': program.auditCount}, 'audit_program') }}
+                                </p>
+                                {% if program.scope %}
+                                <p class="text-muted small">{{ program.scope|length > 80 ? program.scope|slice(0, 80) ~ '…' : program.scope }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer d-flex justify-content-end gap-1">
+                                <a href="{{ path('app_audit_program_edit', {_locale: app.request.locale, id: program.id}) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost position-relative"
+                                   title="{{ 'common.edit'|trans({}, 'messages') }}"
+                                   aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endfor %}
+        {% endif %}
+
+    </main>
+</div>
+{% endblock %}

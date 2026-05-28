@@ -1,0 +1,238 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'audit_program' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+
+{% block title %}{{ program.name }} — {{ 'audit_program.page.show.title'|trans({}, 'audit_program') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard') },
+            { label: 'audit_program.page.index.title'|trans({}, 'audit_program'), url: path('app_audit_program_index', {_locale: app.request.locale}) },
+            { label: program.name }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-clipboard-check', label: 'audit_program.page.show.badge'|trans({'%year%': program.year}, 'audit_program') },
+        title: program.name,
+        subtitle: ('audit_program.status.' ~ program.status)|trans({}, 'audit_program'),
+        actions: [
+            {
+                label: 'common.edit'|trans({}, 'messages'),
+                href: path('app_audit_program_edit', {_locale: app.request.locale, id: program.id}),
+                variant: 'ghost',
+                icon: 'ui-edit'
+            }
+        ]
+    }) }}
+
+    {# Lifecycle toolbar #}
+    <div class="d-flex align-items-center gap-2 mb-4" data-testid="lifecycle-toolbar">
+        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\AuditProgram', status_key: program.status }) }}
+        {{ _lifecycle_actions.dropdown(program, 'audit-program', 'audit_program_lifecycle') }}
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+
+            {# Basic info #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h6 mb-0">
+                        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
+                        {{ 'audit_program.section.basic_info'|trans({}, 'audit_program') }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{{ 'audit_program.field.year'|trans({}, 'audit_program') }}</dt>
+                        <dd class="col-sm-8">{{ program.year }}</dd>
+
+                        {% if program.scope %}
+                        <dt class="col-sm-4">{{ 'audit_program.field.scope'|trans({}, 'audit_program') }}</dt>
+                        <dd class="col-sm-8">{{ program.scope|nl2br }}</dd>
+                        {% endif %}
+
+                        {% if program.objectives %}
+                        <dt class="col-sm-4">{{ 'audit_program.field.objectives'|trans({}, 'audit_program') }}</dt>
+                        <dd class="col-sm-8">{{ program.objectives|nl2br }}</dd>
+                        {% endif %}
+
+                        {% if program.frameworks|length > 0 %}
+                        <dt class="col-sm-4">{{ 'audit_program.field.frameworks'|trans({}, 'audit_program') }}</dt>
+                        <dd class="col-sm-8">
+                            {% for fw in program.frameworks %}
+                            <span class="badge bg-secondary me-1">{{ fw.name }}</span>
+                            {% endfor %}
+                        </dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            {# Audit list #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h6 mb-0">
+                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
+                        {{ 'audit_program.section.audits'|trans({'%count%': program.auditCount}, 'audit_program') }}
+                    </h2>
+                </div>
+                <div class="card-body p-0">
+                    {% if program.audits|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ 'audit_program.audit_col.number'|trans({}, 'audit_program') }}</th>
+                                    <th>{{ 'audit_program.audit_col.title'|trans({}, 'audit_program') }}</th>
+                                    <th>{{ 'audit_program.audit_col.planned_date'|trans({}, 'audit_program') }}</th>
+                                    <th>{{ 'audit_program.audit_col.status'|trans({}, 'audit_program') }}</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for audit in program.audits %}
+                                <tr>
+                                    <td><span class="badge bg-secondary">{{ audit.auditNumber }}</span></td>
+                                    <td>{{ audit.title }}</td>
+                                    <td>{{ audit.plannedDate ? audit.plannedDate|date('d.m.Y') : '-' }}</td>
+                                    <td>
+                                        <span class="{{ badge_status(audit.status) }}">
+                                            {{ ('audit.status.' ~ audit.status)|trans({}, 'audit') }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('app_audit_show', {id: audit.id}) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                                           title="{{ 'common.view'|trans({}, 'messages') }}"
+                                           aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-muted">
+                        {{ 'audit_program.audits.none'|trans({}, 'audit_program') }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-4">
+
+            {# Responsible & Approval #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h6 mb-0">
+                        <i class="fa-icon fa-icon--nav-person" aria-hidden="true"></i>
+                        {{ 'audit_program.section.responsibility'|trans({}, 'audit_program') }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        <dt class="text-muted small">{{ 'audit_program.field.responsible_person'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.effectiveResponsibleName ?? ('common.not_set'|trans({}, 'messages')) }}</dd>
+
+                        {% if program.approvedBy %}
+                        <dt class="text-muted small">{{ 'audit_program.field.approved_by'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.approvedBy.fullName }}</dd>
+                        {% endif %}
+
+                        {% if program.approvedAt %}
+                        <dt class="text-muted small">{{ 'audit_program.field.approved_at'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.approvedAt|date('d.m.Y H:i') }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            {# Resources #}
+            {% if program.budget or program.notes %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h6 mb-0">
+                        <i class="fa-icon fa-icon--nav-coins" aria-hidden="true"></i>
+                        {{ 'audit_program.section.ressourcen'|trans({}, 'audit_program') }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        {% if program.budget %}
+                        <dt class="text-muted small">{{ 'audit_program.field.budget'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.budget|number_format(2, ',', '.') }} EUR</dd>
+                        {% endif %}
+
+                        {% if program.notes %}
+                        <dt class="text-muted small">{{ 'audit_program.field.notes'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.notes|nl2br }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Metadata #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h6 mb-0">
+                        <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
+                        {{ 'audit_program.section.metadata'|trans({}, 'audit_program') }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        <dt class="text-muted small">{{ 'audit_program.field.created_at'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.createdAt|date('d.m.Y H:i') }}</dd>
+
+                        {% if program.createdBy %}
+                        <dt class="text-muted small">{{ 'audit_program.field.created_by'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.createdBy.fullName }}</dd>
+                        {% endif %}
+
+                        {% if program.updatedAt %}
+                        <dt class="text-muted small">{{ 'audit_program.field.updated_at'|trans({}, 'audit_program') }}</dt>
+                        <dd>{{ program.updatedAt|date('d.m.Y H:i') }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {# Delete confirm form (ADMIN only) #}
+    {% if is_granted('ROLE_ADMIN') %}
+    <div class="mt-2 mb-4">
+        <details>
+            <summary class="text-danger small" style="cursor:pointer">
+                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                {{ 'audit_program.action.delete_zone'|trans({}, 'audit_program') }}
+            </summary>
+            <div class="card border-danger mt-2 p-3">
+                <p class="text-danger mb-2">{{ 'audit_program.action.delete_warning'|trans({'%name%': program.name}, 'audit_program') }}</p>
+                <form method="post"
+                      action="{{ path('app_audit_program_delete', {_locale: app.request.locale, id: program.id}) }}"
+                      onsubmit="return confirm('{{ 'audit_program.action.delete_confirm'|trans({}, 'audit_program')|escape('js') }}')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete-audit-program-' ~ program.id) }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                        {{ 'audit_program.action.delete'|trans({}, 'audit_program') }}
+                    </button>
+                </form>
+            </div>
+        </details>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
