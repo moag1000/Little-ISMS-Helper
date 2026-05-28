@@ -130,6 +130,156 @@ class TisaxMaturityAssessmentServiceTest extends TestCase
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // Per-tier assessment model tests
+    // ─────────────────────────────────────────────────────────────────────────
+
+    #[Test]
+    public function category_model_map_covers_all_three_tiers(): void
+    {
+        $map = TisaxMaturityAssessmentService::CATEGORY_MODEL_MAP;
+        self::assertArrayHasKey('information_security', $map);
+        self::assertArrayHasKey('prototype_protection', $map);
+        self::assertArrayHasKey('data_protection', $map);
+        self::assertSame('information_security', $map['information_security']);
+        self::assertSame('prototype_protection', $map['prototype_protection']);
+        self::assertSame('data_protection', $map['data_protection']);
+    }
+
+    #[Test]
+    public function getAssessmentModelForCategory_returns_correct_model(): void
+    {
+        $em = $this->createStub(EntityManagerInterface::class);
+        $service = new TisaxMaturityAssessmentService($em);
+
+        self::assertSame('information_security', $service->getAssessmentModelForCategory('information_security'));
+        self::assertSame('prototype_protection', $service->getAssessmentModelForCategory('prototype_protection'));
+        self::assertSame('data_protection', $service->getAssessmentModelForCategory('data_protection'));
+        // Unknown category falls back to IS model
+        self::assertSame('information_security', $service->getAssessmentModelForCategory('unknown_tier'));
+    }
+
+    #[Test]
+    public function testBulkSetCompliance_BinaryModel_AcceptsCompliantValue(): void
+    {
+        $tenant = $this->createTenantWithId(1);
+
+        $req = new ComplianceRequirement();
+        $req->setUploadTenant($tenant);
+        $req->setCategory('prototype_protection');
+        $req->setAssessmentValue(null);
+
+        $repo = $this->createStub(EntityRepository::class);
+        $repo->method('find')->willReturn($req);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getRepository')->willReturn($repo);
+        $em->expects(self::once())->method('flush');
+
+        $service = new TisaxMaturityAssessmentService($em);
+        $user    = new User();
+
+        $updated = $service->bulkSetCompliance([42 => 'compliant'], $user, $tenant, 'prototype_protection');
+
+        self::assertSame(1, $updated, 'One PP-tier requirement must be updated');
+        self::assertSame('compliant', $req->getAssessmentValue(), 'assessmentValue must be "compliant"');
+    }
+
+    #[Test]
+    public function testBulkSetCompliance_GdprModel_AcceptsInPlaceValue(): void
+    {
+        $tenant = $this->createTenantWithId(1);
+
+        $req = new ComplianceRequirement();
+        $req->setUploadTenant($tenant);
+        $req->setCategory('data_protection');
+        $req->setAssessmentValue(null);
+
+        $repo = $this->createStub(EntityRepository::class);
+        $repo->method('find')->willReturn($req);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getRepository')->willReturn($repo);
+        $em->expects(self::once())->method('flush');
+
+        $service = new TisaxMaturityAssessmentService($em);
+        $user    = new User();
+
+        $updated = $service->bulkSetCompliance([99 => 'in_place'], $user, $tenant, 'data_protection');
+
+        self::assertSame(1, $updated, 'One DP-tier requirement must be updated');
+        self::assertSame('in_place', $req->getAssessmentValue(), 'assessmentValue must be "in_place"');
+    }
+
+    #[Test]
+    public function testBulkSetCompliance_RejectsCrossModelValue(): void
+    {
+        // Submitting a Reifegrad string 'established' (IS-model value) for a PP-tier requirement
+        $tenant = $this->createTenantWithId(1);
+
+        $req = new ComplianceRequirement();
+        $req->setUploadTenant($tenant);
+        $req->setCategory('prototype_protection');
+        $req->setAssessmentValue(null);
+
+        $repo = $this->createStub(EntityRepository::class);
+        $repo->method('find')->willReturn($req);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getRepository')->willReturn($repo);
+        // flush must NOT be called — cross-model value is silently rejected
+        $em->expects(self::never())->method('flush');
+
+        $service = new TisaxMaturityAssessmentService($em);
+        $user    = new User();
+
+        // 'established' is a valid IS-tier value but invalid for prototype_protection
+        $updated = $service->bulkSetCompliance([42 => 'established'], $user, $tenant, 'prototype_protection');
+
+        self::assertSame(0, $updated, 'Cross-model value must be silently rejected');
+        self::assertNull($req->getAssessmentValue(), 'assessmentValue must remain null');
+    }
+
+    #[Test]
+    public function testBulkSetCompliance_RejectsIsValueForDpTier(): void
+    {
+        // Submitting numeric-string IS value '3' for a DP-tier requirement
+        $tenant = $this->createTenantWithId(1);
+
+        $req = new ComplianceRequirement();
+        $req->setUploadTenant($tenant);
+        $req->setCategory('data_protection');
+        $req->setAssessmentValue(null);
+
+        $repo = $this->createStub(EntityRepository::class);
+        $repo->method('find')->willReturn($req);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getRepository')->willReturn($repo);
+        $em->expects(self::never())->method('flush');
+
+        $service = new TisaxMaturityAssessmentService($em);
+        $user    = new User();
+
+        // 'managed' is valid for IS model but not for data_protection
+        $updated = $service->bulkSetCompliance([99 => 'managed'], $user, $tenant, 'data_protection');
+
+        self::assertSame(0, $updated, 'IS value submitted against DP model must be rejected');
+        self::assertNull($req->getAssessmentValue(), 'assessmentValue must remain null');
+    }
+
+    #[Test]
+    public function testBulkSetCompliance_UnknownModel_ThrowsInvalidArgumentException(): void
+    {
+        $em = $this->createStub(EntityManagerInterface::class);
+        $service = new TisaxMaturityAssessmentService($em);
+        $user    = new User();
+        $tenant  = $this->createTenantWithId(1);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $service->bulkSetCompliance([1 => 'compliant'], $user, $tenant, 'unknown_model');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // Helpers
     // ─────────────────────────────────────────────────────────────────────────
 

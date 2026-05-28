@@ -140,3 +140,42 @@ tisax:
         established: 'Etabliert — standardisiert'
         predictable: 'Vorhersagbar — gemessen'
         optimising: 'Optimierend — kontinuierlich verbessert'
+
+      # Tier-KPI Kurzbezeichnungen (Assess-Seite)
+      tier:
+        information_security: 'Informationssicherheit'
+        prototype_protection: 'Prototypenschutz'
+        data_protection: 'Datenschutz'
+
+      # IS-Tier KPI-Wert-Template (Assess-Seite)
+      tier_is_value: 'Ø %avg% / Ziel AL3: 3,0'
+      # PP-Tier KPI-Wert-Template (Assess-Seite)
+      tier_pp_value: '%compliant% / %total% konform'
+      # DP-Tier KPI-Wert-Template (Assess-Seite)
+      tier_dp_value: '%in_place% / %total% vorhanden'
+
+      # Tier 2 — Prototype Protection Bewertungsoptionen (binaer)
+      col:
+        compliance: 'Konformität'
+        conformance: 'DSGVO-Konformität'
+
+      pp:
+        compliant: 'Erfüllt'
+        not_compliant: 'Nicht erfüllt'
+        na: 'Nicht anwendbar'
+
+      # Tier 3 — Data Protection / GDPR-Konformitätsoptionen
+      dp:
+        in_place: 'Maßnahme vorhanden'
+        partial: 'Teilweise vorhanden'
+        not_in_place: 'Nicht vorhanden'
+        na: 'Nicht anwendbar'
+
+  # Bewertungsmodelle (Domänen-Labels, nicht ENX-Lizenztexte)
+  assessment_model:
+    information_security:
+      label: 'Informationssicherheit (ISO/IEC 33020 Reifegrad 0–5)'
+    prototype_protection:
+      label: 'Prototypenschutz (Binaere Konformität)'
+    data_protection:
+      label: 'Datenschutz (DSGVO Art. 28 Konformität)'
