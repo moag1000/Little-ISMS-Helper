@@ -16,19 +16,23 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TisaxLicenseConfirmationRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly int $ttlHours = 24,
+    ) {
         parent::__construct($registry, TisaxLicenseConfirmation::class);
     }
 
     /**
-     * Find the most recent valid (< 24 h) confirmation for a given
+     * Find the most recent valid (within TTL hours) confirmation for a given
      * user + tenant combination. Returns null when no valid confirmation
      * exists (forces user back to Step 0).
+     *
+     * TTL is configurable via the `app.tisax.license_ttl_hours` container parameter.
      */
     public function findValidConfirmation(User $user, Tenant $tenant): ?TisaxLicenseConfirmation
     {
-        $cutoff = new DateTimeImmutable('-24 hours');
+        $cutoff = new DateTimeImmutable(sprintf('-%d hours', $this->ttlHours));
 
         return $this->createQueryBuilder('c')
             ->andWhere('c.user = :user')

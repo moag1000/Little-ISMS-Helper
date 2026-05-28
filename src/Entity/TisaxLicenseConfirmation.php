@@ -132,14 +132,17 @@ class TisaxLicenseConfirmation
     }
 
     /**
-     * Whether this confirmation is still valid (within 24 hours).
+     * Whether this confirmation is still valid (within the TTL window).
+     *
+     * @param int $ttlHours TTL in hours (default 24). Set via the
+     *                      `app.tisax.license_ttl_hours` container parameter.
      */
-    public function isValid(): bool
+    public function isValid(int $ttlHours = 24): bool
     {
         if ($this->confirmedAt === null) {
             return false;
         }
-        $expiresAt = (new DateTimeImmutable())->modify('-24 hours');
+        $expiresAt = (new DateTimeImmutable())->modify(sprintf('-%d hours', $ttlHours));
         return $this->confirmedAt > $expiresAt;
     }
 }

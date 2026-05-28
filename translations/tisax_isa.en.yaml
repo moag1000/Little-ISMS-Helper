@@ -1,7 +1,10 @@
 # Translation file: tisax_isa (English)
 # Domain: TISAX VDA-ISA import wizard + assessment
+#
+# Root key is "tisax:" so templates using tisax.import.* resolve correctly.
+# The domain name (tisax_isa) is only the filename — it doesn't affect key lookup.
 
-tisax_isa:
+tisax:
   nav:
     title: 'TISAX VDA-ISA Import'
 
@@ -9,7 +12,6 @@ tisax_isa:
     title: 'TISAX BYO VDA-ISA Import Wizard'
     subtitle: 'Upload your licensed VDA-ISA workbook and assess Reifegrad 0–5 per requirement'
 
-  # Step labels for the fa-stepper
   step:
     disclaimer: 'Legal Confirmation'
     upload: 'Upload'
@@ -18,8 +20,22 @@ tisax_isa:
     commit: 'Commit'
     assess: 'Assess'
 
-  # Step 0 — Disclaimer
   import:
+    nav:
+      title: 'TISAX VDA-ISA Import'
+
+    page:
+      title: 'TISAX BYO VDA-ISA Import Wizard'
+      subtitle: 'Upload your licensed VDA-ISA workbook and assess Reifegrad 0–5 per requirement'
+
+    step:
+      disclaimer: 'Legal Confirmation'
+      upload: 'Upload'
+      validate: 'Validate'
+      preview: 'Preview'
+      commit: 'Commit'
+      assess: 'Assess'
+
     disclaimer:
       title: 'Legal Confirmation — ENX Licence'
       legal_notice: 'Important: Licensing Notice'
@@ -34,7 +50,6 @@ tisax_isa:
       confirm_button: 'Confirm and Continue'
       confirmed: 'Licence confirmation recorded. You may now upload your workbook.'
 
-    # Step 1 — Upload
     upload:
       title: 'Upload VDA-ISA Workbook'
       subtitle: 'Upload your ENX-licensed VDA-ISA Excel workbook (.xlsx)'
@@ -48,7 +63,6 @@ tisax_isa:
       disclaimer_required: 'Please confirm the licence disclaimer before uploading.'
       security_rejected: 'The file was rejected by the security scanner. Please upload a valid XLSX file.'
 
-    # Step 2 — Validate
     validate:
       title: 'Workbook Validation'
       subtitle: 'Checking structure and control ID format'
@@ -62,7 +76,6 @@ tisax_isa:
       proceed: 'Continue to Preview'
       no_workbook: 'No workbook found in session. Please upload again.'
 
-    # Step 3 — Preview
     preview:
       title: 'Import Preview'
       subtitle: 'Review the delta before committing to the database'
@@ -78,7 +91,6 @@ tisax_isa:
         tier: 'Tier'
       proceed: 'Commit to Database'
 
-    # Step 4 — Commit
     commit:
       title: 'Commit Import'
       subtitle: 'Write requirements to the database'
@@ -88,7 +100,6 @@ tisax_isa:
       submit_button: 'Commit Import'
       success: 'VDA-ISA requirements imported successfully.'
 
-    # Step 5 — Assess
     assess:
       title: 'Reifegrad Assessment'
       subtitle: 'Set maturity levels (Reifegrad 0–5) for each requirement'
@@ -105,8 +116,6 @@ tisax_isa:
       saved: 'Reifegrad scores saved.'
       no_requirements: 'No requirements found. Please complete the import first.'
       export_enx: 'Export ENX Schedule (.xlsx)'
-
-      # Reifegrad level labels
       level:
         incomplete: 'Incomplete — not implemented'
         performed: 'Performed — ad-hoc'

@@ -828,3 +828,9 @@ gstool_import:
 # Tenant (additive — missing format-keys)
 'tenant.validation.lei_code_format': 'LEI-Code muss 20 Zeichen lang sein: 18 alphanumerische Zeichen + 2 Prüfziffern (ISO 17442).'
 'tenant.validation.reporting_currency_format': 'Berichtswährung muss einem gültigen ISO 4217-Währungscode entsprechen (z. B. EUR, USD).'
+
+# TISAX VDA-ISA Import — Constraint-Meldungen (Validator-Domain)
+'tisax.import.upload.required': 'Bitte wählen Sie eine Workbook-Datei aus.'
+'tisax.import.upload.xlsx_only': 'Nur XLSX-Dateien werden akzeptiert.'
+'tisax.import.upload.too_large': 'Die Datei darf 10 MB nicht überschreiten.'
+'tisax.import.disclaimer.must_confirm': 'Sie müssen die Lizenz-Compliance bestätigen, bevor Sie fortfahren.'
