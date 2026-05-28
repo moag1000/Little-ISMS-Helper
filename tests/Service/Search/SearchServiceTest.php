@@ -405,4 +405,126 @@ class SearchServiceTest extends TestCase
         $result = $service->searchObjectives('isms-ziel', null);
         $this->assertIsArray($result, 'searchObjectives must always return an array regardless of module state');
     }
+
+    // -------------------------------------------------------------------------
+    // Navigation alias tests (alias/synonym matching)
+    // -------------------------------------------------------------------------
+
+    private function buildAdminAuthService(): SearchService
+    {
+        $moduleConfig = $this->createMock(ModuleConfigurationService::class);
+        $moduleConfig->method('isModuleActive')->willReturn(true);
+
+        $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $authChecker->method('isGranted')->willReturn(true);
+
+        return $this->buildServiceWith($moduleConfig, $authChecker);
+    }
+
+    #[Test]
+    public function testNavigationMatchesByAlias(): void
+    {
+        $service = $this->buildAdminAuthService();
+
+        $results = $service->searchNavigation('organisation');
+
+        $routes = array_column($results, 'url');
+        // Should find the tenant management / org-settings entry via alias
+        $this->assertNotEmpty($results, 'Query "organisation" must match at least one nav entry via alias');
+    }
+
+    #[Test]
+    public function testNavigationMatchesByGermanAndEnglishAliases(): void
+    {
+        $service = $this->buildAdminAuthService();
+
+        $deResults = $service->searchNavigation('Berechtigung');
+        $enResults = $service->searchNavigation('Permission');
+
+        $this->assertNotEmpty($deResults, '"Berechtigung" must match roles/permissions nav entry');
+        $this->assertNotEmpty($enResults, '"Permission" must match roles/permissions nav entry');
+
+        // Both queries must find the same route (Rollenverwaltung)
+        $deTitles = array_column($deResults, 'title');
+        $enTitles = array_column($enResults, 'title');
+        $this->assertContains('Rollenverwaltung', $deTitles, 'Rollenverwaltung must appear for "Berechtigung"');
+        $this->assertContains('Rollenverwaltung', $enTitles, 'Rollenverwaltung must appear for "Permission"');
+    }
+
+    #[Test]
+    public function testNavigationAliasCaseInsensitive(): void
+    {
+        $service = $this->buildAdminAuthService();
+
+        $upper = $service->searchNavigation('ORGANISATION');
+        $lower = $service->searchNavigation('organisation');
+        $mixed = $service->searchNavigation('Organisation');
+
+        $this->assertNotEmpty($upper, 'Uppercase alias query must match');
+        $this->assertNotEmpty($lower, 'Lowercase alias query must match');
+        $this->assertNotEmpty($mixed, 'Mixed-case alias query must match');
+
+        // All three must return the same count of results
+        $this->assertSameSize($upper, $lower, 'Case variants must return same result count');
+        $this->assertSameSize($lower, $mixed, 'Case variants must return same result count');
+    }
+
+    #[Test]
+    public function testNavigationAliasShortQueryRejected(): void
+    {
+        $service = $this->buildAdminAuthService();
+
+        $single = $service->searchNavigation('a');
+        $empty = $service->searchNavigation('');
+        $whitespace = $service->searchNavigation('  ');
+
+        $this->assertSame([], $single, 'Single-character query must return empty');
+        $this->assertSame([], $empty, 'Empty query must return empty');
+        $this->assertSame([], $whitespace, 'Whitespace-only query must return empty');
+    }
+
+    #[Test]
+    public function testNavigationBackupAliasMatches(): void
+    {
+        $service = $this->buildAdminAuthService();
+
+        $results = $service->searchNavigation('Backup');
+        $titles = array_column($results, 'title');
+
+        $this->assertContains('Backup', $titles, '"Backup" query must return the Backup nav entry');
+    }
+
+    #[Test]
+    public function testNavigationLogoAliasFindsBranding(): void
+    {
+        $service = $this->buildAdminAuthService();
+
+        $results = $service->searchNavigation('Logo');
+        $titles = array_column($results, 'title');
+
+        $this->assertContains('Branding & Logo', $titles, '"Logo" alias must find the Branding nav entry');
+    }
+
+    #[Test]
+    public function testNavigationReportsAliasFinder(): void
+    {
+        $service = $this->buildAdminAuthService();
+
+        $results = $service->searchNavigation('Reports');
+        $this->assertNotEmpty($results, '"Reports" must match at least one report-related nav entry');
+
+        $titles = array_column($results, 'title');
+        $this->assertContains('Berichte', $titles, '"Reports" alias must match the Berichte entry');
+    }
+
+    #[Test]
+    public function testNavigationMfaAliasMatches(): void
+    {
+        $service = $this->buildAdminAuthService();
+
+        $results = $service->searchNavigation('2FA');
+        $titles = array_column($results, 'title');
+
+        $this->assertContains('MFA / Zwei-Faktor-Authentifizierung', $titles, '"2FA" alias must find MFA nav entry');
+    }
 }
