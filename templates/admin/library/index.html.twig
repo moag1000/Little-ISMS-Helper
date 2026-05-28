@@ -48,12 +48,32 @@
                                         {{ 'library.action.file'|trans({}, 'library') }}:
                                         <code>{{ lib.filename }}.yaml</code>
                                     </p>
-                                    <form method="post" action="{{ path('admin_library_import', { type: lib.type }) }}">
-                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
+                                    {% if lib.type == 'tisax' %}
+                                        {# TISAX VDA-ISA is ENX-licensed — YAML ships skeleton only.
+                                           Real content must come via BYO-Workbook-Upload (Wizard). #}
+                                        <p class="text-muted small mb-2">
+                                            <i class="fa-icon fa-icon--nav-shield-lock" aria-hidden="true"></i>
+                                            {{ 'library.tisax.skeleton_hint'|trans({}, 'library') }}
+                                        </p>
+                                        <a href="{{ path('app_tisax_import_disclaimer', { _locale: app.request.locale }) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
                                             <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
-                                            {{ 'library.action.import'|trans({}, 'library') }}
-                                        </button>
-                                    </form>
+                                            {{ 'library.action_byo.open_byo_wizard'|trans({}, 'library') }}
+                                        </a>
+                                    {% elseif is_granted('ROLE_SUPER_ADMIN') %}
+                                        <form method="post" action="{{ path('admin_library_import', { type: lib.type }) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_library_import_' ~ lib.type) }}">
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
+                                                <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                                                {{ 'library.action.import'|trans({}, 'library') }}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <p class="text-muted small mb-0">
+                                            <i class="fa-icon fa-icon--nav-shield-lock" aria-hidden="true"></i>
+                                            {{ 'library.action.import_super_admin_only'|trans({}, 'library') }}
+                                        </p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
