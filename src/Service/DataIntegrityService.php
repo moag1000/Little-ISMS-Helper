@@ -11,6 +11,7 @@ use App\Enum\InternalAuditStatus;
 use App\Enum\TreatmentStrategy;
 use App\Service\DataIntegrity\DuplicateFinder;
 use App\Service\DataIntegrity\OrphanFinder;
+use App\Service\DataIntegrity\ReferenceIntegrityChecker;
 use App\Service\DataIntegrity\StatusEnumDriftChecker;
 use App\Service\DataIntegrity\UploadOrphanChecker;
 use Doctrine\ORM\EntityManagerInterface;
@@ -116,6 +117,11 @@ final class DataIntegrityService
          * unit-test setUp() that constructs without the new dep.
          */
         private readonly ?DuplicateFinder $duplicateFinder = null,
+        /**
+         * Reference integrity checker (broken refs, missing relationships, inconsistent data).
+         * Optional for backward-compat with unit-test setUp() without the new dep.
+         */
+        private readonly ?ReferenceIntegrityChecker $referenceIntegrityChecker = null,
     ) {
     }
 
@@ -356,10 +362,17 @@ final class DataIntegrityService
     }
 
     /**
-     * Find broken foreign key references
+     * Find broken foreign key references.
+     * Delegates to {@see ReferenceIntegrityChecker} when available.
+     * Falls back to inline implementation for unit-test backward-compat.
      */
     public function findBrokenReferences(): array
     {
+        if ($this->referenceIntegrityChecker !== null) {
+            return $this->referenceIntegrityChecker->findBrokenReferences();
+        }
+
+        // Fallback inline implementation for unit tests without ReferenceIntegrityChecker dep.
         $broken = [];
 
         // Check risks with invalid asset references
@@ -444,10 +457,17 @@ final class DataIntegrityService
     }
 
     /**
-     * Find entities with missing required relationships
+     * Find entities with missing required relationships.
+     * Delegates to {@see ReferenceIntegrityChecker} when available.
+     * Falls back to inline implementation for unit-test backward-compat.
      */
     public function findMissingRelationships(): array
     {
+        if ($this->referenceIntegrityChecker !== null) {
+            return $this->referenceIntegrityChecker->findMissingRelationships();
+        }
+
+        // Fallback inline implementation for unit tests without ReferenceIntegrityChecker dep.
         $missing = [];
 
         // Risks without assets
@@ -532,10 +552,17 @@ final class DataIntegrityService
     }
 
     /**
-     * Find inconsistent data (e.g., dates, status)
+     * Find inconsistent data (e.g., dates, status).
+     * Delegates to {@see ReferenceIntegrityChecker} when available.
+     * Falls back to inline implementation for unit-test backward-compat.
      */
     public function findInconsistentData(): array
     {
+        if ($this->referenceIntegrityChecker !== null) {
+            return $this->referenceIntegrityChecker->findInconsistentData();
+        }
+
+        // Fallback inline implementation for unit tests without ReferenceIntegrityChecker dep.
         $inconsistent = [];
 
         // Audits with completed status but no actual completion date
