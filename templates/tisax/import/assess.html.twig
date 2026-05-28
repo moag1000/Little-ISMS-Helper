@@ -180,6 +180,9 @@
                                         {# ── IS / PP: 0-5 Reifegrad select ── #}
                                         {% set currentLevel = req.maturityCurrent %}
                                         <select name="reifegrad[{{ req.id }}]" class="form-select form-select-sm" style="width:auto">
+                                            <option value="" {% if currentLevel is null %}selected{% endif %}>
+                                                {{ 'tisax.import.assess.level.unrated'|trans({}, 'tisax_isa') }}
+                                            </option>
                                             {% for levelInt, levelStr in levels %}
                                             <option value="{{ levelInt }}"
                                                 {% if currentLevel == levelStr %}selected{% endif %}>

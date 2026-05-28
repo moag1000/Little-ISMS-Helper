@@ -401,9 +401,12 @@ final class TisaxImportWizardController extends AbstractController
                 ]);
             }
 
-            // IS / PP tier: Reifegrad 0-5 integers
+            // IS / PP tier: Reifegrad 0-5 integers. Skip empty strings — the
+            // "Bitte wählen" placeholder option submits '' for untouched rows,
+            // and we MUST NOT overwrite those as 0 (incomplete) silently.
             /** @var array<string, string> $reifegradRaw */
             $reifegradRaw = (array) $request->request->all('reifegrad');
+            $reifegradRaw = array_filter($reifegradRaw, static fn ($v): bool => $v !== '' && $v !== null);
             $levelMap     = array_map('intval', $reifegradRaw);
 
             // DP tier: tristate string values (not_applicable | compliant | non_compliant)
