@@ -49,6 +49,16 @@ tisax:
       must_confirm: 'Sie müssen die Lizenz-Compliance bestätigen, bevor Sie fortfahren.'
       confirm_button: 'Bestätigen und weiter'
       confirmed: 'Lizenzbestätigung wurde erfasst. Sie können Ihr Workbook jetzt hochladen.'
+      enx_notice:
+        title: 'Rechtlicher Hinweis: Unvollständiger Katalog (ENX-Lizenz)'
+        body: 'Das mitgelieferte TISAX-Framework ist absichtlich unvollständig (10 von ca. 70 Kontrollen). Die VDA-ISA-Originalfragen sind durch die ENX Association lizensiert und dürfen nicht in Software-Produkten verteilt werden.'
+        steps_heading: 'So gehen Sie vor:'
+        steps:
+          1: 'ISA-Workbook beschaffen über die '
+          2: 'Workbook hier hochladen (BYO-Import, nächster Schritt)'
+          3: 'Reifegradassessment durchführen — alle ~70 Kontrollen werden dann verfügbar'
+        after_import_label: 'Nach dem Import'
+        after_import: 'Tenant-scoped Requirements werden automatisch erstellt. Cross-Mapping zu ISO 27001:2022 läuft ohne weitere Aktion.'
 
     upload:
       title: 'VDA-ISA-Workbook hochladen'

@@ -20,6 +20,7 @@ library:
 
   action:
     import: 'Importieren'
+    import_super_admin_only: 'Import nur fuer Super-Admins verfuegbar (systemweite Operation).'
     export_yaml: 'Als YAML exportieren'
     export_csv: 'Als CSV exportieren'
     back: 'Zurueck zur Uebersicht'
