@@ -725,7 +725,7 @@ class SearchService
             'title' => $e->getControlId() . ' - ' . $e->getName(),
             'description' => $this->truncate($e->getDescription(), 100),
             'url' => $this->urlGenerator->generate('app_soa_show', ['id' => $e->getId()]),
-            'icon' => 'fa-icon--control',
+            'icon' => 'fa-icon--nav-shield-check',
             'type' => 'control',
             'badge' => $e->getImplementationStatus(),
         ], $qb->getQuery()->getResult());
