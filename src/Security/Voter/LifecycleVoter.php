@@ -8,6 +8,7 @@ use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 
 /**
  * Votes on attributes of the form `lifecycle.<workflow_name>.<transition_name>`.
@@ -30,7 +31,7 @@ final class LifecycleVoter extends Voter
         return str_starts_with($attribute, self::ATTRIBUTE_PREFIX) && is_object($subject);
     }
 
-    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         // attribute format: lifecycle.<workflow>.<transition>
         $parts = explode('.', substr($attribute, strlen(self::ATTRIBUTE_PREFIX)), 2);
