@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -75,6 +76,7 @@ final class TisaxImportWizardController extends AbstractController
         private readonly TisaxConfirmationService $confirmationService,
         private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly string $uploadDir,
     ) {}
 
@@ -346,7 +348,7 @@ final class TisaxImportWizardController extends AbstractController
             'delta'     => $delta,
             'framework' => $framework,
             'stepIndex' => 4,
-            'token'     => $this->generateCsrfToken('tisax_commit'),
+            'token'     => $this->csrfTokenManager->getToken('tisax_commit')->getValue(),
         ]);
     }
 
@@ -413,7 +415,7 @@ final class TisaxImportWizardController extends AbstractController
             'aggregate'    => $aggregate,
             'levels'       => TisaxMaturityAssessmentService::LEVEL_MAP,
             'stepIndex'    => 5,
-            'token'        => $this->generateCsrfToken('tisax_assess'),
+            'token'        => $this->csrfTokenManager->getToken('tisax_assess')->getValue(),
         ]);
     }
 
