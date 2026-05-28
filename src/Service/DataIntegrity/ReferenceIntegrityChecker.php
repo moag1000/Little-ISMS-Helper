@@ -30,6 +30,23 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 final class ReferenceIntegrityChecker
 {
+    /**
+     * Per-request entity cache populated lazily by loadEntitiesCache().
+     * Reset via clearCache() when the caller needs a fresh view (e.g. after repair).
+     *
+     * @var array{
+     *     risks: list<mixed>,
+     *     incidents: list<mixed>,
+     *     controls: list<mixed>,
+     *     audits: list<mixed>,
+     *     bc_plans: list<mixed>,
+     *     trainings: list<mixed>,
+     *     dsr: list<mixed>|null,
+     *     kpi_snapshots: list<mixed>|null,
+     * }|null
+     */
+    private ?array $entitiesCache = null;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly RiskRepository $riskRepository,
@@ -45,14 +62,47 @@ final class ReferenceIntegrityChecker
     }
 
     /**
+     * Reset the entity cache so the next call to any find* method triggers
+     * a fresh DB hydration. Use after repair operations that modify entities.
+     */
+    public function clearCache(): void
+    {
+        $this->entitiesCache = null;
+    }
+
+    /**
+     * Load all shared entity collections once per checker instance lifetime.
+     * Subsequent calls return the cached result, avoiding N × findAll() round-trips
+     * when runFullIntegrityCheck() invokes all three find* methods in sequence.
+     */
+    private function loadEntitiesCache(): void
+    {
+        if ($this->entitiesCache !== null) {
+            return;
+        }
+
+        $this->entitiesCache = [
+            'risks'       => $this->riskRepository->findAll(),
+            'incidents'   => $this->incidentRepository->findAll(),
+            'controls'    => $this->controlRepository->findAll(),
+            'audits'      => $this->auditRepository->findAll(),
+            'bc_plans'    => $this->bcPlanRepository->findAll(),
+            'trainings'   => $this->trainingRepository->findAll(),
+            'dsr'         => $this->dataSubjectRequestRepository?->findAll(),
+            'kpi_snapshots' => $this->kpiSnapshotRepository?->findAll(),
+        ];
+    }
+
+    /**
      * Find broken foreign key references
      */
     public function findBrokenReferences(): array
     {
+        $this->loadEntitiesCache();
         $broken = [];
 
         // Check risks with invalid asset references
-        $allRisks = $this->riskRepository->findAll();
+        $allRisks = $this->entitiesCache['risks'];
         foreach ($allRisks as $risk) {
             $asset = $risk->getAsset();
             if ($asset && !$this->entityManager->contains($asset)) {
@@ -81,7 +131,7 @@ final class ReferenceIntegrityChecker
         }
 
         // Check incidents with invalid asset references
-        $allIncidents = $this->incidentRepository->findAll();
+        $allIncidents = $this->entitiesCache['incidents'];
         foreach ($allIncidents as $incident) {
             foreach ($incident->getAffectedAssets() as $asset) {
                 if (!$this->entityManager->contains($asset)) {
@@ -113,7 +163,7 @@ final class ReferenceIntegrityChecker
         }
 
         // Check controls with invalid risk references
-        $allControls = $this->controlRepository->findAll();
+        $allControls = $this->entitiesCache['controls'];
         foreach ($allControls as $control) {
             foreach ($control->getRisks() as $risk) {
                 if (!$this->entityManager->contains($risk)) {
@@ -137,6 +187,7 @@ final class ReferenceIntegrityChecker
      */
     public function findMissingRelationships(): array
     {
+        $this->loadEntitiesCache();
         $missing = [];
 
         // Risks without assets
@@ -149,7 +200,7 @@ final class ReferenceIntegrityChecker
 
         // Incidents without affected assets
         $incidentsWithoutAssets = [];
-        $allIncidents = $this->incidentRepository->findAll();
+        $allIncidents = $this->entitiesCache['incidents'];
         foreach ($allIncidents as $incident) {
             if ($incident->getAffectedAssets()->isEmpty()) {
                 $incidentsWithoutAssets[] = $incident;
@@ -161,7 +212,7 @@ final class ReferenceIntegrityChecker
 
         // Applicable controls without risks (and without framework mapping)
         $controlsWithoutRisks = [];
-        $allControls = $this->controlRepository->findAll();
+        $allControls = $this->entitiesCache['controls'];
         foreach ($allControls as $control) {
             if ($control->isApplicable() && $control->getRisks()->isEmpty()) {
                 $controlsWithoutRisks[] = $control;
@@ -184,7 +235,7 @@ final class ReferenceIntegrityChecker
 
         // BC Plans without business processes
         $bcPlansWithoutProcesses = [];
-        $allBcPlans = $this->bcPlanRepository->findAll();
+        $allBcPlans = $this->entitiesCache['bc_plans'];
         foreach ($allBcPlans as $plan) {
             if (!$plan->getBusinessProcess()) {
                 $bcPlansWithoutProcesses[] = $plan;
@@ -196,7 +247,7 @@ final class ReferenceIntegrityChecker
 
         // Trainings without participants assigned
         $trainingsWithoutParticipants = [];
-        foreach ($this->trainingRepository->findAll() as $training) {
+        foreach ($this->entitiesCache['trainings'] as $training) {
             if (empty($training->getParticipants())) {
                 $trainingsWithoutParticipants[] = $training;
             }
@@ -225,10 +276,11 @@ final class ReferenceIntegrityChecker
      */
     public function findInconsistentData(): array
     {
+        $this->loadEntitiesCache();
         $inconsistent = [];
 
         // Audits with completed status but no actual completion date
-        $audits = $this->auditRepository->findAll();
+        $audits = $this->entitiesCache['audits'];
         foreach ($audits as $audit) {
             if (in_array($audit->getStatus(), [InternalAuditStatus::Completed->value, InternalAuditStatus::Reported->value]) && !$audit->getActualDate()) {
                 $inconsistent['audits_completed_without_date'][] = $audit;
@@ -236,7 +288,7 @@ final class ReferenceIntegrityChecker
         }
 
         // Risks with residual risk higher than inherent risk
-        $risks = $this->riskRepository->findAll();
+        $risks = $this->entitiesCache['risks'];
         foreach ($risks as $risk) {
             if ($risk->getResidualRiskLevel() && $risk->getInherentRiskLevel() &&
                 $risk->getResidualRiskLevel() > $risk->getInherentRiskLevel()) {
@@ -245,7 +297,7 @@ final class ReferenceIntegrityChecker
         }
 
         // Incidents with resolved status but no resolution date
-        $incidents = $this->incidentRepository->findAll();
+        $incidents = $this->entitiesCache['incidents'];
         foreach ($incidents as $incident) {
             if ($incident->getStatus() === IncidentStatus::Resolved && !$incident->getResolvedAt()) {
                 $inconsistent['incidents_resolved_without_date'][] = $incident;
@@ -293,7 +345,7 @@ final class ReferenceIntegrityChecker
                 $inconsistent['invalid_dsr_status'] = $invalidDsr;
             }
 
-            $allDsr = $this->dataSubjectRequestRepository->findAll();
+            $allDsr = $this->entitiesCache['dsr'] ?? [];
             $overdueOpen = array_filter($allDsr, fn($d) =>
                 $d->getEffectiveDeadline() !== null &&
                 $d->getEffectiveDeadline() < new \DateTimeImmutable() &&
@@ -314,7 +366,7 @@ final class ReferenceIntegrityChecker
         // KpiSnapshot with empty data
         if ($this->kpiSnapshotRepository !== null) {
             $emptySnapshots = array_filter(
-                $this->kpiSnapshotRepository->findAll(),
+                $this->entitiesCache['kpi_snapshots'] ?? [],
                 fn($s) => empty($s->getKpiData())
             );
             if (count($emptySnapshots) > 0) {
