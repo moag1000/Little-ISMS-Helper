@@ -58,7 +58,7 @@
                                             <i class="fa-icon fa-icon--nav-shield-lock me-1" aria-hidden="true"></i>
                                             {{ 'library.tisax.skeleton_hint'|trans({}, 'library') }}
                                         </p>
-                                        <a href="{{ path('admin_library_index') }}"
+                                        <a href="{{ path('app_tisax_import_disclaimer', { _locale: app.request.locale }) }}"
                                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
                                             <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
                                             {{ 'library.action.open_byo_wizard'|trans({}, 'library') }}
