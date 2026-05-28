@@ -33,6 +33,8 @@ We are committed to providing a welcoming and inspiring community for everyone. 
 
 ## Getting Started
 
+> **First time contributing?** Start with **[ONBOARDING.md](ONBOARDING.md)** and the step-by-step guides under `docs/onboarding/` (environment setup → architecture tour → hot files → test runbook → anti-patterns). Takes about 30 minutes and will save hours later.
+
 ### Prerequisites
 
 - PHP 8.4+ required (8.5 supported and tested in CI)
