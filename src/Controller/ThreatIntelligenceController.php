@@ -114,10 +114,14 @@ class ThreatIntelligenceController extends AbstractController
             return $this->redirectToRoute('app_threat_intelligence_show', ['id' => $threat->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('threat_intelligence/new.html.twig', [
             'threat' => $threat,
             'form'   => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/threat-intelligence/{id}', name: 'app_threat_intelligence_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -144,10 +148,14 @@ class ThreatIntelligenceController extends AbstractController
             return $this->redirectToRoute('app_threat_intelligence_show', ['id' => $threat->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('threat_intelligence/edit.html.twig', [
             'threat' => $threat,
             'form'   => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/threat-intelligence/{id}/delete', name: 'app_threat_intelligence_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

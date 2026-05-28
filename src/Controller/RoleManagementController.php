@@ -56,11 +56,15 @@ class RoleManagementController extends AbstractController
             return $this->redirectToRoute('role_management_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('role_management/new.html.twig', [
             'role' => $role,
             'form' => $form,
             'permissions' => $permissions,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/admin/roles/compare', name: 'role_management_compare', methods: ['GET'])]
     public function compare(
@@ -208,11 +212,15 @@ class RoleManagementController extends AbstractController
             return $this->redirectToRoute('role_management_show', ['id' => $role->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('role_management/edit.html.twig', [
             'role' => $role,
             'form' => $form,
             'permissions' => $permissions,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/admin/roles/{id}/delete', name: 'role_management_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(

@@ -107,10 +107,14 @@ class RiskTreatmentPlanController extends AbstractController
             return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $riskTreatmentPlan->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('risk_treatment_plan/new.html.twig', [
             'plan' => $riskTreatmentPlan,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/risk-treatment-plan/{id}', name: 'app_risk_treatment_plan_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -141,10 +145,14 @@ class RiskTreatmentPlanController extends AbstractController
             return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $riskTreatmentPlan->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('risk_treatment_plan/edit.html.twig', [
             'plan' => $riskTreatmentPlan,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/risk-treatment-plan/{id}/delete', name: 'app_risk_treatment_plan_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
