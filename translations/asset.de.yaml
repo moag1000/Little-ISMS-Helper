@@ -4,6 +4,9 @@ asset:
     created: 'Asset wurde angelegt.'
     updated: 'Asset wurde aktualisiert.'
     deleted: 'Asset wurde gelöscht.'
+    cloned: 'Asset wurde dupliziert. Datei-Binary muss ggf. neu hochgeladen werden.'
+  clone:
+    success: 'Asset wurde dupliziert. Datei-Binary muss ggf. neu hochgeladen werden.'
   preview:
     title: Asset-Informationen
   action:
@@ -403,6 +406,9 @@ asset:
         Datenleck, Halluzination, Privilege-Escalation).'
       extension_allowlist: 'Liste freigegebener Plugins / Extensions / MCP-Server. Verhindert
         Supply-Chain-Angriffe über kompromittierte Marketplaces.'
+iso_9001_bridge:
+  asset: 'In ISO 9001 sind Assets Bestandteil der Ressourcenverwaltung (Klausel 7.1). ISO 27001 A.5.9/A.5.10 erweitern um Informationswerte und Verantwortliche; ISO 22301 §8.1 verlangt Ressourcenlisten für die BCM-Grundversorgung.'
+
 qr:
   label:
     title: Asset-Etikett

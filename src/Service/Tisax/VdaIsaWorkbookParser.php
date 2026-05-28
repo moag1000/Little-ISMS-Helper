@@ -234,14 +234,14 @@ final class VdaIsaWorkbookParser
                 return isset($headerMap[$field]) ? (string) ($rowData[$headerMap[$field]] ?? '') : null;
             };
 
-            $controlId = trim((string) $get('controlId'));
+            $controlId = $this->sanitizeCellValue(trim((string) $get('controlId')));
             if ($controlId === '') {
                 continue; // skip rows without an ID (section headers, footnotes)
             }
 
             // Resolve best title: prefer DE when present, fall back to EN
-            $titleDe  = trim((string) $get('titleDe'));
-            $titleEn  = trim((string) $get('titleEn'));
+            $titleDe  = $this->sanitizeCellValue(trim((string) $get('titleDe')));
+            $titleEn  = $this->sanitizeCellValue(trim((string) $get('titleEn')));
             $title    = $titleDe !== '' ? $titleDe : $titleEn;
             if ($title === '') {
                 $title = $controlId; // last resort
@@ -251,17 +251,49 @@ final class VdaIsaWorkbookParser
                 controlId: $controlId,
                 title: $title,
                 titleEn: $titleEn !== '' ? $titleEn : null,
-                description: trim((string) $get('description')) ?: null,
-                mustLevel: trim((string) $get('mustLevel')) ?: null,
-                shouldLevel: trim((string) $get('shouldLevel')) ?: null,
-                highLevel: trim((string) $get('highLevel')) ?: null,
-                veryHighLevel: trim((string) $get('veryHighLevel')) ?: null,
-                iso27001Ref: trim((string) $get('iso27001Ref')) ?: null,
-                auditEvidenceHint: trim((string) $get('evidenceHint')) ?: null,
+                description: ($v = $this->sanitizeCellValue(trim((string) $get('description')))) !== '' ? $v : null,
+                mustLevel: ($v = $this->sanitizeCellValue(trim((string) $get('mustLevel')))) !== '' ? $v : null,
+                shouldLevel: ($v = $this->sanitizeCellValue(trim((string) $get('shouldLevel')))) !== '' ? $v : null,
+                highLevel: ($v = $this->sanitizeCellValue(trim((string) $get('highLevel')))) !== '' ? $v : null,
+                veryHighLevel: ($v = $this->sanitizeCellValue(trim((string) $get('veryHighLevel')))) !== '' ? $v : null,
+                iso27001Ref: ($v = $this->sanitizeCellValue(trim((string) $get('iso27001Ref')))) !== '' ? $v : null,
+                auditEvidenceHint: ($v = $this->sanitizeCellValue(trim((string) $get('evidenceHint')))) !== '' ? $v : null,
                 rawRowIndex: $row,
             );
         }
 
         return $controls;
+    }
+
+    /**
+     * Sanitize a cell value against DDE (Dynamic Data Exchange) injection.
+     *
+     * Cell values beginning with `=`, `+`, `-`, `@`, tab (`\t`), or carriage
+     * return (`\r`) are treated as formula triggers by spreadsheet applications
+     * (Excel, LibreOffice Calc, Google Sheets) when the data is re-exported to
+     * CSV or XLSX.  Prepending a single apostrophe is the Excel-standard
+     * mitigation — it renders the cell as text and disables formula evaluation.
+     *
+     * Reference: OWASP CSV Injection (formula injection) guidance.
+     *
+     * @see https://owasp.org/www-community/attacks/CSV_Injection
+     */
+    private function sanitizeCellValue(string $value): string
+    {
+        if ($value === '') {
+            return $value;
+        }
+
+        if (str_starts_with($value, '=')
+            || str_starts_with($value, '+')
+            || str_starts_with($value, '-')
+            || str_starts_with($value, '@')
+            || str_starts_with($value, "\t")
+            || str_starts_with($value, "\r")
+        ) {
+            return "'" . $value;
+        }
+
+        return $value;
     }
 }

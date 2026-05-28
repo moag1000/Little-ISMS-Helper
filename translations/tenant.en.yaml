@@ -4,6 +4,7 @@ tenant:
     empty: 'No organizations available'
     switch_hint: 'Switch'
     switch_header: 'Switch organization'
+    switch_glossary_hint: 'Organization per ISO 27001 Cl. 4.1 — the independent unit with its own assets, risks, and users.'
     orphan_users:
         title: '%count% user account(s) without organization assignment'
         body: 'These accounts can sign in but cannot see any ISMS data (controls, risks, processing activities) because every query is scoped to an organization. Assign the organization via User Management or use Data Repair in bulk mode.'
