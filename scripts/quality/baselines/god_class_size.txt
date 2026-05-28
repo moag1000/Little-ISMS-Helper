@@ -2,14 +2,14 @@
 # Format: <relative-path>:LOC=NNN deps=MMM
 # NEW file added OR existing file growing beyond LOC will fail CI.
 src/Service/Search/SearchService.php:LOC=1416 deps=33
-src/Controller/DeploymentWizardController.php:LOC=1745 deps=0
+src/Controller/DeploymentWizardController.php:LOC=1747 deps=0
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1869 deps=15
 src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php:LOC=1837 deps=4
 src/Service/DashboardStatisticsService.php:LOC=1808 deps=25
-src/Service/DataIntegrityService.php:LOC=499 deps=33
+src/Service/DataIntegrityService.php:LOC=525 deps=36
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=457 deps=17
 src/Controller/RiskController.php:LOC=1610 deps=0
-src/Controller/ComplianceExportController.php:LOC=1588 deps=0
+src/Controller/ComplianceExportController.php:LOC=1637 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=666 deps=0
 src/Service/Export/CertificationBundleExporter.php:LOC=1586 deps=19
 src/Controller/PolicyWizardController.php:LOC=1420 deps=0
@@ -37,3 +37,4 @@ src/Controller/TrainingController.php:LOC=625 deps=0
 src/Service/ScheduledReportService.php:LOC=619 deps=22
 src/Service/ComplianceFrameworkLoaderService.php:LOC=537 deps=26
 src/Service/ComplianceLoaderFixerService.php:LOC=256 deps=28
+src/Service/DataIntegrity/EntityCountAggregator.php:LOC=202 deps=18
