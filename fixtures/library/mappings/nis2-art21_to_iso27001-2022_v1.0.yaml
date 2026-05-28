@@ -4,7 +4,7 @@ library:
   id: 'nis2-art21_to_iso27001-2022_v1.0'
   source_framework: 'NIS2'
   target_framework: 'ISO27001'
-  version: 1
+  version: 2
   effective_from: '2024-09-01'
   effective_until: null
 
@@ -15,7 +15,19 @@ library:
       - 'BSI Mindestanforderungen NIS2-UmsuCG (Konsultationsentwurf 2024-12)'
       - 'Eigene Volltext-Analyse durch Compliance-Team'
       - 'Inverse-Ableitung aus iso27001-2022_to_nis2-art21_v1.0'
+      - 'Directive (EU) 2022/2555 Art. 21(2)(a)-(j) authoritative letter ordering'
     publisher: 'Little ISMS Helper Maintainers'
+    changelog:
+      - version: 2
+        date: '2026-05-28'
+        actor: 'maintainer'
+        note: |
+          Option B re-alignment: source keys now follow directive-correct Art. 21(2)(a)-(j)
+          ordering. Previous v1 had scrambled letter assignments (e.g. 21.2.f pointed to
+          supply-chain/threat-intel instead of effectiveness assessment; 21.2.h pointed to
+          malware instead of cryptography; 21.2.i said "Wirksamkeitsbewertung" but that is
+          directive (f), not (i)). All ISO anchors adjusted accordingly. 21.2.k removed
+          (does not exist in directive). v1 entries without source-key changes are preserved.
 
   methodology:
     type: 'text_comparison_with_expert_review'
@@ -36,20 +48,38 @@ library:
       - { state: 'review',    date: '2024-10-30', actor: 'maintainer' }
       - { state: 'approved',  date: '2024-11-22', actor: 'reviewer-2' }
       - { state: 'published', date: '2024-12-01', actor: 'ciso-signoff' }
+      - { state: 'published', date: '2026-05-28', actor: 'maintainer', note: 'v2: directive-correct letter re-alignment' }
 
 mappings:
-  - source: '21.2.f'
-    target: 'A.5.7'
+  # ── Art. 21(2)(a) — risk analysis & security of information systems ──────────
+  - source: '21.2.a'
+    target: 'A.5.1'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(a) "Konzepte für Risikoanalyse und Sicherheit der
+      Informationssysteme" ist breiter als A.5.1 "Policies for information
+      security". A.5.1 liefert nur die Policy-Komponente; Risikoanalyse-
+      Methodik und Verantwortlichkeiten kommen aus ISO 27001 Clause 6.1
+      und A.6.1.
+    gap_warning: 'A.5.1 allein deckt 21(2)(a) NICHT — bündele zwingend mit A.6.1 und ISO 27001 Clause 6.1.'
+    cross_refs: ['A.6.1']
+    audit_evidence_hint: 'Risikoanalyse-Dokument, IS-Policy, Clause-6.1-Nachweise.'
+
+  # ── Art. 21(2)(b) — incident handling ───────────────────────────────────────
+  - source: '21.2.b'
+    target: 'A.5.24'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      NIS2 Art. 21(2)(f) fordert Threat-Intel-Sharing als Element von
-      Lieferkettensicherheit und Drittbeziehungen. ISO 27001:2022 A.5.7
-      "Threat Intelligence" liefert exakt die operative Grundlage —
-      Sammlung, Analyse, Verteilung. Aus NIS2-Sicht ist A.5.7 die
-      naheliegende ISO-Verankerung; vollständige Abdeckung.
-    audit_evidence_hint: 'Threat-Intel-Quellen-Liste + Sharing-Protokolle (CERT-Bund, BSI-CERT, ISACs) der letzten 12 Monate.'
+      NIS2 Art. 21(2)(b) "Vorfallbewältigung" entspricht aus NIS2-Sicht
+      vollständig A.5.24 "Information security incident management planning
+      and preparation". Die NIS2-spezifischen Meldepflichten (Art. 23) sind
+      separat zu adressieren, der Incident-Management-Prozess selbst ist
+      durch A.5.24 abgedeckt.
+    audit_evidence_hint: 'Incident-Response-Plan, IR-Übungen, IR-Reports.'
 
+  # ── Art. 21(2)(c) — business continuity / BCM / backup / crisis mgmt ────────
   - source: '21.2.c'
     target: 'A.5.30'
     relationship: 'superset'
@@ -65,6 +95,19 @@ mappings:
       A.6.5 / Krisenkommunikations-Prozeduren.
     audit_evidence_hint: 'BC-Pläne mit Krisenmanagement-Teil, Behörden-Meldepfade, dokumentierte Tabletop-Übungen.'
 
+  - source: '21.2.c'
+    target: 'A.5.29'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      Aus NIS2-Sicht deckt A.5.29 "Information security during disruption"
+      nur den Teilaspekt "Sicherheit während Disruption" von 21(2)(c) ab.
+      NIS2 21(2)(c) verlangt darüber hinaus Krisenmanagement-Strukturen
+      und externe Kommunikation. A.5.29 ist daher Untermenge.
+    gap_warning: 'A.5.29 ist nur ein Baustein für 21(2)(c); ohne A.5.30 und Krisenkommunikation unvollständig.'
+    audit_evidence_hint: 'BC-Pläne, Notfallrichtlinien, Disruption-Tests.'
+
+  # ── Art. 21(2)(d) — supply chain security ───────────────────────────────────
   - source: '21.2.d'
     target: 'A.5.20'
     relationship: 'equivalent'
@@ -78,63 +121,43 @@ mappings:
     cross_refs: ['A.5.21', 'A.5.22']
     audit_evidence_hint: 'Supplier-Register mit Risk-Tier, AVV-Verträge, Audit-Reports der letzten 24 Monate.'
 
-  - source: '21.2.b'
-    target: 'A.5.24'
+  # ── Art. 21(2)(e) — security in acquisition, development & maintenance ───────
+  - source: '21.2.e'
+    target: 'A.8.25'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      NIS2 Art. 21(2)(b) "Vorfallbewältigung" entspricht aus NIS2-Sicht
-      vollständig A.5.24 "Information security incident management planning
-      and preparation". Die NIS2-spezifischen Meldepflichten (Art. 23) sind
-      separat zu adressieren, der Incident-Management-Prozess selbst ist
-      durch A.5.24 abgedeckt.
-    audit_evidence_hint: 'Incident-Response-Plan, IR-Übungen, IR-Reports.'
+      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, bei der Entwicklung und
+      der Wartung von Netz- und Informationssystemen" wird operativ durch
+      A.8.25 "Secure development life cycle" 1:1 adressiert.
+    cross_refs: ['A.8.26', 'A.8.27', 'A.8.28', 'A.8.29', 'A.8.30']
+    audit_evidence_hint: 'Secure-SDLC-Policy, Security-in-Requirements-Nachweis, Code-Review-Protokolle.'
 
-  - source: '21.2.c'
-    target: 'A.5.29'
-    relationship: 'superset'
-    confidence: 'medium'
-    rationale: |
-      Aus NIS2-Sicht deckt A.5.29 "Information security during disruption"
-      nur den Teilaspekt "Sicherheit während Disruption" von 21(2)(c) ab.
-      NIS2 21(2)(c) verlangt darüber hinaus Krisenmanagement-Strukturen
-      und externe Kommunikation. A.5.29 ist daher Untermenge.
-    gap_warning: 'A.5.29 ist nur ein Baustein für 21(2)(c); ohne A.5.30 und Krisenkommunikation unvollständig.'
-    audit_evidence_hint: 'BC-Pläne, Notfallrichtlinien, Disruption-Tests.'
-
-  - source: '21.2.h'
-    target: 'A.8.7'
+  # ── Art. 21(2)(f) — effectiveness assessment of cybersecurity measures ───────
+  - source: '21.2.f'
+    target: 'A.5.36'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      NIS2 Art. 21(2)(h) "grundlegende Cyberhygiene" hat als prominentesten
-      Baustein Malware-Schutz, Patching und Hardening. A.8.7 "Protection
-      against malware" deckt aus NIS2-Sicht den Malware-Aspekt vollständig ab.
-    audit_evidence_hint: 'AV/EDR-Reports, Patch-Compliance-Dashboards.'
+      NIS2 Art. 21(2)(f) "Bewertung der Wirksamkeit der Cybersicherheits-
+      Risikomanagement-Maßnahmen" entspricht ISO 27001:2022 A.5.36
+      "Compliance with policies, rules and standards for information security"
+      als oberster Verankerung der Wirksamkeitsprüfung. Ergänzend deckt
+      ISO 27001 Clause 9.1 (Performance evaluation) den Prozess-Anteil ab.
+    cross_refs: ['A.8.16']
+    audit_evidence_hint: 'Management-Review-Protokolle (Cl. 9.3), KPI-Dashboards, interne Audit-Berichte.'
 
-  - source: '21.2.h'
-    target: 'A.8.24'
+  - source: '21.2.f'
+    target: 'A.8.16'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
-      NIS2 21(2)(h) "Cyberhygiene" umfasst auch Krypto-Praxis als Hygiene-
-      Element. A.8.24 "Use of cryptography" ist verwandt, aber nicht
-      deckungsgleich — Cyberhygiene aus NIS2-Sicht ist deutlich breiter
-      (Patching, Hardening, Logs, MFA, Awareness).
-    cross_refs: ['A.8.7', 'A.8.8']
+      NIS2 Art. 21(2)(f) Wirksamkeitsbewertung umfasst auch kontinuierliches
+      Monitoring als operativen Nachweis. A.8.16 "Monitoring activities" liefert
+      die technische Evidenz-Schicht für die Wirksamkeitsbeurteilung.
+    audit_evidence_hint: 'SIEM-Reports, Anomalie-Alerts, Monitoring-Dashboard-Exports.'
 
-  - source: '21.2.e'
-    target: 'A.5.9'
-    relationship: 'equivalent'
-    confidence: 'high'
-    rationale: |
-      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, Entwicklung und Wartung
-      von Netz- und Informationssystemen" basiert operativ auf einem
-      vollständigen Asset-Inventar. A.5.9 "Inventory of information and
-      other associated assets" ist aus NIS2-Sicht die zentrale Verankerung
-      für den Inventar-/Asset-Anteil.
-    cross_refs: ['A.5.10', 'A.5.11']
-
+  # ── Art. 21(2)(g) — cyber hygiene & cybersecurity training ──────────────────
   - source: '21.2.g'
     target: 'A.6.3'
     relationship: 'equivalent'
@@ -146,19 +169,63 @@ mappings:
       ist A.6.3 die direkte ISO-Entsprechung.
     audit_evidence_hint: 'Schulungs-Quote, Phishing-Drill-Ergebnisse, Onboarding-Curriculum.'
 
-  - source: '21.2.a'
-    target: 'A.5.1'
-    relationship: 'superset'
+  - source: '21.2.g'
+    target: 'A.8.7'
+    relationship: 'related'
     confidence: 'medium'
     rationale: |
-      NIS2 Art. 21(2)(a) "Konzepte für Risikoanalyse und Sicherheit der
-      Informationssysteme" ist breiter als A.5.1 "Policies for information
-      security". A.5.1 liefert nur die Policy-Komponente; Risikoanalyse-
-      Methodik und Verantwortlichkeiten kommen aus ISO 27001 Clause 6.1
-      und A.6.1.
-    gap_warning: 'A.5.1 allein deckt 21(2)(a) NICHT — bündele zwingend mit A.6.1 und ISO 27001 Clause 6.1.'
-    cross_refs: ['A.6.1']
+      NIS2 21(2)(g) "Cyberhygiene" umfasst neben Schulungen auch technische
+      Hygiene-Maßnahmen wie Malware-Schutz und Patching. A.8.7
+      "Protection against malware" deckt aus NIS2-Sicht den Malware-Aspekt ab.
+    cross_refs: ['A.8.8']
+    audit_evidence_hint: 'AV/EDR-Reports, Patch-Compliance-Dashboards.'
 
+  # ── Art. 21(2)(h) — cryptography and encryption ─────────────────────────────
+  - source: '21.2.h'
+    target: 'A.8.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(h) "Kryptografie und Verschlüsselung" wird durch
+      A.8.24 "Use of cryptography" direkt abgedeckt. Aus NIS2-Sicht ist
+      A.8.24 die kanonische ISO-Verankerung der Krypto-Policy-Anforderung.
+    audit_evidence_hint: 'Kryptografie-Policy, Schlüsselmanagement-Nachweise, TLS/Verschlüsselungs-Konfigurationen.'
+
+  # ── Art. 21(2)(i) — HR security + access control + asset management ─────────
+  - source: '21.2.i'
+    target: 'A.6.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(i) "Personalsicherheit, Zugangskontrolle und
+      Asset-Management" adressiert den HR-Sicherheits-Anteil über A.6.1
+      "Screening" als Basis-Anforderung für Personensicherheit.
+    cross_refs: ['A.6.2', 'A.6.5']
+    audit_evidence_hint: 'Background-Check-Nachweise, Onboarding/Offboarding-Checklisten.'
+
+  - source: '21.2.i'
+    target: 'A.5.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(i) Zugangskontroll-Anteil wird durch A.5.15
+      "Access control" abgedeckt, die übergeordnete ISO-Policy für
+      bedarfsgerechten Zugang zu Information und Systemen.
+    cross_refs: ['A.5.16', 'A.5.17', 'A.5.18', 'A.8.3']
+    audit_evidence_hint: 'Access-Control-Policy, Benutzerkonten-Reviews, Privileged-Account-Liste.'
+
+  - source: '21.2.i'
+    target: 'A.5.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(i) Asset-Management-Anteil wird durch A.5.9
+      "Inventory of information and other associated assets" als
+      Kern-Verankerung des Asset-Inventars abgedeckt.
+    cross_refs: ['A.5.10', 'A.5.11']
+    audit_evidence_hint: 'Asset-Inventar mit Klassifizierung, CMDB-Auszug, Asset-Owner-Liste.'
+
+  # ── Art. 21(2)(j) — MFA + secured communications ────────────────────────────
   - source: '21.2.j'
     target: 'A.8.5'
     relationship: 'superset'
@@ -169,15 +236,14 @@ mappings:
       Notfallkommunikation. A.8.5 "Secure authentication" deckt aus
       NIS2-Sicht nur den Authentifizierungs-Anteil ab.
     gap_warning: 'Sprach/Video-Notfallkommunikations-Anteil von 21(2)(j) ist NICHT durch A.8.5 abgedeckt — separate Maßnahme nötig (z.B. SINA, Matrix-E2EE-Setups).'
+    audit_evidence_hint: 'MFA-Rollout-Rate, Authentifizierungs-Policy, sichere Kommunikationskanäle.'
 
-  - source: '21.2.i'
-    target: 'A.8.16'
-    relationship: 'equivalent'
-    confidence: 'high'
+  - source: '21.2.j'
+    target: 'A.5.14'
+    relationship: 'related'
+    confidence: 'medium'
     rationale: |
-      NIS2 Art. 21(2)(i) "Konzepte und Verfahren zur Bewertung der
-      Wirksamkeit von Risikomanagement-Maßnahmen" — speziell der
-      Monitoring-Anteil — wird durch A.8.16 "Monitoring activities"
-      abgedeckt. Wirksamkeits-Bewertung selbst kommt ergänzend aus
-      ISO 27001 Clause 9.1.
-    cross_refs: ['A.5.36']
+      NIS2 21(2)(j) gesicherte Kommunikation wird durch A.5.14
+      "Information transfer" als Policy-Verankerung für sichere
+      Übertragungskanäle adressiert.
+    audit_evidence_hint: 'E-Mail-Verschlüsselungs-Policy, Secure-Messaging-Konfiguration.'
