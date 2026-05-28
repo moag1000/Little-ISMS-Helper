@@ -519,6 +519,19 @@ class ComplianceRequirement
     private ?string $requirementSource = 'system';
 
     /**
+     * Data Protection (Chapter 9) tristate compliance state.
+     *
+     * Applicable ONLY to requirements whose category = 'data_protection'.
+     * NULL for IS/PP tier requirements (those use maturityCurrent instead).
+     *
+     * Valid values: 'not_applicable' | 'compliant' | 'non_compliant'
+     * Maps to ENX VDA-ISA 6 workbook Ch. 9 column "DSGVO-Konformitaet"
+     * which uses a 3-state NA / OK / Nicht OK scale — NOT Reifegrad 0-5.
+     */
+    #[ORM\Column(name: 'assessment_state_dp', length: 20, nullable: true)]
+    private ?string $assessmentStateDp = null;
+
+    /**
      * Tenant that uploaded this requirement.
      * NULL for global system rows; always set for tenant_upload rows.
      */
@@ -546,6 +559,47 @@ class ComplianceRequirement
     {
         $this->uploadTenant = $uploadTenant;
         return $this;
+    }
+
+    // ── Data Protection tristate assessment (Chapter 9) ──────────────────────
+
+    /**
+     * Get the tristate DP compliance state.
+     *
+     * Returns one of: 'not_applicable' | 'compliant' | 'non_compliant' | null
+     */
+    public function getAssessmentStateDp(): ?string
+    {
+        return $this->assessmentStateDp;
+    }
+
+    /**
+     * Set the tristate DP compliance state.
+     *
+     * @param string|null $state  'not_applicable' | 'compliant' | 'non_compliant' | null
+     * @throws \InvalidArgumentException for values outside the allowed set
+     */
+    public function setAssessmentStateDp(?string $state): static
+    {
+        if ($state !== null && !in_array($state, ['not_applicable', 'compliant', 'non_compliant'], true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Invalid DP assessment state "%s". Must be not_applicable, compliant, or non_compliant.',
+                    $state,
+                ),
+            );
+        }
+        $this->assessmentStateDp = $state;
+        return $this;
+    }
+
+    /**
+     * Returns true if this requirement belongs to the data_protection tier.
+     * Used to decide which assessment model (Reifegrad vs tristate) applies.
+     */
+    public function isDataProtectionTier(): bool
+    {
+        return $this->category === 'data_protection';
     }
 
     // BSI IT-Grundschutz fields

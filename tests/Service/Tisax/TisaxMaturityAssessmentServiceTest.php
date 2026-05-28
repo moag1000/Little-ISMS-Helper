@@ -130,125 +130,142 @@ class TisaxMaturityAssessmentServiceTest extends TestCase
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Per-tier assessment model tests
+    // DP_STATES constant contract
     // ─────────────────────────────────────────────────────────────────────────
 
     #[Test]
-    public function category_model_map_covers_all_three_tiers(): void
+    public function dp_states_constant_contains_three_states(): void
     {
-        $map = TisaxMaturityAssessmentService::CATEGORY_MODEL_MAP;
-        self::assertArrayHasKey('information_security', $map);
-        self::assertArrayHasKey('prototype_protection', $map);
-        self::assertArrayHasKey('data_protection', $map);
-        self::assertSame('information_security', $map['information_security']);
-        self::assertSame('prototype_protection', $map['prototype_protection']);
-        self::assertSame('data_protection', $map['data_protection']);
+        self::assertCount(3, TisaxMaturityAssessmentService::DP_STATES);
+        self::assertContains('not_applicable', TisaxMaturityAssessmentService::DP_STATES);
+        self::assertContains('compliant', TisaxMaturityAssessmentService::DP_STATES);
+        self::assertContains('non_compliant', TisaxMaturityAssessmentService::DP_STATES);
     }
 
     #[Test]
-    public function getAssessmentModelForCategory_returns_correct_model(): void
+    public function reifegrad_categories_constant_excludes_data_protection(): void
     {
-        $em = $this->createStub(EntityManagerInterface::class);
+        self::assertNotContains('data_protection', TisaxMaturityAssessmentService::REIFEGRAD_CATEGORIES);
+        self::assertContains('information_security', TisaxMaturityAssessmentService::REIFEGRAD_CATEGORIES);
+        self::assertContains('prototype_protection', TisaxMaturityAssessmentService::REIFEGRAD_CATEGORIES);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // bulkSetAssessment dispatch routing tests
+    // ─────────────────────────────────────────────────────────────────────────
+
+    #[Test]
+    public function testBulkSetAssessment_RoutesToReifegradForIS(): void
+    {
+        $tenant = $this->createTenantWithId(1);
+
+        $req = new ComplianceRequirement();
+        $req->setUploadTenant($tenant);
+        $req->setCategory('information_security');
+        $req->setMaturityCurrent('incomplete');
+
+        $repo = $this->createStub(EntityRepository::class);
+        $repo->method('find')->willReturn($req);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getRepository')->willReturn($repo);
+        $em->expects(self::atLeastOnce())->method('flush');
+
         $service = new TisaxMaturityAssessmentService($em);
+        $result  = $service->bulkSetAssessment([42 => 3], new User(), $tenant);
 
-        self::assertSame('information_security', $service->getAssessmentModelForCategory('information_security'));
-        self::assertSame('prototype_protection', $service->getAssessmentModelForCategory('prototype_protection'));
-        self::assertSame('data_protection', $service->getAssessmentModelForCategory('data_protection'));
-        // Unknown category falls back to IS model
-        self::assertSame('information_security', $service->getAssessmentModelForCategory('unknown_tier'));
+        self::assertSame(1, $result['reifegrad']);
+        self::assertSame(0, $result['data_protection']);
+        self::assertSame('established', $req->getMaturityCurrent());
     }
 
     #[Test]
-    public function testBulkSetCompliance_BinaryModel_AcceptsCompliantValue(): void
+    public function testBulkSetAssessment_RoutesToReifegradForPP(): void
     {
         $tenant = $this->createTenantWithId(1);
 
         $req = new ComplianceRequirement();
         $req->setUploadTenant($tenant);
         $req->setCategory('prototype_protection');
-        $req->setAssessmentValue(null);
+        $req->setMaturityCurrent('incomplete');
 
         $repo = $this->createStub(EntityRepository::class);
         $repo->method('find')->willReturn($req);
 
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
-        $em->expects(self::once())->method('flush');
+        $em->expects(self::atLeastOnce())->method('flush');
 
         $service = new TisaxMaturityAssessmentService($em);
-        $user    = new User();
+        $result  = $service->bulkSetAssessment([42 => 2], new User(), $tenant);
 
-        $updated = $service->bulkSetCompliance([42 => 'compliant'], $user, $tenant, 'prototype_protection');
-
-        self::assertSame(1, $updated, 'One PP-tier requirement must be updated');
-        self::assertSame('compliant', $req->getAssessmentValue(), 'assessmentValue must be "compliant"');
+        self::assertSame(1, $result['reifegrad']);
+        self::assertSame(0, $result['data_protection']);
+        self::assertSame('managed', $req->getMaturityCurrent());
     }
 
     #[Test]
-    public function testBulkSetCompliance_GdprModel_AcceptsInPlaceValue(): void
+    public function testBulkSetAssessment_RoutesToTriStateForDP(): void
     {
         $tenant = $this->createTenantWithId(1);
 
         $req = new ComplianceRequirement();
         $req->setUploadTenant($tenant);
         $req->setCategory('data_protection');
-        $req->setAssessmentValue(null);
+        $req->setAssessmentStateDp(null);
 
         $repo = $this->createStub(EntityRepository::class);
         $repo->method('find')->willReturn($req);
 
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
-        $em->expects(self::once())->method('flush');
+        $em->expects(self::atLeastOnce())->method('flush');
 
         $service = new TisaxMaturityAssessmentService($em);
-        $user    = new User();
+        $result  = $service->bulkSetAssessment([42 => 'compliant'], new User(), $tenant);
 
-        $updated = $service->bulkSetCompliance([99 => 'in_place'], $user, $tenant, 'data_protection');
-
-        self::assertSame(1, $updated, 'One DP-tier requirement must be updated');
-        self::assertSame('in_place', $req->getAssessmentValue(), 'assessmentValue must be "in_place"');
+        self::assertSame(0, $result['reifegrad']);
+        self::assertSame(1, $result['data_protection']);
+        self::assertSame('compliant', $req->getAssessmentStateDp());
     }
 
     #[Test]
-    public function testBulkSetCompliance_RejectsCrossModelValue(): void
+    public function testBulkSetAssessment_RejectsReifegradValueOnDpRequirement(): void
     {
-        // Submitting a Reifegrad string 'established' (IS-model value) for a PP-tier requirement
         $tenant = $this->createTenantWithId(1);
 
         $req = new ComplianceRequirement();
         $req->setUploadTenant($tenant);
-        $req->setCategory('prototype_protection');
-        $req->setAssessmentValue(null);
+        $req->setCategory('data_protection');
+        $req->setAssessmentStateDp(null);
 
         $repo = $this->createStub(EntityRepository::class);
         $repo->method('find')->willReturn($req);
 
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')->willReturn($repo);
-        // flush must NOT be called — cross-model value is silently rejected
+        // flush must NOT be called — no valid write should happen
         $em->expects(self::never())->method('flush');
 
         $service = new TisaxMaturityAssessmentService($em);
-        $user    = new User();
+        // Supplying int 3 for a DP requirement is rejected
+        $result  = $service->bulkSetAssessment([42 => 3], new User(), $tenant);
 
-        // 'established' is a valid IS-tier value but invalid for prototype_protection
-        $updated = $service->bulkSetCompliance([42 => 'established'], $user, $tenant, 'prototype_protection');
-
-        self::assertSame(0, $updated, 'Cross-model value must be silently rejected');
-        self::assertNull($req->getAssessmentValue(), 'assessmentValue must remain null');
+        self::assertSame(0, $result['reifegrad']);
+        self::assertSame(0, $result['data_protection']);
+        self::assertSame(1, $result['rejected']);
+        self::assertNull($req->getAssessmentStateDp(), 'DP state must not change when a Reifegrad int is submitted for a DP requirement');
     }
 
     #[Test]
-    public function testBulkSetCompliance_RejectsIsValueForDpTier(): void
+    public function testBulkSetAssessment_RejectsTriStateValueOnIsRequirement(): void
     {
-        // Submitting numeric-string IS value '3' for a DP-tier requirement
         $tenant = $this->createTenantWithId(1);
 
         $req = new ComplianceRequirement();
         $req->setUploadTenant($tenant);
-        $req->setCategory('data_protection');
-        $req->setAssessmentValue(null);
+        $req->setCategory('information_security');
+        $req->setMaturityCurrent('incomplete');
 
         $repo = $this->createStub(EntityRepository::class);
         $repo->method('find')->willReturn($req);
@@ -258,25 +275,13 @@ class TisaxMaturityAssessmentServiceTest extends TestCase
         $em->expects(self::never())->method('flush');
 
         $service = new TisaxMaturityAssessmentService($em);
-        $user    = new User();
+        // Supplying 'compliant' (a DP tristate string) for an IS requirement is rejected
+        $result  = $service->bulkSetAssessment([42 => 'compliant'], new User(), $tenant);
 
-        // 'managed' is valid for IS model but not for data_protection
-        $updated = $service->bulkSetCompliance([99 => 'managed'], $user, $tenant, 'data_protection');
-
-        self::assertSame(0, $updated, 'IS value submitted against DP model must be rejected');
-        self::assertNull($req->getAssessmentValue(), 'assessmentValue must remain null');
-    }
-
-    #[Test]
-    public function testBulkSetCompliance_UnknownModel_ThrowsInvalidArgumentException(): void
-    {
-        $em = $this->createStub(EntityManagerInterface::class);
-        $service = new TisaxMaturityAssessmentService($em);
-        $user    = new User();
-        $tenant  = $this->createTenantWithId(1);
-
-        $this->expectException(\InvalidArgumentException::class);
-        $service->bulkSetCompliance([1 => 'compliant'], $user, $tenant, 'unknown_model');
+        self::assertSame(0, $result['reifegrad']);
+        self::assertSame(0, $result['data_protection']);
+        self::assertSame(1, $result['rejected']);
+        self::assertSame('incomplete', $req->getMaturityCurrent(), 'Maturity must not change when tristate string is submitted for IS requirement');
     }
 
     // ─────────────────────────────────────────────────────────────────────────

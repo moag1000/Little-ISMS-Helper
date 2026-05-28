@@ -128,9 +128,10 @@ tisax:
         title: 'Anforderung'
         tier: 'Bereich'
         reifegrad: 'Aktueller Reifegrad'
+        assessment: 'Bewertung'
         target: 'Ziel'
       save_button: 'Bewertung speichern'
-      saved: 'Reifegradwerte wurden gespeichert.'
+      saved: 'Bewertung gespeichert.'
       no_requirements: 'Keine Anforderungen gefunden. Bitte führen Sie zuerst den Import durch.'
       export_enx: 'ENX-Bewertungsplan exportieren (.xlsx)'
       level:
@@ -140,42 +141,16 @@ tisax:
         established: 'Etabliert — standardisiert'
         predictable: 'Vorhersagbar — gemessen'
         optimising: 'Optimierend — kontinuierlich verbessert'
-
-      # Tier-KPI Kurzbezeichnungen (Assess-Seite)
-      tier:
-        information_security: 'Informationssicherheit'
-        prototype_protection: 'Prototypenschutz'
-        data_protection: 'Datenschutz'
-
-      # IS-Tier KPI-Wert-Template (Assess-Seite)
-      tier_is_value: 'Ø %avg% / Ziel AL3: 3,0'
-      # PP-Tier KPI-Wert-Template (Assess-Seite)
-      tier_pp_value: '%compliant% / %total% konform'
-      # DP-Tier KPI-Wert-Template (Assess-Seite)
-      tier_dp_value: '%in_place% / %total% vorhanden'
-
-      # Tier 2 — Prototype Protection Bewertungsoptionen (binaer)
-      col:
-        compliance: 'Konformität'
-        conformance: 'DSGVO-Konformität'
-
-      pp:
-        compliant: 'Erfüllt'
-        not_compliant: 'Nicht erfüllt'
-        na: 'Nicht anwendbar'
-
-      # Tier 3 — Data Protection / GDPR-Konformitätsoptionen
       dp:
-        in_place: 'Maßnahme vorhanden'
-        partial: 'Teilweise vorhanden'
-        not_in_place: 'Nicht vorhanden'
-        na: 'Nicht anwendbar'
-
-  # Bewertungsmodelle (Domänen-Labels, nicht ENX-Lizenztexte)
-  assessment_model:
-    information_security:
-      label: 'Informationssicherheit (ISO/IEC 33020 Reifegrad 0–5)'
-    prototype_protection:
-      label: 'Prototypenschutz (Binaere Konformität)'
-    data_protection:
-      label: 'Datenschutz (DSGVO Art. 28 Konformität)'
+        tile_label: 'Datenschutz (Kap. 9)'
+        tier_badge: 'Datenschutz'
+        legend: 'Datenschutz-Bewertung (Kapitel 9):'
+        hint: >
+          Datenschutz-Anforderungen werden auf einer 3-Wert-Skala bewertet —
+          kein Reifegrad 0-5. Bitte wählen Sie NA, OK oder Nicht OK pro Anforderung.
+        aria_group: 'Datenschutz-Konformitätsbewertung'
+        target_label: 'Ziel: OK'
+        state:
+          na: 'NA'
+          ok: 'OK'
+          not_ok: 'Nicht OK'
