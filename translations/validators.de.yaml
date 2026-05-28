@@ -778,3 +778,53 @@ gstool_import:
 # Supplier (T10.10 — LEI ISO 17442 + NACE Rev.2 format)
 'supplier.validation.lei_code.format': 'LEI-Code muss 20 Zeichen lang sein: 18 alphanumerische + 2 Prüfziffern (ISO 17442).'
 'supplier.validation.nace_code.format': 'NACE-Code muss dem Format NN oder NN.NN entsprechen (EU NACE Rev.2).'
+
+# ─────────────────────────────────────────────────────────────────────────
+# S19 — Validator-Translation-Keys (missing-i18n-fix 2026-05-28)
+# Clusters: asset_sub_type, dora_exit_plan, dora_subcontractor,
+#           dora_data_flow, patch, tenant
+# ─────────────────────────────────────────────────────────────────────────
+
+# AssetSubType
+'asset_sub_type.validation.top_type_invalid': 'Ungültiger Haupttyp. Erlaubte Werte: Hardware, Software, Datenbank, Personal, Standort, Dienstleistung.'
+'asset_sub_type.validation.source_invalid': 'Ungültige Quelle. Erlaubte Werte: custom, seed-bsi-grundschutz, seed-tisax, seed-production-de-mittelstand.'
+
+# DoraExitPlan (DORA Art. 28 RT_06)
+'dora_exit_plan.validation.supplier_required': 'Bitte wählen Sie einen Lieferanten aus.'
+'dora_exit_plan.validation.trigger_required': 'Bitte wählen Sie einen Auslöser aus.'
+'dora_exit_plan.validation.trigger_invalid': 'Ungültiger Auslöser. Erlaubte Werte: planned-renewal, concentration-risk, force-majeure, breach, insolvency.'
+'dora_exit_plan.validation.data_return_format_max': 'Das Format der Datenrückgabe darf maximal {{ limit }} Zeichen lang sein.'
+'dora_exit_plan.validation.migration_path_max': 'Der Migrationspfad darf maximal {{ limit }} Zeichen lang sein.'
+'dora_exit_plan.validation.duration_non_negative': 'Die geschätzte Dauer muss null oder positiv sein.'
+'dora_exit_plan.validation.cost_non_negative': 'Die geschätzten Kosten müssen null oder positiv sein.'
+
+# DoraSubcontractor (DORA Art. 28 RT_04)
+'dora_subcontractor.validation.parent_supplier_required': 'Bitte wählen Sie den übergeordneten Lieferanten aus.'
+'dora_subcontractor.validation.name_required': 'Name ist erforderlich.'
+'dora_subcontractor.validation.lei_length': 'Der LEI-Code muss genau 20 Zeichen lang sein (ISO 17442).'
+'dora_subcontractor.validation.lei_format': 'Ungültiges LEI-Format. Erlaubt sind 20 alphanumerische Großbuchstaben (ISO 17442).'
+'dora_subcontractor.validation.country_length': 'Der Ländercode muss genau 2 Zeichen lang sein (ISO 3166-1 alpha-2).'
+'dora_subcontractor.validation.country_format': 'Ungültiges Ländercode-Format. Erlaubt sind 2 Großbuchstaben (ISO 3166-1 alpha-2).'
+'dora_subcontractor.validation.tier_range': 'Die Ebene muss zwischen {{ min }} und {{ max }} liegen (2 = direkt, 5 = max. Tiefe).'
+'dora_subcontractor.validation.criticality_invalid': 'Ungültige Kritikalität. Erlaubte Werte: critical, important, standard.'
+'dora_subcontractor.validation.substitutability_invalid': 'Ungültige Substituierbarkeit. Erlaubte Werte: high, medium, low.'
+
+# DoraDataFlow (DORA Art. 28 RT_03)
+'dora_data_flow.validation.supplier_required': 'Bitte wählen Sie einen Lieferanten aus.'
+'dora_data_flow.validation.data_categories_required': 'Mindestens eine Datenkategorie muss ausgewählt werden.'
+'dora_data_flow.validation.direction_required': 'Bitte wählen Sie eine Richtung aus.'
+'dora_data_flow.validation.direction_invalid': 'Ungültige Richtung. Erlaubte Werte: inbound, outbound, bidirectional.'
+'dora_data_flow.validation.processing_purpose_too_long': 'Der Verarbeitungszweck darf maximal {{ limit }} Zeichen lang sein.'
+'dora_data_flow.validation.data_volume_too_long': 'Das Datenvolumen darf maximal {{ limit }} Zeichen lang sein.'
+'dora_data_flow.validation.receiving_country_format': 'Ungültiges Empfangsland-Format. Erlaubt sind 2 Großbuchstaben (ISO 3166-1 alpha-2).'
+
+# Patch (NIS2 Art. 21.2.d)
+'patch.validation.patch_id_required': 'Patch-ID ist erforderlich (z. B. KB5012345).'
+'patch.validation.title_required': 'Patch-Titel ist erforderlich.'
+'patch.validation.description_required': 'Patch-Beschreibung ist erforderlich.'
+'patch.validation.vendor_required': 'Hersteller ist erforderlich.'
+'patch.validation.product_required': 'Produkt ist erforderlich.'
+
+# Tenant (additive — missing format-keys)
+'tenant.validation.lei_code_format': 'LEI-Code muss 20 Zeichen lang sein: 18 alphanumerische Zeichen + 2 Prüfziffern (ISO 17442).'
+'tenant.validation.reporting_currency_format': 'Berichtswährung muss einem gültigen ISO 4217-Währungscode entsprechen (z. B. EUR, USD).'
