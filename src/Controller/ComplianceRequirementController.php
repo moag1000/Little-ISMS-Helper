@@ -141,10 +141,14 @@ class ComplianceRequirementController extends AbstractController
             ]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('compliance/requirement/new.html.twig', [
             'requirement' => $complianceRequirement,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/compliance/requirement/{id}', name: 'app_compliance_requirement_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -255,10 +259,14 @@ class ComplianceRequirementController extends AbstractController
             ]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('compliance/requirement/edit.html.twig', [
             'requirement' => $complianceRequirement,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/compliance/requirement/{id}', name: 'app_compliance_requirement_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

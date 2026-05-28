@@ -257,10 +257,14 @@ class DocumentController extends AbstractController
 
                 $this->addFlash('error', $this->translator->trans('document.error.too_many_uploads')); // @todo H-06 flash-domain
 
+                $status = ($form->isSubmitted() && !$form->isValid())
+                    ? Response::HTTP_UNPROCESSABLE_ENTITY
+                    : Response::HTTP_OK;
+
                 return $this->render('document/new.html.twig', [
                     'document' => $document,
                     'form' => $form,
-                ]);
+                ], new Response(status: $status));
             }
 
             // Security: Validate uploaded file (MIME type, magic bytes, size, extension)
@@ -320,17 +324,25 @@ class DocumentController extends AbstractController
 
                 $this->addFlash('error', $this->translator->trans('document.error.upload_failed') . ': ' . $e->getMessage()); // @todo H-06 flash-domain
 
+                $status = ($form->isSubmitted() && !$form->isValid())
+                    ? Response::HTTP_UNPROCESSABLE_ENTITY
+                    : Response::HTTP_OK;
+
                 return $this->render('document/new.html.twig', [
                     'document' => $document,
                     'form' => $form,
-                ]);
+                ], new Response(status: $status));
             }
         }
+
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
 
         return $this->render('document/new.html.twig', [
             'document' => $document,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**
@@ -896,10 +908,14 @@ class DocumentController extends AbstractController
             return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('document/edit.html.twig', [
             'document' => $document,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

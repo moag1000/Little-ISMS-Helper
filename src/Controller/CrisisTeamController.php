@@ -81,10 +81,14 @@ class CrisisTeamController extends AbstractController
             return $this->redirectToRoute('app_crisis_team_show', ['id' => $crisisTeam->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('crisis_team/new.html.twig', [
             'crisis_team' => $crisisTeam,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/crisis-team/{id}', name: 'app_crisis_team_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -112,10 +116,14 @@ class CrisisTeamController extends AbstractController
             return $this->redirectToRoute('app_crisis_team_show', ['id' => $crisisTeam->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('crisis_team/edit.html.twig', [
             'crisis_team' => $crisisTeam,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/crisis-team/{id}/delete', name: 'app_crisis_team_delete', methods: ['POST'])]

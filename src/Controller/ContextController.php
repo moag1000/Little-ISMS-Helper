@@ -111,10 +111,14 @@ class ContextController extends AbstractController
         // Get current tenant for navigation
         $tenant = $context->getTenant();
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('context/edit.html.twig', [
             'context' => $context,
             'form' => $form,
             'tenant' => $tenant, // NEW: Current tenant for navigation links
-        ]);
+        ], new Response(status: $status));
     }
 }
