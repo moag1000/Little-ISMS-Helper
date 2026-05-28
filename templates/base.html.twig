@@ -80,6 +80,9 @@
     {% block stylesheets %}
         {# Bootstrap zuerst — Aurora (via importmap unten) kommt danach und überschreibt. #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        {# Preload Aurora bundle — eliminates FOUC on Turbo-disabled navigations / full reloads.
+           Browser fetches CSS in parallel with HTML parse, applies before paint. #}
+        <link rel="preload" href="{{ asset('styles.css') }}" as="style">
 
         {# Custom styles #}
         <style>
