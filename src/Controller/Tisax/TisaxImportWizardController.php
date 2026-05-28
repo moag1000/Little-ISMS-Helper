@@ -379,11 +379,17 @@ final class TisaxImportWizardController extends AbstractController
                 ]);
             }
 
-            /** @var array<string, string> $levels */
-            $levels    = (array) $request->request->all('reifegrad');
-            $levelMap  = array_map('intval', $levels);
+            // IS / PP tier: Reifegrad 0-5 integers
+            /** @var array<string, string> $reifegradRaw */
+            $reifegradRaw = (array) $request->request->all('reifegrad');
+            $levelMap     = array_map('intval', $reifegradRaw);
 
-            $updated = $this->maturityService->bulkSetReifegrad($levelMap, $user, $tenant);
+            // DP tier: tristate string values (not_applicable | compliant | non_compliant)
+            /** @var array<string, string> $dpRaw */
+            $dpRaw = (array) $request->request->all('dp');
+
+            $this->maturityService->bulkSetReifegrad($levelMap, $user, $tenant);
+            $this->maturityService->bulkSetDataProtectionCompliance($dpRaw, $user, $tenant);
 
             $this->addFlash('success', 'tisax.import.assess.saved');
 

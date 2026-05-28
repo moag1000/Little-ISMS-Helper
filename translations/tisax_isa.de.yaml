@@ -128,9 +128,10 @@ tisax:
         title: 'Anforderung'
         tier: 'Bereich'
         reifegrad: 'Aktueller Reifegrad'
+        assessment: 'Bewertung'
         target: 'Ziel'
       save_button: 'Bewertung speichern'
-      saved: 'Reifegradwerte wurden gespeichert.'
+      saved: 'Bewertung gespeichert.'
       no_requirements: 'Keine Anforderungen gefunden. Bitte führen Sie zuerst den Import durch.'
       export_enx: 'ENX-Bewertungsplan exportieren (.xlsx)'
       level:
@@ -140,3 +141,16 @@ tisax:
         established: 'Etabliert — standardisiert'
         predictable: 'Vorhersagbar — gemessen'
         optimising: 'Optimierend — kontinuierlich verbessert'
+      dp:
+        tile_label: 'Datenschutz (Kap. 9)'
+        tier_badge: 'Datenschutz'
+        legend: 'Datenschutz-Bewertung (Kapitel 9):'
+        hint: >
+          Datenschutz-Anforderungen werden auf einer 3-Wert-Skala bewertet —
+          kein Reifegrad 0-5. Bitte wählen Sie NA, OK oder Nicht OK pro Anforderung.
+        aria_group: 'Datenschutz-Konformitätsbewertung'
+        target_label: 'Ziel: OK'
+        state:
+          na: 'NA'
+          ok: 'OK'
+          not_ok: 'Nicht OK'

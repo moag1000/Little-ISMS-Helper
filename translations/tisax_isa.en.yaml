@@ -128,9 +128,10 @@ tisax:
         title: 'Requirement'
         tier: 'Tier'
         reifegrad: 'Current Reifegrad'
+        assessment: 'Assessment'
         target: 'Target'
       save_button: 'Save Assessment'
-      saved: 'Reifegrad scores saved.'
+      saved: 'Assessment saved.'
       no_requirements: 'No requirements found. Please complete the import first.'
       export_enx: 'Export ENX Schedule (.xlsx)'
       level:
@@ -140,3 +141,16 @@ tisax:
         established: 'Established — standardised'
         predictable: 'Predictable — measured'
         optimising: 'Optimising — continuously improving'
+      dp:
+        tile_label: 'Data Protection (Ch. 9)'
+        tier_badge: 'Data Protection'
+        legend: 'Data Protection Assessment (Chapter 9):'
+        hint: >
+          Data protection requirements use a 3-state compliance scale —
+          not Reifegrad 0-5. Please select NA, OK, or Not OK per requirement.
+        aria_group: 'Data protection compliance assessment'
+        target_label: 'Target: OK'
+        state:
+          na: 'NA'
+          ok: 'OK'
+          not_ok: 'Not OK'
