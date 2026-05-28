@@ -318,6 +318,8 @@ Oeffnen: `http://localhost:8000/setup`
 
 Der Setup-Wizard fuehrt durch Tenant-Erstellung, Framework-Auswahl und Branchen-Baseline. Detaillierte Schritt-fuer-Schritt-Anleitung mit Screenshots: [**Quickstart-Guide**](docs/QUICKSTART.md).
 
+Neu im Projekt? Lies **[ONBOARDING.md](ONBOARDING.md)** und die Dokumente unter `docs/onboarding/` — sie fuehren durch Umgebungs-Setup, Architektur-Tour, hei&szlig;e Dateien, Test-Runbook und Anti-Patterns in ca. 30 Min.
+
 ---
 
 ## Architektur

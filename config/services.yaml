@@ -64,6 +64,10 @@ parameters:
     app.compliance.gap_report.quick_win_effort_percentile: 20
     app.compliance.gap_report.quick_win_min_gap_percent: 10
 
+    # TISAX BYO Import — ENX licence confirmation TTL.
+    # A confirmation is valid for this many hours (Step 0 → Step 1 guard).
+    app.tisax.license_ttl_hours: 24
+
     # Backup notifier defaults (override via env if needed).
     app.backup_notifier.from_email: 'noreply@little-isms-helper.local'
     app.backup_notifier.subject_prefix: '[ISMS Backup]'
@@ -591,6 +595,10 @@ services:
             $uploadDir: '%kernel.project_dir%/var/import-uploads'
 
     # ── TISAX BYO Import Wizard ──────────────────────────────────────────────
+    App\Repository\TisaxLicenseConfirmationRepository:
+        arguments:
+            $ttlHours: '%app.tisax.license_ttl_hours%'
+
     App\Controller\Tisax\TisaxImportWizardController:
         arguments:
             $uploadDir: '%kernel.project_dir%/var/import-uploads'

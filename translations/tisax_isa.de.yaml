@@ -1,7 +1,10 @@
 # Übersetzungsdatei: tisax_isa (Deutsch)
 # Domäne: TISAX VDA-ISA Import-Wizard + Assessment
+#
+# Root-Schlüssel ist "tisax:" damit Templates mit tisax.import.* funktionieren.
+# Domänenname (tisax_isa) bleibt unverändert — er bestimmt nur die Datei.
 
-tisax_isa:
+tisax:
   nav:
     title: 'TISAX VDA-ISA Import'
 
@@ -9,7 +12,6 @@ tisax_isa:
     title: 'TISAX BYO VDA-ISA Import-Assistent'
     subtitle: 'Laden Sie Ihr lizenziertes VDA-ISA-Workbook hoch und bewerten Sie Reifegrad 0–5 pro Anforderung'
 
-  # Schrittbezeichnungen für fa-stepper
   step:
     disclaimer: 'Rechtliche Bestätigung'
     upload: 'Hochladen'
@@ -19,7 +21,21 @@ tisax_isa:
     assess: 'Bewerten'
 
   import:
-    # Schritt 0 — Rechtliche Bestätigung
+    nav:
+      title: 'TISAX VDA-ISA Import'
+
+    page:
+      title: 'TISAX BYO VDA-ISA Import-Assistent'
+      subtitle: 'Laden Sie Ihr lizenziertes VDA-ISA-Workbook hoch und bewerten Sie Reifegrad 0–5 pro Anforderung'
+
+    step:
+      disclaimer: 'Rechtliche Bestätigung'
+      upload: 'Hochladen'
+      validate: 'Prüfen'
+      preview: 'Vorschau'
+      commit: 'Festschreiben'
+      assess: 'Bewerten'
+
     disclaimer:
       title: 'Rechtliche Bestätigung — ENX-Lizenz'
       legal_notice: 'Wichtiger Hinweis: Lizenzpflicht'
@@ -34,7 +50,6 @@ tisax_isa:
       confirm_button: 'Bestätigen und weiter'
       confirmed: 'Lizenzbestätigung wurde erfasst. Sie können Ihr Workbook jetzt hochladen.'
 
-    # Schritt 1 — Hochladen
     upload:
       title: 'VDA-ISA-Workbook hochladen'
       subtitle: 'Laden Sie Ihr ENX-lizenziertes VDA-ISA-Excel-Workbook hoch (.xlsx)'
@@ -48,7 +63,6 @@ tisax_isa:
       disclaimer_required: 'Bitte bestätigen Sie den Lizenz-Disclaimer, bevor Sie hochladen.'
       security_rejected: 'Die Datei wurde vom Sicherheits-Scanner abgelehnt. Bitte laden Sie eine gültige XLSX-Datei hoch.'
 
-    # Schritt 2 — Prüfen
     validate:
       title: 'Workbook-Validierung'
       subtitle: 'Struktur und Kontroll-ID-Format werden geprüft'
@@ -62,7 +76,6 @@ tisax_isa:
       proceed: 'Weiter zur Vorschau'
       no_workbook: 'Kein Workbook in der Sitzung gefunden. Bitte laden Sie es erneut hoch.'
 
-    # Schritt 3 — Vorschau
     preview:
       title: 'Import-Vorschau'
       subtitle: 'Delta überprüfen, bevor die Datenbank beschrieben wird'
@@ -78,7 +91,6 @@ tisax_isa:
         tier: 'Bereich'
       proceed: 'In Datenbank schreiben'
 
-    # Schritt 4 — Festschreiben
     commit:
       title: 'Import festschreiben'
       subtitle: 'Anforderungen in die Datenbank schreiben'
@@ -88,7 +100,6 @@ tisax_isa:
       submit_button: 'Import festschreiben'
       success: 'VDA-ISA-Anforderungen wurden erfolgreich importiert.'
 
-    # Schritt 5 — Bewerten
     assess:
       title: 'Reifegrad-Bewertung'
       subtitle: 'Reifegrad 0–5 für jede Anforderung festlegen'
@@ -105,8 +116,6 @@ tisax_isa:
       saved: 'Reifegradwerte wurden gespeichert.'
       no_requirements: 'Keine Anforderungen gefunden. Bitte führen Sie zuerst den Import durch.'
       export_enx: 'ENX-Bewertungsplan exportieren (.xlsx)'
-
-      # Reifegrad-Stufenbezeichnungen
       level:
         incomplete: 'Unvollständig — nicht umgesetzt'
         performed: 'Durchgeführt — ad-hoc'
