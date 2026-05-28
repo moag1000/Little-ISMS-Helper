@@ -51,7 +51,7 @@ final class LifecycleStuckInStatusRule extends AbstractGlobalAlvaHintRule
 
     public function key(): string
     {
-        return 'global.lifecycle.stuck_in_status';
+        return 'alva_hint.lifecycle.stuck_in_status';
     }
 
     public function priorityTier(): int
@@ -69,8 +69,8 @@ final class LifecycleStuckInStatusRule extends AbstractGlobalAlvaHintRule
 
         return new AlvaHint(
             key: $this->key(),
-            titleTranslationKey: 'global.lifecycle.stuck_in_status.title',
-            bodyTranslationKey: 'global.lifecycle.stuck_in_status.body',
+            titleTranslationKey: 'alva_hint.lifecycle.stuck_in_status.title',
+            bodyTranslationKey: 'alva_hint.lifecycle.stuck_in_status.body',
             bodyTranslationParams: [
                 '%count%' => (string) $count,
                 '%days%' => (string) self::STUCK_THRESHOLD_DAYS,
@@ -81,7 +81,7 @@ final class LifecycleStuckInStatusRule extends AbstractGlobalAlvaHintRule
             dismissible: true,
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
-            actionLabelTranslationKey: 'global.lifecycle.stuck_in_status.action',
+            actionLabelTranslationKey: 'alva_hint.lifecycle.stuck_in_status.action',
             actionRoute: 'app_document_index',
             actionRouteParams: [],
             actionMethod: 'GET',
