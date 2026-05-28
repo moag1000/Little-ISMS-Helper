@@ -13,6 +13,7 @@ use App\Service\DataIntegrity\DuplicateFinder;
 use App\Service\DataIntegrity\HealthIssueAggregator;
 use App\Service\DataIntegrity\OrphanFinder;
 use App\Service\DataIntegrity\ReferenceIntegrityChecker;
+use App\Service\DataIntegrity\SchemaDriftChecker;
 use App\Service\DataIntegrity\StatusEnumDriftChecker;
 use App\Service\DataIntegrity\UploadOrphanChecker;
 use Doctrine\ORM\EntityManagerInterface;
@@ -128,6 +129,11 @@ final class DataIntegrityService
          * Optional for backward-compat with unit-test setUp() without the new dep.
          */
         private readonly ?HealthIssueAggregator $healthIssueAggregator = null,
+        /**
+         * JSON-schema and AuditLog integrity drift checker.
+         * Optional for backward-compat with unit-test setUp() without the new dep.
+         */
+        private readonly ?SchemaDriftChecker $schemaDriftChecker = null,
     ) {
     }
 
@@ -1335,8 +1341,8 @@ final class DataIntegrityService
     }
 
     /**
-     * Decodes JSON columns and validates their minimal shape. NO auto-repair —
-     * surfaces every violation as a manual-review row in the template.
+     * Decodes JSON columns and validates their minimal shape. NO auto-repair.
+     * Delegates to {@see SchemaDriftChecker} when available.
      *
      * Targets:
      *   - Tenant.settings           : object/null, free-form k/v
@@ -1348,6 +1354,10 @@ final class DataIntegrityService
      */
     public function findJsonSchemaViolations(): array
     {
+        if ($this->schemaDriftChecker !== null) {
+            return $this->schemaDriftChecker->findJsonSchemaViolations();
+        }
+
         $result = [
             'tenant_settings' => [],
             'tenant_policy_settings' => [],
@@ -1513,14 +1523,8 @@ final class DataIntegrityService
 
     /**
      * AuditLog integrity gap detection.
+     * Delegates to {@see SchemaDriftChecker} when available.
      * The AuditLog is append-only and HMAC-chained (see AuditLogger).
-     * This method surfaces structural anomalies the chain alone cannot catch:
-     *
-     *   - bulk_batch_mismatches : ACTION_BULK row recorded `per_entity_count = N`
-     *                             but fewer per-entity rows actually carry the batch_id
-     *   - day_gaps              : days with zero AuditLog entries between days with entries
-     *                             over the last 30 days (suspicious in production)
-     *   - null_tenant_entries   : rows with tenant_id IS NULL (post-merge backfill leak)
      *
      * Detection-only.
      *
@@ -1532,6 +1536,10 @@ final class DataIntegrityService
      */
     public function findAuditLogIntegrityIssues(): array
     {
+        if ($this->schemaDriftChecker !== null) {
+            return $this->schemaDriftChecker->findAuditLogIntegrityIssues();
+        }
+
         $result = [
             'bulk_batch_mismatches' => [],
             'day_gaps' => [],
