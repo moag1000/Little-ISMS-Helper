@@ -26,6 +26,11 @@ use App\Repository\RiskRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TenantRepository;
 use App\Repository\TrainingRepository;
+use App\Service\DataIntegrity\DuplicateFinder;
+use App\Service\DataIntegrity\HealthIssueAggregator;
+use App\Service\DataIntegrity\OrphanFinder;
+use App\Service\DataIntegrity\ReferenceIntegrityChecker;
+use App\Service\DataIntegrity\SchemaDriftChecker;
 use App\Service\DataIntegrityService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -76,6 +81,44 @@ class DataIntegrityServiceTest extends TestCase
         $this->locationRepository = $this->createMock(LocationRepository::class);
         $this->personRepository = $this->createMock(PersonRepository::class);
 
+        // Wire up collaborators so the facade delegates to them rather than
+        // using inline fallback implementations. The collaborators receive the
+        // same mock repositories as the facade.
+        $orphanFinder = new OrphanFinder($this->entityManager);
+        $duplicateFinder = new DuplicateFinder(
+            $this->entityManager,
+            $this->auditRepository,
+            $this->assetRepository,
+            $this->riskRepository,
+            $this->incidentRepository,
+            $this->documentRepository,
+        );
+        $referenceIntegrityChecker = new ReferenceIntegrityChecker(
+            $this->entityManager,
+            $this->riskRepository,
+            $this->incidentRepository,
+            $this->controlRepository,
+            $this->auditRepository,
+            $this->documentRepository,
+            $this->trainingRepository,
+            $this->bcPlanRepository,
+        );
+        $healthIssueAggregator = new HealthIssueAggregator(
+            $this->riskRepository,
+            $this->assetRepository,
+            $this->incidentRepository,
+            $this->dataBreachRepository,
+            $this->processingActivityRepository,
+            $this->supplierRepository,
+            $this->bcPlanRepository,
+            $this->trainingRepository,
+            $this->documentRepository,
+        );
+        $schemaDriftChecker = new SchemaDriftChecker(
+            $this->entityManager,
+            $this->tenantRepository,
+        );
+
         $this->service = new DataIntegrityService(
             $this->entityManager,
             $this->assetRepository,
@@ -92,7 +135,23 @@ class DataIntegrityServiceTest extends TestCase
             $this->processingActivityRepository,
             $this->supplierRepository,
             $this->locationRepository,
-            $this->personRepository
+            $this->personRepository,
+            null, // dataSubjectRequestRepository
+            null, // kpiSnapshotRepository
+            null, // dpiaRepository
+            null, // auditFindingRepository
+            null, // correctiveActionRepository
+            null, // managementReviewRepository
+            null, // workflowInstanceRepository
+            null, // riskTreatmentPlanRepository
+            null, // projectDir
+            null, // uploadOrphanChecker
+            null, // statusEnumDriftChecker
+            $orphanFinder,
+            $duplicateFinder,
+            $referenceIntegrityChecker,
+            $healthIssueAggregator,
+            $schemaDriftChecker,
         );
     }
 
