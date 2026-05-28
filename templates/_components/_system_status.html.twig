@@ -15,16 +15,16 @@
 
 {% set systemTone = app_system_status|default('success') %}
 {% set systemLabelKey = {
-    'success': 'system.status.operational',
-    'warning': 'system.status.degraded',
-    'danger':  'system.status.down',
-    'info':    'system.status.maintenance'
+    'success': 'ui.system.status.operational',
+    'warning': 'ui.system.status.degraded',
+    'danger':  'ui.system.status.down',
+    'info':    'ui.system.status.maintenance'
 } %}
 
 <span class="fa-topbar-status"
-      title="{{ (systemLabelKey[systemTone] ?? 'system.status.operational')|trans({}, 'ui')|default('System operational') }}">
+      title="{{ (systemLabelKey[systemTone] ?? 'ui.system.status.operational')|trans({}, 'ui')|default('System operational') }}">
     {{ pill.render(
-        (systemLabelKey[systemTone] ?? 'system.status.operational')|trans({}, 'ui')|default('Operational'),
+        (systemLabelKey[systemTone] ?? 'ui.system.status.operational')|trans({}, 'ui')|default('Operational'),
         systemTone,
         { size: 'sm' }
     ) }}

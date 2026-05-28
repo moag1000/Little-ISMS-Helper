@@ -97,6 +97,7 @@ ui:
         select: Select
         close: Close
         shortcuts:
+            label: 'Keyboard shortcuts'
             title: 'Keyboard Shortcuts'
             tip: 'Tip: Press <kbd>?</kbd> to show this help anytime'
             trigger_title: 'Keyboard Shortcuts (?)'
