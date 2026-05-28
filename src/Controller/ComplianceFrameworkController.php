@@ -93,10 +93,14 @@ class ComplianceFrameworkController extends AbstractController
             return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('compliance/framework/new.html.twig', [
             'framework' => $complianceFramework,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/compliance/framework/{id}', name: 'app_compliance_framework_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -181,10 +185,14 @@ class ComplianceFrameworkController extends AbstractController
             return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('compliance/framework/edit.html.twig', [
             'framework' => $complianceFramework,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/compliance/framework/{id}/delete', name: 'app_compliance_framework_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

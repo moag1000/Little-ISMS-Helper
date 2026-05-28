@@ -185,9 +185,13 @@ class DataBreachController extends AbstractController
             return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('data_breach/new.html.twig', [
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**
@@ -245,10 +249,14 @@ class DataBreachController extends AbstractController
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('data_breach/edit.html.twig', [
             'breach' => $dataBreach,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

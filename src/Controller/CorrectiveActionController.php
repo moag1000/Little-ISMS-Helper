@@ -157,11 +157,15 @@ class CorrectiveActionController extends AbstractController
             return $this->redirectToRoute('app_corrective_action_show', ['id' => $action->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('corrective_action/new.html.twig', [
             'form' => $form,
             'finding' => $action->getFinding(),
             'previousCapa' => $previousCapa,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -205,10 +209,14 @@ class CorrectiveActionController extends AbstractController
             return $this->redirectToRoute('app_corrective_action_show', ['id' => $action->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('corrective_action/edit.html.twig', [
             'action' => $action,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
