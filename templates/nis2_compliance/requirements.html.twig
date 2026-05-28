@@ -1,0 +1,177 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'nis2' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block title %}{{ 'nis2.art21.dashboard.title'|trans({}, 'nis2') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
+        { label: 'NIS2', url: path('app_nis2_compliance_dashboard') },
+        { label: 'nis2.art21.dashboard.title'|trans({}, 'nis2') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'compliance-shield', label: 'NIS2 Art. 21(2)' },
+    title: 'nis2.art21.dashboard.title'|trans({}, 'nis2'),
+    subtitle: 'nis2.art21.dashboard.subtitle'|trans({}, 'nis2'),
+    actions: [
+        { label: 'nis2.art21.action.dashboard'|trans({}, 'nis2'), variant: 'ghost', icon: 'chart-bar', href: path('app_nis2_compliance_dashboard') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
+
+    {# ── KPI row ─────────────────────────────────────────────────────────── #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            {{ _fa_feature_card.render({
+                icon: 'compliance-shield',
+                title: total_requirements~'',
+                subtitle: 'nis2.art21.kpi.total'|trans({}, 'nis2'),
+                tone: 'neutral'
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ _fa_feature_card.render({
+                icon: 'status-critical',
+                title: critical_count~'',
+                subtitle: 'nis2.art21.kpi.critical'|trans({}, 'nis2'),
+                tone: 'danger'
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ _fa_feature_card.render({
+                icon: loaded_in_db >= total_requirements ? 'status-ok' : 'status-warning',
+                title: loaded_in_db~' / '~total_requirements,
+                subtitle: 'nis2.art21.kpi.loaded_in_db'|trans({}, 'nis2'),
+                tone: loaded_in_db >= total_requirements ? 'success' : 'warning'
+            }) }}
+        </div>
+    </div>
+
+    {# ── Notice: requirements not yet seeded ──────────────────────────────── #}
+    {% if loaded_in_db < total_requirements %}
+        <div class="alert alert-warning d-flex align-items-center gap-2 mb-4" role="alert">
+            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+            <span>
+                {{ 'nis2.art21.notice.not_seeded'|trans({ '%count%': total_requirements - loaded_in_db }, 'nis2') }}
+                <code class="ms-1">php bin/console app:load-nis2art21-requirements</code>
+            </span>
+        </div>
+    {% endif %}
+
+    {# ── Requirements table ───────────────────────────────────────────────── #}
+    {% if coverage_rollup is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'nis2.art21.empty.title'|trans({}, 'nis2'),
+            text: 'nis2.art21.empty.text'|trans({}, 'nis2')
+        }) }}
+    {% else %}
+        {% set status_variant = {
+            'good':    'success',
+            'warning': 'warning',
+            'danger':  'danger',
+            'info':    'info',
+            'na':      'secondary',
+        } %}
+        {% set priority_variant = {
+            'critical': 'danger',
+            'high':     'warning',
+            'medium':   'info',
+            'low':      'secondary',
+        } %}
+
+        {% embed '_components/_fa_table.html.twig' %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col" class="fa-table__th" style="width:7rem">{{ 'nis2.art21.col.clause'|trans({}, 'nis2') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'nis2.art21.col.title'|trans({}, 'nis2') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'nis2.art21.col.category'|trans({}, 'nis2') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'nis2.art21.col.priority'|trans({}, 'nis2') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'nis2.art21.col.iso_anchors'|trans({}, 'nis2') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'nis2.art21.dashboard.coverage_label'|trans({}, 'nis2') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'nis2.art21.col.db_status'|trans({}, 'nis2') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for row in coverage_rollup %}
+                    {% set req = row.requirement %}
+                    {% set metric = row.metric %}
+                    {% set measure_key = row.controlId|lower|replace({'nis2-art21-': ''}) %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">
+                            <code class="text-nowrap fw-semibold">{{ row.clauseReference }}</code>
+                        </td>
+                        <td class="fa-table__cell">
+                            <strong>{{ ('nis2.art21.measure.' ~ measure_key)|trans({}, 'nis2') }}</strong>
+                            {% if req %}
+                                <br><small class="text-muted">{{ req.requirementId }}</small>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell">
+                            <span class="badge bg-secondary">{{ row.category }}</span>
+                        </td>
+                        <td class="fa-table__cell">
+                            {% include '_components/_badge.html.twig' with {
+                                variant: priority_variant[row.priority] ?? 'secondary',
+                                content: row.priority
+                            } %}
+                        </td>
+                        <td class="fa-table__cell">
+                            {% if req is not null and req.dataSourceMapping is not null and req.dataSourceMapping.iso27001_anchors is defined %}
+                                {% for anchor in req.dataSourceMapping.iso27001_anchors|slice(0, 3) %}
+                                    <span class="badge bg-light text-dark border me-1">{{ anchor }}</span>
+                                {% endfor %}
+                                {% if req.dataSourceMapping.iso27001_anchors|length > 3 %}
+                                    <span class="text-muted small">+{{ req.dataSourceMapping.iso27001_anchors|length - 3 }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell">
+                            {% if metric is not null %}
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: status_variant[metric.status] ?? 'secondary',
+                                    content: metric.value is not null ? metric.value~metric.unit : 'N/A'
+                                } %}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell">
+                            {% if req is not null %}
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: 'success',
+                                    icon: 'status-ok',
+                                    content: 'nis2.art21.db.loaded'|trans({}, 'nis2')
+                                } %}
+                            {% else %}
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: 'secondary',
+                                    content: 'nis2.art21.db.not_loaded'|trans({}, 'nis2')
+                                } %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if req is not null and req.description is not null %}
+                        <tr class="fa-table__row bg-body-secondary">
+                            <td colspan="7" class="fa-table__cell py-2 ps-4">
+                                <small class="text-muted">{{ req.description|nl2br }}</small>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
+</main>
+{% endblock %}
