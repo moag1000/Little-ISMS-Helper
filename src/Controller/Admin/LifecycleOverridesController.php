@@ -194,12 +194,16 @@ final class LifecycleOverridesController extends AbstractController
             return $this->redirectToRoute('admin_lifecycle_overrides_show', ['workflowName' => $workflowName]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/lifecycle_overrides/edit.html.twig', [
             'form' => $form,
             'workflowName' => $workflowName,
             'transitionName' => $transitionName,
             'existing' => $existing,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{workflowName}/{transitionName}/reset', name: 'admin_lifecycle_overrides_reset', methods: ['POST'], requirements: ['workflowName' => '[a-z][a-z0-9_]*_lifecycle', 'transitionName' => '[a-z][a-z0-9_]*'])]

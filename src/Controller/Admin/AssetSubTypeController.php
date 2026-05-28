@@ -111,9 +111,13 @@ final class AssetSubTypeController extends AbstractController
             return $this->redirectToRoute('admin_asset_sub_type_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/asset_sub_type/new.html.twig', [
             'form' => $form->createView(),
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
@@ -140,10 +144,14 @@ final class AssetSubTypeController extends AbstractController
             return $this->redirectToRoute('admin_asset_sub_type_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/asset_sub_type/edit.html.twig', [
             'form' => $form->createView(),
             'sub_type' => $subType,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
