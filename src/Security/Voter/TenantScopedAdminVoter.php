@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Repository\TenantRepository;
 use App\Service\TenantContext;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -84,6 +85,7 @@ final class TenantScopedAdminVoter extends Voter
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
         private readonly TenantRepository $tenantRepository,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -103,12 +105,12 @@ final class TenantScopedAdminVoter extends Voter
             self::ADMIN_GLOBAL_OP    => $this->security->isGranted('ROLE_SUPER_ADMIN'),
             self::ADMIN_OWN_TENANT   => $this->canAdministerInScope($subject),
             self::ADMIN_HOLDING_READ => $this->canReadHoldingTree($subject),
-            self::PERSONA_CISO       => $this->security->isGranted('ROLE_CISO'),
-            self::PERSONA_RISK       => $this->security->isGranted('ROLE_RISK_MANAGER'),
-            self::PERSONA_DPO        => $this->security->isGranted('ROLE_DPO'),
+            self::PERSONA_CISO       => $this->security->isGranted('ROLE_CISO') || $this->isActingAs(self::PERSONA_CISO),
+            self::PERSONA_RISK       => $this->security->isGranted('ROLE_RISK_MANAGER') || $this->isActingAs(self::PERSONA_RISK),
+            self::PERSONA_DPO        => $this->security->isGranted('ROLE_DPO') || $this->isActingAs(self::PERSONA_DPO),
             self::PERSONA_COMPLIANCE => $this->security->isGranted('ROLE_COMPLIANCE_MANAGER'),
-            self::PERSONA_ISB        => $this->security->isGranted('ROLE_ISB'),
-            self::PERSONA_BCM        => $this->security->isGranted('ROLE_BCM_OFFICER'),
+            self::PERSONA_ISB        => $this->security->isGranted('ROLE_ISB') || $this->isActingAs(self::PERSONA_ISB),
+            self::PERSONA_BCM        => $this->security->isGranted('ROLE_BCM_OFFICER') || $this->isActingAs(self::PERSONA_BCM),
             default                  => false,
         };
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\MenuDensity;
 use App\Form\UserType;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
@@ -14,6 +15,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -284,4 +286,46 @@ class ProfileController extends AbstractController
             ]);
         }
     }
+
+    #[Route('/preferences/density', name: 'app_preferences_density', methods: ['POST'])]
+    public function setDensity(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$this->isCsrfTokenValid('density_toggle_' . $user->getId(), $request->request->get('_token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+        $density = MenuDensity::tryFrom($request->request->getString('density', ''));
+        if ($density === null) {
+            return new JsonResponse(['error' => 'Invalid density value'], Response::HTTP_BAD_REQUEST);
+        }
+        $user->setMenuDensity($density);
+        $entityManager->flush();
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[IsGranted('PERSONA_COMPLIANCE')]
+    #[Route('/preferences/persona-switch', name: 'app_preferences_persona_switch', methods: ['POST'])]
+    public function personaSwitch(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$this->isCsrfTokenValid('persona_switch_' . $user->getId(), $request->request->get('_token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+        $persona = $request->request->getString('persona', '');
+        $validPersonas = ['PERSONA_CISO', 'PERSONA_RISK', 'PERSONA_DPO', 'PERSONA_ISB', 'PERSONA_BCM'];
+        if ($persona === 'revert') {
+            $request->getSession()->remove('compliance.acting_as_persona');
+            $this->auditLogger->logCustom('persona_switch_revert', 'User', $user->getId(), ['acting_as' => null], ['acting_as' => null], sprintf('User "%s %s" reverted persona switch', $user->getFirstName(), $user->getLastName()));
+            return new JsonResponse(['acting_as' => null]);
+        }
+        if (!in_array($persona, $validPersonas, true)) {
+            return new JsonResponse(['error' => 'Invalid persona'], Response::HTTP_BAD_REQUEST);
+        }
+        $request->getSession()->set('compliance.acting_as_persona', $persona);
+        $this->auditLogger->logCustom('persona_switch', 'User', $user->getId(), ['acting_as' => null], ['acting_as' => $persona], sprintf('User "%s %s" switched to persona %s', $user->getFirstName(), $user->getLastName(), $persona));
+        return new JsonResponse(['acting_as' => $persona]);
+    }
+
 }
