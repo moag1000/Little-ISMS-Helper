@@ -63,7 +63,7 @@ tisax:
     upload:
       title: 'Upload VDA-ISA Workbook'
       subtitle: 'Upload your ENX-licensed VDA-ISA Excel workbook (.xlsx)'
-      instruction: 'Upload the VDA-ISA workbook file. The file must be in XLSX format and must contain an "ISA" sheet or equivalent.'
+      instruction: 'Upload the VDA-ISA workbook file. The file must be in XLSX format and must contain a content sheet named "Information Security", "Informationssicherheit", "Prototype Protection", or equivalent.'
       field_label: 'VDA-ISA Workbook (.xlsx)'
       help: 'Accepted: .xlsx, max. 10 MB. The file will be parsed and validated before import.'
       submit_button: 'Upload and Validate'
@@ -72,6 +72,13 @@ tisax:
       too_large: 'The file must not exceed 10 MB.'
       disclaimer_required: 'Please confirm the licence disclaimer before uploading.'
       security_rejected: 'The file was rejected by the security scanner. Please upload a valid XLSX file.'
+      workbook_help:
+        title: 'Where to get the official ENX ISA 6 workbook'
+        download_intro: 'Download the official ENX ISA 6 workbook directly from the ENX portal (ENX membership required):'
+        en_label: 'English'
+        de_label: 'German'
+        expected_sheets_title: 'Expected sheet names (parser selects the first match):'
+        troubleshoot_hint: 'If the parser rejects your workbook, check that it contains a sheet named "Information Security" (EN) or "Informationssicherheit" (DE). Workbooks modified to rename these sheets will not be recognised.'
 
     validate:
       title: 'Workbook Validation'
