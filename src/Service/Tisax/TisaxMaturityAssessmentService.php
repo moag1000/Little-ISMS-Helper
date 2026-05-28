@@ -12,27 +12,28 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * TISAX Reifegrad (Maturity) Assessment Service
+ * TISAX Assessment Service — supports all three VDA-ISA tier models.
  *
- * Manages Reifegrad 0-5 scoring for tenant-uploaded VDA-ISA requirements.
+ * VDA-ISA v6.0 uses three distinct assessment models per tier:
  *
- * Reifegrad scale (aligned with VDA-ISA / Automotive SPICE):
- *   0 — Incomplete / not implemented
- *   1 — Performed (ad-hoc, not documented)
- *   2 — Managed (planned and tracked)
- *   3 — Established (standardised process)
- *   4 — Predictable (measured and controlled)
- *   5 — Optimising (continuously improving)
+ * Tier 1 — Information Security (Chapters 1-6):
+ *   ISO/IEC 33020 Process Capability levels 0-5 (Reifegrad).
+ *   Stored in ComplianceRequirement.maturityCurrent (string code).
  *
- * The service stores the score in ComplianceRequirement.maturityCurrent
- * (string → cast) with the target in maturityTarget.
+ * Tier 2 — Prototype Protection (Chapters 7-8):
+ *   Binary compliance: 'compliant' | 'not_compliant' | 'na'.
+ *   Stored in ComplianceRequirement.assessmentValue.
+ *
+ * Tier 3 — Data Protection (Chapter 9):
+ *   GDPR Art. 28 conformance: 'in_place' | 'partial' | 'not_in_place' | 'na'.
+ *   Stored in ComplianceRequirement.assessmentValue.
  */
 final class TisaxMaturityAssessmentService
 {
-    /** Valid Reifegrad levels */
+    /** Valid Reifegrad levels — Tier 1 (Information Security) only */
     public const REIFEGRAD_LEVELS = [0, 1, 2, 3, 4, 5];
 
-    /** Reifegrad level → ComplianceRequirement maturity string mapping */
+    /** Reifegrad level → ComplianceRequirement maturity string mapping (Tier 1) */
     public const LEVEL_MAP = [
         0 => 'incomplete',
         1 => 'performed',
@@ -40,6 +41,28 @@ final class TisaxMaturityAssessmentService
         3 => 'established',
         4 => 'predictable',
         5 => 'optimising',
+    ];
+
+    /**
+     * Valid values per assessment model.
+     *
+     * Tier 2 (prototype_protection) — binary compliance.
+     * Tier 3 (data_protection) — GDPR Art. 28 conformance.
+     */
+    public const BINARY_COMPLIANCE_VALUES = ['compliant', 'not_compliant', 'na'];
+    public const GDPR_CONFORMANCE_VALUES  = ['in_place', 'partial', 'not_in_place', 'na'];
+
+    /**
+     * Category code → assessment model name.
+     *
+     * Mirrors the assessmentModels block in vda-isa-tisax-v6.yaml.
+     * Public so importers and controllers can resolve models without
+     * instantiating the service.
+     */
+    public const CATEGORY_MODEL_MAP = [
+        'information_security' => 'information_security',
+        'prototype_protection' => 'prototype_protection',
+        'data_protection'      => 'data_protection',
     ];
 
     public function __construct(
@@ -117,16 +140,107 @@ final class TisaxMaturityAssessmentService
     }
 
     /**
+     * Return the assessment model name for a given category code.
+     *
+     * Falls back to 'information_security' for unknown categories so that
+     * legacy system rows (no category set) keep working with the Reifegrad model.
+     */
+    public function getAssessmentModelForCategory(string $categoryCode): string
+    {
+        return self::CATEGORY_MODEL_MAP[$categoryCode] ?? 'information_security';
+    }
+
+    /**
+     * Bulk-set compliance value for Tier 2 or Tier 3 requirements.
+     *
+     * Generic dispatcher: routes to the correct storage field based on the
+     * assessment model of each requirement's category.
+     *
+     * Tier 1 (information_security):  stores in maturityCurrent (int-mapped string)
+     * Tier 2 (prototype_protection):  stores in assessmentValue ('compliant'|'not_compliant'|'na')
+     * Tier 3 (data_protection):       stores in assessmentValue ('in_place'|'partial'|'not_in_place'|'na')
+     *
+     * Cross-model values are rejected (e.g. submitting '3' for a PP-tier requirement
+     * or 'compliant' for an IS-tier requirement).
+     *
+     * Tenant-scoped: silently skips requirements whose uploadTenant differs from $tenant.
+     *
+     * @param array<int, string> $valueMap  requirementId (int PK) => assessment value string
+     * @return int number of requirements updated
+     */
+    public function bulkSetCompliance(
+        array $valueMap,
+        User $reviewer,
+        Tenant $tenant,
+        string $assessmentModel,
+    ): int {
+        $allowedValues = match ($assessmentModel) {
+            'information_security' => array_values(self::LEVEL_MAP),
+            'prototype_protection' => self::BINARY_COMPLIANCE_VALUES,
+            'data_protection'      => self::GDPR_CONFORMANCE_VALUES,
+            default => throw new \InvalidArgumentException(
+                sprintf('Unknown assessment model "%s".', $assessmentModel),
+            ),
+        };
+
+        $repo    = $this->em->getRepository(ComplianceRequirement::class);
+        $updated = 0;
+
+        foreach ($valueMap as $requirementId => $value) {
+            /** @var ComplianceRequirement|null $req */
+            $req = $repo->find($requirementId);
+            if ($req === null) {
+                continue;
+            }
+            // Cross-tenant guard
+            if ($req->getUploadTenant() === null || $req->getUploadTenant()->getId() !== $tenant->getId()) {
+                continue;
+            }
+            // Cross-model guard — reject if value is not in the model's allowed set
+            if (!in_array($value, $allowedValues, true)) {
+                continue;
+            }
+            // Category-model consistency guard — the requirement's own category must match
+            $reqModel = $this->getAssessmentModelForCategory($req->getCategory() ?? 'information_security');
+            if ($reqModel !== $assessmentModel) {
+                continue;
+            }
+
+            if ($assessmentModel === 'information_security') {
+                // IS-tier: store in maturityCurrent (existing field)
+                $req->setMaturityCurrent($value);
+                $req->setMaturityReviewedAt(new DateTimeImmutable());
+            } else {
+                // PP/DP-tier: store in assessmentValue (new field)
+                $req->setAssessmentValue($value);
+                $req->setMaturityReviewedAt(new DateTimeImmutable());
+            }
+
+            $req->setUpdatedAt(new DateTimeImmutable());
+            $updated++;
+        }
+
+        if ($updated > 0) {
+            $this->em->flush();
+        }
+
+        return $updated;
+    }
+
+    /**
      * Calculate aggregate Reifegrad score for a framework + tenant.
      *
      * Returns an array with:
-     *   - average:       float  (arithmetic mean of all assessed rows, 0.0 when none)
-     *   - assessed:      int    (rows with maturityCurrent set)
+     *   - average:       float  (arithmetic mean of IS-tier Reifegrad rows, 0.0 when none)
+     *   - assessed:      int    (IS-tier rows with maturityCurrent set)
      *   - total:         int    (all tenant-upload rows for this framework)
-     *   - byTier:        array  tier → ['average' => float, 'count' => int]
-     *   - distribution:  array  level (0-5) => count
+     *   - byTier:        array  tier → tier-specific aggregate (see below)
+     *     For 'information_security': ['average' => float, 'count' => int]
+     *     For 'prototype_protection': ['compliant' => int, 'total' => int]
+     *     For 'data_protection':      ['in_place' => int, 'total' => int]
+     *   - distribution:  array  level (0-5) => count  (IS-tier only)
      *
-     * @return array{average: float, assessed: int, total: int, byTier: array<string, array{average: float, count: int}>, distribution: array<int, int>}
+     * @return array{average: float, assessed: int, total: int, byTier: array<string, mixed>, distribution: array<int, int>}
      */
     public function computeAggregate(ComplianceFramework $framework, Tenant $tenant): array
     {
@@ -148,34 +262,67 @@ final class TisaxMaturityAssessmentService
         $tierData     = [];
 
         foreach ($rows as $req) {
-            $current = $req->getMaturityCurrent();
-            if ($current === null) {
-                continue;
-            }
-            $level = $levelToInt[$current] ?? null;
-            if ($level === null) {
-                // Handle numeric strings stored before the enum migration
-                $level = is_numeric($current) ? (int) $current : null;
-            }
-            if ($level === null) {
-                continue;
-            }
+            $tier  = $req->getCategory() ?? 'information_security';
+            $model = $this->getAssessmentModelForCategory($tier);
 
-            $sum += $level;
-            $assessed++;
-            $distribution[$level]++;
+            if ($model === 'information_security') {
+                // IS-tier: numeric Reifegrad from maturityCurrent
+                $current = $req->getMaturityCurrent();
+                if ($current === null) {
+                    continue;
+                }
+                $level = $levelToInt[$current] ?? null;
+                if ($level === null) {
+                    // Handle numeric strings stored before the enum migration
+                    $level = is_numeric($current) ? (int) $current : null;
+                }
+                if ($level === null) {
+                    continue;
+                }
 
-            $tier = $req->getCategory() ?? 'information_security';
-            $tierData[$tier]['sum']   = ($tierData[$tier]['sum'] ?? 0) + $level;
-            $tierData[$tier]['count'] = ($tierData[$tier]['count'] ?? 0) + 1;
+                $sum += $level;
+                $assessed++;
+                $distribution[$level]++;
+
+                $tierData[$tier]['sum']   = ($tierData[$tier]['sum'] ?? 0) + $level;
+                $tierData[$tier]['count'] = ($tierData[$tier]['count'] ?? 0) + 1;
+            } else {
+                // PP/DP-tier: binary/conformance from assessmentValue
+                $value = $req->getAssessmentValue();
+                if ($value === null) {
+                    continue;
+                }
+                $tierData[$tier]['total'] = ($tierData[$tier]['total'] ?? 0) + 1;
+                if ($model === 'prototype_protection' && $value === 'compliant') {
+                    $tierData[$tier]['compliant'] = ($tierData[$tier]['compliant'] ?? 0) + 1;
+                } elseif ($model === 'data_protection' && $value === 'in_place') {
+                    $tierData[$tier]['in_place'] = ($tierData[$tier]['in_place'] ?? 0) + 1;
+                }
+            }
         }
 
         $byTier = [];
         foreach ($tierData as $tier => $data) {
-            $byTier[$tier] = [
-                'average' => $data['count'] > 0 ? round($data['sum'] / $data['count'], 2) : 0.0,
-                'count'   => $data['count'],
-            ];
+            $model = $this->getAssessmentModelForCategory($tier);
+            if ($model === 'information_security') {
+                $byTier[$tier] = [
+                    'average' => ($data['count'] ?? 0) > 0 ? round($data['sum'] / $data['count'], 2) : 0.0,
+                    'count'   => $data['count'] ?? 0,
+                    'model'   => 'information_security',
+                ];
+            } elseif ($model === 'prototype_protection') {
+                $byTier[$tier] = [
+                    'compliant' => $data['compliant'] ?? 0,
+                    'total'     => $data['total'] ?? 0,
+                    'model'     => 'prototype_protection',
+                ];
+            } else {
+                $byTier[$tier] = [
+                    'in_place' => $data['in_place'] ?? 0,
+                    'total'    => $data['total'] ?? 0,
+                    'model'    => 'data_protection',
+                ];
+            }
         }
 
         return [
