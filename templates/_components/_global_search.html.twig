@@ -24,7 +24,8 @@
         <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
         <span class="d-none d-md-inline ms-2">{{ 'ui.global_search.label'|trans({}, 'ui') }}</span>
         <span class="d-none d-md-inline ms-2">
-            <kbd class="bg-body-tertiary border border-secondary-subtle">⌘K</kbd>
+            {# spec-1: fa-kbd instead of chunky browser-default kbd #}
+            <kbd class="fa-kbd">⌘K</kbd>
         </span>
     </button>
 
@@ -34,22 +35,30 @@
          data-action="click->search#handleBackdropClick keydown->search#handleKeydown">
 
         <div class="global-search-container">
-            {# Search Header #}
+            {# Search Header with Aurora Cyber-Frame (spec-1: 4-tick-corners) #}
             <div class="global-search-header">
                 <i class="fa-icon fa-icon--ui-search text-primary" aria-hidden="true"></i>
-                <label>
+                {# spec-1: cyber-frame wrapper with 4-corner tick-markers #}
+                <div class="global-search-input-frame" role="presentation">
+                    <span class="gs-tick gs-tick--tl" aria-hidden="true"></span>
+                    <span class="gs-tick gs-tick--tr" aria-hidden="true"></span>
+                    <span class="gs-tick gs-tick--bl" aria-hidden="true"></span>
+                    <span class="gs-tick gs-tick--br" aria-hidden="true"></span>
+                    <label class="visually-hidden" for="global-search-field">{{ 'ui.global_search.label'|trans({}, 'ui') }}</label>
                     <input type="text"
+                           id="global-search-field"
                            class="global-search-input"
                            placeholder="{{ 'ui.global_search.placeholder'|trans({}, 'ui') }}"
                            data-search-target="input"
                            data-action="input->search#search keydown->search#handleKeydown"
                            autocomplete="off"
                            spellcheck="false">
-                </label>
-                <div class="global-search-shortcuts">
-                    <kbd>↑↓</kbd> {{ 'ui.keyboard.navigation'|trans({}, 'ui') }}
-                    <kbd>↵</kbd> {{ 'ui.keyboard.select'|trans({}, 'ui') }}
-                    <kbd>ESC</kbd> {{ 'ui.keyboard.close'|trans({}, 'ui') }}
+                </div>
+                {# spec-2: inline fa-kbd legend (small, mono) #}
+                <div class="global-search-shortcuts" aria-label="{{ 'ui.keyboard.shortcuts'|trans({}, 'ui') }}">
+                    <kbd class="fa-kbd">↑↓</kbd> {{ 'ui.keyboard.navigation'|trans({}, 'ui') }}
+                    <kbd class="fa-kbd">↵</kbd> {{ 'ui.keyboard.select'|trans({}, 'ui') }}
+                    <kbd class="fa-kbd">ESC</kbd> {{ 'ui.keyboard.close'|trans({}, 'ui') }}
                 </div>
             </div>
 
@@ -58,12 +67,32 @@
                 {# Results will be dynamically inserted here #}
             </div>
 
-            {# Search Footer #}
+            {# Search Footer — spec-6: Alva-Spark left + mono brand-marker right #}
             <div class="global-search-footer">
-                <div class="text-muted small">
-                    <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
-                    {{ 'ui.global_search.tip'|trans({}, 'ui')|raw }}
-                </div>
+                <span class="gs-footer-alva" aria-hidden="true">
+                    {# Inline Alva spark-SVG (16×16) #}
+                    <svg class="gs-alva-spark" width="16" height="16" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <defs>
+                            <radialGradient id="gsAlvaAura" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%"   stop-color="var(--accent)" stop-opacity="0.8"/>
+                                <stop offset="55%"  stop-color="var(--primary)" stop-opacity="0.4"/>
+                                <stop offset="100%" stop-color="var(--primary)" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <circle cx="60" cy="60" r="52" fill="url(#gsAlvaAura)" opacity="0.35"/>
+                        {# Body (fairy-silhouette simplified) #}
+                        <ellipse cx="60" cy="72" rx="16" ry="22" fill="var(--primary)" opacity="0.9"/>
+                        {# Head #}
+                        <circle cx="60" cy="44" r="14" fill="var(--primary)" opacity="0.9"/>
+                        {# Eyes #}
+                        <circle cx="55" cy="43" r="2.5" fill="var(--surface)"/>
+                        <circle cx="65" cy="43" r="2.5" fill="var(--surface)"/>
+                        {# Wings #}
+                        <ellipse cx="36" cy="64" rx="14" ry="8" fill="var(--accent)" opacity="0.6" transform="rotate(-25 36 64)"/>
+                        <ellipse cx="84" cy="64" rx="14" ry="8" fill="var(--accent)" opacity="0.6" transform="rotate(25 84 64)"/>
+                    </svg>
+                </span>
+                <code class="gs-footer-brand fa-mono-label">aurora · <kbd class="fa-kbd">⌘K</kbd></code>
             </div>
         </div>
     </div>
