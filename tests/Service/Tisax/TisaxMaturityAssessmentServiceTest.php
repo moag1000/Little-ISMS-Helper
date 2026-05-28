@@ -284,6 +284,101 @@ class TisaxMaturityAssessmentServiceTest extends TestCase
         self::assertSame('incomplete', $req->getMaturityCurrent(), 'Maturity must not change when tristate string is submitted for IS requirement');
     }
 
+    #[Test]
+    public function testBulkSetReifegrad_AcceptsValueForAllTiers(): void
+    {
+        // Tests that bulkSetReifegrad() accepts Reifegrad 0-5 for IS, PP, and DP tiers.
+        // PP is NOT binary -- it uses the same ISO/IEC 33020 scale as IS.
+        $tenant = $this->createTenantWithId(1);
+
+        $req = new ComplianceRequirement();
+        $req->setUploadTenant($tenant);
+        $req->setMaturityCurrent('incomplete');
+
+        $repo = $this->createStub(EntityRepository::class);
+        $repo->method('find')->willReturn($req);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getRepository')->willReturn($repo);
+        $em->expects(self::once())->method('flush');
+
+        $service = new TisaxMaturityAssessmentService($em);
+        $user    = new User();
+
+        $updated = $service->bulkSetReifegrad([1 => 3], $user, $tenant);
+
+        self::assertSame(1, $updated, 'bulkSetReifegrad must accept Reifegrad 3 for any tier');
+        self::assertSame('established', $req->getMaturityCurrent(),
+            'All tiers (IS, PP, DP) must store maturity string "established" for level 3');
+    }
+
+    #[Test]
+    public function testGdprEvidence_AttachedSeparatelyOnlyForDataProtectionTier(): void
+    {
+        // GDPR Art. 28(3) evidence attachment must only work for data_protection category.
+        // Information Security and Prototype Protection requirements must return 0 (skipped).
+        $tenant = $this->createTenantWithId(1);
+
+        $emNoFlush = $this->createMock(EntityManagerInterface::class);
+        $emNoFlush->method('getRepository')->willReturn($this->createStub(EntityRepository::class));
+        $emNoFlush->expects(self::never())->method('flush');
+
+        $serviceNoFlush = new TisaxMaturityAssessmentService($emNoFlush);
+        $user           = new User();
+
+        foreach (['information_security', 'prototype_protection'] as $nonDpTier) {
+            $req = new ComplianceRequirement();
+            $req->setUploadTenant($tenant);
+            $req->setCategory($nonDpTier);
+
+            $result = $serviceNoFlush->bulkSetGdprEvidence(
+                $req,
+                ['gdpr_art_28_3_processor_obligations' => [1, 2]],
+                $user,
+                $tenant,
+            );
+
+            self::assertSame(0, $result, sprintf(
+                'bulkSetGdprEvidence must return 0 (skipped) for tier "%s"',
+                $nonDpTier,
+            ));
+            self::assertNull($req->getDataSourceMapping(), sprintf(
+                'dataSourceMapping must remain null for non-DP tier "%s"',
+                $nonDpTier,
+            ));
+        }
+    }
+
+    #[Test]
+    public function tierTargetLevels_ContainsAllThreeTiers(): void
+    {
+        self::assertArrayHasKey('information_security', TisaxMaturityAssessmentService::TIER_TARGET_LEVELS);
+        self::assertArrayHasKey('prototype_protection', TisaxMaturityAssessmentService::TIER_TARGET_LEVELS);
+        self::assertArrayHasKey('data_protection', TisaxMaturityAssessmentService::TIER_TARGET_LEVELS);
+
+        // PP must NOT be binary -- it must have AL3 = 3 (same as IS), NOT a boolean flag
+        $ppTarget = TisaxMaturityAssessmentService::TIER_TARGET_LEVELS['prototype_protection']['AL3'];
+        self::assertIsInt($ppTarget, 'Prototype Protection AL3 target must be an int (0-5 Reifegrad), not binary');
+        self::assertSame(3, $ppTarget, 'PP AL3 target must be 3 -- same scale as Information Security');
+    }
+
+    #[Test]
+    public function gdprEvidenceKeys_ContainsRequiredArticles(): void
+    {
+        self::assertContains(
+            'gdpr_art_28_3_processor_obligations',
+            TisaxMaturityAssessmentService::GDPR_EVIDENCE_KEYS,
+        );
+        self::assertContains(
+            'gdpr_art_32_technical_organizational_measures',
+            TisaxMaturityAssessmentService::GDPR_EVIDENCE_KEYS,
+        );
+        self::assertContains(
+            'gdpr_art_33_breach_notification_72h',
+            TisaxMaturityAssessmentService::GDPR_EVIDENCE_KEYS,
+        );
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // Helpers
     // ─────────────────────────────────────────────────────────────────────────

@@ -12,6 +12,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\TenantContext;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +29,8 @@ class ComplianceFrameworkController extends AbstractController
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly TisaxMaturityAssessmentService $tisaxMaturityAssessmentService,
     ) {}
     #[Route('/compliance/framework', name: 'app_compliance_framework_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -158,6 +160,13 @@ class ComplianceFrameworkController extends AbstractController
             }
         }
 
+        // TISAX per-tier aggregate — only computed for TISAX frameworks with a known tenant
+        $tisaxTierAggregate = [];
+        if ($tenant instanceof Tenant && str_starts_with((string) $complianceFramework->getCode(), 'TISAX')) {
+            $aggregate          = $this->tisaxMaturityAssessmentService->computeAggregate($complianceFramework, $tenant);
+            $tisaxTierAggregate = $aggregate['byTier'] ?? [];
+        }
+
         return $this->render('compliance/framework/show.html.twig', [
             'framework' => $complianceFramework,
             'total_requirements' => $totalRequirements,
@@ -167,6 +176,7 @@ class ComplianceFrameworkController extends AbstractController
             'requirement_fulfillments' => $requirementFulfillments,
             'requirements_by_category' => $requirementsByCategory,
             'priority_distribution' => $priorityDistribution,
+            'tisax_tier_aggregate' => $tisaxTierAggregate,
         ]);
     }
     #[Route('/compliance/framework/{id}/edit', name: 'app_compliance_framework_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

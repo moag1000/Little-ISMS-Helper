@@ -42,6 +42,31 @@ final class TisaxMaturityAssessmentService
     /** Categories that use the Reifegrad 0-5 model */
     public const REIFEGRAD_CATEGORIES = ['information_security', 'prototype_protection'];
 
+    /**
+     * AL-level target Reifegrad per tier (mirrors assessmentModels.targetLevels in YAML fixture).
+     *
+     * IS:  AL1=1, AL2=2, AL3=3 (ISO/IEC 33020 baseline)
+     * PP:  AL1=2, AL2=3, AL3=3 (higher baseline — VDA-ISA §7-8)
+     * DP:  AL1=2, AL2=3, AL3=3 (same integer scale — DP tristate sits on top)
+     */
+    public const TIER_TARGET_LEVELS = [
+        'information_security' => ['AL1' => 1, 'AL2' => 2, 'AL3' => 3],
+        'prototype_protection' => ['AL1' => 2, 'AL2' => 3, 'AL3' => 3],
+        'data_protection'      => ['AL1' => 2, 'AL2' => 3, 'AL3' => 3],
+    ];
+
+    /**
+     * GDPR evidence keys for the Data Protection tier.
+     *
+     * Stored in ComplianceRequirement.dataSourceMapping['gdpr_evidence'][].
+     * Independent of the maturity Reifegrad score.
+     */
+    public const GDPR_EVIDENCE_KEYS = [
+        'gdpr_art_28_3_processor_obligations',
+        'gdpr_art_32_technical_organizational_measures',
+        'gdpr_art_33_breach_notification_72h',
+    ];
+
     /** Reifegrad level → ComplianceRequirement maturity string mapping */
     public const LEVEL_MAP = [
         0 => 'incomplete',
@@ -382,6 +407,59 @@ final class TisaxMaturityAssessmentService
                 'percent_compliant' => $applicableForDp > 0 ? round($dpCompliant / $applicableForDp * 100, 1) : 0.0,
             ],
         ];
+    }
+
+    /**
+     * Attach GDPR Art. 28/32/33 evidence document-IDs to a Data Protection tier requirement.
+     *
+     * Only applies to requirements with category = 'data_protection'. Any other
+     * category returns 0 immediately (cross-tier guard — separate from maturity score).
+     *
+     * Evidence is stored in ComplianceRequirement.dataSourceMapping['gdpr_evidence']
+     * as a flat array of document IDs. Existing evidence is REPLACED (not merged)
+     * per evidence key so callers can revoke individual articles.
+     *
+     * Tenant-scoped: silently returns 0 for requirements whose uploadTenant does not
+     * match $tenant (cross-tenant write guard).
+     *
+     * @param array<string, list<int>> $evidenceMap  gdpr_key => [documentId, ...]
+     * @return int  1 if persisted, 0 if skipped
+     */
+    public function bulkSetGdprEvidence(
+        ComplianceRequirement $requirement,
+        array $evidenceMap,
+        User $reviewer,
+        Tenant $tenant,
+    ): int {
+        // Cross-tier guard: only DP requirements carry GDPR evidence
+        if ($requirement->getCategory() !== 'data_protection') {
+            return 0;
+        }
+
+        // Cross-tenant guard
+        if ($requirement->getUploadTenant() === null
+            || $requirement->getUploadTenant()->getId() !== $tenant->getId()
+        ) {
+            return 0;
+        }
+
+        $existing = $requirement->getDataSourceMapping() ?? [];
+        $gdprEvidence = $existing['gdpr_evidence'] ?? [];
+
+        foreach ($evidenceMap as $key => $documentIds) {
+            if (!in_array($key, self::GDPR_EVIDENCE_KEYS, true)) {
+                continue; // unknown key — silently ignored
+            }
+            $gdprEvidence[$key] = array_values(array_unique(array_map('intval', $documentIds)));
+        }
+
+        $existing['gdpr_evidence'] = $gdprEvidence;
+        $requirement->setDataSourceMapping($existing);
+        $requirement->setUpdatedAt(new DateTimeImmutable());
+
+        $this->em->flush();
+
+        return 1;
     }
 
     /**
