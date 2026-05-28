@@ -186,3 +186,52 @@ framework:
         nis2: 'EU-NIS2'
         tisax: 'TISAX'
         soc2: 'SOC 2'
+
+# Effectiveness Monitor — ISO 27001 §9.1 / Annex A 5.35/5.36
+effectiveness_monitor:
+    page:
+        title: 'Effectiveness Monitor'
+        subtitle: 'Controls sorted by effectiveness check date — surface overdue checks (ISO 27001 §9.1)'
+    no_tenant: 'No organisation selected. Please select an organisation.'
+    kpi:
+        overdue: 'Overdue'
+        due_soon: 'Due Soon'
+        recently_checked: 'Recently Checked'
+        never_checked: 'Never Checked'
+        of_applicable: 'of applicable controls'
+    filter:
+        category: 'Filter by category'
+        all_categories: 'All categories'
+        threshold: 'Overdue threshold'
+        months: 'months'
+        apply: 'Apply filter'
+        clear: 'Clear filter'
+    category:
+        organisational: 'Organisational controls'
+        people: 'People controls'
+        physical: 'Physical controls'
+        technological: 'Technological controls'
+    section:
+        overdue: 'Overdue effectiveness checks'
+        due_soon: 'Due soon (30 days)'
+        recently_checked: 'Recently checked controls (90 days)'
+    table:
+        control_id: 'Control ID'
+        name: 'Name'
+        category: 'Category'
+        last_checked: 'Last checked'
+        overdue_days: 'Overdue (days)'
+        days_until_due: 'Due in (days)'
+        next_due: 'Next due'
+        owner: 'Owner'
+        status: 'Implementation status'
+        days_since: 'Days ago'
+    label:
+        never: 'Never checked'
+        days: 'days'
+    action:
+        view: 'View control'
+    empty:
+        no_overdue: 'No overdue effectiveness checks — excellent!'
+        no_due_soon: 'No checks due within the next 30 days.'
+        no_recent: 'No controls checked in the last 90 days.'

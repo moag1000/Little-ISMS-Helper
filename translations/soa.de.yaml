@@ -11,6 +11,7 @@ soa:
         back_to_category: 'Zurück zu %category%'
         print: 'Drucken / PDF speichern'
         back_to_overview: 'Zurück zur Übersicht'
+        open_monitor: 'Wirksamkeits-Monitor öffnen'
     filter:
         view: Ansicht
         search: Suche
@@ -49,6 +50,7 @@ soa:
         metadata: Metadaten
         training_coverage: 'Trainingsabdeckung'
         control_effectiveness: 'Control-Wirksamkeit'
+        effectiveness_check: 'Wirksamkeits-Check (ISO 27001 §9.1)'
     category:
         Organizational: Organisatorische
         People: Personenbezogene
@@ -98,6 +100,10 @@ soa:
         control_coverage: 'Control Coverage:'
         incidents: Incidents
         review_required: 'Review erforderlich:'
+        last_effectiveness_test: 'Letzte Wirksamkeitsprüfung'
+        never_tested: 'Noch nie geprüft'
+        overdue: 'Überfällig'
+        check_current: 'Aktuell'
         not_applicable_prefix: 'Nicht anwendbar:'
         responsible: 'Verantwortlich:'
         linked_risks: 'Zugeordnete Risiken:'

@@ -9970,11 +9970,14 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     color: var(--primary);
     border: 1px solid color-mix(in oklab, var(--primary) 50%, transparent);
     font: 700 11px var(--font-mono);
-    display: inline-flex; align-items: center; justify-content: center;
+    /* Phase 4.4: hidden by default; Stimulus live-badge adds .is-visible when count > 0 */
+    display: none; align-items: center; justify-content: center;
     padding: 0 6px;
     flex-shrink: 0;
     box-shadow: 0 0 8px color-mix(in oklab, var(--primary) 30%, transparent);
 }
+/* Phase 4.4: live-badge is-visible state */
+.sb-prominent__badge.is-visible { display: inline-flex; }
 .sb-prominent__badge--danger {
     background: color-mix(in oklab, var(--danger) 22%, transparent);
     color: var(--danger);
@@ -10008,8 +10011,10 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     outline: none;
 }
 .sb-link:focus-visible {
-    outline: 2px solid var(--primary);
+    /* WCAG 2.2 SC 2.4.11/2.4.13 — 3px solid outline + glow shadow */
+    outline: 3px solid var(--primary);
     outline-offset: 2px;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 30%, transparent);
 }
 .sb-link:hover {
     background: color-mix(in oklab, var(--primary) 8%, transparent);
@@ -10141,7 +10146,11 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     display: flex; align-items: center; justify-content: center;
 }
 .flyout__close:hover { color: var(--fg); background: var(--surface-2); }
-.flyout__close:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.flyout__close:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 30%, transparent);
+}
 
 .flyout__head { margin-bottom: 20px; padding-bottom: 14px; position: relative; }
 .flyout__head::after {
@@ -10201,8 +10210,10 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     outline: none;
 }
 .fly-item:focus-visible {
-    outline: 2px solid var(--primary);
+    /* WCAG 2.2 SC 2.4.11/2.4.13 — 3px solid outline + glow shadow */
+    outline: 3px solid var(--primary);
     outline-offset: 2px;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 30%, transparent);
 }
 .fly-item:hover { background: color-mix(in oklab, var(--primary) 10%, transparent); transform: translateX(2px); }
 .fly-item.is-active {

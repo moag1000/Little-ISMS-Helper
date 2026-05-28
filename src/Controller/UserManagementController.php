@@ -136,10 +136,14 @@ class UserManagementController extends AbstractController
             return $this->redirectToRoute('user_management_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('user_management/new.html.twig', [
             'user' => $user,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/admin/users/bulk-actions', name: 'user_management_bulk_actions', methods: ['POST'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
@@ -724,11 +728,15 @@ class UserManagementController extends AbstractController
             return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('user_management/edit.html.twig', [
             'user' => $user,
             'form' => $form,
             'is_initial_admin' => $isInitialAdmin,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/admin/users/{id}/delete', name: 'user_management_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(

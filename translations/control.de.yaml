@@ -186,3 +186,52 @@ framework:
         nis2: 'EU-NIS2'
         tisax: 'TISAX'
         soc2: 'SOC 2'
+
+# Wirksamkeits-Monitor — ISO 27001 §9.1 / Annex A 5.35/5.36
+effectiveness_monitor:
+    page:
+        title: 'Wirksamkeits-Monitor'
+        subtitle: 'Maßnahmen nach Wirksamkeitsprüfung sortiert — überfällige Prüfungen erkennen (ISO 27001 §9.1)'
+    no_tenant: 'Keine Organisation ausgewählt. Bitte wählen Sie eine Organisation aus.'
+    kpi:
+        overdue: 'Überfällig'
+        due_soon: 'Bald fällig'
+        recently_checked: 'Kürzlich geprüft'
+        never_checked: 'Nie geprüft'
+        of_applicable: 'der anwendbaren Maßnahmen'
+    filter:
+        category: 'Kategorie filtern'
+        all_categories: 'Alle Kategorien'
+        threshold: 'Überfällig-Schwellenwert'
+        months: 'Monate'
+        apply: 'Filtern'
+        clear: 'Filter zurücksetzen'
+    category:
+        organisational: 'Organisatorische Maßnahmen'
+        people: 'Personenbezogene Maßnahmen'
+        physical: 'Physische Maßnahmen'
+        technological: 'Technologische Maßnahmen'
+    section:
+        overdue: 'Überfällige Wirksamkeitsprüfungen'
+        due_soon: 'Bald fällige Prüfungen (30 Tage)'
+        recently_checked: 'Kürzlich geprüfte Maßnahmen (90 Tage)'
+    table:
+        control_id: 'Maßnahmen-ID'
+        name: 'Name'
+        category: 'Kategorie'
+        last_checked: 'Letzte Prüfung'
+        overdue_days: 'Überfällig (Tage)'
+        days_until_due: 'Fällig in (Tage)'
+        next_due: 'Nächste Prüfung'
+        owner: 'Verantwortlich'
+        status: 'Umsetzungsstatus'
+        days_since: 'Tage zurück'
+    label:
+        never: 'Nie geprüft'
+        days: 'Tage'
+    action:
+        view: 'Maßnahme anzeigen'
+    empty:
+        no_overdue: 'Keine überfälligen Wirksamkeitsprüfungen — ausgezeichnet!'
+        no_due_soon: 'Keine Prüfungen in den nächsten 30 Tagen fällig.'
+        no_recent: 'Keine Maßnahmen in den letzten 90 Tagen geprüft.'
