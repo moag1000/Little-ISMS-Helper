@@ -107,10 +107,14 @@ class AuditController extends AbstractController
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('audit/new.html.twig', [
             'audit' => $internalAudit,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/audit/export/excel', name: 'app_audit_export_excel', methods: ['GET'])]
     public function exportExcel(Request $request): Response
@@ -235,10 +239,14 @@ class AuditController extends AbstractController
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('audit/edit.html.twig', [
             'audit' => $internalAudit,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     /**
      * Sprint 3 / C1 — Clone an existing audit into a new planned audit.

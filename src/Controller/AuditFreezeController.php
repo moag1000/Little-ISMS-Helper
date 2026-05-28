@@ -115,9 +115,13 @@ class AuditFreezeController extends AbstractController
             return $this->redirectToRoute('app_audit_freeze_show', ['id' => $created->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('audit_freeze/new.html.twig', [
             'form' => $form->createView(),
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}', name: 'app_audit_freeze_show', methods: ['GET'], requirements: ['id' => '\d+'])]

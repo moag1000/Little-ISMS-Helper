@@ -49,10 +49,14 @@ final class ExistingFrameworksController extends AbstractController
             return $this->redirectToRoute('setup_step8_compliance_frameworks');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('setup_wizard/existing_frameworks.html.twig', [
             'form' => $form->createView(),
             'available_frameworks' => $this->frameworkLoader->getAvailableFrameworks(),
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/skip', name: '_skip', methods: ['GET', 'POST'])]

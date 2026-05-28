@@ -224,11 +224,15 @@ final class ComplianceImportController extends AbstractController
             return $this->redirectToRoute('admin_compliance_import_preview');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/compliance_import/upload.html.twig', [
             'form' => $form->createView(),
             'active_step' => 1,
             'template_url' => $this->generateUrl('admin_compliance_import_template'),
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/preview', name: 'preview', methods: ['GET'])]

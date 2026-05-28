@@ -112,10 +112,14 @@ class ProcessingActivityController extends AbstractController
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('processing_activity/new.html.twig', [
             'form' => $form,
             'processing_activity' => $processingActivity,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**
@@ -136,10 +140,14 @@ class ProcessingActivityController extends AbstractController
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('processing_activity/edit.html.twig', [
             'form' => $form,
             'processing_activity' => $processingActivity,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

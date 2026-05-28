@@ -129,10 +129,14 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile', ['_locale' => $request->getLocale()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('profile/edit.html.twig', [
             'user' => $user,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/profile/alva-settings', name: 'app_profile_alva_settings', methods: ['POST'])]

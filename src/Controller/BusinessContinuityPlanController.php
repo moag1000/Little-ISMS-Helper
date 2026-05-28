@@ -80,10 +80,14 @@ class BusinessContinuityPlanController extends AbstractController
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $businessContinuityPlan->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('business_continuity_plan/new.html.twig', [
             'bc_plan' => $businessContinuityPlan,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/business-continuity-plan/{id}', name: 'app_bc_plan_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -147,10 +151,14 @@ class BusinessContinuityPlanController extends AbstractController
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $businessContinuityPlan->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('business_continuity_plan/edit.html.twig', [
             'bc_plan' => $businessContinuityPlan,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/business-continuity-plan/{id}/delete', name: 'app_bc_plan_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

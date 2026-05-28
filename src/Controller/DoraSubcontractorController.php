@@ -92,10 +92,14 @@ class DoraSubcontractorController extends AbstractController
             return $this->redirectToRoute('app_dora_subcontractor_show', ['id' => $subcontractor->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('dora_subcontractor/new.html.twig', [
             'subcontractor' => $subcontractor,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/dora/subcontractor/{id}', name: 'app_dora_subcontractor_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -135,10 +139,14 @@ class DoraSubcontractorController extends AbstractController
             return $this->redirectToRoute('app_dora_subcontractor_show', ['id' => $subcontractor->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('dora_subcontractor/edit.html.twig', [
             'subcontractor' => $subcontractor,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/dora/subcontractor/{id}/delete', name: 'app_dora_subcontractor_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

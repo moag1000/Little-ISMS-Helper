@@ -164,10 +164,14 @@ class BusinessProcessController extends AbstractController
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('business_process/new.html.twig', [
             'business_process' => $businessProcess,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/bcm/business-process/api/stats', name: 'app_business_process_stats_api', methods: ['GET'])]
     public function statsApi(BusinessProcessRepository $businessProcessRepository): Response
@@ -250,10 +254,14 @@ class BusinessProcessController extends AbstractController
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('business_process/edit.html.twig', [
             'business_process' => $businessProcess,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/bcm/business-process/{id}', name: 'app_business_process_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

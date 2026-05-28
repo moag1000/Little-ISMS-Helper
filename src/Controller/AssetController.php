@@ -244,10 +244,14 @@ class AssetController extends AbstractController
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('asset/new.html.twig', [
             'asset' => $asset,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/asset/new/quick', name: 'app_asset_new_quick', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
@@ -270,10 +274,14 @@ class AssetController extends AbstractController
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('asset/new_quick.html.twig', [
             'asset' => $asset,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     /**
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
@@ -506,10 +514,14 @@ class AssetController extends AbstractController
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('asset/edit.html.twig', [
             'asset' => $asset,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/asset/{id}/delete', name: 'app_asset_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
