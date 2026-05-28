@@ -57,6 +57,43 @@ bausteine:
       standard: []
       hoch: []
 
+  - id: CON.4
+    title: 'Auswahl und Einsatz von Standardsoftware'
+    description: 'Anforderungen an Auswahl, Beschaffung, Test und sicheren Betrieb von Standardsoftware.'
+    anforderungen:
+      basis:
+        - id: CON.4.A1
+          title: 'Erstellung eines Anforderungskatalogs fuer Standardsoftware'
+          requirement_text: 'Vor der Beschaffung einer Standardsoftware MUSS ein Anforderungskatalog erstellt werden, der funktionale, sicherheits- und compliance-relevante Anforderungen enthaelt.'
+        - id: CON.4.A2
+          title: 'Auswahl geeigneter Standardsoftware'
+          requirement_text: 'Standardsoftware MUSS anhand des Anforderungskatalogs ausgewaehlt werden. Anbieter-Reife, Update-Politik und Support MUESSEN bewertet sein. Siehe BSI Kompendium 2023 Baustein CON.4 Anforderung A2.'
+        - id: CON.4.A3
+          title: 'Sichere Installation und Konfiguration'
+          requirement_text: 'Standardsoftware MUSS auf Basis dokumentierter Haertungs-Vorgaben installiert und konfiguriert werden. Default-Konten und ungenutzte Module MUESSEN deaktiviert sein.'
+      standard:
+        - id: CON.4.A5
+          title: 'Test vor Inbetriebnahme'
+          requirement_text: 'Standardsoftware SOLLTE vor dem produktiven Einsatz in einer Testumgebung erprobt und freigegeben werden.'
+      hoch: []
+
+  - id: CON.5
+    title: 'Entwicklung und Einsatz von Allgemeinen Anwendungen'
+    description: 'Anforderungen an die sichere Entwicklung, Einfuehrung und den Betrieb allgemeiner Anwendungen.'
+    anforderungen:
+      basis:
+        - id: CON.5.A1
+          title: 'Planung des Einsatzes Allgemeiner Anwendungen'
+          requirement_text: 'Der Einsatz Allgemeiner Anwendungen MUSS systematisch geplant und Sicherheitsanforderungen MUESSEN dokumentiert werden.'
+        - id: CON.5.A2
+          title: 'Sichere Konfiguration Allgemeiner Anwendungen'
+          requirement_text: 'Allgemeine Anwendungen MUESSEN sicher konfiguriert sein. Default-Passwoerter MUESSEN geaendert, nicht benoetigte Funktionen deaktiviert werden.'
+        - id: CON.5.A3
+          title: 'Geregelte Inbetriebnahme'
+          requirement_text: 'Vor dem produktiven Einsatz MUESSEN Allgemeine Anwendungen formal freigegeben werden. Siehe BSI Kompendium 2023 Baustein CON.5 Anforderung A3.'
+      standard: []
+      hoch: []
+
   - id: CON.6
     title: 'Loeschen und Vernichten'
     description: 'Anforderungen an das geregelte Loeschen und Vernichten von Informationen und Datentraegern.'
