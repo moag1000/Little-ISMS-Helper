@@ -109,7 +109,7 @@ final class PolicyApprovalChainCompletedCheck implements PolicyWizardCheckInterf
             $gap = [
                 'title' => sprintf('compliance_check.%s.fail_message', self::CHECK_ID),
                 'priority' => 'critical',
-                'route' => 'app_workflow_inbox',
+                'route' => 'app_workflow_index',
                 'translation_domain' => 'policy_wizard',
                 'items' => array_slice($unsigned, 0, 5),
             ];
