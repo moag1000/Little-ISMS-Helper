@@ -43,6 +43,55 @@ metadata:
       description: 'Datenschutz — Verarbeitung personenbezogener Daten'
   sourceUrl: 'https://www.enx.com/en-us/tisax/'
 
+# ── Per-tier Assessment Model Definitions ────────────────────────────────────
+#
+# Source: ENX VDA-ISA 6 workbook methodology tab (public framework metadata).
+#
+#   Chapters 1-6  => information_security  (Reifegrad 0-5, ISO/IEC 33020)
+#   Chapters 7-8  => prototype_protection  (Reifegrad 0-5, same scale)
+#   Chapter  9    => data_protection       (3-state: NA / OK / Nicht OK)
+#
+# The data_protection tier does NOT use Reifegrad scoring.
+# It uses a tristate GDPR-conformance assessment:
+#   not_applicable / compliant / non_compliant
+assessmentModels:
+  information_security:
+    type: 'process_capability_iso_33020'
+    scale:
+      0: { code: 'incomplete',  name: 'Incomplete' }
+      1: { code: 'performed',   name: 'Performed' }
+      2: { code: 'managed',     name: 'Managed' }
+      3: { code: 'established', name: 'Established' }
+      4: { code: 'predictable', name: 'Predictable' }
+      5: { code: 'optimising',  name: 'Optimising' }
+    targetLevels: { AL1: 1, AL2: 2, AL3: 3 }
+
+  prototype_protection:
+    type: 'process_capability_iso_33020'
+    scale:
+      0: { code: 'incomplete',  name: 'Incomplete' }
+      1: { code: 'performed',   name: 'Performed' }
+      2: { code: 'managed',     name: 'Managed' }
+      3: { code: 'established', name: 'Established' }
+      4: { code: 'predictable', name: 'Predictable' }
+      5: { code: 'optimising',  name: 'Optimising' }
+    targetLevels: { AL1: 2, AL2: 3, AL3: 3 }
+
+  data_protection:
+    type: 'tristate_compliance'
+    scale:
+      not_applicable: { code: 'not_applicable', name: 'Nicht anwendbar', shortName: 'NA' }
+      compliant:      { code: 'compliant',      name: 'Erfuellt',         shortName: 'OK' }
+      non_compliant:  { code: 'non_compliant',  name: 'Nicht erfuellt',   shortName: 'Nicht OK' }
+    targetLevels:
+      AL1: 'compliant'
+      AL2: 'compliant'
+      AL3: 'compliant'
+    extraEvidenceRequired:
+      - 'gdpr_art_28_3_processor_obligations'
+      - 'gdpr_art_32_technical_organizational_measures'
+      - 'gdpr_art_33_breach_notification_72h'
+
 kapitel:
   - id: '1'
     title: 'Informationssicherheits-Management'
