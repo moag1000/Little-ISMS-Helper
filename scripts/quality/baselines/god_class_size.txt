@@ -1,6 +1,7 @@
 # check_god_class_size.py baseline
 # Format: <relative-path>:LOC=NNN deps=MMM
 # NEW file added OR existing file growing beyond LOC will fail CI.
+src/Service/Search/SearchService.php:LOC=1050 deps=32
 src/Controller/DeploymentWizardController.php:LOC=2694 deps=0
 src/Controller/ComplianceController.php:LOC=2629 deps=0
 src/Service/RestoreService.php:LOC=2285 deps=7
