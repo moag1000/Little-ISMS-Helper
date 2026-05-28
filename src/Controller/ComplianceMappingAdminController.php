@@ -49,6 +49,7 @@ class ComplianceMappingAdminController extends AbstractController
     protected function getTranslator(): TranslatorInterface
     {
         if ($this->translator === null) {
+            // @intentional-assertion: programmer-error guard for misconfigured DI — TranslatorInterface must be wired
             throw new \RuntimeException('TranslatorInterface not injected — flash methods unavailable.');
         }
         return $this->translator;
