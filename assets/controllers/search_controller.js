@@ -171,13 +171,38 @@ export default class extends Controller {
 
         let html = '';
 
-        // Group results by category
+        // Group results by category — navigation FIRST so admins find settings fast
         const categories = [
-            { key: 'assets', label: 'Assets', icon: 'asset-server', color: 'primary' },
-            { key: 'risks', label: 'Risiken', icon: 'status-warning', color: 'warning' },
-            { key: 'controls', label: 'Controls', icon: 'shield-check', color: 'success' },
-            { key: 'incidents', label: 'Vorfälle', icon: 'status-critical', color: 'danger' },
-            { key: 'trainings', label: 'Trainings', icon: 'nav-mortarboard', color: 'info' }
+            { key: 'navigation',             label: 'Navigation',          icon: 'nav-arrow-right',  color: 'primary' },
+            { key: 'assets',                 label: 'Assets',              icon: 'asset-server',     color: 'primary' },
+            { key: 'risks',                  label: 'Risiken',             icon: 'status-warning',   color: 'warning' },
+            { key: 'controls',               label: 'Controls',            icon: 'shield-check',     color: 'success' },
+            { key: 'incidents',              label: 'Vorfälle',            icon: 'status-critical',  color: 'danger' },
+            { key: 'trainings',              label: 'Trainings',           icon: 'nav-mortarboard',  color: 'info' },
+            { key: 'documents',              label: 'Dokumente',           icon: 'nav-document',     color: 'info' },
+            { key: 'suppliers',              label: 'Lieferanten',         icon: 'nav-supplier',     color: 'info' },
+            { key: 'processing_activities',  label: 'Verarbeitungstätigkeiten', icon: 'nav-privacy', color: 'primary' },
+            { key: 'dpias',                  label: 'DSFA',                icon: 'nav-privacy',      color: 'primary' },
+            { key: 'data_breaches',          label: 'Datenpannen',         icon: 'nav-privacy',      color: 'danger' },
+            { key: 'audit_findings',         label: 'Audit-Findings',      icon: 'nav-audit',        color: 'warning' },
+            { key: 'corrective_actions',     label: 'Korrekturmaßnahmen',  icon: 'nav-audit',        color: 'warning' },
+            { key: 'change_requests',        label: 'Change Requests',     icon: 'nav-change',       color: 'info' },
+            { key: 'internal_audits',        label: 'Audits',              icon: 'nav-audit',        color: 'info' },
+            { key: 'business_processes',     label: 'Geschäftsprozesse',   icon: 'nav-bcm',          color: 'info' },
+            { key: 'bc_plans',               label: 'BC-Pläne',            icon: 'nav-bcm',          color: 'info' },
+            { key: 'bc_exercises',           label: 'BC-Übungen',          icon: 'nav-bcm',          color: 'info' },
+            { key: 'crisis_teams',           label: 'Krisenteams',         icon: 'nav-bcm',          color: 'warning' },
+            { key: 'management_reviews',     label: 'Management-Reviews',  icon: 'nav-report',       color: 'info' },
+            { key: 'objectives',             label: 'Ziele',               icon: 'nav-target',       color: 'primary' },
+            { key: 'vulnerabilities',        label: 'Schwachstellen',      icon: 'status-critical',  color: 'danger' },
+            { key: 'patches',                label: 'Patches',             icon: 'nav-wrench',       color: 'info' },
+            { key: 'threat_intelligence',    label: 'Threat Intel',        icon: 'status-warning',   color: 'warning' },
+            { key: 'persons',                label: 'Personen',            icon: 'nav-people',       color: 'info' },
+            { key: 'interested_parties',     label: 'Stakeholder',         icon: 'nav-people',       color: 'info' },
+            { key: 'consents',               label: 'Einwilligungen',      icon: 'nav-privacy',      color: 'info' },
+            { key: 'data_subject_requests',  label: 'Betroffenenanfragen', icon: 'nav-privacy',      color: 'warning' },
+            { key: 'compliance_frameworks',  label: 'Compliance-Frameworks', icon: 'nav-compliance', color: 'primary' },
+            { key: 'compliance_requirements', label: 'Compliance-Anforderungen', icon: 'nav-compliance', color: 'primary' }
         ];
 
         categories.forEach(category => {
@@ -202,13 +227,17 @@ export default class extends Controller {
         `;
 
         items.forEach((item, index) => {
+            // Prefer per-item icon (backend already returns full class for navigation results)
+            const iconClass = item.icon
+                ? (item.icon.startsWith('fa-icon--') ? item.icon : `fa-icon--${item.icon}`)
+                : `fa-icon--${category.icon}`;
             html += `
                 <a href="${item.url}"
                    class="search-result-item"
                    data-index="${index}"
                    data-action="click->search#handleResultClick">
                     <div class="search-result-icon">
-                        <i class="fa-icon fa-icon--${category.icon} text-${category.color}" aria-hidden="true"></i>
+                        <i class="fa-icon ${iconClass} text-${category.color}" aria-hidden="true"></i>
                     </div>
                     <div class="search-result-content">
                         <div class="search-result-title">${this.highlight(item.title, query)}</div>
