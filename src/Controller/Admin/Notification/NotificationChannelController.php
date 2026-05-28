@@ -119,10 +119,14 @@ class NotificationChannelController extends AbstractController
             return $this->redirectToRoute('admin_notification_channel_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/notification/channel/new.html.twig', [
             'form'    => $form,
             'channel' => $channel,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -161,10 +165,14 @@ class NotificationChannelController extends AbstractController
             return $this->redirectToRoute('admin_notification_channel_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/notification/channel/edit.html.twig', [
             'form'    => $form,
             'channel' => $channel,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

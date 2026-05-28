@@ -79,10 +79,14 @@ final class SsoWizardController extends AbstractController
             return $this->redirectToRoute('admin_sso_wizard_step2');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/sso/wizard/step1_preset.html.twig', [
             'form' => $form,
             'presets' => $this->registry->getAllPresets(),
-        ]);
+        ], new Response(status: $status));
     }
 
     /** Step 2: discovery URL + credentials */
@@ -125,12 +129,16 @@ final class SsoWizardController extends AbstractController
             \Symfony\Component\Routing\RouterInterface::ABSOLUTE_URL
         );
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/sso/wizard/step2_discovery.html.twig', [
             'form' => $form,
             'provider' => $provider,
             'preset' => $this->registry->getPreset($presetKey),
             'callbackUrl' => $callbackUrl,
-        ]);
+        ], new Response(status: $status));
     }
 
     /** Step 3: test connection + activate */
@@ -185,12 +193,16 @@ final class SsoWizardController extends AbstractController
             \Symfony\Component\Routing\RouterInterface::ABSOLUTE_URL
         );
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/sso/wizard/step3_test.html.twig', [
             'form' => $form,
             'provider' => $provider,
             'discoveryStatus' => $discoveryStatus,
             'callbackUrl' => $callbackUrl,
-        ]);
+        ], new Response(status: $status));
     }
 
     private function getDraftProvider(Request $request): IdentityProvider

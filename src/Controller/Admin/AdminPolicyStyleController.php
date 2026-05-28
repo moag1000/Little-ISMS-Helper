@@ -89,13 +89,17 @@ final class AdminPolicyStyleController extends AbstractController
             return $this->redirectToRoute('app_admin_policy_style_edit');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/policy_style/edit.html.twig', [
             'form' => $form,
             'tenant' => $tenant,
             'branding' => $branding,
             'style_config' => $branding->getPolicyDocStyleConfig(),
             'sample' => $this->buildSampleData($tenant),
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

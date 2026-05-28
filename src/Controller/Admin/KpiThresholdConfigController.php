@@ -97,7 +97,11 @@ class KpiThresholdConfigController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($config->getGoodThreshold() < $config->getWarningThreshold()) {
                 $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.good_below_warning'));
-                return $this->render('admin/kpi_threshold/new.html.twig', ['form' => $form]);
+                $status = ($form->isSubmitted() && !$form->isValid())
+                    ? Response::HTTP_UNPROCESSABLE_ENTITY
+                    : Response::HTTP_OK;
+
+                return $this->render('admin/kpi_threshold/new.html.twig', ['form' => $form], new Response(status: $status));
             }
             try {
                 $this->entityManager->persist($config);
@@ -109,7 +113,11 @@ class KpiThresholdConfigController extends AbstractController
             }
         }
 
-        return $this->render('admin/kpi_threshold/new.html.twig', ['form' => $form]);
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
+        return $this->render('admin/kpi_threshold/new.html.twig', ['form' => $form], new Response(status: $status));
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
@@ -123,7 +131,11 @@ class KpiThresholdConfigController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($config->getGoodThreshold() < $config->getWarningThreshold()) {
                 $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.good_below_warning'));
-                return $this->render('admin/kpi_threshold/edit.html.twig', ['form' => $form, 'config' => $config]);
+                $status = ($form->isSubmitted() && !$form->isValid())
+                    ? Response::HTTP_UNPROCESSABLE_ENTITY
+                    : Response::HTTP_OK;
+
+                return $this->render('admin/kpi_threshold/edit.html.twig', ['form' => $form, 'config' => $config], new Response(status: $status));
             }
             $config->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
@@ -131,10 +143,14 @@ class KpiThresholdConfigController extends AbstractController
             return $this->redirectToRoute('admin_kpi_threshold_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/kpi_threshold/edit.html.twig', [
             'form' => $form,
             'config' => $config,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
