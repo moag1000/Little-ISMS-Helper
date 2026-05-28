@@ -24,6 +24,24 @@ class TisaxLicenseConfirmationRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find confirmations that still carry a non-empty ip_address and were
+     * confirmed before the given cutoff.  Used by the IP-retention purge command.
+     *
+     * @return list<TisaxLicenseConfirmation>
+     */
+    public function findWithIpAddressOlderThan(DateTimeImmutable $cutoff): array
+    {
+        /** @var list<TisaxLicenseConfirmation> */
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.confirmedAt < :cutoff')
+            ->andWhere("c.ipAddress != ''")
+            ->setParameter('cutoff', $cutoff)
+            ->orderBy('c.confirmedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find the most recent valid (within TTL hours) confirmation for a given
      * user + tenant combination. Returns null when no valid confirmation
      * exists (forces user back to Step 0).

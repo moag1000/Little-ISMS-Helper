@@ -44,7 +44,7 @@ tisax:
       bullet_1: 'Sie über eine gültige, aktuelle ENX-Mitgliedschaft oder -Lizenz verfügen, die zur Nutzung des VDA-ISA-Workbooks berechtigt.'
       bullet_2: 'Das Workbook über offizielle ENX-Kanäle bezogen wurde und nicht in einer lizenzverletzenden Weise verändert wurde.'
       bullet_3: 'Sie die alleinige Verantwortung dafür übernehmen, die Lizenzcompliance Ihrer Organisation sicherzustellen.'
-      body_3: 'Ihre Bestätigung wird mit Zeitstempel und IP-Adresse als Teil Ihres Audit-Trails erfasst (ISO 27001 Abschnitt 7.5.3).'
+      body_3: 'Ihre Bestätigung wird mit Zeitstempel und IP-Adresse als Teil Ihres Audit-Trails erfasst (ISO 27001 Abschnitt 7.5.3). Die IP-Adresse wird nach 365 Tagen automatisch anonymisiert (DSGVO Art. 5 Abs. 1 lit. e).'
       checkbox_label: 'Ich bestätige, dass ich für das VDA-ISA-Workbook, das ich hochladen möchte, eine gültige ENX-Lizenz besitze.'
       must_confirm: 'Sie müssen die Lizenz-Compliance bestätigen, bevor Sie fortfahren.'
       confirm_button: 'Bestätigen und weiter'
