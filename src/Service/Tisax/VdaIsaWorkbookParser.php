@@ -17,37 +17,173 @@ use Psr\Log\LoggerInterface;
  * Parses a customer-supplied (ENX-licensed) VDA-ISA Excel workbook into
  * structured {@see VdaIsaControlRow} DTOs, ready for the import wizard.
  *
+ * Verified against real ENX ISA 6.0.3 (EN) and ISA 6.0.2 (DE) workbooks.
+ *
+ * Real ENX ISA 6 structure (verified 2026-05-28):
+ * - EN workbook: 11 sheets. Active sheet = "Welcome" (metadata — NOT parsed).
+ *   Content sheets: "Information Security", "Prototype Protection", "Data Protection".
+ * - DE workbook: 11 sheets. Active sheet = "Willkommen".
+ *   Content sheets: "Informationssicherheit", "Prototypenschutz", "Datenschutz".
+ * - Header row is row 2 in each content sheet (row 1 = title banner, merged cell).
+ * - EN header row 2: Row_Format | Is_Title? | Control number | Maturity level |
+ *   Implementation description | Reference documentation | Findings/Assessment result |
+ *   Control question | Objective | Requirements (must) | Requirements (should) |
+ *   Additional requirements (high) | Additional requirements (very high) | ... |
+ *   ISO 27001/ISO 27002 references | BSI reference | ...
+ * - DE header row 2: Row_Format | Is_Title? | Kontrollnummer | Reifegrad |
+ *   Beschreibung der Umsetzung | ... | Kontrollfrage | Ziel |
+ *   Anforderungen (muss) | Anforderungen (sollte) | ...
+ * - Column A ("Row_Format") = "header" for section/subsection title rows — skip these.
+ * - Column A ("Row_Format") = "control" or empty for actual control rows.
+ * - Control IDs follow pattern: N.N.N (e.g. 1.1.1, 8.2.3, 9.5.1).
+ *   Section rows have bare integers ("1", "2") or two-part IDs ("1.1", "8.2") — skip these.
+ *
  * Design decisions:
  * - Header detection by text-match, NOT column letter — VDA-ISA versions
- *   differ in layout. We scan the first 20 rows for a row that contains
- *   recognisable header signals ("Control", "Question", "Must" / "Should").
+ *   differ in layout. We scan the first MAX_HEADER_SCAN_ROWS rows for a row
+ *   that contains recognisable header signals.
  * - Column mapping is best-effort: known aliases are tried in order; the
- *   first match wins. Unknown columns are silently ignored.
+ *   first match wins. Aliases are ordered most-specific first to avoid false
+ *   matches (e.g. "description" alias would match "Implementation description"
+ *   before "Objective" — so "objective" is listed first and "description" removed).
+ * - Section header rows (col A = "header", or ID without 2+ dots) are skipped.
  * - Validation is left to VdaIsaWorkbookValidator (single-responsibility).
  */
 final class VdaIsaWorkbookParser
 {
     /** Maximum header-search window. */
-    private const MAX_HEADER_SCAN_ROWS = 20;
+    private const MAX_HEADER_SCAN_ROWS = 40;
 
-    /** Preferred sheet names (case-insensitive, first match wins). */
-    private const PREFERRED_SHEETS = ['ISA', 'VDA-ISA', 'Controls', 'Anforderungen'];
+    /**
+     * Column A ("Row_Format") value that marks section/subsection title rows.
+     * These rows must be skipped — they contain section headings, not controls.
+     */
+    private const ROW_FORMAT_SECTION_HEADER = 'header';
+
+    /**
+     * Preferred sheet names (case-insensitive, first match wins).
+     * Ordered by specificity — exact ENX ISA 6 sheet names first,
+     * then legacy/alternative names.
+     */
+    private const PREFERRED_SHEETS = [
+        // ENX ISA 6 EN exact sheet names
+        'Information Security',
+        'Prototype Protection',
+        'Data Protection',
+        // ENX ISA 6 DE exact sheet names
+        'Informationssicherheit',
+        'Prototypenschutz',
+        'Datenschutz',
+        // Legacy / alternative names from older ISA versions
+        'ISA', 'VDA-ISA', 'ISA 6', 'ISA 6.x', 'ISA6', 'VDA ISA 6',
+        'Controls', 'Anforderungen',
+        'Self Assessment', 'Selbstauskunft',
+        'Assessment', 'Bewertung',
+    ];
 
     /**
      * Header column aliases.  Key = canonical field name, value = list of
      * accepted header cell text fragments (case-insensitive substring match).
+     *
+     * IMPORTANT ordering rules (to avoid false-positive column mapping):
+     * - Most-specific aliases first (verbatim ENX column headers at top).
+     * - Never use a fragment that appears in a *different* column's header.
+     * - "title" removed from titleEn — matches "Is_Title?" (col B) before "Control question" (col H).
+     * - "beschreibung" removed from titleDe — matches "Beschreibung der Umsetzung" (impl. col) before "Kontrollfrage".
+     * - "description" removed from description — matches "Implementation description" (col E) before "Objective" (col I).
+     * - "reference" removed from iso27001Ref — matches "Reference documentation" (col F) before ISO norm col (col P).
      */
     private const HEADER_ALIASES = [
-        'controlId' => ['control no', 'control number', 'req. no', 'nr.', 'id', 'number'],
-        'titleDe'   => ['frage (de)', 'anforderung', 'kontrollfrage', 'frage de'],
-        'titleEn'   => ['question (en)', 'control question', 'question en', 'question'],
-        'description' => ['objective', 'ziel', 'info', 'description', 'erläuterung'],
-        'mustLevel'   => ['must', 'pflicht'],
-        'shouldLevel' => ['should', 'empfehlung'],
-        'highLevel'   => ['high protection', 'high'],
-        'veryHighLevel' => ['very high', 'sehr hoch'],
-        'iso27001Ref'   => ['iso 27001', 'iso27001', 'iso-27001', 'norm ref', 'reference'],
-        'evidenceHint'  => ['evidence', 'nachweis', 'nachweise', 'audit evidence'],
+        'controlId' => [
+            // ENX ISA 6 exact column headers (most specific first)
+            'control number',       // EN col C: "Control number"
+            'kontrollnummer',       // DE col C: "Kontrollnummer"
+            // Legacy / alternate
+            'control no', 'control id', 'req. no', 'req no',
+            'kontroll-nr', 'kontroll-id', 'steuerungs-id',
+            'nr.', 'nummer', '#', 'isa-nr', 'isa nr',
+            // Short aliases last (avoid false matches like "id" in "Findings")
+            'nr', 'number',
+        ],
+        'titleDe' => [
+            // ENX ISA 6 DE exact column header
+            'kontrollfrage',        // DE col H: "Kontrollfrage"
+            // Other DE aliases (no "beschreibung" — matches "Beschreibung der Umsetzung")
+            'frage (de)', 'anforderung', 'steuerungsfrage',
+            'frage de', 'kontroll-frage', 'steuerungs-frage',
+        ],
+        'titleEn' => [
+            // ENX ISA 6 EN exact column header
+            'control question',     // EN col H: "Control question"
+            // Other EN aliases (no "title" — matches "Is_Title?" in col B)
+            'question (en)', 'question en', 'question',
+            'requirement', 'assessment question',
+            // "control" alias removed — too broad; "is_title?" col B contains "title"
+        ],
+        'description' => [
+            // ENX ISA 6 col I: "Objective" / DE "Ziel"
+            'objective', 'ziel',
+            // Other aliases (no "description" — matches "Implementation description" / "Beschreibung der Umsetzung")
+            'erläuterung', 'erlaeuterung',
+            'further info', 'weiterführende information', 'comments', 'kommentar',
+            'kontrollziel', 'steuerungsziel',
+            'info',
+        ],
+        'mustLevel' => [
+            // ENX ISA 6 col J: "Requirements\n(must)" / DE "Anforderungen\n(muss)"
+            'requirements' . "\n" . '(must)', 'anforderungen' . "\n" . '(muss)',
+            // Substring aliases (multiline cell text contains newline in PhpSpreadsheet)
+            'must)', '(muss)',
+            'must', 'pflicht', 'pflichtanforderung', 'verbindlich',
+        ],
+        'shouldLevel' => [
+            'requirements' . "\n" . '(should)', 'anforderungen' . "\n" . '(sollte)',
+            'should)', '(sollte)',
+            'should', 'empfehlung', 'sollte', 'empfohlen',
+        ],
+        'highLevel' => [
+            // ENX ISA 6 EN col L: "Additional requirements\nfor high protection needs"
+            'for high protection needs',
+            // ENX ISA 6 DE col L: "Zusatzanforderungen\nbei hohem Schutzbedarf"
+            'bei hohem schutzbedarf',
+            // Legacy / alternate
+            'additional requirements in case of high',
+            'zusatzanforderungen bei hohem',
+            'high protection', 'hoher schutzbedarf',
+            'high', 'hoch', 'erhöhter schutzbedarf',
+        ],
+        'veryHighLevel' => [
+            // ENX ISA 6 EN col M: "Additional requirements\nfor very high protection needs"
+            'for very high protection needs',
+            // ENX ISA 6 DE col M: "Zusatzanforderungen\nbei sehr hohem Schutzbedarf"
+            'bei sehr hohem schutzbedarf',
+            // Legacy / alternate
+            'additional requirements in case of very high',
+            'zusatzanforderungen bei sehr hohem',
+            'very high protection', 'sehr hoher schutzbedarf',
+            'very high', 'sehr hoch',
+        ],
+        'iso27001Ref' => [
+            // ENX ISA 6 EN col P: "Reference to other standards"
+            'reference to other standards',
+            // ENX ISA 6 DE col P: "Verweisung auf andere Normen"
+            'verweisung auf andere normen',
+            // Legacy / content-level fragments (for workbooks where ISO ref is in its own column)
+            'iso 27001', 'iso27001', 'iso-27001', 'iso/iec 27001',
+            'iso 27002', 'iso27002',
+            // Note: "reference" removed — too broad, matches "Reference documentation" (col F)
+            'norm ref', 'normbezug', 'standard reference', 'reference iso',
+        ],
+        'evidenceHint' => [
+            // ENX ISA 6 EN col AB: "Possible evidence (not mandatory)"
+            'possible evidence',
+            // ENX ISA 6 DE col AB: "Mögliche Nachweise (nicht verbindlich)"
+            'mögliche nachweise',
+            // Legacy aliases
+            'examples of evidence', 'beispiele für nachweise',
+            'evidence', 'nachweis', 'nachweise', 'audit evidence',
+            'further info',
+        ],
     ];
 
     public function __construct(
@@ -134,11 +270,29 @@ final class VdaIsaWorkbookParser
             }
         }
 
+        // Helpful diagnostic: list the actual sheet name + first non-empty cell of each scanned row
+        $diag = [];
+        for ($row = 1; $row <= $scanRows; $row++) {
+            $rowData = $worksheet->rangeToArray('A' . $row . ':' . $highestCol . $row, null, true, false, false)[0] ?? [];
+            $firstCells = array_slice(array_filter(array_map('strval', $rowData), static fn ($v) => trim($v) !== ''), 0, 4);
+            if ($firstCells) {
+                $diag[] = sprintf('row %d: [%s]', $row, implode(' | ', $firstCells));
+            }
+        }
         throw new ErrorException(
             sprintf(
-                'VdaIsaWorkbookParser: no VDA-ISA header row found in first %d rows. '
-                . 'Expected columns containing "Control" and "Question" or "Must"/"Should".',
+                'VdaIsaWorkbookParser: no VDA-ISA header row found in first %d rows of sheet "%s". '
+                . 'Expected an ID-column (control number, kontrollnummer, nr.) plus a question/description column '
+                . '(control question, kontrollfrage, question). '
+                . 'First non-empty cells per row: %s. '
+                . 'Tip: ensure the sheet is "Information Security" / "Informationssicherheit" / '
+                . '"Prototype Protection" / "Prototypenschutz" — current resolver picked "%s". '
+                . 'Official ENX ISA 6 workbooks: https://portal.enx.com/isa6-en.xlsx (EN), '
+                . 'https://portal.enx.com/isa6-de.xlsx (DE).',
                 $scanRows,
+                $worksheet->getTitle(),
+                implode(' || ', array_slice($diag, 0, 8)),
+                $worksheet->getTitle(),
             ),
         );
     }
@@ -146,6 +300,9 @@ final class VdaIsaWorkbookParser
     /**
      * Attempt to map a raw row array to canonical field names.
      * Returns null when the row doesn't look like a valid VDA-ISA header.
+     *
+     * Minimum signal: at least one ID-like alias AND one question-like alias
+     * must be present in the row.
      *
      * @param array<mixed> $rowData
      * @return array<string, int>|null
@@ -157,8 +314,6 @@ final class VdaIsaWorkbookParser
             $rowData,
         );
 
-        // Minimum signal: at least one of the ID-like aliases AND one of
-        // the title/question-like aliases must be present.
         $hasIdCol       = false;
         $hasQuestionCol = false;
 
@@ -184,7 +339,7 @@ final class VdaIsaWorkbookParser
             return null;
         }
 
-        // Build column map
+        // Build column map (first alias match wins per canonical field)
         $map = [];
         foreach (self::HEADER_ALIASES as $canonical => $aliases) {
             foreach ($lower as $colIdx => $cell) {
@@ -205,6 +360,13 @@ final class VdaIsaWorkbookParser
 
     /**
      * Extract data rows starting below the header row.
+     *
+     * Skips:
+     * - Empty rows.
+     * - Section/subsection header rows (col A = "header" in ENX ISA 6 "Row_Format" column).
+     * - Rows without a control ID.
+     * - Rows whose control ID does not contain at least one dot (section numbers
+     *   like "1", "1.1", "8" are category headings, not leaf controls).
      *
      * @param array<string, int> $headerMap
      * @return list<VdaIsaControlRow>
@@ -230,16 +392,30 @@ final class VdaIsaWorkbookParser
                 continue;
             }
 
+            // Skip ENX ISA 6 section/subsection header rows:
+            // Column A ("Row_Format") = "header" marks category title rows (e.g. "1 IS Policies")
+            $rowFormatCell = strtolower(trim((string) ($rowData[0] ?? '')));
+            if ($rowFormatCell === self::ROW_FORMAT_SECTION_HEADER) {
+                continue;
+            }
+
             $get = function (string $field) use ($rowData, $headerMap): ?string {
                 return isset($headerMap[$field]) ? (string) ($rowData[$headerMap[$field]] ?? '') : null;
             };
 
             $controlId = $this->sanitizeCellValue(trim((string) $get('controlId')));
             if ($controlId === '') {
-                continue; // skip rows without an ID (section headers, footnotes)
+                continue; // skip rows without an ID (footnotes, blank content rows)
             }
 
-            // Resolve best title: prefer DE when present, fall back to EN
+            // Skip section/subsection IDs (bare integers or two-part IDs like "1", "1.1", "8").
+            // Real control IDs have at least 2 dots: "1.1.1", "8.2.3", "9.5.1".
+            // Two-part IDs like "1.1" are subsection headings, not leaf controls.
+            if (substr_count($controlId, '.') < 2) {
+                continue;
+            }
+
+            // Resolve best title: prefer DE question when present, fall back to EN
             $titleDe  = $this->sanitizeCellValue(trim((string) $get('titleDe')));
             $titleEn  = $this->sanitizeCellValue(trim((string) $get('titleEn')));
             $title    = $titleDe !== '' ? $titleDe : $titleEn;
