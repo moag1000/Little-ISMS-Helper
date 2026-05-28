@@ -5,18 +5,21 @@ declare(strict_types=1);
 /**
  * ComplianceControllerTest
  *
- * Comprehensive test suite for ComplianceController covering:
- * - Compliance framework overview and dashboard
- * - Gap analysis and data reuse insights
- * - Cross-framework mappings and transitive compliance
- * - Framework comparison functionality
- * - CSV/Excel/PDF export operations
- * - CSRF token validation for mapping creation
- * - Error handling (404 for missing frameworks)
- * - Access control and authorization
+ * Tests for ComplianceController dashboard and view routes:
+ * - Compliance overview / index
+ * - Framework dashboard
+ * - Gap analysis
+ * - Data-reuse insights
+ * - Cross-framework mappings view
+ * - Transitive compliance view
+ * - Framework comparison view
+ * - Framework assessment action
+ * - Framework management redirect
  *
- * Uses PHPUnit 12 with proper mocking patterns.
- * Total: 23 test methods covering all major controller actions.
+ * Export tests: ComplianceExportControllerTest.php
+ * Mapping admin tests: ComplianceMappingAdminControllerTest.php
+ *
+ * Uses PHPUnit 13.1 with proper mocking patterns.
  */
 
 namespace App\Tests\Controller;
@@ -38,19 +41,13 @@ use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
 use PHPUnit\Framework\Attributes\Test;
@@ -292,53 +289,6 @@ class ComplianceControllerTest extends TestCase
     }
 
     #[Test]
-    public function testExportDataReuseReturnsCSVResponse(): void
-    {
-        $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001');
-        $requirements = [$this->createRequirement(1, 'A.5.1')];
-        $analysis = ['reusable_data' => []];
-        $reuseValue = ['estimated_hours_saved' => 20];
-        $session = $this->createMock(SessionInterface::class);
-
-        $request = new Request();
-        $request->setSession($session);
-
-        $this->complianceFrameworkRepository->method('find')
-            ->willReturn($framework);
-
-        $this->complianceRequirementRepository->method('findApplicableByFramework')
-            ->willReturn($requirements);
-
-        $this->complianceMappingService->method('getDataReuseAnalysis')
-            ->willReturn($analysis);
-
-        $this->complianceMappingService->method('calculateDataReuseValue')
-            ->willReturn($reuseValue);
-
-        $response = $this->controller->exportDataReuse($request, 1);
-
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString('text/csv', $response->headers->get('Content-Type'));
-    }
-
-    #[Test]
-    public function testExportDataReuseThrowsNotFoundForInvalidFramework(): void
-    {
-        $request = new Request();
-        $session = $this->createMock(SessionInterface::class);
-        $request->setSession($session);
-
-        $this->complianceFrameworkRepository->method('find')
-            ->willReturn(null);
-
-        $this->expectException(NotFoundHttpException::class);
-        $this->expectExceptionMessage('Framework not found');
-
-        $this->controller->exportDataReuse($request, 999);
-    }
-
-    #[Test]
     public function testCrossFrameworkMappingsReturnsOverview(): void
     {
         $frameworks = [
@@ -434,250 +384,6 @@ class ComplianceControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(302, $response->getStatusCode());
         $this->assertTrue($response->isRedirect());
-    }
-
-    #[Test]
-    public function testCreateComparisonMappingsWithValidCSRFToken(): void
-    {
-        $request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => 'valid-token'],
-            json_encode(['framework1_id' => 1, 'framework2_id' => 2])
-        );
-
-        $this->csrfTokenManager->method('isTokenValid')
-            ->willReturn(true);
-
-        $this->complianceFrameworkRepository->method('find')
-            ->willReturn(null);
-
-        $response = $this->controller->createComparisonMappings($request);
-
-        // Should return 404 since frameworks don't exist
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-    }
-
-    #[Test]
-    public function testCreateComparisonMappingsWithInvalidCSRFToken(): void
-    {
-        $request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => 'invalid-token'],
-            json_encode(['framework1_id' => 1, 'framework2_id' => 2])
-        );
-
-        $this->csrfTokenManager->method('isTokenValid')
-            ->willReturn(false);
-
-        $response = $this->controller->createComparisonMappings($request);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(403, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-        $this->assertSame('Invalid CSRF token', $data['message']);
-    }
-
-    #[Test]
-    public function testCreateComparisonMappingsWithMissingFrameworkIds(): void
-    {
-        $request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => 'valid-token'],
-            json_encode(['framework1_id' => null])
-        );
-
-        $this->csrfTokenManager->method('isTokenValid')
-            ->willReturn(true);
-
-        $response = $this->controller->createComparisonMappings($request);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(400, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-    }
-
-    #[Test]
-    public function testCreateComparisonMappingsWithSameFrameworkIds(): void
-    {
-        $request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => 'valid-token'],
-            json_encode(['framework1_id' => 1, 'framework2_id' => 1])
-        );
-
-        $this->csrfTokenManager->method('isTokenValid')
-            ->willReturn(true);
-
-        $response = $this->controller->createComparisonMappings($request);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(400, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-    }
-
-    #[Test]
-    public function testCreateComparisonMappingsWithNonExistentFrameworks(): void
-    {
-        $request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => 'valid-token'],
-            json_encode(['framework1_id' => 999, 'framework2_id' => 998])
-        );
-
-        $this->csrfTokenManager->method('isTokenValid')
-            ->willReturn(true);
-
-        $this->complianceFrameworkRepository->method('find')
-            ->willReturn(null);
-
-        $response = $this->controller->createComparisonMappings($request);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-    }
-
-    #[Test]
-    public function testCreateCrossFrameworkMappingsWithValidCSRFToken(): void
-    {
-        $iso27001 = $this->createFramework(1, 'ISO 27001', 'ISO27001');
-        $frameworks = [$iso27001];
-
-        $request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => 'valid-token'],
-            json_encode(['batch' => 0, 'batch_size' => 50])
-        );
-
-        $this->csrfTokenManager->method('isTokenValid')
-            ->willReturn(true);
-
-        $this->complianceFrameworkRepository->method('findOneBy')
-            ->willReturn($iso27001);
-
-        $this->complianceFrameworkRepository->method('findAll')
-            ->willReturn($frameworks);
-
-        $response = $this->controller->createCrossFrameworkMappings($request);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(200, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        // Should fail because only 1 framework exists (need at least 2)
-        $this->assertFalse($data['success']);
-    }
-
-    #[Test]
-    public function testCreateCrossFrameworkMappingsWithInvalidCSRFToken(): void
-    {
-        $request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => 'invalid-token'],
-            json_encode(['batch' => 0])
-        );
-
-        $this->csrfTokenManager->method('isTokenValid')
-            ->willReturn(false);
-
-        $response = $this->controller->createCrossFrameworkMappings($request);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(403, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-        $this->assertSame('Invalid CSRF token', $data['message']);
-    }
-
-    #[Test]
-    public function testCreateCrossFrameworkMappingsWithoutISO27001(): void
-    {
-        $request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => 'valid-token'],
-            json_encode(['batch' => 0])
-        );
-
-        $this->csrfTokenManager->method('isTokenValid')
-            ->willReturn(true);
-
-        $this->complianceFrameworkRepository->method('findOneBy')
-            ->willReturn(null);
-
-        $response = $this->controller->createCrossFrameworkMappings($request);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(200, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
-    }
-
-    #[Test]
-    public function testCreateCrossFrameworkMappingsWithInsufficientFrameworks(): void
-    {
-        $iso27001 = $this->createFramework(1, 'ISO 27001', 'ISO27001');
-
-        $request = new Request(
-            [],
-            [],
-            [],
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => 'valid-token'],
-            json_encode(['batch' => 0])
-        );
-
-        $this->csrfTokenManager->method('isTokenValid')
-            ->willReturn(true);
-
-        $this->complianceFrameworkRepository->method('findOneBy')
-            ->willReturn($iso27001);
-
-        $this->complianceFrameworkRepository->method('findAll')
-            ->willReturn([$iso27001]);
-
-        $response = $this->controller->createCrossFrameworkMappings($request);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(200, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertFalse($data['success']);
     }
 
     // Helper methods
