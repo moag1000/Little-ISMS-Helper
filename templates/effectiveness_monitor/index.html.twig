@@ -1,0 +1,209 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'control' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
+
+{% block title %}{{ 'effectiveness_monitor.page.title'|trans({}, 'control') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.soa'|trans({}, 'nav'), url: path('app_soa_index') },
+        { label: 'effectiveness_monitor.page.title'|trans({}, 'control') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'nav-speedometer', label: 'ISO 27001 §9.1' },
+    title: 'effectiveness_monitor.page.title'|trans({}, 'control'),
+    subtitle: 'effectiveness_monitor.page.subtitle'|trans({}, 'control'),
+    actions: []
+}) }}
+
+{% if noTenant %}
+    <div class="alert alert-warning">
+        {{ 'effectiveness_monitor.no_tenant'|trans({}, 'control') }}
+    </div>
+{% else %}
+
+{# ── KPI Cards ─────────────────────────────────────────────────────────── #}
+<div class="grid grid-responsive-200 mb-4" style="gap: var(--space-4);">
+
+    {{ _fa_feature_card.render({
+        label:   'effectiveness_monitor.kpi.overdue'|trans({}, 'control'),
+        value:   stats.overdue,
+        unit:    '',
+        variant: stats.overdue > 0 ? 'danger' : 'success',
+        icon:    'status-warning',
+        hint:    stats.overduePct ~ '% ' ~ 'effectiveness_monitor.kpi.of_applicable'|trans({}, 'control')
+    }) }}
+
+    {{ _fa_feature_card.render({
+        label:   'effectiveness_monitor.kpi.due_soon'|trans({}, 'control'),
+        value:   stats.dueSoon,
+        unit:    '',
+        variant: stats.dueSoon > 0 ? 'warning' : 'primary',
+        icon:    'nav-clock-history',
+        hint:    stats.dueSoonPct ~ '% ' ~ 'effectiveness_monitor.kpi.of_applicable'|trans({}, 'control')
+    }) }}
+
+    {{ _fa_feature_card.render({
+        label:   'effectiveness_monitor.kpi.recently_checked'|trans({}, 'control'),
+        value:   stats.recentlyChecked,
+        unit:    '',
+        variant: 'success',
+        icon:    'status-ok',
+        hint:    stats.recentlyCheckedPct ~ '% ' ~ 'effectiveness_monitor.kpi.of_applicable'|trans({}, 'control')
+    }) }}
+
+    {{ _fa_feature_card.render({
+        label:   'effectiveness_monitor.kpi.never_checked'|trans({}, 'control'),
+        value:   stats.neverChecked,
+        unit:    '',
+        variant: stats.neverChecked > 0 ? 'danger' : 'primary',
+        icon:    'ui-question',
+        hint:    stats.neverCheckedPct ~ '% ' ~ 'effectiveness_monitor.kpi.of_applicable'|trans({}, 'control')
+    }) }}
+
+</div>
+
+{# ── Filter Bar ───────────────────────────────────────────────────────── #}
+<form method="GET" action="{{ path('app_effectiveness_monitor') }}" class="d-flex flex-wrap gap-2 align-items-end mb-4">
+    <div>
+        <label for="category-filter" class="form-label small mb-1">
+            {{ 'effectiveness_monitor.filter.category'|trans({}, 'control') }}
+        </label>
+        <select id="category-filter" name="category" class="form-select form-select-sm" style="min-width: 160px;">
+            <option value="">{{ 'effectiveness_monitor.filter.all_categories'|trans({}, 'control') }}</option>
+            <option value="5." {% if categoryFilter == '5.' %}selected{% endif %}>A.5 — {{ 'effectiveness_monitor.category.organisational'|trans({}, 'control') }}</option>
+            <option value="6." {% if categoryFilter == '6.' %}selected{% endif %}>A.6 — {{ 'effectiveness_monitor.category.people'|trans({}, 'control') }}</option>
+            <option value="7." {% if categoryFilter == '7.' %}selected{% endif %}>A.7 — {{ 'effectiveness_monitor.category.physical'|trans({}, 'control') }}</option>
+            <option value="8." {% if categoryFilter == '8.' %}selected{% endif %}>A.8 — {{ 'effectiveness_monitor.category.technological'|trans({}, 'control') }}</option>
+        </select>
+    </div>
+    <div>
+        <label for="threshold-months" class="form-label small mb-1">
+            {{ 'effectiveness_monitor.filter.threshold'|trans({}, 'control') }}
+        </label>
+        <select id="threshold-months" name="threshold" class="form-select form-select-sm">
+            <option value="6"  {% if thresholdMonths == 6  %}selected{% endif %}>6 {{ 'effectiveness_monitor.filter.months'|trans({}, 'control') }}</option>
+            <option value="12" {% if thresholdMonths == 12 %}selected{% endif %}>12 {{ 'effectiveness_monitor.filter.months'|trans({}, 'control') }}</option>
+            <option value="18" {% if thresholdMonths == 18 %}selected{% endif %}>18 {{ 'effectiveness_monitor.filter.months'|trans({}, 'control') }}</option>
+            <option value="24" {% if thresholdMonths == 24 %}selected{% endif %}>24 {{ 'effectiveness_monitor.filter.months'|trans({}, 'control') }}</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-sm btn-primary">
+        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
+        {{ 'effectiveness_monitor.filter.apply'|trans({}, 'control') }}
+    </button>
+    {% if categoryFilter %}
+        <a href="{{ path('app_effectiveness_monitor', {threshold: thresholdMonths}) }}" class="btn btn-sm btn-ghost">
+            {{ 'effectiveness_monitor.filter.clear'|trans({}, 'control') }}
+        </a>
+    {% endif %}
+</form>
+
+{# ── Overdue Controls Table ───────────────────────────────────────────── #}
+<section class="mb-5" aria-labelledby="overdue-heading">
+    <h2 id="overdue-heading" class="h5 mb-3">
+        <i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>
+        {{ 'effectiveness_monitor.section.overdue'|trans({}, 'control') }}
+        <span class="badge bg-danger ms-1">{{ overdueControls|length }}</span>
+    </h2>
+
+    {{ _fa_table.render({
+        sortable: true,
+        stickyHead: true,
+        headers: [
+            { label: 'effectiveness_monitor.table.control_id'|trans({}, 'control'),   key: 'controlId' },
+            { label: 'effectiveness_monitor.table.name'|trans({}, 'control'),          key: 'name' },
+            { label: 'effectiveness_monitor.table.category'|trans({}, 'control'),      key: 'category' },
+            { label: 'effectiveness_monitor.table.last_checked'|trans({}, 'control'),  key: 'lastChecked', sortable: true },
+            { label: 'effectiveness_monitor.table.overdue_days'|trans({}, 'control'),  key: 'overdueDays',  align: 'right', sortable: true },
+            { label: 'effectiveness_monitor.table.owner'|trans({}, 'control'),         key: 'owner' },
+            { label: 'effectiveness_monitor.table.status'|trans({}, 'control'),        key: 'status' },
+            { label: '', actions: true }
+        ],
+        rows: overdueControls|map(row => {
+            cells: [
+                { value: '<code>' ~ row.control.controlId ~ '</code>' },
+                { value: row.control.name|e },
+                { value: '<span class="badge bg-secondary">' ~ (row.control.category ?? '—')|e ~ '</span>' },
+                { value: row.lastChecked ? row.lastChecked|date('d.m.Y') : '<span class="badge bg-danger">' ~ 'effectiveness_monitor.label.never'|trans({}, 'control') ~ '</span>' },
+                { value: row.overdueDays ? row.overdueDays ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control') : '—', align: 'right' },
+                { value: (row.control.effectiveResponsiblePerson ?? '—')|e },
+                { value: '<span class="badge bg-' ~ (row.control.implementationStatus == 'implemented' ? 'success' : (row.control.implementationStatus == 'in_progress' ? 'warning' : 'secondary')) ~ '">' ~ (row.control.implementationStatus ?? 'n/a')|e ~ '</span>' },
+                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost" aria-label="' ~ 'effectiveness_monitor.action.view'|trans({}, 'control')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
+            ]
+        }),
+        empty: 'effectiveness_monitor.empty.no_overdue'|trans({}, 'control')
+    }) }}
+</section>
+
+{# ── Due Soon Table ───────────────────────────────────────────────────── #}
+<section class="mb-5" aria-labelledby="due-soon-heading">
+    <h2 id="due-soon-heading" class="h5 mb-3">
+        <i class="fa-icon fa-icon--nav-clock-history text-warning" aria-hidden="true"></i>
+        {{ 'effectiveness_monitor.section.due_soon'|trans({}, 'control') }}
+        <span class="badge bg-warning text-dark ms-1">{{ upcomingControls|length }}</span>
+    </h2>
+
+    {{ _fa_table.render({
+        sortable: true,
+        headers: [
+            { label: 'effectiveness_monitor.table.control_id'|trans({}, 'control') },
+            { label: 'effectiveness_monitor.table.name'|trans({}, 'control') },
+            { label: 'effectiveness_monitor.table.next_due'|trans({}, 'control'), sortable: true },
+            { label: 'effectiveness_monitor.table.days_until_due'|trans({}, 'control'), align: 'right', sortable: true },
+            { label: 'effectiveness_monitor.table.owner'|trans({}, 'control') },
+            { label: '', actions: true }
+        ],
+        rows: upcomingControls|map(row => {
+            cells: [
+                { value: '<code>' ~ row.control.controlId ~ '</code>' },
+                { value: row.control.name|e },
+                { value: row.nextDue|date('d.m.Y') },
+                { value: row.daysUntilDue ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
+                { value: (row.control.effectiveResponsiblePerson ?? '—')|e },
+                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
+            ]
+        }),
+        empty: 'effectiveness_monitor.empty.no_due_soon'|trans({}, 'control')
+    }) }}
+</section>
+
+{# ── Recently Checked Table ──────────────────────────────────────────── #}
+<details class="mb-5">
+    <summary class="h5 mb-3 cursor-pointer">
+        <i class="fa-icon fa-icon--status-ok text-success" aria-hidden="true"></i>
+        {{ 'effectiveness_monitor.section.recently_checked'|trans({}, 'control') }}
+        <span class="badge bg-success ms-1">{{ recentlyChecked|length }}</span>
+    </summary>
+
+    {{ _fa_table.render({
+        compact: true,
+        headers: [
+            { label: 'effectiveness_monitor.table.control_id'|trans({}, 'control') },
+            { label: 'effectiveness_monitor.table.name'|trans({}, 'control') },
+            { label: 'effectiveness_monitor.table.last_checked'|trans({}, 'control'), sortable: true },
+            { label: 'effectiveness_monitor.table.days_since'|trans({}, 'control'), align: 'right' },
+            { label: '', actions: true }
+        ],
+        rows: recentlyChecked|map(row => {
+            cells: [
+                { value: '<code>' ~ row.control.controlId ~ '</code>' },
+                { value: row.control.name|e },
+                { value: row.lastChecked|date('d.m.Y') },
+                { value: row.daysSinceCheck ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
+                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
+            ]
+        }),
+        empty: 'effectiveness_monitor.empty.no_recent'|trans({}, 'control')
+    }) }}
+</details>
+
+{% endif %}{# end !noTenant #}
+
+{% endblock %}

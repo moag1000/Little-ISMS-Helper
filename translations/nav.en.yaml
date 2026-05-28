@@ -10,6 +10,7 @@ nav:
     fte_tracking: 'FTE Tracking'
     interested_parties: 'Interested Parties'
     soa: 'SoA (Statement of Applicability)'
+    effectiveness_monitor: 'Effectiveness Monitor'
     assets: Assets
     suppliers: Suppliers
     risks: Risks
@@ -84,6 +85,7 @@ nav:
     # Audit-V3 ME-1..ME-12: Module discoverability fix.
     consent: 'Consents (Art. 7)'
     data_subject_request: 'Data Subject Requests (Art. 15-22)'
+    audit_programs: 'Audit Programmes'
     audit_findings: 'Audit Findings'
     audit_freeze: 'Audit Freeze (SoA snapshot)'
     audit_package: 'Audit Package (framework export)'
@@ -180,6 +182,7 @@ nav:
             context: 'Organization context and scope'
             interested_parties: 'Stakeholders and requirements'
             soa: 'Statement of Applicability (ISO 27001 Annex A)'
+            effectiveness_monitor: 'Track control effectiveness cadence (ISO 27001 §9.1 / A.5.35/5.36)'
             objectives: 'ISMS objectives and targets'
             assets: 'IT and information assets inventory'
             suppliers: 'Third-party suppliers and vendors'
@@ -246,6 +249,7 @@ nav:
             # Audit-V3 ME-1..ME-12: Module discoverability fix — descriptions.
             consent: 'Consents for personal data processing (GDPR Art. 7)'
             data_subject_request: 'Subject access, deletion and rectification requests (GDPR Art. 15-22)'
+            audit_programs: 'Manage ISO 19011 §5.4 annual internal audit programmes'
             audit_findings: 'Structured audit findings incl. severity and status'
             audit_freeze: 'Freeze SoA snapshot for audits (SHA-256 sealed)'
             audit_package: 'Export framework-specific audit package'

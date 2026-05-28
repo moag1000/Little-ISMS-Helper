@@ -1,0 +1,40 @@
+framework:
+    workflows:
+        audit_program_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\AuditProgram
+            initial_marking: planning
+            places:
+                - planning
+                - active
+                - completed
+                - archived
+            transitions:
+                activate:
+                    from: planning
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: false
+                complete:
+                    from: active
+                    to: completed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                archive:
+                    from: [planning, active, completed]
+                    to: archived
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                reopen:
+                    from: [completed, archived]
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true

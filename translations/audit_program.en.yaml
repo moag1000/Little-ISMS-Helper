@@ -1,0 +1,121 @@
+audit_program:
+    page:
+        index:
+            title: 'Audit Programmes'
+            badge: 'Audit Plan'
+            subtitle: 'ISO 19011 §5.4 – Documented audit programme for the ISMS (ISO 27001 Cl. 9.2)'
+        new:
+            subtitle: 'Create a new audit programme per ISO 19011 §5.4.2'
+        show:
+            title: 'Audit Programme'
+
+    action:
+        new: 'New Audit Programme'
+        create: 'Create Audit Programme'
+        edit: 'Edit'
+        save: 'Save'
+        archive: 'Archive'
+        delete: 'Delete'
+        delete_zone: 'Danger zone: Delete programme'
+        delete_warning: 'Do you really want to permanently delete the audit programme "%name%"? All audit associations will be removed.'
+        delete_confirm: 'Really delete audit programme?'
+
+    section:
+        basic_info: 'Basic Information (ISO 19011 §5.4.2)'
+        dates: 'Duration'
+        responsibility: 'Responsibility (ISO 19011 §5.4.4)'
+        status: 'Status'
+        audits: 'Planned Audits (%count%)'
+        metadata: 'Metadata'
+
+    field:
+        name: 'Programme Name'
+        description: 'Description'
+        scope: 'Scope'
+        objectives: 'Programme Objectives'
+        start_date: 'Start Date'
+        end_date: 'End Date'
+        frequency: 'Frequency'
+        risk_categories: 'Risk Categories'
+        programme_owner: 'Audit Programme Manager'
+        status: 'Status'
+        created_at: 'Created At'
+        created_by: 'Created By'
+        updated_at: 'Updated At'
+        archived_at: 'Archived At'
+
+    placeholder:
+        name: 'e.g. ISMS Audit Programme 2026'
+        description: 'Brief description of the programme …'
+        scope: 'Describe the scope (org. units, standards, locations) …'
+        objectives: 'Programme objectives per ISO 19011 §5.4.2 a …'
+        frequency: 'Select frequency …'
+        programme_owner: 'Select internal user …'
+
+    help:
+        name: 'Unique programme name.'
+        description: 'Optional short description of the programme.'
+        scope: 'ISO 19011 §5.4.2 b — Scope: which areas/standards/locations are covered?'
+        objectives: 'ISO 19011 §5.4.2 a — Why is this programme being conducted?'
+        start_date: 'Start of the audit programme period.'
+        end_date: 'End of the audit programme period.'
+        frequency: 'How often will this programme be repeated?'
+        programme_owner: 'ISO 19011 §5.4.4 — Programme manager (responsible person).'
+        status_readonly: 'Status is exclusively managed via the lifecycle workflow.'
+
+    status:
+        planning: 'Planning'
+        active: 'Active'
+        completed: 'Completed'
+        archived: 'Archived'
+
+    frequency:
+        annual: 'Annual'
+        biennial: 'Biennial'
+        quarterly: 'Quarterly'
+        monthly: 'Monthly'
+
+    kpi:
+        total: 'Audit Programmes'
+        active: 'Active'
+        planning: 'Planning'
+        completed: 'Completed'
+
+    label:
+        audit_count: '%count% Audits'
+
+    empty:
+        title: 'No audit programme yet'
+        description: 'ISO 19011 §5.4 requires a documented audit programme. Create the first programme for your ISMS.'
+
+    audit_col:
+        number: 'Number'
+        title: 'Title'
+        planned_date: 'Planned Date'
+        status: 'Status'
+
+    audits:
+        none: 'No audits assigned to this programme yet.'
+
+    success:
+        created: 'Audit programme successfully created.'
+        updated: 'Audit programme successfully updated.'
+        deleted: 'Audit programme successfully deleted.'
+        archived: 'Audit programme successfully archived.'
+
+    error:
+        transition_failed: 'Status transition failed. Please check your permissions and the current status.'
+
+    validation:
+        name_required: 'A programme name is required.'
+        name_max_length: 'Programme name must not exceed 255 characters.'
+        start_date_required: 'Start date is required.'
+        end_date_required: 'End date is required.'
+        status_invalid: 'Invalid status.'
+
+    tooltip:
+        iso_ref: 'ISO 19011:2018 §5.4 — Establishing the audit programme'
+
+    nav:
+        label: 'Audit Programmes'
+        desc: 'Manage ISO 19011 §5.4 annual audit programmes'
