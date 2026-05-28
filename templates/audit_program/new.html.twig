@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'audit_program' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'audit_program.action.new'|trans({}, 'audit_program') }} — {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 col-xl-8 mx-auto">
+
+            {% include '_components/_breadcrumb.html.twig' with {
+                breadcrumbs: [
+                    { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard') },
+                    { label: 'audit_program.page.index.title'|trans({}, 'audit_program'), url: path('app_audit_program_index', {_locale: app.request.locale}) },
+                    { label: 'audit_program.action.new'|trans({}, 'audit_program') }
+                ]
+            } %}
+
+            {{ _fa_page_header.render({
+                badge: { icon: 'plus', label: '' },
+                title: 'audit_program.action.new'|trans({}, 'audit_program'),
+                subtitle: 'audit_program.page.new.subtitle'|trans({}, 'audit_program'),
+                actions: [
+                    {
+                        label: 'common.back'|trans({}, 'messages'),
+                        href: path('app_audit_program_index', {_locale: app.request.locale}),
+                        variant: 'ghost',
+                        icon: 'util-arrow-left'
+                    }
+                ]
+            }) }}
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h6 mb-0">
+                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
+                        {{ 'audit_program.action.new'|trans({}, 'audit_program') }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {% include '_components/_auto_form.html.twig' with {
+                        form: form,
+                        sections: {
+                            'basic_info': {
+                                label: 'audit_program.section.basic_info'|trans({}, 'audit_program'),
+                                fields: ['name', 'description', 'objectives', 'scope', 'frequency']
+                            },
+                            'dates': {
+                                label: 'audit_program.section.dates'|trans({}, 'audit_program'),
+                                fields: ['startDate', 'endDate']
+                            },
+                            'responsibility': {
+                                label: 'audit_program.section.responsibility'|trans({}, 'audit_program'),
+                                fields: ['programmeOwner']
+                            }
+                        },
+                        col_widths: {
+                            name: 12,
+                            startDate: 6,
+                            endDate: 6
+                        },
+                        exclude: ['status', 'riskCategories']
+                    } %}
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ path('app_audit_program_index', {_locale: app.request.locale}) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
+                            {{ 'common.back'|trans({}, 'messages') }}
+                        </a>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
+                            {{ 'audit_program.action.create'|trans({}, 'audit_program') }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
