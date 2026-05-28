@@ -221,6 +221,7 @@
     --z-popover:         50;
     --z-dropdown:       100;
     --z-sticky:         200;
+    --z-flyout:         250; /* mega-menu flyout, above sticky-sidebar (200), below fixed (500) */
     --z-fixed:          500;
     --z-overlay:        900;
     --z-modal-backdrop: 1000;
