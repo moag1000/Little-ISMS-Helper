@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Tisax;
 
 use App\Controller\Trait\ModuleGatedControllerTrait;
-use App\Entity\TisaxLicenseConfirmation;
 use App\Form\Tisax\TisaxLegalConfirmationType;
 use App\Form\Tisax\VdaIsaUploadType;
 use App\Repository\TisaxLicenseConfirmationRepository;
@@ -15,10 +14,10 @@ use App\Service\Import\Mapper\TisaxRequirementMapper;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use App\Service\Tisax\EnxScheduleExporter;
+use App\Service\Tisax\TisaxConfirmationService;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
 use App\Service\Tisax\VdaIsaWorkbookParser;
 use App\Service\Tisax\VdaIsaWorkbookValidator;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -73,6 +72,7 @@ final class TisaxImportWizardController extends AbstractController
         private readonly FileUploadSecurityService $uploadSecurity,
         private readonly AuditLogger $auditLogger,
         private readonly TisaxLicenseConfirmationRepository $confirmationRepo,
+        private readonly TisaxConfirmationService $confirmationService,
         private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
         private readonly string $uploadDir,
@@ -96,15 +96,13 @@ final class TisaxImportWizardController extends AbstractController
             /** @var \App\Entity\User $user */
             $user   = $this->getUser();
 
-            // Persist licence confirmation record
-            $confirmation = new TisaxLicenseConfirmation();
-            $confirmation->setTenant($tenant);
-            $confirmation->setUser($user);
-            $confirmation->setWorkbookFilename('(pending upload)');
-            $confirmation->setIpAddress($request->getClientIp() ?? '');
-            $confirmation->setSessionToken(hash('sha256', $request->getSession()->getId()));
-            $this->em->persist($confirmation);
-            $this->em->flush();
+            // Persist licence confirmation record via dedicated service (em-write out of controller)
+            $confirmation = $this->confirmationService->record(
+                tenant: $tenant,
+                user: $user,
+                sessionId: $request->getSession()->getId(),
+                ipAddress: $request->getClientIp() ?? '',
+            );
 
             // Store confirmation ID in session so upload step can verify
             $request->getSession()->set('tisax_import.confirmation_id', $confirmation->getId());
@@ -465,13 +463,7 @@ final class TisaxImportWizardController extends AbstractController
             return;
         }
 
-        $confirmation = $this->confirmationRepo->find($confirmationId);
-        if ($confirmation === null) {
-            return;
-        }
-
-        $confirmation->setWorkbookFilename($filename);
-        $this->em->flush();
+        $this->confirmationService->updateFilename((int) $confirmationId, $filename);
     }
 
     /**
