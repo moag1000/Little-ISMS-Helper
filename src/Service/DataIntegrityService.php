@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Enum\IncidentStatus;
 use App\Enum\InternalAuditStatus;
 use App\Enum\TreatmentStrategy;
+use App\Service\DataIntegrity\OrphanFinder;
 use App\Service\DataIntegrity\StatusEnumDriftChecker;
 use App\Service\DataIntegrity\UploadOrphanChecker;
 use Doctrine\ORM\EntityManagerInterface;
@@ -104,6 +105,11 @@ final class DataIntegrityService
          * unit-test setUp() that constructs without the new dep.
          */
         private readonly ?StatusEnumDriftChecker $statusEnumDriftChecker = null,
+        /**
+         * Orphan + cascade-orphan detector. Optional for backward-compat with
+         * unit-test setUp() that constructs without the new dep.
+         */
+        private readonly ?OrphanFinder $orphanFinder = null,
     ) {
     }
 
@@ -143,7 +149,10 @@ final class DataIntegrityService
     }
 
     /**
-     * Find all entities without tenant assignment
+     * Find all entities without tenant assignment.
+     *
+     * Delegates to {@see OrphanFinder} when available (container-wired path).
+     * Falls back to inline implementation for unit-test backward-compat.
      *
      * WICHTIG: TenantFilter muss hier deaktiviert sein, sonst kombiniert
      * Doctrine das "tenant IS NULL" mit dem automatischen
@@ -152,6 +161,12 @@ final class DataIntegrityService
      */
     public function findAllOrphanedEntities(): array
     {
+        if ($this->orphanFinder !== null) {
+            return $this->orphanFinder->findAllOrphanedEntities();
+        }
+
+        // Fallback: inline implementation for backward-compat with unit tests
+        // that construct DataIntegrityService without the OrphanFinder dep.
         $filters = $this->entityManager->getFilters();
         $wasEnabled = $filters->isEnabled('tenant_filter');
         if ($wasEnabled) {
@@ -159,7 +174,7 @@ final class DataIntegrityService
         }
 
         try {
-            return $this->queryOrphanedEntities();
+            return $this->queryOrphanedEntitiesFallback();
         } finally {
             if ($wasEnabled) {
                 $filters->enable('tenant_filter');
@@ -168,11 +183,12 @@ final class DataIntegrityService
     }
 
     /**
-     * Generischer Scan: alle Doctrine-gemappten Entities mit tenant-Assoziation
-     * auf NULL-Tenant prüfen. Entdeckt automatisch neue Entity-Typen — kein
-     * Ctor-Argument pro Entity-Klasse mehr nötig.
+     * Fallback orphan scanner used when OrphanFinder is not injected.
+     * Identical logic to OrphanFinder::queryOrphanedEntities().
+     *
+     * @internal Only for unit-test backward-compat (no OrphanFinder dep).
      */
-    private function queryOrphanedEntities(): array
+    private function queryOrphanedEntitiesFallback(): array
     {
         $orphaned = [];
         $metadataFactory = $this->entityManager->getMetadataFactory();
@@ -1224,145 +1240,27 @@ final class DataIntegrityService
      *
      * @return array<string, list<array{id: int, label: string, hint?: string}>>
      */
+    /**
+     * Cross-entity cascade cleanup detection.
+     * Delegates to {@see OrphanFinder} when available.
+     *
+     * @return array<string, list<array{id: int, label: string, hint?: string}>>
+     */
     public function findCascadeOrphans(): array
     {
-        $result = [
+        if ($this->orphanFinder !== null) {
+            return $this->orphanFinder->findCascadeOrphans();
+        }
+
+        // Fallback: return empty structure for backward-compat with
+        // unit-test setUp() that constructs without the OrphanFinder dep.
+        return [
             'workflow_instances' => [],
             'mfa_tokens' => [],
             'sso_user_approvals' => [],
             'evidence_tasks' => [],
             'notification_deliveries' => [],
         ];
-
-        // 1. WorkflowInstance — entity_type + entity_id pointing nowhere.
-        try {
-            $rows = $this->entityManager->createQueryBuilder()
-                ->select('wi.id, wi.entityType, wi.entityId')
-                ->from(\App\Entity\WorkflowInstance::class, 'wi')
-                ->where('wi.entityType IS NOT NULL AND wi.entityId IS NOT NULL')
-                ->getQuery()
-                ->getArrayResult();
-            foreach ($rows as $row) {
-                $type = (string) ($row['entityType'] ?? '');
-                $id = (int) ($row['entityId'] ?? 0);
-                if ($type === '' || $id === 0 || !class_exists($type)) {
-                    continue;
-                }
-                $target = $this->entityManager->find($type, $id);
-                if ($target === null) {
-                    $result['workflow_instances'][] = [
-                        'id' => (int) $row['id'],
-                        'label' => sprintf('WorkflowInstance#%d → %s#%d (missing target)', (int) $row['id'], $type, $id),
-                    ];
-                }
-            }
-        } catch (\Throwable) {
-            // Pre-flush state or missing table — skip silently.
-        }
-
-        // 2. MfaToken — past expiry, never re-used.
-        try {
-            $now = new \DateTimeImmutable();
-            $rows = $this->entityManager->createQueryBuilder()
-                ->select('m.id, m.tokenType, m.expiresAt, m.lastUsedAt')
-                ->from(\App\Entity\MfaToken::class, 'm')
-                ->where('m.expiresAt IS NOT NULL AND m.expiresAt < :now')
-                ->setParameter('now', $now)
-                ->getQuery()
-                ->getArrayResult();
-            foreach ($rows as $row) {
-                // Only flag tokens that were never used after expiry — used tokens
-                // are kept for forensic audit-trail.
-                $lastUsed = $row['lastUsedAt'] ?? null;
-                if ($lastUsed instanceof \DateTimeInterface && $lastUsed > ($row['expiresAt'] ?? $now)) {
-                    continue;
-                }
-                $result['mfa_tokens'][] = [
-                    'id' => (int) $row['id'],
-                    'label' => sprintf('MfaToken#%d (%s) expired %s', (int) $row['id'], (string) ($row['tokenType'] ?? 'unknown'), $row['expiresAt'] instanceof \DateTimeInterface ? $row['expiresAt']->format('Y-m-d') : 'unknown'),
-                ];
-            }
-        } catch (\Throwable) {
-            // Skip.
-        }
-
-        // 3. SsoUserApproval where reviewer User was deleted.
-        try {
-            $rows = $this->entityManager->createQueryBuilder()
-                ->select('s.id, s.email, IDENTITY(s.reviewedBy) AS reviewerId')
-                ->from(\App\Entity\SsoUserApproval::class, 's')
-                ->where('s.reviewedBy IS NOT NULL')
-                ->getQuery()
-                ->getArrayResult();
-            foreach ($rows as $row) {
-                $reviewerId = (int) ($row['reviewerId'] ?? 0);
-                if ($reviewerId === 0) {
-                    continue;
-                }
-                $reviewer = $this->entityManager->find(\App\Entity\User::class, $reviewerId);
-                if ($reviewer === null) {
-                    $result['sso_user_approvals'][] = [
-                        'id' => (int) $row['id'],
-                        'label' => sprintf('SsoUserApproval#%d (%s) → User#%d (deleted)', (int) $row['id'], (string) ($row['email'] ?? ''), $reviewerId),
-                    ];
-                }
-            }
-        } catch (\Throwable) {
-            // Skip.
-        }
-
-        // 4. EvidenceReverificationTask where BOTH targets (DocumentVersion + Control)
-        //    were deleted — the task has no anchor.
-        try {
-            $rows = $this->entityManager->createQueryBuilder()
-                ->select('t.id, IDENTITY(t.documentVersion) AS dvId, IDENTITY(t.control) AS ctrlId, IDENTITY(t.complianceFulfillment) AS cfId')
-                ->from(\App\Entity\EvidenceReverificationTask::class, 't')
-                ->getQuery()
-                ->getArrayResult();
-            foreach ($rows as $row) {
-                $dvId = (int) ($row['dvId'] ?? 0);
-                $ctrlId = (int) ($row['ctrlId'] ?? 0);
-                $cfId = (int) ($row['cfId'] ?? 0);
-                if ($dvId === 0 && $ctrlId === 0 && $cfId === 0) {
-                    $result['evidence_tasks'][] = [
-                        'id' => (int) $row['id'],
-                        'label' => sprintf('EvidenceReverificationTask#%d (no anchor)', (int) $row['id']),
-                    ];
-                }
-            }
-        } catch (\Throwable) {
-            // Skip.
-        }
-
-        // 5. NotificationDelivery whose owning NotificationRule was deleted.
-        try {
-            $rows = $this->entityManager->createQueryBuilder()
-                ->select('d.id, IDENTITY(d.rule) AS ruleId')
-                ->from(\App\Entity\Notification\NotificationDelivery::class, 'd')
-                ->getQuery()
-                ->getArrayResult();
-            foreach ($rows as $row) {
-                $ruleId = (int) ($row['ruleId'] ?? 0);
-                if ($ruleId === 0) {
-                    $result['notification_deliveries'][] = [
-                        'id' => (int) $row['id'],
-                        'label' => sprintf('NotificationDelivery#%d (rule missing)', (int) $row['id']),
-                    ];
-                    continue;
-                }
-                $rule = $this->entityManager->find(\App\Entity\Notification\NotificationRule::class, $ruleId);
-                if ($rule === null) {
-                    $result['notification_deliveries'][] = [
-                        'id' => (int) $row['id'],
-                        'label' => sprintf('NotificationDelivery#%d → Rule#%d (deleted)', (int) $row['id'], $ruleId),
-                    ];
-                }
-            }
-        } catch (\Throwable) {
-            // Skip.
-        }
-
-        return $result;
     }
 
     /**
