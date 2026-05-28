@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'audit_program' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block title %}{{ 'audit_program.page.title'|trans }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.audit_programs'|trans({}, 'nav') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'nav-clipboard-check', label: 'audit_program.page.title'|trans },
+    title: 'audit_program.page.title'|trans,
+    subtitle: 'audit_program.page.subtitle'|trans,
+    actions: is_granted('ROLE_MANAGER') ? [
+        { label: 'audit_program.action.new'|trans, href: path('app_audit_program_new', {_locale: app.request.locale}), variant: 'primary', icon: 'plus' }
+    ] : []
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container-fluid py-4">
+
+    {% set _total     = programs|length %}
+    {% set _active    = programs|filter(p => p.status == 'active')|length %}
+    {% set _planning  = programs|filter(p => p.status == 'planning')|length %}
+    {% set _completed = programs|filter(p => p.status == 'completed')|length %}
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-clipboard-check', label: 'audit_program.kpi.total'|trans, value: _total, tone: 'neutral' }) }}</div>
+        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-circle-fill', label: 'audit_program.kpi.active'|trans, value: _active, tone: 'primary' }) }}</div>
+        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-pencil-square', label: 'audit_program.kpi.planning'|trans, value: _planning, tone: 'neutral' }) }}</div>
+        <div class="col-sm-6 col-lg-3">{{ _fa_feature_card.render({ icon: 'nav-check-circle', label: 'audit_program.kpi.completed'|trans, value: _completed, tone: 'success' }) }}</div>
+    </div>
+
+    {% if programs is empty %}
+        {{ _fa_empty_state.render({
+            icon: 'nav-clipboard-check',
+            title: 'audit_program.empty.title'|trans,
+            body: 'audit_program.empty.body'|trans,
+            cta: is_granted('ROLE_MANAGER') ? { label: 'audit_program.action.new'|trans, href: path('app_audit_program_new', {_locale: app.request.locale}) } : null
+        }) }}
+    {% else %}
+        <div class="row g-3">
+            {% for program in programs %}
+            <div class="col-md-6 col-xl-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <h5 class="card-title mb-0">
+                                <a href="{{ path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) }}" class="text-decoration-none">{{ program.name }}</a>
+                            </h5>
+                            <span class="badge bg-{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'secondary') }} ms-2">
+                                {{ ('audit_program.status.' ~ program.status)|trans }}
+                            </span>
+                        </div>
+                        {% if program.description %}
+                            <p class="card-text text-muted small mb-3">{{ program.description|u.truncate(120, '…') }}</p>
+                        {% endif %}
+                        <div class="d-flex gap-3 small text-muted">
+                            <span><i class="bi bi-calendar3"></i> {{ program.startDate|date('d.m.Y') }} – {{ program.endDate|date('d.m.Y') }}</span>
+                            <span><i class="bi bi-clipboard-check"></i> {{ program.auditCount }} {{ 'audit_program.kpi.audits'|trans }}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ program.frequency ? ('audit_program.frequency.' ~ program.frequency)|trans : '' }}</small>
+                        <a href="{{ path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</div>
+</main>
+{% endblock %}
