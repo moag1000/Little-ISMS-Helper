@@ -658,6 +658,67 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find all mappings where $requirement appears as either source or target.
+     *
+     * Outbound (source) rows: always returned.
+     * Inbound (target) rows: only returned when the mapping is flagged bidirectional=true.
+     *
+     * Deduplication by mapping ID prevents double-counting self-referencing rows.
+     *
+     * @param string|null $otherFrameworkCode Optional filter — only return rows where the
+     *                                        "other" requirement belongs to this framework.
+     * @return ComplianceMapping[]
+     */
+    public function findByEitherSourceOrTarget(
+        ComplianceRequirement $requirement,
+        ?string $otherFrameworkCode = null,
+    ): array {
+        // Outbound: $requirement is source
+        $qbOut = $this->createQueryBuilder('cm')
+            ->innerJoin('cm.targetRequirement', 'tr')
+            ->innerJoin('tr.framework', 'tf')
+            ->where('cm.sourceRequirement = :req')
+            ->setParameter('req', $requirement);
+
+        if ($otherFrameworkCode !== null) {
+            $qbOut->andWhere('tf.code = :fwCode')
+                  ->setParameter('fwCode', $otherFrameworkCode);
+        }
+
+        // Inbound: $requirement is target, mapping must be bidirectional
+        $qbIn = $this->createQueryBuilder('cm2')
+            ->innerJoin('cm2.sourceRequirement', 'sr')
+            ->innerJoin('sr.framework', 'sf')
+            ->where('cm2.targetRequirement = :req2')
+            ->andWhere('cm2.bidirectional = :bi')
+            ->setParameter('req2', $requirement)
+            ->setParameter('bi', true);
+
+        if ($otherFrameworkCode !== null) {
+            $qbIn->andWhere('sf.code = :fwCode2')
+                 ->setParameter('fwCode2', $otherFrameworkCode);
+        }
+
+        /** @var ComplianceMapping[] $outbound */
+        $outbound = $qbOut->getQuery()->getResult();
+        /** @var ComplianceMapping[] $inbound */
+        $inbound = $qbIn->getQuery()->getResult();
+
+        // Deduplicate by mapping ID
+        $seen   = [];
+        $result = [];
+        foreach (array_merge($outbound, $inbound) as $mapping) {
+            $id = $mapping->getId();
+            if (!isset($seen[$id])) {
+                $seen[$id] = true;
+                $result[]  = $mapping;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Find bidirectional mappings where requirements mutually satisfy each other.
      *
      * Bidirectional mappings indicate strong equivalence between requirements across frameworks,

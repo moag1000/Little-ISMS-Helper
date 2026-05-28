@@ -275,5 +275,91 @@ Mappings based on:
 - Expert analysis
 - Community contributions
 
-**Last Updated**: 2025-11-11
+**Last Updated**: 2026-05-28
 **Frameworks Version**: ISO 27001:2022, NIST CSF 2.0, CIS Controls v8, SOC 2 (2017 TSC)
+
+---
+
+## CrossFrameworkLookupService (since 2026-05-28)
+
+`src/Service/CrossFrameworkLookupService.php` provides programmatic forward, reverse, and
+transitive requirement lookup without duplicating DB rows.
+
+### Strategy: Symmetric Query
+
+One row per pair in the DB. The service queries both directions in PHP:
+
+- **Outbound** (`cm.sourceRequirement = :req`) — always returned.
+- **Inbound** (`cm.targetRequirement = :req`) — only returned when `bidirectional = true`.
+
+This avoids a second materialised "reverse" row and keeps the data model simple.
+The repository method `ComplianceMappingRepository::findByEitherSourceOrTarget()` executes
+two sub-queries and deduplicates by mapping ID.
+
+### Bidirectional Flag Semantics
+
+A mapping row with `bidirectional = true` means the relationship is symmetric:
+if TISAX ISA 1.1.1 ≡ ISO A.5.1, then ISO A.5.1 ≡ TISAX ISA 1.1.1.
+ENX-sourced `equivalent`-relationship mappings should have `bidirectional = true`.
+Partial/weak mappings are typically directional only.
+
+### In-Memory Cache
+
+`CrossFrameworkLookupService` holds a `private array $cache` keyed by
+`"<requirementId>:<frameworkCode|*>"`. Cache lifetime = single HTTP request.
+No external cache component needed — avoids invalidation complexity.
+
+### Provenance Tags
+
+`computeProvenanceTags()` returns string tags describing how each relationship
+was inferred:
+
+| Tag | Meaning |
+|-----|---------|
+| `direct_forward` | Mapping row where this req is the source |
+| `direct_reverse` | Mapping row where this req is the target (bidirectional) |
+| `transitive_via_ISO27001-2022` | Reachable via ISO 27001 as intermediate |
+
+### Transitive Walk (DFS)
+
+`findTransitiveEquivalents($req, maxDepth: 2)` uses depth-first search with a
+`$visited` set (requirement IDs as keys) to prevent infinite loops in cyclic graphs.
+Default max depth = 2 (grandchild equivalents). Increase cautiously — depth 3+ on
+dense mapping graphs can be expensive.
+
+### API
+
+```php
+// Direct equivalents, grouped for UI rendering
+$grouped = $service->findEquivalentsGroupedByFramework($requirement);
+// Returns: array<frameworkCode, list<{requirement, mapping, direction, via, depth}>>
+
+// Forward only
+$forward = $service->findMappingsForward($req, 'ISO27001-2022');
+
+// Reverse only (respects bidirectional flag)
+$reverse = $service->findMappingsReverse($req, 'VDA-ISA-6');
+
+// All direct equivalents, deduped (strongest wins)
+$all = $service->findEquivalents($req);
+
+// Transitive up to depth N
+$transitive = $service->findTransitiveEquivalents($req, maxDepth: 2);
+
+// Provenance tags for coverage rollup
+$tags = $service->computeProvenanceTags($req);
+```
+
+### Controller Integration
+
+`ComplianceRequirementController::show()` passes `cross_framework_equivalents` to
+`templates/compliance/requirement/show.html.twig`, which renders the
+"Äquivalente in anderen Frameworks" / "Equivalents in Other Frameworks" card
+when any equivalents exist.
+
+### Tests
+
+`tests/Service/CrossFrameworkLookupServiceTest.php` — 8 unit tests covering:
+forward lookup, framework-code filter, reverse excludes non-bidirectional,
+reverse includes bidirectional, deduplication, in-memory cache, transitive depth-2,
+and cycle guard.
