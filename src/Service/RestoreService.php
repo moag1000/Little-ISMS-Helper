@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Service\BackupEncryptionService;
+use App\Service\Restore\RestoreValidator;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Doctrine\DBAL\Exception as DBALException;
@@ -25,13 +26,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class RestoreService
 {
-    /**
-     * Backup format versions that this RestoreService can handle.
-     * '1.0' = legacy JSON-only (no schema_version in metadata)
-     * '2.0' = JSON + optional ZIP-embedded files + schema_version + app_version
-     */
-    private const array SUPPORTED_VERSIONS = ['1.0', '2.0'];
-
     // Strategies for handling missing fields
     public const string STRATEGY_SKIP_FIELD = 'skip_field';
     public const string STRATEGY_USE_DEFAULT = 'use_default';
@@ -56,6 +50,7 @@ class RestoreService
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly ?BackupEncryptionService $backupEncryption = null,
         private readonly ?ManagerRegistry $registry = null,
+        private readonly ?RestoreValidator $validator = null,
     ) {
     }
 
@@ -84,131 +79,20 @@ class RestoreService
      */
     public function validateBackup(array $backup, ?Tenant $callerScope = null): array
     {
-        $this->validationErrors = [];
-        $this->warnings = [];
+        $validator = $this->getValidator();
+        $result = $validator->validateBackup(
+            $backup,
+            $callerScope,
+            fn(?Tenant $t): array => $this->resolveTenantScopeIds($t),
+            function (string $class, string $name, array $rows) use ($validator): void {
+                $validator->validateEntityData($class, $name, $rows);
+            },
+        );
 
-        // Tenant-scope guard (Phase 5): reject cross-tenant attempts before anything else.
-        if ($callerScope !== null) {
-            $callerScopeIds = $this->resolveTenantScopeIds($callerScope);
-            $backupScopeIds = $backup['metadata']['tenant_scope'] ?? null;
+        $this->validationErrors = $validator->getValidationErrors();
+        $this->warnings = $validator->getWarnings();
 
-            // A backup without any recorded tenant_scope is treated as legacy/global.
-            // Non-SUPER callers must not be allowed to restore such a backup — it
-            // potentially contains data from foreign tenants.
-            if ($backupScopeIds === null || !is_array($backupScopeIds)) {
-                throw new AccessDeniedException(
-                    'Cross-tenant restore denied: backup has no recorded tenant_scope (legacy/global backup).'
-                );
-            }
-
-            $backupScopeIds = array_map(static fn($v): int => (int) $v, $backupScopeIds);
-
-            // Empty array = global backup (created without tenant scope). Only SUPER may restore.
-            if ($backupScopeIds === []) {
-                throw new AccessDeniedException(
-                    'Cross-tenant restore denied: backup was created with global scope.'
-                );
-            }
-
-            if (array_intersect($backupScopeIds, $callerScopeIds) === []) {
-                throw new AccessDeniedException(sprintf(
-                    'Cross-tenant restore denied: backup tenant_scope [%s] does not overlap with caller scope [%s].',
-                    implode(',', $backupScopeIds),
-                    implode(',', $callerScopeIds)
-                ));
-            }
-        }
-
-        // Check metadata
-        if (!isset($backup['metadata'])) {
-            $this->validationErrors[] = 'Missing metadata section';
-            return ['valid' => false, 'errors' => $this->validationErrors, 'warnings' => $this->warnings];
-        }
-
-        // Check version compatibility
-        $version = $backup['metadata']['version'] ?? null;
-        if ($version === null) {
-            // Legacy backup without version field — treat as 1.0 (JSON-only)
-            $this->warnings[] = 'Backup has no format version (assumed legacy 1.0). File restore will be skipped.';
-        } elseif (!in_array($version, self::SUPPORTED_VERSIONS, true)) {
-            // Major-version guard: reject if major part differs from all supported
-            $this->validationErrors[] = sprintf(
-                'Unsupported backup version: %s (supported: %s)',
-                $version,
-                implode(', ', self::SUPPORTED_VERSIONS)
-            );
-        }
-
-        // Schema version advisory check (non-blocking)
-        if (isset($backup['metadata']['schema_version'])) {
-            $this->checkSchemaVersionCompatibility($backup['metadata']['schema_version']);
-        }
-
-        // Warn when files were in backup but extraction has not happened yet
-        if (!empty($backup['metadata']['files_included']) && !isset($backup['metadata']['_extracted_file_count'])) {
-            $this->warnings[] = sprintf(
-                'Backup contains %d embedded file(s) — load via BackupService::loadBackupFromFile() to extract them.',
-                $backup['metadata']['file_count'] ?? 0
-            );
-        }
-
-        // Check data section
-        if (!isset($backup['data']) || !is_array($backup['data'])) {
-            $this->validationErrors[] = 'Missing or invalid data section';
-            return ['valid' => false, 'errors' => $this->validationErrors, 'warnings' => $this->warnings];
-        }
-
-        // Validate each entity type
-        foreach ($backup['data'] as $entityName => $entities) {
-            $entityClass = 'App\\Entity\\' . $entityName;
-
-            if (!class_exists($entityClass)) {
-                $this->warnings[] = sprintf('Entity class not found: %s (will be skipped)', $entityName);
-                continue;
-            }
-
-            if (!is_array($entities)) {
-                $this->validationErrors[] = sprintf('Invalid data format for entity: %s', $entityName);
-                continue;
-            }
-
-            // Validate entity structure
-            $this->validateEntityData($entityClass, $entityName, $entities);
-        }
-
-        return [
-            'valid' => $this->validationErrors === [],
-            'errors' => $this->validationErrors,
-            'warnings' => $this->warnings,
-        ];
-    }
-
-    /**
-     * Compare the backup schema_version against the current database schema.
-     * Adds a non-blocking warning when they differ.
-     */
-    private function checkSchemaVersionCompatibility(string $backupSchemaVersion): void
-    {
-        try {
-            $connection = $this->entityManager->getConnection();
-            $result = $connection->executeQuery(
-                'SELECT version FROM doctrine_migration_versions ORDER BY executed_at DESC LIMIT 1'
-            );
-            $row = $result->fetchAssociative();
-            if ($row !== false && isset($row['version'])) {
-                $currentVersion = preg_replace('/^.*\\\\/', '', (string) $row['version']) ?? (string) $row['version'];
-                if ($currentVersion !== $backupSchemaVersion) {
-                    $this->warnings[] = sprintf(
-                        'Schema version mismatch: backup was created with schema "%s", current schema is "%s". '
-                        . 'Some fields may be missing or incompatible.',
-                        $backupSchemaVersion,
-                        $currentVersion
-                    );
-                }
-            }
-        } catch (Exception) {
-            // Non-critical — if the table does not exist we simply skip the check
-        }
+        return $result;
     }
 
     /**
@@ -1079,39 +963,15 @@ class RestoreService
     }
 
     /**
-     * Validate entity data structure
+     * Validate entity data structure — delegates to RestoreValidator.
      */
     private function validateEntityData(string $entityClass, string $entityName, array $entities): void
     {
-        if ($entities === []) {
-            return;
-        }
-
-        $classMetadata = $this->entityManager->getClassMetadata($entityClass);
-        $requiredFields = [];
-
-        // Check for required fields (not nullable)
-        foreach ($classMetadata->getFieldNames() as $fieldName) {
-            $mapping = $classMetadata->getFieldMapping($fieldName);
-            // Doctrine 3.x returns FieldMapping object (ArrayAccess) or plain array
-            // depending on version. Check both to stay forward-compatible with ORM 4.0.
-            $nullable = is_array($mapping)
-                ? ($mapping['nullable'] ?? false)
-                : ($mapping->nullable ?? false);
-            if (!$nullable && $fieldName !== 'id') {
-                $requiredFields[] = $fieldName;
-            }
-        }
-
-        // Validate first entity as sample
-        $firstEntity = $entities[0];
-        foreach ($requiredFields as $requiredField) {
-            if (!array_key_exists($requiredField, $firstEntity) || $firstEntity[$requiredField] === null) {
-                $this->warnings[] = sprintf(
-                    'Required field "%s" missing in entity "%s" (can use default value strategy)',
-                    $requiredField,
-                    $entityName
-                );
+        $this->getValidator()->validateEntityData($entityClass, $entityName, $entities);
+        // Merge any warnings the validator recorded back into our own warnings array
+        foreach ($this->getValidator()->getWarnings() as $w) {
+            if (!in_array($w, $this->warnings, true)) {
+                $this->warnings[] = $w;
             }
         }
     }
@@ -2088,6 +1948,17 @@ class RestoreService
     }
 
     /**
+     * Lazily build the RestoreValidator collaborator.
+     * When injected via DI (new constructor param) use it directly;
+     * fall back to inline construction so legacy test setUp() code that
+     * does not pass the collaborator still works without breaking changes.
+     */
+    private function getValidator(): RestoreValidator
+    {
+        return $this->validator ?? new RestoreValidator($this->entityManager, $this->logger);
+    }
+
+    /**
      * Get validation errors
      */
     public function getValidationErrors(): array
@@ -2164,36 +2035,14 @@ class RestoreService
 
     /**
      * Verify the SHA256 integrity seal of the backup data section.
-     *
-     * - If `metadata.sha256` is present: recompute hash over `data` and throw on mismatch.
-     * - If `metadata.sha256` is absent (legacy backup): log a warning and return the warning
-     *   string so the caller can re-apply it after the next `validateBackup()` reset.
+     * Delegates to RestoreValidator.
      *
      * @return string|null Warning message for legacy backups without a hash, null otherwise.
-     * @throws RuntimeException When the hash does not match.
+     * @throws \App\Exception\Io\IoException When the hash does not match.
      */
     private function verifyIntegrity(array $backup): ?string
     {
-        $storedHash = $backup['metadata']['sha256'] ?? null;
-
-        if ($storedHash === null) {
-            $warning = 'Legacy backup restored without SHA256 integrity verification — hash absent in metadata.';
-            $this->logger->warning($warning);
-            return $warning;
-        }
-
-        $actualHash = hash('sha256', (string) json_encode($backup['data'] ?? []));
-
-        if (!hash_equals($storedHash, $actualHash)) {
-            throw new \App\Exception\Io\IoException(sprintf(
-                'Backup integrity check failed: sha256 mismatch (expected %s, got %s)',
-                $storedHash,
-                $actualHash
-            ));
-        }
-
-        $this->logger->info('Backup integrity check passed', ['sha256' => $storedHash]);
-        return null;
+        return $this->getValidator()->verifyIntegrity($backup);
     }
 
     /**
