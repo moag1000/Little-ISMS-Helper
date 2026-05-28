@@ -88,7 +88,7 @@
                 <form method="post" action="{{ path('app_dora_subcontractor_delete', {id: subcontractor.id}) }}" class="mt-4" onsubmit="return confirm('{{ 'common.confirm_delete'|trans({}, 'messages')|e('js') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ subcontractor.id) }}">
                     <button type="submit" class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--trash" aria-hidden="true"></i>
                         {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>
