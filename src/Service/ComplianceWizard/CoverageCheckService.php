@@ -23,7 +23,6 @@ use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * CoverageCheckService
@@ -35,6 +34,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * (control_coverage, risk_coverage, asset_coverage, incident_process, bcm_coverage,
  * training_coverage, audit_status, supplier_assessment, document_review,
  * treatment_plan, consent_coverage, dsr_coverage, dpia_coverage, policy_wizard).
+ *
+ * Gap arrays use raw translation keys for `title`, `description`, and `action`.
+ * Templates call |trans({}, 'wizard') on these values. Parameterised descriptions
+ * additionally carry a `description_params` key.
  */
 final class CoverageCheckService
 {
@@ -54,7 +57,6 @@ final class CoverageCheckService
         private readonly ProcessingActivityRepository $processingActivityRepository,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
-        private readonly TranslatorInterface $translator,
         private readonly PolicyWizardCheckRegistry $policyWizardCheckRegistry,
         private readonly ?ComplianceRequirementRepository $requirementRepository = null,
     ) {
@@ -150,14 +152,11 @@ final class CoverageCheckService
         $gap = null;
         if ($score < 100) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.controls_not_implemented', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.controls_description',
-                    ['%count%' => count($notImplemented)],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.controls_not_implemented',
+                'description' => 'wizard.gap.controls_description',
+                'description_params' => ['%count%' => count($notImplemented)],
                 'priority' => count($notImplemented) > 5 ? 'critical' : 'high',
-                'action' => $this->translator->trans('wizard.action.implement_controls', [], 'wizard'),
+                'action' => 'wizard.action.implement_controls',
                 'route' => 'app_soa_index',
                 'items' => array_slice($notImplemented, 0, 5),
             ];
@@ -211,27 +210,21 @@ final class CoverageCheckService
         $gap = null;
         if (!empty($highUntreated)) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.high_risks_untreated', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.high_risks_description',
-                    ['%count%' => count($highUntreated)],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.high_risks_untreated',
+                'description' => 'wizard.gap.high_risks_description',
+                'description_params' => ['%count%' => count($highUntreated)],
                 'priority' => 'critical',
-                'action' => $this->translator->trans('wizard.action.treat_risks', [], 'wizard'),
+                'action' => 'wizard.action.treat_risks',
                 'route' => 'app_risk_index',
                 'items' => array_slice($highUntreated, 0, 5),
             ];
         } elseif ($score < 100) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.risks_need_treatment', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.risks_treatment_description',
-                    ['%treated%' => $treatedRisks, '%total%' => $totalRisks],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.risks_need_treatment',
+                'description' => 'wizard.gap.risks_treatment_description',
+                'description_params' => ['%treated%' => $treatedRisks, '%total%' => $totalRisks],
                 'priority' => 'medium',
-                'action' => $this->translator->trans('wizard.action.review_risks', [], 'wizard'),
+                'action' => 'wizard.action.review_risks',
                 'route' => 'app_risk_index',
             ];
         }
@@ -284,14 +277,11 @@ final class CoverageCheckService
         $gap = null;
         if (!empty($unclassified)) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.assets_not_classified', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.assets_classification_description',
-                    ['%count%' => count($unclassified)],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.assets_not_classified',
+                'description' => 'wizard.gap.assets_classification_description',
+                'description_params' => ['%count%' => count($unclassified)],
                 'priority' => count($unclassified) > 10 ? 'high' : 'medium',
-                'action' => $this->translator->trans('wizard.action.classify_assets', [], 'wizard'),
+                'action' => 'wizard.action.classify_assets',
                 'route' => 'app_asset_index',
                 'items' => array_slice($unclassified, 0, 5),
             ];
@@ -362,14 +352,11 @@ final class CoverageCheckService
         $gap = null;
         if (!empty($overdue)) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.incidents_overdue', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.incidents_overdue_description',
-                    ['%count%' => count($overdue), '%sla%' => $slaHours],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.incidents_overdue',
+                'description' => 'wizard.gap.incidents_overdue_description',
+                'description_params' => ['%count%' => count($overdue), '%sla%' => $slaHours],
                 'priority' => 'critical',
-                'action' => $this->translator->trans('wizard.action.resolve_incidents', [], 'wizard'),
+                'action' => 'wizard.action.resolve_incidents',
                 'route' => 'app_incident_index',
                 'items' => array_slice($overdue, 0, 5),
             ];
@@ -449,23 +436,20 @@ final class CoverageCheckService
         $gap = null;
         if (!empty($criticalWithoutPlan)) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.critical_no_bcplan', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.critical_bcplan_description',
-                    ['%count%' => count($criticalWithoutPlan)],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.critical_no_bcplan',
+                'description' => 'wizard.gap.critical_bcplan_description',
+                'description_params' => ['%count%' => count($criticalWithoutPlan)],
                 'priority' => 'critical',
-                'action' => $this->translator->trans('wizard.action.create_bcplan', [], 'wizard'),
+                'action' => 'wizard.action.create_bcplan',
                 'route' => 'app_bcm_index',
                 'items' => array_slice($criticalWithoutPlan, 0, 5),
             ];
         } elseif ($score < 80) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.bcm_incomplete', [], 'wizard'),
-                'description' => $this->translator->trans('wizard.gap.bcm_incomplete_description', [], 'wizard'),
+                'title' => 'wizard.gap.bcm_incomplete',
+                'description' => 'wizard.gap.bcm_incomplete_description',
                 'priority' => 'high',
-                'action' => $this->translator->trans('wizard.action.complete_bcm', [], 'wizard'),
+                'action' => 'wizard.action.complete_bcm',
                 'route' => 'app_bcm_index',
             ];
         }
@@ -515,14 +499,11 @@ final class CoverageCheckService
         $gap = null;
         if (!empty($overdue)) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.trainings_overdue', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.trainings_overdue_description',
-                    ['%count%' => count($overdue)],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.trainings_overdue',
+                'description' => 'wizard.gap.trainings_overdue_description',
+                'description_params' => ['%count%' => count($overdue)],
                 'priority' => 'high',
-                'action' => $this->translator->trans('wizard.action.complete_trainings', [], 'wizard'),
+                'action' => 'wizard.action.complete_trainings',
                 'route' => 'app_training_index',
                 'items' => array_slice($overdue, 0, 5),
             ];
@@ -582,14 +563,11 @@ final class CoverageCheckService
         $gap = null;
         if (!empty($openCriticalFindings)) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.critical_findings_open', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.critical_findings_description',
-                    ['%count%' => count($openCriticalFindings)],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.critical_findings_open',
+                'description' => 'wizard.gap.critical_findings_description',
+                'description_params' => ['%count%' => count($openCriticalFindings)],
                 'priority' => 'critical',
-                'action' => $this->translator->trans('wizard.action.close_findings', [], 'wizard'),
+                'action' => 'wizard.action.close_findings',
                 'route' => 'app_audit_index',
             ];
         }
@@ -643,14 +621,11 @@ final class CoverageCheckService
         $gap = null;
         if (!empty($criticalUnassessed)) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.suppliers_not_assessed', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.suppliers_assessment_description',
-                    ['%count%' => count($criticalUnassessed)],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.suppliers_not_assessed',
+                'description' => 'wizard.gap.suppliers_assessment_description',
+                'description_params' => ['%count%' => count($criticalUnassessed)],
                 'priority' => 'critical',
-                'action' => $this->translator->trans('wizard.action.assess_suppliers', [], 'wizard'),
+                'action' => 'wizard.action.assess_suppliers',
                 'route' => 'app_supplier_index',
                 'items' => array_slice($criticalUnassessed, 0, 5),
             ];
@@ -712,14 +687,11 @@ final class CoverageCheckService
         $gap = null;
         if (!empty($overdue)) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.treatment_plans_overdue', [], 'wizard'),
-                'description' => $this->translator->trans(
-                    'wizard.gap.treatment_plans_description',
-                    ['%count%' => count($overdue)],
-                    'wizard'
-                ),
+                'title' => 'wizard.gap.treatment_plans_overdue',
+                'description' => 'wizard.gap.treatment_plans_description',
+                'description_params' => ['%count%' => count($overdue)],
                 'priority' => 'high',
-                'action' => $this->translator->trans('wizard.action.complete_treatment', [], 'wizard'),
+                'action' => 'wizard.action.complete_treatment',
                 'route' => 'app_risk_treatment_plan_index',
                 'items' => array_slice($overdue, 0, 5),
             ];
@@ -759,8 +731,8 @@ final class CoverageCheckService
                 'score' => 0,
                 'details' => ['total' => 0, 'active' => 0],
                 'gap' => [
-                    'title' => $this->translator->trans('wizard.gap.no_consents', [], 'wizard'),
-                    'description' => $this->translator->trans('wizard.gap.no_consents_desc', [], 'wizard'),
+                    'title' => 'wizard.gap.no_consents',
+                    'description' => 'wizard.gap.no_consents_desc',
                     'priority' => 'high',
                     'route' => $check['route'] ?? 'app_consent_index',
                 ],
@@ -781,8 +753,8 @@ final class CoverageCheckService
                 'score' => 0,
                 'details' => ['total' => 0, 'active' => 0],
                 'gap' => [
-                    'title' => $this->translator->trans('wizard.gap.no_consents', [], 'wizard'),
-                    'description' => $this->translator->trans('wizard.gap.no_consents_desc', [], 'wizard'),
+                    'title' => 'wizard.gap.no_consents',
+                    'description' => 'wizard.gap.no_consents_desc',
                     'priority' => 'high',
                     'route' => $check['route'] ?? 'app_consent_index',
                 ],
@@ -794,8 +766,8 @@ final class CoverageCheckService
         $gap = null;
         if ($score < 90) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.consent_revoked_high', [], 'wizard'),
-                'description' => $this->translator->trans('wizard.gap.consent_revoked_high_desc', [], 'wizard'),
+                'title' => 'wizard.gap.consent_revoked_high',
+                'description' => 'wizard.gap.consent_revoked_high_desc',
                 'priority' => 'medium',
                 'route' => $check['route'] ?? 'app_consent_index',
             ];
@@ -833,8 +805,8 @@ final class CoverageCheckService
                 'score' => 100,
                 'details' => ['total' => 0, 'completed' => 0, 'message' => 'no_requests_yet'],
                 'gap' => [
-                    'title' => $this->translator->trans('wizard.gap.no_dsr', [], 'wizard'),
-                    'description' => $this->translator->trans('wizard.gap.no_dsr_desc', [], 'wizard'),
+                    'title' => 'wizard.gap.no_dsr',
+                    'description' => 'wizard.gap.no_dsr_desc',
                     'priority' => 'medium',
                     'route' => $check['route'] ?? 'app_data_subject_request_index',
                 ],
@@ -846,8 +818,8 @@ final class CoverageCheckService
         $gap = null;
         if ($score < 90) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.dsr_open_high', [], 'wizard'),
-                'description' => $this->translator->trans('wizard.gap.dsr_open_high_desc', [], 'wizard'),
+                'title' => 'wizard.gap.dsr_open_high',
+                'description' => 'wizard.gap.dsr_open_high_desc',
                 'priority' => 'high',
                 'route' => $check['route'] ?? 'app_data_subject_request_index',
             ];
@@ -900,8 +872,8 @@ final class CoverageCheckService
         $gap = null;
         if ($score < 100) {
             $gap = [
-                'title' => $this->translator->trans('wizard.gap.dpia_missing', [], 'wizard'),
-                'description' => $this->translator->trans('wizard.gap.dpia_missing_desc', [], 'wizard'),
+                'title' => 'wizard.gap.dpia_missing',
+                'description' => 'wizard.gap.dpia_missing_desc',
                 'priority' => 'critical',
                 'route' => $check['route'] ?? 'app_processing_activity_index',
             ];

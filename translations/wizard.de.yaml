@@ -105,6 +105,7 @@ wizard:
         in_progress: "In Bearbeitung"
         needs_work: "Handlungsbedarf"
         not_started: "Nicht begonnen"
+        non_compliant: "Nicht konform"
 
     # Category details
     category_summary: "Zusammenfassung"
@@ -1586,3 +1587,9 @@ wizard:
             score: 'Score'
             status: 'Status'
             gaps: 'Critical Gaps'
+
+compliance_check:
+    policy_approval_chain_completed:
+        fail_message: 'Mindestens eine veröffentlichte Richtlinie hat keine vollständige Approval-Chain (CISO + Top-Management) — Approval-Inbox prüfen.'
+    policy_acknowledgement_coverage:
+        fail_message: 'Mindestens eine Richtlinie liegt unter 95 % Acknowledgement-Quote — Awareness-Erinnerung anstoßen.'

@@ -105,6 +105,7 @@ wizard:
         in_progress: "In Progress"
         needs_work: "Needs Work"
         not_started: "Not Started"
+        non_compliant: "Non-Compliant"
 
     # Category details
     category_summary: "Summary"
@@ -1586,3 +1587,9 @@ wizard:
             score: 'Score'
             status: 'Status'
             gaps: 'Critical Gaps'
+
+compliance_check:
+    policy_approval_chain_completed:
+        fail_message: 'At least one published policy is missing a full approval chain (CISO + Top Management) — check the approval inbox.'
+    policy_acknowledgement_coverage:
+        fail_message: 'At least one policy is below the 95% acknowledgement threshold — send an awareness reminder.'
