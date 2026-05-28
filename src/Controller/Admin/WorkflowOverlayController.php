@@ -272,13 +272,17 @@ final class WorkflowOverlayController extends AbstractController
             return $this->redirectToRoute('admin_workflow_overlay_show', ['name' => $name]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/workflows/step_edit.html.twig', [
             'form' => $form,
             'workflowName' => $name,
             'stepIndex' => $stepIndex,
             'yamlStep' => $yamlStep,
             'existing' => $existing,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**
