@@ -41,7 +41,7 @@
     ], 5) }}
 
     <div class="mt-4">
-        {# Aggregate KPI tiles — per-tier model aware #}
+        {# Aggregate KPI tiles — IS/PP use Reifegrad, DP uses tristate #}
         <div class="row mb-4">
             <div class="col-md-3">
                 {{ _fa_feature_card.render({
@@ -59,35 +59,44 @@
                     icon: 'status-ok'
                 }) }}
             </div>
+            {# IS/PP tier tiles (Reifegrad) #}
             {% for tier, tierData in aggregate.byTier %}
-            <div class="col-md-3">
-                {% if tierData.model == 'information_security' %}
+                {% if tierData.model is defined and tierData.model == 'reifegrad' %}
+                <div class="col-md-3">
                     {{ _fa_feature_card.render({
-                        label: ('tisax.import.assess.tier.' ~ tier)|trans({}, 'tisax_isa'),
-                        value: 'tisax.import.assess.tier_is_value'|trans({'%avg%': tierData.average, '%target%': 3}, 'tisax_isa'),
+                        label: tier|replace({'_': ' '})|title,
+                        value: tierData.average ~ ' / 5',
                         variant: 'info',
-                        icon: 'status-gauge'
+                        icon: 'nav-collection'
                     }) }}
-                {% elseif tierData.model == 'prototype_protection' %}
-                    {{ _fa_feature_card.render({
-                        label: ('tisax.import.assess.tier.' ~ tier)|trans({}, 'tisax_isa'),
-                        value: 'tisax.import.assess.tier_pp_value'|trans({'%compliant%': tierData.compliant, '%total%': tierData.total}, 'tisax_isa'),
-                        variant: tierData.total > 0 and tierData.compliant == tierData.total ? 'success' : 'warning',
-                        icon: 'status-ok'
-                    }) }}
-                {% elseif tierData.model == 'data_protection' %}
-                    {{ _fa_feature_card.render({
-                        label: ('tisax.import.assess.tier.' ~ tier)|trans({}, 'tisax_isa'),
-                        value: 'tisax.import.assess.tier_dp_value'|trans({'%in_place%': tierData.in_place, '%total%': tierData.total}, 'tisax_isa'),
-                        variant: tierData.total > 0 and tierData.in_place == tierData.total ? 'success' : 'warning',
-                        icon: 'nav-shield-alert'
-                    }) }}
+                </div>
                 {% endif %}
-            </div>
             {% endfor %}
+            {# DP tier tile (tristate) #}
+            {% if aggregate.dp.total > 0 %}
+            <div class="col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'tisax.import.assess.dp.tile_label'|trans({}, 'tisax_isa'),
+                    value: aggregate.dp.compliant ~ ' / ' ~ aggregate.dp.total ~ ' OK',
+                    variant: aggregate.dp.non_compliant > 0 ? 'danger' : 'success',
+                    icon: 'nav-collection'
+                }) }}
+            </div>
+            {% endif %}
         </div>
 
-        {# Reifegrad assessment form #}
+        {# DP tier info banner #}
+        {% if aggregate.dp.total > 0 %}
+        <div class="alert alert-info d-flex align-items-start mb-4" role="alert">
+            <i class="bi bi-info-circle-fill me-2 mt-1 flex-shrink-0"></i>
+            <div>
+                <strong>{{ 'tisax.import.assess.dp.legend'|trans({}, 'tisax_isa') }}</strong>
+                {{ 'tisax.import.assess.dp.hint'|trans({}, 'tisax_isa') }}
+            </div>
+        </div>
+        {% endif %}
+
+        {# Assessment form #}
         <form method="post" action="{{ path('app_tisax_import_assess', { _locale: app.request.locale, frameworkId: framework.id }) }}">
             <input type="hidden" name="_token" value="{{ token }}">
 
@@ -106,69 +115,86 @@
                                 <th>{{ 'tisax.import.assess.col.id'|trans({}, 'tisax_isa') }}</th>
                                 <th>{{ 'tisax.import.assess.col.title'|trans({}, 'tisax_isa') }}</th>
                                 <th>{{ 'tisax.import.assess.col.tier'|trans({}, 'tisax_isa') }}</th>
-                                <th>{{ 'tisax.import.assess.col.reifegrad'|trans({}, 'tisax_isa') }}</th>
+                                <th>{{ 'tisax.import.assess.col.assessment'|trans({}, 'tisax_isa') }}</th>
                                 <th>{{ 'tisax.import.assess.col.target'|trans({}, 'tisax_isa') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for req in requirements %}
-                            {% set currentLevel = req.maturityCurrent %}
+                            {% set isDataProtection = req.category == 'data_protection' %}
                             <tr>
                                 <td><code>{{ req.requirementId }}</code></td>
                                 <td class="text-truncate" style="max-width:300px" title="{{ req.title }}">{{ req.title }}</td>
                                 <td>
-                                    <span class="badge bg-secondary text-capitalize">
-                                        {{ req.category|replace({'_': ' '}) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    {% set _category = req.category ?? 'information_security' %}
-                                    {% if _category == 'prototype_protection' %}
-                                    {# Tier 2: binary compliance radio #}
-                                    <div class="d-flex gap-2 flex-wrap" role="group" aria-label="{{ 'tisax.import.assess.col.compliance'|trans({}, 'tisax_isa') }}">
-                                        {% for val in ['compliant', 'not_compliant', 'na'] %}
-                                        <div class="form-check form-check-inline mb-0">
-                                            <input class="form-check-input" type="radio"
-                                                name="compliance_pp[{{ req.id }}]"
-                                                id="pp_{{ req.id }}_{{ val }}"
-                                                value="{{ val }}"
-                                                {% if req.assessmentValue == val %}checked{% endif %}>
-                                            <label class="form-check-label small" for="pp_{{ req.id }}_{{ val }}">
-                                                {{ ('tisax.import.assess.pp.' ~ val)|trans({}, 'tisax_isa') }}
-                                            </label>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                    {% elseif _category == 'data_protection' %}
-                                    {# Tier 3: GDPR conformance radio #}
-                                    <div class="d-flex gap-2 flex-wrap" role="group" aria-label="{{ 'tisax.import.assess.col.conformance'|trans({}, 'tisax_isa') }}">
-                                        {% for val in ['in_place', 'partial', 'not_in_place', 'na'] %}
-                                        <div class="form-check form-check-inline mb-0">
-                                            <input class="form-check-input" type="radio"
-                                                name="compliance_dp[{{ req.id }}]"
-                                                id="dp_{{ req.id }}_{{ val }}"
-                                                value="{{ val }}"
-                                                {% if req.assessmentValue == val %}checked{% endif %}>
-                                            <label class="form-check-label small" for="dp_{{ req.id }}_{{ val }}">
-                                                {{ ('tisax.import.assess.dp.' ~ val)|trans({}, 'tisax_isa') }}
-                                            </label>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
+                                    {% if isDataProtection %}
+                                        <span class="badge bg-info text-dark text-capitalize">
+                                            {{ 'tisax.import.assess.dp.tier_badge'|trans({}, 'tisax_isa') }}
+                                        </span>
                                     {% else %}
-                                    {# Tier 1: Reifegrad 0-5 select (default / information_security) #}
-                                    <select name="reifegrad[{{ req.id }}]" class="form-select form-select-sm" style="width:auto">
-                                        {% for levelInt, levelStr in levels %}
-                                        <option value="{{ levelInt }}"
-                                            {% if currentLevel == levelStr %}selected{% endif %}>
-                                            {{ levelInt }} — {{ ('tisax.import.assess.level.' ~ levelStr)|trans({}, 'tisax_isa') }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
+                                        <span class="badge bg-secondary text-capitalize">
+                                            {{ req.category|replace({'_': ' '}) }}
+                                        </span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if req.maturityTarget %}
+                                    {% if isDataProtection %}
+                                        {# ── Data Protection: 3-state radio (NA / OK / Nicht OK) ── #}
+                                        {% set currentDpState = req.assessmentStateDp %}
+                                        <div class="d-flex gap-2 align-items-center flex-wrap" role="group"
+                                             aria-label="{{ 'tisax.import.assess.dp.aria_group'|trans({}, 'tisax_isa') }}">
+                                            <div class="form-check form-check-inline mb-0">
+                                                <input class="form-check-input"
+                                                       type="radio"
+                                                       name="dp[{{ req.id }}]"
+                                                       id="dp_na_{{ req.id }}"
+                                                       value="not_applicable"
+                                                       {{ currentDpState == 'not_applicable' or currentDpState is null ? 'checked' }}>
+                                                <label class="form-check-label text-muted" for="dp_na_{{ req.id }}">
+                                                    {{ 'tisax.import.assess.dp.state.na'|trans({}, 'tisax_isa') }}
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline mb-0">
+                                                <input class="form-check-input"
+                                                       type="radio"
+                                                       name="dp[{{ req.id }}]"
+                                                       id="dp_ok_{{ req.id }}"
+                                                       value="compliant"
+                                                       {{ currentDpState == 'compliant' ? 'checked' }}>
+                                                <label class="form-check-label text-success fw-semibold" for="dp_ok_{{ req.id }}">
+                                                    {{ 'tisax.import.assess.dp.state.ok'|trans({}, 'tisax_isa') }}
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline mb-0">
+                                                <input class="form-check-input"
+                                                       type="radio"
+                                                       name="dp[{{ req.id }}]"
+                                                       id="dp_nok_{{ req.id }}"
+                                                       value="non_compliant"
+                                                       {{ currentDpState == 'non_compliant' ? 'checked' }}>
+                                                <label class="form-check-label text-danger fw-semibold" for="dp_nok_{{ req.id }}">
+                                                    {{ 'tisax.import.assess.dp.state.not_ok'|trans({}, 'tisax_isa') }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        {# ── IS / PP: 0-5 Reifegrad select ── #}
+                                        {% set currentLevel = req.maturityCurrent %}
+                                        <select name="reifegrad[{{ req.id }}]" class="form-select form-select-sm" style="width:auto">
+                                            {% for levelInt, levelStr in levels %}
+                                            <option value="{{ levelInt }}"
+                                                {% if currentLevel == levelStr %}selected{% endif %}>
+                                                {{ levelInt }} — {{ ('tisax.import.assess.level.' ~ levelStr)|trans({}, 'tisax_isa') }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if isDataProtection %}
+                                        <span class="badge bg-success-subtle text-success-emphasis">
+                                            {{ 'tisax.import.assess.dp.target_label'|trans({}, 'tisax_isa') }}
+                                        </span>
+                                    {% elseif req.maturityTarget %}
                                         <span class="text-muted">{{ req.maturityTarget }}</span>
                                     {% else %}
                                         <span class="text-muted">—</span>
