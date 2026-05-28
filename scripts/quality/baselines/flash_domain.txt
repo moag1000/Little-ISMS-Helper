@@ -10,8 +10,8 @@ src/Controller/BusinessContinuityPlanController.php:173
 src/Controller/ChangeRequestController.php:69
 src/Controller/ChangeRequestController.php:101
 src/Controller/ChangeRequestController.php:122
-src/Controller/ComplianceFrameworkController.php:91
-src/Controller/ComplianceFrameworkController.php:183
+src/Controller/ComplianceFrameworkController.php:96
+src/Controller/ComplianceFrameworkController.php:232
 src/Controller/ContextController.php:107
 src/Controller/CrisisTeamController.php:80
 src/Controller/CrisisTeamController.php:115

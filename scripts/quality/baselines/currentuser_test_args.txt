@@ -4,11 +4,12 @@ tests/Controller/AssetControllerTest.php:206
 tests/Controller/CertificationBundleControllerKonzernTest.php:175
 tests/Controller/CertificationBundleControllerKonzernTest.php:194
 tests/Controller/CommentControllerTest.php:182
-tests/Controller/ComplianceControllerTest.php:164
+tests/Controller/ComplianceControllerTest.php:159
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:122
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:152
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:184
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:207
+tests/Controller/DensityToggleControllerTest.php:35
 tests/Controller/DocumentControllerTest.php:357
 tests/Controller/DocumentControllerTest.php:428
 tests/Controller/DocumentControllerTest.php:486
@@ -17,6 +18,7 @@ tests/Controller/IncidentControllerTest.php:357
 tests/Controller/IncidentControllerTest.php:384
 tests/Controller/IncidentControllerTest.php:436
 tests/Controller/InternalAuditApprovalWorkflowTest.php:163
+tests/Controller/PersonaSwitcherControllerTest.php:35
 tests/Controller/PolicyAcknowledgementControllerTest.php:159
 tests/Controller/PolicyExportControllerTest.php:177
 tests/Controller/PolicyWizardBestandsaufnahmeFlowTest.php:179
