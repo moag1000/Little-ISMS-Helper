@@ -21,31 +21,25 @@ use App\Repository\ComplianceRequirementRepository;
 class Nis2Art21CoverageService
 {
     /**
-     * Maps controlId → Nis2ComplianceService dashboard letter key (Option A: narrower fix).
+     * Maps controlId → Nis2ComplianceService dashboard letter key.
      *
-     * Nis2ComplianceService uses a legacy 11-key grid (21.2.a..21.2.k) whose internal
-     * method-to-letter assignments do NOT match the directive's Art. 21(2)(a)-(j) letters.
-     * The mapping below selects the closest semantic match per service method for each
-     * directive measure. A full alignment of Nis2ComplianceService keys to directive
-     * letters (dropping 21.2.k) is tracked separately as a follow-up refactor.
-     *
-     * NIS2-ART21-B (Incident Handling) and NIS2-ART21-F (Effectiveness Assessment) have
-     * no adequate proxy in the current service; they are mapped to null via absence from
-     * this array, and 'metric' will be null in the rollup.
+     * After the Option B refactor (fix/nis2-legacy-grid-directive-alignment),
+     * Nis2ComplianceService now uses directive-correct 10-letter keys (21.2.a..21.2.j).
+     * Each NIS2-ART21-X descriptor maps 1:1 to its directive-correct letter key.
      *
      * @var array<string, string>
      */
     private const LETTER_KEY_MAP = [
-        'NIS2-ART21-A' => '21.2.a', // Risk management policies → riskManagementPolicies()
-        // NIS2-ART21-B (incident handling) — no service proxy available; metric = null
-        'NIS2-ART21-C' => '21.2.j', // Business continuity → businessContinuity()
-        'NIS2-ART21-D' => '21.2.f', // Supply chain security → supplyChainSecurity()
-        'NIS2-ART21-E' => '21.2.e', // Secure SDLC + vuln handling → secureSdlc() + vulnerabilityManagement() (best proxy: secureSdlc)
-        // NIS2-ART21-F (effectiveness assessment) — no dedicated service proxy; metric = null
-        'NIS2-ART21-G' => '21.2.g', // Cyber hygiene + training → hrSecurity() (training completion proxy)
-        'NIS2-ART21-H' => '21.2.k', // Cryptography → cryptographicControls()
-        'NIS2-ART21-I' => '21.2.h', // HR security + access control + asset mgmt → accessControl() (best proxy)
-        'NIS2-ART21-J' => '21.2.b', // MFA + secure comms → authentication() (MFA adoption proxy)
+        'NIS2-ART21-A' => '21.2.a', // (a) risk analysis & InfoSys security → riskManagementPolicies()
+        'NIS2-ART21-B' => '21.2.b', // (b) incident handling → incidentHandling()
+        'NIS2-ART21-C' => '21.2.c', // (c) BCM / backup / crisis mgmt → businessContinuity()
+        'NIS2-ART21-D' => '21.2.d', // (d) supply chain security → supplyChainSecurity()
+        'NIS2-ART21-E' => '21.2.e', // (e) secure development & acquisition → secureSdlc()
+        'NIS2-ART21-F' => '21.2.f', // (f) effectiveness assessment → effectivenessAssessment()
+        'NIS2-ART21-G' => '21.2.g', // (g) cyber hygiene + training → cyberHygieneAndTraining()
+        'NIS2-ART21-H' => '21.2.h', // (h) cryptography & encryption → cryptographicControls()
+        'NIS2-ART21-I' => '21.2.i', // (i) HR security + access ctrl + asset mgmt → accessControlAndAssetMgmt()
+        'NIS2-ART21-J' => '21.2.j', // (j) MFA + secured communications → authentication()
     ];
 
     /** @var array<int, array<string, string>> Static descriptor list — mirrors YAML fixture order (CELEX:32022L2555 Art. 21(2)(a)-(j)) */
