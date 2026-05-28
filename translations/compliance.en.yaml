@@ -1269,6 +1269,13 @@ export:
         tier_pp_value: '%compliant% / %total% controls compliant (%pct% %%)'
         tier_dp_label: 'Data Protection (%in_place% / %total% in place)'
         tier_dp_value: '%in_place% / %total% measures in place (%pct% %%)'
+        schutzbedarf_cascade_title: 'Protection-need addenda relevant — BSI 3.6 Maximum Principle'
+        schutzbedarf_cascade_body: >
+          %high_asset_count% asset(s) with high protection need (C/I/A ≥ 4) and
+          %very_high_asset_count% asset(s) with very high protection need (C/I/A ≥ 5) found.
+          %high_control_count% VDA-ISA controls have additional requirements for high protection needs (column L),
+          %very_high_control_count% controls for very high protection needs (column M).
+        schutzbedarf_cascade_byo: 'Please read the requirement text in your licensed ENX workbook (BYO wizard).'
 
 framework_show:
     tisax_skeleton_hint: 'This TISAX framework has no controls seeded. The VDA-ISA workbook is ENX-licensed and not redistributable. Use the BYO-Import Wizard to populate controls from your licensed copy.'

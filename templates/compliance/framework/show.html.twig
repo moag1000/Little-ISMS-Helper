@@ -145,6 +145,23 @@
     </div>
     {% endif %}
 
+    {# Schutzbedarf cascade banner — shown when tenant has high/very-high CIA assets and TISAX framework #}
+    {% if framework.code starts with 'TISAX' and schutzbedarf_cascade is defined and schutzbedarf_cascade is not empty %}
+    <div class="alert alert-warning d-flex align-items-start mb-4" role="alert">
+        <i class="bi bi-shield-exclamation me-2 mt-1 flex-shrink-0" aria-hidden="true"></i>
+        <div>
+            <strong>{{ 'compliance.framework.tisax.schutzbedarf_cascade_title'|trans({}, 'compliance') }}</strong>
+            <p class="mb-1">{{ 'compliance.framework.tisax.schutzbedarf_cascade_body'|trans({
+                '%high_asset_count%':          schutzbedarf_cascade.high_asset_count,
+                '%very_high_asset_count%':     schutzbedarf_cascade.very_high_asset_count,
+                '%high_control_count%':        schutzbedarf_cascade.controls_with_high_addendum,
+                '%very_high_control_count%':   schutzbedarf_cascade.controls_with_very_high_addendum
+            }, 'compliance') }}</p>
+            <small class="text-muted">{{ 'compliance.framework.tisax.schutzbedarf_cascade_byo'|trans({}, 'compliance') }}</small>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="row">
         <div class="col-lg-8">
             {# Framework Details #}

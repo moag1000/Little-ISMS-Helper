@@ -141,6 +141,18 @@ tisax:
         established: 'Etabliert — standardisiert'
         predictable: 'Vorhersagbar — gemessen'
         optimising: 'Optimierend — kontinuierlich verbessert'
+      col:
+        req_levels: 'Anforderungsebenen'
+        req_levels_tooltip: 'M=Muss, S=Sollte, H=Hoher Schutzbedarf, VH=Sehr hoher Schutzbedarf. Farbige Badges = Inhalt vorhanden (nur Präsenzflag — kein ENX-Text).'
+      req_levels:
+        aria: 'Anforderungsebenen M/S/H/VH'
+      req_level:
+        must_tooltip: 'Muss-Anforderung (Spalte J) — Präsenz im ENX-Workbook'
+        should_tooltip: 'Sollte-Anforderung (Spalte K) — Präsenz im ENX-Workbook'
+        high_tooltip: 'Zusatzanforderung bei hohem Schutzbedarf (Spalte L) — Präsenz im ENX-Workbook'
+        very_high_tooltip: 'Zusatzanforderung bei sehr hohem Schutzbedarf (Spalte M) — Präsenz im ENX-Workbook'
+        schutzbedarf_note: 'Schutzbedarf-Ergänzung verfügbar'
+        byo_hint: 'Text im eigenen ENX-Workbook (BYO-Assistent)'
       dp:
         tile_label: 'Datenschutz (Kap. 9)'
         tier_badge: 'Datenschutz'

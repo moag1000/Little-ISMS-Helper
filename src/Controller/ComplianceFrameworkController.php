@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Asset;
 use App\Entity\Tenant;
 use DateTimeImmutable;
 use App\Entity\ComplianceFramework;
@@ -12,6 +13,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\TenantContext;
+use App\Service\Tisax\RequirementLevelMetadataLoader;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,6 +33,7 @@ class ComplianceFrameworkController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
         private readonly TisaxMaturityAssessmentService $tisaxMaturityAssessmentService,
+        private readonly ?RequirementLevelMetadataLoader $metadataLoader = null,
     ) {}
     #[Route('/compliance/framework', name: 'app_compliance_framework_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -161,22 +164,58 @@ class ComplianceFrameworkController extends AbstractController
         }
 
         // TISAX per-tier aggregate — only computed for TISAX frameworks with a known tenant
-        $tisaxTierAggregate = [];
+        $tisaxTierAggregate  = [];
+        $schutzbedarfCascade = [];
         if ($tenant instanceof Tenant && str_starts_with((string) $complianceFramework->getCode(), 'TISAX')) {
             $aggregate          = $this->tisaxMaturityAssessmentService->computeAggregate($complianceFramework, $tenant);
             $tisaxTierAggregate = $aggregate['byTier'] ?? [];
+
+            // Schutzbedarf-Cascade: BSI 3.6 Maximumprinzip integration.
+            // Count tenant assets with high (CIA >= 4) or very-high (CIA >= 5) protection needs.
+            // When present, surface the count of VDA-ISA controls with corresponding addenda
+            // so the user knows to consult those addenda in their licensed ENX workbook.
+            if ($this->metadataLoader !== null) {
+                $assetRepo       = $this->entityManager->getRepository(Asset::class);
+                $tenantAssets    = $assetRepo->findBy(['tenant' => $tenant]);
+                $highCiaCount    = 0;
+                $veryHighCiaCount = 0;
+                foreach ($tenantAssets as $asset) {
+                    $maxCia = max(
+                        (int) ($asset->getConfidentialityValue() ?? 0),
+                        (int) ($asset->getIntegrityValue()        ?? 0),
+                        (int) ($asset->getAvailabilityValue()     ?? 0),
+                    );
+                    if ($maxCia >= 5) {
+                        $veryHighCiaCount++;
+                    } elseif ($maxCia >= 4) {
+                        $highCiaCount++;
+                    }
+                }
+
+                if ($highCiaCount > 0 || $veryHighCiaCount > 0) {
+                    $highControlCount    = count($this->metadataLoader->controlIdsWithLevel('high_protection'));
+                    $veryHighControlCount = count($this->metadataLoader->controlIdsWithLevel('very_high_protection'));
+                    $schutzbedarfCascade = [
+                        'high_asset_count'              => $highCiaCount,
+                        'very_high_asset_count'         => $veryHighCiaCount,
+                        'controls_with_high_addendum'      => $highControlCount,
+                        'controls_with_very_high_addendum' => $veryHighControlCount,
+                    ];
+                }
+            }
         }
 
         return $this->render('compliance/framework/show.html.twig', [
-            'framework' => $complianceFramework,
-            'total_requirements' => $totalRequirements,
+            'framework'              => $complianceFramework,
+            'total_requirements'     => $totalRequirements,
             'applicable_requirements' => $applicableRequirements,
             'fulfilled_requirements' => $fulfilledRequirements,
-            'compliance_percentage' => $compliancePercentage,
+            'compliance_percentage'  => $compliancePercentage,
             'requirement_fulfillments' => $requirementFulfillments,
             'requirements_by_category' => $requirementsByCategory,
-            'priority_distribution' => $priorityDistribution,
-            'tisax_tier_aggregate' => $tisaxTierAggregate,
+            'priority_distribution'  => $priorityDistribution,
+            'tisax_tier_aggregate'   => $tisaxTierAggregate,
+            'schutzbedarf_cascade'   => $schutzbedarfCascade,
         ]);
     }
     #[Route('/compliance/framework/{id}/edit', name: 'app_compliance_framework_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
