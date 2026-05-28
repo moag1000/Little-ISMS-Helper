@@ -756,12 +756,12 @@ gstool_import:
 # ─────────────────────────────────────────────────────────────────────────
 
 # AssetSubType
-'asset_sub_type.validation.top_type_invalid': 'Invalid top-level type. Allowed values: Hardware, Software, Datenbank, Personal, Standort, Dienstleistung.'
+'asset_sub_type.validation.top_type_invalid': 'Invalid top-level type. Allowed values: hardware, software, database, personnel, location, service.'
 'asset_sub_type.validation.source_invalid': 'Invalid source. Allowed values: custom, seed-bsi-grundschutz, seed-tisax, seed-production-de-mittelstand.'
 
 # DoraExitPlan (DORA Art. 28 RT_06)
-'dora_exit_plan.validation.supplier_required': 'Please select a supplier.'
-'dora_exit_plan.validation.trigger_required': 'Please select an exit trigger.'
+'dora_exit_plan.validation.supplier_required': 'Supplier is required.'
+'dora_exit_plan.validation.trigger_required': 'Exit trigger is required.'
 'dora_exit_plan.validation.trigger_invalid': 'Invalid exit trigger. Allowed values: planned-renewal, concentration-risk, force-majeure, breach, insolvency.'
 'dora_exit_plan.validation.data_return_format_max': 'The data return format description cannot exceed {{ limit }} characters.'
 'dora_exit_plan.validation.migration_path_max': 'The migration path cannot exceed {{ limit }} characters.'
@@ -769,7 +769,7 @@ gstool_import:
 'dora_exit_plan.validation.cost_non_negative': 'The estimated cost must be zero or positive.'
 
 # DoraSubcontractor (DORA Art. 28 RT_04)
-'dora_subcontractor.validation.parent_supplier_required': 'Please select the parent supplier.'
+'dora_subcontractor.validation.parent_supplier_required': 'Parent supplier is required.'
 'dora_subcontractor.validation.name_required': 'Name is required.'
 'dora_subcontractor.validation.lei_length': 'LEI code must be exactly 20 characters (ISO 17442).'
 'dora_subcontractor.validation.lei_format': 'Invalid LEI format. Must be 20 uppercase alphanumeric characters (ISO 17442).'
@@ -780,9 +780,9 @@ gstool_import:
 'dora_subcontractor.validation.substitutability_invalid': 'Invalid substitutability. Allowed values: high, medium, low.'
 
 # DoraDataFlow (DORA Art. 28 RT_03)
-'dora_data_flow.validation.supplier_required': 'Please select a supplier.'
-'dora_data_flow.validation.data_categories_required': 'At least one data category must be selected.'
-'dora_data_flow.validation.direction_required': 'Please select a direction.'
+'dora_data_flow.validation.supplier_required': 'Supplier is required.'
+'dora_data_flow.validation.data_categories_required': 'At least one data category is required.'
+'dora_data_flow.validation.direction_required': 'Direction is required.'
 'dora_data_flow.validation.direction_invalid': 'Invalid direction. Allowed values: inbound, outbound, bidirectional.'
 'dora_data_flow.validation.processing_purpose_too_long': 'The processing purpose cannot exceed {{ limit }} characters.'
 'dora_data_flow.validation.data_volume_too_long': 'The data volume description cannot exceed {{ limit }} characters.'
