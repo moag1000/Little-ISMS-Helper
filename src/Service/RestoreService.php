@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Service\BackupEncryptionService;
 use App\Service\Restore\RestoreDataPurger;
 use App\Service\Restore\RestoreEntityWriter;
+use App\Service\Restore\RestoreOptions;
 use App\Service\Restore\RestoreSecretsHandler;
 use App\Service\Restore\RestoreValidator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -32,15 +33,15 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class RestoreService
 {
-    // Strategies for handling missing fields
-    public const string STRATEGY_SKIP_FIELD = 'skip_field';
-    public const string STRATEGY_USE_DEFAULT = 'use_default';
-    public const string STRATEGY_FAIL = 'fail';
+    // Strategy constants are sourced from RestoreOptions so collaborators
+    // can depend on them without an upward dependency on the facade.
+    public const string STRATEGY_SKIP_FIELD = RestoreOptions::STRATEGY_SKIP_FIELD;
+    public const string STRATEGY_USE_DEFAULT = RestoreOptions::STRATEGY_USE_DEFAULT;
+    public const string STRATEGY_FAIL = RestoreOptions::STRATEGY_FAIL;
 
-    // Strategies for handling existing data
-    public const string EXISTING_SKIP = 'skip';
-    public const string EXISTING_UPDATE = 'update';
-    public const string EXISTING_REPLACE = 'replace';
+    public const string EXISTING_SKIP = RestoreOptions::EXISTING_SKIP;
+    public const string EXISTING_UPDATE = RestoreOptions::EXISTING_UPDATE;
+    public const string EXISTING_REPLACE = RestoreOptions::EXISTING_REPLACE;
 
     private array $validationErrors = [];
     private array $warnings = [];
@@ -211,7 +212,7 @@ class RestoreService
         $bestEffort = (bool) ($options['best_effort'] ?? false);
         try {
             $integrityWarning = $this->getValidator()->verifyIntegrity($backup);
-        } catch (\RuntimeException $integrityException) {
+        } catch (\App\Exception\Io\IoException $integrityException) {
             if ($bestEffort) {
                 $this->logger->warning('Best-effort: SHA256 mismatch — continuing anyway', [
                     'error' => $integrityException->getMessage(),
