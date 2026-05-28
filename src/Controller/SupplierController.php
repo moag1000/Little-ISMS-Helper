@@ -163,10 +163,14 @@ class SupplierController extends AbstractController
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('supplier/new.html.twig', [
             'supplier' => $supplier,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     /**
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
@@ -343,10 +347,14 @@ class SupplierController extends AbstractController
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('supplier/edit.html.twig', [
             'supplier' => $supplier,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/supplier/{id}/delete', name: 'app_supplier_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
