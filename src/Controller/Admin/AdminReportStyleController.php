@@ -94,13 +94,17 @@ final class AdminReportStyleController extends AbstractController
             return $this->redirectToRoute('app_admin_report_style_edit', ['_locale' => $request->getLocale()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/report_style/edit.html.twig', [
             'form' => $form,
             'tenant' => $tenant,
             'branding' => $branding,
             'style_config' => $branding->getReportDocStyleConfig(),
             'sample' => $this->buildSampleData($tenant),
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

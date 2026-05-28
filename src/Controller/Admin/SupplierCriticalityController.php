@@ -81,9 +81,13 @@ class SupplierCriticalityController extends AbstractController
             return $this->redirectToRoute('app_admin_supplier_criticality_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/supplier_criticality/new.html.twig', [
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/edit', name: 'app_admin_supplier_criticality_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
@@ -127,10 +131,14 @@ class SupplierCriticalityController extends AbstractController
             return $this->redirectToRoute('app_admin_supplier_criticality_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/supplier_criticality/edit.html.twig', [
             'form' => $form,
             'level' => $level,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/delete', name: 'app_admin_supplier_criticality_delete', methods: ['POST'], requirements: ['id' => '\d+'])]

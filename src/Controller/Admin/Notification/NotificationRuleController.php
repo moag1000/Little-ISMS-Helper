@@ -113,9 +113,13 @@ class NotificationRuleController extends AbstractController
             return $this->redirectToRoute('admin_notification_rule_show', ['id' => $rule->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/notification/rule/new.html.twig', [
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -177,10 +181,14 @@ class NotificationRuleController extends AbstractController
             return $this->redirectToRoute('admin_notification_rule_show', ['id' => $rule->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/notification/rule/edit.html.twig', [
             'rule' => $rule,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/toggle', name: 'toggle', requirements: ['id' => '\d+'], methods: ['POST'])]
