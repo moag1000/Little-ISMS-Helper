@@ -398,6 +398,11 @@ class InternalAudit
     #[Groups(['audit:read'])]
     private ?DateTimeImmutable $closedAt = null;
 
+    // Audit Programme cross-link (ISO 19011 §5.4)
+    #[ORM\ManyToOne(targetEntity: AuditProgram::class, inversedBy: 'internalAudits')]
+    #[ORM\JoinColumn(name: 'audit_program_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?AuditProgram $auditProgram = null;
+
 public function __construct()
     {
         $this->scopedAssets = new ArrayCollection();
@@ -1070,5 +1075,16 @@ public function __construct()
         $current = $this->status ?? 'planned';
 
         return self::LIFECYCLE_STAGES[$current]['transitions'] ?? [];
+    }
+    public function getAuditProgram(): ?AuditProgram
+    {
+        return $this->auditProgram;
+    }
+
+    public function setAuditProgram(?AuditProgram $auditProgram): static
+    {
+        $this->auditProgram = $auditProgram;
+
+        return $this;
     }
 }
