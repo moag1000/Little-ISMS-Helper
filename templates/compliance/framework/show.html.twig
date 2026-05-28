@@ -118,25 +118,25 @@
     <div class="row mb-4">
         {% for tier, tierData in tisax_tier_aggregate %}
         <div class="col-md-4">
-            {% if tierData.model == 'information_security' %}
+            {% if tier == 'information_security' %}
             {{ _fa_feature_card.render({
                 label: 'compliance.framework.tisax.tier_is_label'|trans({}, 'compliance'),
                 value: 'compliance.framework.tisax.tier_is_value'|trans({'%avg%': tierData.average, '%target%': 3, '%gap%': (3 - tierData.average)|round(1)}, 'compliance'),
                 variant: tierData.average >= 3 ? 'success' : (tierData.average >= 2 ? 'warning' : 'danger'),
                 icon: 'status-gauge'
             }) }}
-            {% elseif tierData.model == 'prototype_protection' %}
+            {% elseif tier == 'prototype_protection' %}
             {{ _fa_feature_card.render({
                 label: 'compliance.framework.tisax.tier_pp_label'|trans({}, 'compliance'),
-                value: 'compliance.framework.tisax.tier_pp_value'|trans({'%compliant%': tierData.compliant, '%total%': tierData.total, '%pct%': tierData.total > 0 ? ((tierData.compliant / tierData.total) * 100)|round : 0}, 'compliance'),
-                variant: tierData.total > 0 and tierData.compliant == tierData.total ? 'success' : 'warning',
+                value: 'compliance.framework.tisax.tier_is_value'|trans({'%avg%': tierData.average, '%target%': 3, '%gap%': (3 - tierData.average)|round(1)}, 'compliance'),
+                variant: tierData.average >= 3 ? 'success' : (tierData.average >= 2 ? 'warning' : 'danger'),
                 icon: 'status-ok'
             }) }}
-            {% elseif tierData.model == 'data_protection' %}
+            {% elseif tier == 'data_protection' %}
             {{ _fa_feature_card.render({
                 label: 'compliance.framework.tisax.tier_dp_label'|trans({}, 'compliance'),
-                value: 'compliance.framework.tisax.tier_dp_value'|trans({'%in_place%': tierData.in_place, '%total%': tierData.total, '%pct%': tierData.total > 0 ? ((tierData.in_place / tierData.total) * 100)|round : 0}, 'compliance'),
-                variant: tierData.total > 0 and tierData.in_place == tierData.total ? 'success' : 'warning',
+                value: 'compliance.framework.tisax.tier_dp_value'|trans({'%compliant%': tierData.compliant, '%total%': tierData.total, '%pct%': tierData.total > 0 ? ((tierData.compliant / tierData.total) * 100)|round : 0}, 'compliance'),
+                variant: tierData.total > 0 and tierData.compliant == tierData.total ? 'success' : 'warning',
                 icon: 'nav-shield-alert'
             }) }}
             {% endif %}
