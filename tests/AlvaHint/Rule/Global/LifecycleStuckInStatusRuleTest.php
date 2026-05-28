@@ -52,7 +52,7 @@ final class LifecycleStuckInStatusRuleTest extends TestCase
         $hint = $rule->evaluate($this->tenant, $this->user);
 
         self::assertNotNull($hint);
-        self::assertSame('global.lifecycle.stuck_in_status', $hint->key);
+        self::assertSame('alva_hint.lifecycle.stuck_in_status', $hint->key);
     }
 
     #[Test]
@@ -113,7 +113,7 @@ final class LifecycleStuckInStatusRuleTest extends TestCase
     public function keyMatchesConvention(): void
     {
         $rule = new LifecycleStuckInStatusRule($this->makeEm(0));
-        self::assertSame('global.lifecycle.stuck_in_status', $rule->key());
+        self::assertSame('alva_hint.lifecycle.stuck_in_status', $rule->key());
     }
 
     #[Test]
