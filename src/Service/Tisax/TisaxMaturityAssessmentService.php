@@ -72,11 +72,17 @@ final class TisaxMaturityAssessmentService
     /**
      * Bulk-set Reifegrad for all tenant-uploaded requirements of a framework.
      *
+     * Tenant-scoped: silently skips requirements whose uploadTenant does not
+     * match the supplied $tenant. This prevents a cross-tenant write where a
+     * ROLE_MANAGER in tenant A submits requirement IDs belonging to tenant B
+     * in the POST body and overwrites their maturityCurrent.
+     *
      * @param array<int, int> $levelMap  requirementId (int PK) => Reifegrad level
      */
     public function bulkSetReifegrad(
         array $levelMap,
         User $reviewer,
+        Tenant $tenant,
     ): int {
         $repo    = $this->em->getRepository(ComplianceRequirement::class);
         $updated = 0;
@@ -85,6 +91,12 @@ final class TisaxMaturityAssessmentService
             /** @var ComplianceRequirement|null $req */
             $req = $repo->find($requirementId);
             if ($req === null) {
+                continue;
+            }
+            // Cross-tenant guard — uploadTenant MUST match the caller's tenant.
+            // System-seeded rows (uploadTenant=NULL) are also rejected here:
+            // bulkSetReifegrad is intended for tenant-uploaded requirements only.
+            if ($req->getUploadTenant() === null || $req->getUploadTenant()->getId() !== $tenant->getId()) {
                 continue;
             }
             if (!in_array($level, self::REIFEGRAD_LEVELS, true)) {

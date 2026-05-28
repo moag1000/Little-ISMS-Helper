@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Tisax;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\TisaxLicenseConfirmation;
 use App\Form\Tisax\TisaxLegalConfirmationType;
 use App\Form\Tisax\VdaIsaUploadType;
@@ -11,6 +12,7 @@ use App\Repository\TisaxLicenseConfirmationRepository;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\Mapper\TisaxRequirementMapper;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use App\Service\Tisax\EnxScheduleExporter;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -24,6 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * TISAX BYO VDA-ISA Import Wizard
@@ -45,6 +48,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/tisax-import', name: 'app_tisax_import_')]
 final class TisaxImportWizardController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     /** Session key for the parsed workbook temp-file path */
     private const SESSION_WORKBOOK_PATH = 'tisax_import.workbook_path';
 
@@ -68,6 +73,8 @@ final class TisaxImportWizardController extends AbstractController
         private readonly FileUploadSecurityService $uploadSecurity,
         private readonly AuditLogger $auditLogger,
         private readonly TisaxLicenseConfirmationRepository $confirmationRepo,
+        private readonly ModuleConfigurationService $moduleService,
+        private readonly TranslatorInterface $translator,
         private readonly string $uploadDir,
     ) {}
 
@@ -78,6 +85,9 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/disclaimer', name: 'disclaimer', methods: ['GET', 'POST'])]
     public function disclaimer(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('tisax')) {
+            return $redirect;
+        }
         $form = $this->createForm(TisaxLegalConfirmationType::class);
         $form->handleRequest($request);
 
@@ -119,6 +129,9 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/upload', name: 'upload', methods: ['GET', 'POST'])]
     public function upload(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('tisax')) {
+            return $redirect;
+        }
         // Guard: must have a valid disclaimer confirmation
         if (!$this->hasValidConfirmation($request)) {
             $this->addFlash('warning', 'tisax.import.upload.disclaimer_required');
@@ -172,6 +185,9 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/validate', name: 'validate', methods: ['GET', 'POST'])]
     public function validate(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('tisax')) {
+            return $redirect;
+        }
         $workbookPath = $request->getSession()->get(self::SESSION_WORKBOOK_PATH);
         if ($workbookPath === null || !file_exists($workbookPath)) {
             $this->addFlash('warning', 'tisax.import.validate.no_workbook');
@@ -228,6 +244,9 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/preview', name: 'preview', methods: ['GET', 'POST'])]
     public function preview(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('tisax')) {
+            return $redirect;
+        }
         $controls = $this->getSessionControls($request);
         if ($controls === null) {
             return $this->redirectToRoute('app_tisax_import_validate', ['_locale' => $request->getLocale()]);
@@ -257,6 +276,9 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/commit', name: 'commit', methods: ['GET', 'POST'])]
     public function commit(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('tisax')) {
+            return $redirect;
+        }
         $controls = $this->getSessionControls($request);
         if ($controls === null) {
             return $this->redirectToRoute('app_tisax_import_validate', ['_locale' => $request->getLocale()]);
@@ -319,6 +341,9 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/assess/{frameworkId}', name: 'assess', methods: ['GET', 'POST'], requirements: ['frameworkId' => '\d+'])]
     public function assess(Request $request, int $frameworkId): Response
     {
+        if ($redirect = $this->checkModuleActive('tisax')) {
+            return $redirect;
+        }
         $tenant    = $this->tenantContext->getCurrentTenant();
         $framework = $this->em->getRepository(\App\Entity\ComplianceFramework::class)->find($frameworkId);
 
@@ -342,7 +367,7 @@ final class TisaxImportWizardController extends AbstractController
             $levels    = (array) $request->request->all('reifegrad');
             $levelMap  = array_map('intval', $levels);
 
-            $updated = $this->maturityService->bulkSetReifegrad($levelMap, $user);
+            $updated = $this->maturityService->bulkSetReifegrad($levelMap, $user, $tenant);
 
             $this->addFlash('success', 'tisax.import.assess.saved');
 
@@ -377,6 +402,9 @@ final class TisaxImportWizardController extends AbstractController
     #[Route('/assess/{frameworkId}/export-enx', name: 'export_enx', methods: ['GET'], requirements: ['frameworkId' => '\d+'])]
     public function exportEnx(int $frameworkId): Response
     {
+        if ($redirect = $this->checkModuleActive('tisax')) {
+            return $redirect;
+        }
         $tenant    = $this->tenantContext->getCurrentTenant();
         $framework = $this->em->getRepository(\App\Entity\ComplianceFramework::class)->find($frameworkId);
 
@@ -400,6 +428,24 @@ final class TisaxImportWizardController extends AbstractController
 
         $confirmation = $this->confirmationRepo->find($confirmationId);
         if ($confirmation === null) {
+            return false;
+        }
+
+        // Bind confirmation to current user + tenant + session — prevents
+        // replay across sessions or tenants if the session ID were compromised.
+        $user = $this->getUser();
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$user instanceof \App\Entity\User || $tenant === null) {
+            return false;
+        }
+        if ($confirmation->getUser()?->getId() !== $user->getId()) {
+            return false;
+        }
+        if ($confirmation->getTenant()?->getId() !== $tenant->getId()) {
+            return false;
+        }
+        $expectedToken = hash('sha256', $request->getSession()->getId());
+        if (!hash_equals((string) $confirmation->getSessionToken(), $expectedToken)) {
             return false;
         }
 
