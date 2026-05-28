@@ -184,6 +184,17 @@ final class VdaIsaWorkbookParser
             'evidence', 'nachweis', 'nachweise', 'audit evidence',
             'further info',
         ],
+        // Pre-filled Reifegrad column (integer 0-5) — when a user uploads an
+        // already-assessed workbook, mirror the score into ComplianceRequirement
+        // so the assess-page does not show 0 for every row.
+        // ENX ISA 6 col D: "Reifegrad" (DE) / "Result" (EN).
+        'maturityCurrent' => [
+            'reifegrad',
+            'result',
+            'maturity level', 'maturity-level', 'maturitylevel',
+            'level achieved', 'achieved level',
+            'maturity',
+        ],
     ];
 
     public function __construct(
@@ -423,6 +434,17 @@ final class VdaIsaWorkbookParser
                 $title = $controlId; // last resort
             }
 
+            // Pre-filled Reifegrad: parse the cell as int and clamp to 0-5.
+            // Non-numeric or out-of-range values map to null (treat as unrated).
+            $maturityCurrent = null;
+            $maturityRaw     = trim((string) $get('maturityCurrent'));
+            if ($maturityRaw !== '' && is_numeric($maturityRaw)) {
+                $maturityInt = (int) $maturityRaw;
+                if ($maturityInt >= 0 && $maturityInt <= 5) {
+                    $maturityCurrent = $maturityInt;
+                }
+            }
+
             $controls[] = new VdaIsaControlRow(
                 controlId: $controlId,
                 title: $title,
@@ -435,6 +457,7 @@ final class VdaIsaWorkbookParser
                 iso27001Ref: ($v = $this->sanitizeCellValue(trim((string) $get('iso27001Ref')))) !== '' ? $v : null,
                 auditEvidenceHint: ($v = $this->sanitizeCellValue(trim((string) $get('evidenceHint')))) !== '' ? $v : null,
                 rawRowIndex: $row,
+                maturityCurrent: $maturityCurrent,
             );
         }
 

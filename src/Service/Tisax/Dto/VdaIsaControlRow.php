@@ -45,6 +45,13 @@ final readonly class VdaIsaControlRow
 
         /** Original row index for error reporting */
         public int $rawRowIndex,
+
+        /**
+         * Pre-filled Reifegrad score from the uploaded workbook (0-5).
+         * Null when the source workbook is unrated. Mapper applies this to
+         * new requirements only — never overwrites an existing assessment.
+         */
+        public ?int $maturityCurrent = null,
     ) {}
 
     /**
