@@ -439,6 +439,17 @@ class Tenant
         $this->createdAt = new DateTimeImmutable();
     }
 
+    /**
+     * Required by Symfony's DoctrineType EntityType when callers don't pass
+     * an explicit `choice_label` callback. Without this, form-rendering
+     * throws "Object of class App\Entity\Tenant could not be converted to
+     * string" (DoctrineType.php:54).
+     */
+    public function __toString(): string
+    {
+        return $this->name ?? sprintf('Tenant#%d', $this->id ?? 0);
+    }
+
     public function getId(): ?int
     {
         return $this->id;
