@@ -13,13 +13,21 @@
  *   php scripts/import/extract_vda_isa_iso_mapping.php /path/to/vda_isa_6_en.xlsx \
  *       --check-de --de=/path/to/vda_isa_6_de.xlsx
  *
- * Re-run whenever ENX releases a new workbook version and verify DE=EN consistency.
+ * VDA-ISA 6 workbook column layout (EN):
+ *   A = Row_Format  B = Is_Title?  C = Control number  D = Maturity level
+ *   J = Requirements (must)        K = Requirements (should)
+ *   L = Additional requirements for high protection needs
+ *   M = Additional requirements for very high protection needs
+ *   P = Reference to other standards  (ISO 27001:2022 anchors live here)
+ *
+ * Re-run whenever ENX releases a new workbook version.
  */
 
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // ─── CLI argument parsing ────────────────────────────────────────────────────
@@ -53,19 +61,20 @@ if (!file_exists($xlsx)) {
 }
 
 // ─── Sheet → category map (EN and DE variants) ──────────────────────────────
+/** @var array<string, string> */
 $SHEET_CATEGORY_MAP = [
-    'IS Controls'         => 'information_security',
-    'Information Security' => 'information_security',
-    'PP Controls'         => 'prototype_protection',
-    'Prototype Protection' => 'prototype_protection',
-    'DP Controls'         => 'data_protection',
-    'Data Protection'     => 'data_protection',
-    'IS Kontrollen'       => 'information_security',
+    'Information Security'   => 'information_security',
     'Informationssicherheit' => 'information_security',
-    'PP Kontrollen'       => 'prototype_protection',
-    'Prototypenschutz'    => 'prototype_protection',
-    'DS Kontrollen'       => 'data_protection',
-    'Datenschutz'         => 'data_protection',
+    'IS Controls'            => 'information_security',
+    'IS Kontrollen'          => 'information_security',
+    'Prototype Protection'   => 'prototype_protection',
+    'Prototypenschutz'       => 'prototype_protection',
+    'PP Controls'            => 'prototype_protection',
+    'PP Kontrollen'          => 'prototype_protection',
+    'Data Protection'        => 'data_protection',
+    'Datenschutz'            => 'data_protection',
+    'DP Controls'            => 'data_protection',
+    'DS Kontrollen'          => 'data_protection',
 ];
 
 // ─── Parse ISO 27001:2022 anchors from raw reference cell ───────────────────
@@ -149,6 +158,9 @@ function parseIso22Anchors(string $rawRef): array
 
 // ─── Load and extract from workbook ─────────────────────────────────────────
 /**
+ * Scan all rows in each IS/PP/DP sheet. Rows where column C matches
+ * "X.Y.Z" or "ISA X.Y.Z" are control rows. Column P has the ISO ref.
+ *
  * @param array<string, string> $catMap
  * @return array<string, array{source: string, targets: list<string>, category: string, maturity: list<string>, rationale: string}>
  */
@@ -172,91 +184,86 @@ function loadAndExtract(string $path, array $catMap): array
             continue;
         }
 
-        $maxRow      = $sheet->getHighestRow();
-        $headerRow   = null;
-        $colControlId = null;
-        $colMust      = null;
-        $colShould    = null;
-        $colHigh      = null;
-        $colVeryHigh  = null;
-        $colIsoRef    = null;
+        $maxRow = $sheet->getHighestRow();
 
-        // Find header row (rows 1-5)
-        for ($row = 1; $row <= min(5, $maxRow); $row++) {
-            for ($col = 1; $col <= 20; $col++) {
-                $cellVal = (string) $sheet->getCellByColumnAndRow($col, $row)->getValue();
-                $lower   = strtolower(trim(str_replace("\xc2\xa0", ' ', $cellVal)));
+        // Dynamic column detection from header row (row 2)
+        // Fallback to hardcoded positions if header detection fails.
+        $colControlId = 3; // C
+        $colMust      = 10; // J
+        $colShould    = 11; // K
+        $colHigh      = 12; // L
+        $colVeryHigh  = 13; // M
+        $colIsoRef    = 16; // P
 
-                if (in_array($lower, ['control no.', 'no.', 'kontrollnr.', 'lfd. nr.', 'control no'], true)) {
-                    $headerRow    = $row;
-                    $colControlId = $col;
-                }
-                if (in_array($lower, ['must', 'muss'], true)) {
-                    $colMust = $col;
-                }
-                if (in_array($lower, ['should', 'soll'], true)) {
-                    $colShould = $col;
-                }
-                if (str_contains($lower, 'high') && !str_contains($lower, 'very')) {
-                    $colHigh = $col;
-                }
-                if (str_contains($lower, 'very high') || str_contains($lower, 'sehr hoch')) {
-                    $colVeryHigh = $col;
-                }
-                if (
-                    str_contains($lower, 'reference to other standards')
-                    || str_contains($lower, 'verweisung auf andere normen')
-                    || str_contains($lower, 'iso 27001')
-                    || str_contains($lower, 'referenz')
-                ) {
-                    $colIsoRef = $col;
-                }
+        // Try to detect actual columns from row 2 header
+        for ($c = 1; $c <= 20; $c++) {
+            $hdr = strtolower(trim(str_replace("\xc2\xa0", ' ', (string) $sheet->getCell(Coordinate::stringFromColumnIndex($c) . '2')->getValue())));
+            if (str_contains($hdr, 'control number') || str_contains($hdr, 'control no') || str_contains($hdr, 'kontrollnr')) {
+                $colControlId = $c;
             }
-            if ($headerRow !== null) {
-                break;
+            if (in_array($hdr, ['requirements\n(must)', 'must', 'muss'], true) || (str_contains($hdr, 'must') && !str_contains($hdr, 'additional'))) {
+                $colMust = $c;
+            }
+            if (in_array($hdr, ['requirements\n(should)', 'should', 'soll'], true) || (str_contains($hdr, 'should') && !str_contains($hdr, 'additional'))) {
+                $colShould = $c;
+            }
+            if (str_contains($hdr, 'high protection') && !str_contains($hdr, 'very high')) {
+                $colHigh = $c;
+            }
+            if (str_contains($hdr, 'very high')) {
+                $colVeryHigh = $c;
+            }
+            if (str_contains($hdr, 'reference to other standard') || str_contains($hdr, 'verweisung auf andere normen')) {
+                $colIsoRef = $c;
             }
         }
 
-        if ($headerRow === null || $colControlId === null) {
-            continue;
-        }
+        for ($row = 1; $row <= $maxRow; $row++) {
+            $rawId = trim((string) $sheet->getCell(Coordinate::stringFromColumnIndex($colControlId) . $row)->getValue());
 
-        for ($row = $headerRow + 1; $row <= $maxRow; $row++) {
-            $controlId = trim((string) $sheet->getCellByColumnAndRow($colControlId, $row)->getValue());
-            $bare      = ltrim($controlId, 'ISA ');
+            // Normalise: strip "ISA " prefix if present
+            $bareId = ltrim($rawId, 'ISA ');
+            $bareId = preg_replace('/^ISA\s+/', '', $bareId) ?? $bareId;
 
-            if (!preg_match('/^\d+\.\d+\.\d+$/', $bare)) {
+            // Only accept X.Y.Z pattern (3-part, all digits)
+            if (!preg_match('/^(\d+)\.(\d+)\.(\d+)$/', $bareId)) {
                 continue;
             }
 
-            $controlId = 'ISA ' . $bare;
+            $controlId = 'ISA ' . $bareId;
 
+            // Maturity: check if requirement text is non-empty
             $maturity = [];
-            foreach ([
-                $colMust     => 'must',
-                $colShould   => 'should',
-                $colHigh     => 'high',
-                $colVeryHigh => 'very_high',
-            ] as $col => $level) {
-                if ($col !== null) {
-                    $v = trim((string) $sheet->getCellByColumnAndRow($col, $row)->getValue());
-                    if ($v !== '' && $v !== '0') {
-                        $maturity[] = $level;
-                    }
-                }
+            $mustText = (string) $sheet->getCell(Coordinate::stringFromColumnIndex($colMust) . $row)->getValue();
+            if (trim($mustText) !== '' && !str_contains($mustText, 'intentional invisible')) {
+                $maturity[] = 'must';
+            }
+            $shouldText = (string) $sheet->getCell(Coordinate::stringFromColumnIndex($colShould) . $row)->getValue();
+            if (trim($shouldText) !== '' && !str_contains($shouldText, 'intentional invisible')) {
+                $maturity[] = 'should';
+            }
+            $highText = (string) $sheet->getCell(Coordinate::stringFromColumnIndex($colHigh) . $row)->getValue();
+            if (trim($highText) !== '' && strtolower(trim($highText)) !== 'none' && !str_contains($highText, 'intentional invisible')) {
+                $maturity[] = 'high';
+            }
+            $vhText = (string) $sheet->getCell(Coordinate::stringFromColumnIndex($colVeryHigh) . $row)->getValue();
+            if (trim($vhText) !== '' && strtolower(trim($vhText)) !== 'none' && !str_contains($vhText, 'intentional invisible')) {
+                $maturity[] = 'very_high';
             }
 
-            $targets = [];
-            if ($colIsoRef !== null) {
-                $rawRef  = (string) $sheet->getCellByColumnAndRow($colIsoRef, $row)->getValue();
-                $targets = parseIso22Anchors($rawRef);
+            if (empty($maturity)) {
+                $maturity = ['must'];
             }
+
+            // ISO 27001:2022 anchors
+            $rawRef  = (string) $sheet->getCell(Coordinate::stringFromColumnIndex($colIsoRef) . $row)->getValue();
+            $targets = parseIso22Anchors($rawRef);
 
             $results[$controlId] = [
                 'source'    => $controlId,
                 'targets'   => $targets,
                 'category'  => $category,
-                'maturity'  => $maturity ?: ['must'],
+                'maturity'  => $maturity,
                 'rationale' => 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).',
             ];
         }
