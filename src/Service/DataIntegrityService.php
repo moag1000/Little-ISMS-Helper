@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Tenant;
 use App\Service\DataIntegrity\DuplicateFinder;
+use App\Service\DataIntegrity\EntityCountAggregator;
 use App\Service\DataIntegrity\HealthIssueAggregator;
 use App\Service\DataIntegrity\OrphanFinder;
 use App\Service\DataIntegrity\ReferenceIntegrityChecker;
@@ -53,9 +54,8 @@ use App\Repository\RiskTreatmentPlanRepository;
  *
  * The facade retains the original public API for backward-compat with all call-sites
  * (admin UI, data-repair commands, Jobs, etc.). The only logic in this class is:
- *   - getEntityCountsByTenant()   — per-tenant aggregate counts (used for dashboard)
+ *   - getEntityCountsByTenant()   — delegates to {@see EntityCountAggregator::countByTenant()}
  *   - getSummaryStatistics()      — aggregates counts from delegates
- *   - calculateHealthScore()      — health score formula (private)
  *   - getGlobalCatalogueEntityClasses() — exposes constant from OrphanFinder
  *   - runFullIntegrityCheck()     — dispatches all checks and returns unified result
  */
@@ -135,6 +135,10 @@ final class DataIntegrityService
          * JSON-schema and AuditLog integrity drift checker.
          */
         private readonly ?SchemaDriftChecker $schemaDriftChecker = null,
+        /**
+         * Per-tenant entity count aggregator + health-score calculator.
+         */
+        private readonly ?EntityCountAggregator $entityCountAggregator = null,
     ) {
     }
 
@@ -284,40 +288,12 @@ final class DataIntegrityService
     }
 
     /**
-     * Get entity counts grouped by tenant
+     * Get entity counts grouped by tenant.
+     * Delegates to {@see EntityCountAggregator::countByTenant()}.
      */
     public function getEntityCountsByTenant(): array
     {
-        $tenants = $this->tenantRepository->findAll();
-        $counts = [];
-
-        foreach ($tenants as $tenant) {
-            $counts[$tenant->getId()] = [
-                'tenant' => $tenant,
-                'assets' => (int) $this->assetRepository->createQueryBuilder('a')->select('COUNT(a.id)')->where('a.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'risks' => (int) $this->riskRepository->createQueryBuilder('r')->select('COUNT(r.id)')->where('r.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'incidents' => (int) $this->incidentRepository->createQueryBuilder('i')->select('COUNT(i.id)')->where('i.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'audits' => (int) $this->auditRepository->createQueryBuilder('au')->select('COUNT(au.id)')->where('au.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'documents' => (int) $this->documentRepository->createQueryBuilder('d')->select('COUNT(d.id)')->where('d.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'trainings' => (int) $this->trainingRepository->createQueryBuilder('tr')->select('COUNT(tr.id)')->where('tr.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'business_processes' => (int) $this->businessProcessRepository->createQueryBuilder('bp')->select('COUNT(bp.id)')->where('bp.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'bc_plans' => (int) $this->bcPlanRepository->createQueryBuilder('bc')->select('COUNT(bc.id)')->where('bc.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'data_breaches' => (int) $this->dataBreachRepository->createQueryBuilder('db')->select('COUNT(db.id)')->where('db.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'processing_activities' => (int) $this->processingActivityRepository->createQueryBuilder('pa')->select('COUNT(pa.id)')->where('pa.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'suppliers' => (int) $this->supplierRepository->createQueryBuilder('s')->select('COUNT(s.id)')->where('s.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'locations' => (int) $this->locationRepository->createQueryBuilder('l')->select('COUNT(l.id)')->where('l.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-                'people' => (int) $this->personRepository->createQueryBuilder('p')->select('COUNT(p.id)')->where('p.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult(),
-            ];
-
-            if ($this->dataSubjectRequestRepository !== null) {
-                $counts[$tenant->getId()]['data_subject_requests'] = (int) $this->dataSubjectRequestRepository->createQueryBuilder('dsr')->select('COUNT(dsr.id)')->where('dsr.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult();
-            }
-            if ($this->kpiSnapshotRepository !== null) {
-                $counts[$tenant->getId()]['kpi_snapshots'] = (int) $this->kpiSnapshotRepository->createQueryBuilder('ks')->select('COUNT(ks.id)')->where('ks.tenant = :t')->setParameter('t', $tenant)->getQuery()->getSingleScalarResult();
-            }
-        }
-
-        return $counts;
+        return $this->entityCountAggregator?->countByTenant() ?? [];
     }
 
     /**
@@ -358,47 +334,10 @@ final class DataIntegrityService
             'broken_references_count' => count($broken),
             'duplicates_count' => $totalDuplicates,
             'inconsistent_count' => $totalInconsistent,
-            'health_score' => $this->calculateHealthScore($totalOrphaned, $totalMissing, count($broken), $totalDuplicates, $totalInconsistent),
+            'health_score' => $this->entityCountAggregator?->calculateHealthScore(
+                $totalOrphaned, $totalMissing, count($broken), $totalDuplicates, $totalInconsistent
+            ) ?? 100,
         ];
-    }
-
-    /**
-     * Calculate overall data health score (0-100).
-     *
-     * Denominator (total entities) is computed with tenant_filter disabled so
-     * it matches the cross-tenant numerator from findAllOrphanedEntities().
-     * Otherwise the score is arithmetically inconsistent on multi-tenant
-     * installations (filter-on denominator vs filter-off numerator).
-     */
-    private function calculateHealthScore(int $orphaned, int $missing, int $broken, int $duplicates, int $inconsistent): int
-    {
-        $filters = $this->entityManager->getFilters();
-        $filterWasEnabled = $filters->isEnabled('tenant_filter');
-        if ($filterWasEnabled) {
-            $filters->disable('tenant_filter');
-        }
-        try {
-            $totalEntities = count($this->assetRepository->findAll()) +
-                            count($this->riskRepository->findAll()) +
-                            count($this->incidentRepository->findAll()) +
-                            count($this->auditRepository->findAll()) +
-                            count($this->documentRepository->findAll());
-        } finally {
-            if ($filterWasEnabled) {
-                $filters->enable('tenant_filter');
-            }
-        }
-
-        if ($totalEntities === 0) {
-            return 100;
-        }
-
-        $totalIssues = ($orphaned * 3) + ($broken * 5) + ($missing) + ($duplicates * 2) + ($inconsistent);
-        $maxPossibleIssues = $totalEntities * 5; // Max severity weight
-
-        $healthScore = max(0, 100 - (($totalIssues / $maxPossibleIssues) * 100));
-
-        return (int) round($healthScore);
     }
 
     /**
