@@ -19,6 +19,7 @@ use App\Repository\UserRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\MrisMaturityService;
 use App\Service\TenantContext;
+use App\Service\CrossFrameworkLookupService;
 use App\Service\TransitiveCoverageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +40,7 @@ class ComplianceRequirementController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
+        private readonly CrossFrameworkLookupService $crossFrameworkLookupService,
         private readonly TransitiveCoverageService $transitiveCoverageService,
         private readonly MrisMaturityService $mrisMaturityService,
         private readonly UserRepository $userRepository,
@@ -193,6 +195,7 @@ class ComplianceRequirementController extends AbstractController
             'is_inherited' => $isInherited,
             'can_edit' => $canEdit,
             'sub_requirement_fulfillments' => $subRequirementFulfillments,
+            'cross_framework_equivalents' => $this->crossFrameworkLookupService->findEquivalentsGroupedByFramework($complianceRequirement),
             'transitive_coverage' => $this->transitiveCoverageService->computeForRequirement($complianceRequirement),
             'is_mris' => $isMris,
             'mris' => $mrisData,

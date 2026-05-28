@@ -221,6 +221,50 @@
                 {% endembed %}
             {% endif %}
 
+            {# Cross-Framework Equivalents #}
+            {% if cross_framework_equivalents is defined and cross_framework_equivalents|length > 0 %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="mb-0"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ 'compliance.requirement.equivalents.title'|trans({}, 'compliance') }}</h2>
+                            <span class="badge bg-secondary">{{ cross_framework_equivalents|length }} {{ 'compliance.requirement.equivalents.frameworks'|trans({}, 'compliance') }}</span>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        {# re-import inside embed — embed creates new Twig scope (CLAUDE.md pitfall #10) #}
+                        {% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
+                        <div class="p-3">
+                            <p class="text-muted small mb-3">{{ 'compliance.requirement.equivalents.intro'|trans({}, 'compliance') }}</p>
+                            {% for frameworkCode, entries in cross_framework_equivalents %}
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge text-bg-secondary me-2">{{ frameworkCode }}</span>
+                                        <span class="text-muted small">{{ entries|length }} {{ 'compliance.requirement.equivalents.controls'|trans({}, 'compliance') }}</span>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% for entry in entries %}
+                                            {% set otherReq = entry.requirement %}
+                                            {% set mappingPct = entry.mapping.finalPercentage %}
+                                            {% set badgeVariant = mappingPct >= 100 ? 'success' : (mappingPct >= 50 ? 'warning' : 'secondary') %}
+                                            <a href="{{ path('app_compliance_requirement_show', {id: otherReq.id, _locale: app.request.locale}) }}"
+                                               class="badge text-bg-{{ badgeVariant }} text-decoration-none"
+                                               title="{{ otherReq.title }}{% if entry.direction == 'reverse' %} ({{ 'compliance.requirement.equivalents.reverse'|trans({}, 'compliance') }}){% endif %}">
+                                                <code>{{ otherReq.requirementId }}</code>
+                                                <span class="ms-1">{{ mappingPct }}%</span>
+                                                {% if entry.direction == 'reverse' %}
+                                                    <i class="fa-icon fa-icon--ui-arrow-left ms-1" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <p class="text-muted small mt-2 mb-0"><em>{{ 'compliance.requirement.equivalents.legend'|trans({}, 'compliance') }}</em></p>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
             {# Detailed Sub-Requirements #}
             {% if requirement.detailedRequirements|length > 0 %}
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}

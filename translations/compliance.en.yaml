@@ -601,6 +601,13 @@ compliance:
             fulfillment:
                 title: 'Fulfillment Level'
                 desc: 'Percentage of requirement fulfillment (0-100%)'
+        equivalents:
+            title: 'Equivalents in Other Frameworks'
+            frameworks: 'Framework(s)'
+            controls: 'Control(s)'
+            intro: 'This requirement is mapped equivalently in the following frameworks. Percentage = mapping strength per ComplianceMapping.'
+            reverse: 'Reverse mapping (target → source, bidirectional)'
+            legend: 'Percentage = mapping strength. ← = bidirectional reverse mapping.'
         priority:
             critical: Critical
             high: High
