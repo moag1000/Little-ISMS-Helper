@@ -77,10 +77,14 @@ class TenantEmailBrandingController extends AbstractController
 
         $effective = $this->resolver->resolveFor($tenant);
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/tenant_email_branding/edit.html.twig', [
             'form' => $form,
             'tenant' => $tenant,
             'effective' => $effective,
-        ]);
+        ], new Response(status: $status));
     }
 }
