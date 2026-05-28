@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\MenuDensity;
 use DateTimeImmutable;
 use Deprecated;
 use App\Repository\UserRepository;
@@ -178,6 +179,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column(length: 20, options: ['default' => 'bottom-right'])]
     private string $alvaCompanionPosition = 'bottom-right';
+
+    /**
+     * UI density preference for the mega-menu sidebar.
+     */
+    #[ORM\Column(type: 'string', length: 16, enumType: MenuDensity::class, options: ['default' => 'standard'])]
+    private MenuDensity $menuDensity = MenuDensity::STANDARD;
 
     /**
      * ISO 27001 §7.2 Competence — structured per-user competency tracking.
@@ -789,6 +796,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAlvaCompanionPosition(string $alvaCompanionPosition): static
     {
         $this->alvaCompanionPosition = $alvaCompanionPosition;
+        return $this;
+    }
+
+    public function getMenuDensity(): MenuDensity
+    {
+        return $this->menuDensity;
+    }
+
+    public function setMenuDensity(MenuDensity $density): static
+    {
+        $this->menuDensity = $density;
         return $this;
     }
 
