@@ -344,6 +344,10 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="d-grid gap-2">
+                        <a href="{{ path('app_nis2_art21_requirements') }}" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
+                            {{ 'nis2.dashboard.actions.view_art21_requirements'|trans({}, 'nis2') }}
+                        </a>
                         <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i>
                             {{ 'nis2.dashboard.actions.view_incidents'|trans({}, 'messages') }}
