@@ -9,7 +9,7 @@ use App\Job\JobContext;
 use App\Message\Job\ExecuteJobMessage;
 use App\Service\Job\JobStatusService;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 /**
@@ -29,7 +29,7 @@ final class ExecuteJobHandler
 {
     public function __construct(
         private readonly JobStatusService $jobStatusService,
-        #[TaggedLocator('app.async_job')]
+        #[AutowireLocator('app.async_job')]
         private readonly ContainerInterface $jobs,
     ) {
     }

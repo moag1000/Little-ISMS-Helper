@@ -221,9 +221,9 @@ class SearchService
             ],
             // ── Organisation / Tenant ─────────────────────────────────────────
             [
-                'route' => 'tenant_management_edit',
+                'route' => 'tenant_management_index',
                 'label' => 'Organisations-Einstellungen',
-                'description' => 'Organisation konfigurieren: Name, Kontakt, ISMS-Scope',
+                'description' => 'Organisationen verwalten: Name, Kontakt, ISMS-Scope',
                 'aliases' => ['Organisation', 'Organization', 'Tenant', 'Mandant', 'Firma', 'Company', 'Einstellungen', 'Settings', 'Konfiguration', 'Config'],
                 'icon' => 'fa-icon--nav-settings',
                 'roles' => ['ROLE_ADMIN'],
@@ -363,10 +363,10 @@ class SearchService
                 'requiresModule' => null,
             ],
             [
-                'route' => 'app_compliance_gaps',
-                'label' => 'Gap-Report',
-                'description' => 'Compliance-Lücken analysieren, offene Anforderungen',
-                'aliases' => ['Gap', 'Lücke', 'Lücken', 'Lücken-Analyse', 'Gap Analysis', 'Gap-Report', 'Compliance Gap', 'offene Anforderungen'],
+                'route' => 'admin_compliance_index',
+                'label' => 'Compliance & Gap-Analyse',
+                'description' => 'Compliance-Frameworks, Lücken-Analyse, offene Anforderungen',
+                'aliases' => ['Gap', 'Lücke', 'Lücken', 'Lücken-Analyse', 'Gap Analysis', 'Gap-Report', 'Compliance Gap', 'offene Anforderungen', 'Compliance Hub'],
                 'icon' => 'fa-icon--nav-compliance',
                 'roles' => ['ROLE_AUDITOR'],
                 'requiresModule' => 'compliance',
@@ -391,7 +391,7 @@ class SearchService
                 'requiresModule' => null,
             ],
             [
-                'route' => 'data_backup_restore',
+                'route' => 'data_backup_index',
                 'label' => 'Restore / Wiederherstellung',
                 'description' => 'Backup einspielen und Daten wiederherstellen',
                 'aliases' => ['Restore', 'Wiederherstellung', 'Recovery', 'Wiederherstellen', 'Einspielen', 'Import'],
@@ -570,10 +570,11 @@ class SearchService
                 'icon' => 'fa-icon--nav-book',
                 'roles' => ['ROLE_ADMIN'],
                 'requiresModule' => null,
+                'params' => ['_format' => 'html'],
             ],
             // ── Compliance Hub ────────────────────────────────────────────────
             [
-                'route' => 'admin_tenant_compliance_settings_edit',
+                'route' => 'admin_tenant_compliance_settings_current',
                 'label' => 'Compliance-Einstellungen',
                 'description' => 'Compliance-Frameworks aktivieren: ISO 27001, TISAX, DORA, NIS2, BSI',
                 'aliases' => ['Compliance', 'Frameworks', 'ISO', 'ISO 27001', 'TISAX', 'DORA', 'NIS2', 'BSI', 'Framework', 'Normen', 'Standards'],
@@ -603,10 +604,15 @@ class SearchService
             }
 
             if ($this->navigationEntryMatches($item, $query)) {
+                try {
+                    $url = $this->urlGenerator->generate($item['route'], $item['params'] ?? []);
+                } catch (\Symfony\Component\Routing\Exception\MissingMandatoryParametersException) {
+                    continue;
+                }
                 $results[] = [
                     'title' => $item['label'],
                     'description' => $item['description'],
-                    'url' => $this->urlGenerator->generate($item['route']),
+                    'url' => $url,
                     'icon' => $item['icon'],
                     'type' => 'navigation',
                 ];

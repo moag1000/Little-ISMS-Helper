@@ -8,7 +8,7 @@ use App\Job\AsyncJobInterface;
 use App\Job\JobContext;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -47,7 +47,7 @@ class InRequestJobRunner
 {
     public function __construct(
         private readonly JobStatusService $jobStatusService,
-        #[TaggedLocator('app.async_job')]
+        #[AutowireLocator('app.async_job')]
         private readonly ContainerInterface $jobs,
         private readonly LoggerInterface $logger,
     ) {
