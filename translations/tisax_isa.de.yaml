@@ -1,16 +1,116 @@
-# Translation skeleton for tisax_isa
-# Sprint 0 Task 0.1 — empty skeleton with standard sections.
-# Keys to be filled during feature implementation.
+# Übersetzungsdatei: tisax_isa (Deutsch)
+# Domäne: TISAX VDA-ISA Import-Wizard + Assessment
 
 tisax_isa:
   nav:
-    title: ''
+    title: 'TISAX VDA-ISA Import'
+
   page:
-    title: ''
-    subtitle: ''
-  field: {}
-  error: {}
-  help: {}
-  audit: {}
-  success: {}
-  warning: {}
+    title: 'TISAX BYO VDA-ISA Import-Assistent'
+    subtitle: 'Laden Sie Ihr lizenziertes VDA-ISA-Workbook hoch und bewerten Sie Reifegrad 0–5 pro Anforderung'
+
+  # Schrittbezeichnungen für fa-stepper
+  step:
+    disclaimer: 'Rechtliche Bestätigung'
+    upload: 'Hochladen'
+    validate: 'Prüfen'
+    preview: 'Vorschau'
+    commit: 'Festschreiben'
+    assess: 'Bewerten'
+
+  import:
+    # Schritt 0 — Rechtliche Bestätigung
+    disclaimer:
+      title: 'Rechtliche Bestätigung — ENX-Lizenz'
+      legal_notice: 'Wichtiger Hinweis: Lizenzpflicht'
+      body_1: 'Der VDA-ISA-Katalog (Information Security Assessment) wird vom VDA/ENX Association veröffentlicht und ist urheberrechtlich geschützt. Die Kataloginhalte können nicht mit dieser Anwendung ausgeliefert werden.'
+      body_2: 'Vor dem Hochladen Ihres Workbooks müssen Sie bestätigen, dass:'
+      bullet_1: 'Sie über eine gültige, aktuelle ENX-Mitgliedschaft oder -Lizenz verfügen, die zur Nutzung des VDA-ISA-Workbooks berechtigt.'
+      bullet_2: 'Das Workbook über offizielle ENX-Kanäle bezogen wurde und nicht in einer lizenzverletzenden Weise verändert wurde.'
+      bullet_3: 'Sie die alleinige Verantwortung dafür übernehmen, die Lizenzcompliance Ihrer Organisation sicherzustellen.'
+      body_3: 'Ihre Bestätigung wird mit Zeitstempel und IP-Adresse als Teil Ihres Audit-Trails erfasst (ISO 27001 Abschnitt 7.5.3).'
+      checkbox_label: 'Ich bestätige, dass ich für das VDA-ISA-Workbook, das ich hochladen möchte, eine gültige ENX-Lizenz besitze.'
+      must_confirm: 'Sie müssen die Lizenz-Compliance bestätigen, bevor Sie fortfahren.'
+      confirm_button: 'Bestätigen und weiter'
+      confirmed: 'Lizenzbestätigung wurde erfasst. Sie können Ihr Workbook jetzt hochladen.'
+
+    # Schritt 1 — Hochladen
+    upload:
+      title: 'VDA-ISA-Workbook hochladen'
+      subtitle: 'Laden Sie Ihr ENX-lizenziertes VDA-ISA-Excel-Workbook hoch (.xlsx)'
+      instruction: 'Laden Sie die VDA-ISA-Workbook-Datei hoch. Die Datei muss im XLSX-Format vorliegen und ein Tabellenblatt "ISA" oder äquivalent enthalten.'
+      field_label: 'VDA-ISA-Workbook (.xlsx)'
+      help: 'Akzeptiert: .xlsx, max. 10 MB. Die Datei wird vor dem Import analysiert und geprüft.'
+      submit_button: 'Hochladen und prüfen'
+      required: 'Bitte wählen Sie eine Workbook-Datei aus.'
+      xlsx_only: 'Nur XLSX-Dateien werden akzeptiert.'
+      too_large: 'Die Datei darf 10 MB nicht überschreiten.'
+      disclaimer_required: 'Bitte bestätigen Sie den Lizenz-Disclaimer, bevor Sie hochladen.'
+      security_rejected: 'Die Datei wurde vom Sicherheits-Scanner abgelehnt. Bitte laden Sie eine gültige XLSX-Datei hoch.'
+
+    # Schritt 2 — Prüfen
+    validate:
+      title: 'Workbook-Validierung'
+      subtitle: 'Struktur und Kontroll-ID-Format werden geprüft'
+      summary: 'Validierungszusammenfassung'
+      sheet: 'Tabellenblatt'
+      control_count: 'Gefundene Kontrollzeilen'
+      detected_columns: 'Erkannte Spalten'
+      errors_heading: 'Validierungsfehler (Import gesperrt):'
+      warnings_heading: 'Warnungen (nicht blockierend):'
+      ok: 'Das Workbook hat alle Validierungsprüfungen bestanden. Sie können fortfahren.'
+      proceed: 'Weiter zur Vorschau'
+      no_workbook: 'Kein Workbook in der Sitzung gefunden. Bitte laden Sie es erneut hoch.'
+
+    # Schritt 3 — Vorschau
+    preview:
+      title: 'Import-Vorschau'
+      subtitle: 'Delta überprüfen, bevor die Datenbank beschrieben wird'
+      delta:
+        total: 'Anforderungen gesamt'
+        new: 'Neu (werden erstellt)'
+        existing: 'Vorhanden (werden aktualisiert)'
+      sample_heading: 'Kontrollen-Stichprobe (erste 20 Zeilen)'
+      col:
+        id: 'Kontroll-ID'
+        title: 'Frage / Anforderung'
+        iso_ref: 'ISO 27001 Referenz'
+        tier: 'Bereich'
+      proceed: 'In Datenbank schreiben'
+
+    # Schritt 4 — Festschreiben
+    commit:
+      title: 'Import festschreiben'
+      subtitle: 'Anforderungen in die Datenbank schreiben'
+      confirm_heading: 'Bereit zum Festschreiben?'
+      confirm_body: 'Hiermit werden %new% neue Anforderungen erstellt und %existing% bestehende Anforderungen unter Framework „%framework%" aktualisiert.'
+      irreversible_note: 'Bestehende Anforderungen werden direkt überschrieben. Diese Aktion kann mit einer neuen Workbook-Version erneut ausgeführt werden.'
+      submit_button: 'Import festschreiben'
+      success: 'VDA-ISA-Anforderungen wurden erfolgreich importiert.'
+
+    # Schritt 5 — Bewerten
+    assess:
+      title: 'Reifegrad-Bewertung'
+      subtitle: 'Reifegrad 0–5 für jede Anforderung festlegen'
+      avg_reifegrad: 'Durchschnittlicher Reifegrad'
+      assessed: 'Bewertet'
+      requirements_heading: 'Anforderungen'
+      col:
+        id: 'Kontroll-ID'
+        title: 'Anforderung'
+        tier: 'Bereich'
+        reifegrad: 'Aktueller Reifegrad'
+        target: 'Ziel'
+      save_button: 'Bewertung speichern'
+      saved: 'Reifegradwerte wurden gespeichert.'
+      no_requirements: 'Keine Anforderungen gefunden. Bitte führen Sie zuerst den Import durch.'
+      export_enx: 'ENX-Bewertungsplan exportieren (.xlsx)'
+
+      # Reifegrad-Stufenbezeichnungen
+      level:
+        incomplete: 'Unvollständig — nicht umgesetzt'
+        performed: 'Durchgeführt — ad-hoc'
+        managed: 'Gemanagt — geplant und nachverfolgt'
+        established: 'Etabliert — standardisiert'
+        predictable: 'Vorhersagbar — gemessen'
+        optimising: 'Optimierend — kontinuierlich verbessert'

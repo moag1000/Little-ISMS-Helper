@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'tisax_isa' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
+
+{% block title %}{{ 'tisax.import.validate.title'|trans({}, 'tisax_isa') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'tisax.import.nav.title'|trans({}, 'tisax_isa'), href: path('app_tisax_import_disclaimer', { _locale: app.request.locale }) },
+            { label: 'tisax.import.validate.title'|trans({}, 'tisax_isa') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'status-check', label: 'TISAX' },
+        title: 'tisax.import.validate.title'|trans({}, 'tisax_isa'),
+        subtitle: 'tisax.import.validate.subtitle'|trans({}, 'tisax_isa')
+    }) }}
+
+    {{ _fa_stepper.render([
+        { label: 'tisax.import.step.disclaimer'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.upload'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.validate'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.preview'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.commit'|trans({}, 'tisax_isa') },
+        { label: 'tisax.import.step.assess'|trans({}, 'tisax_isa') }
+    ], 2) }}
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-9">
+            {# Summary card #}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">{{ 'tisax.import.validate.summary'|trans({}, 'tisax_isa') }}</h6>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{{ 'tisax.import.validate.sheet'|trans({}, 'tisax_isa') }}</dt>
+                        <dd class="col-sm-8">{{ sheetName }}</dd>
+                        <dt class="col-sm-4">{{ 'tisax.import.validate.control_count'|trans({}, 'tisax_isa') }}</dt>
+                        <dd class="col-sm-8">{{ controlCount }}</dd>
+                        <dt class="col-sm-4">{{ 'tisax.import.validate.detected_columns'|trans({}, 'tisax_isa') }}</dt>
+                        <dd class="col-sm-8">{{ columnMap|keys|join(', ') }}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            {# Errors #}
+            {% if validation.errors is not empty %}
+                <div class="alert alert-danger">
+                    <strong>{{ 'tisax.import.validate.errors_heading'|trans({}, 'tisax_isa') }}</strong>
+                    <ul class="mb-0 mt-1">
+                        {% for error in validation.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {# Warnings #}
+            {% if validation.warnings is not empty %}
+                <div class="alert alert-warning">
+                    <strong>{{ 'tisax.import.validate.warnings_heading'|trans({}, 'tisax_isa') }}</strong>
+                    <ul class="mb-0 mt-1">
+                        {% for warning in validation.warnings %}
+                            <li>{{ warning }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {% if validation.ok %}
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill me-1"></i>
+                    {{ 'tisax.import.validate.ok'|trans({}, 'tisax_isa') }}
+                </div>
+            {% endif %}
+
+            <div class="d-flex gap-2">
+                {% if canProceed %}
+                    <form method="post" action="{{ path('app_tisax_import_validate', { _locale: app.request.locale }) }}">
+                        <button type="submit" class="btn btn-primary">
+                            {{ 'tisax.import.validate.proceed'|trans({}, 'tisax_isa') }}
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </form>
+                {% endif %}
+                <a href="{{ path('app_tisax_import_upload', { _locale: app.request.locale }) }}" class="btn btn-outline-secondary">
+                    {{ 'common.back'|trans({}, 'messages') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
