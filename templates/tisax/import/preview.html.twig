@@ -75,11 +75,7 @@
                         { label: 'tisax.import.preview.col.title'|trans({}, 'tisax_isa') },
                         { label: 'tisax.import.preview.col.iso_ref'|trans({}, 'tisax_isa') }
                     ],
-                    rows: controls|map(ctrl => [
-                        ctrl.controlId,
-                        ctrl.title|length > 120 ? ctrl.title|slice(0, 120) ~ '…' : ctrl.title,
-                        ctrl.iso27001Ref ?: '—'
-                    ])
+                    rows: previewRows
                 }) }}
             </div>
         </div>

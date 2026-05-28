@@ -92,6 +92,13 @@ final class TisaxImportWizardController extends AbstractController
         if ($redirect = $this->checkModuleActive('tisax')) {
             return $redirect;
         }
+        // On fresh entry (GET), wipe any prior import-session state so a
+        // second import starts clean — prevents stale workbook/parsed-controls
+        // from leaking into the new run.
+        if ($request->isMethod('GET')) {
+            $this->resetImportSession($request);
+        }
+
         $form = $this->createForm(TisaxLegalConfirmationType::class);
         $form->handleRequest($request);
 
@@ -280,12 +287,23 @@ final class TisaxImportWizardController extends AbstractController
             return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
         }
 
+        $previewControls = array_slice($controls, 0, 20);
+        $previewRows = array_map(
+            static fn ($ctrl): array => [
+                $ctrl->controlId,
+                mb_strlen($ctrl->title) > 120 ? mb_substr($ctrl->title, 0, 120) . '…' : $ctrl->title,
+                $ctrl->iso27001Ref ?: '—',
+            ],
+            $previewControls,
+        );
+
         return $this->render('tisax/import/preview.html.twig', [
-            'delta'     => $delta,
-            'controls'  => array_slice($controls, 0, 20), // show first 20 as preview
-            'totalRows' => count($controls),
-            'framework' => $framework,
-            'stepIndex' => 3,
+            'delta'       => $delta,
+            'controls'    => $previewControls,
+            'previewRows' => $previewRows,
+            'totalRows'   => count($controls),
+            'framework'   => $framework,
+            'stepIndex'   => 3,
         ]);
     }
 
@@ -458,6 +476,19 @@ final class TisaxImportWizardController extends AbstractController
     // ──────────────────────────────────────────────────────────────────────────
     // Private helpers
     // ──────────────────────────────────────────────────────────────────────────
+
+    private function resetImportSession(Request $request): void
+    {
+        $session = $request->getSession();
+        $workbookPath = $session->get(self::SESSION_WORKBOOK_PATH);
+        if (is_string($workbookPath) && file_exists($workbookPath)) {
+            @unlink($workbookPath);
+        }
+        $session->remove(self::SESSION_WORKBOOK_PATH);
+        $session->remove(self::SESSION_PARSED_CONTROLS);
+        $session->remove(self::SESSION_VALIDATION);
+        $session->remove('tisax_import.confirmation_id');
+    }
 
     private function hasValidConfirmation(Request $request): bool
     {
