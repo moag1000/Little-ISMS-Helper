@@ -418,17 +418,11 @@ class RestoreService
                             'original_data' => [],
                         ];
 
-                        if (!$this->entityManager->isOpen() && $this->registry !== null) {
-                            try {
-                                $this->registry->resetManager();
-                                $this->logger->info('Best-effort: EntityManager was reset after entity-type failure', [
-                                    'entity' => $orderedEntity,
-                                ]);
-                            } catch (\Throwable $resetError) {
-                                $this->logger->warning('Best-effort: could not reset EntityManager', [
-                                    'error' => $resetError->getMessage(),
-                                ]);
-                            }
+                        if (!$this->entityManager->isOpen()) {
+                            // Delegate to the shared recovery helper on RestoreEntityWriter.
+                            // We ignore the return value here — entity-type loop continues
+                            // to the next entity regardless (failures already recorded above).
+                            $entityWriter->safeResetManager($this->registry, $orderedEntity, null, $this->warnings);
                         }
                     }
                 } else {

@@ -14,6 +14,7 @@ use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Handles writing entity rows back during a restore operation.
@@ -205,16 +206,8 @@ class RestoreEntityWriter
         $entityRepository = $this->entityManager->getRepository($entityClass);
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
-        // If clear_before_restore is enabled, temporarily change ID generator to NONE
-        $originalIdGenerator   = null;
-        $originalGeneratorType = null;
-        if ($options['clear_before_restore']) {
-            $originalIdGenerator   = $classMetadata->idGenerator;
-            $originalGeneratorType = $classMetadata->generatorType;
-            $classMetadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
-            $classMetadata->setIdGenerator(new AssignedGenerator());
-            $this->logger->debug('Changed ID generator to ASSIGNED for entity', ['entity' => $entityName]);
-        }
+        // Swap ID generator to ASSIGNED so backup IDs are preserved on full-clear restores
+        [$originalIdGenerator, $originalGeneratorType] = $this->applyIdGeneratorSwap($classMetadata, $options, $entityName);
 
         $stats = ['created' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => 0];
 
@@ -274,55 +267,10 @@ class RestoreEntityWriter
                     break;
                 }
 
-                // Check if entity already exists by ID first
-                $existingEntity = null;
-                $foundById = false;
-                if (isset($data['id'])) {
-                    $existingEntity = $entityRepository->find($data['id']);
-                    $foundById = ($existingEntity !== null);
-                }
-
-                // If not found by ID, check by unique constraint fields
-                if ($existingEntity === null && $uniqueFields !== []) {
-                    $criteria = [];
-                    foreach ($uniqueFields as $uniqueField) {
-                        if (isset($data[$uniqueField])) {
-                            $criteria[$uniqueField] = $data[$uniqueField];
-                        }
-                    }
-                    if ($criteria !== []) {
-                        $existingEntity = $entityRepository->findOneBy($criteria);
-                        $this->logger->debug('Unique field lookup', [
-                            'entity' => $entityName,
-                            'criteria' => $criteria,
-                            'found' => $existingEntity !== null,
-                        ]);
-                    }
-                }
-
-                // Check for unique constraint conflicts when found by ID
-                $conflictingEntity = null;
-                if ($existingEntity !== null && $foundById && $uniqueFields !== []) {
-                    $criteria = [];
-                    foreach ($uniqueFields as $uniqueField) {
-                        if (isset($data[$uniqueField])) {
-                            $criteria[$uniqueField] = $data[$uniqueField];
-                        }
-                    }
-                    if ($criteria !== []) {
-                        $potentialConflict = $entityRepository->findOneBy($criteria);
-                        if ($potentialConflict !== null && $potentialConflict->getId() !== $existingEntity->getId()) {
-                            $conflictingEntity = $potentialConflict;
-                            $this->logger->warning('Unique field conflict detected', [
-                                'entity' => $entityName,
-                                'backup_id' => $data['id'],
-                                'target_id' => $existingEntity->getId(),
-                                'conflicting_id' => $conflictingEntity->getId(),
-                                'criteria' => $criteria,
-                            ]);
-                        }
-                    }
-                }
+                // Resolve existing entity + conflict check
+                [$existingEntity, $foundById, $conflictingEntity] = $this->resolveExistingEntity(
+                    $entityRepository, $entityName, $uniqueFields, $data
+                );
 
                 $this->logger->debug('Processing entity', [
                     'entity' => $entityName,
@@ -363,173 +311,25 @@ class RestoreEntityWriter
                     $entity = new $entityClass();
                 }
 
-                // Set scalar field values
-                foreach ($classMetadata->getFieldNames() as $fieldName) {
-                    if ($fieldName === 'id' && $existingEntity !== null) {
-                        continue;
-                    }
-
-                    if ($fieldName === 'id' && $existingEntity === null && isset($data['id']) && $options['clear_before_restore']) {
-                        try {
-                            $reflection = new ReflectionClass($entity);
-                            if ($reflection->hasProperty('id')) {
-                                $reflection->getProperty('id')->setValue($entity, $data['id']);
-                                $this->logger->debug('Set entity ID from backup', ['entity' => $entityName, 'id' => $data['id']]);
-                            }
-                        } catch (Exception $e) {
-                            $this->logger->warning('Failed to set entity ID from backup', [
-                                'entity' => $entityName, 'id' => $data['id'], 'error' => $e->getMessage(),
-                            ]);
-                        }
-                        continue;
-                    }
-
-                    // Skip FK _id fields managed via associations
-                    if (str_ends_with($fieldName, '_id') && $fieldName !== 'id') {
-                        $assocName = substr($fieldName, 0, -3);
-                        if ($classMetadata->hasAssociation($assocName)) {
-                            continue;
-                        }
-                    }
-
-                    if (!array_key_exists($fieldName, $data)) {
-                        if ($options['missing_field_strategy'] === RestoreOptions::STRATEGY_FAIL) {
-                            throw new \App\Exception\Io\IoException(sprintf('Missing field: %s', $fieldName));
-                        }
-                        if ($options['missing_field_strategy'] === RestoreOptions::STRATEGY_SKIP_FIELD) {
-                            continue;
-                        }
-                    }
-
-                    $value = $data[$fieldName] ?? null;
-
-                    // Default values for Risk entity backward compatibility
-                    if ($entityName === 'Risk' && $value === null) {
-                        $value = match ($fieldName) {
-                            'category' => 'operational',
-                            'involvesPersonalData', 'involvesSpecialCategoryData', 'requiresDPIA' => false,
-                            default => null,
-                        };
-                        if ($value !== null) {
-                            $this->logger->debug("Using default value for Risk.{$fieldName}", [
-                                'entity_index' => $index, 'default' => $value,
-                            ]);
-                        }
-                    }
-
-                    // Null protection for non-nullable JSON/array fields
-                    $type = $classMetadata->getTypeOfField($fieldName);
-                    if ($value === null && in_array($type, ['json', 'simple_array', 'array'], true)) {
-                        try {
-                            $mapping = $classMetadata->getFieldMapping($fieldName);
-                            $isNullable = is_array($mapping) ? ($mapping['nullable'] ?? false) : ($mapping->nullable ?? false);
-                            if (!$isNullable) {
-                                $value = [];
-                            }
-                        } catch (Exception) {
-                            $value = [];
-                        }
-                    }
-
-                    // Convert ISO 8601 strings back to DateTime/DateTimeImmutable
-                    if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'time', 'time_immutable'])) {
-                        try {
-                            $expectsImmutable = str_contains((string) $type, 'immutable');
-                            if (is_string($value)) {
-                                $value = $expectsImmutable ? new DateTimeImmutable($value) : new DateTime($value);
-                            } elseif ($value instanceof DateTimeImmutable && !$expectsImmutable) {
-                                $value = DateTime::createFromImmutable($value);
-                            } elseif ($value instanceof DateTime && $expectsImmutable) {
-                                $value = DateTimeImmutable::createFromMutable($value);
-                            }
-                        } catch (Exception $dateException) {
-                            $this->logger->warning('Failed to parse date/time value', [
-                                'entity' => $entityName, 'field' => $fieldName,
-                                'value' => is_object($value) ? $value::class : $value,
-                                'error' => $dateException->getMessage(),
-                            ]);
-                        }
-                    }
-
-                    try {
-                        if ($propertyAccessor->isWritable($entity, $fieldName)) {
-                            $propertyAccessor->setValue($entity, $fieldName, $value);
-                        } else {
-                            $reflection = new ReflectionClass($entity);
-                            if ($reflection->hasProperty($fieldName)) {
-                                $reflection->getProperty($fieldName)->setValue($entity, $value);
-                            }
-                        }
-                    } catch (Exception $e) {
-                        $this->logger->warning('Failed to set property', [
-                            'entity' => $entityName, 'field' => $fieldName,
-                            'value_type' => get_debug_type($value), 'error' => $e->getMessage(),
-                        ]);
-                        $warnings[] = sprintf('Warning: Could not set %s.%s: %s', $entityName, $fieldName, $e->getMessage());
-                    }
-                }
+                // Hydrate scalar fields
+                $this->hydrateScalarFields(
+                    $entity, $data, $classMetadata, $propertyAccessor,
+                    $entityName, $entityClass, $existingEntity, $options, $warnings
+                );
 
                 // Special handling for User entities: Set password if admin_password is provided
                 if ($entityName === 'User' && !empty($options['admin_password']) && $secretsHandler !== null) {
                     $secretsHandler->applyAdminPasswordToUser($entity, $data, $options['admin_password'], $warnings);
                 } elseif ($entityName === 'User' && !empty($options['admin_password']) && $secretsHandler === null) {
-                    // Fallback: log a warning that secrets handler was not provided
                     $this->logger->warning('admin_password provided but no RestoreSecretsHandler injected — password not set', [
                         'user_email' => $data['email'] ?? 'unknown',
                     ]);
                 }
 
                 // Restore ManyToOne / OneToOne associations
-                foreach ($classMetadata->getAssociationNames() as $assocName) {
-                    if ($classMetadata->isSingleValuedAssociation($assocName)) {
-                        $assocIdKey = $assocName . '_id';
-                        if (isset($data[$assocIdKey])) {
-                            $targetClass = $classMetadata->getAssociationTargetClass($assocName);
-                            $assocId = $data[$assocIdKey];
-
-                            if (is_array($assocId) && isset($assocId['id'])) {
-                                $assocId = $assocId['id'];
-                            }
-
-                            if ($assocId !== null) {
-                                try {
-                                    $relatedEntity = $this->entityManager->getReference($targetClass, $assocId);
-
-                                    if ($propertyAccessor->isWritable($entity, $assocName)) {
-                                        $propertyAccessor->setValue($entity, $assocName, $relatedEntity);
-                                    } else {
-                                        $reflection = new ReflectionClass($entity);
-                                        $setterCandidates = [
-                                            'set' . ucfirst($assocName),
-                                            'set' . ucfirst(preg_replace('/^.*([A-Z][a-z]+)$/', '$1', $assocName)),
-                                        ];
-                                        $setterFound = false;
-                                        foreach ($setterCandidates as $setterName) {
-                                            if ($reflection->hasMethod($setterName)) {
-                                                $reflection->getMethod($setterName)->invoke($entity, $relatedEntity);
-                                                $setterFound = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!$setterFound) {
-                                            throw new \App\Exception\Io\IoException(sprintf(
-                                                'No setter found for association "%s". Tried: %s',
-                                                $assocName,
-                                                implode(', ', $setterCandidates)
-                                            ));
-                                        }
-                                    }
-                                } catch (Exception $e) {
-                                    $this->logger->warning('Failed to restore association', [
-                                        'entity' => $entityName, 'association' => $assocName,
-                                        'target_id' => $assocId, 'error' => $e->getMessage(),
-                                    ]);
-                                }
-                            }
-                        }
-                    }
-                    // ManyToMany: handled in second pass via restoreManyToManyAssociations()
-                }
+                $this->resolveAssociations(
+                    $entity, $data, $classMetadata, $propertyAccessor, $entityName
+                );
 
                 $this->entityManager->persist($entity);
 
@@ -556,33 +356,14 @@ class RestoreEntityWriter
                     ]);
 
                     if ($batchSpName !== null && !$batchErrored) {
-                        try {
-                            $this->entityManager->clear();
-                            $connection->rollbackSavepoint($batchSpName);
-                            $this->logger->info('Best-effort: rolled back batch savepoint', [
-                                'savepoint' => $batchSpName, 'entity' => $entityName,
-                            ]);
-                        } catch (\Throwable) {
-                        }
+                        $this->restoreSavepoint($batchSpName, $connection, $entityName);
                         $batchSpName  = null;
                         $batchErrored = true;
                     }
 
                     if (!$this->entityManager->isOpen()) {
-                        if ($registry !== null) {
-                            try {
-                                $registry->resetManager();
-                                $this->logger->info('Best-effort: EntityManager reset after row failure', [
-                                    'entity' => $entityName, 'index' => $index,
-                                ]);
-                            } catch (\Throwable $resetError) {
-                                $this->logger->warning('Best-effort: could not reset EntityManager, aborting entity-type', [
-                                    'entity' => $entityName, 'error' => $resetError->getMessage(),
-                                ]);
-                                break;
-                            }
-                        } else {
-                            $warnings[] = 'EntityManager closed due to database error. Restore aborted.';
+                        $shouldBreak = $this->safeResetManager($registry, $entityName, $index, $warnings);
+                        if ($shouldBreak) {
                             break;
                         }
                     }
@@ -819,6 +600,351 @@ class RestoreEntityWriter
 
         if ($m2mStats !== [] && isset($statistics[$entityName]) && is_array($statistics[$entityName])) {
             $statistics[$entityName]['m2m'] = $m2mStats;
+        }
+    }
+
+    // =========================================================================
+    // Private helpers — extracted from restoreEntity() for readability
+    // =========================================================================
+
+    /**
+     * Swap ClassMetadata ID generator to AssignedGenerator for clear-before-restore runs.
+     *
+     * Returns [$originalIdGenerator, $originalGeneratorType] so the caller can
+     * restore them after the loop. Both values are null when no swap was performed.
+     *
+     * @return array{0: AbstractIdGenerator|null, 1: int|null}
+     */
+    private function applyIdGeneratorSwap(
+        ClassMetadata $meta,
+        array $options,
+        string $entityName,
+    ): array {
+        if (!$options['clear_before_restore']) {
+            return [null, null];
+        }
+
+        $originalIdGenerator   = $meta->idGenerator;
+        $originalGeneratorType = $meta->generatorType;
+        $meta->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+        $meta->setIdGenerator(new AssignedGenerator());
+        $this->logger->debug('Changed ID generator to ASSIGNED for entity', ['entity' => $entityName]);
+
+        return [$originalIdGenerator, $originalGeneratorType];
+    }
+
+    /**
+     * Resolve which DB entity (if any) the incoming backup row maps to.
+     *
+     * Returns [$existingEntity, $foundById, $conflictingEntity].
+     * $conflictingEntity is non-null when a unique-field conflict was detected.
+     *
+     * @return array{0: object|null, 1: bool, 2: object|null}
+     */
+    private function resolveExistingEntity(
+        object $entityRepository,
+        string $entityName,
+        array $uniqueFields,
+        array $data,
+    ): array {
+        $existingEntity = null;
+        $foundById = false;
+
+        if (isset($data['id'])) {
+            $existingEntity = $entityRepository->find($data['id']);
+            $foundById = ($existingEntity !== null);
+        }
+
+        // If not found by ID, check by unique constraint fields
+        if ($existingEntity === null && $uniqueFields !== []) {
+            $criteria = [];
+            foreach ($uniqueFields as $uniqueField) {
+                if (isset($data[$uniqueField])) {
+                    $criteria[$uniqueField] = $data[$uniqueField];
+                }
+            }
+            if ($criteria !== []) {
+                $existingEntity = $entityRepository->findOneBy($criteria);
+                $this->logger->debug('Unique field lookup', [
+                    'entity' => $entityName,
+                    'criteria' => $criteria,
+                    'found' => $existingEntity !== null,
+                ]);
+            }
+        }
+
+        // Check for unique constraint conflicts when found by ID
+        $conflictingEntity = null;
+        if ($existingEntity !== null && $foundById && $uniqueFields !== []) {
+            $criteria = [];
+            foreach ($uniqueFields as $uniqueField) {
+                if (isset($data[$uniqueField])) {
+                    $criteria[$uniqueField] = $data[$uniqueField];
+                }
+            }
+            if ($criteria !== []) {
+                $potentialConflict = $entityRepository->findOneBy($criteria);
+                if ($potentialConflict !== null && $potentialConflict->getId() !== $existingEntity->getId()) {
+                    $conflictingEntity = $potentialConflict;
+                    $this->logger->warning('Unique field conflict detected', [
+                        'entity' => $entityName,
+                        'backup_id' => $data['id'],
+                        'target_id' => $existingEntity->getId(),
+                        'conflicting_id' => $conflictingEntity->getId(),
+                        'criteria' => $criteria,
+                    ]);
+                }
+            }
+        }
+
+        return [$existingEntity, $foundById, $conflictingEntity];
+    }
+
+    /**
+     * Set all scalar (non-association) field values on an entity from backup data.
+     *
+     * Handles: ID injection for clear-before-restore, FK _id field skipping,
+     * missing-field strategies, Risk backward-compat defaults, JSON null-protection,
+     * and DateTime string coercion.
+     */
+    private function hydrateScalarFields(
+        object $entity,
+        array $data,
+        ClassMetadata $meta,
+        PropertyAccessor $propertyAccessor,
+        string $entityName,
+        string $entityClass,
+        ?object $existingEntity,
+        array $options,
+        array &$warnings,
+    ): void {
+        foreach ($meta->getFieldNames() as $fieldName) {
+            if ($fieldName === 'id' && $existingEntity !== null) {
+                continue;
+            }
+
+            if ($fieldName === 'id' && $existingEntity === null && isset($data['id']) && $options['clear_before_restore']) {
+                try {
+                    $reflection = new ReflectionClass($entity);
+                    if ($reflection->hasProperty('id')) {
+                        $reflection->getProperty('id')->setValue($entity, $data['id']);
+                        $this->logger->debug('Set entity ID from backup', ['entity' => $entityName, 'id' => $data['id']]);
+                    }
+                } catch (Exception $e) {
+                    $this->logger->warning('Failed to set entity ID from backup', [
+                        'entity' => $entityName, 'id' => $data['id'], 'error' => $e->getMessage(),
+                    ]);
+                }
+                continue;
+            }
+
+            // Skip FK _id fields managed via associations
+            if (str_ends_with($fieldName, '_id') && $fieldName !== 'id') {
+                $assocName = substr($fieldName, 0, -3);
+                if ($meta->hasAssociation($assocName)) {
+                    continue;
+                }
+            }
+
+            if (!array_key_exists($fieldName, $data)) {
+                if ($options['missing_field_strategy'] === RestoreOptions::STRATEGY_FAIL) {
+                    throw new \App\Exception\Io\IoException(sprintf('Missing field: %s', $fieldName));
+                }
+                if ($options['missing_field_strategy'] === RestoreOptions::STRATEGY_SKIP_FIELD) {
+                    continue;
+                }
+            }
+
+            $value = $data[$fieldName] ?? null;
+
+            // Default values for Risk entity backward compatibility
+            if ($entityName === 'Risk' && $value === null) {
+                $value = match ($fieldName) {
+                    'category' => 'operational',
+                    'involvesPersonalData', 'involvesSpecialCategoryData', 'requiresDPIA' => false,
+                    default => null,
+                };
+                if ($value !== null) {
+                    $this->logger->debug("Using default value for Risk.{$fieldName}", [
+                        'entity_index' => null, 'default' => $value,
+                    ]);
+                }
+            }
+
+            $type = $meta->getTypeOfField($fieldName);
+
+            // Null protection for non-nullable JSON/array fields
+            if ($value === null && in_array($type, ['json', 'simple_array', 'array'], true)) {
+                try {
+                    $mapping = $meta->getFieldMapping($fieldName);
+                    $isNullable = is_array($mapping) ? ($mapping['nullable'] ?? false) : ($mapping->nullable ?? false);
+                    if (!$isNullable) {
+                        $value = [];
+                    }
+                } catch (Exception) {
+                    $value = [];
+                }
+            }
+
+            // Convert ISO 8601 strings back to DateTime/DateTimeImmutable
+            if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'time', 'time_immutable'])) {
+                try {
+                    $expectsImmutable = str_contains((string) $type, 'immutable');
+                    if (is_string($value)) {
+                        $value = $expectsImmutable ? new DateTimeImmutable($value) : new DateTime($value);
+                    } elseif ($value instanceof DateTimeImmutable && !$expectsImmutable) {
+                        $value = DateTime::createFromImmutable($value);
+                    } elseif ($value instanceof DateTime && $expectsImmutable) {
+                        $value = DateTimeImmutable::createFromMutable($value);
+                    }
+                } catch (Exception $dateException) {
+                    $this->logger->warning('Failed to parse date/time value', [
+                        'entity' => $entityName, 'field' => $fieldName,
+                        'value' => is_object($value) ? $value::class : $value,
+                        'error' => $dateException->getMessage(),
+                    ]);
+                }
+            }
+
+            try {
+                if ($propertyAccessor->isWritable($entity, $fieldName)) {
+                    $propertyAccessor->setValue($entity, $fieldName, $value);
+                } else {
+                    $reflection = new ReflectionClass($entity);
+                    if ($reflection->hasProperty($fieldName)) {
+                        $reflection->getProperty($fieldName)->setValue($entity, $value);
+                    }
+                }
+            } catch (Exception $e) {
+                $this->logger->warning('Failed to set property', [
+                    'entity' => $entityName, 'field' => $fieldName,
+                    'value_type' => get_debug_type($value), 'error' => $e->getMessage(),
+                ]);
+                $warnings[] = sprintf('Warning: Could not set %s.%s: %s', $entityName, $fieldName, $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Restore ManyToOne and OneToOne associations from backup data.
+     *
+     * ManyToMany is handled in the second-pass via restoreManyToManyAssociations().
+     */
+    private function resolveAssociations(
+        object $entity,
+        array $data,
+        ClassMetadata $meta,
+        PropertyAccessor $propertyAccessor,
+        string $entityName,
+    ): void {
+        foreach ($meta->getAssociationNames() as $assocName) {
+            if (!$meta->isSingleValuedAssociation($assocName)) {
+                // ManyToMany: handled in second pass via restoreManyToManyAssociations()
+                continue;
+            }
+
+            $assocIdKey = $assocName . '_id';
+            if (!isset($data[$assocIdKey])) {
+                continue;
+            }
+
+            $targetClass = $meta->getAssociationTargetClass($assocName);
+            $assocId = $data[$assocIdKey];
+
+            if (is_array($assocId) && isset($assocId['id'])) {
+                $assocId = $assocId['id'];
+            }
+
+            if ($assocId === null) {
+                continue;
+            }
+
+            try {
+                $relatedEntity = $this->entityManager->getReference($targetClass, $assocId);
+
+                if ($propertyAccessor->isWritable($entity, $assocName)) {
+                    $propertyAccessor->setValue($entity, $assocName, $relatedEntity);
+                } else {
+                    $reflection = new ReflectionClass($entity);
+                    $setterCandidates = [
+                        'set' . ucfirst($assocName),
+                        'set' . ucfirst(preg_replace('/^.*([A-Z][a-z]+)$/', '$1', $assocName)),
+                    ];
+                    $setterFound = false;
+                    foreach ($setterCandidates as $setterName) {
+                        if ($reflection->hasMethod($setterName)) {
+                            $reflection->getMethod($setterName)->invoke($entity, $relatedEntity);
+                            $setterFound = true;
+                            break;
+                        }
+                    }
+                    if (!$setterFound) {
+                        throw new \App\Exception\Io\IoException(sprintf(
+                            'No setter found for association "%s". Tried: %s',
+                            $assocName,
+                            implode(', ', $setterCandidates)
+                        ));
+                    }
+                }
+            } catch (Exception $e) {
+                $this->logger->warning('Failed to restore association', [
+                    'entity' => $entityName, 'association' => $assocName,
+                    'target_id' => $assocId, 'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Roll back a batch savepoint after a row error (best-effort mode).
+     */
+    private function restoreSavepoint(
+        string $savepoint,
+        \Doctrine\DBAL\Connection $connection,
+        string $entityName,
+    ): void {
+        try {
+            $this->entityManager->clear();
+            $connection->rollbackSavepoint($savepoint);
+            $this->logger->info('Best-effort: rolled back batch savepoint', [
+                'savepoint' => $savepoint, 'entity' => $entityName,
+            ]);
+        } catch (\Throwable) {
+        }
+    }
+
+    /**
+     * Attempt to reset the EntityManager after a fatal row / entity-type failure.
+     *
+     * Returns true when the caller should abort (no registry available, or reset failed).
+     * Returns false when the reset succeeded and processing may continue.
+     *
+     * Called from:
+     *  - restoreEntity() — per-row best-effort error path (private call-site)
+     *  - RestoreService::restoreFromBackup() — entity-type error path (public call-site)
+     */
+    public function safeResetManager(
+        ?\Doctrine\Persistence\ManagerRegistry $registry,
+        string $context,
+        int|string|null $index,
+        array &$warnings,
+    ): bool {
+        if ($registry === null) {
+            $warnings[] = 'EntityManager closed due to database error. Restore aborted.';
+            return true;
+        }
+
+        try {
+            $registry->resetManager();
+            $this->logger->info('Best-effort: EntityManager reset after row failure', [
+                'entity' => $context, 'index' => $index,
+            ]);
+            return false;
+        } catch (\Throwable $resetError) {
+            $this->logger->warning('Best-effort: could not reset EntityManager, aborting entity-type', [
+                'entity' => $context, 'error' => $resetError->getMessage(),
+            ]);
+            return true;
         }
     }
 }
