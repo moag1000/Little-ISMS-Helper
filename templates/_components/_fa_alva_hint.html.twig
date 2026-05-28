@@ -18,7 +18,7 @@
 #}
 {% macro render(hint) %}
     {% set domain = hint.translationDomain %}
-    {% set title = ('alva.title_prefix'|trans({}, 'alva')) ~ ' ' ~ (hint.titleTranslationKey|trans({}, domain)) %}
+    {% set title = ('alva.title_prefix'|trans({}, 'alva')) ~ ' ' ~ (hint.titleTranslationKey|trans(hint.bodyTranslationParams, domain)) %}
     {% set body = hint.bodyTranslationKey|trans(hint.bodyTranslationParams, domain) %}
     <div class="fa-alert fa-alert--{{ hint.variant }} mb-3"
          role="status"
