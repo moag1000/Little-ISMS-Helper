@@ -4,16 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Asset;
-use App\Entity\Control;
-use App\Entity\Incident;
-use App\Entity\Risk;
-use App\Entity\Training;
 use App\Repository\AssetRepository;
-use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
-use App\Repository\TrainingRepository;
-use App\Repository\ControlRepository;
+use App\Repository\RiskRepository;
+use App\Service\Search\SearchService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,53 +19,32 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class SearchController extends AbstractController
 {
     public function __construct(
+        private readonly SearchService $searchService,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly IncidentRepository $incidentRepository,
-        private readonly TrainingRepository $trainingRepository,
-        private readonly ControlRepository $controlRepository
     ) {}
+
     /**
-     * Global search endpoint
-     * Searches across all entities: Assets, Risks, Controls, Incidents, Trainings
+     * Global search endpoint — searches all entities, navigation targets, and admin pages.
      */
     #[Route('/api/search', name: 'app_api_search', methods: ['GET'])]
     public function search(Request $request): JsonResponse
     {
-        $query = $request->query->get('q', '');
+        $query = trim((string) $request->query->get('q', ''));
 
-        if (strlen($query) < 2) {
-            return $this->json([
-                'total' => 0,
-                'assets' => [],
-                'risks' => [],
-                'controls' => [],
-                'incidents' => [],
-                'trainings' => []
-            ]);
+        if (mb_strlen($query) < 2) {
+            return $this->json(['total' => 0, 'query' => $query]);
         }
 
-        // Search in each entity
-        $assets = $this->searchAssets($query);
-        $risks = $this->searchRisks($query);
-        $controls = $this->searchControls($query);
-        $incidents = $this->searchIncidents($query);
-        $trainings = $this->searchTrainings($query);
+        $tenant = $this->getUser()?->getTenant();
+        $results = $this->searchService->search($query, $tenant);
 
-        $total = count($assets) + count($risks) + count($controls) + count($incidents) + count($trainings);
-
-        return $this->json([
-            'total' => $total,
-            'assets' => $assets,
-            'risks' => $risks,
-            'controls' => $controls,
-            'incidents' => $incidents,
-            'trainings' => $trainings,
-            'query' => $query
-        ]);
+        return $this->json($results);
     }
+
     /**
-     * Quick view endpoint for assets
+     * Quick-view endpoint for assets.
      */
     #[Route('/api/asset/{id}/preview', name: 'app_api_asset_preview', methods: ['GET'])]
     public function assetPreview(int $id): Response
@@ -83,12 +56,11 @@ class SearchController extends AbstractController
             return new Response('Not found', Response::HTTP_NOT_FOUND);
         }
 
-        return $this->render('_previews/_asset_preview.html.twig', [
-            'asset' => $asset
-        ]);
+        return $this->render('_previews/_asset_preview.html.twig', ['asset' => $asset]);
     }
+
     /**
-     * Quick view endpoint for risks
+     * Quick-view endpoint for risks.
      */
     #[Route('/api/risk/{id}/preview', name: 'app_api_risk_preview', methods: ['GET'])]
     public function riskPreview(int $id): Response
@@ -100,12 +72,11 @@ class SearchController extends AbstractController
             return new Response('Not found', Response::HTTP_NOT_FOUND);
         }
 
-        return $this->render('_previews/_risk_preview.html.twig', [
-            'risk' => $risk
-        ]);
+        return $this->render('_previews/_risk_preview.html.twig', ['risk' => $risk]);
     }
+
     /**
-     * Quick view endpoint for incidents
+     * Quick-view endpoint for incidents.
      */
     #[Route('/api/incident/{id}/preview', name: 'app_api_incident_preview', methods: ['GET'])]
     public function incidentPreview(int $id): Response
@@ -117,110 +88,6 @@ class SearchController extends AbstractController
             return new Response('Not found', Response::HTTP_NOT_FOUND);
         }
 
-        return $this->render('_previews/_incident_preview.html.twig', [
-            'incident' => $incident
-        ]);
-    }
-    private function searchAssets(string $query): array
-    {
-        $assets = $this->assetRepository->createQueryBuilder('a')
-            ->where('a.name LIKE :query OR a.description LIKE :query OR a.owner LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getResult();
-
-        return array_map(fn(Asset $asset): array => [
-            'id' => $asset->getId(),
-            'title' => $asset->getName(),
-            'description' => $this->truncate($asset->getDescription(), 100),
-            'url' => $this->generateUrl('app_asset_show', ['id' => $asset->getId()]),
-            'badge' => $asset->getAssetType()
-        ], $assets);
-    }
-    private function searchRisks(string $query): array
-    {
-        $risks = $this->riskRepository->createQueryBuilder('r')
-            ->where('r.title LIKE :query OR r.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getResult();
-
-        return array_map(function(Risk $risk): array {
-            $level = $risk->getInherentRiskLevel();
-            $badge = $level >= 15 ? 'Hoch' : ($level >= 9 ? 'Mittel' : 'Niedrig');
-
-            return [
-                'id' => $risk->getId(),
-                'title' => $risk->getTitle(),
-                'description' => $this->truncate($risk->getDescription(), 100),
-                'url' => $this->generateUrl('app_risk_show', ['id' => $risk->getId()]),
-                'badge' => $badge
-            ];
-        }, $risks);
-    }
-    private function searchControls(string $query): array
-    {
-        $controls = $this->controlRepository->createQueryBuilder('c')
-            ->where('c.controlId LIKE :query OR c.name LIKE :query OR c.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getResult();
-
-        return array_map(fn(Control $control): array => [
-            'id' => $control->getId(),
-            'title' => $control->getControlId() . ' - ' . $control->getName(),
-            'description' => $this->truncate($control->getDescription(), 100),
-            'url' => $this->generateUrl('app_soa_show', ['id' => $control->getId()]),
-            'badge' => $control->getImplementationStatus()
-        ], $controls);
-    }
-    private function searchIncidents(string $query): array
-    {
-        $incidents = $this->incidentRepository->createQueryBuilder('i')
-            ->where('i.title LIKE :query OR i.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getResult();
-
-        return array_map(fn(Incident $incident): array => [
-            'id' => $incident->getId(),
-            'title' => $incident->getTitle(),
-            'description' => $this->truncate($incident->getDescription(), 100),
-            'url' => $this->generateUrl('app_incident_show', ['id' => $incident->getId()]),
-            'badge' => $incident->getSeverity()?->value
-        ], $incidents);
-    }
-    private function searchTrainings(string $query): array
-    {
-        $trainings = $this->trainingRepository->createQueryBuilder('t')
-            ->where('t.title LIKE :query OR t.description LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getResult();
-
-        return array_map(fn(Training $training): array => [
-            'id' => $training->getId(),
-            'title' => $training->getTitle(),
-            'description' => $this->truncate($training->getDescription(), 100),
-            'url' => $this->generateUrl('app_training_show', ['id' => $training->getId()]),
-            'badge' => $training->getStatus()
-        ], $trainings);
-    }
-    private function truncate(?string $text, int $length): string
-    {
-        if (!$text) {
-            return '';
-        }
-
-        if (strlen($text) <= $length) {
-            return $text;
-        }
-
-        return substr($text, 0, $length) . '...';
+        return $this->render('_previews/_incident_preview.html.twig', ['incident' => $incident]);
     }
 }
