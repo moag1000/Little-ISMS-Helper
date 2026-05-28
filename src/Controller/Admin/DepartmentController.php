@@ -65,9 +65,13 @@ final class DepartmentController extends AbstractController
             return $this->redirectToRoute('admin_department_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/department/new.html.twig', [
             'form' => $form->createView(),
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
@@ -85,10 +89,14 @@ final class DepartmentController extends AbstractController
             return $this->redirectToRoute('admin_department_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/department/edit.html.twig', [
             'form' => $form->createView(),
             'department' => $department,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]

@@ -109,11 +109,15 @@ final class GstoolImportController extends AbstractController
             }
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/gstool_import/index.html.twig', [
             'form' => $form,
             'result' => $result,
             'isDryRun' => $isDryRun,
-        ]);
+        ], new Response(status: $status));
     }
 
     private function storeUpload(UploadedFile $upload): string
