@@ -27,7 +27,7 @@ library:
     file: 'Datei'
     open_byo_wizard: 'BYO-Import-Assistent oeffnen'
 
-  badge:
+  status_badge:
     skeleton_only: 'Nur Skelett'
 
   tisax:

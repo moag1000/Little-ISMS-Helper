@@ -1263,7 +1263,7 @@ export:
         tier_dp_label: 'Data Protection (%in_place% / %total% in place)'
         tier_dp_value: '%in_place% / %total% measures in place (%pct% %%)'
 
-  framework_show:
+framework_show:
     tisax_skeleton_hint: 'This TISAX framework has no controls seeded. The VDA-ISA workbook is ENX-licensed and not redistributable. Use the BYO-Import Wizard to populate controls from your licensed copy.'
     action:
-      open_byo_wizard: 'Open BYO-Import Wizard'
+        open_byo_wizard: 'Open BYO-Import Wizard'
