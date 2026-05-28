@@ -10,6 +10,7 @@ use App\Repository\TenantRepository;
 use App\Service\AssetSubTypeSeeder;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -33,6 +34,7 @@ final class SetupTenantBootstrapper
         private readonly TenantRepository $tenantRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly AssetSubTypeSeeder $assetSubTypeSeeder,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -93,9 +95,16 @@ final class SetupTenantBootstrapper
             $this->assetSubTypeSeeder->applyPreset($tenant, AssetSubTypeSeeder::PRESET_BSI);
 
             $this->entityManager->flush();
-        } catch (\Exception) {
-            // Log error but don't fail setup.
-            // The organization data is already saved in session and modules are configured.
+        } catch (\Exception $e) {
+            // Setup must not break on tenant-data-write failure (org data is
+            // still in session, modules are configured, user can re-run finalize).
+            // But we MUST log — silent swallow hides data-integrity gaps.
+            $this->logger->error('SetupTenantBootstrapper: tenant data write failed during setup finalize', [
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
         }
     }
 
