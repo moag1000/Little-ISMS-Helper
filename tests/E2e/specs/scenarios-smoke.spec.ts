@@ -141,13 +141,34 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
             const value = interpolate(raw, ctx);
             const locator = page.locator(selector).first();
             const tag = await locator.evaluate((el) => el.tagName).catch(() => 'NONE');
-            if (tag === 'SELECT') {
-                await locator.selectOption(value, { timeout: 5_000 });
-            } else if (tag === 'NONE') {
+            if (tag === 'NONE') {
                 baseResult.failReason = `Selector not found: ${selector}`;
                 return finishResult(baseResult, t0);
-            } else {
-                await locator.fill(value, { timeout: 5_000 });
+            }
+
+            // fa-form-layout sections hide fields by default; the strict
+            // Playwright fill() / selectOption() waits for visible and
+            // times out. Try the visible-aware API first, fall back to a
+            // direct DOM-value-set so required fields in collapsed
+            // sections can still be filled by L2 smokes.
+            try {
+                if (tag === 'SELECT') {
+                    await locator.selectOption(value, { timeout: 5_000 });
+                } else {
+                    await locator.fill(value, { timeout: 5_000 });
+                }
+            } catch {
+                await locator.evaluate((el, v) => {
+                    if (
+                        el instanceof HTMLInputElement
+                        || el instanceof HTMLTextAreaElement
+                        || el instanceof HTMLSelectElement
+                    ) {
+                        el.value = v;
+                    }
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                }, value);
             }
         }
 
@@ -165,12 +186,18 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
             ? scenario.submit
             : 'button[type="submit"]';
 
+        // The base template renders an inline re-auth modal whose hidden
+        // form contains its own submit button. `.first()` would grab that
+        // (invisible) button and time out. Filter for visible so we hit
+        // the real form-action submit.
+        const submitLocator = page.locator(submitSelector).filter({ visible: true }).first();
+
         const [response] = await Promise.all([
             page.waitForResponse(
                 (r) => r.request().method() === 'POST' || r.request().method() === 'PUT',
                 { timeout: 20_000 },
             ).catch(() => null),
-            page.locator(submitSelector).first().click({ timeout: 5_000 }),
+            submitLocator.click({ timeout: 5_000 }),
         ]);
 
         baseResult.finalStatus = response?.status() ?? baseResult.finalStatus;

@@ -1,4 +1,7 @@
 # ISMS-Objective scenarios (ISO 27001 Cl. 6.2).
+#
+# ISMSObjectiveType: status field is disabled+unmapped (LifecycleService
+# owns transitions). Required fields: title, category, targetDate.
 
 scenarios:
   - name: objective_create_minimal
@@ -7,7 +10,9 @@ scenarios:
     category: objective
     fill:
       'input[name="isms_objective[title]"]': "Smoke-Objective ${random.suffix}"
-      'select[name="isms_objective[status]"]': "in_progress"
+      'textarea[name="isms_objective[description]"]': "Auto-generated"
+      'select[name="isms_objective[category]"]': "compliance"
+      'input[name="isms_objective[targetDate]"]': "2026-12-31"
     submit: auto
     expect:
       status_lt: 500

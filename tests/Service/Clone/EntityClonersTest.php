@@ -157,9 +157,12 @@ final class EntityClonersTest extends TestCase
         self::assertSame(12, $clone->getReviewIntervalMonths());
         self::assertSame('draft', $clone->getStatus(), 'lifecycle reset to draft');
         self::assertFalse($clone->isImmutable(), 'clone starts editable');
-        self::assertNull($clone->getFilename(), 'binary not carried over');
-        self::assertNull($clone->getFilePath());
-        self::assertNull($clone->getSha256Hash());
+        // filename + filePath are NOT NULL on the document table — cloner
+        // mirrors the source pointers until the user re-uploads. Hash is
+        // still cleared so the next save recomputes integrity metadata.
+        self::assertSame('uuid-abc.pdf', $clone->getFilename(), 'pointer mirrored — NOT NULL guard');
+        self::assertSame('/var/docs/uuid-abc.pdf', $clone->getFilePath());
+        self::assertNull($clone->getSha256Hash(), 'hash cleared — re-derived on next save');
         self::assertSame('1.0', $clone->getVersion());
     }
 
@@ -195,7 +198,10 @@ final class EntityClonersTest extends TestCase
         self::assertTrue($clone->isMandatory());
         self::assertSame(12, $clone->getRecurrenceMonths());
         self::assertSame('planned', $clone->getStatus(), 'status reset to planned');
-        self::assertNull($clone->getScheduledDate());
+        // scheduledDate is NOT NULL on the training table — cloner mirrors
+        // the source value forward so the row is persistable; user re-plans
+        // via the edit form. completionDate is nullable → cleared.
+        self::assertNotNull($clone->getScheduledDate(), 'date mirrored — NOT NULL guard');
         self::assertNull($clone->getCompletionDate());
         self::assertSame(0, $clone->getAttendeeCount());
         self::assertNull($clone->getFeedback());

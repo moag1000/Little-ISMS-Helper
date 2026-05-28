@@ -1,14 +1,17 @@
 # Asset-Management scenarios (ISO 27001 A.5.9-5.11).
+#
+# AssetType uses `assetType` (camelCase) + `dataClassification`, not the
+# legacy `type` / `classification` names from earlier sprints.
 
 scenarios:
   - name: asset_create_minimal
-    label: "Asset anlegen (Minimal — Name + Owner)"
+    label: "Asset anlegen (Minimal — Name + Type + CIA)"
     route: /de/asset/new
     category: asset
     fill:
       'input[name="asset[name]"]': "Smoke-Asset ${random.suffix}"
-      'select[name="asset[type]"]': "information"
-      'select[name="asset[classification]"]': "internal"
+      'select[name="asset[assetType]"]': "Information"
+      'select[name="asset[dataClassification]"]': "internal"
     submit: auto
     expect:
       status_lt: 500
