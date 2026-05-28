@@ -238,10 +238,14 @@ class ComplianceMappingController extends AbstractController
             ]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('compliance/mapping/new.html.twig', [
             'mapping' => $complianceMapping,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/compliance/mapping/{id}', name: 'app_compliance_mapping_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -274,10 +278,14 @@ class ComplianceMappingController extends AbstractController
             ]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('compliance/mapping/edit.html.twig', [
             'mapping' => $complianceMapping,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/compliance/mapping/{id}', name: 'app_compliance_mapping_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
