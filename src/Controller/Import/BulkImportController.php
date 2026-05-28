@@ -137,11 +137,15 @@ final class BulkImportController extends AbstractController
             }
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('import/wizard/upload.html.twig', [
             'form'            => $form,
             'entityType'      => $entityType,
             'entityTypePascal' => $entityTypePascal,
-        ]);
+        ], new Response(status: $status));
     }
 
     // -------------------------------------------------------------------------
@@ -221,6 +225,10 @@ final class BulkImportController extends AbstractController
             }
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('import/wizard/map.html.twig', [
             'form'            => $form,
             'batch'           => $batch,
@@ -228,7 +236,7 @@ final class BulkImportController extends AbstractController
             'entityTypePascal' => $entityTypePascal,
             'autoMappings'    => $autoMappings,
             'headers'         => $parsed->headers,
-        ]);
+        ], new Response(status: $status));
     }
 
     // -------------------------------------------------------------------------
@@ -290,13 +298,17 @@ final class BulkImportController extends AbstractController
         // Form validation failed — re-render preview with errors
         $deltaResult = $this->orchestrator->preview($batch, $batch->getColumnMapping());
 
+        $status = ($confirmForm->isSubmitted() && !$confirmForm->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('import/wizard/preview.html.twig', [
             'batch'           => $batch,
             'entityType'      => $entityType,
             'entityTypePascal' => $this->toPascalCase($entityType),
             'deltaResult'     => $deltaResult,
             'confirmForm'     => $confirmForm,
-        ]);
+        ], new Response(status: $status));
     }
 
     // -------------------------------------------------------------------------

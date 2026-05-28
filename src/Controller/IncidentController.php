@@ -276,10 +276,14 @@ class IncidentController extends AbstractController
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('incident/new.html.twig', [
             'incident' => $incident,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     /**
      * GDPR Breach Wizard - Calculate risk assessment
@@ -497,10 +501,14 @@ class IncidentController extends AbstractController
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('incident/edit.html.twig', [
             'incident' => $incident,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     /**
      * F16: Link a Risk to this Incident.
