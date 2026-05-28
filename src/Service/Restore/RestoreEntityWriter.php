@@ -349,11 +349,11 @@ class RestoreEntityWriter
 
                 // Handle existing data
                 if ($existingEntity !== null) {
-                    if ($options['existing_data_strategy'] === \App\Service\RestoreService::EXISTING_SKIP) {
+                    if ($options['existing_data_strategy'] === RestoreOptions::EXISTING_SKIP) {
                         $stats['skipped']++;
                         continue;
                     }
-                    if ($options['existing_data_strategy'] === \App\Service\RestoreService::EXISTING_UPDATE) {
+                    if ($options['existing_data_strategy'] === RestoreOptions::EXISTING_UPDATE) {
                         $entity = $existingEntity;
                     } else {
                         $this->entityManager->remove($existingEntity);
@@ -393,10 +393,10 @@ class RestoreEntityWriter
                     }
 
                     if (!array_key_exists($fieldName, $data)) {
-                        if ($options['missing_field_strategy'] === \App\Service\RestoreService::STRATEGY_FAIL) {
+                        if ($options['missing_field_strategy'] === RestoreOptions::STRATEGY_FAIL) {
                             throw new \App\Exception\Io\IoException(sprintf('Missing field: %s', $fieldName));
                         }
-                        if ($options['missing_field_strategy'] === \App\Service\RestoreService::STRATEGY_SKIP_FIELD) {
+                        if ($options['missing_field_strategy'] === RestoreOptions::STRATEGY_SKIP_FIELD) {
                             continue;
                         }
                     }
