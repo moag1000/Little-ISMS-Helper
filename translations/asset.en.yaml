@@ -4,6 +4,9 @@ asset:
     created: 'Asset has been created.'
     updated: 'Asset has been updated.'
     deleted: 'Asset has been deleted.'
+    cloned: 'Asset has been duplicated. File binary may need re-upload.'
+  clone:
+    success: 'Asset has been duplicated. File binary may need re-upload.'
   preview:
     title: Asset Information
   action:
@@ -400,6 +403,9 @@ asset:
         injection, data leak, hallucination, privilege escalation).'
       extension_allowlist: 'List of approved plugins / extensions / MCP servers.
         Prevents supply-chain attacks via compromised marketplaces.'
+iso_9001_bridge:
+  asset: 'In ISO 9001 assets are part of resource management (Clause 7.1). ISO 27001 A.5.9/A.5.10 extend this to information assets and owners; ISO 22301 §8.1 requires resource lists for BCM baseline supply.'
+
 qr:
   label:
     title: Asset Label

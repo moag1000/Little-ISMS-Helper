@@ -2409,3 +2409,6 @@ owner_picker:
 # Junior-ISB-Audit-2026-05-22 S12 §4-6 — truly-missing flat-domain keys
 'supplier.subcontractor.country_placeholder': 'z.B. DE'
 'training.error.material_upload_failed': 'Material-Upload fehlgeschlagen.'
+
+# Missing common action keys
+'common.update': 'Aktualisieren'

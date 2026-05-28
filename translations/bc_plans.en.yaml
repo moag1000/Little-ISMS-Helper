@@ -29,6 +29,7 @@ bc_plans:
     communication: Communication
     backup_recovery: Backup Recovery
     version_review: Version Review
+    resources: Required Resources
   table:
     name: Name
     business_process: Business Process
