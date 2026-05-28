@@ -1023,7 +1023,7 @@ class RestoreServiceTest extends TestCase
         // Tamper the data after computing the hash.
         $backup['data']['User'][0]['email'] = 'evil@hacker.com';
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\App\Exception\Io\IoException::class);
         $this->expectExceptionMessageMatches('/sha256 mismatch/');
 
         $this->service->restoreFromBackup($backup);
@@ -1326,7 +1326,7 @@ class RestoreServiceTest extends TestCase
             'data' => $data,
         ];
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\App\Exception\Io\IoException::class);
         $this->expectExceptionMessageMatches('/sha256 mismatch/');
 
         $this->service->restoreFromBackup($backup, [
