@@ -63,6 +63,7 @@ use App\Repository\SupplierRepository;
 use App\Repository\ThreatIntelligenceRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Service\ModuleConfigurationService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -102,6 +103,7 @@ class SearchService
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly AuthorizationCheckerInterface $authChecker,
+        private readonly ModuleConfigurationService $moduleConfig,
     ) {}
 
     /**
@@ -205,6 +207,7 @@ class SearchService
                 'description' => 'Tenant- und Benutzerverwaltung, System-Status',
                 'icon' => 'fa-icon--nav-settings',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'admin_modules_index',
@@ -212,6 +215,7 @@ class SearchService
                 'description' => 'Compliance-Module ein- und ausschalten',
                 'icon' => 'fa-icon--nav-grid',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'admin_lifecycle_overrides_index',
@@ -219,6 +223,7 @@ class SearchService
                 'description' => 'Workflow-Konfiguration pro Tenant (Rollen, 4-Augen, Pflichtbegründung)',
                 'icon' => 'fa-icon--nav-workflow',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'setup_wizard_index',
@@ -226,6 +231,7 @@ class SearchService
                 'description' => 'Onboarding-Tour, Ersteinrichtung',
                 'icon' => 'fa-icon--nav-star',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'admin_data_repair_index',
@@ -233,6 +239,7 @@ class SearchService
                 'description' => 'Orphans zuweisen, Tenant-Mismatches fixen, Duplikate bereinigen',
                 'icon' => 'fa-icon--nav-wrench',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'admin_queue_status',
@@ -240,6 +247,7 @@ class SearchService
                 'description' => 'Worker-Health und ausstehende Messenger-Jobs',
                 'icon' => 'fa-icon--nav-clock',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'app_help_glossary',
@@ -247,6 +255,7 @@ class SearchService
                 'description' => 'ISMS-Akronyme und Fachbegriffe',
                 'icon' => 'fa-icon--nav-book',
                 'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'app_audit_log_index',
@@ -254,6 +263,7 @@ class SearchService
                 'description' => 'Compliance-Audittrail, alle Änderungen lückenlos',
                 'icon' => 'fa-icon--nav-audit',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'app_soa_index',
@@ -261,6 +271,7 @@ class SearchService
                 'description' => 'ISO 27001 Annex-A Controls, Anwendbarkeitserklärung',
                 'icon' => 'fa-icon--nav-control',
                 'roles' => ['ROLE_USER'],
+                'requiresModule' => 'controls',
             ],
             [
                 'route' => 'app_risk_appetite_index',
@@ -268,6 +279,7 @@ class SearchService
                 'description' => 'Risikotoleranz und Schwellenwerte konfigurieren',
                 'icon' => 'fa-icon--nav-risk',
                 'roles' => ['ROLE_MANAGER'],
+                'requiresModule' => 'risk_appetite',
             ],
             [
                 'route' => 'app_analytics_dashboard',
@@ -275,6 +287,7 @@ class SearchService
                 'description' => 'KPI-Übersicht, Diagramme, Trend-Auswertungen',
                 'icon' => 'fa-icon--nav-chart',
                 'roles' => ['ROLE_MANAGER'],
+                'requiresModule' => 'analytics',
             ],
             [
                 'route' => 'app_reports_index',
@@ -282,6 +295,7 @@ class SearchService
                 'description' => 'Management-Reports, Gap-Report, Compliance-Exporte',
                 'icon' => 'fa-icon--nav-report',
                 'roles' => ['ROLE_AUDITOR'],
+                'requiresModule' => 'report_builder',
             ],
             [
                 'route' => 'user_management_index',
@@ -289,6 +303,7 @@ class SearchService
                 'description' => 'Benutzer anlegen, Rollen vergeben, Passwörter zurücksetzen',
                 'icon' => 'fa-icon--nav-user',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'role_management_index',
@@ -296,6 +311,7 @@ class SearchService
                 'description' => 'Rollen und Berechtigungen konfigurieren',
                 'icon' => 'fa-icon--nav-shield',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'admin_hub_index',
@@ -303,6 +319,7 @@ class SearchService
                 'description' => 'Zentraler Einstieg für alle Admin-Funktionen',
                 'icon' => 'fa-icon--nav-settings',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'app_quick_fix_index',
@@ -310,6 +327,7 @@ class SearchService
                 'description' => 'Migrations, Schema-Drift, Datenreparatur per Web-UI',
                 'icon' => 'fa-icon--nav-wrench',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'admin_notification_channel_index',
@@ -317,6 +335,7 @@ class SearchService
                 'description' => 'E-Mail-, Slack-, Webhook-Kanäle konfigurieren',
                 'icon' => 'fa-icon--nav-notification',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => 'notifications',
             ],
             [
                 'route' => 'admin_notification_rule_index',
@@ -324,6 +343,7 @@ class SearchService
                 'description' => 'Regelbasierte Trigger für automatische Alerts',
                 'icon' => 'fa-icon--nav-notification',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => 'notifications',
             ],
             [
                 'route' => 'app_dashboard',
@@ -331,6 +351,7 @@ class SearchService
                 'description' => 'Persönliches ISMS-Dashboard mit KPIs',
                 'icon' => 'fa-icon--nav-home',
                 'roles' => ['ROLE_USER'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'app_dashboard_ciso',
@@ -338,6 +359,7 @@ class SearchService
                 'description' => 'Sicherheitslage, Top-Risiken, Compliance-Status',
                 'icon' => 'fa-icon--nav-home',
                 'roles' => ['ROLE_CISO'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'app_dashboard_dpo',
@@ -345,6 +367,7 @@ class SearchService
                 'description' => 'Datenschutz-Übersicht, VVT, DSR-Status',
                 'icon' => 'fa-icon--nav-home',
                 'roles' => ['ROLE_DPO'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'app_dashboard_compliance_manager',
@@ -352,6 +375,7 @@ class SearchService
                 'description' => 'Framework-Status, offene Maßnahmen',
                 'icon' => 'fa-icon--nav-home',
                 'roles' => ['ROLE_COMPLIANCE_MANAGER'],
+                'requiresModule' => null,
             ],
             [
                 'route' => 'admin_workflow_overlay_index',
@@ -359,11 +383,17 @@ class SearchService
                 'description' => 'Regulatorische Workflows verwalten',
                 'icon' => 'fa-icon--nav-workflow',
                 'roles' => ['ROLE_ADMIN'],
+                'requiresModule' => null,
             ],
         ];
 
         $results = [];
         foreach ($navMap as $item) {
+            // Module check — skip if required module is inactive
+            if ($item['requiresModule'] !== null && !$this->moduleConfig->isModuleActive($item['requiresModule'])) {
+                continue;
+            }
+
             // Role check — skip if user lacks all required roles
             $hasRole = false;
             foreach ($item['roles'] as $role) {
@@ -396,6 +426,10 @@ class SearchService
 
     public function searchAssets(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('assets')) {
+            return [];
+        }
+
         $qb = $this->assetRepository->createQueryBuilder('a')
             ->where('a.name LIKE :query OR a.description LIKE :query OR a.owner LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -418,6 +452,10 @@ class SearchService
 
     public function searchRisks(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('risks')) {
+            return [];
+        }
+
         $qb = $this->riskRepository->createQueryBuilder('r')
             ->where('r.title LIKE :query OR r.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -445,6 +483,10 @@ class SearchService
 
     public function searchControls(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('controls')) {
+            return [];
+        }
+
         $qb = $this->controlRepository->createQueryBuilder('c')
             ->where('c.controlId LIKE :query OR c.name LIKE :query OR c.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -467,6 +509,10 @@ class SearchService
 
     public function searchIncidents(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('incidents')) {
+            return [];
+        }
+
         $qb = $this->incidentRepository->createQueryBuilder('i')
             ->where('i.title LIKE :query OR i.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -489,6 +535,10 @@ class SearchService
 
     public function searchTrainings(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('training')) {
+            return [];
+        }
+
         $qb = $this->trainingRepository->createQueryBuilder('t')
             ->where('t.title LIKE :query OR t.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -511,6 +561,10 @@ class SearchService
 
     public function searchDocuments(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('documents')) {
+            return [];
+        }
+
         $qb = $this->documentRepository->createQueryBuilder('d')
             ->where('d.originalFilename LIKE :query OR d.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -533,6 +587,10 @@ class SearchService
 
     public function searchSuppliers(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('suppliers')) {
+            return [];
+        }
+
         $qb = $this->supplierRepository->createQueryBuilder('s')
             ->where('s.name LIKE :query OR s.description LIKE :query OR s.serviceProvided LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -555,6 +613,10 @@ class SearchService
 
     public function searchProcessingActivities(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('privacy')) {
+            return [];
+        }
+
         $qb = $this->processingActivityRepository->createQueryBuilder('pa')
             ->where('pa.name LIKE :query OR pa.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -577,6 +639,10 @@ class SearchService
 
     public function searchDpias(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('privacy')) {
+            return [];
+        }
+
         $qb = $this->dpiaRepository->createQueryBuilder('dp')
             ->where('dp.title LIKE :query OR dp.processingDescription LIKE :query OR dp.processingPurposes LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -599,6 +665,10 @@ class SearchService
 
     public function searchDataBreaches(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('privacy')) {
+            return [];
+        }
+
         $qb = $this->dataBreachRepository->createQueryBuilder('db')
             ->where('db.title LIKE :query OR db.breachNature LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -621,6 +691,10 @@ class SearchService
 
     public function searchAuditFindings(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('audits')) {
+            return [];
+        }
+
         $qb = $this->auditFindingRepository->createQueryBuilder('af')
             ->where('af.title LIKE :query OR af.description LIKE :query OR af.clauseReference LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -643,6 +717,10 @@ class SearchService
 
     public function searchCorrectiveActions(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('corrective_actions')) {
+            return [];
+        }
+
         $qb = $this->correctiveActionRepository->createQueryBuilder('ca')
             ->where('ca.title LIKE :query OR ca.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -665,6 +743,10 @@ class SearchService
 
     public function searchChangeRequests(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('change_requests')) {
+            return [];
+        }
+
         $qb = $this->changeRequestRepository->createQueryBuilder('cr')
             ->where('cr.title LIKE :query OR cr.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -687,6 +769,10 @@ class SearchService
 
     public function searchInternalAudits(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('audits')) {
+            return [];
+        }
+
         $qb = $this->internalAuditRepository->createQueryBuilder('ia')
             ->where('ia.title LIKE :query OR ia.scope LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -709,6 +795,10 @@ class SearchService
 
     public function searchBusinessProcesses(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('bcm')) {
+            return [];
+        }
+
         $qb = $this->businessProcessRepository->createQueryBuilder('bp')
             ->where('bp.name LIKE :query OR bp.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -731,6 +821,10 @@ class SearchService
 
     public function searchBcPlans(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('bcm')) {
+            return [];
+        }
+
         $qb = $this->bcPlanRepository->createQueryBuilder('bc')
             ->where('bc.name LIKE :query OR bc.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -753,6 +847,10 @@ class SearchService
 
     public function searchBcExercises(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('bcm')) {
+            return [];
+        }
+
         $qb = $this->bcExerciseRepository->createQueryBuilder('bce')
             ->where('bce.name LIKE :query OR bce.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -775,6 +873,10 @@ class SearchService
 
     public function searchCrisisTeams(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('bcm')) {
+            return [];
+        }
+
         $qb = $this->crisisTeamRepository->createQueryBuilder('ct')
             ->where('ct.teamName LIKE :query OR ct.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -797,6 +899,10 @@ class SearchService
 
     public function searchManagementReviews(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('reviews')) {
+            return [];
+        }
+
         $qb = $this->managementReviewRepository->createQueryBuilder('mr')
             ->where('mr.title LIKE :query OR mr.decisions LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -841,6 +947,10 @@ class SearchService
 
     public function searchVulnerabilities(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('vulnerability_intel')) {
+            return [];
+        }
+
         $qb = $this->vulnerabilityRepository->createQueryBuilder('v')
             ->where('v.cveId LIKE :query OR v.title LIKE :query OR v.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -863,6 +973,10 @@ class SearchService
 
     public function searchPatches(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('patches')) {
+            return [];
+        }
+
         $qb = $this->patchRepository->createQueryBuilder('p')
             ->where('p.title LIKE :query OR p.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -885,6 +999,10 @@ class SearchService
 
     public function searchThreatIntelligence(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('vulnerability_intel')) {
+            return [];
+        }
+
         $qb = $this->threatIntelligenceRepository->createQueryBuilder('ti')
             ->where('ti.title LIKE :query OR ti.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -907,6 +1025,10 @@ class SearchService
 
     public function searchPersons(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('persons')) {
+            return [];
+        }
+
         $qb = $this->personRepository->createQueryBuilder('pe')
             ->where('pe.fullName LIKE :query OR pe.email LIKE :query OR pe.jobTitle LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -929,6 +1051,10 @@ class SearchService
 
     public function searchInterestedParties(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('interested_parties')) {
+            return [];
+        }
+
         $qb = $this->interestedPartyRepository->createQueryBuilder('ip')
             ->where('ip.name LIKE :query OR ip.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -951,6 +1077,10 @@ class SearchService
 
     public function searchConsents(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('privacy')) {
+            return [];
+        }
+
         $qb = $this->consentRepository->createQueryBuilder('co')
             ->where('co.dataSubjectIdentifier LIKE :query OR co.consentText LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -973,6 +1103,10 @@ class SearchService
 
     public function searchDataSubjectRequests(string $query, ?Tenant $tenant): array
     {
+        if (!$this->moduleConfig->isModuleActive('privacy')) {
+            return [];
+        }
+
         $qb = $this->dataSubjectRequestRepository->createQueryBuilder('dsr')
             ->where('dsr.dataSubjectName LIKE :query OR dsr.description LIKE :query OR dsr.dataSubjectIdentifier LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -998,6 +1132,10 @@ class SearchService
      */
     public function searchComplianceFrameworks(string $query): array
     {
+        if (!$this->moduleConfig->isModuleActive('compliance')) {
+            return [];
+        }
+
         $qb = $this->complianceFrameworkRepository->createQueryBuilder('cf')
             ->where('cf.name LIKE :query OR cf.version LIKE :query OR cf.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
@@ -1019,6 +1157,10 @@ class SearchService
      */
     public function searchComplianceRequirements(string $query): array
     {
+        if (!$this->moduleConfig->isModuleActive('compliance')) {
+            return [];
+        }
+
         $qb = $this->complianceRequirementRepository->createQueryBuilder('req')
             ->where('req.requirementId LIKE :query OR req.title LIKE :query OR req.description LIKE :query')
             ->setParameter('query', '%' . $query . '%')
