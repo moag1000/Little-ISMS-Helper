@@ -13,10 +13,14 @@ final class VdaIsaCrossFrameworkMappingTest extends TestCase
     private function dir(): string { return __DIR__.'/../../../fixtures/library/mappings'; }
     public static function crossFrameworkMappingProvider(): array {
         return [
-            'ISA/IEC 62443' => ['tisax-vda-isa-6_to_iec-isa-62443_v1.0.yaml', 20, '/^\d+\.\d+(\.\d+)?$/'],
-            'NIST CSF 1.1'  => ['tisax-vda-isa-6_to_nist-csf-1.1_v1.0.yaml',  25, '/^[A-Z]{2,3}[.\-][A-Z]{2,4}-\d+$/'],
-            'ISO 27017'     => ['tisax-vda-isa-6_to_iso27017_v1.0.yaml',       3,  '/^(CLD\.\d+\.\d+(\.\d+)?|\d+\.\d+\.\d+)$/'],
-            'ISO 27002'     => ['tisax-vda-isa-6_to_iso27002_v1.0.yaml',       1,  '/^A\.\d+\.\d+(\.\d+)?$/'],
+            // Col P (Verweisung auf andere Normen) — extracted by extract_vda_isa_all_mappings.php
+            'ISA/IEC 62443'     => ['tisax-vda-isa-6_to_iec-isa-62443_v1.0.yaml',   20, '/^\d+\.\d+(\.\d+)?$/'],
+            'NIST CSF 1.1'      => ['tisax-vda-isa-6_to_nist-csf-1.1_v1.0.yaml',    25, '/^[A-Z]{2,3}[.\-][A-Z]{2,4}-\d+$/'],
+            'ISO 27017'         => ['tisax-vda-isa-6_to_iso27017_v1.0.yaml',          3, '/^(CLD\.\d+\.\d+(\.\d+)?|\d+\.\d+\.\d+)$/'],
+            'ISO 27002'         => ['tisax-vda-isa-6_to_iso27002_v1.0.yaml',          1, '/^A\.\d+\.\d+(\.\d+)?$/'],
+            // Col Q (Verweisung auf Implementierungsanleitung) — extracted by extract_vda_isa_col_q_mappings.php
+            'BSI IT-Grundschutz' => ['tisax-vda-isa-6_to_bsi-grundschutz_v1.0.yaml', 35, '/^[A-Z]{2,5}\.\d+(\.\d+)*$/'],
+            'NIST SP800-53r5'   => ['tisax-vda-isa-6_to_nist-sp800-53r5_v1.0.yaml',  35, '/^[A-Z]{2,3}-\d+(\(\d+\))?$/'],
         ];
     }
     #[Test] #[DataProvider('crossFrameworkMappingProvider')]
@@ -55,6 +59,27 @@ final class VdaIsaCrossFrameworkMappingTest extends TestCase
         $s=array_column($d['mappings'],'source'); $dup=array_diff_assoc($s,array_unique($s));
         self::assertEmpty($dup,"$f: duplicates: ".implode(',',$dup));
     }
+    /**
+     * Validates that target anchor IDs match the expected framework pattern.
+     * Guards against free-text leaking into extracted anchor-only YAMLs.
+     */
+    #[Test] #[DataProvider('crossFrameworkMappingProvider')]
+    public function targetAnchorsMatchExpectedPattern(string $f, int $min, string $pat): void {
+        $d = Yaml::parseFile($this->dir().'/'.$f);
+        foreach ($d['mappings'] as $i => $m) {
+            foreach ($m['targets'] as $j => $anchor) {
+                self::assertMatchesRegularExpression(
+                    $pat,
+                    $anchor,
+                    "[$i][$j]: anchor '$anchor' in $f does not match pattern $pat"
+                );
+            }
+        }
+    }
+    /**
+     * Smoke test: col-P extraction script reproduces consistent output from ENX workbook.
+     * Skipped when the ENX workbook fixture is not present (Nextcloud-sync environments).
+     */
     #[Test]
     public function extractionScriptProducesConsistentOutput(): void {
         $root=__DIR__.'/../../..'; $script=$root.'/scripts/import/extract_vda_isa_all_mappings.php'; $fix=$root.'/tests/Fixtures/vda_isa_6_de_official.xlsx';
@@ -66,6 +91,29 @@ final class VdaIsaCrossFrameworkMappingTest extends TestCase
             self::assertStringContainsString('iec-isa-62443',$out); self::assertStringContainsString('nist-csf-1.1',$out); self::assertStringContainsString('Done.',$out);
             $gen=glob($tmp.'/*.yaml')??[]; self::assertGreaterThanOrEqual(3,count($gen));
             foreach($gen as $yf){$d=Yaml::parseFile($yf);self::assertArrayHasKey('mappings',$d);self::assertNotEmpty($d['mappings']);}
+        } finally { foreach(glob($tmp.'/*.yaml')??[] as $yf){unlink($yf);} if(is_dir($tmp))rmdir($tmp); }
+    }
+    /**
+     * Smoke test: col-Q extraction script (BSI IT-Grundschutz + NIST SP800-53r5).
+     * Skipped when the ENX workbook fixture is not present.
+     */
+    #[Test]
+    public function colQExtractionScriptProducesConsistentOutput(): void {
+        $root=__DIR__.'/../../..';
+        $script=$root.'/scripts/import/extract_vda_isa_col_q_mappings.php';
+        $fix=$root.'/tests/Fixtures/vda_isa_6_de_official.xlsx';
+        self::assertFileExists($script, 'Col-Q extraction script not found');
+        if (!file_exists($fix)) { self::markTestSkipped('ENX workbook fixture not present — safe to skip in CI.'); }
+        $tmp=sys_get_temp_dir().'/vda_q_'.uniqid(); mkdir($tmp,0777,true);
+        try {
+            $out=(string)shell_exec('php '.escapeshellarg($script).' '.escapeshellarg($fix).' '.escapeshellarg($tmp).' 2>&1');
+            self::assertStringContainsString('bsi-grundschutz', $out);
+            self::assertStringContainsString('nist-sp800-53r5', $out);
+            self::assertStringContainsString('Done.', $out);
+            $gen=glob($tmp.'/*.yaml')??[]; self::assertGreaterThanOrEqual(2, count($gen));
+            foreach ($gen as $yf) {
+                $d=Yaml::parseFile($yf); self::assertArrayHasKey('mappings',$d); self::assertNotEmpty($d['mappings']);
+            }
         } finally { foreach(glob($tmp.'/*.yaml')??[] as $yf){unlink($yf);} if(is_dir($tmp))rmdir($tmp); }
     }
 }
