@@ -30,8 +30,8 @@
     ], 1) }}
 
     <div class="row justify-content-center mt-4">
-        <div class="col-lg-7">
-            <div class="card">
+        <div class="col-lg-8">
+            <div class="card mb-3">
                 <div class="card-body">
                     <p class="text-muted mb-3">{{ 'tisax.import.upload.instruction'|trans({}, 'tisax_isa') }}</p>
 
@@ -52,6 +52,35 @@
                             </a>
                         </div>
                     {{ form_end(form) }}
+                </div>
+            </div>
+
+            <div class="card border-info-subtle">
+                <div class="card-header text-info-emphasis bg-info-subtle">
+                    <i class="bi bi-info-circle me-1"></i>
+                    {{ 'tisax.import.upload.workbook_help.title'|trans({}, 'tisax_isa') }}
+                </div>
+                <div class="card-body small">
+                    <p class="mb-2">{{ 'tisax.import.upload.workbook_help.download_intro'|trans({}, 'tisax_isa') }}</p>
+                    <ul class="mb-3">
+                        <li>
+                            <strong>{{ 'tisax.import.upload.workbook_help.en_label'|trans({}, 'tisax_isa') }}:</strong>
+                            <a href="https://portal.enx.com/isa6-en.xlsx" target="_blank" rel="noopener noreferrer" class="text-break">https://portal.enx.com/isa6-en.xlsx</a>
+                        </li>
+                        <li>
+                            <strong>{{ 'tisax.import.upload.workbook_help.de_label'|trans({}, 'tisax_isa') }}:</strong>
+                            <a href="https://portal.enx.com/isa6-de.xlsx" target="_blank" rel="noopener noreferrer" class="text-break">https://portal.enx.com/isa6-de.xlsx</a>
+                        </li>
+                    </ul>
+                    <p class="mb-1 fw-semibold">{{ 'tisax.import.upload.workbook_help.expected_sheets_title'|trans({}, 'tisax_isa') }}</p>
+                    <ul class="mb-3">
+                        <li>EN: <code>Information Security</code>, <code>Prototype Protection</code>, <code>Data Protection</code></li>
+                        <li>DE: <code>Informationssicherheit</code>, <code>Prototypenschutz</code>, <code>Datenschutz</code></li>
+                    </ul>
+                    <p class="mb-0 text-muted">
+                        <i class="bi bi-lightbulb me-1"></i>
+                        {{ 'tisax.import.upload.workbook_help.troubleshoot_hint'|trans({}, 'tisax_isa') }}
+                    </p>
                 </div>
             </div>
         </div>

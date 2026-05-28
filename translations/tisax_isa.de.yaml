@@ -63,7 +63,7 @@ tisax:
     upload:
       title: 'VDA-ISA-Workbook hochladen'
       subtitle: 'Laden Sie Ihr ENX-lizenziertes VDA-ISA-Excel-Workbook hoch (.xlsx)'
-      instruction: 'Laden Sie die VDA-ISA-Workbook-Datei hoch. Die Datei muss im XLSX-Format vorliegen und ein Tabellenblatt "ISA" oder äquivalent enthalten.'
+      instruction: 'Laden Sie die VDA-ISA-Workbook-Datei hoch. Die Datei muss im XLSX-Format vorliegen und ein Tabellenblatt "Informationssicherheit", "Information Security", "Prototypenschutz" oder äquivalent enthalten.'
       field_label: 'VDA-ISA-Workbook (.xlsx)'
       help: 'Akzeptiert: .xlsx, max. 10 MB. Die Datei wird vor dem Import analysiert und geprüft.'
       submit_button: 'Hochladen und prüfen'
@@ -72,6 +72,13 @@ tisax:
       too_large: 'Die Datei darf 10 MB nicht überschreiten.'
       disclaimer_required: 'Bitte bestätigen Sie den Lizenz-Disclaimer, bevor Sie hochladen.'
       security_rejected: 'Die Datei wurde vom Sicherheits-Scanner abgelehnt. Bitte laden Sie eine gültige XLSX-Datei hoch.'
+      workbook_help:
+        title: 'Wo erhalte ich das offizielle ENX-ISA-6-Workbook?'
+        download_intro: 'Laden Sie das offizielle ENX-ISA-6-Workbook direkt über das ENX-Portal herunter (ENX-Mitgliedschaft erforderlich):'
+        en_label: 'Englisch'
+        de_label: 'Deutsch'
+        expected_sheets_title: 'Erwartete Tabellenblatt-Namen (der Parser wählt den ersten Treffer):'
+        troubleshoot_hint: 'Wenn der Parser Ihr Workbook ablehnt, prüfen Sie, ob es ein Tabellenblatt "Informationssicherheit" (DE) oder "Information Security" (EN) enthält. Workbooks, bei denen diese Tabellenblätter umbenannt wurden, werden nicht erkannt.'
 
     validate:
       title: 'Workbook-Validierung'
