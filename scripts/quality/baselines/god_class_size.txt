@@ -4,7 +4,6 @@
 src/Service/Search/SearchService.php:LOC=1410 deps=33
 src/Controller/DeploymentWizardController.php:LOC=2694 deps=0
 src/Controller/ComplianceController.php:LOC=2629 deps=0
-src/Service/RestoreService.php:LOC=2285 deps=7
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1869 deps=15
 src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php:LOC=1837 deps=4
 src/Service/DashboardStatisticsService.php:LOC=1808 deps=25
