@@ -6,6 +6,11 @@ namespace App\Tests\Service;
 
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Repository\IncidentRepository;
+use App\Repository\MfaTokenRepository;
+use App\Repository\PatchRepository;
+use App\Repository\UserRepository;
+use App\Repository\VulnerabilityRepository;
 use App\Service\Nis2Art21CoverageService;
 use App\Service\Nis2ComplianceService;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +24,9 @@ use ReflectionClass;
  * Verifies that LETTER_KEY_MAP maps NIS2-ART21-A through NIS2-ART21-J to the
  * directive-correct 21.2.a through 21.2.j keys (1:1, no legacy scrambling).
  * Also verifies there is no reference to the non-existent 21.2.k.
+ *
+ * Note: Nis2ComplianceService is final and cannot be mocked; the tests that
+ * need a live Nis2ComplianceService build a real instance with stub repositories.
  */
 class Nis2Art21CoverageServiceTest extends TestCase
 {
@@ -100,13 +108,7 @@ class Nis2Art21CoverageServiceTest extends TestCase
     #[Test]
     public function getCoverageRollupReturnsTenRequirements(): void
     {
-        $nis2ComplianceService = $this->buildNis2ComplianceServiceStub();
-        $frameworkRepo = $this->createMock(ComplianceFrameworkRepository::class);
-        $frameworkRepo->method('findOneBy')->willReturn(null);
-        $requirementRepo = $this->createMock(ComplianceRequirementRepository::class);
-        $requirementRepo->method('findByFramework')->willReturn([]);
-
-        $service = new Nis2Art21CoverageService($nis2ComplianceService, $frameworkRepo, $requirementRepo);
+        $service = $this->buildCoverageService();
         $rollup = $service->getCoverageRollup();
 
         $this->assertCount(10, $rollup, 'getCoverageRollup() must return exactly 10 items');
@@ -115,17 +117,11 @@ class Nis2Art21CoverageServiceTest extends TestCase
     #[Test]
     public function getCoverageRollupHasNoNullMetricForDirectiveCorrectKeys(): void
     {
-        // Build a compliance service that returns all 10 directive-correct letters
-        $nis2ComplianceService = $this->buildNis2ComplianceServiceStub();
-        $frameworkRepo = $this->createMock(ComplianceFrameworkRepository::class);
-        $frameworkRepo->method('findOneBy')->willReturn(null);
-        $requirementRepo = $this->createMock(ComplianceRequirementRepository::class);
-        $requirementRepo->method('findByFramework')->willReturn([]);
-
-        $service = new Nis2Art21CoverageService($nis2ComplianceService, $frameworkRepo, $requirementRepo);
+        $service = $this->buildCoverageService();
         $rollup = $service->getCoverageRollup();
 
-        // Every item should have a non-null metric since the stub returns all 10 letters
+        // Every item should have a non-null metric since Nis2ComplianceService
+        // now returns all 10 directive-correct letters
         foreach ($rollup as $item) {
             $this->assertNotNull($item['metric'],
                 "getCoverageRollup() item {$item['controlId']} has null metric — LETTER_KEY_MAP entry missing or wrong key");
@@ -148,32 +144,48 @@ class Nis2Art21CoverageServiceTest extends TestCase
     }
 
     /**
-     * Build a Nis2ComplianceService stub that returns a minimal but correct
-     * 10-letter payload (all letters a..j present, status 'info').
+     * Build a real Nis2Art21CoverageService backed by a real Nis2ComplianceService
+     * wired with stub repositories. Nis2ComplianceService is final so cannot be mocked.
+     * Uses createStub() to avoid PHPUnit 13 "no expectations" notices.
      */
-    private function buildNis2ComplianceServiceStub(): Nis2ComplianceService
+    private function buildCoverageService(): Nis2Art21CoverageService
     {
-        $stub = $this->createMock(Nis2ComplianceService::class);
+        $incidentRepo = $this->createStub(IncidentRepository::class);
+        $incidentRepo->method('count')->willReturn(0);
+        $incidentRepo->method('findBy')->willReturn([]);
 
-        $letters = [];
-        foreach (['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'] as $l) {
-            $key = "21.2.$l";
-            $letters[$key] = [
-                'letter' => $key,
-                'title' => "Measure $l",
-                'value' => 50.0,
-                'unit' => '%',
-                'status' => 'info',
-                'details' => [],
-            ];
-        }
+        $qb = $this->createStub(\Doctrine\ORM\QueryBuilder::class);
+        $query = $this->createStub(\Doctrine\ORM\Query::class);
+        $query->method('getSingleScalarResult')->willReturn(0);
+        $qb->method('select')->willReturnSelf();
+        $qb->method('where')->willReturnSelf();
+        $qb->method('getQuery')->willReturn($query);
+        $mfaRepo = $this->createStub(MfaTokenRepository::class);
+        $mfaRepo->method('createQueryBuilder')->willReturn($qb);
 
-        $stub->method('getDashboardPayload')->willReturn([
-            'letters' => $letters,
-            'article23' => ['letter' => '23', 'status' => 'info'],
-            'overall' => ['score' => 50.0, 'weighted' => [], 'applicable_count' => 10],
-        ]);
+        $userRepo = $this->createStub(UserRepository::class);
+        $userRepo->method('count')->willReturn(0);
+        $userRepo->method('findBy')->willReturn([]);
 
-        return $stub;
+        $vulnRepo = $this->createStub(VulnerabilityRepository::class);
+        $vulnRepo->method('count')->willReturn(0);
+
+        $patchRepo = $this->createStub(PatchRepository::class);
+        $patchRepo->method('count')->willReturn(0);
+
+        $nis2ComplianceService = new Nis2ComplianceService(
+            incidentRepository: $incidentRepo,
+            mfaTokenRepository: $mfaRepo,
+            userRepository: $userRepo,
+            vulnerabilityRepository: $vulnRepo,
+            patchRepository: $patchRepo,
+        );
+
+        $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);
+        $frameworkRepo->method('findOneBy')->willReturn(null);
+        $requirementRepo = $this->createStub(ComplianceRequirementRepository::class);
+        $requirementRepo->method('findByFramework')->willReturn([]);
+
+        return new Nis2Art21CoverageService($nis2ComplianceService, $frameworkRepo, $requirementRepo);
     }
 }

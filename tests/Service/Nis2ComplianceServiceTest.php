@@ -33,28 +33,28 @@ class Nis2ComplianceServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        // Stub required repositories with minimal mocks
-        $incidentRepo = $this->createMock(IncidentRepository::class);
+        // Use createStub() to avoid PHPUnit 13 "no expectations" notices
+        $incidentRepo = $this->createStub(IncidentRepository::class);
         $incidentRepo->method('count')->willReturn(0);
         $incidentRepo->method('findBy')->willReturn([]);
 
-        $mfaRepo = $this->createMock(MfaTokenRepository::class);
-        $qb = $this->createMock(\Doctrine\ORM\QueryBuilder::class);
-        $query = $this->createMock(\Doctrine\ORM\AbstractQuery::class);
+        $qb = $this->createStub(\Doctrine\ORM\QueryBuilder::class);
+        $query = $this->createStub(\Doctrine\ORM\Query::class);
         $query->method('getSingleScalarResult')->willReturn(0);
         $qb->method('select')->willReturnSelf();
         $qb->method('where')->willReturnSelf();
         $qb->method('getQuery')->willReturn($query);
+        $mfaRepo = $this->createStub(MfaTokenRepository::class);
         $mfaRepo->method('createQueryBuilder')->willReturn($qb);
 
-        $userRepo = $this->createMock(UserRepository::class);
+        $userRepo = $this->createStub(UserRepository::class);
         $userRepo->method('count')->willReturn(0);
         $userRepo->method('findBy')->willReturn([]);
 
-        $vulnRepo = $this->createMock(VulnerabilityRepository::class);
+        $vulnRepo = $this->createStub(VulnerabilityRepository::class);
         $vulnRepo->method('count')->willReturn(0);
 
-        $patchRepo = $this->createMock(PatchRepository::class);
+        $patchRepo = $this->createStub(PatchRepository::class);
         $patchRepo->method('count')->willReturn(0);
 
         $this->service = new Nis2ComplianceService(
