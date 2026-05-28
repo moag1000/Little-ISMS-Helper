@@ -95,3 +95,42 @@ nis2:
         # Footer
         footer: "Confidential - NIS2 Art. 23 Incident Notification Report"
         page: "Page"
+
+    # Art. 21(2)(a)-(j) Requirements Catalogue
+    art21:
+        dashboard:
+            title: "NIS2 Art. 21(2) Requirements Catalogue"
+            subtitle: "10 mandatory cybersecurity measures under Directive (EU) 2022/2555"
+            coverage_label: "Coverage"
+        action:
+            dashboard: "Dashboard"
+        kpi:
+            total: "Total measures"
+            critical: "Critical measures"
+            loaded_in_db: "Loaded in DB"
+        notice:
+            not_seeded: "%count% requirement(s) not yet loaded into the database. Run:"
+        empty:
+            title: "No requirements found"
+            text: "Load the NIS2 Art. 21(2) requirements first using the console command."
+        col:
+            clause: "Clause"
+            title: "Title"
+            category: "Category"
+            priority: "Priority"
+            iso_anchors: "ISO 27001 Anchors"
+            db_status: "DB Status"
+        db:
+            loaded: "Loaded"
+            not_loaded: "Not loaded"
+        measure:
+            a: "Risk Analysis and Information System Security"
+            b: "Incident Handling"
+            c: "Business Continuity (BCM, Backup, Crisis Management)"
+            d: "Supply Chain Security"
+            e: "Security in Procurement, Development and Maintenance"
+            f: "Vulnerability Handling and Disclosure"
+            g: "Effectiveness Assessment of Cybersecurity Measures"
+            h: "Cyber Hygiene and Cybersecurity Training"
+            i: "Cryptography and Encryption"
+            j: "Personnel Security, Asset Management, Access Control and MFA"

@@ -95,3 +95,42 @@ nis2:
         # Footer
         footer: "Vertraulich - NIS2 Art. 23 Sicherheitsvorfall-Meldung"
         page: "Seite"
+
+    # Art. 21(2)(a)-(j) Requirements Catalogue
+    art21:
+        dashboard:
+            title: "NIS2 Art. 21(2) Massnahmenkatalog"
+            subtitle: "10 verbindliche Cybersicherheits-Massnahmen gemaess Richtlinie (EU) 2022/2555"
+            coverage_label: "Abdeckung"
+        action:
+            dashboard: "Dashboard"
+        kpi:
+            total: "Massnahmen gesamt"
+            critical: "Kritische Massnahmen"
+            loaded_in_db: "In DB geladen"
+        notice:
+            not_seeded: "%count% Anforderung(en) noch nicht in die Datenbank geladen. Ausfuehren:"
+        empty:
+            title: "Keine Massnahmen gefunden"
+            text: "Laden Sie zuerst die NIS2 Art. 21(2) Anforderungen mit dem Konsolenbefehl."
+        col:
+            clause: "Klausel"
+            title: "Bezeichnung"
+            category: "Kategorie"
+            priority: "Prioritaet"
+            iso_anchors: "ISO 27001 Anker"
+            db_status: "DB-Status"
+        db:
+            loaded: "Geladen"
+            not_loaded: "Nicht geladen"
+        measure:
+            a: "Risikoanalyse und Sicherheit der Informationssysteme"
+            b: "Behandlung von Sicherheitsvorfaellen"
+            c: "Aufrechterhaltung des Betriebs (BCM, Backup, Krisenmanagement)"
+            d: "Sicherheit der Lieferkette"
+            e: "Sicherheit in Beschaffung, Entwicklung und Wartung"
+            f: "Umgang mit Schwachstellen und Offenlegung"
+            g: "Wirksamkeitsbewertung der Cybersicherheitsmassnahmen"
+            h: "Cyber-Hygiene und Cybersicherheitsschulungen"
+            i: "Kryptografie und Verschluesselung"
+            j: "Personalsicherheit, Asset-Management, Zugriffskontrolle und MFA"
