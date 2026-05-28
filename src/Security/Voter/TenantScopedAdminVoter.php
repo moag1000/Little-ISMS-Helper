@@ -170,6 +170,23 @@ final class TenantScopedAdminVoter extends Voter
     }
 
     /**
+     * Check if the user is currently "acting as" a particular persona
+     * via the quick persona switcher (session key: compliance.acting_as_persona).
+     *
+     * This enables a ROLE_COMPLIANCE_MANAGER user to temporarily access
+     * the CISO/DPO/ISB/BCM/Risk dashboards without holding the corresponding role.
+     */
+    private function isActingAs(string $persona): bool
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request === null) {
+            return false;
+        }
+        $session = $request->getSession();
+        return $session->get('compliance.acting_as_persona') === $persona;
+    }
+
+    /**
      * Resolve a subject into a concrete Tenant, when possible.
      *
      * Accepted subject shapes:
