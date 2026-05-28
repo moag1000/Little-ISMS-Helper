@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Dashboard;
 
+use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,6 +35,8 @@ final class IsbDashboardController extends AbstractController
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly RoleDashboardService $roleDashboardService,
+        private readonly TisaxMaturityAssessmentService $tisaxAssessment,
+        private readonly ComplianceFrameworkRepository $frameworkRepository,
     ) {
     }
 
@@ -46,10 +50,24 @@ final class IsbDashboardController extends AbstractController
         $pendingApprovals = $this->roleDashboardService->getPendingApprovals();
         $lifecycleStuck   = $this->roleDashboardService->getLifecycleStuck();
 
+        // TISAX IS-tier aggregate — ISB scope covers information_security chapters only
+        $tisaxAggregate = null;
+        $settings = $tenant->getSettings() ?? [];
+        if ($settings['modules']['tisax'] ?? true) {
+            $framework = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);
+            if ($framework !== null) {
+                $agg = $this->tisaxAssessment->computeAggregate($framework, $tenant);
+                if ($agg['total'] > 0) {
+                    $tisaxAggregate = $agg;
+                }
+            }
+        }
+
         return $this->render('dashboards/isb.html.twig', [
             'dashboard' => [
                 'pending_approvals' => $pendingApprovals,
                 'lifecycle_stuck'   => $lifecycleStuck,
+                'tisax_aggregate'   => $tisaxAggregate,
             ],
         ]);
     }

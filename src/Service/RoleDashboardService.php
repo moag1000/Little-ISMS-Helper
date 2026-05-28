@@ -9,12 +9,14 @@ use App\Entity\WorkflowInstance;
 use App\Enum\RiskTreatmentPlanStatus;
 use App\Enum\TreatmentStrategy;
 use App\Enum\WorkflowInstanceStatus;
+use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
@@ -44,6 +46,8 @@ class RoleDashboardService
         private readonly TenantContext $tenantContext,
         private readonly ?RiskTreatmentPlanRepository $treatmentPlanRepository = null,
         private readonly ?InternalAuditRepository $auditRepository = null,
+        private readonly ?TisaxMaturityAssessmentService $tisaxAssessment = null,
+        private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
     ) {
     }
 
@@ -82,6 +86,9 @@ class RoleDashboardService
         // DORA KPIs (conditionally included when DORA framework is active)
         $doraKpis = $this->dashboardStatisticsService->getDoraKPIs();
 
+        // TISAX per-tier aggregate (null when module not active or no requirements uploaded)
+        $tisaxAggregate = $this->buildTisaxAggregate($tenant);
+
         return [
             'summary' => [
                 'overall_compliance' => $frameworkComparison['summary']['average_compliance'] ?? 0,
@@ -111,7 +118,36 @@ class RoleDashboardService
             'recent_incidents' => $recentIncidents,
             'management_kpis' => $managementKpis,
             'dora_kpis' => $doraKpis,
+            'tisax_aggregate' => $tisaxAggregate,
         ];
+    }
+
+    /**
+     * Build TISAX per-tier aggregate for a tenant.
+     * Returns null when the tisax module is inactive, no framework found, or no requirements uploaded.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildTisaxAggregate(?Tenant $tenant): ?array
+    {
+        if ($tenant === null || $this->tisaxAssessment === null || $this->frameworkRepository === null) {
+            return null;
+        }
+        $settings = $tenant->getSettings() ?? [];
+        $tisaxEnabled = $settings['modules']['tisax'] ?? true;
+        if (!$tisaxEnabled) {
+            return null;
+        }
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);
+        if ($framework === null) {
+            return null;
+        }
+        $aggregate = $this->tisaxAssessment->computeAggregate($framework, $tenant);
+        if ($aggregate['total'] === 0) {
+            return null;
+        }
+
+        return $aggregate;
     }
 
     /**

@@ -6,11 +6,13 @@ namespace App\Command;
 
 use App\Entity\KpiSnapshot;
 use App\Entity\Tenant;
+use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\KpiSnapshotRepository;
 use App\Repository\SystemSettingsRepository;
 use App\Repository\TenantRepository;
 use App\Service\DashboardStatisticsService;
 use App\Service\MrisKpiService;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -62,6 +64,8 @@ class KpiSnapshotCommand
         private readonly EntityManagerInterface $entityManager,
         private readonly MrisKpiService $mrisKpiService,
         private readonly ?SystemSettingsRepository $systemSettingsRepository = null,
+        private readonly ?TisaxMaturityAssessmentService $tisaxAssessment = null,
+        private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
     ) {
     }
 
@@ -267,6 +271,50 @@ class KpiSnapshotCommand
                 }
             } catch (\Throwable) {
                 // MRIS-Tabellen evtl. nicht migriert — Snapshot bleibt ohne MRIS-Daten.
+            }
+        }
+
+        // TISAX per-tier KPIs (skipped when service not wired or module inactive)
+        $tisaxEnabled = $settings['modules']['tisax'] ?? true;
+        if ($tisaxEnabled && $this->tisaxAssessment !== null && $this->frameworkRepository !== null) {
+            try {
+                $framework = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);
+                if ($framework !== null) {
+                    $agg = $this->tisaxAssessment->computeAggregate($framework, $tenant);
+                    if ($agg['total'] > 0) {
+                        $target = TisaxMaturityAssessmentService::TIER_TARGET_LEVELS;
+                        // IS tier
+                        $is = $agg['byTier']['information_security'] ?? null;
+                        if ($is !== null) {
+                            $isAvg = (float) ($is['average'] ?? 0.0);
+                            $data['tisax.is.avg_maturity']   = $isAvg;
+                            $data['tisax.is.target_gap_al3'] = (float) max(0.0, round(($target['information_security']['AL3'] ?? 3) - $isAvg, 2));
+                        }
+                        // PP tier
+                        $pp = $agg['byTier']['prototype_protection'] ?? null;
+                        if ($pp !== null) {
+                            $ppAvg = (float) ($pp['average'] ?? 0.0);
+                            $data['tisax.pp.avg_maturity']   = $ppAvg;
+                            $data['tisax.pp.target_gap_al3'] = (float) max(0.0, round(($target['prototype_protection']['AL3'] ?? 3) - $ppAvg, 2));
+                        }
+                        // DP tier (tristate)
+                        $dp     = $agg['byTier']['data_protection'] ?? null;
+                        $dpFull = $agg['dp'] ?? null;
+                        if ($dp !== null) {
+                            $dpTotal   = (int) ($dp['total'] ?? 0);
+                            $dpInPlace = (int) ($dp['compliant'] ?? 0);
+                            $data['tisax.dp.compliant_pct']       = $dpTotal > 0 ? (float) round($dpInPlace / $dpTotal * 100, 1) : 0.0;
+                            $data['tisax.dp.not_compliant_count'] = (int) ($dp['non_compliant'] ?? 0);
+                        } elseif ($dpFull !== null) {
+                            $dpTotal   = (int) ($dpFull['total'] ?? 0);
+                            $dpInPlace = (int) ($dpFull['compliant'] ?? 0);
+                            $data['tisax.dp.compliant_pct']       = $dpTotal > 0 ? (float) round($dpInPlace / $dpTotal * 100, 1) : 0.0;
+                            $data['tisax.dp.not_compliant_count'] = (int) ($dpFull['non_compliant'] ?? 0);
+                        }
+                    }
+                }
+            } catch (\Throwable) {
+                // TISAX tables not migrated or service error — snapshot continues without TISAX KPIs.
             }
         }
 
