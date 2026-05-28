@@ -28,6 +28,19 @@ final class TisaxRequirementMapper
     /** ISO 27001 anchor mapping prefix stored in dataSourceMapping. */
     private const ISO_KEY = 'iso27001';
 
+    /** Mirror of TisaxMaturityAssessmentService::LEVEL_MAP. Kept inline to
+     * avoid coupling the import-mapper to the assessment-service layer.
+     * @var array<int, string>
+     */
+    private const LEVEL_MAP = [
+        0 => 'incomplete',
+        1 => 'performed',
+        2 => 'managed',
+        3 => 'established',
+        4 => 'predictable',
+        5 => 'optimising',
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
     ) {}
@@ -95,14 +108,21 @@ final class TisaxRequirementMapper
             ]);
 
             if ($existing !== null) {
-                // Update in place
+                // Update in place — never overwrite an existing Reifegrad
+                // assessment from a re-import (assessor work would be lost).
                 $this->hydrateEntity($existing, $row, $framework, $tenant);
                 $entities[] = $existing;
                 $updated++;
             } else {
-                // Create new
+                // Create new — mirror pre-filled Reifegrad from workbook (if any)
                 $req = new ComplianceRequirement();
                 $this->hydrateEntity($req, $row, $framework, $tenant);
+                if ($row->maturityCurrent !== null
+                    && $row->getTier() !== 'data_protection'
+                    && isset(self::LEVEL_MAP[$row->maturityCurrent])
+                ) {
+                    $req->setMaturityCurrent(self::LEVEL_MAP[$row->maturityCurrent]);
+                }
                 if (!$dryRun) {
                     $this->em->persist($req);
                 }
