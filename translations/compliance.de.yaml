@@ -601,6 +601,13 @@ compliance:
             fulfillment:
                 title: Erfüllungsgrad
                 desc: 'Prozentsatz der Anforderungserfüllung (0-100%)'
+        equivalents:
+            title: 'Äquivalente in anderen Frameworks'
+            frameworks: 'Framework(s)'
+            controls: 'Control(s)'
+            intro: 'Diese Anforderung ist in den folgenden Frameworks äquivalent abgebildet. Prozentwert = Mapping-Stärke gemäß ComplianceMapping.'
+            reverse: 'Umgekehrte Zuordnung (Ziel → Quelle, bidirektional)'
+            legend: 'Prozentwert = Mapping-Stärke. ← = bidirektionale Umkehrzuordnung.'
         priority:
             critical: Kritisch
             high: Hoch
