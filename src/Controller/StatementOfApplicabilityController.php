@@ -477,10 +477,14 @@ class StatementOfApplicabilityController extends AbstractController
             return $this->redirectToRoute('app_soa_show', ['id' => $control->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('soa/edit.html.twig', [
             'control' => $control,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     /**
      * Calculate detailed statistics showing breakdown by origin

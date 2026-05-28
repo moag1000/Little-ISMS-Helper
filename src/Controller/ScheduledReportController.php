@@ -72,10 +72,14 @@ class ScheduledReportController extends AbstractController
             return $this->redirectToRoute('app_scheduled_report_show', ['id' => $report->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('scheduled_report/new.html.twig', [
             'report' => $report,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}', name: 'app_scheduled_report_show', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -107,10 +111,14 @@ class ScheduledReportController extends AbstractController
             return $this->redirectToRoute('app_scheduled_report_show', ['id' => $report->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('scheduled_report/edit.html.twig', [
             'report' => $report,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/toggle', name: 'app_scheduled_report_toggle', methods: ['POST'], requirements: ['id' => '\d+'])]

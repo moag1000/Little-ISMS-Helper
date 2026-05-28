@@ -122,9 +122,13 @@ class SystemSettingsController extends AbstractController
             return $this->redirectToRoute('admin_settings_application');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/settings/application.html.twig', [
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/admin/settings/security', name: 'admin_settings_security', methods: ['GET', 'POST'])]
     #[IsGranted('ADMIN_EDIT')]
@@ -204,9 +208,13 @@ class SystemSettingsController extends AbstractController
             return $this->redirectToRoute('admin_settings_security');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/settings/security.html.twig', [
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/admin/settings/features', name: 'admin_settings_features', methods: ['GET', 'POST'])]
     #[IsGranted('ADMIN_EDIT')]
@@ -250,8 +258,12 @@ class SystemSettingsController extends AbstractController
             return $this->redirectToRoute('admin_settings_features');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/settings/features.html.twig', [
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 }

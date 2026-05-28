@@ -121,10 +121,14 @@ class TrainingController extends AbstractController
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('training/new.html.twig', [
             'training' => $training,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     /**
      * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
@@ -257,10 +261,14 @@ class TrainingController extends AbstractController
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('training/edit.html.twig', [
             'training' => $training,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

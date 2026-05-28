@@ -161,11 +161,15 @@ class TenantManagementController extends AbstractController
             }
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/tenants/form.html.twig', [
             'tenant' => $tenant,
             'form' => $form,
             'isEdit' => false,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/admin/tenants/corporate-structure', name: 'tenant_management_corporate_structure', methods: ['GET'])]
     #[IsGranted('TENANT_VIEW')]
@@ -322,11 +326,15 @@ class TenantManagementController extends AbstractController
             }
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/tenants/form.html.twig', [
             'tenant' => $tenant,
             'form' => $form,
             'isEdit' => true,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/admin/tenants/{id}/toggle', name: 'tenant_management_toggle', methods: ['POST'])]
     #[IsGranted('TENANT_EDIT')]
@@ -914,10 +922,14 @@ class TenantManagementController extends AbstractController
             }
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/tenants/organisation_context.html.twig', [
             'tenant' => $tenant,
             'form' => $form,
             'current_settings' => $orgSettings,
-        ]);
+        ], new Response(status: $status));
     }
 }
