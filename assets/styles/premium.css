@@ -698,7 +698,9 @@
    =============================== */
 
 /* ===============================
-   Global Search Modal
+   Global Search Modal — Aurora-Refactor
+   Spec 1-6: Cyber-frame ticks, fa-kbd legend, accent hit-highlight,
+   brand-gradient bar, Aurora status-pills, Alva-spark footer.
    =============================== */
 .global-search-modal {
     position: fixed;
@@ -754,33 +756,73 @@
     font-size: 1.2rem;
 }
 
-.global-search-input {
+/* ── Spec 1: Cyber-frame wrapper with 4-corner tick-markers ── */
+.global-search-input-frame {
+    position: relative;
     flex: 1;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    transition: border-color var(--t-fast, 150ms) ease-out,
+                box-shadow var(--t-fast, 150ms) ease-out;
+}
+
+.global-search-input-frame:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* 4-corner tick elements — mirrors .fa-cyber-input__tick pattern */
+.gs-tick {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    pointer-events: none;
+    border-color: var(--primary);
+    opacity: 0.6;
+    transition: opacity var(--t-fast, 150ms) ease-out;
+}
+
+.gs-tick--tl { top: -1px; left: -1px;     border-top:    1px solid; border-left:  1px solid; }
+.gs-tick--tr { top: -1px; right: -1px;    border-top:    1px solid; border-right: 1px solid; }
+.gs-tick--bl { bottom: -1px; left: -1px;  border-bottom: 1px solid; border-left:  1px solid; }
+.gs-tick--br { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+
+.global-search-input-frame:focus-within .gs-tick { opacity: 1; }
+
+.global-search-input {
+    width: 100%;
     border: none;
     outline: none;
     font-size: 1.1rem;
-    padding: 8px 0;
+    padding: 8px 12px;
     color: var(--fg);
     background: transparent;
+    border-radius: var(--r-md);
 }
 
 .global-search-input::placeholder {
     color: var(--fg-2);
 }
 
+/* ── Spec 2: Inline fa-kbd legend — remove legacy kbd override,
+   .fa-kbd class from fairy-aurora-components.css handles styling ── */
 .global-search-shortcuts {
     display: flex;
     gap: 12px;
     font-size: 0.75rem;
     color: var(--fg-2);
+    white-space: nowrap;
 }
 
-.global-search-shortcuts kbd {
+/* Neutralize any residual browser-default kbd inside shortcuts;
+   .fa-kbd already provides correct Aurora styling */
+.global-search-shortcuts kbd:not(.fa-kbd) {
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: var(--r-sm);
     padding: 2px 6px;
-    font-family: monospace;
+    font-family: var(--font-mono, monospace);
     font-size: 0.7rem;
 }
 
@@ -815,15 +857,35 @@
     gap: 4px;
 }
 
+/* ── Spec 4: 2-px brand-gradient bar left, primary-glow halo on hover/select ── */
 .search-result-item {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px;
+    padding: 12px 12px 12px 16px; /* extra-left to clear the ::before bar */
     border-radius: var(--r-lg);
     text-decoration: none;
     color: var(--fg);
-    transition: all 0.2s ease;
+    transition: background var(--t-fast, 150ms) ease-out,
+                box-shadow var(--t-fast, 150ms) ease-out,
+                color var(--t-fast, 150ms) ease-out,
+                transform var(--t-fast, 150ms) ease-out;
+    overflow: hidden;
+}
+
+/* 2-px gradient bar on left edge */
+.search-result-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--primary), var(--accent));
+    opacity: 0;
+    transition: opacity var(--t-fast, 150ms) ease-out;
 }
 
 .search-result-item:hover,
@@ -831,17 +893,24 @@
     background: var(--primary-tint);
     color: var(--primary);
     transform: translateX(4px);
+    box-shadow: 0 0 24px color-mix(in oklab, var(--primary) 30%, transparent);
 }
 
+.search-result-item:hover::before,
+.search-result-item.selected::before {
+    opacity: 1;
+}
+
+/* ── Spec 4: Icon-tile 48×48 (was 40×40) ── */
 .search-result-icon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: var(--r-icon);
     background: var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     flex-shrink: 0;
 }
 
@@ -858,10 +927,12 @@
     text-overflow: ellipsis;
 }
 
+/* ── Spec 3: Aurora accent-tint hit-highlight (replaces Bootstrap warning yellow) ── */
 .search-result-title mark {
-    background: var(--bs-warning-bg-subtle);
+    background: color-mix(in oklab, var(--accent) 25%, transparent);
+    color: inherit;
     padding: 0 2px;
-    border-radius: var(--r-sm);
+    border-radius: 4px;
 }
 
 .search-result-description {
@@ -873,9 +944,43 @@
 }
 
 .search-result-description mark {
-    background: var(--bs-warning-bg-subtle);
+    background: color-mix(in oklab, var(--accent) 25%, transparent);
+    color: inherit;
     padding: 0 2px;
-    border-radius: var(--r-sm);
+    border-radius: 4px;
+}
+
+/* ── Spec 5: Aurora-tokenized status-pills in results (replaces generic Bootstrap) ── */
+.search-result-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    border-radius: 100px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.search-result-status--warning {
+    background: var(--warning-glow);
+    color: var(--warning-text);
+    border-color: var(--warning);
+}
+
+.search-result-status--success {
+    background: var(--success-glow);
+    color: var(--success);
+    border-color: var(--success);
+}
+
+.search-result-status--neutral {
+    background: var(--surface-2);
+    color: var(--fg-2);
+    border-color: var(--border);
 }
 
 .search-loading,
@@ -889,15 +994,42 @@
     text-align: center;
 }
 
+/* ── Spec 6: Footer — Alva-spark left + mono brand-marker right ── */
 .global-search-footer {
-    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
     border-top: 1px solid var(--border);
     background: var(--bg);
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: var(--r-xl);
+    border-bottom-right-radius: var(--r-xl);
 }
 
-.global-search-trigger kbd {
+.gs-footer-alva {
+    display: inline-flex;
+    align-items: center;
+}
+
+.gs-alva-spark {
+    display: block;
+    opacity: 0.75;
+    transition: opacity var(--t-fast, 150ms) ease-out;
+}
+
+.global-search-footer:hover .gs-alva-spark {
+    opacity: 1;
+}
+
+.gs-footer-brand {
+    /* inherits .fa-mono-label from fairy-aurora-components.css */
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Trigger button — keep fa-kbd styling; no additional override needed */
+.global-search-trigger kbd:not(.fa-kbd) {
     font-size: 0.7rem;
     padding: 2px 6px;
     border-radius: var(--r-sm);
