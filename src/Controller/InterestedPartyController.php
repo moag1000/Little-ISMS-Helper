@@ -70,10 +70,14 @@ class InterestedPartyController extends AbstractController
             return $this->redirectToRoute('app_interested_party_show', ['id' => $interestedParty->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('interested_party/new.html.twig', [
             'interested_party' => $interestedParty,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/interested-party/{id}', name: 'app_interested_party_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -98,10 +102,14 @@ class InterestedPartyController extends AbstractController
             return $this->redirectToRoute('app_interested_party_show', ['id' => $interestedParty->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('interested_party/edit.html.twig', [
             'interested_party' => $interestedParty,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/interested-party/{id}/delete', name: 'app_interested_party_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

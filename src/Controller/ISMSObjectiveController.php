@@ -72,10 +72,14 @@ class ISMSObjectiveController extends AbstractController
             return $this->redirectToRoute('app_objective_show', ['id' => $ismsObjective->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('objective/new.html.twig', [
             'objective' => $ismsObjective,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/objective/{id}', name: 'app_objective_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(ISMSObjective $ismsObjective): Response
@@ -106,10 +110,14 @@ class ISMSObjectiveController extends AbstractController
             return $this->redirectToRoute('app_objective_show', ['id' => $ismsObjective->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('objective/edit.html.twig', [
             'objective' => $ismsObjective,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/objective/{id}/delete', name: 'app_objective_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
