@@ -332,6 +332,40 @@
 {% endembed %}
 {% endif %}
 
+{# Wirksamkeits-Check Widget — ISO 27001 §9.1 cross-link #}
+{% if control.applicable %}
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+            <div>
+                <h2 class="h6 mb-1">{{ 'soa.section.effectiveness_check'|trans({}, 'soa') }}</h2>
+                {% set lastTest = control.lastEffectivenessTest %}
+                {% set isOverdue = lastTest is null or lastTest < date('-12 months') %}
+                <div class="d-flex align-items-center gap-2 mt-2">
+                    {% if lastTest %}
+                        <span class="text-muted small">{{ 'soa.label.last_effectiveness_test'|trans({}, 'soa') }}: <strong>{{ lastTest|date('d.m.Y') }}</strong></span>
+                    {% else %}
+                        <span class="text-muted small"><em>{{ 'soa.label.never_tested'|trans({}, 'soa') }}</em></span>
+                    {% endif %}
+                    {% if isOverdue %}
+                        <span class="badge bg-danger">{{ 'soa.label.overdue'|trans({}, 'soa') }}</span>
+                    {% else %}
+                        <span class="badge bg-success">{{ 'soa.label.check_current'|trans({}, 'soa') }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% if is_granted('ROLE_AUDITOR') %}
+            <a href="{{ path('app_effectiveness_monitor') }}" class="btn btn-sm btn-ghost">
+                <i class="fa-icon fa-icon--nav-speedometer" aria-hidden="true"></i>
+                {{ 'soa.action.open_monitor'|trans({}, 'soa') }}
+            </a>
+            {% endif %}
+        </div>
+    {% endblock %}
+{% endembed %}
+{% endif %}
+
 {# Metadata #}
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}

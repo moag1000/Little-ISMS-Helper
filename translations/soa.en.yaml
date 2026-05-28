@@ -11,6 +11,7 @@ soa:
         back_to_category: 'Back to %category%'
         print: 'Print / Save as PDF'
         back_to_overview: 'Back to overview'
+        open_monitor: 'Open Effectiveness Monitor'
     filter:
         view: View
         search: Search
@@ -49,6 +50,7 @@ soa:
         metadata: Metadata
         training_coverage: 'Training coverage'
         control_effectiveness: 'Control effectiveness'
+        effectiveness_check: 'Effectiveness Check (ISO 27001 §9.1)'
     category:
         Organizational: Organizational
         People: People
@@ -106,6 +108,10 @@ soa:
         status: Status
         completed_on: 'Completed on'
         effectiveness_score: 'Effectiveness score'
+        last_effectiveness_test: 'Last effectiveness check'
+        never_tested: 'Never checked'
+        overdue: 'Overdue'
+        check_current: 'Current'
     message:
         no_controls_filtered: 'No controls found matching the filter criteria.'
         auto_seeded: '%count% ISO 27001 Annex A controls were auto-loaded for this tenant.'
