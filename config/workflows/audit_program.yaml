@@ -1,0 +1,52 @@
+framework:
+    workflows:
+        audit_program_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\AuditProgram
+            initial_marking: draft
+            places:
+                - draft
+                - approved
+                - active
+                - completed
+                - archived
+            transitions:
+                approve:
+                    from: draft
+                    to: approved
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        reason_required: false
+                        tone_target: info
+                activate:
+                    from: approved
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        tone_target: primary
+                complete:
+                    from: active
+                    to: completed
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        tone_target: success
+                archive:
+                    from: [completed, approved]
+                    to: archived
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_ADMIN]
+                        reason_required: true
+                        tone_target: neutral
+                reopen:
+                    from: archived
+                    to: draft
+                    metadata:
+                        roles: [ROLE_ADMIN]
+                        reason_required: true
+                        tone_target: neutral

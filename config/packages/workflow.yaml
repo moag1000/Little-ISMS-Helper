@@ -36,6 +36,8 @@ imports:
     - { resource: '../workflows/role.yaml' }
     # Junior-ISB-Audit Phase-2 Lifecycle — Tenant (security-critical, 30+ isActive callsites preserved via wrapper)
     - { resource: '../workflows/tenant.yaml' }
+    # feat(audit): AuditProgram lifecycle — ISO 19011 §5.4 Jahresplan (5 stages, 4-eyes on approve)
+    - { resource: '../workflows/audit_program.yaml' }
     # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
     - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }
     - { resource: '../workflows/regulatory/incident_high_severity.yaml' }

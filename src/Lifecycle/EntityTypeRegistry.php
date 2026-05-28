@@ -157,6 +157,13 @@ final class EntityTypeRegistry
             'class' => \App\Entity\Tenant::class,
             'workflow' => 'tenant_lifecycle',
         ],
+        // feat(audit): AuditProgram Jahresplan — ISO 19011 §5.4 documented programme.
+        // 5-stage lifecycle: draft → approved → active → completed → archived.
+        // 4-eyes on approve transition (Audit-Programm-Freigabe).
+        'audit-program' => [
+            'class' => \App\Entity\AuditProgram::class,
+            'workflow' => 'audit_program_lifecycle',
+        ],
     ];
 
     /** @return array{class: class-string, workflow: string}|null */
