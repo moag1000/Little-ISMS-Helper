@@ -15,14 +15,14 @@ Das Tool implementiert zwei BSI-Produkte:
 
 | Produkt | Version | Scope |
 |---|---|---|
-| **BSI IT-Grundschutz-Kompendium** | Edition 2023 | 10 Schichten, 106 Bausteine, ~324 Anforderungen |
+| **BSI IT-Grundschutz-Kompendium** | Edition 2023 | 10 Schichten, 117 Bausteine, ~360 Anforderungen |
 | **BSI C5 Cloud Computing Compliance Criteria Catalogue** | 2020 + 2026 | Cloud-Sicherheit, 17 Domanen |
 
 ---
 
 ## 2. BSI IT-Grundschutz-Kompendium 2023
 
-### 2.1 Canonical Catalogue Tree — 10 Schichten, 106 Bausteine
+### 2.1 Canonical Catalogue Tree — 10 Schichten, 117 Bausteine
 
 Ladebefehl (einheitlicher Command, ersetzt alle frueheren einzelnen Loader):
 
@@ -60,10 +60,12 @@ Jeder Baustein gliedert sich in drei Stufen:
 | Standardabsicherung | S | Standardanforderungen (SOLL) |
 | Erhoehter Schutzbedarf | H | Anforderungen bei erhoehtem Schutzbedarf (SOLLTE) |
 
-### 2.3 IND-Schicht — Erweiterung auf 106 Bausteine
+### 2.3 IND-Schicht — Erweiterung auf 117 Bausteine
 
-Mit v3.5 wurde die Coverage von 42 auf 106 Bausteine erweitert. Die IND-Schicht
-(Industrielle IT) ist vollstaendig abgebildet:
+Mit v3.5 wurde die Coverage von 42 auf 106 Bausteine erweitert. Mit der
+Praktiker-Audit-Erweiterung 2026-05 wurde die Coverage auf 117 Bausteine
+ausgebaut (CON.4/CON.5, OPS.1.1.7/1.2.1/1.2.3/3.1/3.2, DER.2.3, APP.3.3,
+SYS.3.3, INF.11). Die IND-Schicht (Industrielle IT) ist vollstaendig abgebildet:
 
 | Baustein | Titel |
 |---|---|
