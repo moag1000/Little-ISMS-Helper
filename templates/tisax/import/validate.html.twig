@@ -73,7 +73,7 @@
 
             {% if validation.ok %}
                 <div class="alert alert-success">
-                    <i class="bi bi-check-circle-fill me-1"></i>
+                    <i class="fa-icon fa-icon--check-circle-fill me-1"></i>
                     {{ 'tisax.import.validate.ok'|trans({}, 'tisax_isa') }}
                 </div>
             {% endif %}
@@ -84,7 +84,7 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('tisax_proceed') }}">
                         <button type="submit" class="btn btn-primary">
                             {{ 'tisax.import.validate.proceed'|trans({}, 'tisax_isa') }}
-                            <i class="bi bi-arrow-right ms-1"></i>
+                            <i class="fa-icon fa-icon--util-arrow-right ms-1"></i>
                         </button>
                     </form>
                 {% endif %}

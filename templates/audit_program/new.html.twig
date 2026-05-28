@@ -27,9 +27,18 @@
                 form: form,
                 exclude_fields: ['status', 'riskCategories'],
                 sections: {
-                    'audit_program.section.basic_info': ['name', 'description', 'objectives', 'scope', 'frequency'],
-                    'audit_program.section.dates': ['startDate', 'endDate'],
-                    'audit_program.section.responsibility': ['programmeOwner']
+                    'basic_info': {
+                        label: 'audit_program.section.basic_info'|trans({}, 'audit_program'),
+                        fields: ['name', 'description', 'objectives', 'scope', 'frequency']
+                    },
+                    'dates': {
+                        label: 'audit_program.section.dates'|trans({}, 'audit_program'),
+                        fields: ['startDate', 'endDate']
+                    },
+                    'responsibility': {
+                        label: 'audit_program.section.responsibility'|trans({}, 'audit_program'),
+                        fields: ['programmeOwner']
+                    }
                 }
             } %}
             <div class="d-flex gap-2 justify-content-end mt-3">

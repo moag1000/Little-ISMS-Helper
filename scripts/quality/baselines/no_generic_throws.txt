@@ -1,12 +1,6 @@
 # check_no_generic_throws.py baseline
 # Format: <relative-path>:<line>
-src/Controller/AdminBackupController.php:327
-src/Controller/AdminBackupController.php:334
-src/Controller/AdminBackupController.php:368
-src/Controller/AdminBackupController.php:375
-src/Controller/AdminBackupController.php:498
-src/Controller/AdminBackupController.php:505
-src/Controller/AdminBackupController.php:640
-src/Controller/AuditFreezeController.php:168
-src/Controller/AuditFreezeController.php:174
+src/Controller/AuditFreezeController.php:172
+src/Controller/AuditFreezeController.php:178
 src/Controller/ManagementReportController.php:966
+src/Entity/ComplianceRequirement.php:585

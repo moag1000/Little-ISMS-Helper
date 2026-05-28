@@ -258,8 +258,9 @@ final class TisaxImportWizardE2ETest extends WebTestCase
             ],
         ]);
 
-        // Form validation fails — stays on disclaimer (200), no redirect to upload
-        self::assertResponseIsSuccessful();
+        // Form validation fails — stays on disclaimer with HTTP 422 (Turbo-compatible),
+        // no redirect to upload. Controller returns 422 for form validation errors.
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         self::assertSelectorExists('form');
     }
 

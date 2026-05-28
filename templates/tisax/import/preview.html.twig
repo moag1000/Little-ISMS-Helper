@@ -89,7 +89,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('tisax_proceed') }}">
                 <button type="submit" class="btn btn-primary">
                     {{ 'tisax.import.preview.proceed'|trans({}, 'tisax_isa') }}
-                    <i class="bi bi-arrow-right ms-1"></i>
+                    <i class="fa-icon fa-icon--util-arrow-right ms-1"></i>
                 </button>
             </form>
             <a href="{{ path('app_tisax_import_validate', { _locale: app.request.locale }) }}" class="btn btn-outline-secondary">

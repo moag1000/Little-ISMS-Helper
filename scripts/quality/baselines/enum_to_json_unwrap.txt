@@ -1,7 +1,7 @@
 # check_enum_to_json_unwrap.py baseline
 # Format: <relative-path>:<line>
-src/Controller/DPIAController.php:530
+src/Controller/DPIAController.php:538
 src/Controller/LifecycleController.php:104
 src/Controller/MappingQualityController.php:372
 src/Controller/Notification/InAppNotificationCenterController.php:125
-src/Controller/ProcessingActivityController.php:491
+src/Controller/ProcessingActivityController.php:500
