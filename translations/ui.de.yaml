@@ -97,6 +97,7 @@ ui:
         select: Auswählen
         close: Schließen
         shortcuts:
+            label: 'Tastenkürzel'
             title: 'Tastenkürzel'
             tip: 'Tipp: Drücken Sie <kbd>?</kbd> um diese Hilfe jederzeit anzuzeigen'
             trigger_title: 'Tastenkürzel (?)'
