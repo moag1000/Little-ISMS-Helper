@@ -1253,3 +1253,12 @@ export:
         partially_implemented_short: 'Teilweise'
         implemented: 'Umgesetzt'
         not_assessed: 'Nicht bewertet'
+
+    # TISAX per-tier assessment KPI tiles (framework show page)
+    tisax:
+        tier_is_label: 'Informationssicherheit (Reifegrad Ø → Ziel AL3: 3)'
+        tier_is_value: 'Ø %avg% / Ziel 3,0 → Lücke %gap%'
+        tier_pp_label: 'Prototypenschutz (%compliant% / %total% konform)'
+        tier_pp_value: '%compliant% / %total% konform (%pct% %%)'
+        tier_dp_label: 'Datenschutz (%in_place% / %total% vorhanden)'
+        tier_dp_value: '%in_place% / %total% Maßnahmen vorhanden (%pct% %%)'

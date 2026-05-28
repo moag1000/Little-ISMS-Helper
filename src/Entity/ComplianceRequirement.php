@@ -487,6 +487,28 @@ class ComplianceRequirement
         return $this;
     }
 
+    // ── TISAX per-tier assessment value (Tier 2 + Tier 3) ───────────────────
+    //
+    // Tier 1 (IS) uses maturityCurrent (int-mapped string, 'incomplete'…'optimising').
+    // Tier 2 (Prototype Protection) uses: 'compliant' | 'not_compliant' | 'na'
+    // Tier 3 (Data Protection/GDPR)  uses: 'in_place' | 'partial' | 'not_in_place' | 'na'
+    //
+    // NULL = not yet assessed.
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $assessmentValue = null;
+
+    public function getAssessmentValue(): ?string
+    {
+        return $this->assessmentValue;
+    }
+
+    public function setAssessmentValue(?string $assessmentValue): static
+    {
+        $this->assessmentValue = $assessmentValue;
+        return $this;
+    }
+
     // ── TISAX BYO VDA-ISA import ─────────────────────────────────────────────
 
     /**
