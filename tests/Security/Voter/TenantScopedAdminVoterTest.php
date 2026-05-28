@@ -114,8 +114,14 @@ final class TenantScopedAdminVoterTest extends TestCase
         Security $security,
         TenantContext $tenantContext,
         TenantRepository $tenantRepository,
+        ?\Symfony\Component\HttpFoundation\RequestStack $requestStack = null,
     ): TenantScopedAdminVoter {
-        return new TenantScopedAdminVoter($security, $tenantContext, $tenantRepository);
+        return new TenantScopedAdminVoter(
+            $security,
+            $tenantContext,
+            $tenantRepository,
+            $requestStack ?? new \Symfony\Component\HttpFoundation\RequestStack(),
+        );
     }
 
     // --- supports() -------------------------------------------------------
