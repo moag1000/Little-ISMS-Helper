@@ -57,6 +57,7 @@ final class TisaxMaturityAssessmentService
         User $reviewer,
     ): void {
         if (!in_array($level, self::REIFEGRAD_LEVELS, true)) {
+            // @intentional-assertion: programmer-error guard — invalid Reifegrad level is a caller contract violation
             throw new \InvalidArgumentException(
                 sprintf('Invalid Reifegrad level %d. Must be 0–5.', $level),
             );
