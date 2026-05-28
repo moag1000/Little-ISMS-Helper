@@ -15,7 +15,7 @@ risk:
   preview:
     title: Risiko-Informationen
   filter:
-    owner_placeholder: Suche nach Owner...
+    owner_placeholder: Suche nach Verantwortlichem...
     level_label: Risikolevel
     all_risks: Alle Risiken
     # Junior-ISB-Audit-2026-05-22 M-03: level_{critical,high,medium,low} removed —
@@ -34,7 +34,7 @@ risk:
     status_open: Offen
     treatment_label: Behandlungsstrategie
     all_strategies: Alle Strategien
-    owner_label: Risk Owner
+    owner_label: Risikoverantwortlicher
     at_risk: Gefährdete Assets
   index:
     # Junior-ISB-Audit-2026-05-22 M-03: risk_level.{critical,high,medium,low} removed —

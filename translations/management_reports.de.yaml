@@ -528,10 +528,10 @@ cert_readiness:
     clause_compliance_score: 'Clause-Compliance-Score'
     clauses_4_10: 'Clauses 4–10'
     annex_a_coverage: 'Annex-A-Abdeckung'
-    controls_implemented: 'Controls implementiert'
+    controls_implemented: 'Maßnahmen umgesetzt'
     gaps_found: 'Lücken gefunden'
-    all_controls_started: 'Alle Controls begonnen'
-    no_controls_in_progress: 'Keine Controls in Bearbeitung'
+    all_controls_started: 'Alle Maßnahmen begonnen'
+    no_controls_in_progress: 'Keine Maßnahmen in Bearbeitung'
     no_iso_wizard: 'Kein ISO-Wizard verfügbar'
     table:
         clause: Clause
