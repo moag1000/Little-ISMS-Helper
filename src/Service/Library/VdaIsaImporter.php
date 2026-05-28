@@ -14,9 +14,10 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Imports VDA ISA TISAX YAML fixtures into the DB.
  *
- * When the YAML contains `metadata.requiresUpload: true` (skeleton-only
- * fixture), only the framework row is upserted -- no requirements are seeded.
- * Use isSkeletonOnly() to detect this case in controllers/templates.
+ * Parses fixtures/library/frameworks/vda-isa-tisax-v6.yaml (or any
+ * structurally compatible TISAX YAML) and persists ComplianceFramework +
+ * ComplianceRequirement rows via Doctrine. Idempotent: existing rows are
+ * updated in-place using (code, requirementId) as natural key.
  *
  * Not final so it can be mocked in tests.
  */
@@ -33,7 +34,7 @@ final class VdaIsaImporter
     /**
      * Import from the default TISAX v6 fixture path.
      *
-     * @return array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, skeleton_only: bool, errors: list<string>}
+     * @return array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, errors: list<string>}
      */
     public function importDefault(): array
     {
@@ -45,7 +46,7 @@ final class VdaIsaImporter
     /**
      * Import from an arbitrary YAML path.
      *
-     * @return array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, skeleton_only: bool, errors: list<string>}
+     * @return array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, errors: list<string>}
      */
     public function importYaml(string $yamlPath): array
     {
@@ -54,7 +55,6 @@ final class VdaIsaImporter
             'frameworks_updated' => 0,
             'requirements_created' => 0,
             'requirements_updated' => 0,
-            'skeleton_only' => false,
             'errors' => [],
         ];
 
@@ -72,16 +72,6 @@ final class VdaIsaImporter
         }
 
         $meta = $data['metadata'];
-
-        // Skeleton-only guard: requiresUpload=true means ENX-licensed content
-        // has not been included. Create the framework row only; seed no requirements.
-        if (!empty($meta['requiresUpload'])) {
-            $stats['skeleton_only'] = true;
-            $this->upsertFramework($meta, $stats);
-            $this->entityManager->flush();
-            return $stats;
-        }
-
         $framework = $this->upsertFramework($meta, $stats);
 
         if (!isset($data['kontrollen']) || !is_array($data['kontrollen'])) {
@@ -116,24 +106,8 @@ final class VdaIsaImporter
     }
 
     /**
-     * Returns true when the bundled TISAX fixture is skeleton-only
-     * (requiresUpload=true). In this case the BYO-Import wizard must be used
-     * to populate the framework with ENX-licensed content.
-     */
-    public function isSkeletonOnly(): bool
-    {
-        $path = $this->projectDir . '/fixtures/library/frameworks/vda-isa-tisax-v6.yaml';
-        if (!file_exists($path)) {
-            return false;
-        }
-        /** @var array<string, mixed> $data */
-        $data = Yaml::parseFile($path);
-        return !empty($data['metadata']['requiresUpload']);
-    }
-
-    /**
      * @param array<string, mixed> $meta
-     * @param array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, skeleton_only: bool, errors: list<string>} $stats
+     * @param array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, errors: list<string>} $stats
      */
     private function upsertFramework(array $meta, array &$stats): ComplianceFramework
     {
@@ -151,7 +125,7 @@ final class VdaIsaImporter
 
         $framework->setName((string) ($meta['name'] ?? 'TISAX VDA ISA v6.0'));
         $framework->setVersion((string) ($meta['version'] ?? '6.0'));
-        $framework->setDescription((string) ($meta['legalNote'] ?? $meta['note'] ?? $meta['name'] ?? ''));
+        $framework->setDescription((string) ($meta['note'] ?? $meta['name'] ?? ''));
         $framework->setApplicableIndustry('automotive');
         $framework->setRegulatoryBody((string) ($meta['body'] ?? 'VDA / ENX Association'));
         $framework->setMandatory(false);
@@ -162,7 +136,7 @@ final class VdaIsaImporter
     }
 
     /**
-     * @param array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, skeleton_only: bool, errors: list<string>} $stats
+     * @param array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, errors: list<string>} $stats
      */
     private function upsertChapterParent(
         ComplianceFramework $framework,
@@ -198,7 +172,7 @@ final class VdaIsaImporter
     /**
      * @param array<string, mixed> $kontrolle
      * @param array<string, ComplianceRequirement> $chapterParents
-     * @param array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, skeleton_only: bool, errors: list<string>} $stats
+     * @param array{frameworks_created: int, frameworks_updated: int, requirements_created: int, requirements_updated: int, errors: list<string>} $stats
      */
     private function processKontrolle(
         ComplianceFramework $framework,
@@ -208,7 +182,7 @@ final class VdaIsaImporter
     ): void {
         $kontrolleId = (string) ($kontrolle['id'] ?? '');
         if ($kontrolleId === '') {
-            $stats['errors'][] = 'Kontrolle without id -- skipped.';
+            $stats['errors'][] = 'Kontrolle without id — skipped.';
             return;
         }
 
