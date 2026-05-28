@@ -13,10 +13,8 @@ use App\Repository\ComplianceMappingRepository;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
-use App\Service\ExcelExportService;
 use App\Service\FrameworkMaturityService;
 use App\Service\ModuleConfigurationService;
-use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,9 +52,7 @@ class ComplianceController extends AbstractController
         private readonly ComplianceAssessmentService $complianceAssessmentService,
         private readonly ComplianceMappingService $complianceMappingService,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
-        private readonly ExcelExportService $excelExportService,
         private readonly ModuleConfigurationService $moduleConfigurationService,
-        private readonly PdfExportService $pdfExportService,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
         private readonly ?FrameworkMaturityService $frameworkMaturityService = null,

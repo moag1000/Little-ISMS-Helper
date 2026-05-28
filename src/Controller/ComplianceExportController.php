@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\LocalizedFlashTrait;
+use App\Entity\ComplianceRequirement;
 use App\Entity\Tenant;
 use DateTime;
 use App\Repository\ComplianceFrameworkRepository;
@@ -1196,9 +1197,9 @@ class ComplianceExportController extends AbstractController
                 $comparisonDetail['framework1Requirement']->getCategory() ?? '-',
                 $comparisonDetail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
                 $comparisonDetail['matchQuality'] ?? '-',
-                $comparisonDetail['framework2Requirement'] instanceof \App\Entity\ComplianceRequirement ? $comparisonDetail['framework2Requirement']->getRequirementId() : '-',
-                $comparisonDetail['framework2Requirement'] instanceof \App\Entity\ComplianceRequirement ? $comparisonDetail['framework2Requirement']->getTitle() : '-',
-                $comparisonDetail['framework2Requirement'] instanceof \App\Entity\ComplianceRequirement ? ($comparisonDetail['framework2Requirement']->getCategory() ?? '-') : '-',
+                $comparisonDetail['framework2Requirement'] instanceof ComplianceRequirement ? $comparisonDetail['framework2Requirement']->getRequirementId() : '-',
+                $comparisonDetail['framework2Requirement'] instanceof ComplianceRequirement ? $comparisonDetail['framework2Requirement']->getTitle() : '-',
+                $comparisonDetail['framework2Requirement'] instanceof ComplianceRequirement ? ($comparisonDetail['framework2Requirement']->getCategory() ?? '-') : '-',
             ];
         }
 
@@ -1343,9 +1344,9 @@ class ComplianceExportController extends AbstractController
                 $detail['framework1Requirement']->getCategory() ?? '-',
                 $detail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
                 $detail['matchQuality'] ?? '-',
-                $detail['framework2Requirement'] instanceof \App\Entity\ComplianceRequirement ? $detail['framework2Requirement']->getRequirementId() : '-',
-                $detail['framework2Requirement'] instanceof \App\Entity\ComplianceRequirement ? $detail['framework2Requirement']->getTitle() : '-',
-                $detail['framework2Requirement'] instanceof \App\Entity\ComplianceRequirement ? ($detail['framework2Requirement']->getCategory() ?? '-') : '-',
+                $detail['framework2Requirement'] instanceof ComplianceRequirement ? $detail['framework2Requirement']->getRequirementId() : '-',
+                $detail['framework2Requirement'] instanceof ComplianceRequirement ? $detail['framework2Requirement']->getTitle() : '-',
+                $detail['framework2Requirement'] instanceof ComplianceRequirement ? ($detail['framework2Requirement']->getCategory() ?? '-') : '-',
             ];
         }
 
