@@ -10084,9 +10084,17 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
 }
 
 /* ── Flyout panel ────────────────────────────────────────── */
+/*
+ * Anchored to .app-sidebar in production:
+ *   - z-index must be > sidebar's --z-sticky (200), otherwise sidebar overlaps flyout.
+ *   - left offset must match the actual sidebar width at every breakpoint
+ *     (224px default, 220px @768-1024, 300px @1440+).
+ *   - header height in production = 52px (app.css .app-header), not 64px (demo).
+ */
 .flyout {
     position: fixed;
-    top: 52px; left: 224px; /* header min-height=52px, sidebar width=224px (app.css) */
+    top: 52px;
+    left: 224px;
     width: 720px;
     height: calc(100vh - 52px);
     background:
@@ -10098,11 +10106,25 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
                 inset 1px 0 0 color-mix(in oklab, var(--accent) 30%, transparent);
     padding: 24px 32px;
     overflow-y: auto;
-    z-index: var(--z-popover); /* 50 — flyout above sidebar, below modals */
+    /* Must be > --z-sticky (200, used by .app-sidebar). Below --z-fixed (500). */
+    z-index: var(--z-flyout);
     opacity: 0;
     transform: translateX(-12px);
     pointer-events: none;
     transition: opacity 0.16s var(--ease-out), transform 0.16s var(--ease-out);
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .flyout { left: 220px; }
+}
+
+@media (min-width: 1440px) {
+    .flyout { left: 300px; }
+}
+
+@media (max-width: 767px) {
+    /* Mobile: sidebar collapses or stacks; flyout takes full viewport width */
+    .flyout { left: 0; width: 100vw; }
 }
 .flyout.is-open { opacity: 1; transform: translateX(0); pointer-events: auto; }
 .flyout::before {
