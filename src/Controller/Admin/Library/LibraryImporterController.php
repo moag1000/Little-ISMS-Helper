@@ -82,6 +82,11 @@ class LibraryImporterController extends AbstractController
     public function import(Request $request): Response
     {
         $type = $request->query->getString('type', 'bsi');
+
+        if (!$this->isCsrfTokenValid('admin_library_import_' . $type, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token');
+        }
+
         $stats = [];
         $frameworkCode = '';
 

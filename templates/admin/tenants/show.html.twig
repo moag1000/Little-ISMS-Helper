@@ -58,6 +58,7 @@
                   data-controller="ui-actions"
                   data-action="submit->ui-actions#confirm"
                   data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('toggle_tenant_' ~ tenant.id) }}">
                 <button type="submit"
                         class="fa-cyber-btn fa-cyber-btn--{% if tenant.isActive %}warning{% else %}primary{% endif %}">
                     <i class="fa-icon fa-icon--{% if tenant.isActive %}pause{% else %}play{% endif %}" aria-hidden="true"></i>
