@@ -924,10 +924,14 @@ class RiskController extends AbstractController
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('risk/new.html.twig', [
             'risk' => $risk,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/risk/new/quick', name: 'app_risk_new_quick', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
@@ -955,10 +959,14 @@ class RiskController extends AbstractController
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('risk/new_quick.html.twig', [
             'risk' => $risk,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/risk/matrix', name: 'app_risk_matrix', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -1276,10 +1284,14 @@ class RiskController extends AbstractController
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('risk/edit.html.twig', [
             'risk' => $risk,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/risk/{id}/delete', name: 'app_risk_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
