@@ -14,7 +14,7 @@ use Psr\Log\NullLogger;
 /**
  * Unit tests for VdaIsaWorkbookParser.
  *
- * Uses the anonymised stub XLSX at tests/fixtures/vda_isa_stub.xlsx
+ * Uses the anonymised stub XLSX at tests/Fixtures/vda_isa_stub.xlsx
  * which contains 35 synthetic control rows (no ENX-copyrighted content).
  */
 class VdaIsaWorkbookParserTest extends TestCase
@@ -27,7 +27,7 @@ class VdaIsaWorkbookParserTest extends TestCase
     {
         $this->parser    = new VdaIsaWorkbookParser(new NullLogger());
         $this->validator = new VdaIsaWorkbookValidator();
-        $this->stubFixture = dirname(__DIR__, 2) . '/fixtures/vda_isa_stub.xlsx';
+        $this->stubFixture = dirname(__DIR__, 2) . '/Fixtures/vda_isa_stub.xlsx';
     }
 
     #[Test]

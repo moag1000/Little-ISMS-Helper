@@ -27,7 +27,7 @@ use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
  *   Step 4 — commit      → GET 200                    → POST (CSRF) → 302 /assess/{id}
  *   Step 5 — assess      → GET 200 (requirements visible)
  *
- * The stub workbook at tests/fixtures/vda_isa_stub.xlsx contains 35 synthetic
+ * The stub workbook at tests/Fixtures/vda_isa_stub.xlsx contains 35 synthetic
  * control rows (no ENX-copyrighted content).
  *
  * NOTE: Session-state management across the wizard steps means each POST
@@ -52,7 +52,7 @@ final class TisaxImportWizardE2ETest extends WebTestCase
         $this->client      = static::createClient();
         $container         = static::getContainer();
         $this->em          = $container->get(EntityManagerInterface::class);
-        $this->stubFixture = dirname(__DIR__, 2) . '/fixtures/vda_isa_stub.xlsx';
+        $this->stubFixture = dirname(__DIR__, 2) . '/Fixtures/vda_isa_stub.xlsx';
         $this->uniqueId    = uniqid('e2e_tisax_', true);
 
         // Ensure setup lock exists so the setup-wizard does not intercept
@@ -105,7 +105,7 @@ final class TisaxImportWizardE2ETest extends WebTestCase
     {
         // Precondition: stub fixture must exist
         if (!file_exists($this->stubFixture)) {
-            $this->markTestSkipped('Stub fixture tests/fixtures/vda_isa_stub.xlsx not found.');
+            $this->markTestSkipped('Stub fixture tests/Fixtures/vda_isa_stub.xlsx not found.');
         }
 
         $this->client->loginUser($this->managerUser);
