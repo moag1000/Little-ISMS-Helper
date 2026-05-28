@@ -81,6 +81,7 @@
             <div class="d-flex gap-2">
                 {% if canProceed %}
                     <form method="post" action="{{ path('app_tisax_import_validate', { _locale: app.request.locale }) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('tisax_proceed') }}">
                         <button type="submit" class="btn btn-primary">
                             {{ 'tisax.import.validate.proceed'|trans({}, 'tisax_isa') }}
                             <i class="bi bi-arrow-right ms-1"></i>
