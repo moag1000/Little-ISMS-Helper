@@ -13,6 +13,8 @@ use App\Repository\MfaTokenRepository;
 use App\Repository\UserRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Repository\PatchRepository;
+use App\Controller\Trait\ModuleGatedControllerTrait;
+use App\Service\ModuleConfigurationService;
 use App\Service\Nis2Art21CoverageService;
 use App\Service\Nis2ComplianceService;
 use App\Service\PdfExportService;
@@ -35,6 +37,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_MANAGER')]
 class Nis2ComplianceController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
@@ -47,12 +51,17 @@ class Nis2ComplianceController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Nis2ComplianceService $nis2ComplianceService,
         private readonly Nis2Art21CoverageService $nis2Art21CoverageService,
+        private readonly ModuleConfigurationService $moduleService,
     ) {
     }
 
     #[Route('/nis2-compliance', name: 'app_nis2_compliance_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
+        if ($redirect = $this->checkModuleActive('nis2_dora')) {
+            return $redirect;
+        }
+
         // Check if NIS2 framework exists and is active
         $nis2Framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'NIS2']);
 
@@ -190,6 +199,10 @@ class Nis2ComplianceController extends AbstractController
     #[Route('/nis2-compliance/requirements', name: 'app_nis2_art21_requirements', methods: ['GET'])]
     public function art21Requirements(): Response
     {
+        if ($redirect = $this->checkModuleActive('nis2_dora')) {
+            return $redirect;
+        }
+
         $nis2Framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'NIS2']);
 
         if (!$nis2Framework) {
