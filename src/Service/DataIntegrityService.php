@@ -6,7 +6,6 @@ namespace App\Service;
 
 use App\Entity\Tenant;
 use App\Service\DataIntegrity\DuplicateFinder;
-use App\Service\DataIntegrity\EntityCountAggregator;
 use App\Service\DataIntegrity\HealthIssueAggregator;
 use App\Service\DataIntegrity\OrphanFinder;
 use App\Service\DataIntegrity\ReferenceIntegrityChecker;
@@ -136,11 +135,6 @@ final class DataIntegrityService
          * JSON-schema and AuditLog integrity drift checker.
          */
         private readonly ?SchemaDriftChecker $schemaDriftChecker = null,
-        /**
-         * Entity count aggregator — per-tenant counts, summary statistics, health score.
-         * Optional for backward-compat with existing unit-test setUp() calls.
-         */
-        private readonly ?EntityCountAggregator $entityCountAggregator = null,
     ) {
     }
 
@@ -290,20 +284,10 @@ final class DataIntegrityService
     }
 
     /**
-     * Get entity counts grouped by tenant.
-     * Delegates to {@see EntityCountAggregator::countByTenant()}.
-     *
-     * Falls back to inline implementation when aggregator is not injected
-     * (legacy unit-test setUp() without the new dep).
+     * Get entity counts grouped by tenant
      */
     public function getEntityCountsByTenant(): array
     {
-        if ($this->entityCountAggregator !== null) {
-            return $this->entityCountAggregator->countByTenant();
-        }
-
-        // Inline fallback for backward-compat with unit-test setUp() that
-        // constructs DataIntegrityService without the new optional dep.
         $tenants = $this->tenantRepository->findAll();
         $counts = [];
 
@@ -337,9 +321,7 @@ final class DataIntegrityService
     }
 
     /**
-     * Get summary statistics for dashboard display.
-     * Delegates to {@see EntityCountAggregator::summarize()} when available;
-     * falls back to inline implementation for backward-compat.
+     * Get summary statistics for dashboard display
      */
     public function getSummaryStatistics(): array
     {
@@ -349,11 +331,6 @@ final class DataIntegrityService
         $duplicates = $this->findDuplicateEntities();
         $inconsistent = $this->findInconsistentData();
 
-        if ($this->entityCountAggregator !== null) {
-            return $this->entityCountAggregator->summarize($orphaned, $missing, $broken, $duplicates, $inconsistent);
-        }
-
-        // Inline fallback for backward-compat with unit-test setUp() without the new dep.
         $totalOrphaned = 0;
         foreach ($orphaned as $entities) {
             $totalOrphaned += count($entities);
@@ -392,9 +369,6 @@ final class DataIntegrityService
      * it matches the cross-tenant numerator from findAllOrphanedEntities().
      * Otherwise the score is arithmetically inconsistent on multi-tenant
      * installations (filter-on denominator vs filter-off numerator).
-     *
-     * @internal Used by the inline getSummaryStatistics() fallback only.
-     *           When entityCountAggregator is injected, the aggregator owns this formula.
      */
     private function calculateHealthScore(int $orphaned, int $missing, int $broken, int $duplicates, int $inconsistent): int
     {
