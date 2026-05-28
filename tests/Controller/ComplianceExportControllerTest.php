@@ -103,13 +103,18 @@ class ComplianceExportControllerTest extends TestCase
         $requestStack->method('getCurrentRequest')->willReturn($request);
         $requestStack->method('getSession')->willReturn($session);
 
+        // Auth checker — always grants so isGranted() works in unit scope
+        $authChecker = $this->createMock(\Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface::class);
+        $authChecker->method('isGranted')->willReturn(true);
+
         $container = $this->createMock(ContainerInterface::class);
         $container->method('has')->willReturn(true);
-        $container->method('get')->willReturnCallback(function ($id) use ($twig, $router, $requestStack) {
+        $container->method('get')->willReturnCallback(function ($id) use ($twig, $router, $requestStack, $authChecker) {
             return match ($id) {
                 'twig' => $twig,
                 'router' => $router,
                 'request_stack' => $requestStack,
+                'security.authorization_checker' => $authChecker,
                 default => null,
             };
         });
@@ -393,5 +398,130 @@ class ComplianceExportControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertGreaterThanOrEqual(300, $response->getStatusCode());
         $this->assertLessThan(400, $response->getStatusCode());
+    }
+
+    // -------------------------------------------------------------------------
+    // Happy-path tests for routes missing 200-coverage
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function testExportDataReusePdfReturnsPdfResponse(): void
+    {
+        $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001');
+        $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface::class);
+        $request = new Request();
+        $request->setSession($session);
+
+        $reuseValue = ['estimated_hours_saved' => 0, 'reuse_percentage' => 0];
+
+        $this->complianceFrameworkRepository->method('find')->willReturn($framework);
+        $this->complianceRequirementRepository->method('findApplicableByFramework')->willReturn([]);
+        $this->pdfExportService->method('generatePdf')->willReturn('%PDF-1.4 mock content');
+
+        $response = $this->controller->exportDataReusePdf($request, 1);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));
+    }
+
+    #[Test]
+    public function testExportGapsExcelReturnsExcelResponse(): void
+    {
+        $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001');
+        $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface::class);
+        $request = new Request();
+        $request->setSession($session);
+
+        $spreadsheet = $this->createMock(\PhpOffice\PhpSpreadsheet\Spreadsheet::class);
+        $worksheet = $this->createMock(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet::class);
+        $worksheet->method('setTitle')->willReturnSelf();
+        $spreadsheet->method('getActiveSheet')->willReturn($worksheet);
+
+        $this->complianceFrameworkRepository->method('find')->willReturn($framework);
+        $this->complianceRequirementRepository->method('findGapsByFramework')->willReturn([]);
+        $this->complianceRequirementRepository->method('findByFramework')->willReturn([]);
+        $this->tenantContext->method('getCurrentTenant')->willReturn(null);
+        $this->excelExportService->method('createSpreadsheet')->willReturn($spreadsheet);
+        $this->excelExportService->method('createSheet')->willReturn($worksheet);
+        $this->excelExportService->method('addSummarySection')->willReturn(1);
+        $this->excelExportService->method('addFormattedHeaderRow');
+        $this->excelExportService->method('addFormattedDataRows');
+        $this->excelExportService->method('autoSizeColumns');
+        $this->excelExportService->method('getColor')->willReturn('FF0000');
+        $this->excelExportService->method('generateExcel')->willReturn('xlsx-content');
+
+        $response = $this->controller->exportGapsExcel($request, 1);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString(
+            'spreadsheetml.sheet',
+            $response->headers->get('Content-Type')
+        );
+    }
+
+    #[Test]
+    public function testExportGapsPdfThrowsNotFoundForInvalidFramework(): void
+    {
+        $request = new Request();
+        $session = $this->createMock(SessionInterface::class);
+        $request->setSession($session);
+
+        $this->complianceFrameworkRepository->method('find')->willReturn(null);
+
+        $this->expectException(NotFoundHttpException::class);
+        $this->controller->exportGapsPdf($request, 999);
+    }
+
+    #[Test]
+    public function testExportGapsPdfReturnsPdfResponse(): void
+    {
+        $framework = $this->createFramework(1, 'ISO 27001', 'ISO27001');
+        $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface::class);
+        $request = new Request();
+        $request->setSession($session);
+
+        $this->complianceFrameworkRepository->method('find')->willReturn($framework);
+        $this->complianceRequirementRepository->method('findGapsByFramework')->willReturn([]);
+        $this->complianceRequirementRepository->method('findByFramework')->willReturn([]);
+        $this->tenantContext->method('getCurrentTenant')->willReturn(null);
+        $this->complianceMappingRepository->method('calculatePriorityWeightedGaps')->willReturn([
+            'risk_score' => 0,
+            'uncovered_critical' => 0,
+            'uncovered_high' => 0,
+            'priority_distribution' => [],
+            'recommendations' => [],
+        ]);
+        $this->complianceMappingRepository->method('analyzeGapRootCauses')->willReturn([
+            'root_causes' => [],
+            'summary' => '',
+            'category_patterns' => [],
+            'recommendations' => [],
+        ]);
+        $this->pdfExportService->method('generatePdf')->willReturn('%PDF-1.4 mock content');
+
+        $response = $this->controller->exportGapsPdf($request, 1);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));
+    }
+
+    #[Test]
+    public function testExportTransitivePdfReturnsPdfResponse(): void
+    {
+        $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface::class);
+        $request = new Request();
+        $request->setSession($session);
+
+        $this->complianceFrameworkRepository->method('findActiveFrameworks')->willReturn([]);
+        $this->pdfExportService->method('generatePdf')->willReturn('%PDF-1.4 mock content');
+
+        $response = $this->controller->exportTransitivePdf($request);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));
     }
 }
