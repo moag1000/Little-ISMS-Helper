@@ -31,7 +31,6 @@ use App\Service\Setup\DatabaseProvisioner;
 use App\Service\Setup\SetupConsoleRunner;
 use App\Service\Setup\SetupIndustryPresetService;
 use App\Service\Setup\SetupJobStatusService;
-use App\Service\Setup\SetupBaselineApplier;
 use App\Service\Setup\SetupRecommendationEngine;
 use App\Service\Setup\SetupTenantBootstrapper;
 use App\Service\SystemRequirementsChecker;
@@ -70,7 +69,6 @@ class DeploymentWizardController extends AbstractController
         private readonly DatabaseProvisioner $databaseProvisioner,
         private readonly SetupConsoleRunner $setupConsoleRunner,
         private readonly SetupRecommendationEngine $recommendationEngine,
-        private readonly SetupBaselineApplier $setupBaselineApplier,
         private readonly SetupTenantBootstrapper $tenantBootstrapper,
     ) {
     }
@@ -1556,7 +1554,7 @@ class DeploymentWizardController extends AbstractController
             // SMB-2: Apply Generic Starter baseline if requested
             $baselineMessage = '';
             if ($applyBaseline) {
-                $baselineMessage = $this->setupBaselineApplier->applyGenericStarterBaseline();
+                $baselineMessage = $this->recommendationEngine->applyGenericStarterBaseline();
             }
 
             $message = sprintf(

@@ -24,17 +24,6 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  * Extracted from DataIntegrityService to isolate reference-integrity concerns.
  *
- * ### findAll() caching
- *
- * findBrokenReferences(), findMissingRelationships(), and findInconsistentData()
- * all operate on the same entity collections (Risks, Incidents, Controls).
- * When the facade calls all three sequentially via runFullIntegrityCheck(), each
- * used to independently issue findAll() — 6+ unbounded hydrations on large datasets.
- *
- * The getAllEntities() helper centralises the three heavy loads and caches the
- * result in $entityCache for the lifetime of the request. Individual public
- * methods remain unchanged for backward-compat.
- *
  * @see \App\Service\DataIntegrityService::findBrokenReferences()
  * @see \App\Service\DataIntegrityService::findMissingRelationships()
  * @see \App\Service\DataIntegrityService::findInconsistentData()
@@ -56,60 +45,15 @@ final class ReferenceIntegrityChecker
     }
 
     /**
-     * Per-request entity cache: populated on first call, reused on subsequent calls
-     * within the same runFullIntegrityCheck() sweep.
-     *
-     * @var array<string, array<object>>|null
-     */
-    private ?array $entityCache = null;
-
-    /**
-     * Load all entity collections once per check-sweep and cache them.
-     *
-     * All three public check methods need Risks, Incidents, and Controls.
-     * Loading them once here avoids 6+ redundant unbounded findAll() hydrations
-     * when the facade calls all three sequentially.
-     *
-     * @return array<string, array<object>>
-     */
-    private function getAllEntities(): array
-    {
-        if ($this->entityCache !== null) {
-            return $this->entityCache;
-        }
-
-        $this->entityCache = [
-            'risks' => $this->riskRepository->findAll(),
-            'incidents' => $this->incidentRepository->findAll(),
-            'controls' => $this->controlRepository->findAll(),
-            'audits' => $this->auditRepository->findAll(),
-            'bcPlans' => $this->bcPlanRepository->findAll(),
-            'trainings' => $this->trainingRepository->findAll(),
-        ];
-
-        return $this->entityCache;
-    }
-
-    /**
-     * Reset the per-request entity cache.
-     *
-     * Call this if you need fresh data after a repair operation.
-     */
-    public function resetCache(): void
-    {
-        $this->entityCache = null;
-    }
-
-    /**
      * Find broken foreign key references
      */
     public function findBrokenReferences(): array
     {
         $broken = [];
-        $entities = $this->getAllEntities();
 
         // Check risks with invalid asset references
-        foreach ($entities['risks'] as $risk) {
+        $allRisks = $this->riskRepository->findAll();
+        foreach ($allRisks as $risk) {
             $asset = $risk->getAsset();
             if ($asset && !$this->entityManager->contains($asset)) {
                 $broken[] = [
@@ -137,7 +81,8 @@ final class ReferenceIntegrityChecker
         }
 
         // Check incidents with invalid asset references
-        foreach ($entities['incidents'] as $incident) {
+        $allIncidents = $this->incidentRepository->findAll();
+        foreach ($allIncidents as $incident) {
             foreach ($incident->getAffectedAssets() as $asset) {
                 if (!$this->entityManager->contains($asset)) {
                     $broken[] = [
@@ -168,7 +113,8 @@ final class ReferenceIntegrityChecker
         }
 
         // Check controls with invalid risk references
-        foreach ($entities['controls'] as $control) {
+        $allControls = $this->controlRepository->findAll();
+        foreach ($allControls as $control) {
             foreach ($control->getRisks() as $risk) {
                 if (!$this->entityManager->contains($risk)) {
                     $broken[] = [
@@ -192,7 +138,6 @@ final class ReferenceIntegrityChecker
     public function findMissingRelationships(): array
     {
         $missing = [];
-        $entities = $this->getAllEntities();
 
         // Risks without assets
         $risksWithoutAsset = $this->riskRepository->createQueryBuilder('r')
@@ -202,9 +147,10 @@ final class ReferenceIntegrityChecker
             $missing['risks_without_asset'] = $risksWithoutAsset;
         }
 
-        // Incidents without affected assets (use cached collection)
+        // Incidents without affected assets
         $incidentsWithoutAssets = [];
-        foreach ($entities['incidents'] as $incident) {
+        $allIncidents = $this->incidentRepository->findAll();
+        foreach ($allIncidents as $incident) {
             if ($incident->getAffectedAssets()->isEmpty()) {
                 $incidentsWithoutAssets[] = $incident;
             }
@@ -215,7 +161,8 @@ final class ReferenceIntegrityChecker
 
         // Applicable controls without risks (and without framework mapping)
         $controlsWithoutRisks = [];
-        foreach ($entities['controls'] as $control) {
+        $allControls = $this->controlRepository->findAll();
+        foreach ($allControls as $control) {
             if ($control->isApplicable() && $control->getRisks()->isEmpty()) {
                 $controlsWithoutRisks[] = $control;
             }
@@ -226,7 +173,7 @@ final class ReferenceIntegrityChecker
 
         // Applicable controls without protected assets
         $controlsWithoutAssets = [];
-        foreach ($entities['controls'] as $control) {
+        foreach ($allControls as $control) {
             if ($control->isApplicable() && $control->getProtectedAssets()->isEmpty()) {
                 $controlsWithoutAssets[] = $control;
             }
@@ -235,9 +182,10 @@ final class ReferenceIntegrityChecker
             $missing['controls_without_assets'] = $controlsWithoutAssets;
         }
 
-        // BC Plans without business processes (use cached collection)
+        // BC Plans without business processes
         $bcPlansWithoutProcesses = [];
-        foreach ($entities['bcPlans'] as $plan) {
+        $allBcPlans = $this->bcPlanRepository->findAll();
+        foreach ($allBcPlans as $plan) {
             if (!$plan->getBusinessProcess()) {
                 $bcPlansWithoutProcesses[] = $plan;
             }
@@ -246,9 +194,9 @@ final class ReferenceIntegrityChecker
             $missing['bc_plans_without_process'] = $bcPlansWithoutProcesses;
         }
 
-        // Trainings without participants assigned (use cached collection)
+        // Trainings without participants assigned
         $trainingsWithoutParticipants = [];
-        foreach ($entities['trainings'] as $training) {
+        foreach ($this->trainingRepository->findAll() as $training) {
             if (empty($training->getParticipants())) {
                 $trainingsWithoutParticipants[] = $training;
             }
@@ -278,25 +226,27 @@ final class ReferenceIntegrityChecker
     public function findInconsistentData(): array
     {
         $inconsistent = [];
-        $entities = $this->getAllEntities();
 
-        // Audits with completed status but no actual completion date (use cached collection)
-        foreach ($entities['audits'] as $audit) {
+        // Audits with completed status but no actual completion date
+        $audits = $this->auditRepository->findAll();
+        foreach ($audits as $audit) {
             if (in_array($audit->getStatus(), [InternalAuditStatus::Completed->value, InternalAuditStatus::Reported->value]) && !$audit->getActualDate()) {
                 $inconsistent['audits_completed_without_date'][] = $audit;
             }
         }
 
-        // Risks with residual risk higher than inherent risk (use cached collection)
-        foreach ($entities['risks'] as $risk) {
+        // Risks with residual risk higher than inherent risk
+        $risks = $this->riskRepository->findAll();
+        foreach ($risks as $risk) {
             if ($risk->getResidualRiskLevel() && $risk->getInherentRiskLevel() &&
                 $risk->getResidualRiskLevel() > $risk->getInherentRiskLevel()) {
                 $inconsistent['risks_residual_higher_than_inherent'][] = $risk;
             }
         }
 
-        // Incidents with resolved status but no resolution date (use cached collection)
-        foreach ($entities['incidents'] as $incident) {
+        // Incidents with resolved status but no resolution date
+        $incidents = $this->incidentRepository->findAll();
+        foreach ($incidents as $incident) {
             if ($incident->getStatus() === IncidentStatus::Resolved && !$incident->getResolvedAt()) {
                 $inconsistent['incidents_resolved_without_date'][] = $incident;
             }
@@ -316,8 +266,7 @@ final class ReferenceIntegrityChecker
         }
 
         // Risk: accept without formal acceptance
-        // Risk: accept without formal acceptance (use cached collection)
-        $unacceptedAccepts = array_filter($entities['risks'], fn($r) => $r->getTreatmentStrategy() === TreatmentStrategy::Accept && !$r->isFormallyAccepted());
+        $unacceptedAccepts = array_filter($risks, fn($r) => $r->getTreatmentStrategy() === TreatmentStrategy::Accept && !$r->isFormallyAccepted());
         if (count($unacceptedAccepts) > 0) {
             $inconsistent['accept_without_formal'] = array_values($unacceptedAccepts);
         }
