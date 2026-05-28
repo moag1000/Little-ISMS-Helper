@@ -138,10 +138,14 @@ class AuditFindingController extends AbstractController
             return $this->redirectToRoute('app_audit_finding_show', ['id' => $finding->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('audit_finding/new.html.twig', [
             'form' => $form,
             'nc_user_choices' => $this->getNcUserChoices(),
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -224,11 +228,15 @@ class AuditFindingController extends AbstractController
             return $this->redirectToRoute('app_audit_finding_show', ['id' => $finding->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('audit_finding/edit.html.twig', [
             'finding' => $finding,
             'form' => $form,
             'nc_user_choices' => $this->getNcUserChoices(),
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
