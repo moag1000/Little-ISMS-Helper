@@ -38,7 +38,7 @@ requirements:
       (NIS2-RL Art. 21(2)(a))
     category: 'Risikomanagement'
     priority: 'critical'
-    iso27001Anchors: ['A.5.7', 'A.5.9', 'A.6.3']
+    iso27001Anchors: ['A.5.1', 'A.5.9', 'Clause 6.1', 'A.5.7']
     auditEvidenceHint: 'Dokumentiertes Risikomanagement-Rahmenwerk, Risikoregister mit Bewertungsprotokollen, Massnahmenplaene.'
 
   - controlId: 'NIS2-ART21-B'
@@ -75,80 +75,88 @@ requirements:
       Anbietern oder Diensteanbietern. (NIS2-RL Art. 21(2)(d))
     category: 'Lieferkettensicherheit'
     priority: 'high'
-    iso27001Anchors: ['A.5.19', 'A.5.20', 'A.5.21', 'A.5.22']
+    iso27001Anchors: ['A.5.19', 'A.5.20', 'A.5.21', 'A.5.22', 'A.5.23']
     auditEvidenceHint: 'Lieferantenregister mit Risikostufen, AVV-Vertraege, Audit-Reports der letzten 24 Monate.'
 
   - controlId: 'NIS2-ART21-E'
     clauseReference: 'Art. 21(2)(e)'
-    title: 'Sicherheit in Beschaffung, Entwicklung und Wartung'
+    title: 'Sicherheit in Beschaffung, Entwicklung und Wartung inkl. Schwachstellenmanagement'
     description: >
       Sicherheit in der Beschaffung, Entwicklung und Wartung von Netz- und
       Informationssystemen, einschliesslich Management und Offenlegung von
-      Schwachstellen. (NIS2-RL Art. 21(2)(e))
+      Schwachstellen. Einrichtungen muessen Schwachstellen systematisch erkennen,
+      bewerten und zeitnah beheben sowie koordinierte Offenlegungsprozesse
+      (Responsible Disclosure) etablieren. (NIS2-RL Art. 21(2)(e))
     category: 'Secure Development'
     priority: 'high'
-    iso27001Anchors: ['A.8.25', 'A.8.26', 'A.8.27', 'A.8.28', 'A.8.29', 'A.8.30', 'A.8.31', 'A.8.32', 'A.8.33', 'A.8.34']
-    auditEvidenceHint: 'Secure-SDLC-Richtlinie, SAST/DAST-Ergebnisse, Security-Requirements in Lastenheften.'
+    iso27001Anchors: ['A.8.25', 'A.8.26', 'A.8.27', 'A.8.28', 'A.8.29', 'A.8.30', 'A.8.31', 'A.8.32', 'A.8.33', 'A.8.34', 'A.8.8']
+    auditEvidenceHint: 'Secure-SDLC-Richtlinie, SAST/DAST-Ergebnisse, Security-Requirements in Lastenheften, Schwachstellenscanner-Ergebnisse, Patch-Zyklusdokumentation, CVE-Tracking-Nachweis.'
 
   - controlId: 'NIS2-ART21-F'
     clauseReference: 'Art. 21(2)(f)'
-    title: 'Umgang mit Schwachstellen und Offenlegung'
+    title: 'Wirksamkeitsbewertung der Cybersicherheits-Massnahmen'
     description: >
-      Konzepte und Verfahren fuer Vulnerability Management. Einrichtungen muessen
-      Schwachstellen in ihren Systemen erkennen, bewerten und zeitnah beheben.
-      Koordinierte Offenlegungsprozesse (Responsible Disclosure) sind zu etablieren.
-      (NIS2-RL Art. 21(2)(f))
-    category: 'Vulnerability Management'
+      Konzepte und Verfahren zur Bewertung der Wirksamkeit der Risikomanagement-
+      Massnahmen im Bereich der Cybersicherheit. Einrichtungen muessen die
+      Wirksamkeit ihrer Cybersicherheitsmassnahmen regelmaessig pruefen und
+      bewerten. Interne Audits, Penetrationstests und Reifegradmessungen sind
+      geeignete Instrumente. (NIS2-RL Art. 21(2)(f))
+    category: 'Wirksamkeitsbewertung'
     priority: 'high'
-    iso27001Anchors: ['A.8.8']
-    auditEvidenceHint: 'Schwachstellenscanner-Ergebnisse, Patch-Zyklusdokumentation, CVE-Tracking-Nachweis.'
+    iso27001Anchors: ['A.5.35', 'A.5.36', 'Clause 9']
+    auditEvidenceHint: 'Interne Audit-Berichte, Penetrationstest-Ergebnisse, Management-Review-Protokolle, Performance-Measurement-Nachweise.'
 
   - controlId: 'NIS2-ART21-G'
     clauseReference: 'Art. 21(2)(g)'
-    title: 'Wirksamkeitsbewertung der Cybersicherheitsmassnahmen'
+    title: 'Cyber-Hygiene und Cybersicherheitsschulungen'
     description: >
-      Konzepte und Verfahren zur Bewertung der Wirksamkeit der Risikomanagement-
-      Massnahmen im Bereich der Cybersicherheit. Interne Audits, Penetrationstests und
-      Reifegradmessungen sind geeignete Instrumente. (NIS2-RL Art. 21(2)(g))
-    category: 'Wirksamkeitsbewertung'
+      Grundlegende Verfahren im Bereich der Cyber-Hygiene sowie Schulungen im
+      Bereich der Cybersicherheit. Alle Mitarbeiterinnen und Mitarbeiter muessen
+      regelmaessig in Cybersicherheit geschult werden. Grundlegende Hygiene-
+      Praktiken wie Patching, sichere Konfiguration, Zugriffsmanagement und
+      Awareness-Massnahmen sind zu implementieren. (NIS2-RL Art. 21(2)(g))
+    category: 'Training und Awareness'
     priority: 'high'
-    iso27001Anchors: ['A.5.35', 'A.5.36']
-    auditEvidenceHint: 'Interne Audit-Berichte, Penetrationstest-Ergebnisse, Management-Review-Protokolle.'
+    iso27001Anchors: ['A.6.3', 'A.5.4']
+    auditEvidenceHint: 'Schulungsplan und -nachweise, Awareness-Kampagnenmaterial, Phishing-Simulationsergebnisse, Patch-Compliance-Dashboards.'
 
   - controlId: 'NIS2-ART21-H'
     clauseReference: 'Art. 21(2)(h)'
-    title: 'Cyber-Hygiene und Cybersicherheitsschulungen'
+    title: 'Kryptografie und Verschluesselung'
     description: >
-      Grundlegende Verfahren im Bereich der Cyber-Hygiene und Schulungen im
-      Bereich der Cybersicherheit. Alle Mitarbeiterinnen und Mitarbeiter muessen
-      regelmaessig in Cybersicherheit geschult werden. (NIS2-RL Art. 21(2)(h))
-    category: 'Training und Awareness'
+      Konzepte und Verfahren fuer den Einsatz von Kryptografie und,
+      soweit angemessen, Verschluesselung. Die eingesetzten kryptografischen
+      Verfahren muessen dem Stand der Technik entsprechen. Daten in Uebertragung
+      und im Ruhezustand sind angemessen zu verschluesseln.
+      (NIS2-RL Art. 21(2)(h))
+    category: 'Kryptografie'
     priority: 'high'
-    iso27001Anchors: ['A.6.3']
-    auditEvidenceHint: 'Schulungsplan und -nachweise, Awareness-Kampagnenmaterial, Phishing-Simulationsergebnisse.'
+    iso27001Anchors: ['A.8.24', 'A.5.31']
+    auditEvidenceHint: 'Kryptografie-Richtlinie, Schluesselmanagement-Prozess, Inventar kryptografischer Algorithmen, Nachweis Stand-der-Technik-Konformitaet.'
 
   - controlId: 'NIS2-ART21-I'
     clauseReference: 'Art. 21(2)(i)'
-    title: 'Kryptografie und Verschluesselung'
+    title: 'Personalsicherheit, Zugriffskontrolle und Asset-Management'
     description: >
-      Konzepte und Verfahren fuer den Einsatz von Kryptografie und Verschluesselung.
-      Die eingesetzten kryptografischen Verfahren muessen dem Stand der Technik
-      entsprechen. Daten in Uebertragung und im Ruhezustand sind angemessen zu
-      verschluesseln. (NIS2-RL Art. 21(2)(i))
-    category: 'Kryptografie'
-    priority: 'high'
-    iso27001Anchors: ['A.8.24']
-    auditEvidenceHint: 'Kryptografie-Richtlinie, Schluesselmanagement-Prozess, Inventar kryptografischer Algorithmen.'
+      Sicherheit des Personals, Konzepte fuer die Zugriffskontrolle und
+      Asset-Management. Einrichtungen muessen Massnahmen zur Personalsicherheit
+      im Lebenszyklus (Einstellung, Beschaeftigung, Ausscheiden), zur
+      rollenbasierten Zugriffskontrolle und zum Inventar und Management ihrer
+      Informationsassets etablieren. (NIS2-RL Art. 21(2)(i))
+    category: 'Personalsicherheit / Zugriffskontrolle'
+    priority: 'critical'
+    iso27001Anchors: ['A.6.1', 'A.6.2', 'A.6.3', 'A.6.4', 'A.6.5', 'A.6.6', 'A.5.15', 'A.5.16', 'A.5.17', 'A.5.18', 'A.5.9', 'A.5.10', 'A.5.11']
+    auditEvidenceHint: 'HR-Sicherheitsrichtlinie, Onboarding-/Offboarding-Protokolle, Zugriffskontroll-Matrix, Asset-Inventar mit Klassifizierung.'
 
   - controlId: 'NIS2-ART21-J'
     clauseReference: 'Art. 21(2)(j)'
-    title: 'Personalsicherheit, Asset-Management, Zugriffskontrolle und MFA'
+    title: 'MFA, sichere Kommunikation und Notfallkommunikation'
     description: >
-      Sicherheit des Personals, Konzepte fuer die Zugriffskontrolle und
-      Management von Anlagen sowie Verwendung von Loesungen zur Multi-Faktor-
-      Authentifizierung oder kontinuierlichen Authentifizierung.
-      (NIS2-RL Art. 21(2)(j))
-    category: 'Personalsicherheit / Zugriffskontrolle'
+      Verwendung von Loesungen zur Multi-Faktor-Authentifizierung oder
+      kontinuierlichen Authentifizierung, gesicherte Sprach-, Video- und
+      Textkommunikation sowie gesicherte Notfallkommunikationssysteme innerhalb
+      der Einrichtung, soweit angemessen. (NIS2-RL Art. 21(2)(j))
+    category: 'Authentifizierung / Sichere Kommunikation'
     priority: 'critical'
-    iso27001Anchors: ['A.6.1', 'A.6.2', 'A.6.3', 'A.6.4', 'A.6.5', 'A.6.6', 'A.5.9', 'A.5.10', 'A.5.11', 'A.5.15', 'A.5.16', 'A.5.17', 'A.5.18']
-    auditEvidenceHint: 'HR-Sicherheitsrichtlinie, MFA-Aktivierungsnachweis, Zugriffskontroll-Matrix, Asset-Inventar.'
+    iso27001Anchors: ['A.5.17', 'A.8.5', 'A.5.14']
+    auditEvidenceHint: 'MFA-Aktivierungsnachweis fuer alle privilegierten Konten, Nachweis gesicherter Kommunikationskanaele, Notfallkommunikationskonzept.'
