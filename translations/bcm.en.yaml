@@ -23,6 +23,7 @@ bcm:
         add_process: 'Add Process'
         data_reuse: 'Data Reuse'
         view_insights: 'View insights'
+        view_bia: 'View BIA'
     insights_col:
         business_process: 'Business Process'
         supporting_asset: 'Supporting Asset'
