@@ -82,9 +82,13 @@ final class TagController extends AbstractController
             return $this->redirectToRoute('admin_tag_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/tag/new.html.twig', [
             'form' => $form->createView(),
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
@@ -102,10 +106,14 @@ final class TagController extends AbstractController
             return $this->redirectToRoute('admin_tag_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/tag/edit.html.twig', [
             'form' => $form->createView(),
             'tag' => $tag,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]

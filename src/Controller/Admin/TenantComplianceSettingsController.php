@@ -102,10 +102,14 @@ final class TenantComplianceSettingsController extends AbstractController
             'telemetry_opt_in' => $this->systemSettings->getSetting('telemetry', 'opt_in', 'false') === 'true',
         ];
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/tenant_compliance_settings/edit.html.twig', [
             'tenant' => $tenant,
             'form' => $form,
             'globals' => $globals,
-        ]);
+        ], new Response(status: $status));
     }
 }

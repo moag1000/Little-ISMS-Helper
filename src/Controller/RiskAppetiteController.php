@@ -93,10 +93,14 @@ class RiskAppetiteController extends AbstractController
             return $this->redirectToRoute('app_risk_appetite_show', ['id' => $riskAppetite->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('risk_appetite/new.html.twig', [
             'appetite' => $riskAppetite,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/risk-appetite/{id}', name: 'app_risk_appetite_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -142,10 +146,14 @@ class RiskAppetiteController extends AbstractController
             return $this->redirectToRoute('app_risk_appetite_show', ['id' => $riskAppetite->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('risk_appetite/edit.html.twig', [
             'appetite' => $riskAppetite,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/risk-appetite/{id}/delete', name: 'app_risk_appetite_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

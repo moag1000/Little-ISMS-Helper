@@ -92,10 +92,14 @@ class DoraExitPlanController extends AbstractController
                     'dora_exit_plan',
                 ));
 
+                $status = ($form->isSubmitted() && !$form->isValid())
+                    ? Response::HTTP_UNPROCESSABLE_ENTITY
+                    : Response::HTTP_OK;
+
                 return $this->render('dora_exit_plan/new.html.twig', [
                     'plan' => $plan,
                     'form' => $form,
-                ]);
+                ], new Response(status: $status));
             }
 
             $this->entityManager->persist($plan);
@@ -110,10 +114,14 @@ class DoraExitPlanController extends AbstractController
             return $this->redirectToRoute('app_dora_exit_plan_show', ['id' => $plan->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('dora_exit_plan/new.html.twig', [
             'plan' => $plan,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -151,10 +159,14 @@ class DoraExitPlanController extends AbstractController
             return $this->redirectToRoute('app_dora_exit_plan_show', ['id' => $plan->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('dora_exit_plan/edit.html.twig', [
             'plan' => $plan,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/delete', name: 'delete', requirements: ['id' => '\d+'], methods: ['POST'])]

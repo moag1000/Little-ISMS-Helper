@@ -78,12 +78,16 @@ class PersonController extends AbstractController
             return $this->redirectToRoute('app_person_show', ['id' => $person->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('person/new.html.twig', [
             'person' => $person,
             'form' => $form,
             'available_users' => $this->personRepository->findUsersAvailableToLink($tenant),
             'prefilled_from_user' => $prefilledFromUser,
-        ]);
+        ], new Response(status: $status));
     }
 
     private function prefillPersonFromUser(Person $person, User $sourceUser): void
@@ -133,10 +137,14 @@ class PersonController extends AbstractController
             return $this->redirectToRoute('app_person_show', ['id' => $person->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('person/edit.html.twig', [
             'person' => $person,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/person/{id}/delete', name: 'app_person_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

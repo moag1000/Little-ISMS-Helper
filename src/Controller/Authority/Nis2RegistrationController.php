@@ -121,10 +121,14 @@ final class Nis2RegistrationController extends AbstractController
             return $this->redirectToRoute('nis2_registration_index');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('authority/nis2_registration/edit.html.twig', [
             'profile' => $profile,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     // ─── JSON Export ──────────────────────────────────────────────────────────

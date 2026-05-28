@@ -123,10 +123,14 @@ class AuditProgramController extends AbstractController
             ]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('audit_program/new.html.twig', [
             'form'    => $form,
             'program' => $program,
-        ]);
+        ], new Response(status: $status));
     }
 
     // ── Edit ───────────────────────────────────────────────────────────────────
@@ -161,10 +165,14 @@ class AuditProgramController extends AbstractController
             ]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('audit_program/edit.html.twig', [
             'form'    => $form,
             'program' => $auditProgram,
-        ]);
+        ], new Response(status: $status));
     }
 
     // ── Archive ────────────────────────────────────────────────────────────────

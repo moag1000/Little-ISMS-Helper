@@ -148,10 +148,14 @@ class DPIAController extends AbstractController
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()],Response::HTTP_SEE_OTHER);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('dpia/new.html.twig', [
             'form' => $form,
             'dpia' => $dataProtectionImpactAssessment,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**
@@ -178,10 +182,14 @@ class DPIAController extends AbstractController
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()], Response::HTTP_SEE_OTHER);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('dpia/edit.html.twig', [
             'form' => $form,
             'dpia' => $dataProtectionImpactAssessment,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

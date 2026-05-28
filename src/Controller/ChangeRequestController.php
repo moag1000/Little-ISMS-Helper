@@ -70,10 +70,14 @@ class ChangeRequestController extends AbstractController
             return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('change_request/new.html.twig', [
             'change_request' => $changeRequest,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/change-request/{id}', name: 'app_change_request_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -98,10 +102,14 @@ class ChangeRequestController extends AbstractController
             return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('change_request/edit.html.twig', [
             'change_request' => $changeRequest,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/change-request/{id}/delete', name: 'app_change_request_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

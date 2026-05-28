@@ -114,10 +114,14 @@ final class TisaxImportWizardController extends AbstractController
             ]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('tisax/import/disclaimer.html.twig', [
             'form'     => $form->createView(),
             'stepIndex' => 0,
-        ]);
+        ], new Response(status: $status));
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -148,10 +152,14 @@ final class TisaxImportWizardController extends AbstractController
                 $this->uploadSecurity->validateUpload($file);
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'tisax.import.upload.security_rejected');
+                $status = ($form->isSubmitted() && !$form->isValid())
+                    ? Response::HTTP_UNPROCESSABLE_ENTITY
+                    : Response::HTTP_OK;
+
                 return $this->render('tisax/import/upload.html.twig', [
                     'form'      => $form->createView(),
                     'stepIndex' => 1,
-                ]);
+                ], new Response(status: $status));
             }
 
             // Store workbook to temp directory
@@ -170,10 +178,14 @@ final class TisaxImportWizardController extends AbstractController
             ]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('tisax/import/upload.html.twig', [
             'form'      => $form->createView(),
             'stepIndex' => 1,
-        ]);
+        ], new Response(status: $status));
     }
 
     // ──────────────────────────────────────────────────────────────────────────
