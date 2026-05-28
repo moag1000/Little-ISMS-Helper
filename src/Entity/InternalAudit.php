@@ -327,6 +327,16 @@ class InternalAudit
     private ?InternalAudit $parentAudit = null;
 
     /**
+     * Audit-Programm-Zuordnung (ISO 19011 §5.4 — Jahresplan).
+     * Optional: ein Audit kann einem AuditProgram als Jahresplan-Eintrag zugeordnet sein.
+     * ON DELETE SET NULL: Programm-Löschung hebt Zuordnung auf, Audit bleibt erhalten.
+     */
+    #[ORM\ManyToOne(targetEntity: AuditProgram::class, inversedBy: 'audits')]
+    #[ORM\JoinColumn(name: 'program_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['audit:read'])]
+    private ?AuditProgram $program = null;
+
+    /**
      * @var Collection<int, InternalAudit>
      */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentAudit')]
@@ -1070,5 +1080,18 @@ public function __construct()
         $current = $this->status ?? 'planned';
 
         return self::LIFECYCLE_STAGES[$current]['transitions'] ?? [];
+    }
+
+    // ── AuditProgram relation (ISO 19011 §5.4 Jahresplan) ──────────────────────
+
+    public function getProgram(): ?AuditProgram
+    {
+        return $this->program;
+    }
+
+    public function setProgram(?AuditProgram $program): static
+    {
+        $this->program = $program;
+        return $this;
     }
 }
