@@ -30,8 +30,15 @@ final class VdaIsaUploadType extends AbstractType
                 new File([
                     'maxSize'          => '10M',
                     'mimeTypes'        => [
+                        // Standard XLSX (Office 2007+ Open XML)
                         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        // Legacy XLS (Office 97-2003 binary)
                         'application/vnd.ms-excel',
+                        // ENX workbooks sometimes report as generic ZIP (xlsx IS a zip container)
+                        // or octet-stream depending on browser + OS file-association
+                        'application/zip',
+                        'application/x-zip-compressed',
+                        'application/octet-stream',
                     ],
                     'mimeTypesMessage' => 'tisax.import.upload.xlsx_only',
                     'maxSizeMessage'   => 'tisax.import.upload.too_large',
