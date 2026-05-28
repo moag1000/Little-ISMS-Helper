@@ -120,10 +120,14 @@ class IncidentSlaConfigController extends AbstractController
             return $this->redirectToRoute('app_admin_incident_sla_config');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/incident_sla_config/edit.html.twig', [
             'form' => $form,
             'config' => $config,
-        ]);
+        ], new Response(status: $status));
     }
 
     private function requireTenant(Request $request): Tenant

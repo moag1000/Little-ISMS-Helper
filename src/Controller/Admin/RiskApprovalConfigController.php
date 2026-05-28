@@ -103,9 +103,13 @@ class RiskApprovalConfigController extends AbstractController
             return $this->redirectToRoute('app_admin_risk_approval_config');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('admin/risk_approval_config/edit.html.twig', [
             'form' => $form,
             'config' => $config,
-        ]);
+        ], new Response(status: $status));
     }
 }
