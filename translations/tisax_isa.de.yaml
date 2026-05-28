@@ -139,6 +139,7 @@ tisax:
       no_requirements: 'Keine Anforderungen gefunden. Bitte führen Sie zuerst den Import durch.'
       export_enx: 'ENX-Bewertungsplan exportieren (.xlsx)'
       level:
+        unrated: 'Bitte wählen …'
         incomplete: 'Unvollständig — nicht umgesetzt'
         performed: 'Durchgeführt — ad-hoc'
         managed: 'Gemanagt — geplant und nachverfolgt'

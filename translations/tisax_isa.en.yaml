@@ -146,6 +146,7 @@ tisax:
       no_requirements: 'No requirements found. Please complete the import first.'
       export_enx: 'Export ENX Schedule (.xlsx)'
       level:
+        unrated: 'Please select …'
         incomplete: 'Incomplete — not implemented'
         performed: 'Performed — ad-hoc'
         managed: 'Managed — planned and tracked'
