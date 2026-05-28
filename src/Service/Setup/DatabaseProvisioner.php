@@ -267,51 +267,6 @@ final class DatabaseProvisioner
     }
 
     /**
-     * Run database migrations via the Symfony Console Application.
-     *
-     * @return array{success: bool, message: string, output?: string, exception?: string}
-     */
-    public function runMigrationsInternal(): array
-    {
-        try {
-            $application = new \Symfony\Bundle\FrameworkBundle\Console\Application(
-                new \Symfony\Component\HttpKernel\Kernel('prod', false)
-            );
-            $application->setAutoExit(false);
-
-            $arrayInput = new \Symfony\Component\Console\Input\ArrayInput([
-                'command' => 'doctrine:migrations:migrate',
-                '--no-interaction' => true,
-                '--allow-no-migration' => true,
-            ]);
-
-            $bufferedOutput = new \Symfony\Component\Console\Output\BufferedOutput();
-            $exitCode = $application->run($arrayInput, $bufferedOutput);
-            $outputText = $bufferedOutput->fetch();
-
-            if ($exitCode === 0) {
-                return [
-                    'success' => true,
-                    'message' => 'Database migrations executed successfully',
-                    'output' => $outputText,
-                ];
-            }
-
-            return [
-                'success' => false,
-                'message' => 'Migration failed with exit code ' . $exitCode . ': ' . $outputText,
-                'output' => $outputText,
-            ];
-        } catch (\Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Migration exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine(),
-                'exception' => $e::class,
-            ];
-        }
-    }
-
-    /**
      * Drop and recreate database to ensure clean state.
      * For SQLite: deletes the db file. For MySQL/PgSQL: delegates to truncateAllTables().
      */
