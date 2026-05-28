@@ -195,7 +195,17 @@
                 'class': 'mb-4'
             } %}
                 {% block card_body %}
-                    {% if requirements_by_category|length > 0 %}
+                    {% if requirements_by_category|length == 0 and framework.code starts with 'TISAX' %}
+                        <div class="text-center py-4">
+                            <i class="fa-icon fa-icon--nav-shield-alert fs-1 text-warning" aria-hidden="true"></i>
+                            <p class="mt-2 text-muted">{{ 'compliance.framework_show.tisax_skeleton_hint'|trans({}, 'compliance') }}</p>
+                            <a href="{{ path('admin_library_index') }}"
+                               class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                                {{ 'compliance.framework_show.action.open_byo_wizard'|trans({}, 'compliance') }}
+                            </a>
+                        </div>
+                    {% elseif requirements_by_category|length > 0 %}
                         <div class="accordion" id="categoryAccordion">
                             {% for category, requirements in requirements_by_category %}
                                 <div class="accordion-item">

@@ -65,6 +65,7 @@ class LibraryImporterController extends AbstractController
         return $this->render('admin/library/index.html.twig', [
             'available_libraries' => $availableLibraries,
             'imported_frameworks' => $importedFrameworks,
+            'tisax_skeleton_only' => $this->vdaImporter->isSkeletonOnly(),
         ]);
     }
 
