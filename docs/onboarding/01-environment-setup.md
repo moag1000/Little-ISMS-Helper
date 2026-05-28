@@ -244,3 +244,36 @@ php bin/console cache:clear
 The app uses `intl` for locale-aware formatting. Ensure `extension=intl` is
 enabled in `php.ini`. PHP will start without it but will fail at runtime on
 number/date formatters.
+
+---
+
+## Recommended Cron Jobs
+
+Add these to your crontab (`crontab -e`) or server scheduler once the
+application is deployed.
+
+| Schedule | Command | Purpose |
+|---|---|---|
+| `0 2 * * 0` (weekly, Sun 02:00) | `php bin/console app:tisax:purge-old-ip-addresses` | GDPR Art. 5(1)(e): NULL-out IP addresses on `tisax_license_confirmation` rows older than 365 days |
+| `0 3 * * *` (daily, 03:00) | `php bin/console app:policy-wizard:purge-sandboxes` | Remove sandbox Policy-Wizard runs older than 7 days |
+| `0 4 * * *` (daily, 04:00) | `php bin/console app:process-timed-workflows` | Advance time-based regulatory workflow auto-progressions |
+| `0 1 * * 0` (weekly, Sun 01:00) | `php bin/console app:audit-log:cleanup` | Trim audit log to configured retention window |
+
+### TISAX IP-address purge detail
+
+The ENX-licence confirmation step records the client IP for ISO 27001 Clause
+7.5.3 audit-trail purposes.  Under GDPR Art. 5(1)(e) this personal data point
+must be erased after 365 days (configurable via `app.tisax.ip_retention_days`).
+The command NULL-outs the `ip_address` column without deleting the confirmation
+row — the audit footprint (user, tenant, timestamp) is preserved.
+
+```bash
+# Preview (no writes)
+php bin/console app:tisax:purge-old-ip-addresses --dry-run
+
+# Execute (standard 365-day retention)
+php bin/console app:tisax:purge-old-ip-addresses
+
+# Custom retention window (e.g. 90 days for stricter policy)
+php bin/console app:tisax:purge-old-ip-addresses --days=90
+```

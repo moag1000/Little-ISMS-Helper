@@ -68,6 +68,11 @@ parameters:
     # A confirmation is valid for this many hours (Step 0 → Step 1 guard).
     app.tisax.license_ttl_hours: 24
 
+    # TISAX IP-address retention (GDPR Art. 5(1)(e)).
+    # The ip_address recorded at ENX-licence confirmation is NULL-ed out after
+    # this many days by the app:tisax:purge-old-ip-addresses command.
+    app.tisax.ip_retention_days: 365
+
     # Backup notifier defaults (override via env if needed).
     app.backup_notifier.from_email: 'noreply@little-isms-helper.local'
     app.backup_notifier.subject_prefix: '[ISMS Backup]'
@@ -602,6 +607,10 @@ services:
     App\Controller\Tisax\TisaxImportWizardController:
         arguments:
             $uploadDir: '%kernel.project_dir%/var/import-uploads'
+
+    App\Command\PurgeTisaxIpAddressesCommand:
+        arguments:
+            $ipRetentionDays: '%app.tisax.ip_retention_days%'
 
     # ── Sprint 10A — F5b Library importers + roundtrip ───────────────────────
     App\Service\Library\BsiKompendiumImporter:
