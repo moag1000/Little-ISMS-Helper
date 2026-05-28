@@ -116,9 +116,13 @@ class DataSubjectRequestController extends AbstractController
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('data_subject_request/new.html.twig', [
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**
@@ -166,10 +170,14 @@ class DataSubjectRequestController extends AbstractController
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('data_subject_request/edit.html.twig', [
             'dsr' => $dsr,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

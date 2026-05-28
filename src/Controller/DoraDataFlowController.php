@@ -90,10 +90,14 @@ class DoraDataFlowController extends AbstractController
             return $this->redirectToRoute('app_dora_data_flow_show', ['id' => $flow->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('dora_data_flow/new.html.twig', [
             'flow' => $flow,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/dora/data-flow/{id}', name: 'app_dora_data_flow_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -131,10 +135,14 @@ class DoraDataFlowController extends AbstractController
             return $this->redirectToRoute('app_dora_data_flow_show', ['id' => $flow->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('dora_data_flow/edit.html.twig', [
             'flow' => $flow,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/dora/data-flow/{id}/delete', name: 'app_dora_data_flow_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
