@@ -88,7 +88,7 @@
         {# DP tier info banner #}
         {% if aggregate.dp.total > 0 %}
         <div class="alert alert-info d-flex align-items-start mb-4" role="alert">
-            <i class="bi bi-info-circle-fill me-2 mt-1 flex-shrink-0"></i>
+            <i class="fa-icon fa-icon--nav-info-circle me-2 mt-1 flex-shrink-0"></i>
             <div>
                 <strong>{{ 'tisax.import.assess.dp.legend'|trans({}, 'tisax_isa') }}</strong>
                 {{ 'tisax.import.assess.dp.hint'|trans({}, 'tisax_isa') }}
@@ -104,7 +104,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="mb-0">{{ 'tisax.import.assess.requirements_heading'|trans({}, 'tisax_isa') }}</h6>
                     <button type="submit" class="btn btn-primary btn-sm">
-                        <i class="bi bi-floppy me-1"></i>
+                        <i class="fa-icon fa-icon--save me-1"></i>
                         {{ 'tisax.import.assess.save_button'|trans({}, 'tisax_isa') }}
                     </button>
                 </div>
@@ -214,7 +214,7 @@
                 {% if requirements|length > 0 %}
                 <div class="card-footer text-end">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-floppy me-1"></i>
+                        <i class="fa-icon fa-icon--save me-1"></i>
                         {{ 'tisax.import.assess.save_button'|trans({}, 'tisax_isa') }}
                     </button>
                 </div>

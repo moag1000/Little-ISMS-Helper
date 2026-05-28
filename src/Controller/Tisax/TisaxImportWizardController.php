@@ -15,6 +15,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use App\Service\Tisax\EnxScheduleExporter;
 use App\Service\Tisax\TisaxConfirmationService;
+use App\Service\Tisax\RequirementLevelMetadataLoader;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
 use App\Service\Tisax\VdaIsaWorkbookParser;
 use App\Service\Tisax\VdaIsaWorkbookValidator;
@@ -78,6 +79,7 @@ final class TisaxImportWizardController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly string $uploadDir,
+        private readonly ?RequirementLevelMetadataLoader $metadataLoader = null,
     ) {}
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -409,13 +411,27 @@ final class TisaxImportWizardController extends AbstractController
             'requirementSource' => 'tenant_upload',
         ]);
 
+        // Build per-requirement level-flag map (Must/Sollte/High/VeryHigh) from YAML fixture.
+        // Empty when RequirementLevelMetadataLoader is not wired (graceful degradation).
+        $requirementLevelFlags = [];
+        if ($this->metadataLoader !== null) {
+            foreach ($requirements as $req) {
+                $reqId = (string) ($req->getRequirementId() ?? '');
+                $meta  = $this->metadataLoader->getMetadataFor($reqId);
+                if ($meta !== null) {
+                    $requirementLevelFlags[$reqId] = $meta['levels'];
+                }
+            }
+        }
+
         return $this->render('tisax/import/assess.html.twig', [
-            'framework'    => $framework,
-            'requirements' => $requirements,
-            'aggregate'    => $aggregate,
-            'levels'       => TisaxMaturityAssessmentService::LEVEL_MAP,
-            'stepIndex'    => 5,
-            'token'        => $this->csrfTokenManager->getToken('tisax_assess')->getValue(),
+            'framework'             => $framework,
+            'requirements'          => $requirements,
+            'aggregate'             => $aggregate,
+            'levels'                => TisaxMaturityAssessmentService::LEVEL_MAP,
+            'stepIndex'             => 5,
+            'token'                 => $this->csrfTokenManager->getToken('tisax_assess')->getValue(),
+            'requirementLevelFlags' => $requirementLevelFlags,
         ]);
     }
 

@@ -79,7 +79,84 @@ final class TisaxMaturityAssessmentService
 
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly ?RequirementLevelMetadataLoader $metadataLoader = null,
     ) {}
+
+    /**
+     * Return the suggested Assessment Levels for a requirement based on
+     * the presence-flag metadata (columns J/K/L of the ENX workbook).
+     *
+     * Returns the subset of ['AL1', 'AL2', 'AL3'] that applies to this
+     * control, or an empty array when the control ID is unknown.
+     *
+     * @return list<string>
+     */
+    public function getApplicableAssessmentLevels(ComplianceRequirement $req): array
+    {
+        if ($this->metadataLoader === null) {
+            return [];
+        }
+
+        $meta = $this->metadataLoader->getMetadataFor((string) ($req->getRequirementId() ?? ''));
+
+        return $meta['suggested_assessment_levels'] ?? [];
+    }
+
+    /**
+     * Return true when the control has a Hoher Schutzbedarf (high-protection)
+     * addendum in the ENX workbook (column L populated).
+     */
+    public function requiresHighProtectionAddendum(ComplianceRequirement $req): bool
+    {
+        if ($this->metadataLoader === null) {
+            return false;
+        }
+
+        $meta = $this->metadataLoader->getMetadataFor((string) ($req->getRequirementId() ?? ''));
+
+        return ($meta['levels']['high_protection'] ?? false) === true;
+    }
+
+    /**
+     * Return true when the control has a Sehr hoher Schutzbedarf (very-high)
+     * addendum in the ENX workbook (column M populated).
+     */
+    public function requiresVeryHighProtectionAddendum(ComplianceRequirement $req): bool
+    {
+        if ($this->metadataLoader === null) {
+            return false;
+        }
+
+        $meta = $this->metadataLoader->getMetadataFor((string) ($req->getRequirementId() ?? ''));
+
+        return ($meta['levels']['very_high_protection'] ?? false) === true;
+    }
+
+    /**
+     * Return all four level-flags for a requirement in one call.
+     *
+     * @return array{must: bool, should: bool, high_protection: bool, very_high_protection: bool}
+     */
+    public function getLevelFlags(ComplianceRequirement $req): array
+    {
+        $empty = ['must' => false, 'should' => false, 'high_protection' => false, 'very_high_protection' => false];
+
+        if ($this->metadataLoader === null) {
+            return $empty;
+        }
+
+        $meta = $this->metadataLoader->getMetadataFor((string) ($req->getRequirementId() ?? ''));
+        if ($meta === null) {
+            return $empty;
+        }
+
+        return [
+            'must'                 => (bool) ($meta['levels']['must']                 ?? false),
+            'should'               => (bool) ($meta['levels']['should']               ?? false),
+            'high_protection'      => (bool) ($meta['levels']['high_protection']      ?? false),
+            'very_high_protection' => (bool) ($meta['levels']['very_high_protection'] ?? false),
+        ];
+    }
 
     /**
      * Set the current Reifegrad for a single requirement.

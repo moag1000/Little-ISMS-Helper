@@ -1269,6 +1269,13 @@ export:
         tier_pp_value: '%compliant% / %total% konform (%pct% %%)'
         tier_dp_label: 'Datenschutz (%in_place% / %total% vorhanden)'
         tier_dp_value: '%in_place% / %total% Maßnahmen vorhanden (%pct% %%)'
+        schutzbedarf_cascade_title: 'Schutzbedarf-Ergänzungen relevant — BSI 3.6 Maximumprinzip'
+        schutzbedarf_cascade_body: >
+          %high_asset_count% Asset(s) mit hohem Schutzbedarf (C/I/A ≥ 4) und
+          %very_high_asset_count% Asset(s) mit sehr hohem Schutzbedarf (C/I/A ≥ 5) vorhanden.
+          %high_control_count% VDA-ISA-Kontrollen haben Zusatzanforderungen bei hohem Schutzbedarf (Spalte L),
+          %very_high_control_count% Kontrollen bei sehr hohem Schutzbedarf (Spalte M).
+        schutzbedarf_cascade_byo: 'Bitte lesen Sie den Anforderungstext in Ihrem lizenzierten ENX-Workbook nach (BYO-Assistent).'
 
 framework_show:
     tisax_skeleton_hint: 'Dieses TISAX-Framework hat keine Kontrollen. Das VDA-ISA-Arbeitsbuch ist ENX-lizenziert und nicht weitergabe-berechtigt. Bitte den BYO-Import-Assistenten mit Ihrer lizenzierten Kopie verwenden.'
