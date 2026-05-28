@@ -109,7 +109,7 @@ auditor:
     kpi:
         audits_ytd: 'Audits (YTD)'
         upcoming: 'Bevorstehend'
-        open_findings: 'Offene Findings'
+        open_findings: 'Offene Feststellungen'
         overdue_actions: 'Überfällige Maßnahmen'
         evidence_coverage: 'Nachweisabdeckung'
     section:
@@ -152,7 +152,7 @@ compliance_manager:
         frameworks_active: 'Frameworks aktiv'
         avg_compliance: 'Ø Compliance'
         at_risk: 'Frameworks at-risk'
-        open_findings: 'Open Findings'
+        open_findings: 'Offene Feststellungen'
         upcoming_audits: 'Audits 90d'
         approval_queue: 'Doc-Approval-Queue'
         dora_roi_status: 'DORA RoI-Status'
@@ -161,7 +161,7 @@ compliance_manager:
     section:
         coverage_heatmap: 'Coverage-Heatmap pro Framework'
         lowest_coverage: 'Top-3 Frameworks mit niedrigster Coverage'
-        findings_by_severity: 'Open Findings nach Severity'
+        findings_by_severity: 'Offene Feststellungen nach Schweregrad'
         audit_schedule: 'Audit-Schedule (nächste 90 Tage)'
         approval_queue: 'Dokument-Approval-Queue'
         quick_actions: 'Quick-Actions'
@@ -214,7 +214,7 @@ compliance_manager:
             all_sections: 'Alle Sections'
             covered: 'Abgedeckt'
             gaps: 'Lücken'
-            findings: 'Open Findings'
+            findings: 'Offene Feststellungen'
             coverage_rate: 'Coverage-Rate'
             fix: 'Beheben'
             framework_not_found: 'Framework "%code%" nicht gefunden oder nicht aktiv.'
