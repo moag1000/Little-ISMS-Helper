@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use App\Risk\RiskMatrixThresholds;
 use App\Service\RiskService;
 use Symfony\Component\HttpKernel\KernelInterface;
+use App\Util\CsvSanitizer;
 
 /**
  * Async admin job: write the filtered risk register to a UTF-8 CSV file
@@ -157,7 +158,7 @@ final class ExportRisksJob implements AsyncJobInterface
                 'Erstellt am',
                 'Überprüfungsdatum',
             ];
-            fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $header), ';', escape: '\\');
+            fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $header), ';', escape: '\\');
 
             foreach ($risks as $i => $risk) {
                 $riskScore = $risk->getRiskScore();
@@ -201,7 +202,7 @@ final class ExportRisksJob implements AsyncJobInterface
                     $risk->getReviewDate() ? $risk->getReviewDate()->format('Y-m-d') : '-',
                 ];
 
-                fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), ';', escape: '\\');
+                fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), ';', escape: '\\');
 
                 if (($i + 1) % 50 === 0 || $i + 1 === $total) {
                     $ctx->progress($i + 1, max($total, 1), sprintf('Wrote %d / %d row(s)…', $i + 1, $total));
@@ -218,21 +219,6 @@ final class ExportRisksJob implements AsyncJobInterface
             basename($path),
             (int) round($size / 1024),
         ));
-    }
-
-    /**
-     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
-     * Mirrors RiskController::sanitizeCsvValue().
-     */
-    private function sanitizeCsvValue(mixed $value): mixed
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-            return "'" . $value;
-        }
-        return $value;
     }
 
     private function ensureExportDir(string $dir): void

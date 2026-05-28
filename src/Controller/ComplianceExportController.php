@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Util\CsvSanitizer;
 
 /**
  * ComplianceExportController
@@ -166,7 +167,7 @@ class ComplianceExportController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), ';', escape: '\\');
+            fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), ';', escape: '\\');
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -208,26 +209,27 @@ class ComplianceExportController extends AbstractController
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Data Reuse Insights Report');
+        $te = $this->getTranslator();
 
         // Tab 1: Summary
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->setTitle('Zusammenfassung');
+        $worksheet->setTitle($te->trans('export.section.summary', [], 'compliance'));
 
         $metrics = [
-            'Framework' => $framework->getName() . ' (' . $framework->getCode() . ')',
-            'Analysierte Anforderungen' => count($dataReuseAnalysis),
-            'Zeitersparnis (Stunden)' => round($totalTimeSavings, 1),
-            'Zeitersparnis (Tage)' => round($totalTimeSavings / 8, 1),
-            'Export-Datum' => date('d.m.Y H:i'),
+            $te->trans('export.column.framework', [], 'compliance') => $framework->getName() . ' (' . $framework->getCode() . ')',
+            $te->trans('export.column.analyzed_requirements', [], 'compliance') => count($dataReuseAnalysis),
+            $te->trans('export.column.time_savings_hours', [], 'compliance') => round($totalTimeSavings, 1),
+            $te->trans('export.column.time_savings_days', [], 'compliance') => round($totalTimeSavings / 8, 1),
+            $te->trans('export.column.export_date', [], 'compliance') => date('d.m.Y H:i'),
         ];
 
         $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Data Reuse Insights');
         $this->excelExportService->autoSizeColumns($worksheet);
 
         // Tab 2: Details
-        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Reuse Details');
+        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, $te->trans('export.sheet.reuse_details', [], 'compliance'));
 
-        $headers = ['ID', 'Titel', 'Kategorie', 'Reusable Data', 'Quellen', 'Zeitersparnis (h)', 'Reuse %', 'Confidence'];
+        $headers = ['ID', $te->trans('export.column.title', [], 'compliance'), $te->trans('export.column.category', [], 'compliance'), $te->trans('export.column.reusable_data', [], 'compliance'), $te->trans('export.column.sources', [], 'compliance'), $te->trans('export.column.time_savings_h', [], 'compliance'), 'Reuse %', $te->trans('export.column.confidence', [], 'compliance')];
         $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
 
         $data = [];
@@ -371,19 +373,35 @@ class ComplianceExportController extends AbstractController
 
         // Create CSV content
         $csv = [];
+        $tg = $this->getTranslator();
+
+        // Priority and status maps for data rows
+        $priorityMap = [
+            'critical' => $tg->trans('export.label.critical', [], 'compliance'),
+            'high'     => $tg->trans('export.label.high', [], 'compliance'),
+            'medium'   => $tg->trans('export.label.medium', [], 'compliance'),
+            'low'      => $tg->trans('export.label.low', [], 'compliance'),
+        ];
+        $statusMap = [
+            'not_applicable'       => $tg->trans('export.status.not_applicable', [], 'compliance'),
+            'not_implemented'      => $tg->trans('export.status.not_implemented', [], 'compliance'),
+            'partially_implemented'=> $tg->trans('export.status.partially_implemented', [], 'compliance'),
+            'implemented'          => $tg->trans('export.status.implemented', [], 'compliance'),
+            'not_assessed'         => $tg->trans('export.status.not_assessed', [], 'compliance'),
+        ];
 
         // CSV Header - Title
         $csv[] = ['Gap Analysis - ' . $framework->getName()];
         $csv[] = [];
 
         // Summary section
-        $csv[] = ['Zusammenfassung'];
-        $csv[] = ['Framework', $framework->getName() . ' (' . $framework->getCode() . ')'];
-        $csv[] = ['Gesamt Anforderungen', count($requirements)];
-        $csv[] = ['Erfüllte Anforderungen', $metRequirements];
-        $csv[] = ['Identifizierte Gaps', count($gaps)];
+        $csv[] = [$tg->trans('export.section.summary', [], 'compliance')];
+        $csv[] = [$tg->trans('export.column.framework', [], 'compliance'), $framework->getName() . ' (' . $framework->getCode() . ')'];
+        $csv[] = [$tg->trans('export.column.total_requirements', [], 'compliance'), count($requirements)];
+        $csv[] = [$tg->trans('export.column.met_requirements', [], 'compliance'), $metRequirements];
+        $csv[] = [$tg->trans('export.column.identified_gaps', [], 'compliance'), count($gaps)];
         $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 2) : 0;
-        $csv[] = ['Compliance Score (%)', $complianceScore];
+        $csv[] = [$tg->trans('export.column.compliance_score_pct', [], 'compliance'), $complianceScore];
         $csv[] = [];
 
         // Gap severity breakdown
@@ -402,23 +420,23 @@ class ComplianceExportController extends AbstractController
             };
         }
 
-        $csv[] = ['Gaps nach Severity'];
-        $csv[] = ['Kritisch', $criticalCount];
-        $csv[] = ['Hoch', $highCount];
-        $csv[] = ['Mittel', $mediumCount];
-        $csv[] = ['Niedrig', $lowCount];
+        $csv[] = [$tg->trans('export.section.gaps_by_severity', [], 'compliance')];
+        $csv[] = [$tg->trans('export.label.critical', [], 'compliance'), $criticalCount];
+        $csv[] = [$tg->trans('export.label.high', [], 'compliance'), $highCount];
+        $csv[] = [$tg->trans('export.label.medium', [], 'compliance'), $mediumCount];
+        $csv[] = [$tg->trans('export.label.low', [], 'compliance'), $lowCount];
         $csv[] = [];
 
         // CSV Header - Gaps
         $csv[] = [
-            'Anforderungs-ID',
-            'Titel',
-            'Kategorie',
-            'Beschreibung',
-            'Priority/Severity',
-            'Status',
-            'Erfüllungsgrad (%)',
-            'Gap-Grund',
+            $tg->trans('export.column.requirement_id', [], 'compliance'),
+            $tg->trans('export.column.title', [], 'compliance'),
+            $tg->trans('export.column.category', [], 'compliance'),
+            $tg->trans('export.column.description', [], 'compliance'),
+            $tg->trans('export.column.priority_severity', [], 'compliance'),
+            $tg->trans('export.column.status', [], 'compliance'),
+            $tg->trans('export.column.fulfillment_pct', [], 'compliance'),
+            $tg->trans('export.column.gap_reason', [], 'compliance'),
         ];
 
         // CSV Data - Gaps
@@ -426,32 +444,15 @@ class ComplianceExportController extends AbstractController
             $requirement = $gapAnalysi['requirement'];
             $analysis = $gapAnalysi['analysis'];
 
-            // Translate priority
-            $priorityMap = [
-                'critical' => 'Kritisch',
-                'high' => 'Hoch',
-                'medium' => 'Mittel',
-                'low' => 'Niedrig',
-            ];
-
-            // Translate status
-            $statusMap = [
-                'not_applicable' => 'Nicht anwendbar',
-                'not_implemented' => 'Nicht implementiert',
-                'partially_implemented' => 'Teilweise implementiert',
-                'implemented' => 'Implementiert',
-                'not_assessed' => 'Nicht bewertet',
-            ];
-
             $csv[] = [
                 $requirement->getRequirementId(),
                 $requirement->getTitle(),
                 $requirement->getCategory() ?? '-',
                 $requirement->getDescription() ?? '-',
-                $priorityMap[$requirement->getPriority() ?? 'low'] ?? 'Niedrig',
-                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? 'Nicht bewertet',
+                $priorityMap[$requirement->getPriority() ?? 'low'] ?? $tg->trans('export.label.low', [], 'compliance'),
+                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? $tg->trans('export.status.not_assessed', [], 'compliance'),
                 $requirement->getFulfillmentPercentage() ?? 0,
-                $analysis['gap_reason'] ?? 'Nicht erfüllt',
+                $analysis['gap_reason'] ?? $tg->trans('export.label.not_met', [], 'compliance'),
             ];
         }
 
@@ -472,7 +473,7 @@ class ComplianceExportController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), ';', escape: '\\');
+            fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), ';', escape: '\\');
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -517,38 +518,54 @@ class ComplianceExportController extends AbstractController
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Gap Analysis Report');
+        $tge = $this->getTranslator();
+
+        // Priority and status maps (outside loop for performance)
+        $priorityMapExcel = [
+            'critical' => $tge->trans('export.label.critical', [], 'compliance'),
+            'high'     => $tge->trans('export.label.high', [], 'compliance'),
+            'medium'   => $tge->trans('export.label.medium', [], 'compliance'),
+            'low'      => $tge->trans('export.label.low', [], 'compliance'),
+        ];
+        $statusMapExcel = [
+            'not_applicable'        => $tge->trans('export.status.not_applicable', [], 'compliance'),
+            'not_implemented'       => $tge->trans('export.status.not_implemented', [], 'compliance'),
+            'partially_implemented' => $tge->trans('export.status.partially_implemented_short', [], 'compliance'),
+            'implemented'           => $tge->trans('export.status.implemented', [], 'compliance'),
+            'not_assessed'          => $tge->trans('export.status.not_assessed', [], 'compliance'),
+        ];
 
         // Tab 1: Summary
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->setTitle('Zusammenfassung');
+        $worksheet->setTitle($tge->trans('export.section.summary', [], 'compliance'));
 
         $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
 
         $metrics = [
-            'Framework' => $framework->getName() . ' (' . $framework->getCode() . ')',
-            'Gesamt Anforderungen' => count($requirements),
-            'Erfüllte Anforderungen' => $metRequirements,
-            'Identifizierte Gaps' => count($gaps),
-            'Compliance Score' => $complianceScore . '%',
-            'Export-Datum' => date('d.m.Y H:i'),
+            $tge->trans('export.column.framework', [], 'compliance') => $framework->getName() . ' (' . $framework->getCode() . ')',
+            $tge->trans('export.column.total_requirements', [], 'compliance') => count($requirements),
+            $tge->trans('export.column.met_requirements', [], 'compliance') => $metRequirements,
+            $tge->trans('export.column.identified_gaps', [], 'compliance') => count($gaps),
+            $tge->trans('export.column.compliance_score', [], 'compliance') => $complianceScore . '%',
+            $tge->trans('export.column.export_date', [], 'compliance') => date('d.m.Y H:i'),
         ];
 
         $nextRow = $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Gap Analysis');
 
         // Severity breakdown
         $severityMetrics = [
-            'Kritische Gaps' => $severityCounts['critical'],
-            'Hohe Gaps' => $severityCounts['high'],
-            'Mittlere Gaps' => $severityCounts['medium'],
-            'Niedrige Gaps' => $severityCounts['low'],
+            $tge->trans('export.label.critical_gaps', [], 'compliance') => $severityCounts['critical'],
+            $tge->trans('export.label.high_gaps', [], 'compliance') => $severityCounts['high'],
+            $tge->trans('export.label.medium_gaps', [], 'compliance') => $severityCounts['medium'],
+            $tge->trans('export.label.low_gaps', [], 'compliance') => $severityCounts['low'],
         ];
         $this->excelExportService->addSummarySection($worksheet, $severityMetrics, $nextRow, 'Severity Breakdown');
         $this->excelExportService->autoSizeColumns($worksheet);
 
         // Tab 2: Gap Details
-        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Gap Details');
+        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, $tge->trans('export.sheet.gap_details', [], 'compliance'));
 
-        $headers = ['ID', 'Titel', 'Kategorie', 'Priority', 'Status', 'Erfüllungsgrad %', 'Gap Grund'];
+        $headers = ['ID', $tge->trans('export.column.title', [], 'compliance'), $tge->trans('export.column.category', [], 'compliance'), $tge->trans('export.column.priority_severity', [], 'compliance'), $tge->trans('export.column.status', [], 'compliance'), $tge->trans('export.column.fulfillment_pct', [], 'compliance'), $tge->trans('export.column.gap_reason', [], 'compliance')];
         $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
 
         $data = [];
@@ -556,33 +573,24 @@ class ComplianceExportController extends AbstractController
             $requirement = $gapAnalysi['requirement'];
             $analysis = $gapAnalysi['analysis'];
 
-            $priorityMap = ['critical' => 'Kritisch', 'high' => 'Hoch', 'medium' => 'Mittel', 'low' => 'Niedrig'];
-            $statusMap = [
-                'not_applicable' => 'Nicht anwendbar',
-                'not_implemented' => 'Nicht implementiert',
-                'partially_implemented' => 'Teilweise',
-                'implemented' => 'Implementiert',
-                'not_assessed' => 'Nicht bewertet',
-            ];
-
             $data[] = [
                 $requirement->getRequirementId(),
                 $requirement->getTitle(),
                 $requirement->getCategory() ?? '-',
-                $priorityMap[$requirement->getPriority() ?? 'low'] ?? 'Niedrig',
-                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? '-',
+                $priorityMapExcel[$requirement->getPriority() ?? 'low'] ?? $tge->trans('export.label.low', [], 'compliance'),
+                $statusMapExcel[$requirement->getStatus() ?? 'not_assessed'] ?? '-',
                 $requirement->getFulfillmentPercentage() ?? 0,
-                substr($analysis['gap_reason'] ?? 'Nicht erfüllt', 0, 100),
+                substr($analysis['gap_reason'] ?? $tge->trans('export.label.not_met', [], 'compliance'), 0, 100),
             ];
         }
 
         // Conditional formatting
         $conditionalFormatting = [
             3 => [ // Priority
-                'Kritisch' => $this->excelExportService->getColor('critical'),
-                'Hoch' => $this->excelExportService->getColor('high'),
-                'Mittel' => $this->excelExportService->getColor('medium'),
-                'Niedrig' => $this->excelExportService->getColor('low'),
+                $tge->trans('export.label.critical', [], 'compliance') => $this->excelExportService->getColor('critical'),
+                $tge->trans('export.label.high', [], 'compliance') => $this->excelExportService->getColor('high'),
+                $tge->trans('export.label.medium', [], 'compliance') => $this->excelExportService->getColor('medium'),
+                $tge->trans('export.label.low', [], 'compliance') => $this->excelExportService->getColor('low'),
             ],
             5 => [ // Fulfillment %
                 '>=80' => $this->excelExportService->getColor('success'),
@@ -785,15 +793,16 @@ class ComplianceExportController extends AbstractController
 
         // Create CSV content
         $csv = [];
+        $tt = $this->getTranslator();
 
         // CSV Header - Framework Relationships
-        $csv[] = ['Framework-Beziehungen und Transitive Compliance'];
+        $csv[] = [$tt->trans('export.section.framework_relationships', [], 'compliance')];
         $csv[] = [];
         $csv[] = [
-            'Quell-Framework',
-            'Ziel-Framework',
-            'Gemappte Anforderungen',
-            'Gesamt-Anforderungen',
+            $tt->trans('export.column.source_framework', [], 'compliance'),
+            $tt->trans('export.column.target_framework', [], 'compliance'),
+            $tt->trans('export.column.mapped_requirements', [], 'compliance'),
+            $tt->trans('export.column.total_requirements', [], 'compliance'),
             'Coverage (%)',
         ];
 
@@ -810,16 +819,16 @@ class ComplianceExportController extends AbstractController
 
         // Add summary section
         $csv[] = [];
-        $csv[] = ['Zusammenfassung'];
+        $csv[] = [$tt->trans('export.section.summary', [], 'compliance')];
         $csv[] = [];
-        $csv[] = ['Metrik', 'Wert'];
-        $csv[] = ['Anzahl aktiver Frameworks', count($frameworks)];
-        $csv[] = ['Anzahl Framework-Beziehungen', count($frameworkRelationships)];
-        $csv[] = ['Transitive Compliance Opportunities', count($transitiveAnalysis)];
+        $csv[] = [$tt->trans('export.column.metric', [], 'compliance'), $tt->trans('export.column.value', [], 'compliance')];
+        $csv[] = [$tt->trans('export.column.active_frameworks', [], 'compliance'), count($frameworks)];
+        $csv[] = [$tt->trans('export.column.framework_relations', [], 'compliance'), count($frameworkRelationships)];
+        $csv[] = [$tt->trans('export.column.transitive_opportunities', [], 'compliance'), count($transitiveAnalysis)];
 
         if ($transitiveAnalysis !== []) {
             $totalRequirementsHelped = array_sum(array_column($transitiveAnalysis, 'requirements_helped'));
-            $csv[] = ['Gesamt unterstützte Anforderungen', $totalRequirementsHelped];
+            $csv[] = [$tt->trans('export.column.total_supported_requirements', [], 'compliance'), $totalRequirementsHelped];
         }
 
         // Generate CSV file
@@ -838,7 +847,7 @@ class ComplianceExportController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
+            fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -889,28 +898,29 @@ class ComplianceExportController extends AbstractController
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Transitive Compliance Report');
+        $tx = $this->getTranslator();
 
         // Tab 1: Summary
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->setTitle('Zusammenfassung');
+        $worksheet->setTitle($tx->trans('export.section.summary', [], 'compliance'));
 
         $totalHelped = $transitiveAnalysis === [] ? 0 : array_sum(array_column($transitiveAnalysis, 'requirements_helped'));
 
         $metrics = [
-            'Aktive Frameworks' => count($frameworks),
-            'Framework-Beziehungen' => count($frameworkRelationships),
-            'Transitive Opportunities' => count($transitiveAnalysis),
-            'Unterstützte Anforderungen' => $totalHelped,
-            'Export-Datum' => date('d.m.Y H:i'),
+            $tx->trans('export.column.active_frameworks', [], 'compliance') => count($frameworks),
+            $tx->trans('export.column.framework_relations', [], 'compliance') => count($frameworkRelationships),
+            $tx->trans('export.column.transitive_opportunities', [], 'compliance') => count($transitiveAnalysis),
+            $tx->trans('export.column.supported_requirements', [], 'compliance') => $totalHelped,
+            $tx->trans('export.column.export_date', [], 'compliance') => date('d.m.Y H:i'),
         ];
 
         $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Transitive Compliance');
         $this->excelExportService->autoSizeColumns($worksheet);
 
         // Tab 2: Framework Relationships
-        $relationshipsSheet = $this->excelExportService->createSheet($spreadsheet, 'Framework-Beziehungen');
+        $relationshipsSheet = $this->excelExportService->createSheet($spreadsheet, $tx->trans('export.sheet.framework_relations', [], 'compliance'));
 
-        $headers = ['Quell-Framework', 'Ziel-Framework', 'Gemapped', 'Total', 'Coverage %'];
+        $headers = [$tx->trans('export.column.source_framework', [], 'compliance'), $tx->trans('export.column.target_framework', [], 'compliance'), $tx->trans('export.label.mapped', [], 'compliance'), 'Total', 'Coverage %'];
         $this->excelExportService->addFormattedHeaderRow($relationshipsSheet, $headers, 1, true);
 
         $data = [];
@@ -1176,17 +1186,20 @@ class ComplianceExportController extends AbstractController
 
         // Create CSV content
         $csv = [];
+        $tc = $this->getTranslator();
+        $mappedLabel = $tc->trans('export.label.mapped', [], 'compliance');
+        $notMappedLabel = $tc->trans('export.label.not_mapped', [], 'compliance');
 
         // CSV Header
         $csv[] = [
             $framework1->getName() . ' - ID',
-            $framework1->getName() . ' - Titel',
-            $framework1->getName() . ' - Kategorie',
-            'Mapping Status',
-            'Match Qualität (%)',
+            $framework1->getName() . ' - ' . $tc->trans('export.column.title', [], 'compliance'),
+            $framework1->getName() . ' - ' . $tc->trans('export.column.category', [], 'compliance'),
+            $tc->trans('export.column.mapping_status', [], 'compliance'),
+            $tc->trans('export.column.match_quality_pct', [], 'compliance'),
             $framework2->getName() . ' - ID',
-            $framework2->getName() . ' - Titel',
-            $framework2->getName() . ' - Kategorie',
+            $framework2->getName() . ' - ' . $tc->trans('export.column.title', [], 'compliance'),
+            $framework2->getName() . ' - ' . $tc->trans('export.column.category', [], 'compliance'),
         ];
 
         // CSV Data
@@ -1195,7 +1208,7 @@ class ComplianceExportController extends AbstractController
                 $comparisonDetail['framework1Requirement']->getRequirementId(),
                 $comparisonDetail['framework1Requirement']->getTitle(),
                 $comparisonDetail['framework1Requirement']->getCategory() ?? '-',
-                $comparisonDetail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
+                $comparisonDetail['mapped'] ? $mappedLabel : $notMappedLabel,
                 $comparisonDetail['matchQuality'] ?? '-',
                 $comparisonDetail['framework2Requirement'] instanceof ComplianceRequirement ? $comparisonDetail['framework2Requirement']->getRequirementId() : '-',
                 $comparisonDetail['framework2Requirement'] instanceof ComplianceRequirement ? $comparisonDetail['framework2Requirement']->getTitle() : '-',
@@ -1221,7 +1234,7 @@ class ComplianceExportController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
+            fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -1298,10 +1311,13 @@ class ComplianceExportController extends AbstractController
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Framework Comparison Report');
+        $tce = $this->getTranslator();
+        $mappedLabelExcel = $tce->trans('export.label.mapped', [], 'compliance');
+        $notMappedLabelExcel = $tce->trans('export.label.not_mapped', [], 'compliance');
 
         // === TAB 1: Summary ===
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->setTitle('Zusammenfassung');
+        $worksheet->setTitle($tce->trans('export.section.summary', [], 'compliance'));
 
         $framework1Count = count($framework1->requirements);
         $framework2Count = count($framework2->requirements);
@@ -1310,28 +1326,28 @@ class ComplianceExportController extends AbstractController
         $metrics = [
             'Framework 1' => $framework1->getName() . ' (' . $framework1->getCode() . ')',
             'Framework 2' => $framework2->getName() . ' (' . $framework2->getCode() . ')',
-            'Framework 1 Anforderungen' => $framework1Count,
-            'Framework 2 Anforderungen' => $framework2Count,
-            'Gemappte Anforderungen' => $mappedCount,
-            'Overlap Prozentsatz' => $overlapPercentage . '%',
-            'Export-Datum' => date('d.m.Y H:i'),
+            $tce->trans('export.column.framework1_requirements', [], 'compliance') => $framework1Count,
+            $tce->trans('export.column.framework2_requirements', [], 'compliance') => $framework2Count,
+            $tce->trans('export.column.mapped_requirements', [], 'compliance') => $mappedCount,
+            $tce->trans('export.column.overlap_percentage', [], 'compliance') => $overlapPercentage . '%',
+            $tce->trans('export.column.export_date', [], 'compliance') => date('d.m.Y H:i'),
         ];
 
-        $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Framework Vergleich');
+        $this->excelExportService->addSummarySection($worksheet, $metrics, 1, $tce->trans('export.section.framework_comparison', [], 'compliance'));
         $this->excelExportService->autoSizeColumns($worksheet);
 
         // === TAB 2: Detailed Comparison ===
-        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Detaillierter Vergleich');
+        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, $tce->trans('export.sheet.detailed_comparison', [], 'compliance'));
 
         $headers = [
             $framework1->getName() . ' ID',
-            $framework1->getName() . ' Titel',
-            $framework1->getName() . ' Kategorie',
-            'Mapping Status',
-            'Match %',
+            $framework1->getName() . ' ' . $tce->trans('export.column.title', [], 'compliance'),
+            $framework1->getName() . ' ' . $tce->trans('export.column.category', [], 'compliance'),
+            $tce->trans('export.column.mapping_status', [], 'compliance'),
+            $tce->trans('export.column.match_quality_pct', [], 'compliance'),
             $framework2->getName() . ' ID',
-            $framework2->getName() . ' Titel',
-            $framework2->getName() . ' Kategorie',
+            $framework2->getName() . ' ' . $tce->trans('export.column.title', [], 'compliance'),
+            $framework2->getName() . ' ' . $tce->trans('export.column.category', [], 'compliance'),
         ];
 
         $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
@@ -1342,7 +1358,7 @@ class ComplianceExportController extends AbstractController
                 $detail['framework1Requirement']->getRequirementId(),
                 $detail['framework1Requirement']->getTitle(),
                 $detail['framework1Requirement']->getCategory() ?? '-',
-                $detail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
+                $detail['mapped'] ? $mappedLabelExcel : $notMappedLabelExcel,
                 $detail['matchQuality'] ?? '-',
                 $detail['framework2Requirement'] instanceof ComplianceRequirement ? $detail['framework2Requirement']->getRequirementId() : '-',
                 $detail['framework2Requirement'] instanceof ComplianceRequirement ? $detail['framework2Requirement']->getTitle() : '-',
@@ -1353,8 +1369,8 @@ class ComplianceExportController extends AbstractController
         // Conditional formatting for mapping status and match quality
         $conditionalFormatting = [
             3 => [ // Mapping Status
-                'Gemapped' => $this->excelExportService->getColor('success'),
-                'Nicht gemapped' => ['color' => $this->excelExportService->getColor('warning'), 'bold' => false],
+                $mappedLabelExcel => $this->excelExportService->getColor('success'),
+                $notMappedLabelExcel => ['color' => $this->excelExportService->getColor('warning'), 'bold' => false],
             ],
             4 => [ // Match Quality
                 '>=80' => $this->excelExportService->getColor('success'),
@@ -1569,20 +1585,5 @@ class ComplianceExportController extends AbstractController
         $response->headers->set('Content-Length', (string) strlen($pdfContent));
 
         return $response;
-    }
-
-    /**
-     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
-     * Prefixes values starting with =, +, -, @, TAB or CR with a single quote.
-     */
-    private function sanitizeCsvValue(mixed $value): mixed
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-            return "'" . $value;
-        }
-        return $value;
     }
 }

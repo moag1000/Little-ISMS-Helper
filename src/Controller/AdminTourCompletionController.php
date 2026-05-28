@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Util\CsvSanitizer;
 
 /**
  * Sprint 13 / P3 — Admin-Report: Tour-Completion pro User.
@@ -111,7 +112,7 @@ class AdminTourCompletionController extends AbstractController
                 foreach ($tours as $tourId) {
                     $row[] = $user->hasCompletedTour($tourId) ? '1' : '';
                 }
-                fputcsv($out, array_map([$this, 'sanitizeCsvValue'], $row), ',', '"', '\\');
+                fputcsv($out, array_map([CsvSanitizer::class, 'sanitize'], $row), ',', '"', '\\');
             }
 
             fclose($out);
@@ -188,20 +189,5 @@ class AdminTourCompletionController extends AbstractController
             return GuidedTourService::TOUR_CISO;
         }
         return GuidedTourService::TOUR_JUNIOR;
-    }
-
-    /**
-     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
-     * Prefixes values starting with =, +, -, @, TAB or CR with a single quote.
-     */
-    private function sanitizeCsvValue(mixed $value): mixed
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-            return "'" . $value;
-        }
-        return $value;
     }
 }

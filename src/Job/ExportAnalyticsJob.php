@@ -9,6 +9,7 @@ use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\RiskRepository;
 use Symfony\Component\HttpKernel\KernelInterface;
+use App\Util\CsvSanitizer;
 
 /**
  * Async admin job: dump analytics dataset slices (risks / assets /
@@ -66,7 +67,7 @@ final class ExportAnalyticsJob implements AsyncJobInterface
 
         try {
             foreach ($rows as $i => $row) {
-                fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), escape: '\\');
+                fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), escape: '\\');
                 if ($i > 0 && ($i % 100 === 0 || $i === count($rows) - 1)) {
                     $ctx->progress($i, max($total, 1), sprintf('Wrote %d / %d row(s)…', $i, $total));
                 }
@@ -149,21 +150,6 @@ final class ExportAnalyticsJob implements AsyncJobInterface
             ];
         }
         return $data;
-    }
-
-    /**
-     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
-     * Mirrors AnalyticsController::sanitizeCsvValue().
-     */
-    private function sanitizeCsvValue(mixed $value): mixed
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-            return "'" . $value;
-        }
-        return $value;
     }
 
     private function ensureExportDir(string $dir): void

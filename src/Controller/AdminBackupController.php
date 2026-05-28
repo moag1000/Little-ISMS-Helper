@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Util\CsvSanitizer;
 
 /**
  * Backup / Restore / Export / Import admin controller.
@@ -782,7 +783,7 @@ class AdminBackupController extends AbstractController
 
                 // Write data
                 foreach ($entities as $entity) {
-                    fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $entity), escape: '\\');
+                    fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $entity), escape: '\\');
                 }
 
                 // Empty line between entities
@@ -797,20 +798,5 @@ class AdminBackupController extends AbstractController
             'attachment; filename="export_' . date('Y-m-d_H-i-s') . '.csv"');
 
         return $streamedResponse;
-    }
-
-    /**
-     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
-     * Prefixes values starting with =, +, -, @, TAB or CR with a single quote.
-     */
-    private function sanitizeCsvValue(mixed $value): mixed
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-            return "'" . $value;
-        }
-        return $value;
     }
 }

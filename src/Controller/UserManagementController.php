@@ -36,6 +36,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Util\CsvSanitizer;
 
 class UserManagementController extends AbstractController
 {
@@ -357,7 +358,7 @@ class UserManagementController extends AbstractController
                     $user->getCreatedAt()?->format('Y-m-d H:i:s'),
                     $user->getLastLoginAt()?->format('Y-m-d H:i:s'),
                 ];
-                fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), escape: '\\');
+                fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), escape: '\\');
             }
 
             fclose($handle);
@@ -1009,20 +1010,5 @@ class UserManagementController extends AbstractController
                 'error' => $e->getMessage(),
             ]);
         }
-    }
-
-    /**
-     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
-     * Prefixes values starting with =, +, -, @, TAB or CR with a single quote.
-     */
-    private function sanitizeCsvValue(mixed $value): mixed
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-            return "'" . $value;
-        }
-        return $value;
     }
 }

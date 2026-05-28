@@ -7,6 +7,7 @@ namespace App\Job;
 use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use App\Util\CsvSanitizer;
 
 /**
  * Async admin job: dump selected Doctrine-mapped entity classes to a file
@@ -170,7 +171,7 @@ final class ExportDataJob implements AsyncJobInterface
                 fputcsv($handle, array_keys($rows[0]), escape: '\\');
 
                 foreach ($rows as $row) {
-                    fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), escape: '\\');
+                    fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), escape: '\\');
                 }
 
                 fputcsv($handle, [], escape: '\\');
@@ -178,21 +179,6 @@ final class ExportDataJob implements AsyncJobInterface
         } finally {
             fclose($handle);
         }
-    }
-
-    /**
-     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
-     * Mirrors AdminBackupController::sanitizeCsvValue().
-     */
-    private function sanitizeCsvValue(mixed $value): mixed
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-            return "'" . $value;
-        }
-        return $value;
     }
 
     private function ensureExportDir(string $dir): void
