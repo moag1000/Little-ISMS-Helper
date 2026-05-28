@@ -141,11 +141,15 @@ class ConsentController extends AbstractController
             }
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('consent/form.html.twig', [
             'consent' => $consent,
             'form' => $form,
             'is_edit' => false,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}', name: 'app_consent_show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -182,11 +186,15 @@ class ConsentController extends AbstractController
             return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('consent/form.html.twig', [
             'consent' => $consent,
             'form' => $form,
             'is_edit' => true,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/verify', name: 'app_consent_verify', requirements: ['id' => '\d+'], methods: ['POST'])]
