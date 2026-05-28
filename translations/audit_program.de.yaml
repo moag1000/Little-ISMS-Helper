@@ -1,0 +1,114 @@
+audit_program:
+    page:
+        index:
+            title: 'Audit-Programme'
+            badge: 'Jahresplan'
+            subtitle: 'ISO 19011 §5.4 – Dokumentiertes Audit-Programm für das ISMS (ISO 27001 Kl. 9.2)'
+        new:
+            subtitle: 'Neues Audit-Programm gemäß ISO 19011 §5.4.2 anlegen'
+        show:
+            title: 'Audit-Programm'
+            badge: 'Jahresplan %year%'
+
+    action:
+        new: 'Neues Audit-Programm'
+        create: 'Audit-Programm anlegen'
+        edit: 'Bearbeiten'
+        save: 'Speichern'
+        delete: 'Löschen'
+        delete_zone: 'Gefahrenzone: Programm löschen'
+        delete_warning: 'Möchten Sie das Audit-Programm „%name%" unwiderruflich löschen? Alle Zuordnungen zu Audits werden entfernt.'
+        delete_confirm: 'Audit-Programm wirklich löschen?'
+        approve: 'Freigeben'
+
+    section:
+        basic_info: 'Grunddaten (ISO 19011 §5.4.2)'
+        responsibility: 'Verantwortlichkeit (ISO 19011 §5.4.4)'
+        ressourcen: 'Ressourcen (ISO 19011 §5.4.5)'
+        status: 'Status'
+        audits: 'Geplante Audits (%count%)'
+        metadata: 'Metadaten'
+
+    field:
+        name: 'Programmname'
+        year: 'Geschäftsjahr'
+        scope: 'Anwendungsbereich'
+        objectives: 'Programmziele'
+        frameworks: 'Normabdeckung'
+        responsible_person: 'Audit-Programm-Manager (intern)'
+        responsible_person_ref: 'Audit-Programm-Manager (extern/Person)'
+        approved_by: 'Freigegeben durch'
+        approved_at: 'Freigegeben am'
+        budget: 'Budget'
+        notes: 'Hinweise / Notizen'
+        status: 'Status'
+        created_at: 'Erstellt am'
+        created_by: 'Erstellt von'
+        updated_at: 'Aktualisiert am'
+
+    placeholder:
+        name: 'z. B. Audit-Programm 2026'
+        year: '2026'
+        scope: 'Beschreibung des Geltungsbereichs (Org.-Einheiten, Normen, Standorte) …'
+        objectives: 'Ziele des Audit-Programms gemäß ISO 19011 §5.4.2 a …'
+        responsible_person: 'Internen Benutzer auswählen …'
+        responsible_person_ref: 'Externe Person aus Stammdaten auswählen …'
+        notes: 'Interne Hinweise …'
+
+    help:
+        name: 'Eindeutiger Name des Audit-Programms, z. B. mit Jahresangabe.'
+        year: 'Geschäftsjahr, für das dieses Programm gilt.'
+        scope: 'ISO 19011 §5.4.2 b — Geltungsbereich: Welche Bereiche/Normen/Standorte werden abgedeckt?'
+        objectives: 'ISO 19011 §5.4.2 a — Programmziele: Warum wird das Programm durchgeführt?'
+        frameworks: 'Optionale Norm-Zuordnung: ISO 27001, BCM, DSGVO usw.'
+        responsible_person: 'ISO 19011 §5.4.4 — Audit-Programm-Manager (bevorzugt interner Benutzer).'
+        responsible_person_ref: 'Externer Audit-Programm-Manager ohne App-Login (aus Stammdaten).'
+        budget: 'ISO 19011 §5.4.5 — Ressourcen: geplantes Budget (optional).'
+        status_readonly: 'Status wird ausschließlich über den Lifecycle-Workflow gesteuert.'
+
+    status:
+        draft: 'Entwurf'
+        approved: 'Freigegeben'
+        active: 'Aktiv'
+        completed: 'Abgeschlossen'
+        archived: 'Archiviert'
+
+    kpi:
+        total: 'Audit-Programme'
+        active: 'Aktiv'
+        draft: 'Entwurf'
+        completed: 'Abgeschlossen'
+
+    label:
+        audit_count: '%count% Audits'
+
+    empty:
+        title: 'Kein Audit-Programm vorhanden'
+        description: 'ISO 19011 §5.4 fordert ein dokumentiertes Audit-Programm. Legen Sie jetzt das erste Programm für Ihr ISMS an.'
+
+    audit_col:
+        number: 'Nummer'
+        title: 'Titel'
+        planned_date: 'Geplantes Datum'
+        status: 'Status'
+
+    audits:
+        none: 'Noch keine Audits diesem Programm zugeordnet.'
+
+    success:
+        created: 'Audit-Programm erfolgreich angelegt.'
+        updated: 'Audit-Programm erfolgreich aktualisiert.'
+        deleted: 'Audit-Programm erfolgreich gelöscht.'
+        approved: 'Audit-Programm erfolgreich freigegeben.'
+
+    error:
+        transition_failed: 'Die Statusänderung konnte nicht durchgeführt werden. Bitte prüfen Sie die Berechtigung und den aktuellen Status.'
+
+    validation:
+        name_required: 'Ein Programmname ist erforderlich.'
+        name_max_length: 'Der Programmname darf maximal 200 Zeichen lang sein.'
+        year_required: 'Das Geschäftsjahr ist ein Pflichtfeld.'
+        status_invalid: 'Ungültiger Status.'
+
+    tooltip:
+        iso_ref: 'ISO 19011:2018 §5.4 — Establishing the audit programme'

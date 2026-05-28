@@ -778,11 +778,19 @@
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.audits_reviews'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
                         {% if is_module_active('audits') %}
-                        <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' %}active{% endif %}" data-turbo-action="advance">
+                        <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' and not (current_route starts with 'app_audit_program_') %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-clipboard-data" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.audits'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.audits'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {# feat(audit): AuditProgram — ISO 19011 §5.4 Jahresplan. Deferred from PRs #732-#738. #}
+                        <li><a href="{{ path('app_audit_program_index', {_locale: app.request.locale}) }}" class="{% if current_route starts with 'app_audit_program_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.audit_program'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.audit_program'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
                         {% endif %}

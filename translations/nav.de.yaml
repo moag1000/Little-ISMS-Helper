@@ -35,6 +35,7 @@ nav:
     bc_exercises: BC-Übungen
     incidents: Vorfälle
     audits: Audits
+    audit_program: 'Audit-Programm'
     compliance: Compliance
     audit_log: 'Audit Log'
     nis2_dashboard: 'NIS2 Dashboard'
@@ -195,6 +196,7 @@ nav:
             vulnerabilities: 'Schwachstellenverfolgung'
             patches: 'Patch Management System'
             audits: 'Interne und externe Audits'
+            audit_program: 'ISO 19011 §5.4 Jahresplan – Audit-Programm-Management'
             training: 'Sicherheitsbewusstseins-Schulungen'
             management_reviews: 'Managementbewertungs-Meetings'
             compliance_manager_dashboard: 'Coverage-Heatmap, offene Findings, Audit-Plan, Doc-Approvals'
