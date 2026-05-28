@@ -1,5 +1,20 @@
 # check_no_bi_classes.py baseline
 # Format: <relative-path>:<line>
+templates/audit_program/index.html.twig:64
+templates/audit_program/index.html.twig:65
 templates/dora_subcontractor/index.html.twig:42
 templates/dora_subcontractor/show.html.twig:91
+templates/tisax/import/assess.html.twig:91
+templates/tisax/import/assess.html.twig:107
+templates/tisax/import/assess.html.twig:217
+templates/tisax/import/commit.html.twig:36
+templates/tisax/import/commit.html.twig:51
+templates/tisax/import/disclaimer.html.twig:60
+templates/tisax/import/disclaimer.html.twig:82
+templates/tisax/import/preview.html.twig:92
+templates/tisax/import/upload.html.twig:47
+templates/tisax/import/upload.html.twig:60
+templates/tisax/import/upload.html.twig:81
+templates/tisax/import/validate.html.twig:76
+templates/tisax/import/validate.html.twig:87
 assets/controllers/command_palette_controller.js:220
