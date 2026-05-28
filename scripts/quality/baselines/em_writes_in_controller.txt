@@ -468,3 +468,9 @@ src/Controller/WorkflowController.php:250
 src/Controller/WorkflowController.php:440
 src/Controller/WorkflowController.php:441
 src/Controller/WorkflowController.php:459
+src/Controller/AuditProgramController.php:121
+src/Controller/AuditProgramController.php:122
+src/Controller/AuditProgramController.php:159
+src/Controller/AuditProgramController.php:195
+src/Controller/AuditProgramController.php:196
+src/Controller/AuditProgramController.php:230
