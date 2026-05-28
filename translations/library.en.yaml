@@ -1,5 +1,5 @@
-# Library domain — English
-# Sprint 10A — F5b Wave 1 BSI/TISAX Library + Roundtrip
+# Library domain -- English
+# Sprint 10A -- F5b Wave 1 BSI/TISAX Library + Roundtrip
 
 library:
   title: 'Framework Library Import/Export'
@@ -25,6 +25,13 @@ library:
     export_csv: 'Export as CSV'
     back: 'Back to overview'
     file: 'File'
+    open_byo_wizard: 'Open BYO-Import Wizard'
+
+  badge:
+    skeleton_only: 'Skeleton only'
+
+  tisax:
+    skeleton_hint: 'ENX-licensed content not included. Use the BYO-Import Wizard with your licensed VDA-ISA workbook copy.'
 
   empty:
     no_yamls: 'No library YAMLs found'
@@ -36,12 +43,14 @@ library:
     title: 'Import Result: %type%'
     success: 'Import completed successfully.'
     partial_success: 'Import completed with warnings.'
-    errors_occurred: '%count% error(s) occurred — see details below.'
+    errors_occurred: '%count% error(s) occurred -- see details below.'
     frameworks_created: 'Frameworks created'
     frameworks_updated: 'Frameworks updated'
     requirements_created: 'Requirements created'
     requirements_updated: 'Requirements updated'
     show_errors: 'Show %count% error(s)'
+    skeleton_only_title: 'Skeleton framework created -- no controls seeded'
+    skeleton_only_body: 'The TISAX VDA-ISA workbook is ENX Association-licensed. The skeleton fixture creates the framework row only. To populate controls, use the BYO-Import Wizard with your own licensed copy of the VDA ISA workbook.'
 
   framework:
     imported: 'Framework imported'

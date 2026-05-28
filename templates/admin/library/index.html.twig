@@ -43,12 +43,27 @@
                                     <div class="d-flex align-items-center mb-2">
                                         <i class="fa-icon fa-icon--nav-file-earmark-text me-2" aria-hidden="true"></i>
                                         <strong>{{ lib.label }}</strong>
+                                        {% if lib.type == 'tisax' and tisax_skeleton_only %}
+                                            <span class="badge bg-warning text-dark ms-2">
+                                                {{ 'library.badge.skeleton_only'|trans({}, 'library') }}
+                                            </span>
+                                        {% endif %}
                                     </div>
                                     <p class="text-muted small mb-3">
                                         {{ 'library.action.file'|trans({}, 'library') }}:
                                         <code>{{ lib.filename }}.yaml</code>
                                     </p>
-                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                    {% if lib.type == 'tisax' and tisax_skeleton_only %}
+                                        <p class="text-muted small mb-2">
+                                            <i class="fa-icon fa-icon--nav-shield-lock me-1" aria-hidden="true"></i>
+                                            {{ 'library.tisax.skeleton_hint'|trans({}, 'library') }}
+                                        </p>
+                                        <a href="{{ path('admin_library_index') }}"
+                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
+                                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                                            {{ 'library.action.open_byo_wizard'|trans({}, 'library') }}
+                                        </a>
+                                    {% elseif is_granted('ROLE_SUPER_ADMIN') %}
                                         <form method="post" action="{{ path('admin_library_import', { type: lib.type }) }}">
                                             <input type="hidden" name="_token" value="{{ csrf_token('admin_library_import_' ~ lib.type) }}">
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">

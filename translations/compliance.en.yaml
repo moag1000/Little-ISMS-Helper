@@ -1253,3 +1253,17 @@ export:
         partially_implemented_short: 'Partial'
         implemented: 'Implemented'
         not_assessed: 'Not Assessed'
+
+    # TISAX per-tier assessment KPI tiles (framework show page)
+    tisax:
+        tier_is_label: 'Information Security (Avg. Reifegrad → Target AL3: 3)'
+        tier_is_value: 'Avg. %avg% / Target 3.0 → gap %gap%'
+        tier_pp_label: 'Prototype Protection (%compliant% / %total% compliant)'
+        tier_pp_value: '%compliant% / %total% controls compliant (%pct% %%)'
+        tier_dp_label: 'Data Protection (%in_place% / %total% in place)'
+        tier_dp_value: '%in_place% / %total% measures in place (%pct% %%)'
+
+  framework_show:
+    tisax_skeleton_hint: 'This TISAX framework has no controls seeded. The VDA-ISA workbook is ENX-licensed and not redistributable. Use the BYO-Import Wizard to populate controls from your licensed copy.'
+    action:
+      open_byo_wizard: 'Open BYO-Import Wizard'
