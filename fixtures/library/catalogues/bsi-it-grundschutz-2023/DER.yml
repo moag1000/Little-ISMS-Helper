@@ -57,6 +57,26 @@ bausteine:
       standard: []
       hoch: []
 
+  - id: DER.2.3
+    title: 'Bereinigung weitreichender Sicherheitsvorfaelle'
+    description: 'Anforderungen an die strukturierte Bereinigung schwerwiegender Sicherheitsvorfaelle (APT, weitreichender Kompromittierungen).'
+    anforderungen:
+      basis:
+        - id: DER.2.3.A1
+          title: 'Vorbereitung der Bereinigung'
+          requirement_text: 'Vor der Bereinigung eines weitreichenden Sicherheitsvorfalls MUESSEN Umfang, betroffene Systeme und Vorgehen geplant und dokumentiert werden.'
+        - id: DER.2.3.A2
+          title: 'Eindaemmung und Isolation betroffener Systeme'
+          requirement_text: 'Betroffene Systeme MUESSEN konsequent isoliert werden, um weitere Schaeden und Datenabfluesse zu verhindern. Siehe BSI Kompendium 2023 Baustein DER.2.3 Anforderung A2.'
+        - id: DER.2.3.A3
+          title: 'Wiederaufbau und Inbetriebnahme bereinigter Systeme'
+          requirement_text: 'Bereinigte Systeme MUESSEN aus vertrauenswuerdigen Quellen neu aufgebaut werden. Vor Inbetriebnahme MUSS eine Pruefung auf Rest-Kompromittierung erfolgen.'
+      standard:
+        - id: DER.2.3.A4
+          title: 'Lessons Learned nach Bereinigung'
+          requirement_text: 'Nach der Bereinigung SOLLTEN Erkenntnisse strukturiert ausgewertet und in das Sicherheitskonzept zurueckgefuehrt werden.'
+      hoch: []
+
   - id: DER.3.1
     title: 'Audits und Revisionen'
     description: 'Anforderungen an Planung und Durchfuehrung interner Audits und Revisionen der Informationssicherheit.'

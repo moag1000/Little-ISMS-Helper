@@ -108,6 +108,40 @@ bausteine:
       standard: []
       hoch: []
 
+  - id: OPS.1.1.7
+    title: 'Systemmanagement'
+    description: 'Anforderungen an Konzept, Werkzeuge und Prozesse fuer das zentrale Systemmanagement (Konfiguration, Inventarisierung, Monitoring).'
+    anforderungen:
+      basis:
+        - id: OPS.1.1.7.A1
+          title: 'Planung des Systemmanagements'
+          requirement_text: 'Vor dem Einsatz eines zentralen Systemmanagements MUSS die Systemmanagement-Strategie geplant werden. Verantwortlichkeiten, Werkzeuge und Schnittstellen MUESSEN festgelegt sein.'
+        - id: OPS.1.1.7.A2
+          title: 'Sichere Konfiguration von Systemmanagement-Werkzeugen'
+          requirement_text: 'Systemmanagement-Werkzeuge MUESSEN sicher konfiguriert sein. Administrative Schnittstellen DUERFEN NUR aus vertrauenswuerdigen Netzen erreichbar sein. Siehe BSI Kompendium 2023 Baustein OPS.1.1.7 Anforderung A2.'
+        - id: OPS.1.1.7.A3
+          title: 'Aktuelle Inventarisierung von IT-Komponenten'
+          requirement_text: 'Das Systemmanagement MUSS eine aktuelle Inventarisierung der verwalteten IT-Komponenten fuehren und regelmaessig abgleichen.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.2.1
+    title: 'Operative IT-Prozesse'
+    description: 'Anforderungen an die geregelte Steuerung und Dokumentation operativer ITSM-Prozesse (Incident-, Problem-, Service-Request-Management).'
+    anforderungen:
+      basis:
+        - id: OPS.1.2.1.A1
+          title: 'Festlegung operativer IT-Prozesse'
+          requirement_text: 'Die wesentlichen operativen IT-Prozesse (Incident-, Problem-, Service-Request-, Change-Management) MUESSEN festgelegt und dokumentiert sein.'
+        - id: OPS.1.2.1.A2
+          title: 'Zuweisung von Verantwortlichkeiten in IT-Prozessen'
+          requirement_text: 'Fuer jeden operativen IT-Prozess MUESSEN Prozessverantwortliche und Bearbeiterrollen benannt sein. Siehe BSI Kompendium 2023 Baustein OPS.1.2.1 Anforderung A2.'
+        - id: OPS.1.2.1.A3
+          title: 'Dokumentation und Auswertung operativer IT-Prozesse'
+          requirement_text: 'Operative IT-Prozesse MUESSEN nachvollziehbar dokumentiert und regelmaessig auf Wirksamkeit ausgewertet werden.'
+      standard: []
+      hoch: []
+
   - id: OPS.1.2.2
     title: 'Archivierung'
     description: 'Anforderungen an die geregelte und revisionssichere Archivierung von Informationen.'
@@ -122,6 +156,23 @@ bausteine:
         - id: OPS.1.2.2.A3
           title: 'Schutz und Wiederherstellbarkeit archivierter Daten'
           requirement_text: 'Archivierte Daten MUESSEN ueber den Aufbewahrungszeitraum gegen Verlust und unberechtigte Aenderungen geschuetzt sein. Siehe BSI Kompendium 2023 Baustein OPS.1.2.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.2.3
+    title: 'Informations- und Datentraegeraustausch'
+    description: 'Anforderungen an den geregelten Austausch von Informationen und Datentraegern mit internen wie externen Stellen.'
+    anforderungen:
+      basis:
+        - id: OPS.1.2.3.A1
+          title: 'Regelung des Informations- und Datentraegeraustauschs'
+          requirement_text: 'Der Austausch von Informationen und Datentraegern MUSS geregelt werden. Es MUESSEN zulaessige Wege, Empfaenger und Schutzmassnahmen festgelegt sein.'
+        - id: OPS.1.2.3.A2
+          title: 'Verpackung und Versand von Datentraegern'
+          requirement_text: 'Datentraeger MUESSEN angemessen verpackt und gegen Verlust und unbefugten Zugriff geschuetzt versandt werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.3 Anforderung A2.'
+        - id: OPS.1.2.3.A3
+          title: 'Verschluesselung beim Datentraegeraustausch'
+          requirement_text: 'Vertrauliche Informationen auf Datentraegern MUESSEN beim Austausch verschluesselt sein. Schluessel MUESSEN getrennt vom Datentraeger uebermittelt werden.'
       standard: []
       hoch: []
 
@@ -228,4 +279,38 @@ bausteine:
         - id: OPS.2.3.A6
           title: 'Ueberwachung des Outsourcing-Dienstleisters'
           requirement_text: 'Die Einhaltung der vereinbarten Sicherheitsanforderungen SOLLTE regelmaessig ueberprueft werden.'
+      hoch: []
+
+  - id: OPS.3.1
+    title: 'Outsourcing fuer Dienstleister'
+    description: 'Anforderungen an die Erbringung von Outsourcing-Leistungen aus Sicht des Dienstleisters (Provider-Perspektive).'
+    anforderungen:
+      basis:
+        - id: OPS.3.1.A1
+          title: 'Sicherheitskonzept fuer Outsourcing-Dienstleistungen'
+          requirement_text: 'Der Dienstleister MUSS ein Sicherheitskonzept fuer die erbrachten Outsourcing-Leistungen erstellen und mit dem Kunden abstimmen.'
+        - id: OPS.3.1.A2
+          title: 'Vertragsgestaltung mit Auftraggebern'
+          requirement_text: 'Vertragliche Vereinbarungen mit Auftraggebern MUESSEN sicherheitsrelevante Anforderungen, SLA, Meldewege, Datenortsgarantien und Audit-Rechte abdecken. Siehe BSI Kompendium 2023 Baustein OPS.3.1 Anforderung A2.'
+        - id: OPS.3.1.A3
+          title: 'Sichere Trennung der Mandantendaten'
+          requirement_text: 'Daten verschiedener Auftraggeber MUESSEN beim Dienstleister technisch und organisatorisch sicher voneinander getrennt sein.'
+      standard: []
+      hoch: []
+
+  - id: OPS.3.2
+    title: 'Anbindung externer IT-Systeme'
+    description: 'Anforderungen an die sichere Anbindung externer IT-Systeme (Partnernetze, Kunden, Dienstleister) an das eigene Netz.'
+    anforderungen:
+      basis:
+        - id: OPS.3.2.A1
+          title: 'Planung der externen Anbindung'
+          requirement_text: 'Vor der Anbindung externer IT-Systeme MUSS geplant werden, welche Daten ausgetauscht, welche Zugriffe ermoeglicht und welche Schutzmassnahmen umgesetzt werden.'
+        - id: OPS.3.2.A2
+          title: 'Sichere Anbindung externer Systeme'
+          requirement_text: 'Externe IT-Systeme MUESSEN ueber abgesicherte Schnittstellen (VPN, TLS, Reverse-Proxy) angebunden werden. Direkter Zugriff auf interne Systeme MUSS auf das Notwendige begrenzt sein.'
+        - id: OPS.3.2.A3
+          title: 'Authentisierung und Autorisierung externer Stellen'
+          requirement_text: 'Externe Stellen MUESSEN eindeutig authentifiziert und auf die fuer ihre Aufgabe erforderlichen Ressourcen begrenzt sein. Siehe BSI Kompendium 2023 Baustein OPS.3.2 Anforderung A3.'
+      standard: []
       hoch: []

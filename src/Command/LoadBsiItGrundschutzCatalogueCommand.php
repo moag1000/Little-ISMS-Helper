@@ -35,7 +35,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 #[AsCommand(
     name: 'app:load-bsi-grundschutz-catalogue',
-    description: 'Load BSI IT-Grundschutz-Kompendium 2023 from canonical YAML catalogue tree (10 Schichten, 106 Bausteine, ~324 Anforderungen).',
+    description: 'Load BSI IT-Grundschutz-Kompendium 2023 from canonical YAML catalogue tree (10 Schichten, 117 Bausteine, ~360 Anforderungen).',
 )]
 final class LoadBsiItGrundschutzCatalogueCommand
 {
@@ -98,7 +98,7 @@ final class LoadBsiItGrundschutzCatalogueCommand
             $framework = (new ComplianceFramework())
                 ->setCode(self::FRAMEWORK_CODE)
                 ->setName('BSI IT-Grundschutz')
-                ->setDescription('BSI IT-Grundschutz-Kompendium Edition 2023 — 10 Schichten, 106 Bausteine, Basis/Standard/Hoch-Anforderungen.')
+                ->setDescription('BSI IT-Grundschutz-Kompendium Edition 2023 — 10 Schichten, 117 Bausteine, Basis/Standard/Hoch-Anforderungen.')
                 ->setVersion('Edition 2023')
                 ->setApplicableIndustry('all_sectors')
                 ->setRegulatoryBody('BSI (Bundesamt fuer Sicherheit in der Informationstechnik)')

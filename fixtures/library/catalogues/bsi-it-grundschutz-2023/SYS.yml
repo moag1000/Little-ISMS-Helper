@@ -349,6 +349,23 @@ bausteine:
       standard: []
       hoch: []
 
+  - id: SYS.3.3
+    title: 'Mobiltelefon'
+    description: 'Anforderungen an die geregelte Nutzung klassischer Mobiltelefone (Feature-Phones) ohne Smartphone-Funktionalitaet.'
+    anforderungen:
+      basis:
+        - id: SYS.3.3.A1
+          title: 'Regelungen zur Nutzung von Mobiltelefonen'
+          requirement_text: 'Fuer die dienstliche Nutzung klassischer Mobiltelefone MUESSEN Regelungen erstellt werden, die zulaessige Geraete, Datenarten und Schutzmassnahmen festlegen.'
+        - id: SYS.3.3.A2
+          title: 'Sperre und Verlustmeldung von Mobiltelefonen'
+          requirement_text: 'Bei Verlust oder Diebstahl MUSS das Mobiltelefon umgehend gesperrt werden koennen. Es MUSS ein Meldeweg festgelegt sein. Siehe BSI Kompendium 2023 Baustein SYS.3.3 Anforderung A2.'
+        - id: SYS.3.3.A3
+          title: 'Schutz vor unbefugter Nutzung'
+          requirement_text: 'Mobiltelefone MUESSEN mit einer PIN gegen unbefugte Nutzung geschuetzt sein. Vertrauliche Daten DUERFEN NICHT unverschluesselt darauf abgelegt werden.'
+      standard: []
+      hoch: []
+
   - id: SYS.4.1
     title: 'Drucker, Kopierer, Multifunktionsgeraete'
     description: 'Anforderungen an die sichere Konfiguration und Nutzung von Druckern, Kopierern und Multifunktionsgeraeten.'

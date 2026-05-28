@@ -145,6 +145,26 @@ bausteine:
       standard: []
       hoch: []
 
+  - id: APP.3.3
+    title: 'Fileserver'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Fileservern (zentrale Datenablage im LAN).'
+    anforderungen:
+      basis:
+        - id: APP.3.3.A1
+          title: 'Planung des Fileserver-Einsatzes'
+          requirement_text: 'Vor dem Einsatz eines Fileservers MUSS geplant werden, welche Daten gespeichert werden, welche Zugriffsrechte gelten und welche Backup-Strategie umgesetzt wird.'
+        - id: APP.3.3.A2
+          title: 'Sichere Konfiguration eines Fileservers'
+          requirement_text: 'Fileserver MUESSEN sicher konfiguriert sein. Nicht benoetigte Dienste, Freigaben und Protokolle MUESSEN deaktiviert sein. Default-Konten MUESSEN umbenannt sein.'
+        - id: APP.3.3.A3
+          title: 'Berechtigungskonzept fuer Fileserver-Freigaben'
+          requirement_text: 'Fuer Fileserver-Freigaben MUSS ein Berechtigungskonzept nach dem Need-to-Know-Prinzip existieren. Berechtigungen MUESSEN regelmaessig geprueft werden.'
+      standard:
+        - id: APP.3.3.A5
+          title: 'Datensicherung des Fileservers'
+          requirement_text: 'Auf Fileservern gespeicherte Daten SOLLTEN regelmaessig gesichert und die Wiederherstellbarkeit getestet werden.'
+      hoch: []
+
   - id: APP.3.4
     title: 'Samba'
     description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Samba-Diensten.'
