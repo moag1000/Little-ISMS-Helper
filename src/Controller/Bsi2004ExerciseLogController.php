@@ -125,11 +125,15 @@ class Bsi2004ExerciseLogController extends AbstractController
             return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $log->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('bcm/exercise_log/new.html.twig', [
             'exercise' => $exercise,
             'log'      => $log,
             'form'     => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     // -------------------------------------------------------------------------
@@ -184,10 +188,14 @@ class Bsi2004ExerciseLogController extends AbstractController
             return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $log->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('bcm/exercise_log/edit.html.twig', [
             'log'  => $log,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     // -------------------------------------------------------------------------
