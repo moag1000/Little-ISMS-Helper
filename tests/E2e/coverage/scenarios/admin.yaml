@@ -1,0 +1,103 @@
+# Admin-Panel form-fill scenarios (ROLE_ADMIN / ROLE_SUPER_ADMIN actions).
+#
+# Covers the most common admin form-submit flows: KPI thresholds, lifecycle
+# overrides, supplier criticality, quick-fix settings, audit-retention,
+# tags, data-retention, notification rules. Excludes destructive actions
+# (bulk-delete, async-job triggers, setup-wizard).
+
+scenarios:
+  - name: admin_kpi_threshold_new
+    label: "KPI Threshold anlegen"
+    route: /de/admin/kpi-thresholds/new
+    category: admin
+    fill:
+      'input[name="kpi_threshold_config_type[kpiKey]"]': "TEST_KPI_${random.suffix}"
+      'input[name="kpi_threshold_config_type[goodThreshold]"]': "80"
+      'input[name="kpi_threshold_config_type[warningThreshold]"]': "60"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '/de/admin/kpi-thresholds'
+
+  - name: admin_supplier_criticality_new
+    label: "Supplier-Kritikalitätsstufe anlegen"
+    route: /de/admin/supplier-criticality/new
+    category: admin
+    fill:
+      'input[name="supplier_criticality_level_type[code]"]': "CRIT_${random.suffix}"
+      'input[name="supplier_criticality_level_type[labelDe]"]': "Kritisch Test"
+      'input[name="supplier_criticality_level_type[labelEn]"]': "Critical Test"
+      'input[name="supplier_criticality_level_type[sortOrder]"]': "10"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '/de/admin/supplier-criticality'
+
+  - name: admin_tag_new
+    label: "Tag anlegen"
+    route: /de/admin/tags/new
+    category: admin
+    fill:
+      'input[name="tag_type[name]"]': "review-${random.suffix}"
+      'select[name="tag_type[type]"]': "control"
+      'input[name="tag_type[color]"]': "#FF5733"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '/de/admin/tags'
+
+  - name: admin_notification_rule_new
+    label: "Notification Rule anlegen"
+    route: /de/admin/notification/rule/new
+    category: admin
+    fill:
+      'input[name="notification_rule_type[name]"]': "alert-${random.suffix}"
+      'select[name="notification_rule_type[eventType]"]': "risk.created"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '/de/admin/notification/rule'
+
+  - name: admin_audit_retention_edit
+    label: "Audit-Log Retention speichern"
+    route: /de/admin/audit-log/retention
+    category: admin
+    fill:
+      'input[name="retention_days"]': "1095"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '/de/admin/audit-log/retention'
+
+  - name: admin_quick_fix_settings
+    label: "Quick-Fix Settings speichern"
+    route: /de/admin/quick-fix-settings
+    category: admin
+    fill:
+      'input[name="ip_allowlist"]': "192.168.1.0/24"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '/de/admin/quick-fix-settings'
+
+  - name: admin_data_retention_settings
+    label: "Data-Retention Policy speichern"
+    route: /de/admin/settings/data-retention
+    category: admin
+    fill:
+      'input[name="retention_days_asset"]': "730"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '/de/admin/settings/data-retention'
+
+  - name: admin_lifecycle_override_edit
+    label: "Lifecycle-Override bearbeiten"
+    route: /de/admin/lifecycle-overrides/document_lifecycle/draft_to_review/edit
+    category: admin
+    fill:
+      'input[name="lifecycle_override_type[roles_raw]"]': "ROLE_ADMIN, ROLE_MANAGER"
+    submit: auto
+    expect:
+      status_lt: 500
+      url_pattern: '/de/admin/lifecycle-overrides'

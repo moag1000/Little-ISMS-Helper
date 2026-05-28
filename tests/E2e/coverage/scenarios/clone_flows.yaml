@@ -1,0 +1,79 @@
+# C4-C1 Klon-Funktionen — POST /<entity>/{id}/clone smoke tests.
+#
+# Each scenario navigates to the show-page of a seeded entity (IDs from
+# app:load-connected-demo-data baseline) and clicks the clone button. The
+# cloner persists a fresh editable copy and redirects to its edit form.
+#
+# Fixture-IDs (update when demo-data seeder is re-run with reset):
+#   risk:201 · asset:211 · document:123 · training:97 · supplier:81
+#   business_continuity_plan:61 · bc_exercise:49
+#   audit_finding + internal_audit — no fixtures yet; scenarios deferred.
+#
+# Module-gated scenarios skip when their module is inactive.
+
+scenarios:
+  - name: clone_risk
+    label: "Risk klonen (C4-C1, ROLE_USER)"
+    route: /de/risk/201
+    category: clone
+    submit: 'form[action$="/risk/201/clone"] button[type="submit"]'
+    expect:
+      status_lt: 500
+      url_pattern: '/risk/\d+/edit'
+
+  - name: clone_asset
+    label: "Asset klonen (C4-C1, ROLE_USER)"
+    route: /de/asset/211
+    category: clone
+    submit: 'form[action$="/asset/211/clone"] button[type="submit"]'
+    expect:
+      status_lt: 500
+      url_pattern: '/asset/\d+/edit'
+
+  - name: clone_document
+    label: "Dokument klonen (C4-C1, ROLE_USER)"
+    route: /de/document/123
+    category: clone
+    submit: 'form[action$="/document/123/clone"] button[type="submit"]'
+    expect:
+      status_lt: 500
+      url_pattern: '/document/\d+/edit'
+
+  - name: clone_training
+    label: "Training klonen (C4-C1, ROLE_USER)"
+    route: /de/training/97
+    category: clone
+    submit: 'form[action$="/training/97/clone"] button[type="submit"]'
+    expect:
+      status_lt: 500
+      url_pattern: '/training/\d+/edit'
+
+  - name: clone_supplier
+    label: "Supplier klonen (C4-C1, ROLE_USER)"
+    route: /de/supplier/81
+    category: clone
+    requires_module: suppliers
+    submit: 'form[action$="/supplier/81/clone"] button[type="submit"]'
+    expect:
+      status_lt: 500
+      url_pattern: '/supplier/\d+/edit'
+
+  - name: clone_bc_plan
+    label: "BC-Plan klonen (C4-C1, ROLE_USER)"
+    route: /de/business-continuity-plan/61
+    category: clone
+    requires_module: bcm
+    submit: 'form[action$="/business-continuity-plan/61/clone"] button[type="submit"]'
+    expect:
+      status_lt: 500
+      url_pattern: '/business-continuity-plan/\d+/edit'
+
+  - name: clone_bc_exercise
+    label: "BC-Exercise klonen (C4-C1, ROLE_USER)"
+    route: /de/bc-exercise/49
+    category: clone
+    requires_module: bcm
+    submit: 'form[action$="/bc-exercise/49/clone"] button[type="submit"]'
+    expect:
+      status_lt: 500
+      url_pattern: '/bc-exercise/\d+/edit'

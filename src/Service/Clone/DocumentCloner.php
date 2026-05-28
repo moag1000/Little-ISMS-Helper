@@ -93,13 +93,19 @@ final class DocumentCloner implements EntityClonerInterface
         $clone->setIsImmutable(false);
         $clone->setVersion('1.0');
 
-        // File binary intentionally NOT cloned — user re-uploads in edit form.
-        $clone->setFilename(null);
-        $clone->setFilePath(null);
+        // File-reference fields — `filename` + `filePath` are NOT NULL on the
+        // `document` table, so we initially mirror the source pointers (the
+        // clone references the same on-disk file until the user re-uploads
+        // via the edit form). Cloning the binary itself is intentionally NOT
+        // done — that would duplicate evidence + invalidate the sha audit
+        // chain. Hash fields are cleared so the next save recomputes them
+        // (or sets them after a fresh upload).
+        $clone->setFilename($source->getFilename() ?? 'cloned.bin');
+        $clone->setFilePath($source->getFilePath());
+        $clone->setMimeType($source->getMimeType());
+        $clone->setFileSize($source->getFileSize());
         $clone->setSha256Hash(null);
         $clone->setContentHash(null);
-        $clone->setMimeType($source->getMimeType());
-        $clone->setFileSize(null);
 
         // Provenance refs cleared — clone is its own document.
         $clone->setSupersedes(null);

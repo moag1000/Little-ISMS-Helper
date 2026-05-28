@@ -105,8 +105,11 @@ final class TrainingCloner implements EntityClonerInterface
         }
 
         // Reset lifecycle to 'planned'; clear per-session execution data.
+        // scheduledDate is NOT NULL on the `training` table — carry the
+        // source date forward so the row is persistable; user re-schedules
+        // via the edit form. completionDate is nullable → cleared.
         $clone->setStatus('planned'); // @phpstan-ignore lifecycle.directSetStatus (initial state on clone pre-persist — matches entity-specific lifecycle.initial_marking)
-        $clone->setScheduledDate(null);
+        $clone->setScheduledDate($source->getScheduledDate() ?? new DateTimeImmutable());
         $clone->setCompletionDate(null);
         $clone->setAttendeeCount(0);
         $clone->setFeedback(null);
