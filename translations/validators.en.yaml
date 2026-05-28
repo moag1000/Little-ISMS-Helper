@@ -748,3 +748,53 @@ gstool_import:
 # Supplier (T10.10 — LEI ISO 17442 + NACE Rev.2 format)
 'supplier.validation.lei_code.format': 'LEI code must be 20 characters: 18 alphanumeric + 2 check digits (ISO 17442).'
 'supplier.validation.nace_code.format': 'NACE code must follow the NN or NN.NN format (EU NACE Rev.2).'
+
+# ─────────────────────────────────────────────────────────────────────────
+# S19 — Validator-Translation-Keys (missing-i18n-fix 2026-05-28)
+# Clusters: asset_sub_type, dora_exit_plan, dora_subcontractor,
+#           dora_data_flow, patch, tenant
+# ─────────────────────────────────────────────────────────────────────────
+
+# AssetSubType
+'asset_sub_type.validation.top_type_invalid': 'Invalid top-level type. Allowed values: Hardware, Software, Datenbank, Personal, Standort, Dienstleistung.'
+'asset_sub_type.validation.source_invalid': 'Invalid source. Allowed values: custom, seed-bsi-grundschutz, seed-tisax, seed-production-de-mittelstand.'
+
+# DoraExitPlan (DORA Art. 28 RT_06)
+'dora_exit_plan.validation.supplier_required': 'Please select a supplier.'
+'dora_exit_plan.validation.trigger_required': 'Please select an exit trigger.'
+'dora_exit_plan.validation.trigger_invalid': 'Invalid exit trigger. Allowed values: planned-renewal, concentration-risk, force-majeure, breach, insolvency.'
+'dora_exit_plan.validation.data_return_format_max': 'The data return format description cannot exceed {{ limit }} characters.'
+'dora_exit_plan.validation.migration_path_max': 'The migration path cannot exceed {{ limit }} characters.'
+'dora_exit_plan.validation.duration_non_negative': 'The estimated duration must be zero or positive.'
+'dora_exit_plan.validation.cost_non_negative': 'The estimated cost must be zero or positive.'
+
+# DoraSubcontractor (DORA Art. 28 RT_04)
+'dora_subcontractor.validation.parent_supplier_required': 'Please select the parent supplier.'
+'dora_subcontractor.validation.name_required': 'Name is required.'
+'dora_subcontractor.validation.lei_length': 'LEI code must be exactly 20 characters (ISO 17442).'
+'dora_subcontractor.validation.lei_format': 'Invalid LEI format. Must be 20 uppercase alphanumeric characters (ISO 17442).'
+'dora_subcontractor.validation.country_length': 'Country code must be exactly 2 characters (ISO 3166-1 alpha-2).'
+'dora_subcontractor.validation.country_format': 'Invalid country code format. Must be 2 uppercase letters (ISO 3166-1 alpha-2).'
+'dora_subcontractor.validation.tier_range': 'Tier must be between {{ min }} and {{ max }} (2 = direct, 5 = max depth).'
+'dora_subcontractor.validation.criticality_invalid': 'Invalid criticality. Allowed values: critical, important, standard.'
+'dora_subcontractor.validation.substitutability_invalid': 'Invalid substitutability. Allowed values: high, medium, low.'
+
+# DoraDataFlow (DORA Art. 28 RT_03)
+'dora_data_flow.validation.supplier_required': 'Please select a supplier.'
+'dora_data_flow.validation.data_categories_required': 'At least one data category must be selected.'
+'dora_data_flow.validation.direction_required': 'Please select a direction.'
+'dora_data_flow.validation.direction_invalid': 'Invalid direction. Allowed values: inbound, outbound, bidirectional.'
+'dora_data_flow.validation.processing_purpose_too_long': 'The processing purpose cannot exceed {{ limit }} characters.'
+'dora_data_flow.validation.data_volume_too_long': 'The data volume description cannot exceed {{ limit }} characters.'
+'dora_data_flow.validation.receiving_country_format': 'Invalid receiving country format. Must be 2 uppercase letters (ISO 3166-1 alpha-2).'
+
+# Patch (NIS2 Art. 21.2.d)
+'patch.validation.patch_id_required': 'Patch ID is required (e.g. KB5012345).'
+'patch.validation.title_required': 'Patch title is required.'
+'patch.validation.description_required': 'Patch description is required.'
+'patch.validation.vendor_required': 'Vendor is required.'
+'patch.validation.product_required': 'Product is required.'
+
+# Tenant (additive — missing format-keys)
+'tenant.validation.lei_code_format': 'LEI code must be 20 characters: 18 alphanumeric + 2 check digits (ISO 17442).'
+'tenant.validation.reporting_currency_format': 'Reporting currency must be a valid ISO 4217 currency code (e.g. EUR, USD).'
