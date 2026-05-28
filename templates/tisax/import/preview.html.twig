@@ -71,9 +71,9 @@
             <div class="card-body p-0">
                 {{ _fa_table.render({
                     headers: [
-                        'tisax.import.preview.col.id'|trans({}, 'tisax_isa'),
-                        'tisax.import.preview.col.title'|trans({}, 'tisax_isa'),
-                        'tisax.import.preview.col.iso_ref'|trans({}, 'tisax_isa')
+                        { label: 'tisax.import.preview.col.id'|trans({}, 'tisax_isa') },
+                        { label: 'tisax.import.preview.col.title'|trans({}, 'tisax_isa') },
+                        { label: 'tisax.import.preview.col.iso_ref'|trans({}, 'tisax_isa') }
                     ],
                     rows: controls|map(ctrl => [
                         ctrl.controlId,

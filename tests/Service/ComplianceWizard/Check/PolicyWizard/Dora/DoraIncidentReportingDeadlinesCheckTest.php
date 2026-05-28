@@ -74,7 +74,7 @@ final class DoraIncidentReportingDeadlinesCheckTest extends TestCase
 
         self::assertNotNull($result->gap);
         self::assertSame('critical', $result->gap['priority']);
-        self::assertSame('app_admin_incident_sla_index', $result->gap['route']);
+        self::assertSame('app_admin_incident_sla_config', $result->gap['route']);
         self::assertSame('policy_wizard', $result->gap['translation_domain']);
         self::assertSame(
             'compliance_check.dora_incident_reporting_deadlines.fail_message',
