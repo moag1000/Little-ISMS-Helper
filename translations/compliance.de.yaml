@@ -1263,7 +1263,7 @@ export:
         tier_dp_label: 'Datenschutz (%in_place% / %total% vorhanden)'
         tier_dp_value: '%in_place% / %total% Maßnahmen vorhanden (%pct% %%)'
 
-  framework_show:
+framework_show:
     tisax_skeleton_hint: 'Dieses TISAX-Framework hat keine Kontrollen. Das VDA-ISA-Arbeitsbuch ist ENX-lizenziert und nicht weitergabe-berechtigt. Bitte den BYO-Import-Assistenten mit Ihrer lizenzierten Kopie verwenden.'
     action:
-      open_byo_wizard: 'BYO-Import-Assistent oeffnen'
+        open_byo_wizard: 'BYO-Import-Assistent öffnen'

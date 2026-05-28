@@ -27,7 +27,7 @@ library:
     file: 'File'
     open_byo_wizard: 'Open BYO-Import Wizard'
 
-  badge:
+  status_badge:
     skeleton_only: 'Skeleton only'
 
   tisax:

@@ -4,7 +4,15 @@ declare(strict_types=1);
 
 use Symfony\Component\Dotenv\Dotenv;
 
-require dirname(__DIR__).'/vendor/autoload.php';
+$loader = require dirname(__DIR__).'/vendor/autoload.php';
+
+// Worktree isolation: prepend this worktree's src/ so that classes defined here
+// (e.g. AuditProgram entity added on the main branch) are found even when the
+// Composer static-map resolves App\ to the main project's src/ (a different branch).
+if (realpath(__DIR__ . '/..') !== realpath(dirname(__DIR__).'/vendor/composer/../../')) {
+    $loader->addPsr4('App\\', [__DIR__ . '/../src'], true);
+    $loader->addPsr4('App\\Tests\\', [__DIR__], true);
+}
 
 if (method_exists(Dotenv::class, 'bootEnv')) {
     (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
