@@ -118,7 +118,7 @@ final class DoraIncidentReportingDeadlinesCheck implements PolicyWizardCheckInte
             gap: [
                 'title' => sprintf('compliance_check.%s.fail_message', self::CHECK_ID),
                 'priority' => 'critical',
-                'route' => 'app_admin_incident_sla_index',
+                'route' => 'app_admin_incident_sla_config',
                 'translation_domain' => 'policy_wizard',
                 'items' => array_slice($violations, 0, 5),
             ],

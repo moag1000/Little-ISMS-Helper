@@ -646,7 +646,6 @@ final class BsiFrameworkCategoryProvider
                         'type' => 'manual',
                         'priority' => 'medium',
                         'description' => 'wizard.check.bsi_c5_2026_post_quantum_cryptography_desc',
-                        'route' => 'app_crypto_index',
                     ],
                 ],
             ],

@@ -968,7 +968,7 @@ final class EuRegulatoryFrameworkCategoryProvider
         $checks = [];
         foreach ([
             DoraIctRiskFrameworkPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
-            DoraIncidentReportingDeadlinesCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_admin_incident_sla_index'],
+            DoraIncidentReportingDeadlinesCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_admin_incident_sla_config'],
             DoraThirdPartyRegisterMaintainedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_supplier_index'],
             DoraTlptCadenceCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_bc_exercise_index'],
             DoraExitStrategyDocumentedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_supplier_index'],
@@ -1132,7 +1132,7 @@ final class EuRegulatoryFrameworkCategoryProvider
             RopaMethodologyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
             DpiaMethodologyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
             DsrProcedurePresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
-            DataBreachNotification72hCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_admin_incident_sla_index'],
+            DataBreachNotification72hCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_admin_incident_sla_config'],
             DpoCharterAppointedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
             GdprSectionCoverageCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
             A534ThinHostPresentCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
@@ -1653,7 +1653,7 @@ final class EuRegulatoryFrameworkCategoryProvider
                         'type' => 'manual',
                         'priority' => 'high',
                         'module' => 'bcm',
-                        'route' => 'app_business_continuity_plan_index',
+                        'route' => 'app_bc_plan_index',
                     ],
                 ],
             ],

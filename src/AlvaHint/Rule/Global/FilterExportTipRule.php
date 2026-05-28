@@ -54,7 +54,7 @@ final class FilterExportTipRule extends AbstractGlobalAlvaHintRule
             'app_risk_index',
             'app_asset_index',
             'app_supplier_index',
-            'app_control_index',
+            'app_soa_index',
             'app_incident_index',
             'app_audit_finding_index',
         ];
