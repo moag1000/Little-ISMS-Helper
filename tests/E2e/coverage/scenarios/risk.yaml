@@ -1,4 +1,8 @@
 # Risk-Management scenarios (ISO 27001 Cl. 6.1.2 + 6.1.3).
+#
+# Form block-prefix: `risk` for RiskType, `risk_quick` for RiskQuickType
+# (FQCN→snake-case strips the Type suffix). RiskType uses IntegerType for
+# probability/impact (not select).
 
 scenarios:
   - name: risk_create_minimal
@@ -8,8 +12,8 @@ scenarios:
     fill:
       'input[name="risk[title]"]': "Smoke-Risk ${random.suffix}"
       'select[name="risk[category]"]': "operational"
-      'select[name="risk[likelihood]"]': "3"
-      'select[name="risk[impact]"]': "3"
+      'input[name="risk[probability]"]': "3"
+      'input[name="risk[impact]"]': "3"
     submit: auto
     expect:
       status_lt: 500
@@ -20,7 +24,10 @@ scenarios:
     route: /de/risk/new/quick
     category: risk
     fill:
-      'input[name="risk[title]"]': "Quick-Risk ${random.suffix}"
+      'input[name="risk_quick[title]"]': "Quick-Risk ${random.suffix}"
+      'textarea[name="risk_quick[description]"]': "Smoke description"
+      'input[name="risk_quick[probability]"]': "2"
+      'input[name="risk_quick[impact]"]': "2"
     submit: auto
     expect:
       status_lt: 500
