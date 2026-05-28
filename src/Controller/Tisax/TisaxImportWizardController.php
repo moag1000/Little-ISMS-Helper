@@ -224,6 +224,9 @@ final class TisaxImportWizardController extends AbstractController
         $request->getSession()->set(self::SESSION_VALIDATION, $validation);
 
         if ($request->isMethod('POST') && $validation['ok']) {
+            if (!$this->isCsrfTokenValid('tisax_proceed', $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('CSRF token invalid.');
+            }
             return $this->redirectToRoute('app_tisax_import_preview', ['_locale' => $request->getLocale()]);
         }
 
@@ -257,6 +260,9 @@ final class TisaxImportWizardController extends AbstractController
         $delta     = $this->mapper->computeDelta($controls, $framework, $tenant);
 
         if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('tisax_proceed', $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('CSRF token invalid.');
+            }
             return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
         }
 

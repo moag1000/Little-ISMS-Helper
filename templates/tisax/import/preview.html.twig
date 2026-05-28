@@ -86,6 +86,7 @@
 
         <div class="d-flex gap-2 mt-3">
             <form method="post" action="{{ path('app_tisax_import_preview', { _locale: app.request.locale }) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('tisax_proceed') }}">
                 <button type="submit" class="btn btn-primary">
                     {{ 'tisax.import.preview.proceed'|trans({}, 'tisax_isa') }}
                     <i class="bi bi-arrow-right ms-1"></i>
