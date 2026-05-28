@@ -23,6 +23,7 @@ bcm:
         add_process: 'Prozess hinzufügen'
         data_reuse: 'Daten wiederverwenden'
         view_insights: 'Insights anzeigen'
+        view_bia: 'BIA anzeigen'
     insights_col:
         business_process: 'Geschäftsprozess'
         supporting_asset: 'Unterstützendes Asset'

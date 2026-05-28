@@ -153,6 +153,64 @@ class VdaIsaWorkbookParserTest extends TestCase
         self::assertNotEmpty($validation['errors']);
     }
 
+    // ──────────────────────────────────────────────────────────────────────────
+    // DDE (formula-injection) sanitization tests
+    // ──────────────────────────────────────────────────────────────────────────
+
+    #[Test]
+    public function testCellValueStartingWithEqualsIsPrefixedWithApostrophe(): void
+    {
+        $parser = new VdaIsaWorkbookParser(new NullLogger());
+
+        // Use reflection to call the private sanitizeCellValue helper
+        $method = new \ReflectionMethod($parser, 'sanitizeCellValue');
+
+        $payload = '=cmd|\'/c calc\'!A0';
+        $result  = $method->invoke($parser, $payload);
+
+        self::assertStringStartsWith("'", $result, 'DDE payload starting with = must be prefixed with apostrophe');
+        self::assertSame("'" . $payload, $result);
+    }
+
+    #[Test]
+    public function testCellValueStartingWithPlusIsPrefixedWithApostrophe(): void
+    {
+        $parser = new VdaIsaWorkbookParser(new NullLogger());
+        $method = new \ReflectionMethod($parser, 'sanitizeCellValue');
+
+        foreach (['+', '-', '@', "\t", "\r"] as $trigger) {
+            $payload = $trigger . 'dangerous payload';
+            $result  = $method->invoke($parser, $payload);
+
+            self::assertStringStartsWith(
+                "'",
+                $result,
+                sprintf('DDE trigger character %s must be neutralised by apostrophe prefix', json_encode($trigger)),
+            );
+            self::assertSame("'" . $payload, $result);
+        }
+    }
+
+    #[Test]
+    public function testNormalTextValueIsUnchanged(): void
+    {
+        $parser = new VdaIsaWorkbookParser(new NullLogger());
+        $method = new \ReflectionMethod($parser, 'sanitizeCellValue');
+
+        $safeValues = [
+            'ISO 27001 A.5.9',
+            'Control question text',
+            '1.2.3',
+            'Normal description',
+            '',
+        ];
+
+        foreach ($safeValues as $value) {
+            $result = $method->invoke($parser, $value);
+            self::assertSame($value, $result, "Safe value '{$value}' must not be modified");
+        }
+    }
+
     #[Test]
     public function validator_rejects_result_with_high_invalid_id_ratio(): void
     {
