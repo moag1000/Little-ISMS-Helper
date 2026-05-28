@@ -6,12 +6,14 @@ namespace App\Service;
 
 use App\Entity\Incident;
 use App\Entity\Tenant;
+use App\Enum\ManagementReviewStatus;
 use App\Enum\TrainingStatus;
 use App\Repository\AssetRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
+use App\Repository\ManagementReviewRepository;
 use App\Repository\MfaTokenRepository;
 use App\Repository\PatchRepository;
 use App\Repository\SupplierRepository;
@@ -20,11 +22,24 @@ use App\Repository\UserRepository;
 use App\Repository\VulnerabilityRepository;
 
 /**
- * NIS2 Compliance Service — computes a metric per Art. 21.2 letter (a..j)
+ * NIS2 Compliance Service — computes a metric per Art. 21(2) letter (a..j)
  * plus the Art. 23 reporting timeline and a weighted overall score.
  *
  * Returns pure data (arrays). The controller renders them; downstream
  * widgets can consume individual letters without pulling the full set.
+ *
+ * Key→method mapping follows the official NIS2 Directive (EU 2022/2555)
+ * Art. 21(2)(a)-(j) ordering exactly — 10 measures, no letter k:
+ *   (a) risk analysis & security of information systems → riskManagementPolicies()
+ *   (b) incident handling                              → incidentHandling()
+ *   (c) business continuity / BCM / backup            → businessContinuity()
+ *   (d) supply chain security                         → supplyChainSecurity()
+ *   (e) security in acquisition, development, maint.  → secureSdlc()
+ *   (f) effectiveness assessment of cyber measures    → effectivenessAssessment()
+ *   (g) cyber hygiene + cybersecurity training        → cyberHygieneAndTraining()
+ *   (h) cryptography and encryption                   → cryptographicControls()
+ *   (i) HR security + access control + asset mgmt     → accessControlAndAssetMgmt()
+ *   (j) MFA + secured communications                  → authentication()
  *
  * All metrics follow the same shape:
  *   [
@@ -53,12 +68,17 @@ final class Nis2ComplianceService
         private readonly ?SupplierRepository $supplierRepository = null,
         private readonly ?TrainingRepository $trainingRepository = null,
         private readonly ?BusinessContinuityPlanRepository $bcPlanRepository = null,
+        private readonly ?ManagementReviewRepository $managementReviewRepository = null,
     ) {
     }
 
     /**
-     * Full dashboard payload — eleven Art. 21.2 letters + Art. 23 timer +
-     * weighted overall score.
+     * Full dashboard payload — ten Art. 21(2) letters (a..j, directive-correct)
+     * + Art. 23 timer + weighted overall score.
+     *
+     * Letter ordering follows EU 2022/2555 Art. 21(2)(a)-(j) exactly.
+     * The former 11-letter legacy grid (including the non-existent 21.2.k) has
+     * been removed; each letter now maps to its directive-correct measure.
      *
      * @return array{
      *     letters: array<string, array>,
@@ -69,17 +89,16 @@ final class Nis2ComplianceService
     public function getDashboardPayload(?Tenant $tenant = null): array
     {
         $letters = [
-            '21.2.a' => $this->riskManagementPolicies($tenant),
-            '21.2.b' => $this->authentication(),
-            '21.2.c' => $this->encryption(),
-            '21.2.d' => $this->vulnerabilityManagement(),
-            '21.2.e' => $this->secureSdlc($tenant),
-            '21.2.f' => $this->supplyChainSecurity($tenant),
-            '21.2.g' => $this->hrSecurity($tenant),
-            '21.2.h' => $this->accessControl(),
-            '21.2.i' => $this->assetManagement($tenant),
-            '21.2.j' => $this->businessContinuity($tenant),
-            '21.2.k' => $this->cryptographicControls($tenant),
+            '21.2.a' => $this->riskManagementPolicies($tenant),          // (a) risk analysis & InfoSys security
+            '21.2.b' => $this->incidentHandling(),                        // (b) incident handling
+            '21.2.c' => $this->businessContinuity($tenant),               // (c) BCM / backup / crisis mgmt
+            '21.2.d' => $this->supplyChainSecurity($tenant),              // (d) supply chain security
+            '21.2.e' => $this->secureSdlc($tenant),                       // (e) secure development & acquisition
+            '21.2.f' => $this->effectivenessAssessment($tenant),          // (f) effectiveness assessment
+            '21.2.g' => $this->cyberHygieneAndTraining($tenant),          // (g) cyber hygiene + training
+            '21.2.h' => $this->cryptographicControls($tenant),            // (h) cryptography & encryption
+            '21.2.i' => $this->accessControlAndAssetMgmt($tenant),        // (i) HR security + access ctrl + asset mgmt
+            '21.2.j' => $this->authentication(),                          // (j) MFA + secured communications
         ];
 
         return [
@@ -89,7 +108,7 @@ final class Nis2ComplianceService
         ];
     }
 
-    /** Art. 21.2.a — documented risk-management policies. */
+    /** Art. 21(2)(a) — documented risk-management policies (risk analysis + InfoSys security). */
     private function riskManagementPolicies(?Tenant $tenant): array
     {
         $controls = $this->controlsImplementedInCategory('Organizational controls', $tenant);
@@ -103,64 +122,75 @@ final class Nis2ComplianceService
         );
     }
 
-    /** Art. 21.2.b — MFA / cryptographic authentication adoption. */
-    private function authentication(): array
+    /**
+     * Art. 21(2)(b) — incident handling (detection, classification, containment,
+     * eradication, recovery). Proxy: ratio of NIS2-category incidents that have
+     * reached the "resolved" / "closed" lifecycle state, indicating the handling
+     * process was followed to completion.
+     */
+    private function incidentHandling(): array
     {
-        $total = $this->userRepository->count(['isActive' => true]);
-        $withMfa = $this->mfaTokenRepository->createQueryBuilder('m')
-            ->select('COUNT(DISTINCT m.user)')
-            ->where('m.isActive = true')
-            ->getQuery()
-            ->getSingleScalarResult();
-        $rate = $total > 0 ? round(((int) $withMfa / $total) * 100, 1) : null;
+        $total = $this->incidentRepository->count([]);
+        if ($total === 0) {
+            return $this->metric(
+                '21.2.b', 'Incident handling',
+                null, '',
+                'info',
+                ['total_incidents' => 0, 'resolved' => 0]
+            );
+        }
+        $resolved = $this->incidentRepository->count(['status' => 'resolved']);
+        $closed = $this->incidentRepository->count(['status' => 'closed']);
+        $handledCount = $resolved + $closed;
+        $rate = round(($handledCount / $total) * 100, 1);
         return $this->metric(
-            '21.2.b', 'Authentication / MFA adoption',
+            '21.2.b', 'Incident handling',
+            $rate, '%',
+            $this->status($rate, 80.0, 50.0),
+            ['total_incidents' => $total, 'resolved' => $resolved, 'closed' => $closed]
+        );
+    }
+
+    /** Art. 21(2)(c) — business continuity / BCM / backup / crisis management. */
+    private function businessContinuity(?Tenant $tenant): array
+    {
+        if ($this->bcPlanRepository === null) {
+            return $this->metricNa('21.2.c', 'Business continuity');
+        }
+        $activePlans = $this->bcPlanRepository->count(['status' => 'active']);
+        $allPlans = $this->bcPlanRepository->count([]);
+        $rate = $allPlans > 0 ? round(($activePlans / $allPlans) * 100, 1) : null;
+        return $this->metric(
+            '21.2.c', 'Business continuity / crisis management',
             $rate, $rate === null ? '' : '%',
-            $this->status($rate, 90.0, 60.0),
-            ['users_total' => $total, 'users_with_mfa' => (int) $withMfa]
+            $rate === null ? 'na' : $this->status($rate, 80.0, 50.0),
+            ['plans_total' => $allPlans, 'plans_active' => $activePlans]
         );
     }
 
-    /** Art. 21.2.c — encryption in transit / at rest (proxy: control implementation). */
-    private function encryption(): array
+    /** Art. 21(2)(d) — supply-chain security (supplier assessments). */
+    private function supplyChainSecurity(?Tenant $tenant): array
     {
-        $implemented = $this->controlsImplementedInCategory('Technological controls', null);
-        $applicable = $this->controlsApplicableInCategory('Technological controls', null);
-        $ratio = $applicable > 0 ? round(($implemented / $applicable) * 100, 1) : null;
+        if ($this->supplierRepository === null) {
+            return $this->metricNa('21.2.d', 'Supply chain security');
+        }
+        $critical = $this->supplierRepository->findBy(['criticality' => ['critical', 'high']]);
+        $assessed = 0;
+        foreach ($critical as $supplier) {
+            if (method_exists($supplier, 'getLastSecurityAssessment') && $supplier->getLastSecurityAssessment() !== null) {
+                $assessed++;
+            }
+        }
+        $rate = count($critical) > 0 ? round(($assessed / count($critical)) * 100, 1) : null;
         return $this->metric(
-            '21.2.c', 'Encryption / cryptography',
-            $ratio, $ratio === null ? '' : '%',
-            $this->status($ratio, 80.0, 50.0),
-            ['implemented' => $implemented, 'applicable' => $applicable]
+            '21.2.d', 'Supply chain security',
+            $rate, $rate === null ? '' : '%',
+            $rate === null ? 'na' : $this->status($rate, 90.0, 60.0),
+            ['critical_suppliers' => count($critical), 'assessed' => $assessed]
         );
     }
 
-    /** Art. 21.2.d — vulnerability + patch management. */
-    private function vulnerabilityManagement(): array
-    {
-        $totalPatches = $this->patchRepository->count([]);
-        $deployed = $this->patchRepository->count(['status' => 'deployed']);
-        $failed = $this->patchRepository->count(['status' => 'failed']);
-        $patchRate = $totalPatches > 0 ? round(($deployed / $totalPatches) * 100, 1) : null;
-
-        $openVulns = $this->vulnerabilityRepository->count(['status' => 'open']);
-        $criticalOpenVulns = $this->vulnerabilityRepository->count(['status' => 'open', 'severity' => 'critical']);
-
-        return $this->metric(
-            '21.2.d', 'Vulnerability / patch management',
-            $patchRate, $patchRate === null ? '' : '%',
-            $criticalOpenVulns > 0 ? 'danger' : $this->status($patchRate, 90.0, 70.0),
-            [
-                'patches_total' => $totalPatches,
-                'patches_deployed' => $deployed,
-                'patches_failed' => $failed,
-                'open_vulnerabilities' => $openVulns,
-                'open_critical_vulnerabilities' => $criticalOpenVulns,
-            ]
-        );
-    }
-
-    /** Art. 21.2.e — security in system acquisition, development and maintenance. */
+    /** Art. 21(2)(e) — security in system acquisition, development and maintenance. */
     private function secureSdlc(?Tenant $tenant): array
     {
         $implemented = $this->controlsImplementedMatching('8.2', $tenant);
@@ -174,130 +204,156 @@ final class Nis2ComplianceService
         );
     }
 
-    /** Art. 21.2.f — supply-chain security (supplier assessments). */
-    private function supplyChainSecurity(?Tenant $tenant): array
+    /**
+     * Art. 21(2)(f) — effectiveness assessment of cybersecurity measures
+     * (ISO 27001 Clause 9.1 / 9.3 proxy: management-review completion rate).
+     * A completed management review demonstrates the organisation evaluates
+     * the effectiveness of its security controls periodically.
+     */
+    private function effectivenessAssessment(?Tenant $tenant): array
     {
-        if ($this->supplierRepository === null) {
-            return $this->metricNa('21.2.f', 'Supply chain security');
+        if ($this->managementReviewRepository === null) {
+            return $this->metricNa('21.2.f', 'Effectiveness assessment');
         }
-        $critical = $this->supplierRepository->findBy(['criticality' => ['critical', 'high']]);
-        $assessed = 0;
-        foreach ($critical as $supplier) {
-            if (method_exists($supplier, 'getLastSecurityAssessment') && $supplier->getLastSecurityAssessment() !== null) {
-                $assessed++;
-            }
+        $total = $this->managementReviewRepository->count([]);
+        if ($total === 0) {
+            return $this->metric(
+                '21.2.f', 'Effectiveness assessment',
+                null, '',
+                'info',
+                ['total_reviews' => 0, 'completed' => 0]
+            );
         }
-        $rate = count($critical) > 0 ? round(($assessed / count($critical)) * 100, 1) : null;
+        $completed = $this->managementReviewRepository->count(['status' => ManagementReviewStatus::Completed->value]);
+        $rate = round(($completed / $total) * 100, 1);
         return $this->metric(
-            '21.2.f', 'Supply chain security',
-            $rate, $rate === null ? '' : '%',
-            $rate === null ? 'na' : $this->status($rate, 90.0, 60.0),
-            ['critical_suppliers' => count($critical), 'assessed' => $assessed]
+            '21.2.f', 'Effectiveness assessment',
+            $rate, '%',
+            $this->status($rate, 80.0, 50.0),
+            ['total_reviews' => $total, 'completed' => $completed]
         );
     }
 
-    /** Art. 21.2.g — human-resources security / training completion. */
-    private function hrSecurity(?Tenant $tenant): array
+    /**
+     * Art. 21(2)(g) — cyber hygiene practices + cybersecurity training for staff.
+     * Proxy: training completion rate (same semantic as prior hrSecurity() method).
+     */
+    private function cyberHygieneAndTraining(?Tenant $tenant): array
     {
         if ($this->trainingRepository === null) {
-            return $this->metricNa('21.2.g', 'Human resources security');
+            return $this->metricNa('21.2.g', 'Cyber hygiene & training');
         }
         $allTrainings = $this->trainingRepository->findAll();
         $completed = 0;
-        $totalAssigned = 0;
         foreach ($allTrainings as $training) {
-            if (method_exists($training, 'getAttendees')) {
-                $attendees = $training->getAttendees();
-                if ($attendees !== null) {
-                    $totalAssigned += is_array($attendees) ? count($attendees) : 1;
-                }
-            }
             if (method_exists($training, 'getStatus') && $training->getStatus() === TrainingStatus::Completed->value) {
                 $completed++;
             }
         }
         $rate = count($allTrainings) > 0 ? round(($completed / count($allTrainings)) * 100, 1) : null;
         return $this->metric(
-            '21.2.g', 'HR security / training',
+            '21.2.g', 'Cyber hygiene & training',
             $rate, $rate === null ? '' : '%',
             $rate === null ? 'na' : $this->status($rate, 85.0, 60.0),
             ['trainings_total' => count($allTrainings), 'completed' => $completed]
         );
     }
 
-    /** Art. 21.2.h — access control (active users vs. users with role). */
-    private function accessControl(): array
-    {
-        $totalActive = $this->userRepository->count(['isActive' => true]);
-        $withRoles = 0;
-        $users = $this->userRepository->findBy(['isActive' => true]);
-        foreach ($users as $user) {
-            $roles = array_diff($user->getRoles(), ['ROLE_USER']); // drop default
-            if ($roles !== []) {
-                $withRoles++;
-            }
-        }
-        $rate = $totalActive > 0 ? round(($withRoles / $totalActive) * 100, 1) : null;
-        return $this->metric(
-            '21.2.h', 'Access control / RBAC',
-            $rate, $rate === null ? '' : '%',
-            $this->status($rate, 80.0, 50.0),
-            ['users_active' => $totalActive, 'users_with_role' => $withRoles]
-        );
-    }
-
-    /** Art. 21.2.i — asset management (inventory + classification). */
-    private function assetManagement(?Tenant $tenant): array
-    {
-        if ($this->assetRepository === null) {
-            return $this->metricNa('21.2.i', 'Asset management');
-        }
-        $total = $this->assetRepository->count([]);
-        $classified = 0;
-        foreach ($this->assetRepository->findAll() as $asset) {
-            if (method_exists($asset, 'getConfidentialityValue')
-                && $asset->getConfidentialityValue() !== null
-                && $asset->getConfidentialityValue() > 0) {
-                $classified++;
-            }
-        }
-        $rate = $total > 0 ? round(($classified / $total) * 100, 1) : null;
-        return $this->metric(
-            '21.2.i', 'Asset management',
-            $rate, $rate === null ? '' : '%',
-            $this->status($rate, 90.0, 70.0),
-            ['assets_total' => $total, 'assets_classified' => $classified]
-        );
-    }
-
-    /** Art. 21.2.j — business continuity / crisis management. */
-    private function businessContinuity(?Tenant $tenant): array
-    {
-        if ($this->bcPlanRepository === null) {
-            return $this->metricNa('21.2.j', 'Business continuity');
-        }
-        $activePlans = $this->bcPlanRepository->count(['status' => 'active']);
-        $allPlans = $this->bcPlanRepository->count([]);
-        $rate = $allPlans > 0 ? round(($activePlans / $allPlans) * 100, 1) : null;
-        return $this->metric(
-            '21.2.j', 'Business continuity / crisis management',
-            $rate, $rate === null ? '' : '%',
-            $rate === null ? 'na' : $this->status($rate, 80.0, 50.0),
-            ['plans_total' => $allPlans, 'plans_active' => $activePlans]
-        );
-    }
-
-    /** Art. 21.2.k — cryptographic controls policy (post-quantum readiness). */
+    /**
+     * Art. 21(2)(h) — cryptography and encryption (use of cryptography policy,
+     * post-quantum readiness). Proxy: A.8.24 control implementation rate.
+     */
     private function cryptographicControls(?Tenant $tenant): array
     {
         $implemented = $this->controlsImplementedMatching('8.24', $tenant);
         $applicable = $this->controlsApplicableMatching('8.24', $tenant);
         $ratio = $applicable > 0 ? round(($implemented / $applicable) * 100, 1) : null;
         return $this->metric(
-            '21.2.k', 'Cryptographic controls policy',
+            '21.2.h', 'Cryptographic controls policy',
             $ratio, $ratio === null ? '' : '%',
             $this->status($ratio, 80.0, 50.0),
             ['implemented' => $implemented, 'applicable' => $applicable]
+        );
+    }
+
+    /**
+     * Art. 21(2)(i) — HR security + access control + asset management.
+     * Combined metric: average of (a) RBAC coverage (users with non-default role)
+     * and (b) asset classification rate. When the asset module is inactive,
+     * falls back to the RBAC rate alone.
+     */
+    private function accessControlAndAssetMgmt(?Tenant $tenant): array
+    {
+        // Access control sub-metric
+        $totalActive = $this->userRepository->count(['isActive' => true]);
+        $withRoles = 0;
+        $users = $this->userRepository->findBy(['isActive' => true]);
+        foreach ($users as $user) {
+            $roles = array_diff($user->getRoles(), ['ROLE_USER']); // drop default ROLE_USER
+            if ($roles !== []) {
+                $withRoles++;
+            }
+        }
+        $rbacRate = $totalActive > 0 ? round(($withRoles / $totalActive) * 100, 1) : null;
+
+        // Asset management sub-metric
+        if ($this->assetRepository !== null) {
+            $totalAssets = $this->assetRepository->count([]);
+            $classified = 0;
+            foreach ($this->assetRepository->findAll() as $asset) {
+                if (method_exists($asset, 'getConfidentialityValue')
+                    && $asset->getConfidentialityValue() !== null
+                    && $asset->getConfidentialityValue() > 0) {
+                    $classified++;
+                }
+            }
+            $assetRate = $totalAssets > 0 ? round(($classified / $totalAssets) * 100, 1) : null;
+        } else {
+            $assetRate = null;
+        }
+
+        // Combined: average if both available, fallback to whichever is non-null
+        if ($rbacRate !== null && $assetRate !== null) {
+            $combined = round(($rbacRate + $assetRate) / 2.0, 1);
+        } elseif ($rbacRate !== null) {
+            $combined = $rbacRate;
+        } elseif ($assetRate !== null) {
+            $combined = $assetRate;
+        } else {
+            $combined = null;
+        }
+
+        return $this->metric(
+            '21.2.i', 'HR security / access control / asset management',
+            $combined, $combined === null ? '' : '%',
+            $combined === null ? 'na' : $this->status($combined, 80.0, 50.0),
+            [
+                'users_active' => $totalActive,
+                'users_with_role' => $withRoles,
+                'rbac_rate' => $rbacRate,
+                'asset_classification_rate' => $assetRate,
+            ]
+        );
+    }
+
+    /**
+     * Art. 21(2)(j) — multi-factor authentication (MFA) + secured communications.
+     * Proxy: MFA adoption rate across active users.
+     */
+    private function authentication(): array
+    {
+        $total = $this->userRepository->count(['isActive' => true]);
+        $withMfa = $this->mfaTokenRepository->createQueryBuilder('m')
+            ->select('COUNT(DISTINCT m.user)')
+            ->where('m.isActive = true')
+            ->getQuery()
+            ->getSingleScalarResult();
+        $rate = $total > 0 ? round(((int) $withMfa / $total) * 100, 1) : null;
+        return $this->metric(
+            '21.2.j', 'MFA / secured communications',
+            $rate, $rate === null ? '' : '%',
+            $this->status($rate, 90.0, 60.0),
+            ['users_total' => $total, 'users_with_mfa' => (int) $withMfa]
         );
     }
 
@@ -341,8 +397,9 @@ final class Nis2ComplianceService
     }
 
     /**
-     * Weighted overall NIS2 score across the eleven Art. 21.2 letters.
+     * Weighted overall NIS2 score across the ten Art. 21(2) letters (a..j).
      * Letters without applicable data are excluded from the average.
+     * Weights reflect regulatory criticality per directive text and ENISA guidance.
      *
      * @param array<string, array> $letters
      * @return array{score: float, weighted: array<string,float>, applicable_count: int}
@@ -350,9 +407,16 @@ final class Nis2ComplianceService
     private function overallScore(array $letters): array
     {
         $weights = [
-            '21.2.a' => 1.0, '21.2.b' => 1.0, '21.2.c' => 1.0, '21.2.d' => 1.2,
-            '21.2.e' => 0.9, '21.2.f' => 1.0, '21.2.g' => 0.8, '21.2.h' => 1.0,
-            '21.2.i' => 0.9, '21.2.j' => 1.1, '21.2.k' => 0.8,
+            '21.2.a' => 1.0, // risk management policies
+            '21.2.b' => 1.2, // incident handling (critical — mandatory NIS2 Art. 23 link)
+            '21.2.c' => 1.1, // BCM / business continuity
+            '21.2.d' => 1.0, // supply chain security
+            '21.2.e' => 0.9, // secure development
+            '21.2.f' => 0.8, // effectiveness assessment
+            '21.2.g' => 0.8, // cyber hygiene + training
+            '21.2.h' => 1.0, // cryptography
+            '21.2.i' => 1.0, // HR security / access control / asset mgmt
+            '21.2.j' => 1.1, // MFA + secured communications (critical)
         ];
         $sum = 0.0;
         $weightSum = 0.0;
