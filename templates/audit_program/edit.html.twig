@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'audit_program' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'audit_program.action.edit'|trans }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.audit_programs'|trans({}, 'nav'), url: path('app_audit_program_index', {_locale: app.request.locale}) },
+        { label: program.name, url: path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) },
+        { label: 'audit_program.action.edit'|trans }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'nav-pencil-square', label: 'audit_program.action.edit'|trans },
+    title: program.name,
+    subtitle: 'audit_program.page.subtitle'|trans
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            {{ form_start(form) }}
+            {% include '_components/_auto_form.html.twig' with {
+                form: form,
+                exclude_fields: ['riskCategories'],
+                sections: {
+                    'audit_program.section.basic_info': ['name', 'description', 'objectives', 'scope', 'frequency'],
+                    'audit_program.section.dates': ['startDate', 'endDate'],
+                    'audit_program.section.responsibility': ['programmeOwner'],
+                    'audit_program.section.status': ['status']
+                }
+            } %}
+            <div class="d-flex gap-2 justify-content-end mt-3">
+                <a href="{{ path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) }}" class="btn btn-outline-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
+                <button type="submit" class="btn btn-primary">{{ 'common.save'|trans({}, 'messages') }}</button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+</main>
+{% endblock %}
