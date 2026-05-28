@@ -13,10 +13,12 @@ namespace App\Service\Setup;
  * wizard-session data.
  *
  * Public API:
- *   - getRecommendedFrameworks(industry, employeeCount, country) → string[]
- *   - getRecommendedModules(industry, employeeCount) → string[]
- *   - getRecommendedFrameworksForIndustries(industries[], employeeCount, country) → string[]
  *   - getRecommendedModulesForIndustries(industries[], employeeCount) → string[]
+ *   - getRecommendedFrameworksForIndustries(industries[], employeeCount, country) → string[]
+ *
+ * Single-industry helpers are private implementation details:
+ *   - getRecommendedFrameworks() — called only by getRecommendedFrameworksForIndustries()
+ *   - getRecommendedModules()    — called only by getRecommendedModulesForIndustries()
  * SMB-2 baseline application lives in {@see SetupBaselineApplier}.
  */
 final class SetupRecommendationEngine
@@ -37,7 +39,7 @@ final class SetupRecommendationEngine
      * @param string $country        Country code (DE, AT, CH, etc.)
      * @return string[]              List of recommended framework codes
      */
-    public function getRecommendedFrameworks(string $industry, string $employeeCount, string $country): array
+    private function getRecommendedFrameworks(string $industry, string $employeeCount, string $country): array
     {
         $recommendations = ['ISO27001']; // Always recommend ISO 27001
 
@@ -180,7 +182,7 @@ final class SetupRecommendationEngine
      * @param string $employeeCount Employee count range
      * @return string[]             List of recommended module keys
      */
-    public function getRecommendedModules(string $industry, string $employeeCount): array
+    private function getRecommendedModules(string $industry, string $employeeCount): array
     {
         $recommendations = [];
 
