@@ -190,6 +190,12 @@ class BackupService
         'DoraDataFlow',
         'DoraExitPlan',
         'DoraSubcontractor',
+
+        // Audit-Program (ISO 19011 §5.4 Jahresplan) — Phase 2.5
+        'AuditProgram',             // FK: Tenant, User — links to InternalAudit children
+
+        // TISAX BYO-Import disclaimer-trail (legal evidence)
+        'TisaxLicenseConfirmation', // FK: Tenant, User — ISO 27001 Cl. 7.5.3 audit trail
     ];
 
     /**
