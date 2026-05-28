@@ -348,3 +348,30 @@ bcm_officer:
     empty:
         no_approvals_title: 'Keine offenen Freigaben'
         no_approvals_text: 'Alle Freigabeanfragen sind bearbeitet.'
+
+# ── TISAX Per-Tier Statistics (shared across persona dashboards) ──────────────
+tisax:
+    section:
+        title: 'TISAX Reifegradübersicht'
+        subtitle: 'VDA-ISA 6 — Drei-Tier-Bewertung'
+    tier:
+        information_security:  'Informationssicherheit (Kap. 1–6)'
+        prototype_protection:  'Prototypenschutz (Kap. 7–8)'
+        data_protection:       'Datenschutz (Kap. 9 / DSGVO)'
+    label:
+        avg_maturity: 'Ø Reifegrad'
+        target:       'Ziel AL3'
+        gap:          'Lücke'
+        assessed:     'Bewertet'
+        total:        'Gesamt'
+        compliant:    'Konform'
+        not_compliant: 'Nicht konform'
+        not_applicable: 'Nicht anwendbar'
+        pct_compliant: 'Konformitätsquote'
+    grade:
+        critical: 'Kritisch'
+        amber:    'Verbesserungsbedarf'
+        green:    'Ziel erreicht'
+    empty:
+        no_tisax_title: 'Keine TISAX-Anforderungen'
+        no_tisax_text:  'Bisher wurden keine VDA-ISA-Anforderungen hochgeladen.'

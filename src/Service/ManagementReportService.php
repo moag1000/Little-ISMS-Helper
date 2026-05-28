@@ -7,6 +7,8 @@ namespace App\Service;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Enum\RiskTreatmentPlanStatus;
+use App\Service\TenantContext;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\Risk;
@@ -64,6 +66,8 @@ final class ManagementReportService
         private readonly TranslatorInterface $translator,
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
+        private readonly ?TisaxMaturityAssessmentService $tisaxAssessment = null,
+        private readonly ?TenantContext $tenantContext = null,
     ) {
     }
 
@@ -821,6 +825,31 @@ final class ManagementReportService
         $activePlans = array_filter($treatmentPlans, fn($p): bool => $p->getStatus() === RiskTreatmentPlanStatus::InProgress->value);
         $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetDate() !== null && $p->getTargetDate() < new DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value);
 
+        // TISAX per-tier breakdown for PDF report
+        $tisaxSection = null;
+        if ($this->tisaxAssessment !== null && $this->tenantContext !== null) {
+            $tenant = $this->tenantContext->getCurrentTenant();
+            if ($tenant !== null) {
+                $settings     = $tenant->getSettings() ?? [];
+                $tisaxEnabled = $settings['modules']['tisax'] ?? true;
+                if ($tisaxEnabled) {
+                    $framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'TISAX']);
+                    if ($framework !== null) {
+                        $agg = $this->tisaxAssessment->computeAggregate($framework, $tenant);
+                        if ($agg['total'] > 0) {
+                            $tisaxSection = [
+                                'average'  => $agg['average'],
+                                'assessed' => $agg['assessed'],
+                                'total'    => $agg['total'],
+                                'byTier'   => $agg['byTier'],
+                                'dp'       => $agg['dp'],
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
         return [
             'generated_at' => new DateTime(),
             'executive_data' => $executiveSummary,
@@ -833,6 +862,7 @@ final class ManagementReportService
                 'active' => count($activePlans),
                 'overdue' => count($overduePlans),
             ],
+            'tisax_section' => $tisaxSection,
         ];
     }
 

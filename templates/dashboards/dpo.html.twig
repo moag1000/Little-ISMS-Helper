@@ -228,6 +228,37 @@
     </section>
     {% endif %}
 
+
+    {# TISAX DP-Tier Compliance — DPO sees Data Protection chapter 9 (GDPR Art. 28) #}
+    {% if is_module_active('tisax') and dashboard.tisax_dp_aggregate is defined and dashboard.tisax_dp_aggregate is not null %}
+    <section class="fa-section mb-4" id="tisax-dp">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'tisax.section.title'|trans }}</h2>
+            <small class="text-muted">{{ 'tisax.tier.data_protection'|trans }}</small>
+        </div>
+        <div class="fa-section__body">
+            {% set dp = dashboard.tisax_dp_aggregate %}
+            {% set dpPct = dp.percent_compliant ?? (dp.total > 0 ? ((dp.compliant / dp.total) * 100)|round(1) : 0) %}
+            {% set dpVariant = dpPct < 60 ? 'danger' : (dpPct < 90 ? 'warning' : 'success') %}
+            <div class="kpi-grid d-grid grid-responsive-200 gap-3">
+                {{ _fa_feature_card.render({
+                    icon:    'nav-shield-lock',
+                    label:   'tisax.label.pct_compliant'|trans,
+                    value:   dpPct ~ ' %',
+                    variant: dpVariant,
+                    href:    path('app_compliance_wizard_assess', {wizard: 'tisax', _locale: app.request.locale})
+                }) }}
+                {{ _fa_feature_card.render({
+                    icon:    'status-warning',
+                    label:   'tisax.label.not_compliant'|trans,
+                    value:   dp.non_compliant ?? 0,
+                    variant: (dp.non_compliant ?? 0) > 0 ? 'danger' : 'success',
+                    href:    path('app_compliance_wizard_assess', {wizard: 'tisax', _locale: app.request.locale})
+                }) }}
+            </div>
+        </div>
+    </section>
+    {% endif %}
     {# DORA Obligation status — only for DORA-obligated tenants (CTPP/financial entity) #}
     {% if is_module_active('nis2_dora') and is_dora_obligated() %}
     <section class="mt-4">

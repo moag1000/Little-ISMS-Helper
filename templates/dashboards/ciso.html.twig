@@ -326,6 +326,44 @@
         </div>
     </div>
 
+
+    {# TISAX Per-Tier Maturity — only rendered when module active + requirements uploaded #}
+    {% if is_module_active('tisax') and dashboard.tisax_aggregate is defined and dashboard.tisax_aggregate is not null %}
+    <section class="fa-section mb-4 mt-4" id="tisax-maturity">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'tisax.section.title'|trans }}</h2>
+            <small class="text-muted">{{ 'tisax.section.subtitle'|trans }}</small>
+        </div>
+        <div class="fa-section__body">
+            <div class="kpi-grid d-grid grid-responsive-250 gap-4">
+                {% for tierKey, tier in dashboard.tisax_aggregate.byTier %}
+                    {% if tier.model == 'reifegrad' %}
+                        {% set avg = tier.average %}
+                        {% set target = 3 %}
+                        {% set variant = avg < 2 ? 'danger' : (avg < target ? 'warning' : 'success') %}
+                        {{ _fa_feature_card.render({
+                            icon:    'compliance-shield',
+                            label:   ('tisax.tier.' ~ tierKey)|trans,
+                            value:   avg ~ ' / 5',
+                            variant: variant,
+                            href:    path('app_compliance_wizard_assess', {wizard: 'tisax', _locale: app.request.locale})
+                        }) }}
+                    {% elseif tier.model == 'tristate' %}
+                        {% set pct = tier.percent_compliant %}
+                        {% set variant = pct < 60 ? 'danger' : (pct < 90 ? 'warning' : 'success') %}
+                        {{ _fa_feature_card.render({
+                            icon:    'nav-shield-lock',
+                            label:   ('tisax.tier.' ~ tierKey)|trans,
+                            value:   pct ~ ' %',
+                            variant: variant,
+                            href:    path('app_compliance_wizard_assess', {wizard: 'tisax', _locale: app.request.locale})
+                        }) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
     {# Last Updated Timestamp #}
     <div class="text-muted text-end small mt-3">
         {{ 'dashboard.last_updated'|trans({'%time%': 'now'|date('H:i')}, 'dashboard') }}

@@ -14,6 +14,7 @@ use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,6 +48,7 @@ class ComplianceManagerDashboardController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ComplianceRequirementRepository $requirementRepo,
         private readonly RoleDashboardService $roleDashboardService,
+        private readonly TisaxMaturityAssessmentService $tisaxAssessment,
     ) {
     }
 
@@ -122,6 +124,23 @@ class ComplianceManagerDashboardController extends AbstractController
         $pendingApprovals = $this->roleDashboardService->getPendingApprovals();
         $lifecycleStuck   = $this->roleDashboardService->getLifecycleStuck();
 
+        // TISAX full per-tier aggregate (IS + PP + DP) for compliance overview
+        $tisaxAggregate = null;
+        if ($tenant !== null) {
+            $settings = $tenant->getSettings() ?? [];
+            if ($settings['modules']['tisax'] ?? true) {
+                foreach ($this->frameworkRepo->findActiveFrameworks() as $fw) {
+                    if ((string) $fw->getCode() === 'TISAX') {
+                        $agg = $this->tisaxAssessment->computeAggregate($fw, $tenant);
+                        if ($agg['total'] > 0) {
+                            $tisaxAggregate = $agg;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
         return $this->render('dashboards/compliance_manager.html.twig', [
             'dashboard' => [
                 'frameworks'         => $frameworks,
@@ -136,6 +155,7 @@ class ComplianceManagerDashboardController extends AbstractController
                 'at_risk_count'      => $frameworkComparison['summary']['at_risk'] ?? 0,
                 'pending_approvals'  => $pendingApprovals,
                 'lifecycle_stuck'    => $lifecycleStuck,
+                'tisax_aggregate'    => $tisaxAggregate,
             ],
         ]);
     }

@@ -9,11 +9,14 @@ use App\Entity\DataBreach;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
+use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -39,6 +42,8 @@ class DpoDashboardControllerTest extends TestCase
     private MockObject $dpiaRepo;
     private MockObject $processingActivityRepo;
     private MockObject $roleDashboardService;
+    private TisaxMaturityAssessmentService $tisaxAssessment;
+    private MockObject $frameworkRepository;
     private MockObject $container;
     private MockObject $twig;
     private DpoDashboardController $controller;
@@ -51,6 +56,10 @@ class DpoDashboardControllerTest extends TestCase
         $this->dpiaRepo               = $this->createMock(DataProtectionImpactAssessmentRepository::class);
         $this->processingActivityRepo = $this->createMock(ProcessingActivityRepository::class);
         $this->roleDashboardService   = $this->createMock(RoleDashboardService::class);
+        // TisaxMaturityAssessmentService is final — instantiate with a null-returning EM stub.
+        $em = $this->createMock(EntityManagerInterface::class);
+        $this->tisaxAssessment        = new TisaxMaturityAssessmentService($em);
+        $this->frameworkRepository    = $this->createMock(ComplianceFrameworkRepository::class);
         $this->container              = $this->createMock(ContainerInterface::class);
         $this->twig                   = $this->createMock(Environment::class);
 
@@ -74,12 +83,17 @@ class DpoDashboardControllerTest extends TestCase
         $this->roleDashboardService->method('getPendingApprovals')->willReturn([]);
         $this->roleDashboardService->method('getLifecycleStuck')->willReturn([]);
 
+        // frameworkRepository returns null → no TISAX section rendered
+        $this->frameworkRepository->method('findOneBy')->willReturn(null);
+
         $this->controller = new DpoDashboardController(
             $this->tenantContext,
             $this->dataBreachRepo,
             $this->dpiaRepo,
             $this->processingActivityRepo,
             $this->roleDashboardService,
+            $this->tisaxAssessment,
+            $this->frameworkRepository,
         );
         $this->controller->setContainer($this->container);
     }
