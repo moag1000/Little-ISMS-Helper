@@ -39,6 +39,16 @@ tisax:
     disclaimer:
       title: 'Legal Confirmation — ENX Licence'
       legal_notice: 'Important: Licensing Notice'
+      enx_notice:
+        title: 'Legal Notice: Incomplete Catalogue (ENX Licence)'
+        body: 'The bundled TISAX framework is intentionally incomplete (10 of approximately 70 controls). The original VDA-ISA questions are licensed by the ENX Association and may not be distributed in software products.'
+        steps_heading: 'How to proceed:'
+        steps:
+          1: 'Obtain the ISA workbook from the '
+          2: 'Upload the workbook here (BYO-Import, next step)'
+          3: 'Conduct the maturity assessment — all ~70 controls will then be available'
+        after_import_label: 'After import'
+        after_import: 'Tenant-scoped requirements are created automatically. Cross-mapping to ISO 27001:2022 runs without further action.'
       body_1: 'The VDA-ISA (Information Security Assessment) catalogue is published by the VDA/ENX Association and is protected by copyright. The catalogue content cannot be shipped with this application.'
       body_2: 'Before uploading your workbook, you must confirm that:'
       bullet_1: 'You hold a valid, current ENX membership or licence that entitles you to use the VDA-ISA workbook.'

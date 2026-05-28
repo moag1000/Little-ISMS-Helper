@@ -2,6 +2,7 @@
 {% trans_default_domain 'tisax_isa' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'tisax.import.disclaimer.title'|trans({}, 'tisax_isa') }}{% endblock %}
 
@@ -31,6 +32,28 @@
 
     <div class="row justify-content-center mt-4">
         <div class="col-lg-8">
+
+            {# ── ENX Legal Notice: why the catalogue is incomplete + BYO-Import guide ── #}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', title: 'tisax.import.disclaimer.enx_notice.title'|trans({}, 'tisax_isa'), class: 'mb-4' } } %}
+                {% block alert_body %}
+                    {% trans_default_domain 'tisax_isa' %}
+                    <p class="fa-alert__message mb-2">{{ 'tisax.import.disclaimer.enx_notice.body'|trans({}, 'tisax_isa') }}</p>
+                    <p class="fa-alert__message fw-semibold mb-1">{{ 'tisax.import.disclaimer.enx_notice.steps_heading'|trans({}, 'tisax_isa') }}</p>
+                    <ol class="mb-2 ps-3">
+                        <li>
+                            {{ 'tisax.import.disclaimer.enx_notice.steps.1'|trans({}, 'tisax_isa') }}
+                            <a href="https://enx.com/tisax" target="_blank" rel="noopener noreferrer" class="fw-semibold">ENX Association (enx.com/tisax)</a>
+                        </li>
+                        <li>{{ 'tisax.import.disclaimer.enx_notice.steps.2'|trans({}, 'tisax_isa') }}</li>
+                        <li>{{ 'tisax.import.disclaimer.enx_notice.steps.3'|trans({}, 'tisax_isa') }}</li>
+                    </ol>
+                    <p class="fa-alert__message small mb-0">
+                        <strong>{{ 'tisax.import.disclaimer.enx_notice.after_import_label'|trans({}, 'tisax_isa') }}:</strong>
+                        {{ 'tisax.import.disclaimer.enx_notice.after_import'|trans({}, 'tisax_isa') }}
+                    </p>
+                {% endblock %}
+            {% endembed %}
+
             <div class="card border-warning">
                 <div class="card-body">
                     <h5 class="card-title text-warning">
