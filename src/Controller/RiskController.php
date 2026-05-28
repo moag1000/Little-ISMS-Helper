@@ -49,6 +49,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Util\CsvSanitizer;
 
 class RiskController extends AbstractController
 {
@@ -368,7 +369,7 @@ class RiskController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
+            fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $row), ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -1475,21 +1476,6 @@ class RiskController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
-    }
-
-    /**
-     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
-     * Prefixes values starting with =, +, -, @, TAB or CR with a single quote.
-     */
-    private function sanitizeCsvValue(mixed $value): mixed
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-            return "'" . $value;
-        }
-        return $value;
     }
 
     /**

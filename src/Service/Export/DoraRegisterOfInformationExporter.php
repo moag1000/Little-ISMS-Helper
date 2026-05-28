@@ -7,6 +7,7 @@ namespace App\Service\Export;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Repository\SupplierRepository;
+use App\Util\CsvSanitizer;
 
 /**
  * DORA Register of Information (ROI) CSV exporter.
@@ -76,7 +77,7 @@ final class DoraRegisterOfInformationExporter
         fputcsv($handle, self::COLUMNS, ',', '"', '\\');
 
         foreach ($suppliers as $supplier) {
-            fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $this->buildRow($supplier, $entityLei)), ',', '"', '\\');
+            fputcsv($handle, array_map([CsvSanitizer::class, 'sanitize'], $this->buildRow($supplier, $entityLei)), ',', '"', '\\');
         }
 
         rewind($handle);
@@ -170,20 +171,5 @@ final class DoraRegisterOfInformationExporter
             static fn(string $v): bool => $v !== '',
         ));
         return implode('|', $normalized);
-    }
-
-    /**
-     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
-     * Prefixes values starting with =, +, -, @, TAB or CR with a single quote.
-     */
-    private function sanitizeCsvValue(mixed $value): mixed
-    {
-        if (!is_string($value)) {
-            return $value;
-        }
-        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-            return "'" . $value;
-        }
-        return $value;
     }
 }

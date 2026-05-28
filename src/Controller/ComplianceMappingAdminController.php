@@ -75,14 +75,14 @@ class ComplianceMappingAdminController extends AbstractController
             if (!$framework1Id || !$framework2Id) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Beide Framework IDs müssen angegeben werden!'
+                    'message' => $this->getTranslator()->trans('mapping_admin.error.both_ids_required', [], 'compliance'),
                 ], Response::HTTP_BAD_REQUEST);
             }
 
             if ($framework1Id === $framework2Id) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Die beiden Frameworks müssen unterschiedlich sein!'
+                    'message' => $this->getTranslator()->trans('mapping_admin.error.frameworks_must_differ', [], 'compliance'),
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -95,7 +95,7 @@ class ComplianceMappingAdminController extends AbstractController
             if (!$framework1 || !$framework2) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Ein oder beide Frameworks wurden nicht gefunden!'
+                    'message' => $this->getTranslator()->trans('mapping_admin.error.frameworks_not_found', [], 'compliance'),
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -359,7 +359,7 @@ class ComplianceMappingAdminController extends AbstractController
             if (!$iso27001) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'ISO 27001 Framework muss zuerst geladen werden!'
+                    'message' => $this->getTranslator()->trans('mapping_admin.error.iso_required', [], 'compliance'),
                 ]);
             }
 
@@ -368,7 +368,7 @@ class ComplianceMappingAdminController extends AbstractController
             if (count($frameworks) < 2) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'Mindestens 2 Frameworks müssen geladen sein!'
+                    'message' => $this->getTranslator()->trans('mapping_admin.error.min_two_frameworks', [], 'compliance'),
                 ]);
             }
 
@@ -579,20 +579,20 @@ class ComplianceMappingAdminController extends AbstractController
                 ? round(($processedSoFar / $totalPotentialMappings) * 100, 1)
                 : 100;
 
-            $message = sprintf(
-                'Batch %d: %d Mappings erstellt',
-                $currentBatch + 1,
-                $mappingsCreated
-            );
+            $t = $this->getTranslator();
+            $message = $t->trans('mapping_admin.progress.batch_created', [
+                '%batch%' => $currentBatch + 1,
+                '%count%' => $mappingsCreated,
+            ], 'compliance');
             if ($hasMore) {
-                $message .= sprintf(' (%d%% - %d/%d verarbeitet, %d verbleibend)',
-                    $progressPercent,
-                    $processedSoFar,
-                    $totalPotentialMappings,
-                    $remaining
-                );
+                $message .= $t->trans('mapping_admin.progress.batch_progress', [
+                    '%percent%' => $progressPercent,
+                    '%processed%' => $processedSoFar,
+                    '%total%' => $totalPotentialMappings,
+                    '%remaining%' => $remaining,
+                ], 'compliance');
             } else {
-                $message .= ' - Alle Mappings erstellt!';
+                $message .= $t->trans('mapping_admin.progress.all_done', [], 'compliance');
             }
 
             // Additional debug info to help diagnose mapping issues
@@ -659,7 +659,7 @@ class ComplianceMappingAdminController extends AbstractController
         } catch (Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Fehler beim Erstellen der Mappings: ' . $e->getMessage()
+                'message' => $this->getTranslator()->trans('compliance.auto_mapping.error', ['%reason%' => $e->getMessage()], 'compliance'),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
