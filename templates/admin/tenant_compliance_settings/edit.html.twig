@@ -106,7 +106,7 @@
                         {% trans_default_domain 'admin' %}
                         <tr class="fa-table__row">
                             <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.mfa_roles'|trans }}</th>
-                            <td class="fa-table__cell"><code>{{ globals.mfa_required_roles }}</code></td>
+                            <td class="fa-table__cell"><code>{{ globals.mfa_required_roles is iterable ? globals.mfa_required_roles|join(', ') : globals.mfa_required_roles }}</code></td>
                         </tr>
                         <tr class="fa-table__row">
                             <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.password_min_length'|trans }}</th>
