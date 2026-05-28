@@ -10,6 +10,7 @@ nav:
     fte_tracking: 'FTE-Tracking'
     interested_parties: 'Interessierte Parteien'
     soa: 'SoA (Anwendbarkeitserklärung)'
+    effectiveness_monitor: 'Wirksamkeits-Monitor'
     assets: Assets
     suppliers: Lieferanten
     risks: Risiken
@@ -84,6 +85,7 @@ nav:
     # Audit-V3 ME-1..ME-12: Module discoverability fix.
     consent: 'Einwilligungen (Art. 7)'
     data_subject_request: 'Betroffenenrechte (Art. 15-22)'
+    audit_programs: 'Audit-Programme'
     audit_findings: 'Audit-Findings'
     audit_freeze: 'Audit-Freeze (SoA-Stichtag)'
     audit_package: 'Audit-Paket (Framework-Export)'
@@ -180,6 +182,7 @@ nav:
             context: 'Organisationskontext und Anwendungsbereich'
             interested_parties: 'Stakeholder und Anforderungen'
             soa: 'Anwendbarkeitserklärung (ISO 27001 Anhang A)'
+            effectiveness_monitor: 'Maßnahmen-Wirksamkeit verfolgen (ISO 27001 §9.1 / A.5.35/5.36)'
             objectives: 'ISMS-Ziele und Vorgaben'
             assets: 'IT- und Informationsassets-Inventar'
             suppliers: 'Drittanbieter und Lieferanten'
@@ -244,6 +247,7 @@ nav:
             # Audit-V3 ME-1..ME-12: Module discoverability fix — descriptions.
             consent: 'Einwilligungen für personenbezogene Daten (DSGVO Art. 7)'
             data_subject_request: 'Auskunfts-, Lösch- und Berichtigungsanfragen (DSGVO Art. 15-22)'
+            audit_programs: 'ISO 19011 §5.4 Jahresprogramme für interne Audits verwalten'
             audit_findings: 'Strukturierte Audit-Findings inkl. Schwere und Status'
             audit_freeze: 'SoA-Stichtag für Audits einfrieren (versiegelt SHA-256)'
             audit_package: 'Framework-spezifisches Audit-Paket exportieren'

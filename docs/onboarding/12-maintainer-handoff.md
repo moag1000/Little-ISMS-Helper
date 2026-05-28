@@ -244,6 +244,7 @@ This design is ISO-audit-defensible per the ADR.
 
 - **ENX member portal:** [https://enx.com](https://enx.com) (login required for VDA-ISA workbook)
 - **TISAX participant portal:** [https://portal.enx.com](https://portal.enx.com)
+- **VDA-ISA licensing analysis:** [docs/tisax/ENX_VDA_ISA_LICENSING_ANALYSIS.md](../tisax/ENX_VDA_ISA_LICENSING_ANALYSIS.md) — use-case classification, open questions, template email to ENX legal
 
 ### EU Regulations
 
