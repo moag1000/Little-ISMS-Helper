@@ -7,11 +7,13 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\Incident;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\MfaTokenRepository;
 use App\Repository\UserRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Repository\PatchRepository;
+use App\Service\Nis2Art21CoverageService;
 use App\Service\Nis2ComplianceService;
 use App\Service\PdfExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,6 +37,7 @@ class Nis2ComplianceController extends AbstractController
 {
     public function __construct(
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly MfaTokenRepository $mfaTokenRepository,
         private readonly UserRepository $userRepository,
@@ -43,6 +46,7 @@ class Nis2ComplianceController extends AbstractController
         private readonly PdfExportService $pdfExportService,
         private readonly TranslatorInterface $translator,
         private readonly Nis2ComplianceService $nis2ComplianceService,
+        private readonly Nis2Art21CoverageService $nis2Art21CoverageService,
     ) {
     }
 
@@ -174,6 +178,49 @@ class Nis2ComplianceController extends AbstractController
             'letters' => $payload['letters'] ?? [],
             'article23' => $payload['article23'] ?? null,
             'overall' => $payload['overall'] ?? null,
+        ]);
+    }
+
+    /**
+     * NIS2 Art. 21(2) Requirements Catalogue
+     *
+     * Shows the 10 Art. 21(2)(a)-(j) measures as first-class ComplianceRequirement rows
+     * with live coverage metrics merged from Nis2ComplianceService.
+     */
+    #[Route('/nis2-compliance/requirements', name: 'app_nis2_art21_requirements', methods: ['GET'])]
+    public function art21Requirements(): Response
+    {
+        $nis2Framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'NIS2']);
+
+        if (!$nis2Framework) {
+            $this->addFlash('info', $this->translator->trans('nis2.not_installed', [], 'nis2'));
+
+            return $this->redirectToRoute('app_compliance_index');
+        }
+
+        if (!$nis2Framework->isActive()) {
+            $this->addFlash('warning', $this->translator->trans('nis2.not_active', [], 'nis2'));
+
+            return $this->redirectToRoute('app_compliance_index');
+        }
+
+        $coverageRollup = $this->nis2Art21CoverageService->getCoverageRollup();
+
+        // Requirements loaded in DB for this framework
+        $dbRequirements = $this->complianceRequirementRepository->findByFramework($nis2Framework);
+
+        // Counts for page header KPIs
+        $totalRequirements = count($coverageRollup);
+        $criticalCount = count(array_filter($coverageRollup, fn ($r) => $r['priority'] === 'critical'));
+        $loadedInDb = count($dbRequirements);
+
+        return $this->render('nis2_compliance/requirements.html.twig', [
+            'framework'          => $nis2Framework,
+            'coverage_rollup'    => $coverageRollup,
+            'total_requirements' => $totalRequirements,
+            'critical_count'     => $criticalCount,
+            'loaded_in_db'       => $loadedInDb,
+            'db_requirements'    => $dbRequirements,
         ]);
     }
 
