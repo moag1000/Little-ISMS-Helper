@@ -48,12 +48,20 @@
                                         {{ 'library.action.file'|trans({}, 'library') }}:
                                         <code>{{ lib.filename }}.yaml</code>
                                     </p>
-                                    <form method="post" action="{{ path('admin_library_import', { type: lib.type }) }}">
-                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
-                                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
-                                            {{ 'library.action.import'|trans({}, 'library') }}
-                                        </button>
-                                    </form>
+                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                        <form method="post" action="{{ path('admin_library_import', { type: lib.type }) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_library_import_' ~ lib.type) }}">
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
+                                                <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                                                {{ 'library.action.import'|trans({}, 'library') }}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <p class="text-muted small mb-0">
+                                            <i class="fa-icon fa-icon--nav-shield-lock" aria-hidden="true"></i>
+                                            {{ 'library.action.import_super_admin_only'|trans({}, 'library') }}
+                                        </p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
