@@ -61,10 +61,14 @@ class LocationController extends AbstractController
             return $this->redirectToRoute('app_location_show', ['id' => $location->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('location/new.html.twig', [
             'location' => $location,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/location/{id}', name: 'app_location_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -95,10 +99,14 @@ class LocationController extends AbstractController
             return $this->redirectToRoute('app_location_show', ['id' => $location->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('location/edit.html.twig', [
             'location' => $location,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/location/{id}/delete', name: 'app_location_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

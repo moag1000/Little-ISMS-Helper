@@ -82,10 +82,14 @@ class PrototypeProtectionAssessmentController extends AbstractController
             return $this->redirectToRoute('app_prototype_protection_show', ['id' => $assessment->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('prototype_protection/new.html.twig', [
             'assessment' => $assessment,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -117,10 +121,14 @@ class PrototypeProtectionAssessmentController extends AbstractController
             return $this->redirectToRoute('app_prototype_protection_show', ['id' => $assessment->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('prototype_protection/edit.html.twig', [
             'assessment' => $assessment,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     #[Route('/{id}/pdf', name: 'pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
