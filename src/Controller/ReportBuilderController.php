@@ -457,10 +457,14 @@ class ReportBuilderController extends AbstractController
             return $this->redirectToRoute('report_builder_settings_edit', ['id' => $report->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('report_builder/settings_edit.html.twig', [
             'report' => $report,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     /**

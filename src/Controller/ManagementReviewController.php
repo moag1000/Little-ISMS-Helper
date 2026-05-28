@@ -73,10 +73,14 @@ class ManagementReviewController extends AbstractController
             return $this->redirectToRoute('app_management_review_show', ['id' => $managementReview->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('management_review/new.html.twig', [
             'review' => $managementReview,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/management-review/{id}', name: 'app_management_review_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(ManagementReview $managementReview): Response
@@ -100,10 +104,14 @@ class ManagementReviewController extends AbstractController
             return $this->redirectToRoute('app_management_review_show', ['id' => $managementReview->getId()]);
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('management_review/edit.html.twig', [
             'review' => $managementReview,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
     #[Route('/management-review/{id}/pdf', name: 'app_management_review_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]

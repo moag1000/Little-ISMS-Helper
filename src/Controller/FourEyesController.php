@@ -89,10 +89,14 @@ final class FourEyesController extends AbstractController
             return $this->redirectToRoute('app_four_eyes_inbox');
         }
 
+        $status = ($form->isSubmitted() && !$form->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
         return $this->render('four_eyes/edit.html.twig', [
             'approvalRequest' => $approvalRequest,
             'form' => $form,
-        ]);
+        ], new Response(status: $status));
     }
 
     private function assertSameTenant(FourEyesApprovalRequest $request): void
