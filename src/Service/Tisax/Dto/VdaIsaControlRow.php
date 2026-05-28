@@ -58,15 +58,23 @@ final readonly class VdaIsaControlRow
 
     /**
      * Map domain prefix to the three TISAX assessment tiers.
-     * Domain 1 = Information Security, domain 8 = Prototype Protection,
-     * domains 2-7 = Data Protection context.
+     *
+     * VDA-ISA 6.x official chapter structure:
+     *   Information Security: domains 1-6
+     *   Prototype Protection: domains 7-9
+     *   Data Protection:      domains 10-12
      */
     public function getTier(): string
     {
-        return match ($this->getDomainPrefix()) {
-            '8'     => 'prototype_protection',
-            '2', '3' => 'data_protection',
-            default  => 'information_security',
-        };
+        $domain = (int) $this->getDomainPrefix();
+
+        if ($domain >= 10 && $domain <= 12) {
+            return 'data_protection';
+        }
+        if ($domain >= 7 && $domain <= 9) {
+            return 'prototype_protection';
+        }
+        // domains 1-6 (and any unrecognised value) → information_security
+        return 'information_security';
     }
 }
