@@ -5,9 +5,20 @@
  # L1 triggers use data-mega-menu-target="trigger" + data-category="<id>"
  # to activate the corresponding flyout panel (data-mega-menu-target="panel").
  # Direct links (Mein Tag, Aktivität) have no trigger/panel.
+ #
+ # Phase 4.1 WCAG 2.2 AA Audit:
+ #   - role="menubar" aria-orientation="vertical" on <nav>
+ #   - role="menuitem" + aria-haspopup="menu" on L1 trigger buttons
+ #   - Focus-visible rings bumped to 3px with glow-shadow (see CSS)
+ # Phase 4.4 Live-Badges:
+ #   - badge spans use data-controller="live-badge" for polling /api/live-counts
+ #   - aria-live="polite" + aria-atomic="true" (WCAG 2.2 SC 4.1.3)
  #}
 {% set current_route = app.request.attributes.get('_route') %}
 {% set _locale = app.request.locale %}
+
+{# Phase 4.4: locale-aware URL for the live-counts endpoint (locale-prefixed route) #}
+{% set _live_counts_url = path('api_live_counts') %}
 
 {# ── Prominent hero cards: Mein Tag + Aktivität ── #}
 <div class="sb-prominent">
@@ -21,6 +32,14 @@
             <span class="sb-prominent__label">{{ 'nav.my_day'|trans({}, 'nav') }}</span>
             <span class="sb-prominent__sub">{{ 'nav.mega.desc.my_day_short'|trans({}, 'nav') }}</span>
         </span>
+        {# Phase 4.4 Live-Badge: polls /api/live-counts every 30s (tab-visibility-aware) #}
+        <span class="sb-prominent__badge"
+              data-controller="live-badge"
+              data-live-badge-source-value="my_day"
+              data-live-badge-url-value="{{ _live_counts_url }}"
+              data-live-badge-target="count"
+              aria-live="polite"
+              aria-atomic="true">0</span>
     </a>
     <a class="sb-prominent__item"
        href="{{ path('app_activity_feed') }}"
@@ -32,20 +51,30 @@
             <span class="sb-prominent__label">{{ 'nav.activity'|trans({}, 'nav') }}</span>
             <span class="sb-prominent__sub">{{ 'nav.mega.desc.activity_short'|trans({}, 'nav') }}</span>
         </span>
+        {# Phase 4.4 Live-Badge: activity feed entry count #}
+        <span class="sb-prominent__badge"
+              data-controller="live-badge"
+              data-live-badge-source-value="activity"
+              data-live-badge-url-value="{{ _live_counts_url }}"
+              data-live-badge-target="count"
+              aria-live="polite"
+              aria-atomic="true">0</span>
     </a>
 </div>
 
 {# ── L1 Category Links ── #}
-<nav class="sb-list" id="main-navigation" role="navigation" aria-label="{{ 'nav.main_navigation'|trans({}, 'nav') }}">
+{# WAI-ARIA: role=menubar on nav + role=menuitem on each trigger per Authoring Practices §3.15 #}
+<nav class="sb-list" id="main-navigation" role="menubar" aria-label="{{ 'nav.main_navigation'|trans({}, 'nav') }}" aria-orientation="vertical">
 
     {# Mein Cockpit — Persona-Dashboard-Eingang #}
     {% if is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('PERSONA_DPO') or is_granted('PERSONA_COMPLIANCE') or is_granted('PERSONA_ISB') or is_granted('PERSONA_BCM') or is_granted('ROLE_AUDITOR') %}
     <button class="sb-link {% if current_route starts with 'app_dashboard_' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="cockpit"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-cockpit">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--persona" aria-hidden="true"></i></span>
@@ -59,10 +88,11 @@
     {% if _is_corporate and (is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN')) %}
     <button class="sb-link {% if current_route starts with 'app_portfolio_' or current_route starts with 'app_group_report_' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="portfolio"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-portfolio">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--portfolio" aria-hidden="true"></i></span>
@@ -74,10 +104,11 @@
     {# Dashboard #}
     <button class="sb-link {% if current_route starts with 'app_home' or current_route starts with 'app_dashboard' or current_route starts with 'app_analytics_' or current_route starts with 'analytics_fte_' or current_route starts with 'app_management_reports' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="dashboard"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-dashboard">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i></span>
@@ -87,12 +118,13 @@
 
     {# ISMS Kern #}
     {% if is_module_active('core') or is_module_active('controls') %}
-    <button class="sb-link {% if current_route starts with 'app_context_' or current_route starts with 'app_interested_party_' or current_route starts with 'app_soa_' or current_route starts with 'app_objective_' %}is-active{% endif %}"
+    <button class="sb-link {% if current_route starts with 'app_context_' or current_route starts with 'app_interested_party_' or current_route starts with 'app_soa_' or current_route starts with 'app_objective_' or current_route starts with 'app_effectiveness_monitor' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="isms-core"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-isms-core">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i></span>
@@ -105,10 +137,11 @@
     {% if is_module_active('assets') or is_module_active('risks') %}
     <button class="sb-link {% if current_route starts with 'app_asset_' or current_route starts with 'app_supplier_' or current_route starts with 'app_location_' or current_route starts with 'app_person_' or current_route starts with 'app_risk_' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="assets-risk"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-assets-risk">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i></span>
@@ -121,10 +154,11 @@
     {% if is_module_active('bcm') %}
     <button class="sb-link {% if current_route starts with 'app_business_process_' or current_route starts with 'app_bc_plan_' or current_route starts with 'app_bc_exercise_' or current_route starts with 'app_crisis_team_' or current_route starts with 'bcm_exercise_log_' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="bcm"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-bcm">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i></span>
@@ -137,10 +171,11 @@
     {% if is_module_active('privacy') %}
     <button class="sb-link {% if current_route starts with 'app_processing_activity_' or current_route starts with 'app_dpia_' or current_route starts with 'app_data_breach_' or current_route starts with 'app_consent_' or current_route starts with 'app_data_subject_request_' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="privacy"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-privacy">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--persona-dpo" aria-hidden="true"></i></span>
@@ -153,10 +188,11 @@
     {% if is_module_active('core') or is_module_active('incidents') %}
     <button class="sb-link {% if current_route starts with 'app_document_' or current_route starts with 'app_change_request_' or current_route starts with 'app_workflow_' or current_route starts with 'app_incident_' or current_route starts with 'app_vulnerability_' or current_route starts with 'app_patch_' or current_route starts with 'app_policy_ack_' or current_route starts with 'app_four_eyes_' or current_route starts with 'app_audit_log_' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="operations"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-operations">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--workspace" aria-hidden="true"></i></span>
@@ -169,10 +205,11 @@
     {% if is_module_active('audits') or is_module_active('compliance') %}
     <button class="sb-link {% if current_route starts with 'app_audit_' or current_route starts with 'app_training_' or current_route starts with 'app_management_review_' or current_route starts with 'app_compliance_' or current_route starts with 'app_mapping_quality_' or current_route starts with 'app_nis2_' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="compliance"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-compliance">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--checklist-stamped" aria-hidden="true"></i></span>
@@ -185,10 +222,11 @@
     {% if is_granted('ROLE_ADMIN') %}
     <button class="sb-link {% if current_route starts with 'admin_' or current_route starts with 'user_management_' or current_route starts with 'role_management_' or current_route starts with 'tenant_management_' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="admin"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-admin">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--nav-gear" aria-hidden="true"></i></span>
@@ -200,10 +238,11 @@
     {# Hilfe & Ressourcen #}
     <button class="sb-link {% if current_route starts with 'app_help_' %}is-active{% endif %}"
             type="button"
+            role="menuitem"
             data-mega-menu-target="trigger"
             data-category="help"
             data-action="click->mega-menu#toggle"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="flyout-help">
         <span class="sb-link__icon"><i class="fa-icon fa-icon--glossary" aria-hidden="true"></i></span>
