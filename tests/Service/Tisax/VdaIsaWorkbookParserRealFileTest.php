@@ -15,8 +15,8 @@ use Psr\Log\NullLogger;
  * These tests only run when the fixture files are present.
  * The files are NOT committed — download them manually:
  *
- *   curl -sL https://portal.enx.com/isa6-en.xlsx -o tests/fixtures/vda_isa_6_en_official.xlsx
- *   curl -sL https://portal.enx.com/isa6-de.xlsx  -o tests/fixtures/vda_isa_6_de_official.xlsx
+ *   curl -sL https://portal.enx.com/isa6-en.xlsx -o tests/Fixtures/vda_isa_6_en_official.xlsx
+ *   curl -sL https://portal.enx.com/isa6-de.xlsx  -o tests/Fixtures/vda_isa_6_de_official.xlsx
  *
  * See docs/tisax/VDA_ISA_6_PARSER_NOTES.md for full structure documentation.
  */
@@ -244,7 +244,7 @@ class VdaIsaWorkbookParserRealFileTest extends TestCase
             $this->markTestSkipped(
                 sprintf(
                     'Official ENX VDA-ISA 6 workbook "%s" not present. '
-                    . 'Download it with: curl -sL https://portal.enx.com/isa6-%s.xlsx -o tests/fixtures/%s',
+                    . 'Download it with: curl -sL https://portal.enx.com/isa6-%s.xlsx -o tests/Fixtures/%s',
                     $filename,
                     str_contains($filename, '_de_') ? 'de' : 'en',
                     $filename,
