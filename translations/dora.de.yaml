@@ -61,7 +61,7 @@ dora:
     testing_requirement: "DORA fordert mindestens jährliche Resilienztests für kritische Funktionen"
     information_sharing_desc: "Freiwilliger Austausch von Cyber-Bedrohungsinformationen zwischen Finanzunternehmen"
     high_dependency_providers: "Anbieter mit hoher Abhängigkeit"
-    controls_implemented: "Controls implementiert"
+    controls_implemented: "Maßnahmen umgesetzt"
 
     # Quick actions
     quick_actions: "Schnellaktionen"

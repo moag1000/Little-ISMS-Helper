@@ -139,7 +139,7 @@ ui:
         less_info: 'Weniger Informationen'
     filter:
         search_label: 'Suchen'
-        search_placeholder: 'Suchen nach Name, ID, Owner …'
+        search_placeholder: 'Suchen nach Name, ID, Verantwortlichem …'
         search_aria_label: 'Suchen'
         advanced_filters: 'Erweiterte Filter'
         advanced_filters_hint: 'Klicken, um weitere Filter zu öffnen'
