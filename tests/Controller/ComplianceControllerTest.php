@@ -89,9 +89,7 @@ class ComplianceControllerTest extends TestCase
             $this->complianceAssessmentService,
             $this->complianceMappingService,
             $this->csrfTokenManager,
-            $this->excelExportService,
             $this->moduleConfigurationService,
-            $this->pdfExportService,
             $this->complianceRequirementFulfillmentService,
             $this->tenantContext
         );

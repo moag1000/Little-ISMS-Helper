@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -54,6 +55,7 @@ class ComplianceMappingAdminController extends AbstractController
     }
 
     #[Route('/compliance/frameworks/create-comparison-mappings', name: 'app_compliance_create_comparison_mappings', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function createComparisonMappings(Request $request): JsonResponse
     {
         // Validate CSRF token
@@ -332,6 +334,7 @@ class ComplianceMappingAdminController extends AbstractController
     }
 
     #[Route('/compliance/frameworks/create-mappings', name: 'app_compliance_create_mappings', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function createCrossFrameworkMappings(Request $request): JsonResponse
     {
         // Validate CSRF token
@@ -649,7 +652,8 @@ class ComplianceMappingAdminController extends AbstractController
                     'remaining' => $remaining,
                     'percent' => $progressPercent,
                 ],
-                'debug' => $debugInfo
+                // Debug payload only exposed in dev — production must not leak framework internals.
+                ...($this->getParameter('kernel.debug') ? ['debug' => $debugInfo] : []),
             ]);
 
         } catch (Exception $e) {
