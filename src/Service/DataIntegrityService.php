@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Notification\NotificationTemplate;
 use App\Entity\Tenant;
 use App\Service\DataIntegrity\DuplicateFinder;
 use App\Service\DataIntegrity\HealthIssueAggregator;
@@ -70,12 +69,9 @@ final class DataIntegrityService
      * UniqueConstraintViolationException when multiple seeded rows share the same
      * unique key (e.g. NotificationTemplate.uniq_template_key_tenant).
      *
-     * Add to this list when a new globally-scoped entity type is introduced.
-     * Each entry must be an FQCN of a Doctrine-mapped entity class.
+     * Source of truth: {@see OrphanFinder::GLOBAL_CATALOGUE_ENTITIES}.
+     * The facade returns the constant from there to avoid duplication.
      */
-    private const GLOBAL_CATALOGUE_ENTITIES = [
-        NotificationTemplate::class, // Sprint-6a: global notification templates, tenant_id=NULL by design
-    ];
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -150,7 +146,7 @@ final class DataIntegrityService
      */
     public function getGlobalCatalogueEntityClasses(): array
     {
-        return self::GLOBAL_CATALOGUE_ENTITIES;
+        return OrphanFinder::GLOBAL_CATALOGUE_ENTITIES;
     }
 
     /**
@@ -367,15 +363,31 @@ final class DataIntegrityService
     }
 
     /**
-     * Calculate overall data health score (0-100)
+     * Calculate overall data health score (0-100).
+     *
+     * Denominator (total entities) is computed with tenant_filter disabled so
+     * it matches the cross-tenant numerator from findAllOrphanedEntities().
+     * Otherwise the score is arithmetically inconsistent on multi-tenant
+     * installations (filter-on denominator vs filter-off numerator).
      */
     private function calculateHealthScore(int $orphaned, int $missing, int $broken, int $duplicates, int $inconsistent): int
     {
-        $totalEntities = count($this->assetRepository->findAll()) +
-                        count($this->riskRepository->findAll()) +
-                        count($this->incidentRepository->findAll()) +
-                        count($this->auditRepository->findAll()) +
-                        count($this->documentRepository->findAll());
+        $filters = $this->entityManager->getFilters();
+        $filterWasEnabled = $filters->isEnabled('tenant_filter');
+        if ($filterWasEnabled) {
+            $filters->disable('tenant_filter');
+        }
+        try {
+            $totalEntities = count($this->assetRepository->findAll()) +
+                            count($this->riskRepository->findAll()) +
+                            count($this->incidentRepository->findAll()) +
+                            count($this->auditRepository->findAll()) +
+                            count($this->documentRepository->findAll());
+        } finally {
+            if ($filterWasEnabled) {
+                $filters->enable('tenant_filter');
+            }
+        }
 
         if ($totalEntities === 0) {
             return 100;
