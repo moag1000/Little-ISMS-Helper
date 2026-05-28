@@ -14,6 +14,8 @@ use App\Repository\InternalAuditRepository;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
+use App\Service\Tisax\TisaxMaturityAssessmentService;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -43,6 +45,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
     private MockObject $tenantContext;
     private MockObject $requirementRepo;
     private MockObject $roleDashboardService;
+    private TisaxMaturityAssessmentService $tisaxAssessment;
     private MockObject $container;
     private MockObject $twig;
     private ComplianceManagerDashboardController $controller;
@@ -58,6 +61,9 @@ class ComplianceManagerDashboardControllerTest extends TestCase
         $this->requirementRepo = $this->createMock(ComplianceRequirementRepository::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
         $this->roleDashboardService = $this->createMock(RoleDashboardService::class);
+        // TisaxMaturityAssessmentService is final — use real instance with no-op EM.
+        $em = $this->createMock(EntityManagerInterface::class);
+        $this->tisaxAssessment = new TisaxMaturityAssessmentService($em);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->twig = $this->createMock(Environment::class);
 
@@ -88,6 +94,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
             $this->tenantContext,
             $this->requirementRepo,
             $this->roleDashboardService,
+            $this->tisaxAssessment,
         );
         $this->controller->setContainer($this->container);
     }

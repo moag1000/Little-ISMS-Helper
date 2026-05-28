@@ -77,6 +77,9 @@ final class TisaxMaturityAssessmentService
         5 => 'optimising',
     ];
 
+    /** Per-request aggregate cache: "{frameworkId}:{tenantId}" => result array */
+    private array $aggregateCache = [];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly ?RequirementLevelMetadataLoader $metadataLoader = null,
@@ -378,6 +381,11 @@ final class TisaxMaturityAssessmentService
      */
     public function computeAggregate(ComplianceFramework $framework, Tenant $tenant): array
     {
+        $cacheKey = $framework->getId() . ':' . $tenant->getId();
+        if (array_key_exists($cacheKey, $this->aggregateCache)) {
+            return $this->aggregateCache[$cacheKey];
+        }
+
         $repo = $this->em->getRepository(ComplianceRequirement::class);
 
         /** @var list<ComplianceRequirement> $rows */
@@ -470,7 +478,7 @@ final class TisaxMaturityAssessmentService
 
         $applicableForDp = $dpTotal - $dpNotApplicable;
 
-        return [
+        $result = [
             'average'      => $assessed > 0 ? round($sum / $assessed, 2) : 0.0,
             'assessed'     => $assessed,
             'total'        => $total,
@@ -484,6 +492,19 @@ final class TisaxMaturityAssessmentService
                 'percent_compliant' => $applicableForDp > 0 ? round($dpCompliant / $applicableForDp * 100, 1) : 0.0,
             ],
         ];
+
+        $this->aggregateCache[$cacheKey] = $result;
+
+        return $result;
+    }
+
+    /**
+     * Invalidate aggregate cache for a specific framework + tenant pair.
+     * Call after any write operation that changes requirement scores.
+     */
+    public function invalidateAggregateCache(ComplianceFramework $framework, Tenant $tenant): void
+    {
+        unset($this->aggregateCache[$framework->getId() . ':' . $tenant->getId()]);
     }
 
     /**

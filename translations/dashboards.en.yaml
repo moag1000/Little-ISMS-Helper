@@ -348,3 +348,30 @@ bcm_officer:
     empty:
         no_approvals_title: 'No open approvals'
         no_approvals_text: 'All approval requests have been processed.'
+
+# ── TISAX Per-Tier Statistics (shared across persona dashboards) ──────────────
+tisax:
+    section:
+        title: 'TISAX Maturity Overview'
+        subtitle: 'VDA-ISA 6 — Three-Tier Assessment'
+    tier:
+        information_security:  'Information Security (Ch. 1-6)'
+        prototype_protection:  'Prototype Protection (Ch. 7-8)'
+        data_protection:       'Data Protection (Ch. 9 / GDPR)'
+    label:
+        avg_maturity: 'Avg. Maturity'
+        target:       'Target AL3'
+        gap:          'Gap'
+        assessed:     'Assessed'
+        total:        'Total'
+        compliant:    'Compliant'
+        not_compliant: 'Non-Compliant'
+        not_applicable: 'Not Applicable'
+        pct_compliant: 'Compliance Rate'
+    grade:
+        critical: 'Critical'
+        amber:    'Needs Improvement'
+        green:    'Target Met'
+    empty:
+        no_tisax_title: 'No TISAX Requirements'
+        no_tisax_text:  'No VDA-ISA requirements have been uploaded yet.'
