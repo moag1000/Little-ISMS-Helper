@@ -90,7 +90,7 @@ class MapIso27701VersionsCommand
             $mapping1 = new ComplianceMapping();
             $mapping1->setSourceRequirement($req2025);
             $mapping1->setTargetRequirement($req2019);
-            $mapping1->setConfidence(95); // High confidence - version evolution
+            $mapping1->setConfidence('high'); // High confidence - version evolution
             $mapping1->setMappingType('version_evolution');
             $mapping1->setReviewNotes('Automatic mapping between ISO 27701:2025 and ISO 27701:2019 versions');
             $this->entityManager->persist($mapping1);
@@ -99,7 +99,7 @@ class MapIso27701VersionsCommand
             $mapping2 = new ComplianceMapping();
             $mapping2->setSourceRequirement($req2019);
             $mapping2->setTargetRequirement($req2025);
-            $mapping2->setConfidence(95);
+            $mapping2->setConfidence('high');
             $mapping2->setMappingType('version_evolution');
             $mapping2->setReviewNotes('Automatic mapping between ISO 27701:2019 and ISO 27701:2025 versions');
             $this->entityManager->persist($mapping2);

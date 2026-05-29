@@ -397,12 +397,6 @@ parameters:
 			path: src/Command/LoadTkgRequirementsCommand.php
 
 		-
-			message: '#^Parameter \#1 \$confidence of method App\\Entity\\ComplianceMapping\:\:setConfidence\(\) expects string, int given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Command/MapIso27701VersionsCommand.php
-
-		-
 			message: '#^Property App\\Command\\MappingLibrarySmokeTestCommand\:\:\$mqsService is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -1876,12 +1870,6 @@ parameters:
 			message: '#^Cannot call method getEmail\(\) on string\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Controller/ReportController.php
-
-		-
-			message: '#^Parameter \#1 \$value of function count expects array\|Countable, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
 			path: src/Controller/ReportController.php
 
 		-
