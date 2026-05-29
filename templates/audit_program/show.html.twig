@@ -121,7 +121,7 @@
 
             {% if is_granted('ROLE_ADMIN') %}
             <div class="card border-danger">
-                <div class="card-header bg-danger text-white"><strong>{{ 'audit_program.show.danger_zone'|trans }}</strong></div>
+                <div class="card-header"><strong class="text-danger">{{ 'audit_program.show.danger_zone'|trans }}</strong></div>
                 <div class="card-body">
                     {% if program.status != 'archived' and is_granted('ROLE_MANAGER') %}
                     <form method="post" action="{{ path('app_audit_program_archive', {_locale: app.request.locale, id: program.id}) }}" class="mb-2">
