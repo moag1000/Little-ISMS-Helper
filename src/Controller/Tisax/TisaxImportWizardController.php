@@ -60,6 +60,9 @@ final class TisaxImportWizardController extends AbstractController
     /** Session key for validation result */
     private const SESSION_VALIDATION = 'tisax_import.validation';
 
+    /** Session key for the organisation name read from the workbook cover sheet */
+    private const SESSION_WORKBOOK_COMPANY = 'tisax_import.workbook_company';
+
     /** Temp upload subdirectory */
     private const UPLOAD_SUBDIR = 'tisax_workbooks';
 
@@ -238,11 +241,13 @@ final class TisaxImportWizardController extends AbstractController
                 'iso27001Ref'      => $ctrl->iso27001Ref,
                 'auditEvidenceHint' => $ctrl->auditEvidenceHint,
                 'rawRowIndex'      => $ctrl->rawRowIndex,
+                'maturityCurrent'  => $ctrl->maturityCurrent,
             ],
             $parsed->controls,
         );
         $request->getSession()->set(self::SESSION_PARSED_CONTROLS, $serialisedControls);
         $request->getSession()->set(self::SESSION_VALIDATION, $validation);
+        $request->getSession()->set(self::SESSION_WORKBOOK_COMPANY, $parsed->workbookCompany);
 
         if ($request->isMethod('POST') && $validation['ok']) {
             if (!$this->isCsrfTokenValid('tisax_proceed', $request->request->get('_token'))) {
@@ -325,6 +330,10 @@ final class TisaxImportWizardController extends AbstractController
         $tenant    = $this->tenantContext->getCurrentTenant();
         $framework = $this->mapper->findOrCreateFramework();
 
+        $workbookCompany = $request->getSession()->get(self::SESSION_WORKBOOK_COMPANY);
+        $workbookCompany = is_string($workbookCompany) ? $workbookCompany : null;
+        $companyMismatch = $this->isCompanyMismatch($workbookCompany, $tenant);
+
         if ($request->isMethod('POST')) {
             // CSRF protection
             if (!$this->isCsrfTokenValid('tisax_commit', $request->request->get('_token'))) {
@@ -332,15 +341,30 @@ final class TisaxImportWizardController extends AbstractController
                 return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
             }
 
+            // Organisation-mismatch guard: when the workbook cover sheet names a
+            // different organisation than the current tenant, the user MUST tick
+            // the confirmation checkbox before the import is allowed to proceed.
+            if ($companyMismatch && !$request->request->getBoolean('company_confirm')) {
+                $this->addFlash('warning', 'tisax.import.commit.company_confirm_required');
+                return $this->redirectToRoute('app_tisax_import_commit', ['_locale' => $request->getLocale()]);
+            }
+
             $result = $this->mapper->mapRows($controls, $framework, $tenant);
+
+            // Selective Reifegrad-overwrite: apply only the diff rows the user
+            // explicitly ticked, overwriting the stored assessment with the
+            // workbook value (audited separately below).
+            $applyIds   = array_map('strval', (array) $request->request->all('apply_maturity'));
+            $overwritten = $this->applySelectedMaturityOverwrites($applyIds, $controls, $framework, $tenant);
 
             $this->auditLogger->logImport(
                 'ComplianceRequirement',
                 $result['created'] + $result['updated'],
                 sprintf(
-                    'TISAX BYO import: %d created, %d updated — framework %s',
+                    'TISAX BYO import: %d created, %d updated, %d Reifegrad overwritten — framework %s',
                     $result['created'],
                     $result['updated'],
+                    $overwritten,
                     $framework->getCode(),
                 ),
             );
@@ -362,13 +386,18 @@ final class TisaxImportWizardController extends AbstractController
             ]);
         }
 
-        $delta = $this->mapper->computeDelta($controls, $framework, $tenant);
+        $delta        = $this->mapper->computeDelta($controls, $framework, $tenant);
+        $maturityDiff = $this->mapper->computeMaturityDiff($controls, $framework, $tenant);
 
         return $this->render('tisax/import/commit.html.twig', [
-            'delta'     => $delta,
-            'framework' => $framework,
-            'stepIndex' => 4,
-            'token'     => $this->csrfTokenManager->getToken('tisax_commit')->getValue(),
+            'delta'           => $delta,
+            'maturityDiff'    => $maturityDiff,
+            'framework'       => $framework,
+            'stepIndex'       => 4,
+            'workbookCompany' => $workbookCompany,
+            'tenantName'      => $tenant?->getName(),
+            'companyMismatch' => $companyMismatch,
+            'token'           => $this->csrfTokenManager->getToken('tisax_commit')->getValue(),
         ]);
     }
 
@@ -490,6 +519,7 @@ final class TisaxImportWizardController extends AbstractController
         $session->remove(self::SESSION_WORKBOOK_PATH);
         $session->remove(self::SESSION_PARSED_CONTROLS);
         $session->remove(self::SESSION_VALIDATION);
+        $session->remove(self::SESSION_WORKBOOK_COMPANY);
         $session->remove('tisax_import.confirmation_id');
     }
 
@@ -562,9 +592,99 @@ final class TisaxImportWizardController extends AbstractController
                     iso27001Ref: $d['iso27001Ref'] ?? null,
                     auditEvidenceHint: $d['auditEvidenceHint'] ?? null,
                     rawRowIndex: $d['rawRowIndex'] ?? 0,
+                    maturityCurrent: $d['maturityCurrent'] ?? null,
                 ),
             $serialised,
         );
+    }
+
+    /**
+     * Decide whether the workbook organisation name differs from the current
+     * tenant. Normalises away legal-form suffixes and punctuation, then treats
+     * a substring match in either direction as "same organisation". Returns
+     * false when we cannot read a workbook company name (nothing to warn about).
+     */
+    private function isCompanyMismatch(?string $workbookCompany, ?\App\Entity\Tenant $tenant): bool
+    {
+        if ($workbookCompany === null || trim($workbookCompany) === '' || $tenant === null) {
+            return false;
+        }
+
+        $wb = $this->normaliseOrgName($workbookCompany);
+        $org = $this->normaliseOrgName((string) $tenant->getName());
+
+        if ($wb === '' || $org === '') {
+            return false;
+        }
+
+        return !str_contains($wb, $org) && !str_contains($org, $wb);
+    }
+
+    /**
+     * Lowercase, strip common legal-form suffixes and non-alphanumerics so that
+     * "CANCOM GmbH" and "Cancom" compare equal.
+     */
+    private function normaliseOrgName(string $name): string
+    {
+        $name = mb_strtolower($name);
+        $name = preg_replace('/\b(gmbh|mbh|ag|kg|se|ohg|gbr|e\.?\s?v|co|kgaa|ug|ltd|inc|llc|sa|nv|bv)\b/u', ' ', $name) ?? $name;
+        $name = preg_replace('/[^a-z0-9]+/u', '', $name) ?? $name;
+
+        return trim($name);
+    }
+
+    /**
+     * Overwrite the stored Reifegrad with the workbook value for the explicitly
+     * selected control IDs. Resolves each control ID to its requirement PK and
+     * delegates to the tenant-scoped, validating bulk setter.
+     *
+     * @param list<string>                                         $applyControlIds
+     * @param list<\App\Service\Tisax\Dto\VdaIsaControlRow>        $controls
+     * @return int  number of requirements whose Reifegrad was overwritten
+     */
+    private function applySelectedMaturityOverwrites(
+        array $applyControlIds,
+        array $controls,
+        \App\Entity\ComplianceFramework $framework,
+        \App\Entity\Tenant $tenant,
+    ): int {
+        $applyControlIds = array_flip(array_filter($applyControlIds, static fn ($v): bool => $v !== ''));
+        if ($applyControlIds === []) {
+            return 0;
+        }
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $repo = $this->em->getRepository(\App\Entity\ComplianceRequirement::class);
+        $levelMap = [];
+
+        foreach ($controls as $ctrl) {
+            if (!isset($applyControlIds[$ctrl->controlId]) || $ctrl->maturityCurrent === null) {
+                continue;
+            }
+            $req = $repo->findOneBy([
+                'framework'     => $framework,
+                'requirementId' => $ctrl->controlId,
+                'uploadTenant'  => $tenant,
+            ]);
+            if ($req !== null && $req->getId() !== null) {
+                $levelMap[$req->getId()] = (int) $ctrl->maturityCurrent;
+            }
+        }
+
+        if ($levelMap === []) {
+            return 0;
+        }
+
+        $count = $this->maturityService->bulkSetReifegrad($levelMap, $user, $tenant);
+
+        $this->auditLogger->logImport(
+            'ComplianceRequirement',
+            $count,
+            sprintf('TISAX BYO import: %d Reifegrad values overwritten from workbook on user confirmation', $count),
+        );
+
+        return $count;
     }
 
     private function getUploadDir(): string

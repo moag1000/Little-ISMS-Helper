@@ -20,6 +20,13 @@ final readonly class ParsedWorkbookResult
         public string $sheetName,
         public int $headerRowIndex,
         public array $detectedColumnMap,
+        /**
+         * Company / organisation name read from the workbook cover sheet
+         * ("Deckblatt" → "Firma / Organisation"). Null when not found.
+         * Used to warn when the uploaded assessment belongs to a different
+         * organisation than the current tenant.
+         */
+        public ?string $workbookCompany = null,
     ) {}
 
     public function getControlCount(): int

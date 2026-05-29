@@ -294,6 +294,128 @@ final class TisaxRequirementMapperTest extends TestCase
         self::assertSame('A.5.1, A.5.2', $mapping['iso27001']);
     }
 
+    #[Test]
+    public function map_rows_creates_with_prefilled_reifegrad_mapped_to_level_string(): void
+    {
+        // Workbook Reifegrad 3 → 'established' on a freshly created requirement.
+        $rows = [$this->makeRow('1.1.1', 'Prefilled Req', maturityCurrent: 3)];
+
+        $this->requirementRepo->method('findOneBy')->willReturn(null);
+
+        $createdEntity = null;
+        $this->em->method('persist')
+            ->willReturnCallback(static function (object $entity) use (&$createdEntity): void {
+                $createdEntity = $entity;
+            });
+        $this->em->method('flush');
+
+        $this->mapper->mapRows($rows, $this->framework, $this->tenant);
+
+        self::assertInstanceOf(ComplianceRequirement::class, $createdEntity);
+        self::assertSame('established', $createdEntity->getMaturityCurrent());
+    }
+
+    #[Test]
+    public function map_rows_fills_prefilled_reifegrad_on_existing_row_when_currently_empty(): void
+    {
+        // Regression: a row imported with the old (Reifegrad-blind) parser exists
+        // with maturityCurrent = null. Re-import of the pre-filled workbook MUST
+        // backfill the empty assessment — else the assess-page shows "Bitte wählen".
+        $existing = new ComplianceRequirement();
+        $existing->setRequirementId('1.1.1');
+        $existing->setTitle('Old Title');
+        self::assertNull($existing->getMaturityCurrent());
+
+        $rows = [$this->makeRow('1.1.1', 'Updated Title', maturityCurrent: 2)];
+
+        $this->requirementRepo->method('findOneBy')->willReturn($existing);
+        $this->em->method('flush');
+
+        $this->mapper->mapRows($rows, $this->framework, $this->tenant);
+
+        self::assertSame('managed', $existing->getMaturityCurrent());
+    }
+
+    #[Test]
+    public function map_rows_does_not_overwrite_existing_reifegrad_assessment(): void
+    {
+        // Assessor work guard: an existing real assessment must NOT be clobbered
+        // by a re-import, even if the workbook carries a different Reifegrad.
+        $existing = new ComplianceRequirement();
+        $existing->setRequirementId('1.1.1');
+        $existing->setTitle('Assessed');
+        $existing->setMaturityCurrent('optimising'); // human-set level 5
+
+        $rows = [$this->makeRow('1.1.1', 'Updated Title', maturityCurrent: 2)];
+
+        $this->requirementRepo->method('findOneBy')->willReturn($existing);
+        $this->em->method('flush');
+
+        $this->mapper->mapRows($rows, $this->framework, $this->tenant);
+
+        self::assertSame('optimising', $existing->getMaturityCurrent());
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // computeMaturityDiff() tests
+    // ──────────────────────────────────────────────────────────────────────────
+
+    #[Test]
+    public function compute_maturity_diff_reports_changed_existing_rows_only(): void
+    {
+        // Existing 'established' (3); workbook says 2 ('managed') → a downward change.
+        $existing = new ComplianceRequirement();
+        $existing->setRequirementId('1.1.1');
+        $existing->setTitle('Stored Title');
+        $existing->setMaturityCurrent('established');
+
+        $rows = [$this->makeRow('1.1.1', 'Workbook Title', maturityCurrent: 2)];
+
+        $this->requirementRepo->method('findOneBy')->willReturn($existing);
+
+        $diff = $this->mapper->computeMaturityDiff($rows, $this->framework, $this->tenant);
+
+        self::assertCount(1, $diff);
+        self::assertSame('1.1.1', $diff[0]['controlId']);
+        self::assertSame('established', $diff[0]['currentLevel']);
+        self::assertSame(3, $diff[0]['currentInt']);
+        self::assertSame('managed', $diff[0]['workbookLevel']);
+        self::assertSame(2, $diff[0]['workbookInt']);
+        self::assertSame('down', $diff[0]['direction']);
+        self::assertSame('Stored Title', $diff[0]['title']);
+    }
+
+    #[Test]
+    public function compute_maturity_diff_excludes_empty_and_unchanged_and_new_rows(): void
+    {
+        $rows = [
+            $this->makeRow('1.1.1', 'Empty existing', maturityCurrent: 3),   // existing empty → backfill, not a change
+            $this->makeRow('1.2.1', 'Unchanged', maturityCurrent: 3),        // existing already 'established' → unchanged
+            $this->makeRow('1.3.1', 'Brand new', maturityCurrent: 4),        // no existing row → create, not a change
+        ];
+
+        $emptyExisting = new ComplianceRequirement();
+        $emptyExisting->setRequirementId('1.1.1');
+        // maturityCurrent left null
+
+        $sameExisting = new ComplianceRequirement();
+        $sameExisting->setRequirementId('1.2.1');
+        $sameExisting->setMaturityCurrent('established');
+
+        $this->requirementRepo->method('findOneBy')
+            ->willReturnCallback(static function (array $c) use ($emptyExisting, $sameExisting): ?ComplianceRequirement {
+                return match ($c['requirementId']) {
+                    '1.1.1' => $emptyExisting,
+                    '1.2.1' => $sameExisting,
+                    default => null,
+                };
+            });
+
+        $diff = $this->mapper->computeMaturityDiff($rows, $this->framework, $this->tenant);
+
+        self::assertSame([], $diff);
+    }
+
     // ──────────────────────────────────────────────────────────────────────────
     // derivePriority() — via mapRows (private method tested through public API)
     // ──────────────────────────────────────────────────────────────────────────
@@ -576,6 +698,7 @@ final class TisaxRequirementMapperTest extends TestCase
         ?string $highLevel     = null,
         ?string $veryHighLevel = null,
         ?string $iso27001Ref   = null,
+        ?int    $maturityCurrent = null,
     ): VdaIsaControlRow {
         return new VdaIsaControlRow(
             controlId:         $controlId,
@@ -589,6 +712,7 @@ final class TisaxRequirementMapperTest extends TestCase
             iso27001Ref:       $iso27001Ref,
             auditEvidenceHint: null,
             rawRowIndex:       1,
+            maturityCurrent:   $maturityCurrent,
         );
     }
 }

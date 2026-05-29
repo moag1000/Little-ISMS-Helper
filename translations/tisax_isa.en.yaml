@@ -116,6 +116,16 @@ tisax:
       irreversible_note: 'Existing requirements will be overwritten in place. This action can be re-run to refresh data from a new workbook version.'
       submit_button: 'Commit Import'
       success: 'VDA-ISA requirements imported successfully.'
+      company_mismatch_title: 'Organisation differs'
+      company_mismatch_body: 'The uploaded self-assessment is issued for "%workbook%", but your organisation in this system is "%org%". Please verify you are importing the correct workbook.'
+      company_confirm_label: 'I confirm that the self-assessment from "%workbook%" belongs to our organisation and should be imported.'
+      company_confirm_required: 'Please confirm the differing organisation before committing the import.'
+      maturity_diff_title: 'Reifegrad differences (%count%)'
+      maturity_diff_body: 'For these requirements the workbook Reifegrad differs from the value already stored. Select which workbook values should overwrite the current state. Unchecked requirements keep their existing Reifegrad.'
+      maturity_diff_select_all: 'Apply all'
+      maturity_diff_col_control: 'Requirement'
+      maturity_diff_col_current: 'Current'
+      maturity_diff_col_workbook: 'Workbook'
 
     assess:
       title: 'Reifegrad Assessment'

@@ -230,6 +230,118 @@ final class TisaxImportWizardE2ETest extends WebTestCase
     }
 
     // ──────────────────────────────────────────────────────────────────────────
+    // Company-mismatch + Reifegrad-diff (selective overwrite) runtime coverage
+    // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Exercises the commit step with BOTH new branches active:
+     *  - workbook organisation differs from tenant → mismatch card + required checkbox
+     *  - workbook Reifegrad differs from a stored assessment → diff table + selective overwrite
+     *
+     * This is the runtime proof that the new Twig branches render without error
+     * and that the overwrite path actually persists the chosen value.
+     */
+    #[Test]
+    public function commit_renders_mismatch_and_diff_then_overwrites_selected(): void
+    {
+        $container = static::getContainer();
+        /** @var TisaxRequirementMapper $mapper */
+        $mapper    = $container->get(TisaxRequirementMapper::class);
+        $framework = $mapper->findOrCreateFramework();
+
+        // Seed an existing assessment for control 1.1.1 at 'established' (level 3).
+        $existing = new ComplianceRequirement();
+        $existing->setFramework($framework);
+        $existing->setRequirementId('1.1.1');
+        $existing->setTitle('Seeded requirement 1.1.1');
+        $existing->setDescription('seed');
+        $existing->setPriority('medium');
+        $existing->setRequirementType('core');
+        $existing->setRequirementSource('tenant_upload');
+        $existing->setUploadTenant($this->testTenant);
+        $existing->setMaturityCurrent('established');
+        $this->em->persist($existing);
+        $this->em->flush();
+        $existingId = $existing->getId();
+
+        $this->client->loginUser($this->managerUser);
+
+        // Start a session via a real request.
+        $this->client->request('GET', '/en/tisax-import/disclaimer');
+        self::assertResponseIsSuccessful();
+
+        // Prime session: parsed controls (control 1.1.1 with workbook Reifegrad 2 =
+        // 'managed', a DOWNWARD change) + a workbook company that differs from the tenant.
+        $session = $this->client->getRequest()->getSession();
+        $session->set('tisax_import.parsed_controls', [[
+            'controlId'         => '1.1.1',
+            'title'             => 'Workbook requirement 1.1.1',
+            'titleEn'           => null,
+            'description'       => null,
+            'mustLevel'         => 'x',
+            'shouldLevel'       => null,
+            'highLevel'         => null,
+            'veryHighLevel'     => null,
+            'iso27001Ref'       => null,
+            'auditEvidenceHint' => null,
+            'rawRowIndex'       => 5,
+            'maturityCurrent'   => 2,
+        ]]);
+        $session->set('tisax_import.workbook_company', 'Völlig Andere Firma GmbH');
+        $session->save();
+
+        // ── Commit GET → 200, both branches rendered ─────────────────────────
+        $this->client->request('GET', '/en/tisax-import/commit');
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('company_confirm', $html, 'Mismatch confirm checkbox must render');
+        self::assertStringContainsString('Völlig Andere Firma GmbH', $html, 'Workbook company must be shown');
+        self::assertStringContainsString('apply_maturity[]', $html, 'Diff overwrite checkbox must render');
+        self::assertStringContainsString('1.1.1', $html, 'Diff row for changed control must render');
+        // No raw translation keys leaked (missing-key smell).
+        self::assertStringNotContainsString('tisax.import.commit.company_mismatch_title', $html);
+        self::assertStringNotContainsString('tisax.import.commit.maturity_diff_title', $html);
+
+        // ── Commit POST WITHOUT confirm → blocked (redirect back to commit) ──
+        $token = $this->generateCsrfTokenFromSession('tisax_commit');
+        $this->client->request('POST', '/en/tisax-import/commit', ['_token' => $token]);
+        self::assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        self::assertStringContainsString('commit', $this->client->getResponse()->headers->get('Location') ?? '');
+        // Not overwritten yet.
+        $this->em->clear();
+        $reloaded = $this->em->getRepository(ComplianceRequirement::class)->find($existingId);
+        self::assertSame('established', $reloaded?->getMaturityCurrent(), 'Must not overwrite without confirmation');
+
+        // Re-prime session (clear() + new request rotated it) and confirm + select the row.
+        $this->client->request('GET', '/en/tisax-import/disclaimer');
+        $session = $this->client->getRequest()->getSession();
+        $session->set('tisax_import.parsed_controls', [[
+            'controlId' => '1.1.1', 'title' => 'Workbook requirement 1.1.1', 'titleEn' => null,
+            'description' => null, 'mustLevel' => 'x', 'shouldLevel' => null, 'highLevel' => null,
+            'veryHighLevel' => null, 'iso27001Ref' => null, 'auditEvidenceHint' => null,
+            'rawRowIndex' => 5, 'maturityCurrent' => 2,
+        ]]);
+        $session->set('tisax_import.workbook_company', 'Völlig Andere Firma GmbH');
+        // Set the CSRF token into the SAME session BEFORE saving, so it persists.
+        $token = (new UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/tisax_commit', $token);
+        $session->save();
+
+        $this->client->request('POST', '/en/tisax-import/commit', [
+            '_token'          => $token,
+            'company_confirm' => '1',
+            'apply_maturity'  => ['1.1.1'],
+        ]);
+        self::assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        self::assertStringContainsString('assess', $this->client->getResponse()->headers->get('Location') ?? '');
+
+        // ── Overwrite persisted: 'established' → 'managed' ───────────────────
+        $this->em->clear();
+        $after = $this->em->getRepository(ComplianceRequirement::class)->find($existingId);
+        self::assertSame('managed', $after?->getMaturityCurrent(), 'Selected workbook Reifegrad must overwrite the stored value');
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
     // Individual step isolation tests
     // ──────────────────────────────────────────────────────────────────────────
 
