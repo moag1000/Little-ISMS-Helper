@@ -38,13 +38,16 @@ services:
         tags:
             - phpstan.rules.rule
 
-    # Marks constants consumed only outside analysed PHP (CI gate scripts,
-    # reflection in tests) as always-used — e.g. BackupService::EXCLUDED_FROM_BACKUP
-    # (parsed by Gate 43's Python + read via reflection in BackupServiceTest).
+    # Marks constants + methods consumed only outside analysed PHP (CI gate
+    # scripts, reflection in tests) as always-used — e.g.
+    # BackupService::EXCLUDED_FROM_BACKUP (Gate 43 Python + BackupServiceTest
+    # reflection) and ComplianceWizardService::check{Consent,Dsr,Dpia}Coverage
+    # (ComplianceWizardServiceTest reflection).
     -
-        class: App\Tests\PHPStan\Constant\ExternallyConsumedConstantExtension
+        class: App\Tests\PHPStan\ExternallyConsumedSymbolExtension
         tags:
             - phpstan.constants.alwaysUsedClassConstantsExtension
+            - phpstan.methods.alwaysUsedMethodExtension
 
     # Narrow getUser() → App\Entity\User|null (single user entity). Kills the
     # ~190 false method.notFound/argument.type against ?UserInterface.
