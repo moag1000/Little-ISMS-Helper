@@ -37,7 +37,7 @@
                 {# ── Organisation-mismatch warning (Art. data-integrity) ── #}
                 {% if companyMismatch %}
                     <div class="alert alert-warning d-flex align-items-start gap-2 mb-4">
-                        <i class="fa-icon fa-icon--alert-triangle-fill fa-icon--24 text-warning flex-shrink-0"></i>
+                        <i class="fa-icon fa-icon--exclamation-triangle-fill fa-icon--24 text-warning flex-shrink-0"></i>
                         <div>
                             <strong>{{ 'tisax.import.commit.company_mismatch_title'|trans({}, 'tisax_isa') }}</strong>
                             <p class="mb-2">
@@ -103,9 +103,9 @@
                                                 </td>
                                                 <td class="text-center">
                                                     {% if d.direction == 'up' %}
-                                                        <i class="fa-icon fa-icon--arrow-up text-success"></i>
+                                                        <i class="fa-icon fa-icon--util-arrow-up text-success"></i>
                                                     {% else %}
-                                                        <i class="fa-icon fa-icon--arrow-down text-danger"></i>
+                                                        <i class="fa-icon fa-icon--util-arrow-down text-danger"></i>
                                                     {% endif %}
                                                 </td>
                                                 <td class="text-center">
