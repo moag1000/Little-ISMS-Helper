@@ -118,6 +118,16 @@ tisax:
       irreversible_note: 'Bestehende Anforderungen werden direkt überschrieben. Diese Aktion kann mit einer neuen Workbook-Version erneut ausgeführt werden.'
       submit_button: 'Import festschreiben'
       success: 'VDA-ISA-Anforderungen wurden erfolgreich importiert.'
+      company_mismatch_title: 'Organisation weicht ab'
+      company_mismatch_body: 'Das hochgeladene Self-Assessment ist auf „%workbook%" ausgestellt, Ihre Organisation in diesem System ist jedoch „%org%". Bitte prüfen Sie, ob Sie das richtige Workbook importieren.'
+      company_confirm_label: 'Ich bestätige, dass das Self-Assessment von „%workbook%" zu unserer Organisation gehört und importiert werden soll.'
+      company_confirm_required: 'Bitte bestätigen Sie die abweichende Organisation, bevor der Import festgeschrieben wird.'
+      maturity_diff_title: 'Reifegrad-Abweichungen (%count%)'
+      maturity_diff_body: 'Für diese Anforderungen weicht der Reifegrad im Workbook vom bereits gespeicherten Stand ab. Wählen Sie aus, welche Workbook-Werte den aktuellen Stand überschreiben sollen. Nicht angehakte Anforderungen behalten ihren bisherigen Reifegrad.'
+      maturity_diff_select_all: 'Alle übernehmen'
+      maturity_diff_col_control: 'Anforderung'
+      maturity_diff_col_current: 'Aktuell'
+      maturity_diff_col_workbook: 'Workbook'
 
     assess:
       title: 'Reifegrad-Bewertung'

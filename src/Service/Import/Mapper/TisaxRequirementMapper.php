@@ -108,20 +108,25 @@ final class TisaxRequirementMapper
             ]);
 
             if ($existing !== null) {
-                // Update in place — never overwrite an existing Reifegrad
-                // assessment from a re-import (assessor work would be lost).
+                // Update in place. Backfill a pre-filled Reifegrad ONLY when the
+                // existing requirement has no assessment yet — this rescues rows
+                // imported by the old Reifegrad-blind parser (they sit at null and
+                // would otherwise show "Bitte wählen" forever). A real assessment
+                // is never overwritten, so assessor work is preserved on re-import.
                 $this->hydrateEntity($existing, $row, $framework, $tenant);
+                if ($this->isEmptyMaturity($existing->getMaturityCurrent())
+                    && ($level = $this->resolvePrefilledLevel($row)) !== null
+                ) {
+                    $existing->setMaturityCurrent($level);
+                }
                 $entities[] = $existing;
                 $updated++;
             } else {
                 // Create new — mirror pre-filled Reifegrad from workbook (if any)
                 $req = new ComplianceRequirement();
                 $this->hydrateEntity($req, $row, $framework, $tenant);
-                if ($row->maturityCurrent !== null
-                    && $row->getTier() !== 'data_protection'
-                    && isset(self::LEVEL_MAP[$row->maturityCurrent])
-                ) {
-                    $req->setMaturityCurrent(self::LEVEL_MAP[$row->maturityCurrent]);
+                if (($level = $this->resolvePrefilledLevel($row)) !== null) {
+                    $req->setMaturityCurrent($level);
                 }
                 if (!$dryRun) {
                     $this->em->persist($req);
@@ -170,9 +175,96 @@ final class TisaxRequirementMapper
         ];
     }
 
+    /**
+     * Compute the Reifegrad delta between the uploaded workbook and the current
+     * stored assessment, for rows whose existing maturity is set AND differs
+     * from the workbook value. Empty existing rows are excluded — those are
+     * silently backfilled by mapRows() and are not "changes" the user must
+     * confirm. The result feeds the selective-overwrite UI on the commit step.
+     *
+     * @param list<VdaIsaControlRow> $rows
+     * @return list<array{controlId: string, title: string, currentLevel: string,
+     *     currentInt: int|null, workbookLevel: string, workbookInt: int, direction: string}>
+     */
+    public function computeMaturityDiff(
+        array $rows,
+        ComplianceFramework $framework,
+        Tenant $tenant,
+    ): array {
+        $repo    = $this->em->getRepository(ComplianceRequirement::class);
+        $reverse = array_flip(self::LEVEL_MAP); // 'established' => 3, …
+        $diff    = [];
+
+        foreach ($rows as $row) {
+            $workbookLevel = $this->resolvePrefilledLevel($row);
+            if ($workbookLevel === null) {
+                continue; // no usable workbook score (or DP tier)
+            }
+
+            $existing = $repo->findOneBy([
+                'framework'     => $framework,
+                'requirementId' => $row->controlId,
+                'uploadTenant'  => $tenant,
+            ]);
+            if ($existing === null) {
+                continue; // brand-new row → handled as create, not a change
+            }
+
+            $currentLevel = $existing->getMaturityCurrent();
+            if ($this->isEmptyMaturity($currentLevel)) {
+                continue; // empty → auto-backfilled, no confirmation needed
+            }
+            if ($currentLevel === $workbookLevel) {
+                continue; // unchanged
+            }
+
+            $currentInt  = $reverse[$currentLevel] ?? null;
+            $workbookInt = (int) $row->maturityCurrent;
+            $diff[] = [
+                'controlId'     => $row->controlId,
+                'title'         => $existing->getTitle() ?? $row->title,
+                'currentLevel'  => $currentLevel,
+                'currentInt'    => $currentInt,
+                'workbookLevel' => $workbookLevel,
+                'workbookInt'   => $workbookInt,
+                'direction'     => ($currentInt === null || $workbookInt > $currentInt) ? 'up' : 'down',
+            ];
+        }
+
+        return $diff;
+    }
+
     // ──────────────────────────────────────────────────────────────────────────
     // Private helpers
     // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Resolve the pre-filled workbook Reifegrad (0-5 int) into the canonical
+     * level string ('incomplete'…'optimising'), or null when the row carries no
+     * usable score. DP-tier rows use a tristate model, not the 0-5 Reifegrad —
+     * so they are deliberately excluded.
+     */
+    private function resolvePrefilledLevel(VdaIsaControlRow $row): ?string
+    {
+        if ($row->maturityCurrent === null
+            || $row->getTier() === 'data_protection'
+            || !isset(self::LEVEL_MAP[$row->maturityCurrent])
+        ) {
+            return null;
+        }
+
+        return self::LEVEL_MAP[$row->maturityCurrent];
+    }
+
+    /**
+     * True when an existing requirement has no Reifegrad assessment yet.
+     * 'incomplete' (= level 0) is treated as a real, deliberate assessment and
+     * is NOT backfilled — only null/empty counts as "unrated".
+     */
+    private function isEmptyMaturity(?string $current): bool
+    {
+        return $current === null || $current === '';
+    }
 
     private function hydrateEntity(
         ComplianceRequirement $req,
