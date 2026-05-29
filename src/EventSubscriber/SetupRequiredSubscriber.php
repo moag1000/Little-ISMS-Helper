@@ -46,9 +46,12 @@ final class SetupRequiredSubscriber implements EventSubscriberInterface
         $request = $requestEvent->getRequest();
         $path = $request->getPathInfo();
 
-        // Skip for setup routes (allow setup wizard to work)
-        // Routes have locale prefix: /{_locale}/setup/
-        if (str_starts_with($path, '/setup') || str_contains($path, '/setup/')) {
+        // Skip setup routes themselves so the wizard can run. Must also match
+        // the locale prefix: Symfony routes /setup as /{_locale}/setup, so the
+        // bare index path "/de/setup" has no "/setup/" substring and was NOT
+        // skipped — it then redirected to itself → infinite loop.
+        $normalizedPath = preg_replace('#^/[a-z]{2}(?=/|$)#', '', $path) ?? $path;
+        if (str_starts_with($normalizedPath, '/setup')) {
             return;
         }
 
@@ -67,17 +70,18 @@ final class SetupRequiredSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // If setup is already complete, don't redirect
-        if ($this->setupAccessChecker->isSetupComplete()) {
+        // Redirect to the setup wizard unless the install is fully configured.
+        // "Fully configured" = setup_complete.lock present AND core tables exist.
+        // Keying off the lock (not tables alone) is essential: the embedded
+        // MariaDB image bootstraps the full schema on first boot, so a table
+        // check can never detect a fresh, unconfigured install. The table check
+        // is kept as an additional recovery trigger (lock present but schema gone).
+        if ($this->setupAccessChecker->isSetupComplete() && $this->databaseTablesExist()) {
             return;
         }
 
-        // Check if database tables exist
-        if (!$this->databaseTablesExist()) {
-            // Redirect to setup wizard with default locale
-            $setupUrl = $this->urlGenerator->generate('setup_wizard_index', ['_locale' => 'de']);
-            $requestEvent->setResponse(new RedirectResponse($setupUrl));
-        }
+        $setupUrl = $this->urlGenerator->generate('setup_wizard_index', ['_locale' => 'de']);
+        $requestEvent->setResponse(new RedirectResponse($setupUrl));
     }
 
     /**
@@ -86,9 +90,9 @@ final class SetupRequiredSubscriber implements EventSubscriberInterface
     private function databaseTablesExist(): bool
     {
         try {
-            // Try to check if the user table exists (it's one of the core tables)
+            // Try to check if the users table exists (it's one of the core tables)
             $schemaManager = $this->connection->createSchemaManager();
-            return $schemaManager->tablesExist(['user']);
+            return $schemaManager->tablesExist(['users']);
         } catch (Exception) {
             // Any error means database is not properly set up
 

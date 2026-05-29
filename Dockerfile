@@ -52,6 +52,8 @@ COPY --from=mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /u
 RUN install-php-extensions \
     pdo_mysql \
     mysqli \
+    pdo_pgsql \
+    pgsql \
     intl \
     zip \
     gd \
@@ -70,6 +72,10 @@ COPY composer.json symfony.lock ./
 # Install dependencies (production) WITHOUT running scripts (bin/console doesn't exist yet)
 # This will generate a fresh composer.lock with the latest compatible versions.
 # BuildKit cache-mount reuses Composer's package cache across builds.
+# Disable symfony/flex plugin so Composer does NOT fetch recipes over the network
+# (corporate DNS/firewall blocks flex.symfony.com + raw.githubusercontent.com).
+# Recipes are not needed: this repo ships config/ fully generated. runtime plugin stays.
+RUN composer config allow-plugins.symfony/flex false
 RUN --mount=type=cache,target=/root/.composer/cache,sharing=locked \
     composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts --verbose
 
@@ -104,6 +110,12 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
 # Use a build-time DATABASE_URL that won't persist (init-mysql.sh will set the real one)
 RUN DATABASE_URL="mysql://build:build@localhost/isms?serverVersion=mariadb-11.4.0" \
     composer run-script --no-dev auto-scripts || true
+
+# Download importmap vendor assets (jsdelivr) + compile the asset map at build time.
+# Without this, AssetMapper tries to compile at runtime → permission denied +
+# circular-reference errors on every page render in prod.
+RUN php bin/console importmap:install && \
+    php bin/console asset-map:compile
 
 # Create required directories (gem. config/modules.yaml: var/cache, var/log,
 # var/sessions, public/uploads) plus log mounts for supervisor/nginx
