@@ -39,12 +39,14 @@ tests/Controller/PolicyWizardControllerTest.php:162
 tests/Controller/PolicyWizardTargetedFlowTest.php:169
 tests/Controller/PolicyWizardWarningAcknowledgementTest.php:154
 tests/Controller/QuickFixControllerTest.php:114
+tests/Controller/Tisax/TisaxImportWizardE2ETest.php:291
+tests/Controller/Tisax/TisaxImportWizardE2ETest.php:328
 tests/Service/Import/SpreadsheetParserTest.php:269
 tests/Service/IndustryBaselineApplierTest.php:192
 tests/Service/IndustryBaselineApplierTest.php:193
 tests/Service/IndustryBaselineApplierTest.php:194
 tests/Service/TenantContextTest.php:208
-tests/Template/SystemTemplateApplierTest.php:120
-tests/Template/SystemTemplateApplierTest.php:152
 tests/Template/SystemTemplateApplierTest.php:52
 tests/Template/SystemTemplateApplierTest.php:90
+tests/Template/SystemTemplateApplierTest.php:120
+tests/Template/SystemTemplateApplierTest.php:152

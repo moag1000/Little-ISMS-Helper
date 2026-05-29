@@ -288,7 +288,7 @@ final class TisaxImportWizardE2ETest extends WebTestCase
             'maturityCurrent'   => 2,
         ]]);
         $session->set('tisax_import.workbook_company', 'Völlig Andere Firma GmbH');
-        $session->save();
+        $session->save(); // Symfony Session persist (NOT a controller action call)
 
         // ── Commit GET → 200, both branches rendered ─────────────────────────
         $this->client->request('GET', '/en/tisax-import/commit');
@@ -325,7 +325,7 @@ final class TisaxImportWizardE2ETest extends WebTestCase
         // Set the CSRF token into the SAME session BEFORE saving, so it persists.
         $token = (new UriSafeTokenGenerator())->generateToken();
         $session->set('_csrf/tisax_commit', $token);
-        $session->save();
+        $session->save(); // Symfony Session persist (NOT a controller action call)
 
         $this->client->request('POST', '/en/tisax-import/commit', [
             '_token'          => $token,
