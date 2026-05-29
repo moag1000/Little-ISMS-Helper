@@ -130,11 +130,41 @@ fi
 # This is critical for container restarts where the container is rebuilt
 # but the volume (with the database) persists
 
-# Generate APP_SECRET if .env.local doesn't exist
-if [ ! -f /var/www/html/.env.local ]; then
-    echo "APP_SECRET=$(openssl rand -hex 32)" > /var/www/html/.env.local
-    echo "APP_ENV=prod" >> /var/www/html/.env.local
-    echo ".env.local created with APP_SECRET"
+# APP_SECRET must stay STABLE across container recreations. It is the key
+# material for sessions, CSRF tokens, MFA secrets and AES-encrypted backups
+# (BackupEncryptionService derives its AES key from APP_SECRET via SHA-256).
+# .env.local lives in the image layer and is recreated empty on every new
+# container, so a fresh APP_SECRET used to be generated on every recreate —
+# silently invalidating sessions/MFA and making previously-encrypted backups
+# undecryptable. Persist it on the volume (var/) and reuse it, exactly like the
+# MySQL password above. An explicit APP_SECRET env var still wins (12-factor).
+ENV_FILE=/var/www/html/.env.local
+SECRET_FILE=/var/www/html/var/app_secret
+# The Dockerfile sets a build-time placeholder APP_SECRET (needed so cache:warmup
+# can run during the image build). It must NEVER be used at runtime — treat it
+# as "unset" so we fall through to a persisted, per-install secret.
+PLACEHOLDER_SECRET="build-time-placeholder-not-a-real-secret"
+if [ -n "${APP_SECRET:-}" ] && [ "${APP_SECRET}" != "$PLACEHOLDER_SECRET" ]; then
+    SECRET="$APP_SECRET"
+elif [ -f "$SECRET_FILE" ]; then
+    SECRET=$(cat "$SECRET_FILE")
+    echo "Reusing persisted APP_SECRET from var/app_secret"
+else
+    SECRET=$(openssl rand -hex 32)
+    printf '%s' "$SECRET" > "$SECRET_FILE"
+    chmod 600 "$SECRET_FILE"
+    chown www-data:www-data "$SECRET_FILE" 2>/dev/null || true
+    echo "Generated and persisted APP_SECRET to var/app_secret"
+fi
+
+# Ensure .env.local carries the stable APP_SECRET (preserve any other vars).
+if [ ! -f "$ENV_FILE" ]; then
+    printf 'APP_SECRET=%s\nAPP_ENV=prod\n' "$SECRET" > "$ENV_FILE"
+    echo ".env.local created with persisted APP_SECRET"
+elif grep -q "^APP_SECRET=" "$ENV_FILE" 2>/dev/null; then
+    sed -i "s|^APP_SECRET=.*|APP_SECRET=$SECRET|" "$ENV_FILE"
+else
+    echo "APP_SECRET=$SECRET" >> "$ENV_FILE"
 fi
 
 # Update or add DATABASE_URL (preserving other variables)
