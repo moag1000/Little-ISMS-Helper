@@ -1710,8 +1710,14 @@ class DeploymentWizardController extends AbstractController
             $this->moduleConfigurationService->saveActiveModules($selectedModules);
         }
 
-        // Save organization data to Tenant settings
-        $this->tenantBootstrapper->saveOrganisationDataToTenant($session);
+        // Save organization data to Tenant settings — but NOT after a backup
+        // restore: the restored tenant already carries its real name + settings,
+        // and the wizard session holds only defaults here (empty org form), which
+        // would overwrite settings.organisation (industries/size/country/…) with
+        // 'other'/'1-10'/'DE'. Skipping preserves the restored organisation.
+        if (!$backupRestored) {
+            $this->tenantBootstrapper->saveOrganisationDataToTenant($session);
+        }
 
         // Mark setup as complete
         $this->setupAccessChecker->markSetupComplete();
