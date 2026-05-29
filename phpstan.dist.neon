@@ -13,6 +13,12 @@ parameters:
     # checks — the class of static bug that previously slipped through.
     level: 5
 
+    # The prod image runs PHP 8.5 while CI analyses on PHP 8.4, so a few
+    # version-specific findings (e.g. postInc.type "++ on literal-string") land
+    # in the baseline on one version but not the other. Tolerate unmatched
+    # baseline entries — genuinely NEW errors still fail the build.
+    reportUnmatchedIgnoredErrors: false
+
     # Exclude paths that are allowed to call setStatus() directly
     excludePaths:
         - src/Entity/
