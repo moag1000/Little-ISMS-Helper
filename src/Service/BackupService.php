@@ -198,6 +198,20 @@ class BackupService
         'TisaxLicenseConfirmation', // FK: Tenant, User — ISO 27001 Cl. 7.5.3 audit trail
     ];
 
+    // Entities deliberately NOT backed up — enforced by Gate 43
+    // (scripts/quality/check_backup_entity_coverage.py) and BackupServiceTest.
+    private const array EXCLUDED_FROM_BACKUP = [
+        // Global seeded catalogues (re-loadable via App\Command\Load*Command)
+        'UserTenantAssignment' => 'stub for multi-tenant spec (Option A), schema migration deferred',
+        'IndustryBaseline'      => 'global seeded catalogue, re-loadable via LoadIndustryBaseline commands',
+        'IndustryPresetBundle'  => 'global seeded catalogue (no tenant_id) — wizard W4-B preset bundles',
+        'ElementaryThreat'      => 'global BSI threat catalogue, re-loadable via LoadElementaryThreats command',
+
+        // Derived / re-computable snapshots
+        'PortfolioSnapshot'     => 'derived trend-cache, re-computable from primary entities',
+        'ReuseTrendSnapshot'    => 'derived trend-cache, re-computable from primary entities',
+    ];
+
     // Fields to exclude from backup (sensitive or regeneratable)
     private const array EXCLUDED_FIELDS = [
         'password',

@@ -120,7 +120,7 @@ final class PolicyZipExporter
 
             // Evidence folder (auditor's audit pack).
             if ($options->includeEvidence) {
-                $zip->addFromString('evidence/audit-trail.csv', $this->buildAuditTrailCsv());
+                $zip->addFromString('evidence/audit-trail.csv', $this->buildAuditTrailCsv($tenant));
                 $zip->addFromString('evidence/soa.csv', $this->buildSoaCsv($tenant));
                 $zip->addFromString('evidence/acknowledgements.csv', $this->buildAcknowledgementsCsv($documents));
                 $zip->addFromString('evidence/workflow-instances.csv', $this->buildWorkflowInstancesCsv($documents));
@@ -217,13 +217,14 @@ final class PolicyZipExporter
         return $slug === '' ? sprintf('document-%d', $doc->getId() ?? 0) : $slug;
     }
 
-    private function buildAuditTrailCsv(): string
+    private function buildAuditTrailCsv(Tenant $tenant): string
     {
         $header = ['id', 'created_at', 'action', 'entity_type', 'entity_id', 'user_name', 'actor_role', 'description'];
         $rows = [$header];
         if ($this->auditLogRepository !== null) {
+            // Tenant-scoped: audit pack must never leak other tenants' log rows.
             $logs = $this->auditLogRepository->findBy(
-                ['entityType' => 'Document'],
+                ['entityType' => 'Document', 'tenant' => $tenant],
                 ['createdAt' => 'DESC'],
                 500,
             );

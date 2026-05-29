@@ -146,7 +146,7 @@ SECRET_FILE=/var/www/html/var/app_secret
 PLACEHOLDER_SECRET="build-time-placeholder-not-a-real-secret"
 if [ -n "${APP_SECRET:-}" ] && [ "${APP_SECRET}" != "$PLACEHOLDER_SECRET" ]; then
     SECRET="$APP_SECRET"
-elif [ -f "$SECRET_FILE" ]; then
+elif [ -s "$SECRET_FILE" ]; then
     SECRET=$(cat "$SECRET_FILE")
     echo "Reusing persisted APP_SECRET from var/app_secret"
 else
@@ -162,7 +162,10 @@ if [ ! -f "$ENV_FILE" ]; then
     printf 'APP_SECRET=%s\nAPP_ENV=prod\n' "$SECRET" > "$ENV_FILE"
     echo ".env.local created with persisted APP_SECRET"
 elif grep -q "^APP_SECRET=" "$ENV_FILE" 2>/dev/null; then
-    sed -i "s|^APP_SECRET=.*|APP_SECRET=$SECRET|" "$ENV_FILE"
+    # Rewrite without sed so special chars in an operator-supplied secret
+    # (| & \ newlines) can't corrupt the sed replacement.
+    { grep -v "^APP_SECRET=" "$ENV_FILE"; printf 'APP_SECRET=%s\n' "$SECRET"; } > "$ENV_FILE.tmp" \
+        && mv "$ENV_FILE.tmp" "$ENV_FILE"
 else
     echo "APP_SECRET=$SECRET" >> "$ENV_FILE"
 fi
