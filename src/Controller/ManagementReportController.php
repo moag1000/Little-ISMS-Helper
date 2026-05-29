@@ -581,12 +581,12 @@ class ManagementReportController extends AbstractController
                 if ($status === 'not_started') {
                     $controlsNotStarted[] = [
                         'id' => $control->getControlId(),
-                        'title' => $control->getTitle(),
+                        'title' => $control->getName(),
                     ];
                 } elseif ($status === 'in_progress') {
                     $controlsInProgress[] = [
                         'id' => $control->getControlId(),
-                        'title' => $control->getTitle(),
+                        'title' => $control->getName(),
                     ];
                 }
             }

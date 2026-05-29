@@ -22,6 +22,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method InternalAudit|null findOneBy(array $criteria, array $orderBy = null)
  * @method InternalAudit[]    findAll()
  * @method InternalAudit[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method InternalAudit[]    findByTenant(Tenant $tenant)
  */
 class InternalAuditRepository extends ServiceEntityRepository
 {

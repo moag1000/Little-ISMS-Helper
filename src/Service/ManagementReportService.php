@@ -208,7 +208,7 @@ final class ManagementReportService
         // Treatment plan summary
         $treatmentPlans = $this->riskTreatmentPlanRepository->findAll();
         $activePlans = array_filter($treatmentPlans, fn($p): bool => $p->getStatus() === RiskTreatmentPlanStatus::InProgress->value);
-        $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetDate() !== null && $p->getTargetDate() < new DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value);
+        $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetCompletionDate() !== null && $p->getTargetCompletionDate() < new DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value);
 
         return [
             'generated_at' => new DateTime(),
@@ -566,7 +566,7 @@ final class ManagementReportService
         // This year's breaches
         $thisYear = (new DateTime())->format('Y');
         $breachesThisYear = array_filter($breaches, function ($b) use ($thisYear): bool {
-            $date = $b->getDiscoveredAt();
+            $date = $b->getDetectedAt();
             return $date !== null && $date->format('Y') === $thisYear;
         });
 
@@ -823,7 +823,7 @@ final class ManagementReportService
         // Treatment plan data
         $treatmentPlans = $this->riskTreatmentPlanRepository->findAll();
         $activePlans = array_filter($treatmentPlans, fn($p): bool => $p->getStatus() === RiskTreatmentPlanStatus::InProgress->value);
-        $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetDate() !== null && $p->getTargetDate() < new DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value);
+        $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetCompletionDate() !== null && $p->getTargetCompletionDate() < new DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value);
 
         // TISAX per-tier breakdown for PDF report
         $tisaxSection = null;
@@ -981,7 +981,7 @@ final class ManagementReportService
         // (left blank initially; user fills based on previous-review tracking)
 
         // §9.3 (b) — Changes in external/internal issues relevant to ISMS
-        $review->setChangesRelevantToISMS($this->buildContextChangesNarrative($report, $locale));
+        $review->setChangesRelevantToISMS($this->buildContextChangesNarrative($locale));
 
         // §9.3 (c) — Feedback on ISMS performance
         // §9.3 (c.1) — Nonconformities & corrective actions
@@ -1126,7 +1126,7 @@ final class ManagementReportService
         );
     }
 
-    private function buildContextChangesNarrative(array $report, string $locale): string
+    private function buildContextChangesNarrative(string $locale): string
     {
         if ($locale === 'de') {
             return "Kontext-Änderungen seit letztem Review\n\n[Vom CISO/Compliance-Manager auszufüllen — relevante Änderungen extern (Recht, Markt, Lieferkette) und intern (Org-Struktur, IT-Landschaft, Prozesse, Personen).]";

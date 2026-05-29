@@ -147,7 +147,7 @@ HELP
             }
 
             // Check for SLA breaches and escalation (GDPR 72h deadline)
-            $slaStatus = $this->checkSLAStatus($workflowInstance, $currentStep);
+            $slaStatus = $this->checkSLAStatus($workflowInstance);
             if ($slaStatus === 'escalate') {
                 $io->text(sprintf(
                     '  ⚠️  ESCALATING: %s (Step: %s) - SLA threshold reached',
@@ -397,7 +397,7 @@ HELP
      *
      * @return string 'escalate', 'warning', or 'ok'
      */
-    private function checkSLAStatus(WorkflowInstance $workflowInstance, WorkflowStep $step): string
+    private function checkSLAStatus(WorkflowInstance $workflowInstance): string
     {
         $workflow = $workflowInstance->getWorkflow();
         $metadata = $workflow->getMetadata() ?? [];

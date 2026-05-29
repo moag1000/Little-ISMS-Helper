@@ -77,6 +77,19 @@ repos:
         files: ^(templates|translations)/.*\.(twig|yaml)$
         pass_filenames: false
 
+  # Twig → entity member existence. lint:twig only checks syntax; this catches
+  # `{{ x.relation.member }}` where member is not a real accessor on the related
+  # entity (a runtime 500). Scans the whole tree, so pass_filenames: false and
+  # gate on templates/ or src/Entity/ changes (the check depends on both).
+  - repo: local
+    hooks:
+      - id: check-twig-entity-properties
+        name: Twig Entity Properties (accessed members must exist)
+        entry: python3 scripts/quality/check_twig_entity_properties.py
+        language: system
+        files: ^(templates/.*\.twig|src/Entity/.*\.php)$
+        pass_filenames: false
+
   # Secret scanning — fails on accidentally staged credentials
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.21.2

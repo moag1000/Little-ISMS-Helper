@@ -165,6 +165,11 @@ class Risk
     #[Assert\NotBlank(message: 'risk.validation.description_required')]
     private ?string $description = null;
 
+    /** Free-text notes — e.g. incident-triggered re-evaluation log. */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $notes = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
     private ?string $threat = null;
@@ -456,6 +461,17 @@ class Risk
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+        return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): static
+    {
+        $this->notes = $notes;
         return $this;
     }
 

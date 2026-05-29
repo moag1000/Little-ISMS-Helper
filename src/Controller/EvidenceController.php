@@ -89,7 +89,7 @@ class EvidenceController extends AbstractController
 
         if (!$file) {
             $this->addFlash('error', $this->translator->trans('evidence.error.no_file', [], 'evidence'));
-            return $this->redirectBack($request, $entityType, $entityId);
+            return $this->redirectBack($request);
         }
 
         if (!$entityType || !$entityId) {
@@ -122,7 +122,7 @@ class EvidenceController extends AbstractController
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectBack($request, $entityType, $entityId);
+        return $this->redirectBack($request);
     }
 
     /**
@@ -198,7 +198,7 @@ class EvidenceController extends AbstractController
     /**
      * Redirect back to the entity show page or evidence index.
      */
-    private function redirectBack(Request $request, ?string $entityType, ?int $entityId): Response
+    private function redirectBack(Request $request): Response
     {
         $referer = $request->headers->get('referer');
         if ($referer) {

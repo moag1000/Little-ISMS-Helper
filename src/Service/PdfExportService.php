@@ -34,8 +34,17 @@ class PdfExportService
 
     public function generatePdf(string $template, array $data, array $options = []): string
     {
-        $html = $this->twigEnvironment->render($template, $data);
+        return $this->generateFromHtml($this->twigEnvironment->render($template, $data), $options);
+    }
 
+    /**
+     * Generate a PDF from already-rendered HTML (no Twig template step).
+     *
+     * Same security controls and watermark/classification handling as
+     * generatePdf(); used when the caller has already produced the markup.
+     */
+    public function generateFromHtml(string $html, array $options = []): string
+    {
         // Add watermark/classification if specified
         $watermark = $options['watermark'] ?? null;
         $classification = $options['classification'] ?? null;

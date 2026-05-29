@@ -42,17 +42,6 @@ use Symfony\Component\Yaml\Yaml;
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class WorkflowOverlayController extends AbstractController
 {
-    /** Step-level keys that can be overridden via this UI. */
-    private const STEP_OVERRIDEABLE_KEYS = [
-        'approverRole',
-        'approverUsers',
-        'daysToComplete',
-        'autoProgressConditions',
-        'reasonRequired',
-        'fourEyes',
-        'module',
-    ];
-
     public function __construct(
         private readonly LifecycleConfigRepository $overrideRepo,
         private readonly EntityManagerInterface $em,

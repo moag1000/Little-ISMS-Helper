@@ -314,7 +314,7 @@ class RestoreEntityWriter
                 // Hydrate scalar fields
                 $this->hydrateScalarFields(
                     $entity, $data, $classMetadata, $propertyAccessor,
-                    $entityName, $entityClass, $existingEntity, $options, $warnings
+                    $entityName, $existingEntity, $options, $warnings
                 );
 
                 // Special handling for User entities: Set password if admin_password is provided
@@ -713,7 +713,6 @@ class RestoreEntityWriter
         ClassMetadata $meta,
         PropertyAccessor $propertyAccessor,
         string $entityName,
-        string $entityClass,
         ?object $existingEntity,
         array $options,
         array &$warnings,
@@ -783,6 +782,25 @@ class RestoreEntityWriter
                     }
                 } catch (Exception) {
                     $value = [];
+                }
+            }
+
+            // Null protection for non-nullable SCALAR fields (string/int/bool/etc.).
+            // A backup may carry null for a column that maps to a typed, non-nullable
+            // PHP property — e.g. Tenant::$status (string, default 'draft') or the
+            // @ORM\Version Tenant::$lockVersion (int, default 0). Assigning null to
+            // those throws a TypeError that aborts the whole row, and because Tenant
+            // is restored first, losing it cascades into "Tenant id(N) not found" for
+            // every dependent entity. Leave the property's declared default instead.
+            if ($value === null && !in_array($type, ['json', 'simple_array', 'array'], true)) {
+                try {
+                    $mapping = $meta->getFieldMapping($fieldName);
+                    $isNullable = is_array($mapping) ? ($mapping['nullable'] ?? false) : ($mapping->nullable ?? false);
+                } catch (Exception) {
+                    $isNullable = false;
+                }
+                if (!$isNullable) {
+                    continue; // keep the entity's PHP default; do not assign null
                 }
             }
 

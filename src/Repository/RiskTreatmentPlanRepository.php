@@ -13,6 +13,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<RiskTreatmentPlan>
+ *
+ * @method RiskTreatmentPlan[] findByTenant(Tenant $tenant)
  */
 class RiskTreatmentPlanRepository extends ServiceEntityRepository
 {

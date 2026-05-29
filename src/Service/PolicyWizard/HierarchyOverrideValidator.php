@@ -144,7 +144,7 @@ class HierarchyOverrideValidator
 
         return match ($mode) {
             OverrideMode::ForbiddenToChange => !$this->valuesEqual($parent, $candidate),
-            OverrideMode::ForbiddenToRelax => $this->isLooser($mode, $parent, $candidate),
+            OverrideMode::ForbiddenToRelax => $this->isLooser($parent, $candidate),
             OverrideMode::FloorOnly => is_numeric($parent) && is_numeric($candidate)
                 ? (float) $candidate < (float) $parent
                 : (is_bool($parent) && $parent === true && $candidate === false),
@@ -155,7 +155,7 @@ class HierarchyOverrideValidator
         };
     }
 
-    private function isLooser(OverrideMode $mode, mixed $parent, mixed $candidate): bool
+    private function isLooser(mixed $parent, mixed $candidate): bool
     {
         if (is_bool($parent) || is_bool($candidate)) {
             // ForbiddenToRelax: parent=true must stay true.

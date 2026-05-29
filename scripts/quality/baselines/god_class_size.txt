@@ -4,7 +4,7 @@
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1869 deps=15
 src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php:LOC=1837 deps=4
 src/Service/DashboardStatisticsService.php:LOC=1808 deps=25
-src/Controller/DeploymentWizardController.php:LOC=1747 deps=0
+src/Controller/DeploymentWizardController.php:LOC=1753 deps=0
 src/Controller/RiskController.php:LOC=1608 deps=0
 src/Controller/ComplianceExportController.php:LOC=1590 deps=0
 src/Service/Export/CertificationBundleExporter.php:LOC=1573 deps=19

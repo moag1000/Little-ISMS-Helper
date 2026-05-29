@@ -80,7 +80,7 @@ final class ScheduledReportService
 
         foreach ($dueReports as $report) {
             try {
-                $this->tenantContext->setTenantId($report->getTenantId());
+                $this->tenantContext->setCurrentTenantById($report->getTenantId());
 
                 $this->processReport($report);
 
@@ -604,7 +604,7 @@ final class ScheduledReportService
      */
     public function triggerReport(ScheduledReport $report): void
     {
-        $this->tenantContext->setTenantId($report->getTenantId());
+        $this->tenantContext->setCurrentTenantById($report->getTenantId());
         $this->processReport($report);
     }
 
@@ -613,7 +613,7 @@ final class ScheduledReportService
      */
     public function previewReport(ScheduledReport $report): string
     {
-        $this->tenantContext->setTenantId($report->getTenantId());
+        $this->tenantContext->setCurrentTenantById($report->getTenantId());
         return $this->generateReportContent($report);
     }
 }

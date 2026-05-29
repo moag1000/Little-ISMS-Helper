@@ -166,16 +166,19 @@ class BcmModuleBulkActionTest extends WebTestCase
      */
     private function getBulkCsrfToken(): string
     {
-        // Symfony's session-based CSRF stores tokens under the key '_csrf/<tokenId>'
-        $tokenValue = bin2hex(random_bytes(16));
-        $container  = static::getContainer();
-        /** @var \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface $csrfManager */
-        $csrfManager = $container->get('security.csrf.token_manager');
-        // Refresh the token for the 'bulk_action' ID so isCsrfTokenValid passes.
-        // Warm the session via a GET request so CSRF storage can persist tokens.
+        // bulk_action is session-stateful CSRF: the controller validates the
+        // body "_token" against the session. Warm the SAME session the caller
+        // logged into (loginUser pinned its cookie) via a GET, set the token
+        // under SessionTokenStorage's '_csrf/bulk_action' key, then save+close
+        // so it reaches storage — a late set() after the response stays
+        // in-memory only and the POST would open a fresh session without it.
+        // (Do NOT mint a new session/cookie here: that would drop the login.)
         $this->client->request('GET', '/');
-        $token = $csrfManager->getToken('bulk_action');
-        return $token->getValue();
+        $session = $this->client->getRequest()->getSession();
+        $tokenValue = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
+        $session->set('_csrf/bulk_action', $tokenValue);
+        $session->save();
+        return $tokenValue;
     }
 
     private function makeUser(string $email, Tenant $tenant): User

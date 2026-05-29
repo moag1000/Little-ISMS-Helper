@@ -100,9 +100,6 @@ final class MyDayAggregator
     /** Management-review look-ahead window — ISO 27001 §9.3 cadence (V4 R2). */
     private const MGMT_REVIEW_WARN_DAYS = 90;
 
-    /** Incident-priority look-ahead window for "due-soon" badge (V4 R2). */
-    private const INCIDENT_PRIORITY_DAYS = 7;
-
     /** V4-EF-7: Wizard stall window in days before surfaced as "overdue" to CM. */
     private const WIZARD_OVERDUE_DAYS = 90;
 
@@ -187,13 +184,13 @@ final class MyDayAggregator
         $reviewsUpcoming   = $tenant ? $this->buildManagementReviewUpcoming($user, $tenant) : [];
         // V4-EF-7 — Compliance-Manager CM-Buckets (visibility-gated to ROLE_COMPLIANCE_MANAGER).
         $docsPendingApproval = ($tenant && $this->isComplianceManager($user))
-            ? $this->buildDocumentsPendingApproval($user, $tenant)
+            ? $this->buildDocumentsPendingApproval($tenant)
             : [];
         $wizardOverdue       = ($tenant && $this->isComplianceManager($user))
-            ? $this->buildWizardOverdue($user, $tenant)
+            ? $this->buildWizardOverdue($tenant)
             : [];
         $frameworkGaps       = ($tenant && $this->isComplianceManager($user))
-            ? $this->buildFrameworkGapsCritical($user)
+            ? $this->buildFrameworkGapsCritical()
             : [];
 
         $total = count($workflowsPending) + count($workflowsOverdue)
@@ -970,7 +967,7 @@ final class MyDayAggregator
      *
      * @return array<int, array<string, mixed>>
      */
-    private function buildDocumentsPendingApproval(User $user, Tenant $tenant): array
+    private function buildDocumentsPendingApproval(Tenant $tenant): array
     {
         $items = [];
         foreach ($this->documentRepo->findPendingApprovalForTenant($tenant) as $document) {
@@ -1002,7 +999,7 @@ final class MyDayAggregator
      *
      * @return array<int, array<string, mixed>>
      */
-    private function buildWizardOverdue(User $user, Tenant $tenant): array
+    private function buildWizardOverdue(Tenant $tenant): array
     {
         $items = [];
         foreach ($this->wizardSessionRepo->findOverdueByTenant($tenant, self::WIZARD_OVERDUE_DAYS) as $session) {
@@ -1039,7 +1036,7 @@ final class MyDayAggregator
      *
      * @return array<int, array<string, mixed>>
      */
-    private function buildFrameworkGapsCritical(User $user): array
+    private function buildFrameworkGapsCritical(): array
     {
         $items = [];
         foreach ($this->complianceAnalytics->findFrameworkGapsCritical(self::FRAMEWORK_GAP_CRITICAL_PCT) as $f) {

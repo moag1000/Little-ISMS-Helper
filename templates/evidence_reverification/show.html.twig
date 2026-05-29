@@ -55,7 +55,7 @@
                         <dt class="col-sm-4">{{ 'evidence_reverification.show.linked_control'|trans({}, 'document') }}</dt>
                         <dd class="col-sm-8">
                             <a href="{{ path('app_soa_show', {id: task.control.id}) }}">
-                                {{ task.control.controlId }} — {{ task.control.controlName }}
+                                {{ task.control.controlId }} — {{ task.control.name }}
                             </a>
                         </dd>
                         {% endif %}

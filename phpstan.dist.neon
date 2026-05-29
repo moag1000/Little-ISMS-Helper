@@ -1,8 +1,23 @@
+includes:
+    # Pre-existing level-5 violations are frozen here so the higher bar applies
+    # to NEW code immediately while the backlog is burned down over time.
+    # Regenerate after fixing some: vendor/bin/phpstan analyse --generate-baseline
+    - phpstan-baseline.neon
+
 parameters:
     paths:
         - src/
 
-    level: 1
+    # Raised from 1 → 5 (with a baseline for the existing backlog). Level 5 adds
+    # undefined method/property detection on resolved types and argument-type
+    # checks — the class of static bug that previously slipped through.
+    level: 5
+
+    # The prod image runs PHP 8.5 while CI analyses on PHP 8.4, so a few
+    # version-specific findings (e.g. postInc.type "++ on literal-string") land
+    # in the baseline on one version but not the other. Tolerate unmatched
+    # baseline entries — genuinely NEW errors still fail the build.
+    reportUnmatchedIgnoredErrors: false
 
     # Exclude paths that are allowed to call setStatus() directly
     excludePaths:
@@ -22,3 +37,29 @@ services:
         class: App\Tests\PHPStan\Rule\NoNewWorkflowOrWorkflowStepRule
         tags:
             - phpstan.rules.rule
+
+    # Marks constants + methods consumed only outside analysed PHP (CI gate
+    # scripts, reflection in tests) as always-used — e.g.
+    # BackupService::EXCLUDED_FROM_BACKUP (Gate 43 Python + BackupServiceTest
+    # reflection) and ComplianceWizardService::check{Consent,Dsr,Dpia}Coverage
+    # (ComplianceWizardServiceTest reflection).
+    -
+        class: App\Tests\PHPStan\ExternallyConsumedSymbolExtension
+        tags:
+            - phpstan.constants.alwaysUsedClassConstantsExtension
+            - phpstan.methods.alwaysUsedMethodExtension
+
+    # Narrow getUser() → App\Entity\User|null (single user entity). Kills the
+    # ~190 false method.notFound/argument.type against ?UserInterface.
+    -
+        class: App\Tests\PHPStan\Type\GetUserReturnTypeExtension
+        arguments:
+            forClass: Symfony\Bundle\SecurityBundle\Security
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+    -
+        class: App\Tests\PHPStan\Type\GetUserReturnTypeExtension
+        arguments:
+            forClass: Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension

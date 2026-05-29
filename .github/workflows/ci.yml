@@ -210,6 +210,12 @@ jobs:
       - name: DQL Field Mismatch Check
         run: php scripts/quality/check-dql-mismatches.php
 
+      # Twig Entity-Member Gate — catches {{ x.relation.member }} where member is
+      # not a real accessor on the related entity (lint:twig only checks syntax;
+      # such accesses fail at render-time with an HTTP 500).
+      - name: Twig Entity-Property Check
+        run: python3 scripts/quality/check_twig_entity_properties.py
+
       # ── Repo Quality Gates ─────────────────────────────────────────────────
       # 8 static-analysis gates that catch common bug-patterns at PR-time.
       # Each gate exits 0 (clean) or 1 (violations). Blocking gates fail

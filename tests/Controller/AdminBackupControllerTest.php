@@ -171,23 +171,45 @@ class AdminBackupControllerTest extends WebTestCase
     }
 
     /**
-     * Execute a same-origin JSON request. The SameOriginCsrfTokenManager
-     * accepts any token value when both `Sec-Fetch-Site: same-origin` and a
-     * token parameter are present (cf. config/packages/csrf.yaml).
+     * Seed a session-stateful CSRF token for the backup/export/import endpoints
+     * and return its value. Those endpoints validate the body "_token" against
+     * the session (config/packages/csrf.yaml — they are NOT stateless). The
+     * caller has already logged in, so warm that SAME session via an
+     * authenticated GET, write the token under every relevant '_csrf/<id>'
+     * key, and save it so the next POST (reusing the login cookie) carries both
+     * auth and a valid token. A late set() after the response would stay
+     * in-memory only, so the explicit save() is required.
+     */
+    private function seedBackupCsrfToken(): string
+    {
+        $this->client->request('GET', '/en/admin/data/backup');
+        $session = $this->client->getRequest()->getSession();
+        $tokenValue = (new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator())->generateToken();
+        foreach ([
+            'data_backup_create', 'data_backup_upload', 'data_backup_validate',
+            'data_backup_restore', 'data_backup_delete',
+            'data_export', 'data_import', 'data_import_execute',
+        ] as $id) {
+            $session->set('_csrf/' . $id, $tokenValue);
+        }
+        $session->save();
+
+        return $tokenValue;
+    }
+
+    /**
+     * Execute a same-origin AJAX JSON request with a valid session CSRF token.
      *
-     * Sends `X-Requested-With: XMLHttpRequest` to match the JS fetch()
-     * call's headers — AdminBackupController distinguishes the AJAX path
-     * (JsonResponse) from the JS-failed form-submit fallback path
-     * (server-side redirect to progress page) via this header.
+     * Sends `X-Requested-With: XMLHttpRequest` to match the JS fetch() call's
+     * headers — AdminBackupController distinguishes the AJAX path (JsonResponse)
+     * from the JS-failed form-submit fallback path (server-side redirect to the
+     * progress page) via this header.
      *
-     * @param array<string, mixed> $params Post parameters (will carry `_token=same-origin`)
+     * @param array<string, mixed> $params Post parameters (will carry `_token`)
      */
     private function sameOriginRequest(string $method, string $uri, array $params = [], array $files = []): void
     {
-        // 'csrf-token' matches Symfony's default cookie name, which the
-        // SameOriginCsrfTokenManager accepts regardless of length (the
-        // `$token->getValue() !== $this->cookieName` branch in isTokenValid).
-        $params['_token'] = 'csrf-token';
+        $params['_token'] = $this->seedBackupCsrfToken();
         $this->client->request(
             $method,
             $uri,
@@ -268,10 +290,12 @@ class AdminBackupControllerTest extends WebTestCase
         // controller must redirect to the progress page server-side instead
         // of returning a JsonResponse the browser would render as raw text.
         $this->loginAsUser($this->adminUser);
+        // Valid session CSRF token, but NO X-Requested-With — exercises the
+        // server-side redirect (form-submit fallback) path, not the AJAX path.
         $this->client->request(
             'POST',
             '/en/admin/data/backup/create',
-            ['_token' => 'csrf-token'],
+            ['_token' => $this->seedBackupCsrfToken()],
             [],
             ['HTTP_SEC_FETCH_SITE' => 'same-origin'],
         );

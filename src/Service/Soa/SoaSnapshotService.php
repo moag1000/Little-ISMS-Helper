@@ -305,17 +305,16 @@ final class SoaSnapshotService
             if (isset($supersededIds[$doc->getId()])) {
                 continue;
             }
-            $current[] = $this->describeDocument($doc, $candidates);
+            $current[] = $this->describeDocument($doc);
         }
 
         return $current;
     }
 
     /**
-     * @param list<Document> $allCandidates
      * @return array<string, mixed>
      */
-    private function describeDocument(Document $doc, array $allCandidates): array
+    private function describeDocument(Document $doc): array
     {
         $chain = [];
         $cursor = $doc->getSupersedes();

@@ -93,7 +93,7 @@ class EvidenceCascadeInvalidationService
         }
 
         // --- Invalidate linked ComplianceRequirementFulfillments ---
-        $fulfillments = $this->findFulfillmentsLinkedToDocument($document, $tenant);
+        $fulfillments = $this->findFulfillmentsLinkedToDocument();
         foreach ($fulfillments as $fulfillment) {
             $fulfillment->setEvidenceOutdated(true);
 
@@ -218,10 +218,8 @@ class EvidenceCascadeInvalidationService
      *
      * @return ComplianceRequirementFulfillment[]
      */
-    private function findFulfillmentsLinkedToDocument(
-        \App\Entity\Document $document,
-        Tenant $tenant,
-    ): array {
+    private function findFulfillmentsLinkedToDocument(): array
+    {
         // CRF does not yet have a direct document FK (Sprint 5B scope).
         // Return empty; the structure is in place for future extension.
         return [];

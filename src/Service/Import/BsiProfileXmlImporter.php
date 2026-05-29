@@ -485,7 +485,7 @@ final class BsiProfileXmlImporter
             return $cache[$key];
         }
 
-        $candidates = $this->candidateIds($framework, $requirementId);
+        $candidates = $this->candidateIds($requirementId);
         foreach ($candidates as $candidate) {
             $hit = $this->requirementRepository->findOneBy([
                 'framework' => $framework,
@@ -506,7 +506,7 @@ final class BsiProfileXmlImporter
     /**
      * @return list<string>
      */
-    private function candidateIds(ComplianceFramework $framework, string $id): array
+    private function candidateIds(string $id): array
     {
         $candidates = [$id];
         $stripped = preg_replace('/^(Art\.|§)/i', '', $id) ?? $id;

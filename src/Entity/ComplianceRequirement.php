@@ -346,6 +346,21 @@ class ComplianceRequirement
         return (float) $this->calculateFulfillmentFromControls();
     }
 
+    /**
+     * Implementation status derived from the fulfilment percentage, using the
+     * vocabulary the gap-analysis export expects.
+     */
+    public function getStatus(): string
+    {
+        $pct = $this->getFulfillmentPercentage();
+
+        return match (true) {
+            $pct >= 100.0 => 'implemented',
+            $pct > 0.0 => 'partially_implemented',
+            default => 'not_implemented',
+        };
+    }
+
     public function getRequirementType(): string
     {
         return $this->requirementType;
