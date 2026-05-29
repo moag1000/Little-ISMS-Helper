@@ -95,7 +95,15 @@ export default class extends Controller {
             : this.element.closest('form');
         if (!form) return;
 
+        this._form = form;
         this._terminal = false;
+
+        // Busy state must be driven here, not by a DOMContentLoaded handler:
+        // under Turbo navigation DOMContentLoaded does not fire on step changes,
+        // so a page-level inline script would never bind and the spinner would
+        // never appear. Stimulus reconnects on every Turbo render, so this does.
+        this._setFormBusy(true);
+
         if (this.hasStatusMessageTarget && this.messageRunningValue) {
             this.statusMessageTarget.textContent = this.messageRunningValue;
         }
@@ -128,6 +136,23 @@ export default class extends Controller {
     }
 
     // ── Private helpers ────────────────────────────────────────────────────
+
+    // Toggle the submit button's text/spinner spans and disabled state.
+    // Mirrors the markup convention `.btn-text` / `.btn-loading.d-none`.
+    _setFormBusy(busy) {
+        const form = this._form ?? (this.element.tagName === 'FORM' ? this.element : null);
+        if (!form) return;
+        const button = form.querySelector('button[type="submit"]');
+        if (!button) return;
+
+        const btnText = button.querySelector('.btn-text');
+        const btnLoading = button.querySelector('.btn-loading');
+        if (btnText && btnLoading) {
+            btnText.classList.toggle('d-none', busy);
+            btnLoading.classList.toggle('d-none', !busy);
+        }
+        button.disabled = busy;
+    }
 
     _startPolling() {
         // Poll immediately, then on interval
@@ -302,6 +327,8 @@ export default class extends Controller {
     _applyTerminalFailure(message, trace) {
         this._terminal = true;
         this._stopPolling();
+        // Re-enable the submit button so the user can correct input and retry.
+        this._setFormBusy(false);
 
         if (this.hasErrorBoxTarget) {
             this.errorBoxTarget.classList.remove('d-none');
