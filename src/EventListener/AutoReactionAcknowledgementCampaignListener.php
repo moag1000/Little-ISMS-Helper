@@ -82,6 +82,7 @@ final class AutoReactionAcknowledgementCampaignListener
                 ]);
                 return;
             }
+            /** @var \App\Repository\PolicyAcknowledgementRepository $repo */
             $repo = $em->getRepository(PolicyAcknowledgement::class);
 
             // Audit V3 W2-C4: tenant-scoped active-user query.

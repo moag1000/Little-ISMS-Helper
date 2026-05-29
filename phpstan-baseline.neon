@@ -1723,12 +1723,6 @@ parameters:
 			path: src/EventListener/AssetSchutzbedarfDpiaListener.php
 
 		-
-			message: '#^Call to an undefined method Doctrine\\ORM\\EntityRepository\<App\\Entity\\PolicyAcknowledgement\>\:\:findOneFor\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/EventListener/AutoReactionAcknowledgementCampaignListener.php
-
-		-
 			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getAssignedTo'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -2749,20 +2743,20 @@ parameters:
 			path: src/Service/ComplianceWizard/Check/PolicyWizard/PolicyTailoringFieldsCheck.php
 
 		-
-			message: '#^Call to an undefined method App\\Repository\\InternalAuditRepository\:\:findByTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Service/ComplianceWizard/CoverageCheckService.php
-
-		-
-			message: '#^Call to an undefined method App\\Repository\\RiskTreatmentPlanRepository\:\:findByTenant\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Empty array passed to foreach\.$#'
+			identifier: foreach.emptyArray
 			count: 1
 			path: src/Service/ComplianceWizard/CoverageCheckService.php
 
 		-
 			message: '#^Strict comparison using \=\=\= between '''' and ''closed'' will always evaluate to false\.$#'
 			identifier: identical.alwaysFalse
+			count: 1
+			path: src/Service/ComplianceWizard/CoverageCheckService.php
+
+		-
+			message: '#^Variable \$openCriticalFindings in empty\(\) always exists and is always falsy\.$#'
+			identifier: empty.variable
 			count: 1
 			path: src/Service/ComplianceWizard/CoverageCheckService.php
 
