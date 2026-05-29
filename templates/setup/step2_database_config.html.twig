@@ -222,7 +222,11 @@
 
 {# JavaScript for dynamic field toggling based on database type #}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+// turbo:load (not DOMContentLoaded): Turbo Drive (body data-turbo="true")
+// swaps the body on navigation without firing DOMContentLoaded, so this dynamic
+// field toggling would never bind when the step is reached via a Turbo visit.
+// turbo:load fires on the initial load and on every Turbo visit.
+document.addEventListener('turbo:load', function() {
     const typeSelect = document.querySelector('select[name*="[type]"]');
     const serverFields = document.getElementById('server-fields');
     const unixSocketField = document.getElementById('unix-socket-field');

@@ -562,7 +562,7 @@
                                 {% if supplier.exitStrategyDocument %}
                                     <a href="{{ path('app_document_show', {id: supplier.exitStrategyDocument.id}) }}">
                                         <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
-                                        {{ supplier.exitStrategyDocument.title }}
+                                        {{ supplier.exitStrategyDocument.originalFilename }}
                                     </a>
                                 {% else %}
                                     <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>

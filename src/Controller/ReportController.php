@@ -365,7 +365,9 @@ class ReportController extends AbstractController
                 $training->getTrainingType(),
                 $training->getScheduledDate()->format('Y-m-d H:i'),
                 $training->getDurationMinutes(),
-                count($training->getParticipants()),
+                // participants is a comma-separated string, not a collection —
+                // count() on it would TypeError. Count non-empty CSV entries.
+                $training->getParticipants() ? count(explode(',', $training->getParticipants())) : 0,
                 $training->isMandatory() ? 'Yes' : 'No',
                 $training->getStatus(),
             ];

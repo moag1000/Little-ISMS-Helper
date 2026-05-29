@@ -552,12 +552,27 @@ class RestoreService
                 }
             }
 
+            // The entity writer records per-row errors into statistics WITHOUT
+            // aborting, so previously a root-entity failure (e.g. Tenant — which
+            // every other entity FKs to) still returned success=true and left a
+            // half-populated database. In strict mode any error must therefore
+            // mark the restore as failed; best_effort callers opt into skipping
+            // rows, so they keep success=true but can inspect errors_total.
+            $errorsTotal = 0;
+            foreach ($this->statistics as $statistic) {
+                if (is_array($statistic)) {
+                    $errorsTotal += $statistic['errors'] ?? 0;
+                }
+            }
+            $success = $options['best_effort'] || $errorsTotal === 0;
+
             return [
-                'success'    => true,
-                'statistics' => $this->statistics,
-                'warnings'   => $this->warnings,
-                'failures'   => $this->failures,
-                'dry_run'    => $options['dry_run'],
+                'success'      => $success,
+                'errors_total' => $errorsTotal,
+                'statistics'   => $this->statistics,
+                'warnings'     => $this->warnings,
+                'failures'     => $this->failures,
+                'dry_run'      => $options['dry_run'],
             ];
         } catch (Exception $e) {
             try {

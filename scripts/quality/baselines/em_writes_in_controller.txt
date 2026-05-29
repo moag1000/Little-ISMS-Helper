@@ -28,9 +28,9 @@ src/Controller/Admin/KpiThresholdConfigController.php:108
 src/Controller/Admin/KpiThresholdConfigController.php:141
 src/Controller/Admin/KpiThresholdConfigController.php:165
 src/Controller/Admin/KpiThresholdConfigController.php:166
-src/Controller/Admin/LifecycleOverridesController.php:182
-src/Controller/Admin/LifecycleOverridesController.php:272
-src/Controller/Admin/LifecycleOverridesController.php:290
+src/Controller/Admin/LifecycleOverridesController.php:179
+src/Controller/Admin/LifecycleOverridesController.php:269
+src/Controller/Admin/LifecycleOverridesController.php:287
 src/Controller/Admin/MappingQualityController.php:85
 src/Controller/Admin/MappingQualityController.php:135
 src/Controller/Admin/Notification/NotificationChannelController.php:101
@@ -83,9 +83,9 @@ src/Controller/Admin/TagController.php:129
 src/Controller/Admin/TagController.php:130
 src/Controller/Admin/TenantComplianceSettingsController.php:83
 src/Controller/Admin/TenantEmailBrandingController.php:55
-src/Controller/Admin/WorkflowOverlayController.php:260
-src/Controller/Admin/WorkflowOverlayController.php:497
-src/Controller/Admin/WorkflowOverlayController.php:515
+src/Controller/Admin/WorkflowOverlayController.php:249
+src/Controller/Admin/WorkflowOverlayController.php:486
+src/Controller/Admin/WorkflowOverlayController.php:504
 src/Controller/AdminComplianceController.php:135
 src/Controller/AdminComplianceController.php:136
 src/Controller/AdminTourCompletionController.php:147

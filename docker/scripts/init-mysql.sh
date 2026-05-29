@@ -37,6 +37,9 @@ if [ "${EMBEDDED_DB:-mariadb}" = "none" ]; then
     # Cache rebuild without touching .env.local — DATABASE_URL stays as-is.
     php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"
     php bin/console cache:warmup --env=prod 2>&1 || echo "Cache warmup failed"
+    # Hand cache ownership to www-data so php-fpm can write runtime cache (see
+    # the note before `wait $MYSQL_PID` in the embedded path for the rationale).
+    chown -R www-data:www-data /var/www/html/var/cache /var/www/html/var/log 2>/dev/null || true
     echo "External-DB bootstrap done"
 
     # Supervisor expects this program to stay running.
@@ -127,11 +130,44 @@ fi
 # This is critical for container restarts where the container is rebuilt
 # but the volume (with the database) persists
 
-# Generate APP_SECRET if .env.local doesn't exist
-if [ ! -f /var/www/html/.env.local ]; then
-    echo "APP_SECRET=$(openssl rand -hex 32)" > /var/www/html/.env.local
-    echo "APP_ENV=prod" >> /var/www/html/.env.local
-    echo ".env.local created with APP_SECRET"
+# APP_SECRET must stay STABLE across container recreations. It is the key
+# material for sessions, CSRF tokens, MFA secrets and AES-encrypted backups
+# (BackupEncryptionService derives its AES key from APP_SECRET via SHA-256).
+# .env.local lives in the image layer and is recreated empty on every new
+# container, so a fresh APP_SECRET used to be generated on every recreate —
+# silently invalidating sessions/MFA and making previously-encrypted backups
+# undecryptable. Persist it on the volume (var/) and reuse it, exactly like the
+# MySQL password above. An explicit APP_SECRET env var still wins (12-factor).
+ENV_FILE=/var/www/html/.env.local
+SECRET_FILE=/var/www/html/var/app_secret
+# The Dockerfile sets a build-time placeholder APP_SECRET (needed so cache:warmup
+# can run during the image build). It must NEVER be used at runtime — treat it
+# as "unset" so we fall through to a persisted, per-install secret.
+PLACEHOLDER_SECRET="build-time-placeholder-not-a-real-secret"
+if [ -n "${APP_SECRET:-}" ] && [ "${APP_SECRET}" != "$PLACEHOLDER_SECRET" ]; then
+    SECRET="$APP_SECRET"
+elif [ -s "$SECRET_FILE" ]; then
+    SECRET=$(cat "$SECRET_FILE")
+    echo "Reusing persisted APP_SECRET from var/app_secret"
+else
+    SECRET=$(openssl rand -hex 32)
+    printf '%s' "$SECRET" > "$SECRET_FILE"
+    chmod 600 "$SECRET_FILE"
+    chown www-data:www-data "$SECRET_FILE" 2>/dev/null || true
+    echo "Generated and persisted APP_SECRET to var/app_secret"
+fi
+
+# Ensure .env.local carries the stable APP_SECRET (preserve any other vars).
+if [ ! -f "$ENV_FILE" ]; then
+    printf 'APP_SECRET=%s\nAPP_ENV=prod\n' "$SECRET" > "$ENV_FILE"
+    echo ".env.local created with persisted APP_SECRET"
+elif grep -q "^APP_SECRET=" "$ENV_FILE" 2>/dev/null; then
+    # Rewrite without sed so special chars in an operator-supplied secret
+    # (| & \ newlines) can't corrupt the sed replacement.
+    { grep -v "^APP_SECRET=" "$ENV_FILE"; printf 'APP_SECRET=%s\n' "$SECRET"; } > "$ENV_FILE.tmp" \
+        && mv "$ENV_FILE.tmp" "$ENV_FILE"
+else
+    echo "APP_SECRET=$SECRET" >> "$ENV_FILE"
 fi
 
 # Update or add DATABASE_URL (preserving other variables)
@@ -175,6 +211,16 @@ else
     php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"
     echo "Cache cleared"
 fi
+
+# Cache is built above as root (this script runs as root). php-fpm runs as
+# www-data and must be able to READ the warmed cache AND WRITE runtime cache
+# entries (twig templates, asset_mapper, API-Platform metadata pools, …).
+# Without this, www-data hits root-owned files/dirs and every such write fails
+# with "Permission denied" → HTTP 500. One recursive chown after the warmup
+# fixes it for all bootstrap branches above.
+php bin/console cache:warmup --env=prod 2>&1 || echo "Cache warmup (final) failed"
+chown -R www-data:www-data /var/www/html/var/cache /var/www/html/var/log 2>/dev/null || true
+echo "Cache ownership normalised for www-data"
 
 # Keep MariaDB running in foreground
 wait $MYSQL_PID

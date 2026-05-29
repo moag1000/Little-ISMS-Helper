@@ -48,7 +48,7 @@ class CheckRiskReviewsHandler
 
             // Send notifications to risk owners
             foreach ($risksDueForReview as $risk) {
-                $owner = $risk->getOwner();
+                $owner = $risk->getRiskOwner();
 
                 if (!$owner) {
                     $this->logger->warning('Risk has no owner assigned', [
@@ -59,15 +59,15 @@ class CheckRiskReviewsHandler
                 }
 
                 try {
-                    $this->emailService->sendEmail(
-                        $owner->getEmail(),
+                    $this->emailService->sendGenericNotification(
                         'Risk Review Required: ' . $risk->getTitle(),
                         'emails/risk_review_notification.html.twig',
                         [
                             'risk' => $risk,
                             'owner' => $owner,
-                            'due_date' => $risk->getNextReviewDate(),
-                        ]
+                            'due_date' => $risk->getReviewDate(),
+                        ],
+                        [$owner->getEmail()],
                     );
 
                     $this->logger->info('Sent risk review notification', [

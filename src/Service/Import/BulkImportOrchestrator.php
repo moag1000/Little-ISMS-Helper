@@ -287,9 +287,10 @@ class BulkImportOrchestrator
             if ($flushedRowCount % self::BATCH_FLUSH_SIZE === 0) {
                 $this->em->flush();
                 $this->em->clear();
-                // Re-merge batch and tenant after clear
-                $batch  = $this->em->merge($batch) ?? $batch;
-                $tenant = $this->em->merge($tenant) ?? $tenant;
+                // Doctrine ORM 3 removed EntityManager::merge(); after clear()
+                // the entities are detached, so re-fetch them as managed by id.
+                $batch  = $this->em->find(BulkImportBatch::class, $batch->getId()) ?? $batch;
+                $tenant = $this->em->find(Tenant::class, $tenant->getId()) ?? $tenant;
             }
         }
 
@@ -334,8 +335,10 @@ class BulkImportOrchestrator
             if ($flushedRowCount % self::BATCH_FLUSH_SIZE === 0) {
                 $this->em->flush();
                 $this->em->clear();
-                $batch  = $this->em->merge($batch) ?? $batch;
-                $tenant = $this->em->merge($tenant) ?? $tenant;
+                // Doctrine ORM 3 removed EntityManager::merge(); after clear()
+                // the entities are detached, so re-fetch them as managed by id.
+                $batch  = $this->em->find(BulkImportBatch::class, $batch->getId()) ?? $batch;
+                $tenant = $this->em->find(Tenant::class, $tenant->getId()) ?? $tenant;
             }
         }
 
@@ -351,8 +354,10 @@ class BulkImportOrchestrator
             if ($flushedRowCount % self::BATCH_FLUSH_SIZE === 0) {
                 $this->em->flush();
                 $this->em->clear();
-                $batch  = $this->em->merge($batch) ?? $batch;
-                $tenant = $this->em->merge($tenant) ?? $tenant;
+                // Doctrine ORM 3 removed EntityManager::merge(); after clear()
+                // the entities are detached, so re-fetch them as managed by id.
+                $batch  = $this->em->find(BulkImportBatch::class, $batch->getId()) ?? $batch;
+                $tenant = $this->em->find(Tenant::class, $tenant->getId()) ?? $tenant;
             }
         }
 
@@ -367,8 +372,10 @@ class BulkImportOrchestrator
             if ($flushedRowCount % self::BATCH_FLUSH_SIZE === 0) {
                 $this->em->flush();
                 $this->em->clear();
-                $batch  = $this->em->merge($batch) ?? $batch;
-                $tenant = $this->em->merge($tenant) ?? $tenant;
+                // Doctrine ORM 3 removed EntityManager::merge(); after clear()
+                // the entities are detached, so re-fetch them as managed by id.
+                $batch  = $this->em->find(BulkImportBatch::class, $batch->getId()) ?? $batch;
+                $tenant = $this->em->find(Tenant::class, $tenant->getId()) ?? $tenant;
             }
         }
 

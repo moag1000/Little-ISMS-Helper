@@ -221,8 +221,7 @@ class RiskTreatmentPlanApprovalService
         string $approvalLevel
     ): void {
         try {
-            $this->emailNotificationService->sendEmail(
-                $user->getEmail(),
+            $this->emailNotificationService->sendGenericNotification(
                 'Risk Treatment Plan Approval Required',
                 'emails/treatment_plan_approval_notification.html.twig',
                 [
@@ -230,7 +229,8 @@ class RiskTreatmentPlanApprovalService
                     'user' => $user,
                     'approval_level' => $approvalLevel,
                     'budget' => $riskTreatmentPlan->getBudget(),
-                ]
+                ],
+                [$user->getEmail()],
             );
 
             $this->logger->info('Approval notification sent', [

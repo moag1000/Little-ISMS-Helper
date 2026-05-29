@@ -63,7 +63,7 @@ class CertBundleReadinessService
         $checks = [];
 
         // Check 1: All required Documents approved
-        [$docCheck, $docBlockers, $docWarnings] = $this->checkDocumentApprovals($tenant, $frameworkCode);
+        [$docCheck, $docBlockers, $docWarnings] = $this->checkDocumentApprovals($tenant);
         $checks['documents_approved'] = $docCheck;
         $blockers = array_merge($blockers, $docBlockers);
         $warnings = array_merge($warnings, $docWarnings);
@@ -112,7 +112,7 @@ class CertBundleReadinessService
      *
      * @return array{0: bool, 1: list<array{type: string, description: string, severity: string}>, 2: list<array{type: string, description: string, severity: string}>}
      */
-    private function checkDocumentApprovals(Tenant $tenant, string $frameworkCode): array
+    private function checkDocumentApprovals(Tenant $tenant): array
     {
         $blockers = [];
         $warnings = [];

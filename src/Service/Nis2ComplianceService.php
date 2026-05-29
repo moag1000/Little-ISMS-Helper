@@ -91,13 +91,13 @@ final class Nis2ComplianceService
         $letters = [
             '21.2.a' => $this->riskManagementPolicies($tenant),          // (a) risk analysis & InfoSys security
             '21.2.b' => $this->incidentHandling(),                        // (b) incident handling
-            '21.2.c' => $this->businessContinuity($tenant),               // (c) BCM / backup / crisis mgmt
-            '21.2.d' => $this->supplyChainSecurity($tenant),              // (d) supply chain security
+            '21.2.c' => $this->businessContinuity(),               // (c) BCM / backup / crisis mgmt
+            '21.2.d' => $this->supplyChainSecurity(),              // (d) supply chain security
             '21.2.e' => $this->secureSdlc($tenant),                       // (e) secure development & acquisition
-            '21.2.f' => $this->effectivenessAssessment($tenant),          // (f) effectiveness assessment
-            '21.2.g' => $this->cyberHygieneAndTraining($tenant),          // (g) cyber hygiene + training
+            '21.2.f' => $this->effectivenessAssessment(),          // (f) effectiveness assessment
+            '21.2.g' => $this->cyberHygieneAndTraining(),          // (g) cyber hygiene + training
             '21.2.h' => $this->cryptographicControls($tenant),            // (h) cryptography & encryption
-            '21.2.i' => $this->accessControlAndAssetMgmt($tenant),        // (i) HR security + access ctrl + asset mgmt
+            '21.2.i' => $this->accessControlAndAssetMgmt(),        // (i) HR security + access ctrl + asset mgmt
             '21.2.j' => $this->authentication(),                          // (j) MFA + secured communications
         ];
 
@@ -111,8 +111,8 @@ final class Nis2ComplianceService
     /** Art. 21(2)(a) — documented risk-management policies (risk analysis + InfoSys security). */
     private function riskManagementPolicies(?Tenant $tenant): array
     {
-        $controls = $this->controlsImplementedInCategory('Organizational controls', $tenant);
-        $applicable = $this->controlsApplicableInCategory('Organizational controls', $tenant);
+        $controls = $this->controlsImplementedInCategory('Organizational controls');
+        $applicable = $this->controlsApplicableInCategory('Organizational controls');
         $ratio = $applicable > 0 ? round(($controls / $applicable) * 100, 1) : null;
         return $this->metric(
             '21.2.a', 'Risk management policies',
@@ -152,7 +152,7 @@ final class Nis2ComplianceService
     }
 
     /** Art. 21(2)(c) — business continuity / BCM / backup / crisis management. */
-    private function businessContinuity(?Tenant $tenant): array
+    private function businessContinuity(): array
     {
         if ($this->bcPlanRepository === null) {
             return $this->metricNa('21.2.c', 'Business continuity');
@@ -169,7 +169,7 @@ final class Nis2ComplianceService
     }
 
     /** Art. 21(2)(d) — supply-chain security (supplier assessments). */
-    private function supplyChainSecurity(?Tenant $tenant): array
+    private function supplyChainSecurity(): array
     {
         if ($this->supplierRepository === null) {
             return $this->metricNa('21.2.d', 'Supply chain security');
@@ -193,8 +193,8 @@ final class Nis2ComplianceService
     /** Art. 21(2)(e) — security in system acquisition, development and maintenance. */
     private function secureSdlc(?Tenant $tenant): array
     {
-        $implemented = $this->controlsImplementedMatching('8.2', $tenant);
-        $applicable = $this->controlsApplicableMatching('8.2', $tenant);
+        $implemented = $this->controlsImplementedMatching('8.2');
+        $applicable = $this->controlsApplicableMatching('8.2');
         $ratio = $applicable > 0 ? round(($implemented / $applicable) * 100, 1) : null;
         return $this->metric(
             '21.2.e', 'Security in development & acquisition',
@@ -210,7 +210,7 @@ final class Nis2ComplianceService
      * A completed management review demonstrates the organisation evaluates
      * the effectiveness of its security controls periodically.
      */
-    private function effectivenessAssessment(?Tenant $tenant): array
+    private function effectivenessAssessment(): array
     {
         if ($this->managementReviewRepository === null) {
             return $this->metricNa('21.2.f', 'Effectiveness assessment');
@@ -238,7 +238,7 @@ final class Nis2ComplianceService
      * Art. 21(2)(g) — cyber hygiene practices + cybersecurity training for staff.
      * Proxy: training completion rate (same semantic as prior hrSecurity() method).
      */
-    private function cyberHygieneAndTraining(?Tenant $tenant): array
+    private function cyberHygieneAndTraining(): array
     {
         if ($this->trainingRepository === null) {
             return $this->metricNa('21.2.g', 'Cyber hygiene & training');
@@ -265,8 +265,8 @@ final class Nis2ComplianceService
      */
     private function cryptographicControls(?Tenant $tenant): array
     {
-        $implemented = $this->controlsImplementedMatching('8.24', $tenant);
-        $applicable = $this->controlsApplicableMatching('8.24', $tenant);
+        $implemented = $this->controlsImplementedMatching('8.24');
+        $applicable = $this->controlsApplicableMatching('8.24');
         $ratio = $applicable > 0 ? round(($implemented / $applicable) * 100, 1) : null;
         return $this->metric(
             '21.2.h', 'Cryptographic controls policy',
@@ -282,7 +282,7 @@ final class Nis2ComplianceService
      * and (b) asset classification rate. When the asset module is inactive,
      * falls back to the RBAC rate alone.
      */
-    private function accessControlAndAssetMgmt(?Tenant $tenant): array
+    private function accessControlAndAssetMgmt(): array
     {
         // Access control sub-metric
         $totalActive = $this->userRepository->count(['isActive' => true]);
@@ -295,7 +295,6 @@ final class Nis2ComplianceService
             }
         }
         $rbacRate = $totalActive > 0 ? round(($withRoles / $totalActive) * 100, 1) : null;
-
         // Asset management sub-metric
         if ($this->assetRepository !== null) {
             $totalAssets = $this->assetRepository->count([]);
@@ -311,7 +310,6 @@ final class Nis2ComplianceService
         } else {
             $assetRate = null;
         }
-
         // Combined: average if both available, fallback to whichever is non-null
         if ($rbacRate !== null && $assetRate !== null) {
             $combined = round(($rbacRate + $assetRate) / 2.0, 1);
@@ -322,7 +320,6 @@ final class Nis2ComplianceService
         } else {
             $combined = null;
         }
-
         return $this->metric(
             '21.2.i', 'HR security / access control / asset management',
             $combined, $combined === null ? '' : '%',
@@ -444,7 +441,7 @@ final class Nis2ComplianceService
 
     // ── helpers ──────────────────────────────────────────────────────────
 
-    private function controlsImplementedInCategory(string $category, ?Tenant $tenant): int
+    private function controlsImplementedInCategory(string $category): int
     {
         if ($this->controlRepository === null) {
             return 0;
@@ -459,7 +456,7 @@ final class Nis2ComplianceService
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    private function controlsApplicableInCategory(string $category, ?Tenant $tenant): int
+    private function controlsApplicableInCategory(string $category): int
     {
         if ($this->controlRepository === null) {
             return 0;
@@ -472,7 +469,7 @@ final class Nis2ComplianceService
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    private function controlsImplementedMatching(string $controlIdPrefix, ?Tenant $tenant): int
+    private function controlsImplementedMatching(string $controlIdPrefix): int
     {
         if ($this->controlRepository === null) {
             return 0;
@@ -487,7 +484,7 @@ final class Nis2ComplianceService
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    private function controlsApplicableMatching(string $controlIdPrefix, ?Tenant $tenant): int
+    private function controlsApplicableMatching(string $controlIdPrefix): int
     {
         if ($this->controlRepository === null) {
             return 0;

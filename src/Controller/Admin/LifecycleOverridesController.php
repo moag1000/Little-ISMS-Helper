@@ -37,9 +37,6 @@ use Symfony\Component\Workflow\Registry;
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class LifecycleOverridesController extends AbstractController
 {
-    /** Keys that can be overridden via this UI. */
-    private const OVERRIDEABLE_KEYS = ['roles', 'reason_required', 'four_eyes', 'module'];
-
     public function __construct(
         private readonly Registry $workflowRegistry,
         private readonly LifecycleConfigRepository $overrideRepo,

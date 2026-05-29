@@ -212,7 +212,7 @@ final class CertificationBundleExporter
         $wizardResult = $this->addPolicyWizardDocuments($zip, $rootDir, $tenant);
 
         // ── 04: Evidence Documents ──────────────────────────────────────
-        $evidenceResult = $this->addEvidenceDocuments($zip, $rootDir, $tenant);
+        $evidenceResult = $this->addEvidenceDocuments($zip, $rootDir);
         $documentCount = $evidenceResult['document_count'] + $wizardResult['document_count'];
 
         // ── 02_FRAMEWORK_MAPPING: per-framework coverage CSVs ───────────
@@ -1098,7 +1098,7 @@ final class CertificationBundleExporter
      *
      * @return array{document_count: int, index_rows: list<list<string>>}
      */
-    private function addEvidenceDocuments(\ZipArchive $zip, string $rootDir, Tenant $tenant): array
+    private function addEvidenceDocuments(\ZipArchive $zip, string $rootDir): array
     {
         $evidenceDir = $rootDir . '/04_EVIDENCE';
         $documentCount = 0;

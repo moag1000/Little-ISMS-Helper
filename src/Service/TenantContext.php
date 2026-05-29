@@ -70,6 +70,16 @@ class TenantContext
     }
 
     /**
+     * Set the current tenant by id, resolving the entity. Used by background
+     * jobs (e.g. scheduled reports) that only carry a tenant id, not the object.
+     */
+    public function setCurrentTenantById(?int $id): void
+    {
+        $this->currentTenant = $id !== null ? $this->tenantRepository->find($id) : null;
+        $this->initialized = true;
+    }
+
+    /**
      * Get the current tenant ID
      */
     public function getCurrentTenantId(): ?int

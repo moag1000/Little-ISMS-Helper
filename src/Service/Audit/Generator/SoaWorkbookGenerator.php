@@ -207,7 +207,7 @@ final class SoaWorkbookGenerator implements AuditWorkbookGeneratorInterface
             foreach ($evidenceDocs as $doc) {
                 $sheet->setCellValueExplicit('A' . $row, $control->getControlId(), DataType::TYPE_STRING);
                 $sheet->setCellValue('B' . $row, $control->getName());
-                $sheet->setCellValue('C' . $row, $doc->getTitle());
+                $sheet->setCellValue('C' . $row, $doc->getOriginalFilename());
                 $sheet->setCellValue('D' . $row, method_exists($doc, 'getDocumentType') ? (string) $doc->getDocumentType() : '');
                 $sheet->setCellValue('E' . $row, method_exists($doc, 'getCategory') ? (string) $doc->getCategory() : '');
                 $sheet->setCellValue('F' . $row, method_exists($doc, 'getCreatedAt') ? $doc->getCreatedAt()?->format('Y-m-d') ?? '' : '');

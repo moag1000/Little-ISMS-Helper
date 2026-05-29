@@ -317,17 +317,6 @@ final class MfaService
     }
 
     /**
-     * Generate a base32-encoded TOTP secret (RFC 6238 compatible).
-     * Kept for backwards compatibility with callers — production code should
-     * prefer TOTP::generate() which uses this encoding internally.
-     */
-    private function generateSecureSecret(): string
-    {
-        // 160-bit (20 byte) secret, base32 encoded for authenticator apps
-        return \ParagonIE\ConstantTime\Base32::encodeUpper(random_bytes(20));
-    }
-
-    /**
      * Generate backup codes
      */
     private function generateBackupCodes(): array

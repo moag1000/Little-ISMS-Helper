@@ -3,4 +3,4 @@
 src/Controller/AuditFreezeController.php:172
 src/Controller/AuditFreezeController.php:178
 src/Controller/ManagementReportController.php:966
-src/Entity/ComplianceRequirement.php:585
+src/Entity/ComplianceRequirement.php:600

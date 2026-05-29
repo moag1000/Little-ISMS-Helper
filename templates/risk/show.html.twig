@@ -356,13 +356,13 @@
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.supplier.name }}</div>
-                                {% if risk.supplier.contactEmail %}
-                                    <p><strong>{{ 'supplier.field.contact'|trans({}, 'suppliers') }}:</strong> <a href="mailto:{{ risk.supplier.contactEmail }}">{{ risk.supplier.contactEmail }}</a></p>
+                                {% if risk.supplier.email %}
+                                    <p><strong>{{ 'supplier.field.contact'|trans({}, 'suppliers') }}:</strong> <a href="mailto:{{ risk.supplier.email }}">{{ risk.supplier.email }}</a></p>
                                 {% endif %}
-                                {% if risk.supplier.riskLevel %}
+                                {% if risk.supplier.criticality %}
                                     <p><strong>{{ 'supplier.field.risk_level'|trans({}, 'suppliers') }}:</strong>
-                                        <span class="{{ badge_risk(risk.supplier.riskLevel) }}">
-                                            {{ risk.supplier.riskLevel|upper }}
+                                        <span class="{{ badge_risk(risk.supplier.criticality) }}">
+                                            {{ risk.supplier.criticality|upper }}
                                         </span>
                                     </p>
                                 {% endif %}

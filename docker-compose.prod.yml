@@ -23,7 +23,7 @@ services:
       - "${APP_PORT:-80}:80"
       - "${APP_PORT_HTTPS:-443}:443"
     volumes:
-      # ✅ REQUIRED: Persistente Daten (inkl. embedded MariaDB)
+      # ✅ REQUIRED: Persistente Daten (inkl. embedded MariaDB unter var/mysql)
       # Ohne dieses Volume gehen alle Daten bei Container-Neustart verloren!
       - isms_data:/var/www/html/var
     environment:

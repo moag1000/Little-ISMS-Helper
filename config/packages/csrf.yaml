@@ -10,14 +10,13 @@ framework:
             - authenticate
             - logout
             - corporate_structure
-            # Admin Backup/Export/Import — JSON API endpoints use SameOrigin header
-            - data_backup_create
-            - data_backup_upload
-            - data_backup_validate
-            - data_backup_restore
-            - data_backup_delete
-            - data_export
-            - data_import
-            - data_import_execute
-            # Bulk-action endpoints (export/assign/status-change) — JSON POST with SameOrigin header
-            - bulk_action
+            # NOTE: Admin Backup/Export/Import and bulk-action endpoints are
+            # intentionally NOT stateless. Their JavaScript submits via fetch()
+            # and sends the CSRF token in the request body (the "_token" field),
+            # but never sets the SameOrigin double-submit cookie/header that
+            # stateless validation requires (csrf_protection.js only does that on
+            # a native form submit). Listing them as stateless therefore made
+            # every create/upload/restore/delete/export/import POST return 403.
+            # Session-stateful CSRF matches how they actually submit — and how
+            # the app's other custom JSON endpoints (alva_hint, audit_checklist,
+            # …) already work.

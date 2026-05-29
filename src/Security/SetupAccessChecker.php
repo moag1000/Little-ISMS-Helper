@@ -15,7 +15,14 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class SetupAccessChecker
 {
-    private const string SETUP_LOCK_FILE = '/config/setup_complete.lock';
+    // Runtime state belongs under var/ (the writable, volume-persisted dir),
+    // NOT config/ (committed code, lives in the image and is lost on every
+    // container recreate — which made the setup wizard re-trigger after an
+    // image update despite the data being intact).
+    private const string SETUP_LOCK_FILE = '/var/setup_complete.lock';
+    // Pre-existing installs wrote the lock to config/. Keep reading it so they
+    // are not forced back through the wizard after upgrading.
+    private const string LEGACY_SETUP_LOCK_FILE = '/config/setup_complete.lock';
 
     public function __construct(
         private readonly ParameterBagInterface $parameterBag
@@ -27,8 +34,7 @@ class SetupAccessChecker
      */
     public function isSetupComplete(): bool
     {
-        $setupFile = $this->getSetupLockFilePath();
-        return file_exists($setupFile);
+        return $this->resolveExistingLockFile() !== null;
     }
 
     /**
@@ -37,9 +43,9 @@ class SetupAccessChecker
      */
     public function isSetupRecentlyCompleted(): bool
     {
-        $setupFile = $this->getSetupLockFilePath();
+        $setupFile = $this->resolveExistingLockFile();
 
-        if (!file_exists($setupFile)) {
+        if ($setupFile === null) {
             return false;
         }
 
@@ -74,10 +80,10 @@ class SetupAccessChecker
             throw new \LogicException('Setup reset is only allowed in development environment');
         }
 
-        $setupFile = $this->getSetupLockFilePath();
-
-        if (file_exists($setupFile)) {
-            unlink($setupFile);
+        foreach ([$this->getSetupLockFilePath(), $this->getLegacyLockFilePath()] as $setupFile) {
+            if (file_exists($setupFile)) {
+                unlink($setupFile);
+            }
         }
     }
 
@@ -87,6 +93,30 @@ class SetupAccessChecker
     private function getSetupLockFilePath(): string
     {
         return $this->parameterBag->get('kernel.project_dir') . self::SETUP_LOCK_FILE;
+    }
+
+    /**
+     * Legacy lock path (config/) for installs created before the lock moved
+     * to var/. Read-only fallback — new completions are written to var/.
+     */
+    private function getLegacyLockFilePath(): string
+    {
+        return $this->parameterBag->get('kernel.project_dir') . self::LEGACY_SETUP_LOCK_FILE;
+    }
+
+    /**
+     * Return the path of the lock file that actually exists (canonical var/
+     * first, then the legacy config/ location), or null if setup is not done.
+     */
+    private function resolveExistingLockFile(): ?string
+    {
+        foreach ([$this->getSetupLockFilePath(), $this->getLegacyLockFilePath()] as $setupFile) {
+            if (file_exists($setupFile)) {
+                return $setupFile;
+            }
+        }
+
+        return null;
     }
 
     /**

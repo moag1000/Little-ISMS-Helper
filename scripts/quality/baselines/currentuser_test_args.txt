@@ -1,6 +1,19 @@
 # check_currentuser_test_args.py baseline
 # Format: <relative-path>:<line>
+tests/Controller/AdminBackupControllerTest.php:195
 tests/Controller/AssetControllerTest.php:206
+tests/Controller/Bulk/AssetBulkActionTest.php:185
+tests/Controller/Bulk/BcmModuleBulkActionTest.php:180
+tests/Controller/Bulk/ChangeRequestBulkActionTest.php:118
+tests/Controller/Bulk/IncidentBulkActionTest.php:120
+tests/Controller/Bulk/PatchBulkActionTest.php:118
+tests/Controller/Bulk/PrivacyModuleBulkActionTest.php:357
+tests/Controller/Bulk/RiskBulkActionTest.php:237
+tests/Controller/Bulk/SoaBulkActionTest.php:119
+tests/Controller/Bulk/SupplierBulkActionTest.php:118
+tests/Controller/Bulk/ThreatIntelligenceBulkActionTest.php:109
+tests/Controller/Bulk/TrainingBulkActionTest.php:166
+tests/Controller/Bulk/VulnerabilityBulkActionTest.php:118
 tests/Controller/CertificationBundleControllerKonzernTest.php:175
 tests/Controller/CertificationBundleControllerKonzernTest.php:194
 tests/Controller/CommentControllerTest.php:182
@@ -31,7 +44,7 @@ tests/Service/IndustryBaselineApplierTest.php:192
 tests/Service/IndustryBaselineApplierTest.php:193
 tests/Service/IndustryBaselineApplierTest.php:194
 tests/Service/TenantContextTest.php:208
-tests/Template/SystemTemplateApplierTest.php:52
-tests/Template/SystemTemplateApplierTest.php:90
 tests/Template/SystemTemplateApplierTest.php:120
 tests/Template/SystemTemplateApplierTest.php:152
+tests/Template/SystemTemplateApplierTest.php:52
+tests/Template/SystemTemplateApplierTest.php:90

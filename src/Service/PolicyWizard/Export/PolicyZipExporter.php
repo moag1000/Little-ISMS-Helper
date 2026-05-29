@@ -122,8 +122,8 @@ final class PolicyZipExporter
             if ($options->includeEvidence) {
                 $zip->addFromString('evidence/audit-trail.csv', $this->buildAuditTrailCsv($tenant));
                 $zip->addFromString('evidence/soa.csv', $this->buildSoaCsv($tenant));
-                $zip->addFromString('evidence/acknowledgements.csv', $this->buildAcknowledgementsCsv($tenant, $documents));
-                $zip->addFromString('evidence/workflow-instances.csv', $this->buildWorkflowInstancesCsv($tenant, $documents));
+                $zip->addFromString('evidence/acknowledgements.csv', $this->buildAcknowledgementsCsv($documents));
+                $zip->addFromString('evidence/workflow-instances.csv', $this->buildWorkflowInstancesCsv($documents));
             }
 
             // Source provenance.
@@ -222,8 +222,9 @@ final class PolicyZipExporter
         $header = ['id', 'created_at', 'action', 'entity_type', 'entity_id', 'user_name', 'actor_role', 'description'];
         $rows = [$header];
         if ($this->auditLogRepository !== null) {
+            // Tenant-scoped: audit pack must never leak other tenants' log rows.
             $logs = $this->auditLogRepository->findBy(
-                ['entityType' => 'Document'],
+                ['entityType' => 'Document', 'tenant' => $tenant],
                 ['createdAt' => 'DESC'],
                 500,
             );
@@ -270,7 +271,7 @@ final class PolicyZipExporter
     /**
      * @param list<Document> $documents
      */
-    private function buildAcknowledgementsCsv(Tenant $tenant, array $documents): string
+    private function buildAcknowledgementsCsv(array $documents): string
     {
         $header = ['document_id', 'document_filename', 'user_email', 'acknowledged_at', 'document_version'];
         $rows = [$header];
@@ -294,7 +295,7 @@ final class PolicyZipExporter
     /**
      * @param list<Document> $documents
      */
-    private function buildWorkflowInstancesCsv(Tenant $tenant, array $documents): string
+    private function buildWorkflowInstancesCsv(array $documents): string
     {
         $header = ['instance_id', 'entity_type', 'entity_id', 'status', 'started_at', 'completed_at', 'approval_history'];
         $rows = [$header];

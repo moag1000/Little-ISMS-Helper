@@ -89,54 +89,6 @@ class DashboardStatisticsService
     }
 
     /**
-     * Per-tenant threshold override cache. Loaded on first status() call.
-     *
-     * @var array<string, array{good:int, warning:int}>|null
-     */
-    private ?array $thresholdOverrides = null;
-    private ?int $thresholdOverrideTenantId = null;
-
-    /**
-     * Tenant-aware getStatus — prefers override from kpi_threshold_config.
-     *
-     * Phase 8M.3: Wenn KpiThresholdConfigResolver injiziert ist, wird dieser
-     * bevorzugt (Holding-Fallback-Kaskade). Andernfalls Fallback auf den
-     * direkten Repository-Zugriff (Legacy-Pfad für Backward-Compatibility).
-     */
-    private function getStatusFor(string $kpiKey, int $value, int $goodDefault, int $warningDefault, ?Tenant $tenant): string
-    {
-        $good = $goodDefault;
-        $warning = $warningDefault;
-
-        if ($tenant instanceof Tenant) {
-            // Bevorzugter Pfad: KpiThresholdConfigResolver (inkl. Holding-Fallback-Kaskade)
-            if ($this->kpiThresholdConfigResolver !== null) {
-                $view = $this->kpiThresholdConfigResolver->resolveFor($tenant, $kpiKey, $goodDefault, $warningDefault);
-                $good = $view->goodThreshold;
-                $warning = $view->warningThreshold;
-            } elseif ($this->thresholdConfigRepository !== null) {
-                // Legacy-Pfad: direkter Repository-Zugriff (kein Holding-Merge)
-                if ($this->thresholdOverrideTenantId !== $tenant->getId() || $this->thresholdOverrides === null) {
-                    $this->thresholdOverrides = $this->thresholdConfigRepository->getThresholdMap($tenant);
-                    $this->thresholdOverrideTenantId = $tenant->getId();
-                }
-                if (isset($this->thresholdOverrides[$kpiKey])) {
-                    $good = $this->thresholdOverrides[$kpiKey]['good'];
-                    $warning = $this->thresholdOverrides[$kpiKey]['warning'];
-                }
-            }
-        }
-
-        if ($value >= $good) {
-            return 'good';
-        }
-        if ($value >= $warning) {
-            return 'warning';
-        }
-        return 'danger';
-    }
-
-    /**
      * @return array<string, int> Map of category => maxAcceptableRisk for the tenant (fallback: global).
      */
     /**
@@ -668,23 +620,23 @@ class DashboardStatisticsService
         }
 
         if (in_array('bcm', $activeModules, true)) {
-            $kpis['business_continuity'] = $this->getBusinessContinuityKPIs($tenant);
+            $kpis['business_continuity'] = $this->getBusinessContinuityKPIs();
         }
 
         if (in_array('training', $activeModules, true)) {
-            $kpis['training'] = $this->getTrainingKPIs($tenant);
+            $kpis['training'] = $this->getTrainingKPIs();
         }
 
         if (in_array('audits', $activeModules, true)) {
-            $kpis['audits'] = $this->getAuditKPIs($tenant);
+            $kpis['audits'] = $this->getAuditKPIs();
         }
 
         if (in_array('suppliers', $activeModules, true)) {
-            $kpis['supplier_management'] = $this->getSupplierKPIs($tenant);
+            $kpis['supplier_management'] = $this->getSupplierKPIs();
         }
 
         if (in_array('documents', $activeModules, true)) {
-            $kpis['documentation'] = $this->getDocumentationKPIs($tenant);
+            $kpis['documentation'] = $this->getDocumentationKPIs();
         }
 
         return $kpis;
@@ -1370,10 +1322,9 @@ class DashboardStatisticsService
     /**
      * Get business continuity KPIs
      */
-    private function getBusinessContinuityKPIs(?Tenant $tenant): array
+    private function getBusinessContinuityKPIs(): array
     {
         $kpis = [];
-
         // Business processes with BIA
         if ($this->businessProcessRepository !== null) {
             $allProcesses = $this->businessProcessRepository->findAll();
@@ -1396,7 +1347,6 @@ class DashboardStatisticsService
                 'status' => $this->getStatus($biaCoverage, 90, 70),
             ];
         }
-
         // BC Plans
         if ($this->bcPlanRepository !== null) {
             $allPlans = $this->bcPlanRepository->findAll();
@@ -1409,7 +1359,6 @@ class DashboardStatisticsService
                 'status' => count($activePlans) > 0 ? 'good' : 'warning',
             ];
         }
-
         // BC Exercises
         if ($this->bcExerciseRepository !== null) {
             $allExercises = $this->bcExerciseRepository->findAll();
@@ -1426,30 +1375,26 @@ class DashboardStatisticsService
                 'status' => count($exercisesThisYear) >= 1 ? 'good' : 'warning',
             ];
         }
-
         return $kpis;
     }
 
     /**
      * Get training KPIs
      */
-    private function getTrainingKPIs(?Tenant $tenant): array
+    private function getTrainingKPIs(): array
     {
         if ($this->trainingRepository === null) {
             return [];
         }
-
         $allTrainings = $this->trainingRepository->findAll();
         $completedTrainings = array_filter($allTrainings, fn($t): bool => $t->getStatus() === TrainingStatus::Completed->value);
         $overdueTrainings = array_filter(
             $allTrainings,
             fn($t): bool => $t->getScheduledDate() !== null && $t->getScheduledDate() < new \DateTime() && $t->getStatus() !== TrainingStatus::Completed->value
         );
-
         $completionRate = count($allTrainings) > 0
             ? (int) round((count($completedTrainings) / count($allTrainings)) * 100)
             : 0;
-
         return [
             'training_completion_rate' => [
                 'label' => 'kpi.training_completion_rate',
@@ -1469,12 +1414,11 @@ class DashboardStatisticsService
     /**
      * Get audit KPIs
      */
-    private function getAuditKPIs(?Tenant $tenant): array
+    private function getAuditKPIs(): array
     {
         if ($this->auditRepository === null) {
             return [];
         }
-
         $allAudits = $this->auditRepository->findAll();
         $thisYear = (new \DateTime())->format('Y');
         $auditsThisYear = array_filter(
@@ -1482,7 +1426,6 @@ class DashboardStatisticsService
             fn($a): bool => $a->getPlannedDate() !== null && $a->getPlannedDate()->format('Y') === $thisYear
         );
         $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === 'completed');
-
         // Count open findings (assuming audits have a method for findings)
         $openFindings = 0;
         foreach ($auditsThisYear as $audit) {
@@ -1494,7 +1437,6 @@ class DashboardStatisticsService
                 ));
             }
         }
-
         return [
             'audits_completed_ytd' => [
                 'label' => 'kpi.audits_completed_ytd',
@@ -1520,12 +1462,11 @@ class DashboardStatisticsService
     /**
      * Get supplier management KPIs
      */
-    private function getSupplierKPIs(?Tenant $tenant): array
+    private function getSupplierKPIs(): array
     {
         if ($this->supplierRepository === null) {
             return [];
         }
-
         $allSuppliers = $this->supplierRepository->findAll();
         $criticalSuppliers = array_filter(
             $allSuppliers,
@@ -1539,7 +1480,6 @@ class DashboardStatisticsService
         $assessmentRate = $hasCriticalSuppliers
             ? (int) round((count($assessedSuppliers) / count($criticalSuppliers)) * 100)
             : null;
-
         // Check for overdue assessments (> 12 months)
         $overdueAssessments = count(array_filter(
             $criticalSuppliers,
@@ -1548,7 +1488,6 @@ class DashboardStatisticsService
                 $s->getLastSecurityAssessment()->diff(new \DateTime())->days > 365
             )
         ));
-
         return [
             'total_suppliers' => [
                 'label' => 'kpi.total_suppliers',
@@ -1582,19 +1521,17 @@ class DashboardStatisticsService
     /**
      * Get documentation KPIs
      */
-    private function getDocumentationKPIs(?Tenant $tenant): array
+    private function getDocumentationKPIs(): array
     {
         if ($this->documentRepository === null) {
             return [];
         }
-
         $allDocuments = $this->documentRepository->findAll();
         $activeDocuments = array_filter(
             $allDocuments,
             // 'active' is a legacy/pre-migration value kept for backward-compat; not a DocumentStatus enum case.
             fn($d): bool => method_exists($d, 'getStatus') && ($d->getStatus() === DocumentStatus::Approved->value || $d->getStatus() === 'active' || $d->getStatus() === null)
         );
-
         // Documents needing review (> 12 months since last review)
         $documentsNeedingReview = count(array_filter(
             $activeDocuments,
@@ -1603,13 +1540,11 @@ class DashboardStatisticsService
                 $d->getLastReviewDate()->diff(new \DateTime())->days > 365
             )
         ));
-
         // Documents without owner
         $documentsWithoutOwner = count(array_filter(
             $activeDocuments,
             fn($d): bool => method_exists($d, 'getOwner') && $d->getOwner() === null
         ));
-
         return [
             'total_documents' => [
                 'label' => 'kpi.total_documents',
@@ -1660,8 +1595,8 @@ class DashboardStatisticsService
         return [
             'ict_risk' => $this->getIctRiskKPIs($tenant),
             'incident_reporting' => $this->getDoraIncidentKPIs($tenant),
-            'resilience_testing' => $this->getResilienceTestingKPIs($tenant),
-            'third_party' => $this->getThirdPartyRiskKPIs($tenant),
+            'resilience_testing' => $this->getResilienceTestingKPIs(),
+            'third_party' => $this->getThirdPartyRiskKPIs(),
         ];
     }
 
@@ -1744,10 +1679,9 @@ class DashboardStatisticsService
     /**
      * Get Resilience Testing KPIs for DORA
      */
-    private function getResilienceTestingKPIs(?Tenant $tenant): array
+    private function getResilienceTestingKPIs(): array
     {
         $kpis = [];
-
         // BC Exercises as resilience tests
         if ($this->bcExerciseRepository !== null) {
             $allExercises = $this->bcExerciseRepository->findAll();
@@ -1764,32 +1698,27 @@ class DashboardStatisticsService
                 'status' => count($exercisesThisYear) >= 1 ? 'good' : 'warning',
             ];
         }
-
         return $kpis;
     }
 
     /**
      * Get Third-Party Risk KPIs for DORA
      */
-    private function getThirdPartyRiskKPIs(?Tenant $tenant): array
+    private function getThirdPartyRiskKPIs(): array
     {
         if ($this->supplierRepository === null) {
             return [];
         }
-
         $allSuppliers = $this->supplierRepository->findAll();
-
         // ICT Third-party providers (assuming type or category)
         $ictProviders = array_filter(
             $allSuppliers,
             fn($s): bool => method_exists($s, 'getType') && stripos($s->getType() ?? '', 'ICT') !== false
         );
-
         $criticalIctProviders = array_filter(
             $ictProviders,
             fn($s): bool => method_exists($s, 'getCriticality') && $s->getCriticality() === 'critical'
         );
-
         return [
             'ict_providers' => [
                 'label' => 'kpi.dora.ict_third_party_providers',
