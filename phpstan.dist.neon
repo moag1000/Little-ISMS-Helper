@@ -31,3 +31,18 @@ services:
         class: App\Tests\PHPStan\Rule\NoNewWorkflowOrWorkflowStepRule
         tags:
             - phpstan.rules.rule
+
+    # Narrow getUser() → App\Entity\User|null (single user entity). Kills the
+    # ~190 false method.notFound/argument.type against ?UserInterface.
+    -
+        class: App\Tests\PHPStan\Type\GetUserReturnTypeExtension
+        arguments:
+            forClass: Symfony\Bundle\SecurityBundle\Security
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+    -
+        class: App\Tests\PHPStan\Type\GetUserReturnTypeExtension
+        arguments:
+            forClass: Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension

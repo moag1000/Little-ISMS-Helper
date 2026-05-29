@@ -835,22 +835,10 @@ parameters:
 			path: src/Controller/Api/WorkflowStepApiController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 8
-			path: src/Controller/AssetController.php
-
-		-
 			message: '#^Property App\\Controller\\Audit\\AuditWorkbookController\:\:\$em is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
 			path: src/Controller/Audit/AuditWorkbookController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/AuditFindingController.php
 
 		-
 			message: '#^Offset ''id'' on array\{id\: int, reason\: string\} on left side of \?\? always exists and is not nullable\.$#'
@@ -863,36 +851,6 @@ parameters:
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Controller/AuditLogController.php
-
-		-
-			message: '#^Parameter \#1 \$createdBy of method App\\Entity\\AuditProgram\:\:setCreatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/AuditProgramController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/BCExerciseController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Controller/BusinessContinuityPlanController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Controller/BusinessProcessController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 6
-			path: src/Controller/CertificationBundleController.php
 
 		-
 			message: '#^Call to function is_array\(\) with array\<mixed\> will always evaluate to true\.$#'
@@ -911,12 +869,6 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: src/Controller/CertificationBundleController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/ChangeRequestController.php
 
 		-
 			message: '#^Call to function method_exists\(\) with App\\Entity\\Asset\|App\\Entity\\AuditFinding\|App\\Entity\\Control\|App\\Entity\\CorrectiveAction\|App\\Entity\\DataBreach\|App\\Entity\\DataProtectionImpactAssessment\|App\\Entity\\DataSubjectRequest\|App\\Entity\\Document\|App\\Entity\\Incident\|App\\Entity\\Risk and ''getTenant'' will always evaluate to true\.$#'
@@ -997,12 +949,6 @@ parameters:
 			path: src/Controller/ComplianceMappingSeedController.php
 
 		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\ComplianceRequirementFulfillment\:\:setLastUpdatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/ComplianceRequirementController.php
-
-		-
 			message: '#^Call to function method_exists\(\) with App\\Entity\\ComplianceRequirementFulfillment and ''getAdjustedEffortDa…'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -1025,54 +971,6 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Controller/Component/PoliciesYouOwnWidgetController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/CorporateStructureController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\CorporateGovernance\:\:setCreatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Controller/CorporateStructureController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/CorrectiveActionController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Controller/CrisisTeamController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/DPIAController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\DataProtectionImpactAssessmentService\:\:approve\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/DPIAController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\DataProtectionImpactAssessmentService\:\:recordDPOConsultation\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/DPIAController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\DataProtectionImpactAssessmentService\:\:reject\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/DPIAController.php
 
 		-
 			message: '#^Call to function method_exists\(\) with App\\Entity\\AuditFinding and ''getSeverity'' will always evaluate to true\.$#'
@@ -1105,48 +1003,6 @@ parameters:
 			path: src/Controller/Dashboard/ComplianceManagerDashboardController.php
 
 		-
-			message: '#^Parameter \#1 \$user of method App\\Repository\\DashboardLayoutRepository\:\:findOrCreateForUser\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Controller/DashboardLayoutController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Repository\\DashboardLayoutRepository\:\:resetToDefaults\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/DashboardLayoutController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/DataBreachController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\DataBreachService\:\:close\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/DataBreachController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\DataBreachService\:\:reopen\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/DataBreachController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\DataBreachService\:\:submitForAssessment\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/DataBreachController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\DataBreachService\:\:update\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Controller/DataBreachController.php
-
-		-
 			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -1169,12 +1025,6 @@ parameters:
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Controller/DataExportAsyncController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/DataSubjectRequestController.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -1205,12 +1055,6 @@ parameters:
 			identifier: booleanAnd.rightAlwaysTrue
 			count: 1
 			path: src/Controller/DeploymentWizardController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 9
-			path: src/Controller/DocumentController.php
 
 		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
@@ -1255,12 +1099,6 @@ parameters:
 			path: src/Controller/DocumentController.php
 
 		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\Document\:\:setUploadedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/DocumentController.php
-
-		-
 			message: '#^Property App\\Controller\\DocumentController\:\:\$evidenceCascadeInvalidationService is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -1273,28 +1111,16 @@ parameters:
 			path: src/Controller/DocumentController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Controller/DoraComplianceController.php
-
-		-
 			message: '#^Property App\\Controller\\DoraComplianceController\:\:\$treatmentPlanRepository is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
 			path: src/Controller/DoraComplianceController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getTenant'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Controller/DoraDataFlowController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Controller/DoraExitPlanController.php
 
 		-
 			message: '#^Left side of && is always true\.$#'
@@ -1315,8 +1141,8 @@ parameters:
 			path: src/Controller/DoraRegisterExportController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getTenant'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Controller/DoraSubcontractorController.php
 
@@ -1331,18 +1157,6 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: src/Controller/EffectivenessMonitorController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Controller/EvidenceController.php
-
-		-
-			message: '#^Parameter \#4 \$user of method App\\Service\\EvidenceCollectionService\:\:uploadAndLink\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/EvidenceController.php
 
 		-
 			message: '#^Property App\\Controller\\EvidenceController\:\:\$entityManager is never read, only written\.$#'
@@ -1369,6 +1183,12 @@ parameters:
 			path: src/Controller/GuidedTourController.php
 
 		-
+			message: '#^Instanceof between App\\Entity\\User and App\\Entity\\User will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Controller/HomeController.php
+
+		-
 			message: '#^Offset ''count'' on array\{count\: int, control\: App\\Entity\\Control, frameworks\: array\<string, true\>\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
@@ -1393,40 +1213,16 @@ parameters:
 			path: src/Controller/HomeController.php
 
 		-
-			message: '#^Parameter \#1 \$user of method App\\Repository\\WorkflowInstanceRepository\:\:findPendingForUser\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/HomeController.php
-
-		-
 			message: '#^Property App\\Controller\\HomeController\:\:\$complianceAnalyticsService is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
 			path: src/Controller/HomeController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/ISMSObjectiveController.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: src/Controller/Import/BulkImportController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Controller/IncidentController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Service\\WorkflowService\:\:canUserApprove\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/IncidentController.php
 
 		-
 			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
@@ -1453,52 +1249,16 @@ parameters:
 			path: src/Controller/KonzernRollupController.php
 
 		-
-			message: '#^Parameter \#4 \$user of method App\\Lifecycle\\LifecycleService\:\:transition\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Controller/LifecycleController.php
-
-		-
 			message: '#^Property App\\Lifecycle\\InvalidTransitionException\:\:\$allowedTransitions \(list\<string\>\) on left side of \?\? is not nullable\.$#'
 			identifier: nullCoalesce.property
 			count: 1
 			path: src/Controller/LifecycleController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Controller/LocationController.php
-
-		-
 			message: '#^Call to an undefined method App\\Entity\\Control\:\:getTitle\(\)\.$#'
 			identifier: method.notFound
 			count: 2
 			path: src/Controller/ManagementReportController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getFullName\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/ManagementReportController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Controller/ManagementReportController.php
-
-		-
-			message: '#^Using nullsafe method call on non\-nullable type Symfony\\Component\\Security\\Core\\User\\UserInterface\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Controller/ManagementReportController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/ManagementReviewController.php
 
 		-
 			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
@@ -1565,18 +1325,6 @@ parameters:
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Controller/Nis2ComplianceController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 5
-			path: src/Controller/PatchController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Controller/PersonController.php
 
 		-
 			message: '#^Offset ''status'' on array\{id\: string, name\: string, status\: string, message\: string\|null, progress_current\: int, progress_total\: int, started_at\: int\|null, updated_at\: int\|null, \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
@@ -1675,34 +1423,10 @@ parameters:
 			path: src/Controller/PortfolioReportController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/ProcessingActivityController.php
-
-		-
 			message: '#^Offset ''status'' on array\{id\: string, name\: string, status\: string, message\: string\|null, progress_current\: int, progress_total\: int, started_at\: int\|null, updated_at\: int\|null, \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Controller/ProcessingActivityController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getEmail\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Controller/ProfileMfaController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getId\(\)\.$#'
-			identifier: method.notFound
-			count: 5
-			path: src/Controller/ProfileMfaController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Service\\MfaService\:\:generateTotpSecret\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/ProfileMfaController.php
 
 		-
 			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
@@ -1807,54 +1531,6 @@ parameters:
 			path: src/Controller/QuickFixJobStatusController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getId\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/ReportBuilderController.php
-
-		-
-			message: '#^Parameter \#1 \$newOwner of method App\\Entity\\CustomReport\:\:cloneAsNew\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/ReportBuilderController.php
-
-		-
-			message: '#^Parameter \#1 \$owner of method App\\Entity\\CustomReport\:\:setOwner\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/ReportBuilderController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\CustomReport\:\:canAccess\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 4
-			path: src/Controller/ReportBuilderController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Repository\\CustomReportRepository\:\:findFavoritesByUser\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/ReportBuilderController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Repository\\CustomReportRepository\:\:findOwnedByUser\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/ReportBuilderController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Repository\\CustomReportRepository\:\:findRecentlyUsed\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/ReportBuilderController.php
-
-		-
-			message: '#^Parameter \#2 \$owner of method App\\Service\\ReportBuilderService\:\:createFromTemplate\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/ReportBuilderController.php
-
-		-
 			message: '#^Cannot call method getEmail\(\) on string\.$#'
 			identifier: method.nonObject
 			count: 2
@@ -1871,12 +1547,6 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: src/Controller/ReportController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 14
-			path: src/Controller/RiskController.php
 
 		-
 			message: '#^Cannot access property \$value on null\.$#'
@@ -1897,24 +1567,6 @@ parameters:
 			path: src/Controller/RiskController.php
 
 		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\RiskAcceptanceWorkflowService\:\:approveAcceptance\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/RiskController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\RiskAcceptanceWorkflowService\:\:rejectAcceptance\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/RiskController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\RiskAcceptanceWorkflowService\:\:requestAcceptance\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/RiskController.php
-
-		-
 			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 2
@@ -1925,18 +1577,6 @@ parameters:
 			identifier: nullCoalesce.expr
 			count: 1
 			path: src/Controller/RoleManagementController.php
-
-		-
-			message: '#^Parameter \#1 \$createdBy of method App\\Entity\\ScheduledReport\:\:setCreatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/ScheduledReportController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 4
-			path: src/Controller/SearchController.php
 
 		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
@@ -1969,15 +1609,15 @@ parameters:
 			path: src/Controller/ShareController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 6
-			path: src/Controller/StatementOfApplicabilityController.php
-
-		-
 			message: '#^Call to function is_array\(\) with array\<mixed\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
+			path: src/Controller/StatementOfApplicabilityController.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 3
 			path: src/Controller/StatementOfApplicabilityController.php
 
 		-
@@ -1987,22 +1627,10 @@ parameters:
 			path: src/Controller/StatementOfApplicabilityController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 8
-			path: src/Controller/SupplierController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\CorporateGovernance\:\:setCreatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/TenantManagementController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
 			count: 2
-			path: src/Controller/ThreatIntelligenceController.php
+			path: src/Controller/StatementOfApplicabilityController.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -2041,22 +1669,10 @@ parameters:
 			path: src/Controller/Tisax/TisaxImportWizardController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Controller/TrainingController.php
-
-		-
 			message: '#^Instanceof between App\\Entity\\User and App\\Entity\\User will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
 			path: src/Controller/TrainingController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getId\(\)\.$#'
-			identifier: method.notFound
-			count: 6
-			path: src/Controller/UserManagementController.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -2071,46 +1687,10 @@ parameters:
 			path: src/Controller/UserManagementController.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 5
-			path: src/Controller/VulnerabilityController.php
-
-		-
 			message: '#^Parameter \#1 \$user of method App\\Repository\\WorkflowInstanceRepository\:\:findPendingForUser\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: src/Controller/WelcomeController.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getLastName\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Controller/WorkflowController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Service\\WorkflowService\:\:canUserApprove\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 6
-			path: src/Controller/WorkflowController.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Service\\WorkflowService\:\:getPendingApprovals\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/WorkflowController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\WorkflowService\:\:approveStep\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/WorkflowController.php
-
-		-
-			message: '#^Parameter \#2 \$user of method App\\Service\\WorkflowService\:\:rejectStep\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Controller/WorkflowController.php
 
 		-
 			message: '#^Property App\\Controller\\WorkflowController\:\:\$tenantContext is never read, only written\.$#'
@@ -2369,12 +1949,6 @@ parameters:
 			identifier: nullCoalesce.expr
 			count: 1
 			path: src/EventSubscriber/SecurityEventSubscriber.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/EventSubscriber/TenantFilterSubscriber.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\HttpFoundation\\Session\\SessionInterface\:\:getFlashBag\(\)\.$#'
@@ -3283,12 +2857,6 @@ parameters:
 			path: src/Service/CrossFrameworkLookupService.php
 
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Service/DashboardStatisticsService.php
-
-		-
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -3547,24 +3115,6 @@ parameters:
 			path: src/Service/DataProtectionImpactAssessmentService.php
 
 		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\DataProtectionImpactAssessment\:\:setConductor\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Service/DataProtectionImpactAssessmentService.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\DataProtectionImpactAssessment\:\:setCreatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Service/DataProtectionImpactAssessmentService.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\DataProtectionImpactAssessment\:\:setUpdatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Service/DataProtectionImpactAssessmentService.php
-
-		-
 			message: '#^Call to function is_array\(\) with non\-empty\-array will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -3772,6 +3322,12 @@ parameters:
 			message: '#^Call to an undefined method DateTimeInterface\:\:modify\(\)\.$#'
 			identifier: method.notFound
 			count: 1
+			path: src/Service/ISMSContextService.php
+
+		-
+			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getTenant'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
 			path: src/Service/ISMSContextService.php
 
 		-
@@ -4717,18 +4273,6 @@ parameters:
 			path: src/Service/PreFiller/DpiaPreFiller.php
 
 		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\ProcessingActivity\:\:setCreatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/ProcessingActivityService.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\ProcessingActivity\:\:setUpdatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Service/ProcessingActivityService.php
-
-		-
 			message: '#^Call to an undefined method App\\Entity\\Risk\:\:getLikelihood\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -5005,27 +4549,9 @@ parameters:
 			path: src/Service/RoleDashboardService.php
 
 		-
-			message: '#^Parameter \#1 \$user of method App\\Repository\\WorkflowInstanceRepository\:\:findPendingForUser\(\) expects App\\Entity\\User, Symfony\\Component\\Security\\Core\\User\\UserInterface given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/RoleDashboardService.php
-
-		-
 			message: '#^Call to an undefined method App\\Service\\TenantContext\:\:setTenantId\(\)\.$#'
 			identifier: method.notFound
 			count: 3
-			path: src/Service/ScheduledReportService.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getFullName\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Service/ScheduledReportService.php
-
-		-
-			message: '#^Call to an undefined method Symfony\\Component\\Security\\Core\\User\\UserInterface\:\:getTenant\(\)\.$#'
-			identifier: method.notFound
-			count: 1
 			path: src/Service/ScheduledReportService.php
 
 		-
@@ -5147,12 +4673,6 @@ parameters:
 			identifier: nullsafe.neverNull
 			count: 1
 			path: src/Service/WorkflowAutoProgressionService.php
-
-		-
-			message: '#^Parameter \#1 \$user of method App\\Entity\\WorkflowInstance\:\:setInitiatedBy\(\) expects App\\Entity\\User\|null, Symfony\\Component\\Security\\Core\\User\\UserInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Service/WorkflowService.php
 
 		-
 			message: '#^Strict comparison using \!\=\= between Doctrine\\Common\\Collections\\Collection\<int, App\\Entity\\WorkflowStep\> and null will always evaluate to true\.$#'
