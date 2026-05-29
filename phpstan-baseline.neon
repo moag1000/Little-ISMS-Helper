@@ -547,12 +547,6 @@ parameters:
 			path: src/Command/SetupPermissionsCommand.php
 
 		-
-			message: '#^Call to an undefined method App\\Service\\PdfExportService\:\:generateFromHtml\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Command/WizardReportCommand.php
-
-		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
 			identifier: nullCoalesce.expr
 			count: 1
@@ -883,15 +877,9 @@ parameters:
 			path: src/Controller/ComplianceController.php
 
 		-
-			message: '#^Call to an undefined method App\\Entity\\ComplianceRequirement\:\:getStatus\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Controller/ComplianceExportController.php
-
-		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
 			identifier: nullCoalesce.expr
-			count: 2
+			count: 4
 			path: src/Controller/ComplianceExportController.php
 
 		-
@@ -3379,18 +3367,6 @@ parameters:
 			path: src/Service/IncidentEscalationWorkflowService.php
 
 		-
-			message: '#^Call to an undefined method App\\Entity\\Risk\:\:getNotes\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Service/IncidentRiskFeedbackService.php
-
-		-
-			message: '#^Call to an undefined method App\\Entity\\Risk\:\:setNotes\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Service/IncidentRiskFeedbackService.php
-
-		-
 			message: '#^Property App\\Service\\IncidentRiskFeedbackService\:\:\$riskRepository is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -3533,18 +3509,6 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 2
 			path: src/Service/Mail/RecipientFilter.php
-
-		-
-			message: '#^Call to an undefined method App\\Entity\\DataBreach\:\:getNotificationDate\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Service/ManagementReportService.php
-
-		-
-			message: '#^Call to an undefined method App\\Entity\\DataBreach\:\:isNotificationRequired\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Service/ManagementReportService.php
 
 		-
 			message: '#^Strict comparison using \=\=\= between App\\Enum\\RiskStatus\|null and ''closed'' will always evaluate to false\.$#'
@@ -4481,12 +4445,6 @@ parameters:
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Service/RoleDashboardService.php
-
-		-
-			message: '#^Call to an undefined method App\\Service\\TenantContext\:\:setTenantId\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Service/ScheduledReportService.php
 
 		-
 			message: '#^Property App\\Service\\ScheduledReportService\:\:\$userRepository is never read, only written\.$#'

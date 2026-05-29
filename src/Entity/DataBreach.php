@@ -834,6 +834,24 @@ class DataBreach
         return $this->supervisoryAuthorityNotifiedAt;
     }
 
+    /**
+     * Whether a supervisory-authority notification is required (Art. 33 GDPR).
+     * Convenience alias used by reporting.
+     */
+    public function isNotificationRequired(): bool
+    {
+        return $this->requiresAuthorityNotification;
+    }
+
+    /**
+     * Date the supervisory authority was actually notified (null = not yet).
+     * Convenience alias of getSupervisoryAuthorityNotifiedAt() for reporting.
+     */
+    public function getNotificationDate(): ?DateTimeInterface
+    {
+        return $this->supervisoryAuthorityNotifiedAt;
+    }
+
     public function setSupervisoryAuthorityNotifiedAt(?DateTimeInterface $supervisoryAuthorityNotifiedAt): static
     {
         $this->supervisoryAuthorityNotifiedAt = $supervisoryAuthorityNotifiedAt;
