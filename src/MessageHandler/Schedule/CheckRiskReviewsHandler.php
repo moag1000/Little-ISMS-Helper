@@ -66,7 +66,7 @@ class CheckRiskReviewsHandler
                         [
                             'risk' => $risk,
                             'owner' => $owner,
-                            'due_date' => $risk->getNextReviewDate(),
+                            'due_date' => $risk->getReviewDate(),
                         ]
                     );
 

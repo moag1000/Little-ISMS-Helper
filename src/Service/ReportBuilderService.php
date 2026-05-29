@@ -890,7 +890,7 @@ final class ReportBuilderService
         foreach ($risks as $risk) {
             $rows[] = [
                 'id' => $risk->getId(),
-                'name' => $risk->getName(),
+                'name' => $risk->getTitle(),
                 'category' => $risk->getCategory(),
                 'score' => $risk->getRiskScore(),
                 'status' => $risk->getStatus()?->value,
