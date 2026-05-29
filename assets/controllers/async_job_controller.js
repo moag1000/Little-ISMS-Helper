@@ -25,6 +25,18 @@ import { Controller } from '@hotwired/stimulus';
  *   pollInterval  (Number) — polling interval in ms (default 3000)
  *   jobId         (String) — UUID of the job (for reference)
  *   cancelUrl     (String) — optional URL for "back" navigation on done
+ *   redirectUrl   (String) — optional; navigate here on terminal success
+ *   messageRunning (String) — optional running-state text
+ *   messageSuccess (String) — optional success-state text
+ *
+ * Two usage modes:
+ *   1. Display-only (admin jobs page): controller is attached to a non-form
+ *      element and polls statusUrl immediately on connect().
+ *   2. Submit-driven (setup wizard long-running steps): controller is attached
+ *      to a <form> with `data-action="submit->async-job#start"`. start() posts
+ *      the form via fetch (so the browser never blocks/times out on the
+ *      long-running request), then polls statusUrl and — if redirectUrl is set
+ *      — navigates to the next step once the job reports success.
  */
 export default class extends Controller {
     static targets = [
@@ -44,17 +56,75 @@ export default class extends Controller {
         pollInterval: { type: Number, default: 3000 },
         jobId: String,
         cancelUrl: { type: String, default: '' },
+        redirectUrl: { type: String, default: '' },
+        messageRunning: { type: String, default: '' },
+        messageSuccess: { type: String, default: '' },
     };
 
     connect() {
         this._timer = null;
         this._terminal = false;
+
+        // Submit-driven forms start the job on submit — don't poll before the
+        // job exists. Display-only usages (non-form) begin polling immediately.
+        if (this.element.tagName === 'FORM') {
+            return;
+        }
+
         window.alvaBus?.emit({ mood: 'scanning', reason: 'async-job-pending' });
         this._startPolling();
     }
 
     disconnect() {
         this._stopPolling();
+    }
+
+    // ── Actions ─────────────────────────────────────────────────────────────
+
+    /**
+     * Submit handler: POST the form via fetch instead of a full-page navigation,
+     * so a long-running backup/schema job cannot make the browser hang or render
+     * the endpoint's raw JSON. The endpoint returns {status:'started'} at once
+     * (work continues in the background); we then poll statusUrl for the result.
+     */
+    async start(event) {
+        event.preventDefault();
+
+        const form = this.element.tagName === 'FORM'
+            ? this.element
+            : this.element.closest('form');
+        if (!form) return;
+
+        this._terminal = false;
+        if (this.hasStatusMessageTarget && this.messageRunningValue) {
+            this.statusMessageTarget.textContent = this.messageRunningValue;
+        }
+        window.alvaBus?.emit({ mood: 'scanning', reason: 'async-job-started' });
+
+        try {
+            const resp = await fetch(form.getAttribute('action') || window.location.href, {
+                method: (form.getAttribute('method') || 'POST').toUpperCase(),
+                body: new FormData(form),
+                headers: { Accept: 'application/json' },
+                credentials: 'same-origin',
+            });
+
+            if (!resp.ok) {
+                // Kickoff rejected (CSRF / validation). Surface server message.
+                let msg = `Request failed (${resp.status}).`;
+                try {
+                    const j = await resp.json();
+                    if (j && j.message) msg = j.message;
+                } catch (_e) { /* non-JSON body */ }
+                this._applyTerminalFailure(msg);
+                return;
+            }
+
+            // Kickoff accepted ({status:'started'}) — poll for the real result.
+            this._startPolling();
+        } catch (_e) {
+            this._applyTerminalFailure('Network error while starting the job.');
+        }
     }
 
     // ── Private helpers ────────────────────────────────────────────────────
@@ -141,10 +211,11 @@ export default class extends Controller {
             }
         }
 
-        // Terminal states
-        if (status === 'succeeded') {
-            this._applyTerminalSuccess(data.message, data.payload);
-        } else if (status === 'failed') {
+        // Terminal states. The admin jobs endpoint emits succeeded/failed;
+        // the setup-wizard endpoints emit success/failed/error — accept both.
+        if (status === 'succeeded' || status === 'success') {
+            this._applyTerminalSuccess(data.message ?? this.messageSuccessValue, data.payload);
+        } else if (status === 'failed' || status === 'error') {
             this._applyTerminalFailure(data.message, data.error_trace);
         }
     }
@@ -173,6 +244,14 @@ export default class extends Controller {
 
         this._showBackLink();
         window.alvaBus?.emit({ mood: 'celebrating', reason: 'async-job-succeeded', ttlMs: 5000 });
+
+        // Submit-driven steps continue the wizard once the job succeeds. The
+        // poll that observed success already let the status endpoint lift its
+        // payload (e.g. setup_schema_created) into the session, so the next
+        // step sees the side effects.
+        if (this.redirectUrlValue) {
+            window.location.assign(this.redirectUrlValue);
+        }
     }
 
     _renderPayloadDetails(payload) {
