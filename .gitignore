@@ -84,3 +84,6 @@ translations/*+intl-icu.*.yaml
 
 # Claude Code worktrees (isolated workspaces)
 /.claude/worktrees/
+
+# local Playwright form-inspect debug helper (hardcoded creds — never commit)
+/scripts/inspect-form.mjs
