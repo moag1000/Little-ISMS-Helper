@@ -308,7 +308,11 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+// turbo:load (not DOMContentLoaded): Turbo Drive swaps the body without firing
+// DOMContentLoaded on navigation. The per-form busy state is now also handled
+// by the async-job Stimulus controller; this remains for the page-level
+// "disable every submit button" behaviour and binds on each Turbo visit.
+document.addEventListener('turbo:load', function() {
     // Handle all setup forms with loading spinners
     document.querySelectorAll('form.setup-form-loading').forEach(function(form) {
         form.addEventListener('submit', function(e) {

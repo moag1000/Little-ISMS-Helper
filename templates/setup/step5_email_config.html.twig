@@ -170,8 +170,11 @@
 </div>
 
 <script>
-// Toggle SMTP fields based on transport selection
-document.addEventListener('DOMContentLoaded', function() {
+// Toggle SMTP fields based on transport selection.
+// turbo:load (not DOMContentLoaded): under Turbo Drive the body is swapped on
+// navigation without firing DOMContentLoaded; turbo:load fires on initial load
+// and every Turbo visit, so the toggle binds whichever way the step is reached.
+document.addEventListener('turbo:load', function() {
     const transportSelect = document.querySelector('select[name="email_configuration[transport]"]');
     const smtpConfig = document.getElementById('smtp-config');
 
