@@ -1,8 +1,17 @@
+includes:
+    # Pre-existing level-5 violations are frozen here so the higher bar applies
+    # to NEW code immediately while the backlog is burned down over time.
+    # Regenerate after fixing some: vendor/bin/phpstan analyse --generate-baseline
+    - phpstan-baseline.neon
+
 parameters:
     paths:
         - src/
 
-    level: 1
+    # Raised from 1 → 5 (with a baseline for the existing backlog). Level 5 adds
+    # undefined method/property detection on resolved types and argument-type
+    # checks — the class of static bug that previously slipped through.
+    level: 5
 
     # Exclude paths that are allowed to call setStatus() directly
     excludePaths:
