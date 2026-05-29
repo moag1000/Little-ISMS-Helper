@@ -218,10 +218,12 @@
                                       data-async-job-poll-interval-value="2000"
                                       data-async-job-message-running-value="{{ 'setup.alva.busy.restore'|trans({}, 'setup') }}"
                                       data-async-job-message-success-value="{{ 'setup.alva.success.restore'|trans({}, 'setup') }}"
-                                      {# After a successful restore the database is already fully configured
-                                         (admin, org, frameworks, data). Jump straight to completion instead of
-                                         walking the admin/org/data steps, which would clobber the restored data. #}
-                                      data-async-job-redirect-url-value="{{ path('setup_step11_complete') }}"
+                                      {# Redirect back to this step so its restore-result block renders:
+                                         it surfaces statistics, the orphaned-entity repair form, and — when
+                                         there are no orphans — a "finish setup" button. All of those lead to
+                                         step11-complete (which skips re-saving org data for backup installs),
+                                         so the restored data is preserved AND orphan repair is not bypassed. #}
+                                      data-async-job-redirect-url-value="{{ path('setup_step3_restore_backup') }}"
                                       data-action="submit->async-job#start">
                                     <input type="hidden" name="_token" value="{{ csrf_token('setup_restore_backup') }}">
 
