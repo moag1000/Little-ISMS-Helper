@@ -37,6 +37,9 @@ if [ "${EMBEDDED_DB:-mariadb}" = "none" ]; then
     # Cache rebuild without touching .env.local — DATABASE_URL stays as-is.
     php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"
     php bin/console cache:warmup --env=prod 2>&1 || echo "Cache warmup failed"
+    # Hand cache ownership to www-data so php-fpm can write runtime cache (see
+    # the note before `wait $MYSQL_PID` in the embedded path for the rationale).
+    chown -R www-data:www-data /var/www/html/var/cache /var/www/html/var/log 2>/dev/null || true
     echo "External-DB bootstrap done"
 
     # Supervisor expects this program to stay running.
@@ -175,6 +178,16 @@ else
     php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"
     echo "Cache cleared"
 fi
+
+# Cache is built above as root (this script runs as root). php-fpm runs as
+# www-data and must be able to READ the warmed cache AND WRITE runtime cache
+# entries (twig templates, asset_mapper, API-Platform metadata pools, …).
+# Without this, www-data hits root-owned files/dirs and every such write fails
+# with "Permission denied" → HTTP 500. One recursive chown after the warmup
+# fixes it for all bootstrap branches above.
+php bin/console cache:warmup --env=prod 2>&1 || echo "Cache warmup (final) failed"
+chown -R www-data:www-data /var/www/html/var/cache /var/www/html/var/log 2>/dev/null || true
+echo "Cache ownership normalised for www-data"
 
 # Keep MariaDB running in foreground
 wait $MYSQL_PID
