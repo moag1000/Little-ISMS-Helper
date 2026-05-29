@@ -786,6 +786,25 @@ class RestoreEntityWriter
                 }
             }
 
+            // Null protection for non-nullable SCALAR fields (string/int/bool/etc.).
+            // A backup may carry null for a column that maps to a typed, non-nullable
+            // PHP property — e.g. Tenant::$status (string, default 'draft') or the
+            // @ORM\Version Tenant::$lockVersion (int, default 0). Assigning null to
+            // those throws a TypeError that aborts the whole row, and because Tenant
+            // is restored first, losing it cascades into "Tenant id(N) not found" for
+            // every dependent entity. Leave the property's declared default instead.
+            if ($value === null && !in_array($type, ['json', 'simple_array', 'array'], true)) {
+                try {
+                    $mapping = $meta->getFieldMapping($fieldName);
+                    $isNullable = is_array($mapping) ? ($mapping['nullable'] ?? false) : ($mapping->nullable ?? false);
+                } catch (Exception) {
+                    $isNullable = false;
+                }
+                if (!$isNullable) {
+                    continue; // keep the entity's PHP default; do not assign null
+                }
+            }
+
             // Convert ISO 8601 strings back to DateTime/DateTimeImmutable
             if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'time', 'time_immutable'])) {
                 try {
