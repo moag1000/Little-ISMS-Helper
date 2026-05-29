@@ -851,9 +851,9 @@ final class ReportBuilderService
         foreach ($assets as $asset) {
             // Calculate criticality from CIA values
             $maxCia = max(
-                $asset->getConfidentiality() ?? 1,
-                $asset->getIntegrity() ?? 1,
-                $asset->getAvailability() ?? 1
+                $asset->getConfidentialityValue() ?? 1,
+                $asset->getIntegrityValue() ?? 1,
+                $asset->getAvailabilityValue() ?? 1
             );
 
             if ($maxCia >= 4) {
@@ -985,8 +985,8 @@ final class ReportBuilderService
 
         // Sort by max CIA value
         usort($assets, function ($a, $b) {
-            $maxA = max($a->getConfidentiality() ?? 0, $a->getIntegrity() ?? 0, $a->getAvailability() ?? 0);
-            $maxB = max($b->getConfidentiality() ?? 0, $b->getIntegrity() ?? 0, $b->getAvailability() ?? 0);
+            $maxA = max($a->getConfidentialityValue() ?? 0, $a->getIntegrityValue() ?? 0, $a->getAvailabilityValue() ?? 0);
+            $maxB = max($b->getConfidentialityValue() ?? 0, $b->getIntegrityValue() ?? 0, $b->getAvailabilityValue() ?? 0);
             return $maxB - $maxA;
         });
 
@@ -998,9 +998,9 @@ final class ReportBuilderService
                 'id' => $asset->getId(),
                 'name' => $asset->getName(),
                 'type' => $asset->getAssetType(),
-                'c' => $asset->getConfidentiality(),
-                'i' => $asset->getIntegrity(),
-                'a' => $asset->getAvailability(),
+                'c' => $asset->getConfidentialityValue(),
+                'i' => $asset->getIntegrityValue(),
+                'a' => $asset->getAvailabilityValue(),
             ];
         }
 

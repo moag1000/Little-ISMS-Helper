@@ -84,7 +84,7 @@ class BCMController extends AbstractController
                         'process' => $process,
                         'asset' => $asset,
                         'analysis' => $analysis,
-                        'current_availability' => $asset->getAvailability(),
+                        'current_availability' => $asset->getAvailabilityValue(),
                         'suggested_availability' => $analysis['availability']['value']
                     ];
 
