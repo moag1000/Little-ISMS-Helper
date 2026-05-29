@@ -52,6 +52,44 @@ final class TisaxConfirmationService
     }
 
     /**
+     * Verify that the stored confirmation is valid AND bound to the current
+     * user + tenant + session. The session-token binding prevents replay of a
+     * confirmation across sessions or tenants even if the session ID leaked.
+     *
+     * Returns false on any missing/mismatching binding (fail-closed).
+     *
+     * @param int|null $confirmationId  session-held confirmation ID (mixed-safe)
+     * @param string   $sessionId       raw Symfony session ID (SHA-256-compared internally)
+     */
+    public function isValidFor(
+        ?int $confirmationId,
+        ?User $user,
+        ?Tenant $tenant,
+        string $sessionId,
+    ): bool {
+        if ($confirmationId === null || $user === null || $tenant === null) {
+            return false;
+        }
+
+        $confirmation = $this->repository->find($confirmationId);
+        if ($confirmation === null) {
+            return false;
+        }
+        if ($confirmation->getUser()?->getId() !== $user->getId()) {
+            return false;
+        }
+        if ($confirmation->getTenant()?->getId() !== $tenant->getId()) {
+            return false;
+        }
+        $expectedToken = hash('sha256', $sessionId);
+        if (!hash_equals((string) $confirmation->getSessionToken(), $expectedToken)) {
+            return false;
+        }
+
+        return $confirmation->isValid();
+    }
+
+    /**
      * Update the workbook filename on an existing confirmation after a
      * successful upload (Step 0 → Step 1 filename backfill).
      */
