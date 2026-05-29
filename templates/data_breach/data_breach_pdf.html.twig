@@ -265,7 +265,7 @@
     <div class="section">
         <h2>2. Linked Security Incident & Processing Activity</h2>
         {% if breach.incident %}
-            <p><strong>Security Incident:</strong> {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}</p>
+            <p><strong>Security Incident:</strong> {{ breach.incident.incidentNumber }} - {{ breach.incident.title }}</p>
             <p><strong>Incident Severity:</strong>
                 {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity ? breach.incident.severity.value : ''] %}
                 <span class="badge badge-{{ sev_class }}">{{ breach.incident.severity ? breach.incident.severity.value|upper : '' }}</span>

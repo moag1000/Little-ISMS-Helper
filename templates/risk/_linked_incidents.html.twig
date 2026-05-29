@@ -97,7 +97,7 @@
                                 meta:    [
                                     ('risk.link_incident.link_type.' ~ link.linkType)|trans,
                                     link.linkedAt|date('d.m.Y'),
-                                    link.linkedBy ? link.linkedBy.displayName ?? link.linkedBy.email : null
+                                    link.linkedBy ? link.linkedBy.fullName ?? link.linkedBy.email : null
                                 ]|filter(v => v is not null),
                                 href:    path('app_incident_show', {id: incident.id}),
                                 status:  { variant: incident.status.value == 'closed' ? 'neutral' : 'warning', label: incident.status.value|upper|replace({'_': ' '}) },
