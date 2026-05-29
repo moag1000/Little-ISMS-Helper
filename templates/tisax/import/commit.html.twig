@@ -30,22 +30,109 @@
     ], 4) }}
 
     <div class="row justify-content-center mt-4">
-        <div class="col-lg-7">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <i class="fa-icon fa-icon--nav-database-add fa-icon--48 text-primary mb-2"></i>
-                    <h5>{{ 'tisax.import.commit.confirm_heading'|trans({}, 'tisax_isa') }}</h5>
-                    <p class="text-muted">
-                        {{ 'tisax.import.commit.confirm_body'|trans({
-                            '%new%': delta.new,
-                            '%existing%': delta.existing,
-                            '%framework%': framework.name
-                        }, 'tisax_isa') }}
-                    </p>
-                    <p class="small text-muted">{{ 'tisax.import.commit.irreversible_note'|trans({}, 'tisax_isa') }}</p>
+        <div class="col-lg-9">
+            <form method="post" action="{{ path('app_tisax_import_commit', { _locale: app.request.locale }) }}">
+                <input type="hidden" name="_token" value="{{ token }}">
 
-                    <form method="post" action="{{ path('app_tisax_import_commit', { _locale: app.request.locale }) }}">
-                        <input type="hidden" name="_token" value="{{ token }}">
+                {# ── Organisation-mismatch warning (Art. data-integrity) ── #}
+                {% if companyMismatch %}
+                    <div class="alert alert-warning d-flex align-items-start gap-2 mb-4">
+                        <i class="fa-icon fa-icon--alert-triangle-fill fa-icon--24 text-warning flex-shrink-0"></i>
+                        <div>
+                            <strong>{{ 'tisax.import.commit.company_mismatch_title'|trans({}, 'tisax_isa') }}</strong>
+                            <p class="mb-2">
+                                {{ 'tisax.import.commit.company_mismatch_body'|trans({
+                                    '%workbook%': workbookCompany,
+                                    '%org%': tenantName
+                                }, 'tisax_isa') }}
+                            </p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="company_confirm" value="1" id="companyConfirm" required>
+                                <label class="form-check-label" for="companyConfirm">
+                                    {{ 'tisax.import.commit.company_confirm_label'|trans({ '%workbook%': workbookCompany }, 'tisax_isa') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {# ── Reifegrad-Diff (workbook vs current) — selective overwrite ── #}
+                {% if maturityDiff is not empty %}
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="fa-icon fa-icon--nav-analytics me-1"></i>
+                                {{ 'tisax.import.commit.maturity_diff_title'|trans({ '%count%': maturityDiff|length }, 'tisax_isa') }}
+                            </span>
+                            <div class="form-check form-check-inline m-0">
+                                <input class="form-check-input" type="checkbox" id="diffSelectAll">
+                                <label class="form-check-label small" for="diffSelectAll">
+                                    {{ 'tisax.import.commit.maturity_diff_select_all'|trans({}, 'tisax_isa') }}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="small text-muted">{{ 'tisax.import.commit.maturity_diff_body'|trans({}, 'tisax_isa') }}</p>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:3rem"></th>
+                                            <th>{{ 'tisax.import.commit.maturity_diff_col_control'|trans({}, 'tisax_isa') }}</th>
+                                            <th class="text-center">{{ 'tisax.import.commit.maturity_diff_col_current'|trans({}, 'tisax_isa') }}</th>
+                                            <th class="text-center"></th>
+                                            <th class="text-center">{{ 'tisax.import.commit.maturity_diff_col_workbook'|trans({}, 'tisax_isa') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for d in maturityDiff %}
+                                            <tr>
+                                                <td>
+                                                    <input class="form-check-input diff-apply-cb" type="checkbox"
+                                                           name="apply_maturity[]" value="{{ d.controlId }}"
+                                                           id="apply_{{ d.controlId }}">
+                                                </td>
+                                                <td>
+                                                    <label class="form-check-label" for="apply_{{ d.controlId }}">
+                                                        <code>{{ d.controlId }}</code>
+                                                        <span class="d-block text-muted small">{{ d.title|length > 80 ? d.title|slice(0, 80) ~ '…' : d.title }}</span>
+                                                    </label>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-secondary-subtle text-secondary-emphasis">{{ d.currentInt }} — {{ ('tisax.import.assess.level.' ~ d.currentLevel)|trans({}, 'tisax_isa') }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    {% if d.direction == 'up' %}
+                                                        <i class="fa-icon fa-icon--arrow-up text-success"></i>
+                                                    {% else %}
+                                                        <i class="fa-icon fa-icon--arrow-down text-danger"></i>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-primary-subtle text-primary-emphasis">{{ d.workbookInt }} — {{ ('tisax.import.assess.level.' ~ d.workbookLevel)|trans({}, 'tisax_isa') }}</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="card border-primary">
+                    <div class="card-body text-center">
+                        <i class="fa-icon fa-icon--nav-database-add fa-icon--48 text-primary mb-2"></i>
+                        <h5>{{ 'tisax.import.commit.confirm_heading'|trans({}, 'tisax_isa') }}</h5>
+                        <p class="text-muted">
+                            {{ 'tisax.import.commit.confirm_body'|trans({
+                                '%new%': delta.new,
+                                '%existing%': delta.existing,
+                                '%framework%': framework.name
+                            }, 'tisax_isa') }}
+                        </p>
+                        <p class="small text-muted">{{ 'tisax.import.commit.irreversible_note'|trans({}, 'tisax_isa') }}</p>
+
                         <div class="d-flex gap-2 justify-content-center mt-3">
                             <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="fa-icon fa-icon--check-circle-fill me-1"></i>
@@ -55,10 +142,22 @@
                                 {{ 'common.back'|trans({}, 'messages') }}
                             </a>
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
+
+{% if maturityDiff is not empty %}
+<script>
+    document.addEventListener('turbo:load', function () {
+        var all = document.getElementById('diffSelectAll');
+        if (!all) return;
+        all.addEventListener('change', function () {
+            document.querySelectorAll('.diff-apply-cb').forEach(function (cb) { cb.checked = all.checked; });
+        });
+    });
+</script>
+{% endif %}
 {% endblock %}

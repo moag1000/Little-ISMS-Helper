@@ -222,11 +222,14 @@ final class VdaIsaWorkbookParser
 
         $controls = $this->extractControlRows($worksheet, $headerRow, $headerMap);
 
+        $company = $this->extractCompany($spreadsheet);
+
         $this->logger->info('VdaIsaWorkbookParser: parsed workbook', [
             'file'    => basename($filePath),
             'sheet'   => $worksheet->getTitle(),
             'headers' => array_keys($headerMap),
             'rows'    => count($controls),
+            'company' => $company,
         ]);
 
         return new ParsedWorkbookResult(
@@ -234,12 +237,73 @@ final class VdaIsaWorkbookParser
             sheetName: $worksheet->getTitle(),
             headerRowIndex: $headerRow,
             detectedColumnMap: $headerMap,
+            workbookCompany: $company,
         );
     }
 
     // ──────────────────────────────────────────────────────────────────────────
     // Private helpers
     // ──────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Cover sheets to scan for the organisation name, in priority order.
+     * "Deckblatt" (DE) / "Cover" (EN) carry "Firma / Organisation"; the
+     * "Ergebnisse"/"Results" sheet repeats it as "Firma:".
+     */
+    private const COMPANY_SHEETS = ['Deckblatt', 'Cover', 'Ergebnisse', 'Results'];
+
+    /**
+     * Label fragments (lowercased) that mark the company-name cell. The value
+     * is read from the first non-empty cell to the RIGHT of the label cell.
+     */
+    private const COMPANY_LABELS = ['firma', 'organisation', 'company', 'organization'];
+
+    /**
+     * Read the organisation name from the workbook cover sheet.
+     * Returns null when no recognisable label/value pair is found.
+     */
+    private function extractCompany(\PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet): ?string
+    {
+        foreach (self::COMPANY_SHEETS as $sheetName) {
+            $ws = null;
+            foreach ($spreadsheet->getSheetNames() as $actual) {
+                if (strcasecmp($actual, $sheetName) === 0) {
+                    $ws = $spreadsheet->getSheetByName($actual);
+                    break;
+                }
+            }
+            if ($ws === null) {
+                continue;
+            }
+
+            $highestRow = min(40, $ws->getHighestDataRow());
+            $highestCol = $ws->getHighestDataColumn();
+
+            for ($row = 1; $row <= $highestRow; $row++) {
+                $cells = $ws->rangeToArray('A' . $row . ':' . $highestCol . $row, null, true, false, false)[0] ?? [];
+                foreach ($cells as $colIdx => $cell) {
+                    $text = strtolower(trim((string) ($cell ?? '')));
+                    if ($text === '') {
+                        continue;
+                    }
+                    foreach (self::COMPANY_LABELS as $label) {
+                        if (!str_contains($text, $label)) {
+                            continue;
+                        }
+                        // Found a label cell — take first non-empty cell to its right.
+                        for ($j = $colIdx + 1; $j < count($cells); $j++) {
+                            $value = trim((string) ($cells[$j] ?? ''));
+                            if ($value !== '') {
+                                return $value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 
     /**
      * Try preferred sheet names first, fall back to active sheet.
