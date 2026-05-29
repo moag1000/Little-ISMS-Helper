@@ -691,7 +691,7 @@ final class ReportBuilderService
             }
         }
         foreach ($risks as $risk) {
-            $l = min(5, max(1, $risk->getLikelihood() ?? 1));
+            $l = min(5, max(1, $risk->getProbability() ?? 1));
             $i = min(5, max(1, $risk->getImpact() ?? 1));
             $matrix[$l][$i]++;
         }

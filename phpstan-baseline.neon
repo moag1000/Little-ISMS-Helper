@@ -2341,18 +2341,6 @@ parameters:
 			path: src/Listener/AutoReactionCorrectiveActionListenerForIncident.php
 
 		-
-			message: '#^Call to an undefined method App\\Entity\\Risk\:\:getOwner\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/MessageHandler/Schedule/CheckRiskReviewsHandler.php
-
-		-
-			message: '#^Call to an undefined method App\\Service\\EmailNotificationService\:\:sendEmail\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/MessageHandler/Schedule/CheckRiskReviewsHandler.php
-
-		-
 			message: '#^Property App\\MessageHandler\\Schedule\\GenerateComplianceReportHandler\:\:\$emailService is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -3553,12 +3541,6 @@ parameters:
 			path: src/Service/Mail/RecipientFilter.php
 
 		-
-			message: '#^Call to an undefined method App\\Entity\\DataBreach\:\:getDiscoveredAt\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Service/ManagementReportService.php
-
-		-
 			message: '#^Call to an undefined method App\\Entity\\DataBreach\:\:getNotificationDate\(\)\.$#'
 			identifier: method.notFound
 			count: 2
@@ -3568,12 +3550,6 @@ parameters:
 			message: '#^Call to an undefined method App\\Entity\\DataBreach\:\:isNotificationRequired\(\)\.$#'
 			identifier: method.notFound
 			count: 2
-			path: src/Service/ManagementReportService.php
-
-		-
-			message: '#^Call to an undefined method App\\Entity\\RiskTreatmentPlan\:\:getTargetDate\(\)\.$#'
-			identifier: method.notFound
-			count: 4
 			path: src/Service/ManagementReportService.php
 
 		-
@@ -4255,12 +4231,6 @@ parameters:
 			path: src/Service/PreFiller/DpiaPreFiller.php
 
 		-
-			message: '#^Call to an undefined method App\\Entity\\Risk\:\:getLikelihood\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Service/ReportBuilderService.php
-
-		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
 			identifier: nullCoalesce.expr
 			count: 2
@@ -4487,12 +4457,6 @@ parameters:
 			identifier: nullsafe.neverNull
 			count: 1
 			path: src/Service/RiskIntelligenceService.php
-
-		-
-			message: '#^Call to an undefined method App\\Service\\EmailNotificationService\:\:sendEmail\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Service/RiskTreatmentPlanApprovalService.php
 
 		-
 			message: '#^Call to function is_array\(\) with non\-empty\-array will always evaluate to true\.$#'
