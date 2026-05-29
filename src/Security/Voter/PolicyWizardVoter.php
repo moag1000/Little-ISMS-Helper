@@ -206,7 +206,7 @@ final class PolicyWizardVoter extends Voter
         if (!$this->isInUserScope($user, $tenant)) {
             return false;
         }
-        if (!$this->isDoraTenant($tenant)) {
+        if (!$this->isDoraTenant()) {
             return true;
         }
         // DORA: dual-signoff Pflicht.
@@ -389,7 +389,7 @@ final class PolicyWizardVoter extends Voter
      * In Tests injizieren wir eine Mock-Repo, die hier den passenden
      * Wert liefert.
      */
-    private function isDoraTenant(Tenant $tenant): bool
+    private function isDoraTenant(): bool
     {
         if ($this->complianceFrameworkRepository === null) {
             return false;

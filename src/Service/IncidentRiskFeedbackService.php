@@ -82,7 +82,7 @@ class IncidentRiskFeedbackService
 
         foreach ($realizedRisks as $risk) {
             if ($this->shouldTriggerRiskReEvaluation($incident, $risk)) {
-                $this->triggerRiskReEvaluation($risk, $incident, $user);
+                $this->triggerRiskReEvaluation($risk, $incident);
                 $triggeredCount++;
             }
         }
@@ -135,7 +135,7 @@ class IncidentRiskFeedbackService
      * Starts a new risk assessment workflow for the risk
      * Records incident as trigger for audit trail
      */
-    private function triggerRiskReEvaluation(Risk $risk, Incident $incident, User $user): void
+    private function triggerRiskReEvaluation(Risk $risk, Incident $incident): void
     {
         $this->logger->info('Triggering risk re-evaluation due to incident', [
             'risk_id' => $risk->getId(),

@@ -120,10 +120,10 @@ final class PolicyZipExporter
 
             // Evidence folder (auditor's audit pack).
             if ($options->includeEvidence) {
-                $zip->addFromString('evidence/audit-trail.csv', $this->buildAuditTrailCsv($tenant));
+                $zip->addFromString('evidence/audit-trail.csv', $this->buildAuditTrailCsv());
                 $zip->addFromString('evidence/soa.csv', $this->buildSoaCsv($tenant));
-                $zip->addFromString('evidence/acknowledgements.csv', $this->buildAcknowledgementsCsv($tenant, $documents));
-                $zip->addFromString('evidence/workflow-instances.csv', $this->buildWorkflowInstancesCsv($tenant, $documents));
+                $zip->addFromString('evidence/acknowledgements.csv', $this->buildAcknowledgementsCsv($documents));
+                $zip->addFromString('evidence/workflow-instances.csv', $this->buildWorkflowInstancesCsv($documents));
             }
 
             // Source provenance.
@@ -217,7 +217,7 @@ final class PolicyZipExporter
         return $slug === '' ? sprintf('document-%d', $doc->getId() ?? 0) : $slug;
     }
 
-    private function buildAuditTrailCsv(Tenant $tenant): string
+    private function buildAuditTrailCsv(): string
     {
         $header = ['id', 'created_at', 'action', 'entity_type', 'entity_id', 'user_name', 'actor_role', 'description'];
         $rows = [$header];
@@ -270,7 +270,7 @@ final class PolicyZipExporter
     /**
      * @param list<Document> $documents
      */
-    private function buildAcknowledgementsCsv(Tenant $tenant, array $documents): string
+    private function buildAcknowledgementsCsv(array $documents): string
     {
         $header = ['document_id', 'document_filename', 'user_email', 'acknowledged_at', 'document_version'];
         $rows = [$header];
@@ -294,7 +294,7 @@ final class PolicyZipExporter
     /**
      * @param list<Document> $documents
      */
-    private function buildWorkflowInstancesCsv(Tenant $tenant, array $documents): string
+    private function buildWorkflowInstancesCsv(array $documents): string
     {
         $header = ['instance_id', 'entity_type', 'entity_id', 'status', 'started_at', 'completed_at', 'approval_history'];
         $rows = [$header];

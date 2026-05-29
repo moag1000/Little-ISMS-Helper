@@ -443,11 +443,11 @@ class WorkflowAutoProgressionService
         ]);
 
         if ($entityType === 'Incident') {
-            $this->triggerIncidentRiskFeedback($entity, $user);
+            $this->triggerIncidentRiskFeedback($entity);
         }
     }
 
-    private function triggerIncidentRiskFeedback(object $incident, User $user): void
+    private function triggerIncidentRiskFeedback(object $incident): void
     {
         try {
             // BACKLOG: Dispatch an IncidentClosedEvent from IncidentController when

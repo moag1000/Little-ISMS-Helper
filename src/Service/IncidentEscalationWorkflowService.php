@@ -48,14 +48,7 @@ class IncidentEscalationWorkflowService
     private const IncidentSeverity SEVERITY_CRITICAL = IncidentSeverity::Critical;
 
     // GDPR breach notification deadline (hours)
-    private const int GDPR_BREACH_DEADLINE_HOURS = 72;
-
-    // Response time SLAs (hours)
-    private const int SLA_LOW = 48;        // 2 days
-    private const int SLA_MEDIUM = 24;     // 1 day
-    private const int SLA_HIGH = 8;        // 8 hours
-    private const int SLA_CRITICAL = 2;    // 2 hours
-    private const int SLA_BREACH = 1;      // 1 hour (immediate)
+    private const int GDPR_BREACH_DEADLINE_HOURS = 72;      // 1 hour (immediate)
 
     public function __construct(
         private readonly WorkflowService $workflowService,

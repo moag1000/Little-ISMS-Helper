@@ -144,14 +144,14 @@ final class InverseCoverageService
         }
 
         foreach ($req->getMappedControls() as $control) {
-            if ($this->controlTouchesSupplier($control, $supplier)) {
+            if ($this->controlTouchesSupplier($control)) {
                 return true;
             }
         }
         return false;
     }
 
-    private function controlTouchesSupplier(Control $control, Supplier $supplier): bool
+    private function controlTouchesSupplier(Control $control): bool
     {
         $category = (string) $control->getCategory();
         if ($category !== '' && stripos($category, 'supplier') !== false) {
@@ -306,14 +306,14 @@ final class InverseCoverageService
             }
         }
         foreach ($req->getMappedControls() as $control) {
-            if ($this->controlTouchesAsset($control, $asset)) {
+            if ($this->controlTouchesAsset($control)) {
                 return true;
             }
         }
         return false;
     }
 
-    private function controlTouchesAsset(Control $control, Asset $asset): bool
+    private function controlTouchesAsset(Control $control): bool
     {
         $controlId = (string) $control->getControlId();
         // ISO 27001:2022 asset-management controls

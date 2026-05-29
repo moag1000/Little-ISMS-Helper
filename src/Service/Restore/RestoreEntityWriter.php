@@ -314,7 +314,7 @@ class RestoreEntityWriter
                 // Hydrate scalar fields
                 $this->hydrateScalarFields(
                     $entity, $data, $classMetadata, $propertyAccessor,
-                    $entityName, $entityClass, $existingEntity, $options, $warnings
+                    $entityName, $existingEntity, $options, $warnings
                 );
 
                 // Special handling for User entities: Set password if admin_password is provided
@@ -713,7 +713,6 @@ class RestoreEntityWriter
         ClassMetadata $meta,
         PropertyAccessor $propertyAccessor,
         string $entityName,
-        string $entityClass,
         ?object $existingEntity,
         array $options,
         array &$warnings,

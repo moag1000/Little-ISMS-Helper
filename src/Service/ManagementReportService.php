@@ -981,7 +981,7 @@ final class ManagementReportService
         // (left blank initially; user fills based on previous-review tracking)
 
         // §9.3 (b) — Changes in external/internal issues relevant to ISMS
-        $review->setChangesRelevantToISMS($this->buildContextChangesNarrative($report, $locale));
+        $review->setChangesRelevantToISMS($this->buildContextChangesNarrative($locale));
 
         // §9.3 (c) — Feedback on ISMS performance
         // §9.3 (c.1) — Nonconformities & corrective actions
@@ -1126,7 +1126,7 @@ final class ManagementReportService
         );
     }
 
-    private function buildContextChangesNarrative(array $report, string $locale): string
+    private function buildContextChangesNarrative(string $locale): string
     {
         if ($locale === 'de') {
             return "Kontext-Änderungen seit letztem Review\n\n[Vom CISO/Compliance-Manager auszufüllen — relevante Änderungen extern (Recht, Markt, Lieferkette) und intern (Org-Struktur, IT-Landschaft, Prozesse, Personen).]";

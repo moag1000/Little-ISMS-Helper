@@ -91,7 +91,7 @@ class ExportRoutesCommand
                 'raw'      => $path,
                 'methods'  => $methods === [] ? ['GET'] : $methods,
                 'admin'    => $this->isAdminRoute($name, $path),
-                'category' => $this->categorise($name, $path),
+                'category' => $this->categorise($path),
             ];
         }
 
@@ -151,7 +151,7 @@ class ExportRoutesCommand
     /**
      * Coarse categorisation so the report can group routes per ISMS area.
      */
-    private function categorise(string $name, string $path): string
+    private function categorise(string $path): string
     {
         return match (true) {
             str_contains($path, '/admin/')              => 'admin',

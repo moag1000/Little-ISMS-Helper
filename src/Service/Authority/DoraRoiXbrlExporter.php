@@ -48,7 +48,6 @@ final class DoraRoiXbrlExporter
     private const string NS_XBRLDI      = 'http://xbrl.org/2006/xbrldi';
     private const string NS_LINK        = 'http://www.xbrl.org/2003/linkbase';
     private const string NS_XSI         = 'http://www.w3.org/2001/XMLSchema-instance';
-    private const string NS_XSD         = 'http://www.w3.org/2001/XMLSchema';
     /** ESA RoI taxonomy namespace — update when ESA publishes official URI */
     private const string NS_ESA_ROI     = 'http://esa.europa.eu/xbrl/dora/roi/2024';
     private const string NS_ISO4217     = 'http://www.xbrl.org/2003/iso4217';

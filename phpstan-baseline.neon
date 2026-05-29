@@ -691,12 +691,6 @@ parameters:
 			path: src/Controller/Admin/KpiThresholdConfigController.php
 
 		-
-			message: '#^Constant App\\Controller\\Admin\\LifecycleOverridesController\:\:OVERRIDEABLE_KEYS is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Controller/Admin/LifecycleOverridesController.php
-
-		-
 			message: '#^Offset 1 on array\{list\<string\>, list\<non\-empty\-string\>\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
@@ -773,12 +767,6 @@ parameters:
 			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Controller/Admin/SystemSettings/NotificationPreferencesController.php
-
-		-
-			message: '#^Constant App\\Controller\\Admin\\WorkflowOverlayController\:\:STEP_OVERRIDEABLE_KEYS is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Controller/Admin/WorkflowOverlayController.php
 
 		-
 			message: '#^Parameter \#2 \$entityId of method App\\Service\\AuditLogger\:\:logUpdate\(\) expects int\|null, string given\.$#'
@@ -2917,12 +2905,6 @@ parameters:
 			path: src/Service/ActivityFeed.php
 
 		-
-			message: '#^Constant App\\Service\\ActivityFeed\:\:COMPLIANCE_SOURCES is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Service/ActivityFeed.php
-
-		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
 			identifier: nullCoalesce.expr
 			count: 2
@@ -2989,12 +2971,6 @@ parameters:
 			path: src/Service/AuditFreezeSnapshotBuilder.php
 
 		-
-			message: '#^Constant App\\Service\\Authority\\DoraRoiXbrlExporter\:\:NS_XSD is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Service/Authority/DoraRoiXbrlExporter.php
-
-		-
 			message: '#^PHPDoc tag @throws with type App\\Service\\Authority\\LogicException is not subtype of Throwable$#'
 			identifier: throws.notThrowable
 			count: 1
@@ -3023,12 +2999,6 @@ parameters:
 			identifier: throws.notThrowable
 			count: 2
 			path: src/Service/BackupEncryptionService.php
-
-		-
-			message: '#^Constant App\\Service\\BackupService\:\:EXCLUDED_FROM_BACKUP is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Service/BackupService.php
 
 		-
 			message: '#^Match arm comparison between ''TenantBranding'' and ''TenantBranding'' is always true\.$#'
@@ -3253,24 +3223,6 @@ parameters:
 			path: src/Service/ComplianceWizard/CoverageCheckService.php
 
 		-
-			message: '#^Method App\\Service\\ComplianceWizardService\:\:checkConsentCoverage\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Service/ComplianceWizardService.php
-
-		-
-			message: '#^Method App\\Service\\ComplianceWizardService\:\:checkDpiaCoverage\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Service/ComplianceWizardService.php
-
-		-
-			message: '#^Method App\\Service\\ComplianceWizardService\:\:checkDsrCoverage\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Service/ComplianceWizardService.php
-
-		-
 			message: '#^Property App\\Service\\ComplianceWizardService\:\:\$frameworkRepository is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -3397,14 +3349,20 @@ parameters:
 			path: src/Service/DashboardStatisticsService.php
 
 		-
-			message: '#^Method App\\Service\\DashboardStatisticsService\:\:getStatusFor\(\) is unused\.$#'
-			identifier: method.unused
+			message: '#^Offset ''overall'' on array\{framework\: array\{code\: string, name\: string, version\: string\|null\}, filter\: array\{absicherungsStufe\: string\|null\}, overall\: array, by_layer\: array\<string, array\>, bausteine\: array\<string, array\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
 			count: 1
 			path: src/Service/DashboardStatisticsService.php
 
 		-
-			message: '#^Offset ''overall'' on array\{framework\: array\{code\: string, name\: string, version\: string\|null\}, filter\: array\{absicherungsStufe\: string\|null\}, overall\: array, by_layer\: array\<string, array\>, bausteine\: array\<string, array\>\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
+			message: '#^Property App\\Service\\DashboardStatisticsService\:\:\$kpiThresholdConfigResolver is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Service/DashboardStatisticsService.php
+
+		-
+			message: '#^Property App\\Service\\DashboardStatisticsService\:\:\$thresholdConfigRepository is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: src/Service/DashboardStatisticsService.php
 
@@ -3901,36 +3859,6 @@ parameters:
 			path: src/Service/IncidentEscalationWorkflowService.php
 
 		-
-			message: '#^Constant App\\Service\\IncidentEscalationWorkflowService\:\:SLA_BREACH is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Service/IncidentEscalationWorkflowService.php
-
-		-
-			message: '#^Constant App\\Service\\IncidentEscalationWorkflowService\:\:SLA_CRITICAL is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Service/IncidentEscalationWorkflowService.php
-
-		-
-			message: '#^Constant App\\Service\\IncidentEscalationWorkflowService\:\:SLA_HIGH is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Service/IncidentEscalationWorkflowService.php
-
-		-
-			message: '#^Constant App\\Service\\IncidentEscalationWorkflowService\:\:SLA_LOW is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Service/IncidentEscalationWorkflowService.php
-
-		-
-			message: '#^Constant App\\Service\\IncidentEscalationWorkflowService\:\:SLA_MEDIUM is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: src/Service/IncidentEscalationWorkflowService.php
-
-		-
 			message: '#^Call to an undefined method App\\Entity\\Risk\:\:getNotes\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -4123,12 +4051,6 @@ parameters:
 			path: src/Service/MappingQualityAnalysisService.php
 
 		-
-			message: '#^Method App\\Service\\MfaService\:\:generateSecureSecret\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Service/MfaService.php
-
-		-
 			message: '#^Strict comparison using \=\=\= between int\<1, max\> and 0 will always evaluate to false\.$#'
 			identifier: identical.alwaysFalse
 			count: 1
@@ -4257,12 +4179,6 @@ parameters:
 		-
 			message: '#^Call to function method_exists\(\) with App\\Entity\\User and ''getEmail'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Service/MyDayAggregator.php
-
-		-
-			message: '#^Constant App\\Service\\MyDayAggregator\:\:INCIDENT_PRIORITY_DAYS is unused\.$#'
-			identifier: classConstant.unused
 			count: 1
 			path: src/Service/MyDayAggregator.php
 
@@ -5063,18 +4979,6 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Service/RiskTreatmentPlanApprovalService.php
-
-		-
-			message: '#^Method App\\Service\\RoleDashboardService\:\:getRAGMetrics\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Service/RoleDashboardService.php
-
-		-
-			message: '#^Method App\\Service\\RoleDashboardService\:\:getTrendIndicators\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Service/RoleDashboardService.php
 
 		-
 			message: '#^Offset ''accept''\|''avoid''\|''mitigate''\|''transfer'' on array\{mitigate\: int\<0, max\>, accept\: int\<0, max\>, transfer\: int\<0, max\>, avoid\: int\<0, max\>, untreated\: int\<0, max\>\} in isset\(\) always exists and is not nullable\.$#'

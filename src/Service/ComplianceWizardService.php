@@ -579,28 +579,4 @@ final class ComplianceWizardService
             'module' => $check['module'] ?? null,
         ];
     }
-
-    /**
-     * Backward-compat facade for test-reflection — delegates to CoverageCheckService.
-     */
-    private function checkConsentCoverage(array $check, ?Tenant $tenant): array
-    {
-        return $this->coverageCheckService->checkConsentCoverage($check, $tenant);
-    }
-
-    /**
-     * Backward-compat facade for test-reflection — delegates to CoverageCheckService.
-     */
-    private function checkDsrCoverage(array $check, ?Tenant $tenant): array
-    {
-        return $this->coverageCheckService->checkDsrCoverage($check, $tenant);
-    }
-
-    /**
-     * Backward-compat facade for test-reflection — delegates to CoverageCheckService.
-     */
-    private function checkDpiaCoverage(array $check, ?Tenant $tenant): array
-    {
-        return $this->coverageCheckService->checkDpiaCoverage($check, $tenant);
-    }
 }

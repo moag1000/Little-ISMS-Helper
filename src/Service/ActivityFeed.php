@@ -71,8 +71,6 @@ final class ActivityFeed
         'WizardSession',
     ];
 
-    private const COMPLIANCE_SOURCES = ['document', 'workflow'];
-
     private const COMPLIANCE_ACTION_PREFIXES = ['approve', 'reject', 'compliance'];
 
     /**

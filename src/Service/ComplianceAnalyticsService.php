@@ -394,7 +394,7 @@ class ComplianceAnalyticsService
 
             // Estimate time to completion based on current progress
             $remainingGaps = $stats['applicable'] - $stats['fulfilled'];
-            $estimatedWeeks = $this->estimateTimeToCompletion($remainingGaps, $compliance);
+            $estimatedWeeks = $this->estimateTimeToCompletion($remainingGaps);
 
             $roadmap[] = [
                 'framework' => $framework->getName(),
@@ -433,7 +433,7 @@ class ComplianceAnalyticsService
     /**
      * Estimate weeks to completion
      */
-    private function estimateTimeToCompletion(int $remainingGaps, float $currentCompliance): int
+    private function estimateTimeToCompletion(int $remainingGaps): int
     {
         if ($remainingGaps === 0) {
             return 0;

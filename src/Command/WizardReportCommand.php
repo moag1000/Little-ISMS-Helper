@@ -124,7 +124,7 @@ class WizardReportCommand extends Command
 
         // Run all wizards
         if ($input->getOption('all')) {
-            return $this->runAllWizards($io, $input);
+            return $this->runAllWizards($io);
         }
 
         // Run specific wizard
@@ -261,7 +261,7 @@ class WizardReportCommand extends Command
     /**
      * Run all available wizards
      */
-    private function runAllWizards(SymfonyStyle $io, InputInterface $input): int
+    private function runAllWizards(SymfonyStyle $io): int
     {
         $io->title('Running All Available Compliance Wizards');
 

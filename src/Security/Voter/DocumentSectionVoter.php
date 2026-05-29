@@ -85,7 +85,7 @@ final class DocumentSectionVoter extends Voter
         }
 
         return match ($attribute) {
-            self::VIEW    => $this->canView($user, $subject),
+            self::VIEW    => $this->canView($user),
             self::APPROVE => $this->canApprove($user, $subject),
             self::REJECT  => $this->canReject($user, $subject),
             default       => false,
@@ -98,7 +98,7 @@ final class DocumentSectionVoter extends Voter
      * obviously sees them. Anyone in the same tenant with one of the
      * curator roles may view.
      */
-    private function canView(User $user, DocumentSection $section): bool
+    private function canView(User $user): bool
     {
         return $this->hasAnyRole($user, [
             'ROLE_DPO',

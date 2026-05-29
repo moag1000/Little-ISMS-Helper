@@ -41,7 +41,7 @@ final class TemplateInstantiator
         // Resolve or auto-create channels specified in defaultChannels
         foreach ($template->getDefaultChannels() as $channelSpec) {
             $channelType = (string) ($channelSpec['type'] ?? NotificationChannel::TYPE_EMAIL);
-            $channel     = $this->resolveOrCreateChannel($tenant, $channelType, $channelSpec);
+            $channel     = $this->resolveOrCreateChannel($tenant, $channelType);
             $rule->addChannel($channel);
         }
 
@@ -50,10 +50,7 @@ final class TemplateInstantiator
         return $rule;
     }
 
-    /**
-     * @param array<string, mixed> $spec
-     */
-    private function resolveOrCreateChannel(Tenant $tenant, string $type, array $spec): NotificationChannel
+    private function resolveOrCreateChannel(Tenant $tenant, string $type): NotificationChannel
     {
         // Try to reuse the first active channel of the required type
         $existing = $this->channelRepo->findActiveByType($type, $tenant);

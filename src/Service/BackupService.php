@@ -198,34 +198,6 @@ class BackupService
         'TisaxLicenseConfirmation', // FK: Tenant, User — ISO 27001 Cl. 7.5.3 audit trail
     ];
 
-    /**
-     * Entities deliberately excluded from backup with rationale.
-     *
-     * These entities are intentionally NOT in PRODUCTIVE_ENTITIES because they
-     * fall into one of three categories:
-     *   1) Global seeded catalogues that are re-loaded via console commands
-     *      (no tenant data, no productive value in backup).
-     *   2) Derived/cache rows that are re-computed on demand from primary data.
-     *   3) Transient/ephemeral state that is rebuilt on next login/use.
-     *
-     * Entities listed here are skipped silently by the backup but accepted by
-     * Gate 43 (`scripts/quality/check_backup_entity_coverage.py`).
-     *
-     * When ADDING a new entity to this list, you MUST include a one-line
-     * rationale comment — Gate 43 enforces presence of inline reasoning.
-     */
-    private const array EXCLUDED_FROM_BACKUP = [
-        // Global seeded catalogues (re-loadable via App\Command\Load*Command)
-        'UserTenantAssignment' => 'stub for multi-tenant spec (Option A), schema migration deferred',
-        'IndustryBaseline'      => 'global seeded catalogue, re-loadable via LoadIndustryBaseline commands',
-        'IndustryPresetBundle'  => 'global seeded catalogue (no tenant_id) — wizard W4-B preset bundles',
-        'ElementaryThreat'      => 'global BSI threat catalogue, re-loadable via LoadElementaryThreats command',
-
-        // Derived / re-computable snapshots
-        'PortfolioSnapshot'     => 'derived trend-cache, re-computable from primary entities',
-        'ReuseTrendSnapshot'    => 'derived trend-cache, re-computable from primary entities',
-    ];
-
     // Fields to exclude from backup (sensitive or regeneratable)
     private const array EXCLUDED_FIELDS = [
         'password',
