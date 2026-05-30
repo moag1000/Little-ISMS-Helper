@@ -17,6 +17,7 @@ _REL_PCT = {
     "subset": 75,
     "partial_overlap": 60,
     "related": 40,
+    "reference": 70,  # anchor-style entries (targets-list schema, no relationship)
 }
 
 
@@ -48,7 +49,7 @@ def parse_library_yaml(text):
     blocks = re.split(r"\n\s*-\s+source:", body)
     rows = []
     for blk in blocks:
-        if "target:" not in blk:
+        if "target:" not in blk and "targets:" not in blk:
             continue
         msrc = re.match(r"\s*'?\"?([^'\"\n]+)'?\"?", blk)
         src = msrc.group(1).strip() if msrc else ""
@@ -56,27 +57,41 @@ def parse_library_yaml(text):
         def first(key):
             m = re.search(r"^\s+%s:\s*'?\"?([^'\"\n|]+)'?\"?\s*$" % re.escape(key), blk, re.M)
             return m.group(1).strip() if m else ""
-        tgt = first("target")
         rel = first("relationship")
         conf = first("confidence")
-        if not src or not tgt:
+        # two schemas: singular `target: 'X'` (+relationship) OR plural `targets: ['A','B']`
+        tgt = first("target")
+        if not tgt:
+            # plural `targets:` — inline `['A','B']` or a block list of `- 'X'` lines
+            mt_inline = re.search(r"^\s+targets:\s*\[([^\]]*)\]", blk, re.M)
+            if mt_inline:
+                tgt_list = [t.strip().strip("'\"") for t in mt_inline.group(1).split(",") if t.strip()]
+            else:
+                mblock = re.search(r"^(\s+)targets:\s*$(.*?)(?=^\1\S|\Z)", blk, re.M | re.S)
+                body_t = mblock.group(2) if mblock else ""
+                tgt_list = [m.strip().strip("'\"") for m in re.findall(r"^\s+-\s+(.+)$", body_t, re.M)]
+            rel = rel or "reference"  # these anchor-style entries carry no relationship
+        else:
+            tgt_list = [tgt]
+        if not src or not tgt_list:
             continue
         # the multi-line rationale block is not captured, but record its PRESENCE so
         # the suspect heuristic (high-pct + no rationale) does not false-flag every
         # 'equivalent' (=100%) library row that does have a rationale in the YAML.
         has_rationale = bool(re.search(r"^\s+rationale:\s*", blk, re.M))
-        rows.append({
-            "source_framework": meta["source_framework"],
-            "source_requirement_id": src,
-            "target_framework": meta["target_framework"],
-            "target_requirement_id": tgt,
-            "relationship": rel,
-            "confidence": conf or "medium",
-            "mapping_percentage": str(relationship_to_pct(rel)),
-            "source_catalog": meta["library_id"],
-            "provenance_url": meta["provenance_url"],
-            "rationale": "present" if has_rationale else "",
-        })
+        for tgt in tgt_list:
+            rows.append({
+                "source_framework": meta["source_framework"],
+                "source_requirement_id": src,
+                "target_framework": meta["target_framework"],
+                "target_requirement_id": tgt,
+                "relationship": rel,
+                "confidence": conf or "medium",
+                "mapping_percentage": str(relationship_to_pct(rel)),
+                "source_catalog": meta["library_id"],
+                "provenance_url": meta["provenance_url"],
+                "rationale": "present" if has_rationale else "",
+            })
     return meta, rows
 
 
