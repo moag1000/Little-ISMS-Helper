@@ -233,9 +233,13 @@ class AuditLogger
     }
 
     /**
-     * Core logging method
+     * Core logging method.
+     *
+     * Public so callers can log with an explicit domain-specific action
+     * constant (e.g. ACTION_NOTIFICATION_RULE_CREATED) that the
+     * logCreate()/logUpdate()/logDelete() convenience wrappers do not cover.
      */
-    private function log(
+    public function log(
         string $action,
         string $entityType,
         ?int $entityId,

@@ -67,7 +67,7 @@
                             <h3 class="h6 mb-0">{{ template.name }}</h3>
                         </div>
                         <p class="text-muted small flex-grow-1">
-                            {{ ('notification.template.desc.' ~ template.templateKey)|trans({}, 'notification', null, template.name) }}
+                            {{ ('notification.template.desc.' ~ template.templateKey)|trans({}, 'notification') }}
                         </p>
                         <div class="d-flex align-items-center justify-content-between mt-3">
                             <span class="badge bg-secondary">{{ template.defaultEventType }}</span>
