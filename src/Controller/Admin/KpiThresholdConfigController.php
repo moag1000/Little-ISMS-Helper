@@ -97,7 +97,7 @@ class KpiThresholdConfigController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($config->getGoodThreshold() < $config->getWarningThreshold()) {
                 $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.good_below_warning'));
-                $status = ($form->isSubmitted() && !$form->isValid())
+                $status = $form->isSubmitted()
                     ? Response::HTTP_UNPROCESSABLE_ENTITY
                     : Response::HTTP_OK;
 
@@ -113,7 +113,11 @@ class KpiThresholdConfigController extends AbstractController
             }
         }
 
-        $status = ($form->isSubmitted() && !$form->isValid())
+        // Any render reached after a submit is an error state (validation,
+        // business rule, or DB constraint) — return 422 so Turbo re-renders the
+        // form in place instead of throwing "Form responses must redirect to
+        // another location". Only the initial GET renders 200.
+        $status = $form->isSubmitted()
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
@@ -131,7 +135,7 @@ class KpiThresholdConfigController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($config->getGoodThreshold() < $config->getWarningThreshold()) {
                 $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.good_below_warning'));
-                $status = ($form->isSubmitted() && !$form->isValid())
+                $status = $form->isSubmitted()
                     ? Response::HTTP_UNPROCESSABLE_ENTITY
                     : Response::HTTP_OK;
 
@@ -143,7 +147,11 @@ class KpiThresholdConfigController extends AbstractController
             return $this->redirectToRoute('admin_kpi_threshold_index');
         }
 
-        $status = ($form->isSubmitted() && !$form->isValid())
+        // Any render reached after a submit is an error state (validation,
+        // business rule, or DB constraint) — return 422 so Turbo re-renders the
+        // form in place instead of throwing "Form responses must redirect to
+        // another location". Only the initial GET renders 200.
+        $status = $form->isSubmitted()
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
