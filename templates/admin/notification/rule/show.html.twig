@@ -16,7 +16,7 @@
     {{ _fa_page_header.render({
         badge: { icon: 'bell', label: 'Rule' },
         title: rule.name,
-        subtitle: ('notification.event_type.' ~ rule.eventType|replace({'.': '_'}))|trans({}, 'notification', null, rule.eventType),
+        subtitle: ('notification.event_type.' ~ rule.eventType|replace({'.': '_'}))|trans({}, 'notification'),
         actions: [
             {
                 label: 'common.edit'|trans({}, 'messages'),

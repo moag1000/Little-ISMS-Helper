@@ -180,7 +180,8 @@ final class LifecycleOverridesController extends AbstractController
 
             $this->auditLogger->logUpdate(
                 'LifecycleConfig',
-                sprintf('%s/%s', $workflowName, $transitionName),
+                null, // composite key (workflow/transition) lives in the description; entityId is ?int
+
                 $oldValues,
                 $newValues,
                 sprintf('Lifecycle-Override für %s / %s gespeichert.', $workflowName, $transitionName),
@@ -221,7 +222,8 @@ final class LifecycleOverridesController extends AbstractController
         if ($deleted > 0) {
             $this->auditLogger->logUpdate(
                 'LifecycleConfig',
-                sprintf('%s/%s', $workflowName, $transitionName),
+                null, // composite key (workflow/transition) lives in the description; entityId is ?int
+
                 ['deleted_count' => $deleted],
                 [],
                 sprintf('Lifecycle-Overrides für %s / %s auf YAML-Baseline zurückgesetzt.', $workflowName, $transitionName),

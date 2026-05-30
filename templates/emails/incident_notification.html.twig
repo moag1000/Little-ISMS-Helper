@@ -41,7 +41,7 @@
 
             <div class="field">
                 <span class="label">{{ 'emails.incident.reported'|trans({}, 'emails') }}:</span>
-                <span class="value">{{ incident.reportedDate|date('d.m.Y H:i') }}</span>
+                <span class="value">{{ incident.createdAt|date('d.m.Y H:i') }}</span>
             </div>
 
             {% if incident.description %}
