@@ -33,6 +33,8 @@ def read_catalog_manifest(path):
                 current = line.rstrip(":").strip()
                 catalog[current] = {"source": "", "requirements": []}
                 in_reqs = False
+            elif current is None:
+                continue  # indented content before any framework header — ignore
             elif line.strip().startswith("source:"):
                 catalog[current]["source"] = _strip_inline_comment(line.split(":", 1)[1])
                 in_reqs = False

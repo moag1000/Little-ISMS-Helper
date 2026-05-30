@@ -58,3 +58,12 @@ def test_suspects_flag_full_or_exceeds_with_low_confidence_or_no_rationale():
     assert ("Art.21.2.a", "high_pct_low_confidence") in reasons
     assert ("Art.21.2.b", "high_pct_no_rationale") in reasons
     assert len(result) == 2  # the 60% row is not suspect
+
+
+def test_suspects_tolerates_float_formatted_percentage():
+    rows = [
+        {"mapping_percentage": "100.0", "confidence": "low", "rationale": "x", "target_requirement_id": "A.5.1", "source_requirement_id": "Art.21.2.a"},
+    ]
+    result = metrics.suspects(rows)
+    assert len(result) == 1
+    assert result[0]["mapping_percentage"] == 100  # "100.0" not dropped to 0

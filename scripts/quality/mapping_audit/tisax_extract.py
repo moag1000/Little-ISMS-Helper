@@ -65,7 +65,12 @@ _CRIT_RX = re.compile(r"^\d+(\.\d+)+$")  # e.g. 1.1.1
 
 
 def locate_columns(header_grid):
-    """Find column letters by header label across header rows."""
+    """Find column letters by header label across header rows.
+
+    Only 'references' and 'evidence' are located by label. 'criterion' stays None
+    by design: the VDA-ISA criterion-number column has no stable header label, so
+    build_records detects it heuristically (per-row scan for an N.N.N pattern).
+    """
     cols = {"criterion": None, "references": None, "evidence": None}
     for row in header_grid:
         for letter, text in row.items():
@@ -133,14 +138,19 @@ def read_sheet_grid(xlsx_path, sheet_name):
                 continue
             letter = mref.group(1)
             mv = re.search(r"<v>(.*?)</v>", cell_xml, re.S)
-            if not mv:
-                continue
-            val = mv.group(1)
-            if re.search(r'\bt="s"', cell_xml):  # shared-string index
-                try:
-                    val = shared[int(val)]
-                except (ValueError, IndexError):
-                    pass
+            if mv:
+                val = mv.group(1)
+                if re.search(r'\bt="s"', cell_xml):  # shared-string index
+                    try:
+                        val = shared[int(val)]
+                    except (ValueError, IndexError):
+                        pass
+            else:
+                # inline string: <c t="inlineStr"><is><t>..</t></is></c>
+                runs = re.findall(r"<t[^>]*>(.*?)</t>", cell_xml, re.S)
+                if not runs:
+                    continue
+                val = "".join(runs)
             # unescape common XML entities
             val = (val.replace("&amp;", "&").replace("&lt;", "<")
                       .replace("&gt;", ">").replace("&#10;", "\n").replace("&#13;", ""))

@@ -44,6 +44,19 @@ def test_read_manifest_strips_inline_comments(tmp_path):
     assert cat["DORA"]["requirements"] == ["Art.19", "Art.28"]
 
 
+def test_read_manifest_ignores_orphan_indented_lines_before_first_header(tmp_path):
+    man = tmp_path / "m.yaml"
+    man.write_text(
+        "  source: stray\n"          # orphan indented line before any header
+        "  - orphan-item\n"
+        "NIS2:\n  source: enisa\n  requirements:\n    - Art.21.2.a\n",
+        encoding="utf-8",
+    )
+    cat = audit_io.read_catalog_manifest(str(man))  # must not raise KeyError
+    assert cat["NIS2"]["requirements"] == ["Art.21.2.a"]
+    assert None not in cat
+
+
 def test_write_dossier_roundtrips(tmp_path):
     out = tmp_path / "sub" / "nis2_iso27001_dossier.json"
     audit_io.write_dossier(str(out), {"pair": "NIS2_ISO27001", "coverage_pct": 50.0})
