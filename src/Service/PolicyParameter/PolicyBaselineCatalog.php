@@ -25,6 +25,7 @@ final class PolicyBaselineCatalog
     {
         $all = $this->all();
         if (!isset($all[$sector])) {
+            // @intentional-assertion: unknown baseline sector is a programming/config error
             throw new \InvalidArgumentException(sprintf('Unknown policy baseline sector "%s".', $sector));
         }
 
