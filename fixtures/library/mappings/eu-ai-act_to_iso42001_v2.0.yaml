@@ -340,7 +340,7 @@ mappings:
   # ----- Art. 14 — Menschliche Aufsicht -----
   - source: 'Art.14'
     target: 'A.9.2'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       AI Act Art. 14 verlangt menschliche Aufsicht ueber Hochrisiko-Systeme
@@ -508,7 +508,7 @@ mappings:
   # ----- Art. 20 — Korrekturmassnahmen -----
   - source: 'Art.20'
     target: '10.2'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       AI Act Art. 20 verpflichtet Anbieter zu unverzueglichen
