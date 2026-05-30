@@ -9,7 +9,6 @@ use Doctrine\Migrations\Metadata\MigrationPlan;
 use Doctrine\Migrations\Metadata\MigrationPlanList;
 use Doctrine\Migrations\MigratorConfiguration;
 use Doctrine\Migrations\Version\Direction;
-use Doctrine\Migrations\Version\Version;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 
@@ -516,64 +515,45 @@ class SchemaMaintenanceService
                 ];
             }
 
-            $df = $this->migrationsDependencyFactory;
-            $df->getMetadataStorage()->ensureInitialized();
-            $planCalc = $df->getMigrationPlanCalculator();
-            $migrator = $df->getMigrator();
+            // The operator has explicitly confirmed (safety checkbox in the
+            // Quick-Fix UI) that EVERY table/column of the pending migrations is
+            // already present in the schema — i.e. they are ALL phantom. We
+            // therefore RECORD each version as executed via a metadata-only
+            // INSERT and never run its DDL.
+            //
+            // The previous implementation ran each migration and only marked the
+            // ones that errored with a phantom-diff (already-exists). On a
+            // reconcile-built schema that drifted it badly: old migrations whose
+            // DDL "succeeds" (e.g. an ALTER resetting a column to an earlier
+            // definition a later migration had changed) were applied for real,
+            // leaving the schema out of sync with the entity metadata. Marking
+            // without running is the safe, correct behaviour for the operator's
+            // "they all already exist" assertion — equivalent to
+            // `doctrine:migrations:version --add --all`.
+            $this->migrationsDependencyFactory->getMetadataStorage()->ensureInitialized();
 
             foreach ($pending as $version) {
                 if (++$iter > $cap) {
                     break;
                 }
 
-                try {
-                    // Build a single-version UP plan and execute it.
-                    $plan = $planCalc->getPlanForVersions(
-                        [new Version($version)],
-                        Direction::UP,
+                $markResult = $this->markMigrationAsExecuted($version);
+                if ($markResult['success']) {
+                    $marked[] = $version;
+                    $this->auditLogger->logCustom(
+                        'quick_fix.force_mark_migration_executed',
+                        'Migration',
+                        null,
+                        null,
+                        ['version' => $version, 'batch' => 'mark_all_phantom_diff'],
+                        sprintf(
+                            'QuickFix/mark-all: marked phantom migration as executed (no DDL): %s',
+                            $version,
+                        ),
                     );
-
-                    $config = (new MigratorConfiguration())
-                        ->setDryRun(false)
-                        ->setAllOrNothing(false)
-                        ->setNoMigrationException(true)
-                        ->setTimeAllQueries(true);
-
-                    $migrator->migrate($plan, $config);
-                    // Migration ran cleanly → already recorded; nothing extra to do.
-                } catch (\Throwable $e) {
-                    $msg = $e->getMessage();
-
-                    // A failed migration may have closed the default ORM EM
-                    // (constraint violation, integrity errors). Reset before
-                    // continuing so subsequent iterations + audit-log writes
-                    // do not throw EntityManagerClosed.
+                } else {
                     $this->resetEntityManagerIfClosed();
-
-                    if ($this->isPhantomDiffError($msg)) {
-                        // Schema already has the object → force-mark.
-                        $markResult = $this->markMigrationAsExecuted($version);
-                        if ($markResult['success']) {
-                            $marked[] = $version;
-                            $this->auditLogger->logCustom(
-                                'quick_fix.force_mark_migration_executed',
-                                'Migration',
-                                null,
-                                null,
-                                ['version' => $version, 'batch' => 'mark_all_phantom_diff'],
-                                sprintf(
-                                    'QuickFix/mark-all: phantom-diff force-marked migration: %s',
-                                    $version,
-                                ),
-                            );
-                        } else {
-                            $skipped[$version] = sprintf('[force-mark-failed] %s', $markResult['error'] ?? 'unknown');
-                        }
-                    } else {
-                        // Real error — skip and continue with next version.
-                        $category = $this->categorizeMigrationError($msg);
-                        $skipped[$version] = sprintf('[%s] %s', $category, $msg);
-                    }
+                    $skipped[$version] = sprintf('[mark-failed] %s', $markResult['error'] ?? 'unknown');
                 }
             }
         } catch (\Throwable $e) {
@@ -615,34 +595,6 @@ class SchemaMaintenanceService
             || preg_match('/Unknown table/i', $msg)
             || preg_match('/1091|1051|1086|1176|3940/', $msg)
         );
-    }
-
-    /**
-     * Categorizes a migration error message into a short token for the skipped
-     * map so the operator gets actionable context in the flash messages.
-     */
-    private function categorizeMigrationError(string $msg): string
-    {
-        if (
-            preg_match('/SAVEPOINT [A-Z_0-9]+ does not exist/', $msg)
-            || preg_match('/There is no active transaction/i', $msg)
-        ) {
-            return 'savepoint_collapse';
-        }
-
-        if (preg_match('/SQLSTATE\[23000\].*foreign key/i', $msg)) {
-            return 'foreign_key_constraint';
-        }
-
-        if (preg_match("/Field '([^']+)' doesn't have a default value/i", $msg)) {
-            return 'missing_default_value';
-        }
-
-        if (preg_match("/Unknown column '([^']+)'/i", $msg)) {
-            return 'unknown_column';
-        }
-
-        return 'unknown';
     }
 
     /**
