@@ -45,6 +45,7 @@ final class PolicyParameterAnnexRendererTest extends TestCase
             $manager,
             new ParameterRegisterBuilder($params),
             $translator,
+            $params,
         );
     }
 

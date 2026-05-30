@@ -1913,3 +1913,17 @@ annex:
     value:
         bool_true: 'yes'
         bool_false: 'no'
+    value_label:
+        mfa_scope:
+            none: 'no MFA requirement'
+            privileged_only: 'privileged accounts only'
+            privileged_external: 'privileged accounts + all external access'
+            all: 'all user accounts'
+        classification_scheme:
+            3tier: '3-tier (public / internal / confidential)'
+            4tier: '4-tier (public / internal / confidential / strictly confidential)'
+            tisax_4tier: '4-tier per TISAX (incl. prototype protection)'
+        approval_model:
+            single_ciso: 'single sign-off by CISO'
+            dual: 'two-person review'
+            dual_signoff: 'four-eyes approval (separate sign-off)'

@@ -25,6 +25,7 @@ final readonly class PolicyParameterAnnexRenderer
         private PolicyProfileManager $profileManager,
         private ParameterRegisterBuilder $registerBuilder,
         private TranslatorInterface $translator,
+        private PolicyParameterCatalog $catalog,
     ) {
     }
 
@@ -64,8 +65,8 @@ final readonly class PolicyParameterAnnexRenderer
 
             $md .= sprintf(
                 "| %s | %s | %s | %s | %s |\n",
-                $row->label,
-                $this->formatValue($row->value),
+                $this->localizedParamLabel($row->paramKey, $row->label),
+                $this->formatValue($row->paramKey, $row->value),
                 $authority,
                 $row->source ?? $dash,
                 $frameworksCol,
@@ -75,7 +76,26 @@ final readonly class PolicyParameterAnnexRenderer
         return rtrim($md);
     }
 
-    private function formatValue(mixed $value): string
+    /**
+     * Localizes the parameter name to the active translator locale via the
+     * catalog's bilingual labels. Falls back to the register row's (German)
+     * label, then the param key.
+     */
+    private function localizedParamLabel(string $paramKey, string $fallback): string
+    {
+        $locale = substr($this->translator->getLocale(), 0, 2);
+        $labels = $this->catalog->get($paramKey)->labels;
+
+        return $labels[$locale] ?? $fallback;
+    }
+
+    /**
+     * Renders a human-readable label for an enum value (e.g. `all` →
+     * "alle Konten") via `annex.value_label.<paramKey>.<value>`. Falls back to
+     * the raw value when no label is registered (ints, unmapped enums) so the
+     * canonical parameter value still shows.
+     */
+    private function formatValue(string $paramKey, mixed $value): string
     {
         if (is_bool($value)) {
             return $this->translator->trans(
@@ -85,6 +105,10 @@ final readonly class PolicyParameterAnnexRenderer
             );
         }
 
-        return (string) $value;
+        $raw = (string) $value;
+        $key = 'annex.value_label.' . $paramKey . '.' . $raw;
+        $label = $this->translator->trans($key, [], 'policy_wizard');
+
+        return $label === $key ? $raw : $label;
     }
 }
