@@ -25,6 +25,7 @@ class SchemaHealthService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
+        private readonly \Doctrine\Migrations\DependencyFactory $migrationsDependencyFactory,
     ) {
     }
 
@@ -488,24 +489,38 @@ class SchemaHealthService
             $executed = $conn->executeQuery('SELECT version FROM doctrine_migration_versions')
                 ->fetchFirstColumn();
         } catch (\Throwable) {
-            return [];
+            // doctrine_migration_versions does not exist yet (e.g. a
+            // reconcile-built schema that was never migrated). The correct
+            // reading is "nothing recorded as executed" — so EVERY filesystem
+            // migration is pending. Returning [] here previously hid this state
+            // and silently no-op'd markAllPhantomDiffMigrationsAsExecuted, the
+            // very action meant to recover from it.
+            $executed = [];
         }
         $executedSet = array_flip(array_map(static fn(string $v): string => (string) $v, $executed));
 
-        $allVersions = [];
-        $dir = __DIR__ . '/../../migrations';
-        if (is_dir($dir)) {
-            foreach (glob($dir . '/Version*.php') ?: [] as $path) {
-                $allVersions[] = 'DoctrineMigrations\\' . pathinfo($path, PATHINFO_FILENAME);
+        // Derive available versions from Doctrine's own migration repository,
+        // NOT from a filesystem glob. A glob keys versions by FILE name, which
+        // breaks for files whose name carries a descriptive suffix their class
+        // lacks (e.g. VersionYYYY..._t31_sprint1.php declaring class
+        // VersionYYYY...). That produced version strings Doctrine — and
+        // markMigrationAsExecuted — never recognise, leaving those migrations
+        // permanently "pending" and unmarkable. The repository is the same
+        // authoritative source markMigrationAsExecuted validates against, so
+        // the version strings always match.
+        $pending = [];
+        foreach (
+            $this->migrationsDependencyFactory
+                ->getMigrationRepository()
+                ->getMigrations()
+                ->getItems() as $available
+        ) {
+            $version = (string) $available->getVersion();
+            if (!isset($executedSet[$version])) {
+                $pending[] = $version;
             }
         }
 
-        $pending = [];
-        foreach ($allVersions as $v) {
-            if (!isset($executedSet[$v])) {
-                $pending[] = $v;
-            }
-        }
         return $pending;
     }
 }
