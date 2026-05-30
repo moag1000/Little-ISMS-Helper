@@ -67,7 +67,9 @@ const results = await pipeline(
   FRAMEWORKS,
   // Stage A — specialist correctness + breadth audit
   fw => agent(
-    `You are auditing the **${fw.framework}** cross-framework mappings of an ISMS tool for an EU-compliance critique that said the mappings are too thin and not audit-defensible.
+    `FIRST STEP — load domain expertise: invoke the Skill tool with skill='${fw.specialist}' before doing anything else. That skill gives you the regulatory depth (norm clauses, official crosswalks) this audit requires.
+
+You are auditing the **${fw.framework}** cross-framework mappings of an ISMS tool for an EU-compliance critique that said the mappings are too thin and not audit-defensible.
 
 DETERMINISTIC BASELINE (computed by script — treat as ground truth, do NOT recompute):
 ${fw.dossierJson}
@@ -83,7 +85,7 @@ HARD RULES:
 - If you cannot ground a mapping but have a reasoned guess, put it in 'hypotheses' with hypothesis_pct + reasoning + uncertainty_reason + resolution_hint + confidence_band. NEVER invent a clause id or percentage as fact.
 - Use WebSearch against the official source (${fw.groundTruth}) to verify before asserting.
 - Default to skepticism. When unsure, hypothesize — do not confirm.`,
-    { label: `audit:${fw.framework}`, phase: 'Audit', schema: FINDINGS_SCHEMA, agentType: fw.specialist }
+    { label: `audit:${fw.framework}`, phase: 'Audit', schema: FINDINGS_SCHEMA }
   ),
   // Stage B — adversarial verify of confirmed + proposed (hypotheses skip to human queue)
   (findings, fw) => {
@@ -93,14 +95,16 @@ HARD RULES:
     ]
     return parallel(toVerify.map(f => () =>
       agent(
-        `Adversarially REFUTE this ${fw.framework} mapping. Default verdict: refute unless the cited ground-truth clearly supports it.
+        `FIRST STEP — invoke the Skill tool with skill='${fw.specialist}' to load regulatory depth, then refute.
+
+Adversarially REFUTE this ${fw.framework} mapping. Default verdict: refute unless the cited ground-truth clearly supports it.
 
 Mapping: ${f.source_req} -> ${f.target_req} at ${f.pct}%
 Claimed ground-truth: ${f.ground_truth_cite}
 Source to re-check: ${fw.groundTruth}
 
 Re-read the cited clause via WebSearch. If the percentage is overstated, the clause does not say what is claimed, or the cite is unverifiable, return verdict 'refute' with evidence. Only 'hold' if the cite genuinely supports the mapping.`,
-        { label: `verify:${fw.framework}:${f.source_req}`, phase: 'Verify', schema: VERDICT_SCHEMA, agentType: fw.specialist }
+        { label: `verify:${fw.framework}:${f.source_req}`, phase: 'Verify', schema: VERDICT_SCHEMA }
       ).then(v => ({ ...f, framework: fw.framework, verify: v }))
     )).then(verified => ({ framework: fw.framework, findings, verified }))
   }
