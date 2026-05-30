@@ -26,6 +26,7 @@ final class PolicyParameterCatalog
     {
         $all = $this->all();
         if (!isset($all[$key])) {
+            // @intentional-assertion: unknown catalog key is a programming/config error
             throw new \InvalidArgumentException(sprintf('Unknown policy parameter "%s".', $key));
         }
 
