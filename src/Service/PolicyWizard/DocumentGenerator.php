@@ -18,6 +18,7 @@ use App\Exception\Tenant\TenantOrphanException;
 use App\Repository\ControlRepository;
 use App\Repository\DocumentControlLinkRepository;
 use App\Repository\DocumentRepository;
+use App\Service\PolicyParameter\PolicyParameterAnnexRenderer;
 use App\Repository\DocumentSectionRepository;
 use App\Repository\PolicyTemplateRepository;
 use App\Repository\TagRepository;
@@ -118,6 +119,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         private readonly ?PolicySettingProvider $policySettingProvider = null,
         private readonly ?GdprSectionCatalogue $gdprSectionCatalogue = null,
         private readonly ?SoaAutoUpdateService $soaAutoUpdateService = null,
+        private readonly ?PolicyParameterAnnexRenderer $policyParameterAnnexRenderer = null,
     ) {
     }
 
@@ -218,6 +220,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             $body = $this->renderBody($template, $variables);
             $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
+            $body = $this->appendPolicyParameterAnnexIfApplicable($body, $run);
 
             // Compliance-Manager / Auditor-External Wish — prominent
             // norm-anchor header at the very top of every generated
@@ -437,6 +440,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             $body = $this->renderBody($template, $variables);
             $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
+            $body = $this->appendPolicyParameterAnnexIfApplicable($body, $run);
             $body = $this->prependNormAnkerHeader($template, $body);
             $previews[] = [
                 'template_key' => $template->getKey(),
@@ -718,6 +722,34 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      *    emit `dora-extension:applied` + `dora-validity:2025-01-17`
      *    on the underlying ISO Document.
      */
+    /**
+     * Appends the "Binding Security Parameters" annex (tenant's effective
+     * policy-parameter values + framework authority/source) to the rendered
+     * policy body. No-op when the renderer is absent or the tenant has no
+     * OrganizationSecurityProfile, so policies stay unchanged for tenants that
+     * never configured parameters.
+     */
+    public function appendPolicyParameterAnnexIfApplicable(string $body, WizardRun $run): string
+    {
+        if ($this->policyParameterAnnexRenderer === null) {
+            return $body;
+        }
+
+        $tenantId = $run->getTenantId();
+        if ($tenantId === null) {
+            return $body;
+        }
+
+        /** @var list<string> $frameworks */
+        $frameworks = array_values($run->getStandardsAdopted() ?? []);
+        $annex = $this->policyParameterAnnexRenderer->renderForTenant($tenantId, $frameworks);
+        if ($annex === '') {
+            return $body;
+        }
+
+        return rtrim($body) . "\n\n" . $annex . "\n";
+    }
+
     public function appendDoraExtensionIfApplicable(
         PolicyTemplate $template,
         string $body,

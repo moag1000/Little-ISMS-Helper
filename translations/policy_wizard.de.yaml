@@ -1899,3 +1899,20 @@ compliance_check:
             title: 'Datenschutz in physischen Sicherheitsbereichen (DSGVO Art. 32)'
             description: 'Eingebettet in die Physical-Security-Policy. Schutz personenbezogener Daten in Räumlichkeiten und Zutrittskontrollen.'
 
+
+annex:
+    heading: 'Verbindliche Sicherheitsparameter'
+    intro: 'Die folgenden Sicherheitsparameter wurden organisationsweit im Sicherheitsprofil festgelegt und sind für diese Richtlinie verbindlich. Maßgeblich ist der jeweils angegebene Nachweis bzw. die regulatorische Quelle.'
+    col:
+        parameter: 'Parameter'
+        value: 'Festlegung'
+        authority: 'Verbindlichkeit'
+        source: 'Nachweis / Quelle'
+        frameworks: 'Rahmenwerke'
+    authority:
+        regulatory: 'Pflicht'
+        benchmark: 'Marktpraxis'
+        recommended: 'Empfehlung'
+    value:
+        bool_true: 'ja'
+        bool_false: 'nein'

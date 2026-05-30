@@ -1896,3 +1896,20 @@ compliance_check:
             title: 'Personal data in physical security zones (GDPR Art. 32)'
             description: 'Embedded in the Physical Security Policy. Protection of personal data in premises and access-control regimes.'
 
+
+annex:
+    heading: 'Binding Security Parameters'
+    intro: 'The following security parameters were defined organisation-wide in the security profile and are binding for this policy. The stated evidence or regulatory source is authoritative.'
+    col:
+        parameter: 'Parameter'
+        value: 'Setting'
+        authority: 'Obligation'
+        source: 'Evidence / Source'
+        frameworks: 'Frameworks'
+    authority:
+        regulatory: 'Mandatory'
+        benchmark: 'Market practice'
+        recommended: 'Recommended'
+    value:
+        bool_true: 'yes'
+        bool_false: 'no'
