@@ -27,6 +27,19 @@ from scripts.quality.mapping_audit import io as audit_io
 from scripts.quality.mapping_audit import metrics
 from scripts.quality.mapping_audit import synthesis
 from scripts.quality.mapping_audit import tisax_extract as tx
+from scripts.quality.mapping_audit import library_reader as lib
+
+# Phase C — EU-relevant library YAML mappings (fixtures/library/mappings/).
+LIBRARY_EU = [
+    "cra_to_nis2-art21_v1.0.yaml",
+    "nis2-art21_to_cra_v1.0.yaml",
+    "eu-ai-act_to_iso42001_v2.0.yaml",
+    "eu-ai-act_to_gdpr_v1.0.yaml",
+    "eu-ai-act_to_nis2_v1.0.yaml",
+    "eucs_to_iso27001-2022_v1.0.yaml",
+    "iso27001-2022_to_eucs_v1.0.yaml",
+    "eucs_to_bsi-c5-2020_v1.0.yaml",
+]
 
 # Which CSV files feed which EU/EU-adjacent source framework (forward direction).
 EU_PAIRS = {
@@ -103,6 +116,24 @@ def write_tisax_candidate(records, out_dir):
     return path
 
 
+def build_library_dossier(label, meta, rows):
+    """Dossier for a library YAML mapping (relationship-based, already provenanced)."""
+    prov = metrics.provenance_completeness(rows)
+    susp = metrics.suspects(rows)  # equivalent(=100) rows with low confidence get flagged
+    rel_hist = {}
+    for r in rows:
+        rel_hist[r["relationship"]] = rel_hist.get(r["relationship"], 0) + 1
+    return {
+        "framework": label,
+        "source_framework": meta["source_framework"],
+        "target_framework": meta["target_framework"],
+        "row_count": len(rows),
+        "provenance": prov,
+        "suspects": susp,
+        "relationship_histogram": rel_hist,
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mappings-dir", default="fixtures/mappings/public")
@@ -110,6 +141,7 @@ def main():
     ap.add_argument("--workbook", default="")
     ap.add_argument("--out", default="var/audit")
     ap.add_argument("--synthesize", default="", help="path to workflow_results.json")
+    ap.add_argument("--library-dir", default="", help="audit EU library YAML mappings from this dir")
     args = ap.parse_args()
 
     os.makedirs(args.out, exist_ok=True)
@@ -124,6 +156,20 @@ def main():
               f"({c['mapped_count']}/{c['catalog_count']}), "
               f"{len(dossier['suspects'])} suspect, "
               f"provenance {dossier['provenance']['complete_pct']}%")
+
+    if args.library_dir:
+        for fn in LIBRARY_EU:
+            path = os.path.join(args.library_dir, fn)
+            if not os.path.exists(path):
+                print(f"LIB {fn}: MISSING")
+                continue
+            meta, rows = lib.read_library_mapping(path)
+            label = fn.replace(".yaml", "")
+            dossier = build_library_dossier(label, meta, rows)
+            audit_io.write_dossier(os.path.join(args.out, f"lib_{label}_dossier.json"), dossier)
+            print(f"LIB {meta['source_framework']}->{meta['target_framework']}: "
+                  f"{dossier['row_count']} rows, {len(dossier['suspects'])} suspect, "
+                  f"provenance {dossier['provenance']['complete_pct']}%, rels {dossier['relationship_histogram']}")
 
     if args.synthesize and os.path.exists(args.synthesize):
         with open(args.synthesize, encoding="utf-8") as fh:
