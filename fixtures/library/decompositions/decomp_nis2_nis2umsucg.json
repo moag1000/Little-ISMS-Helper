@@ -1,0 +1,344 @@
+[
+  {
+    "source": "NIS2-Art.20(1)-approve-measures",
+    "target": "BSIG-§38(1)-Umsetzungspflicht",
+    "relationship": "equivalent",
+    "rationale": "Art.20(1) requires management bodies to approve cybersecurity risk-management measures and oversee implementation; §38(1) BSIG mirrors this exactly, obligating management boards ('Geschäftsleitungen') to implement and oversee the §30 risk-management measures."
+  },
+  {
+    "source": "NIS2-Art.20(1)-liability-infringements",
+    "target": "BSIG-§38(2)-Haftung",
+    "relationship": "equivalent",
+    "rationale": "Art.20(1) third sentence makes management bodies liable for infringements; §38(2) BSIG establishes personal civil liability of management boards under applicable corporate law for breaches of §38(1), adding that waivers of damage claims are invalid — slightly stricter than NIS2 baseline."
+  },
+  {
+    "source": "NIS2-Art.20(1)-public-institution-carve-out",
+    "target": "BSIG-§38(1)-public-sector-applicability",
+    "relationship": "equivalent",
+    "rationale": "Art.20(1) preserves national liability rules for public institutions; §38(1) BSIG applies to both private and public 'Einrichtungen', relying on existing sector-specific public-law liability regimes as the carve-out."
+  },
+  {
+    "source": "NIS2-Art.20(2)-management-training-mandatory",
+    "target": "BSIG-§38(3)-Schulungspflicht",
+    "relationship": "equivalent",
+    "rationale": "Art.20(2) requires Member States to mandate training for management body members; §38(3) BSIG makes this a direct legal obligation for Geschäftsleitungen covering risk identification, risk-management practices, and service-impact assessment — co-extensive with the Directive's three competence areas."
+  },
+  {
+    "source": "NIS2-Art.20(2)-employee-training-encouraged",
+    "target": "BSIG-§30(2)-Nr.7-Schulungen",
+    "relationship": "equivalent",
+    "rationale": "Art.20(2) second sentence encourages (but does not mandate) employee training; §30(2) Nr.7 BSIG elevates this to a mandatory measure requiring 'grundlegende Schulungen und Sensibilisierungsmaßnahmen' — Germany gold-plates by making employee awareness training obligatory, not merely encouraged."
+  },
+  {
+    "source": "NIS2-Art.21(1)-proportionate-measures-all-hazards",
+    "target": "BSIG-§30(1)-Verhältnismäßigkeit",
+    "relationship": "equivalent",
+    "rationale": "Art.21(1) requires 'appropriate and proportionate technical, operational and organisational measures' using an all-hazards approach; §30(1) BSIG transposes this verbatim as 'geeignete, verhältnismäßige und wirksame technische und organisatorische Maßnahmen' with identical proportionality criteria (risk exposure, size, cost, probability, impact)."
+  },
+  {
+    "source": "NIS2-Art.21(1)-minimize-incident-impact",
+    "target": "BSIG-§30(1)-Schadensminimierung",
+    "relationship": "equivalent",
+    "rationale": "Art.21(1) requires measures to minimize impact on recipients and other services; §30(1) BSIG covers the same objective of preventing disruptions and minimizing security incident impacts to IT systems and processes."
+  },
+  {
+    "source": "NIS2-Art.21(2)(a)-risk-analysis-policies",
+    "target": "BSIG-§30(2)-Nr.1-Risikoanalyse",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(a) mandates 'policies for risk analysis and information system security'; §30(2) Nr.1 BSIG transposes this as 'Konzepte in Bezug auf die Risikoanalyse und auf die Sicherheit in der Informationstechnik' — content and scope are co-extensive."
+  },
+  {
+    "source": "NIS2-Art.21(2)(b)-incident-handling",
+    "target": "BSIG-§30(2)-Nr.2-Sicherheitsvorfälle",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(b) requires 'incident handling' procedures; §30(2) Nr.2 BSIG mandates 'Bewältigung von Sicherheitsvorfällen' — direct 1:1 transposition of incident management obligations."
+  },
+  {
+    "source": "NIS2-Art.21(2)(c)-business-continuity-backup",
+    "target": "BSIG-§30(2)-Nr.3-Betriebskontinuität",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(c) covers 'business continuity, such as backup management and disaster recovery, and crisis management'; §30(2) Nr.3 BSIG transposes as 'Aufrechterhaltung des Betriebs, wie Backup-Management und Wiederherstellung nach einem Notfall, und Krisenmanagement' — verbatim equivalence."
+  },
+  {
+    "source": "NIS2-Art.21(2)(d)-supply-chain-security",
+    "target": "BSIG-§30(2)-Nr.4-Lieferkettensicherheit",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(d) requires supply chain security 'including security aspects of the relationships between each entity and its direct suppliers or service providers'; §30(2) Nr.4 BSIG mirrors this as 'Sicherheit der Lieferkette einschließlich sicherheitsbezogener Aspekte der Beziehungen zu unmittelbaren Anbietern oder Diensteanbietern' — co-extensive."
+  },
+  {
+    "source": "NIS2-Art.21(2)(e)-secure-development-maintenance",
+    "target": "BSIG-§30(2)-Nr.5-Erwerb-Entwicklung-Wartung",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(e) mandates 'security in network and information systems acquisition, development and maintenance'; §30(2) Nr.5 BSIG transposes as 'Sicherheitsmaßnahmen bei Erwerb, Entwicklung und Wartung von informationstechnischen Systemen, Komponenten und Prozessen' — scope is equivalent, Germany adds explicit mention of 'components'."
+  },
+  {
+    "source": "NIS2-Art.21(2)(f)-effectiveness-assessment",
+    "target": "BSIG-§30(2)-Nr.6-Wirksamkeitsbewertung",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(f) requires 'policies and procedures to assess the effectiveness of cybersecurity risk-management measures'; §30(2) Nr.6 BSIG transposes as 'Konzepte und Verfahren zur Bewertung der Wirksamkeit von Risikomanagementmaßnahmen' — direct equivalence."
+  },
+  {
+    "source": "NIS2-Art.21(2)(g)-cyber-hygiene-training",
+    "target": "BSIG-§30(2)-Nr.7-Schulungen",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(g) covers 'basic cyber hygiene practices and cybersecurity training'; §30(2) Nr.7 BSIG transposes as 'grundlegende Schulungen und Sensibilisierungsmaßnahmen im Bereich der Sicherheit' — direct equivalence for the operational training obligation."
+  },
+  {
+    "source": "NIS2-Art.21(2)(h)-cryptography-encryption",
+    "target": "BSIG-§30(2)-Nr.8-Kryptographie",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(h) requires 'policies and procedures regarding the use of cryptography and, where appropriate, encryption'; §30(2) Nr.8 BSIG transposes as 'Konzepte und Prozesse für den Einsatz von kryptographischen Verfahren' — encryption is subsumed under 'kryptographische Verfahren', scope is equivalent."
+  },
+  {
+    "source": "NIS2-Art.21(2)(i)-human-resources-security",
+    "target": "BSIG-§30(2)-Nr.9-Personalsicherheit",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(i) requires 'human resources security, access control policies and asset management'; §30(2) Nr.9 BSIG transposes as 'Konzepte für die Sicherheit des Personals, die Zugriffskontrolle und für die Verwaltung von Informationstechniksystemen' — all three components are co-extensive."
+  },
+  {
+    "source": "NIS2-Art.21(2)(j)-mfa-continuous-auth",
+    "target": "BSIG-§30(2)-Nr.10-MFA-sichere-Kommunikation",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(j) mandates MFA or continuous authentication, secured voice/video/text communications, and secured emergency communication systems; §30(2) Nr.10 BSIG transposes all three as 'Verwendung von Lösungen zur Multi-Faktor-Authentifizierung oder kontinuierlichen Authentifizierung, gesicherte Kommunikation und gesicherte Notfallkommunikation' — verbatim equivalence."
+  },
+  {
+    "source": "NIS2-Art.21(3)-supplier-vulnerability-assessment",
+    "target": "BSIG-§30(2)-Nr.4-Lieferkettensicherheit",
+    "relationship": "subset",
+    "rationale": "Art.21(3) adds a specific obligation to evaluate supplier vulnerabilities, security practices, and coordinated risk assessments per Art.22(1) when selecting measures; §30(2) Nr.4 BSIG covers supply chain security broadly but does not separately enumerate the Art.21(3) evaluative methodology — Art.21(3) is a sub-obligation subsumed within but more specific than BSIG Nr.4."
+  },
+  {
+    "source": "NIS2-Art.21(4)-corrective-measures",
+    "target": "BSIG-§30(1)-geeignete-Maßnahmen",
+    "relationship": "subset",
+    "rationale": "Art.21(4) requires entities to implement all necessary corrective measures without undue delay upon non-compliance finding; §30(1) BSIG establishes the primary obligation but does not contain an explicit corrective-measures sub-provision — enforcement is addressed via §61-62 BSIG supervisory powers rather than an entity-facing corrective duty."
+  },
+  {
+    "source": "NIS2-Art.21(5)-implementing-acts-technical-specs",
+    "target": "BSIG-§30(3-5)-EU-Verordnungsvorrang",
+    "relationship": "equivalent",
+    "rationale": "Art.21(5) authorises Commission implementing acts specifying technical requirements for DNS, cloud, data centres, CDNs, MSPs, and trust service providers; §30(3)-(5) BSIG expressly implements this by establishing that EU implementing acts take precedence over national requirements for these entity types, with residual ministerial regulation authority."
+  },
+  {
+    "source": "NIS2-Art.21(6)-ENISA-guidelines-consideration",
+    "target": "BSIG-§30(8-9)-Branchenstandards",
+    "relationship": "related",
+    "rationale": "Art.21(6) (recital-level guidance) encourages use of European and international standards; §30(8)-(9) BSIG provides a formal mechanism for industry associations to propose sector-specific standards that BSI validates — Germany operationalises the ENISA-guidelines encouragement into a structured standards-validation process, which is broader than a direct transposition."
+  },
+  {
+    "source": "NIS2-Art.21(6)-ICT-certification",
+    "target": "BSIG-§30(6)-Zertifizierungsanforderungen",
+    "relationship": "equivalent",
+    "rationale": "Art.21(6) allows Member States to require use of certified ICT products/services per ENISA cybersecurity certification schemes; §30(6) BSIG implements this by allowing regulations to require that only certified products/services under EU Regulation 2019/881 schemas be used — direct transposition."
+  },
+  {
+    "source": "NIS2-Art.22(1)-Cooperation-Group-risk-assessment",
+    "target": "BSIG-§30(2)-Nr.4-Lieferkettensicherheit",
+    "relationship": "subset",
+    "rationale": "Art.22(1) tasks the Cooperation Group (not individual entities) to carry out coordinated security risk assessments of critical ICT supply chains; §30(2) Nr.4 BSIG imposes entity-level supply chain security obligations but does not transpose the Union-level cooperative assessment process — this is an institutional gap, covered only indirectly via Art.21(3) reference."
+  },
+  {
+    "source": "NIS2-Art.22(2)-Commission-identify-critical-ICT",
+    "target": "BSIG-§30(3-5)-EU-Verordnungsvorrang",
+    "relationship": "related",
+    "rationale": "Art.22(2) authorises the Commission to identify specific critical ICT services/systems/products for risk assessment; §30(3)-(5) BSIG acknowledges EU-level supremacy for implementing acts but does not separately transpose the identification process — Germany relies on EU-level execution of Art.22(2) directly."
+  },
+  {
+    "source": "NIS2-Art.23(1)-notify-CSIRT-significant-incident",
+    "target": "BSIG-§32(1)-Erstmeldung-24h",
+    "relationship": "equivalent",
+    "rationale": "Art.23(1) requires entities to notify the CSIRT or competent authority without undue delay of significant incidents; §32(1) Nr.1 BSIG implements this as mandatory notification to a joint BSI/BBK notification centre within 24 hours, which is the initial notification stage — equivalent obligation and channel."
+  },
+  {
+    "source": "NIS2-Art.23(1)-notify-service-recipients",
+    "target": "BSIG-§35(1)-Unterrichtungspflicht",
+    "relationship": "equivalent",
+    "rationale": "Art.23(1) second sentence requires entities to inform service recipients of incidents likely to affect them adversely; §35(1) BSIG transposes this as a BSI-ordered notification obligation requiring entities to promptly inform service recipients, with option for website publication — equivalent in scope, Germany adds BSI-order trigger as implementation mechanism."
+  },
+  {
+    "source": "NIS2-Art.23(2)-significant-incident-definition-operational",
+    "target": "BSIG-§32(1)-erheblicher-Sicherheitsvorfall",
+    "relationship": "equivalent",
+    "rationale": "Art.23(2) defines significant incidents as those causing severe operational disruption or financial loss to the entity; §32(1) BSIG adopts the same threshold of 'erheblicher Sicherheitsvorfall' (significant security incident), deferring detailed criteria to BSI procedure rules under §32(4)."
+  },
+  {
+    "source": "NIS2-Art.23(2)-significant-incident-definition-damage-others",
+    "target": "BSIG-§32(1)-erheblicher-Sicherheitsvorfall",
+    "relationship": "equivalent",
+    "rationale": "Art.23(2)(b) extends significance to incidents causing considerable material or non-material damage to other persons; §32(1) BSIG's 'erheblicher Sicherheitsvorfall' concept encompasses this broader damage criterion, consistent with recital-level interpretation under German administrative practice."
+  },
+  {
+    "source": "NIS2-Art.23(3)-intermediate-report-on-request",
+    "target": "BSIG-§32(1)-Nr.3-Statusmeldung",
+    "relationship": "equivalent",
+    "rationale": "Art.23(3) requires intermediate status reports upon request by the CSIRT or competent authority; §32(1) Nr.3 BSIG transposes as 'Zwischenmeldungen auf Anforderung des Bundesamtes' — identical on-demand reporting mechanism."
+  },
+  {
+    "source": "NIS2-Art.23(4)(a)-early-warning-24h",
+    "target": "BSIG-§32(1)-Nr.1-Erstmeldung",
+    "relationship": "equivalent",
+    "rationale": "Art.23(4)(a) specifies early warning within 24 hours including suspected unlawful origin or cross-border impact; §32(1) Nr.1 BSIG transposes verbatim as notification within 24 hours including indication of suspected malicious origin and cross-border dimension — direct equivalence."
+  },
+  {
+    "source": "NIS2-Art.23(4)(b)-incident-notification-72h",
+    "target": "BSIG-§32(1)-Nr.2-Folgemeldung",
+    "relationship": "equivalent",
+    "rationale": "Art.23(4)(b) requires an incident notification within 72 hours with initial severity assessment and indicators of compromise; §32(1) Nr.2 BSIG mirrors this as detailed notification within 72 hours with severity assessment and compromise indicators — verbatim equivalence."
+  },
+  {
+    "source": "NIS2-Art.23(4)(c)-intermediate-reports",
+    "target": "BSIG-§32(1)-Nr.3-Statusmeldung",
+    "relationship": "equivalent",
+    "rationale": "Art.23(4)(c) lists intermediate reports on request as part of the reporting sequence; §32(1) Nr.3 BSIG implements the same on-request status update mechanism — direct transposition."
+  },
+  {
+    "source": "NIS2-Art.23(4)(d)-final-report-1month",
+    "target": "BSIG-§32(1)-Nr.4-Abschlussbericht",
+    "relationship": "equivalent",
+    "rationale": "Art.23(4)(d) requires a final report within one month covering detailed description, threat type, mitigation, and cross-border impact; §32(1) Nr.4 BSIG implements identical final report within one month with the same content requirements — direct equivalence."
+  },
+  {
+    "source": "NIS2-Art.23(4)(d)-progress-report-ongoing",
+    "target": "BSIG-§32(2)-Fortschrittsmeldung",
+    "relationship": "equivalent",
+    "rationale": "Art.23(4) allows substituting a progress report for the final report when an incident is ongoing; §32(2) BSIG implements this as an explicit 'Fortschrittsmeldung' in lieu of the Abschlussbericht for ongoing incidents — direct equivalence."
+  },
+  {
+    "source": "NIS2-Art.23(4)(e)-trust-service-provider-24h",
+    "target": "BSIG-§32(1)-Nr.1-Erstmeldung",
+    "relationship": "subset",
+    "rationale": "Art.23(4)(e) adds a specific 24-hour deadline for trust service providers (eIDAS); §32(1) Nr.1 BSIG establishes the general 24-hour deadline for all covered entities but does not separately enumerate trust service providers — the sector-specific rule is subsumed in the general BSIG provision."
+  },
+  {
+    "source": "NIS2-Art.23(5)-CSIRT-response-24h",
+    "target": "BSIG-§36-Rückmeldungen",
+    "relationship": "equivalent",
+    "rationale": "Art.23(5) requires the CSIRT or authority to provide initial feedback within 24 hours of receiving the early warning with guidance on mitigation; §36 BSIG establishes a Federal Office feedback obligation to reporting entities including guidance — equivalent obligation on the authority side."
+  },
+  {
+    "source": "NIS2-Art.23(6)-cross-border-notification-member-states",
+    "target": "BSIG-§32(5)-Behördenweiterleitung",
+    "relationship": "equivalent",
+    "rationale": "Art.23(6) requires the CSIRT or authority to inform other affected Member States and ENISA of cross-border incidents; §32(5) BSIG transposes this as the Federal Office immediately forwarding incident reports to competent federal supervisory authorities — equivalent information-sharing mechanism, though Germany's formulation focuses on domestic authority sharing as the implementation step."
+  },
+  {
+    "source": "NIS2-Art.23(7)-public-disclosure-authority",
+    "target": "BSIG-§35(1)-öffentliche-Unterrichtung",
+    "relationship": "equivalent",
+    "rationale": "Art.23(7) allows authorities to require public disclosure where public awareness is necessary; §35(1) BSIG empowers BSI to order entities to notify service recipients or publish on their website — equivalent public-interest disclosure mechanism."
+  },
+  {
+    "source": "NIS2-Art.23(8)-SPoC-forward-notification",
+    "target": "BSIG-§40-Nationale-Verbindungsstelle",
+    "relationship": "equivalent",
+    "rationale": "Art.23(8) requires the single point of contact to forward notifications to other affected Member States' SPoCs; §40 BSIG designates the Federal Office as both national liaison and central notification point (nationale Verbindungsstelle), fulfilling the SPoC forwarding function."
+  },
+  {
+    "source": "NIS2-Art.23(9)-ENISA-quarterly-summary",
+    "target": "BSIG-§40-Nationale-Verbindungsstelle",
+    "relationship": "subset",
+    "rationale": "Art.23(9) requires SPoCs to submit quarterly anonymised summary reports to ENISA; §40 BSIG establishes the SPoC function and reporting to European bodies but does not separately specify the quarterly ENISA reporting frequency — this cadence obligation derives directly from the Directive rather than a BSIG sub-provision."
+  },
+  {
+    "source": "NIS2-Art.23(10)-critical-entity-information-sharing",
+    "target": "BSIG-§32(5)-Behördenweiterleitung",
+    "relationship": "related",
+    "rationale": "Art.23(10) requires CSIRTs to share incident information about CER-Directive critical entities with the relevant competent authorities; §32(5) BSIG implements general authority-sharing for incident reports but does not specifically cross-reference the CER Directive (2022/2557) critical entity category — partial transposition, related but not co-extensive."
+  },
+  {
+    "source": "NIS2-Art.23(11)-implementing-acts-significance-criteria",
+    "target": "BSIG-§32(4)-Verfahrensregelung-BSI",
+    "relationship": "equivalent",
+    "rationale": "Art.23(11) authorises Commission implementing acts on significance criteria for DNS, cloud, CDNs, MSPs; §32(4) BSIG empowers the Federal Office to establish notification procedure details and publishes them online — Germany's delegation to BSI administrative rules implements the significance-criteria mechanism, with EU implementing acts taking precedence per §30(3) by analogy."
+  },
+  {
+    "source": "NIS2-Art.21(3)-ref-Art22-coordinated-assessment",
+    "target": "BSIG-§30(2)-Nr.4-Lieferkettensicherheit",
+    "relationship": "subset",
+    "rationale": "Art.21(3) requires entities to consider results of Art.22(1) coordinated supply chain risk assessments when selecting measures; §30(2) Nr.4 BSIG mandates supply chain security broadly but contains no explicit entity-level obligation to incorporate Cooperation Group assessment results — the EU-level coordination dimension is a subset not directly transposed at entity level."
+  },
+  {
+    "source": "NIS2-Art.20(2)-training-scope-risk-identification",
+    "target": "BSIG-§38(3)-Kenntnisse-Risikoerkennung",
+    "relationship": "equivalent",
+    "rationale": "Art.20(2) specifies training must enable members to identify risks and assess cybersecurity risk-management practices and their impact; §38(3) BSIG reproduces these three competence areas verbatim ('Erkennung und Bewertung von Risiken', 'Risikomanagementpraktiken', 'Auswirkungen auf Dienste') — precise equivalence."
+  },
+  {
+    "source": "NIS2-Art.21(2)(d)-supplier-assessment-security-practices",
+    "target": "BSIG-§30(2)-Nr.4-Lieferkettensicherheit",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(d) second clause specifically requires assessing supplier security practices including secure development procedures; §30(2) Nr.4 BSIG includes 'sicherheitsbezogene Aspekte der Beziehungen zu unmittelbaren Anbietern' which encompasses supplier security practice assessment — co-extensive at this sub-granularity."
+  },
+  {
+    "source": "NIS2-Art.21(2)(e)-vulnerability-handling-disclosure",
+    "target": "BSIG-§30(2)-Nr.5-Schwachstellenmanagement",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(e) includes 'handling and disclosure of vulnerabilities' within secure acquisition/development/maintenance; §30(2) Nr.5 BSIG explicitly adds 'einschließlich des Managements und der Offenlegung von Schwachstellen' (vulnerability management and disclosure) — Germany transposes this sub-element explicitly."
+  },
+  {
+    "source": "NIS2-Art.23(1)-voluntary-notification-near-miss",
+    "target": "BSIG-§32-keine-freiwillige-Meldung",
+    "relationship": "superset",
+    "rationale": "Art.23(1) in conjunction with Art.30 permits voluntary notification of incidents, cyber threats, and near-misses; §32 BSIG focuses exclusively on mandatory reporting of significant incidents — Germany does not transpose the voluntary near-miss notification pathway in §32, creating a source superset (NIS2 is broader at this sub-point)."
+  },
+  {
+    "source": "NIS2-Art.21(1)-sectoral-union-acts-precedence",
+    "target": "BSIG-§30(3-5)-EU-Verordnungsvorrang",
+    "relationship": "equivalent",
+    "rationale": "Art.21(1) states measures shall be without prejudice to sector-specific Union legal acts; §30(3)-(5) BSIG implements this by explicitly conferring precedence on EU Commission implementing acts for DNS, cloud, CDN, MSP and trust service provider entity types — direct transposition."
+  },
+  {
+    "source": "NIS2-Art.21-KRITIS-enhanced-requirements",
+    "target": "BSIG-§31(1)-erhöhter-Verhältnismäßigkeitsmaßstab",
+    "relationship": "superset",
+    "rationale": "NIS2 Art.21 does not separately distinguish KRITIS operators; §31(1) BSIG gold-plates by imposing enhanced proportionality standards for Betreiber kritischer Anlagen, considering consequences of failure of the specific critical installation — Germany adds a KRITIS-specific tier beyond NIS2's uniform baseline."
+  },
+  {
+    "source": "NIS2-Art.21-no-attack-detection-mandate",
+    "target": "BSIG-§31(2)-Angriffserkennung",
+    "relationship": "superset",
+    "rationale": "NIS2 Art.21 contains no explicit attack-detection system requirement; §31(2) BSIG gold-plates by mandating that critical infrastructure operators deploy continuous automated attack detection systems meeting state-of-the-art technical standards — this is a German superset obligation with no NIS2 equivalent."
+  },
+  {
+    "source": "NIS2-Art.23-no-registration-requirement",
+    "target": "BSIG-§33-Registrierungspflicht",
+    "relationship": "superset",
+    "rationale": "NIS2 Arts.20-23 do not mandate entity registration with a national authority; §33 BSIG gold-plates by requiring all besonders wichtige and wichtige Einrichtungen to register with BSI within three months, providing contact details, sector classification, and IP ranges — purely a German addition."
+  },
+  {
+    "source": "NIS2-Art.21-no-triennial-audit-proof",
+    "target": "BSIG-§39-Nachweispflichten",
+    "relationship": "superset",
+    "rationale": "NIS2 Art.21 requires measures but does not mandate periodic proof submission to a national authority; §39 BSIG gold-plates by requiring Betreiber kritischer Anlagen to submit audit/certification evidence every three years covering §30(1), §31(1), and §31(2) measures to BSI — a German superset obligation."
+  },
+  {
+    "source": "NIS2-Art.23(6)-confidentiality-preservation",
+    "target": "BSIG-§32(5)-Behördenweiterleitung",
+    "relationship": "subset",
+    "rationale": "Art.23(6) explicitly requires authorities to preserve the entity's security interests and commercial confidentiality when sharing cross-border incident information; §32(5) BSIG implements authority-to-authority forwarding without a corresponding explicit confidentiality preservation clause for forwarded incident data — Germany does not reproduce this sub-obligation explicitly."
+  },
+  {
+    "source": "NIS2-Art.23(5)-CSIRT-guidance-mitigation",
+    "target": "BSIG-§32(6)-BSI-Unterstützung",
+    "relationship": "equivalent",
+    "rationale": "Art.23(5) requires CSIRT to offer guidance or operational advice on mitigation measures upon request; §32(6) BSIG empowers BSI to offer support (Unterstützungsangebote) to reporting entities for incident remediation — equivalent in substance, Germany makes support a BSI discretionary offer rather than a request-triggered obligation."
+  },
+  {
+    "source": "NIS2-Art.22(1)-technical-nontechnical-risk-factors",
+    "target": "BSIG-§30(2)-Nr.4-Lieferkettensicherheit",
+    "relationship": "subset",
+    "rationale": "Art.22(1) explicitly addresses both technical and non-technical risk factors (e.g. foreign state interference) in supply chain assessments at Union level; §30(2) Nr.4 BSIG focuses on direct supplier security relationships without explicitly addressing the non-technical/geopolitical risk dimension that Art.22 elevates — NIS2 is broader at this sub-point."
+  },
+  {
+    "source": "NIS2-Art.21(2)(g)-cyber-hygiene",
+    "target": "BSIG-§30(2)-Nr.7-Cyberhygiene",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(g) separates 'basic cyber hygiene practices' from 'cybersecurity training' as two elements; §30(2) Nr.7 BSIG combines both as 'grundlegende Schulungen und Sensibilisierungsmaßnahmen' — the hygiene practices element is subsumed in awareness/training, content is co-extensive even if articulation slightly differs."
+  },
+  {
+    "source": "NIS2-Art.21(2)(j)-secured-emergency-comms",
+    "target": "BSIG-§30(2)-Nr.10-Notfallkommunikation",
+    "relationship": "equivalent",
+    "rationale": "Art.21(2)(j) specifically includes 'secured emergency communication systems within the entity'; §30(2) Nr.10 BSIG explicitly adds 'gesicherte Notfallkommunikationssysteme' as a distinct element alongside MFA and voice/video/text communications — direct equivalence including the emergency comms sub-element."
+  }
+]

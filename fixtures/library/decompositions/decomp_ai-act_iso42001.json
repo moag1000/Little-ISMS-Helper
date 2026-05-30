@@ -1,0 +1,578 @@
+[
+  {
+    "source": "Art.9(1) — establish, implement, document, maintain risk management system",
+    "target": "Clause 6.1.1 — General (actions to address risks and opportunities)",
+    "relationship": "equivalent",
+    "rationale": "Both require a documented, maintained process to identify and address risks; Art.9(1)'s lifecycle framing of high-risk AI risk management is co-extensive with ISO 42001 Clause 6.1.1's AIMS risk-process mandate."
+  },
+  {
+    "source": "Art.9(1) — continuous iterative process throughout lifecycle",
+    "target": "Clause 8.2 — AI risk assessment (operational, recurring)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(1)'s requirement for a continuous iterative process is operationalised in ISO 42001 Clause 8.2, which mandates regular re-assessment of AI risks especially after changes."
+  },
+  {
+    "source": "Art.9(2)(a) — identify and analyse known and foreseeable risks to health, safety, fundamental rights",
+    "target": "Clause 6.1.2 — AI risk assessment",
+    "relationship": "subset",
+    "rationale": "Art.9(2)(a) scopes risk identification to health/safety/fundamental-rights harms of high-risk AI, while ISO 42001 Clause 6.1.2 covers the broader universe of organisational and AI-system risks without limiting to those three harm categories."
+  },
+  {
+    "source": "Art.9(2)(a) — identify and analyse known and foreseeable risks to health, safety, fundamental rights",
+    "target": "A.5.4 — Assessing AI system impact on individuals or groups",
+    "relationship": "partial_overlap",
+    "rationale": "Art.9(2)(a)'s risk identification for individual harms partially overlaps A.5.4's individual/group impact assessment, but A.5.4 is broader (all impacts, not only health/safety/rights) and Art.9 is narrower (high-risk AI only)."
+  },
+  {
+    "source": "Art.9(2)(b) — estimate and evaluate risks under intended use and reasonably foreseeable misuse",
+    "target": "Clause 6.1.2 — AI risk assessment",
+    "relationship": "subset",
+    "rationale": "The estimation/evaluation step including misuse scenarios in Art.9(2)(b) implements the risk-assessment activity of ISO 42001 Clause 6.1.2, but is narrower in only addressing high-risk AI harms."
+  },
+  {
+    "source": "Art.9(2)(b) — estimate and evaluate risks under intended use and reasonably foreseeable misuse",
+    "target": "A.6.2.2 — AI system requirements and specification",
+    "relationship": "related",
+    "rationale": "Misuse-scenario analysis under Art.9(2)(b) feeds into the requirements and specification process of A.6.2.2, but the two address different process stages (risk eval vs. requirements capture)."
+  },
+  {
+    "source": "Art.9(2)(c) — evaluate risks from post-market monitoring data",
+    "target": "A.6.2.6 — AI system operation and monitoring",
+    "relationship": "equivalent",
+    "rationale": "Both require systematic collection and evaluation of operational performance data to identify emerging risks after deployment; Art.9(2)(c) and A.6.2.6 are co-extensive at this sub-point."
+  },
+  {
+    "source": "Art.9(2)(c) — evaluate risks from post-market monitoring data",
+    "target": "Clause 9.1 — Monitoring, measurement, analysis and evaluation",
+    "relationship": "subset",
+    "rationale": "Art.9(2)(c) is a specific post-market monitoring-driven risk update, which is a subset of the broader performance-measurement framework in Clause 9.1 covering all AIMS metrics."
+  },
+  {
+    "source": "Art.9(2)(d) — adopt appropriate risk management measures",
+    "target": "Clause 6.1.3 — AI risk treatment",
+    "relationship": "equivalent",
+    "rationale": "Art.9(2)(d)'s requirement to adopt risk management measures addressing identified risks is co-extensive with ISO 42001 Clause 6.1.3's AI risk treatment mandate."
+  },
+  {
+    "source": "Art.9(2)(d) — adopt appropriate risk management measures",
+    "target": "Clause 8.3 — AI risk treatment (operational)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(2)(d)'s adoption of measures is also operationally equivalent to ISO 42001 Clause 8.3, which requires implementing and reviewing the risk treatment plan during operation."
+  },
+  {
+    "source": "Art.9(3) — risks that may be mitigated through design or technical information",
+    "target": "A.6.1.3 — Processes for responsible design and development of AI systems",
+    "relationship": "equivalent",
+    "rationale": "Art.9(3)'s scoping of mitigable risks to design-level measures aligns precisely with A.6.1.3's requirement for processes ensuring responsible design that address identified risks."
+  },
+  {
+    "source": "Art.9(4) — risk measures must balance effectiveness with compliance across all Section requirements",
+    "target": "Clause 8.1 — Operational planning and control",
+    "relationship": "related",
+    "rationale": "Art.9(4)'s balancing requirement is a proportionality principle for measure selection; Clause 8.1 provides the operational framework within which such balancing decisions are implemented and monitored."
+  },
+  {
+    "source": "Art.9(5)(a) — elimination or reduction of risks through design",
+    "target": "A.6.1.3 — Processes for responsible design and development of AI systems",
+    "relationship": "equivalent",
+    "rationale": "Risk elimination/reduction through design in Art.9(5)(a) is the primary objective of A.6.1.3's responsible design processes; both sub-points address the same design-phase risk-reduction obligation."
+  },
+  {
+    "source": "Art.9(5)(b) — mitigation and control measures for non-eliminable risks",
+    "target": "Clause 6.1.3 — AI risk treatment",
+    "relationship": "equivalent",
+    "rationale": "Art.9(5)(b)'s residual-risk mitigation controls correspond directly to the risk treatment options (modify, transfer, accept) specified in ISO 42001 Clause 6.1.3."
+  },
+  {
+    "source": "Art.9(5)(c) — information provision and deployer training",
+    "target": "A.8.2 — System documentation and information for users",
+    "relationship": "equivalent",
+    "rationale": "Art.9(5)(c)'s requirement to provide information per Art.13 and appropriate deployer training is co-extensive with A.8.2's user documentation and information control."
+  },
+  {
+    "source": "Art.9(6) — testing to identify risk measures and ensure consistent performance",
+    "target": "A.6.2.4 — AI system verification and validation",
+    "relationship": "equivalent",
+    "rationale": "Art.9(6)'s testing requirement to identify adequate risk measures and confirm consistent performance is co-extensive with A.6.2.4's verification and validation control."
+  },
+  {
+    "source": "Art.9(8) — testing throughout development and before market placement with defined metrics/thresholds",
+    "target": "A.6.2.4 — AI system verification and validation",
+    "relationship": "subset",
+    "rationale": "Art.9(8) adds the pre-market timing and metric-threshold specificity to testing that is required under A.6.2.4, but A.6.2.4 also covers post-deployment validation not addressed here."
+  },
+  {
+    "source": "Art.9(9) — consideration of adverse impacts on minors and vulnerable groups",
+    "target": "A.5.4 — Assessing AI system impact on individuals or groups",
+    "relationship": "subset",
+    "rationale": "Art.9(9) narrows the population of concern to minors and vulnerable groups, while A.5.4 requires assessment of impacts on any individuals or groups without restriction."
+  },
+  {
+    "source": "Art.10(1) — training, validation, and testing datasets meeting quality criteria",
+    "target": "A.7.4 — Quality of data for AI systems",
+    "relationship": "equivalent",
+    "rationale": "Art.10(1)'s dataset quality criteria for training/validation/test splits are co-extensive with A.7.4's data quality control requirement for AI systems."
+  },
+  {
+    "source": "Art.10(2)(a) — data design choices",
+    "target": "A.7.2 — Data for development and enhancement of AI system",
+    "relationship": "subset",
+    "rationale": "Art.10(2)(a)'s requirement to document design choices in data governance is a specific sub-activity of the broader A.7.2 control covering all aspects of data used for AI development."
+  },
+  {
+    "source": "Art.10(2)(b) — data collection processes and origin of data",
+    "target": "A.7.3 — Acquisition of data",
+    "relationship": "equivalent",
+    "rationale": "Art.10(2)(b)'s documentation of data collection processes and origin directly corresponds to A.7.3's data acquisition control; both address source, method, and provenance at the same granularity."
+  },
+  {
+    "source": "Art.10(2)(b) — data collection processes and origin of data",
+    "target": "A.7.5 — Data provenance",
+    "relationship": "equivalent",
+    "rationale": "Art.10(2)(b)'s 'origin of data' sub-requirement is co-extensive with A.7.5's data provenance control, both requiring traceability of data back to its source."
+  },
+  {
+    "source": "Art.10(2)(c) — data preparation operations (annotation, labelling, cleaning, updating, enrichment, aggregation)",
+    "target": "A.7.6 — Data preparation",
+    "relationship": "equivalent",
+    "rationale": "Art.10(2)(c) enumerates the same data preparation activities (annotation, labelling, cleaning, enrichment, aggregation) that A.7.6 requires to be governed; the two sub-points are co-extensive."
+  },
+  {
+    "source": "Art.10(2)(d) — assumptions about data representation",
+    "target": "A.7.4 — Quality of data for AI systems",
+    "relationship": "subset",
+    "rationale": "Documenting representational assumptions is one component of data quality governance; A.7.4 covers data quality more broadly including completeness, accuracy, and fitness for purpose."
+  },
+  {
+    "source": "Art.10(2)(e) — assessment of dataset availability, quantity, and suitability",
+    "target": "A.7.2 — Data for development and enhancement of AI system",
+    "relationship": "equivalent",
+    "rationale": "Art.10(2)(e)'s assessment of data availability, quantity, and suitability for the intended purpose is co-extensive with A.7.2's requirement to identify and evaluate data for AI development."
+  },
+  {
+    "source": "Art.10(2)(f) — examination of potential biases affecting health, safety, fundamental rights or discrimination",
+    "target": "A.5.4 — Assessing AI system impact on individuals or groups",
+    "relationship": "equivalent",
+    "rationale": "Art.10(2)(f)'s bias examination for discriminatory harm is co-extensive with A.5.4's impact assessment on individuals/groups; both target the same discriminatory-impact analysis activity."
+  },
+  {
+    "source": "Art.10(2)(f) — examination of potential biases affecting health, safety, fundamental rights or discrimination",
+    "target": "A.7.4 — Quality of data for AI systems",
+    "relationship": "subset",
+    "rationale": "Bias examination is one dimension of data quality; A.7.4 covers the full spectrum of quality attributes beyond bias."
+  },
+  {
+    "source": "Art.10(2)(g) — measures to detect, prevent and mitigate identified biases",
+    "target": "A.7.6 — Data preparation",
+    "relationship": "subset",
+    "rationale": "Bias-mitigation measures applied during data preparation fall within A.7.6's data preparation governance, but A.7.6 addresses all preparation activities beyond bias alone."
+  },
+  {
+    "source": "Art.10(2)(h) — identification of data gaps preventing regulatory compliance",
+    "target": "A.7.2 — Data for development and enhancement of AI system",
+    "relationship": "subset",
+    "rationale": "Identifying gaps in data coverage is a specific activity within the broader A.7.2 data-for-development control; A.7.2 also covers data selection, labelling, and adequacy more generally."
+  },
+  {
+    "source": "Art.10(3) — datasets must be relevant, sufficiently representative, free of errors and complete",
+    "target": "A.7.4 — Quality of data for AI systems",
+    "relationship": "equivalent",
+    "rationale": "Art.10(3)'s data-quality criteria (relevant, representative, error-free, complete) are the canonical data-quality attributes that A.7.4 requires organisations to assess and maintain."
+  },
+  {
+    "source": "Art.10(4) — datasets account for geographical, contextual, behavioural, functional characteristics",
+    "target": "A.7.4 — Quality of data for AI systems",
+    "relationship": "subset",
+    "rationale": "Contextual and geographic representativeness is a dimension of data quality under A.7.4; A.7.4 is broader, encompassing all quality dimensions not just representativeness."
+  },
+  {
+    "source": "Art.10(5) — processing of special categories of personal data for bias detection under strict conditions",
+    "target": "A.7.3 — Acquisition of data",
+    "relationship": "partial_overlap",
+    "rationale": "Art.10(5)'s exceptional processing of sensitive personal data for bias testing overlaps A.7.3 data-acquisition controls, but the GDPR-specific strict conditions in Art.10(5) exceed anything ISO 42001 specifies."
+  },
+  {
+    "source": "Art.11(1) — technical documentation prepared before market placement, kept current, lists Annex IV elements",
+    "target": "A.6.2.7 — AI system technical documentation",
+    "relationship": "equivalent",
+    "rationale": "Art.11(1)'s technical documentation requirements map directly to A.6.2.7, which requires maintaining complete technical documentation of AI systems throughout their lifecycle."
+  },
+  {
+    "source": "Art.11(1) — technical documentation must demonstrate compliance for competent authority assessment",
+    "target": "Clause 7.5 — Documented information",
+    "relationship": "subset",
+    "rationale": "Art.11(1)'s compliance-evidence function for authorities is a specific use-case of documented information under Clause 7.5, which governs the broader creation, control, and retention of all AIMS documentation."
+  },
+  {
+    "source": "Art.12(1) — automatic recording of events (logs) over system lifetime",
+    "target": "A.6.2.8 — AI system recording of event logs",
+    "relationship": "equivalent",
+    "rationale": "Art.12(1)'s requirement for automatic event-log recording over system lifetime is co-extensive with A.6.2.8's event-logging control; both address the same logging obligation at the same level of specificity."
+  },
+  {
+    "source": "Art.12(2) — logs capture risk-identification events, post-market monitoring, deployer monitoring",
+    "target": "A.6.2.8 — AI system recording of event logs",
+    "relationship": "superset",
+    "rationale": "Art.12(2) specifies three distinct purposes for log content (risk events, post-market monitoring, deployer oversight) that go beyond A.6.2.8's general event-logging requirement, making the article provision broader."
+  },
+  {
+    "source": "Art.12(2) — logs enabling post-market monitoring activities",
+    "target": "A.6.2.6 — AI system operation and monitoring",
+    "relationship": "subset",
+    "rationale": "Logging that enables post-market monitoring is a supporting mechanism for the broader operational monitoring requirement in A.6.2.6, which covers the full operational-monitoring process not just log retention."
+  },
+  {
+    "source": "Art.12(3) — biometric identification systems must log usage periods, reference databases, input data, verification personnel",
+    "target": "A.6.2.8 — AI system recording of event logs",
+    "relationship": "superset",
+    "rationale": "Art.12(3) prescribes specific biometric-context log fields that exceed the general event-logging guidance in A.6.2.8, making this paragraph a stricter superset of the control."
+  },
+  {
+    "source": "Art.13(1) — operation sufficiently transparent for deployers to interpret output",
+    "target": "A.8.2 — System documentation and information for users",
+    "relationship": "equivalent",
+    "rationale": "Art.13(1)'s transparency requirement for output interpretability is co-extensive with A.8.2's control requiring documentation that enables users to understand and operate the AI system correctly."
+  },
+  {
+    "source": "Art.13(3)(a) — provider identity and contact information",
+    "target": "A.8.5 — Information for interested parties",
+    "relationship": "subset",
+    "rationale": "Provider identification in instructions of use is one element of the broader information-for-interested-parties obligation in A.8.5; A.8.5 covers all stakeholder information needs beyond deployer identity."
+  },
+  {
+    "source": "Art.13(3)(b) — system characteristics: intended purpose, accuracy, robustness, cybersecurity, risks, explainability, demographic performance, input specs, output guidance",
+    "target": "A.8.2 — System documentation and information for users",
+    "relationship": "superset",
+    "rationale": "Art.13(3)(b) enumerates more specific categories of system-characteristic information (cybersecurity results, demographic performance, explainability) than A.8.2's general user-documentation control."
+  },
+  {
+    "source": "Art.13(3)(b) — accuracy metrics, robustness and cybersecurity testing results declared in instructions",
+    "target": "A.6.2.4 — AI system verification and validation",
+    "relationship": "partial_overlap",
+    "rationale": "Declaring V&V results in user-facing documentation partially overlaps A.6.2.4, but the article concerns disclosure to deployers while A.6.2.4 addresses the internal V&V process itself."
+  },
+  {
+    "source": "Art.13(3)(d) — human oversight procedures per Art.14 in instructions of use",
+    "target": "A.9.4 — Intended use",
+    "relationship": "equivalent",
+    "rationale": "Providing human oversight instructions in the system documentation aligns with A.9.4's requirement to define and communicate intended use conditions including operator responsibilities."
+  },
+  {
+    "source": "Art.13(3)(f) — data logging mechanisms enabling deployer collection, storage, and analysis",
+    "target": "A.6.2.8 — AI system recording of event logs",
+    "relationship": "subset",
+    "rationale": "Informing deployers about available logging mechanisms is a deployment-communication aspect of A.6.2.8's event-logging control; A.6.2.8 also governs the log system design itself."
+  },
+  {
+    "source": "Art.14(1) — high-risk AI systems designed to be effectively overseen by natural persons",
+    "target": "A.9.2 — Processes for responsible use of AI",
+    "relationship": "equivalent",
+    "rationale": "Art.14(1)'s design-for-oversight requirement is co-extensive with A.9.2's processes for responsible use, which require establishing human oversight mechanisms commensurate with the AI system's autonomy and risk."
+  },
+  {
+    "source": "Art.14(2) — oversight aims to prevent or minimise risks to health, safety, fundamental rights",
+    "target": "A.9.3 — Objectives for responsible use of AI",
+    "relationship": "equivalent",
+    "rationale": "Art.14(2)'s stated purpose of oversight (prevent/minimise harms) aligns precisely with A.9.3's requirement to define objectives for responsible AI use including harm prevention."
+  },
+  {
+    "source": "Art.14(3)(a) — oversight measures built into system by provider before market placement",
+    "target": "A.6.2.5 — AI system deployment",
+    "relationship": "equivalent",
+    "rationale": "Provider-side built-in oversight measures established before market placement are deployment-stage controls addressed directly by A.6.2.5's AI system deployment control."
+  },
+  {
+    "source": "Art.14(3)(b) — oversight measures identified by provider for implementation by deployer",
+    "target": "A.10.2 — Allocating responsibilities",
+    "relationship": "equivalent",
+    "rationale": "Art.14(3)(b)'s allocation of oversight measures to the deployer is co-extensive with A.10.2's requirement to formally allocate AI-related responsibilities between provider and deployer."
+  },
+  {
+    "source": "Art.14(4)(a) — overseer enabled to understand capabilities/limitations and monitor anomalies",
+    "target": "A.9.2 — Processes for responsible use of AI",
+    "relationship": "equivalent",
+    "rationale": "Enabling overseers to understand system capabilities and monitor for anomalies is the operational expression of A.9.2's responsible-use processes for human operators."
+  },
+  {
+    "source": "Art.14(4)(b) — awareness of automation bias risk in output reliance",
+    "target": "A.9.2 — Processes for responsible use of AI",
+    "relationship": "subset",
+    "rationale": "Automation-bias awareness is one specific element of responsible-use processes; A.9.2 covers the full responsible-use process including but not limited to bias awareness."
+  },
+  {
+    "source": "Art.14(4)(c) — correct interpretation of high-risk AI system output",
+    "target": "A.8.2 — System documentation and information for users",
+    "relationship": "subset",
+    "rationale": "Output interpretation guidance for overseers is a component of the user documentation in A.8.2; A.8.2 covers broader documentation beyond output interpretation alone."
+  },
+  {
+    "source": "Art.14(4)(d) — ability to override or disregard AI system output",
+    "target": "A.9.2 — Processes for responsible use of AI",
+    "relationship": "equivalent",
+    "rationale": "The human right to override or disregard AI output is a foundational element of responsible-use processes in A.9.2, both requiring operational mechanisms for human veto of automated decisions."
+  },
+  {
+    "source": "Art.14(4)(e) — intervention capability including stop-button / safe-state halt",
+    "target": "A.6.2.6 — AI system operation and monitoring",
+    "relationship": "subset",
+    "rationale": "A stop-button/safe-halt mechanism is one safety feature of operational monitoring and control; A.6.2.6 addresses the broader operational monitoring framework of which this is a component."
+  },
+  {
+    "source": "Art.14(4)(e) — intervention capability including stop-button / safe-state halt",
+    "target": "A.9.2 — Processes for responsible use of AI",
+    "relationship": "equivalent",
+    "rationale": "The obligation to provide physical/logical intervention capability is co-extensive with A.9.2's responsible-use process requirement for operators to be able to interrupt AI operation."
+  },
+  {
+    "source": "Art.14(5) — biometric identification: two-person verification before any action",
+    "target": "A.9.2 — Processes for responsible use of AI",
+    "relationship": "superset",
+    "rationale": "Art.14(5)'s mandatory two-person verification for biometric identification is a stricter, technology-specific oversight requirement that exceeds what A.9.2 specifies for responsible-use processes generally."
+  },
+  {
+    "source": "Art.15(1) — achieve appropriate level of accuracy, robustness, cybersecurity throughout lifecycle",
+    "target": "A.6.2.4 — AI system verification and validation",
+    "relationship": "subset",
+    "rationale": "Accuracy, robustness and cybersecurity levels are tested during V&V per A.6.2.4, but A.6.2.4 is broader (all functional/non-functional requirements), while Art.15(1) specifies the quality targets themselves."
+  },
+  {
+    "source": "Art.15(1) — maintain consistent performance throughout lifecycle",
+    "target": "A.6.2.6 — AI system operation and monitoring",
+    "relationship": "equivalent",
+    "rationale": "Maintaining consistent performance throughout the system lifecycle is co-extensive with A.6.2.6's operational-monitoring control, which requires continuous monitoring of AI system performance."
+  },
+  {
+    "source": "Art.15(3) — accuracy levels and metrics declared in instructions of use",
+    "target": "A.6.2.7 — AI system technical documentation",
+    "relationship": "subset",
+    "rationale": "Declaring accuracy metrics in instructions of use is a subset of the broader technical documentation required by A.6.2.7; the article specifies a particular type of documentation content."
+  },
+  {
+    "source": "Art.15(4) — resilience against errors and faults; redundancy solutions",
+    "target": "A.6.2.4 — AI system verification and validation",
+    "relationship": "partial_overlap",
+    "rationale": "Resilience and redundancy are partially addressed by V&V testing requirements in A.6.2.4, but A.6.2.4 does not specifically mandate redundancy architectures that Art.15(4) requires."
+  },
+  {
+    "source": "Art.15(4) — post-deployment learning systems: eliminate or reduce biased-output feedback loops",
+    "target": "A.6.2.6 — AI system operation and monitoring",
+    "relationship": "equivalent",
+    "rationale": "Monitoring and controlling biased-output feedback loops in continual-learning systems is co-extensive with A.6.2.6's operational monitoring requirement for AI systems in production."
+  },
+  {
+    "source": "Art.15(5) — cybersecurity protection against unauthorised alteration of use, outputs or performance",
+    "target": "A.6.2.4 — AI system verification and validation",
+    "relationship": "partial_overlap",
+    "rationale": "Cybersecurity V&V for adversarial robustness is partially addressed by A.6.2.4's validation activities, but A.6.2.4 does not specifically enumerate data-poisoning or adversarial-example threats named in Art.15(5)."
+  },
+  {
+    "source": "Art.15(5) — protection against data poisoning, model poisoning, adversarial examples, confidentiality attacks, model flaws",
+    "target": "A.6.2.4 — AI system verification and validation",
+    "relationship": "superset",
+    "rationale": "Art.15(5) specifies five named attack vectors for cybersecurity protection that are more prescriptive than anything in A.6.2.4's general V&V control, making this article provision a superset."
+  },
+  {
+    "source": "Art.17(1)(a) — strategy for regulatory compliance including conformity assessment",
+    "target": "Clause 6.1.1 — General (actions to address risks and opportunities)",
+    "relationship": "subset",
+    "rationale": "A regulatory compliance strategy is a planning artifact that flows from Clause 6.1.1's risk-and-opportunity analysis; Clause 6.1.1 also encompasses internal and AI-impact risks beyond regulatory compliance."
+  },
+  {
+    "source": "Art.17(1)(a) — strategy for regulatory compliance including conformity assessment",
+    "target": "A.2.2 — AI Policy",
+    "relationship": "equivalent",
+    "rationale": "A documented compliance strategy for the AI system corresponds directly to A.2.2's requirement for an AI policy that sets direction and demonstrates management commitment to compliance."
+  },
+  {
+    "source": "Art.17(1)(b) — design procedures including design control and design verification",
+    "target": "A.6.1.3 — Processes for responsible design and development",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(b)'s design-control and design-verification procedures map directly to A.6.1.3's requirement for documented processes governing responsible design and development of AI systems."
+  },
+  {
+    "source": "Art.17(1)(c) — development procedures covering quality control and quality assurance",
+    "target": "A.6.2.3 — Documentation of AI system design and development",
+    "relationship": "equivalent",
+    "rationale": "QC/QA development procedures in Art.17(1)(c) are co-extensive with A.6.2.3's requirement to document the design and development process to ensure quality and traceability."
+  },
+  {
+    "source": "Art.17(1)(d) — examination, test and validation procedures before, during and after development",
+    "target": "A.6.2.4 — AI system verification and validation",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(d)'s full-lifecycle test and validation procedures are co-extensive with A.6.2.4's V&V control requiring systematic verification and validation across all development stages."
+  },
+  {
+    "source": "Art.17(1)(e) — technical specifications and standards application methods",
+    "target": "A.6.2.2 — AI system requirements and specification",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(e)'s technical-specification documentation corresponds directly to A.6.2.2's requirement to establish and maintain AI system requirements and specification."
+  },
+  {
+    "source": "Art.17(1)(f) — data management systems for acquisition, collection, analysis, labelling, storage",
+    "target": "A.7.2 — Data for development and enhancement of AI system",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(f)'s data management system covering acquisition through storage is co-extensive with A.7.2's data-for-development control; both address the full data management lifecycle."
+  },
+  {
+    "source": "Art.17(1)(f) — data management systems for acquisition, collection, analysis, labelling, storage",
+    "target": "A.7.6 — Data preparation",
+    "relationship": "subset",
+    "rationale": "Data labelling and preparation activities in Art.17(1)(f) are a specific subset of A.7.6's broader data preparation governance control."
+  },
+  {
+    "source": "Art.17(1)(g) — risk management framework from Article 9",
+    "target": "Clause 6.1.2 — AI risk assessment",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(g)'s incorporation of the Art.9 risk management system into the QMS is co-extensive with Clause 6.1.2's AI risk assessment requirement within the AIMS planning framework."
+  },
+  {
+    "source": "Art.17(1)(g) — risk management framework from Article 9",
+    "target": "Clause 6.1.3 — AI risk treatment",
+    "relationship": "equivalent",
+    "rationale": "Embedding Art.9 risk treatment within the QMS per Art.17(1)(g) aligns with Clause 6.1.3's risk treatment requirement; both are components of the same overarching risk management mandate."
+  },
+  {
+    "source": "Art.17(1)(h) — post-market monitoring per Article 72",
+    "target": "A.6.2.6 — AI system operation and monitoring",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(h)'s post-market monitoring integration into the QMS is co-extensive with A.6.2.6's operational monitoring control requiring systematic performance tracking after deployment."
+  },
+  {
+    "source": "Art.17(1)(i) — serious incident reporting procedures per Article 73",
+    "target": "A.8.4 — Communication of incidents",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(i)'s serious incident reporting procedures are co-extensive with A.8.4's incident communication control; both require formalised processes for reporting AI-related incidents to relevant parties."
+  },
+  {
+    "source": "Art.17(1)(j) — communication procedures with authorities and stakeholders",
+    "target": "A.8.5 — Information for interested parties",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(j)'s stakeholder and authority communication procedures are co-extensive with A.8.5's information-for-interested-parties control governing external communications."
+  },
+  {
+    "source": "Art.17(1)(k) — systems and procedures for record-keeping of all relevant documentation",
+    "target": "Clause 7.5 — Documented information",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(k)'s record-keeping systems and procedures map directly to Clause 7.5's documented-information requirements for creation, maintenance, and retention of AIMS records."
+  },
+  {
+    "source": "Art.17(1)(k) — systems and procedures for record-keeping of all relevant documentation",
+    "target": "A.6.2.7 — AI system technical documentation",
+    "relationship": "subset",
+    "rationale": "Record-keeping procedures in Art.17(1)(k) support but are narrower than A.6.2.7's technical documentation control, which also covers document content, completeness, and currency."
+  },
+  {
+    "source": "Art.17(1)(l) — resource management including supply security",
+    "target": "Clause 7.1 — Resources",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(l)'s resource management requirement (including supply security) is co-extensive with Clause 7.1's resource provision mandate for the AIMS."
+  },
+  {
+    "source": "Art.17(1)(l) — resource management including supply security",
+    "target": "A.10.3 — Suppliers",
+    "relationship": "equivalent",
+    "rationale": "Supply security measures in Art.17(1)(l) correspond directly to A.10.3's supplier-relationship control governing third-party AI component and data supply chains."
+  },
+  {
+    "source": "Art.17(1)(m) — accountability framework defining management responsibilities",
+    "target": "Clause 5.3 — Roles, responsibilities and authorities",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(m)'s management accountability framework is co-extensive with Clause 5.3's requirement to define, document, and communicate AI management roles and responsibilities."
+  },
+  {
+    "source": "Art.17(1)(m) — accountability framework defining management responsibilities",
+    "target": "A.3.2 — AI roles and responsibilities",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1)(m)'s accountability framework maps directly to A.3.2's control requiring documented AI-specific roles and responsibilities across the organisation."
+  },
+  {
+    "source": "Art.17(2) — implementation proportionate to size of provider organisation",
+    "target": "Clause 8.1 — Operational planning and control",
+    "relationship": "related",
+    "rationale": "Art.17(2)'s proportionality principle informs how Clause 8.1 is scoped and implemented, but proportionality is a meta-requirement rather than a specific control activity in either standard."
+  },
+  {
+    "source": "Art.17(3) — integration with existing QMS under EU sectoral law",
+    "target": "Clause 4.1 — Understanding the organisation and its context",
+    "relationship": "related",
+    "rationale": "Integration with existing management systems reflects the context-setting activity of Clause 4.1, but Art.17(3) is specifically about avoiding duplication with sectoral QMS obligations, not about context analysis."
+  },
+  {
+    "source": "Art.72(1) — establish and document post-market monitoring system proportionate to AI technologies and risks",
+    "target": "A.6.2.6 — AI system operation and monitoring",
+    "relationship": "equivalent",
+    "rationale": "Art.72(1)'s post-market monitoring system establishment and documentation is co-extensive with A.6.2.6's operational monitoring control requiring planned monitoring of AI system performance."
+  },
+  {
+    "source": "Art.72(2) — actively and systematically collect, document and analyse performance data throughout lifetime",
+    "target": "Clause 9.1 — Monitoring, measurement, analysis and evaluation",
+    "relationship": "equivalent",
+    "rationale": "Art.72(2)'s active, systematic data collection and analysis for continuous compliance monitoring is co-extensive with Clause 9.1's performance evaluation mandate."
+  },
+  {
+    "source": "Art.72(2) — data from deployers and other sources on performance of high-risk AI systems",
+    "target": "A.6.2.6 — AI system operation and monitoring",
+    "relationship": "subset",
+    "rationale": "Multi-source performance data collection is one implementation mechanism for A.6.2.6's operational monitoring; A.6.2.6 also covers monitoring process design, thresholds, and response procedures."
+  },
+  {
+    "source": "Art.72(3) — post-market monitoring plan integrated into technical documentation",
+    "target": "A.6.2.7 — AI system technical documentation",
+    "relationship": "subset",
+    "rationale": "The monitoring plan as a technical documentation component is a specific record addressed by A.6.2.7's technical documentation control, which covers a much wider set of documentation elements."
+  },
+  {
+    "source": "Art.72(3) — post-market monitoring plan integrated into technical documentation",
+    "target": "A.6.2.6 — AI system operation and monitoring",
+    "relationship": "equivalent",
+    "rationale": "A formalised monitoring plan with specifications for what, how, and when to monitor is co-extensive with A.6.2.6's operational monitoring control requirement."
+  },
+  {
+    "source": "Art.72(4) — integration with existing Union harmonisation legislation monitoring systems",
+    "target": "Clause 4.1 — Understanding the organisation and its context",
+    "relationship": "related",
+    "rationale": "Integrating monitoring with existing regulatory obligations reflects the context-awareness required by Clause 4.1, but Art.72(4) is a legal simplification mechanism rather than a context-analysis requirement."
+  },
+  {
+    "source": "Art.73(1) — providers report serious incidents to market surveillance authorities",
+    "target": "A.8.4 — Communication of incidents",
+    "relationship": "equivalent",
+    "rationale": "Art.73(1)'s incident reporting obligation to authorities is co-extensive with A.8.4's incident communication control requiring formal notification of incidents to relevant parties."
+  },
+  {
+    "source": "Art.73(2) — report within 15 days of establishing causal link or reasonable likelihood",
+    "target": "A.8.4 — Communication of incidents",
+    "relationship": "superset",
+    "rationale": "Art.73(2)'s mandatory 15-day reporting deadline with causal-link trigger is more prescriptive than A.8.4's general incident communication control, which does not specify regulatory timelines."
+  },
+  {
+    "source": "Art.73(3) — widespread infringement or safety incident: report within 2 days",
+    "target": "A.8.4 — Communication of incidents",
+    "relationship": "superset",
+    "rationale": "Art.73(3)'s 2-day emergency reporting requirement for widespread/safety incidents exceeds anything specified in A.8.4's incident communication control."
+  },
+  {
+    "source": "Art.73(4) — fatal incidents: report within 10 days of suspected causal link",
+    "target": "A.8.4 — Communication of incidents",
+    "relationship": "superset",
+    "rationale": "Art.73(4)'s 10-day deadline for fatality reporting is a legally-mandated deadline absent from A.8.4, which addresses incident communication generally without specifying severity-tiered timelines."
+  },
+  {
+    "source": "Art.73(6) — investigation, risk assessment and corrective action after incident",
+    "target": "Clause 10.2 — Nonconformity and corrective action",
+    "relationship": "equivalent",
+    "rationale": "Art.73(6)'s post-incident investigation, risk assessment, and corrective action requirements are co-extensive with Clause 10.2's nonconformity and corrective-action process."
+  },
+  {
+    "source": "Art.73(6) — investigation, risk assessment and corrective action after incident",
+    "target": "A.8.4 — Communication of incidents",
+    "relationship": "partial_overlap",
+    "rationale": "Post-incident investigation partially overlaps A.8.4's incident-management process, but A.8.4 focuses on communication while Art.73(6) additionally mandates corrective action and authority cooperation."
+  },
+  {
+    "source": "Art.73(6) — do not alter AI system in ways affecting evaluation of causes before informing authorities",
+    "target": "A.6.2.8 — AI system recording of event logs",
+    "relationship": "related",
+    "rationale": "Preserving system state and logs during incident investigation is a related obligation that supports A.6.2.8's event-logging control, but A.6.2.8 addresses proactive log recording, not post-incident evidence preservation."
+  }
+]

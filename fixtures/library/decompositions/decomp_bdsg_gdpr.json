@@ -1,0 +1,828 @@
+[
+  {
+    "source": "BDSG-1.1",
+    "target": "GDPR-2.1",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§1 Abs.1 BDSG narrows the material/personal scope to German federal public authorities and private entities processing in Germany, implementing GDPR Art.2(1) which broadly covers 'wholly or partly by automated means' — BDSG adds the federal/state authority overlay."
+  },
+  {
+    "source": "BDSG-1.2",
+    "target": "GDPR-2.2",
+    "relationship": "related",
+    "legal_basis": "GDPR",
+    "rationale": "§1 Abs.2 BDSG establishes the lex-specialis principle (other federal data protection laws take precedence), analogous to GDPR Art.2(2) carve-outs, but extends to purely domestic German law hierarchy not addressed by Art.2(2)."
+  },
+  {
+    "source": "BDSG-1.4",
+    "target": "GDPR-3.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§1 Abs.4 BDSG defines territorial scope for domestic processing, mirroring GDPR Art.3(1) establishment principle, and extends it to EEA/Schengen equivalences in Abs.6–8 beyond the GDPR text."
+  },
+  {
+    "source": "BDSG-1.5",
+    "target": "GDPR-1.1",
+    "relationship": "equivalent",
+    "legal_basis": "GDPR",
+    "rationale": "§1 Abs.5 explicitly provides that BDSG does not apply where EU law (especially GDPR) directly applies, giving direct effect to GDPR Art.1(1) supremacy and confirming the GDPR as lex specialis over BDSG."
+  },
+  {
+    "source": "BDSG-2.1",
+    "target": "GDPR-4.7",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§2 Abs.1–3 BDSG defines 'federal/state public authority' and their sub-categories — these are national elaborations of the controller concept in GDPR Art.4(7), restricted to the German public-sector context."
+  },
+  {
+    "source": "BDSG-2.4",
+    "target": "GDPR-4.7",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§2 Abs.4 BDSG defines 'non-public bodies' (private natural/legal persons) — the complement of the public-authority definition, again a national specification of the controller/processor concept in GDPR Art.4(7)."
+  },
+  {
+    "source": "BDSG-3",
+    "target": "GDPR-6.1.e",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§3 BDSG provides the national opening-clause legal basis for public-authority processing 'necessary for task fulfilment or exercise of public power', directly invoking GDPR Art.6(1)(e) and satisfying the Art.6(3) requirement for a Union/Member-State law basis."
+  },
+  {
+    "source": "BDSG-4.1",
+    "target": "GDPR-6.1.e",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§4 Abs.1 BDSG permits video surveillance of publicly accessible spaces for legitimate interests or Hausrecht, implementing GDPR Art.6(1)(e)/(f), but adds specific German balancing tests and protected-interest categories beyond GDPR's generic proportionality requirement."
+  },
+  {
+    "source": "BDSG-4.2",
+    "target": "GDPR-13.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§4 Abs.2 BDSG requires visible notice of video surveillance 'at the earliest possible time', specifying GDPR Art.13(1) transparency obligation with a spatial/temporal German-law supplement for surveillance scenarios."
+  },
+  {
+    "source": "BDSG-4.3",
+    "target": "GDPR-5.1.b",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§4 Abs.3 BDSG restricts further processing/reuse of video data to original purpose or specific exceptions (security/criminal prosecution), implementing GDPR Art.5(1)(b) purpose-limitation principle for the video-surveillance context."
+  },
+  {
+    "source": "BDSG-4.4",
+    "target": "GDPR-13.1",
+    "relationship": "related",
+    "legal_basis": "GDPR",
+    "rationale": "§4 Abs.4 BDSG cross-references GDPR Art.13 and §32 BDSG for notification when video data is linked to individuals, explicitly tying the video-surveillance context to the GDPR transparency regime."
+  },
+  {
+    "source": "BDSG-4.5",
+    "target": "GDPR-5.1.e",
+    "relationship": "equivalent",
+    "legal_basis": "GDPR",
+    "rationale": "§4 Abs.5 BDSG mandates immediate deletion when data no longer necessary or when subject's protected interests prevail, directly mirroring GDPR Art.5(1)(e) storage-limitation principle for video data."
+  },
+  {
+    "source": "BDSG-5",
+    "target": "GDPR-37.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§5 BDSG mandates DPO appointment for all federal public bodies without exception, going beyond GDPR Art.37(1)(a) which requires DPO for public authorities only 'except for courts acting in their judicial capacity' — BDSG makes the appointment universally mandatory for federal bodies."
+  },
+  {
+    "source": "BDSG-6",
+    "target": "GDPR-38.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§6 BDSG governs DPO position/independence/tasks for public bodies, supplementing GDPR Art.38(1)–(6) with additional German public-law protections including civil-service style tenure and explicit publication obligations."
+  },
+  {
+    "source": "BDSG-7",
+    "target": "GDPR-39.1",
+    "relationship": "equivalent",
+    "legal_basis": "GDPR",
+    "rationale": "§7 BDSG enumerates DPO tasks for public bodies (advising, monitoring compliance, DPIA cooperation, supervisory authority liaison), tracking GDPR Art.39(1)(a)–(e) task list with no material addition."
+  },
+  {
+    "source": "BDSG-8",
+    "target": "GDPR-51.1",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§8 BDSG establishes the Bundesbeauftragte für Datenschutz und Informationsfreiheit (BfDI) as Germany's federal supervisory authority, fulfilling GDPR Art.51(1) Member State obligation to establish a supervisory authority."
+  },
+  {
+    "source": "BDSG-14",
+    "target": "GDPR-57.1",
+    "relationship": "equivalent",
+    "legal_basis": "GDPR",
+    "rationale": "§14 BDSG lists the BfDI's tasks (monitoring compliance, handling complaints, annual report, advisory opinions), tracking GDPR Art.57(1)(a)–(v) task catalogue with minor German-public-law additions."
+  },
+  {
+    "source": "BDSG-16",
+    "target": "GDPR-58.1",
+    "relationship": "equivalent",
+    "legal_basis": "GDPR",
+    "rationale": "§16 BDSG grants the BfDI investigative, corrective, and advisory powers, implementing GDPR Art.58(1)–(3) powers framework with the addition of the information-freedom mandate specific to the German BfDI."
+  },
+  {
+    "source": "BDSG-17",
+    "target": "GDPR-60.1",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§17 BDSG designates the BfDI as central contact point and EDPB representative for Germany, implementing GDPR Art.60(1) lead-authority cooperation principle and Art.68–69 EDPB membership obligations."
+  },
+  {
+    "source": "BDSG-18",
+    "target": "GDPR-61.1",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§18 BDSG governs mutual assistance between German supervisory authorities (federal/Länder), implementing GDPR Art.61(1) mutual assistance obligation in the German federal multi-DPA context."
+  },
+  {
+    "source": "BDSG-20",
+    "target": "GDPR-78.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§20 BDSG establishes judicial protection against supervisory authority decisions, implementing GDPR Art.78(1)–(2) right to effective judicial remedy, and additionally covers constitutional review of EU Commission adequacy decisions per Art.78(3) via specific German court procedures."
+  },
+  {
+    "source": "BDSG-22.1.Nr1",
+    "target": "GDPR-9.2.b",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§22 Abs.1 Nr.1(a) BDSG permits processing of special-category data for social security and social protection rights, directly implementing GDPR Art.9(2)(b) opening clause."
+  },
+  {
+    "source": "BDSG-22.1.Nr1.b",
+    "target": "GDPR-9.2.h",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§22 Abs.1 Nr.1(b) BDSG permits processing for healthcare, work-capacity assessment, and medical diagnosis by health professionals under secrecy, implementing GDPR Art.9(2)(h) health-care opening clause."
+  },
+  {
+    "source": "BDSG-22.1.Nr1.c",
+    "target": "GDPR-9.2.i",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§22 Abs.1 Nr.1(c) BDSG permits processing for public health interests including cross-border health threat prevention, implementing GDPR Art.9(2)(i) public health opening clause."
+  },
+  {
+    "source": "BDSG-22.1.Nr1.d",
+    "target": "GDPR-9.2.g",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§22 Abs.1 Nr.1(d) BDSG allows processing for substantial public interest with balancing requirement, implementing GDPR Art.9(2)(g) 'reasons of substantial public interest' opening clause."
+  },
+  {
+    "source": "BDSG-22.1.Nr2",
+    "target": "GDPR-9.2.g",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§22 Abs.1 Nr.2 BDSG (public bodies only) permits processing to avert serious public safety threats, prevent substantial public harm, or serve defense/humanitarian purposes — a national specification of GDPR Art.9(2)(g) for public authorities."
+  },
+  {
+    "source": "BDSG-22.2",
+    "target": "GDPR-9.2.g",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§22 Abs.2 BDSG mandates a catalogue of 'appropriate and specific measures' (encryption, pseudonymisation, access controls, DPO designation, audit trails, staff training) as a condition for Art.9(2)(g) processing — Germany exercises the Art.9(2)(g) opening clause by imposing supplementary organisational safeguards beyond the GDPR baseline."
+  },
+  {
+    "source": "BDSG-23.1",
+    "target": "GDPR-5.1.b",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§23 Abs.1 BDSG permits public bodies to repurpose personal data for security, law enforcement, oversight, or subject-benefit reasons, specifying GDPR Art.5(1)(b) purpose-limitation compatibility assessment with a national statutory list of permissible secondary purposes."
+  },
+  {
+    "source": "BDSG-23.2",
+    "target": "GDPR-9.2",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§23 Abs.2 BDSG requires an applicable Art.9(2) exception PLUS §23 Abs.1 grounds when public bodies repurpose special-category data, adding a second-layer national requirement on top of GDPR Art.9(2)."
+  },
+  {
+    "source": "BDSG-24.1",
+    "target": "GDPR-5.1.b",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§24 Abs.1 BDSG restricts secondary use of personal data by non-public bodies to security/crime-prevention or legal-claim purposes with a balancing test, implementing GDPR Art.5(1)(b) purpose limitation for private entities via a national statutory compatibility test."
+  },
+  {
+    "source": "BDSG-26.1.S1",
+    "target": "GDPR-88.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§26 Abs.1 S.1 BDSG establishes necessity-based lawfulness for employment data (establishment/execution/termination of employment contract), using GDPR Art.88(1) opening clause to create a specific national legal basis supplementing Art.6(1)(b)."
+  },
+  {
+    "source": "BDSG-26.1.S2",
+    "target": "GDPR-88.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§26 Abs.1 S.2 BDSG permits processing for detecting workplace crime only where documented specific suspicion exists and proportionality is maintained — a stricter national rule than GDPR Art.88(1) alone would require, exercising Art.88 to impose employee-protective conditions."
+  },
+  {
+    "source": "BDSG-26.2",
+    "target": "GDPR-7.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§26 Abs.2 BDSG governs consent in employment relationships, requiring awareness of the power imbalance and mandating written/electronic form, going beyond GDPR Art.7(1) and Art.88 by imposing additional validity requirements for employment consent."
+  },
+  {
+    "source": "BDSG-26.3",
+    "target": "GDPR-9.2.b",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§26 Abs.3 BDSG permits processing of special-category employment data when necessary for employment law / social protection rights, implementing GDPR Art.9(2)(b) in the specific employment context with proportionality balancing."
+  },
+  {
+    "source": "BDSG-26.4",
+    "target": "GDPR-88.2",
+    "relationship": "equivalent",
+    "legal_basis": "GDPR",
+    "rationale": "§26 Abs.4 BDSG allows collective agreements (Betriebsvereinbarungen/Tarifverträge) to authorise employee data processing including special categories, directly implementing GDPR Art.88(2) which explicitly envisages collective agreement authorisation."
+  },
+  {
+    "source": "BDSG-26.5",
+    "target": "GDPR-5.1.f",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§26 Abs.5 BDSG requires controllers to implement measures ensuring compliance with Art.5 principles in employment data processing, implementing GDPR Art.5(1)(f) integrity/confidentiality and Art.5(2) accountability in the national employment context."
+  },
+  {
+    "source": "BDSG-26.8",
+    "target": "GDPR-88.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§26 Abs.8 BDSG extends the definition of 'employee' to trainees, disabled workers, volunteers, job applicants, and former employees — broadening the GDPR Art.88(1) employment context beyond what the GDPR defines, using the opening clause to set a wider national scope."
+  },
+  {
+    "source": "BDSG-27.1",
+    "target": "GDPR-9.2.j",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§27 Abs.1 BDSG permits processing of special-category data without consent for scientific/historical research or statistics where controller interest considerably outweighs data subject interest, implementing GDPR Art.9(2)(j) research/statistics opening clause."
+  },
+  {
+    "source": "BDSG-27.2",
+    "target": "GDPR-89.2",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§27 Abs.2 BDSG restricts data-subject rights (Art.15, 16, 18, 21) where exercising them would seriously impair scientific or statistical purposes, implementing the GDPR Art.89(2) derogation for research/statistics processing."
+  },
+  {
+    "source": "BDSG-28.1",
+    "target": "GDPR-9.2.j",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§28 Abs.1 BDSG permits processing of special-category data for public-interest archival purposes with appropriate safeguards per §22 Abs.2, implementing GDPR Art.9(2)(j) in the archiving context via the Art.89(3) derogation pathway."
+  },
+  {
+    "source": "BDSG-28.2",
+    "target": "GDPR-14.5.b",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§28 Abs.2 BDSG exempts archives from the GDPR Art.14 information obligation where records are not indexed by name or retrieval requires disproportionate effort, directly invoking the GDPR Art.14(5)(b) disproportionate-effort exemption in the archival context."
+  },
+  {
+    "source": "BDSG-28.3",
+    "target": "GDPR-16",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§28 Abs.3 BDSG replaces the GDPR Art.16 rectification right for archives with a statement-of-objection mechanism (Widerspruchsvermerk), exercising Art.89(3) to restrict rectification while protecting the data subject's interest through a documented counter-note."
+  },
+  {
+    "source": "BDSG-28.4",
+    "target": "GDPR-89.3",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§28 Abs.4 BDSG disapplies Arts.18, 20, 21 GDPR rights for public-interest archiving where those rights would seriously impair archival objectives, implementing GDPR Art.89(3) which permits Member States to provide derogations for archival purposes."
+  },
+  {
+    "source": "BDSG-29.1",
+    "target": "GDPR-14.5.d",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§29 Abs.1 BDSG exempts professional confidentiality holders from GDPR Arts.14 and 15 obligations and Art.34 breach notification where disclosure would reveal information that must be kept confidential by nature, implementing GDPR Art.14(5)(d) professional secrecy exception."
+  },
+  {
+    "source": "BDSG-30.1",
+    "target": "GDPR-9.2",
+    "relationship": "related",
+    "legal_basis": "GDPR",
+    "rationale": "§30 Abs.1 BDSG ensures equal treatment of cross-border EU credit inquiries, related to GDPR's non-discrimination and free-flow principles but more directly implementing CCD2 Directive Art.9 obligations within the GDPR data-portability framework."
+  },
+  {
+    "source": "BDSG-30.2",
+    "target": "GDPR-22.3",
+    "relationship": "related",
+    "legal_basis": "GDPR",
+    "rationale": "§30 Abs.2 BDSG requires lenders to notify consumers of adverse credit decisions based on third-party information, related to GDPR Art.22(3) right-to-explanation but also implementing Art.7 Consumer Credit Directive obligations alongside GDPR."
+  },
+  {
+    "source": "BDSG-31.1",
+    "target": "GDPR-22.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§31 Abs.1 BDSG restricts scoring (probability-value-based automated decisions on contracts) to demonstrably relevant data computed under recognised statistical methods, adding substantive national conditions to GDPR Art.22(1) beyond Art.22(2)/(3) procedural safeguards."
+  },
+  {
+    "source": "BDSG-31.1.Nr3",
+    "target": "GDPR-22.2.b",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§31 Abs.1 Nr.3 BDSG explicitly prohibits address data as the sole basis for scoring, going beyond GDPR Art.22(2)(b) which allows scoring with appropriate safeguards without this specific data-type exclusion."
+  },
+  {
+    "source": "BDSG-31.2",
+    "target": "GDPR-6.1.f",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§31 Abs.2 BDSG specifies conditions for credit-bureau (Auskunftei) payment-capacity probability values — only listed debt categories (judgment, insolvency, acknowledgement, double reminder + four-week interval, contract termination notice) qualify, providing national specification of GDPR Art.6(1)(f) legitimate-interest balance for creditworthiness assessment."
+  },
+  {
+    "source": "BDSG-32.1",
+    "target": "GDPR-13.4",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§32 Abs.1 BDSG restricts or exempts the GDPR Art.13 information obligation (direct collection) for public bodies where disclosure would endanger task fulfilment, security, state interests, or legal claims — exercising the Art.23(1) opening clause to restrict Art.13."
+  },
+  {
+    "source": "BDSG-32.2",
+    "target": "GDPR-23.2",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§32 Abs.2 BDSG requires controllers who withhold Art.13 information to publish general information and document their reasons, partially implementing GDPR Art.23(2) safeguards catalogue (purpose, categories, duration, safeguards) required when restricting data-subject rights."
+  },
+  {
+    "source": "BDSG-32.3",
+    "target": "GDPR-13.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§32 Abs.3 BDSG allows deferred notification (up to 2 weeks after obstacle ceases) when temporary impediments prevent fulfilment of Art.13 obligations — a national procedural rule specifying the timing of transparency duties not explicitly addressed in GDPR Art.13(1)."
+  },
+  {
+    "source": "BDSG-33.1",
+    "target": "GDPR-14.5",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§33 Abs.1 BDSG restricts or exempts the GDPR Art.14 information obligation (data not obtained directly) for public and private entities on grounds of task endangerment, security, legal claims, or confidentiality, using Art.23(1) to expand the derogation categories beyond Art.14(5)'s exhaustive list."
+  },
+  {
+    "source": "BDSG-33.2",
+    "target": "GDPR-23.2",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§33 Abs.2 BDSG mandates protective measures and documentation when withholding Art.14 information, partially implementing the safeguard requirements of GDPR Art.23(2)."
+  },
+  {
+    "source": "BDSG-33.3",
+    "target": "GDPR-14.5.d",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§33 Abs.3 BDSG grants intelligence/security services a veto right over disclosure of data transmissions to them, going beyond GDPR Art.14(5)(d) professional secrecy by conferring the confidentiality decision on the intelligence service rather than the controller."
+  },
+  {
+    "source": "BDSG-34.1",
+    "target": "GDPR-15.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§34 Abs.1 BDSG restricts the GDPR Art.15 right of access for public and private entities on grounds of confidentiality, disproportionate effort, or data-protection-only retention — exercising GDPR Art.23(1) to create national access derogations beyond Art.15's built-in exceptions."
+  },
+  {
+    "source": "BDSG-34.2",
+    "target": "GDPR-23.2",
+    "relationship": "subset",
+    "legal_basis": "GDPR",
+    "rationale": "§34 Abs.2 BDSG requires documentation of access-denial reasons and limits onward use of provided information, implementing GDPR Art.23(2)(g)–(h) safeguard catalogue for Art.15 restrictions."
+  },
+  {
+    "source": "BDSG-34.3",
+    "target": "GDPR-58.1.a",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§34 Abs.3 BDSG grants the BfDI access to denied data on behalf of data subjects in the public-authority context, providing a national surrogate-access mechanism not contemplated in GDPR Art.15 but consistent with the supervisory-authority investigative power in Art.58(1)(a)."
+  },
+  {
+    "source": "BDSG-34.4",
+    "target": "GDPR-15.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§34 Abs.4 BDSG restricts Art.15 access for non-automated non-systematically stored data to cases where the subject provides identifying information and effort is proportionate — a practical national access filter beyond GDPR Art.15's text."
+  },
+  {
+    "source": "BDSG-35.1",
+    "target": "GDPR-17.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§35 Abs.1 BDSG replaces the GDPR Art.17(1) erasure right with restriction under Art.18 when deletion is impossible/impracticable due to non-automated storage methods, exercising GDPR Art.23(1)(e) to allow restriction instead of erasure where technical means do not permit deletion."
+  },
+  {
+    "source": "BDSG-35.2",
+    "target": "GDPR-17.1.a",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§35 Abs.2 BDSG extends the Art.18-substitution rule to Art.17(1)(a) and (d) erasure grounds where deletion would harm the data subject's own legitimate interests, adding a subject-protective national derogation to the Art.17(1) erasure right."
+  },
+  {
+    "source": "BDSG-35.3",
+    "target": "GDPR-17.3.b",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§35 Abs.3 BDSG disapplies Art.17(1)(a) erasure where statutory or contractual retention periods prevent deletion, supplementing GDPR Art.17(3)(b) (legal obligation retention) by adding the contractual retention category not expressly covered in Art.17(3)."
+  },
+  {
+    "source": "BDSG-36",
+    "target": "GDPR-21.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§36 BDSG restricts the GDPR Art.21(1) right to object against public-authority processing where overriding compelling public interest exists or a legal obligation mandates processing — exercising Art.23(1) to narrow the objection right in the public-sector context."
+  },
+  {
+    "source": "BDSG-37.1",
+    "target": "GDPR-22.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§37 Abs.1 BDSG disapplies the GDPR Art.22(1) prohibition on solely automated decisions for insurance contract performance where the request is granted or binding fee schedules are used with appropriate safeguards, exercising Art.22(2)(b) 'Union/Member-State law' exception to permit such decisions."
+  },
+  {
+    "source": "BDSG-37.2",
+    "target": "GDPR-9.2",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§37 Abs.2 BDSG permits automated decisions based on health data (Art.4(15)) in the insurance context where §22 Abs.2 safeguards are applied, creating a national Art.9(2)(g) basis for health-data-based automated decisions in insurance — extending beyond GDPR's default prohibition."
+  },
+  {
+    "source": "BDSG-38.1",
+    "target": "GDPR-37.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§38 Abs.1 BDSG mandates DPO appointment for non-public bodies employing ≥20 persons in automated data processing (regardless of DPIA obligation), going beyond GDPR Art.37(1)(b)–(c) which ties mandatory DPO to DPIA-requiring or large-scale processing without a fixed headcount threshold."
+  },
+  {
+    "source": "BDSG-38.1.S2",
+    "target": "GDPR-37.1.b",
+    "relationship": "related",
+    "legal_basis": "GDPR",
+    "rationale": "§38 Abs.1 S.2 BDSG additionally requires DPO appointment for commercial data brokers (transmission, anonymisation, market research) regardless of staff numbers, extending GDPR Art.37(1)(b)–(c) by identifying commercial data trading as a per-se high-risk activity."
+  },
+  {
+    "source": "BDSG-38.2",
+    "target": "GDPR-38.3",
+    "relationship": "equivalent",
+    "legal_basis": "GDPR",
+    "rationale": "§38 Abs.2 BDSG applies §6 (qualification, independence, tasks) to private-sector DPOs by cross-reference, implementing GDPR Art.38(3) independence and Art.37(5) qualification requirements for the non-public sector."
+  },
+  {
+    "source": "BDSG-40",
+    "target": "GDPR-51.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§40 BDSG establishes the Länder supervisory authorities for non-public bodies and grants them investigative, corrective, data-sharing, and DPO-removal powers, implementing GDPR Art.51(1) and Art.58 at the state level with additional German-public-law competence rules for multi-establishment cases."
+  },
+  {
+    "source": "BDSG-41.1",
+    "target": "GDPR-83.4",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§41 Abs.1 BDSG specifies that the German OWiG (Administrative Offences Act) applies to GDPR Art.83(4)–(6) fines proceedings, with specific carve-outs (§§17, 35, 36 OWiG inapplicable) and a €100,000 threshold for Regional Court jurisdiction — national procedural implementation of GDPR Art.83(4)."
+  },
+  {
+    "source": "BDSG-41.2",
+    "target": "GDPR-83.8",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§41 Abs.2 BDSG applies OWiG and StPO procedural rules to GDPR fine proceedings and restricts prosecutor discontinuation to supervisory-authority consent, implementing GDPR Art.83(8) procedural safeguards with national-law detail."
+  },
+  {
+    "source": "BDSG-42.1",
+    "target": "GDPR-84.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§42 Abs.1 BDSG establishes criminal penalties (up to 3 years imprisonment) for commercial unauthorised disclosure of personal data to large numbers of persons, using GDPR Art.84(1) opening clause to supplement administrative fines with criminal sanctions for aggravated violations."
+  },
+  {
+    "source": "BDSG-42.2",
+    "target": "GDPR-84.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§42 Abs.2 BDSG provides criminal penalties (up to 2 years imprisonment) for unauthorized processing or processing obtained by false pretences for personal gain or intent to harm, further exercising GDPR Art.84(1) to establish criminal liability categories not covered by Art.83 fines."
+  },
+  {
+    "source": "BDSG-42.4",
+    "target": "GDPR-83.1",
+    "relationship": "related",
+    "legal_basis": "GDPR",
+    "rationale": "§42 Abs.4 BDSG prohibits using Art.33 breach notifications or Art.34(1) data-breach disclosures as evidence in criminal proceedings against the notifying party without consent, protecting the GDPR's incentive structure for voluntary breach reporting under Art.83/84."
+  },
+  {
+    "source": "BDSG-43.1",
+    "target": "GDPR-83.4",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§43 Abs.1 BDSG establishes specific Ordnungswidrigkeiten (§30(1) credit-information and §30(2) consumer notification obligations) with fines up to €50,000, providing national implementing penalties supplementing GDPR Art.83(4) fines."
+  },
+  {
+    "source": "BDSG-43.4",
+    "target": "GDPR-33.1",
+    "relationship": "related",
+    "legal_basis": "GDPR",
+    "rationale": "§43 Abs.4 BDSG restricts evidentiary use of GDPR Art.33/Art.34(1) breach notifications in Ordnungswidrigkeiten proceedings without consent, protecting notification incentives consistent with the GDPR Art.33(1) 72-hour reporting duty."
+  },
+  {
+    "source": "BDSG-44.1",
+    "target": "GDPR-79.1",
+    "relationship": "superset",
+    "legal_basis": "GDPR",
+    "rationale": "§44 Abs.1 BDSG provides that data subjects may sue controllers/processors at the court of the controller's establishment or the data subject's residence, implementing GDPR Art.79(1) effective judicial remedy and Art.79(2) jurisdiction rule with an additional home-court option for data subjects."
+  },
+  {
+    "source": "BDSG-44.3",
+    "target": "GDPR-27.4",
+    "relationship": "equivalent",
+    "legal_basis": "GDPR",
+    "rationale": "§44 Abs.3 BDSG provides that the Art.27(1) representative is authorised to receive service of process in civil proceedings, directly implementing GDPR Art.27(4) which designates the representative as addressee for proceedings against the controller."
+  },
+  {
+    "source": "BDSG-45",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§45 BDSG defines scope for Teil 3 (processing by law-enforcement competent authorities for crime prevention/prosecution), implementing LED (EU) 2016/680 Art.1 — NOT GDPR. The existing CSV mapping §45→GDPR-Art.4 is mis-attributed; LED has its own Art.3 definitions independent of GDPR."
+  },
+  {
+    "source": "BDSG-46",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§46 BDSG provides definitions for Teil 3 (Begriffsbestimmungen), implementing LED Art.3 definitions — NOT GDPR Art.4. Any mapping to GDPR Art.4 would be incorrect; LED definitions diverge from GDPR (e.g., different 'controller' scope limited to law-enforcement authorities)."
+  },
+  {
+    "source": "BDSG-47",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§47 BDSG establishes general principles for LED processing (purpose limitation, accuracy, proportionality), implementing LED Art.4 — NOT GDPR Art.5. The GDPR principles apply only to GDPR-scope processing; Teil 3 is structurally parallel but legally distinct."
+  },
+  {
+    "source": "BDSG-48",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§48 BDSG governs processing of special-category data by law-enforcement authorities, implementing LED Art.10 — NOT GDPR Art.9. The existing CSV mapping §48→GDPR-Art.6 is a structural mis-attribution; LED Art.10 is the correct reference norm for special-category law-enforcement processing."
+  },
+  {
+    "source": "BDSG-49",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§49 BDSG governs secondary-purpose processing by law-enforcement authorities, implementing LED Art.4(2) purpose limitation — NOT GDPR Art.5(1)(b)."
+  },
+  {
+    "source": "BDSG-50",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§50 BDSG governs archival/research/statistical processing in the law-enforcement context, implementing LED Art.4(3) — NOT GDPR Art.89."
+  },
+  {
+    "source": "BDSG-51",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§51 BDSG governs consent in LED processing contexts, implementing LED Art.4(b) — NOT GDPR Art.7. LED consent has narrower scope (supplements lawful basis; does not create a standalone legal basis as in GDPR)."
+  },
+  {
+    "source": "BDSG-52",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§52 BDSG governs processing on instructions in the LED context, implementing LED Art.6 — NOT GDPR Art.29."
+  },
+  {
+    "source": "BDSG-53",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§53 BDSG establishes the duty of secrecy for LED-context processors, implementing LED Art.28(3) — NOT GDPR Art.5(1)(f)."
+  },
+  {
+    "source": "BDSG-54",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§54 BDSG governs automated individual decision-making in the law-enforcement context, implementing LED Art.11 — NOT GDPR Art.22."
+  },
+  {
+    "source": "BDSG-55",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§55 BDSG requires general information provision to data subjects in LED processing, implementing LED Art.13 — NOT GDPR Art.13."
+  },
+  {
+    "source": "BDSG-56",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§56 BDSG governs notification of data subjects in LED processing, implementing LED Art.14 — NOT GDPR Art.34."
+  },
+  {
+    "source": "BDSG-57",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§57 BDSG provides data subjects' right of access in LED processing, implementing LED Art.14 — NOT GDPR Art.15."
+  },
+  {
+    "source": "BDSG-58",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§58 BDSG governs rectification, erasure, and restriction in LED processing, implementing LED Art.16 — NOT GDPR Art.17/18."
+  },
+  {
+    "source": "BDSG-59",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§59 BDSG establishes procedures for data subjects exercising LED rights, implementing LED Art.17 — NOT GDPR Art.12."
+  },
+  {
+    "source": "BDSG-60",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§60 BDSG provides complaint mechanism with BfDI in LED context, implementing LED Art.17(3) — NOT GDPR Art.77."
+  },
+  {
+    "source": "BDSG-61",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§61 BDSG provides judicial protection against LED supervisory decisions, implementing LED Art.53 — NOT GDPR Art.78."
+  },
+  {
+    "source": "BDSG-62",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§62 BDSG governs processor contracts in LED processing, implementing LED Art.22 — NOT GDPR Art.28."
+  },
+  {
+    "source": "BDSG-63",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§63 BDSG governs joint controllership in LED processing, implementing LED Art.21 — NOT GDPR Art.26."
+  },
+  {
+    "source": "BDSG-64",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§64 BDSG sets security requirements for LED processing (encryption, pseudonymisation, 14-point controls catalogue), implementing LED Art.29 — NOT GDPR Art.32. The existing CSV mapping §64→GDPR-Art.32 is a structural mis-attribution; LED Art.29 is the correct norm even though its content is substantively parallel."
+  },
+  {
+    "source": "BDSG-65",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§65 BDSG governs reporting of data breaches by LED controllers, implementing LED Art.30 — NOT GDPR Art.33."
+  },
+  {
+    "source": "BDSG-66",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§66 BDSG governs notification of data subjects after LED breaches, implementing LED Art.31 — NOT GDPR Art.34."
+  },
+  {
+    "source": "BDSG-67",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§67 BDSG governs DPIA for LED processing, implementing LED Art.27 — NOT GDPR Art.35."
+  },
+  {
+    "source": "BDSG-68",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§68 BDSG requires cooperation with BfDI in LED processing contexts, implementing LED Art.46 — NOT GDPR Art.31."
+  },
+  {
+    "source": "BDSG-69",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§69 BDSG requires prior consultation with BfDI for high-risk LED processing, implementing LED Art.28 — NOT GDPR Art.36."
+  },
+  {
+    "source": "BDSG-70",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§70 BDSG mandates records of processing activities for LED controllers, implementing LED Art.24 — NOT GDPR Art.30."
+  },
+  {
+    "source": "BDSG-71",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§71 BDSG requires data protection by design and by default in LED processing, implementing LED Art.20 — NOT GDPR Art.25."
+  },
+  {
+    "source": "BDSG-72",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§72 BDSG requires distinction between categories of data subjects in LED processing (suspects/convicted persons/victims/witnesses), implementing LED Art.6 — NOT GDPR; GDPR has no equivalent provision."
+  },
+  {
+    "source": "BDSG-73",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§73 BDSG requires distinction between facts and assessments in LED processing, implementing LED Art.7 — NOT GDPR; GDPR has no equivalent provision."
+  },
+  {
+    "source": "BDSG-74",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§74 BDSG governs procedures for LED data transmissions, implementing LED Art.8 conditions on onward transfers within law-enforcement — NOT GDPR Art.44 ff."
+  },
+  {
+    "source": "BDSG-75",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§75 BDSG governs rectification, erasure, and restriction remedies for LED-context data, implementing LED Art.16 — NOT GDPR Art.16/17/18."
+  },
+  {
+    "source": "BDSG-76",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§76 BDSG mandates logging of LED automated-processing operations, implementing LED Art.25 — NOT GDPR Art.30 (which covers records of processing, not operational logs)."
+  },
+  {
+    "source": "BDSG-77",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§77 BDSG governs confidential reporting of violations in LED processing, implementing LED Art.32 — NOT GDPR; whistleblower protection in the LED context is structurally separate from GDPR breach reporting."
+  },
+  {
+    "source": "BDSG-78",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§78 BDSG sets general conditions for LED data transfers to third countries, implementing LED Art.35 — NOT GDPR Art.44; LED transfer conditions differ materially from GDPR Ch.V."
+  },
+  {
+    "source": "BDSG-79",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§79 BDSG governs LED transfers with appropriate guarantees, implementing LED Art.36 — NOT GDPR Art.46."
+  },
+  {
+    "source": "BDSG-80",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§80 BDSG governs LED transfers without appropriate safeguards (derogations), implementing LED Art.38 — NOT GDPR Art.49."
+  },
+  {
+    "source": "BDSG-81",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§81 BDSG governs other LED-specific data transmissions, implementing LED Art.39 onward-transfer provisions — NOT GDPR."
+  },
+  {
+    "source": "BDSG-82",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§82 BDSG governs mutual assistance between supervisory authorities in the LED context, implementing LED Art.50 — NOT GDPR Art.61."
+  },
+  {
+    "source": "BDSG-83",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§83 BDSG governs damages and compensation for LED processing violations, implementing LED Art.56 — NOT GDPR Art.82; LED Art.56 damages regime is structurally similar but legally distinct from GDPR."
+  },
+  {
+    "source": "BDSG-84",
+    "target": "n/a",
+    "relationship": "n/a",
+    "legal_basis": "LED-2016/680-NOT-GDPR",
+    "rationale": "§84 BDSG establishes criminal penalties for LED processing violations, implementing LED Art.57 — NOT GDPR Art.84; these are distinct LED-specific sanctions applicable only to law-enforcement-context processing."
+  }
+]

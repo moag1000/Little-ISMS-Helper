@@ -1,0 +1,440 @@
+[
+  {
+    "source": "GDPR-Art5(1)(a)-lawfulness",
+    "target": "ISO27018-A.3.1",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(a) requires lawful processing broadly; A.3.1 (Public cloud PII processor's purpose) addresses only the processor-side obligation to process solely for the contracted purpose, covering the lawfulness limb as applied to processors but not the controller-side lawful-basis determination."
+  },
+  {
+    "source": "GDPR-Art5(1)(a)-fairness",
+    "target": "ISO27018-A.3.2",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(a) fairness requires no deceptive/harmful processing; A.3.2 (prohibition of commercial use of PII) covers one specific unfair-use scenario (using customer data for advertising without consent) but does not exhaust the fairness principle."
+  },
+  {
+    "source": "GDPR-Art5(1)(a)-transparency",
+    "target": "ISO27018-A.8.1",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(a) transparency applies to controllers informing data subjects; A.8.1 (disclosure of sub-contracted PII processing) covers only processor-to-controller transparency about sub-processors, a subset of the broader transparency obligation."
+  },
+  {
+    "source": "GDPR-Art5(1)(b)-purpose-limitation",
+    "target": "ISO27018-A.3.1",
+    "relationship": "equivalent",
+    "rationale": "Art.5(1)(b) purpose limitation and A.3.1 (Public cloud PII processor's purpose) are co-extensive at the processor level: both require processing only for the specified contracted purpose and prohibit incompatible secondary use."
+  },
+  {
+    "source": "GDPR-Art5(1)(b)-purpose-limitation",
+    "target": "ISO27018-A.3.2",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(b) purpose limitation is broad; A.3.2 (prohibition of commercial use) addresses only one incompatible-purpose scenario (marketing/profiling), making it a specific application of the broader principle."
+  },
+  {
+    "source": "GDPR-Art5(1)(c)-data-minimisation",
+    "target": "ISO27018-A.5.1",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(c) data minimisation applies to all collected and processed data; A.5.1 (secure erasure of temporary files) covers only one operational aspect — ensuring temporary PII copies are minimised and deleted — not collection minimisation as a whole."
+  },
+  {
+    "source": "GDPR-Art5(1)(d)-accuracy",
+    "target": "ISO27018-A.2.1",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(d) accuracy requires keeping data up to date; A.2.1 (obligation to cooperate regarding PII principals' rights) creates the processor's duty to assist with correction/rectification requests, which supports accuracy but does not itself mandate data quality governance."
+  },
+  {
+    "source": "GDPR-Art5(1)(e)-storage-limitation",
+    "target": "ISO27018-A.10.3",
+    "relationship": "equivalent",
+    "rationale": "Art.5(1)(e) storage limitation and A.10.3 (PII return, transfer and disposal) are co-extensive: both mandate that PII is retained only as long as necessary and then securely returned, transferred, or disposed of."
+  },
+  {
+    "source": "GDPR-Art5(1)(e)-storage-limitation",
+    "target": "ISO27018-A.10.2",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(e) storage limitation covers all PII; A.10.2 (retention period for administrative security policies and guidelines) addresses only policy-document retention, a narrow subset of the broader data storage-limitation requirement."
+  },
+  {
+    "source": "GDPR-Art5(1)(f)-integrity-confidentiality",
+    "target": "ISO27018-A.11.6",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(f) integrity and confidentiality covers all security measures; A.11.6 (encryption of PII transmitted over public data-transmission networks) addresses only one technical control — encryption in transit — leaving at-rest protection and other CIA measures outside its scope."
+  },
+  {
+    "source": "GDPR-Art5(1)(f)-integrity-confidentiality",
+    "target": "ISO27018-A.11.1",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(f) requires confidentiality broadly; A.11.1 (confidentiality or non-disclosure agreements) addresses only the personnel/contractual dimension of confidentiality, not technical or organisational security measures at large."
+  },
+  {
+    "source": "GDPR-Art5(2)-accountability",
+    "target": "ISO27018-A.10.2",
+    "relationship": "subset",
+    "rationale": "Art.5(2) accountability requires the controller to demonstrate compliance with all principles; A.10.2 (retention of administrative security policies and guidelines) supports one evidentiary aspect — maintaining policy records — but does not address demonstration of compliance with the full principle set."
+  },
+  {
+    "source": "GDPR-Art28(2)-sub-processor-authorisation",
+    "target": "ISO27018-A.8.1",
+    "relationship": "equivalent",
+    "rationale": "Art.28(2) requiring prior written controller authorisation for sub-processors and A.8.1 (disclosure of sub-contracted PII processing) are co-extensive: both require the processor to notify the controller of sub-processors and obtain approval before engagement."
+  },
+  {
+    "source": "GDPR-Art28(3)(a)-process-on-instructions",
+    "target": "ISO27018-A.3.1",
+    "relationship": "equivalent",
+    "rationale": "Art.28(3)(a) (process only on documented controller instructions) and A.3.1 (public cloud PII processor's purpose) are co-extensive at the processor level: both prohibit processing outside the contracted scope and require adherence to documented controller instructions."
+  },
+  {
+    "source": "GDPR-Art28(3)(a)-third-country-transfers",
+    "target": "ISO27018-A.12.1",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(a) covers instructions including third-country transfers; A.12.1 (geographical location of PII) addresses location transparency but does not itself mandate the legal-basis requirements for international transfers under Chapter V."
+  },
+  {
+    "source": "GDPR-Art28(3)(b)-confidentiality",
+    "target": "ISO27018-A.11.1",
+    "relationship": "equivalent",
+    "rationale": "Art.28(3)(b) requiring processor personnel to be bound by confidentiality and A.11.1 (confidentiality or non-disclosure agreements for personnel) are co-extensive: both mandate enforceable confidentiality obligations for all authorised persons."
+  },
+  {
+    "source": "GDPR-Art28(3)(c)-security-Art32",
+    "target": "ISO27018-A.11.6",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(c) incorporates the full Art.32 security obligation; A.11.6 (encryption in transit) implements only one specific technical measure within that broader security requirement."
+  },
+  {
+    "source": "GDPR-Art28(3)(c)-security-Art32",
+    "target": "ISO27018-A.11.2",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(c) security obligation encompasses all TOM; A.11.2 (restriction of creation of hardcopy material) addresses one specific physical security control — limiting PII on printed output — within the broader security framework."
+  },
+  {
+    "source": "GDPR-Art28(3)(c)-security-Art32",
+    "target": "ISO27018-A.11.3",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(c)/Art.32 broad security obligation; A.11.3 (control and logging of data restoration) addresses only the specific operational security measure of auditing backup restoration activities involving PII."
+  },
+  {
+    "source": "GDPR-Art28(3)(c)-security-Art32",
+    "target": "ISO27018-A.11.4",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(c)/Art.32 broad security obligation; A.11.4 (protecting data on storage media leaving premises) covers one physical security scenario — media transportation — within the comprehensive security requirement."
+  },
+  {
+    "source": "GDPR-Art28(3)(c)-security-Art32",
+    "target": "ISO27018-A.11.5",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(c)/Art.32 broad security obligation; A.11.5 (use of unencrypted portable storage media and devices) addresses one endpoint-security control — prohibiting unencrypted removable media for PII — within the full security framework."
+  },
+  {
+    "source": "GDPR-Art28(3)(d)-sub-processor-obligations",
+    "target": "ISO27018-A.8.1",
+    "relationship": "equivalent",
+    "rationale": "Art.28(3)(d) requiring equivalent data protection obligations on sub-processors and A.8.1 (disclosure of sub-contracted PII processing, including contractual flow-down) are co-extensive: both mandate that sub-processors are bound by the same PII protection requirements."
+  },
+  {
+    "source": "GDPR-Art28(3)(e)-data-subject-rights-assistance",
+    "target": "ISO27018-A.2.1",
+    "relationship": "equivalent",
+    "rationale": "Art.28(3)(e) requiring processor assistance with data subject rights (Chapter III) and A.2.1 (obligation to co-operate regarding PII principals' rights) are co-extensive: both require the processor to facilitate access, correction, erasure, and other rights requests from data subjects."
+  },
+  {
+    "source": "GDPR-Art28(3)(f)-assist-Art32-36",
+    "target": "ISO27018-A.10.1",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(f) requires processor assistance with Art.32-36 obligations (security, DPIA, prior consultation); A.10.1 (notification of a data breach involving PII) covers only the breach-notification dimension of that assistance obligation."
+  },
+  {
+    "source": "GDPR-Art28(3)(g)-deletion-return",
+    "target": "ISO27018-A.10.3",
+    "relationship": "equivalent",
+    "rationale": "Art.28(3)(g) (delete or return all personal data after service termination) and A.10.3 (PII return, transfer and disposal) are co-extensive: both require secure return or deletion of PII at contract end unless retention is legally mandated."
+  },
+  {
+    "source": "GDPR-Art28(3)(h)-audit-cooperation",
+    "target": "ISO27018-A.10.2",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(h) requires processor to provide all information needed for and to contribute to audits/inspections; A.10.2 (retention of administrative security policies) supports auditability by preserving policy documentation but covers only one evidentiary input to audit cooperation."
+  },
+  {
+    "source": "GDPR-Art28(4)-sub-processor-liability",
+    "target": "ISO27018-A.8.1",
+    "relationship": "subset",
+    "rationale": "Art.28(4) makes the primary processor fully liable for sub-processor failures; A.8.1 (disclosure of sub-contracted PII processing) addresses transparency and contractual flow-down but does not establish liability allocation, making it a partial enabler rather than an equivalent."
+  },
+  {
+    "source": "GDPR-Art30(2)(a)-processor-record-contacts",
+    "target": "ISO27018-A.10.2",
+    "relationship": "subset",
+    "rationale": "Art.30(2)(a) requires processor records to include contact details of processor, controllers, and DPO; A.10.2 (retention of administrative security policies and guidelines) covers policy-document retention but not the specific contact-record requirement."
+  },
+  {
+    "source": "GDPR-Art30(2)(b)-processing-categories",
+    "target": "ISO27018-A.3.1",
+    "relationship": "subset",
+    "rationale": "Art.30(2)(b) requires recording all processing categories carried out per controller; A.3.1 (public cloud PII processor's purpose) defines purpose documentation obligations but does not mandate the formal RoPA record format required by Art.30."
+  },
+  {
+    "source": "GDPR-Art30(2)(c)-third-country-transfers-record",
+    "target": "ISO27018-A.12.1",
+    "relationship": "subset",
+    "rationale": "Art.30(2)(c) requires records of third-country transfers including safeguards; A.12.1 (geographical location of PII) covers location disclosure to the controller but is narrower — it does not require documenting the legal safeguards mechanism for each transfer."
+  },
+  {
+    "source": "GDPR-Art30(2)(d)-security-description",
+    "target": "ISO27018-A.11.6",
+    "relationship": "subset",
+    "rationale": "Art.30(2)(d) requires a general description of technical and organisational security measures in the processor's RoPA; A.11.6 (encryption in transit) is one specific TOM that would feature in that description but does not constitute the full description."
+  },
+  {
+    "source": "GDPR-Art32(1)-risk-based-security",
+    "target": "ISO27018-A.11.6",
+    "relationship": "subset",
+    "rationale": "Art.32(1) requires risk-appropriate security measures considering state of the art, costs, and risk; A.11.6 (encryption of PII in transit) implements one specific security control (encryption) without encompassing the broader risk-assessment and proportionality analysis."
+  },
+  {
+    "source": "GDPR-Art32(1)(a)-pseudonymisation-encryption",
+    "target": "ISO27018-A.11.6",
+    "relationship": "subset",
+    "rationale": "Art.32(1)(a) covers both pseudonymisation and encryption at rest and in transit; A.11.6 addresses only encryption of PII transmitted over public networks, not pseudonymisation or encryption at rest."
+  },
+  {
+    "source": "GDPR-Art32(1)(a)-pseudonymisation-encryption",
+    "target": "ISO27018-A.11.5",
+    "relationship": "subset",
+    "rationale": "Art.32(1)(a) encryption obligation; A.11.5 (prohibition on unencrypted portable storage media for PII) implements the encryption principle for one specific medium type — portable devices — not for all data stores."
+  },
+  {
+    "source": "GDPR-Art32(1)(b)-CIA-resilience",
+    "target": "ISO27018-A.11.3",
+    "relationship": "subset",
+    "rationale": "Art.32(1)(b) requires ongoing confidentiality, integrity, availability and resilience; A.11.3 (control and logging of data restoration) addresses only availability-related controls for recovery operations, not the full CIA+resilience requirement."
+  },
+  {
+    "source": "GDPR-Art32(1)(b)-CIA-resilience",
+    "target": "ISO27018-A.11.4",
+    "relationship": "subset",
+    "rationale": "Art.32(1)(b) CIA and resilience broadly; A.11.4 (protecting data on storage media leaving premises) covers one physical availability/confidentiality control — media transit security — within the full resilience framework."
+  },
+  {
+    "source": "GDPR-Art32(1)(c)-restore-availability",
+    "target": "ISO27018-A.11.3",
+    "relationship": "equivalent",
+    "rationale": "Art.32(1)(c) (ability to restore availability/access timely after incident) and A.11.3 (control and logging of data restoration) are co-extensive at the operational level: both specifically address the restoration process and require it to be controlled and auditable."
+  },
+  {
+    "source": "GDPR-Art32(1)(d)-testing-assessing",
+    "target": "ISO27018-A.10.2",
+    "relationship": "subset",
+    "rationale": "Art.32(1)(d) requires regular testing and evaluation of security measures; A.10.2 (retention of security policy documentation) supports the evidentiary side of ongoing evaluation but does not itself mandate the testing/assessment process."
+  },
+  {
+    "source": "GDPR-Art32(2)-risk-factors",
+    "target": "ISO27018-A.3.1",
+    "relationship": "subset",
+    "rationale": "Art.32(2) requires factoring in risks from accidental/unlawful destruction, loss, alteration, unauthorised disclosure; A.3.1 (purpose limitation) contributes to risk reduction by confining processing scope but does not constitute a risk-assessment process."
+  },
+  {
+    "source": "GDPR-Art33(2)-processor-notify-controller",
+    "target": "ISO27018-A.10.1",
+    "relationship": "equivalent",
+    "rationale": "Art.33(2) (processor must notify controller without undue delay after becoming aware of a breach) and A.10.1 (notification of a data breach involving PII) are co-extensive: both impose the same notification-without-undue-delay obligation on the processor toward the controller."
+  },
+  {
+    "source": "GDPR-Art33(3)(a)-breach-nature",
+    "target": "ISO27018-A.10.1",
+    "relationship": "subset",
+    "rationale": "Art.33(3)(a) requires breach notifications to describe the nature, affected categories and approximate number of data subjects; A.10.1 (breach notification) covers the obligation to notify but does not prescribe the specific content elements required by Art.33(3), making it a broader enabler."
+  },
+  {
+    "source": "GDPR-Art33(5)-breach-documentation",
+    "target": "ISO27018-A.10.1",
+    "relationship": "subset",
+    "rationale": "Art.33(5) requires controllers to document all breaches; A.10.1 covers processor-to-controller notification obligations but does not extend to the controller's documentation requirement, making it a partial match."
+  },
+  {
+    "source": "GDPR-Art33(5)-breach-documentation",
+    "target": "ISO27018-A.10.2",
+    "relationship": "subset",
+    "rationale": "Art.33(5) breach-record documentation; A.10.2 (retention of administrative security policies) covers policy-document retention but not incident-specific breach records, making it a weak related match only."
+  },
+  {
+    "source": "GDPR-Art44-46-international-transfers",
+    "target": "ISO27018-A.12.1",
+    "relationship": "subset",
+    "rationale": "Arts.44-46 require lawful mechanisms for third-country transfers (adequacy, SCCs, BCRs etc.); A.12.1 (geographical location of PII) requires only that the processor discloses where data is stored/processed, not that it ensures a legal transfer basis."
+  },
+  {
+    "source": "GDPR-Art44-46-international-transfers",
+    "target": "ISO27018-A.3.1",
+    "relationship": "subset",
+    "rationale": "Arts.44-46 international transfer restrictions include the requirement to process only on instructions covering transfers; A.3.1 (purpose limitation at processor level) addresses the instruction-based processing obligation but not the specific legal-basis mechanism for cross-border flows."
+  },
+  {
+    "source": "GDPR-Art5(1)(b)-purpose-limitation",
+    "target": "ISO27018-A.5.1",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(b) purpose limitation applies to all data use; A.5.1 (secure erasure of temporary files) ensures temporary PII copies created for non-contracted purposes are removed, implementing purpose limitation for one specific operational artefact type."
+  },
+  {
+    "source": "GDPR-Art5(1)(c)-data-minimisation",
+    "target": "ISO27018-A.3.2",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(c) data minimisation applies to collection and processing; A.3.2 (prohibition of commercial use of PII) prevents excessive re-use for marketing, addressing one dimension of the minimisation principle at the processor level."
+  },
+  {
+    "source": "GDPR-Art28(3)(f)-assist-Art35-DPIA",
+    "target": "ISO27018-A.3.1",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(f) requires processor assistance with DPIAs (Art.35); A.3.1 (purpose documentation) provides the purpose-specification inputs needed for a DPIA but does not itself constitute DPIA assistance."
+  },
+  {
+    "source": "GDPR-Art28(3)(f)-assist-Art36-prior-consultation",
+    "target": "ISO27018-A.10.1",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(f) includes assisting with prior consultation (Art.36) where DPIA shows high residual risk; A.10.1 (breach notification) covers incident response notification but not the prospective prior-consultation process."
+  },
+  {
+    "source": "GDPR-Art5(1)(a)-transparency",
+    "target": "ISO27018-A.12.1",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(a) transparency requires open communication about processing to data subjects; A.12.1 (geographical location of PII) mandates processor-to-controller disclosure of storage locations, contributing to transparency but not addressing data-subject-level transparency."
+  },
+  {
+    "source": "GDPR-Art32(1)(a)-pseudonymisation-encryption",
+    "target": "ISO27018-A.11.4",
+    "relationship": "subset",
+    "rationale": "Art.32(1)(a) encryption obligation covers all data states; A.11.4 (protecting data on storage media leaving premises) implements one physical-layer security measure for media in transit, addressing encryption/protection for a specific operational scenario."
+  },
+  {
+    "source": "GDPR-Art28(3)(e)-data-subject-rights-assistance",
+    "target": "ISO27018-A.10.3",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(e) data subject rights include erasure (Art.17); A.10.3 (PII return, transfer and disposal) covers end-of-contract deletion but also supports erasure rights execution — it is a partial implementation of data-subject erasure rights as a processor obligation."
+  },
+  {
+    "source": "GDPR-Art5(1)(f)-integrity-confidentiality",
+    "target": "ISO27018-A.11.2",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(f) integrity and confidentiality applies to all processing; A.11.2 (restriction of creation of hardcopy material) addresses one physical-layer confidentiality control — preventing uncontrolled printed PII — within the broader security principle."
+  },
+  {
+    "source": "GDPR-Art5(1)(f)-integrity-confidentiality",
+    "target": "ISO27018-A.11.3",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(f) integrity and confidentiality; A.11.3 (control and logging of data restoration) contributes to integrity by ensuring restored data is auditable, addressing one operational integrity control."
+  },
+  {
+    "source": "GDPR-Art5(1)(f)-integrity-confidentiality",
+    "target": "ISO27018-A.11.4",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(f) security principle; A.11.4 (protecting data on storage media leaving premises) implements one physical confidentiality measure within the broader security-of-processing requirement."
+  },
+  {
+    "source": "GDPR-Art5(1)(f)-integrity-confidentiality",
+    "target": "ISO27018-A.11.5",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(f) security principle; A.11.5 (use of unencrypted portable storage media) implements one endpoint encryption control targeting a specific confidentiality risk scenario."
+  },
+  {
+    "source": "GDPR-Art6(1)-lawful-basis",
+    "target": "ISO27018-A.3.1",
+    "relationship": "subset",
+    "rationale": "Art.6(1) requires a lawful basis for each processing operation; A.3.1 (processor's purpose) constrains the processor to the contracted purpose but does not verify or validate the controller's chosen lawful basis, making it a narrow procedural safeguard."
+  },
+  {
+    "source": "GDPR-Art6(1)-lawful-basis",
+    "target": "ISO27018-A.3.2",
+    "relationship": "subset",
+    "rationale": "Art.6(1) lawful basis; A.3.2 (prohibition of commercial use without consent) specifically enforces the consent condition for one secondary processing scenario (marketing), implementing one lawful-basis check at processor level."
+  },
+  {
+    "source": "GDPR-Art17(1)-right-erasure",
+    "target": "ISO27018-A.10.3",
+    "relationship": "subset",
+    "rationale": "Art.17(1) gives data subjects the right to erasure upon request; A.10.3 (PII return, transfer and disposal) covers end-of-contract disposal and supports erasure operationally, but applies specifically to contract termination rather than ad-hoc erasure requests during an active contract."
+  },
+  {
+    "source": "GDPR-Art17(1)-right-erasure",
+    "target": "ISO27018-A.5.1",
+    "relationship": "subset",
+    "rationale": "Art.17(1) right to erasure; A.5.1 (secure erasure of temporary files) ensures incidental PII copies are also erased, supporting completeness of erasure but addressing only one operational data-deletion scenario."
+  },
+  {
+    "source": "GDPR-Art13-14-information-obligations",
+    "target": "ISO27018-A.8.1",
+    "relationship": "subset",
+    "rationale": "Arts.13-14 require controllers to disclose processing information to data subjects including sub-processors; A.8.1 (disclosure of sub-contracted PII processing to the controller) enables the controller to fulfil Art.13/14 by making sub-processor information available, but is not itself a data-subject-facing obligation."
+  },
+  {
+    "source": "GDPR-Art13-14-information-obligations",
+    "target": "ISO27018-A.12.1",
+    "relationship": "subset",
+    "rationale": "Arts.13-14 information obligations include disclosing third-country transfer destinations to data subjects; A.12.1 (geographical location of PII disclosed to controller) enables controller disclosure but is a processor-to-controller transparency obligation, not direct data-subject notification."
+  },
+  {
+    "source": "GDPR-Art48-disclosure-to-authorities",
+    "target": "ISO27018-A.6.1",
+    "relationship": "subset",
+    "rationale": "Art.48 restricts transfers of personal data to third-country authorities without an international agreement; A.6.1 (PII disclosure notification — requiring the processor to notify the controller before disclosing PII to authorities unless legally prohibited) implements the prior-authorisation spirit of Art.48 but does not itself create the legal-transfer mechanism."
+  },
+  {
+    "source": "GDPR-Art48-disclosure-to-authorities",
+    "target": "ISO27018-A.6.2",
+    "relationship": "subset",
+    "rationale": "Art.48 requires lawful and documented transfers to foreign authorities; A.6.2 (recording of PII disclosures, including to third parties) creates the audit trail that demonstrates compliance with Art.48 but does not itself impose the transfer-restriction conditions."
+  },
+  {
+    "source": "GDPR-Art5(2)-accountability",
+    "target": "ISO27018-A.6.2",
+    "relationship": "subset",
+    "rationale": "Art.5(2) accountability requires the controller/processor to demonstrate compliance; A.6.2 (recording of PII disclosures) contributes to an audit trail supporting accountability but covers only one specific activity record, not the full accountability programme."
+  },
+  {
+    "source": "GDPR-Art5(2)-accountability",
+    "target": "ISO27018-A.10.1",
+    "relationship": "subset",
+    "rationale": "Art.5(2) accountability; A.10.1 (breach notification to controller) supports accountability by ensuring breaches are documented and reported, but covers only the incident-reporting dimension of demonstrating compliance."
+  },
+  {
+    "source": "GDPR-Art24(1)-controller-responsibility",
+    "target": "ISO27018-A.3.1",
+    "relationship": "subset",
+    "rationale": "Art.24(1) requires controllers to implement appropriate TOMs and demonstrate compliance; A.3.1 (purpose limitation as a processor obligation) supports the controller's TOM framework by contractually binding the processor to purpose constraints, but addresses only the processor-side implementation."
+  },
+  {
+    "source": "GDPR-Art32(1)(b)-CIA-resilience",
+    "target": "ISO27018-A.11.6",
+    "relationship": "subset",
+    "rationale": "Art.32(1)(b) confidentiality, integrity, availability and resilience of processing systems; A.11.6 (encryption of PII over public networks) implements the confidentiality dimension for one communication channel, leaving availability and resilience requirements unaddressed."
+  },
+  {
+    "source": "GDPR-Art28(3)(c)-security-Art32",
+    "target": "ISO27018-A.10.1",
+    "relationship": "subset",
+    "rationale": "Art.28(3)(c) security obligation incorporates Art.32 including incident detection; A.10.1 (PII breach notification) covers the notification response to a detected incident but not the broader preventive security measures required by Art.32."
+  },
+  {
+    "source": "GDPR-Art25(1)-data-protection-by-design",
+    "target": "ISO27018-A.5.1",
+    "relationship": "subset",
+    "rationale": "Art.25(1) data protection by design requires privacy-by-design in system development; A.5.1 (secure erasure of temporary files) implements one data-minimisation-by-design control — automatic deletion of incidental PII copies — within the broader privacy-by-design principle."
+  },
+  {
+    "source": "GDPR-Art25(2)-data-protection-by-default",
+    "target": "ISO27018-A.3.2",
+    "relationship": "subset",
+    "rationale": "Art.25(2) data protection by default requires minimum necessary processing by default; A.3.2 (prohibition of commercial use without explicit consent) enforces privacy-by-default by preventing opt-out marketing, implementing one specific default-minimal-use requirement."
+  },
+  {
+    "source": "GDPR-Art5(1)(c)-data-minimisation",
+    "target": "ISO27018-A.6.1",
+    "relationship": "related",
+    "rationale": "Art.5(1)(c) data minimisation; A.6.1 (PII disclosure notification — notifying controller before disclosing to third parties) limits unnecessary disclosures which reduces de facto data spread, but the control targets disclosure governance rather than collection/processing minimisation directly."
+  },
+  {
+    "source": "GDPR-Art5(1)(e)-storage-limitation",
+    "target": "ISO27018-A.5.1",
+    "relationship": "subset",
+    "rationale": "Art.5(1)(e) storage limitation applies to all PII retention; A.5.1 (secure erasure of temporary files) implements storage limitation for one class of transient PII artefacts (caches, buffers, temp files) but not for primary data stores."
+  }
+]
