@@ -24,9 +24,9 @@
 | `scripts/quality/audit_eu_mappings.py` | CLI entrypoint: Layer-1 dossiers + TISAX extract |
 | `fixtures/audit/eu_catalog_manifest.yaml` | Canonical target-requirement-ID catalogs per EU framework (denominators) |
 | `scripts/workflows/eu_mapping_audit.workflow.js` | Layer-2 Workflow orchestration script |
-| `tests/quality/mapping_audit/test_metrics.py` | pytest for metrics.py |
-| `tests/quality/mapping_audit/test_tisax_extract.py` | pytest for tisax_extract.py |
-| `tests/quality/mapping_audit/test_synthesis.py` | pytest for synthesis.py |
+| `scripts/quality/mapping_audit/tests/test_metrics.py` | pytest for metrics.py |
+| `scripts/quality/mapping_audit/tests/test_tisax_extract.py` | pytest for tisax_extract.py |
+| `scripts/quality/mapping_audit/tests/test_synthesis.py` | pytest for synthesis.py |
 | `var/audit/<pair>_dossier.json` | Runtime: Layer-1 output (gitignored) |
 | `var/audit/eu_mapping_backlog.csv` | Runtime: backlog (gitignored, regenerable) |
 | `docs/compliance/eu-mapping-audit-findings.md` | Tracked: finding table (force-add, `docs/` is gitignored) |
@@ -43,20 +43,20 @@ Notes:
 **Files:**
 - Create: `scripts/quality/mapping_audit/__init__.py` (empty)
 - Create: `scripts/quality/mapping_audit/metrics.py`
-- Create: `tests/quality/mapping_audit/__init__.py` (empty)
-- Test: `tests/quality/mapping_audit/test_metrics.py`
+- Create: `scripts/quality/mapping_audit/tests/__init__.py` (empty)
+- Test: `scripts/quality/mapping_audit/tests/test_metrics.py`
 
 - [ ] **Step 1: Create package markers**
 
 ```bash
-mkdir -p scripts/quality/mapping_audit tests/quality/mapping_audit
-touch scripts/quality/mapping_audit/__init__.py tests/quality/mapping_audit/__init__.py
+mkdir -p scripts/quality/mapping_audit scripts/quality/mapping_audit/tests
+touch scripts/quality/mapping_audit/__init__.py scripts/quality/mapping_audit/tests/__init__.py
 ```
 
 - [ ] **Step 2: Write the failing test**
 
 ```python
-# tests/quality/mapping_audit/test_metrics.py
+# scripts/quality/mapping_audit/tests/test_metrics.py
 from scripts.quality.mapping_audit import metrics
 
 
@@ -82,7 +82,7 @@ def test_coverage_empty_catalog_is_zero_not_crash():
 
 - [ ] **Step 3: Run test to verify it fails**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_metrics.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_metrics.py -v`
 Expected: FAIL — `ModuleNotFoundError` / `AttributeError: module 'metrics' has no attribute 'coverage'`
 
 - [ ] **Step 4: Implement `coverage`**
@@ -110,13 +110,13 @@ def coverage(mappings, catalog):
 
 - [ ] **Step 5: Run test to verify it passes**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_metrics.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_metrics.py -v`
 Expected: PASS (2 passed)
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add scripts/quality/mapping_audit/__init__.py scripts/quality/mapping_audit/metrics.py tests/quality/mapping_audit/__init__.py tests/quality/mapping_audit/test_metrics.py
+git add scripts/quality/mapping_audit/__init__.py scripts/quality/mapping_audit/metrics.py scripts/quality/mapping_audit/tests/__init__.py scripts/quality/mapping_audit/tests/test_metrics.py
 git commit -m "feat(audit): EU-mapping coverage metric (pure fn + tests)"
 ```
 
@@ -126,12 +126,12 @@ git commit -m "feat(audit): EU-mapping coverage metric (pure fn + tests)"
 
 **Files:**
 - Modify: `scripts/quality/mapping_audit/metrics.py`
-- Test: `tests/quality/mapping_audit/test_metrics.py`
+- Test: `scripts/quality/mapping_audit/tests/test_metrics.py`
 
 - [ ] **Step 1: Add failing tests**
 
 ```python
-# append to tests/quality/mapping_audit/test_metrics.py
+# append to scripts/quality/mapping_audit/tests/test_metrics.py
 def test_bidirectional_symmetry_share_of_AtoB_with_matching_BtoA():
     forward = [
         {"source_requirement_id": "Art.21.2.a", "target_requirement_id": "A.5.1"},
@@ -173,7 +173,7 @@ def test_suspects_flag_full_or_exceeds_with_low_confidence_or_no_rationale():
 
 - [ ] **Step 2: Run to verify fail**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_metrics.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_metrics.py -v`
 Expected: FAIL — `AttributeError` for `bidirectional_symmetry`/`provenance_completeness`/`suspects`
 
 - [ ] **Step 3: Implement the three functions**
@@ -228,13 +228,13 @@ def suspects(rows):
 
 - [ ] **Step 4: Run to verify pass**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_metrics.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_metrics.py -v`
 Expected: PASS (5 passed)
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add scripts/quality/mapping_audit/metrics.py tests/quality/mapping_audit/test_metrics.py
+git add scripts/quality/mapping_audit/metrics.py scripts/quality/mapping_audit/tests/test_metrics.py
 git commit -m "feat(audit): symmetry, provenance, suspect metrics (pure fns + tests)"
 ```
 
@@ -320,14 +320,14 @@ git commit -m "feat(audit): EU framework catalog manifest (coverage denominators
 
 **Files:**
 - Create: `scripts/quality/mapping_audit/io.py`
-- Test: `tests/quality/mapping_audit/test_io.py`
+- Test: `scripts/quality/mapping_audit/tests/test_io.py`
 
 The manifest is YAML, but to stay dependency-free we parse the manifest's simple `key:` + `- item` structure with a tiny hand-rolled reader (no PyYAML). Mapping CSVs use stdlib `csv`.
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tests/quality/mapping_audit/test_io.py
+# scripts/quality/mapping_audit/tests/test_io.py
 import json
 from scripts.quality.mapping_audit import io as audit_io
 
@@ -367,7 +367,7 @@ def test_write_dossier_roundtrips(tmp_path):
 
 - [ ] **Step 2: Run to verify fail**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_io.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_io.py -v`
 Expected: FAIL — `ModuleNotFoundError: scripts.quality.mapping_audit.io`
 
 - [ ] **Step 3: Implement io.py**
@@ -422,13 +422,13 @@ def write_dossier(path, data):
 
 - [ ] **Step 4: Run to verify pass**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_io.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_io.py -v`
 Expected: PASS (3 passed)
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add scripts/quality/mapping_audit/io.py tests/quality/mapping_audit/test_io.py
+git add scripts/quality/mapping_audit/io.py scripts/quality/mapping_audit/tests/test_io.py
 git commit -m "feat(audit): IO layer for mapping CSV + catalog manifest + dossier"
 ```
 
@@ -438,7 +438,7 @@ git commit -m "feat(audit): IO layer for mapping CSV + catalog manifest + dossie
 
 **Files:**
 - Create: `scripts/quality/mapping_audit/tisax_extract.py`
-- Test: `tests/quality/mapping_audit/test_tisax_extract.py`
+- Test: `scripts/quality/mapping_audit/tests/test_tisax_extract.py`
 
 The VDA-ISA "Verweisung auf andere Normen" cell contains multi-standard references like:
 `"ISO 27001:2013: A.5.1.1, A.5.1.2\nISO 27001:2022: A.5.1\nISA/IEC 62443: 1.1.1\nNIST CSF 1.1: ID.GV-1"`.
@@ -447,7 +447,7 @@ The VDA-ISA "Verweisung auf andere Normen" cell contains multi-standard referenc
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tests/quality/mapping_audit/test_tisax_extract.py
+# scripts/quality/mapping_audit/tests/test_tisax_extract.py
 from scripts.quality.mapping_audit import tisax_extract as tx
 
 
@@ -486,7 +486,7 @@ def test_normalize_standard_maps_to_framework_code():
 
 - [ ] **Step 2: Run to verify fail**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_tisax_extract.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_tisax_extract.py -v`
 Expected: FAIL — `ModuleNotFoundError`
 
 - [ ] **Step 3: Implement parse functions**
@@ -555,13 +555,13 @@ def parse_evidence(cell):
 
 - [ ] **Step 4: Run to verify pass**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_tisax_extract.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_tisax_extract.py -v`
 Expected: PASS (4 passed)
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add scripts/quality/mapping_audit/tisax_extract.py tests/quality/mapping_audit/test_tisax_extract.py
+git add scripts/quality/mapping_audit/tisax_extract.py scripts/quality/mapping_audit/tests/test_tisax_extract.py
 git commit -m "feat(audit): TISAX VDA-ISA reference/evidence parse fns (pure + tests)"
 ```
 
@@ -571,14 +571,14 @@ git commit -m "feat(audit): TISAX VDA-ISA reference/evidence parse fns (pure + t
 
 **Files:**
 - Modify: `scripts/quality/mapping_audit/tisax_extract.py`
-- Test: `tests/quality/mapping_audit/test_tisax_extract.py`
+- Test: `scripts/quality/mapping_audit/tests/test_tisax_extract.py`
 
 The reader: open the xlsx zip, read `sharedStrings.xml`, resolve the `Informationssicherheit` sheet, scan header rows to find the column letters for the criterion number, the "Verweisung auf andere Normen" cell, and the "Mögliche Nachweise" cell (label-match, not fixed index), then yield one record per data row. Tests cover the column-locate logic with a small in-memory cell grid (the zip-reading wrapper itself is exercised by the live run in Task 7, not unit-tested — crafting a valid xlsx in a test is not worth the cost).
 
 - [ ] **Step 1: Add failing test for `locate_columns`**
 
 ```python
-# append to tests/quality/mapping_audit/test_tisax_extract.py
+# append to scripts/quality/mapping_audit/tests/test_tisax_extract.py
 def test_locate_columns_finds_by_header_label():
     # header_grid: list of rows, each row is dict col_letter -> text
     header_grid = [
@@ -605,7 +605,7 @@ def test_build_records_uses_located_columns():
 
 - [ ] **Step 2: Run to verify fail**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_tisax_extract.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_tisax_extract.py -v`
 Expected: FAIL — `AttributeError: locate_columns` / `build_records`
 
 - [ ] **Step 3: Implement locate/build + xlsx reader**
@@ -703,7 +703,7 @@ def extract_workbook(xlsx_path, sheet_name="Informationssicherheit"):
 
 - [ ] **Step 4: Run to verify pass**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_tisax_extract.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_tisax_extract.py -v`
 Expected: PASS (6 passed)
 
 - [ ] **Step 5: Smoke-test against the real workbook**
@@ -724,7 +724,7 @@ Expected: non-zero record count, a sizeable share carrying an `ISO27001` referen
 - [ ] **Step 6: Commit**
 
 ```bash
-git add scripts/quality/mapping_audit/tisax_extract.py tests/quality/mapping_audit/test_tisax_extract.py
+git add scripts/quality/mapping_audit/tisax_extract.py scripts/quality/mapping_audit/tests/test_tisax_extract.py
 git commit -m "feat(audit): TISAX workbook xlsx reader + column auto-locate"
 ```
 
@@ -1012,14 +1012,14 @@ git commit -m "feat(audit): Layer-2 specialist audit Workflow (audit + adversari
 **Files:**
 - Create: `scripts/quality/mapping_audit/synthesis.py`
 - Modify: `scripts/quality/audit_eu_mappings.py` (add `--synthesize` mode reading workflow results JSON)
-- Test: `tests/quality/mapping_audit/test_synthesis.py`
+- Test: `scripts/quality/mapping_audit/tests/test_synthesis.py`
 
 The workflow's return value (array of `{framework, findings, verified}`) is saved to `var/audit/workflow_results.json` by the operator after the run. Synthesis turns it into the backlog CSV + the tracked finding-table markdown.
 
 - [ ] **Step 1: Write failing test**
 
 ```python
-# tests/quality/mapping_audit/test_synthesis.py
+# scripts/quality/mapping_audit/tests/test_synthesis.py
 from scripts.quality.mapping_audit import synthesis
 
 
@@ -1064,7 +1064,7 @@ def test_finding_table_has_one_row_per_framework():
 
 - [ ] **Step 2: Run to verify fail**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/test_synthesis.py -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/test_synthesis.py -v`
 Expected: FAIL — `ModuleNotFoundError`
 
 - [ ] **Step 3: Implement synthesis**
@@ -1194,13 +1194,13 @@ import json
 
 - [ ] **Step 5: Run tests + verify**
 
-Run: `python3 -m pytest tests/quality/mapping_audit/ -v`
+Run: `python3 -m pytest scripts/quality/mapping_audit/tests/ -v`
 Expected: PASS (all tests across metrics/io/tisax/synthesis)
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add scripts/quality/mapping_audit/synthesis.py scripts/quality/audit_eu_mappings.py tests/quality/mapping_audit/test_synthesis.py
+git add scripts/quality/mapping_audit/synthesis.py scripts/quality/audit_eu_mappings.py scripts/quality/mapping_audit/tests/test_synthesis.py
 git commit -m "feat(audit): synthesis — backlog CSV + finding-table markdown"
 ```
 

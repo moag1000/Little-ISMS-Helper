@@ -91,6 +91,25 @@ Sheets carry the three TISAX tiers: **Informationssicherheit, Prototypenschutz, 
 
 A TISAX extractor parses both columns. Stronger than WebSearch. The pre-filled workbook also exposes maturity data, but for *mapping* ground-truth only the criterion ID + reference + evidence columns are used (no customer data enters mappings).
 
+### 5.1 Licensing constraint (hard rule)
+
+The app may **NOT** ship the full VDA-ISA catalog — the requirement texts, the
+"Anforderungen (muss/sollte)" prose, and the evidence-example prose are VDA
+copyright. The TISAX extractor is therefore a **user-side tool**: the user points
+it at *their own* licensed workbook. It is never bundled, and the workbook's
+authored content never enters a shipped artifact.
+
+What **is** allowed in the repo / shipped fixtures (facts, not copyrightable):
+criterion **numbers** (`1.1.1`) and **mappings** (criterion-number → ISO 27001 /
+NIST-CSF / BSI clause). What stays **local only** (`var/`, gitignored): requirement
+texts and the evidence prose — usable as an audit-time quality signal on the
+user's machine, never written into `fixtures/` or DB seeds. Concretely:
+- `extract_workbook()` may return evidence (it runs locally), but any committed
+  output (Wave-1 import into `fixtures/mappings/public/`) carries criterion-number
+  → clause pairs ONLY — no evidence prose, no requirement text.
+- The derived `tisax_catalog.json` holds criterion **numbers** only (no texts), so
+  even though it lives in `var/`, it would be shippable if ever needed.
+
 ---
 
 ## 6. Human Queue — Reasoned Hypotheses (never blank)
@@ -178,3 +197,4 @@ Per-wave acceptance is measurable by the Layer-1 script (coverage %, provenance 
 - Auto-publishing any mapping without human sign-off on uncertain items.
 - Touching the mapping *engine* / entities (model is sufficient) — this effort is content + audit, plus the one new `audit_eu_mappings.py` script and a TISAX workbook extractor.
 - Importing customer/maturity data from the pre-filled workbook into mappings (only criterion ID + reference + evidence columns are used).
+- Shipping any VDA-ISA requirement text or evidence prose (see §5.1 — only criterion numbers + mappings may be committed; the catalog itself is user-loaded).
