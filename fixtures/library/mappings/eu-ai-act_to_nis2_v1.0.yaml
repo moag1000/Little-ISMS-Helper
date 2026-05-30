@@ -205,7 +205,7 @@ mappings:
 
   - source: 'Art.15'
     target: '21.2.h'
-    relationship: 'equivalent'
+    relationship: 'related'
     confidence: 'high'
     rationale: |
       AI Act Art. 15 "Genauigkeit, Robustheit und Cybersicherheit"
@@ -394,7 +394,7 @@ mappings:
 
   - source: 'Art.72'
     target: '21.2.f'
-    relationship: 'equivalent'
+    relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       AI Act Art. 72 "Beobachtung nach Inverkehrbringen (Post-Market-

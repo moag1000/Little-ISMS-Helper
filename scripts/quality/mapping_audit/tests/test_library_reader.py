@@ -50,3 +50,43 @@ def test_first_field_not_polluted_by_multiline_rationale():
     assert r0["mapping_percentage"] == "100"
     assert r0["confidence"] == "high"
     assert r0["provenance_url"].endswith("2024/2847/oj")
+
+
+def test_targets_inline_list_schema():
+    txt = """library:
+  source_framework: 'TISAX'
+  target_framework: 'ISO27001'
+  provenance:
+    primary_source_url: 'https://www.enx.com/en-US/TISAX/'
+mappings:
+  - source: 'ISA 1.2.2'
+    targets: ['A.5.2', 'A.5.3']
+    category: 'information_security'
+    rationale: 'anchor'
+"""
+    meta, rows = lr.parse_library_yaml(txt)
+    assert len(rows) == 2  # one row per target
+    assert {r["target_requirement_id"] for r in rows} == {"A.5.2", "A.5.3"}
+    assert rows[0]["relationship"] == "reference"
+    assert rows[0]["provenance_url"].endswith("/TISAX/")
+
+
+def test_targets_block_list_schema():
+    txt = """library:
+  source_framework: 'TISAX'
+  target_framework: 'ISO27002'
+  provenance:
+    primary_source_url: 'https://www.enx.com/en-US/TISAX/'
+mappings:
+  - source: 'ISA 2.1.3'
+    targets:
+      - 'A.7.2.1'
+      - 'A.7.2.2'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'x'
+"""
+    meta, rows = lr.parse_library_yaml(txt)
+    assert len(rows) == 2
+    assert {r["target_requirement_id"] for r in rows} == {"A.7.2.1", "A.7.2.2"}
+    assert rows[0]["relationship"] == "related"
