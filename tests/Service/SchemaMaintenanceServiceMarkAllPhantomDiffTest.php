@@ -30,17 +30,16 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for SchemaMaintenanceService::markAllPhantomDiffMigrationsAsExecuted()
- * using Approach C (per-version isolated execution loop).
+ * Unit tests for SchemaMaintenanceService::markAllPhantomDiffMigrationsAsExecuted().
  *
- * Each pending migration version is executed INDEPENDENTLY via a single-version
- * MigrationPlanCalculator::getPlanForVersions() call. A failure in version N
- * does NOT abort the loop.
+ * The operator confirms (Quick-Fix safety checkbox) that every table/column of
+ * the pending migrations already exists, so each pending version is RECORDED as
+ * executed via a metadata-only INSERT (markMigrationAsExecuted) and its DDL is
+ * NEVER run. The migrator is therefore never invoked.
  *
  * Per-version outcomes tested:
- *  - Migration executes cleanly → recorded naturally (pending count drops)
- *  - Migration throws phantom-diff error → force-marked via markMigrationAsExecuted()
- *  - Migration throws real error → added to skipped[], loop continues
+ *  - Version known to the repository → marked without running
+ *  - Version unknown to the repository → markMigrationAsExecuted fails → skipped[]
  *  - Empty pending list → early success return
  *
  * Tests are pure unit tests using PHPUnit mocks — no database required.
@@ -176,30 +175,29 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
     }
 
     // -------------------------------------------------------------------------
-    // Test 2: Migration executes cleanly → not force-marked, pending drops naturally
+    // Test 2: Pending version known to the repository → marked WITHOUT running
+    //          its DDL (the migrator is never invoked).
     // -------------------------------------------------------------------------
 
     #[Test]
-    public function markAll_migrationRunsCleanly_notMarkedAndPendingDrops(): void
+    public function markAll_pendingVersionInRepository_markedWithoutRunning(): void
     {
         $this->schemaHealthService
             ->method('listPendingMigrationVersions')
             ->willReturnOnConsecutiveCalls(
                 [self::V1],  // initial pending scan
-                [],          // remaining_pending after clean execution
+                [],          // remaining_pending after marking
             );
 
-        $this->planCalculator
-            ->method('getPlanForVersions')
-            ->willReturn($this->makePlanList(self::V1));
+        $this->stubMarkAsExecutedSuccess(self::V1);
 
-        // Migrator does NOT throw → clean execution
-        $this->migrator->method('migrate')->willReturn([]);
+        // The operator confirmed all already exist → no DDL must run.
+        $this->migrator->expects(self::never())->method('migrate');
 
         $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
 
         self::assertTrue($result['success']);
-        self::assertSame([], $result['marked']);   // nothing force-marked
+        self::assertSame([self::V1], $result['marked']);
         self::assertSame([], $result['skipped']);
         self::assertSame(0, $result['remaining_pending']);
     }
@@ -269,11 +267,13 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
     }
 
     // -------------------------------------------------------------------------
-    // Test 5: Real error (FK constraint) → skipped with category, loop continues
+    // Test 5: Pending version NOT known to the migration repository → marking
+    //          fails for it (markMigrationAsExecuted rejects unknown versions),
+    //          it is skipped, and the loop continues.
     // -------------------------------------------------------------------------
 
     #[Test]
-    public function markAll_realFkError_versionSkippedLoopContinues(): void
+    public function markAll_versionNotInRepository_skipped(): void
     {
         $this->schemaHealthService
             ->method('listPendingMigrationVersions')
@@ -282,76 +282,50 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
                 [self::V3],  // still pending after skip
             );
 
-        $this->planCalculator
-            ->method('getPlanForVersions')
-            ->willReturn($this->makePlanList(self::V3));
+        // Repository knows only V1 — the pending V3 is unknown, so
+        // markMigrationAsExecuted returns failure and V3 lands in skipped[].
+        $this->stubMarkAsExecutedSuccess(self::V1);
 
-        $this->migrator
-            ->method('migrate')
-            ->willThrowException(new \RuntimeException('SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails'));
+        // Mark-without-running: the migrator is never invoked.
+        $this->migrator->expects(self::never())->method('migrate');
 
         $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
 
         self::assertFalse($result['success']);
         self::assertSame([], $result['marked']);
         self::assertArrayHasKey(self::V3, $result['skipped']);
-        self::assertStringContainsString('foreign_key_constraint', $result['skipped'][self::V3]);
+        self::assertStringContainsString('mark-failed', $result['skipped'][self::V3]);
         self::assertSame(1, $result['remaining_pending']);
         self::assertNull($result['stopped_at_error']);
     }
 
     // -------------------------------------------------------------------------
-    // Test 6: Mixed — phantom + clean success + real error
-    // V1 phantom → force-marked, V2 runs cleanly, V3 real error → skipped
+    // Test 6: Mixed — known versions (V1, V2) are marked, the unknown version
+    //          (V3, not in the repository) is skipped. The loop continues.
     // -------------------------------------------------------------------------
 
     #[Test]
-    public function markAll_mixedPhantomCleanAndRealError_markedAndSkippedCorrectly(): void
+    public function markAll_mixedKnownAndUnknown_marksKnownSkipsUnknown(): void
     {
         $this->schemaHealthService
             ->method('listPendingMigrationVersions')
             ->willReturnOnConsecutiveCalls(
                 [self::V1, self::V2, self::V3],
-                [self::V3],  // only real-error version remains
+                [self::V3],  // only the unknown version remains pending
             );
 
-        $planV1 = $this->makePlanList(self::V1);
-        $planV2 = $this->makePlanList(self::V2);
-        $planV3 = $this->makePlanList(self::V3);
+        // Repository knows V1 + V2 but NOT V3.
+        $this->stubMarkAsExecutedSuccess(self::V1, self::V2);
 
-        $this->planCalculator
-            ->method('getPlanForVersions')
-            ->willReturnCallback(static function (array $versions) use ($planV1, $planV2, $planV3): MigrationPlanList {
-                $v = (string) $versions[0];
-                return match ($v) {
-                    self::V1 => $planV1,
-                    self::V2 => $planV2,
-                    default  => $planV3,
-                };
-            });
-
-        $this->migrator
-            ->method('migrate')
-            ->willReturnCallback(function (MigrationPlanList $plan, MigratorConfiguration $cfg): array {
-                $items = $plan->getItems();
-                $v = (string) $items[0]->getVersion();
-                if ($v === self::V1) {
-                    throw new \RuntimeException("SQLSTATE[42S21]: Duplicate column name 'tenant_id'");
-                }
-                if ($v === self::V3) {
-                    throw new \RuntimeException('SQLSTATE[23000]: Integrity constraint violation: foreign key constraint fails');
-                }
-                return []; // V2 runs cleanly
-            });
-
-        $this->stubMarkAsExecutedSuccess(self::V1, self::V2, self::V3);
+        // Mark-without-running: the migrator is never invoked.
+        $this->migrator->expects(self::never())->method('migrate');
 
         $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
 
         self::assertFalse($result['success']);  // V3 skipped → partial
-        self::assertSame([self::V1], $result['marked']);
+        self::assertSame([self::V1, self::V2], $result['marked']);
         self::assertArrayHasKey(self::V3, $result['skipped']);
-        self::assertStringContainsString('foreign_key_constraint', $result['skipped'][self::V3]);
+        self::assertStringContainsString('mark-failed', $result['skipped'][self::V3]);
         self::assertCount(1, $result['skipped']);
         self::assertSame(1, $result['remaining_pending']);
         self::assertNull($result['stopped_at_error']);
