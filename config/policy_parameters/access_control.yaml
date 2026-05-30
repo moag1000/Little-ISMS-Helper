@@ -1,0 +1,14 @@
+mfa_scope:
+  category: access_control
+  type: enum
+  allowed: [all, privileged_external, privileged_only, none]
+  default: privileged_external
+  iso_clauses: [A.8.5, A.5.17]
+  framework_constraints:
+    dora: { min: all, authority: regulatory, source: "DORA Art. 9(3)" }
+    nis2: { min: privileged_external, authority: regulatory, source: "NIS2 Art. 21(2)(i)" }
+  template_slot:
+    interpolate: policy.access.mfa_value
+    section_if: { not: none }
+  wizard_step: governance_controls
+  labels: { de: "MFA-Geltungsbereich", en: "MFA scope" }
