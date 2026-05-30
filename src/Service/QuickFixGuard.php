@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Repository\SystemSettingsRepository;
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -21,8 +22,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
  *                               `var/setup-token` (random token written by
  *                               composer post-install-cmd)
  *  - allow_in_dev_only        — only reachable in dev environment
- *  - ip_allowlist             — comma-separated CIDR-less IPs / hostnames;
- *                               empty list = disabled
+ *  - ip_allowlist             — comma-separated exact IPs and/or CIDR ranges
+ *                               (e.g. `10.0.0.5, 192.168.1.0/24, ::1`),
+ *                               matched via Symfony IpUtils; empty = disabled
  */
 class QuickFixGuard
 {
@@ -41,8 +43,15 @@ class QuickFixGuard
             return false;
         }
         $allowlist = $this->ipAllowlist();
-        if ($allowlist !== [] && !in_array((string) $request->getClientIp(), $allowlist, true)) {
-            return false;
+        if ($allowlist !== []) {
+            $clientIp = (string) $request->getClientIp();
+            // IpUtils::checkIp matches both exact IPs and CIDR ranges (IPv4 +
+            // IPv6). A bare in_array() never matched a CIDR entry, so an
+            // operator who entered their subnet (the natural notation) locked
+            // everyone — including themselves — out.
+            if ($clientIp === '' || !IpUtils::checkIp($clientIp, $allowlist)) {
+                return false;
+            }
         }
         return true;
     }
