@@ -1,0 +1,11 @@
+approval_model:
+  category: governance
+  type: enum
+  allowed: [single_ciso, dual, dual_signoff]
+  default: single_ciso
+  iso_clauses: [A.5.1]
+  framework_constraints:
+    dora: { min: dual_signoff, authority: regulatory, source: "DORA Art. 5 governance" }
+  template_slot: { interpolate: policy.governance.approval }
+  wizard_step: governance_controls
+  labels: { de: "Freigabemodell", en: "Approval model" }
