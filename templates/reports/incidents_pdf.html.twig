@@ -95,8 +95,8 @@
         incident.title|length > 30 ? incident.title|slice(0, 30) ~ '...' : incident.title,
         '<span class="badge ' ~ _sev_badge_class ~ '">' ~ _sev|upper ~ '</span>',
         incident.category,
-        incident.detectedDate|date('Y-m-d'),
-        incident.resolvedDate ? incident.resolvedDate|date('Y-m-d') : ('pdf.common.open'|trans({}, 'reports')),
+        incident.detectedAt ? incident.detectedAt|date('Y-m-d') : '-',
+        incident.resolvedAt ? incident.resolvedAt|date('Y-m-d') : ('pdf.common.open'|trans({}, 'reports')),
         incident.status ? incident.status.value : '',
         incident.reportedBy ? (incident.reportedBy.email|length > 20 ? incident.reportedBy.email|slice(0, 20) ~ '...' : incident.reportedBy.email) : '-',
     ]]) %}

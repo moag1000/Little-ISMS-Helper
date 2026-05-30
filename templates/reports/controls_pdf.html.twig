@@ -98,7 +98,8 @@
     {% set _applicable_html = control.applicable
         ? '<span class="applicable">' ~ ('soa.value.yes'|trans({}, 'soa')) ~ '</span>'
         : '<span class="not-applicable">' ~ ('soa.value.no'|trans({}, 'soa')) ~ '</span>' %}
-    {% set _progress_html = '<div class="progress-bar"><div class="progress-fill" style="width: ' ~ control.implementationProgress ~ '%;"></div></div> ' ~ control.implementationProgress ~ '%' %}
+    {% set _progress_pct = control.implementationPercentage ?? 0 %}
+    {% set _progress_html = '<div class="progress-bar"><div class="progress-fill" style="width: ' ~ _progress_pct ~ '%;"></div></div> ' ~ _progress_pct ~ '%' %}
     {% set _control_rows = _control_rows|merge([[
         control.controlId,
         control.name|length > 40 ? control.name|slice(0, 40) ~ '...' : control.name,
