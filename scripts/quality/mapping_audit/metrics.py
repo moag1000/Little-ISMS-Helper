@@ -18,7 +18,12 @@ def coverage(mappings, catalog):
 
 
 def bidirectional_symmetry(forward, reverse):
-    """Share of forward A->B pairs that have a matching reverse B->A pair."""
+    """Share of forward A->B pairs that have a matching reverse B->A pair.
+
+    DORMANT (intentional): no reverse-direction EU CSVs exist yet, so the Layer-1
+    CLI does not call this per-pair. It activates in Wave 3 when direct/reverse EU
+    pairs are added (see spec §4 + plan self-review). Built+tested ahead of data.
+    """
     reverse_pairs = {(r["source_requirement_id"], r["target_requirement_id"]) for r in reverse}
     symmetric = 0
     for f in forward:
@@ -46,8 +51,8 @@ def suspects(rows):
     out = []
     for r in rows:
         try:
-            pct = int(r.get("mapping_percentage") or 0)
-        except ValueError:
+            pct = int(float(r.get("mapping_percentage") or 0))  # tolerate "100.0"
+        except (ValueError, TypeError):
             pct = 0
         if pct < 100:
             continue

@@ -15,28 +15,30 @@ def _verdict_index(verified):
 def build_backlog(results):
     rows = []
     for r in results:
-        fw = r["framework"]
+        # tolerate externally-supplied / hand-edited workflow_results.json:
+        # missing keys degrade to "" rather than raising an opaque KeyError.
+        fw = r.get("framework", "")
         findings = r.get("findings", {}) or {}
         vidx = _verdict_index(r.get("verified", []))
 
         for f in findings.get("confirmed", []):
-            v = vidx.get((f["source_req"], f["target_req"]), {})
+            v = vidx.get((f.get("source_req"), f.get("target_req")), {})
             refuted = v.get("verdict") == "refute"
             rows.append({
                 "framework_pair": fw, "action": "add",
-                "source_req": f["source_req"], "target_req": f["target_req"],
-                "proposed_pct": f["pct"], "ground_truth_cite": f["ground_truth_cite"],
+                "source_req": f.get("source_req", ""), "target_req": f.get("target_req", ""),
+                "proposed_pct": f.get("pct", ""), "ground_truth_cite": f.get("ground_truth_cite", ""),
                 "confidence": "verified" if not refuted else "refuted",
                 "verify_verdict": v.get("verdict", ""),
                 "human_review_needed": "yes" if refuted else "no",
             })
         for f in findings.get("proposed", []):
-            v = vidx.get((f["source_req"], f["target_req"]), {})
+            v = vidx.get((f.get("source_req"), f.get("target_req")), {})
             refuted = v.get("verdict") == "refute"
             rows.append({
                 "framework_pair": fw, "action": "add",
-                "source_req": f["source_req"], "target_req": f["target_req"],
-                "proposed_pct": f["pct"], "ground_truth_cite": f["ground_truth_cite"],
+                "source_req": f.get("source_req", ""), "target_req": f.get("target_req", ""),
+                "proposed_pct": f.get("pct", ""), "ground_truth_cite": f.get("ground_truth_cite", ""),
                 "confidence": "verified" if not refuted else "refuted",
                 "verify_verdict": v.get("verdict", ""),
                 "human_review_needed": "yes" if refuted else "no",
@@ -45,7 +47,7 @@ def build_backlog(results):
             rows.append({
                 "framework_pair": fw,
                 "action": "remove" if f.get("recommended_action") == "remove" else "fix",
-                "source_req": f["source_req"], "target_req": f["target_req"],
+                "source_req": f.get("source_req", ""), "target_req": f.get("target_req", ""),
                 "proposed_pct": "", "ground_truth_cite": "", "confidence": "",
                 "verify_verdict": "", "human_review_needed": "yes",
                 "reasoning": f.get("issue", ""),
@@ -53,13 +55,13 @@ def build_backlog(results):
         for f in findings.get("hypotheses", []):
             rows.append({
                 "framework_pair": fw, "action": "add",
-                "source_req": f["source_req"], "target_req": f["target_req"],
+                "source_req": f.get("source_req", ""), "target_req": f.get("target_req", ""),
                 "proposed_pct": "", "ground_truth_cite": "", "confidence": "hypothesis",
                 "verify_verdict": "", "human_review_needed": "yes",
-                "hypothesis_pct": f["hypothesis_pct"], "reasoning": f["reasoning"],
-                "uncertainty_reason": f["uncertainty_reason"],
-                "resolution_hint": f["resolution_hint"],
-                "confidence_band": f["confidence_band"],
+                "hypothesis_pct": f.get("hypothesis_pct", ""), "reasoning": f.get("reasoning", ""),
+                "uncertainty_reason": f.get("uncertainty_reason", ""),
+                "resolution_hint": f.get("resolution_hint", ""),
+                "confidence_band": f.get("confidence_band", ""),
             })
     # normalize: every row has every column
     for row in rows:
@@ -84,10 +86,11 @@ def build_finding_table(results):
         "|---|---|---|---|---|---|",
     ]
     for r in results:
+        fw_name = r.get("framework", "")
         f = r.get("findings", {}) or {}
         refuted = sum(1 for v in (r.get("verified") or []) if v.get("verify", {}).get("verdict") == "refute")
         lines.append(
-            f"| {r['framework']} | {len(f.get('confirmed', []))} | "
+            f"| {fw_name} | {len(f.get('confirmed', []))} | "
             f"{len(f.get('suspect', []))} | {len(f.get('proposed', []))} | "
             f"{len(f.get('hypotheses', []))} | {refuted} |"
         )

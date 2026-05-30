@@ -38,8 +38,8 @@ EU_PAIRS = {
 
 def _pct_int(row):
     try:
-        return int(row.get("mapping_percentage") or 0)
-    except ValueError:
+        return int(float(row.get("mapping_percentage") or 0))  # tolerate "100.0"
+    except (ValueError, TypeError):
         return 0
 
 
