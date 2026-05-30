@@ -1,0 +1,11 @@
+sector: kritis_utility
+label: { de: "KRITIS / Versorger", en: "KRITIS / utility" }
+frameworks: [iso27001, nis2, bsi_grundschutz, gdpr]
+mandatory_topics: [bsi_incident_reporting, ot_security]
+regulator: bsi
+flags: { has_works_council: true, employee_band: "250+" }
+parameter_presets:
+  approval_model:        { value: dual_signoff, authority: benchmark, source: "KRITIS-Praxis" }
+  mfa_scope:             { value: all, authority: regulatory, source: "NIS2 Art. 21(2)(i)" }
+  log_retention_days:    { value: 365, authority: benchmark, source: "Marktpraxis" }
+  classification_scheme: { value: 4tier, authority: recommended, source: "BSI-Grundschutz" }

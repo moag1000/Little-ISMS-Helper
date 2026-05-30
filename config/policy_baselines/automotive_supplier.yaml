@@ -1,0 +1,11 @@
+sector: automotive_supplier
+label: { de: "Automotive-Zulieferer", en: "Automotive supplier" }
+frameworks: [iso27001, tisax, gdpr, cra]
+mandatory_topics: [prototype_protection, supplier_security]
+regulator: none
+flags: { has_works_council: true, employee_band: "50-249" }
+parameter_presets:
+  approval_model:        { value: dual, authority: benchmark, source: "TISAX-Praxis" }
+  mfa_scope:             { value: all, authority: recommended, source: "TISAX Anforderung" }
+  log_retention_days:    { value: 365, authority: benchmark, source: "Marktpraxis Automotive" }
+  classification_scheme: { value: tisax_4tier, authority: recommended, source: "TISAX Schutzklassen (Label only)" }

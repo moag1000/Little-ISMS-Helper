@@ -1,0 +1,11 @@
+sector: mittelstand_generic
+label: { de: "Mittelstand (generisch)", en: "SME (generic)" }
+frameworks: [iso27001, bsi_grundschutz, gdpr]
+mandatory_topics: []
+regulator: none
+flags: { has_works_council: false, employee_band: "10-49" }
+parameter_presets:
+  approval_model:        { value: single_ciso, authority: benchmark, source: "Marktpraxis KMU" }
+  mfa_scope:             { value: privileged_external, authority: benchmark, source: "Marktpraxis KMU" }
+  log_retention_days:    { value: 180, authority: benchmark, source: "Marktpraxis" }
+  classification_scheme: { value: 3tier, authority: recommended, source: "ISO A.5.12 pragmatisch" }
