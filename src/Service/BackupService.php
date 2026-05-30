@@ -46,6 +46,7 @@ class BackupService
         'Tenant',
         'Role',
         'Permission',
+        'OrganizationSecurityProfile',
         'User',
         'Person',
         'Location',
