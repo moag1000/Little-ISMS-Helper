@@ -65,4 +65,37 @@ final class PolicyProfileManagerTest extends TestCase
 
         self::assertSame('privileged_external', $resolved['mfa_scope']);
     }
+
+    #[Test]
+    public function coverage_for_finance_baseline_is_fully_covered(): void
+    {
+        $profile = new OrganizationSecurityProfile();
+        $m = $this->manager();
+        $m->applySector($profile, 'finance_bafin');
+
+        $coverage = $m->coverage($profile);
+
+        self::assertArrayHasKey('dora', $coverage);
+        self::assertCount(0, $coverage['dora']->violations);
+    }
+
+    #[Test]
+    public function coverage_reports_dora_gap_when_overridden_weaker(): void
+    {
+        $profile = new OrganizationSecurityProfile();
+        $m = $this->manager();
+        $m->applySector($profile, 'finance_bafin');
+
+        $coverage = $m->coverage($profile, ['mfa_scope' => 'privileged_external']);
+
+        $dora = $coverage['dora'];
+        self::assertGreaterThanOrEqual(1, count($dora->blockingViolations()));
+        self::assertSame('mfa_scope', $dora->blockingViolations()[0]->paramKey);
+    }
+
+    #[Test]
+    public function coverage_without_sector_is_empty(): void
+    {
+        self::assertSame([], $this->manager()->coverage(new OrganizationSecurityProfile()));
+    }
 }
