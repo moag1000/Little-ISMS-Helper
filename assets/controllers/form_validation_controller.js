@@ -23,19 +23,60 @@ export default class extends Controller {
     }
 
     connect() {
+        // The controller is mounted either on the <form> itself (e.g. login)
+        // or on a wrapper such as `.fa-form-layout` that lives *inside* the
+        // form. Resolve the real form element for both cases.
+        this.form = this.element.closest('form')
+            || this.element.querySelector('form')
+            || (this.element.tagName === 'FORM' ? this.element : null);
+
+        if (this.form) {
+            // Disable native HTML5 validation. A `required` field inside a
+            // collapsed fa-form-section is not focusable, so the browser aborts
+            // submit silently ("An invalid form control … is not focusable")
+            // before our submit handler can reveal the section. We run the
+            // validation ourselves on submit — see handleSubmit().
+            this.form.noValidate = true;
+            this._onSubmit = this.handleSubmit.bind(this);
+            this.form.addEventListener('submit', this._onSubmit);
+        }
+
         // Check for errors on page load (server-side validation)
         this.checkForErrors();
     }
 
+    disconnect() {
+        if (this.form && this._onSubmit) {
+            this.form.removeEventListener('submit', this._onSubmit);
+        }
+    }
+
     /**
-     * Handle form submission
-     * Checks for client-side validation errors before submit
+     * Handle form submission. With native validation disabled (see connect),
+     * the submit event always fires — so we can reveal the collapsed section /
+     * inactive tab that hides the first invalid field *before* the browser
+     * reports the constraint, instead of being silently blocked.
      */
     handleSubmit(event) {
-        // Let browser's native validation run first
-        if (!this.element.checkValidity()) {
+        if (!this.form || typeof this.form.checkValidity !== 'function') {
+            return;
+        }
+        if (!this.form.checkValidity()) {
             event.preventDefault();
-            this.scrollToFirstError();
+            const firstInvalid = this.form.querySelector(
+                'input:invalid, select:invalid, textarea:invalid'
+            );
+            if (firstInvalid) {
+                // Reveal the collapsed section / inactive tab first, then let
+                // the now-visible field receive focus + the native bubble.
+                this.revealHiddenAncestors(firstInvalid);
+                requestAnimationFrame(() => {
+                    this.scrollToError(firstInvalid);
+                    try { firstInvalid.focus({ preventScroll: true }); } catch (e) { /* not focusable yet */ }
+                    this.form.reportValidity();
+                });
+            }
+            this.announceErrors();
             return false;
         }
     }
