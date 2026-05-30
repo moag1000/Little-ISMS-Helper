@@ -1,7 +1,7 @@
 mfa_scope:
   category: access_control
   type: enum
-  allowed: [all, privileged_external, privileged_only, none]
+  allowed: [none, privileged_only, privileged_external, all]
   default: privileged_external
   iso_clauses: [A.8.5, A.5.17]
   framework_constraints:
