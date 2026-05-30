@@ -39,6 +39,10 @@ interface Scenario {
     category?: string;
     personas?: string[];
     requires_module?: string;
+    // Resolve a dynamic `{id}` placeholder in `route`/`submit` from the first
+    // matching link on an index page — keeps clone smokes tenant-agnostic
+    // instead of hard-coding entity IDs that only exist in one tenant.
+    resolve_id?: { from: string; pattern: string };
     fill?: Record<string, string>;
     before_submit?: Array<{ selector: string; action: 'click' | 'check' | 'uncheck' }>;
     submit?: string;
@@ -127,7 +131,36 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
     };
 
     try {
-        const navResp = await page.goto(scenario.route, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+        let effectiveRoute = scenario.route;
+        let effectiveSubmit = scenario.submit;
+
+        // Resolve a dynamic {id} from an index page so clone smokes target an
+        // entity in the *current* tenant instead of a hard-coded ID.
+        if (scenario.resolve_id) {
+            const idxResp = await page.goto(scenario.resolve_id.from, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+            if ((idxResp?.status() ?? 500) >= 400) {
+                baseResult.failReason = `resolve_id index ${scenario.resolve_id.from} returned ${idxResp?.status()}`;
+                return finishResult(baseResult, t0);
+            }
+            const id = await page.evaluate((pat) => {
+                const re = new RegExp(pat);
+                for (const a of Array.from(document.querySelectorAll('a[href]'))) {
+                    const m = (a.getAttribute('href') || '').match(re);
+                    if (m) return m[1];
+                }
+                return null;
+            }, scenario.resolve_id.pattern);
+            if (!id) {
+                // Nothing to clone in this tenant — skip rather than 404.
+                baseResult.ok = true;
+                baseResult.skipReason = `no entity at ${scenario.resolve_id.from} to clone`;
+                return finishResult(baseResult, t0);
+            }
+            effectiveRoute = effectiveRoute.replace('{id}', id);
+            effectiveSubmit = effectiveSubmit?.replace('{id}', id);
+        }
+
+        const navResp = await page.goto(effectiveRoute, { waitUntil: 'domcontentloaded', timeout: 20_000 });
         baseResult.finalStatus = navResp?.status() ?? null;
         baseResult.finalUrl = page.url();
 
@@ -208,8 +241,8 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
             }
         }
 
-        const submitSelector = scenario.submit && scenario.submit !== 'auto'
-            ? scenario.submit
+        const submitSelector = effectiveSubmit && effectiveSubmit !== 'auto'
+            ? effectiveSubmit
             : 'button[type="submit"]';
 
         // The base template renders an inline re-auth modal whose hidden
@@ -347,6 +380,11 @@ test.describe(`L2 Scenarios — ${PERSONA}`, () => {
 
             const result = await runScenario(page, scenario);
             results.push(result);
+
+            if (result.skipReason) {
+                test.skip(true, result.skipReason);
+                return;
+            }
 
             expect.soft(result.finalStatus, `final status for ${scenario.name}`).not.toBeGreaterThanOrEqual(500);
             expect.soft(result.pageErrors, `page errors for ${scenario.name}`).toEqual([]);
