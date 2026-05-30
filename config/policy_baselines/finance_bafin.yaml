@@ -1,0 +1,11 @@
+sector: finance_bafin
+label: { de: "Finanz / BaFin", en: "Finance / BaFin" }
+frameworks: [iso27001, dora, nis2, gdpr]
+mandatory_topics: [third_party_register, resilience_testing]
+regulator: bafin
+flags: { has_works_council: true, employee_band: "250+" }
+parameter_presets:
+  approval_model:        { value: dual_signoff, authority: regulatory, source: "DORA Art. 5" }
+  mfa_scope:             { value: all, authority: regulatory, source: "DORA Art. 9(3)" }
+  log_retention_days:    { value: 730, authority: benchmark, source: "Marktpraxis Finanz; keine pauschale Norm" }
+  classification_scheme: { value: 4tier, authority: recommended, source: "Aufsichtspraxis" }

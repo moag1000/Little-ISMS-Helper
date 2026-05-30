@@ -1,0 +1,9 @@
+log_retention_days:
+  category: resilience
+  type: int
+  default: 180
+  iso_clauses: [A.8.15]
+  framework_constraints: {}
+  template_slot: { interpolate: policy.logging.retention }
+  wizard_step: governance_controls
+  labels: { de: "Log-Aufbewahrung (Tage)", en: "Log retention (days)" }

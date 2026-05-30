@@ -50,3 +50,5 @@ tests/Template/SystemTemplateApplierTest.php:52
 tests/Template/SystemTemplateApplierTest.php:90
 tests/Template/SystemTemplateApplierTest.php:120
 tests/Template/SystemTemplateApplierTest.php:152
+tests/Service/PolicyParameter/PolicyBaselineApplierTest.php:27
+tests/Service/PolicyParameter/PolicyBaselineApplierTest.php:40
