@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container py-4">
+    <h1 class="h3 mb-1">Parameter-Register</h1>
+    <p class="text-muted">
+        Cross-Framework-Audit-Register{% if frameworks is not empty %} — Rahmenwerke: <strong>{{ frameworks|join(', ')|upper }}</strong>{% endif %}.
+        Gelb hinterlegt = regulatorische Pflicht.
+    </p>
+    <table class="table table-sm">
+        <thead><tr><th>Parameter</th><th>Wert</th><th>Autorität</th><th>Quelle</th><th>ISO-Klausel</th><th>Frameworks</th></tr></thead>
+        <tbody>
+            {% for row in rows %}
+                <tr class="{{ row.isRegulatory() ? 'table-warning' : '' }}">
+                    <td>{{ row.label }}<br><small class="text-muted">{{ row.paramKey }}</small></td>
+                    <td>{{ row.value }}</td>
+                    <td>{% if row.authority %}<span class="badge {{ row.isRegulatory() ? 'bg-danger' : 'bg-secondary' }}">{{ row.authority }}</span>{% else %}<span class="text-muted">–</span>{% endif %}</td>
+                    <td><small>{{ row.source ?? '–' }}</small></td>
+                    <td><small>{{ row.isoClauses|join(', ') }}</small></td>
+                    <td><small>{{ row.frameworks is not empty ? row.frameworks|join(', ')|upper : '–' }}</small></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('app_policy_profile_index', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">Zurück zum Profil</a>
+</div>
+{% endblock %}

@@ -22,4 +22,11 @@ class OrganizationSecurityProfileRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['tenantId' => $tenantId]);
     }
+
+    public function save(OrganizationSecurityProfile $profile): void
+    {
+        $em = $this->getEntityManager();
+        $em->persist($profile);
+        $em->flush();
+    }
 }
