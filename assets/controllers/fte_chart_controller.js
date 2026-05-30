@@ -45,44 +45,48 @@ export default class extends Controller {
             return;
         }
 
-        // Lazy-load Chart.js (already bundled in importmap)
-        import('chart.js/auto').then(({ default: Chart }) => {
-            const ctx = this.canvasTarget.getContext('2d');
-            this._chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'Savings (min)',
-                        data,
-                        backgroundColor: 'rgba(13, 110, 253, 0.25)',
-                        borderColor:     'rgba(13, 110, 253, 0.85)',
-                        borderWidth: 2,
-                        borderRadius: 4,
-                    }],
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: ctx => {
-                                    const min = ctx.parsed.y;
-                                    const h   = (min / 60).toFixed(1);
-                                    return `${min} min (${h} h)`;
-                                },
+        // Chart.js is registered globally as window.Chart in app.js (canonical
+        // pattern shared with trend_chart / radar_chart / chart controllers).
+        const Chart = window.Chart;
+        if (!Chart) {
+            return;
+        }
+
+        const ctx = this.canvasTarget.getContext('2d');
+        this._chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Savings (min)',
+                    data,
+                    backgroundColor: 'rgba(13, 110, 253, 0.25)',
+                    borderColor:     'rgba(13, 110, 253, 0.85)',
+                    borderWidth: 2,
+                    borderRadius: 4,
+                }],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => {
+                                const min = ctx.parsed.y;
+                                const h   = (min / 60).toFixed(1);
+                                return `${min} min (${h} h)`;
                             },
                         },
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: { display: true, text: 'Minutes saved' },
-                        },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Minutes saved' },
                     },
                 },
-            });
+            },
         });
     }
 }
