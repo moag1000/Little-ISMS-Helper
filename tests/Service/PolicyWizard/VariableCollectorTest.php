@@ -8,8 +8,18 @@ use App\Entity\Tenant;
 use App\Entity\TenantPolicySetting;
 use App\Entity\User;
 use App\Entity\WizardRun;
+use App\Entity\OrganizationSecurityProfile;
+use App\Repository\OrganizationSecurityProfileRepository;
 use App\Repository\TenantPolicySettingRepository;
 use App\Repository\UserRepository;
+use App\Service\PolicyParameter\FrameworkConstraintChecker;
+use App\Service\PolicyParameter\FrameworkCoverageEvaluator;
+use App\Service\PolicyParameter\PolicyBaselineApplier;
+use App\Service\PolicyParameter\PolicyBaselineCatalog;
+use App\Service\PolicyParameter\PolicyParameterCatalog;
+use App\Service\PolicyParameter\PolicyParameterResolver;
+use App\Service\PolicyParameter\PolicyParameterVariables;
+use App\Service\PolicyParameter\PolicyProfileManager;
 use App\Service\PolicyWizard\VariableCollector;
 use App\Service\PolicyWizard\WizardStepKeys;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -60,6 +70,42 @@ final class VariableCollectorTest extends TestCase
         $settingRepo ??= $this->createStub(TenantPolicySettingRepository::class);
         $userRepo ??= $this->createStub(UserRepository::class);
         return new VariableCollector($settingRepo, $userRepo);
+    }
+
+    #[Test]
+    public function mergesPolicyParameterInterpolationVariables(): void
+    {
+        $configRoot = \dirname(__DIR__, 3) . '/config';
+        $params = new PolicyParameterCatalog($configRoot . '/policy_parameters');
+        $baselines = new PolicyBaselineCatalog($configRoot . '/policy_baselines');
+        $manager = new PolicyProfileManager(
+            $params,
+            $baselines,
+            new PolicyParameterResolver($params),
+            new PolicyBaselineApplier($baselines),
+            new FrameworkCoverageEvaluator($params, new FrameworkConstraintChecker()),
+        );
+
+        // Profile pre-filled from the finance_bafin baseline -> mfa_scope = all.
+        $profile = new OrganizationSecurityProfile();
+        $manager->applySector($profile, 'finance_bafin');
+
+        $profileRepo = $this->createStub(OrganizationSecurityProfileRepository::class);
+        $profileRepo->method('findForTenant')->willReturn($profile);
+
+        $collector = new VariableCollector(
+            $this->createStub(TenantPolicySettingRepository::class),
+            $this->createStub(UserRepository::class),
+            $profileRepo,
+            $manager,
+            new PolicyParameterVariables($params),
+        );
+
+        $vars = $collector->collectFor($this->makeRun($this->makeTenant(), []));
+
+        // mfa_scope -> template_slot.interpolate policy.access.mfa_value
+        self::assertSame('all', $vars['policy.access.mfa_value']);
+        self::assertSame('dual_signoff', $vars['policy.governance.approval']);
     }
 
     #[Test]
