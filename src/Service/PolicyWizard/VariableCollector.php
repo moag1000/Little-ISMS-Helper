@@ -29,6 +29,12 @@ class VariableCollector
     public function __construct(
         private readonly TenantPolicySettingRepository $settingRepository,
         private readonly UserRepository $userRepository,
+        // Nullable so existing 2-arg test construction keeps working; autowired
+        // in production. When present, effective policy-parameter values are
+        // merged as {{ policy.* }} interpolation variables.
+        private readonly ?\App\Repository\OrganizationSecurityProfileRepository $profileRepository = null,
+        private readonly ?\App\Service\PolicyParameter\PolicyProfileManager $profileManager = null,
+        private readonly ?\App\Service\PolicyParameter\PolicyParameterVariables $parameterVariables = null,
     ) {
     }
 
@@ -96,6 +102,26 @@ class VariableCollector
             $vars['lifecycle.review_interval_months'] = $this->scalarOrNull(
                 $lifecycleSlot['review_interval_months'] ?? null,
             );
+        }
+
+        // ── Policy-parameter slot ───────────────────────────────────
+        // Effective parameter values (override→profile→baseline→default)
+        // become {{ policy.* }} interpolation variables so generated policies
+        // render the tenant's audit-defensible values.
+        $tenantId = $tenant?->getId();
+        if (
+            $tenantId !== null
+            && $this->profileRepository !== null
+            && $this->profileManager !== null
+            && $this->parameterVariables !== null
+        ) {
+            $profile = $this->profileRepository->findForTenant($tenantId);
+            if ($profile !== null) {
+                $resolved = $this->profileManager->resolveAll($profile);
+                foreach ($this->parameterVariables->build($resolved) as $key => $value) {
+                    $vars[$key] = is_scalar($value) ? $value : (string) $value;
+                }
+            }
         }
 
         // Drop nullables that resolved to empty string AFTER we tried
