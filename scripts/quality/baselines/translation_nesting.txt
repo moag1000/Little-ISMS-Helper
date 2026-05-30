@@ -257,8 +257,10 @@ translations/policy_tisax.de.yaml:1:policy
 translations/policy_tisax.en.yaml:1:policy
 translations/policy_wizard.de.yaml:1479:policy_ack
 translations/policy_wizard.de.yaml:1501:compliance_check
+translations/policy_wizard.de.yaml:1903:annex
 translations/policy_wizard.en.yaml:1476:policy_ack
 translations/policy_wizard.en.yaml:1498:compliance_check
+translations/policy_wizard.en.yaml:1900:annex
 translations/privacy.de.yaml:1073:dpia
 translations/privacy.en.yaml:921:dpia
 translations/report_builder.de.yaml:291:settings

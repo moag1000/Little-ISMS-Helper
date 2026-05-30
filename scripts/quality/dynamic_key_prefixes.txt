@@ -12,6 +12,8 @@ admin.report_style.chart	1
 admin.workflow_slas.basis	1
 admin.workflow_slas.event	1
 alva.mood	1
+annex.authority	1
+annex.value_label	1
 asset.classification	6
 asset.dependency.criticality_impact	1
 asset.dependency.type	1
