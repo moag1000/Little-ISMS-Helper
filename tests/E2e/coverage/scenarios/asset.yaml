@@ -12,6 +12,9 @@ scenarios:
       'input[name="asset[name]"]': "Smoke-Asset ${random.suffix}"
       'select[name="asset[assetType]"]': "Information"
       'select[name="asset[dataClassification]"]': "internal"
+      'input[name="asset[confidentialityValue]"]': "3"
+      'input[name="asset[integrityValue]"]': "3"
+      'input[name="asset[availabilityValue]"]': "3"
     submit: auto
     expect:
       status_lt: 500

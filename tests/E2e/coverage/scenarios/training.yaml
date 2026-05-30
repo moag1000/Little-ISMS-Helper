@@ -12,6 +12,8 @@ scenarios:
       'input[name="training[title]"]': "Smoke-Training ${random.suffix}"
       'select[name="training[trainingType]"]': "security_awareness"
       'input[name="training[scheduledDate]"]': "2026-12-01"
+      # owner constraint: at least one of trainerUser / trainerPerson required
+      'select[name="training[trainerUser]"]': "__first__"
     submit: auto
     expect:
       status_lt: 500

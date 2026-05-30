@@ -136,6 +136,19 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
             return finishResult(baseResult, t0);
         }
 
+        // fa-form-layout collapses all but the first section by default, which
+        // hides their (often required) fields. Expand every collapsed section
+        // up-front so fields are visible + focusable — native fill/select then
+        // works and the form is actually submittable (no reliance on the
+        // DOM-value fallback, and no silent native-validation block on a
+        // hidden required control). Clicking the head delegates to
+        // form-layout#toggleSection.
+        const collapsedHeads = page.locator('.fa-form-section--collapsed .fa-form-section__head');
+        for (let remaining = await collapsedHeads.count(); remaining > 0; remaining--) {
+            await collapsedHeads.first().click().catch(() => { /* already open / not clickable */ });
+            await page.waitForTimeout(80);
+        }
+
         const ctx = { suffix: randomBytes(4).toString('hex') };
         for (const [selector, raw] of Object.entries(scenario.fill ?? {})) {
             const value = interpolate(raw, ctx);
@@ -153,7 +166,20 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
             // sections can still be filled by L2 smokes.
             try {
                 if (tag === 'SELECT') {
-                    await locator.selectOption(value, { timeout: 5_000 });
+                    if (value === '__first__') {
+                        // Pick the first real option (skip the empty placeholder).
+                        // Lets relational EntityType selects be satisfied generically
+                        // without hard-coding tenant-specific entity IDs.
+                        const optValue = await locator.evaluate((el) => {
+                            const opt = [...(el as HTMLSelectElement).options].find((o) => o.value !== '');
+                            return opt ? opt.value : '';
+                        });
+                        if (optValue) {
+                            await locator.selectOption(optValue, { timeout: 5_000 });
+                        }
+                    } else {
+                        await locator.selectOption(value, { timeout: 5_000 });
+                    }
                 } else {
                     await locator.fill(value, { timeout: 5_000 });
                 }
@@ -192,6 +218,8 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
         // the real form-action submit.
         const submitLocator = page.locator(submitSelector).filter({ visible: true }).first();
 
+        const preSubmitUrl = page.url();
+
         const [response] = await Promise.all([
             page.waitForResponse(
                 (r) => r.request().method() === 'POST' || r.request().method() === 'PUT',
@@ -202,7 +230,18 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
 
         baseResult.finalStatus = response?.status() ?? baseResult.finalStatus;
 
-        await page.waitForLoadState('domcontentloaded', { timeout: 10_000 }).catch(() => {});
+        // Turbo handles the POST → 302 → render asynchronously: domcontentloaded /
+        // networkidle can fire while the URL is still the form route, so a
+        // successful create would be misread as "stayed on /new". Wait for the
+        // URL to actually leave the form route (successful create redirects
+        // away). On a validation re-render the URL stays, so this just times out
+        // cleanly and we report the (correct) unchanged URL.
+        await page.waitForFunction(
+            (prev) => window.location.href !== prev,
+            preSubmitUrl,
+            { timeout: 8_000 },
+        ).catch(() => {});
+        await page.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
         baseResult.finalUrl = page.url();
 
         const expectations = scenario.expect ?? {};
