@@ -28,11 +28,17 @@ from scripts.quality.mapping_audit import metrics
 from scripts.quality.mapping_audit import synthesis
 from scripts.quality.mapping_audit import tisax_extract as tx
 
-# Which CSV files feed which EU target framework (forward direction into ISO/other).
+# Which CSV files feed which EU/EU-adjacent source framework (forward direction).
 EU_PAIRS = {
-    "NIS2": ["nis2_iso27001_v1.csv"],
+    "NIS2": ["nis2_iso27001_v1.csv", "nis2_iso22301_v1.csv", "nis2_iso27005_v1.csv"],
     "DORA": ["dora_iso27001_v1.csv", "dora_iso27005_v1.csv", "dora_iso22301_v1.csv"],
     "GDPR": ["gdpr_iso27701_v1.csv"],
+    # Wave 4 — remaining EU / EU-transposition frameworks
+    "EU-AI-ACT": ["eu_ai_act_iso27001_v1.csv"],
+    "BDSG": ["bdsg_gdpr_v1.csv"],
+    "KRITIS": ["kritis_nis2_v1.csv"],
+    "TKG-2024": ["tkg_nis2_v1.csv"],
+    "NIS2UMSUCG": ["nis2umsucg_nis2_v1.csv"],
 }
 
 
@@ -50,6 +56,12 @@ def build_dossier(framework, csv_files, mappings_dir, catalog):
         if os.path.exists(path):
             rows.extend(audit_io.read_mapping_csv(path))
     cat_reqs = catalog.get(framework, {}).get("requirements", [])
+    if not cat_reqs:
+        # No manifest catalog (e.g. national EU-transposition frameworks): fall back
+        # to the distinct source IDs present in the CSV. Coverage is then trivially
+        # complete — for these the audit value is provenance + suspects + correctness,
+        # not coverage-gap analysis.
+        cat_reqs = sorted({r["source_requirement_id"] for r in rows})
     # a requirement is "covered" if it appears as source_requirement_id in >=1 row
     source_view = [{"target_requirement_id": r["source_requirement_id"]} for r in rows]
     cov = metrics.coverage(source_view, cat_reqs)
