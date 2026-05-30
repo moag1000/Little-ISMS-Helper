@@ -11,7 +11,6 @@ use App\Service\PolicyParameter\PolicyBaselineCatalog;
 use App\Service\PolicyParameter\PolicyParameterCatalog;
 use App\Service\PolicyParameter\PolicyProfileManager;
 use App\Service\TenantContext;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +30,6 @@ class PolicyProfileController extends AbstractController
 {
     public function __construct(
         private readonly OrganizationSecurityProfileRepository $repository,
-        private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly PolicyProfileManager $profileManager,
         private readonly PolicyParameterCatalog $catalog,
@@ -67,7 +65,7 @@ class PolicyProfileController extends AbstractController
 
         if (\in_array($sector, $this->baselines->sectors(), true)) {
             $this->profileManager->applySector($profile, $sector);
-            $this->entityManager->flush();
+            $this->repository->save($profile);
             $this->addFlash('success', 'Branchen-Baseline angewendet — Profil vorbelegt.');
         } else {
             $this->addFlash('error', 'Unbekannte Branche.');
@@ -93,7 +91,7 @@ class PolicyProfileController extends AbstractController
                 $profile->setValue($key, $def->type === 'int' ? (int) $raw : (string) $raw);
             }
         }
-        $this->entityManager->flush();
+        $this->repository->save($profile);
         $this->addFlash('success', 'Parameter gespeichert.');
 
         return $this->redirectToRoute('app_policy_profile_index', ['_locale' => $request->getLocale()]);
@@ -121,8 +119,7 @@ class PolicyProfileController extends AbstractController
 
         if ($profile === null) {
             $profile = (new OrganizationSecurityProfile())->setTenantId($tenantId);
-            $this->entityManager->persist($profile);
-            $this->entityManager->flush();
+            $this->repository->save($profile);
         }
 
         return $profile;
