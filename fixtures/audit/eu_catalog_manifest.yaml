@@ -24,6 +24,23 @@ NIS2:
     - Art.21.2.h
     - Art.21.2.i
     - Art.21.2.j
+    - Art.20                          # governance / management-body accountability
+    - Art.21.1                        # overarching risk-management-measures obligation
+    - Art.21.3                        # supply-chain risk assessment
+    - Art.23                          # incident reporting obligations
+EU-AI-ACT:
+  source: eu_2024_1689              # Regulation (EU) 2024/1689 (AI Act)
+  requirements:
+    - AIACT-1
+    - AIACT-2
+    - AIACT-3
+    - AIACT-4
+    - AIACT-5
+    - AIACT-6
+    - AIACT-7
+    - AIACT-8
+    - AIACT-9
+    - AIACT-10
 DORA:
   source: eu_2022_2554              # ICT-risk-relevant articles (Ch. II-V)
   requirements:
