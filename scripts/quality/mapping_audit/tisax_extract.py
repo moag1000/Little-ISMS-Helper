@@ -57,3 +57,148 @@ def parse_evidence(cell):
         return []
     parts = re.split(r"[;,]", text)
     return [p.strip() for p in parts if p.strip()]
+
+
+import zipfile
+
+_CRIT_RX = re.compile(r"^\d+(\.\d+)+$")  # e.g. 1.1.1
+
+
+def locate_columns(header_grid):
+    """Find column letters by header label across header rows."""
+    cols = {"criterion": None, "references": None, "evidence": None}
+    for row in header_grid:
+        for letter, text in row.items():
+            t = (text or "").strip().lower()
+            if cols["references"] is None and t.startswith("verweisung auf andere normen"):
+                cols["references"] = letter
+            elif cols["evidence"] is None and t.startswith("mögliche nachweise"):
+                cols["evidence"] = letter
+    return cols
+
+
+def build_records(data_grid, cols):
+    """One record per data row that has a criterion-number in cols['criterion'].
+
+    Each record's 'references' list contains (normalized_code, clause) tuples,
+    where normalized_code is the internal framework key (e.g. 'ISO27001') or
+    None for untracked standards (filtered out).
+    """
+    out = []
+    crit_col = cols.get("criterion")
+    for row in data_grid:
+        crit = (row.get(crit_col) or "").strip() if crit_col else ""
+        if not crit:
+            # fall back: find any cell that looks like a criterion number
+            crit = next((v.strip() for v in row.values() if _CRIT_RX.match((v or "").strip())), "")
+        if not crit or not _CRIT_RX.match(crit):
+            continue
+        raw_refs = parse_references(row.get(cols.get("references") or "", "") or "")
+        # Normalize standard labels to internal codes; keep only tracked ones.
+        # Raw label is kept as-is when normalize_standard returns None (untracked).
+        normalized_refs = []
+        for std_label, clause in raw_refs:
+            code = normalize_standard(std_label)
+            normalized_refs.append((code if code is not None else std_label, clause))
+        out.append({
+            "criterion": crit,
+            "references": normalized_refs,
+            "evidence": parse_evidence(row.get(cols.get("evidence") or "", "") or ""),
+        })
+    return out
+
+
+def _col_letter(cell_ref):
+    return re.match(r"([A-Z]+)", cell_ref).group(1)
+
+
+def read_sheet_grid(xlsx_path, sheet_name):
+    """Return list of {col_letter: value} dicts for every row of a sheet.
+    Stdlib-only OOXML reader."""
+    z = zipfile.ZipFile(xlsx_path)
+    shared = []
+    if "xl/sharedStrings.xml" in z.namelist():
+        ss = z.read("xl/sharedStrings.xml").decode("utf-8", "ignore")
+        # each <si> may hold multiple <t> runs -> concatenate per <si>
+        for si in re.findall(r"<si>(.*?)</si>", ss, re.S):
+            shared.append("".join(re.findall(r"<t[^>]*>(.*?)</t>", si, re.S)))
+    wb = z.read("xl/workbook.xml").decode("utf-8", "ignore")
+    rels = dict(re.findall(r'<Relationship Id="(rId\d+)"[^>]*Target="([^"]+)"',
+                           z.read("xl/_rels/workbook.xml.rels").decode("utf-8", "ignore")))
+    target = None
+    for nm, rid in re.findall(r'<sheet [^>]*name="([^"]+)"[^>]*r:id="(rId\d+)"', wb):
+        if nm == sheet_name:
+            target = rels[rid]
+    if target is None:
+        raise ValueError(f"sheet {sheet_name!r} not found")
+    data = z.read("xl/" + target).decode("utf-8", "ignore")
+    grid = []
+    for row_xml in re.findall(r"<row[^>]*>(.*?)</row>", data, re.S):
+        row = {}
+        for cell_xml in re.findall(r"<c\b[^>]*>.*?</c>|<c\b[^>]*/>", row_xml, re.S):
+            mref = re.search(r'r="([A-Z]+)\d+"', cell_xml)
+            if not mref:
+                continue
+            letter = mref.group(1)
+            mv = re.search(r"<v>(.*?)</v>", cell_xml, re.S)
+            if not mv:
+                continue
+            val = mv.group(1)
+            if re.search(r'\bt="s"', cell_xml):  # shared-string index
+                try:
+                    val = shared[int(val)]
+                except (ValueError, IndexError):
+                    pass
+            # unescape common XML entities
+            val = (val.replace("&amp;", "&").replace("&lt;", "<")
+                      .replace("&gt;", ">").replace("&#10;", "\n").replace("&#13;", ""))
+            row[letter] = val
+        if row:
+            grid.append(row)
+    return grid
+
+
+def _prev_col(letter):
+    """Return the column letter immediately to the left (e.g. P -> O, AA -> Z)."""
+    if not letter:
+        return None
+    last = letter[-1]
+    prefix = letter[:-1]
+    if last == "A":
+        if not prefix:
+            return None  # A has no predecessor
+        prev_prefix = _prev_col(prefix)
+        return (prev_prefix if prev_prefix else "") + "Z"
+    return prefix + chr(ord(last) - 1)
+
+
+def _anchor_cols_to_data(cols, data_grid):
+    """VDA-ISA workbooks have a one-column left-shift between the header label
+    row and the actual data rows (a merged-cell layout artifact). Verify each
+    located column has data in criterion rows (rows that have a criterion-number
+    cell); if not, try the immediately preceding column."""
+    # Only consider actual data rows (rows that have a criterion number)
+    criterion_rows = [
+        row for row in data_grid
+        if any(_CRIT_RX.match((v or "").strip()) for v in row.values())
+    ]
+    anchored = dict(cols)
+    for key in ("references", "evidence"):
+        col = anchored.get(key)
+        if col is None:
+            continue
+        has_data = any(row.get(col, "").strip() for row in criterion_rows)
+        if not has_data:
+            left = _prev_col(col)
+            if left and any(row.get(left, "").strip() for row in criterion_rows):
+                anchored[key] = left
+    return anchored
+
+
+def extract_workbook(xlsx_path, sheet_name="Informationssicherheit"):
+    """High-level: grid -> located columns -> records."""
+    grid = read_sheet_grid(xlsx_path, sheet_name)
+    header_grid = grid[:8]   # VDA-ISA header band
+    cols = locate_columns(header_grid)
+    cols = _anchor_cols_to_data(cols, grid)
+    return build_records(grid, cols)

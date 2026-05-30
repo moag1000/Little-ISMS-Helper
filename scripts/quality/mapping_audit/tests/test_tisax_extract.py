@@ -32,3 +32,28 @@ def test_normalize_standard_maps_to_framework_code():
     assert tx.normalize_standard("NIST CSF 1.1") == "NIST-CSF"
     assert tx.normalize_standard("BSI IT-Grundschutz-Compendium") == "BSI-GRUNDSCHUTZ"
     assert tx.normalize_standard("ISA/IEC 62443") is None  # not a tracked framework
+
+
+def test_locate_columns_finds_by_header_label():
+    # header_grid: list of rows, each row is dict col_letter -> text
+    header_grid = [
+        {"A": "header", "C": "Nr.", "K": "Verweisung auf andere Normen", "M": "Mögliche Nachweise (nicht verbindlich)"},
+    ]
+    cols = tx.locate_columns(header_grid)
+    assert cols["references"] == "K"
+    assert cols["evidence"] == "M"
+
+
+def test_build_records_uses_located_columns():
+    cols = {"criterion": "B", "references": "K", "evidence": "M"}
+    data_grid = [
+        {"B": "1.1.1", "K": "ISO 27001:2022: A.5.1", "M": "Richtlinie, Intranet"},
+        {"B": "", "K": "", "M": ""},  # blank criterion -> skipped
+    ]
+    records = tx.build_records(data_grid, cols)
+    assert len(records) == 1
+    rec = records[0]
+    assert rec["criterion"] == "1.1.1"
+    # build_records normalizes standard labels to internal codes
+    assert ("ISO27001", "A.5.1") in rec["references"]
+    assert rec["evidence"] == ["Richtlinie", "Intranet"]
