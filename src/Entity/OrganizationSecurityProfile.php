@@ -26,7 +26,9 @@ class OrganizationSecurityProfile
     private ?int $tenantId = null;
 
     /** @var array<string, mixed> */
-    #[ORM\Column(type: Types::JSON)]
+    // Column named parameter_values (not `values`) to avoid the MariaDB/MySQL
+    // reserved word, which Doctrine does not reliably quote in hydration SQL.
+    #[ORM\Column(name: 'parameter_values', type: Types::JSON)]
     private array $values = [];
 
     /** @var array<string, bool> */

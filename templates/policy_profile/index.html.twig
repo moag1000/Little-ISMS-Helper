@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container py-4">
+    <h1 class="h3 mb-1">Organisations-Sicherheitsprofil</h1>
+    <p class="text-muted">Branche wählen → Parameter vorbelegt → audit-feste Policy-Werte + Abdeckung je Rahmenwerk. Werte sind editierbar.</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" action="{{ path('app_policy_profile_apply_sector', {_locale: app.request.locale}) }}" class="row g-2 align-items-end">
+                <input type="hidden" name="_token" value="{{ csrf_token('policy_profile_sector') }}">
+                <div class="col-auto">
+                    <label class="form-label mb-1">Branche</label>
+                    <select name="sector" class="form-select">
+                        {% for key, b in sectors %}
+                            <option value="{{ key }}"{{ profile.sectorKey == key ? ' selected' : '' }}>{{ b.labels.de ?? key }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-auto"><button class="btn btn-primary">Baseline anwenden</button></div>
+                {% if profile.sectorKey %}<div class="col-auto text-muted">Aktuelle Branche: <strong>{{ profile.sectorKey }}</strong></div>{% endif %}
+            </form>
+        </div>
+    </div>
+
+    {% if coverage is not empty %}
+        <h2 class="h5">Framework-Abdeckung</h2>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            {% for fw, c in coverage %}
+                {% set blocking = c.blockingViolations()|length %}
+                <span class="badge {{ blocking > 0 ? 'bg-danger' : (c.violations|length > 0 ? 'bg-warning text-dark' : 'bg-success') }}">
+                    {{ fw|upper }}: {{ c.satisfiedCount() }}/{{ c.totalConstrained }}{% if blocking > 0 %} · {{ blocking }} Pflicht-Gap{% endif %}
+                </span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" action="{{ path('app_policy_profile_save', {_locale: app.request.locale}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('policy_profile_save') }}">
+        <table class="table align-middle">
+            <thead><tr><th>Parameter</th><th style="width: 30%">Wert</th><th>ISO-Klausel</th></tr></thead>
+            <tbody>
+                {% for key, def in definitions %}
+                    <tr>
+                        <td>{{ def.labels.de ?? key }}<br><small class="text-muted">{{ key }}</small></td>
+                        <td>
+                            {% if def.type == 'enum' %}
+                                <select name="param[{{ key }}]" class="form-select form-select-sm">
+                                    {% for opt in def.allowed %}<option value="{{ opt }}"{{ resolved[key] == opt ? ' selected' : '' }}>{{ opt }}</option>{% endfor %}
+                                </select>
+                            {% else %}
+                                <input type="{{ def.type == 'int' ? 'number' : 'text' }}" name="param[{{ key }}]" value="{{ resolved[key] }}" class="form-control form-control-sm">
+                            {% endif %}
+                        </td>
+                        <td><small class="text-muted">{{ def.isoClauses|join(', ') }}</small></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-success">Parameter speichern</button>
+        <a href="{{ path('app_policy_profile_register', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">Parameter-Register ansehen</a>
+    </form>
+</div>
+{% endblock %}
