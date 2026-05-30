@@ -60,7 +60,7 @@ library:
 mappings:
   - source: 'CRA-Annex-I-1.1'
     target: '21.2.e'
-    relationship: 'equivalent'
+    relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       CRA Anhang I Teil I Nr. 1.1 "Security-by-Design + Default-Secure-Configuration"
@@ -113,7 +113,7 @@ mappings:
 
   - source: 'CRA-Annex-I-1.3.b'
     target: '21.2.h'
-    relationship: 'equivalent'
+    relationship: 'related'
     confidence: 'high'
     rationale: |
       CRA Anhang I Teil I Nr. 1.3(b) "Schutz der Vertraulichkeit gespeicherter,
@@ -199,7 +199,7 @@ mappings:
 
   - source: 'CRA-Annex-I-1.3.h'
     target: '21.2.f'
-    relationship: 'equivalent'
+    relationship: 'related'
     confidence: 'high'
     rationale: |
       CRA Anhang I Teil I Nr. 1.3(h) "Logging und Monitoring relevanter
@@ -211,7 +211,7 @@ mappings:
 
   - source: 'CRA-Annex-I-1.3.i'
     target: '21.2.e'
-    relationship: 'equivalent'
+    relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       CRA Anhang I Teil I Nr. 1.3(i) "Sichere Updates / Patch-Mechanismen,
@@ -220,23 +220,9 @@ mappings:
       Mechanismus, Betreiber nutzt diesen fuer regulaeren Patch-Zyklus.
     audit_evidence_hint: 'Update-Mechanismus-Spec mit Signaturpruefung (Hersteller), Patch-Compliance-Dashboard (Betreiber).'
 
-  - source: 'CRA-Annex-II-1'
-    target: '21.2.e'
-    relationship: 'equivalent'
-    confidence: 'high'
-    rationale: |
-      CRA Anhang I Teil II Nr. 1 "Schwachstellen-Identifizierung im Produkt
-      durch regelmaessige Tests und Reviews der Sicherheit" entspricht NIS2
-      21(2)(e) Wartungs-Anteil fuer In-House-Entwicklung. Beide Seiten verlangen
-      systematische Schwachstellenpruefung im SDLC.
-    gap_warning: |
-      Bei Drittprodukten ist die Pflicht beim Hersteller; Betreiber-Verantwortung
-      reduziert sich auf Vendor-Vulnerability-Tracking + Patch-Anwendung.
-    audit_evidence_hint: 'SAST/DAST-Reports, Pentest-Reports, Vulnerability-Tracking-System.'
-
   - source: 'CRA-Annex-II-2'
     target: '21.2.e'
-    relationship: 'equivalent'
+    relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       CRA Anhang I Teil II Nr. 2 "Schwachstellen-Beseitigung ohne Verzug,
@@ -261,7 +247,7 @@ mappings:
 
   - source: 'CRA-Annex-II-4'
     target: '21.2.e'
-    relationship: 'equivalent'
+    relationship: 'related'
     confidence: 'high'
     rationale: |
       CRA Anhang I Teil II Nr. 4 "Regelmaessige Tests und Reviews der
@@ -311,23 +297,6 @@ mappings:
       Adressaten-Mismatch: Hersteller-Pflicht zur Patch-Bereitstellung vs.
       Betreiber-Pflicht zum Incident-Response-Prozess. Schwache direkte
       Schnittmenge.
-
-  - source: 'CRA-Art-11'
-    target: '21.2.d'
-    relationship: 'subset'
-    confidence: 'medium'
-    rationale: |
-      CRA Art. 11 "Coordinated Vulnerability Disclosure (CVD) — Hersteller hat
-      Disclosure-Policy zu pflegen, security.txt oder vergleichbarer Mechanismus,
-      Kooperation mit ENISA-Single-Reporting-Plattform" ist Teilmenge der
-      breiteren NIS2 21(2)(d) "Sicherheit der Lieferkette". Lieferkettensicherheit
-      umfasst CVD als ein Element neben Vendor-Risk-Mgmt, Vertragsklauseln,
-      Audit-Rights.
-    gap_warning: |
-      NIS2 21.2.d ist deutlich breiter als CRA Art. 11. Wer NUR CRA Art. 11
-      hat, deckt nur Disclosure-Aspekt ab — Vendor-Onboarding, Subcontractor-
-      Mgmt, Exit-Strategien bleiben offen.
-    audit_evidence_hint: 'security.txt, CVD-Policy auf Webseite, ENISA-Plattform-Account, Disclosure-Statistik.'
 
   - source: 'CRA-Art-14.1'
     target: '23.1'

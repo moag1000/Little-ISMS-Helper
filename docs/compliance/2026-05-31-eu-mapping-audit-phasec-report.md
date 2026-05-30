@@ -37,13 +37,10 @@ Wave 4 found AI-Act requirements **force-fitted onto ISO 27001**. Phase C confir
 
 ---
 
-## Layer-2 (in progress)
+## Layer-2 (done) — 27 agents, 1.6M tokens
 
-Focused specialist correctness spot-check on the two most strategically/structurally complex: `eu-ai-act_to_iso42001` (validate the 42001 home) and `cra_to_nis2-art21` (manufacturer-vs-operator addressee gap — watch for overstated `equivalent`). Findings + any relationship-label fixes will be appended.
+Focused specialist correctness spot-check on the two most strategically/structurally complex: `eu-ai-act_to_iso42001` (validate the 42001 home) and `cra_to_nis2-art21` (manufacturer-vs-operator addressee gap — watch for overstated `equivalent`). **AI-Act → ISO 42001:** 18 confirmed, 2 relationship relabels (`equivalent`→`subset`): Art.14→A.9.2 (human oversight is a subset of responsible-use, not 1:1), Art.20→10.2 (corrective-action is a narrow regulatory subset). Net: 44 subset / 1 equivalent (Art.12 logging→A.6.2.8, genuine 1:1) — a strong, now-precise crosswalk.
 
----
+**CRA → NIS2:** only 4 confirmed, **8 over-claimed** — the manufacturer-vs-operator addressee gap caused inflated `equivalent` labels. Applied: 4 downgrades to `partial_overlap`, 2 to `related` (incl. 2 wrong-target product-security duties), and **2 removed as spurious** (Annex-II-1 manufacturer name/address; Art-11 product-safety derogation — no NIS2 pendant). Net: 23→21 rows, all `partial_overlap`/`related`, zero overstated equivalence.
 
-## Notes
-
-- The `--library-dir` mode is operator-run (not a CI gate); stdlib-only, no PyYAML dependency.
-- Library mappings are NOT auto-imported here — this is an audit pass. Relationship-label fixes (if any from Layer-2) apply to the YAML `relationship:` field.
+**Takeaway:** even the curated library set had a real defect (CRA↔NIS2 over-equivalence from conflating addressees) — auditing it was worthwhile. The AI-Act→ISO 42001 crosswalk is genuinely high quality and is the right primary home for AI-Act governance.
