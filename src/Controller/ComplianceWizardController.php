@@ -387,6 +387,14 @@ class ComplianceWizardController extends AbstractController
             'rows' => $rows,
             'summary' => $summary,
             'sort' => $sort,
+            // Top-level vars the template + _gap_report_body partial consume
+            // (mapped from $summary / $rows — the partial uses these names,
+            // not the raw rows/summary).
+            'effort_table' => $rows,
+            'total_effort_days' => $summary['total_effort_days'] ?? 0,
+            'quick_wins' => $summary['quick_wins'] ?? [],
+            'effort_estimated_count' => $summary['estimated_count'] ?? 0,
+            'effort_unestimated_count' => $summary['unestimated_count'] ?? 0,
         ]);
     }
 
