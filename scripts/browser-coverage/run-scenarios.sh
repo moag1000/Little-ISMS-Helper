@@ -16,7 +16,10 @@ cd "$PROJECT_ROOT"
 if [ "$#" -gt 0 ]; then
     PERSONAS=("$@")
 else
-    mapfile -t PERSONAS < <(python3 -c '
+    # `mapfile`/`readarray` is bash 4+; macOS ships bash 3.2. Use a
+    # portable read-loop so the default (no-args) path works everywhere.
+    PERSONAS=()
+    while IFS= read -r _persona; do PERSONAS+=("$_persona"); done < <(python3 -c '
 import yaml
 d = yaml.safe_load(open("tests/E2e/coverage/persona-routes.yaml"))
 print("\n".join(d["personas"].keys()))
