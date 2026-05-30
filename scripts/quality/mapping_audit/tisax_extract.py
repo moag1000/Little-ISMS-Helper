@@ -80,9 +80,8 @@ def locate_columns(header_grid):
 def build_records(data_grid, cols):
     """One record per data row that has a criterion-number in cols['criterion'].
 
-    Each record's 'references' list contains (normalized_code, clause) tuples,
-    where normalized_code is the internal framework key (e.g. 'ISO27001') or
-    None for untracked standards (filtered out).
+    Each record's 'references' list contains raw (standard_label, clause) tuples
+    exactly as returned by parse_references — normalization is a downstream concern.
     """
     out = []
     crit_col = cols.get("criterion")
@@ -93,16 +92,9 @@ def build_records(data_grid, cols):
             crit = next((v.strip() for v in row.values() if _CRIT_RX.match((v or "").strip())), "")
         if not crit or not _CRIT_RX.match(crit):
             continue
-        raw_refs = parse_references(row.get(cols.get("references") or "", "") or "")
-        # Normalize standard labels to internal codes; keep only tracked ones.
-        # Raw label is kept as-is when normalize_standard returns None (untracked).
-        normalized_refs = []
-        for std_label, clause in raw_refs:
-            code = normalize_standard(std_label)
-            normalized_refs.append((code if code is not None else std_label, clause))
         out.append({
             "criterion": crit,
-            "references": normalized_refs,
+            "references": parse_references(row.get(cols.get("references") or "", "") or ""),
             "evidence": parse_evidence(row.get(cols.get("evidence") or "", "") or ""),
         })
     return out

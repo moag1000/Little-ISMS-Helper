@@ -54,6 +54,6 @@ def test_build_records_uses_located_columns():
     assert len(records) == 1
     rec = records[0]
     assert rec["criterion"] == "1.1.1"
-    # build_records normalizes standard labels to internal codes
-    assert ("ISO27001", "A.5.1") in rec["references"]
+    # build_records returns raw labels; normalization is a downstream concern
+    assert ("ISO 27001:2022", "A.5.1") in rec["references"]
     assert rec["evidence"] == ["Richtlinie", "Intranet"]
