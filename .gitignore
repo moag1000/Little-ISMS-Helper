@@ -87,3 +87,7 @@ translations/*+intl-icu.*.yaml
 
 # local Playwright form-inspect debug helper (hardcoded creds — never commit)
 /scripts/inspect-form.mjs
+
+# Python tooling bytecode
+__pycache__/
+*.pyc
