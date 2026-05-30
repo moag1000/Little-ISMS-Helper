@@ -163,6 +163,7 @@ final class ImportMappingCsvCommand extends Command
                 ->setBidirectional($isBidirectional)
                 ->setMappingRationale($data['rationale'])
                 ->setSource($data['source_catalog'])
+                ->setProvenanceUrl(($data['provenance_url'] ?? '') !== '' ? $data['provenance_url'] : null)
                 ->setVersion(($existing?->getVersion() ?? 0) + 1)
                 ->setValidFrom(new DateTimeImmutable());
 
@@ -185,6 +186,7 @@ final class ImportMappingCsvCommand extends Command
                     ->setBidirectional(true)
                     ->setMappingRationale($data['rationale'])
                     ->setSource($data['source_catalog'] . '_reverse')
+                    ->setProvenanceUrl(($data['provenance_url'] ?? '') !== '' ? $data['provenance_url'] : null)
                     ->setVersion(1)
                     ->setValidFrom(new DateTimeImmutable());
 
