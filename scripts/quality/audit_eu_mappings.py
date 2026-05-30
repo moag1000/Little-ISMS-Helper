@@ -13,6 +13,7 @@ var/audit/tisax_workbook_mappings_candidate.csv
 """
 import argparse
 import csv
+import json
 import os
 import sys
 
@@ -24,6 +25,7 @@ if _project_root not in sys.path:
 
 from scripts.quality.mapping_audit import io as audit_io
 from scripts.quality.mapping_audit import metrics
+from scripts.quality.mapping_audit import synthesis
 from scripts.quality.mapping_audit import tisax_extract as tx
 
 # Which CSV files feed which EU target framework (forward direction into ISO/other).
@@ -95,6 +97,7 @@ def main():
     ap.add_argument("--manifest", default="fixtures/audit/eu_catalog_manifest.yaml")
     ap.add_argument("--workbook", default="")
     ap.add_argument("--out", default="var/audit")
+    ap.add_argument("--synthesize", default="", help="path to workflow_results.json")
     args = ap.parse_args()
 
     os.makedirs(args.out, exist_ok=True)
@@ -109,6 +112,20 @@ def main():
               f"({c['mapped_count']}/{c['catalog_count']}), "
               f"{len(dossier['suspects'])} suspect, "
               f"provenance {dossier['provenance']['complete_pct']}%")
+
+    if args.synthesize and os.path.exists(args.synthesize):
+        with open(args.synthesize, encoding="utf-8") as fh:
+            wf_results = json.load(fh)
+        rows = synthesis.build_backlog(wf_results)
+        synthesis.write_backlog_csv(os.path.join(args.out, "eu_mapping_backlog.csv"), rows)
+        table = synthesis.build_finding_table(wf_results)
+        os.makedirs("docs/compliance", exist_ok=True)
+        with open("docs/compliance/eu-mapping-audit-findings.md", "w", encoding="utf-8") as fh:
+            fh.write("# EU Mapping Audit — Findings\n\n")
+            fh.write(f"_Generated {len(rows)} backlog rows._\n\n")
+            fh.write(table)
+        print(f"backlog rows: {len(rows)} -> var/audit/eu_mapping_backlog.csv")
+        print("finding table -> docs/compliance/eu-mapping-audit-findings.md")
 
     if args.workbook and os.path.exists(args.workbook):
         recs = tx.extract_workbook(args.workbook)
