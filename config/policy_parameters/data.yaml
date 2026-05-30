@@ -1,0 +1,10 @@
+classification_scheme:
+  category: data
+  type: enum
+  allowed: [3tier, 4tier, tisax_4tier]
+  default: 3tier
+  iso_clauses: [A.5.12]
+  framework_constraints: {}
+  template_slot: { interpolate: policy.data.classification, section_if: { exists: true } }
+  wizard_step: data_people_legal
+  labels: { de: "Klassifizierungsschema", en: "Classification scheme" }
