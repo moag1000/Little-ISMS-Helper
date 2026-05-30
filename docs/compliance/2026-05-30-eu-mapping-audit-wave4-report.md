@@ -55,3 +55,16 @@ All 8 EU frameworks now at **100 % provenance** (provenance_url backfilled, Phas
 Library-YAML mappings (CRA, EUCS, EU-AI-Act↔GDPR/NIS2/ISO42001) — the audit toolchain reads public CSVs only; auditing these needs a YAML-mapping reader first.
 
 Backlog (machine-readable): `var/audit/eu_mapping_backlog_wave4.csv` (97 rows, gitignored).
+
+---
+
+## Wave 5 — applied (de-conflicted, user-approved)
+
+26 edits, 0 mismatches:
+- **19 %-reductions** of overstated/forced mappings: EU-AI-Act force-fits (A.5.12/A.5.1/A.5.2→40, 9.2→45, A.5.20/A.5.9→55), BDSG §4/§31→70, KRITIS 6 rows →70-75, TKG 4 rows →70-75, NIS2UmsuCG-11→75.
+- **2 re-targets** (correction wins over %-fix): NIS2UmsuCG-12 → NIS2 Art.32 (supervisory, was mis-mapped to Art.25), NIS2UmsuCG-13 → NIS2 Art.34 (fines, was Art.25).
+- **5 new rows** (double-verified): EU-AI-Act AIACT-4→A.8.15 (logging), BDSG §33→GDPR Art.14, KRITIS-8b-4.4→NIS2-23.4, NIS2UmsuCG-16→Art.21(2)(g) + -17→Art.21(2)(e) (gap-fills).
+
+De-confliction rule applied: where a source had both a correction (re-target) and a fix_pct on the old target, the correction won.
+
+Acceptance: all 8 EU frameworks 100 % provenance, 0 mechanical suspects, pytest 19/19.
