@@ -81,7 +81,11 @@ class SupplierCriticalityController extends AbstractController
             return $this->redirectToRoute('app_admin_supplier_criticality_index');
         }
 
-        $status = ($form->isSubmitted() && !$form->isValid())
+        // Any render reached after a submit is an error state (validation,
+        // business rule, or DB constraint) — return 422 so Turbo re-renders the
+        // form in place instead of throwing "Form responses must redirect to
+        // another location". Only the initial GET renders 200.
+        $status = $form->isSubmitted()
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
@@ -131,7 +135,11 @@ class SupplierCriticalityController extends AbstractController
             return $this->redirectToRoute('app_admin_supplier_criticality_index');
         }
 
-        $status = ($form->isSubmitted() && !$form->isValid())
+        // Any render reached after a submit is an error state (validation,
+        // business rule, or DB constraint) — return 422 so Turbo re-renders the
+        // form in place instead of throwing "Form responses must redirect to
+        // another location". Only the initial GET renders 200.
+        $status = $form->isSubmitted()
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 

@@ -39,6 +39,10 @@ interface Scenario {
     category?: string;
     personas?: string[];
     requires_module?: string;
+    // Resolve a dynamic `{id}` placeholder in `route`/`submit` from the first
+    // matching link on an index page — keeps clone smokes tenant-agnostic
+    // instead of hard-coding entity IDs that only exist in one tenant.
+    resolve_id?: { from: string; pattern: string };
     fill?: Record<string, string>;
     before_submit?: Array<{ selector: string; action: 'click' | 'check' | 'uncheck' }>;
     submit?: string;
@@ -127,13 +131,55 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
     };
 
     try {
-        const navResp = await page.goto(scenario.route, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+        let effectiveRoute = scenario.route;
+        let effectiveSubmit = scenario.submit;
+
+        // Resolve a dynamic {id} from an index page so clone smokes target an
+        // entity in the *current* tenant instead of a hard-coded ID.
+        if (scenario.resolve_id) {
+            const idxResp = await page.goto(scenario.resolve_id.from, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+            if ((idxResp?.status() ?? 500) >= 400) {
+                baseResult.failReason = `resolve_id index ${scenario.resolve_id.from} returned ${idxResp?.status()}`;
+                return finishResult(baseResult, t0);
+            }
+            const id = await page.evaluate((pat) => {
+                const re = new RegExp(pat);
+                for (const a of Array.from(document.querySelectorAll('a[href]'))) {
+                    const m = (a.getAttribute('href') || '').match(re);
+                    if (m) return m[1];
+                }
+                return null;
+            }, scenario.resolve_id.pattern);
+            if (!id) {
+                // Nothing to clone in this tenant — skip rather than 404.
+                baseResult.ok = true;
+                baseResult.skipReason = `no entity at ${scenario.resolve_id.from} to clone`;
+                return finishResult(baseResult, t0);
+            }
+            effectiveRoute = effectiveRoute.replace('{id}', id);
+            effectiveSubmit = effectiveSubmit?.replace('{id}', id);
+        }
+
+        const navResp = await page.goto(effectiveRoute, { waitUntil: 'domcontentloaded', timeout: 20_000 });
         baseResult.finalStatus = navResp?.status() ?? null;
         baseResult.finalUrl = page.url();
 
         if (baseResult.finalStatus !== null && baseResult.finalStatus >= 400) {
             baseResult.failReason = `Form GET returned ${baseResult.finalStatus}`;
             return finishResult(baseResult, t0);
+        }
+
+        // fa-form-layout collapses all but the first section by default, which
+        // hides their (often required) fields. Expand every collapsed section
+        // up-front so fields are visible + focusable — native fill/select then
+        // works and the form is actually submittable (no reliance on the
+        // DOM-value fallback, and no silent native-validation block on a
+        // hidden required control). Clicking the head delegates to
+        // form-layout#toggleSection.
+        const collapsedHeads = page.locator('.fa-form-section--collapsed .fa-form-section__head');
+        for (let remaining = await collapsedHeads.count(); remaining > 0; remaining--) {
+            await collapsedHeads.first().click().catch(() => { /* already open / not clickable */ });
+            await page.waitForTimeout(80);
         }
 
         const ctx = { suffix: randomBytes(4).toString('hex') };
@@ -153,7 +199,20 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
             // sections can still be filled by L2 smokes.
             try {
                 if (tag === 'SELECT') {
-                    await locator.selectOption(value, { timeout: 5_000 });
+                    if (value === '__first__') {
+                        // Pick the first real option (skip the empty placeholder).
+                        // Lets relational EntityType selects be satisfied generically
+                        // without hard-coding tenant-specific entity IDs.
+                        const optValue = await locator.evaluate((el) => {
+                            const opt = [...(el as HTMLSelectElement).options].find((o) => o.value !== '');
+                            return opt ? opt.value : '';
+                        });
+                        if (optValue) {
+                            await locator.selectOption(optValue, { timeout: 5_000 });
+                        }
+                    } else {
+                        await locator.selectOption(value, { timeout: 5_000 });
+                    }
                 } else {
                     await locator.fill(value, { timeout: 5_000 });
                 }
@@ -182,8 +241,8 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
             }
         }
 
-        const submitSelector = scenario.submit && scenario.submit !== 'auto'
-            ? scenario.submit
+        const submitSelector = effectiveSubmit && effectiveSubmit !== 'auto'
+            ? effectiveSubmit
             : 'button[type="submit"]';
 
         // The base template renders an inline re-auth modal whose hidden
@@ -191,6 +250,8 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
         // (invisible) button and time out. Filter for visible so we hit
         // the real form-action submit.
         const submitLocator = page.locator(submitSelector).filter({ visible: true }).first();
+
+        const preSubmitUrl = page.url();
 
         const [response] = await Promise.all([
             page.waitForResponse(
@@ -202,7 +263,18 @@ async function runScenario(page: Page, scenario: Scenario): Promise<ScenarioResu
 
         baseResult.finalStatus = response?.status() ?? baseResult.finalStatus;
 
-        await page.waitForLoadState('domcontentloaded', { timeout: 10_000 }).catch(() => {});
+        // Turbo handles the POST → 302 → render asynchronously: domcontentloaded /
+        // networkidle can fire while the URL is still the form route, so a
+        // successful create would be misread as "stayed on /new". Wait for the
+        // URL to actually leave the form route (successful create redirects
+        // away). On a validation re-render the URL stays, so this just times out
+        // cleanly and we report the (correct) unchanged URL.
+        await page.waitForFunction(
+            (prev) => window.location.href !== prev,
+            preSubmitUrl,
+            { timeout: 8_000 },
+        ).catch(() => {});
+        await page.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
         baseResult.finalUrl = page.url();
 
         const expectations = scenario.expect ?? {};
@@ -308,6 +380,11 @@ test.describe(`L2 Scenarios — ${PERSONA}`, () => {
 
             const result = await runScenario(page, scenario);
             results.push(result);
+
+            if (result.skipReason) {
+                test.skip(true, result.skipReason);
+                return;
+            }
 
             expect.soft(result.finalStatus, `final status for ${scenario.name}`).not.toBeGreaterThanOrEqual(500);
             expect.soft(result.pageErrors, `page errors for ${scenario.name}`).toEqual([]);

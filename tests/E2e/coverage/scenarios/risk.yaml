@@ -11,9 +11,12 @@ scenarios:
     category: risk
     fill:
       'input[name="risk[title]"]': "Smoke-Risk ${random.suffix}"
+      'textarea[name="risk[description]"]': "Auto-generated smoke risk"
       'select[name="risk[category]"]': "operational"
       'input[name="risk[probability]"]': "3"
       'input[name="risk[impact]"]': "3"
+      # ISO 27001 Cl. 6.1.2 c — at least one subject (asset/person/location/supplier)
+      'select[name="risk[asset]"]': "__first__"
     submit: auto
     expect:
       status_lt: 500

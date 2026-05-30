@@ -13,6 +13,7 @@ scenarios:
       'textarea[name="isms_objective[description]"]': "Auto-generated"
       'select[name="isms_objective[category]"]': "compliance"
       'input[name="isms_objective[targetDate]"]': "2026-12-31"
+      'input[name="isms_objective[responsiblePerson]"]': "Smoke Owner"
     submit: auto
     expect:
       status_lt: 500
