@@ -23,7 +23,7 @@ src/Controller/Admin/ComplianceImportController.php:LOC=927 deps=0
 src/Controller/ProcessingActivityController.php:LOC=837 deps=0
 src/Controller/AssetController.php:LOC=812 deps=0
 src/Controller/AdminBackupController.php:LOC=802 deps=0
-src/Controller/ComplianceWizardController.php:LOC=762 deps=0
+src/Controller/ComplianceWizardController.php:LOC=770 deps=0
 src/Controller/DPIAController.php:LOC=761 deps=0
 src/Controller/AnalyticsController.php:LOC=742 deps=0
 src/Controller/MonitoringController.php:LOC=727 deps=0

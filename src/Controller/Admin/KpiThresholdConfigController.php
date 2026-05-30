@@ -97,9 +97,8 @@ class KpiThresholdConfigController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($config->getGoodThreshold() < $config->getWarningThreshold()) {
                 $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.good_below_warning'));
-                $status = $form->isSubmitted()
-                    ? Response::HTTP_UNPROCESSABLE_ENTITY
-                    : Response::HTTP_OK;
+                // always submitted here (inside the isSubmitted() guard)
+                $status = Response::HTTP_UNPROCESSABLE_ENTITY;
 
                 return $this->render('admin/kpi_threshold/new.html.twig', ['form' => $form], new Response(status: $status));
             }
@@ -135,9 +134,8 @@ class KpiThresholdConfigController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($config->getGoodThreshold() < $config->getWarningThreshold()) {
                 $this->addFlash('error', $this->flashTrans('kpi_threshold.flash.good_below_warning'));
-                $status = $form->isSubmitted()
-                    ? Response::HTTP_UNPROCESSABLE_ENTITY
-                    : Response::HTTP_OK;
+                // always submitted here (inside the isSubmitted() guard)
+                $status = Response::HTTP_UNPROCESSABLE_ENTITY;
 
                 return $this->render('admin/kpi_threshold/edit.html.twig', ['form' => $form, 'config' => $config], new Response(status: $status));
             }

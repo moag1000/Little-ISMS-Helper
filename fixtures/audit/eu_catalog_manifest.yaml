@@ -1,0 +1,78 @@
+# Canonical requirement-ID catalogs (denominators) for EU-framework mapping coverage.
+# IDs MUST match the source_requirement_id values used in fixtures/mappings/public/*.csv
+# (verified 2026-05-30 against the actual CSVs). Coverage = manifest IDs that appear as a
+# source_requirement_id in >=1 mapping row; the rest surface as 'unmapped' gaps.
+#
+# This is the AUDITED BASELINE, not gospel: the Layer-2 specialist audit re-checks each
+# framework's catalog completeness against the official source and extends these lists.
+# Some IDs below are official-and-important but may be currently unmapped ON PURPOSE — they
+# are here to make real breadth gaps visible (e.g. GDPR Art.33/34 breach notification).
+#
+# Granularity note: GDPR mixes article-level (GDPR-6) and sub-point (GDPR-5.1.a) IDs because
+# the source CSV does. Keep manifest IDs in the SAME granularity the CSV uses, else coverage
+# reports a false gap.
+NIS2:
+  source: enisa_nis2_2024            # Directive 2022/2555 Art. 21(2)(a-j)
+  requirements:
+    - Art.21.2.a
+    - Art.21.2.b
+    - Art.21.2.c
+    - Art.21.2.d
+    - Art.21.2.e
+    - Art.21.2.f
+    - Art.21.2.g
+    - Art.21.2.h
+    - Art.21.2.i
+    - Art.21.2.j
+DORA:
+  source: eu_2022_2554              # ICT-risk-relevant articles (Ch. II-V)
+  requirements:
+    - Art.5
+    - Art.6
+    - Art.7
+    - Art.8
+    - Art.9
+    - Art.10
+    - Art.11
+    - Art.12
+    - Art.13
+    - Art.14
+    - Art.17                         # ICT-related incident management
+    - Art.18                         # classification of incidents
+    - Art.19                         # reporting of major incidents (check: may be unmapped)
+    - Art.24                         # testing of ICT tools/systems
+    - Art.25                         # testing of ICT tools/systems
+    - Art.26                         # advanced testing / TLPT
+    - Art.27                         # TLPT requirements (check: may be unmapped)
+    - Art.28                         # ICT third-party risk — general
+    - Art.29                         # concentration risk
+    - Art.30                         # key contractual provisions
+GDPR:
+  source: eu_2016_679              # security / accountability-relevant articles
+  requirements:
+    - GDPR-5.1.a                     # lawfulness, fairness, transparency
+    - GDPR-5.1.b                     # purpose limitation
+    - GDPR-5.1.c                     # data minimisation
+    - GDPR-5.1.e                     # storage limitation
+    - GDPR-6                         # lawfulness of processing
+    - GDPR-9                         # special categories
+    - GDPR-12                        # transparent information
+    - GDPR-13                        # information to be provided (collected)
+    - GDPR-14                        # information to be provided (not collected)
+    - GDPR-15                        # right of access
+    - GDPR-16                        # right to rectification
+    - GDPR-17                        # right to erasure
+    - GDPR-18                        # right to restriction
+    - GDPR-20                        # data portability
+    - GDPR-21                        # right to object
+    - GDPR-25                        # data protection by design / by default
+    - GDPR-28                        # processor obligations
+    - GDPR-30                        # records of processing
+    - GDPR-32                        # security of processing
+    - GDPR-33                        # breach notification to authority (check: may be unmapped)
+    - GDPR-34                        # breach communication to data subject (check: may be unmapped)
+    - GDPR-35                        # data protection impact assessment
+    - GDPR-37                        # designation of the DPO (check: may be unmapped)
+TISAX:
+  source: workbook                 # filled by tisax_extract (Task 6) — leave empty here
+  requirements: []
