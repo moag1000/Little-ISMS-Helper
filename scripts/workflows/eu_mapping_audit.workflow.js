@@ -61,7 +61,7 @@ const VERDICT_SCHEMA = {
   },
 }
 
-const FRAMEWORKS = args
+const FRAMEWORKS = typeof args === 'string' ? JSON.parse(args) : args
 
 const results = await pipeline(
   FRAMEWORKS,
