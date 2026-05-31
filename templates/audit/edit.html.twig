@@ -187,6 +187,8 @@
 </style>
 
 <script>
+// IIFE: Turbo re-eval guard — prevents re-declaration errors on body-swap
+(function () {
 function initAuditEditSubsidiaries() {
     const scopeTypeSelect = document.querySelector('[data-corporate-scope]');
     const subsidiariesContainer = document.getElementById('subsidiaries-container');
@@ -229,5 +231,6 @@ function initAuditEditSubsidiaries() {
 
 document.addEventListener('DOMContentLoaded', initAuditEditSubsidiaries);
 document.addEventListener('turbo:load', initAuditEditSubsidiaries);
+})();
 </script>
 {% endblock %}

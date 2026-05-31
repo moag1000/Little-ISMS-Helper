@@ -300,6 +300,8 @@
 
 {% if selectedFramework1 and selectedFramework2 %}
 <script>
+// Turbo re-eval guard: wrap in IIFE so top-level declarations are not re-declared on body-swap
+(function () {
 function initializeComparisonMappingButton() {
     const createMappingsBtn = document.getElementById('createMappingsBtn');
 
@@ -358,6 +360,7 @@ function initializeComparisonMappingButton() {
 
 document.addEventListener('DOMContentLoaded', initializeComparisonMappingButton);
 document.addEventListener('turbo:load', initializeComparisonMappingButton);
+})();
 </script>
 {% endif %}
 

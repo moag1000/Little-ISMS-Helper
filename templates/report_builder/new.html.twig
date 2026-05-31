@@ -135,6 +135,8 @@
 </div>
 
 <script>
+// Turbo re-eval guard: wrap in IIFE so top-level symbols are not re-declared on body-swap
+(function () {
 function initReportBuilderLayout() {
     const layoutSelect = document.getElementById('layout');
     const layoutOptions = document.querySelectorAll('.layout-option');
@@ -161,6 +163,7 @@ function initReportBuilderLayout() {
 
 document.addEventListener('DOMContentLoaded', initReportBuilderLayout);
 document.addEventListener('turbo:load', initReportBuilderLayout);
+})();
 </script>
 
 <style>
