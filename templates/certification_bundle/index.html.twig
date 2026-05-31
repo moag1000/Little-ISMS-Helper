@@ -11,7 +11,7 @@
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.compliance'|trans({}, 'nav'), path: 'app_management_reports' },
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
             { label: 'certification_bundle.title'|trans({}, 'certification_bundle') }
         ]
     } only %}

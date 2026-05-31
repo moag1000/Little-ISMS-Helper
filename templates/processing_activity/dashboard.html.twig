@@ -5,7 +5,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'GDPR', icon: 'shield-check' },
+            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'shield-check' },
             { label: 'VVT Dashboard' }
         ]
     } %}

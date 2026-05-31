@@ -6,7 +6,7 @@
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'four_eyes.inbox.title'|trans({}, 'four_eyes'), path: path('app_four_eyes_inbox') },
+        { label: 'four_eyes.inbox.title'|trans({}, 'four_eyes'), url: path('app_four_eyes_inbox') },
         { label: 'four_eyes.edit.title'|trans({}, 'four_eyes') }
     ]
 } %}
