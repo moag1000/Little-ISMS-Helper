@@ -11,9 +11,11 @@ use App\Form\ComplianceMappingType;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\AuditLogger;
 use App\Service\ComplianceMappingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -30,6 +32,7 @@ class ComplianceMappingController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
         private readonly ?TranslatorInterface $translator = null,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
 
     /**
@@ -139,10 +142,9 @@ class ComplianceMappingController extends AbstractController
                 $confidence = 'medium';
             }
 
-            if ($errors === []
-                && $source instanceof ComplianceRequirement
-                && $target instanceof ComplianceRequirement
-            ) {
+            // PHPStan narrows $source/$target to ComplianceRequirement after the instanceof
+            // guards above; $errors === [] is the only additional guard needed here.
+            if ($errors === []) {
                 $mapping = new ComplianceMapping();
                 $mapping->setSourceRequirement($source);
                 $mapping->setTargetRequirement($target);
@@ -300,6 +302,105 @@ class ComplianceMappingController extends AbstractController
         }
 
         return $this->redirectToRoute('app_compliance_mapping_index');
+    }
+
+    /**
+     * Bulk lifecycle-state change for selected mapping IDs.
+     *
+     * Accepts a JSON body: { "ids": [1,2,3], "newStatus": "approved", "_token": "..." }
+     * Returns JSON: { "ok": true, "changed": N, "rejected": [...] }
+     *
+     * Valid target states (ComplianceMapping lifecycle): draft, review, approved, published, deprecated.
+     * ISO 27001 Cl. 7.5.3 — audit log written via AuditLogger::logBulk (1 batch + N per-entity entries).
+     * Mappings are NOT tenant-scoped; ROLE_USER may flag for review; ROLE_MANAGER may approve/publish/deprecate.
+     */
+    #[Route('/compliance/mapping/bulk-status-change', name: 'app_compliance_mapping_bulk_status_change', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkStatusChange(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+        $newStatus = (string) ($data['newStatus'] ?? '');
+        $csrfToken = (string) ($data['_token'] ?? '');
+
+        if (!$this->isCsrfTokenValid('bulk_action', $csrfToken)) {
+            return $this->json(['error' => 'Invalid CSRF token'], 403);
+        }
+
+        if (empty($ids) || !is_array($ids)) {
+            return $this->json(['error' => $this->translator?->trans('compliance.mapping.bulk.no_ids', [], 'compliance') ?? 'No items selected'], 400);
+        }
+
+        /** @var list<string> $allowedStatuses */
+        $allowedStatuses = ['draft', 'review', 'approved', 'published', 'deprecated'];
+        if (!in_array($newStatus, $allowedStatuses, true)) {
+            return $this->json(['error' => $this->translator?->trans('compliance.mapping.bulk.invalid_status', [], 'compliance') ?? 'Invalid target status'], 400);
+        }
+
+        // ROLE_MANAGER required for operational-state transitions (approve/publish/deprecate)
+        $operationalTransitions = ['approved', 'published', 'deprecated'];
+        if (in_array($newStatus, $operationalTransitions, true) && !$this->isGranted('ROLE_MANAGER')) {
+            return $this->json(['error' => 'Insufficient permissions for this lifecycle transition'], 403);
+        }
+
+        $changed = 0;
+        $rejected = [];
+        $perEntityData = [];
+
+        foreach ($ids as $rawId) {
+            $id = (int) $rawId;
+            $mapping = $this->complianceMappingRepository->find($id);
+
+            if (!$mapping instanceof ComplianceMapping) {
+                $rejected[] = ['id' => $id, 'reason' => 'not_found'];
+                continue;
+            }
+
+            $oldState = $mapping->getLifecycleState();
+            $oldReviewStatus = $mapping->getReviewStatus();
+
+            $mapping->setLifecycleState($newStatus);
+            $mapping->setUpdatedAt(new DateTimeImmutable());
+
+            // Mirror reviewStatus for interoperability with the existing review-queue feature
+            if ($newStatus === 'approved') {
+                $mapping->setReviewStatus('approved');
+            } elseif ($newStatus === 'review') {
+                $mapping->setReviewStatus('in_review');
+            } elseif ($newStatus === 'draft') {
+                $mapping->setReviewStatus('unreviewed');
+            }
+
+            $perEntityData[] = [
+                'entity_id' => $id,
+                'action'    => 'update',
+                'old_values' => ['lifecycleState' => $oldState, 'reviewStatus' => $oldReviewStatus],
+                'new_values' => ['lifecycleState' => $newStatus, 'reviewStatus' => $mapping->getReviewStatus()],
+            ];
+
+            $changed++;
+        }
+
+        if ($changed > 0) {
+            $this->entityManager->flush();
+
+            // ISO 27001 Cl. 7.5.3 — 1 batch entry + N per-entity entries
+            if ($this->auditLogger !== null) {
+                $this->auditLogger->logBulk(
+                    'bulk_lifecycle_change',
+                    'ComplianceMapping',
+                    ['target_state' => $newStatus, 'requested_count' => count($ids), 'changed_count' => $changed],
+                    $perEntityData,
+                    sprintf('Bulk lifecycle change to "%s" for %d ComplianceMapping(s)', $newStatus, $changed),
+                );
+            }
+        }
+
+        return $this->json([
+            'ok'       => true,
+            'changed'  => $changed,
+            'rejected' => $rejected,
+        ]);
     }
 
     #[Route('/compliance/mapping/{id}/analyze', name: 'app_compliance_mapping_analyze', requirements: ['id' => '\d+'], methods: ['POST'])]
