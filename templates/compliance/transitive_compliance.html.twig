@@ -26,8 +26,14 @@
     {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_compliance_export_transitive_pdf'} only %}
 </div>
 
+{# Tenant-globale Alva-Hints für die Transitiv-/Coverage-Seite #}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% for _h in alva_hints('app_compliance_transitive') %}
+    {{ _fa_alva_hint.render(_h) }}
+{% endfor %}
+
 {# Statistics Cards - Prominently displayed #}
-<div class="kpi-grid mb-2">
+<div class="kpi-grid mb-2" data-tour="mapping-coverage">
     <div class="col-auto">
         {{ _fa_feature_card.render({ label: 'compliance.stats.total_relationships'|trans({}, 'compliance'), value: total_relationships, variant: 'primary' }) }}
     </div>

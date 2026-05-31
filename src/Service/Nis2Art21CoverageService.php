@@ -88,7 +88,9 @@ class Nis2Art21CoverageService
         $dbRequirements = [];
         $nis2Framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2']);
         if ($nis2Framework !== null) {
-            $dbReqs = $this->requirementRepository->findByFramework($nis2Framework);
+            // Top-level only — the rollup maps the 10 canonical Art. 21(2)
+            // requirements; imported sub-requirements never match a descriptor key.
+            $dbReqs = $this->requirementRepository->findTopLevelByFramework($nis2Framework);
             foreach ($dbReqs as $req) {
                 $dbRequirements[$req->getRequirementId()] = $req;
             }

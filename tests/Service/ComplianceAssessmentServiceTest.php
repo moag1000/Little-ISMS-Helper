@@ -85,7 +85,9 @@ class ComplianceAssessmentServiceTest extends TestCase
         $req1 = $this->createRequirement('NIS2-1', 'Req 1', true);
         $req2 = $this->createRequirement('NIS2-2', 'Req 2', true);
 
-        $this->requirementRepository->method('findByFramework')
+        // assessFramework() counts only top-level requirements (core/detailed),
+        // excluding sub_requirements — the coverage-dilution correctness fix.
+        $this->requirementRepository->method('findTopLevelByFramework')
             ->willReturn([$req1, $req2]);
 
         $this->requirementRepository->method('getFrameworkStatisticsForTenant')

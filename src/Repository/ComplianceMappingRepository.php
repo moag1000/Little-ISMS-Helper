@@ -8,6 +8,7 @@ use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceFramework;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -31,7 +32,45 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Typed accessor for the ComplianceRequirement repository — used by the
+     * coverage calculators below to read the top-level requirement count
+     * (the coverage/compliance denominator). Wrapped so PHPStan resolves the
+     * concrete repository methods rather than the generic EntityRepository.
+     */
+    private function requirementRepository(): ComplianceRequirementRepository
+    {
+        /** @var ComplianceRequirementRepository $repo */
+        $repo = $this->getEntityManager()->getRepository(ComplianceRequirement::class);
+
+        return $repo;
+    }
+
+    /**
+     * Restrict a mapping query to OPERATIONAL lifecycle states
+     * (approved + published — see {@see ComplianceMapping::OPERATIONAL_STATES}).
+     *
+     * Coverage % and inheritance suggestions must ONLY consider operational
+     * mappings — unreviewed `draft`/`review` and retired `deprecated` rows
+     * must NOT contribute. The ~7000 decomposition mappings land as `draft`
+     * and would otherwise inflate coverage before any human review.
+     *
+     * Apply this to every coverage / inheritance query. Do NOT apply it to
+     * admin / listing / quality views (mapping-quality dashboard, review
+     * queue) which legitimately surface drafts.
+     */
+    public function applyOperationalStateFilter(QueryBuilder $qb, string $alias = 'cm'): QueryBuilder
+    {
+        return $qb
+            ->andWhere(sprintf('%s.lifecycleState IN (:operationalStates)', $alias))
+            ->setParameter('operationalStates', ComplianceMapping::OPERATIONAL_STATES);
+    }
+
+    /**
      * Find all mappings for a specific source requirement.
+     *
+     * NOT operational-state-filtered: this powers the mapping MANAGEMENT index
+     * (`app_compliance_mapping_index`) which legitimately lists drafts. For the
+     * coverage/inheritance outbound walk use {@see findMappingsFromRequirement()}.
      *
      * @param ComplianceRequirement $requirement Source requirement
      * @return ComplianceMapping[] Array of mappings
@@ -54,12 +93,13 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      */
     public function findMappingsFromRequirement(ComplianceRequirement $complianceRequirement): array
     {
-        return $this->createQueryBuilder('cm')
+        $qb = $this->createQueryBuilder('cm')
             ->where('cm.sourceRequirement = :requirement')
             ->setParameter('requirement', $complianceRequirement)
-            ->orderBy('cm.mappingPercentage', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('cm.mappingPercentage', 'DESC');
+        $this->applyOperationalStateFilter($qb);
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -70,12 +110,13 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      */
     public function findMappingsToRequirement(ComplianceRequirement $complianceRequirement): array
     {
-        return $this->createQueryBuilder('cm')
+        $qb = $this->createQueryBuilder('cm')
             ->where('cm.targetRequirement = :requirement')
             ->setParameter('requirement', $complianceRequirement)
-            ->orderBy('cm.mappingPercentage', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('cm.mappingPercentage', 'DESC');
+        $this->applyOperationalStateFilter($qb);
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -97,15 +138,15 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             return [];
         }
 
-        $mappings = $this->createQueryBuilder('cm')
+        $qb = $this->createQueryBuilder('cm')
             ->select('cm', 'tr', 'tf')
             ->leftJoin('cm.targetRequirement', 'tr')
             ->leftJoin('tr.framework', 'tf')
             ->where('cm.sourceRequirement IN (:requirements)')
             ->setParameter('requirements', $requirements)
-            ->orderBy('cm.mappingPercentage', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('cm.mappingPercentage', 'DESC');
+        $this->applyOperationalStateFilter($qb);
+        $mappings = $qb->getQuery()->getResult();
 
         $byId = [];
         foreach ($mappings as $mapping) {
@@ -131,15 +172,15 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             return [];
         }
 
-        $mappings = $this->createQueryBuilder('cm')
+        $qb = $this->createQueryBuilder('cm')
             ->select('cm', 'sr', 'sf')
             ->leftJoin('cm.sourceRequirement', 'sr')
             ->leftJoin('sr.framework', 'sf')
             ->where('cm.targetRequirement IN (:requirements)')
             ->setParameter('requirements', $requirements)
-            ->orderBy('cm.mappingPercentage', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('cm.mappingPercentage', 'DESC');
+        $this->applyOperationalStateFilter($qb);
+        $mappings = $qb->getQuery()->getResult();
 
         $byId = [];
         foreach ($mappings as $mapping) {
@@ -168,7 +209,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      */
     public function findSourceFrameworksMappingTo(ComplianceFramework $targetFramework): array
     {
-        $rows = $this->createQueryBuilder('cm')
+        $qb = $this->createQueryBuilder('cm')
             ->select('IDENTITY(sr.framework) AS framework_id, COUNT(cm.id) AS mapping_count')
             ->join('cm.sourceRequirement', 'sr')
             ->join('cm.targetRequirement', 'tr')
@@ -176,9 +217,9 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('sr.framework != :target')
             ->setParameter('target', $targetFramework)
             ->groupBy('sr.framework')
-            ->orderBy('mapping_count', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('mapping_count', 'DESC');
+        $this->applyOperationalStateFilter($qb);
+        $rows = $qb->getQuery()->getResult();
 
         if ($rows === []) {
             return [];
@@ -214,16 +255,17 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ComplianceFramework $sourceFramework,
         ComplianceFramework $targetFramework
     ): array {
-        return $this->createQueryBuilder('cm')
+        $qb = $this->createQueryBuilder('cm')
             ->join('cm.sourceRequirement', 'sr')
             ->join('cm.targetRequirement', 'tr')
             ->where('sr.framework = :sourceFramework')
             ->andWhere('tr.framework = :targetFramework')
             ->setParameter('sourceFramework', $sourceFramework)
             ->setParameter('targetFramework', $targetFramework)
-            ->orderBy('cm.mappingPercentage', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('cm.mappingPercentage', 'DESC');
+        $this->applyOperationalStateFilter($qb);
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -246,7 +288,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             return [];
         }
 
-        $mappings = $this->createQueryBuilder('cm')
+        $qb = $this->createQueryBuilder('cm')
             ->addSelect('sr', 'tr', 'sf', 'tf')
             ->join('cm.sourceRequirement', 'sr')
             ->join('cm.targetRequirement', 'tr')
@@ -256,9 +298,9 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('tf IN (:frameworks)')
             ->andWhere('sf != tf')
             ->setParameter('frameworks', $frameworks)
-            ->orderBy('cm.mappingPercentage', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('cm.mappingPercentage', 'DESC');
+        $this->applyOperationalStateFilter($qb);
+        $mappings = $qb->getQuery()->getResult();
 
         $result = [];
         foreach ($mappings as $mapping) {
@@ -281,7 +323,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ComplianceFramework $sourceFramework,
         ComplianceFramework $targetFramework
     ): array {
-        return $this->createQueryBuilder('cm')
+        $qb = $this->createQueryBuilder('cm')
             ->join('cm.sourceRequirement', 'sr')
             ->join('cm.targetRequirement', 'tr')
             ->where('sr.framework = :sourceFramework')
@@ -289,9 +331,10 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('cm.mappingPercentage >= 100')
             ->setParameter('sourceFramework', $sourceFramework)
             ->setParameter('targetFramework', $targetFramework)
-            ->orderBy('cm.mappingPercentage', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('cm.mappingPercentage', 'DESC');
+        $this->applyOperationalStateFilter($qb);
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -311,7 +354,9 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ComplianceFramework $targetFramework
     ): array {
         $mappings = $this->findCrossFrameworkMappings($sourceFramework, $targetFramework);
-        $targetRequirements = $targetFramework->requirements->count();
+        // Denominator = top-level requirements only. Sub-requirements roll up
+        // via their parent and must NOT dilute the coverage %.
+        $targetRequirements = $this->requirementRepository()->countTopLevelByFramework($targetFramework);
 
         $coveredRequirements = [];
         $totalCoveragePercentage = 0;
@@ -398,7 +443,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             $totalBenefit += $targetRequirementHelped;
         }
 
-        $targetReqCount = $targetFramework->requirements->count();
+        // Denominator = top-level requirements only (sub-requirements roll up).
+        $targetReqCount = $this->requirementRepository()->countTopLevelByFramework($targetFramework);
         $averageBenefit = $targetReqCount > 0 ? round($totalBenefit / $targetReqCount, 2) : 0;
 
         return [
@@ -461,7 +507,11 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     ): array {
         $categoryStats = [];
 
-        foreach ($sourceFramework->requirements as $requirement) {
+        // Iterate top-level requirements only — sub-requirements roll up via
+        // their parent and must not be counted as separate category entries.
+        $sourceRequirements = $this->requirementRepository()->findTopLevelByFramework($sourceFramework);
+
+        foreach ($sourceRequirements as $requirement) {
             $category = $requirement->getCategory() ?? 'Uncategorized';
 
             if (!isset($categoryStats[$category])) {
@@ -524,32 +574,32 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ComplianceFramework $complianceFramework
     ): ?ComplianceMapping {
         // Check outbound mappings (where requirement is source)
-        $outboundMappings = $this->createQueryBuilder('cm')
+        $qbOut = $this->createQueryBuilder('cm')
             ->join('cm.targetRequirement', 'tr')
             ->where('cm.sourceRequirement = :requirement')
             ->andWhere('tr.framework = :targetFramework')
             ->setParameter('requirement', $complianceRequirement)
             ->setParameter('targetFramework', $complianceFramework)
             ->orderBy('cm.mappingPercentage', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults(1);
+        $this->applyOperationalStateFilter($qbOut);
+        $outboundMappings = $qbOut->getQuery()->getResult();
 
         if (!empty($outboundMappings)) {
             return $outboundMappings[0];
         }
 
         // Check inbound mappings (where requirement is target)
-        $inboundMappings = $this->createQueryBuilder('cm')
+        $qbIn = $this->createQueryBuilder('cm')
             ->join('cm.sourceRequirement', 'sr')
             ->where('cm.targetRequirement = :requirement')
             ->andWhere('sr.framework = :targetFramework')
             ->setParameter('requirement', $complianceRequirement)
             ->setParameter('targetFramework', $complianceFramework)
             ->orderBy('cm.mappingPercentage', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults(1);
+        $this->applyOperationalStateFilter($qbIn);
+        $inboundMappings = $qbIn->getQuery()->getResult();
 
         return empty($inboundMappings) ? null : $inboundMappings[0];
     }
@@ -679,6 +729,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->innerJoin('tr.framework', 'tf')
             ->where('cm.sourceRequirement = :req')
             ->setParameter('req', $requirement);
+        $this->applyOperationalStateFilter($qbOut);
 
         if ($otherFrameworkCode !== null) {
             $qbOut->andWhere('tf.code = :fwCode')
@@ -693,6 +744,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->andWhere('cm2.bidirectional = :bi')
             ->setParameter('req2', $requirement)
             ->setParameter('bi', true);
+        $this->applyOperationalStateFilter($qbIn, 'cm2');
 
         if ($otherFrameworkCode !== null) {
             $qbIn->andWhere('sf.code = :fwCode2')
@@ -799,9 +851,10 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ComplianceFramework $targetFramework,
         float $coveragePercentage
     ): array {
-        // Get requirement counts
-        $sourceReqCount = count($sourceFramework->requirements);
-        $targetReqCount = count($targetFramework->requirements);
+        // Get requirement counts (top-level only — sub-requirements roll up)
+        $reqRepo = $this->requirementRepository();
+        $sourceReqCount = $reqRepo->countTopLevelByFramework($sourceFramework);
+        $targetReqCount = $reqRepo->countTopLevelByFramework($targetFramework);
         $avgReqCount = ($sourceReqCount + $targetReqCount) / 2;
 
         // Priority multiplier based on framework importance
@@ -853,8 +906,9 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ComplianceFramework $targetFramework,
         float $currentCoverage
     ): int {
-        $sourceReqCount = count($sourceFramework->requirements);
-        $targetReqCount = count($targetFramework->requirements);
+        $reqRepo = $this->requirementRepository();
+        $sourceReqCount = $reqRepo->countTopLevelByFramework($sourceFramework);
+        $targetReqCount = $reqRepo->countTopLevelByFramework($targetFramework);
 
         // Base effort: 0.5 hours per requirement for initial mapping
         $baseEffortPerReq = 0.5;
@@ -1227,9 +1281,20 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
 
+        // "Analyzed" via the text-similarity heuristic (legacy column).
         $analyzedMappings = $this->createQueryBuilder('cm')
             ->select('COUNT(cm.id)')
             ->where('cm.calculatedPercentage IS NOT NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // "Scored" = has EITHER a heuristic percentage OR an MQS quality score.
+        // Metadata-rich decomposition mappings get an authoritative MQS at
+        // import/backfill time and must NOT be treated as "waiting for analysis"
+        // just because the slow text-similarity column is still NULL.
+        $scoredMappings = $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.calculatedPercentage IS NOT NULL OR cm.qualityScore IS NOT NULL')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -1283,8 +1348,11 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         return [
             'total_mappings' => (int) $totalMappings,
             'analyzed_mappings' => (int) $analyzedMappings,
-            'unanalyzed_mappings' => (int) ($totalMappings - $analyzedMappings),
-            'analysis_coverage' => (int) $totalMappings > 0 ? round(((int) $analyzedMappings / (int) $totalMappings) * 100, 1) : 0,
+            'scored_mappings' => (int) $scoredMappings,
+            // "Waiting for analysis" = genuinely metadata-poor: lacks BOTH the
+            // heuristic percentage AND an MQS quality score.
+            'unanalyzed_mappings' => (int) ($totalMappings - $scoredMappings),
+            'analysis_coverage' => (int) $totalMappings > 0 ? round(((int) $scoredMappings / (int) $totalMappings) * 100, 1) : 0,
             'high_confidence' => (int) $highConfidence,
             'medium_confidence' => (int) $mediumConfidence,
             'low_confidence' => (int) $lowConfidence,
@@ -1293,6 +1361,69 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             'avg_quality_score' => round((float) $avgQualityScore, 1),
             'avg_confidence' => round((float) $avgConfidence, 1),
         ];
+    }
+
+    /**
+     * Add the "genuinely metadata-poor" filter to a query builder: mappings
+     * that have NEITHER a heuristic calculatedPercentage NOR an MQS qualityScore.
+     * These are the only rows the slow text-similarity batch should target.
+     */
+    public function applyMetadataPoorFilter(QueryBuilder $qb, string $alias = 'cm'): QueryBuilder
+    {
+        return $qb->andWhere(sprintf('%s.calculatedPercentage IS NULL AND %s.qualityScore IS NULL', $alias, $alias));
+    }
+
+    /**
+     * Count mappings that still require the text-similarity heuristic, i.e. they
+     * lack BOTH a calculatedPercentage and an MQS qualityScore.
+     */
+    public function countMetadataPoorUnscored(): int
+    {
+        $qb = $this->createQueryBuilder('cm')->select('COUNT(cm.id)');
+        $this->applyMetadataPoorFilter($qb);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Find mappings eligible for MQS backfill: authoritative metadata present
+     * (provenanceUrl + an explicit confidence) but no MQS qualityScore yet.
+     *
+     * @return list<ComplianceMapping>
+     */
+    public function findMqsBackfillCandidates(?int $limit = null, int $offset = 0): array
+    {
+        $qb = $this->createQueryBuilder('cm')
+            ->where('cm.qualityScore IS NULL')
+            ->andWhere('cm.provenanceUrl IS NOT NULL')
+            ->andWhere("cm.provenanceUrl <> ''")
+            ->andWhere("cm.confidence IN ('high', 'medium', 'low')")
+            ->orderBy('cm.id', 'ASC')
+            ->setFirstResult($offset);
+
+        if ($limit !== null) {
+            $qb->setMaxResults($limit);
+        }
+
+        /** @var list<ComplianceMapping> $result */
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
+    }
+
+    /**
+     * Count MQS-backfill candidates (see findMqsBackfillCandidates()).
+     */
+    public function countMqsBackfillCandidates(): int
+    {
+        return (int) $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.qualityScore IS NULL')
+            ->andWhere('cm.provenanceUrl IS NOT NULL')
+            ->andWhere("cm.provenanceUrl <> ''")
+            ->andWhere("cm.confidence IN ('high', 'medium', 'low')")
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

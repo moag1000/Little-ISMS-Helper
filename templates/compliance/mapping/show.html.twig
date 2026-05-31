@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
 {% trans_default_domain 'compliance' %}
 
 {% block title %}Mapping: {{ mapping.sourceRequirement.requirementId }} → {{ mapping.targetRequirement.requirementId }}{% endblock %}
@@ -43,6 +44,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
                     <div class="row">
                         <div class="col-md-5">
                             <p class="fw-semibold text-muted small text-uppercase">{{ 'compliance.field.source_requirement'|trans({}, 'compliance') }}</p>
@@ -79,11 +81,27 @@
 
                     <div class="row">
                         <div class="col-md-4">
-                            <strong>Mapping Type:</strong>
-                            {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.mappingType } %}
+                            <strong>{{ 'compliance.mapping.field.mapping_type'|trans({}, 'compliance') }}:</strong>
+                            {% set _relType = mapping.relationship %}
+                            {% set _relKnown = _relType in ['equivalent', 'subset', 'superset', 'partial_overlap', 'related'] %}
+                            {% if _relKnown %}
+                                {{ fa_glossary_tooltip({
+                                    acronym: ('compliance.mapping.rel_type.' ~ _relType ~ '.label')|trans({}, 'compliance'),
+                                    fullText: ('compliance.mapping.rel_type.' ~ _relType ~ '.label')|trans({}, 'compliance'),
+                                    definition: ('compliance.mapping.rel_type.' ~ _relType ~ '.def')|trans({}, 'compliance'),
+                                    glossaryHref: path('app_help_glossary')
+                                }) }}
+                            {% else %}
+                                {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.mappingType } %}
+                            {% endif %}
                         </div>
                         <div class="col-md-4">
-                            <strong>Confidence:</strong>
+                            <strong>{{ fa_glossary_tooltip({
+                                acronym: 'compliance.mapping.field.confidence'|trans({}, 'compliance'),
+                                fullText: 'compliance.mapping.field.confidence'|trans({}, 'compliance'),
+                                definition: 'compliance.mapping.gloss.confidence'|trans({}, 'compliance'),
+                                glossaryHref: path('app_help_glossary')
+                            }) }}:</strong>
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.confidence } %}
                         </div>
                         <div class="col-md-4">
@@ -113,6 +131,7 @@
                         </div>
                     {% endblock %}
                     {% block card_body %}
+                        {% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
                         <div class="row">
                             <div class="col-md-3">
                                 <strong>Calculated %:</strong><br>
@@ -127,7 +146,12 @@
                                 <span class="h4">{{ (mapping.textualSimilarity * 100)|number_format(1) }}%</span>
                             </div>
                             <div class="col-md-3">
-                                <strong>Quality Score:</strong><br>
+                                <strong>{{ fa_glossary_tooltip({
+                                    acronym: 'MQS',
+                                    fullText: 'compliance.mapping.field.mqs'|trans({}, 'compliance'),
+                                    definition: 'compliance.mapping.gloss.mqs'|trans({}, 'compliance'),
+                                    glossaryHref: path('app_help_glossary')
+                                }) }}:</strong><br>
                                 <span class="h4">{{ mapping.qualityScore|default('-') }}</span>
                             </div>
                         </div>

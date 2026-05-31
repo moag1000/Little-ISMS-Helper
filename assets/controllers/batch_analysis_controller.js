@@ -20,18 +20,80 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['progress', 'progressBar', 'progressText', 'analyzedCount',
                       'remainingCount', 'errorCount', 'statusText', 'results',
-                      'resultsMessage', 'log', 'cancelBtn'];
+                      'resultsMessage', 'log', 'cancelBtn', 'headerPill'];
     static values = {
         url: String,
+        statsUrl: String,
         batchSize: { type: Number, default: 5 },
         running: { type: Boolean, default: false },
-        cancelled: { type: Boolean, default: false }
+        cancelled: { type: Boolean, default: false },
+        // Server-rendered status strings (Bug 2: no raw Twig in JS).
+        statusAnalyzing: { type: String, default: 'Analyzing…' },
+        statusDone: { type: String, default: 'Done' },
+        statusCancelled: { type: String, default: 'Cancelled' },
+        statusError: { type: String, default: 'Error' },
+        // Template with `__A__` / `__E__` placeholders for the results message.
+        resultsTemplate: { type: String, default: '__A__ analyzed, __E__ errors' }
     };
 
     connect() {
         this.analyzed = 0;
         this.errors = 0;
         this.total = 0;
+
+        // Bug 3: never inherit a stale "running" state across page (re)loads or
+        // Turbo navigation. The "analysis running" UI must only be visible while
+        // a batch is actually running in THIS session.
+        this.runningValue = false;
+        this.cancelledValue = false;
+        this.resetUi();
+
+        // Reflect the real remaining-count from the server (so a reload after a
+        // partial run shows the truth, not a stale server-rendered number).
+        this.refreshRemaining();
+    }
+
+    /**
+     * Hide the progress + results panels and restore the idle status label.
+     */
+    resetUi() {
+        if (this.hasProgressTarget) {
+            this.progressTarget.classList.add('d-none');
+        }
+        if (this.hasResultsTarget) {
+            this.resultsTarget.classList.add('d-none');
+        }
+        if (this.hasLogTarget) {
+            this.logTarget.innerHTML = '';
+            this.logTarget.classList.add('d-none');
+        }
+        if (this.hasStatusTextTarget) {
+            this.statusTextTarget.textContent = '';
+        }
+    }
+
+    /**
+     * Query the read-only stats endpoint to render the current remaining-count
+     * without triggering any analysis. Best-effort: failures are non-fatal.
+     */
+    async refreshRemaining() {
+        if (!this.hasStatsUrlValue || !this.statsUrlValue) return;
+        try {
+            const response = await fetch(this.statsUrlValue, {
+                method: 'GET',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            if (!response.ok) return;
+            const result = await response.json();
+            if (!result.success) return;
+            const remaining = parseInt(result.remaining || 0, 10);
+            this.element.dataset.totalUnanalyzed = String(remaining);
+            if (this.hasRemainingCountTarget) {
+                this.remainingCountTarget.textContent = remaining;
+            }
+        } catch (error) {
+            /* stats endpoint unavailable — keep the server-rendered fallback */
+        }
     }
 
     async start(event) {
@@ -61,12 +123,12 @@ export default class extends Controller {
         this.total = count === 'all' ? parseInt(this.element.dataset.totalUnanalyzed || 0) : parseInt(count);
 
         this.updateProgress();
-        this.updateStatus('{{ "compliance.status.analyzing"|trans({}, "compliance") }}' || 'Analyzing...');
+        this.updateStatus(this.statusAnalyzingValue);
 
         try {
             await this.processBatches(count, force);
         } catch (error) {
-            this.updateStatus('Error: ' + error.message);
+            this.updateStatus(this.statusErrorValue + ': ' + error.message);
         }
 
         this.runningValue = false;
@@ -156,7 +218,7 @@ export default class extends Controller {
 
     cancel() {
         this.cancelledValue = true;
-        this.updateStatus('{{ "common.cancelled"|trans({}, "messages") }}' || 'Cancelled');
+        this.updateStatus(this.statusCancelledValue);
     }
 
     updateProgress() {
@@ -202,9 +264,10 @@ export default class extends Controller {
             this.resultsTarget.classList.remove('d-none');
         }
         if (this.hasResultsMessageTarget) {
-            this.resultsMessageTarget.textContent =
-                `${this.analyzed} Mappings analysiert, ${this.errors} Fehler`;
+            this.resultsMessageTarget.textContent = this.resultsTemplateValue
+                .replace('__A__', this.analyzed)
+                .replace('__E__', this.errors);
         }
-        this.updateStatus(this.cancelledValue ? 'Abgebrochen' : 'Fertig');
+        this.updateStatus(this.cancelledValue ? this.statusCancelledValue : this.statusDoneValue);
     }
 }

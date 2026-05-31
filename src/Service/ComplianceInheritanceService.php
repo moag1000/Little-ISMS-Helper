@@ -350,7 +350,11 @@ class ComplianceInheritanceService
         Tenant $tenant,
         DateTimeImmutable $stichtag,
     ): array {
-        $mappings = $this->mappingRepository->findBy(['targetRequirement' => $target]);
+        // Operational mappings only — draft/review/deprecated mappings (incl. the
+        // ~7000 imported decomposition drafts) must NOT drive inheritance
+        // suggestions before review. findMappingsToRequirement() applies the
+        // operational-state filter.
+        $mappings = $this->mappingRepository->findMappingsToRequirement($target);
         $candidates = [];
 
         foreach ($mappings as $mapping) {

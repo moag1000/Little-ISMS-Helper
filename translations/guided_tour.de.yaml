@@ -22,6 +22,8 @@ guided_tour:
             label: 'Einstiegs-Tour (Junior)'
         mris:
             label: 'MRIS-Modul-Tour'
+        mapping:
+            label: 'Mapping-Tour'
 
     mobile:
         title: 'Tour am Desktop öffnen'
@@ -201,3 +203,28 @@ guided_tour:
             audit_log:
                 title: 'Audit-Log mit Integritäts-Prüfung'
                 body: '/admin/audit-log — tamper-evident HMAC-SHA256-Chain. Klick auf „Verify" prüft jeden Eintrag. Das ist Ihre Spurensicherung für ISO 27001 Clause 9.2 und NIS2 Art. 21.2.'
+
+    # Mapping-Topic-Tour (6 Steps) — für Junior-ISB mit IT-/9001-Hintergrund
+    mapping:
+        meta:
+            label: 'Mapping-Tour'
+            description: 'Sechs Stopps, die das Mapping-Konzept von Grund auf erklären: Brücke zwischen Frameworks, Data-Reuse/Vererbung, Coverage, Confidence vs. MQS und Lifecycle.'
+        step:
+            what_is_mapping:
+                title: 'Was ist ein Mapping?'
+                body: 'Ein Mapping ist eine Brücke: Es verbindet eine Anforderung aus Framework A (z. B. ISO 27001) mit einer aus Framework B (z. B. NIS2). Statt jede Norm getrennt abzuarbeiten, sagt das Mapping „diese beiden meinen dasselbe". 9001-Analogie: wie ein Verweis zwischen zwei Prozessbeschreibungen, die dieselbe Maßnahme verlangen.'
+            why_reuse:
+                title: 'Warum? Data-Reuse & Vererbung'
+                body: 'Der Nutzen: Erfüllen Sie die Anforderung in A einmal, zählt sie über das Mapping automatisch auch für B (Vererbung / Data-Reuse). Sie pflegen den Nachweis einmal statt mehrfach. 9001-Analogie: eine CAPA, die gleich mehrere Prozesse abdeckt — ein Beleg, mehrere Häkchen.'
+            read_coverage:
+                title: 'Coverage lesen'
+                body: 'Coverage zeigt, wie viel Prozent von Framework X bereits durch Ihre erfüllten Controls abgedeckt sind — z. B. „87 %". Die fehlenden 13 % sind Ihre To-do-Liste: ungemappte oder noch nicht erfüllte Anforderungen. Das %-Bild ist also kein Selbstzweck, sondern Ihr Arbeitsvorrat. (ISO 27001 Cl. 6.1.3)'
+            quality:
+                title: 'Qualität verstehen: Confidence vs. MQS'
+                body: 'Zwei Zahlen, zwei Fragen: Confidence sagt „wie sicher passt der Inhalt der Mapping-Verbindung?". MQS (Mapping-Qualitäts-Score) sagt „wie gut ist die Verbindung belegt und gepflegt?" — also Herkunft (Provenance), Methodik und Lebenszyklus. Hohe Confidence bei niedrigem MQS heißt: inhaltlich plausibel, aber noch schlecht dokumentiert.'
+            lifecycle:
+                title: 'Lifecycle: draft vs. published'
+                body: 'Ein Mapping im Status „draft" (Entwurf) ist noch nicht geprüft und zählt NICHT in der Coverage. Erst nach dem Review-Gate, also „published", wird es operativ wirksam. Sehen Sie viele Entwürfe? Das ist Ihr Review-Stapel. 9001-Analogie: ein Dokument im Entwurf gilt erst nach Freigabe.'
+            where_used:
+                title: 'Wo nutze ich das?'
+                body: 'Drei Orte: die Coverage-/Transitiv-Matrix (das große %-Bild), die Vererbungs-Vorschläge (Data-Reuse-Hub: „dieser Nachweis passt auch hier") und das Qualitäts-Dashboard (Reviews, Confidence/MQS, Gaps). Tour fertig — Sie können sie jederzeit über „Tour starten" auf der Mapping-Seite neu starten.'

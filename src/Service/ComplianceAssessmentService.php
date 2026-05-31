@@ -37,7 +37,9 @@ class ComplianceAssessmentService
      */
     public function assessFramework(ComplianceFramework $complianceFramework): array
     {
-        $requirements = $this->complianceRequirementRepository->findByFramework($complianceFramework);
+        // Top-level requirements only — sub-requirements roll up via their parent
+        // and must not be counted separately in the assessment totals.
+        $requirements = $this->complianceRequirementRepository->findTopLevelByFramework($complianceFramework);
         $assessmentResults = [];
         $tenant = $this->tenantContext->getCurrentTenant();
 

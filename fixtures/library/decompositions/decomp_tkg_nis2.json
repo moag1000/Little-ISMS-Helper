@@ -1,0 +1,356 @@
+[
+  {
+    "source": "TKG-§165(1)-Nr1",
+    "target": "NIS2-Art21(2)(i)",
+    "relationship": "subset",
+    "rationale": "§165(1) Nr.1 mandates protection of telecommunications secrecy (Fernmeldegeheimnis) as a data-confidentiality measure, which is a telecom-specific subset of NIS2 Art.21(2)(i) human resources security and access control covering confidentiality of information."
+  },
+  {
+    "source": "TKG-§165(1)-Nr2",
+    "target": "NIS2-Art21(2)(i)",
+    "relationship": "subset",
+    "rationale": "§165(1) Nr.2 requires protection of personal data against breach, a data-protection-specific subset of the access control and asset management obligations in NIS2 Art.21(2)(i)."
+  },
+  {
+    "source": "TKG-§165(2)-Grundpflicht",
+    "target": "NIS2-Art21(1)",
+    "relationship": "equivalent",
+    "rationale": "§165(2) base obligation to take 'appropriate technical and organisational measures' against disruptions and security risks, proportionate to risk and state of the art, is textually and materially equivalent to the general proportionality/risk standard in NIS2 Art.21(1)."
+  },
+  {
+    "source": "TKG-§165(2)-Verschlüsselung",
+    "target": "NIS2-Art21(2)(h)",
+    "relationship": "subset",
+    "rationale": "§165(2) explicitly mentions encryption measures (Verschlüsselungsmaßnahmen) as an element of the general security obligation, directly mapping to NIS2 Art.21(2)(h) cryptography and encryption policies, but telecom-scoped only."
+  },
+  {
+    "source": "TKG-§165(2)-Risikobewertung",
+    "target": "NIS2-Art21(2)(a)",
+    "relationship": "partial_overlap",
+    "rationale": "§165(2) requires risk proportionality assessment considering operator size, incident probability, and societal/economic effects; NIS2 Art.21(2)(a) requires explicit risk analysis policies — the TKG duty is implicit in proportionality, not a formalised policy obligation."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr1",
+    "target": "NIS2-Art21(2)(a)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.1 'Konzepte in Bezug auf die Risikoanalyse und Sicherheit für Informationssysteme' directly transposes NIS2 Art.21(2)(a) 'policies on risk analysis and information system security' verbatim for telecom essential/important entities."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr2",
+    "target": "NIS2-Art21(2)(b)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.2 'Bewältigung von Sicherheitsvorfällen' is a direct transposition of NIS2 Art.21(2)(b) 'incident handling', both requiring incident management capability."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr3",
+    "target": "NIS2-Art21(2)(c)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.3 'Aufrechterhaltung des Betriebs, Backup-Management, Wiederherstellung nach einem Notfall, Krisenmanagement' mirrors NIS2 Art.21(2)(c) 'business continuity, including backup management, disaster recovery and crisis management' word-for-word."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr4",
+    "target": "NIS2-Art21(2)(d)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.4 'Sicherheit der Lieferkette einschließlich sicherheitsbezogener Aspekte der Beziehungen zwischen den Einrichtungen und ihren unmittelbaren Anbietern' directly transposes NIS2 Art.21(2)(d) supply chain security wording."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr5",
+    "target": "NIS2-Art21(2)(e)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.5 'Sicherheitsmaßnahmen bei Erwerb, Entwicklung und Wartung von Netz- und Informationssystemen, einschließlich Management und Offenlegung von Schwachstellen' directly transposes NIS2 Art.21(2)(e) acquisition, development, maintenance and vulnerability management."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr6",
+    "target": "NIS2-Art21(2)(f)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.6 'Konzepte und Verfahren zur Bewertung der Wirksamkeit von Maßnahmen' directly transposes NIS2 Art.21(2)(f) policies assessing effectiveness of cybersecurity risk-management measures."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr7",
+    "target": "NIS2-Art21(2)(g)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.7 'Grundlegende Verfahren und Schulungen im Bereich der Sicherheit von Netzen und Diensten' directly transposes NIS2 Art.21(2)(g) basic cyber hygiene practices and cybersecurity training."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr8",
+    "target": "NIS2-Art21(2)(h)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.8 'Konzepte und Verfahren für den Einsatz von Kryptografie und Verschlüsselung' directly transposes NIS2 Art.21(2)(h) policies and procedures regarding use of cryptography and encryption."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr9",
+    "target": "NIS2-Art21(2)(i)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.9 'Sicherheit des Personals, Konzepte für die Zugriffskontrolle und Management von Anlagen' directly transposes NIS2 Art.21(2)(i) human resources security, access control policies and asset management."
+  },
+  {
+    "source": "TKG-§165(2a)-Nr10",
+    "target": "NIS2-Art21(2)(j)",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) Nr.10 'Verwendung von Lösungen zur Multi-Faktor-Authentifizierung oder kontinuierlichen Authentifizierung, gesicherte Sprach-, Video- und Textkommunikation sowie gesicherte Notfallkommunikationssysteme' directly transposes NIS2 Art.21(2)(j) verbatim."
+  },
+  {
+    "source": "TKG-§165(2a)-GefahrenübergreifenderAnsatz",
+    "target": "NIS2-Art21(2)-Preamble",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) introductory sentence 'müssen auf einem gefahrenübergreifenden Ansatz beruhen' directly transposes the NIS2 Art.21(2) all-hazards approach preamble, covering physical and cyber threats to network/information systems."
+  },
+  {
+    "source": "TKG-§165(2b)",
+    "target": "NIS2-Art21(1)",
+    "relationship": "superset",
+    "rationale": "§165(2b) imposes explicit management responsibility for implementing and monitoring the measures on the Geschäftsleitung of essential/important telecom entities; NIS2 Art.21(1) is silent on this specific management duty, making TKG the superset via BSIG §38 incorporation."
+  },
+  {
+    "source": "TKG-§165(2c)",
+    "target": "NIS2-Art21(1)",
+    "relationship": "superset",
+    "rationale": "§165(2c) adds personal civil liability of management for damages caused by breach of §165(2) duties; NIS2 Art.21 has no equivalent management liability provision, so TKG is stricter (superset) via German corporate law incorporation."
+  },
+  {
+    "source": "TKG-§165(2d)",
+    "target": "NIS2-Art21(2)(g)",
+    "relationship": "superset",
+    "rationale": "§165(2d) mandates regular cybersecurity risk training for Geschäftsleitung members specifically; NIS2 Art.21(2)(g) covers general cybersecurity training without explicitly targeting board members, making the TKG provision stricter for management."
+  },
+  {
+    "source": "TKG-§165(3)",
+    "target": "NIS2-Art21(2)(e)",
+    "relationship": "superset",
+    "rationale": "§165(3) mandates deployment of intrusion detection systems (Systeme zur Angriffserkennung) for operators with elevated risk, with continuous threat monitoring; NIS2 Art.21(2)(e) covers vulnerability handling but does not explicitly require IDS/IPS deployment."
+  },
+  {
+    "source": "TKG-§165(4)-KritischeKomponenten",
+    "target": "NIS2-Art21(2)(d)",
+    "relationship": "superset",
+    "rationale": "§165(4) requires certification of critical components before deployment by high-risk operators; NIS2 Art.21(2)(d) addresses supply chain security but does not mandate pre-deployment certification of specific components — TKG is stricter for telecom KRITIS."
+  },
+  {
+    "source": "TKG-§165(5)-Verfügbarkeit",
+    "target": "NIS2-Art21(2)(c)",
+    "relationship": "subset",
+    "rationale": "§165(5) requires measures to ensure orderly operation and continuous service availability; this is a subset of NIS2 Art.21(2)(c) business continuity and disaster recovery, focused narrowly on operational availability."
+  },
+  {
+    "source": "TKG-§165(6)-Verhältnismäßigkeit",
+    "target": "NIS2-Art21(1)",
+    "relationship": "equivalent",
+    "rationale": "§165(6) proportionality standard (effort must not be disproportionate to the significance of the networks) mirrors the NIS2 Art.21(1) 'appropriate and proportionate' standard based on costs and risk exposure."
+  },
+  {
+    "source": "TKG-§165(7)-GemeinsameNutzung",
+    "target": "NIS2-Art21(1)",
+    "relationship": "related",
+    "rationale": "§165(7) addresses security obligations when facilities are shared by multiple operators; NIS2 Art.21 does not specifically address co-location, making this a telecom-specific elaboration related to the general duty of care."
+  },
+  {
+    "source": "TKG-§165(8)-Anordnungsbefugnis",
+    "target": "NIS2-Art32(4)",
+    "relationship": "equivalent",
+    "rationale": "§165(8) empowers BNetzA to order specific security measures and set implementation deadlines after a security incident; NIS2 Art.32(4) empowers competent authorities to impose binding instructions and require implementation of security measures."
+  },
+  {
+    "source": "TKG-§165(9)-Überprüfung",
+    "target": "NIS2-Art32(4)(b)",
+    "relationship": "equivalent",
+    "rationale": "§165(9) mandates biennial security audits for high-risk operators with audit reports to BNetzA and BSI; NIS2 Art.32(4)(b) empowers authorities to order security audits — TKG makes periodic audits mandatory rather than discretionary."
+  },
+  {
+    "source": "TKG-§165(10)-BSI-Unterrichtung",
+    "target": "NIS2-Art26",
+    "relationship": "related",
+    "rationale": "§165(10) requires BNetzA to promptly notify BSI of discovered security deficiencies; NIS2 Art.26 addresses peer-exchange and information sharing between competent authorities and ENISA, making this the domestic inter-agency analogue."
+  },
+  {
+    "source": "TKG-§165(11)-CSIRT-Einbindung",
+    "target": "NIS2-Art10",
+    "relationship": "equivalent",
+    "rationale": "§165(11) expressly authorises BNetzA to involve a CSIRT designated under NIS2 Directive 2022/2555, and to consult BSI and the Data Protection Officer — directly implementing the CSIRT integration obligation of NIS2 Art.10."
+  },
+  {
+    "source": "TKG-§166(1)-Nr1-Sicherheitsbeauftragter",
+    "target": "NIS2-Art21(2)(i)",
+    "relationship": "superset",
+    "rationale": "§166(1) Nr.1 requires designation of a named security officer (Sicherheitsbeauftragter); NIS2 Art.21(2)(i) requires human resources security and access control policies but does not explicitly mandate a dedicated security officer role."
+  },
+  {
+    "source": "TKG-§166(1)-Nr2-Ansprechpartner-EU",
+    "target": "NIS2-Art3(3)",
+    "relationship": "equivalent",
+    "rationale": "§166(1) Nr.2 requires designation of a contact person resident in the EU for non-EU established operators; NIS2 Art.3(3) requires entities established outside the EU to designate a representative in a Member State."
+  },
+  {
+    "source": "TKG-§166(1)-Nr3a-Netzübersicht",
+    "target": "NIS2-Art21(2)(a)",
+    "relationship": "related",
+    "rationale": "§166(1) Nr.3a requires the security concept to document which networks and services are operated; NIS2 Art.21(2)(a) risk analysis policy presupposes an asset/scope inventory — TKG makes this a formal documentation requirement."
+  },
+  {
+    "source": "TKG-§166(1)-Nr3b-Gefährdungsanalyse",
+    "target": "NIS2-Art21(2)(a)",
+    "relationship": "equivalent",
+    "rationale": "§166(1) Nr.3b requires the security concept to document existing threats (Gefährdungen); this is materially equivalent to NIS2 Art.21(2)(a) risk analysis policies at the telecom entity scope."
+  },
+  {
+    "source": "TKG-§166(1)-Nr3c-Schutzmaßnahmen",
+    "target": "NIS2-Art21(2)-allpoints",
+    "relationship": "superset",
+    "rationale": "§166(1) Nr.3c requires documentation of planned and implemented technical and other protective measures in the security concept — this creates a comprehensive documented security programme that encompasses all NIS2 Art.21(2) sub-points as a formal concept."
+  },
+  {
+    "source": "TKG-§166(2)-Vorlage-BNetzA",
+    "target": "NIS2-Art21(1)",
+    "relationship": "superset",
+    "rationale": "§166(2) requires network operators to submit the security concept to BNetzA immediately after commencing operations — a regulatory submission obligation that goes beyond NIS2 Art.21(1), which does not require proactive submission of the security framework to the competent authority."
+  },
+  {
+    "source": "TKG-§166(3)-Umsetzungserklärung",
+    "target": "NIS2-Art21(4)",
+    "relationship": "equivalent",
+    "rationale": "§166(3) requires a declaration that the documented measures are implemented or will be immediately implemented; NIS2 Art.21(4) requires entities to 'take without undue delay all necessary corrective measures', both mandating actual rather than nominal compliance."
+  },
+  {
+    "source": "TKG-§166(4)-Mängelrüge",
+    "target": "NIS2-Art32(4)(c)",
+    "relationship": "equivalent",
+    "rationale": "§166(4) empowers BNetzA to identify deficiencies and require remediation; NIS2 Art.32(4)(c) empowers competent authorities to issue binding instructions for remediation, equivalent supervisory correction powers."
+  },
+  {
+    "source": "TKG-§166(5)-Regelmäßige-Überprüfung",
+    "target": "NIS2-Art32(4)(b)",
+    "relationship": "equivalent",
+    "rationale": "§166(5) mandates BNetzA review of security concept implementation at least every two years; NIS2 Art.32(4)(b) provides authority for targeted security audits of essential entities on a regular basis."
+  },
+  {
+    "source": "TKG-§167(1)-Nr1-Sicherheitskatalog",
+    "target": "NIS2-Art21(2)-allpoints",
+    "relationship": "superset",
+    "rationale": "§167(1) Nr.1 empowers BNetzA (with BSI and BfDI) to issue a binding Security Catalog specifying details of all §165(1-7) measures; this implementing-act mechanism goes beyond NIS2 Art.21(2), providing granular telecom-specific obligations beyond the directive's minimum."
+  },
+  {
+    "source": "TKG-§167(1)-Nr2-KritischeFunktionen",
+    "target": "NIS2-Art21(2)(d)",
+    "relationship": "superset",
+    "rationale": "§167(1) Nr.2 empowers BNetzA to designate specific functions as critical and components as critical components under BSIG; NIS2 Art.21(2)(d) addresses supply chain security but has no equivalent component-designation mechanism — this is a German superset."
+  },
+  {
+    "source": "TKG-§167(1)-Nr3-ErhöhtesGefährdungspotenzial",
+    "target": "NIS2-Art21(1)",
+    "relationship": "superset",
+    "rationale": "§167(1) Nr.3 empowers BNetzA to classify operators with elevated risk (erhöhtes Gefährdungspotenzial), triggering stricter obligations under §165(3)(4)(9); NIS2 Art.21(1) applies uniformly to essential/important entities without sub-tier risk classification."
+  },
+  {
+    "source": "TKG-§167(1)-Schnittstellen-Standards",
+    "target": "NIS2-Art21(2)(e)",
+    "relationship": "superset",
+    "rationale": "§167(1) final sentence permits the Security Catalog to include requirements for interface disclosure and interoperability standards of network components; NIS2 Art.21(2)(e) covers system security but not interoperability standards — this is a telecom-specific superset."
+  },
+  {
+    "source": "TKG-§167(2)-Rechtsverordnung-BSI",
+    "target": "NIS2-Art21(5)",
+    "relationship": "related",
+    "rationale": "§167(2) coordinates the BNetzA Security Catalog with any future BSI statutory regulation under BSIG, ensuring no overlap; NIS2 Art.21(5) provides for EU-level implementing acts setting technical and methodological requirements — this is the domestic coordination mechanism."
+  },
+  {
+    "source": "TKG-§167(3)-Umsetzungsfrist",
+    "target": "NIS2-Art21(4)",
+    "relationship": "related",
+    "rationale": "§167(3) grants a one-year implementation deadline for Security Catalog requirements after entry into force; NIS2 Art.21(4) requires corrective measures 'without undue delay' — the TKG provides a defined timeline whereas NIS2 leaves timing to discretion."
+  },
+  {
+    "source": "TKG-§168(1)-Nr1-Erstmeldung-24h",
+    "target": "NIS2-Art23(4)(a)",
+    "relationship": "equivalent",
+    "rationale": "§168(1) Nr.1 requires an early notification to BNetzA and BSI within 24 hours of becoming aware of a significant security incident; NIS2 Art.23(4)(a) requires an early warning 'within 24 hours of becoming aware of the significant incident' — identical timelines and content."
+  },
+  {
+    "source": "TKG-§168(1)-Nr2-DetailmeldungR-72h",
+    "target": "NIS2-Art23(4)(b)",
+    "relationship": "equivalent",
+    "rationale": "§168(1) Nr.2 requires a detailed incident report within 72 hours with first assessment and severity classification; NIS2 Art.23(4)(b) requires an incident notification within 72 hours including initial assessment — directly equivalent timelines and content."
+  },
+  {
+    "source": "TKG-§168(1)-Nr3-Zwischenmeldung",
+    "target": "NIS2-Art23(4)(c)",
+    "relationship": "equivalent",
+    "rationale": "§168(1) Nr.3 requires intermediate status reports upon request from BNetzA/BSI; NIS2 Art.23(4)(c) requires intermediate reports 'upon request of a CSIRT or competent authority' — textually equivalent."
+  },
+  {
+    "source": "TKG-§168(1)-Nr4-Abschlussmeldung",
+    "target": "NIS2-Art23(4)(d)",
+    "relationship": "equivalent",
+    "rationale": "§168(1) Nr.4 requires a final report within one month covering description, threat type, mitigation measures, and cross-border effects; NIS2 Art.23(4)(d) requires a final report 'not later than one month' with the same elements — directly equivalent."
+  },
+  {
+    "source": "TKG-§168(2)-Fortschrittsmeldung",
+    "target": "NIS2-Art23(4)(e)",
+    "relationship": "equivalent",
+    "rationale": "§168(2) provides for a progress report when an incident is ongoing (replacing the final report until resolution); NIS2 Art.23(4)(e) provides for progress reports for ongoing incidents with final report after resolution — equivalent provisions."
+  },
+  {
+    "source": "TKG-§168(3)-Erheblichkeitsdefinition",
+    "target": "NIS2-Art23(3)",
+    "relationship": "equivalent",
+    "rationale": "§168(3) defines a significant incident as one causing severe operational disruption, financial loss, or considerable material/non-material damage to third parties; NIS2 Art.23(3) uses the same dual criteria (operational disruption/financial loss AND third-party damage) — textually equivalent transposition."
+  },
+  {
+    "source": "TKG-§168(4)-Verfahrensdetails-BNetzA",
+    "target": "NIS2-Art23(4)",
+    "relationship": "related",
+    "rationale": "§168(4) empowers BNetzA to regulate notification procedural details; NIS2 Art.23(4) sets the reporting framework but leaves procedural details to Member State implementation — this is the domestic implementing power."
+  },
+  {
+    "source": "TKG-§168(4)-Bestätigung-24h",
+    "target": "NIS2-Art23(5)",
+    "relationship": "equivalent",
+    "rationale": "§168(4) requires BNetzA to confirm receipt and provide initial feedback within 24 hours; NIS2 Art.23(5) requires CSIRTs/competent authorities to provide initial feedback 'within 24 hours' of receiving an early warning — directly equivalent."
+  },
+  {
+    "source": "TKG-§168(5)-EU-Infopflichten",
+    "target": "NIS2-Art23(6)",
+    "relationship": "equivalent",
+    "rationale": "§168(5) requires BNetzA to inform other EU authorities and ENISA about cross-border significant incidents; NIS2 Art.23(6) requires competent authorities to inform other Member States and ENISA 'without undue delay' about cross-border impacts — equivalent inter-authority information obligation."
+  },
+  {
+    "source": "TKG-§168(6)-Nutzerschutz",
+    "target": "NIS2-Art23(2)",
+    "relationship": "equivalent",
+    "rationale": "§168(6) requires operators to inform affected users about significant cyber threats and available protective measures; NIS2 Art.23(2) requires entities to communicate 'without undue delay' to service recipients about significant cyber threats — equivalent end-user notification duty."
+  },
+  {
+    "source": "TKG-§168(7)-Jahresbericht",
+    "target": "NIS2-Art23(6)",
+    "relationship": "partial_overlap",
+    "rationale": "§168(7) requires annual reporting to the European Commission; NIS2 Art.23(6) covers competent-authority information sharing with ENISA — the annual Commission report is an additional telecom-sector obligation not fully covered by NIS2."
+  },
+  {
+    "source": "TKG-§168-Meldepflicht-allgemein",
+    "target": "NIS2-Art23(1)",
+    "relationship": "equivalent",
+    "rationale": "§168 overall imposes the obligation for telecom operators to notify BNetzA and BSI of significant incidents; NIS2 Art.23(1) imposes the obligation on essential/important entities to notify their CSIRT or competent authority — materially equivalent, TKG names both authorities jointly."
+  },
+  {
+    "source": "TKG-§165(2a)-GefahrenübergreifendePhysischeUmwelt",
+    "target": "NIS2-Art21(2)-Preamble",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) explicitly requires protection of 'die physische Umwelt dieser Systeme' (physical environment of network systems), mirroring NIS2 Art.21(2) preamble requirement to protect 'network and information systems and the physical environment of those systems'."
+  },
+  {
+    "source": "TKG-§165(4)-Zertifizierungspflicht",
+    "target": "NIS2-Art24",
+    "relationship": "related",
+    "rationale": "§165(4) requires critical components to be certified by accredited certification bodies before deployment; NIS2 Art.24 enables use of EU cybersecurity certification schemes to demonstrate compliance — TKG makes certification mandatory for high-risk telecom operators, going beyond the optional NIS2 certification framework."
+  },
+  {
+    "source": "TKG-§166(1)-Sicherheitskonzept-gesamt",
+    "target": "NIS2-Art21(2)(f)",
+    "relationship": "superset",
+    "rationale": "§166(1) Nr.3 mandates a documented, comprehensive security concept covering all threats and all measures across the full network; NIS2 Art.21(2)(f) requires policies to assess effectiveness of risk-management measures — the TKG security concept is broader, combining planning, documentation and review."
+  },
+  {
+    "source": "TKG-§167(1)-BSI-Einvernehmen",
+    "target": "NIS2-Art10",
+    "relationship": "related",
+    "rationale": "§167(1) requires BNetzA to issue the Security Catalog in agreement with BSI (Einvernehmen), structurally involving the national CSIRT/cybersecurity authority in telecom standard-setting; NIS2 Art.10 establishes CSIRTs as mandatory national bodies — this is the governance integration mechanism."
+  }
+]

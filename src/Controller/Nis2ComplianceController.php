@@ -219,8 +219,9 @@ class Nis2ComplianceController extends AbstractController
 
         $coverageRollup = $this->nis2Art21CoverageService->getCoverageRollup();
 
-        // Requirements loaded in DB for this framework
-        $dbRequirements = $this->complianceRequirementRepository->findByFramework($nis2Framework);
+        // Requirements loaded in DB for this framework (top-level only — the KPI
+        // counts canonical requirements, not imported sub-requirements)
+        $dbRequirements = $this->complianceRequirementRepository->findTopLevelByFramework($nis2Framework);
 
         // Counts for page header KPIs
         $totalRequirements = count($coverageRollup);

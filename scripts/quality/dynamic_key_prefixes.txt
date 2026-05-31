@@ -244,3 +244,5 @@ workflow.status	6
 workflow.step_description	1
 workflow.step_label	1
 workflow_instance.status	1
+
+compliance.mapping.rel_type	1

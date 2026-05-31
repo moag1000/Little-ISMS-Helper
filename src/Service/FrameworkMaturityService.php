@@ -80,7 +80,9 @@ final class FrameworkMaturityService
      */
     public function computeForFramework(ComplianceFramework $framework, ?Tenant $tenant = null): array
     {
-        $requirements = $this->requirementRepository->findByFramework($framework);
+        // Top-level requirements only — sub-requirements roll up via their parent
+        // and must not dilute the maturity denominator.
+        $requirements = $this->requirementRepository->findTopLevelByFramework($framework);
         $total = count($requirements);
         if ($total === 0) {
             return $this->emptyResult();

@@ -67,6 +67,75 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find only the TOP-LEVEL requirements for a framework — i.e. the requirements
+     * that constitute the framework's coverage/compliance denominator.
+     *
+     * Sub-requirements (`requirementType='sub_requirement'`, imported by the
+     * EU-mapping decomposition) roll up via their parent and must NOT be counted
+     * as separate denominator entries. A requirement is top-level when it has no
+     * parent (`parentRequirement IS NULL`); the `requirementType IN ('core','detailed')`
+     * predicate is added for belt-and-braces against any stray sub-requirement
+     * that lost its parent link via the `ON DELETE SET NULL` join column.
+     *
+     * Use this in EVERY coverage / compliance-% computation and in requirement
+     * LISTS. Detail / hierarchy views that legitimately show sub-requirements
+     * keep using {@see findByFramework()}.
+     *
+     * @return ComplianceRequirement[] Array of top-level requirements sorted by requirement ID
+     */
+    public function findTopLevelByFramework(ComplianceFramework $complianceFramework): array
+    {
+        return $this->topLevelQueryBuilder($complianceFramework)
+            ->orderBy('cr.requirementId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find ALL top-level requirements across every framework (for the global
+     * requirement index). Excludes imported sub-requirements which appear nested
+     * under their parent on the detail view.
+     *
+     * @return ComplianceRequirement[]
+     */
+    public function findAllTopLevel(): array
+    {
+        return $this->createQueryBuilder('cr')
+            ->where('cr.parentRequirement IS NULL')
+            ->andWhere("cr.requirementType IN ('core', 'detailed')")
+            ->orderBy('cr.requirementId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Count the top-level requirements for a framework (coverage/compliance denominator).
+     *
+     * @see findTopLevelByFramework()
+     */
+    public function countTopLevelByFramework(ComplianceFramework $complianceFramework): int
+    {
+        return (int) $this->topLevelQueryBuilder($complianceFramework)
+            ->select('COUNT(cr.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Shared predicate for the top-level filter — keeps the
+     * `parentRequirement IS NULL` + `requirementType IN ('core','detailed')`
+     * rule in exactly one place.
+     */
+    private function topLevelQueryBuilder(ComplianceFramework $complianceFramework): \Doctrine\ORM\QueryBuilder
+    {
+        return $this->createQueryBuilder('cr')
+            ->where('cr.framework = :framework')
+            ->andWhere('cr.parentRequirement IS NULL')
+            ->andWhere("cr.requirementType IN ('core', 'detailed')")
+            ->setParameter('framework', $complianceFramework);
+    }
+
+    /**
      * Find only applicable requirements for a framework (exclusions filtered out).
      *
      * @param ComplianceFramework $complianceFramework Compliance framework entity
@@ -95,6 +164,10 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('cr')
             ->where('cr.framework = :framework')
+            // Top-level gaps only — a sub-requirement gap is a detail row under
+            // its parent gap, not a standalone gap-list entry / denominator.
+            ->andWhere('cr.parentRequirement IS NULL')
+            ->andWhere("cr.requirementType IN ('core', 'detailed')")
             ->setParameter('framework', $complianceFramework);
 
         if ($tenant !== null) {
@@ -125,10 +198,13 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     public function findByFrameworkAndPriority(ComplianceFramework $complianceFramework, string $priority): array
     {
         // Note: fulfillment is tenant-specific (ComplianceRequirementFulfillment)
-        // Returning all requirements by framework and priority
+        // Returning top-level requirements by framework and priority — used for
+        // critical-gap counts/lists, which must not double-count sub-requirements.
         return $this->createQueryBuilder('cr')
             ->where('cr.framework = :framework')
             ->andWhere('cr.priority = :priority')
+            ->andWhere('cr.parentRequirement IS NULL')
+            ->andWhere("cr.requirementType IN ('core', 'detailed')")
             ->setParameter('framework', $complianceFramework)
             ->setParameter('priority', $priority)
             ->orderBy('cr.requirementId', 'ASC')
@@ -167,10 +243,19 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     {
         // Cast to int — Doctrine getSingleScalarResult() returns string for COUNT()
         // on MySQL/PDO. PHP 8.5 strict mode errors on string→int|float coercion.
+        //
+        // All counts are restricted to TOP-LEVEL requirements
+        // (parentRequirement IS NULL AND requirementType IN ('core','detailed')).
+        // The imported sub_requirements roll up via their parent and must NOT
+        // inflate the denominator (total/applicable) — that would dilute the
+        // compliance % shown on the dashboard ~25×.
+        $topLevel = "cr.parentRequirement IS NULL AND cr.requirementType IN ('core', 'detailed')";
+
         return [
             'total' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(cr.id)')
                 ->where('cr.framework = :framework')
+                ->andWhere($topLevel)
                 ->setParameter('framework', $complianceFramework)
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -179,6 +264,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
                 ->select('COUNT(DISTINCT cr.id)')
                 ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'ON', 'crf.requirement = cr AND crf.tenant = :tenant')
                 ->where('cr.framework = :framework')
+                ->andWhere($topLevel)
                 ->andWhere('crf.applicable = :applicable')
                 ->setParameter('framework', $complianceFramework)
                 ->setParameter('tenant', $tenant)
@@ -190,6 +276,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
                 ->select('COUNT(DISTINCT cr.id)')
                 ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'ON', 'crf.requirement = cr AND crf.tenant = :tenant')
                 ->where('cr.framework = :framework')
+                ->andWhere($topLevel)
                 ->andWhere('crf.applicable = :applicable')
                 ->andWhere('crf.fulfillmentPercentage >= 100')
                 ->setParameter('framework', $complianceFramework)
@@ -202,6 +289,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
                 ->select('COUNT(DISTINCT cr.id)')
                 ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'ON', 'crf.requirement = cr AND crf.tenant = :tenant')
                 ->where('cr.framework = :framework')
+                ->andWhere($topLevel)
                 ->andWhere('crf.applicable = :applicable')
                 ->andWhere('cr.priority = :priority')
                 ->andWhere('crf.fulfillmentPercentage < 100')
@@ -232,10 +320,13 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     public function getFrameworkStatistics(ComplianceFramework $complianceFramework): array
     {
         $queryBuilder = $this->createQueryBuilder('cr');
+        // Top-level only — sub-requirements roll up via their parent.
+        $topLevel = "cr.parentRequirement IS NULL AND cr.requirementType IN ('core', 'detailed')";
 
         return [
             'total' => $queryBuilder->select('COUNT(cr.id)')
                 ->where('cr.framework = :framework')
+                ->andWhere($topLevel)
                 ->setParameter('framework', $complianceFramework)
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -244,6 +335,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             // Returning total count for all metrics as fallback
             'applicable' => $queryBuilder->select('COUNT(cr.id)')
                 ->where('cr.framework = :framework')
+                ->andWhere($topLevel)
                 ->setParameter('framework', $complianceFramework)
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -253,6 +345,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             'critical_gaps' => $this->createQueryBuilder('cr')
                 ->select('COUNT(cr.id)')
                 ->where('cr.framework = :framework')
+                ->andWhere($topLevel)
                 ->andWhere('cr.priority = :priority')
                 ->setParameter('framework', $complianceFramework)
                 ->setParameter('priority', 'critical')
@@ -276,6 +369,9 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'ON', 'crf.requirement = cr')
             ->where('crf.applicable = :applicable')
             ->andWhere('crf.fulfillmentPercentage >= 100')
+            // Top-level only — sub-requirements roll up via their parent.
+            ->andWhere('cr.parentRequirement IS NULL')
+            ->andWhere("cr.requirementType IN ('core', 'detailed')")
             ->setParameter('applicable', true);
 
         if ($tenant !== null) {

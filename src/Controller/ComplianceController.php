@@ -113,7 +113,9 @@ class ComplianceController extends AbstractController
         }
 
         $dashboard = $this->complianceAssessmentService->getComplianceDashboard($framework);
-        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
+        // List top-level requirements only — sub-requirements appear nested under
+        // their parent via getDetailedRequirements() on the detail view.
+        $requirements = $this->complianceRequirementRepository->findTopLevelByFramework($framework);
 
         $allModules = $this->moduleConfigurationService->getAllModules();
         $activeModules = $this->moduleConfigurationService->getActiveModules();
@@ -270,6 +272,13 @@ class ComplianceController extends AbstractController
         // perf: single bulk query replaces O(N²) per-pair queries (was >10 s with many frameworks)
         $allMappingsBulk = $this->complianceMappingRepository->findAllCrossFrameworkMappingsBulk($frameworks);
 
+        // Denominator = top-level requirements only (sub-requirements roll up via
+        // their parent and must NOT dilute coverage %). Precompute per framework.
+        $topLevelCounts = [];
+        foreach ($frameworks as $fw) {
+            $topLevelCounts[$fw->getId()] = $this->complianceRequirementRepository->countTopLevelByFramework($fw);
+        }
+
         $transitiveAnalysis = [];
         $mappingMatrix = [];
         $crossMappings = [];
@@ -287,7 +296,7 @@ class ComplianceController extends AbstractController
                 $pairMappings = $allMappingsBulk[$framework->getId()][$targetFramework->getId()] ?? [];
 
                 // Inline coverage calculation (was calculateFrameworkCoverage — now uses cached data)
-                $targetRequirements = $targetFramework->requirements->count();
+                $targetRequirements = $topLevelCounts[$targetFramework->getId()] ?? 0;
                 $coveredRequirements = [];
                 foreach ($pairMappings as $mapping) {
                     $targetReqId = $mapping->getTargetRequirement()->getId();
@@ -330,7 +339,7 @@ class ComplianceController extends AbstractController
                     }
                 }
                 $totalBenefit = array_sum($targetRequirementsHelped);
-                $targetReqCount = $targetFramework->requirements->count();
+                $targetReqCount = $topLevelCounts[$targetFramework->getId()] ?? 0;
                 $avgBenefit = $targetReqCount > 0 ? round($totalBenefit / $targetReqCount, 2) : 0;
 
                 if (count($targetRequirementsHelped) > 0) {
