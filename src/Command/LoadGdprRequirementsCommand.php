@@ -167,6 +167,19 @@ class LoadGdprRequirementsCommand extends Command
                 ],
             ],
 
+            [
+                'id' => 'GDPR-5.2',
+                'title' => 'Accountability',
+                'description' => 'The controller is responsible for compliance with the Art. 5(1) principles and must be able to demonstrate that compliance. This is the accountability backbone underpinning all ROPA and governance obligations.',
+                'category' => 'Principles',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                    'entity' => 'ProcessingActivity',
+                    'audit_evidence' => true,
+                ],
+            ],
+
             // Chapter 2: Principles (Legal Bases & Special Categories)
             [
                 'id' => 'GDPR-6',
@@ -177,6 +190,17 @@ class LoadGdprRequirementsCommand extends Command
                 'data_source_mapping' => [
                     'entity' => 'ProcessingActivity',
                     'field' => 'legal_basis',
+                ],
+            ],
+            [
+                'id' => 'GDPR-7',
+                'title' => 'Conditions for Consent',
+                'description' => 'Where processing is based on consent, the controller must be able to demonstrate that consent was given, and withdrawal must be as easy as giving it. Consent must be freely given and may not be bundled with other terms.',
+                'category' => 'Lawfulness',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'entity' => 'Consent',
+                    'iso_controls' => ['5.34'],
                 ],
             ],
             [
@@ -262,6 +286,17 @@ class LoadGdprRequirementsCommand extends Command
                 'category' => 'Data Subject Rights',
                 'priority' => 'high',
                 'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                ],
+            ],
+            [
+                'id' => 'GDPR-19',
+                'title' => 'Notification Obligation Regarding Rectification, Erasure or Restriction',
+                'description' => 'The controller must communicate any rectification, erasure or restriction of processing carried out under Arts. 16, 17 and 18 to each recipient to whom the personal data have been disclosed, unless impossible or disproportionate.',
+                'category' => 'Data Subject Rights',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'entity' => 'DataSubjectRequest',
                     'iso_controls' => ['5.34'],
                 ],
             ],
@@ -455,6 +490,29 @@ class LoadGdprRequirementsCommand extends Command
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.3'],
+                ],
+            ],
+            [
+                'id' => 'GDPR-38',
+                'title' => 'Position of the Data Protection Officer',
+                'description' => 'The controller and processor must ensure the DPO is involved properly and in a timely manner in all data-protection matters, is given the resources necessary to carry out tasks and maintain expert knowledge, and operates with full independence.',
+                'category' => 'DPO',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.3'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'GDPR-39',
+                'title' => 'Tasks of the Data Protection Officer',
+                'description' => 'The DPO must inform and advise the controller and its employees, monitor compliance, advise on and monitor DPIAs, cooperate with and act as contact point for the supervisory authority.',
+                'category' => 'DPO',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.3'],
+                    'entity' => 'DataProtectionImpactAssessment',
+                    'audit_evidence' => true,
                 ],
             ],
             [
