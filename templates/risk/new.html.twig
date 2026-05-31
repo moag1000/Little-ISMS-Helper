@@ -40,6 +40,17 @@
     prominence: 'always_visible'
 }) }}
 
+{# Junior-ISB glossary intro: hover the core concepts for an inline definition
+   (loaded via /api/glossary/{acronym}). Addresses the recurring
+   "Bedrohung vs. Schwachstelle?" confusion. #}
+{% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
+<div class="text-muted small mb-3">
+    {{ 'risk.help.concepts_intro'|trans({}, 'risk') }}
+    {{ fa_glossary_tooltip(glossary('Bedrohung', app.request.locale)) }} ·
+    {{ fa_glossary_tooltip(glossary('Schwachstelle', app.request.locale)) }} ·
+    {{ fa_glossary_tooltip(glossary('Restrisiko', app.request.locale)) }}
+</div>
+
 {# P-19 — Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}
 {{ form_start(form, {'attr': {
     'data-controller': 'alva-hint-in-form',
