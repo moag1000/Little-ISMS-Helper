@@ -1267,7 +1267,7 @@ class RiskController extends AbstractController
 
         // Check if risk can be edited (not inherited) - only if user has tenant
         if ($tenant && !$this->riskService->canEditRisk($risk, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited', [], 'messages'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -1303,7 +1303,7 @@ class RiskController extends AbstractController
 
         // Check if risk can be deleted (not inherited) - only if user has tenant
         if ($tenant && !$this->riskService->canEditRisk($risk, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited', [], 'messages'));
             return $this->redirectToRoute('app_risk_index');
         }
 
@@ -1342,7 +1342,7 @@ class RiskController extends AbstractController
         if ($request->isMethod('POST')) {
             // CSRF token validation
             if (!$this->isCsrfTokenValid('request-acceptance'.$risk->getId(), $request->request->get('_token'))) {
-                $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid')); // @todo H-06 flash-domain
+                $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid', [], 'messages'));
                 return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
             }
 
@@ -1396,7 +1396,7 @@ class RiskController extends AbstractController
         $user = $this->security->getUser();
 
         if (!$this->isCsrfTokenValid('approve-acceptance'.$risk->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid', [], 'messages'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -1421,7 +1421,7 @@ class RiskController extends AbstractController
         $user = $this->security->getUser();
 
         if (!$this->isCsrfTokenValid('reject-acceptance'.$risk->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid', [], 'messages'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 

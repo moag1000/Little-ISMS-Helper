@@ -105,7 +105,7 @@ class PatchController extends AbstractController
             $this->entityManager->persist($patch);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('patch.success.created')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('patch.success.created', [], 'messages'));
             return $this->redirectToRoute('app_patch_show', ['id' => $patch->getId()]);
         }
 
@@ -136,7 +136,7 @@ class PatchController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('patch.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('patch.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_patch_show', ['id' => $patch->getId()]);
         }
 
@@ -157,7 +157,7 @@ class PatchController extends AbstractController
             $this->entityManager->remove($patch);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('patch.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('patch.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_patch_index');

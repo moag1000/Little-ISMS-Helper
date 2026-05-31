@@ -117,7 +117,7 @@ class TrainingController extends AbstractController
             // P-15 DataReuse: sync participantUsers → TrainingParticipation rows.
             $this->syncParticipantUsersToParticipationRows($training);
 
-            $this->addFlash('success', $this->translator->trans('training.success.created')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('training.success.created', [], 'messages'));
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
 
@@ -257,7 +257,7 @@ class TrainingController extends AbstractController
             // P-15 DataReuse: sync participantUsers → TrainingParticipation rows.
             $this->syncParticipantUsersToParticipationRows($training);
 
-            $this->addFlash('success', $this->translator->trans('training.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('training.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
 
@@ -382,7 +382,7 @@ class TrainingController extends AbstractController
             $this->entityManager->remove($training);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('training.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('training.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_training_index');

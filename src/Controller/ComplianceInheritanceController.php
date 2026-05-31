@@ -179,7 +179,7 @@ final class ComplianceInheritanceController extends AbstractController
 
         try {
             $this->inheritanceService->confirmInheritance($log, $user, $comment, $requestImplement, $approver);
-            $this->addFlash('success', $this->trans('compliance_inheritance.flash.confirmed')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->trans('compliance_inheritance.flash.confirmed', [], 'messages'));
         } catch (\InvalidArgumentException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -202,7 +202,7 @@ final class ComplianceInheritanceController extends AbstractController
 
         try {
             $this->inheritanceService->rejectInheritance($log, $user, (string) $request->request->get('reason', ''));
-            $this->addFlash('success', $this->trans('compliance_inheritance.flash.rejected')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->trans('compliance_inheritance.flash.rejected', [], 'messages'));
         } catch (\InvalidArgumentException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -234,7 +234,7 @@ final class ComplianceInheritanceController extends AbstractController
                 (string) $request->request->get('reason', ''),
                 $approver,
             );
-            $this->addFlash('success', $this->trans('compliance_inheritance.flash.overridden')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->trans('compliance_inheritance.flash.overridden', [], 'messages'));
         } catch (\InvalidArgumentException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
