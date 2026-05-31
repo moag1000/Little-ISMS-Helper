@@ -30,17 +30,23 @@ NIS2:
     - Art.23                          # incident reporting obligations
 EU-AI-ACT:
   source: eu_2024_1689              # Regulation (EU) 2024/1689 (AI Act)
+  # Art.X scheme (full article-level catalogue). The mapping-relevant high-risk/
+  # GPAI articles below are the coverage denominators; the loaded catalogue
+  # carries all 113 articles + 13 annexes.
   requirements:
-    - AIACT-1
-    - AIACT-2
-    - AIACT-3
-    - AIACT-4
-    - AIACT-5
-    - AIACT-6
-    - AIACT-7
-    - AIACT-8
-    - AIACT-9
-    - AIACT-10
+    - Art.5                          # Prohibited practices
+    - Art.6                          # High-risk classification
+    - Art.9                          # Risk management system
+    - Art.10                         # Data governance
+    - Art.11                         # Technical documentation
+    - Art.13                         # Transparency
+    - Art.14                         # Human oversight
+    - Art.15                         # Accuracy, robustness, cybersecurity
+    - Art.43                         # Conformity assessment
+    - Art.50                         # Transparency for certain AI systems
+    - Art.53                         # GPAI model obligations
+    - Art.72                         # Post-market monitoring
+    - Art.73                         # Serious incident reporting
 DORA:
   source: eu_2022_2554              # ICT-risk-relevant articles (Ch. II-V)
   requirements:
