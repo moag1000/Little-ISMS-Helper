@@ -1,0 +1,326 @@
+[
+  {
+    "source": "9.1.1-a",
+    "target": "5.3.2",
+    "relationship": "equivalent",
+    "rationale": "TISAX DP policy requirement mirrors ISO 27701 clause 5.3.2 which mandates top-management-issued privacy policy addressing PII processing principles."
+  },
+  {
+    "source": "9.1.1-b",
+    "target": "6.2",
+    "relationship": "subset",
+    "rationale": "TISAX DP policy scope covers data-protection-specific policies, which is a subset of ISO 27701 clause 6.2 guidance that extends ISO 27002 information security policies to cover PII considerations broadly."
+  },
+  {
+    "source": "9.1.1-c",
+    "target": "5.5.4",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement to maintain and communicate DP policies as documented information maps directly to ISO 27701 clause 5.5.4 on privacy documented information controls."
+  },
+  {
+    "source": "9.2.1-a",
+    "target": "5.3.3",
+    "relationship": "equivalent",
+    "rationale": "TISAX criterion for defining data protection roles and responsibilities (DPO appointment) directly corresponds to ISO 27701 clause 5.3.3 requiring defined privacy roles and responsibilities."
+  },
+  {
+    "source": "9.2.1-b",
+    "target": "6.3",
+    "relationship": "subset",
+    "rationale": "TISAX data protection organizational structure requirement is a subset of ISO 27701 clause 6.3 which extends ISO 27002 organizational controls to include PII-specific governance structures."
+  },
+  {
+    "source": "9.2.1-c",
+    "target": "5.2.2",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement to determine whether the organization acts as controller or processor maps directly to ISO 27701 clause 5.2.2 which explicitly requires determining PII controller and/or processor roles."
+  },
+  {
+    "source": "9.3.1-a",
+    "target": "7.2.8",
+    "relationship": "equivalent",
+    "rationale": "TISAX processing directory (Verarbeitungsverzeichnis) as controller maps 1:1 to ISO 27701 clause 7.2.8 requiring Records Related to Processing PII for controllers (Art. 30 GDPR basis)."
+  },
+  {
+    "source": "9.3.1-b",
+    "target": "8.2.6",
+    "relationship": "equivalent",
+    "rationale": "TISAX processing register requirements when acting as processor map directly to ISO 27701 clause 8.2.6 requiring processors to maintain records related to processing PII on behalf of controllers."
+  },
+  {
+    "source": "9.3.1-c",
+    "target": "7.2.1",
+    "relationship": "subset",
+    "rationale": "TISAX requirement to document processing purposes within the register is a sub-element of ISO 27701 clause 7.2.1 which mandates identifying and documenting processing purpose as a standalone control."
+  },
+  {
+    "source": "9.3.1-d",
+    "target": "7.4.7",
+    "relationship": "subset",
+    "rationale": "TISAX obligation to include retention periods in the processing directory implements the retention documentation aspect of ISO 27701 clause 7.4.7 on categorical retention schedules."
+  },
+  {
+    "source": "9.4.1-a",
+    "target": "7.2.5",
+    "relationship": "equivalent",
+    "rationale": "TISAX DPIA (Datenschutz-Folgenabschätzung) requirement maps directly to ISO 27701 clause 7.2.5 requiring Privacy Impact Assessment for high-risk processing activities."
+  },
+  {
+    "source": "9.4.1-b",
+    "target": "5.4.1",
+    "relationship": "subset",
+    "rationale": "TISAX criterion to assess risks within the DPIA is a practical application of ISO 27701 clause 5.4.1 which requires privacy risk assessment considering PII processing at the planning stage."
+  },
+  {
+    "source": "9.4.1-c",
+    "target": "5.6.2",
+    "relationship": "subset",
+    "rationale": "TISAX requirement to execute the DPIA prior to processing corresponds to ISO 27701 clause 5.6.2 mandating operational execution of privacy risk assessments."
+  },
+  {
+    "source": "9.4.1-d",
+    "target": "7.4.2",
+    "relationship": "partial_overlap",
+    "rationale": "TISAX DPIA necessity test (is processing limited to purpose?) partially overlaps ISO 27701 clause 7.4.2 on limiting processing, but the DPIA is a broader procedural gate whereas 7.4.2 is a design principle."
+  },
+  {
+    "source": "9.5.1-a",
+    "target": "7.2.2",
+    "relationship": "equivalent",
+    "rationale": "TISAX criterion for establishing a legal basis for data transfers (Art. 6 GDPR) maps directly to ISO 27701 clause 7.2.2 on identifying the lawful basis for PII processing."
+  },
+  {
+    "source": "9.5.1-b",
+    "target": "7.2.1",
+    "relationship": "subset",
+    "rationale": "TISAX requirement to document the purpose of data transfers implements the purpose-identification sub-element of ISO 27701 clause 7.2.1."
+  },
+  {
+    "source": "9.5.1-c",
+    "target": "7.4.1",
+    "relationship": "subset",
+    "rationale": "TISAX data minimisation check at point of transfer is a specific application of ISO 27701 clause 7.4.1 which requires limiting PII collection to what is relevant and necessary."
+  },
+  {
+    "source": "9.5.2-a",
+    "target": "7.5.1",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement to identify and document the legal basis for third-country transfers (GDPR Chapter V) maps directly to ISO 27701 clause 7.5.1 on identifying basis for PII transfer between jurisdictions."
+  },
+  {
+    "source": "9.5.2-b",
+    "target": "7.5.2",
+    "relationship": "equivalent",
+    "rationale": "TISAX obligation to maintain a list of countries and international organisations to which PII may be transferred maps 1:1 to ISO 27701 clause 7.5.2 on documented destination countries and organisations."
+  },
+  {
+    "source": "9.5.2-c",
+    "target": "8.5.1",
+    "relationship": "equivalent",
+    "rationale": "TISAX third-country transfer requirements when acting as processor mirror ISO 27701 clause 8.5.1 requiring processors to inform customers of PII transfers across jurisdictions."
+  },
+  {
+    "source": "9.5.2-d",
+    "target": "8.5.2",
+    "relationship": "equivalent",
+    "rationale": "TISAX processor-side obligation to list recipient countries maps directly to ISO 27701 clause 8.5.2 requiring processors to maintain accurate lists of destination countries for PII transfers."
+  },
+  {
+    "source": "9.5.3-a",
+    "target": "7.2.6",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement for AV-Vertrag (data processing agreement with processors per Art. 28 GDPR) maps directly to ISO 27701 clause 7.2.6 on Contracts with PII Processors."
+  },
+  {
+    "source": "9.5.3-b",
+    "target": "7.2.7",
+    "relationship": "equivalent",
+    "rationale": "TISAX criterion for joint-controller arrangements (gemeinsame Verantwortung, Art. 26 GDPR) maps directly to ISO 27701 clause 7.2.7 on Joint PII Controller arrangements."
+  },
+  {
+    "source": "9.5.3-c",
+    "target": "7.5.3",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement to maintain records of disclosures and data-sharing to third parties maps directly to ISO 27701 clause 7.5.3 on Records of Transfer of PII."
+  },
+  {
+    "source": "9.5.3-d",
+    "target": "7.5.4",
+    "relationship": "subset",
+    "rationale": "TISAX data-sharing log requirement is a subset of ISO 27701 clause 7.5.4 which additionally requires logging date, time and recipient identity for each PII disclosure."
+  },
+  {
+    "source": "9.5.3-e",
+    "target": "8.5.7",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement for sub-processor agreements (sub-AVV, Art. 28(4) GDPR) maps directly to ISO 27701 clause 8.5.7 on binding agreements with subcontractors engaged to process PII."
+  },
+  {
+    "source": "9.5.3-f",
+    "target": "8.5.6",
+    "relationship": "equivalent",
+    "rationale": "TISAX obligation to disclose sub-processors to the controller before processing maps directly to ISO 27701 clause 8.5.6 on disclosing subcontractors used to process PII."
+  },
+  {
+    "source": "9.5.3-g",
+    "target": "8.5.8",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement to notify the controller in advance of any sub-processor change maps directly to ISO 27701 clause 8.5.8 on notifying customers of changes to subcontractors."
+  },
+  {
+    "source": "9.6.1-a",
+    "target": "7.3.1",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement to determine and document all GDPR data-subject rights obligations maps directly to ISO 27701 clause 7.3.1 on determining and fulfilling obligations to PII principals."
+  },
+  {
+    "source": "9.6.1-b",
+    "target": "7.3.2",
+    "relationship": "equivalent",
+    "rationale": "TISAX transparency obligation (privacy notice, Art. 13/14 GDPR) maps directly to ISO 27701 clause 7.3.2 on determining the information to be provided to PII principals."
+  },
+  {
+    "source": "9.6.1-c",
+    "target": "7.3.3",
+    "relationship": "equivalent",
+    "rationale": "TISAX criterion for actively communicating privacy information to data subjects maps directly to ISO 27701 clause 7.3.3 on providing information to PII principals."
+  },
+  {
+    "source": "9.6.1-d",
+    "target": "7.3.4",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement for a consent-modification mechanism (Art. 7(3) GDPR) maps directly to ISO 27701 clause 7.3.4 on providing a mechanism to modify or withdraw consent."
+  },
+  {
+    "source": "9.6.1-e",
+    "target": "7.3.5",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement for a documented objection mechanism (Art. 21 GDPR) maps directly to ISO 27701 clause 7.3.5 on providing a mechanism to object to PII processing."
+  },
+  {
+    "source": "9.6.1-f",
+    "target": "7.3.6",
+    "relationship": "equivalent",
+    "rationale": "TISAX data-subject access, rectification, and erasure rights handling (Art. 15-17 GDPR) maps directly to ISO 27701 clause 7.3.6 on access, correction and/or erasure mechanisms."
+  },
+  {
+    "source": "9.6.1-g",
+    "target": "7.3.9",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement to handle data-subject requests within legal deadlines maps directly to ISO 27701 clause 7.3.9 on handling requests from PII principals in a timely manner."
+  },
+  {
+    "source": "9.6.1-h",
+    "target": "8.3.1",
+    "relationship": "equivalent",
+    "rationale": "TISAX processor-side obligation to support controller with data-subject rights requests maps directly to ISO 27701 clause 8.3.1 requiring processors to assist the controller in fulfilling obligations to PII principals."
+  },
+  {
+    "source": "9.6.1-i",
+    "target": "7.3.10",
+    "relationship": "subset",
+    "rationale": "TISAX data-portability requirement (Art. 20 GDPR) is a specific right addressed by ISO 27701 clause 7.3.10 on data portability, but TISAX scopes it to B2B processor context narrowing applicability."
+  },
+  {
+    "source": "9.6.2-a",
+    "target": "6.13",
+    "relationship": "subset",
+    "rationale": "TISAX data-breach handling and notification requirement is a subset of ISO 27701 clause 6.13 which extends ISO 27002 incident management to privacy incidents, adding PII-specific responsibilities and procedures."
+  },
+  {
+    "source": "9.6.2-b",
+    "target": "7.3.7",
+    "relationship": "equivalent",
+    "rationale": "TISAX obligation to notify affected third parties after a breach involving shared PII maps directly to ISO 27701 clause 7.3.7 on controllers' obligations to inform third parties of rectification/erasure/restrictions."
+  },
+  {
+    "source": "9.6.2-c",
+    "target": "8.5.3",
+    "relationship": "equivalent",
+    "rationale": "TISAX processor requirement to document all PII disclosures including breach-related disclosures maps directly to ISO 27701 clause 8.5.3 on records of PII disclosure to third parties."
+  },
+  {
+    "source": "9.6.2-d",
+    "target": "8.5.4",
+    "relationship": "equivalent",
+    "rationale": "TISAX processor obligation to notify the controller of any legally-binding disclosure request maps directly to ISO 27701 clause 8.5.4 on notification of PII disclosure requests."
+  },
+  {
+    "source": "9.6.2-e",
+    "target": "8.5.5",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement to object to unlawful disclosure requests and consult the controller maps directly to ISO 27701 clause 8.5.5 on handling legally binding PII disclosures."
+  },
+  {
+    "source": "9.7.1-a",
+    "target": "5.5.1",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement to ensure staff handling personal data have adequate data-protection competence maps directly to ISO 27701 clause 5.5.1 on determining and maintaining privacy competence requirements."
+  },
+  {
+    "source": "9.7.1-b",
+    "target": "5.5.2",
+    "relationship": "equivalent",
+    "rationale": "TISAX criterion for regular data-protection awareness training maps directly to ISO 27701 clause 5.5.2 on ensuring privacy awareness for all relevant personnel."
+  },
+  {
+    "source": "9.7.1-c",
+    "target": "6.4",
+    "relationship": "subset",
+    "rationale": "TISAX HR data-protection onboarding and offboarding requirements are a subset of ISO 27701 clause 6.4 which extends ISO 27002 human resource security controls to PII-handling roles."
+  },
+  {
+    "source": "9.7.2-a",
+    "target": "6.4.2",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement for personnel to acknowledge data-protection obligations (Datenschutzverpflichtung) during employment maps directly to ISO 27701 clause 6.4.2 on privacy obligations during employment."
+  },
+  {
+    "source": "9.7.2-b",
+    "target": "6.4.3",
+    "relationship": "equivalent",
+    "rationale": "TISAX criterion for revoking PII access rights and enforcing confidentiality commitments at employment termination maps directly to ISO 27701 clause 6.4.3 on termination and change of employment procedures for privacy."
+  },
+  {
+    "source": "9.7.2-c",
+    "target": "5.5.3",
+    "relationship": "subset",
+    "rationale": "TISAX internal communication of data-protection obligations is a subset of ISO 27701 clause 5.5.3 which requires broader privacy communication processes covering all relevant stakeholder groups."
+  },
+  {
+    "source": "9.8.1-a",
+    "target": "8.2.1",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement for documented processing instructions from controller to processor (Weisungsgebundenheit, Art. 28(3)(a) GDPR) maps directly to ISO 27701 clause 8.2.1 on customer agreement with documented processing instructions."
+  },
+  {
+    "source": "9.8.1-b",
+    "target": "8.2.4",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement that processor immediately notify controller when instructions may be unlawful maps directly to ISO 27701 clause 8.2.4 on handling infringing instructions from the controller."
+  },
+  {
+    "source": "9.8.1-c",
+    "target": "8.2.2",
+    "relationship": "equivalent",
+    "rationale": "TISAX criterion restricting processor from processing PII for its own purposes beyond controller instructions maps directly to ISO 27701 clause 8.2.2 prohibiting the processor from determining its own processing purposes."
+  },
+  {
+    "source": "9.8.1-d",
+    "target": "8.2.3",
+    "relationship": "equivalent",
+    "rationale": "TISAX prohibition on processor using PII for marketing or advertising without explicit controller authorisation maps directly to ISO 27701 clause 8.2.3 on restrictions for marketing and advertising use of PII."
+  },
+  {
+    "source": "9.8.1-e",
+    "target": "8.2.5",
+    "relationship": "equivalent",
+    "rationale": "TISAX requirement for processor to contractually support controller in meeting its own GDPR obligations maps directly to ISO 27701 clause 8.2.5 on processor assisting with customer (controller) obligations."
+  },
+  {
+    "source": "9.8.1-f",
+    "target": "7.2.3",
+    "relationship": "partial_overlap",
+    "rationale": "TISAX instruction-binding requirement overlaps ISO 27701 clause 7.2.3 on when and how consent is obtained, but 9.8.1 focuses on controller-to-processor instruction flow rather than controller-to-data-subject consent mechanics."
+  }
+]

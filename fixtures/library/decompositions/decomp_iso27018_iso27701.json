@@ -1,0 +1,344 @@
+[
+  {
+    "source": "27018-A.2.1",
+    "target": "27701-8.2.5",
+    "relationship": "equivalent",
+    "rationale": "Both require the cloud PII processor to cooperate with and assist the customer (PII controller) in fulfilling obligations toward PII principals (data subjects)."
+  },
+  {
+    "source": "27018-A.3.1",
+    "target": "27701-8.2.2",
+    "relationship": "equivalent",
+    "rationale": "Both prohibit the cloud/PII processor from processing PII for any purpose beyond the documented instructions of the customer/controller, limiting use to the agreed service purposes only."
+  },
+  {
+    "source": "27018-A.3.2",
+    "target": "27701-8.2.3",
+    "relationship": "equivalent",
+    "rationale": "Both explicitly prohibit use of PII for marketing or advertising without the consent of the PII principal, directly paralleling the ban on secondary commercial use by the processor."
+  },
+  {
+    "source": "27018-A.3.1",
+    "target": "27701-8.2.6",
+    "relationship": "subset",
+    "rationale": "ISO 27018 A.3.1 limits processor purpose to customer instructions; 27701-8.2.6 additionally requires maintaining records of all processing activities, going beyond the purpose-limitation statement."
+  },
+  {
+    "source": "27018-A.5.1",
+    "target": "27701-8.4.1",
+    "relationship": "equivalent",
+    "rationale": "Both require secure deletion/erasure of temporary files containing PII that arise during cloud/processor operations and are no longer needed."
+  },
+  {
+    "source": "27018-A.6.1",
+    "target": "27701-8.5.5",
+    "relationship": "equivalent",
+    "rationale": "Both require the processor to notify the customer/controller whenever it receives a legally binding request to disclose PII (e.g. from law enforcement), unless legally prohibited."
+  },
+  {
+    "source": "27018-A.6.1",
+    "target": "27701-8.5.6",
+    "relationship": "partial_overlap",
+    "rationale": "27018 A.6.1 covers notification of any disclosure request; 27701-8.5.6 specifically covers legally binding mandatory disclosures and requires handling them while informing the controller — overlapping but 27701 is more prescriptive on the handling procedure."
+  },
+  {
+    "source": "27018-A.6.2",
+    "target": "27701-8.5.4",
+    "relationship": "equivalent",
+    "rationale": "Both require the processor to maintain records of all PII disclosures to third parties, enabling accountability and auditability of every disclosure event."
+  },
+  {
+    "source": "27018-A.8.1",
+    "target": "27701-8.5.7",
+    "relationship": "equivalent",
+    "rationale": "Both require disclosure to the customer/controller of any subcontractors (sub-processors) used to process PII, enabling the controller to assess the sub-processing chain."
+  },
+  {
+    "source": "27018-A.8.1",
+    "target": "27701-8.5.8",
+    "relationship": "subset",
+    "rationale": "27018 A.8.1 requires disclosure of subcontractors; 27701-8.5.8 additionally requires the processor to notify the controller in advance of any changes to subcontractors, giving the controller an opportunity to object."
+  },
+  {
+    "source": "27018-A.10.1",
+    "target": "27701-6.13.1",
+    "relationship": "subset",
+    "rationale": "27018 A.10.1 requires notification of the customer in the event of a data breach involving PII; 27701-6.13.1 provides broader PII incident management guidance applicable to all organizations, but 27018 is cloud-processor-specific and more operationally prescriptive."
+  },
+  {
+    "source": "27018-A.10.1",
+    "target": "27701-8.2.5",
+    "relationship": "related",
+    "rationale": "Breach notification to the controller supports the customer obligations in 27701-8.2.5 (assisting the controller), but 27018 A.10.1 is a specific operational trigger while 27701-8.2.5 is a general assistance obligation."
+  },
+  {
+    "source": "27018-A.10.2",
+    "target": "27701-6.15.1",
+    "relationship": "subset",
+    "rationale": "27018 A.10.2 requires retention of administrative security policies for a defined period; 27701-6.15.1 covers compliance with legal/contractual requirements including documentation retention, but is broader and not cloud-specific."
+  },
+  {
+    "source": "27018-A.10.3",
+    "target": "27701-8.4.2",
+    "relationship": "equivalent",
+    "rationale": "Both require the processor to have procedures for returning, transferring, or securely disposing of PII when the service agreement ends or at the controller's request."
+  },
+  {
+    "source": "27018-A.11.1",
+    "target": "27701-6.15.1",
+    "relationship": "subset",
+    "rationale": "27018 A.11.1 requires confidentiality or non-disclosure agreements with personnel processing PII; 27701-6.15.1 addresses contractual compliance more broadly, but both enforce binding confidentiality obligations."
+  },
+  {
+    "source": "27018-A.11.1",
+    "target": "27701-6.4.2",
+    "relationship": "related",
+    "rationale": "27018 A.11.1 (confidentiality NDAs) relates to 27701-6.4.2 (during employment — personnel security), which requires awareness and binding obligations for employees handling PII."
+  },
+  {
+    "source": "27018-A.11.2",
+    "target": "27701-6.9.1",
+    "relationship": "subset",
+    "rationale": "27018 A.11.2 restricts creation of hardcopy material containing PII in cloud environments; 27701-6.9.1 addresses operational procedures and responsibilities including output controls, but 27701 does not have an equally specific hardcopy restriction."
+  },
+  {
+    "source": "27018-A.11.3",
+    "target": "27701-6.9.4",
+    "relationship": "subset",
+    "rationale": "27018 A.11.3 requires control and logging of data restoration operations to prevent unauthorized access to PII during restoration; 27701-6.9.4 (logging and monitoring) covers logging broadly, but 27018 is specifically focused on restoration events."
+  },
+  {
+    "source": "27018-A.11.4",
+    "target": "27701-6.5.3",
+    "relationship": "equivalent",
+    "rationale": "Both require protecting PII on storage media that leaves the premises, including encryption and secure handling to prevent unauthorized disclosure during transit."
+  },
+  {
+    "source": "27018-A.11.5",
+    "target": "27701-6.5.3",
+    "relationship": "subset",
+    "rationale": "27018 A.11.5 specifically addresses unencrypted portable storage media and requires encryption of PII; 27701-6.5.3 (media handling) covers the broader category of media protection, of which encryption of portable media is a specific sub-requirement."
+  },
+  {
+    "source": "27018-A.11.5",
+    "target": "27701-6.7.1",
+    "relationship": "related",
+    "rationale": "The encryption requirement in 27018 A.11.5 for portable media aligns with 27701-6.7.1 (cryptographic controls), which provides the PIMS-extended guidance on when and how to apply cryptography to protect PII."
+  },
+  {
+    "source": "27018-A.11.6",
+    "target": "27701-8.4.3",
+    "relationship": "equivalent",
+    "rationale": "Both require encryption of PII transmitted over public networks, protecting PII in transit from unauthorized interception during cloud processing operations."
+  },
+  {
+    "source": "27018-A.11.6",
+    "target": "27701-6.7.1",
+    "relationship": "subset",
+    "rationale": "27018 A.11.6 mandates encryption for PII in public-network transit (cloud-specific); 27701-6.7.1 gives broader cryptographic controls guidance applicable to all PII transmission contexts, making it a superset in scope."
+  },
+  {
+    "source": "27018-A.11.7",
+    "target": "27701-6.5.3",
+    "relationship": "subset",
+    "rationale": "27018 A.11.7 requires secure disposal of hardcopy materials containing PII; 27701-6.5.3 (media handling) covers disposal of media broadly, but hardcopy-specific secure disposal is a sub-point within this broader control."
+  },
+  {
+    "source": "27018-A.11.8",
+    "target": "27701-6.6.2",
+    "relationship": "subset",
+    "rationale": "27018 A.11.8 mandates unique user IDs for all users accessing PII in cloud systems; 27701-6.6.2 (user access management) requires proper identity management including unique identifiers, of which this is a specific enforcement sub-point."
+  },
+  {
+    "source": "27018-A.11.9",
+    "target": "27701-6.6.2",
+    "relationship": "subset",
+    "rationale": "27018 A.11.9 requires maintaining records of authorized users who can access PII; 27701-6.6.2 requires user access management records, with 27018 adding the cloud-PII-specific documentation requirement."
+  },
+  {
+    "source": "27018-A.11.10",
+    "target": "27701-6.6.2",
+    "relationship": "equivalent",
+    "rationale": "Both require lifecycle management of user IDs including timely revocation/deactivation when users no longer require access to PII systems."
+  },
+  {
+    "source": "27018-A.11.11",
+    "target": "27701-8.2.1",
+    "relationship": "equivalent",
+    "rationale": "Both require that the processing relationship be governed by a formal contract specifying the nature, scope, and purpose of PII processing, establishing the customer agreement as the legal basis for processor activity."
+  },
+  {
+    "source": "27018-A.11.11",
+    "target": "27701-7.2.6",
+    "relationship": "related",
+    "rationale": "27018 A.11.11 addresses contract measures for the processor side; 27701-7.2.6 addresses the same contractual requirement from the controller perspective, requiring controllers to have written contracts with processors — a mirror obligation."
+  },
+  {
+    "source": "27018-A.11.12",
+    "target": "27701-8.5.7",
+    "relationship": "equivalent",
+    "rationale": "Both require that any subcontracted PII processing is governed by the same obligations as the primary processor, ensuring consistent protection throughout the sub-processing chain."
+  },
+  {
+    "source": "27018-A.11.12",
+    "target": "27701-8.5.8",
+    "relationship": "subset",
+    "rationale": "27018 A.11.12 requires equivalent contractual obligations for sub-processors; 27701-8.5.8 additionally requires advance notification of sub-processor changes, making 27701 a superset of the sub-contractor governance obligation."
+  },
+  {
+    "source": "27018-A.11.13",
+    "target": "27701-6.6.4",
+    "relationship": "subset",
+    "rationale": "27018 A.11.13 requires that pre-used data storage is sanitized before re-allocation to prevent access to prior tenant's PII; 27701-6.6.4 (system and application access control) addresses preventing unauthorized access but does not specifically cover storage re-use in multi-tenant cloud environments."
+  },
+  {
+    "source": "27018-A.12.1",
+    "target": "27701-8.5.2",
+    "relationship": "equivalent",
+    "rationale": "Both require the processor to document and disclose the geographical locations (countries/regions) where PII is or may be stored or processed, enabling the controller to assess transfer risks."
+  },
+  {
+    "source": "27018-A.12.1",
+    "target": "27701-8.5.3",
+    "relationship": "equivalent",
+    "rationale": "Both require maintaining records of which countries and jurisdictions hold or process the PII, directly mapping the geographic location disclosure requirement to the records obligation."
+  },
+  {
+    "source": "27018-A.12.2",
+    "target": "27701-8.5.1",
+    "relationship": "equivalent",
+    "rationale": "Both require establishing a legal basis or mechanism for any cross-border transfer of PII, ensuring that international transfers comply with applicable privacy law and contractual obligations."
+  },
+  {
+    "source": "27018-A.12.2",
+    "target": "27701-7.5.1",
+    "relationship": "related",
+    "rationale": "27018 A.12.2 covers the processor's obligation to identify the legal basis for PII transfer; 27701-7.5.1 covers the same obligation from the controller perspective, making them mirror requirements for different roles in the same transfer chain."
+  },
+  {
+    "source": "27018-A.3.2",
+    "target": "27701-7.2.3",
+    "relationship": "related",
+    "rationale": "27018 A.3.2 prohibits marketing/advertising use by the processor without PII principal consent; 27701-7.2.3 (from the controller side) requires determining when and how consent must be obtained before processing, including for marketing purposes."
+  },
+  {
+    "source": "27018-A.2.1",
+    "target": "27701-8.3.1",
+    "relationship": "equivalent",
+    "rationale": "Both require the PII processor to assist in fulfilling obligations to PII principals (data subjects), including responding to subject access requests and other rights, with 27018 framing this as a cooperation obligation and 27701 as a formal assistance obligation."
+  },
+  {
+    "source": "27018-A.10.1",
+    "target": "27701-5.6.1",
+    "relationship": "related",
+    "rationale": "27018 A.10.1 (breach notification) requires an operational response; 27701-5.6.1 (operational planning and control) requires that operational processes for PII protection — including incident response — are planned and controlled, providing the PIMS management-system context for breach notification."
+  },
+  {
+    "source": "27018-A.6.1",
+    "target": "27701-7.3.4",
+    "relationship": "related",
+    "rationale": "27018 A.6.1 requires the processor to notify the controller of disclosure requests from law enforcement; 27701-7.3.4 (from the controller side) requires mechanisms for PII principals to exercise rights, but both ultimately support the principal's right to know about disclosures of their data."
+  },
+  {
+    "source": "27018-A.11.4",
+    "target": "27701-6.8.2",
+    "relationship": "related",
+    "rationale": "27018 A.11.4 (protecting media leaving premises) aligns with 27701-6.8.2 (equipment security) which addresses secure handling of equipment including media outside the organization's physical perimeter."
+  },
+  {
+    "source": "27018-A.11.3",
+    "target": "27701-6.9.3",
+    "relationship": "related",
+    "rationale": "27018 A.11.3 requires logging of data restoration operations; 27701-6.9.3 (backup) requires that backup and restoration procedures protect PII integrity and confidentiality, providing the management-system control within which restoration logging applies."
+  },
+  {
+    "source": "27018-A.10.2",
+    "target": "27701-5.5.5",
+    "relationship": "subset",
+    "rationale": "27018 A.10.2 requires retention of administrative security policies; 27701-5.5.5 (documented information) requires control of documented information within the PIMS, which subsumes all retention requirements for PIMS documentation."
+  },
+  {
+    "source": "27018-A.11.2",
+    "target": "27701-6.6.3",
+    "relationship": "related",
+    "rationale": "27018 A.11.2 restricts hardcopy creation of PII; 27701-6.6.3 (user responsibilities) requires users to follow information-handling procedures, which should encompass restrictions on creating unnecessary PII copies."
+  },
+  {
+    "source": "27018-A.11.8",
+    "target": "27701-5.4.1",
+    "relationship": "related",
+    "rationale": "Unique user ID requirements in 27018 A.11.8 support accountability tracking that feeds into the privacy risk assessment process required by 27701-5.4.1, where the ability to attribute actions to individuals is a risk mitigation measure."
+  },
+  {
+    "source": "27018-A.12.1",
+    "target": "27701-7.5.2",
+    "relationship": "related",
+    "rationale": "27018 A.12.1 (geographical location of PII) is the processor-side disclosure of where PII is stored; 27701-7.5.2 is the controller-side obligation to document countries and international organizations to which PII can be transferred — both support the same transfer-transparency goal."
+  },
+  {
+    "source": "27018-A.3.1",
+    "target": "27701-7.4.2",
+    "relationship": "related",
+    "rationale": "27018 A.3.1 (processor purpose limitation) corresponds to 27701-7.4.2 (limit processing from the controller side), both implementing the privacy-by-design principle of processing PII only for specified purposes."
+  },
+  {
+    "source": "27018-A.5.1",
+    "target": "27701-7.4.6",
+    "relationship": "equivalent",
+    "rationale": "Both require secure handling and deletion of temporary files containing PII — 27018 A.5.1 from the cloud processor perspective and 27701-7.4.6 from the controller perspective — directly parallel controls at different role levels."
+  },
+  {
+    "source": "27018-A.10.3",
+    "target": "27701-7.4.8",
+    "relationship": "related",
+    "rationale": "27018 A.10.3 (PII return, transfer and disposal at contract end) is the processor obligation; 27701-7.4.8 (disposal) is the controller obligation to ensure secure disposal — they are mirror obligations applying the same disposal requirement to different roles."
+  },
+  {
+    "source": "27018-A.11.6",
+    "target": "27701-6.10.2",
+    "relationship": "equivalent",
+    "rationale": "Both require security controls for PII transmitted over networks, with 27018 A.11.6 specifying encryption over public data-transmission networks and 27701-6.10.2 providing PIMS-extended guidance on information transfer security."
+  },
+  {
+    "source": "27018-A.11.7",
+    "target": "27701-6.9.1",
+    "relationship": "subset",
+    "rationale": "27018 A.11.7 addresses secure disposal of hardcopy PII materials in cloud operations; 27701-6.9.1 (operational procedures and responsibilities) provides the broader operational management framework within which hardcopy disposal procedures must be defined."
+  },
+  {
+    "source": "27018-A.6.2",
+    "target": "27701-7.5.4",
+    "relationship": "equivalent",
+    "rationale": "Both require maintaining records of PII disclosures to third parties — 27018 A.6.2 from the processor perspective and 27701-7.5.4 from the controller perspective — providing equivalent accountability at different roles in the processing chain."
+  },
+  {
+    "source": "27018-A.11.9",
+    "target": "27701-6.6.2",
+    "relationship": "subset",
+    "rationale": "27018 A.11.9 requires a current list of authorized users for PII access as part of cloud access governance; 27701-6.6.2 mandates formal user access management processes that encompass maintaining such authorization records."
+  },
+  {
+    "source": "27018-A.11.13",
+    "target": "27701-6.5.3",
+    "relationship": "subset",
+    "rationale": "27018 A.11.13 requires sanitization of pre-used storage before reuse to prevent access to prior PII; 27701-6.5.3 (media handling) covers media disposal and re-use broadly, with 27018 adding the cloud multi-tenancy context."
+  },
+  {
+    "source": "27018-A.8.1",
+    "target": "27701-6.12.1",
+    "relationship": "related",
+    "rationale": "27018 A.8.1 (disclosure of sub-contracted PII processing) supports the supplier relationship transparency requirement in 27701-6.12.1, which requires that information security and privacy requirements be addressed in supplier agreements."
+  },
+  {
+    "source": "27018-A.11.11",
+    "target": "27701-6.12.1",
+    "relationship": "equivalent",
+    "rationale": "Both require that processing arrangements with service providers/sub-processors are governed by formal contracts that include appropriate privacy and security requirements."
+  },
+  {
+    "source": "27018-A.10.1",
+    "target": "27701-6.13.1",
+    "relationship": "subset",
+    "rationale": "27018 A.10.1 specifies breach notification to the customer for PII-related incidents in cloud environments; 27701-6.13.1 provides the full PIMS incident management framework including reporting obligations that encompasses 27018's notification requirement."
+  }
+]

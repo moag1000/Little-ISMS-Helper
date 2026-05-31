@@ -1,0 +1,356 @@
+[
+  {
+    "source": "MHC-01.a",
+    "target": "A.8.24",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-01.a (cryptographic inventory of all algorithms, key lengths, implementations) partially overlaps A.8.24 (use and management of cryptography) — A.8.24 requires cryptographic policy and key management but does not mandate a structured PQC-readiness inventory."
+  },
+  {
+    "source": "MHC-01.b",
+    "target": "A.8.24",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-01.b (continuous monitoring of PQC state-of-the-art / NIST PQC finalisation tracking) goes beyond A.8.24, which contains no quantum-readiness monitoring obligation."
+  },
+  {
+    "source": "MHC-01.c",
+    "target": "A.8.24",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-01.c (deployment of hybrid cryptography models combining classical + PQC algorithms) is not required by A.8.24; ISO 27001 is algorithm-neutral and demands no PQC migration path."
+  },
+  {
+    "source": "MHC-01.d",
+    "target": "A.8.24",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-01.d (defined quantum-threat trigger-events, transition roadmap, success criteria, annual review cadence) is a PQC migration governance artefact not required anywhere in ISO 27001:2022 Annex A."
+  },
+  {
+    "source": "MHC-02.a",
+    "target": "A.5.21",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-02.a (automated SBOM generation in CI pipelines in SPDX/CycloneDX format for all self-developed artefacts) partially overlaps A.5.21 (managing security in the ICT supply chain) — A.5.21 covers supply chain risk management but does not mandate machine-readable SBOMs."
+  },
+  {
+    "source": "MHC-02.b",
+    "target": "A.5.20",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-02.b (contractual SBOM delivery requirement from critical software suppliers) extends A.5.20 (addressing security in supplier agreements) beyond what A.5.20 requires; CRA Annex I Part II makes this legally binding under EU law."
+  },
+  {
+    "source": "MHC-02.c",
+    "target": "A.8.8",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-02.c (automated vulnerability correlation against CVE/EUVD/OSV databases triggered by SBOM) requires real-time SBOM-driven vuln correlation; A.8.8 covers vulnerability management but imposes no SBOM-correlated scanning obligation."
+  },
+  {
+    "source": "MHC-02.d",
+    "target": "A.8.4",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-02.d (SLSA Level 3+ build provenance for critical artefacts) provides cryptographic build attestation not covered by A.8.4 (access to source code), which addresses repository access control only."
+  },
+  {
+    "source": "MHC-03.a",
+    "target": "A.8.5",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-03.a (phishing-resistant MFA — FIDO2/WebAuthn/Passkeys — for all privileged accounts and externally reachable services) partially overlaps A.8.5 (secure authentication) — A.8.5 requires strong authentication but does not mandate origin-bound FIDO2/WebAuthn credentials."
+  },
+  {
+    "source": "MHC-03.b",
+    "target": "A.5.17",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-03.b (explicit exclusion and migration plan for SMS-MFA and push-notification MFA without Number-Matching for new deployments) goes beyond A.5.17 (authentication information management), which sets no prohibition on specific MFA methods."
+  },
+  {
+    "source": "MHC-03.c",
+    "target": "A.8.1",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-03.c (hardware-bound platform authenticator / TPM-bound credentials on endpoints) extends A.8.1 (user endpoint devices) beyond its scope; A.8.1 does not require hardware-attested credential binding."
+  },
+  {
+    "source": "MHC-03.d",
+    "target": "A.6.7",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-03.d (FIDO2 mandatory for VPN/SSO remote access) hardens A.6.7 (teleworking) with origin-binding; A.6.7 accepts any authentication measure and does not require phishing-resistant protocol-level assurance."
+  },
+  {
+    "source": "MHC-04.a",
+    "target": "A.5.15",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-04.a (SPIFFE/SPIRE workload identities for privileged service accounts, mTLS on 3-5 critical service-to-service paths — Maturity Stage 1) partially overlaps A.5.15 (access control) — A.5.15 covers identity-based access control but does not mandate SPIFFE-based workload identity."
+  },
+  {
+    "source": "MHC-04.b",
+    "target": "A.5.16",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-04.b (workload identity for all production microservices with short-lived tokens, ZTNA for privileged remote access — Maturity Stage 2) extends A.5.16 (identity management) beyond its scope; A.5.16 has no requirement for SPIFFE/SPIRE or service-mesh-based machine identity."
+  },
+  {
+    "source": "MHC-04.c",
+    "target": "A.8.2",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-04.c (per-request policy enforcement (PEP/PDP), JIT access, capability-scoped permissions — Maturity Stage 3) goes beyond A.8.2 (privileged access rights), which allows standing privileges with periodic review."
+  },
+  {
+    "source": "MHC-04.d",
+    "target": "A.8.22",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-04.d (identity-aware microsegmentation via service mesh — Maturity Stage 3) extends A.8.22 (segregation of networks), which accepts VLAN/subnet-based separation without identity-aware policy enforcement."
+  },
+  {
+    "source": "MHC-04.e",
+    "target": "UNVERIFIED-A.8.16",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-04.e (dedicated workload identities and audit trail for AI coding agents — Claude Code, Cursor, Copilot Workspace — correlated to initiating human identity) has no direct counterpart in ISO 27001:2022; A.8.16 (monitoring) is the closest anchor but does not cover agentic AI identity governance."
+  },
+  {
+    "source": "MHC-05.a",
+    "target": "A.8.16",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-05.a (UEBA with ML-driven baseline anomaly alerting) partially overlaps A.8.16 (monitoring activities) — A.8.16 requires monitoring but does not mandate ML-based behavioural baseline detection."
+  },
+  {
+    "source": "MHC-05.b",
+    "target": "A.5.7",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-05.b (MITRE ATT&CK-based detection rules with measurable coverage >= 60% of top-10 industry techniques, validated via DeTT&CT/Atomic Red Team) extends A.5.7 (threat intelligence) beyond collection into quantified detection coverage validation."
+  },
+  {
+    "source": "MHC-05.c",
+    "target": "A.8.16",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-05.c (kill-chain correlation across multiple events and time windows to detect beacon-less C2 and LotL binaries) is not required by A.8.16; ISO 27001 imposes no multi-hop event correlation or MITRE-coverage obligation."
+  },
+  {
+    "source": "MHC-05.d",
+    "target": "A.5.7",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-05.d (structured threat hunting as a dedicated function — PEAK/TaHiTI methodology, minimum 12 hypothesis-driven hunts per year) goes beyond A.5.7 (threat intelligence), which does not require proactive threat hunting."
+  },
+  {
+    "source": "MHC-05.e",
+    "target": "A.8.7",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-05.e (adversarial robustness testing of detection AI / ML models against evasion) has no equivalent in A.8.7 (protection against malware), which addresses signature-based and behavioural anti-malware without requiring adversarial ML robustness validation."
+  },
+  {
+    "source": "MHC-06.a",
+    "target": "A.8.27",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-06.a (signed base images from controlled registries, admission controller policies, automated image scans before deployment) partially overlaps A.8.27 (secure systems architecture principles) — A.8.27 covers architectural hardening but contains no container-specific image signing or admission control requirements."
+  },
+  {
+    "source": "MHC-06.b",
+    "target": "A.8.27",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-06.b (TEE/Secure Enclave deployment for high-protection-need workloads with remote attestation) goes beyond A.8.27; ISO 27001:2022 contains no Confidential Computing or hardware-attestation requirement."
+  },
+  {
+    "source": "MHC-06.c",
+    "target": "A.8.31",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-06.c (hardware-enforced isolation between dev/test/prod workloads via TEE/Namespace) extends A.8.31 (separation of development, testing and production environments), which accepts software-only separation."
+  },
+  {
+    "source": "MHC-06.d",
+    "target": "A.5.23",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-06.d (attested confidential VMs in cloud for cloud-operator insider-threat mitigation) goes beyond A.5.23 (information security for use of cloud services); A.5.23 does not require memory-encrypted confidential computing."
+  },
+  {
+    "source": "MHC-07.a",
+    "target": "A.8.22",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-07.a (documented separation concepts for data — tenant-specific encryption keys, logical or physical isolation) partially overlaps A.8.22 (segregation of networks) — A.8.22 covers network segregation but does not require tenant-specific key material."
+  },
+  {
+    "source": "MHC-07.b",
+    "target": "A.8.22",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-07.b (network isolation via tenant-specific VPCs, namespaces, and SDN rules) extends A.8.22 beyond typical VLAN separation to multi-tenant cloud-native isolation patterns not addressed by ISO 27001."
+  },
+  {
+    "source": "MHC-07.c",
+    "target": "A.5.23",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-07.c (regular/automated tests verifying tenant isolation and blast-radius limits, including side-channel assessments) extends A.5.23 (cloud services); ISO 27001 contains no requirement to run automated tenant-boundary penetration tests."
+  },
+  {
+    "source": "MHC-08.a",
+    "target": "A.8.13",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-08.a (3-2-1-1-0 model — three copies, two media types, one offsite, one immutable/offline, zero restore errors) partially overlaps A.8.13 (information backup) — A.8.13 requires backup but does not mandate immutability, air-gap, or a specific n-copy model."
+  },
+  {
+    "source": "MHC-08.b",
+    "target": "A.8.13",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-08.b (WORM / Object Lock with Compliance-Mode for immutable backups) goes beyond A.8.13; ISO 27001 backup controls accept logically access-controlled backups without requiring cryptographic write-once enforcement."
+  },
+  {
+    "source": "MHC-08.c",
+    "target": "A.8.13",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-08.c (separate IAM path for backup infrastructure — administrative isolation of backup accounts from production identity plane) is not required by A.8.13 and has no direct ISO 27001 counterpart at this specificity."
+  },
+  {
+    "source": "MHC-08.d",
+    "target": "A.8.13",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-08.d (quarterly restore tests with full documentation and zero-error SLA) tightens A.8.13 restore-test cadence from unspecified / annual to quarterly with documented zero-failure evidence."
+  },
+  {
+    "source": "MHC-08.e",
+    "target": "A.5.29",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-08.e (ransomware-resilient recovery from immutable backups meeting RTO/RPO targets) partially overlaps A.5.29 (information security during disruption) — A.5.29 covers continuity without mandating tamper-proof recovery media."
+  },
+  {
+    "source": "MHC-09.a",
+    "target": "A.8.29",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-09.a (SAST/DAST/SCA integrated in CI pipelines) partially overlaps A.8.29 (security testing in development and acceptance) — A.8.29 requires security testing but does not mandate specific tooling classes or minimum coverage thresholds."
+  },
+  {
+    "source": "MHC-09.b",
+    "target": "A.8.29",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-09.b (next-generation AI-augmented code scanning — GitHub Copilot Autofix, Snyk Code DeepCode AI, Semgrep Pro AI-Assist — with pre-merge block at High/Critical confidence >= 80% and KEV findings blocking immediately) goes beyond A.8.29; AI-assisted scanning with mandatory gate enforcement is not required by ISO 27001."
+  },
+  {
+    "source": "MHC-09.c",
+    "target": "A.8.8",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-09.c (daily vulnerability scans of running systems, not just on deployment) extends A.8.8 (management of technical vulnerabilities) beyond periodic scanning; ISO 27001 imposes no daily-scan cadence obligation."
+  },
+  {
+    "source": "MHC-09.d",
+    "target": "A.8.25",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-09.d (pre-commit hooks with AI code-audit rules and weekly AI code-audit reporting with trend tracking) extends A.8.25 (secure development lifecycle) beyond what ISO 27001 requires; AI-augmented pre-commit security gates are additive."
+  },
+  {
+    "source": "MHC-09.e",
+    "target": "UNVERIFIED-A.6.3",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-09.e (vibe-coded / AI-generated code designated as a separate risk category in the SoA) has no ISO 27001 counterpart; A.6.3 (information security awareness) is the nearest anchor but does not address AI-generated code risk categorisation in the SoA."
+  },
+  {
+    "source": "MHC-10.a",
+    "target": "A.5.36",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-10.a (Policy-as-Code formalisation in OPA/Rego or HashiCorp Sentinel integrated into CI pre-deploy checks) partially overlaps A.5.36 (compliance with policies, rules and standards) — A.5.36 requires compliance checking but does not mandate machine-executable policy engines."
+  },
+  {
+    "source": "MHC-10.b",
+    "target": "A.5.36",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-10.b (runtime policy enforcement via OPA/Sentinel with automated incident ticket generation on deviation) extends A.5.36; ISO 27001 accepts periodic manual compliance reviews and contains no real-time enforcement or automated ticketing requirement."
+  },
+  {
+    "source": "MHC-10.c",
+    "target": "A.8.9",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-10.c (continuous drift detection with automatic alerts for configuration deviations against baselines) goes beyond A.8.9 (configuration management), which accepts manual baseline reviews without requiring near-real-time drift alerting."
+  },
+  {
+    "source": "MHC-10.d",
+    "target": "A.5.35",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-10.d (real-time compliance dashboards with quantified deviation indicators) extends A.5.35 (independent review of information security) beyond scheduled audit cadence to continuous evidence collection — not required by ISO 27001."
+  },
+  {
+    "source": "MHC-10.e",
+    "target": "A.5.18",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-10.e (continuous access-rights drift detection and recertification monitoring beyond annual reviews) extends A.5.18 (access rights) — ISO 27001 permits periodic (e.g. annual) recertification; continuous real-time drift alerting is additive."
+  },
+  {
+    "source": "MHC-11.a",
+    "target": "A.5.24",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-11.a (SOAR platform with machine-executable playbooks for standard Tier-1 containment actions) partially overlaps A.5.24 (information security incident management planning and preparation) — A.5.24 requires IR planning but does not mandate automated machine-speed playbook execution."
+  },
+  {
+    "source": "MHC-11.b",
+    "target": "A.5.25",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-11.b (automated Tier-1 auto-triage and classification of events without human intervention) extends A.5.25 (assessment of and decision on information security events) — ISO 27001 does not require automated triage engines."
+  },
+  {
+    "source": "MHC-11.c",
+    "target": "A.5.26",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-11.c (full auto-containment achieving MTTC < 10 minutes for Tier-1 clear-signal incidents with human escalation only for ambiguous cases) extends A.5.26 (response to information security incidents) — ISO 27001 has no MTTC metric or automation requirement."
+  },
+  {
+    "source": "MHC-11.d",
+    "target": "UNVERIFIED-A.5.24",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-11.d (Mythos-specific playbooks for mass data exfiltration, parallel multi-vector attack, supply-chain compromise, credential-stuffing wave, MFA-fatigue) are scenario-specific IR playbooks not required by ISO 27001; A.5.24 covers planning without mandating these specific scenarios."
+  },
+  {
+    "source": "MHC-11.e",
+    "target": "UNVERIFIED-A.5.24",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-11.e (SOAR automation-layer hardening — signed trigger events, playbook audit trail, rate limits, human-in-the-loop for high-blast-radius actions, playbook definitions treated as source code) has no equivalent in ISO 27001 which does not address security of the IR toolchain itself."
+  },
+  {
+    "source": "MHC-11.f",
+    "target": "A.5.5",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-11.f (SOAR-automated preparation and dispatch of NIS2/DORA regulatory incident reports including out-of-hours coverage) extends A.5.5 (contact with authorities); ISO 27001 requires maintaining authority contacts but not automated regulatory notification pipelines."
+  },
+  {
+    "source": "MHC-12.a",
+    "target": "A.8.29",
+    "relationship": "partial_overlap",
+    "rationale": "MHC-12.a (threat-led penetration tests using external red teamers following real threat-intelligence scenarios — minimum annually for critical functions) partially overlaps A.8.29 (security testing in development and acceptance) — A.8.29 requires security testing but does not mandate external, threat-intelligence-driven TLPT."
+  },
+  {
+    "source": "MHC-12.b",
+    "target": "A.5.35",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-12.b (Mythos-specific TLPT scenarios — AI-assisted spear-phishing with deepfake voice, fragmented micro-step attack chains, parallel multi-vector attacks, supply-chain compromise, cloud API abuse via compromised service accounts) go beyond A.5.35 (independent review) — ISO 27001 contains no requirement for specific adversarial TTP scenarios."
+  },
+  {
+    "source": "MHC-12.c",
+    "target": "A.5.35",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-12.c (Purple Team exercises between TLPT cycles with ATT&CK coverage mapping and >= 90% closure rate SLA) extends A.5.35; ISO 27001 does not require Purple Team exercises or finding-closure-rate SLAs."
+  },
+  {
+    "source": "MHC-12.d",
+    "target": "A.8.29",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-12.d (continuous adversary emulation using BAS platforms — AttackIQ, SafeBreach, Picus — as interim validation between TLPT cycles) has no ISO 27001 equivalent; A.8.29 does not mandate continuous automated adversary emulation."
+  },
+  {
+    "source": "MHC-13.a",
+    "target": "A.5.16",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-13.a (Harness-Audit — prompts, tool definitions, retrieval pipelines and escalation logic subject to code-review discipline, versioning, signed releases, pre-production pen tests against Prompt Injection and Tool Confused Deputy) has no ISO 27001 counterpart; A.5.16 (identity management) covers identity lifecycle but not AI harness code governance."
+  },
+  {
+    "source": "MHC-13.b",
+    "target": "A.8.2",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-13.b (Blast-Radius-Limits — capability scoping per tool call, rate limits per agent identity, circuit breakers, human-approval gates for irreversible actions) goes beyond A.8.2 (privileged access rights), which covers standing privilege review without requiring per-invocation capability scoping for AI agents."
+  },
+  {
+    "source": "MHC-13.c",
+    "target": "A.8.16",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-13.c (Human-Override requirements — every agent session with a named human owner and kill-switch, full audit trail of all agent actions correlated to initiating identity, retention >= 12 months) extends A.8.16 (monitoring) — ISO 27001 does not require agent-session ownership or agent audit-trail retention targets."
+  },
+  {
+    "source": "MHC-13.d",
+    "target": "A.5.21",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-13.d (Supply-Chain inventory for MCP servers, VS Code / JetBrains extensions with AI function, agentic skills, external agent frameworks) extends A.5.21 (ICT supply chain); ISO 27001 has no control covering AI extension/plugin inventory as a supply-chain vector."
+  },
+  {
+    "source": "MHC-13.e",
+    "target": "A.8.27",
+    "relationship": "superset",
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-13.e (Pre-Production checks before agent deployment — scope definition, threat model, rollback plan, monitoring plan; 100% of production-grade coding agents with documented threat model; Mean Time to Revoke < 5 minutes) maps partially to A.8.27 (secure systems architecture) but ISO 27001 contains no AI agent-specific pre-deployment governance gate requirement."
+  }
+]

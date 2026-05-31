@@ -1,0 +1,584 @@
+[
+  {
+    "source": "7.2.1",
+    "target": "A.1.2.2",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require identifying and documenting the purpose of PII processing with no substantive change to the control requirement."
+  },
+  {
+    "source": "7.2.2",
+    "target": "A.1.2.3",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require identifying the lawful basis for PII processing; wording unchanged."
+  },
+  {
+    "source": "7.2.3",
+    "target": "A.1.2.4",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require determining when and how consent is to be obtained; substantively unchanged."
+  },
+  {
+    "source": "7.2.4",
+    "target": "A.1.2.5",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require obtaining and recording consent; no material change to the control requirement."
+  },
+  {
+    "source": "7.2.5",
+    "target": "A.1.2.6",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; privacy impact assessment requirement is substantively unchanged between editions."
+  },
+  {
+    "source": "7.2.6",
+    "target": "A.1.2.7",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require written contracts with PII processors; 2025 version explicitly references Table A.2 for processor controls, slight strengthening but same core requirement."
+  },
+  {
+    "source": "7.2.7",
+    "target": "A.1.2.8",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; joint PII controller obligations are substantively unchanged between editions."
+  },
+  {
+    "source": "7.2.8",
+    "target": "A.1.2.9",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; records of PII processing requirement is unchanged; title aligned to match ISO 27002:2022 language."
+  },
+  {
+    "source": "7.3.1",
+    "target": "A.1.3.2",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require determining and fulfilling obligations to PII principals; substantively unchanged."
+  },
+  {
+    "source": "7.3.2",
+    "target": "A.1.3.3",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require determining information to be provided to PII principals; no material change."
+  },
+  {
+    "source": "7.3.3",
+    "target": "A.1.3.4",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require providing information to PII principals; substantively unchanged."
+  },
+  {
+    "source": "7.3.4",
+    "target": "A.1.3.5",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require a mechanism to modify or withdraw consent; no material change."
+  },
+  {
+    "source": "7.3.5",
+    "target": "A.1.3.6",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require a mechanism to object to PII processing; substantively unchanged."
+  },
+  {
+    "source": "7.3.6",
+    "target": "A.1.3.7",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both cover access, correction, and/or erasure rights; no material change to the control requirement."
+  },
+  {
+    "source": "7.3.7",
+    "target": "A.1.3.8",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both address obligation to inform third parties of corrections/erasures; substantively unchanged."
+  },
+  {
+    "source": "7.3.8",
+    "target": "A.1.3.9",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require providing a copy of PII processed upon request; no material change."
+  },
+  {
+    "source": "7.3.9",
+    "target": "A.1.3.10",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require handling requests from PII principals in a timely manner; substantively unchanged."
+  },
+  {
+    "source": "7.3.10",
+    "target": "A.1.3.11",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both address automated decision making obligations; substantively unchanged."
+  },
+  {
+    "source": "7.4.1",
+    "target": "A.1.4.2",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require limiting PII collection to the minimum necessary; no material change."
+  },
+  {
+    "source": "7.4.2",
+    "target": "A.1.4.3",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require limiting PII processing to the stated purposes; substantively unchanged."
+  },
+  {
+    "source": "7.4.3",
+    "target": "A.1.4.4",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require maintaining PII accuracy and quality; 2025 adds explicit lifecycle emphasis but same core requirement."
+  },
+  {
+    "source": "7.4.4",
+    "target": "A.1.4.5",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require defining PII minimisation objectives and mechanisms; substantively unchanged."
+  },
+  {
+    "source": "7.4.5",
+    "target": "A.1.4.6",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require de-identification and deletion at end of processing; 2025 adds explicit ISO/IEC 20889 reference but core requirement unchanged."
+  },
+  {
+    "source": "7.4.6",
+    "target": "A.1.4.7",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require timely destruction of temporary files holding PII; substantively unchanged."
+  },
+  {
+    "source": "7.4.7",
+    "target": "A.1.4.8",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require defining and enforcing PII retention periods; no material change."
+  },
+  {
+    "source": "7.4.8",
+    "target": "A.1.4.9",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require secure disposal of PII; substantively unchanged."
+  },
+  {
+    "source": "7.4.9",
+    "target": "A.1.4.10",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require controls on PII transmission to prevent interception; no material change."
+  },
+  {
+    "source": "7.5.1",
+    "target": "A.1.5.2",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require identifying and documenting the lawful basis for cross-jurisdiction PII transfers; substantively unchanged."
+  },
+  {
+    "source": "7.5.2",
+    "target": "A.1.5.3",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require maintaining a register of countries/organisations to which PII may be transferred; substantively unchanged."
+  },
+  {
+    "source": "7.5.3",
+    "target": "A.1.5.4",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require keeping records of PII transfers between jurisdictions; no material change."
+  },
+  {
+    "source": "7.5.4",
+    "target": "A.1.5.5",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require maintaining records of PII disclosures to third parties; 2025 adds clearer distinction between routine and exceptional disclosures."
+  },
+  {
+    "source": "8.2.1",
+    "target": "A.2.2.2",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require a formal customer agreement governing the processor's PII processing activities; substantively unchanged."
+  },
+  {
+    "source": "8.2.2",
+    "target": "A.2.2.3",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both restrict the processor to processing PII only for the customer's (controller's) stated purposes; no material change."
+  },
+  {
+    "source": "8.2.3",
+    "target": "A.2.2.4",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both prohibit use of PII for marketing or advertising without explicit customer consent; substantively unchanged."
+  },
+  {
+    "source": "8.2.4",
+    "target": "A.2.2.5",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require the processor to inform the controller when an instruction would infringe applicable law; no material change."
+  },
+  {
+    "source": "8.2.5",
+    "target": "A.2.2.6",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require the processor to support the controller in meeting its obligations; substantively unchanged."
+  },
+  {
+    "source": "8.2.6",
+    "target": "A.2.2.7",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require the processor to maintain records related to its PII processing activities; no material change."
+  },
+  {
+    "source": "8.3.1",
+    "target": "A.2.3.2",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require processors to enable controllers to meet their obligations to PII principals; substantively unchanged."
+  },
+  {
+    "source": "8.4.1",
+    "target": "A.2.4.2",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require timely destruction of temporary files containing PII; substantively unchanged."
+  },
+  {
+    "source": "8.4.2",
+    "target": "A.2.4.3",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require secure return, transfer or disposal of PII at end of contract; no material change."
+  },
+  {
+    "source": "8.4.3",
+    "target": "A.2.4.4",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require controls on PII transmission by the processor to prevent interception; substantively unchanged."
+  },
+  {
+    "source": "8.5.1",
+    "target": "A.2.5.2",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require the processor to identify the lawful basis before transferring PII across jurisdictions; no material change."
+  },
+  {
+    "source": "8.5.2",
+    "target": "A.2.5.3",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require maintaining a register of countries/organisations to which the processor may transfer PII; substantively unchanged."
+  },
+  {
+    "source": "8.5.3",
+    "target": "A.2.5.4",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require the processor to maintain records of PII disclosures to third parties; no material change."
+  },
+  {
+    "source": "8.5.4",
+    "target": "A.2.5.5",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require the processor to notify the controller of PII disclosure requests from authorities; substantively unchanged."
+  },
+  {
+    "source": "8.5.5",
+    "target": "A.2.5.6",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require the processor to handle legally binding PII disclosure requests appropriately; no material change."
+  },
+  {
+    "source": "8.5.6",
+    "target": "A.2.5.7",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require disclosure of subcontractors used to process PII; substantively unchanged."
+  },
+  {
+    "source": "8.5.7",
+    "target": "A.2.5.8",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require the processor to apply the same obligations when engaging subcontractors; no material change."
+  },
+  {
+    "source": "8.5.8",
+    "target": "A.2.5.9",
+    "relationship": "equivalent",
+    "rationale": "Renumbered 1:1; both require the processor to notify the controller before changing a subcontractor; substantively unchanged."
+  },
+  {
+    "source": "6.2.1.1",
+    "target": "A.3.3",
+    "relationship": "subset",
+    "rationale": "Information security policies sub-clause 6.2.1.1 (policies for information security) is subsumed into the consolidated A.3.3 control; 2025 merges 6.2.1.1 and 6.2.1.2 into one unified policy control."
+  },
+  {
+    "source": "6.2.1.2",
+    "target": "A.3.3",
+    "relationship": "subset",
+    "rationale": "Review of policies sub-clause 6.2.1.2 is merged with 6.2.1.1 into the single consolidated A.3.3 Information Security Policies control in 2025."
+  },
+  {
+    "source": "6.3",
+    "target": "A.3.4",
+    "relationship": "subset",
+    "rationale": "Clause 6.3 organisation of information security (privacy roles/responsibilities) is condensed into the single A.3.4 control; 2025 removes sub-clauses without PII-specific guidance."
+  },
+  {
+    "source": "6.4",
+    "target": "A.3.17",
+    "relationship": "subset",
+    "rationale": "Human resource security guidance in 6.4, particularly awareness and confidentiality, maps primarily to A.3.17 (security awareness/training) and A.3.18 (confidentiality agreements); non-PII-specific sub-clauses dropped."
+  },
+  {
+    "source": "6.4",
+    "target": "A.3.18",
+    "relationship": "subset",
+    "rationale": "The confidentiality/non-disclosure aspect of 6.4 (human resource security) maps to A.3.18 in 2025; the broader HR security items without PII specificity were removed."
+  },
+  {
+    "source": "6.5",
+    "target": "A.3.5",
+    "relationship": "subset",
+    "rationale": "Asset management clause 6.5 PII classification guidance maps to A.3.5 (Classification of Information) in 2025; labelling aspects map to A.3.6."
+  },
+  {
+    "source": "6.5",
+    "target": "A.3.6",
+    "relationship": "subset",
+    "rationale": "Asset labelling sub-requirements within 6.5 (asset management) are extracted into the dedicated A.3.6 (Labelling of Information) control in 2025."
+  },
+  {
+    "source": "6.6",
+    "target": "A.3.8",
+    "relationship": "subset",
+    "rationale": "Access control clause 6.6 identity management guidance maps to A.3.8 (Identity Management) in 2025; access rights aspects map to A.3.9."
+  },
+  {
+    "source": "6.6",
+    "target": "A.3.9",
+    "relationship": "subset",
+    "rationale": "Access rights sub-requirements within 6.6 (access control) are extracted into the dedicated A.3.9 (Access Rights) control in 2025."
+  },
+  {
+    "source": "6.6",
+    "target": "A.3.23",
+    "relationship": "subset",
+    "rationale": "Secure authentication sub-requirements in 6.6 (access control, user access management) map to the dedicated A.3.23 (Secure Authentication) control in 2025."
+  },
+  {
+    "source": "6.7",
+    "target": "A.3.26",
+    "relationship": "equivalent",
+    "rationale": "Cryptography clause 6.7 maps directly to A.3.26 (Use of Cryptography); the PII-specific cryptographic requirements are substantively unchanged in 2025."
+  },
+  {
+    "source": "6.8",
+    "target": "A.3.19",
+    "relationship": "subset",
+    "rationale": "Physical and environmental security clause 6.8 clear desk/screen requirements map to A.3.19 in 2025; equipment disposal aspects map to A.3.21."
+  },
+  {
+    "source": "6.8",
+    "target": "A.3.20",
+    "relationship": "subset",
+    "rationale": "Storage media handling sub-requirements in 6.8 (physical and environmental security) map to the dedicated A.3.20 (Storage Media) control in 2025."
+  },
+  {
+    "source": "6.8",
+    "target": "A.3.21",
+    "relationship": "subset",
+    "rationale": "Secure disposal of equipment sub-requirements in 6.8 map to the dedicated A.3.21 (Secure Disposal or Re-use of Equipment) control in 2025."
+  },
+  {
+    "source": "6.8",
+    "target": "A.3.22",
+    "relationship": "subset",
+    "rationale": "User endpoint device sub-requirements in 6.8 (physical and environmental security) map to the dedicated A.3.22 (User Endpoint Devices) control in 2025."
+  },
+  {
+    "source": "6.9",
+    "target": "A.3.24",
+    "relationship": "subset",
+    "rationale": "Operations security clause 6.9 backup requirements for PII map to A.3.24 (Information Backup) in 2025; logging aspects map to A.3.25."
+  },
+  {
+    "source": "6.9",
+    "target": "A.3.25",
+    "relationship": "subset",
+    "rationale": "Logging sub-requirements in 6.9 (operations security) map to the dedicated A.3.25 (Logging) control in 2025."
+  },
+  {
+    "source": "6.10",
+    "target": "A.3.7",
+    "relationship": "equivalent",
+    "rationale": "Communications security clause 6.10 secure information transfer requirements map to A.3.7 (Information Transfer) in 2025; substantively unchanged for PII-specific aspects."
+  },
+  {
+    "source": "6.11",
+    "target": "A.3.27",
+    "relationship": "subset",
+    "rationale": "Systems acquisition/development/maintenance clause 6.11 secure development lifecycle aspects map to A.3.27 in 2025; application security maps to A.3.28."
+  },
+  {
+    "source": "6.11",
+    "target": "A.3.28",
+    "relationship": "subset",
+    "rationale": "Application security requirements in 6.11 (system development) map to the dedicated A.3.28 (Application Security Requirements) control in 2025."
+  },
+  {
+    "source": "6.11",
+    "target": "A.3.29",
+    "relationship": "subset",
+    "rationale": "Secure architecture sub-requirements in 6.11 (system acquisition and development) map to the dedicated A.3.29 (Secure System Architecture and Engineering Principles) control in 2025."
+  },
+  {
+    "source": "6.11",
+    "target": "A.3.30",
+    "relationship": "subset",
+    "rationale": "Outsourced development sub-requirements within 6.11 map to the dedicated A.3.30 (Outsourced Development) control in 2025."
+  },
+  {
+    "source": "6.11",
+    "target": "A.3.31",
+    "relationship": "subset",
+    "rationale": "Test information protection sub-requirements in 6.11 (system development) map to the dedicated A.3.31 (Test Information) control in 2025."
+  },
+  {
+    "source": "6.12",
+    "target": "A.3.10",
+    "relationship": "equivalent",
+    "rationale": "Supplier relationships clause 6.12 PII-specific supplier agreement requirements map to A.3.10 (Addressing Information Security within Supplier Agreements) in 2025; substantively unchanged."
+  },
+  {
+    "source": "6.13.1.1",
+    "target": "A.3.11",
+    "relationship": "subset",
+    "rationale": "Incident management responsibilities and procedures (6.13.1.1) contributes to A.3.11 (Incident Management Planning and Preparation); 2025 merges planning/preparation sub-clauses into one control."
+  },
+  {
+    "source": "6.13.1.2",
+    "target": "A.3.11",
+    "relationship": "subset",
+    "rationale": "Reporting information security events (6.13.1.2) is subsumed into A.3.11 (Incident Management Planning and Preparation) in the consolidated 2025 structure."
+  },
+  {
+    "source": "6.13.1.3",
+    "target": "A.3.11",
+    "relationship": "subset",
+    "rationale": "Reporting information security weaknesses (6.13.1.3) is merged into A.3.11 (Incident Management Planning and Preparation) in 2025."
+  },
+  {
+    "source": "6.13.1.4",
+    "target": "A.3.12",
+    "relationship": "subset",
+    "rationale": "Assessment and decisions on information security events (6.13.1.4) maps to A.3.12 (Response to Information Security Incidents) in the consolidated 2025 response control."
+  },
+  {
+    "source": "6.13.1.5",
+    "target": "A.3.12",
+    "relationship": "subset",
+    "rationale": "Response to information security incidents (6.13.1.5) maps directly to A.3.12 in 2025; the core response requirement is unchanged."
+  },
+  {
+    "source": "6.13.1.6",
+    "target": "A.3.12",
+    "relationship": "subset",
+    "rationale": "Learning from information security incidents (6.13.1.6) is incorporated into A.3.12 (Response to Information Security Incidents) in the 2025 consolidated control."
+  },
+  {
+    "source": "6.13.1.7",
+    "target": "A.3.12",
+    "relationship": "subset",
+    "rationale": "Collection of evidence (6.13.1.7) is merged into A.3.12 (Response to Information Security Incidents) in the 2025 consolidated structure."
+  },
+  {
+    "source": "6.14",
+    "target": "UNVERIFIED-A.3.11",
+    "relationship": "related",
+    "rationale": "Business continuity management clause 6.14 has no direct 1:1 control in 2025 A.3; it was dropped as a dedicated control since ISO 27701:2025 relies on ISO 27001:2022 BCM controls directly — UNVERIFIED pending Annex F review."
+  },
+  {
+    "source": "6.15",
+    "target": "A.3.13",
+    "relationship": "subset",
+    "rationale": "Compliance clause 6.15 legal/regulatory requirements aspects map to A.3.13 (Legal, Statutory, Regulatory and Contractual Requirements) in 2025."
+  },
+  {
+    "source": "6.15",
+    "target": "A.3.14",
+    "relationship": "subset",
+    "rationale": "Records protection sub-requirements within 6.15 (compliance) map to the dedicated A.3.14 (Protection of Records) control in 2025."
+  },
+  {
+    "source": "6.15",
+    "target": "A.3.15",
+    "relationship": "subset",
+    "rationale": "Independent review requirements within 6.15 (compliance) map to the dedicated A.3.15 (Independent Review of Information Security) control in 2025."
+  },
+  {
+    "source": "6.15",
+    "target": "A.3.16",
+    "relationship": "subset",
+    "rationale": "Compliance with policies and standards requirements within 6.15 map to the dedicated A.3.16 (Compliance with Policies, Rules and Standards) control in 2025."
+  },
+  {
+    "source": "NONE",
+    "target": "A.1.2.1",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.1.2.1 is the section-level heading control for 'Conditions for Collection and Processing' in Table A.1; no direct predecessor in 2019 (structural artefact of the standalone format)."
+  },
+  {
+    "source": "NONE",
+    "target": "A.1.3.1",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.1.3.1 is the section-level heading control for 'Obligations to PII Principals' in Table A.1; no direct predecessor in 2019 (structural artefact)."
+  },
+  {
+    "source": "NONE",
+    "target": "A.1.4.1",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.1.4.1 is the section-level heading control for 'Privacy by Design and Privacy by Default' in Table A.1; no direct predecessor in 2019 (structural artefact)."
+  },
+  {
+    "source": "NONE",
+    "target": "A.1.5.1",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.1.5.1 is the section-level heading control for 'PII Sharing, Transfer and Disclosure' in Table A.1; no direct predecessor in 2019 (structural artefact)."
+  },
+  {
+    "source": "NONE",
+    "target": "A.2.2.1",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.2.2.1 is the section-level heading control for 'Conditions for Collection and Processing' in Table A.2; no direct predecessor in 2019 (structural artefact)."
+  },
+  {
+    "source": "NONE",
+    "target": "A.2.3.1",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.2.3.1 is the section-level heading control for 'Obligations to PII Principals' in Table A.2; no direct predecessor in 2019 (structural artefact)."
+  },
+  {
+    "source": "NONE",
+    "target": "A.2.4.1",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.2.4.1 is the section-level heading control for 'Privacy by Design and Privacy by Default' in Table A.2; no direct predecessor in 2019 (structural artefact)."
+  },
+  {
+    "source": "NONE",
+    "target": "A.2.5.1",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.2.5.1 is the section-level heading control for 'PII Sharing, Transfer and Disclosure' in Table A.2; no direct predecessor in 2019 (structural artefact)."
+  },
+  {
+    "source": "5.x-extended",
+    "target": "Clauses-4-10",
+    "relationship": "superset",
+    "rationale": "The 2019 PIMS requirements extending ISO 27001:2013 (Clause 5) are replaced by full standalone management system Clauses 4-10 in 2025, which now embed privacy governance requirements directly without requiring ISO 27001 as a prerequisite."
+  },
+  {
+    "source": "6.1",
+    "target": "NONE",
+    "relationship": "additive",
+    "rationale": "ADDITIVE (reverse) — ISO 27701:2019 Clause 6.1 (general guidance on ISO 27002 applicability) has no successor in 2025 because the standalone PIMS no longer references ISO 27002 as a normative prerequisite; subsumed by the standalone structure."
+  },
+  {
+    "source": "NONE",
+    "target": "A.3.1",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.3.1 is the section-level entry for the Shared Security Controls table; the concept of shared controller/processor security controls was implicit in 2019 Clause 6 but not structured as a distinct normative table."
+  },
+  {
+    "source": "NONE",
+    "target": "A.3.2",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in 2025; A.3.2 is the sub-section heading for shared controls; structural artefact of the new standalone table format with no 2019 predecessor."
+  }
+]

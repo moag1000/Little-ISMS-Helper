@@ -1,0 +1,818 @@
+[
+  {
+    "source": "27017-5.1.1",
+    "source_title": "Policies for information security (cloud guidance)",
+    "target": "A.5.1",
+    "target_title": "Policies for information security",
+    "relationship": "subset",
+    "rationale": "27017 cl.5.1.1 adds cloud-service-specific policy implementation guidance for CSP/CSC, covering a narrower cloud-context subset of the broader A.5.1 requirement."
+  },
+  {
+    "source": "27017-5.1.2",
+    "source_title": "Review of the policies for information security (cloud guidance)",
+    "target": "A.5.1",
+    "target_title": "Policies for information security",
+    "relationship": "subset",
+    "rationale": "27017 cl.5.1.2 adds cloud-specific review guidance; the review obligation is a sub-element of A.5.1 which covers the full policy lifecycle."
+  },
+  {
+    "source": "27017-6.1.1",
+    "source_title": "Information security roles and responsibilities (cloud guidance)",
+    "target": "A.5.2",
+    "target_title": "Information security roles and responsibilities",
+    "relationship": "subset",
+    "rationale": "27017 cl.6.1.1 provides cloud-specific role assignment guidance (CSP vs CSC split); A.5.2 sets the full organisational RBAC requirement."
+  },
+  {
+    "source": "27017-6.1.2",
+    "source_title": "Segregation of duties (cloud guidance)",
+    "target": "A.5.3",
+    "target_title": "Segregation of duties",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.6.1.2 and A.5.3 both require segregation of duties; the cloud guidance adds virtualisation context but is co-extensive at the control level."
+  },
+  {
+    "source": "27017-6.1.3",
+    "source_title": "Contact with authorities (cloud guidance)",
+    "target": "A.5.5",
+    "target_title": "Contact with authorities",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.6.1.3 restates the authority-contact requirement with cloud-service context; maps 1:1 to A.5.5."
+  },
+  {
+    "source": "27017-6.1.4",
+    "source_title": "Contact with special interest groups (cloud guidance)",
+    "target": "A.5.6",
+    "target_title": "Contact with special interest groups",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.6.1.4 maps directly to A.5.6; cloud guidance adds CSP-forum participation but control intent is co-extensive."
+  },
+  {
+    "source": "27017-6.1.5",
+    "source_title": "Information security in project management (cloud guidance)",
+    "target": "A.5.8",
+    "target_title": "Information security in project management",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.6.1.5 provides cloud-context project-security guidance that maps co-extensively to A.5.8."
+  },
+  {
+    "source": "27017-CLD.6.3.1",
+    "source_title": "Shared roles and responsibilities within a cloud computing environment",
+    "target": "A.5.2",
+    "target_title": "Information security roles and responsibilities",
+    "relationship": "superset",
+    "rationale": "CLD.6.3.1 is a cloud-additive control requiring explicit shared-responsibility matrices between CSP and CSC; A.5.2 covers general role assignment but not the CSP/CSC split specifically, so 27017 is broader for cloud."
+  },
+  {
+    "source": "27017-CLD.6.3.1",
+    "source_title": "Shared roles and responsibilities within a cloud computing environment",
+    "target": "A.5.19",
+    "target_title": "Information security in supplier relationships",
+    "relationship": "related",
+    "rationale": "CLD.6.3.1 shared-responsibility matrices also overlap with A.5.19 supplier-relationship obligations; the relationship is partial/related rather than direct."
+  },
+  {
+    "source": "27017-7.2.1",
+    "source_title": "Management responsibilities (cloud guidance)",
+    "target": "A.5.4",
+    "target_title": "Management responsibilities",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.7.2.1 restates management accountability for information security in cloud context; maps co-extensively to A.5.4."
+  },
+  {
+    "source": "27017-7.2.2",
+    "source_title": "Information security awareness, education and training (cloud guidance)",
+    "target": "A.6.3",
+    "target_title": "Information security awareness, education and training",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.7.2.2 adds cloud-specific training topics (shared responsibility, cloud risks); control intent maps 1:1 to A.6.3."
+  },
+  {
+    "source": "27017-7.3.1",
+    "source_title": "Termination and change of employment — security (cloud guidance)",
+    "target": "A.6.5",
+    "target_title": "Responsibilities after termination or change of employment",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.7.3.1 and A.6.5 both address post-employment obligations; cloud guidance adds CSP access revocation specifics but is co-extensive at the control level."
+  },
+  {
+    "source": "27017-8.1.1",
+    "source_title": "Inventory of assets (cloud guidance)",
+    "target": "A.5.9",
+    "target_title": "Inventory of information and other associated assets",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.8.1.1 requires asset inventory inclusive of cloud-hosted assets; maps 1:1 to A.5.9 which covers all information and associated assets."
+  },
+  {
+    "source": "27017-8.1.2",
+    "source_title": "Ownership of assets (cloud guidance)",
+    "target": "A.5.9",
+    "target_title": "Inventory of information and other associated assets",
+    "relationship": "subset",
+    "rationale": "27017 cl.8.1.2 addresses asset ownership in cloud (CSP vs CSC); A.5.9 includes ownership as a sub-element of inventory management."
+  },
+  {
+    "source": "27017-8.1.3",
+    "source_title": "Acceptable use of assets (cloud guidance)",
+    "target": "A.5.10",
+    "target_title": "Acceptable use of information and other associated assets",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.8.1.3 applies acceptable-use policies to cloud assets; maps 1:1 to A.5.10."
+  },
+  {
+    "source": "27017-8.1.4",
+    "source_title": "Return of assets (cloud guidance)",
+    "target": "A.5.11",
+    "target_title": "Return of assets",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.8.1.4 addresses return of assets at cloud contract end; maps co-extensively to A.5.11."
+  },
+  {
+    "source": "27017-CLD.8.1.5",
+    "source_title": "Removal of cloud service customer assets",
+    "target": "A.5.11",
+    "target_title": "Return of assets",
+    "relationship": "superset",
+    "rationale": "CLD.8.1.5 is cloud-additive: it requires secure removal/return of CSC assets including data wipe verification not covered in A.5.11 alone."
+  },
+  {
+    "source": "27017-CLD.8.1.5",
+    "source_title": "Removal of cloud service customer assets",
+    "target": "A.8.10",
+    "target_title": "Information deletion",
+    "relationship": "related",
+    "rationale": "CLD.8.1.5 overlaps with A.8.10 (information deletion) when customer assets include data that must be verifiably erased at contract end."
+  },
+  {
+    "source": "27017-8.2.1",
+    "source_title": "Classification of information (cloud guidance)",
+    "target": "A.5.12",
+    "target_title": "Classification of information",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.8.2.1 applies classification schemes to cloud-hosted data (CSP must honour CSC classifications); maps 1:1 to A.5.12."
+  },
+  {
+    "source": "27017-8.2.2",
+    "source_title": "Labelling of information (cloud guidance)",
+    "target": "A.5.13",
+    "target_title": "Labelling of information",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.8.2.2 and A.5.13 both require labelling aligned to classification; cloud guidance adds metadata/tag mechanisms but is co-extensive."
+  },
+  {
+    "source": "27017-8.2.3",
+    "source_title": "Handling of assets (cloud guidance)",
+    "target": "A.5.10",
+    "target_title": "Acceptable use of information and other associated assets",
+    "relationship": "subset",
+    "rationale": "27017 cl.8.2.3 handling procedures in cloud map into the broader acceptable-use and asset-handling intent of A.5.10."
+  },
+  {
+    "source": "27017-8.3.1",
+    "source_title": "Management of removable media (cloud guidance)",
+    "target": "A.7.10",
+    "target_title": "Storage media",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.8.3.1 addresses removable/cloud storage media; maps to A.7.10 which consolidates removable media management."
+  },
+  {
+    "source": "27017-9.1.1",
+    "source_title": "Access control policy (cloud guidance)",
+    "target": "A.5.15",
+    "target_title": "Access control",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.9.1.1 mandates access-control policy for cloud services (CSP and CSC views); maps 1:1 to A.5.15."
+  },
+  {
+    "source": "27017-9.1.2",
+    "source_title": "Access to networks and network services (cloud guidance)",
+    "target": "A.8.20",
+    "target_title": "Network security",
+    "relationship": "subset",
+    "rationale": "27017 cl.9.1.2 adds cloud-network access controls; A.8.20 covers broader network security; 27017 is a cloud-specific subset."
+  },
+  {
+    "source": "27017-9.2.1",
+    "source_title": "User registration and de-registration (cloud guidance)",
+    "target": "A.5.16",
+    "target_title": "Identity management",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.9.2.1 covers cloud user provisioning/deprovisioning; maps 1:1 to A.5.16 identity management."
+  },
+  {
+    "source": "27017-9.2.2",
+    "source_title": "User access provisioning (cloud guidance)",
+    "target": "A.5.18",
+    "target_title": "Access rights",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.9.2.2 access provisioning in cloud contexts maps co-extensively to A.5.18 which covers access rights lifecycle."
+  },
+  {
+    "source": "27017-9.2.3",
+    "source_title": "Management of privileged access rights (cloud guidance)",
+    "target": "A.8.2",
+    "target_title": "Privileged access rights",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.9.2.3 privileged access management in cloud (admin accounts, CSP super-admin) maps 1:1 to A.8.2."
+  },
+  {
+    "source": "27017-9.2.4",
+    "source_title": "Management of secret authentication information of users (cloud guidance)",
+    "target": "A.5.17",
+    "target_title": "Authentication information",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.9.2.4 secret-auth-info management in cloud maps co-extensively to A.5.17."
+  },
+  {
+    "source": "27017-9.2.5",
+    "source_title": "Review of user access rights (cloud guidance)",
+    "target": "A.5.18",
+    "target_title": "Access rights",
+    "relationship": "subset",
+    "rationale": "27017 cl.9.2.5 periodic review of cloud user access rights is a sub-element of the full access-rights lifecycle in A.5.18."
+  },
+  {
+    "source": "27017-9.2.6",
+    "source_title": "Removal or adjustment of access rights (cloud guidance)",
+    "target": "A.5.18",
+    "target_title": "Access rights",
+    "relationship": "subset",
+    "rationale": "27017 cl.9.2.6 revocation of cloud access maps into A.5.18; the cloud guidance adds CSP-API revocation specifics not in the parent control."
+  },
+  {
+    "source": "27017-9.3.1",
+    "source_title": "Use of secret authentication information (cloud guidance)",
+    "target": "A.5.17",
+    "target_title": "Authentication information",
+    "relationship": "subset",
+    "rationale": "27017 cl.9.3.1 end-user secret-auth usage in cloud is a use-case subset of A.5.17."
+  },
+  {
+    "source": "27017-9.4.1",
+    "source_title": "Information access restriction (cloud guidance)",
+    "target": "A.8.3",
+    "target_title": "Information access restriction",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.9.4.1 and A.8.3 both control information access restriction; cloud guidance adds multi-tenant isolation context but is co-extensive."
+  },
+  {
+    "source": "27017-9.4.2",
+    "source_title": "Secure log-on procedures (cloud guidance)",
+    "target": "A.8.5",
+    "target_title": "Secure authentication",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.9.4.2 secure log-on for cloud consoles/APIs maps 1:1 to A.8.5 secure authentication."
+  },
+  {
+    "source": "27017-9.4.3",
+    "source_title": "Password management system (cloud guidance)",
+    "target": "A.5.17",
+    "target_title": "Authentication information",
+    "relationship": "subset",
+    "rationale": "27017 cl.9.4.3 cloud-service password management is a technical sub-element of A.5.17."
+  },
+  {
+    "source": "27017-9.4.4",
+    "source_title": "Use of privileged utility programs (cloud guidance)",
+    "target": "A.8.18",
+    "target_title": "Use of privileged utility programs",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.9.4.4 and A.8.18 both restrict privileged utility program usage; cloud guidance adds hypervisor-level tools but intent is co-extensive."
+  },
+  {
+    "source": "27017-9.4.5",
+    "source_title": "Access control to program source code (cloud guidance)",
+    "target": "A.8.4",
+    "target_title": "Access to source code",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.9.4.5 source-code access in cloud (CSP dev pipelines) maps 1:1 to A.8.4."
+  },
+  {
+    "source": "27017-CLD.9.5.1",
+    "source_title": "Segregation in virtual computing environments",
+    "target": "A.8.22",
+    "target_title": "Segregation of networks",
+    "relationship": "superset",
+    "rationale": "CLD.9.5.1 is cloud-additive: it mandates virtual-tenant isolation (hypervisor, VM, container level) which extends beyond the network-layer segregation in A.8.22."
+  },
+  {
+    "source": "27017-CLD.9.5.1",
+    "source_title": "Segregation in virtual computing environments",
+    "target": "A.5.3",
+    "target_title": "Segregation of duties",
+    "relationship": "related",
+    "rationale": "CLD.9.5.1 virtual-environment segregation has a logical overlap with A.5.3 (duties) when admin access to hypervisors must be duty-separated."
+  },
+  {
+    "source": "27017-CLD.9.5.2",
+    "source_title": "Virtual machine hardening",
+    "target": "A.8.9",
+    "target_title": "Configuration management",
+    "relationship": "superset",
+    "rationale": "CLD.9.5.2 is cloud-additive: it requires baseline hardening of VMs/containers; A.8.9 covers configuration management broadly but does not specify VM hardening baselines."
+  },
+  {
+    "source": "27017-CLD.9.5.2",
+    "source_title": "Virtual machine hardening",
+    "target": "A.8.8",
+    "target_title": "Management of technical vulnerabilities",
+    "relationship": "related",
+    "rationale": "CLD.9.5.2 VM hardening overlaps with A.8.8 vulnerability management since unpatched VM images introduce technical vulnerabilities."
+  },
+  {
+    "source": "27017-10.1.1",
+    "source_title": "Policy on the use of cryptographic controls (cloud guidance)",
+    "target": "A.8.24",
+    "target_title": "Use of cryptography",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.10.1.1 cryptography policy for cloud services maps 1:1 to A.8.24; cloud guidance adds CSP-managed vs customer-managed key contexts."
+  },
+  {
+    "source": "27017-10.1.2",
+    "source_title": "Key management (cloud guidance)",
+    "target": "A.8.24",
+    "target_title": "Use of cryptography",
+    "relationship": "subset",
+    "rationale": "27017 cl.10.1.2 key management is a sub-element of A.8.24; cloud guidance adds BYOK/HYOK and CSP key-escrow considerations."
+  },
+  {
+    "source": "27017-11.1.4",
+    "source_title": "Protecting against external and environmental threats (cloud guidance)",
+    "target": "A.7.5",
+    "target_title": "Protecting against physical and environmental threats",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.11.1.4 maps co-extensively to A.7.5; cloud guidance focuses on CSP data-centre environmental controls."
+  },
+  {
+    "source": "27017-11.2.6",
+    "source_title": "Security of equipment and assets off-premises (cloud guidance)",
+    "target": "A.7.9",
+    "target_title": "Security of assets off-premises",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.11.2.6 and A.7.9 both address off-premises asset security; cloud context covers portable devices accessing cloud services."
+  },
+  {
+    "source": "27017-11.2.7",
+    "source_title": "Secure disposal or re-use of equipment (cloud guidance)",
+    "target": "A.7.14",
+    "target_title": "Secure disposal or re-use of equipment",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.11.2.7 and A.7.14 both require secure media/hardware disposal; cloud guidance adds CSP storage-media sanitisation specifics."
+  },
+  {
+    "source": "27017-12.1.1",
+    "source_title": "Documented operating procedures (cloud guidance)",
+    "target": "A.5.37",
+    "target_title": "Documented operating procedures",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.1.1 requires documented procedures for cloud operations; maps 1:1 to A.5.37."
+  },
+  {
+    "source": "27017-12.1.2",
+    "source_title": "Change management (cloud guidance)",
+    "target": "A.8.32",
+    "target_title": "Change management",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.1.2 cloud change management (CSP change notifications to CSC) maps co-extensively to A.8.32."
+  },
+  {
+    "source": "27017-12.1.3",
+    "source_title": "Capacity management (cloud guidance)",
+    "target": "A.8.6",
+    "target_title": "Capacity management",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.1.3 and A.8.6 both require capacity planning; cloud guidance adds elastic-scaling and SLA-capacity monitoring."
+  },
+  {
+    "source": "27017-CLD.12.1.5",
+    "source_title": "Administrator's operational security",
+    "target": "A.8.2",
+    "target_title": "Privileged access rights",
+    "relationship": "superset",
+    "rationale": "CLD.12.1.5 is cloud-additive: it requires dedicated admin procedures for cloud-admin (CSP side) including JIT access and admin audit trails, extending beyond the access-rights scope of A.8.2."
+  },
+  {
+    "source": "27017-CLD.12.1.5",
+    "source_title": "Administrator's operational security",
+    "target": "A.5.37",
+    "target_title": "Documented operating procedures",
+    "relationship": "related",
+    "rationale": "CLD.12.1.5 admin operational security also requires documented admin procedures that overlap with A.5.37."
+  },
+  {
+    "source": "27017-12.3.1",
+    "source_title": "Information backup (cloud guidance)",
+    "target": "A.8.13",
+    "target_title": "Information backup",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.3.1 backup in cloud (CSP backup obligations, CSC backup responsibility) maps 1:1 to A.8.13."
+  },
+  {
+    "source": "27017-12.4.1",
+    "source_title": "Event logging (cloud guidance)",
+    "target": "A.8.15",
+    "target_title": "Logging",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.4.1 event logging for cloud services (CSP logs, CSC audit logs) maps co-extensively to A.8.15."
+  },
+  {
+    "source": "27017-12.4.2",
+    "source_title": "Protection of log information (cloud guidance)",
+    "target": "A.8.15",
+    "target_title": "Logging",
+    "relationship": "subset",
+    "rationale": "27017 cl.12.4.2 log integrity protection is a sub-element of A.8.15 which covers the full logging lifecycle."
+  },
+  {
+    "source": "27017-12.4.3",
+    "source_title": "Administrator and operator logs (cloud guidance)",
+    "target": "A.8.15",
+    "target_title": "Logging",
+    "relationship": "subset",
+    "rationale": "27017 cl.12.4.3 privileged-user logs in cloud context is a sub-element of A.8.15."
+  },
+  {
+    "source": "27017-12.4.4",
+    "source_title": "Clock synchronisation (cloud guidance)",
+    "target": "A.8.17",
+    "target_title": "Clock synchronisation",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.4.4 and A.8.17 both require clock sync; cloud guidance adds NTP-source requirements for distributed cloud systems."
+  },
+  {
+    "source": "27017-CLD.12.4.5",
+    "source_title": "Monitoring of cloud services",
+    "target": "A.8.16",
+    "target_title": "Monitoring activities",
+    "relationship": "superset",
+    "rationale": "CLD.12.4.5 is cloud-additive: it requires CSP to provide monitoring capabilities to CSC and defines what cloud service metrics must be monitored, extending beyond the general monitoring requirement of A.8.16."
+  },
+  {
+    "source": "27017-CLD.12.4.5",
+    "source_title": "Monitoring of cloud services",
+    "target": "A.8.15",
+    "target_title": "Logging",
+    "relationship": "related",
+    "rationale": "CLD.12.4.5 monitoring of cloud services requires logs and audit trails, overlapping with A.8.15 logging requirements."
+  },
+  {
+    "source": "27017-12.5.1",
+    "source_title": "Installation of software on operational systems (cloud guidance)",
+    "target": "A.8.19",
+    "target_title": "Installation of software on operational systems",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.5.1 software installation controls in cloud environments map 1:1 to A.8.19."
+  },
+  {
+    "source": "27017-12.6.1",
+    "source_title": "Management of technical vulnerabilities (cloud guidance)",
+    "target": "A.8.8",
+    "target_title": "Management of technical vulnerabilities",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.6.1 vulnerability management for cloud (CSP patching SLAs, CSC responsibility for guest OS) maps 1:1 to A.8.8."
+  },
+  {
+    "source": "27017-12.6.2",
+    "source_title": "Restrictions on software installation (cloud guidance)",
+    "target": "A.8.19",
+    "target_title": "Installation of software on operational systems",
+    "relationship": "subset",
+    "rationale": "27017 cl.12.6.2 software installation restrictions are a sub-element of A.8.19."
+  },
+  {
+    "source": "27017-13.1.1",
+    "source_title": "Network controls (cloud guidance)",
+    "target": "A.8.20",
+    "target_title": "Network security",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.13.1.1 cloud network controls (virtual networks, SDN) map co-extensively to A.8.20."
+  },
+  {
+    "source": "27017-13.1.2",
+    "source_title": "Security of network services (cloud guidance)",
+    "target": "A.8.21",
+    "target_title": "Security of network services",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.13.1.2 and A.8.21 both address security of network services; cloud guidance adds cloud-interconnect and VPN service specifics."
+  },
+  {
+    "source": "27017-13.1.3",
+    "source_title": "Segregation in networks (cloud guidance)",
+    "target": "A.8.22",
+    "target_title": "Segregation of networks",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.13.1.3 network segregation in cloud (VPC, subnets) maps 1:1 to A.8.22."
+  },
+  {
+    "source": "27017-CLD.13.1.4",
+    "source_title": "Alignment of security management for virtual and physical networks",
+    "target": "A.8.20",
+    "target_title": "Network security",
+    "relationship": "superset",
+    "rationale": "CLD.13.1.4 is cloud-additive: it requires explicit parity between virtual-network and physical-network security policies, a cloud-specific obligation not covered in A.8.20 alone."
+  },
+  {
+    "source": "27017-CLD.13.1.4",
+    "source_title": "Alignment of security management for virtual and physical networks",
+    "target": "A.8.22",
+    "target_title": "Segregation of networks",
+    "relationship": "related",
+    "rationale": "CLD.13.1.4 virtual/physical network alignment also reinforces A.8.22 segregation requirements in cloud-native architectures."
+  },
+  {
+    "source": "27017-13.2.1",
+    "source_title": "Information transfer policies and procedures (cloud guidance)",
+    "target": "A.5.14",
+    "target_title": "Information transfer",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.13.2.1 information transfer policies for cloud (data-in-transit encryption, API security) map 1:1 to A.5.14."
+  },
+  {
+    "source": "27017-13.2.2",
+    "source_title": "Agreements on information transfer (cloud guidance)",
+    "target": "A.5.14",
+    "target_title": "Information transfer",
+    "relationship": "subset",
+    "rationale": "27017 cl.13.2.2 transfer agreements are a contractual sub-element of A.5.14."
+  },
+  {
+    "source": "27017-14.1.1",
+    "source_title": "Information security requirements analysis and specification (cloud guidance)",
+    "target": "A.8.26",
+    "target_title": "Application security requirements",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.14.1.1 security requirements for cloud-hosted applications map 1:1 to A.8.26."
+  },
+  {
+    "source": "27017-14.1.2",
+    "source_title": "Securing application services on public networks (cloud guidance)",
+    "target": "A.8.26",
+    "target_title": "Application security requirements",
+    "relationship": "subset",
+    "rationale": "27017 cl.14.1.2 public-cloud API security is a sub-element of A.8.26 application security requirements."
+  },
+  {
+    "source": "27017-14.1.3",
+    "source_title": "Protecting application services transactions (cloud guidance)",
+    "target": "A.8.26",
+    "target_title": "Application security requirements",
+    "relationship": "subset",
+    "rationale": "27017 cl.14.1.3 transaction protection in cloud is a sub-element of A.8.26."
+  },
+  {
+    "source": "27017-14.2.1",
+    "source_title": "Secure development policy (cloud guidance)",
+    "target": "A.8.25",
+    "target_title": "Secure development life cycle",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.14.2.1 secure development in cloud environments maps 1:1 to A.8.25."
+  },
+  {
+    "source": "27017-14.2.5",
+    "source_title": "Secure system engineering principles (cloud guidance)",
+    "target": "A.8.27",
+    "target_title": "Secure systems architecture and engineering principles",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.14.2.5 secure engineering for cloud (defence-in-depth, zero-trust) maps 1:1 to A.8.27."
+  },
+  {
+    "source": "27017-14.2.6",
+    "source_title": "Secure development environment (cloud guidance)",
+    "target": "A.8.31",
+    "target_title": "Separation of development, test and production environments",
+    "relationship": "subset",
+    "rationale": "27017 cl.14.2.6 secure dev environment in cloud is a sub-element of A.8.31 environment separation."
+  },
+  {
+    "source": "27017-14.2.8",
+    "source_title": "System security testing (cloud guidance)",
+    "target": "A.8.29",
+    "target_title": "Security testing in development and acceptance",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.14.2.8 cloud system security testing maps 1:1 to A.8.29."
+  },
+  {
+    "source": "27017-15.1.1",
+    "source_title": "Information security policy for supplier relationships (cloud guidance)",
+    "target": "A.5.19",
+    "target_title": "Information security in supplier relationships",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.15.1.1 supplier security policy for cloud providers maps 1:1 to A.5.19."
+  },
+  {
+    "source": "27017-15.1.2",
+    "source_title": "Addressing security within supplier agreements (cloud guidance)",
+    "target": "A.5.20",
+    "target_title": "Addressing information security within supplier agreements",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.15.1.2 adds cloud-specific contract clauses (SLA, audit rights, data sovereignty) on top of A.5.20."
+  },
+  {
+    "source": "27017-15.1.3",
+    "source_title": "ICT supply chain (cloud guidance)",
+    "target": "A.5.21",
+    "target_title": "Managing information security in the ICT supply chain",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.15.1.3 ICT supply chain for cloud (sub-processors, sub-contractors) maps 1:1 to A.5.21."
+  },
+  {
+    "source": "27017-15.2.1",
+    "source_title": "Monitoring and review of supplier services (cloud guidance)",
+    "target": "A.5.22",
+    "target_title": "Monitoring, review and change management of supplier services",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.15.2.1 cloud supplier service monitoring (CSP SLA reviews, audit reports) maps 1:1 to A.5.22."
+  },
+  {
+    "source": "27017-15.2.2",
+    "source_title": "Managing changes to supplier services (cloud guidance)",
+    "target": "A.5.22",
+    "target_title": "Monitoring, review and change management of supplier services",
+    "relationship": "subset",
+    "rationale": "27017 cl.15.2.2 change management for cloud supplier services is a sub-element of the broader A.5.22."
+  },
+  {
+    "source": "27017-16.1.1",
+    "source_title": "Responsibilities and procedures — incident management (cloud guidance)",
+    "target": "A.5.24",
+    "target_title": "Information security incident management planning and preparation",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.16.1.1 cloud incident management roles (CSP notification obligations to CSC) map 1:1 to A.5.24."
+  },
+  {
+    "source": "27017-16.1.2",
+    "source_title": "Reporting information security events — cloud guidance",
+    "target": "A.6.8",
+    "target_title": "Information security event reporting",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.16.1.2 event reporting for cloud (CSP-to-CSC breach notification) maps 1:1 to A.6.8."
+  },
+  {
+    "source": "27017-16.1.4",
+    "source_title": "Assessment of and decision on information security events (cloud guidance)",
+    "target": "A.5.25",
+    "target_title": "Assessment and decision on information security events",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.16.1.4 cloud event assessment and triage maps 1:1 to A.5.25."
+  },
+  {
+    "source": "27017-16.1.5",
+    "source_title": "Response to information security incidents (cloud guidance)",
+    "target": "A.5.26",
+    "target_title": "Response to information security incidents",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.16.1.5 cloud incident response (CSP remediation obligations) maps 1:1 to A.5.26."
+  },
+  {
+    "source": "27017-16.1.6",
+    "source_title": "Learning from information security incidents (cloud guidance)",
+    "target": "A.5.27",
+    "target_title": "Learning from information security incidents",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.16.1.6 post-incident review in cloud maps 1:1 to A.5.27."
+  },
+  {
+    "source": "27017-16.1.7",
+    "source_title": "Collection of evidence (cloud guidance)",
+    "target": "A.5.28",
+    "target_title": "Collection of evidence",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.16.1.7 evidence collection in cloud (forensic log preservation by CSP) maps 1:1 to A.5.28."
+  },
+  {
+    "source": "27017-17.1.1",
+    "source_title": "Planning information security continuity (cloud guidance)",
+    "target": "A.5.29",
+    "target_title": "Information security during disruption",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.17.1.1 continuity planning for cloud services maps 1:1 to A.5.29."
+  },
+  {
+    "source": "27017-17.1.2",
+    "source_title": "Implementing information security continuity (cloud guidance)",
+    "target": "A.5.29",
+    "target_title": "Information security during disruption",
+    "relationship": "subset",
+    "rationale": "27017 cl.17.1.2 implementation of continuity measures for cloud is a sub-element of A.5.29."
+  },
+  {
+    "source": "27017-17.1.3",
+    "source_title": "Verify, review and evaluate information security continuity (cloud guidance)",
+    "target": "A.5.29",
+    "target_title": "Information security during disruption",
+    "relationship": "subset",
+    "rationale": "27017 cl.17.1.3 testing continuity of cloud services is a sub-element of A.5.29."
+  },
+  {
+    "source": "27017-17.2.1",
+    "source_title": "Availability of information processing facilities (cloud guidance)",
+    "target": "A.8.14",
+    "target_title": "Redundancy of information processing facilities",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.17.2.1 availability requirements for cloud (SLA uptime, multi-AZ) map 1:1 to A.8.14."
+  },
+  {
+    "source": "27017-18.1.1",
+    "source_title": "Identification of applicable legislation and contractual requirements (cloud guidance)",
+    "target": "A.5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.18.1.1 legal/regulatory identification for cloud (data residency laws, jurisdictional scope) maps 1:1 to A.5.31."
+  },
+  {
+    "source": "27017-18.1.2",
+    "source_title": "Intellectual property rights (cloud guidance)",
+    "target": "A.5.32",
+    "target_title": "Intellectual property rights",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.18.1.2 IPR in cloud (CSP licensing obligations) maps 1:1 to A.5.32."
+  },
+  {
+    "source": "27017-18.1.3",
+    "source_title": "Protection of records (cloud guidance)",
+    "target": "A.5.33",
+    "target_title": "Protection of records",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.18.1.3 record protection in cloud (immutable storage, retention policies) maps 1:1 to A.5.33."
+  },
+  {
+    "source": "27017-18.1.4",
+    "source_title": "Privacy and protection of personally identifiable information (cloud guidance)",
+    "target": "A.5.34",
+    "target_title": "Privacy and protection of PII",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.18.1.4 PII protection in cloud maps 1:1 to A.5.34."
+  },
+  {
+    "source": "27017-18.1.5",
+    "source_title": "Regulation of cryptographic controls (cloud guidance)",
+    "target": "A.8.24",
+    "target_title": "Use of cryptography",
+    "relationship": "subset",
+    "rationale": "27017 cl.18.1.5 regulatory crypto requirements in cloud (export controls, national crypto laws) is a compliance-context sub-element of A.8.24."
+  },
+  {
+    "source": "27017-18.2.1",
+    "source_title": "Independent review of information security (cloud guidance)",
+    "target": "A.5.35",
+    "target_title": "Independent review of information security",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.18.2.1 independent review of cloud security posture maps 1:1 to A.5.35."
+  },
+  {
+    "source": "27017-18.2.2",
+    "source_title": "Compliance with security policies and standards (cloud guidance)",
+    "target": "A.5.36",
+    "target_title": "Compliance with policies and standards for information security",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.18.2.2 policy compliance checking in cloud maps 1:1 to A.5.36."
+  },
+  {
+    "source": "27017-18.2.3",
+    "source_title": "Technical compliance review (cloud guidance)",
+    "target": "A.5.36",
+    "target_title": "Compliance with policies and standards for information security",
+    "relationship": "subset",
+    "rationale": "27017 cl.18.2.3 technical compliance scanning/audit in cloud is a sub-element of A.5.36."
+  },
+  {
+    "source": "27017-12.2.1",
+    "source_title": "Controls against malware (cloud guidance)",
+    "target": "A.8.7",
+    "target_title": "Protection against malware",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.2.1 anti-malware controls for cloud workloads (CSP-provided vs CSC-managed AV) map 1:1 to A.8.7."
+  },
+  {
+    "source": "27017-6.2.1",
+    "source_title": "Mobile device policy (cloud guidance)",
+    "target": "A.8.1",
+    "target_title": "User endpoint devices",
+    "relationship": "subset",
+    "rationale": "27017 cl.6.2.1 mobile device policy for cloud access is a subset of A.8.1 which covers all endpoint device security."
+  },
+  {
+    "source": "27017-6.2.2",
+    "source_title": "Teleworking (cloud guidance)",
+    "target": "A.6.7",
+    "target_title": "Remote working",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.6.2.2 teleworking/remote access to cloud services maps 1:1 to A.6.7."
+  },
+  {
+    "source": "27017-14.2.9",
+    "source_title": "System acceptance testing (cloud guidance)",
+    "target": "A.8.29",
+    "target_title": "Security testing in development and acceptance",
+    "relationship": "subset",
+    "rationale": "27017 cl.14.2.9 acceptance testing for cloud systems is a sub-element of A.8.29."
+  },
+  {
+    "source": "27017-12.7.1",
+    "source_title": "Information systems audit controls (cloud guidance)",
+    "target": "A.8.34",
+    "target_title": "Protection of information systems during audit testing",
+    "relationship": "equivalent",
+    "rationale": "27017 cl.12.7.1 audit controls for cloud information systems map 1:1 to A.8.34."
+  }
+]
