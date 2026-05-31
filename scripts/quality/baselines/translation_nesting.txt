@@ -377,8 +377,8 @@ translations/validators.en.yaml:549:risk_approval_config
 translations/validators.en.yaml:558:gstool_import
 translations/vulnerabilities.de.yaml:1:vulnerability
 translations/vulnerabilities.en.yaml:1:vulnerability
-translations/wizard.de.yaml:1591:compliance_check
-translations/wizard.en.yaml:1591:compliance_check
+translations/wizard.de.yaml:1597:compliance_check
+translations/wizard.en.yaml:1597:compliance_check
 translations/workflows.de.yaml:1:workflow
 translations/workflows.de.yaml:336:workflow_instance
 translations/workflows.de.yaml:343:workflow_step
