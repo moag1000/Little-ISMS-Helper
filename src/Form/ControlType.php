@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Control;
+use App\Entity\Document;
 use App\Entity\Person;
 use App\Entity\Risk;
 use App\Entity\User;
@@ -21,13 +22,15 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class ControlType extends AbstractType
+final class ControlType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
 
@@ -114,6 +117,10 @@ final class ControlType extends AbstractType
                 ],
                 'help' => 'control.help.justification',
             ])
+            // F12 — per-option descriptions live on each choice via
+            // choice_attr (title + data-description), so the wall-of-text help
+            // is broken up; only the "only applicable controls count" caveat
+            // remains as field-level help.
             ->add('implementationStatus', ChoiceType::class, [
                 'label' => 'control.field.implementation_status',
                 'choices' => [
@@ -123,14 +130,23 @@ final class ControlType extends AbstractType
                     'control.implementation_status.implemented' => 'implemented',
                     'control.implementation_status.verified' => 'verified',
                 ],
+                'choice_attr' => fn(string $choice): array => [
+                    'title' => 'control.implementation_status_desc.' . $choice,
+                    'data-description' => 'control.implementation_status_desc.' . $choice,
+                ],
                 'choice_translation_domain' => 'control',
-                'help' => 'control.help.implementation_status_explained',
+                'attr' => [
+                    'data-control-status-target' => 'status',
+                    'data-action' => 'change->control-status#onChange',
+                ],
+                'help' => 'control.help.implementation_status_caveat',
             ])
             ->add('implementationPercentage', IntegerType::class, [
                 'label' => 'control.field.implementation_percentage',
                 'attr' => [
                     'min' => 0,
                     'max' => 100,
+                    'data-control-status-target' => 'percentage',
                 ],
                 'constraints' => [
                     new Range(min: 0, max: 100),
@@ -271,6 +287,21 @@ final class ControlType extends AbstractType
                 'label' => 'control.field.next_effectiveness_test',
                 'required' => false,
             ])
+            // F8 — evidence documents (ISO 27001 Cl. 7.5). Multiple-select
+            // backed by the control_evidence join table; TomSelect autocomplete.
+            ->add('evidenceDocuments', EntityType::class, [
+                'class' => Document::class,
+                'choice_label' => 'originalFilename',
+                'label' => 'control.field.evidence_documents',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'by_reference' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'control.help.evidence_documents',
+            ])
             // S5 Bucket 5 (item 5.5) — proper FormType for the variable-key
             // associative map `array<framework_slug, list<reference_id>>`.
             // One labelled chip-row per known framework slug; legacy custom
@@ -339,6 +370,49 @@ final class ControlType extends AbstractType
                     'help' => 'control.help.shared_responsibility',
                 ]);
         }
+
+        // F10 — derive `category` from the ISO 27001:2022 Annex A control-id
+        // prefix when the field is still empty. Soft pre-fill only: the user
+        // can override the selection. No DB migration — the value lands on the
+        // entity through the normal form-mapping when category was blank.
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            $control = $event->getData();
+            if (!$control instanceof Control) {
+                return;
+            }
+            if (trim((string) $control->getCategory()) !== '') {
+                return;
+            }
+            $derived = self::deriveCategoryFromControlId($control->getControlId());
+            if ($derived !== null) {
+                $control->setCategory($derived);
+            }
+        });
+    }
+
+    /**
+     * F10 — map an ISO 27001:2022 Annex A control-id to its theme/category.
+     *
+     * A.5.* → organizational, A.6.* → people, A.7.* → physical,
+     * A.8.* → technological. Returns null for non-Annex-A ids so custom
+     * frameworks are left untouched.
+     */
+    public static function deriveCategoryFromControlId(?string $controlId): ?string
+    {
+        if ($controlId === null) {
+            return null;
+        }
+        if (!preg_match('/^A\.?(\d+)\./', trim($controlId), $m)) {
+            return null;
+        }
+
+        return match ($m[1]) {
+            '5' => 'organizational',
+            '6' => 'people',
+            '7' => 'physical',
+            '8' => 'technological',
+            default => null,
+        };
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -361,8 +435,59 @@ final class ControlType extends AbstractType
             'constraints' => [
                 new Callback([$this, 'validateResponsibleSlot']),
                 new Callback([$this, 'validateJustificationWhenNotApplicable']),
+                new Callback([$this, 'validateVerifiedRequiresEvidence']),
+                new Callback([$this, 'validateEffectivenessRequiresTest']),
+                new Callback([$this, 'validateReviewDateOrder']),
             ],
         ]);
+    }
+
+    /**
+     * SectionPolicy (S4 Foundation P-2) — groups the ~30 Control fields into
+     * regulatorily-meaningful sections so the SoA edit form never dumps a
+     * field into the generic catch-all. Section keys resolve to
+     * `form.section.<key>` in the `messages` domain.
+     *
+     * Cloud fields are listed even though they are module-gated: when
+     * `cloud_security` is inactive they simply are not added to the builder,
+     * and the section-map references are tolerated by the renderer.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => ['controlId', 'name', 'description', 'category'],
+            'applicability' => ['applicable', 'justification'],
+            'implementation' => [
+                'implementationStatus',
+                'implementationPercentage',
+                'implementationNotes',
+                'targetDate',
+            ],
+            'classification' => ['controlType', 'automationLevel', 'controlMaturity'],
+            'effectiveness' => [
+                'effectiveness',
+                'lastEffectivenessTest',
+                'nextEffectivenessTest',
+                'evidenceDocuments',
+            ],
+            'responsibility' => [
+                'responsiblePersonUser',
+                'responsiblePersonRef',
+                'responsibleDeputyPersons',
+                'responsiblePerson',
+            ],
+            'review' => ['lastReviewDate', 'nextReviewDate'],
+            'references' => ['frameworkReferences'],
+            'relations' => ['risks', 'protectedAssets'],
+            'cloud' => [
+                'cloudControlReference',
+                'cloudPrivacyReference',
+                'pimsReference',
+                'customerOrProviderResponsibility',
+            ],
+        ];
     }
 
     public function validateResponsibleSlot(?Control $entity, ExecutionContextInterface $context): void
@@ -391,6 +516,88 @@ final class ControlType extends AbstractType
         if ($entity->isApplicable() === false && trim((string) $entity->getJustification()) === '') {
             $context->buildViolation('control.error.justification_required_when_not_applicable')
                 ->atPath('justification')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * F4 + C — when a control is marked `verified` it must carry evidence of
+     * verification:
+     *   - a verification/review date (lastEffectivenessTest OR lastReviewDate),
+     *   - an effectiveness rating other than `not_assessed`, AND
+     *   - 100 % implementation (a verified control cannot be partially done).
+     *
+     * ISO 27001 Cl. 9.1 — controls claimed effective need monitoring evidence.
+     */
+    public function validateVerifiedRequiresEvidence(?Control $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null || $entity->getImplementationStatus() !== 'verified') {
+            return;
+        }
+
+        if ($entity->getLastEffectivenessTest() === null && $entity->getLastReviewDate() === null) {
+            $context->buildViolation('control.error.verified_requires_date')
+                ->atPath('lastEffectivenessTest')
+                ->addViolation();
+        }
+
+        if ($entity->getEffectiveness() === null || $entity->getEffectiveness() === 'not_assessed') {
+            $context->buildViolation('control.error.verified_requires_effectiveness')
+                ->atPath('effectiveness')
+                ->addViolation();
+        }
+
+        if (($entity->getImplementationPercentage() ?? 0) < 100) {
+            $context->buildViolation('control.error.verified_requires_full_percentage')
+                ->atPath('implementationPercentage')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * F5 — an effectiveness rating other than `not_assessed` requires a
+     * documented last-effectiveness-test date (ISO 27001 Cl. 9.1 — you cannot
+     * rate effectiveness without having measured it).
+     */
+    public function validateEffectivenessRequiresTest(?Control $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        $effectiveness = $entity->getEffectiveness();
+        if ($effectiveness === null || $effectiveness === 'not_assessed') {
+            return;
+        }
+        if ($entity->getLastEffectivenessTest() === null) {
+            $context->buildViolation('control.error.effectiveness_requires_test')
+                ->atPath('lastEffectivenessTest')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * F11 — cross-field date sanity: a "next" date must be strictly after its
+     * "last" counterpart (review schedule + effectiveness-test schedule).
+     */
+    public function validateReviewDateOrder(?Control $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+
+        $lastReview = $entity->getLastReviewDate();
+        $nextReview = $entity->getNextReviewDate();
+        if ($lastReview !== null && $nextReview !== null && $nextReview <= $lastReview) {
+            $context->buildViolation('control.error.next_review_after_last')
+                ->atPath('nextReviewDate')
+                ->addViolation();
+        }
+
+        $lastTest = $entity->getLastEffectivenessTest();
+        $nextTest = $entity->getNextEffectivenessTest();
+        if ($lastTest !== null && $nextTest !== null && $nextTest <= $lastTest) {
+            $context->buildViolation('control.error.next_test_after_last')
+                ->atPath('nextEffectivenessTest')
                 ->addViolation();
         }
     }

@@ -23,21 +23,77 @@
         { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_soa_index'), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
+
+{# F13 — control.name / control.description are instance free-text, NOT
+   translation keys: output them raw (no |trans filter). #}
 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
     {% block alert_body %}
-        <div class="fa-alert__title">{{ control.name|trans({}, 'control') }}</div>
-        <p class="mt-sm-text-light">{{ control.description|trans({}, 'control') }}</p>
+        <div class="fa-alert__title">{{ control.name }}</div>
+        <p class="mt-sm-text-light">{{ control.description }}</p>
         <div class="mt-2">
             {% include '_components/_badge.html.twig' with { variant: 'info', content: control.category|trans({}, 'control') } %}
         </div>
     {% endblock %}
 {% endembed %}
 
+{# F8 — read-only warning when linked evidence has been superseded (ISO 27001 §7.5). #}
+{% if control.isEvidenceOutdated %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', class: 'mb-4' } } %}
+        {% block alert_body %}
+            <div class="fa-alert__title">{{ 'control.evidence.outdated_title'|trans({}, 'control') }}</div>
+            <p class="mb-0">{{ 'control.evidence.outdated_body'|trans({}, 'control') }}</p>
+        {% endblock %}
+    {% endembed %}
+{% endif %}
+
 {{ form_start(form) }}
 
-{# Applicability Section #}
+{# ── Overview ─────────────────────────────────────────────────────── #}
 <fieldset class="mb-4">
-    <legend class="h5 mb-3">{{ 'control.section.applicability'|trans({}, 'control') }}</legend>
+    <legend class="h5 mb-3">{{ 'form.section.overview'|trans({}, 'messages') }}</legend>
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.controlId,
+                'label_key': form.controlId.vars.label,
+                'translation_domain': 'control',
+                'required': form.controlId.vars.required
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.category,
+                'label_key': form.category.vars.label,
+                'translation_domain': 'control',
+                'required': form.category.vars.required
+            } %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.name,
+                'label_key': form.name.vars.label,
+                'translation_domain': 'control',
+                'required': form.name.vars.required
+            } %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.description,
+                'label_key': form.description.vars.label,
+                'translation_domain': 'control',
+                'required': form.description.vars.required
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# ── Applicability ────────────────────────────────────────────────── #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">{{ 'form.section.applicability'|trans({}, 'messages') }}</legend>
     <div class="row">
         <div class="col-md-12">
             <div class="form-check mb-3">
@@ -59,9 +115,12 @@
     </div>
 </fieldset>
 
-{# Implementation Section #}
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">{{ 'control.section.implementation'|trans({}, 'control') }}</legend>
+{# ── Implementation (F3: collapses when applicable=false) ──────────── #}
+<fieldset class="mb-4" data-controller="control-status"
+          data-applicability-toggle-target="collapse"
+          data-control-status-verified-tooltip="{{ 'control.status_hint.verified_full'|trans({}, 'control') }}"
+          data-control-status-implemented-confirm="{{ 'control.status_hint.implemented_confirm'|trans({}, 'control') }}">
+    <legend class="h5 mb-3">{{ 'form.section.implementation'|trans({}, 'messages') }}</legend>
     <div class="row">
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
@@ -83,6 +142,7 @@
                             'class': 'flex-1',
                             'min': '0',
                             'max': '100',
+                            'data-control-status-target': 'percentage',
                             'data-progress-slider-target': 'slider',
                             'data-action': 'input->progress-slider#update',
                             'aria-label': form.implementationPercentage.vars.label|trans({}, 'control')
@@ -103,6 +163,16 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.targetDate,
+                'label_key': form.targetDate.vars.label,
+                'translation_domain': 'control',
+                'required': form.targetDate.vars.required
+            } %}
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.implementationNotes,
@@ -114,9 +184,86 @@
     </div>
 </fieldset>
 
-{# Responsibility Section #}
+{# ── Classification ───────────────────────────────────────────────── #}
 <fieldset class="mb-4">
-    <legend class="h5 mb-3">{{ 'control.section.responsibility'|trans({}, 'control') }}</legend>
+    <legend class="h5 mb-3">{{ 'form.section.classification'|trans({}, 'messages') }}</legend>
+    <div class="row">
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.controlType,
+                'label_key': form.controlType.vars.label,
+                'translation_domain': 'control',
+                'required': form.controlType.vars.required
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.automationLevel,
+                'label_key': form.automationLevel.vars.label,
+                'translation_domain': 'control',
+                'required': form.automationLevel.vars.required
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.controlMaturity,
+                'label_key': form.controlMaturity.vars.label,
+                'translation_domain': 'control',
+                'required': form.controlMaturity.vars.required
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# ── Effectiveness (F3: collapses when applicable=false) ───────────── #}
+<fieldset class="mb-4" data-applicability-toggle-target="collapse">
+    <legend class="h5 mb-3">{{ 'form.section.effectiveness'|trans({}, 'messages') }}</legend>
+    <div class="row">
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.effectiveness,
+                'label_key': form.effectiveness.vars.label,
+                'translation_domain': 'control',
+                'required': form.effectiveness.vars.required
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.lastEffectivenessTest,
+                'label_key': form.lastEffectivenessTest.vars.label,
+                'translation_domain': 'control',
+                'required': form.lastEffectivenessTest.vars.required
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.nextEffectivenessTest,
+                'label_key': form.nextEffectivenessTest.vars.label,
+                'translation_domain': 'control',
+                'required': form.nextEffectivenessTest.vars.required
+            } %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.evidenceDocuments,
+                'label_key': form.evidenceDocuments.vars.label,
+                'translation_domain': 'control',
+                'required': form.evidenceDocuments.vars.required
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# ── Responsibility ───────────────────────────────────────────────── #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">{{ 'form.section.responsibility'|trans({}, 'messages') }}</legend>
+    {# F6 — User-or-Ref requirement marker. #}
+    <p class="text-muted small mb-3">
+        <i class="fa-icon fa-icon--ui-info-circle"></i>
+        {{ 'control.help.owner_required_marker'|trans({}, 'control') }}
+    </p>
     <div class="row">
         <div class="col-md-6">
             {{ form_row(form.responsiblePersonUser) }}
@@ -130,8 +277,10 @@
             {{ form_row(form.responsibleDeputyPersons) }}
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
+    {# F6 — legacy free-text owner hidden behind a collapsed disclosure. #}
+    <details class="mt-2">
+        <summary class="text-muted small">{{ 'control.disclosure.legacy_owner'|trans({}, 'control') }}</summary>
+        <div class="mt-2">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.responsiblePerson,
                 'label_key': form.responsiblePerson.vars.label,
@@ -139,24 +288,14 @@
                 'required': form.responsiblePerson.vars.required
             } %}
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.targetDate,
-                'label_key': form.targetDate.vars.label,
-                'translation_domain': 'control',
-                'required': form.targetDate.vars.required
-            } %}
-        </div>
-    </div>
+    </details>
 </fieldset>
 
-{# Review Section #}
+{# ── Review ───────────────────────────────────────────────────────── #}
 <fieldset class="mb-4">
-    <legend class="h5 mb-3">{{ 'control.section.review'|trans({}, 'control') }}</legend>
+    <legend class="h5 mb-3">{{ 'form.section.review'|trans({}, 'messages') }}</legend>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.lastReviewDate,
                 'label_key': form.lastReviewDate.vars.label,
@@ -164,9 +303,7 @@
                 'required': form.lastReviewDate.vars.required
             } %}
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.nextReviewDate,
                 'label_key': form.nextReviewDate.vars.label,
@@ -177,9 +314,20 @@
     </div>
 </fieldset>
 
-{# Assets Section #}
+{# ── Framework references ─────────────────────────────────────────── #}
 <fieldset class="mb-4">
-    <legend class="h5 mb-3">{{ 'control.section.assets'|trans({}, 'control') }}</legend>
+    <legend class="h5 mb-3">{{ 'form.section.references'|trans({}, 'messages') }}</legend>
+    {{ form_row(form.frameworkReferences) }}
+</fieldset>
+
+{# ── Relations ────────────────────────────────────────────────────── #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">{{ 'form.section.relations'|trans({}, 'messages') }}</legend>
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_row(form.risks) }}
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
@@ -192,6 +340,49 @@
     </div>
 </fieldset>
 
+{# ── Cloud (module-gated: fields only present when 'cloud_security' active) ── #}
+{% if form.cloudControlReference is defined %}
+    <fieldset class="mb-4">
+        <legend class="h5 mb-3">{{ 'form.section.cloud'|trans({}, 'messages') }}</legend>
+        <div class="row">
+            <div class="col-md-4">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.cloudControlReference,
+                    'label_key': form.cloudControlReference.vars.label,
+                    'translation_domain': 'control',
+                    'required': form.cloudControlReference.vars.required
+                } %}
+            </div>
+            <div class="col-md-4">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.cloudPrivacyReference,
+                    'label_key': form.cloudPrivacyReference.vars.label,
+                    'translation_domain': 'control',
+                    'required': form.cloudPrivacyReference.vars.required
+                } %}
+            </div>
+            <div class="col-md-4">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.pimsReference,
+                    'label_key': form.pimsReference.vars.label,
+                    'translation_domain': 'control',
+                    'required': form.pimsReference.vars.required
+                } %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.customerOrProviderResponsibility,
+                    'label_key': form.customerOrProviderResponsibility.vars.label,
+                    'translation_domain': 'control',
+                    'required': form.customerOrProviderResponsibility.vars.required
+                } %}
+            </div>
+        </div>
+    </fieldset>
+{% endif %}
+
 <div class="d-flex gap-2 mt-4">
     <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
         {{ 'common.save_changes'|trans({}, 'messages') }}
@@ -200,6 +391,10 @@
         {{ 'common.cancel'|trans({}, 'messages') }}
     </a>
 </div>
+
+{# Render any field not explicitly placed above (safety net — must stay empty
+   per SectionPolicy; surfaces accidental orphans in dev instead of dropping). #}
+{{ form_rest(form) }}
 
 {{ form_end(form) }}
 

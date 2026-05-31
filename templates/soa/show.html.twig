@@ -194,13 +194,23 @@
         <div class="stats-grid mt-3 grid-responsive-250">
             <div class="stat-item">
                 <strong>
-                    {% if control.responsiblePerson %}
+                    {% if control.responsiblePersonUser %}
+                        {{ control.responsiblePersonUser.fullName }}
+                    {% elseif control.responsiblePersonRef %}
+                        {{ control.responsiblePersonRef.displayName }}
+                    {% elseif control.responsiblePerson %}
                         {{ control.responsiblePerson }}
                     {% else %}
                         <span class="text-muted">{{ 'soa.field.unassigned'|trans({}, 'soa') }}</span>
                     {% endif %}
                 </strong>
                 <span>{{ 'soa.field.responsible_person'|trans({}, 'soa') }}</span>
+                {% if control.responsibleDeputyPersons|length > 0 %}
+                    <span class="text-muted small d-block">
+                        {{ 'soa.field.deputies'|trans({}, 'soa') }}:
+                        {{ control.responsibleDeputyPersons|map(p => p.displayName)|join(', ') }}
+                    </span>
+                {% endif %}
             </div>
 
             <div class="stat-item">
