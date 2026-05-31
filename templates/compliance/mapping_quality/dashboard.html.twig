@@ -420,6 +420,11 @@
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
+    // IIFE: Turbo re-runs in-body <script> on every body-swap/restore. Top-level
+    // const/let persist in the global scope across swaps, so a second run throws
+    // "Identifier '…' has already been declared" and aborts Turbo's renderElement.
+    // Function-scoping every declaration makes re-execution idempotent.
+    (function () {
         // Chart.js 4 requires explicit Colors-plugin registration; without it
         // datasets fall back to black/no-fill (was unrelated in v3 because the
         // default-color generator was always-on).
@@ -557,7 +562,12 @@
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                stepSize: 1
+                                // Integer ticks without forcing stepSize:1 — gap
+                                // counts can reach thousands; stepSize:1 then asks
+                                // Chart.js for ~N ticks (warning + perf hit). Let
+                                // it auto-space and just keep them whole numbers.
+                                precision: 0,
+                                maxTicksLimit: 8
                             }
                         }
                     }
@@ -567,5 +577,6 @@
         }
 
         // Batch analysis is now handled by batch-analysis Stimulus controller
+    })();
     </script>
 {% endblock %}
