@@ -36,7 +36,7 @@ library:
 mappings:
   - source: '7.2.1'
     target: 'Art.5'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27701 Klausel 7.2.1 "Identify and document purpose" verlangt die
@@ -60,7 +60,7 @@ mappings:
 
   - source: '7.2.3'
     target: 'Art.7'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27701 Klausel 7.2.3 "Determine when and how consent is to be
@@ -72,7 +72,7 @@ mappings:
 
   - source: '7.3.2'
     target: 'Art.13'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27701 Klausel 7.3.2 "Determining information for PII principals"
@@ -84,7 +84,7 @@ mappings:
 
   - source: '7.3.3'
     target: 'Art.15'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27701 Klausel 7.3.3 "Providing mechanisms to modify or withdraw
@@ -95,7 +95,7 @@ mappings:
 
   - source: '7.3.6'
     target: 'Art.17'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27701 Klausel 7.3.6 "Access, correction and/or erasure" verlangt
@@ -118,7 +118,7 @@ mappings:
 
   - source: '7.4.1'
     target: 'Art.25'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27701 Klauseln 7.4.1 "Limit collection" und 7.4.2 "Limit
@@ -130,7 +130,7 @@ mappings:
 
   - source: '8.5.1'
     target: 'Art.28'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27701 Klauseln 8.5.1 "Customer agreement" und 8.5.2
@@ -202,7 +202,7 @@ mappings:
 
   - source: '6.3.1'
     target: 'Art.37'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27701 Klauseln 6.3.1 "PII protection officer" und 6.3.2
@@ -214,7 +214,7 @@ mappings:
 
   - source: '7.5.1'
     target: 'Art.44'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27701 Klauseln 7.5.1 "Identify basis for PII transfer between
