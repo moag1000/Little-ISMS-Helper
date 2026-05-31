@@ -251,36 +251,29 @@
                 {% endblock %}
                 {% block card_body %}
                     {% if roadmap.roadmap|length > 0 %}
-                    <div class="row mb-4">
+                    {# Aurora KPI-Tiles statt Bootstrap bg-* (Kontrast garantiert, CLAUDE Pitfall #11). #}
+                    {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+                    <div class="row g-3 mb-4">
                         <div class="col-md-4">
-                            {% embed '_components/_card.html.twig' with { 'class': 'bg-success bg-opacity-10 border-success' } %}
-                                {% block card_body %}
-                                    <div class="text-center">
-                                        <h3 class="" style="color: var(--success-strong, var(--success)); font-weight: 700;">{{ roadmap.summary.frameworks_compliant }}</h3>
-                                        <p class="mb-0">{{ 'analytics.compliance.table.compliant'|trans({}, 'analytics') }}</p>
-                                    </div>
-                                {% endblock %}
-                            {% endembed %}
+                            {{ _fa_feature_card.render({
+                                variant: 'success',
+                                value: roadmap.summary.frameworks_compliant,
+                                label: 'analytics.compliance.table.compliant'|trans({}, 'analytics'),
+                            }) }}
                         </div>
                         <div class="col-md-4">
-                            {% embed '_components/_card.html.twig' with { 'class': 'bg-warning bg-opacity-10 border-warning' } %}
-                                {% block card_body %}
-                                    <div class="text-center">
-                                        <h3 class="" style="color: var(--warning-strong, var(--warning)); font-weight: 700;">{{ roadmap.summary.frameworks_in_progress }}</h3>
-                                        <p class="mb-0">{{ 'analytics.compliance.table.partial'|trans({}, 'analytics') }}</p>
-                                    </div>
-                                {% endblock %}
-                            {% endembed %}
+                            {{ _fa_feature_card.render({
+                                variant: 'warning',
+                                value: roadmap.summary.frameworks_in_progress,
+                                label: 'analytics.compliance.table.partial'|trans({}, 'analytics'),
+                            }) }}
                         </div>
                         <div class="col-md-4">
-                            {% embed '_components/_card.html.twig' with { 'class': 'bg-secondary bg-opacity-10 border-secondary' } %}
-                                {% block card_body %}
-                                    <div class="text-center">
-                                        <h3 class="" style="color: var(--secondary-strong, var(--secondary)); font-weight: 700;">{{ roadmap.summary.frameworks_not_started }}</h3>
-                                        <p class="mb-0">{{ 'analytics.compliance.table.non_compliant'|trans({}, 'analytics') }}</p>
-                                    </div>
-                                {% endblock %}
-                            {% endembed %}
+                            {{ _fa_feature_card.render({
+                                variant: 'danger',
+                                value: roadmap.summary.frameworks_not_started,
+                                label: 'analytics.compliance.table.non_compliant'|trans({}, 'analytics'),
+                            }) }}
                         </div>
                     </div>
 
