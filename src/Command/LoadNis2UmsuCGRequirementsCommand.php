@@ -127,12 +127,12 @@ class LoadNis2UmsuCGRequirementsCommand extends Command
             [
                 'id' => 'NIS2UMSUCG-1',
                 'title' => 'BSI-Registrierungspflicht',
-                'description' => 'Registrierung bei BSI innerhalb 3 Monaten nach Inkrafttreten des Gesetzes. Besonders wichtige und wichtige Einrichtungen muessen sich beim Bundesamt fuer Sicherheit in der Informationstechnik registrieren (§33 NIS2UmsuCG).',
+                'description' => 'Registrierung bei BSI innerhalb 3 Monaten nach Inkrafttreten des Gesetzes. Besonders wichtige und wichtige Einrichtungen muessen sich beim Bundesamt fuer Sicherheit in der Informationstechnik registrieren (§29 NIS2UmsuCG).',
                 'category' => 'Registrierung',
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.1', '5.5'],
-                    'legal_reference' => '§33 NIS2UmsuCG',
+                    'legal_reference' => '§29 NIS2UmsuCG',
                     'deadline' => '3_months',
                     'audit_evidence' => true,
                 ],
@@ -181,12 +181,12 @@ class LoadNis2UmsuCGRequirementsCommand extends Command
             [
                 'id' => 'NIS2UMSUCG-5',
                 'title' => 'Geschaeftsfuehrerhaftung',
-                'description' => 'Persoenliche Haftung der Geschaeftsfuehrung bei Pflichtverletzung. Geschaeftsleitungen haften fuer Schaeden, die durch Verstoesse gegen die Pflichten zur Umsetzung von Risikomanagementmassnahmen entstehen. Die Haftung kann nicht durch Vereinbarung ausgeschlossen werden (§38 NIS2UmsuCG).',
+                'description' => 'Persoenliche Haftung der Geschaeftsfuehrung bei Pflichtverletzung. Geschaeftsleitungen haften fuer Schaeden, die durch Verstoesse gegen die Pflichten zur Umsetzung von Risikomanagementmassnahmen entstehen. Die Haftung kann nicht durch Vereinbarung ausgeschlossen werden (§34 NIS2UmsuCG).',
                 'category' => 'Governance',
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.1', '5.3', '5.4'],
-                    'legal_reference' => '§38 NIS2UmsuCG',
+                    'legal_reference' => '§34 NIS2UmsuCG',
                     'audit_evidence' => true,
                 ],
             ],
@@ -216,12 +216,12 @@ class LoadNis2UmsuCGRequirementsCommand extends Command
             [
                 'id' => 'NIS2UMSUCG-8',
                 'title' => 'Schulungen Geschaeftsfuehrung',
-                'description' => 'Regelmaessige Cybersicherheitsschulungen fuer die Geschaeftsfuehrung. Mitglieder der Geschaeftsleitungen muessen an Schulungen teilnehmen, um ausreichende Kenntnisse und Faehigkeiten zur Erkennung und Bewertung von Risiken zu erwerben (§38 Abs. 3 NIS2UmsuCG).',
+                'description' => 'Regelmaessige Cybersicherheitsschulungen fuer die Geschaeftsfuehrung. Mitglieder der Geschaeftsleitungen muessen an Schulungen teilnehmen, um ausreichende Kenntnisse und Faehigkeiten zur Erkennung und Bewertung von Risiken zu erwerben (§34 Abs. 3 NIS2UmsuCG).',
                 'category' => 'Schulung',
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.3', '6.3'],
-                    'legal_reference' => '§38 Abs. 3 NIS2UmsuCG',
+                    'legal_reference' => '§34 Abs. 3 NIS2UmsuCG',
                     'training_required' => true,
                 ],
             ],
@@ -230,12 +230,12 @@ class LoadNis2UmsuCGRequirementsCommand extends Command
             [
                 'id' => 'NIS2UMSUCG-9',
                 'title' => 'Nachweispflicht',
-                'description' => 'Nachweis der Massnahmen gegenueber dem BSI. Besonders wichtige Einrichtungen muessen erstmalig drei Jahre nach Inkrafttreten und danach alle drei Jahre die Erfuellung der Anforderungen gegenueber dem BSI nachweisen (§34 NIS2UmsuCG).',
+                'description' => 'Nachweis der Massnahmen gegenueber dem BSI. Besonders wichtige Einrichtungen muessen erstmalig drei Jahre nach Inkrafttreten und danach alle drei Jahre die Erfuellung der Anforderungen gegenueber dem BSI nachweisen (§35 NIS2UmsuCG).',
                 'category' => 'Nachweis',
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.1', '5.35', '5.36'],
-                    'legal_reference' => '§34 NIS2UmsuCG',
+                    'legal_reference' => '§35 NIS2UmsuCG',
                     'audit_evidence' => true,
                     'recurrence' => '3_years',
                 ],
@@ -255,12 +255,12 @@ class LoadNis2UmsuCGRequirementsCommand extends Command
             [
                 'id' => 'NIS2UMSUCG-11',
                 'title' => 'Bussgeldrahmen',
-                'description' => 'Bis zu 10 Mio. EUR oder 2% des weltweiten Jahresumsatzes fuer besonders wichtige Einrichtungen. Fuer wichtige Einrichtungen bis zu 7 Mio. EUR oder 1,4% des weltweiten Jahresumsatzes (§65 NIS2UmsuCG).',
+                'description' => 'Bis zu 10 Mio. EUR oder 2% des weltweiten Jahresumsatzes fuer besonders wichtige Einrichtungen. Fuer wichtige Einrichtungen bis zu 7 Mio. EUR oder 1,4% des weltweiten Jahresumsatzes (§66 NIS2UmsuCG).',
                 'category' => 'Sanktionen',
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.1', '5.31'],
-                    'legal_reference' => '§65 NIS2UmsuCG',
+                    'legal_reference' => '§66 NIS2UmsuCG',
                 ],
             ],
 
