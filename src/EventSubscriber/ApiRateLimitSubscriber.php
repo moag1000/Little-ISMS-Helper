@@ -56,6 +56,14 @@ final class ApiRateLimitSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // The glossary lookup is a read-only UI helper fired on hover (tiny
+        // static responses, client-side cached per acronym). Exempt it from the
+        // data-API rate limit so tooltip definitions never 429 on a page with
+        // many terms.
+        if (str_starts_with($request->getPathInfo(), '/api/glossary/')) {
+            return;
+        }
+
         // Create limiter based on client IP
         $limiter = $this->rateLimiterFactory->create($request->getClientIp());
 

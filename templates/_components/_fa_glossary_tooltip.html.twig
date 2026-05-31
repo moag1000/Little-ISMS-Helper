@@ -22,6 +22,7 @@
 {% macro fa_glossary_tooltip(config) %}
     <span class="fa-glossary-tooltip"
           data-controller="glossary-tooltip"
+          data-action="mouseenter->glossary-tooltip#mouseenter mouseleave->glossary-tooltip#hide"
           data-glossary-tooltip-acronym-value="{{ config.acronym }}">
         <abbr title="{{ config.fullText }}{% if config.normRef is defined and config.normRef %} ({{ config.normRef }}){% endif %}">{{ config.acronym }}</abbr><sup class="fa-glossary-tooltip__indicator"
              tabindex="0"
