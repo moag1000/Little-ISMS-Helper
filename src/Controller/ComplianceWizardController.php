@@ -547,7 +547,7 @@ class ComplianceWizardController extends AbstractController
         $result = $this->mappingLibraryLoader->load($requestedPath);
 
         if (!$result['success']) {
-            $this->addFlash('error', $this->translator->trans('wizard.mapping_library.load_failed', [ // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('wizard.mapping_library.load_failed', [
                 '%errors%' => implode('; ', $result['errors']),
             ], 'wizard'));
             return $this->redirectToRoute('app_compliance_wizard_start', ['wizard' => $wizard]);
@@ -570,7 +570,7 @@ class ComplianceWizardController extends AbstractController
             );
         }
 
-        $this->addFlash('success', $this->translator->trans('wizard.mapping_library.imported', [ // @todo H-06 flash-domain
+        $this->addFlash('success', $this->translator->trans('wizard.mapping_library.imported', [
             '%imported%' => $result['imported'],
             '%updated%' => $result['updated'],
             '%skipped%' => $result['skipped'],

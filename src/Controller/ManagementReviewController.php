@@ -69,7 +69,7 @@ class ManagementReviewController extends AbstractController
             $this->entityManager->persist($managementReview);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('management_review.success.created')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('management_review.success.created', [], 'messages'));
             return $this->redirectToRoute('app_management_review_show', ['id' => $managementReview->getId()]);
         }
 
@@ -100,7 +100,7 @@ class ManagementReviewController extends AbstractController
             $managementReview->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('management_review.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('management_review.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_management_review_show', ['id' => $managementReview->getId()]);
         }
 
@@ -180,7 +180,7 @@ class ManagementReviewController extends AbstractController
             $this->entityManager->remove($managementReview);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('management_review.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('management_review.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_management_review_index');

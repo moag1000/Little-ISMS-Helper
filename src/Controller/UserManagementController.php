@@ -131,7 +131,7 @@ class UserManagementController extends AbstractController
                 sprintf('User "%s %s" (%s) created', $user->getFirstName(), $user->getLastName(), $user->getEmail())
             );
 
-            $this->addFlash('success', $translator->trans('user.success.created')); // @todo H-06 flash-domain
+            $this->addFlash('success', $translator->trans('user.success.created', [], 'messages'));
 
             return $this->redirectToRoute('user_management_index');
         }
@@ -164,7 +164,7 @@ class UserManagementController extends AbstractController
         $userIds = $request->request->all('user_ids') ?? [];
 
         if ($userIds === []) {
-            $this->addFlash('error', $translator->trans('user.error.no_users_selected')); // @todo H-06 flash-domain
+            $this->addFlash('error', $translator->trans('user.error.no_users_selected', [], 'messages'));
             return $this->redirectToRoute('user_management_index');
         }
 
@@ -272,10 +272,10 @@ class UserManagementController extends AbstractController
 
         // Success message
         if ($count > 0) {
-            $this->addFlash('success', $translator->trans('user.success.bulk_action_completed', [ // @todo H-06 flash-domain
+            $this->addFlash('success', $translator->trans('user.success.bulk_action_completed', [
                 'count' => $count,
                 'action' => $action,
-            ]));
+            ], 'messages'));
         }
 
         // Detailed feedback for skipped users
@@ -483,7 +483,7 @@ class UserManagementController extends AbstractController
             $file = $request->files->get('import_file');
 
             if (!$file) {
-                $this->addFlash('error', $translator->trans('user.error.no_file_uploaded')); // @todo H-06 flash-domain
+                $this->addFlash('error', $translator->trans('user.error.no_file_uploaded', [], 'messages'));
                 return $this->redirectToRoute('user_management_import');
             }
 
@@ -553,7 +553,7 @@ class UserManagementController extends AbstractController
 
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('user.success.imported', ['count' => $imported])); // @todo H-06 flash-domain
+            $this->addFlash('success', $translator->trans('user.success.imported', ['count' => $imported], 'messages'));
 
             foreach ($errors as $error) {
                 $this->addFlash('warning', $error);
@@ -649,7 +649,7 @@ class UserManagementController extends AbstractController
 
                 // Warn user if they changed their own password
                 if ($isEditingSelf) {
-                    $this->addFlash('warning', $translator->trans('user.warning.own_password_changed')); // @todo H-06 flash-domain
+                    $this->addFlash('warning', $translator->trans('user.warning.own_password_changed', [], 'messages'));
                 }
             }
 
@@ -719,11 +719,11 @@ class UserManagementController extends AbstractController
                 }
 
                 if ($criticalChanges || $plainPassword) {
-                    $this->addFlash('warning', $translator->trans('user.warning.session_will_be_invalidated')); // @todo H-06 flash-domain
+                    $this->addFlash('warning', $translator->trans('user.warning.session_will_be_invalidated', [], 'messages'));
                 }
             }
 
-            $this->addFlash('success', $translator->trans('user.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $translator->trans('user.success.updated', [], 'messages'));
 
             return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
         }
@@ -789,7 +789,7 @@ class UserManagementController extends AbstractController
                 sprintf('User "%s" (%s) deleted', $userName, $userEmail)
             );
 
-            $this->addFlash('success', $translator->trans('user.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $translator->trans('user.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('user_management_index');
@@ -840,7 +840,7 @@ class UserManagementController extends AbstractController
                 )
             );
 
-            $this->addFlash('success', $user->isActive() ? $translator->trans('user.success.activated') : $translator->trans('user.success.deactivated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $user->isActive() ? $translator->trans('user.success.activated', [], 'messages') : $translator->trans('user.success.deactivated', [], 'messages'));
         }
 
         return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
@@ -926,7 +926,7 @@ class UserManagementController extends AbstractController
         $token = $mfaTokenRepository->find($tokenId);
 
         if (!$token || $token->getUser()->getId() !== $user->getId()) {
-            $this->addFlash('error', $translator->trans('mfa.error.token_not_found')); // @todo H-06 flash-domain
+            $this->addFlash('error', $translator->trans('mfa.error.token_not_found', [], 'mfa'));
             return $this->redirectToRoute('user_management_mfa', ['id' => $user->getId()]);
         }
 
@@ -934,7 +934,7 @@ class UserManagementController extends AbstractController
             $entityManager->remove($token);
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('mfa.success.token_reset')); // @todo H-06 flash-domain
+            $this->addFlash('success', $translator->trans('mfa.success.token_reset', [], 'mfa'));
         }
 
         return $this->redirectToRoute('user_management_mfa', ['id' => $user->getId()]);

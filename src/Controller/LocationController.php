@@ -57,7 +57,7 @@ class LocationController extends AbstractController
             $this->entityManager->persist($location);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('location.success.created')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('location.success.created', [], 'messages'));
             return $this->redirectToRoute('app_location_show', ['id' => $location->getId()]);
         }
 
@@ -95,7 +95,7 @@ class LocationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('location.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('location.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_location_show', ['id' => $location->getId()]);
         }
 
@@ -116,7 +116,7 @@ class LocationController extends AbstractController
             $this->entityManager->remove($location);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('location.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('location.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_location_index');

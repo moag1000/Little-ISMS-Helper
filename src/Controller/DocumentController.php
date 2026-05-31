@@ -255,7 +255,7 @@ class DocumentController extends AbstractController
                 // Security: Log rate limit hit for monitoring
                 $this->securityEventLogger->logRateLimitHit('document_upload');
 
-                $this->addFlash('error', $this->translator->trans('document.error.too_many_uploads')); // @todo H-06 flash-domain
+                $this->addFlash('error', $this->translator->trans('document.error.too_many_uploads', [], 'messages'));
 
                 $status = ($form->isSubmitted() && !$form->isValid())
                     ? Response::HTTP_UNPROCESSABLE_ENTITY
@@ -309,7 +309,7 @@ class DocumentController extends AbstractController
                 // Security: Log data change
                 $this->securityEventLogger->logDataChange('Document', $document->getId(), 'CREATE');
 
-                $this->addFlash('success', $this->translator->trans('document.success.uploaded')); // @todo H-06 flash-domain
+                $this->addFlash('success', $this->translator->trans('document.success.uploaded', [], 'messages'));
                 return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
 
             } catch (FileException $e) {
@@ -322,7 +322,7 @@ class DocumentController extends AbstractController
                     $e->getMessage()
                 );
 
-                $this->addFlash('error', $this->translator->trans('document.error.upload_failed') . ': ' . $e->getMessage()); // @todo H-06 flash-domain
+                $this->addFlash('error', $this->translator->trans('document.error.upload_failed', [], 'messages') . ': ' . $e->getMessage());
 
                 $status = ($form->isSubmitted() && !$form->isValid())
                     ? Response::HTTP_UNPROCESSABLE_ENTITY
@@ -827,7 +827,7 @@ class DocumentController extends AbstractController
 
         // Check if document can be edited (not inherited) - only if user has tenant
         if ($tenant && !$this->documentService->canEditDocument($document, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited', [], 'messages'));
             return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
 
@@ -904,7 +904,7 @@ class DocumentController extends AbstractController
                 );
             }
 
-            $this->addFlash('success', $this->translator->trans('document.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('document.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
 
@@ -1013,7 +1013,7 @@ class DocumentController extends AbstractController
 
         // Check if document can be deleted (not inherited) - only if user has tenant
         if ($tenant && !$this->documentService->canEditDocument($document, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited', [], 'messages'));
             return $this->redirectToRoute('app_document_index');
         }
 
@@ -1036,7 +1036,7 @@ class DocumentController extends AbstractController
                 $this->entityManager->flush();
             }
 
-            $this->addFlash('success', $this->translator->trans('document.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('document.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_document_index');

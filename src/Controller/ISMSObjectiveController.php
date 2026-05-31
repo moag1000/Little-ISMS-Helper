@@ -68,7 +68,7 @@ class ISMSObjectiveController extends AbstractController
             $this->entityManager->persist($ismsObjective);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('objective.success.created')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('objective.success.created', [], 'messages'));
             return $this->redirectToRoute('app_objective_show', ['id' => $ismsObjective->getId()]);
         }
 
@@ -106,7 +106,7 @@ class ISMSObjectiveController extends AbstractController
 
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('objective.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('objective.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_objective_show', ['id' => $ismsObjective->getId()]);
         }
 
@@ -127,7 +127,7 @@ class ISMSObjectiveController extends AbstractController
             $this->entityManager->remove($ismsObjective);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('objective.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('objective.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_objective_index');

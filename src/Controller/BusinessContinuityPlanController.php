@@ -170,7 +170,7 @@ class BusinessContinuityPlanController extends AbstractController
             $this->entityManager->remove($businessContinuityPlan);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_bc_plan_index');
