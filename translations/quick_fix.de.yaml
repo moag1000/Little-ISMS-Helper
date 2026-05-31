@@ -120,5 +120,6 @@ quick_fix:
             help: 'Quick-Fix nur erreichbar wenn APP_ENV=dev.'
         ip_allowlist:
             label: 'IP-Allowlist'
-            help: 'Komma-getrennte Liste erlaubter Client-IPs. Leer = deaktiviert.'
+            help: 'Komma-getrennte Liste erlaubter Client-IPs oder CIDR-Bereiche (z.B. 10.0.0.5, 192.168.1.0/24, ::1). Leer = deaktiviert.'
+        ip_allowlist_invalid: 'IP-Allowlist nicht gespeichert: ungültige Einträge. Nur exakte IPs (IPv4/IPv6) oder CIDR-Bereiche erlaubt, z.B. 10.0.0.5, 192.168.1.0/24.'
         save: 'Speichern'
