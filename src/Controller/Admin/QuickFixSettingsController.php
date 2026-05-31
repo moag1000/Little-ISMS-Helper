@@ -60,6 +60,20 @@ class QuickFixSettingsController extends AbstractController
                 'ip_allowlist' => trim((string) $request->request->get('ip_allowlist', '')),
             ];
 
+            // Reject malformed allowlist entries up front: an invalid value
+            // (e.g. a typo'd CIDR) silently locks the Quick-Fix UI for everyone
+            // because QuickFixGuard fails closed. Re-render with the submitted
+            // input so the operator can fix it without losing their changes.
+            $invalid = self::invalidIpAllowlistEntries($new['ip_allowlist']);
+            if ($invalid !== []) {
+                $this->addFlash('danger', 'quick_fix.settings.ip_allowlist_invalid');
+
+                return $this->render('admin/quick_fix_settings/edit.html.twig', [
+                    'current' => $new,
+                    'ip_allowlist_invalid' => $invalid,
+                ]);
+            }
+
             $updatedBy = $user->getUserIdentifier();
 
             foreach ($new as $key => $value) {
@@ -86,5 +100,45 @@ class QuickFixSettingsController extends AbstractController
         return $this->render('admin/quick_fix_settings/edit.html.twig', [
             'current' => $current,
         ]);
+    }
+
+    /**
+     * Returns the comma-separated allowlist entries that are neither a valid
+     * exact IP (v4/v6) nor a valid CIDR range — exactly what
+     * {@see \Symfony\Component\HttpFoundation\IpUtils::checkIp()} can match.
+     *
+     * @return list<string>
+     */
+    public static function invalidIpAllowlistEntries(string $raw): array
+    {
+        $invalid = [];
+        foreach (explode(',', $raw) as $entry) {
+            $entry = trim($entry);
+            if ($entry === '') {
+                continue;
+            }
+
+            if (!str_contains($entry, '/')) {
+                if (filter_var($entry, FILTER_VALIDATE_IP) === false) {
+                    $invalid[] = $entry;
+                }
+                continue;
+            }
+
+            // CIDR: "<ip>/<prefix>" — validate both halves.
+            [$ip, $prefix] = explode('/', $entry, 2);
+            $isIpv6 = str_contains($ip, ':');
+            $maxPrefix = $isIpv6 ? 128 : 32;
+            if (
+                filter_var($ip, FILTER_VALIDATE_IP) === false
+                || $prefix === ''
+                || !ctype_digit($prefix)
+                || (int) $prefix > $maxPrefix
+            ) {
+                $invalid[] = $entry;
+            }
+        }
+
+        return $invalid;
     }
 }

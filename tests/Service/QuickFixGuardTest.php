@@ -142,6 +142,54 @@ class QuickFixGuardTest extends TestCase
     }
 
     #[Test]
+    public function ipAllowlistAllowsIpInsideCidrRange(): void
+    {
+        // Regression: a CIDR entry never matched under the old in_array() check,
+        // so an operator who allowlisted their subnet locked everyone out.
+        $this->settings->method('getSetting')->willReturnCallback(
+            fn(string $cat, string $key, mixed $default) => $key === 'ip_allowlist' ? '192.168.1.0/24' : $default
+        );
+
+        $request = Request::create('/quick-fix');
+        $request->server->set('REMOTE_ADDR', '192.168.1.42');
+
+        $this->assertTrue($this->guard->mayAccess($request));
+    }
+
+    #[Test]
+    public function ipAllowlistBlocksIpOutsideCidrRange(): void
+    {
+        $this->settings->method('getSetting')->willReturnCallback(
+            fn(string $cat, string $key, mixed $default) => $key === 'ip_allowlist' ? '192.168.1.0/24' : $default
+        );
+
+        $request = Request::create('/quick-fix');
+        $request->server->set('REMOTE_ADDR', '10.0.0.5');
+
+        $this->assertFalse($this->guard->mayAccess($request));
+    }
+
+    #[Test]
+    public function ipAllowlistMatchesAcrossMixedExactAndCidrEntries(): void
+    {
+        $this->settings->method('getSetting')->willReturnCallback(
+            fn(string $cat, string $key, mixed $default) => $key === 'ip_allowlist' ? '8.8.8.8, 10.0.0.0/8, ::1' : $default
+        );
+
+        $inRange = Request::create('/quick-fix');
+        $inRange->server->set('REMOTE_ADDR', '10.255.3.7');
+        $this->assertTrue($this->guard->mayAccess($inRange));
+
+        $exact = Request::create('/quick-fix');
+        $exact->server->set('REMOTE_ADDR', '8.8.8.8');
+        $this->assertTrue($this->guard->mayAccess($exact));
+
+        $blocked = Request::create('/quick-fix');
+        $blocked->server->set('REMOTE_ADDR', '172.16.0.1');
+        $this->assertFalse($this->guard->mayAccess($blocked));
+    }
+
+    #[Test]
     public function failsClosedToDefaultsWhenSettingsTableMissing(): void
     {
         $this->settings->method('getSetting')->willThrowException(new \RuntimeException('table missing'));
