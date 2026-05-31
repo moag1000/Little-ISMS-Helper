@@ -262,7 +262,7 @@
     <div class="gap-item critical">
         <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
         {% if gap.description is defined %}
-        <p>{{ gap.description|trans({}, 'wizard') }}</p>
+        <p>{{ gap.description|trans(gap.description_params|default({}), 'wizard') }}</p>
         {% endif %}
         {% if gap.action is defined %}
         <p><strong>Recommended Action:</strong> {{ gap.action|trans({}, 'wizard') }}</p>
@@ -313,7 +313,7 @@
     <div class="gap-item {% if gap.priority == 'critical' %}critical{% endif %}">
         <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
         {% if gap.description is defined %}
-        <p>{{ gap.description|trans({}, 'wizard') }}</p>
+        <p>{{ gap.description|trans(gap.description_params|default({}), 'wizard') }}</p>
         {% endif %}
     </div>
     {% endfor %}
