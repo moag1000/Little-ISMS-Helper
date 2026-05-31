@@ -10,7 +10,7 @@
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+        { label: 'nav.reports'|trans({}, 'nav'), url: path('app_reports_index') },
         { label: 'scheduled_report.title'|trans({}, 'scheduled_reports') }
     ]
 } %}

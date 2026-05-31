@@ -24,7 +24,7 @@
 <div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.compliance'|trans({}, 'nav') },
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
             { label: 'prototype_protection.page.index_title'|trans({}, 'prototype_protection') }
         ]
     } %}

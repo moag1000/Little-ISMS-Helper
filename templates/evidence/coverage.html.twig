@@ -9,7 +9,6 @@
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard') },
             { label: 'evidence.title'|trans({}, 'evidence'), url: path('app_evidence_index') },
             { label: 'evidence.coverage.title'|trans({}, 'evidence') }
         ]

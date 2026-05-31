@@ -6,8 +6,8 @@
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
-            { label: 'report_builder.page.title'|trans({},'report_builder'), path: path('report_builder_index') },
+            { label: 'nav.reports'|trans({}, 'nav'), url: path('app_reports_overview') },
+            { label: 'report_builder.page.title'|trans({},'report_builder'), url: path('report_builder_index') },
             { label: report.name }
         ]
     } %}

@@ -12,7 +12,7 @@
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'tisax.import.nav.title'|trans({}, 'tisax_isa'), href: path('app_tisax_import_disclaimer', { _locale: app.request.locale }) },
+            { label: 'tisax.import.nav.title'|trans({}, 'tisax_isa'), url: path('app_tisax_import_disclaimer') },
             { label: 'tisax.import.assess.title'|trans({}, 'tisax_isa') }
         ]
     } %}
