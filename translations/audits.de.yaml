@@ -395,6 +395,11 @@ audit_finding:
         no_findings: 'Keine Feststellungen vorhanden.'
     empty:
         body: 'Keine offenen Feststellungen — Ihr ISMS arbeitet aktuell konformitätsfest. Im Audit-Modul können Sie jederzeit neue Feststellungen aus internen oder externen Audits dokumentieren.'
+        no_audit:
+            title: 'Zuerst ein Audit anlegen'
+            text: 'Eine Feststellung gehört immer zu einem internen Audit. Legen Sie zuerst ein Audit an — danach können Sie hier Feststellungen dazu dokumentieren.'
+            cta: 'Audit anlegen'
+            back: 'Zurück zur Übersicht'
     confirm:
         delete: 'Möchten Sie diese Feststellung wirklich löschen?'
     flash:
@@ -424,6 +429,12 @@ corrective_action:
         title: 'Korrekturmaßnahmen'
         new: 'Neue Korrekturmaßnahme'
         edit: 'Korrekturmaßnahme bearbeiten'
+    empty:
+        no_finding:
+            title: 'Zuerst eine Feststellung anlegen'
+            text: 'Eine Korrekturmaßnahme behebt eine konkrete Auditfeststellung. Legen Sie zuerst eine Feststellung an — danach können Sie hier die passende Maßnahme dazu dokumentieren.'
+            cta: 'Feststellung anlegen'
+            back: 'Zurück zur Übersicht'
     action:
         new: 'Korrekturmaßnahme hinzufügen'
     field:

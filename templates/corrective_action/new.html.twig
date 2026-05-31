@@ -30,6 +30,21 @@
         }) }}
     {% endif %}
 
+    {# Empty-state: a corrective action requires a finding to act on. Without any
+       finding the required finding-select is empty and the form can't be
+       submitted — guide the user to create a finding first. #}
+    {% if form.finding.vars.choices|length == 0 %}
+        {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+        {{ _fa_empty_state.render({
+            icon: 'nav-list-check',
+            title: 'corrective_action.empty.no_finding.title'|trans({}, 'audits'),
+            text: 'corrective_action.empty.no_finding.text'|trans({}, 'audits'),
+            actions: [
+                { label: 'corrective_action.empty.no_finding.cta'|trans({}, 'audits'), variant: 'primary', icon: 'plus', href: path('app_audit_finding_new', {_locale: app.request.locale}) },
+                { label: 'corrective_action.empty.no_finding.back'|trans({}, 'audits'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_corrective_action_index', {_locale: app.request.locale}) }
+            ]
+        }) }}
+    {% else %}
     {% if finding %}
         <p class="text-muted mb-3">
             {{ 'corrective_action.message.for_finding'|trans({}, 'audits') }}:
@@ -37,5 +52,6 @@
         </p>
     {% endif %}
     {% include 'corrective_action/_form.html.twig' with {form: form} %}
+    {% endif %}
 </div>
 {% endblock %}
