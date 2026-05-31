@@ -8,8 +8,10 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Yaml\Yaml;
 
@@ -37,7 +39,7 @@ use Symfony\Component\Yaml\Yaml;
     name: 'app:load-bsi-grundschutz-catalogue',
     description: 'Load BSI IT-Grundschutz-Kompendium 2023 from canonical YAML catalogue tree (10 Schichten, 117 Bausteine, ~360 Anforderungen).',
 )]
-final class LoadBsiItGrundschutzCatalogueCommand
+final class LoadBsiItGrundschutzCatalogueCommand extends Command
 {
     private const CATALOGUE_DIR = 'fixtures/library/catalogues/bsi-it-grundschutz-2023';
     private const FRAMEWORK_CODE = 'BSI_GRUNDSCHUTZ';
@@ -47,15 +49,22 @@ final class LoadBsiItGrundschutzCatalogueCommand
         private readonly EntityManagerInterface $em,
         private readonly string $projectDir,
     ) {
+        parent::__construct();
     }
 
-    public function __invoke(
-        SymfonyStyle $io,
-        #[Option(name: 'update', shortcut: 'u', description: 'Update existing requirements instead of skipping')]
-        bool $update = false,
-        #[Option(name: 'layer', description: 'Only load a specific Schicht (ISMS|ORP|CON|OPS|DER|APP|SYS|IND|NET|INF)')]
-        ?string $layer = null,
-    ): int {
+    protected function configure(): void
+    {
+        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping');
+        $this->addOption('layer', null, InputOption::VALUE_REQUIRED, 'Only load a specific Schicht (ISMS|ORP|CON|OPS|DER|APP|SYS|IND|NET|INF)');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        $update = (bool) $input->getOption('update');
+        /** @var string|null $layer */
+        $layer = $input->getOption('layer');
+
         $framework = $this->ensureFramework();
 
         $layers = $layer !== null ? [strtoupper($layer)] : self::LAYERS;

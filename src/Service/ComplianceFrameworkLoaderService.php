@@ -11,7 +11,7 @@ use Exception;
 use App\Command\LoadTisaxRequirementsCommand;
 use App\Command\LoadDoraRequirementsCommand;
 use App\Command\LoadNis2RequirementsCommand;
-use App\Command\LoadBsiItGrundschutzRequirementsCommand;
+use App\Command\LoadBsiItGrundschutzCatalogueCommand;
 use App\Command\LoadGdprRequirementsCommand;
 use App\Command\LoadIso27001RequirementsCommand;
 use App\Command\LoadIso27701RequirementsCommand;
@@ -51,7 +51,7 @@ final class ComplianceFrameworkLoaderService
         private readonly LoadTisaxRequirementsCommand $loadTisaxRequirementsCommand,
         private readonly LoadDoraRequirementsCommand $loadDoraRequirementsCommand,
         private readonly LoadNis2RequirementsCommand $loadNis2RequirementsCommand,
-        private readonly LoadBsiItGrundschutzRequirementsCommand $loadBsiItGrundschutzRequirementsCommand,
+        private readonly LoadBsiItGrundschutzCatalogueCommand $loadBsiItGrundschutzCatalogueCommand,
         private readonly LoadGdprRequirementsCommand $loadGdprRequirementsCommand,
         private readonly LoadIso27001RequirementsCommand $loadIso27001RequirementsCommand,
         private readonly LoadIso27701RequirementsCommand $loadIso27701RequirementsCommand,
@@ -506,7 +506,11 @@ final class ComplianceFrameworkLoaderService
             'TISAX' => $this->loadTisaxRequirementsCommand,
             'DORA' => $this->loadDoraRequirementsCommand,
             'NIS2' => $this->loadNis2RequirementsCommand,
-            'BSI_GRUNDSCHUTZ' => $this->loadBsiItGrundschutzRequirementsCommand,
+            // Canonical 360-Anforderung catalogue (10 Schichten, 117 Bausteine)
+            // replaces the deprecated 32-entry hardcoded loader — the latter
+            // gave only ~3% Basis-coverage. The deprecated command stays
+            // available via CLI for legacy callers.
+            'BSI_GRUNDSCHUTZ' => $this->loadBsiItGrundschutzCatalogueCommand,
             'GDPR' => $this->loadGdprRequirementsCommand,
             'ISO27001' => $this->loadIso27001RequirementsCommand,
             'ISO27701' => $this->loadIso27701RequirementsCommand,
