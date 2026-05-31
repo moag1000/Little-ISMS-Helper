@@ -10088,6 +10088,35 @@ table.fa-coverage-matrix td:first-child { text-align: left; font-weight: 700; co
     outline-offset: 2px;
 }
 
+/* Persona-Vorschau: revert-to-own-view + active-preview cue */
+.sb-persona-switcher.is-acting .sb-density__label::after {
+    content: " · aktiv";
+    color: var(--primary);
+    font-weight: 700;
+}
+.sb-persona-switcher__revert {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 5px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--surface-2);
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.sb-persona-switcher__revert:hover {
+    background: var(--primary);
+    color: var(--on-primary);
+}
+.sb-persona-switcher__revert:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
 /* ── Flyout panel ────────────────────────────────────────── */
 /*
  * Anchored to .app-sidebar in production:

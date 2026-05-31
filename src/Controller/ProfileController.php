@@ -314,18 +314,34 @@ class ProfileController extends AbstractController
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
         $persona = $request->request->getString('persona', '');
-        $validPersonas = ['PERSONA_CISO', 'PERSONA_RISK', 'PERSONA_DPO', 'PERSONA_ISB', 'PERSONA_BCM'];
+        // Each persona maps to the dashboard the switcher should land on, so the
+        // UI navigates straight into that role's cockpit instead of only
+        // unlocking access on the current page.
+        $dashboardRoutes = [
+            'PERSONA_CISO' => 'app_dashboard_ciso',
+            'PERSONA_RISK' => 'app_dashboard_risk_manager',
+            'PERSONA_DPO'  => 'app_dashboard_dpo',
+            'PERSONA_ISB'  => 'app_dashboard_isb',
+            'PERSONA_BCM'  => 'app_dashboard_bcm',
+        ];
+        $locale = $request->getLocale();
         if ($persona === 'revert') {
             $request->getSession()->remove('compliance.acting_as_persona');
             $this->auditLogger->logCustom('persona_switch_revert', 'User', $user->getId(), ['acting_as' => null], ['acting_as' => null], sprintf('User "%s %s" reverted persona switch', $user->getFirstName(), $user->getLastName()));
-            return new JsonResponse(['acting_as' => null]);
+            return new JsonResponse([
+                'acting_as' => null,
+                'redirect' => $this->generateUrl('app_dashboard_compliance_manager', ['_locale' => $locale]),
+            ]);
         }
-        if (!in_array($persona, $validPersonas, true)) {
+        if (!array_key_exists($persona, $dashboardRoutes)) {
             return new JsonResponse(['error' => 'Invalid persona'], Response::HTTP_BAD_REQUEST);
         }
         $request->getSession()->set('compliance.acting_as_persona', $persona);
         $this->auditLogger->logCustom('persona_switch', 'User', $user->getId(), ['acting_as' => null], ['acting_as' => $persona], sprintf('User "%s %s" switched to persona %s', $user->getFirstName(), $user->getLastName(), $persona));
-        return new JsonResponse(['acting_as' => $persona]);
+        return new JsonResponse([
+            'acting_as' => $persona,
+            'redirect' => $this->generateUrl($dashboardRoutes[$persona], ['_locale' => $locale]),
+        ]);
     }
 
 }

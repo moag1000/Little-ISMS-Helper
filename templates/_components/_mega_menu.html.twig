@@ -318,43 +318,35 @@
 
 {# ── Phase 3.4: Persona Quick-Switcher (ROLE_COMPLIANCE_MANAGER + expert-density only) ── #}
 {% if is_granted('PERSONA_COMPLIANCE') and app.user %}
-<div class="sb-persona-switcher"
+{% set _acting_persona = app.request.session.get('compliance.acting_as_persona') %}
+<div class="sb-persona-switcher{{ _acting_persona ? ' is-acting' : '' }}"
      data-controller="persona-switcher"
      data-persona-switcher-endpoint-value="{{ path('app_preferences_persona_switch') }}"
      data-persona-switcher-csrf-value="{{ csrf_token('persona_switch_' ~ app.user.id) }}"
-     data-persona-switcher-current-value="{{ app.request.session.get('compliance.acting_as_persona') ?? '' }}">
+     data-persona-switcher-current-value="{{ _acting_persona ?? '' }}">
     <div class="sb-density__label">Persona-Vorschau</div>
     <div class="sb-density__group" role="group" aria-label="Persona-Vorschau">
-        <button class="sb-density__opt"
+        {% for p in [
+            { code: 'PERSONA_CISO', label: 'CISO', hint: 'CISO-Sicht' },
+            { code: 'PERSONA_RISK', label: 'Risk', hint: 'Risk-Manager-Sicht' },
+            { code: 'PERSONA_DPO', label: 'DPO', hint: 'DPO-Sicht' },
+            { code: 'PERSONA_ISB', label: 'ISB', hint: 'ISB-Sicht' },
+            { code: 'PERSONA_BCM', label: 'BCM', hint: 'BCM-Officer-Sicht' },
+        ] %}
+        <button class="sb-density__opt{{ _acting_persona == p.code ? ' is-active' : '' }}"
                 type="button"
-                data-persona="PERSONA_CISO"
+                data-persona="{{ p.code }}"
                 data-persona-switcher-target="option"
                 data-action="click->persona-switcher#switch"
-                title="CISO-Sicht">CISO</button>
-        <button class="sb-density__opt"
-                type="button"
-                data-persona="PERSONA_RISK"
-                data-persona-switcher-target="option"
-                data-action="click->persona-switcher#switch"
-                title="Risk-Manager-Sicht">Risk</button>
-        <button class="sb-density__opt"
-                type="button"
-                data-persona="PERSONA_DPO"
-                data-persona-switcher-target="option"
-                data-action="click->persona-switcher#switch"
-                title="DPO-Sicht">DPO</button>
-        <button class="sb-density__opt"
-                type="button"
-                data-persona="PERSONA_ISB"
-                data-persona-switcher-target="option"
-                data-action="click->persona-switcher#switch"
-                title="ISB-Sicht">ISB</button>
-        <button class="sb-density__opt"
-                type="button"
-                data-persona="PERSONA_BCM"
-                data-persona-switcher-target="option"
-                data-action="click->persona-switcher#switch"
-                title="BCM-Officer-Sicht">BCM</button>
+                aria-pressed="{{ _acting_persona == p.code ? 'true' : 'false' }}"
+                title="{{ p.hint }}">{{ p.label }}</button>
+        {% endfor %}
     </div>
+    {% if _acting_persona %}
+    <button class="sb-persona-switcher__revert"
+            type="button"
+            data-action="click->persona-switcher#revert"
+            title="Zurück zur eigenen Compliance-Manager-Sicht">↩ Eigene Sicht</button>
+    {% endif %}
 </div>
 {% endif %}
