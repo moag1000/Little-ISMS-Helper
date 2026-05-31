@@ -51,7 +51,14 @@ final class LoadC52026FullCatalogueCommand extends Command
             $area = basename($f, '.yml');
             $content = file_get_contents($f);
             // The BSI YAML uses anchors with duplicate names which breaks Symfony YAML.
-            // Parse with regex instead, since structure is regular.
+            // Parse with regex instead, since structure is regular. Two schemas
+            // appear in the C5:2026 catalogue:
+            //   1. anchored: `identifier: &ID_… '01'` + `name: '…'`  (most areas)
+            //   2. plain:    `id: 'GC-01'` + `name: '…'`            (e.g. GC.yml)
+            // The plain schema was silently dropped before, losing the 6 GC
+            // (governance/jurisdiction) criteria — legally material for cloud
+            // customers. Collect [$reqId, $num, $title] from BOTH schemas.
+            $entries = [];
             preg_match_all(
                 '/^  identifier:\s+&\S+\s+\'(\d+)\'\n  name:\s+\'([^\']+)\'/m',
                 $content,
@@ -59,7 +66,20 @@ final class LoadC52026FullCatalogueCommand extends Command
                 PREG_SET_ORDER
             );
             foreach ($matches as [$_, $num, $title]) {
-                $reqId = sprintf('%s-%s', $area, $num);
+                $entries[] = [sprintf('%s-%s', $area, $num), $num, $title];
+            }
+            preg_match_all(
+                '/^  id:\s+\'([^\']+)\'\n  name:\s+\'([^\']+)\'/m',
+                $content,
+                $idMatches,
+                PREG_SET_ORDER
+            );
+            foreach ($idMatches as [$_, $fullId, $title]) {
+                // The plain schema already carries the full prefixed id (e.g. GC-01).
+                $num = str_starts_with($fullId, $area . '-') ? substr($fullId, strlen($area) + 1) : $fullId;
+                $entries[] = [$fullId, $num, $title];
+            }
+            foreach ($entries as [$reqId, $num, $title]) {
                 $req = $reqRepo->findOneBy(['framework' => $framework, 'requirementId' => $reqId]);
                 if ($req === null) {
                     $req = new ComplianceRequirement();

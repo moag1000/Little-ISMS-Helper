@@ -91,7 +91,7 @@ mappings:
     gap_warning: 'Definitionen, kein Control-Pfad.'
 
   # ===== Chapter II — Principles (Art.5-11) =====
-  - source: 'Art.5'
+  - source: 'GDPR-5.1.a'
     target: '18.1.4'
     relationship: 'equivalent'
     confidence: 'high'
@@ -102,7 +102,7 @@ mappings:
     cross_refs: ['A.2.1', 'A.4.1']
     audit_evidence_hint: 'Datenschutz-Policy mit Grundsaetzen, RoPA mit Zwecken, Loeschkonzept.'
 
-  - source: 'Art.6'
+  - source: 'GDPR-6'
     target: '18.1.4'
     relationship: 'equivalent'
     confidence: 'high'
@@ -111,7 +111,7 @@ mappings:
       18.1.4 plus A.2.1 (Verarbeitungszweck) und A.2.2.
     cross_refs: ['A.2.1', 'A.2.2']
 
-  - source: 'Art.7'
+  - source: 'GDPR-7'
     target: 'A.2.1'
     relationship: 'subset'
     confidence: 'medium'
@@ -130,7 +130,7 @@ mappings:
       kein direktes 27018-Pendant.
     gap_warning: 'Kinder-Consent ist Controller-Pflicht.'
 
-  - source: 'Art.9'
+  - source: 'GDPR-9'
     target: 'A.10.6'
     relationship: 'related'
     confidence: 'medium'
@@ -157,7 +157,7 @@ mappings:
       27018-Pendant.
 
   # ===== Chapter III — Data subject rights (Art.12-23) =====
-  - source: 'Art.12'
+  - source: 'GDPR-12'
     target: 'A.1.1'
     relationship: 'equivalent'
     confidence: 'high'
@@ -168,7 +168,7 @@ mappings:
       Erfuellung der Modalitaeten.
     audit_evidence_hint: 'Workflow zur Subject-Request-Bearbeitung mit Processor-Unterstuetzung.'
 
-  - source: 'Art.13'
+  - source: 'GDPR-13'
     target: 'A.7.1'
     relationship: 'subset'
     confidence: 'medium'
@@ -178,7 +178,7 @@ mappings:
       und A.11.2.
     cross_refs: ['A.11.2']
 
-  - source: 'Art.14'
+  - source: 'GDPR-14'
     target: 'A.7.2'
     relationship: 'subset'
     confidence: 'medium'
@@ -186,7 +186,7 @@ mappings:
       GDPR Art.14 (Informationspflicht ohne Erhebung beim Betroffenen) Teil
       von 27018 A.7.2 plus A.11.2.
 
-  - source: 'Art.15'
+  - source: 'GDPR-15'
     target: 'A.1.1'
     relationship: 'subset'
     confidence: 'high'
@@ -194,7 +194,7 @@ mappings:
       GDPR Art.15 "Auskunftsrecht" Teil der Cloud-Processor-Co-Operation-
       Pflicht in A.1.1.
 
-  - source: 'Art.16'
+  - source: 'GDPR-16'
     target: 'A.1.1'
     relationship: 'subset'
     confidence: 'high'
@@ -202,7 +202,7 @@ mappings:
       GDPR Art.16 "Recht auf Berichtigung" Teil von A.1.1 — Processor muss
       technische Korrektur-Funktion bereitstellen.
 
-  - source: 'Art.17'
+  - source: 'GDPR-17'
     target: 'A.5.2'
     relationship: 'equivalent'
     confidence: 'high'
@@ -213,7 +213,7 @@ mappings:
     cross_refs: ['A.4.1', '8.3.2']
     audit_evidence_hint: 'Loeschkonzept, Loeschprotokolle, Tempdaten/Cache-Cleanup.'
 
-  - source: 'Art.18'
+  - source: 'GDPR-18'
     target: 'A.6.2'
     relationship: 'equivalent'
     confidence: 'high'
@@ -222,7 +222,7 @@ mappings:
       ISO 27018 A.6.2 (Restriction-Aspekt im Cloud-Processor-Kontext).
     audit_evidence_hint: 'Technische Implementierung von Restriction-Flags pro PII-Datensatz.'
 
-  - source: 'Art.19'
+  - source: 'GDPR-19'
     target: 'A.1.1'
     relationship: 'subset'
     confidence: 'medium'
@@ -230,7 +230,7 @@ mappings:
       GDPR Art.19 "Mitteilungspflicht bei Berichtigung/Loeschung/Einschraenkung"
       Teil von A.1.1 (Co-operation Pflicht).
 
-  - source: 'Art.20'
+  - source: 'GDPR-20'
     target: 'A.1.1'
     relationship: 'subset'
     confidence: 'high'
@@ -239,14 +239,14 @@ mappings:
       Processor muss Export-Format/API bereitstellen.
     audit_evidence_hint: 'Datenexport-API, strukturiertes maschinenlesbares Format.'
 
-  - source: 'Art.21'
+  - source: 'GDPR-21'
     target: 'A.1.1'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       GDPR Art.21 "Widerspruchsrecht" Teil der Co-Operation-Pflicht in A.1.1.
 
-  - source: 'Art.22'
+  - source: 'GDPR-22'
     target: 'A.1.1'
     relationship: 'subset'
     confidence: 'medium'
@@ -264,7 +264,7 @@ mappings:
       kein direktes 27018-Pendant.
 
   # ===== Chapter IV — Controller and processor (Art.24-43) =====
-  - source: 'Art.24'
+  - source: 'GDPR-24'
     target: '5.1.1'
     relationship: 'subset'
     confidence: 'medium'
@@ -273,7 +273,7 @@ mappings:
       27002:2013 5.1.1 (Policies) — Controller-Pflicht; Cloud-Processor
       liefert AVV-konforme Vertragsgrundlage.
 
-  - source: 'Art.25'
+  - source: 'GDPR-25'
     target: '14.1.1'
     relationship: 'related'
     confidence: 'medium'
@@ -284,7 +284,7 @@ mappings:
     cross_refs: ['14.2.5']
     gap_warning: 'PbD/PbDef ist primaer Controller-Pflicht; Processor liefert technische Bausteine.'
 
-  - source: 'Art.26'
+  - source: 'GDPR-26'
     target: null
     relationship: 'related'
     confidence: 'low'
@@ -300,7 +300,7 @@ mappings:
       GDPR Art.27 "Vertreter von nicht in der Union niedergelassenen
       Verantwortlichen" ohne Cloud-Processor-Pendant.
 
-  - source: 'Art.28'
+  - source: 'GDPR-28'
     target: 'A.3.1'
     relationship: 'equivalent'
     confidence: 'high'
@@ -321,7 +321,7 @@ mappings:
       Weisung verarbeiten.
     cross_refs: ['A.10.1']
 
-  - source: 'Art.30'
+  - source: 'GDPR-30'
     target: 'A.4.1'
     relationship: 'equivalent'
     confidence: 'high'
@@ -341,7 +341,7 @@ mappings:
       A.5.1 (Government Disclosures); ueberwiegend prozessual.
     cross_refs: ['A.5.1']
 
-  - source: 'Art.32'
+  - source: 'GDPR-32'
     target: 'A.10.6'
     relationship: 'equivalent'
     confidence: 'high'
@@ -353,7 +353,7 @@ mappings:
     cross_refs: ['A.10.1', 'A.10.2', 'A.10.3', 'A.10.4', 'A.10.5', 'A.10.7', 'A.10.8', 'A.10.9', 'A.10.10', 'A.10.11', 'A.10.12', 'A.10.13', '9.1.1', '10.1.1', '12.3.1', '13.1.1']
     audit_evidence_hint: 'Kryptokonzept, TOMs-Beschreibung, Pentest-Reports, Backup/Restore-Tests.'
 
-  - source: 'Art.33'
+  - source: 'GDPR-33'
     target: 'A.8.1'
     relationship: 'equivalent'
     confidence: 'high'
@@ -366,7 +366,7 @@ mappings:
     cross_refs: ['16.1.1', '16.1.2']
     audit_evidence_hint: 'Breach-Notification-Workflow mit 24h-SLA, Breach-Register, Mustertexte.'
 
-  - source: 'Art.34'
+  - source: 'GDPR-34'
     target: 'A.8.1'
     relationship: 'equivalent'
     confidence: 'high'
@@ -376,7 +376,7 @@ mappings:
       operativ; Processor unterstuetzt Controller mit den noetigen
       Informationen.
 
-  - source: 'Art.35'
+  - source: 'GDPR-35'
     target: null
     relationship: 'related'
     confidence: 'medium'
@@ -386,7 +386,7 @@ mappings:
       ISO 27018-Pendant; ISO 27701 deckt PIA explizit.
     gap_warning: 'DPIA ist Controller-Pflicht. Vollstaendige Abdeckung erfordert ISO 27701 oder ISO 29134.'
 
-  - source: 'Art.36'
+  - source: 'GDPR-36'
     target: null
     relationship: 'related'
     confidence: 'low'
@@ -394,7 +394,7 @@ mappings:
       GDPR Art.36 "Vorherige Konsultation" ist Controller-Pflicht; kein
       direktes 27018-Pendant.
 
-  - source: 'Art.37'
+  - source: 'GDPR-37'
     target: null
     relationship: 'related'
     confidence: 'low'
@@ -404,14 +404,14 @@ mappings:
       Klausel 5 (Leadership) plus 27002:2013 6.1.1 als TOM-Anteil.
     cross_refs: ['6.1.1']
 
-  - source: 'Art.38'
+  - source: 'GDPR-38'
     target: null
     relationship: 'related'
     confidence: 'low'
     rationale: |
       GDPR Art.38 "Stellung des Datenschutzbeauftragten" ohne 27018-Pendant.
 
-  - source: 'Art.39'
+  - source: 'GDPR-39'
     target: '7.2.2'
     relationship: 'related'
     confidence: 'medium'
@@ -452,7 +452,7 @@ mappings:
       GDPR Art.43 (Zertifizierungsstellen) ohne direkten 27018-Control-Pfad.
 
   # ===== Chapter V — Transfers to third countries (Art.44-50) =====
-  - source: 'Art.44'
+  - source: 'GDPR-44'
     target: 'A.7.1'
     relationship: 'equivalent'
     confidence: 'high'
@@ -473,7 +473,7 @@ mappings:
     cross_refs: ['A.7.1', '18.1.1']
     audit_evidence_hint: 'Adequacy-Liste, TIA-Reports.'
 
-  - source: 'Art.46'
+  - source: 'GDPR-46'
     target: 'A.7.2'
     relationship: 'equivalent'
     confidence: 'high'

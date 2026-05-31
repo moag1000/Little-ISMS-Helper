@@ -66,7 +66,7 @@ class ChangeRequestController extends AbstractController
             $this->entityManager->persist($changeRequest);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('change_request.success.created')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('change_request.success.created', [], 'messages'));
             return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
         }
 
@@ -98,7 +98,7 @@ class ChangeRequestController extends AbstractController
             $changeRequest->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('change_request.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('change_request.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
         }
 
@@ -119,7 +119,7 @@ class ChangeRequestController extends AbstractController
             $this->entityManager->remove($changeRequest);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('change_request.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('change_request.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_change_request_index');

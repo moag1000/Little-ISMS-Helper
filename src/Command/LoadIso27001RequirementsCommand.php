@@ -20,8 +20,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadIso27001RequirementsCommand extends Command
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoadIso27001ClausesCommand $loadIso27001ClausesCommand,
+    ) {
         parent::__construct();
     }
 
@@ -117,6 +119,13 @@ class LoadIso27001RequirementsCommand extends Command
             ]
         );
         $symfonyStyle->note('These ComplianceRequirements enable cross-framework mappings (separate from Control entities for implementation tracking).');
+
+        // ISO 27001 certification needs the mandatory management Clauses 4-10, not
+        // just Annex A. Seed them in the same load so they are never silently
+        // missing (the standalone app:load-iso27001-clauses command remains for
+        // re-runs). The clauses command is invokable; it finds the framework row
+        // this command just created and adds its 28 clause requirements.
+        ($this->loadIso27001ClausesCommand)(update: $update, symfonyStyle: $symfonyStyle);
 
         return Command::SUCCESS;
     }

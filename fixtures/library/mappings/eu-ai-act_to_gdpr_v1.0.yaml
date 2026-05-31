@@ -92,7 +92,7 @@ library:
 
 mappings:
   - source: 'Art.10'
-    target: 'Art.5'
+    target: 'GDPR-5.1.a'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -112,7 +112,7 @@ mappings:
     audit_evidence_hint: 'Trainingsdaten-Dokumentation mit Repräsentativitäts-Analyse, RoPA-Eintrag mit Rechtsgrundlage und Datenminimierungs-Begründung.'
 
   - source: 'Art.10'
-    target: 'Art.6'
+    target: 'GDPR-6'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -130,7 +130,7 @@ mappings:
     audit_evidence_hint: 'Pro Trainings-Datensatz: dokumentierte DSGVO-Rechtsgrundlage, ggf. LIA (Legitimate Interest Assessment).'
 
   - source: 'Art.10'
-    target: 'Art.9'
+    target: 'GDPR-9'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -151,7 +151,7 @@ mappings:
     audit_evidence_hint: 'DSGVO-Art.-9(2)-Rechtsgrundlage für Bias-Detection-Datensätze, technisch-organisatorische Schutzmaßnahmen-Dokumentation.'
 
   - source: 'Art.10'
-    target: 'Art.22'
+    target: 'GDPR-22'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -167,7 +167,7 @@ mappings:
     cross_refs: ['Art.5', 'Art.9']
 
   - source: 'Art.13'
-    target: 'Art.13'
+    target: 'GDPR-13'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -187,7 +187,7 @@ mappings:
     audit_evidence_hint: 'Gebrauchsanweisung KI-System (AI Act Art. 13), Datenschutzerklärung (DSGVO Art. 13), KI-Hinweis in Datenschutzerklärung.'
 
   - source: 'Art.13'
-    target: 'Art.14'
+    target: 'GDPR-14'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
@@ -204,7 +204,7 @@ mappings:
     cross_refs: ['Art.13']
 
   - source: 'Art.14'
-    target: 'Art.22'
+    target: 'GDPR-22'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -226,7 +226,7 @@ mappings:
     audit_evidence_hint: 'Aufsichts-Konzept mit Eskalationspfaden, Schulungsnachweise für Aufsichtspersonen, Anfechtungsprozess für betroffene Personen.'
 
   - source: 'Art.15'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
@@ -247,7 +247,7 @@ mappings:
     audit_evidence_hint: 'Adversarial-Testing-Reports, Model-Robustness-Tests, KI-spezifische TOM-Liste, Pen-Test-Reports mit ML-Attack-Vektoren.'
 
   - source: 'Art.26'
-    target: 'Art.5'
+    target: 'GDPR-5.1.a'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -261,7 +261,7 @@ mappings:
     cross_refs: ['Art.6']
 
   - source: 'Art.27'
-    target: 'Art.35'
+    target: 'GDPR-35'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -282,7 +282,7 @@ mappings:
     audit_evidence_hint: 'Integrierter FRIA+DPIA-Bericht, Konsultation Datenschutzaufsicht (Art. 36 DSGVO) bei hohem Restrisiko, FRIA-Notifikation Marktaufsichtsbehörde (Art. 27(3) AI Act).'
 
   - source: 'Art.49'
-    target: 'Art.30'
+    target: 'GDPR-30'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -299,7 +299,7 @@ mappings:
     audit_evidence_hint: 'EU-Datenbank-Registrierungsbestätigung, RoPA-Eintrag mit Verweis auf KI-System.'
 
   - source: 'Art.50'
-    target: 'Art.13'
+    target: 'GDPR-13'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -317,7 +317,7 @@ mappings:
     audit_evidence_hint: 'KI-Kennzeichnung in UI ("Sie chatten mit einer KI"), Deepfake-Wasserzeichen, Datenschutzerklärung mit KI-Hinweis.'
 
   - source: 'Art.59'
-    target: 'Art.6'
+    target: 'GDPR-6'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -348,7 +348,7 @@ mappings:
     cross_refs: ['Art.6']
 
   - source: 'Art.73'
-    target: 'Art.33'
+    target: 'GDPR-33'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -367,7 +367,7 @@ mappings:
     audit_evidence_hint: 'AI-Act-Meldeprotokoll Marktaufsicht, DSGVO-Meldeprotokoll Datenschutzaufsicht, Incident-Response-Plan mit Doppelmelde-Logik.'
 
   - source: 'Art.73'
-    target: 'Art.34'
+    target: 'GDPR-34'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -399,7 +399,7 @@ mappings:
     audit_evidence_hint: 'Beschwerdemanagement-Prozess mit beiden Eskalationswegen, Hinweis in Datenschutzerklärung auf beide Beschwerderechte.'
 
   - source: 'Art.86'
-    target: 'Art.22'
+    target: 'GDPR-22'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -420,7 +420,7 @@ mappings:
     audit_evidence_hint: 'Erklärungs-Template für KI-Entscheidungen, Schulung Customer-Service zur Erklärungspflicht, Logging der Anfragen.'
 
   - source: 'Art.86'
-    target: 'Art.15'
+    target: 'GDPR-15'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -431,7 +431,7 @@ mappings:
     cross_refs: ['Art.22']
 
   - source: 'Art.4'
-    target: 'Art.39'
+    target: 'GDPR-39'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -446,7 +446,7 @@ mappings:
       Rolle empfohlen.
 
   - source: 'Art.5'
-    target: 'Art.22'
+    target: 'GDPR-22'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -463,7 +463,7 @@ mappings:
     cross_refs: ['Art.9']
 
   - source: 'Annex-III'
-    target: 'Art.35'
+    target: 'GDPR-35'
     relationship: 'related'
     confidence: 'high'
     rationale: |

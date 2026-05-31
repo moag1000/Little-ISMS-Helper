@@ -34,9 +34,9 @@ class LoadIso27001ClausesCommand
         $symfonyStyle?->text(sprintf('Mode: %s', $update ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
-            ->findOneBy(['code' => 'ISO-27001']);
+            ->findOneBy(['code' => 'ISO27001']);
         if (!$framework instanceof ComplianceFramework) {
-            $symfonyStyle?->error('ISO-27001 framework not found. Run app:load-iso27001-requirements first.');
+            $symfonyStyle?->error('ISO27001 framework not found. Run app:load-iso27001-requirements first.');
             return Command::FAILURE;
         }
 

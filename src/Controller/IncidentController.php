@@ -272,7 +272,7 @@ class IncidentController extends AbstractController
             // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
             // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
-            $this->addFlash('success', $this->translator->trans('incident.success.reported')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('incident.success.reported', [], 'messages'));
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
@@ -497,7 +497,7 @@ class IncidentController extends AbstractController
                 }
             }
 
-            $this->addFlash('success', $this->translator->trans('incident.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('incident.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
@@ -581,7 +581,7 @@ class IncidentController extends AbstractController
             $this->entityManager->remove($incident);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('incident.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('incident.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_incident_index');

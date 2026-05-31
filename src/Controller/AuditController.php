@@ -284,7 +284,7 @@ class AuditController extends AbstractController
         );
         $this->entityManager->flush();
 
-        $this->addFlash('success', $this->translator->trans('audit.flash.cloned', [ // @todo H-06 flash-domain
+        $this->addFlash('success', $this->translator->trans('audit.flash.cloned', [
             '%title%' => (string) $clone->getTitle(),
         ], 'audits'));
 

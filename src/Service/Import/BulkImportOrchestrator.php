@@ -6,6 +6,7 @@ namespace App\Service\Import;
 
 use App\Entity\BulkImportBatch;
 use App\Entity\BulkImportRow;
+use App\Entity\Document;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Exception\Import\ImportFailedException;
@@ -87,6 +88,10 @@ class BulkImportOrchestrator
         $storedName   = sprintf('%s_%s.%s', date('Ymd_His'), bin2hex(random_bytes(6)), $extension);
         $storedPath   = $this->uploadDir . DIRECTORY_SEPARATOR . $storedName;
 
+        // Capture the MIME type BEFORE move() — the UploadedFile's temp file
+        // (which getMimeType() inspects) is gone once it has been moved.
+        $mimeType = $file->getMimeType() ?: 'application/octet-stream';
+
         $file->move($this->uploadDir, $storedName);
 
         // Compute SHA-256 of the persisted file for tamper-evidence + dedup
@@ -107,13 +112,36 @@ class BulkImportOrchestrator
         $batch->setSourceFileName($originalName);
         $batch->setSourceFileHash($fileHash);
         $batch->setSourceFileSize($fileSize);
-        // $batch->setSourceDocument(null) — document linkage deferred to F2.6
 
         if ($user !== null) {
             $batch->setExecutedBy($user);
         }
 
         $this->em->persist($batch);
+        $this->em->flush();
+
+        // F2.6 — record the uploaded source file as an import-evidence Document
+        // and link it to the batch (ISO 27001 Cl. 7.5.3 — documented evidence of
+        // what was imported, with the same SHA-256 for tamper-evidence). The
+        // batch id is available after the flush above, so the document can carry
+        // a back-reference to it.
+        $document = new Document();
+        $document->setTenant($tenant);
+        $document->setFilename($storedName);
+        $document->setOriginalFilename($originalName);
+        $document->setMimeType($mimeType);
+        $document->setFileSize((int) $fileSize);
+        $document->setFilePath($storedPath);
+        $document->setSha256Hash($fileHash);
+        $document->setCategory('import_evidence');
+        $document->setEntityType('bulk_import_batch');
+        $document->setEntityId($batch->getId());
+        if ($user !== null) {
+            $document->setUploadedBy($user);
+        }
+
+        $this->em->persist($document);
+        $batch->setSourceDocument($document);
         $this->em->flush();
 
         return $batch;

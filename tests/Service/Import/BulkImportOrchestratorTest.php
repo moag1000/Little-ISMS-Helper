@@ -125,6 +125,7 @@ final class BulkImportOrchestratorTest extends TestCase
         $uploadedFile = $this->createMock(UploadedFile::class);
         $uploadedFile->method('getClientOriginalName')->willReturn('test.csv');
         $uploadedFile->method('getClientOriginalExtension')->willReturn('csv');
+        $uploadedFile->method('getMimeType')->willReturn('text/csv');
         $uploadedFile->method('move')->willReturnCallback(function (string $dir, string $name) use ($tmpFile): File {
             if (!is_dir($dir)) {
                 mkdir($dir, 0750, true);
@@ -134,8 +135,10 @@ final class BulkImportOrchestratorTest extends TestCase
             return new File($dest);
         });
 
-        $this->em->expects($this->once())->method('persist');
-        $this->em->expects($this->once())->method('flush');
+        // Two persist/flush cycles: (1) the batch, (2) the import-evidence
+        // Document linked back to the now-persisted batch (F2.6).
+        $this->em->expects($this->exactly(2))->method('persist');
+        $this->em->expects($this->exactly(2))->method('flush');
 
         $batch = $this->orchestrator->upload($uploadedFile, 'Asset', $this->tenant, $this->user);
 
@@ -146,6 +149,17 @@ final class BulkImportOrchestratorTest extends TestCase
         $this->assertSame('test.csv', $batch->getSourceFileName());
         $this->assertSame($expectedHash, $batch->getSourceFileHash());
         $this->assertNotEmpty($batch->getSourceFileSize());
+
+        // F2.6 — the uploaded source file is recorded as an import-evidence
+        // Document and linked to the batch with the same SHA-256.
+        $doc = $batch->getSourceDocument();
+        $this->assertNotNull($doc, 'upload() must link an import-evidence Document');
+        $this->assertSame('import_evidence', $doc->getCategory());
+        $this->assertSame('test.csv', $doc->getOriginalFilename());
+        $this->assertSame($expectedHash, $doc->getSha256Hash());
+        $this->assertSame('text/csv', $doc->getMimeType());
+        $this->assertSame('bulk_import_batch', $doc->getEntityType());
+        $this->assertSame($this->tenant, $doc->getTenant());
 
         unlink($tmpFile);
     }

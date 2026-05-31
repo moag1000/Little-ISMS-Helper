@@ -17,6 +17,7 @@ use App\Service\CompliancePolicyService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -35,6 +36,7 @@ final class ComplianceInheritanceController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly TenantContext $tenantContext,
         private readonly CompliancePolicyService $policy,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -179,7 +181,7 @@ final class ComplianceInheritanceController extends AbstractController
 
         try {
             $this->inheritanceService->confirmInheritance($log, $user, $comment, $requestImplement, $approver);
-            $this->addFlash('success', $this->trans('compliance_inheritance.flash.confirmed')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->trans('compliance_inheritance.flash.confirmed'));
         } catch (\InvalidArgumentException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -202,7 +204,7 @@ final class ComplianceInheritanceController extends AbstractController
 
         try {
             $this->inheritanceService->rejectInheritance($log, $user, (string) $request->request->get('reason', ''));
-            $this->addFlash('success', $this->trans('compliance_inheritance.flash.rejected')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->trans('compliance_inheritance.flash.rejected'));
         } catch (\InvalidArgumentException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -234,7 +236,7 @@ final class ComplianceInheritanceController extends AbstractController
                 (string) $request->request->get('reason', ''),
                 $approver,
             );
-            $this->addFlash('success', $this->trans('compliance_inheritance.flash.overridden')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->trans('compliance_inheritance.flash.overridden'));
         } catch (\InvalidArgumentException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -276,6 +278,6 @@ final class ComplianceInheritanceController extends AbstractController
 
     private function trans(string $key): string
     {
-        return $key;
+        return $this->translator->trans($key, [], 'messages');
     }
 }
