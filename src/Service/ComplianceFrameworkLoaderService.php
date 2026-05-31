@@ -456,7 +456,7 @@ final class ComplianceFrameworkLoaderService
                 'code' => 'PCI-DSS-4.0.1',
                 'name' => 'PCI DSS v4.0.1 - Payment Card Industry Data Security Standard',
                 'description' => '12 Anforderungen für die Sicherheit von Karteninhaberdaten (Netzwerk, Zugriff, Verschlüsselung, Monitoring, Tests).',
-                'industry' => 'finance',
+                'industry' => 'financial_services',
                 'regulatory_body' => 'PCI Security Standards Council',
                 'mandatory' => false,
                 'applicability' => 'conditional',

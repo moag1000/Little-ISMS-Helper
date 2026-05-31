@@ -87,7 +87,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
     {
         $stats = $this->service->getFrameworkStatistics();
 
-        $this->assertEquals(24, $stats['total_available']);
+        $this->assertEquals(29, $stats['total_available']);
         $this->assertArrayHasKey('total_loaded', $stats);
         $this->assertArrayHasKey('total_not_loaded', $stats);
         $this->assertArrayHasKey('compliance_percentage', $stats);
@@ -143,6 +143,8 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
             'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'KRITIS', 'KRITIS-HEALTH',
             'DIGAV', 'TKG-2024', 'GXP', 'BDSG', 'EU-AI-ACT', 'NIS2UMSUCG',
             'MRIS-v1.5',
+            // Newly-wired catalogues (Welle 1a) — all conditional + mandatory=false.
+            'ISO42001', 'ISO27017', 'ISO27018', 'EU-CRA', 'PCI-DSS-4.0.1',
         ];
         $voluntary = [
             'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
