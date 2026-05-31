@@ -84,7 +84,7 @@ library:
       - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
 
 mappings:
-  - source: 'Art.5'
+  - source: 'GDPR-5.1.a'
     target: 'Art.10'
     relationship: 'related'
     confidence: 'high'
@@ -101,7 +101,7 @@ mappings:
     cross_refs: ['Art.9']
     audit_evidence_hint: 'RoPA mit Trainingsdaten-Beschreibung, Datenqualitäts-Reports, Repräsentativitäts-Analyse, Datenminimierungs-Begründung.'
 
-  - source: 'Art.5'
+  - source: 'GDPR-5.1.a'
     target: 'Art.26'
     relationship: 'related'
     confidence: 'medium'
@@ -112,7 +112,7 @@ mappings:
       und Aufsicht über Eingabedaten-Relevanz.
     cross_refs: ['Art.10']
 
-  - source: 'Art.6'
+  - source: 'GDPR-6'
     target: 'Art.10'
     relationship: 'related'
     confidence: 'high'
@@ -129,7 +129,7 @@ mappings:
     cross_refs: ['Art.5']
     audit_evidence_hint: 'Pro Trainings-Datensatz: dokumentierte DSGVO-Rechtsgrundlage, ggf. LIA mit KI-spezifischen Risiken.'
 
-  - source: 'Art.6'
+  - source: 'GDPR-6'
     target: 'Art.59'
     relationship: 'related'
     confidence: 'medium'
@@ -144,7 +144,7 @@ mappings:
       Forschungs-/wissenschaftlichen Zwecken.
     cross_refs: ['Art.89']
 
-  - source: 'Art.9'
+  - source: 'GDPR-9'
     target: 'Art.10'
     relationship: 'related'
     confidence: 'high'
@@ -164,7 +164,7 @@ mappings:
     cross_refs: ['Art.5']
     audit_evidence_hint: 'DSGVO-Art.-9(2)-Rechtsgrundlage für Bias-Detection-Datensätze, technisch-organisatorische Schutzmaßnahmen-Dokumentation, Pseudonymisierungs-Konzept.'
 
-  - source: 'Art.13'
+  - source: 'GDPR-13'
     target: 'Art.13'
     relationship: 'partial_overlap'
     confidence: 'high'
@@ -182,7 +182,7 @@ mappings:
     cross_refs: ['Art.50']
     audit_evidence_hint: 'Datenschutzerklärung mit KI-Hinweis, Gebrauchsanweisung KI-System, FAQ-Material zu KI-Entscheidungen.'
 
-  - source: 'Art.13'
+  - source: 'GDPR-13'
     target: 'Art.50'
     relationship: 'related'
     confidence: 'high'
@@ -196,7 +196,7 @@ mappings:
       Pflichten kumulativ.
     cross_refs: ['Art.14']
 
-  - source: 'Art.14'
+  - source: 'GDPR-14'
     target: 'Art.13'
     relationship: 'partial_overlap'
     confidence: 'high'
@@ -210,7 +210,7 @@ mappings:
       Guidance zur Anwendbarkeit auf KI-Training noch nicht final
       (Stand 2026-Q2).
 
-  - source: 'Art.14'
+  - source: 'GDPR-14'
     target: 'Art.50'
     relationship: 'related'
     confidence: 'medium'
@@ -220,7 +220,7 @@ mappings:
       Content (z.B. Deepfake) personenbezogen ist und ohne Wissen der
       Betroffenen erstellt wurde.
 
-  - source: 'Art.15'
+  - source: 'GDPR-15'
     target: 'Art.86'
     relationship: 'related'
     confidence: 'high'
@@ -237,7 +237,7 @@ mappings:
     cross_refs: ['Art.22']
     audit_evidence_hint: 'Auskunfts-Workflow mit KI-Erklärungs-Modul, Logging der Anfragen, Schulung Customer-Service.'
 
-  - source: 'Art.22'
+  - source: 'GDPR-22'
     target: 'Art.14'
     relationship: 'related'
     confidence: 'high'
@@ -256,7 +256,7 @@ mappings:
     cross_refs: ['Art.86']
     audit_evidence_hint: 'Aufsichts-Konzept mit Eskalationspfaden, Anfechtungs-Workflow, Schulungsnachweise für Aufsichtspersonen.'
 
-  - source: 'Art.22'
+  - source: 'GDPR-22'
     target: 'Art.10'
     relationship: 'related'
     confidence: 'medium'
@@ -270,7 +270,7 @@ mappings:
       (menschliche Letztentscheidung, Anfechtungsrecht). Bias-Detection
       ist Voraussetzung, aber nicht hinreichend.
 
-  - source: 'Art.22'
+  - source: 'GDPR-22'
     target: 'Art.86'
     relationship: 'related'
     confidence: 'high'
@@ -281,7 +281,7 @@ mappings:
       bei KI-Entscheidungen bedeutet, präzisiert Art. 86 AI Act.
     cross_refs: ['Art.13', 'Art.14', 'Art.15']
 
-  - source: 'Art.22'
+  - source: 'GDPR-22'
     target: 'Art.5'
     relationship: 'related'
     confidence: 'medium'
@@ -295,7 +295,7 @@ mappings:
       Art. 5 AI Act ist absolutes VERBOT (keine Rechtfertigung möglich),
       DSGVO Art. 22 erlaubt Ausnahmen mit Schutzgarantien.
 
-  - source: 'Art.30'
+  - source: 'GDPR-30'
     target: 'Art.49'
     relationship: 'related'
     confidence: 'medium'
@@ -309,7 +309,7 @@ mappings:
       erforderlich mit Querverweisen.
     audit_evidence_hint: 'RoPA-Eintrag mit Verweis auf KI-System und EU-Datenbank-Registrierungs-ID.'
 
-  - source: 'Art.32'
+  - source: 'GDPR-32'
     target: 'Art.15'
     relationship: 'partial_overlap'
     confidence: 'high'
@@ -328,7 +328,7 @@ mappings:
     cross_refs: ['Art.5']
     audit_evidence_hint: 'TOM-Liste mit KI-spezifischen Maßnahmen, Adversarial-Testing-Reports, ML-spezifische Pen-Test-Reports.'
 
-  - source: 'Art.33'
+  - source: 'GDPR-33'
     target: 'Art.73'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -347,7 +347,7 @@ mappings:
     cross_refs: ['Art.34']
     audit_evidence_hint: 'DSGVO-Meldeprotokoll Datenschutzaufsicht, AI-Act-Meldeprotokoll Marktaufsicht, Incident-Response-Plan mit Doppelmelde-Logik.'
 
-  - source: 'Art.34'
+  - source: 'GDPR-34'
     target: 'Art.73'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -362,7 +362,7 @@ mappings:
       Art. 73 → Behörde. Kommunikation nicht austauschbar.
     cross_refs: ['Art.33']
 
-  - source: 'Art.35'
+  - source: 'GDPR-35'
     target: 'Art.27'
     relationship: 'related'
     confidence: 'high'
@@ -381,7 +381,7 @@ mappings:
     cross_refs: ['Art.36']
     audit_evidence_hint: 'Integrierter FRIA+DPIA-Bericht, Konsultation Datenschutzaufsicht (Art. 36 DSGVO) bei hohem Restrisiko, FRIA-Notifikation Marktaufsichtsbehörde (Art. 27(3) AI Act).'
 
-  - source: 'Art.35'
+  - source: 'GDPR-35'
     target: 'Annex-III'
     relationship: 'related'
     confidence: 'high'
@@ -398,7 +398,7 @@ mappings:
     cross_refs: ['Art.27']
     audit_evidence_hint: 'Klassifikations-Matrix DPIA-Pflicht × Annex-III-Hochrisiko, FRIA-Trigger-Checkliste.'
 
-  - source: 'Art.39'
+  - source: 'GDPR-39'
     target: 'Art.4'
     relationship: 'related'
     confidence: 'low'
@@ -440,7 +440,7 @@ mappings:
     cross_refs: ['Art.6']
     audit_evidence_hint: 'Forschungs-/Sandbox-Konzept mit Pseudonymisierungs-Maßnahmen, Lösch-/Anonymisierungs-Protokoll nach Sandbox-Ende.'
 
-  - source: 'Art.25'
+  - source: 'GDPR-25'
     target: 'Art.10'
     relationship: 'related'
     confidence: 'medium'
@@ -451,7 +451,7 @@ mappings:
       (Pseudonymisierung, Synthetic Data, Federated Learning).
     cross_refs: ['Art.15']
 
-  - source: 'Art.5'
+  - source: 'GDPR-5.1.a'
     target: 'Art.5'
     relationship: 'related'
     confidence: 'medium'
