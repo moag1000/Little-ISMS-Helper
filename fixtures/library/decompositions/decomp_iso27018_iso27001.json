@@ -1,0 +1,596 @@
+[
+  {
+    "source": "27018-5.1.1 (mod)",
+    "target": "5.1",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §5 requires information security policies to include an explicit commitment to comply with applicable PII protection legislation, going beyond the generic policy obligation in 27001:2022 A.5.1."
+  },
+  {
+    "source": "27018-5.1.2 (mod)",
+    "target": "5.1",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §5 mandates review of policies for continued suitability specifically with respect to PII processing changes, adding a privacy-specific trigger to the general review cycle in A.5.1."
+  },
+  {
+    "source": "27018-6.1.1 (mod)",
+    "target": "5.2",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §6.1 extends the assignment of information-security roles to include explicit designation of a person responsible for PII protection, adding a privacy-officer accountability layer absent from A.5.2."
+  },
+  {
+    "source": "27018-7.2.2 (mod)",
+    "target": "6.3",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §7.2 extends awareness and training to include specific instruction on PII handling obligations and privacy rights, broadening the generic security awareness requirement in A.6.3."
+  },
+  {
+    "source": "27018-9.2.1 (mod)",
+    "target": "5.16",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §9.2 requires user registration and deregistration procedures to address PII data-subject account lifecycles, adding a privacy dimension to the identity management control in A.5.16."
+  },
+  {
+    "source": "27018-9.2.4 (mod)",
+    "target": "5.16",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §9.2 mandates management of secret authentication information specifically for PII-system access accounts, reinforcing identity management in A.5.16 with a PII-specific scope."
+  },
+  {
+    "source": "27018-9.4.2 (mod)",
+    "target": "8.5",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §9.4 adds requirements for secure log-on to PII processing systems (e.g., session time-outs, failed-attempt limits scoped to PII contexts), going beyond the generic secure-authentication requirement in A.8.5."
+  },
+  {
+    "source": "27018-10.1.1 (mod)",
+    "target": "8.24",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §10 requires that the policy on cryptographic controls explicitly covers PII in transit and at rest, adding privacy-specific encryption obligations to the general cryptography-use control in A.8.24."
+  },
+  {
+    "source": "27018-11.2.7 (mod)",
+    "target": "7.14",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §11.2 requires secure disposal or re-use of equipment to ensure complete erasure of PII from storage media before reuse, adding a PII-specific assurance requirement to A.7.14."
+  },
+  {
+    "source": "27018-12.1.4 (mod)",
+    "target": "8.31",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §12.1 extends separation of development, testing, and operational environments to explicitly prohibit use of real PII in test environments, adding a data-minimisation obligation to A.8.31."
+  },
+  {
+    "source": "27018-12.3.1 (mod)",
+    "target": "8.13",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §12.3 requires information backup procedures to cover restoration of PII and to test restorability, adding PII-specific backup assurance obligations to the general backup control A.8.13."
+  },
+  {
+    "source": "27018-12.4.1 (mod)",
+    "target": "8.15",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §12.4 requires event logging to capture PII-processing activities including access, modification, and disclosure events, adding privacy-specific logging scope to A.8.15."
+  },
+  {
+    "source": "27018-12.4.2 (mod)",
+    "target": "8.15",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §12.4 requires protection of log information containing PII to prevent tampering and unauthorized access, reinforcing log-protection requirements with a privacy dimension beyond A.8.15."
+  },
+  {
+    "source": "27018-13.2.1 (mod)",
+    "target": "5.14",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §13.2 extends information-transfer policies to explicitly address lawful basis and contractual obligations for transferring PII to third parties, going beyond A.5.14's generic transfer requirements."
+  },
+  {
+    "source": "27018-16.1.1 (mod)",
+    "target": "5.24",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §16.1 extends information-security incident management to include procedures specifically for PII-related breaches, adding breach-identification and notification-trigger obligations beyond A.5.24."
+  },
+  {
+    "source": "27018-18.2.1 (mod)",
+    "target": "5.35",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §18.2 extends the independent security review obligation to include review of PII protection practices and compliance with applicable privacy legislation, broadening A.5.35 with a privacy audit requirement."
+  },
+  {
+    "source": "A.2.1 Obligation to cooperate re PII principals' rights",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "A.2.1 mandates the cloud PII processor to assist the controller in meeting data-subject rights requests; ISO 27001:2022 A.5.34 covers privacy and PII protection obligations at a high level but does not specify sub-processor cooperation mechanics."
+  },
+  {
+    "source": "A.2.1 sub: timely response to data-subject requests",
+    "target": "5.34",
+    "relationship": "subset",
+    "rationale": "The time-bound response obligation in A.2.1 is a specific operational sub-requirement within the broader PII protection duty stated in A.5.34."
+  },
+  {
+    "source": "A.2.1 sub: contractual commitment to pass requests to controller",
+    "target": "5.19",
+    "relationship": "partial_overlap",
+    "rationale": "The contractual pass-through obligation for data-subject requests partially overlaps with A.5.19 (information security in supplier relationships), which covers security requirements in supplier contracts but not privacy-specific pass-through clauses."
+  },
+  {
+    "source": "A.3.1 Public cloud PII processor's purpose",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "A.3.1 requires the processor to process PII only on documented controller instructions, implementing purpose-limitation; A.5.34 covers PII protection broadly but does not mandate instruction-bound processing."
+  },
+  {
+    "source": "A.3.1 sub: documented lawful basis for processing",
+    "target": "5.31",
+    "relationship": "partial_overlap",
+    "rationale": "The requirement to document the lawful basis for processing partially overlaps with A.5.31 (legal and regulatory requirements), which addresses compliance with applicable laws including privacy regulations."
+  },
+  {
+    "source": "A.3.1 sub: prohibition on processing beyond contracted scope",
+    "target": "5.34",
+    "relationship": "subset",
+    "rationale": "The prohibition on out-of-scope processing is a specific enforcement sub-requirement of the broader PII protection obligation in A.5.34."
+  },
+  {
+    "source": "A.3.2 Public cloud PII processor's commercial use prohibition",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "A.3.2 explicitly prohibits using PII for marketing, advertising, or commercial profiling without explicit consent; A.5.34 covers PII protection generically but does not prohibit commercial secondary use."
+  },
+  {
+    "source": "A.3.2 sub: no sale or transfer of PII for commercial gain",
+    "target": "5.14",
+    "relationship": "partial_overlap",
+    "rationale": "The prohibition on transferring PII for commercial purposes partially overlaps with A.5.14 (information transfer), which governs transfer policies but without the commercial-prohibition specificity."
+  },
+  {
+    "source": "A.3.2 sub: consent requirement for secondary use",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "The explicit consent gate for any secondary commercial use of PII is a sub-requirement not present in A.5.34's general PII protection stance."
+  },
+  {
+    "source": "A.5.1 Secure erasure of temporary files",
+    "target": "8.10",
+    "relationship": "equivalent",
+    "rationale": "A.5.1 requires secure deletion of temporary PII files after processing; this maps directly to A.8.10 (information deletion), which mandates that information stored in systems, devices, or media be deleted when no longer required."
+  },
+  {
+    "source": "A.5.1 sub: automated erasure of temp PII after defined retention window",
+    "target": "8.10",
+    "relationship": "subset",
+    "rationale": "The automated, time-triggered erasure of temporary PII is a specific implementation sub-requirement within the broader information-deletion control A.8.10."
+  },
+  {
+    "source": "A.5.1 sub: logging of erasure events",
+    "target": "8.15",
+    "relationship": "partial_overlap",
+    "rationale": "The requirement to log erasure of temporary PII files partially overlaps with A.8.15 (logging), which covers logging of activities broadly; the privacy-specific deletion-logging focus is not explicitly stated in A.8.15."
+  },
+  {
+    "source": "A.6.1 PII disclosure notification",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "A.6.1 requires the processor to notify the controller of legally compelled PII disclosures to law-enforcement/government bodies; A.5.34 covers PII protection generally but does not address compelled-disclosure notification chains."
+  },
+  {
+    "source": "A.6.1 sub: advance notice where legally permissible",
+    "target": "5.31",
+    "relationship": "partial_overlap",
+    "rationale": "The obligation to provide advance notice of government data requests, where legally permissible, partially overlaps with A.5.31 (legal and regulatory requirements) regarding compliance with legal orders and notification obligations."
+  },
+  {
+    "source": "A.6.1 sub: prohibition on voluntary disclosure without controller consent",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "The prohibition on voluntary disclosure is a processor-specific obligation under A.6.1 that extends A.5.34's general PII protection to a concrete governance fence."
+  },
+  {
+    "source": "A.6.2 Recording of PII disclosures",
+    "target": "8.15",
+    "relationship": "superset",
+    "rationale": "A.6.2 mandates recording of each PII disclosure event including recipient, legal basis, and data categories; A.8.15 (logging) covers general activity logs but does not require disclosure-specific records in this structured form."
+  },
+  {
+    "source": "A.6.2 sub: disclosure log including date, recipient, and legal basis",
+    "target": "8.15",
+    "relationship": "superset",
+    "rationale": "The structured disclosure log with mandatory fields (date, recipient, legal basis, data categories) is a PII-specific logging sub-requirement beyond A.8.15's general logging scope."
+  },
+  {
+    "source": "A.6.2 sub: retention of disclosure records for audit purposes",
+    "target": "5.33",
+    "relationship": "partial_overlap",
+    "rationale": "The retention of PII-disclosure records partially overlaps with A.5.33 (protection of records), which covers record retention but without specifying privacy-breach disclosure as a mandatory record category."
+  },
+  {
+    "source": "A.8.1 Disclosure of sub-contracted PII processing",
+    "target": "5.19",
+    "relationship": "superset",
+    "rationale": "A.8.1 requires the processor to maintain and disclose a list of sub-processors to the controller and notify of changes; A.5.19 governs supplier security generally but does not mandate proactive sub-processor disclosure to the controller as a transparency obligation."
+  },
+  {
+    "source": "A.8.1 sub: prior consent from controller before engaging sub-processor",
+    "target": "5.19",
+    "relationship": "superset",
+    "rationale": "The prior-consent gate for sub-processor engagement is a PII-specific contractual obligation in A.8.1 that goes beyond A.5.19's general supplier security management requirements."
+  },
+  {
+    "source": "A.8.1 sub: contractual flow-down of privacy obligations to sub-processors",
+    "target": "5.20",
+    "relationship": "superset",
+    "rationale": "The obligation to flow down privacy and PII-protection requirements to sub-processors via contract is more specific than A.5.20 (addressing information security in supplier agreements), which covers security generally."
+  },
+  {
+    "source": "A.8.1 sub: sub-processor audit rights",
+    "target": "5.22",
+    "relationship": "partial_overlap",
+    "rationale": "The right to audit sub-processors for PII compliance partially overlaps with A.5.22 (monitoring and review of supplier services), which covers performance and security monitoring of suppliers."
+  },
+  {
+    "source": "A.10.1 Notification of data breach involving PII",
+    "target": "5.26",
+    "relationship": "superset",
+    "rationale": "A.10.1 mandates prompt notification to the controller upon detection of a PII breach, including detailed incident information; A.5.26 covers incident response broadly but does not specify controller notification timelines or PII-breach-specific reporting content."
+  },
+  {
+    "source": "A.10.1 sub: breach notification to controller without undue delay",
+    "target": "5.26",
+    "relationship": "superset",
+    "rationale": "The 'without undue delay' notification obligation and the minimum content requirements (categories of PII, estimated affected individuals) are PII-specific sub-requirements beyond A.5.26's general incident response scope."
+  },
+  {
+    "source": "A.10.1 sub: breach documentation and root-cause analysis",
+    "target": "5.27",
+    "relationship": "equivalent",
+    "rationale": "The requirement to document the breach and conduct root-cause analysis maps directly to A.5.27 (learning from incidents), which requires knowledge gained from incidents to be used to reduce future occurrences."
+  },
+  {
+    "source": "A.10.2 Retention period for admin security policies and guidelines",
+    "target": "5.33",
+    "relationship": "equivalent",
+    "rationale": "A.10.2 specifies that administrative PII security policies must be retained for an auditable period; this maps directly to A.5.33 (protection of records), which governs retention and protection of organizational records."
+  },
+  {
+    "source": "A.10.2 sub: version history of PII-specific policy documents",
+    "target": "5.33",
+    "relationship": "subset",
+    "rationale": "The requirement to maintain version history of PII policies is a specific sub-requirement within the broader records-protection obligation in A.5.33."
+  },
+  {
+    "source": "A.10.3 PII return, transfer and disposal",
+    "target": "8.10",
+    "relationship": "superset",
+    "rationale": "A.10.3 requires the processor to return or securely destroy all PII at contract end per controller instructions; A.8.10 (information deletion) covers deletion generically but does not address the contractual return/transfer obligation or the post-contract confirmation requirement."
+  },
+  {
+    "source": "A.10.3 sub: written confirmation of PII destruction",
+    "target": "8.10",
+    "relationship": "superset",
+    "rationale": "The obligation to provide written confirmation of PII destruction upon contract termination is a PII-specific accountability sub-requirement absent from the general information-deletion control A.8.10."
+  },
+  {
+    "source": "A.10.3 sub: secure transfer of PII to successor processor",
+    "target": "5.14",
+    "relationship": "partial_overlap",
+    "rationale": "The secure transfer of PII to a successor cloud processor partially overlaps with A.5.14 (information transfer), which governs security of information during transfer but without the end-of-contract/succession specificity."
+  },
+  {
+    "source": "A.10.3 sub: backup deletion included in disposal scope",
+    "target": "8.13",
+    "relationship": "superset",
+    "rationale": "Requiring deletion of all PII backups as part of end-of-contract disposal goes beyond A.8.13 (information backup), which governs backup creation and restoration but does not explicitly mandate backup deletion at contract end."
+  },
+  {
+    "source": "A.11.1 Confidentiality or non-disclosure agreements",
+    "target": "6.6",
+    "relationship": "equivalent",
+    "rationale": "A.11.1 requires staff with PII access to sign confidentiality agreements; this maps directly to A.6.6 (confidentiality or non-disclosure agreements), which requires such agreements for relevant staff and third parties."
+  },
+  {
+    "source": "A.11.1 sub: NDA scope explicitly covers PII",
+    "target": "6.6",
+    "relationship": "subset",
+    "rationale": "Explicitly scoping the NDA to cover PII categories is a PII-specific sub-requirement within the broader confidentiality agreement obligation in A.6.6."
+  },
+  {
+    "source": "A.11.2 Restriction of the creation of hardcopy material",
+    "target": "7.7",
+    "relationship": "superset",
+    "rationale": "A.11.2 restricts printing and hardcopy creation of PII unless operationally necessary, with disposal requirements; A.7.7 (clear desk and clear screen) addresses physical security of materials on desks but does not restrict PII hardcopy creation as a first-order control."
+  },
+  {
+    "source": "A.11.2 sub: prohibition on printing PII unless necessary",
+    "target": "7.7",
+    "relationship": "superset",
+    "rationale": "The necessity test for PII hardcopy creation adds a data-minimisation principle to the physical security context of A.7.7."
+  },
+  {
+    "source": "A.11.2 sub: secure disposal of printed PII",
+    "target": "7.10",
+    "relationship": "partial_overlap",
+    "rationale": "The requirement for secure disposal of printed PII materials partially overlaps with A.7.10 (storage media), which covers physical media disposal; A.11.2 extends this to paper hardcopies specifically."
+  },
+  {
+    "source": "A.11.3 Control and logging of data restoration",
+    "target": "8.13",
+    "relationship": "superset",
+    "rationale": "A.11.3 requires that PII data restoration activities are controlled, authorized, and logged; A.8.13 (information backup) covers backup and restore processes but does not mandate authorization controls and audit logs for each restoration event."
+  },
+  {
+    "source": "A.11.3 sub: authorized access only for PII restoration",
+    "target": "5.18",
+    "relationship": "partial_overlap",
+    "rationale": "The requirement for formal authorization before PII restoration partially overlaps with A.5.18 (access rights), which governs granting and revoking access rights broadly."
+  },
+  {
+    "source": "A.11.3 sub: log of each PII restoration event",
+    "target": "8.15",
+    "relationship": "superset",
+    "rationale": "Mandating a dedicated log entry for every PII restoration event is a privacy-specific logging sub-requirement beyond the general logging scope of A.8.15."
+  },
+  {
+    "source": "A.11.4 Protecting data on storage media leaving premises",
+    "target": "7.10",
+    "relationship": "superset",
+    "rationale": "A.11.4 adds PII-specific requirements for encrypting and tracking storage media containing PII when it leaves the cloud premises; A.7.10 (storage media) covers media management broadly but with less specificity around PII and encryption requirements."
+  },
+  {
+    "source": "A.11.4 sub: encryption of PII on portable media before transit",
+    "target": "8.24",
+    "relationship": "partial_overlap",
+    "rationale": "The encryption requirement for PII on portable media partially overlaps with A.8.24 (use of cryptography), which covers cryptographic controls generally but without prescribing their mandatory application to PII on transit media."
+  },
+  {
+    "source": "A.11.5 Use of unencrypted portable storage media and devices",
+    "target": "8.24",
+    "relationship": "superset",
+    "rationale": "A.11.5 prohibits use of unencrypted portable storage devices for PII; A.8.24 requires a policy on cryptographic controls but does not explicitly prohibit unencrypted portable media for PII data."
+  },
+  {
+    "source": "A.11.5 sub: organisational prohibition on unencrypted USB/portable media for PII",
+    "target": "8.1",
+    "relationship": "partial_overlap",
+    "rationale": "The prohibition on unencrypted portable media for PII partially overlaps with A.8.1 (user endpoint devices), which covers endpoint device policies but does not specifically mandate PII encryption on portable storage."
+  },
+  {
+    "source": "A.11.6 Encryption of PII transmitted over public networks",
+    "target": "8.24",
+    "relationship": "equivalent",
+    "rationale": "A.11.6 mandates encryption of PII in transit over public networks; this maps equivalently to A.8.24 (use of cryptography), which requires cryptographic controls for protecting information, including in transit."
+  },
+  {
+    "source": "A.11.6 sub: use of approved protocols (TLS/HTTPS) for PII transmission",
+    "target": "8.20",
+    "relationship": "partial_overlap",
+    "rationale": "The requirement to use approved secure protocols for PII transmission partially overlaps with A.8.20 (networks security), which governs network security controls including secure communication protocols."
+  },
+  {
+    "source": "A.11.7 Secure disposal of hardcopy materials containing PII",
+    "target": "7.10",
+    "relationship": "equivalent",
+    "rationale": "A.11.7 requires cross-cut shredding or equivalent secure destruction of printed PII; A.7.10 (storage media) covers secure disposal of physical media, and hardcopy falls within this scope, making the mapping equivalent."
+  },
+  {
+    "source": "A.11.7 sub: use of secure disposal contractors under confidentiality agreement",
+    "target": "5.19",
+    "relationship": "partial_overlap",
+    "rationale": "Engaging contracted destruction services under confidentiality agreement partially overlaps with A.5.19 (information security in supplier relationships), which covers security requirements for supplier engagements."
+  },
+  {
+    "source": "A.11.8 Unique use of user IDs",
+    "target": "5.16",
+    "relationship": "equivalent",
+    "rationale": "A.11.8 prohibits shared user IDs for PII system access to maintain individual accountability; this maps directly to A.5.16 (identity management), which requires unique identifiable credentials for each user."
+  },
+  {
+    "source": "A.11.8 sub: prohibition on shared/generic accounts for PII access",
+    "target": "5.16",
+    "relationship": "subset",
+    "rationale": "The explicit prohibition on shared accounts for PII access is a PII-scoped enforcement sub-requirement within the general identity management obligations of A.5.16."
+  },
+  {
+    "source": "A.11.9 Records of authorised users",
+    "target": "5.18",
+    "relationship": "equivalent",
+    "rationale": "A.11.9 requires maintaining up-to-date records of users authorized to access PII systems; this maps directly to A.5.18 (access rights), which requires management and documentation of access rights."
+  },
+  {
+    "source": "A.11.9 sub: periodic review of authorized-user records",
+    "target": "5.18",
+    "relationship": "subset",
+    "rationale": "The periodic review obligation for PII-system authorized-user lists is a specific sub-requirement within the access-rights management cycle defined in A.5.18."
+  },
+  {
+    "source": "A.11.10 User ID management",
+    "target": "5.16",
+    "relationship": "equivalent",
+    "rationale": "A.11.10 requires lifecycle management of user IDs (provisioning, modification, deprovisioning) for PII systems; this maps directly to A.5.16 (identity management)."
+  },
+  {
+    "source": "A.11.10 sub: immediate deprovisioning of PII-system access on termination",
+    "target": "6.5",
+    "relationship": "partial_overlap",
+    "rationale": "The immediate revocation of PII-system access on employment termination partially overlaps with A.6.5 (responsibilities after termination or change of employment), which covers return of assets and access revocation."
+  },
+  {
+    "source": "A.11.11 Contract measures",
+    "target": "5.20",
+    "relationship": "superset",
+    "rationale": "A.11.11 requires contracts with PII controllers to include all privacy obligations (purpose, retention, security, breach notification, sub-processing); A.5.20 (addressing security in supplier agreements) covers security contract clauses but does not enumerate the full PII-processor contractual obligations."
+  },
+  {
+    "source": "A.11.11 sub: contractual right for controller to audit processor",
+    "target": "5.22",
+    "relationship": "partial_overlap",
+    "rationale": "The contractual audit-right clause in processor agreements partially overlaps with A.5.22 (monitoring and review of supplier services), which covers audit and review rights in supplier relationships."
+  },
+  {
+    "source": "A.11.11 sub: contractual data-breach notification SLA",
+    "target": "5.26",
+    "relationship": "superset",
+    "rationale": "The contractually-specified breach notification timeline is a PII-processor obligation in A.11.11 that extends beyond A.5.26's general incident-response framework."
+  },
+  {
+    "source": "A.11.12 Sub-contracted PII processing",
+    "target": "5.19",
+    "relationship": "superset",
+    "rationale": "A.11.12 requires the processor to impose equivalent PII protection obligations on all sub-processors and maintain oversight; A.5.19 covers supplier security management but does not specifically mandate privacy obligation flow-down to sub-processors."
+  },
+  {
+    "source": "A.11.12 sub: written agreements with each sub-processor",
+    "target": "5.20",
+    "relationship": "equivalent",
+    "rationale": "The requirement for written privacy agreements with each sub-processor maps directly to A.5.20 (addressing information security in supplier agreements)."
+  },
+  {
+    "source": "A.11.12 sub: responsibility for sub-processor compliance retained by processor",
+    "target": "5.19",
+    "relationship": "superset",
+    "rationale": "Retaining accountability for sub-processor PII compliance is a privacy-governance sub-requirement beyond the general supplier security accountability in A.5.19."
+  },
+  {
+    "source": "A.11.13 Access to data on pre-used storage space",
+    "target": "8.10",
+    "relationship": "superset",
+    "rationale": "A.11.13 requires cloud providers to ensure PII cannot be recovered from storage media that is repurposed or reallocated to another customer; A.8.10 (information deletion) covers deletion broadly but does not specifically address multi-tenant data-remanence risks in cloud environments."
+  },
+  {
+    "source": "A.11.13 sub: cryptographic erasure or overwrite before storage reallocation",
+    "target": "8.10",
+    "relationship": "subset",
+    "rationale": "The requirement for cryptographic erasure or secure overwrite of cloud storage blocks before reallocation is a specific technical sub-requirement within the information-deletion control A.8.10."
+  },
+  {
+    "source": "A.11.13 sub: no residual PII accessible to subsequent tenants",
+    "target": "8.11",
+    "relationship": "partial_overlap",
+    "rationale": "The prohibition on residual PII being accessible to subsequent tenants partially overlaps with A.8.11 (data masking), which covers techniques to limit data exposure; the storage-remanence context is more specific than data masking."
+  },
+  {
+    "source": "A.12.1 Geographical location of PII",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "A.12.1 requires the processor to disclose to the controller the countries and regions where PII may be stored or processed; A.5.34 covers PII protection generically but does not mandate data-residency transparency obligations."
+  },
+  {
+    "source": "A.12.1 sub: contractual specification of permitted PII jurisdictions",
+    "target": "5.31",
+    "relationship": "partial_overlap",
+    "rationale": "The contractual enumeration of PII processing jurisdictions partially overlaps with A.5.31 (legal and regulatory requirements), which covers compliance with applicable laws including data-residency restrictions."
+  },
+  {
+    "source": "A.12.1 sub: notification to controller before PII is transferred to new jurisdiction",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "The advance notification requirement before jurisdictional transfer of PII is a cloud-specific sub-obligation in A.12.1 that is absent from A.5.34's general PII protection scope."
+  },
+  {
+    "source": "A.12.2 Intended destination of PII",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "A.12.2 requires the processor to make information about the intended destination countries for PII publicly available and to notify the controller; this transparency obligation is not present in A.5.34's general PII protection requirement."
+  },
+  {
+    "source": "A.12.2 sub: public disclosure of PII processing locations",
+    "target": "5.34",
+    "relationship": "superset",
+    "rationale": "The public transparency obligation regarding PII destination countries is a cloud-processor accountability sub-requirement that goes beyond A.5.34's internal privacy management focus."
+  },
+  {
+    "source": "A.12.2 sub: cross-border transfer safeguards documentation",
+    "target": "5.31",
+    "relationship": "partial_overlap",
+    "rationale": "Documenting legal safeguards for cross-border PII transfers (e.g., SCCs, adequacy decisions) partially overlaps with A.5.31 (legal and regulatory requirements), which covers compliance with applicable legal frameworks."
+  },
+  {
+    "source": "27018-18.1.4 (mod)",
+    "target": "5.34",
+    "relationship": "equivalent",
+    "rationale": "ISO 27018 §18.1 extends the privacy and PII protection compliance control (ISO 27002:2013 18.1.4) by applying it specifically to cloud processing contexts; this maps directly to A.5.34 (privacy and PII protection) in ISO 27001:2022."
+  },
+  {
+    "source": "27018-18.2.2 (mod)",
+    "target": "5.36",
+    "relationship": "equivalent",
+    "rationale": "ISO 27018 §18.2 requires compliance with PII-related security policies and standards to be reviewed; this maps directly to A.5.36 (compliance with policies and standards) in ISO 27001:2022."
+  },
+  {
+    "source": "A.5.1 sub: scope covers diagnostic and operational log PII minimisation",
+    "target": "8.12",
+    "relationship": "partial_overlap",
+    "rationale": "The 27018 requirement to minimise PII in diagnostic and operational logs partially overlaps with A.8.12 (data leakage prevention), which covers preventing unauthorized disclosure of information."
+  },
+  {
+    "source": "A.3.1 sub: purpose-limitation documented in processing agreement",
+    "target": "5.20",
+    "relationship": "partial_overlap",
+    "rationale": "Documenting the specific processing purpose in the contractual agreement partially overlaps with A.5.20 (addressing information security in supplier agreements), which requires security requirements to be documented in contracts."
+  },
+  {
+    "source": "27018-9.4.3 (mod): inactivity session timeout for PII systems",
+    "target": "8.5",
+    "relationship": "subset",
+    "rationale": "The session-timeout sub-requirement for PII processing sessions is a specific implementation sub-control within the secure-authentication context of A.8.5."
+  },
+  {
+    "source": "27018-12.1.1 sub: operating procedures for PII processing documented",
+    "target": "5.37",
+    "relationship": "equivalent",
+    "rationale": "The requirement for documented operating procedures covering PII processing activities maps directly to A.5.37 (documented operating procedures) in ISO 27001:2022."
+  },
+  {
+    "source": "27018-15.1.1 (mod): PII protection requirements in supplier contracts",
+    "target": "5.19",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §15.1 extends supplier relationship security requirements to mandate explicit PII protection clauses, breach notification obligations, and audit rights in supplier agreements, going beyond A.5.19's general supplier security scope."
+  },
+  {
+    "source": "27018-15.1.2 (mod): addressing PII in sub-processor agreements",
+    "target": "5.20",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §15.1 requires that PII processor agreements with suppliers explicitly define privacy obligations, going beyond the general security-agreement requirements in A.5.20."
+  },
+  {
+    "source": "A.10.1 sub: PII breach impact assessment",
+    "target": "5.25",
+    "relationship": "partial_overlap",
+    "rationale": "The obligation to assess the impact of a PII breach on affected data subjects partially overlaps with A.5.25 (assessment and decision on information security events), which covers assessment of security events to determine if they constitute incidents."
+  },
+  {
+    "source": "A.8.1 sub: sub-processor change notification to controller",
+    "target": "5.22",
+    "relationship": "superset",
+    "rationale": "The obligation to proactively notify the controller of any planned changes to sub-processor arrangements is a PII-specific transparency requirement that goes beyond the general supplier-monitoring obligations in A.5.22."
+  },
+  {
+    "source": "27018-5.1 sub: PII privacy policy publicly available",
+    "target": "5.34",
+    "relationship": "partial_overlap",
+    "rationale": "The requirement to make the PII privacy policy publicly available as evidence of commitment partially overlaps with A.5.34's obligation to implement measures for privacy and PII protection."
+  },
+  {
+    "source": "27018-7.3.1 (mod): termination PII access revocation",
+    "target": "6.5",
+    "relationship": "equivalent",
+    "rationale": "ISO 27018 §7.3 requires that PII system access is revoked upon termination of employment; this maps directly to A.6.5 (responsibilities after termination or change of employment), which covers return of assets and access revocation."
+  },
+  {
+    "source": "A.11.4 sub: chain-of-custody documentation for PII media in transit",
+    "target": "7.10",
+    "relationship": "superset",
+    "rationale": "The chain-of-custody documentation requirement for PII media in transit is a privacy-specific accountability sub-requirement that goes beyond A.7.10's general storage-media management obligations."
+  },
+  {
+    "source": "27018-16.1.2 (mod): PII breach reporting channel to controller",
+    "target": "6.8",
+    "relationship": "superset",
+    "rationale": "ISO 27018 §16.1 requires a defined communication channel for reporting PII breaches to the controller; A.6.8 (information security event reporting) covers internal reporting channels but does not specify the processor-to-controller breach notification pathway."
+  },
+  {
+    "source": "A.12.1 sub: data-residency controls in cloud architecture",
+    "target": "5.23",
+    "relationship": "related",
+    "rationale": "Implementing technical controls to enforce PII geographical boundaries in cloud architecture is related to A.5.23 (information security for use of cloud services), which covers security requirements for cloud service usage including data governance."
+  }
+]

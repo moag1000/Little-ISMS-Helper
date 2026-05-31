@@ -1,0 +1,308 @@
+[
+  {
+    "source": "DORA:Art.11(1)",
+    "target": "22301:8.4.1",
+    "relationship": "equivalent",
+    "rationale": "Both require a comprehensive documented business continuity policy/plan as the top-level artefact that governs all BCM activities; DORA's ICT BCP mirrors 22301's general BC plan establishment obligation."
+  },
+  {
+    "source": "DORA:Art.11(1)",
+    "target": "22301:5.2",
+    "relationship": "partial_overlap",
+    "rationale": "DORA Art.11(1) requires the ICT BCP to be an integral part of the overall BC policy, echoing 22301:5.2's requirement for a documented BC policy signed by top management, but DORA is narrower (ICT-scoped only)."
+  },
+  {
+    "source": "DORA:Art.11(2)(a)",
+    "target": "22301:8.3.1",
+    "relationship": "subset",
+    "rationale": "DORA's requirement to ensure continuity of critical or important functions is a subset of 22301:8.3.1, which requires organisations to identify and select strategies for all prioritised activities including non-ICT functions."
+  },
+  {
+    "source": "DORA:Art.11(2)(b)",
+    "target": "22301:8.4.2",
+    "relationship": "equivalent",
+    "rationale": "Both require rapid, effective response to disruptive events that limits damage and prioritises resumption of activities, matching 22301:8.4.2's response structure requirement for incident assessment and prioritised response activation."
+  },
+  {
+    "source": "DORA:Art.11(2)(c)",
+    "target": "22301:8.4.4",
+    "relationship": "subset",
+    "rationale": "DORA's obligation to activate containment plans and tailored response/recovery procedures maps directly to 22301:8.4.4's requirement for documented BC plans covering activation criteria, containment actions and recovery steps; DORA is ICT-scoped only."
+  },
+  {
+    "source": "DORA:Art.11(2)(d)",
+    "target": "22301:8.4.2",
+    "relationship": "subset",
+    "rationale": "DORA's requirement to estimate preliminary impacts, damages and losses corresponds to 22301:8.4.2's requirement for response teams to assess nature and extent of disruption against pre-defined thresholds."
+  },
+  {
+    "source": "DORA:Art.11(2)(e)",
+    "target": "22301:8.4.3",
+    "relationship": "equivalent",
+    "rationale": "Both require communication and crisis management actions ensuring updated information is transmitted to internal staff and external stakeholders during a disruption event."
+  },
+  {
+    "source": "DORA:Art.11(3)",
+    "target": "22301:8.4.4",
+    "relationship": "subset",
+    "rationale": "DORA's requirement for associated ICT response and recovery plans subject to internal audit reviews corresponds to 22301:8.4.4's requirement for documented plans covering response and recovery procedures; the internal-audit obligation in DORA adds a governance layer absent from 22301:8.4.4 itself."
+  },
+  {
+    "source": "DORA:Art.11(3)",
+    "target": "22301:9.2",
+    "relationship": "partial_overlap",
+    "rationale": "DORA's independent internal audit review of ICT response/recovery plans partially overlaps with 22301:9.2 (internal audit) but 22301:9.2 applies to the whole BCMS, not only response plans."
+  },
+  {
+    "source": "DORA:Art.11(4)",
+    "target": "22301:8.5",
+    "relationship": "equivalent",
+    "rationale": "Both require financial entities/organisations to maintain and periodically test business continuity plans; DORA additionally specifies that third-party outsourced functions must be covered, which is implied but not explicit in 22301:8.5."
+  },
+  {
+    "source": "DORA:Art.11(5)",
+    "target": "22301:8.2.2",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.11(5) mandates a Business Impact Analysis covering quantitative and qualitative criteria, criticality of functions, third-party dependencies and scenario analysis — co-extensive with 22301:8.2.2 BIA requirements for MTPD, RTO, RPO and dependency mapping."
+  },
+  {
+    "source": "DORA:Art.11(5)",
+    "target": "22301:8.2.3",
+    "relationship": "partial_overlap",
+    "rationale": "DORA's BIA inclusion of external data and scenario analysis partially overlaps with 22301:8.2.3 risk assessment, but DORA conflates BIA and scenario-based risk evaluation in one article while 22301 separates them."
+  },
+  {
+    "source": "DORA:Art.11(6)(a)",
+    "target": "22301:8.5",
+    "relationship": "equivalent",
+    "rationale": "DORA's annual testing of ICT BCP and response/recovery plans covering all ICT systems supporting functions corresponds exactly to 22301:8.5's requirement for an exercise programme validating plans and strategies on a regular basis."
+  },
+  {
+    "source": "DORA:Art.11(6)(a)",
+    "target": "22301:9.1",
+    "relationship": "partial_overlap",
+    "rationale": "DORA's periodic testing mandate partially overlaps with 22301:9.1's monitoring and evaluation requirements; 22301:9.1 is broader (ongoing metrics, KPIs) while DORA:Art.11(6)(a) specifically mandates at-least-annual plan tests."
+  },
+  {
+    "source": "DORA:Art.11(6)(b)",
+    "target": "22301:8.4.3",
+    "relationship": "subset",
+    "rationale": "DORA's requirement to test crisis communication plans maps to 22301:8.4.3's communication plan requirement; DORA adds an explicit periodic test obligation that 22301 covers more generally under 8.5."
+  },
+  {
+    "source": "DORA:Art.11(7)",
+    "target": "22301:8.4.2",
+    "relationship": "equivalent",
+    "rationale": "Both require a dedicated crisis management function/structure with clear roles and procedures for internal and external communications during BCP activation."
+  },
+  {
+    "source": "DORA:Art.11(7)",
+    "target": "22301:8.4.3",
+    "relationship": "equivalent",
+    "rationale": "DORA's requirement for crisis communication procedures when BCP is activated matches 22301:8.4.3's warning and communication procedures requirement within BC plans."
+  },
+  {
+    "source": "DORA:Art.11(8)",
+    "target": "22301:7.5",
+    "relationship": "subset",
+    "rationale": "DORA's requirement to keep readily accessible records of activities before and during disruption events is a subset of 22301:7.5's documented information control requirements covering creation, maintenance, retention and availability of BCMS records."
+  },
+  {
+    "source": "DORA:Art.11(8)",
+    "target": "22301:9.1",
+    "relationship": "related",
+    "rationale": "Records of activities during disruption relate to 22301:9.1 evidence of monitoring and measurement results, but DORA focuses on incident records while 22301:9.1 addresses ongoing performance metrics."
+  },
+  {
+    "source": "DORA:Art.12(1)(a)",
+    "target": "22301:8.3.3",
+    "relationship": "equivalent",
+    "rationale": "DORA's requirement for documented backup policies specifying data scope and minimum backup frequency based on criticality maps to 22301:8.3.3's requirement to ensure resource availability and protection solutions including data backup mechanisms."
+  },
+  {
+    "source": "DORA:Art.12(1)(b)",
+    "target": "22301:8.4.4",
+    "relationship": "subset",
+    "rationale": "DORA's requirement for documented restoration and recovery procedures and methods is a subset of the broader recovery plan requirements in 22301:8.4.4, which covers all activities including non-ICT recovery steps."
+  },
+  {
+    "source": "DORA:Art.12(1)(b)",
+    "target": "22301:8.3.2",
+    "relationship": "subset",
+    "rationale": "DORA's restoration/recovery methods specification aligns with 22301:8.3.2's requirement to identify and select solutions that meet RTO/RPO continuity objectives; DORA is ICT/data-focused while 22301:8.3.2 covers all resource types."
+  },
+  {
+    "source": "DORA:Art.12(2)",
+    "target": "22301:8.5",
+    "relationship": "equivalent",
+    "rationale": "DORA's mandate to set up activatable backup systems and to periodically test backup procedures and recovery methods corresponds directly to 22301:8.5's exercise programme requirement that tests plans and solutions including data restoration capabilities."
+  },
+  {
+    "source": "DORA:Art.12(2)",
+    "target": "22301:8.4.4",
+    "relationship": "subset",
+    "rationale": "DORA's activation security requirement — that backup activation must not jeopardise data availability, authenticity, integrity or confidentiality — is a subset of the plan-execution safeguards implied by 22301:8.4.4, with DORA adding explicit cybersecurity properties absent from 22301."
+  },
+  {
+    "source": "DORA:Art.12(3)",
+    "target": "22301:8.3.3",
+    "relationship": "subset",
+    "rationale": "DORA's requirement for physically and logically segregated ICT restore systems protected from unauthorised access is a specific technology-layer implementation of 22301:8.3.3's general resource-protection and data-backup solution requirements."
+  },
+  {
+    "source": "DORA:Art.12(4)",
+    "target": "22301:8.3.2",
+    "relationship": "equivalent",
+    "rationale": "DORA's requirement for financial entities (other than microenterprises) to maintain redundant ICT capacities adequate for business needs maps to 22301:8.3.2's requirement for strategies and solutions providing adequate redundant resources to meet continuity objectives."
+  },
+  {
+    "source": "DORA:Art.12(4)",
+    "target": "22301:8.3.3",
+    "relationship": "equivalent",
+    "rationale": "Redundant ICT capacity maintenance directly fulfils 22301:8.3.3's resource availability requirements (people, technology, information) as part of selected BC solutions."
+  },
+  {
+    "source": "DORA:Art.24(1)",
+    "target": "22301:8.5",
+    "relationship": "equivalent",
+    "rationale": "DORA's requirement to establish, maintain and review a digital operational resilience testing programme as part of the ICT risk management framework is co-extensive with 22301:8.5's requirement for an organisation-wide exercise and testing programme validating BCMS arrangements."
+  },
+  {
+    "source": "DORA:Art.24(2)",
+    "target": "22301:8.5",
+    "relationship": "subset",
+    "rationale": "DORA's list of testing types (vulnerability assessments, scenario-based tests, etc.) partially fulfils 22301:8.5's broader exercise programme requirement; 22301:8.5 additionally requires exercises that test people and process responses beyond tool/system tests."
+  },
+  {
+    "source": "DORA:Art.24(3)",
+    "target": "22301:8.5",
+    "relationship": "partial_overlap",
+    "rationale": "DORA's risk-based testing approach considering evolving ICT risk landscape and asset criticality maps partially to 22301:8.5's requirement for exercises aligned with BC objectives; 22301 does not prescribe risk-based prioritisation of exercise scope."
+  },
+  {
+    "source": "DORA:Art.24(4)",
+    "target": "22301:8.5",
+    "relationship": "partial_overlap",
+    "rationale": "DORA's independence requirement for testers (internal or external, conflict-of-interest free) partially overlaps with 22301:8.5's exercise objectivity expectations, but 22301:8.5 does not explicitly mandate independent testers."
+  },
+  {
+    "source": "DORA:Art.24(6)",
+    "target": "22301:8.5",
+    "relationship": "equivalent",
+    "rationale": "DORA's requirement for at least annual testing of ICT systems supporting critical or important functions maps to 22301:8.5's requirement for a structured periodic exercise programme validating plans on a regular schedule."
+  },
+  {
+    "source": "DORA:Art.25(1)",
+    "target": "22301:8.5",
+    "relationship": "subset",
+    "rationale": "DORA Art.25 testing types (vulnerability assessments, scenario-based tests, penetration testing, performance testing, end-to-end testing) are largely ICT-technical tests that fulfil a subset of 22301:8.5 requirements; 22301:8.5 additionally requires tabletop exercises, simulation drills and process-level validation."
+  },
+  {
+    "source": "DORA:Art.25(1)",
+    "target": "22301:9.1",
+    "relationship": "related",
+    "rationale": "DORA's testing output (findings, vulnerabilities) feeds into performance evaluation analogous to 22301:9.1's monitoring, measurement and analysis requirements, though DORA testing is event-based while 22301:9.1 mandates ongoing metrics collection."
+  },
+  {
+    "source": "DORA:Art.25(2)",
+    "target": "22301:8.2.3",
+    "relationship": "related",
+    "rationale": "DORA's requirement for central securities depositories to perform vulnerability assessments before deploying applications relates to 22301:8.2.3's risk assessment process but is a pre-deployment security check rather than a BCMS disruption risk assessment."
+  },
+  {
+    "source": "DORA:Art.25(3)",
+    "target": "22301:8.5",
+    "relationship": "partial_overlap",
+    "rationale": "DORA's risk-based testing approach for microenterprises (balancing resources, urgency, criticality) partially maps to 22301:8.5's exercise programme scoping requirements; 22301:8.5 does not create a scaled-down regime for smaller organisations."
+  },
+  {
+    "source": "DORA:Art.26(1)",
+    "target": "22301:8.5",
+    "relationship": "superset",
+    "rationale": "DORA Art.26 TLPT — red-team adversarial testing against live production systems every three years by designated significant entities — goes well beyond 22301:8.5, which covers tabletop and drill exercises but does not require adversarial or threat-intelligence-led penetration tests."
+  },
+  {
+    "source": "DORA:Art.26(2)",
+    "target": "22301:8.5",
+    "relationship": "superset",
+    "rationale": "DORA's requirement that TLPT cover all critical or important functions on live production systems including outsourced ICT services expands significantly beyond 22301:8.5's exercise scope, which does not mandate live-system adversarial testing of third-party supply chain components."
+  },
+  {
+    "source": "DORA:Art.26(2)",
+    "target": "22301:8.2.2",
+    "relationship": "related",
+    "rationale": "DORA's mapping of ICT systems and third-party dependencies within TLPT scope relates to 22301:8.2.2's BIA requirement to map critical activities, third-party dependencies and information assets, but serves adversarial test scoping rather than impact quantification."
+  },
+  {
+    "source": "DORA:Art.26(3)",
+    "target": "22301:8.5",
+    "relationship": "superset",
+    "rationale": "DORA's pooled TLPT mechanism — allowing multiple financial entities to conduct a single joint test on shared ICT third-party providers — has no equivalent in 22301:8.5, which treats exercise programmes as entirely organisation-internal."
+  },
+  {
+    "source": "DORA:Art.26(5)",
+    "target": "22301:9.1",
+    "relationship": "partial_overlap",
+    "rationale": "DORA's requirement to assess TLPT results and address identified vulnerabilities partially overlaps with 22301:9.1's monitoring, analysis and evaluation requirements, but DORA additionally mandates submission of findings to competent authorities with an attestation mechanism."
+  },
+  {
+    "source": "DORA:Art.26(6)",
+    "target": "22301:9.1",
+    "relationship": "related",
+    "rationale": "DORA's post-TLPT reporting (summary of findings, remediation plans, documentation to competent authority) relates to 22301:9.1's evaluation and documented information obligations but adds a regulatory submission requirement absent from 22301."
+  },
+  {
+    "source": "DORA:Art.26(7)",
+    "target": "22301:9.1",
+    "relationship": "related",
+    "rationale": "DORA's mutual recognition attestation from competent authorities for TLPT results is a regulatory cross-border governance mechanism with no direct parallel in 22301:9.1."
+  },
+  {
+    "source": "DORA:Art.26(8)",
+    "target": "22301:8.2.2",
+    "relationship": "related",
+    "rationale": "DORA's entity identification criteria for TLPT designation (impact factors, systemic character, ICT risk profile) relate to 22301:8.2.2's criticality and impact assessment outputs, but serve supervisory targeting rather than organisation-internal BIA outputs."
+  },
+  {
+    "source": "DORA:Art.27(1)(a)",
+    "target": "22301:8.5",
+    "relationship": "superset",
+    "rationale": "DORA's prescriptive qualification requirements for TLPT testers (highest suitability, technical expertise in threat intelligence, penetration testing, red team) exceed anything required for exercise facilitators under 22301:8.5."
+  },
+  {
+    "source": "DORA:Art.27(1)(b)",
+    "target": "22301:7.2",
+    "relationship": "partial_overlap",
+    "rationale": "DORA's competency requirements for TLPT testers (technical expertise, certifications, ethical frameworks) partially overlap with 22301:7.2's general competence requirements for personnel performing BCMS work, but DORA's prescription is far more detailed and regulated."
+  },
+  {
+    "source": "DORA:Art.27(1)(c)",
+    "target": "22301:7.2",
+    "relationship": "superset",
+    "rationale": "DORA's certification and formal code-of-conduct requirement for TLPT testers goes beyond 22301:7.2's general competence requirements, adding a formal accreditation or ethical-framework prerequisite with no 22301 equivalent."
+  },
+  {
+    "source": "DORA:Art.27(1)(d)",
+    "target": "22301:8.5",
+    "relationship": "superset",
+    "rationale": "DORA's requirement for independent assurance or audit report on management of TLPT risks (data protection, business risk redress) has no equivalent in 22301:8.5 exercise programme requirements."
+  },
+  {
+    "source": "DORA:Art.27(1)(e)",
+    "target": "22301:8.5",
+    "relationship": "superset",
+    "rationale": "DORA's mandatory professional indemnity insurance requirement for TLPT testers covering misconduct and negligence risks is a procurement/contractual safeguard entirely outside the scope of 22301:8.5."
+  },
+  {
+    "source": "DORA:Art.27(2)",
+    "target": "22301:8.5",
+    "relationship": "superset",
+    "rationale": "DORA's conditions for use of internal TLPT testers (competent authority approval, dedicated resources, external threat intelligence provider) impose supervisory oversight obligations that go well beyond 22301:8.5's exercise independence expectations."
+  },
+  {
+    "source": "DORA:Art.27(3)",
+    "target": "22301:7.5",
+    "relationship": "related",
+    "rationale": "DORA's contractual requirements for external TLPT testers covering secure management, storage, aggregation and destruction of test results relate to 22301:7.5's documented information control obligations but are specific to third-party security testing data rather than general BCMS documents."
+  }
+]

@@ -1,0 +1,428 @@
+[
+  {
+    "source": "KRITIS-8a-1-general",
+    "target": "ISO22301:2019-4.1",
+    "relationship": "related",
+    "rationale": "§8a Abs.1 BSIG requires KRITIS operators to protect availability, integrity, authenticity and confidentiality of IT systems; ISO 22301 §4.1 requires understanding the organizational context including legal/regulatory obligations, establishing the foundation for the BCMS."
+  },
+  {
+    "source": "KRITIS-8a-1-general",
+    "target": "ISO22301:2019-4.2",
+    "relationship": "related",
+    "rationale": "§8a Abs.1 obligation to protect critical-service availability for the public mirrors ISO 22301 §4.2 requirement to understand interested parties (regulators, the public, sector-authority) and their needs/expectations."
+  },
+  {
+    "source": "KRITIS-8a-1-general",
+    "target": "ISO22301:2019-6.1",
+    "relationship": "subset",
+    "rationale": "§8a Abs.1 requires state-of-the-art risk-proportionate measures; ISO 22301 §6.1 requires the organization to identify risks and opportunities that could affect the BCMS, which is the planning-layer precondition for availability assurance."
+  },
+  {
+    "source": "KRITIS-8a-1.1-ISMS",
+    "target": "ISO22301:2019-5.1",
+    "relationship": "related",
+    "rationale": "BSI KdA control group ISMS requires top-management commitment and a security policy for the KRITIS scope; ISO 22301 §5.1 requires demonstrable leadership and commitment to the BCMS with the same purpose."
+  },
+  {
+    "source": "KRITIS-8a-1.1-ISMS",
+    "target": "ISO22301:2019-5.2",
+    "relationship": "subset",
+    "rationale": "BSI KdA ISMS requirements include a documented information security policy aligned to §8a obligations; ISO 22301 §5.2 requires a BCMS policy that is appropriate to the organization's purpose and includes commitment to continual improvement."
+  },
+  {
+    "source": "KRITIS-8a-1.1-ISMS",
+    "target": "ISO22301:2019-5.3",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA ISMS requires defined roles, responsibilities and authorities for security management of the KRITIS scope; ISO 22301 §5.3 requires assignment of responsibilities and authorities for BCMS roles — the scope and intent are equivalent."
+  },
+  {
+    "source": "KRITIS-8a-1.2-Risikomanagement",
+    "target": "ISO22301:2019-6.1",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.1 and BSI KdA risk management controls require a documented risk identification and treatment process proportionate to critical-service risk; ISO 22301 §6.1 mandates the same — identifying risks/opportunities relevant to the BCMS."
+  },
+  {
+    "source": "KRITIS-8a-1.2-Risikomanagement",
+    "target": "ISO22301:2019-8.2.3",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA risk management controls require systematic identification, assessment, and treatment of threats to KRITIS IT systems; ISO 22301 §8.2.3 requires the organization to conduct a risk assessment covering threats, vulnerabilities, and impacts on continuity."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.2.1",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.1 requires organizational and technical measures to ensure availability of critical services; ISO 22301 §8.2.1 requires establishing a formal documented BIA/RA process, the mandatory first step for continuity planning."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM controls require identification of critical activities, RTO/RPO and minimum service levels for the critical service; ISO 22301 §8.2.2 requires a Business Impact Analysis specifying prioritized activities, MTPD, RTO, RPO, and minimum resource levels."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.3.1",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.1 availability assurance requires identifying and selecting strategies to prevent/reduce disruptions to critical services; ISO 22301 §8.3.1 requires identifying continuity strategies addressing pre-, during-, and post-disruption phases."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM requires documented solutions (redundancies, alternative sites, manual procedures) to ensure critical-service availability; ISO 22301 §8.3.2 requires identifying and selecting strategies and solutions for continuity based on BIA outputs."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.3.3",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM requires identification and allocation of all resources (personnel, technology, facilities) needed to maintain critical services; ISO 22301 §8.3.3 requires determining resource requirements for each strategy and solution."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.4.1",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.1 requires documented emergency plans for continuity of critical services; ISO 22301 §8.4.1 (General) requires establishing, implementing, and maintaining plans and procedures to manage disruptions."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM requires a crisis response structure with defined roles, escalation paths, and decision-making authority; ISO 22301 §8.4.2 requires a documented response structure covering incident management, crisis management and business continuity."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.4.3",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM requires warning and alert procedures to notify relevant internal and external parties when a disruption occurs; ISO 22301 §8.4.3 requires warning and communication procedures covering internal notification, external communications, and regulatory reporting."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.1 and BSI KdA BCM require documented, tested, and regularly updated IT emergency/continuity plans; ISO 22301 §8.4.4 requires business continuity plans documenting response actions, roles, contacts, and recovery procedures."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.4.5",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM requires documented recovery procedures to restore critical services within defined timeframes; ISO 22301 §8.4.5 requires recovery plans and procedures to restore normal operations within RTO."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-Notfallmanagement",
+    "target": "ISO22301:2019-8.5",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM requires regular exercises and tests to validate the effectiveness of emergency plans for critical services; ISO 22301 §8.5 requires an exercise program to verify BCMS effectiveness through simulated disruptions at planned intervals."
+  },
+  {
+    "source": "KRITIS-8a-1.4-PersonalSicherheit",
+    "target": "ISO22301:2019-7.2",
+    "relationship": "subset",
+    "rationale": "BSI KdA personal security controls require background checks and defined security roles for employees with KRITIS system access; ISO 22301 §7.2 (Competence) requires identifying and ensuring competence of personnel performing BCMS-relevant roles."
+  },
+  {
+    "source": "KRITIS-8a-1.4-PersonalSicherheit",
+    "target": "ISO22301:2019-7.3",
+    "relationship": "subset",
+    "rationale": "BSI KdA personnel security requires awareness training on security obligations for KRITIS IT systems; ISO 22301 §7.3 (Awareness) requires all personnel to be aware of the BCMS policy, their contribution, and implications of non-conformance."
+  },
+  {
+    "source": "KRITIS-8a-1.4-PersonalSicherheit",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "related",
+    "rationale": "BSI KdA requires key personnel roles to be defined for crisis response; ISO 22301 §8.4.2 requires defined response structure roles including crisis management team membership — overlap on personnel role assignment for crisis scenarios."
+  },
+  {
+    "source": "KRITIS-8a-1.5-PhysischeSicherheit",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "subset",
+    "rationale": "BSI KdA physical security controls require protection of KRITIS facilities against physical threats; ISO 22301 §8.3.2 requires identifying solutions that include physical infrastructure protection as part of the BC strategy — physical security is a sub-element."
+  },
+  {
+    "source": "KRITIS-8a-1.5-PhysischeSicherheit",
+    "target": "ISO22301:2019-8.3.3",
+    "relationship": "related",
+    "rationale": "BSI KdA requires physical resource inventory (buildings, UPS, fire suppression) to maintain critical-service availability; ISO 22301 §8.3.3 requires identifying resource requirements including facilities and physical infrastructure for continuity strategies."
+  },
+  {
+    "source": "KRITIS-8a-1.6-Netzwerksicherheit",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "subset",
+    "rationale": "BSI KdA network security controls require segmentation, firewalls, and redundant network paths to protect critical-service availability; ISO 22301 §8.3.2 requires selecting solutions including network redundancy as a BC solution to prevent and reduce disruption duration."
+  },
+  {
+    "source": "KRITIS-8a-1.6-Netzwerksicherheit",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "related",
+    "rationale": "BSI KdA network incident response requires documented procedures for network failover and recovery; ISO 22301 §8.4.4 requires BC plans to include procedures for managing technology disruptions including network failures."
+  },
+  {
+    "source": "KRITIS-8a-1.7-Protokollierung",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "related",
+    "rationale": "BSI KdA logging controls require central, tamper-proof audit logs for KRITIS systems to support incident detection and forensics; ISO 22301 §8.4.2 response structure requires documented evidence of incident timeline and decisions during a disruption event."
+  },
+  {
+    "source": "KRITIS-8a-1.7-Protokollierung",
+    "target": "ISO22301:2019-9.1",
+    "relationship": "related",
+    "rationale": "BSI KdA logging requirements provide monitoring data for measuring the effectiveness of security measures; ISO 22301 §9.1 requires monitoring, measurement, analysis, and evaluation of BCMS performance using defined metrics."
+  },
+  {
+    "source": "KRITIS-8a-1.8-Detektion",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "subset",
+    "rationale": "BSI KdA detection controls require threat detection mechanisms to trigger timely incident response; ISO 22301 §8.4.2 requires a response structure that activates upon detection of a disruption — detection is the trigger mechanism for BCMS activation."
+  },
+  {
+    "source": "KRITIS-8a-1.8-Detektion",
+    "target": "ISO22301:2019-8.4.3",
+    "relationship": "related",
+    "rationale": "BSI KdA detection must trigger warning and alerting procedures to relevant personnel and authorities; ISO 22301 §8.4.3 requires warning and communication procedures that activate once a disruption or threat is detected."
+  },
+  {
+    "source": "KRITIS-8a-1.8-Detektion",
+    "target": "ISO22301:2019-9.1",
+    "relationship": "related",
+    "rationale": "BSI KdA continuous monitoring/detection provides observability data used to measure KRITIS security posture; ISO 22301 §9.1 requires measurement and analysis of BCMS effectiveness through KPIs and monitoring indicators."
+  },
+  {
+    "source": "KRITIS-8a-1.9-Lieferkette",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "subset",
+    "rationale": "BSI KdA supply-chain security requires identification of critical suppliers and dependencies that could affect critical-service continuity; ISO 22301 §8.2.2 BIA requires identification of dependencies including third-party services in the impact analysis."
+  },
+  {
+    "source": "KRITIS-8a-1.9-Lieferkette",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "subset",
+    "rationale": "BSI KdA supply-chain controls require alternative suppliers and contractual continuity provisions; ISO 22301 §8.3.2 requires selecting solutions that address supply-chain dependencies as part of the continuity strategy."
+  },
+  {
+    "source": "KRITIS-8a-1.9-Lieferkette",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "related",
+    "rationale": "BSI KdA requires emergency plans covering supplier failure scenarios; ISO 22301 §8.4.4 requires BC plans to address scenarios including loss of critical suppliers and document alternative sourcing procedures."
+  },
+  {
+    "source": "KRITIS-8a-1a-SzA-general",
+    "target": "ISO22301:2019-8.1",
+    "relationship": "related",
+    "rationale": "§8a Abs.1a (since 01.05.2023) requires deployment of attack-detection systems (SzA) as an operational measure; ISO 22301 §8.1 operational planning and control requires establishing all operational processes needed to meet BCMS objectives, of which detection is a precondition."
+  },
+  {
+    "source": "KRITIS-8a-1a-SzA-logging",
+    "target": "ISO22301:2019-9.1",
+    "relationship": "related",
+    "rationale": "§8a Abs.1a SzA requires continuous automated parameter capture and log evaluation; ISO 22301 §9.1 requires monitoring and measurement of BCMS-relevant parameters — attack-detection logs contribute to security performance measurement."
+  },
+  {
+    "source": "KRITIS-8a-1a-SzA-detection",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "subset",
+    "rationale": "§8a Abs.1a SzA requires automated detection of attack patterns to trigger incident response; ISO 22301 §8.4.2 response structure requires defined triggers and escalation mechanisms to activate the crisis management team — SzA detection is a sub-enabler."
+  },
+  {
+    "source": "KRITIS-8a-1a-SzA-detection",
+    "target": "ISO22301:2019-8.4.3",
+    "relationship": "subset",
+    "rationale": "§8a Abs.1a SzA must generate alerts that trigger notification to the relevant response parties; ISO 22301 §8.4.3 warning and communication procedures require automatic or manual alerting upon detection of a disruption — SzA alert output feeds this."
+  },
+  {
+    "source": "KRITIS-8a-1a-SzA-response",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "related",
+    "rationale": "§8a Abs.1a SzA requires remediation measures for detected threats; ISO 22301 §8.4.4 BC plans must include actions to manage and resolve disruptions, including cyber-attack scenarios — SzA response playbooks map into plan procedures."
+  },
+  {
+    "source": "KRITIS-8a-1a-SzA-maturity-level",
+    "target": "ISO22301:2019-9.1",
+    "relationship": "partial_overlap",
+    "rationale": "§8a Abs.1a mandates a minimum SzA maturity level (stage 3/Reifegrad 3) verified at audit; ISO 22301 §9.1 requires measurement and evaluation of security/BCMS performance — maturity measurement overlaps but SzA maturity is specific to cybersecurity rather than broader BCMS performance."
+  },
+  {
+    "source": "KRITIS-8a-3-audit-certification",
+    "target": "ISO22301:2019-9.2",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.3 requires KRITIS operators to provide proof of compliance every two years via audit, inspection, or recognized certification; ISO 22301 §9.2 requires a planned internal audit program to assess BCMS conformance — both require systematic, evidence-based periodic assurance."
+  },
+  {
+    "source": "KRITIS-8a-3-audit-certification",
+    "target": "ISO22301:2019-9.3",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.3 audit results including identified deficiencies must be reported and addressed; ISO 22301 §9.3 requires management review of BCMS performance including audit results, with decisions on improvement — equivalent obligation to review and act on audit outputs."
+  },
+  {
+    "source": "KRITIS-8a-3-audit-scope",
+    "target": "ISO22301:2019-4.3",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.3 audit scope is defined by the KRITIS facility's critical-service boundary (Geltungsbereich); ISO 22301 §4.3 requires the organization to define and document the BCMS scope including the boundaries — both mandate a defined, documented scope for assurance purposes."
+  },
+  {
+    "source": "KRITIS-8a-3-remediation",
+    "target": "ISO22301:2019-10.1",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.3 requires that identified deficiencies from KRITIS audits are communicated to BSI and must be remediated; ISO 22301 §10.1 requires nonconformities to be documented, root-cause analyzed, corrected, and eliminated — equivalent corrective action obligation."
+  },
+  {
+    "source": "KRITIS-8a-3-remediation",
+    "target": "ISO22301:2019-10.2",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.3 implies continual improvement through repeated two-year audit cycles; ISO 22301 §10.2 requires continual improvement of the suitability, adequacy, and effectiveness of the BCMS — structurally equivalent improvement obligation."
+  },
+  {
+    "source": "KRITIS-8a-3-documented-evidence",
+    "target": "ISO22301:2019-7.5",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.3 requires operators to provide documented proof (B3S certification, audit reports, ISO 22301 cert) to the BSI; ISO 22301 §7.5 requires documented information to be created, controlled, and maintained as evidence of BCMS conformance."
+  },
+  {
+    "source": "KRITIS-8b-4-incident-reporting-initial",
+    "target": "ISO22301:2019-8.4.3",
+    "relationship": "equivalent",
+    "rationale": "§8b Abs.4 requires KRITIS operators to report significant IT security incidents to BSI within 24 hours of awareness; ISO 22301 §8.4.3 requires documented warning and communication procedures including timely notification to external authorities — the 24-hour notification is an instance of this requirement."
+  },
+  {
+    "source": "KRITIS-8b-4-incident-reporting-initial",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "subset",
+    "rationale": "§8b Abs.4 initial incident report requires identification of affected systems, likely cause, and initial impact; ISO 22301 §8.4.2 response structure requires establishing an incident management process with initial assessment and documentation — §8b reporting is a regulatory output of this process."
+  },
+  {
+    "source": "KRITIS-8b-4-incident-reporting-intermediate",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "subset",
+    "rationale": "§8b Abs.4 intermediate report (within ongoing incident management) requires updates on affected systems and containment measures; ISO 22301 §8.4.4 BC plans must include progress tracking procedures during active disruptions — intermediate reporting is a plan element."
+  },
+  {
+    "source": "KRITIS-8b-4-incident-reporting-final",
+    "target": "ISO22301:2019-8.4.5",
+    "relationship": "subset",
+    "rationale": "§8b Abs.4 final report requires documentation of root cause, impact, and measures taken; ISO 22301 §8.4.5 recovery procedures require post-incident documentation of restoration actions — the final regulatory report draws from BCMS recovery documentation."
+  },
+  {
+    "source": "KRITIS-8b-4-incident-reporting-final",
+    "target": "ISO22301:2019-10.1",
+    "relationship": "subset",
+    "rationale": "§8b Abs.4 final incident report includes lessons learned and corrective measures; ISO 22301 §10.1 requires root-cause analysis and corrective action for nonconformities — the regulatory post-incident review feeds the BCMS improvement cycle."
+  },
+  {
+    "source": "KRITIS-8b-4-incident-reporting-threshold",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "related",
+    "rationale": "§8b Abs.4 reporting threshold (significant impairment of critical-service functionality) aligns with ISO 22301 §8.2.2 BIA outputs — the threshold is defined by the minimum service level (MBCO) and MTPD determined in the BIA."
+  },
+  {
+    "source": "KRITIS-8b-4-incident-reporting-threshold",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "subset",
+    "rationale": "§8b Abs.4 threshold requires operators to have defined criteria for declaring a significant incident; ISO 22301 §8.4.2 response structure requires decision criteria and escalation thresholds for activating incident and crisis management — threshold definition is a component of the response structure."
+  },
+  {
+    "source": "KRITIS-8b-4-contact-registration",
+    "target": "ISO22301:2019-7.4",
+    "relationship": "subset",
+    "rationale": "§8b Abs.3 requires KRITIS operators to register a contact point with BSI for incident reporting; ISO 22301 §7.4 (Communication) requires defining who communicates, when, and to which external parties including regulators — BSI contact registration is an instance of external communication planning."
+  },
+  {
+    "source": "KRITIS-8b-4-contact-registration",
+    "target": "ISO22301:2019-8.4.3",
+    "relationship": "subset",
+    "rationale": "§8b contact registration ensures the regulatory notification channel is pre-established; ISO 22301 §8.4.3 requires contact lists for external parties including regulatory bodies to be maintained as part of the warning and communication procedure."
+  },
+  {
+    "source": "KRITIS-KritisV-threshold-sector-scope",
+    "target": "ISO22301:2019-4.3",
+    "relationship": "related",
+    "rationale": "BSI-KritisV sector thresholds (e.g., 500,000 persons served for water, 3,700 GWh/a for energy) determine which facilities are KRITIS-regulated; ISO 22301 §4.3 requires defining the BCMS scope based on the organization's critical activities and regulatory obligations — KritisV thresholds drive the BCMS scope boundary."
+  },
+  {
+    "source": "KRITIS-KritisV-threshold-sector-scope",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "related",
+    "rationale": "BSI-KritisV thresholds define the critical services whose availability must be protected; ISO 22301 §8.2.2 BIA identifies and prioritizes activities that are critical to service delivery — the KritisV-defined critical service is the primary subject of the BIA."
+  },
+  {
+    "source": "KRITIS-8a-1-availability-objective",
+    "target": "ISO22301:2019-6.2",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.1 establishes availability of the critical service as the primary protection objective; ISO 22301 §6.2 requires BCMS objectives to be established including specific availability and recovery targets — the KRITIS availability obligation translates directly to BCMS objectives."
+  },
+  {
+    "source": "KRITIS-8a-1-availability-objective",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "superset",
+    "rationale": "§8a Abs.1 availability objective covers IT systems, components, and processes; ISO 22301 §8.2.2 BIA covers critical activities across all resources — ISO 22301 BIA is broader (includes non-IT assets like personnel, facilities) while KRITIS focuses on IT systems, making the standard a superset on scope."
+  },
+  {
+    "source": "KRITIS-8a-1-state-of-the-art",
+    "target": "ISO22301:2019-9.1",
+    "relationship": "related",
+    "rationale": "§8a Abs.1 'state of the art' requirement mandates ongoing review of measures against current threat landscape; ISO 22301 §9.1 requires periodic monitoring and evaluation of BCMS effectiveness, ensuring measures remain adequate over time."
+  },
+  {
+    "source": "KRITIS-8a-1-state-of-the-art",
+    "target": "ISO22301:2019-10.2",
+    "relationship": "related",
+    "rationale": "§8a Abs.1 'state of the art' mandate requires adaptation of measures as technology and threats evolve; ISO 22301 §10.2 continual improvement requires the BCMS to be updated to reflect changing context, threats, and lessons learned."
+  },
+  {
+    "source": "KRITIS-8a-1-proportionality",
+    "target": "ISO22301:2019-6.1",
+    "relationship": "equivalent",
+    "rationale": "§8a Abs.1 proportionality principle requires measures to be commensurate with the disruption risk; ISO 22301 §6.1 requires risk-based planning where actions address risks proportionate to their potential impact on BCMS objectives."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-training",
+    "target": "ISO22301:2019-7.2",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM controls require training and qualification of personnel responsible for executing emergency plans; ISO 22301 §7.2 requires ensuring competence of personnel performing BCMS-relevant tasks through education, training, and experience."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-training",
+    "target": "ISO22301:2019-7.3",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM requires all relevant personnel to understand their roles in crisis and emergency scenarios; ISO 22301 §7.3 awareness requires personnel to understand the BCMS policy, their contribution, and consequences of non-compliance."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-exercises",
+    "target": "ISO22301:2019-8.5",
+    "relationship": "equivalent",
+    "rationale": "BSI KdA BCM requires regular exercises (tabletop and live) to test emergency plans for critical services; ISO 22301 §8.5 requires an exercise program including objectives, schedule, types of exercises, and post-exercise review — directly equivalent obligations."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-review",
+    "target": "ISO22301:2019-8.5",
+    "relationship": "subset",
+    "rationale": "BSI KdA BCM requires post-exercise review and update of emergency plans based on exercise results; ISO 22301 §8.5 requires exercises to result in evaluation reports with identified improvements — post-exercise plan update is a sub-requirement of §8.5."
+  },
+  {
+    "source": "KRITIS-8a-1.3-BCM-review",
+    "target": "ISO22301:2019-10.1",
+    "relationship": "related",
+    "rationale": "BSI KdA BCM post-exercise gaps identified must be remediated; ISO 22301 §10.1 requires corrective actions for nonconformities — exercise-identified gaps are a form of nonconformity triggering corrective action."
+  },
+  {
+    "source": "KRITIS-8a-1.9-Lieferkette-contracts",
+    "target": "ISO22301:2019-8.1",
+    "relationship": "subset",
+    "rationale": "BSI KdA supply-chain controls require contractual security and continuity obligations from critical suppliers; ISO 22301 §8.1 operational planning and control requires that outsourced processes relevant to the BCMS are controlled — supplier contracts are an operational control."
+  },
+  {
+    "source": "KRITIS-8a-1.9-Lieferkette-monitoring",
+    "target": "ISO22301:2019-9.1",
+    "relationship": "subset",
+    "rationale": "BSI KdA supply-chain security requires ongoing monitoring of supplier security performance; ISO 22301 §9.1 requires monitoring and measurement of performance including outsourced processes contributing to critical services."
+  },
+  {
+    "source": "KRITIS-8a-3-BSI-reporting",
+    "target": "ISO22301:2019-9.3",
+    "relationship": "subset",
+    "rationale": "§8a Abs.3 requires audit results and deficiencies to be submitted to BSI; ISO 22301 §9.3 management review requires review of BCMS performance with outputs including decisions and improvement actions — BSI submission is a regulatory subset of the management review output."
+  },
+  {
+    "source": "KRITIS-8a-3-BSI-reporting",
+    "target": "ISO22301:2019-7.5",
+    "relationship": "subset",
+    "rationale": "§8a Abs.3 requires structured documented proof (audit reports, certificates) submitted every two years; ISO 22301 §7.5 requires documented information to be retained as evidence — the regulatory proof package is a subset of required BCMS documented information."
+  }
+]

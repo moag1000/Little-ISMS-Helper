@@ -1,0 +1,2966 @@
+[
+  {
+    "source": "APP.1.1.A3",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI APP.1.1.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "APP.1.2.A11",
+    "target": "A.5.34",
+    "relationship": "partial_overlap",
+    "rationale": "BSI APP.1.2.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.34 (Privacy and protection of PII)."
+  },
+  {
+    "source": "APP.1.2.A11",
+    "target": "A.8.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI APP.1.2.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "APP.2.1.A12",
+    "target": "A.8.2",
+    "relationship": "subset",
+    "rationale": "BSI APP.2.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "APP.2.2.A17",
+    "target": "A.8.2",
+    "relationship": "subset",
+    "rationale": "BSI APP.2.2.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "APP.3.1.A9",
+    "target": "A.8.26",
+    "relationship": "subset",
+    "rationale": "BSI APP.3.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.26 (Application security requirements)."
+  },
+  {
+    "source": "APP.3.2.A14",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI APP.3.2.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "APP.3.2.A15",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI APP.3.2.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "APP.3.2.A4",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI APP.3.2.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "APP.3.2.A7",
+    "target": "A.5.32",
+    "relationship": "subset",
+    "rationale": "BSI APP.3.2.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.32 (Intellectual property rights)."
+  },
+  {
+    "source": "APP.3.3.A12",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI APP.3.3.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "APP.3.3.A13",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI APP.3.3.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "APP.3.3.A6",
+    "target": "A.8.26",
+    "relationship": "subset",
+    "rationale": "BSI APP.3.3.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.26 (Application security requirements)."
+  },
+  {
+    "source": "APP.3.6.A2",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI APP.3.6.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "APP.4.4.A9",
+    "target": "A.8.2",
+    "relationship": "subset",
+    "rationale": "BSI APP.4.4.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "APP.5.3.A1",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI APP.5.3.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "APP.5.3.A11",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI APP.5.3.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "APP.5.3.A6",
+    "target": "A.5.14",
+    "relationship": "subset",
+    "rationale": "BSI APP.5.3.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.14 (Information transfer)."
+  },
+  {
+    "source": "APP.6.A1",
+    "target": "A.8.19",
+    "relationship": "subset",
+    "rationale": "BSI APP.6.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.19 (Installation of software on operational systems)."
+  },
+  {
+    "source": "APP.6.A4",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI APP.6.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "APP.6.A4",
+    "target": "A.8.19",
+    "relationship": "partial_overlap",
+    "rationale": "BSI APP.6.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.19 (Installation of software on operational systems)."
+  },
+  {
+    "source": "APP.6.A5",
+    "target": "A.8.19",
+    "relationship": "subset",
+    "rationale": "BSI APP.6.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.19 (Installation of software on operational systems)."
+  },
+  {
+    "source": "APP.6.A8",
+    "target": "A.8.19",
+    "relationship": "subset",
+    "rationale": "BSI APP.6.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.19 (Installation of software on operational systems)."
+  },
+  {
+    "source": "APP.6.A9",
+    "target": "A.5.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI APP.6.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.9 (Inventory of information and other associated assets)."
+  },
+  {
+    "source": "APP.6.A9",
+    "target": "A.5.32",
+    "relationship": "partial_overlap",
+    "rationale": "BSI APP.6.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.32 (Intellectual property rights)."
+  },
+  {
+    "source": "CON.1.A2",
+    "target": "A.8.13",
+    "relationship": "equivalent",
+    "rationale": "BSI CON.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.13 (Information backup)."
+  },
+  {
+    "source": "CON.1.A5",
+    "target": "A.8.10",
+    "relationship": "subset",
+    "rationale": "BSI CON.1.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.10 (Information deletion)."
+  },
+  {
+    "source": "CON.1.A9",
+    "target": "A.5.34",
+    "relationship": "subset",
+    "rationale": "BSI CON.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.34 (Privacy and protection of PII)."
+  },
+  {
+    "source": "CON.10.A11",
+    "target": "A.8.27",
+    "relationship": "subset",
+    "rationale": "BSI CON.10.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.27 (Secure system architecture and engineering principles)."
+  },
+  {
+    "source": "CON.3.A12",
+    "target": "A.7.10",
+    "relationship": "subset",
+    "rationale": "BSI CON.3.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  },
+  {
+    "source": "CON.6.A13",
+    "target": "A.7.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.6.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  },
+  {
+    "source": "CON.6.A13",
+    "target": "A.7.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.6.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "CON.6.A14",
+    "target": "A.7.10",
+    "relationship": "subset",
+    "rationale": "BSI CON.6.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  },
+  {
+    "source": "CON.6.A2",
+    "target": "A.7.14",
+    "relationship": "subset",
+    "rationale": "BSI CON.6.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "CON.7.A10",
+    "target": "A.7.10",
+    "relationship": "subset",
+    "rationale": "BSI CON.7.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  },
+  {
+    "source": "CON.7.A13",
+    "target": "A.7.10",
+    "relationship": "subset",
+    "rationale": "BSI CON.7.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  },
+  {
+    "source": "CON.7.A2",
+    "target": "A.5.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.7.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.10 (Acceptable use of information and other associated assets)."
+  },
+  {
+    "source": "CON.7.A2",
+    "target": "A.8.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.7.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "CON.7.A7",
+    "target": "A.6.7",
+    "relationship": "equivalent",
+    "rationale": "BSI CON.7.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.7 (Remote working)."
+  },
+  {
+    "source": "CON.7.A9",
+    "target": "A.5.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.7.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.14 (Information transfer)."
+  },
+  {
+    "source": "CON.7.A9",
+    "target": "A.8.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.7.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "CON.8.A10",
+    "target": "A.8.4",
+    "relationship": "equivalent",
+    "rationale": "BSI CON.8.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.4 (Access to source code)."
+  },
+  {
+    "source": "CON.8.A11",
+    "target": "A.8.31",
+    "relationship": "subset",
+    "rationale": "BSI CON.8.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "CON.8.A12",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.8.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "CON.8.A12",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.8.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "CON.8.A12",
+    "target": "A.8.27",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.8.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.27 (Secure system architecture and engineering principles)."
+  },
+  {
+    "source": "CON.8.A22",
+    "target": "A.8.27",
+    "relationship": "subset",
+    "rationale": "BSI CON.8.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.27 (Secure system architecture and engineering principles)."
+  },
+  {
+    "source": "CON.8.A3",
+    "target": "A.8.31",
+    "relationship": "subset",
+    "rationale": "BSI CON.8.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "CON.8.A5",
+    "target": "A.8.27",
+    "relationship": "subset",
+    "rationale": "BSI CON.8.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.27 (Secure system architecture and engineering principles)."
+  },
+  {
+    "source": "CON.8.A7",
+    "target": "A.8.31",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.8.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "CON.8.A7",
+    "target": "A.8.33",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.8.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.33 (Test information)."
+  },
+  {
+    "source": "CON.9.A9",
+    "target": "A.5.19",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.9.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.19 (Information security in supplier relationships)."
+  },
+  {
+    "source": "CON.9.A9",
+    "target": "A.6.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI CON.9.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.6 (Confidentiality or non-disclosure agreements)."
+  },
+  {
+    "source": "DER.1.A10",
+    "target": "A.5.34",
+    "relationship": "subset",
+    "rationale": "BSI DER.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.34 (Privacy and protection of PII)."
+  },
+  {
+    "source": "DER.1.A11",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI DER.1.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "DER.1.A12",
+    "target": "A.5.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.6 (Contact with special interest groups)."
+  },
+  {
+    "source": "DER.1.A12",
+    "target": "A.5.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.7 (Threat intelligence)."
+  },
+  {
+    "source": "DER.1.A12",
+    "target": "A.8.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "DER.1.A12",
+    "target": "A.8.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.8 (Management of technical vulnerabilities)."
+  },
+  {
+    "source": "DER.1.A14",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI DER.1.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "DER.1.A15",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI DER.1.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "DER.1.A16",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI DER.1.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "DER.1.A2",
+    "target": "A.5.34",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.34 (Privacy and protection of PII)."
+  },
+  {
+    "source": "DER.1.A2",
+    "target": "A.8.15",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "DER.1.A3",
+    "target": "A.6.8",
+    "relationship": "subset",
+    "rationale": "BSI DER.1.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.8 (Information security event reporting)."
+  },
+  {
+    "source": "DER.1.A4",
+    "target": "A.6.8",
+    "relationship": "subset",
+    "rationale": "BSI DER.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.8 (Information security event reporting)."
+  },
+  {
+    "source": "DER.1.A5",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI DER.1.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "DER.1.A6",
+    "target": "A.8.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.1.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "DER.1.A6",
+    "target": "A.8.15",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.1.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "DER.1.A6",
+    "target": "A.8.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.1.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "DER.1.A9",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI DER.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "DER.2.1.A14",
+    "target": "A.5.5",
+    "relationship": "subset",
+    "rationale": "BSI DER.2.1.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.5 (Contact with authorities)."
+  },
+  {
+    "source": "DER.2.1.A16",
+    "target": "A.5.37",
+    "relationship": "subset",
+    "rationale": "BSI DER.2.1.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "DER.2.1.A17",
+    "target": "A.5.27",
+    "relationship": "subset",
+    "rationale": "BSI DER.2.1.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.27 (Learning from information security incidents)."
+  },
+  {
+    "source": "DER.2.1.A18",
+    "target": "A.5.27",
+    "relationship": "subset",
+    "rationale": "BSI DER.2.1.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.27 (Learning from information security incidents)."
+  },
+  {
+    "source": "DER.2.1.A20",
+    "target": "A.6.8",
+    "relationship": "subset",
+    "rationale": "BSI DER.2.1.A20 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.8 (Information security event reporting)."
+  },
+  {
+    "source": "DER.2.1.A22",
+    "target": "A.5.27",
+    "relationship": "subset",
+    "rationale": "BSI DER.2.1.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.27 (Learning from information security incidents)."
+  },
+  {
+    "source": "DER.2.1.A4",
+    "target": "A.5.5",
+    "relationship": "subset",
+    "rationale": "BSI DER.2.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.5 (Contact with authorities)."
+  },
+  {
+    "source": "DER.2.1.A9",
+    "target": "A.5.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.2.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.5 (Contact with authorities)."
+  },
+  {
+    "source": "DER.2.1.A9",
+    "target": "A.5.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.2.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.7 (Threat intelligence)."
+  },
+  {
+    "source": "DER.2.1.A9",
+    "target": "A.6.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI DER.2.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.8 (Information security event reporting)."
+  },
+  {
+    "source": "DER.2.2.A1",
+    "target": "A.5.34",
+    "relationship": "subset",
+    "rationale": "BSI DER.2.2.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.34 (Privacy and protection of PII)."
+  },
+  {
+    "source": "DER.2.2.A13",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI DER.2.2.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "IND.1.A10",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI IND.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "IND.1.A11",
+    "target": "A.8.27",
+    "relationship": "subset",
+    "rationale": "BSI IND.1.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.27 (Secure system architecture and engineering principles)."
+  },
+  {
+    "source": "IND.1.A12",
+    "target": "A.5.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI IND.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.6 (Contact with special interest groups)."
+  },
+  {
+    "source": "IND.1.A12",
+    "target": "A.5.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI IND.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.7 (Threat intelligence)."
+  },
+  {
+    "source": "IND.1.A12",
+    "target": "A.8.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI IND.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.8 (Management of technical vulnerabilities)."
+  },
+  {
+    "source": "IND.1.A14",
+    "target": "A.8.2",
+    "relationship": "subset",
+    "rationale": "BSI IND.1.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "IND.1.A18",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI IND.1.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "IND.1.A22",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI IND.1.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "IND.1.A3",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI IND.1.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "IND.1.A4",
+    "target": "A.5.9",
+    "relationship": "subset",
+    "rationale": "BSI IND.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.9 (Inventory of information and other associated assets)."
+  },
+  {
+    "source": "IND.1.A7",
+    "target": "A.6.4",
+    "relationship": "subset",
+    "rationale": "BSI IND.1.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.4 (Disciplinary process)."
+  },
+  {
+    "source": "IND.2.1.A8",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI IND.2.1.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "IND.2.2.A3",
+    "target": "A.8.17",
+    "relationship": "subset",
+    "rationale": "BSI IND.2.2.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.17 (Clock synchronization)."
+  },
+  {
+    "source": "IND.3.2.A14",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI IND.3.2.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "IND.3.2.A9",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI IND.3.2.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "INF.1.A1",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.1.A1",
+    "target": "A.7.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A10",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A12",
+    "target": "A.7.2",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.2 (Physical entry)."
+  },
+  {
+    "source": "INF.1.A13",
+    "target": "A.7.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.2 (Physical entry)."
+  },
+  {
+    "source": "INF.1.A13",
+    "target": "A.7.12",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.12 (Cabling security)."
+  },
+  {
+    "source": "INF.1.A14",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A15",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A16",
+    "target": "A.7.3",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.3 (Securing offices, rooms and facilities)."
+  },
+  {
+    "source": "INF.1.A17",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A20",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A20 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A22",
+    "target": "A.7.1",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.1.A23",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.1.A23",
+    "target": "A.7.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.6 (Working in secure areas)."
+  },
+  {
+    "source": "INF.1.A24",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A25",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A25 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A26",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A26 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.1.A26",
+    "target": "A.7.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A26 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.2 (Physical entry)."
+  },
+  {
+    "source": "INF.1.A26",
+    "target": "A.7.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A26 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.4 (Physical security monitoring)."
+  },
+  {
+    "source": "INF.1.A27",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A27 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.1.A27",
+    "target": "A.7.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A27 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.4 (Physical security monitoring)."
+  },
+  {
+    "source": "INF.1.A3",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A32",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A32 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A34",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A34 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.1.A34",
+    "target": "A.7.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A34 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.4 (Physical security monitoring)."
+  },
+  {
+    "source": "INF.1.A35",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A35 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.1.A35",
+    "target": "A.7.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A35 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.4 (Physical security monitoring)."
+  },
+  {
+    "source": "INF.1.A4",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A5",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A6",
+    "target": "A.7.1",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.1.A7",
+    "target": "A.5.15",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.15 (Access control)."
+  },
+  {
+    "source": "INF.1.A7",
+    "target": "A.7.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.2 (Physical entry)."
+  },
+  {
+    "source": "INF.1.A8",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.1.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A9",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.1.A9",
+    "target": "A.7.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.3 (Securing offices, rooms and facilities)."
+  },
+  {
+    "source": "INF.1.A9",
+    "target": "A.7.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.1.A9",
+    "target": "A.7.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.6 (Working in secure areas)."
+  },
+  {
+    "source": "INF.11.A2",
+    "target": "A.7.13",
+    "relationship": "subset",
+    "rationale": "BSI INF.11.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.11.A5",
+    "target": "A.5.9",
+    "relationship": "subset",
+    "rationale": "BSI INF.11.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.9 (Inventory of information and other associated assets)."
+  },
+  {
+    "source": "INF.12.A10",
+    "target": "A.7.12",
+    "relationship": "subset",
+    "rationale": "BSI INF.12.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.12 (Cabling security)."
+  },
+  {
+    "source": "INF.12.A11",
+    "target": "A.7.12",
+    "relationship": "subset",
+    "rationale": "BSI INF.12.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.12 (Cabling security)."
+  },
+  {
+    "source": "INF.12.A15",
+    "target": "A.7.12",
+    "relationship": "subset",
+    "rationale": "BSI INF.12.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.12 (Cabling security)."
+  },
+  {
+    "source": "INF.12.A17",
+    "target": "A.7.12",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.12.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.12 (Cabling security)."
+  },
+  {
+    "source": "INF.12.A17",
+    "target": "A.8.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.12.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "INF.12.A2",
+    "target": "A.7.12",
+    "relationship": "subset",
+    "rationale": "BSI INF.12.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.12 (Cabling security)."
+  },
+  {
+    "source": "INF.12.A5",
+    "target": "A.7.12",
+    "relationship": "subset",
+    "rationale": "BSI INF.12.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.12 (Cabling security)."
+  },
+  {
+    "source": "INF.13.A12",
+    "target": "A.7.13",
+    "relationship": "subset",
+    "rationale": "BSI INF.13.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.13.A15",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI INF.13.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "INF.13.A17",
+    "target": "A.7.13",
+    "relationship": "subset",
+    "rationale": "BSI INF.13.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.13.A18",
+    "target": "A.7.13",
+    "relationship": "subset",
+    "rationale": "BSI INF.13.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.13.A29",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI INF.13.A29 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "INF.14.A24",
+    "target": "A.8.17",
+    "relationship": "subset",
+    "rationale": "BSI INF.14.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.17 (Clock synchronization)."
+  },
+  {
+    "source": "INF.14.A30",
+    "target": "A.8.17",
+    "relationship": "subset",
+    "rationale": "BSI INF.14.A30 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.17 (Clock synchronization)."
+  },
+  {
+    "source": "INF.2.A1",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.2.A1",
+    "target": "A.7.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.3 (Securing offices, rooms and facilities)."
+  },
+  {
+    "source": "INF.2.A1",
+    "target": "A.7.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.6 (Working in secure areas)."
+  },
+  {
+    "source": "INF.2.A10",
+    "target": "A.7.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A10",
+    "target": "A.7.13",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.2.A11",
+    "target": "A.7.11",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A12",
+    "target": "A.7.1",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.2.A13",
+    "target": "A.7.4",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.4 (Physical security monitoring)."
+  },
+  {
+    "source": "INF.2.A14",
+    "target": "A.7.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A14",
+    "target": "A.7.13",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.2.A15",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.2.A16",
+    "target": "A.7.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.2.A16",
+    "target": "A.7.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A19",
+    "target": "A.7.11",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A2",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.2.A21",
+    "target": "A.7.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A21 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.2.A21",
+    "target": "A.8.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A21 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "INF.2.A22",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.2.A23",
+    "target": "A.7.12",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.12 (Cabling security)."
+  },
+  {
+    "source": "INF.2.A24",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.2.A24",
+    "target": "A.7.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.4 (Physical security monitoring)."
+  },
+  {
+    "source": "INF.2.A25",
+    "target": "A.7.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A25 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A25",
+    "target": "A.8.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A25 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "INF.2.A26",
+    "target": "A.7.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A26 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A26",
+    "target": "A.7.13",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A26 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.2.A26",
+    "target": "A.8.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A26 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "INF.2.A28",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A28 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.2.A28",
+    "target": "A.7.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A28 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.4 (Physical security monitoring)."
+  },
+  {
+    "source": "INF.2.A3",
+    "target": "A.7.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A3",
+    "target": "A.7.13",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.2.A30",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A30 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.2.A4",
+    "target": "A.7.11",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A5",
+    "target": "A.7.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.2.A5",
+    "target": "A.7.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.8 (Equipment siting and protection)."
+  },
+  {
+    "source": "INF.2.A5",
+    "target": "A.7.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.2.A6",
+    "target": "A.7.2",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.2 (Physical entry)."
+  },
+  {
+    "source": "INF.2.A7",
+    "target": "A.7.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.1 (Physical security perimeters)."
+  },
+  {
+    "source": "INF.2.A7",
+    "target": "A.7.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.2.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.2 (Physical entry)."
+  },
+  {
+    "source": "INF.2.A8",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.2.A9",
+    "target": "A.7.5",
+    "relationship": "subset",
+    "rationale": "BSI INF.2.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.5 (Protecting against physical and environmental threats)."
+  },
+  {
+    "source": "INF.5.A1",
+    "target": "A.7.3",
+    "relationship": "subset",
+    "rationale": "BSI INF.5.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.3 (Securing offices, rooms and facilities)."
+  },
+  {
+    "source": "INF.5.A10",
+    "target": "A.7.11",
+    "relationship": "subset",
+    "rationale": "BSI INF.5.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.5.A11",
+    "target": "A.7.11",
+    "relationship": "subset",
+    "rationale": "BSI INF.5.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.5.A16",
+    "target": "A.7.11",
+    "relationship": "subset",
+    "rationale": "BSI INF.5.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.5.A17",
+    "target": "A.7.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.5.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.5.A17",
+    "target": "A.7.13",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.5.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.5.A19",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI INF.5.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "INF.5.A2",
+    "target": "A.7.3",
+    "relationship": "subset",
+    "rationale": "BSI INF.5.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.3 (Securing offices, rooms and facilities)."
+  },
+  {
+    "source": "INF.5.A23",
+    "target": "A.7.13",
+    "relationship": "subset",
+    "rationale": "BSI INF.5.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.5.A24",
+    "target": "A.7.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.5.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.5.A24",
+    "target": "A.7.13",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.5.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "INF.5.A4",
+    "target": "A.7.3",
+    "relationship": "subset",
+    "rationale": "BSI INF.5.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.3 (Securing offices, rooms and facilities)."
+  },
+  {
+    "source": "INF.5.A9",
+    "target": "A.7.11",
+    "relationship": "subset",
+    "rationale": "BSI INF.5.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "INF.7.A1",
+    "target": "A.7.3",
+    "relationship": "subset",
+    "rationale": "BSI INF.7.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.3 (Securing offices, rooms and facilities)."
+  },
+  {
+    "source": "INF.7.A6",
+    "target": "A.7.7",
+    "relationship": "subset",
+    "rationale": "BSI INF.7.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.7 (Clear desk and clear screen)."
+  },
+  {
+    "source": "INF.7.A7",
+    "target": "A.7.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.7.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.7 (Clear desk and clear screen)."
+  },
+  {
+    "source": "INF.7.A7",
+    "target": "A.7.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.7.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.8 (Equipment siting and protection)."
+  },
+  {
+    "source": "INF.7.A7",
+    "target": "A.7.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI INF.7.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  },
+  {
+    "source": "INF.7.A8",
+    "target": "A.7.7",
+    "relationship": "subset",
+    "rationale": "BSI INF.7.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.7 (Clear desk and clear screen)."
+  },
+  {
+    "source": "INF.8.A1",
+    "target": "A.7.7",
+    "relationship": "subset",
+    "rationale": "BSI INF.8.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.7 (Clear desk and clear screen)."
+  },
+  {
+    "source": "INF.8.A6",
+    "target": "A.7.7",
+    "relationship": "subset",
+    "rationale": "BSI INF.8.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.7 (Clear desk and clear screen)."
+  },
+  {
+    "source": "INF.9.A2",
+    "target": "A.8.1",
+    "relationship": "subset",
+    "rationale": "BSI INF.9.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.1 (User endpoint devices)."
+  },
+  {
+    "source": "INF.9.A8",
+    "target": "A.8.1",
+    "relationship": "subset",
+    "rationale": "BSI INF.9.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.1 (User endpoint devices)."
+  },
+  {
+    "source": "INF.9.A9",
+    "target": "A.7.10",
+    "relationship": "subset",
+    "rationale": "BSI INF.9.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  },
+  {
+    "source": "ISMS.1.A1",
+    "target": "A.5.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.1 (Policies for information security)."
+  },
+  {
+    "source": "ISMS.1.A1",
+    "target": "A.5.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.4 (Management responsibilities)."
+  },
+  {
+    "source": "ISMS.1.A10",
+    "target": "A.5.12",
+    "relationship": "equivalent",
+    "rationale": "BSI ISMS.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.12 (Classification of information)."
+  },
+  {
+    "source": "ISMS.1.A11",
+    "target": "A.5.35",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.35 (Independent review of information security)."
+  },
+  {
+    "source": "ISMS.1.A11",
+    "target": "A.5.36",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.36 (Compliance with policies, rules and standards for information security)."
+  },
+  {
+    "source": "ISMS.1.A11",
+    "target": "A.8.34",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.34 (Protection of information systems during audit testing)."
+  },
+  {
+    "source": "ISMS.1.A13",
+    "target": "A.5.33",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.33 (Protection of records)."
+  },
+  {
+    "source": "ISMS.1.A13",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "ISMS.1.A16",
+    "target": "A.5.1",
+    "relationship": "subset",
+    "rationale": "BSI ISMS.1.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.1 (Policies for information security)."
+  },
+  {
+    "source": "ISMS.1.A2",
+    "target": "A.5.10",
+    "relationship": "subset",
+    "rationale": "BSI ISMS.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.10 (Acceptable use of information and other associated assets)."
+  },
+  {
+    "source": "ISMS.1.A3",
+    "target": "A.5.1",
+    "relationship": "subset",
+    "rationale": "BSI ISMS.1.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.1 (Policies for information security)."
+  },
+  {
+    "source": "ISMS.1.A4",
+    "target": "A.5.2",
+    "relationship": "subset",
+    "rationale": "BSI ISMS.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.2 (Information security roles and responsibilities)."
+  },
+  {
+    "source": "ISMS.1.A5",
+    "target": "A.5.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "ISMS.1.A5",
+    "target": "A.6.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.5 (Responsibilities after termination or change of employment)."
+  },
+  {
+    "source": "ISMS.1.A6",
+    "target": "A.5.2",
+    "relationship": "subset",
+    "rationale": "BSI ISMS.1.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.2 (Information security roles and responsibilities)."
+  },
+  {
+    "source": "ISMS.1.A8",
+    "target": "A.5.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.4 (Management responsibilities)."
+  },
+  {
+    "source": "ISMS.1.A8",
+    "target": "A.6.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ISMS.1.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.4 (Disciplinary process)."
+  },
+  {
+    "source": "ISMS.1.A9",
+    "target": "A.5.8",
+    "relationship": "equivalent",
+    "rationale": "BSI ISMS.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.8 (Information security in project management)."
+  },
+  {
+    "source": "NET.1.1.A10",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A13",
+    "target": "A.8.6",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "NET.1.1.A16",
+    "target": "A.8.20",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.1.1.A18",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A19",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A2",
+    "target": "A.5.9",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.9 (Inventory of information and other associated assets)."
+  },
+  {
+    "source": "NET.1.1.A21",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A21 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A22",
+    "target": "A.8.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.1.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.1.1.A22",
+    "target": "A.8.22",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.1.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A22",
+    "target": "A.8.31",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.1.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "NET.1.1.A23",
+    "target": "A.8.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.1.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.1.1.A23",
+    "target": "A.8.22",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.1.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A24",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A28",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A28 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "NET.1.1.A29",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A29 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "NET.1.1.A32",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A32 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A33",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A33 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A34",
+    "target": "A.8.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.1.A34 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.1.1.A34",
+    "target": "A.8.21",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.1.A34 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.21 (Security of network services)."
+  },
+  {
+    "source": "NET.1.1.A35",
+    "target": "A.8.12",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A35 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.12 (Data leakage prevention)."
+  },
+  {
+    "source": "NET.1.1.A36",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A36 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A4",
+    "target": "A.8.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.1.1.A4",
+    "target": "A.8.22",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A5",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A6",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.1.A7",
+    "target": "A.8.20",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.1.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.1.2.A11",
+    "target": "A.8.20",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.1.2.A25",
+    "target": "A.8.6",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A25 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "NET.1.2.A26",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A26 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "NET.1.2.A30",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A30 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "NET.1.2.A32",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A32 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.2.A33",
+    "target": "A.8.22",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A33 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.22 (Segregation of networks)."
+  },
+  {
+    "source": "NET.1.2.A35",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A35 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "NET.1.2.A36",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A36 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "NET.1.2.A37",
+    "target": "A.8.17",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A37 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.17 (Clock synchronization)."
+  },
+  {
+    "source": "NET.1.2.A7",
+    "target": "A.8.15",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.2.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "NET.1.2.A7",
+    "target": "A.8.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.1.2.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.1.2.A9",
+    "target": "A.8.20",
+    "relationship": "subset",
+    "rationale": "BSI NET.1.2.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.2.1.A18",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI NET.2.1.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "NET.3.1.A19",
+    "target": "A.8.21",
+    "relationship": "subset",
+    "rationale": "BSI NET.3.1.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.21 (Security of network services)."
+  },
+  {
+    "source": "NET.3.1.A24",
+    "target": "A.8.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.3.1.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "NET.3.1.A24",
+    "target": "A.8.21",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.3.1.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.21 (Security of network services)."
+  },
+  {
+    "source": "NET.3.1.A7",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI NET.3.1.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "NET.3.1.A9",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.3.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "NET.3.1.A9",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.3.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "NET.3.2.A14",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.3.2.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "NET.3.2.A14",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.3.2.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "NET.3.2.A21",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI NET.3.2.A21 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "NET.3.2.A22",
+    "target": "A.8.17",
+    "relationship": "subset",
+    "rationale": "BSI NET.3.2.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.17 (Clock synchronization)."
+  },
+  {
+    "source": "NET.3.2.A23",
+    "target": "A.8.6",
+    "relationship": "subset",
+    "rationale": "BSI NET.3.2.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "NET.3.2.A9",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI NET.3.2.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "NET.4.1.A10",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.4.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "NET.4.1.A10",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.4.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "NET.4.1.A11",
+    "target": "A.7.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.4.1.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "NET.4.1.A11",
+    "target": "A.8.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.4.1.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.10 (Information deletion)."
+  },
+  {
+    "source": "NET.4.1.A19",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI NET.4.1.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "NET.4.1.A5",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI NET.4.1.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "NET.4.2.A12",
+    "target": "A.7.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.4.2.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "NET.4.2.A12",
+    "target": "A.8.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI NET.4.2.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.10 (Information deletion)."
+  },
+  {
+    "source": "NET.4.3.A9",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI NET.4.3.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "OPS.1.1.1.A10",
+    "target": "A.5.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.7 (Threat intelligence)."
+  },
+  {
+    "source": "OPS.1.1.1.A10",
+    "target": "A.8.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.8 (Management of technical vulnerabilities)."
+  },
+  {
+    "source": "OPS.1.1.1.A19",
+    "target": "A.7.13",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.1.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.13 (Equipment maintenance)."
+  },
+  {
+    "source": "OPS.1.1.1.A2",
+    "target": "A.5.18",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.18 (Access rights)."
+  },
+  {
+    "source": "OPS.1.1.1.A2",
+    "target": "A.8.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "OPS.1.1.1.A20",
+    "target": "A.5.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A20 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.7 (Threat intelligence)."
+  },
+  {
+    "source": "OPS.1.1.1.A20",
+    "target": "A.8.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A20 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.8 (Management of technical vulnerabilities)."
+  },
+  {
+    "source": "OPS.1.1.1.A22",
+    "target": "A.5.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.7 (Threat intelligence)."
+  },
+  {
+    "source": "OPS.1.1.1.A22",
+    "target": "A.5.35",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.35 (Independent review of information security)."
+  },
+  {
+    "source": "OPS.1.1.1.A22",
+    "target": "A.8.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.8 (Management of technical vulnerabilities)."
+  },
+  {
+    "source": "OPS.1.1.1.A23",
+    "target": "A.5.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.7 (Threat intelligence)."
+  },
+  {
+    "source": "OPS.1.1.1.A23",
+    "target": "A.5.35",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.35 (Independent review of information security)."
+  },
+  {
+    "source": "OPS.1.1.1.A23",
+    "target": "A.8.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.8 (Management of technical vulnerabilities)."
+  },
+  {
+    "source": "OPS.1.1.1.A25",
+    "target": "A.8.9",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.1.A25 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "OPS.1.1.1.A3",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "OPS.1.1.1.A3",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "OPS.1.1.1.A5",
+    "target": "A.8.9",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.1.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "OPS.1.1.1.A6",
+    "target": "A.5.9",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.1.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.9 (Inventory of information and other associated assets)."
+  },
+  {
+    "source": "OPS.1.1.1.A7",
+    "target": "A.8.9",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.1.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "OPS.1.1.1.A8",
+    "target": "A.8.9",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.1.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "OPS.1.1.1.A9",
+    "target": "A.8.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "OPS.1.1.1.A9",
+    "target": "A.8.16",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.1.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "OPS.1.1.2.A11",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "OPS.1.1.2.A11",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "OPS.1.1.2.A16",
+    "target": "A.8.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "OPS.1.1.2.A16",
+    "target": "A.8.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.5 (Secure authentication)."
+  },
+  {
+    "source": "OPS.1.1.2.A17",
+    "target": "A.8.2",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.2.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "OPS.1.1.2.A18",
+    "target": "A.8.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "OPS.1.1.2.A18",
+    "target": "A.8.15",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "OPS.1.1.2.A19",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.2.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "OPS.1.1.2.A21",
+    "target": "A.5.18",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A21 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.18 (Access rights)."
+  },
+  {
+    "source": "OPS.1.1.2.A21",
+    "target": "A.8.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A21 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "OPS.1.1.2.A22",
+    "target": "A.8.18",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.2.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.18 (Use of privileged utility programs)."
+  },
+  {
+    "source": "OPS.1.1.2.A26",
+    "target": "A.8.9",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.2.A26 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "OPS.1.1.2.A4",
+    "target": "A.5.16",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.16 (Identity management)."
+  },
+  {
+    "source": "OPS.1.1.2.A4",
+    "target": "A.6.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.5 (Responsibilities after termination or change of employment)."
+  },
+  {
+    "source": "OPS.1.1.2.A4",
+    "target": "A.8.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "OPS.1.1.2.A4",
+    "target": "A.8.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.2.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "OPS.1.1.2.A5",
+    "target": "A.8.2",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.2.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "OPS.1.1.2.A6",
+    "target": "A.8.2",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.2.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "OPS.1.1.3.A11",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.3.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "OPS.1.1.3.A11",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.3.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "OPS.1.1.3.A15",
+    "target": "A.8.8",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.3.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.8 (Management of technical vulnerabilities)."
+  },
+  {
+    "source": "OPS.1.1.3.A9",
+    "target": "A.8.19",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.3.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.19 (Installation of software on operational systems)."
+  },
+  {
+    "source": "OPS.1.1.5.A13",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.5.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "OPS.1.1.5.A4",
+    "target": "A.8.17",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.5.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.17 (Clock synchronization)."
+  },
+  {
+    "source": "OPS.1.1.5.A5",
+    "target": "A.5.34",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.5.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.34 (Privacy and protection of PII)."
+  },
+  {
+    "source": "OPS.1.1.6.A1",
+    "target": "A.8.31",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.6.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "OPS.1.1.6.A11",
+    "target": "A.5.34",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.6.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.34 (Privacy and protection of PII)."
+  },
+  {
+    "source": "OPS.1.1.6.A11",
+    "target": "A.8.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.6.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.11 (Data masking)."
+  },
+  {
+    "source": "OPS.1.1.6.A11",
+    "target": "A.8.33",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.1.6.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.33 (Test information)."
+  },
+  {
+    "source": "OPS.1.1.6.A12",
+    "target": "A.8.29",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.6.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.29 (Security testing in development and acceptance)."
+  },
+  {
+    "source": "OPS.1.1.6.A13",
+    "target": "A.8.31",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.6.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "OPS.1.1.6.A14",
+    "target": "A.8.29",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.6.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.29 (Security testing in development and acceptance)."
+  },
+  {
+    "source": "OPS.1.1.6.A16",
+    "target": "A.6.1",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.6.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.1 (Screening)."
+  },
+  {
+    "source": "OPS.1.1.6.A4",
+    "target": "A.8.31",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.6.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "OPS.1.1.6.A5",
+    "target": "A.8.29",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.6.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.29 (Security testing in development and acceptance)."
+  },
+  {
+    "source": "OPS.1.1.7.A22",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.7.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "OPS.1.1.7.A23",
+    "target": "A.8.17",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.7.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.17 (Clock synchronization)."
+  },
+  {
+    "source": "OPS.1.1.7.A25",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.7.A25 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "OPS.1.1.7.A3",
+    "target": "A.8.17",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.1.7.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.17 (Clock synchronization)."
+  },
+  {
+    "source": "OPS.1.2.2.A12",
+    "target": "A.8.6",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.2.2.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "OPS.1.2.2.A3",
+    "target": "A.7.8",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.2.2.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.8 (Equipment siting and protection)."
+  },
+  {
+    "source": "OPS.1.2.2.A3",
+    "target": "A.7.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI OPS.1.2.2.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  },
+  {
+    "source": "OPS.1.2.5.A22",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.2.5.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "OPS.1.2.5.A7",
+    "target": "A.5.37",
+    "relationship": "subset",
+    "rationale": "BSI OPS.1.2.5.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "OPS.2.2.A19",
+    "target": "A.6.1",
+    "relationship": "subset",
+    "rationale": "BSI OPS.2.2.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.1 (Screening)."
+  },
+  {
+    "source": "OPS.2.3.A13",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI OPS.2.3.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "OPS.2.3.A14",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI OPS.2.3.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "OPS.2.3.A18",
+    "target": "A.5.22",
+    "relationship": "subset",
+    "rationale": "BSI OPS.2.3.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.22 (Monitoring, review and change management of supplier services)."
+  },
+  {
+    "source": "OPS.2.3.A21",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI OPS.2.3.A21 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "OPS.2.3.A24",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI OPS.2.3.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "OPS.2.3.A4",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI OPS.2.3.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "OPS.2.3.A6",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI OPS.2.3.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "OPS.3.2.A16",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI OPS.3.2.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "OPS.3.2.A18",
+    "target": "A.6.6",
+    "relationship": "subset",
+    "rationale": "BSI OPS.3.2.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.6 (Confidentiality or non-disclosure agreements)."
+  },
+  {
+    "source": "OPS.3.2.A2",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI OPS.3.2.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "OPS.3.2.A3",
+    "target": "A.5.20",
+    "relationship": "subset",
+    "rationale": "BSI OPS.3.2.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.20 (Addressing information security within supplier agreements)."
+  },
+  {
+    "source": "OPS.3.2.A9",
+    "target": "A.5.22",
+    "relationship": "subset",
+    "rationale": "BSI OPS.3.2.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.22 (Monitoring, review and change management of supplier services)."
+  },
+  {
+    "source": "ORP.1.A1",
+    "target": "A.5.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.1.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.1 (Policies for information security)."
+  },
+  {
+    "source": "ORP.1.A1",
+    "target": "A.5.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.1.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.2 (Information security roles and responsibilities)."
+  },
+  {
+    "source": "ORP.1.A2",
+    "target": "A.5.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.2 (Information security roles and responsibilities)."
+  },
+  {
+    "source": "ORP.1.A2",
+    "target": "A.5.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.9 (Inventory of information and other associated assets)."
+  },
+  {
+    "source": "ORP.1.A3",
+    "target": "A.7.2",
+    "relationship": "subset",
+    "rationale": "BSI ORP.1.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.2 (Physical entry)."
+  },
+  {
+    "source": "ORP.1.A4",
+    "target": "A.5.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.3 (Segregation of duties)."
+  },
+  {
+    "source": "ORP.1.A8",
+    "target": "A.5.9",
+    "relationship": "subset",
+    "rationale": "BSI ORP.1.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.9 (Inventory of information and other associated assets)."
+  },
+  {
+    "source": "ORP.2.A1",
+    "target": "A.6.2",
+    "relationship": "subset",
+    "rationale": "BSI ORP.2.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.2 (Terms and conditions of employment)."
+  },
+  {
+    "source": "ORP.2.A13",
+    "target": "A.6.1",
+    "relationship": "subset",
+    "rationale": "BSI ORP.2.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.1 (Screening)."
+  },
+  {
+    "source": "ORP.2.A14",
+    "target": "A.5.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.2.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.4 (Management responsibilities)."
+  },
+  {
+    "source": "ORP.2.A14",
+    "target": "A.6.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.2.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.2 (Terms and conditions of employment)."
+  },
+  {
+    "source": "ORP.2.A14",
+    "target": "A.6.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.2.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.5 (Responsibilities after termination or change of employment)."
+  },
+  {
+    "source": "ORP.2.A2",
+    "target": "A.5.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.2.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.11 (Return of assets)."
+  },
+  {
+    "source": "ORP.2.A2",
+    "target": "A.6.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.2.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.5 (Responsibilities after termination or change of employment)."
+  },
+  {
+    "source": "ORP.2.A4",
+    "target": "A.5.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.2.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.11 (Return of assets)."
+  },
+  {
+    "source": "ORP.2.A4",
+    "target": "A.6.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.2.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.2 (Terms and conditions of employment)."
+  },
+  {
+    "source": "ORP.2.A5",
+    "target": "A.6.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.2.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.2 (Terms and conditions of employment)."
+  },
+  {
+    "source": "ORP.2.A5",
+    "target": "A.6.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.2.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.6 (Confidentiality or non-disclosure agreements)."
+  },
+  {
+    "source": "ORP.2.A7",
+    "target": "A.6.1",
+    "relationship": "subset",
+    "rationale": "BSI ORP.2.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.1 (Screening)."
+  },
+  {
+    "source": "ORP.3.A1",
+    "target": "A.5.4",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.3.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.4 (Management responsibilities)."
+  },
+  {
+    "source": "ORP.3.A1",
+    "target": "A.6.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.3.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.3 (Information security awareness, education and training)."
+  },
+  {
+    "source": "ORP.3.A3",
+    "target": "A.5.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.3.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.1 (Policies for information security)."
+  },
+  {
+    "source": "ORP.3.A3",
+    "target": "A.5.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.3.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.10 (Acceptable use of information and other associated assets)."
+  },
+  {
+    "source": "ORP.3.A3",
+    "target": "A.8.1",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.3.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.1 (User endpoint devices)."
+  },
+  {
+    "source": "ORP.3.A4",
+    "target": "A.6.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.3.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.3 (Information security awareness, education and training)."
+  },
+  {
+    "source": "ORP.3.A6",
+    "target": "A.6.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.3.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.3 (Information security awareness, education and training)."
+  },
+  {
+    "source": "ORP.3.A7",
+    "target": "A.6.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.3.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.3 (Information security awareness, education and training)."
+  },
+  {
+    "source": "ORP.3.A8",
+    "target": "A.6.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.3.A8 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.3 (Information security awareness, education and training)."
+  },
+  {
+    "source": "ORP.4.A1",
+    "target": "A.8.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A1",
+    "target": "A.8.18",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.18 (Use of privileged utility programs)."
+  },
+  {
+    "source": "ORP.4.A10",
+    "target": "A.8.2",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "ORP.4.A11",
+    "target": "A.8.5",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A11 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.5 (Secure authentication)."
+  },
+  {
+    "source": "ORP.4.A12",
+    "target": "A.8.5",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.5 (Secure authentication)."
+  },
+  {
+    "source": "ORP.4.A13",
+    "target": "A.8.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.5 (Secure authentication)."
+  },
+  {
+    "source": "ORP.4.A13",
+    "target": "A.8.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "ORP.4.A13",
+    "target": "A.8.21",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.21 (Security of network services)."
+  },
+  {
+    "source": "ORP.4.A14",
+    "target": "A.8.5",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A14 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.5 (Secure authentication)."
+  },
+  {
+    "source": "ORP.4.A15",
+    "target": "A.8.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A16",
+    "target": "A.8.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "ORP.4.A16",
+    "target": "A.8.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A16",
+    "target": "A.8.20",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.20 (Networks security)."
+  },
+  {
+    "source": "ORP.4.A19",
+    "target": "A.8.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A2",
+    "target": "A.5.11",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.11 (Return of assets)."
+  },
+  {
+    "source": "ORP.4.A2",
+    "target": "A.6.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.5 (Responsibilities after termination or change of employment)."
+  },
+  {
+    "source": "ORP.4.A2",
+    "target": "A.8.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "ORP.4.A2",
+    "target": "A.8.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A2",
+    "target": "A.8.18",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.18 (Use of privileged utility programs)."
+  },
+  {
+    "source": "ORP.4.A3",
+    "target": "A.8.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A4",
+    "target": "A.5.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.3 (Segregation of duties)."
+  },
+  {
+    "source": "ORP.4.A4",
+    "target": "A.8.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A5",
+    "target": "A.7.2",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.2 (Physical entry)."
+  },
+  {
+    "source": "ORP.4.A5",
+    "target": "A.8.3",
+    "relationship": "partial_overlap",
+    "rationale": "BSI ORP.4.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A6",
+    "target": "A.8.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A7",
+    "target": "A.8.3",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.3 (Information access restriction)."
+  },
+  {
+    "source": "ORP.4.A9",
+    "target": "A.7.7",
+    "relationship": "subset",
+    "rationale": "BSI ORP.4.A9 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.7 (Clear desk and clear screen)."
+  },
+  {
+    "source": "SYS.1.1.A1",
+    "target": "A.7.8",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.1.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.8 (Equipment siting and protection)."
+  },
+  {
+    "source": "SYS.1.1.A10",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.1.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "SYS.1.1.A12",
+    "target": "A.8.6",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.1.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "SYS.1.1.A12",
+    "target": "A.8.15",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.1.1.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "SYS.1.1.A15",
+    "target": "A.7.11",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.1.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "SYS.1.1.A21",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.1.1.A21 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "SYS.1.1.A21",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.1.1.A21 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "SYS.1.1.A23",
+    "target": "A.8.6",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.1.A23 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "SYS.1.1.A25",
+    "target": "A.7.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.1.1.A25 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "SYS.1.1.A25",
+    "target": "A.8.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.1.1.A25 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.10 (Information deletion)."
+  },
+  {
+    "source": "SYS.1.1.A27",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.1.A27 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "SYS.1.1.A28",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.1.A28 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "SYS.1.1.A30",
+    "target": "A.8.31",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.1.A30 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "SYS.1.1.A31",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.1.A31 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "SYS.1.2.2.A5",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.2.2.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "SYS.1.5.A10",
+    "target": "A.8.31",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.5.A10 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "SYS.1.5.A17",
+    "target": "A.8.6",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.5.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "SYS.1.5.A20",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.5.A20 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "SYS.1.5.A6",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.5.A6 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "SYS.1.5.A7",
+    "target": "A.8.17",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.5.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.17 (Clock synchronization)."
+  },
+  {
+    "source": "SYS.1.7.A33",
+    "target": "A.8.31",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.7.A33 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.31 (Separation of development, test and production environments)."
+  },
+  {
+    "source": "SYS.1.8.A16",
+    "target": "A.7.14",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.8.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "SYS.1.8.A2",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.8.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "SYS.1.8.A22",
+    "target": "A.8.14",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.8.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.14 (Redundancy of information processing facilities)."
+  },
+  {
+    "source": "SYS.1.8.A25",
+    "target": "A.7.14",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.8.A25 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "SYS.1.9.A19",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI SYS.1.9.A19 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "SYS.2.1.A1",
+    "target": "A.7.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.2.1.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.7 (Clear desk and clear screen)."
+  },
+  {
+    "source": "SYS.2.1.A1",
+    "target": "A.8.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.2.1.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.5 (Secure authentication)."
+  },
+  {
+    "source": "SYS.2.1.A24",
+    "target": "A.8.12",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.1.A24 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.12 (Data leakage prevention)."
+  },
+  {
+    "source": "SYS.2.1.A27",
+    "target": "A.7.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.2.1.A27 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "SYS.2.1.A27",
+    "target": "A.8.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.2.1.A27 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.10 (Information deletion)."
+  },
+  {
+    "source": "SYS.2.1.A29",
+    "target": "A.8.6",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.1.A29 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.6 (Capacity management)."
+  },
+  {
+    "source": "SYS.2.1.A37",
+    "target": "A.8.5",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.1.A37 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.5 (Secure authentication)."
+  },
+  {
+    "source": "SYS.2.1.A39",
+    "target": "A.7.11",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.1.A39 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.11 (Supporting utilities)."
+  },
+  {
+    "source": "SYS.2.1.A40",
+    "target": "A.5.37",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.2.1.A40 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.37 (Documented operating procedures)."
+  },
+  {
+    "source": "SYS.2.1.A40",
+    "target": "A.8.9",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.2.1.A40 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.9 (Configuration management)."
+  },
+  {
+    "source": "SYS.2.1.A42",
+    "target": "A.5.34",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.1.A42 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.34 (Privacy and protection of PII)."
+  },
+  {
+    "source": "SYS.2.1.A45",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.1.A45 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "SYS.2.2.3.A13",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.2.3.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "SYS.2.2.3.A20",
+    "target": "A.8.2",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.2.3.A20 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.2 (Privileged access rights)."
+  },
+  {
+    "source": "SYS.2.2.3.A22",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.2.3.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "SYS.2.2.3.A4",
+    "target": "A.5.34",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.2.3.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.34 (Privacy and protection of PII)."
+  },
+  {
+    "source": "SYS.2.2.3.A5",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.2.3.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "SYS.2.3.A1",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.3.A1 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "SYS.2.3.A7",
+    "target": "A.8.18",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.3.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.18 (Use of privileged utility programs)."
+  },
+  {
+    "source": "SYS.2.5.A17",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.5.A17 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "SYS.2.6.A16",
+    "target": "A.8.16",
+    "relationship": "subset",
+    "rationale": "BSI SYS.2.6.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.16 (Monitoring activities)."
+  },
+  {
+    "source": "SYS.3.1.A7",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI SYS.3.1.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "SYS.3.2.1.A4",
+    "target": "A.7.7",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.3.2.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.7 (Clear desk and clear screen)."
+  },
+  {
+    "source": "SYS.3.2.1.A4",
+    "target": "A.8.5",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.3.2.1.A4 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.5 (Secure authentication)."
+  },
+  {
+    "source": "SYS.3.2.2.A22",
+    "target": "A.7.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.3.2.2.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "SYS.3.2.2.A22",
+    "target": "A.8.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.3.2.2.A22 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.10 (Information deletion)."
+  },
+  {
+    "source": "SYS.3.3.A15",
+    "target": "A.7.6",
+    "relationship": "subset",
+    "rationale": "BSI SYS.3.3.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.6 (Working in secure areas)."
+  },
+  {
+    "source": "SYS.4.1.A15",
+    "target": "A.5.14",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.1.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.14 (Information transfer)."
+  },
+  {
+    "source": "SYS.4.1.A2",
+    "target": "A.6.6",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.1.A2 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.6.6 (Confidentiality or non-disclosure agreements)."
+  },
+  {
+    "source": "SYS.4.1.A20",
+    "target": "A.8.12",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.1.A20 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.12 (Data leakage prevention)."
+  },
+  {
+    "source": "SYS.4.1.A5",
+    "target": "A.5.14",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.1.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.5.14 (Information transfer)."
+  },
+  {
+    "source": "SYS.4.3.A3",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.3.A3 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "SYS.4.3.A7",
+    "target": "A.8.27",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.3.A7 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.27 (Secure system architecture and engineering principles)."
+  },
+  {
+    "source": "SYS.4.4.A15",
+    "target": "A.8.18",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.4.A15 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.18 (Use of privileged utility programs)."
+  },
+  {
+    "source": "SYS.4.4.A18",
+    "target": "A.8.15",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.4.A18 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.15 (Logging)."
+  },
+  {
+    "source": "SYS.4.4.A20",
+    "target": "A.7.14",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.4.4.A20 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.14 (Secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "SYS.4.4.A20",
+    "target": "A.8.10",
+    "relationship": "partial_overlap",
+    "rationale": "BSI SYS.4.4.A20 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.10 (Information deletion)."
+  },
+  {
+    "source": "SYS.4.5.A12",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.5.A12 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "SYS.4.5.A13",
+    "target": "A.7.10",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.5.A13 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  },
+  {
+    "source": "SYS.4.5.A16",
+    "target": "A.8.7",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.5.A16 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.8.7 (Protection against malware)."
+  },
+  {
+    "source": "SYS.4.5.A5",
+    "target": "A.7.10",
+    "relationship": "subset",
+    "rationale": "BSI SYS.4.5.A5 is cited by BSI official Kreuzreferenz (Edition 6/2023) as fulfilling ISO/IEC 27001:2022 A.7.10 (Storage media)."
+  }
+]

@@ -1,0 +1,626 @@
+[
+  {
+    "source": "Art.5(1) - internal governance and control framework for ICT risk",
+    "target": "ISO27001:2022 Cl.5.1 (Leadership and commitment)",
+    "relationship": "partial_overlap",
+    "rationale": "DORA Art.5(1) requires a specific ICT-risk governance framework; ISO 27001 Cl.5.1 requires top management to demonstrate leadership and commitment to the ISMS broadly, not ICT risk specifically."
+  },
+  {
+    "source": "Art.5(2)(a) - management body bears ultimate responsibility for ICT risk",
+    "target": "ISO27001:2022 Cl.5.1 (Leadership and commitment)",
+    "relationship": "equivalent",
+    "rationale": "Both sub-points assign ultimate accountability for information/ICT risk to the highest management body, making them co-extensive at this granularity."
+  },
+  {
+    "source": "Art.5(2)(b) - policies for availability, authenticity, integrity, confidentiality",
+    "target": "ISO27001:2022 Cl.5.2 (Information security policy)",
+    "relationship": "subset",
+    "rationale": "DORA Art.5(2)(b) narrows the policy mandate to AAIC properties for ICT; ISO 27001 Cl.5.2 also requires policy to include objectives and commitment to continual improvement, making the ISO clause broader."
+  },
+  {
+    "source": "Art.5(2)(c) - clear roles and responsibilities for ICT functions",
+    "target": "ISO27001:2022 Cl.5.3 (Organisational roles, responsibilities and authorities)",
+    "relationship": "equivalent",
+    "rationale": "Art.5(2)(c) and ISO 27001 Cl.5.3 are co-extensive: both require management to assign and communicate clear roles and responsibilities for information/ICT security functions."
+  },
+  {
+    "source": "Art.5(2)(d) - approve digital operational resilience strategy and risk tolerance",
+    "target": "ISO27001:2022 Cl.6.1.1 (General risk management) + A.5.1 (Policies for information security)",
+    "relationship": "partial_overlap",
+    "rationale": "DORA Art.5(2)(d) requires explicit board-level approval of a DOR strategy with defined ICT risk appetite; ISO 27001 addresses risk tolerance in Cl.6.1 and policy in A.5.1 but does not mandate a standalone DOR strategy document."
+  },
+  {
+    "source": "Art.5(2)(e) - approve and review ICT business continuity policy and recovery plans",
+    "target": "ISO27001:2022 A.5.30 (ICT readiness for business continuity)",
+    "relationship": "equivalent",
+    "rationale": "Both Art.5(2)(e) and A.5.30 require management-level approval and periodic review of ICT business continuity policy and recovery plans."
+  },
+  {
+    "source": "Art.5(2)(f) - approve and review ICT audit plans and findings",
+    "target": "ISO27001:2022 Cl.9.2 (Internal audit)",
+    "relationship": "equivalent",
+    "rationale": "Art.5(2)(f) requires management body oversight of ICT audit plans; ISO 27001 Cl.9.2 requires planned internal audits of the ISMS at defined intervals with management accountability."
+  },
+  {
+    "source": "Art.5(2)(g) - allocate adequate ICT budget",
+    "target": "ISO27001:2022 Cl.7.1 (Resources)",
+    "relationship": "equivalent",
+    "rationale": "Art.5(2)(g) mandates budget allocation for ICT risk management; ISO 27001 Cl.7.1 requires the organisation to determine and provide resources needed for the ISMS."
+  },
+  {
+    "source": "Art.5(3) - role/function to monitor ICT third-party arrangements",
+    "target": "ISO27001:2022 A.5.22 (Monitoring, review and change management of supplier services)",
+    "relationship": "subset",
+    "rationale": "DORA Art.5(3) requires a dedicated senior function for third-party ICT oversight; ISO A.5.22 addresses monitoring supplier service levels and changes but does not require a specifically designated senior manager role."
+  },
+  {
+    "source": "Art.5(4) - management body training on ICT risk",
+    "target": "ISO27001:2022 Cl.7.2 (Competence) + A.6.3 (Information security awareness, education and training)",
+    "relationship": "subset",
+    "rationale": "DORA Art.5(4) specifically mandates ongoing ICT-risk training for board members; ISO 27001 Cl.7.2 and A.6.3 require competence and training for persons doing work under the ISMS, but do not target the management body explicitly."
+  },
+  {
+    "source": "Art.6(1) - sound, comprehensive, documented ICT risk management framework",
+    "target": "ISO27001:2022 Cl.6.1 (Actions to address risks and opportunities)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.6(1) requires a standalone documented ICT risk management framework; ISO 27001 Cl.6.1 requires risk management processes within the ISMS but does not mandate a separate ICT-specific framework document."
+  },
+  {
+    "source": "Art.6(2) - strategies, policies, procedures, protocols and tools to protect all ICT and information assets",
+    "target": "ISO27001:2022 A.5.9 (Inventory of information and other associated assets)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.6(2) requires protection measures covering all information assets and ICT assets including hardware and premises; A.5.9 addresses asset inventory but protection controls are distributed across many further Annex A controls."
+  },
+  {
+    "source": "Art.6(4) - three lines of defence; separation of ICT risk, control and audit functions",
+    "target": "ISO27001:2022 A.5.3 (Segregation of duties)",
+    "relationship": "superset",
+    "rationale": "Art.6(4) prescribes the specific three-lines-of-defence model with formal independence requirements for ICT risk management; ISO A.5.3 requires segregation of conflicting duties but does not mandate this specific organisational model."
+  },
+  {
+    "source": "Art.6(5) - ICT risk management framework reviewed at least annually and after major incidents",
+    "target": "ISO27001:2022 Cl.9.3 (Management review) + Cl.10.1 (Continual improvement)",
+    "relationship": "equivalent",
+    "rationale": "Both Art.6(5) and ISO 27001 Cl.9.3/10.1 require periodic review of the security management framework including after significant events, and continual improvement based on findings."
+  },
+  {
+    "source": "Art.6(6) - ICT risk management framework subject to internal audit",
+    "target": "ISO27001:2022 Cl.9.2 (Internal audit)",
+    "relationship": "equivalent",
+    "rationale": "Art.6(6) requires regular internal audit of the ICT risk management framework by competent auditors; ISO 27001 Cl.9.2 establishes the same requirement for ISMS internal audits with comparable independence expectations."
+  },
+  {
+    "source": "Art.6(7) - formal follow-up process for ICT audit findings",
+    "target": "ISO27001:2022 Cl.10.1 (Nonconformity and corrective action)",
+    "relationship": "equivalent",
+    "rationale": "Art.6(7) mandates timely verification and remediation of critical ICT audit findings; ISO 27001 Cl.10.1 requires corrective action for nonconformities found through audit or review."
+  },
+  {
+    "source": "Art.6(8) - digital operational resilience strategy as part of ICT risk framework",
+    "target": "ISO27001:2022 Cl.5.2 (Information security policy) + Cl.6.2 (Information security objectives)",
+    "relationship": "superset",
+    "rationale": "DORA Art.6(8) requires a specific DOR strategy document with methods and ICT objectives; ISO 27001 Cl.5.2 and Cl.6.2 require a security policy and measurable objectives but not an explicit DOR strategy."
+  },
+  {
+    "source": "Art.7(a) - ICT systems appropriate to operational scale (proportionality)",
+    "target": "ISO27001:2022 Cl.4.1 (Understanding the organisation and its context)",
+    "relationship": "related",
+    "rationale": "Art.7(a) requires ICT system sizing to be commensurate with the magnitude of operations; ISO 27001 Cl.4.1 requires understanding of context to determine ISMS scope, which informs proportionate controls."
+  },
+  {
+    "source": "Art.7(b) - ICT systems reliability and sufficient capacity",
+    "target": "ISO27001:2022 A.8.6 (Capacity management)",
+    "relationship": "equivalent",
+    "rationale": "Art.7(b) and A.8.6 both require monitoring and planning of IT resource capacity to ensure reliable, adequate performance under normal and peak conditions."
+  },
+  {
+    "source": "Art.7(c) - ICT systems technologically resilient for stressed conditions",
+    "target": "ISO27001:2022 A.8.14 (Redundancy of information processing facilities)",
+    "relationship": "equivalent",
+    "rationale": "Art.7(c) requires technology resilience for adverse and stressed market conditions; A.8.14 requires redundancy in information processing facilities to meet availability requirements."
+  },
+  {
+    "source": "Art.7(d) - ICT systems kept up to date (updates, patches, latest versions)",
+    "target": "ISO27001:2022 A.8.8 (Management of technical vulnerabilities)",
+    "relationship": "equivalent",
+    "rationale": "Art.7(d) requires financial entities to use and maintain updated ICT systems; A.8.8 requires timely identification and remediation of technical vulnerabilities including patches and updates."
+  },
+  {
+    "source": "Art.8(1) - classify and document all ICT-supported business functions and roles",
+    "target": "ISO27001:2022 A.5.9 (Inventory of information and other associated assets)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.8(1) requires classification and documentation of business functions, roles, and associated ICT assets; A.5.9 requires an inventory of information and associated assets but does not explicitly require mapping business functions to assets."
+  },
+  {
+    "source": "Art.8(2) - continuous identification of ICT risk sources and cyber threats",
+    "target": "ISO27001:2022 Cl.6.1.2 (Information security risk assessment) + A.5.7 (Threat intelligence)",
+    "relationship": "subset",
+    "rationale": "Art.8(2) requires continuous on-going identification of ICT risk sources and threat assessment; ISO 27001 Cl.6.1.2 addresses risk assessment (not mandating continuous cadence) while A.5.7 covers threat intelligence gathering."
+  },
+  {
+    "source": "Art.8(3) - identify changes affecting ICT risk profile",
+    "target": "ISO27001:2022 Cl.8.2 (Information security risk assessment, periodic and on change)",
+    "relationship": "equivalent",
+    "rationale": "Art.8(3) requires identification of changed circumstances affecting ICT risk; ISO 27001 Cl.8.2 requires risk assessments to be re-run at planned intervals and when significant changes occur."
+  },
+  {
+    "source": "Art.8(4) - map configurations, links and interdependencies of ICT assets",
+    "target": "ISO27001:2022 A.8.9 (Configuration management)",
+    "relationship": "equivalent",
+    "rationale": "Art.8(4) requires mapping ICT asset configurations and interdependencies; A.8.9 requires configurations of hardware, software and services to be established, documented, monitored and reviewed."
+  },
+  {
+    "source": "Art.8(5) - identify and document processes dependent on ICT third-party providers",
+    "target": "ISO27001:2022 A.5.21 (Managing information security in the ICT supply chain)",
+    "relationship": "equivalent",
+    "rationale": "Art.8(5) requires documenting all third-party-dependent processes including critical-function interconnections; A.5.21 requires managing information security risks in the ICT supply chain including identifying dependencies."
+  },
+  {
+    "source": "Art.8(6) - maintain and update inventories periodically and after major changes",
+    "target": "ISO27001:2022 A.5.9 (Inventory of information and other associated assets)",
+    "relationship": "equivalent",
+    "rationale": "Art.8(6) mandates maintaining and periodically updating ICT asset inventories; A.5.9 explicitly requires asset inventories to be maintained and kept accurate."
+  },
+  {
+    "source": "Art.9(2) - design and implement ICT security policies and procedures",
+    "target": "ISO27001:2022 A.5.1 (Policies for information security)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(2) and A.5.1 both require documented security policies and procedures to be established, approved by management, and communicated."
+  },
+  {
+    "source": "Art.9(3) - network and infrastructure security including segmentation",
+    "target": "ISO27001:2022 A.8.20 (Networks security) + A.8.22 (Segregation of networks)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(3) requires securing networks and infrastructure through appropriate controls; A.8.20 and A.8.22 require networks to be secured and segmented to protect information systems."
+  },
+  {
+    "source": "Art.9(4)(a) - policies for information security risk assessment",
+    "target": "ISO27001:2022 Cl.6.1.2 (Information security risk assessment)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(a) requires documented risk assessment policies and processes; ISO 27001 Cl.6.1.2 establishes the same requirement for a risk assessment process."
+  },
+  {
+    "source": "Art.9(4)(b) - implement security measures for protection of ICT assets",
+    "target": "ISO27001:2022 Cl.8.3 (Information security risk treatment)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(b) requires implementation of protective security measures based on risk; ISO 27001 Cl.8.3 requires implementation of the risk treatment plan."
+  },
+  {
+    "source": "Art.9(4)(c) - limit physical and logical access to information assets (need-to-know/need-to-use)",
+    "target": "ISO27001:2022 A.5.15 (Access control) + A.5.18 (Access rights)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(c) and A.5.15/A.5.18 are co-extensive: both require access to information and ICT assets to be restricted to authorised users only based on business need."
+  },
+  {
+    "source": "Art.9(4)(d) - strong authentication mechanisms based on relevant standards",
+    "target": "ISO27001:2022 A.8.5 (Secure authentication)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(d) and A.8.5 both require multi-factor or strong authentication mechanisms based on established standards for access to information systems."
+  },
+  {
+    "source": "Art.9(4)(d) - cryptographic protection measures for data encryption based on classification",
+    "target": "ISO27001:2022 A.8.24 (Use of cryptography)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(d) requires encryption of data based on classification and risk assessment; A.8.24 requires a policy on use of cryptography to protect information."
+  },
+  {
+    "source": "Art.9(4)(e) - ICT change management policies, procedures and controls",
+    "target": "ISO27001:2022 A.8.32 (Change management)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(e) and A.8.32 are co-extensive: both require risk-based documented change management for ICT systems covering recording, testing, approving and verifying changes."
+  },
+  {
+    "source": "Art.9(4)(f) - policies for patches and updates",
+    "target": "ISO27001:2022 A.8.8 (Management of technical vulnerabilities)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(f) specifically requires patch and update policies; A.8.8 requires timely identification and remediation of technical vulnerabilities through patching as a core control."
+  },
+  {
+    "source": "Art.9(4)(g) - physical security policies for ICT asset protection",
+    "target": "ISO27001:2022 A.7.1 (Physical security perimeters) + A.7.8 (Equipment siting and protection)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(g) requires physical security protection for ICT assets; A.7.1 and A.7.8 address physical perimeters and equipment protection respectively."
+  },
+  {
+    "source": "Art.9(4)(h) - ICT security measures for remote access and portable devices",
+    "target": "ISO27001:2022 A.8.1 (User endpoint devices) + A.6.7 (Remote working)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(h) requires security controls for remote access and mobile/portable devices; A.8.1 and A.6.7 address endpoint device and remote working security respectively."
+  },
+  {
+    "source": "Art.9(4)(i) - data loss prevention measures",
+    "target": "ISO27001:2022 A.8.12 (Data leakage prevention)",
+    "relationship": "equivalent",
+    "rationale": "Art.9(4)(i) requires DLP measures to detect and prevent exfiltration of sensitive data; A.8.12 requires data leakage prevention measures to be applied to systems and networks."
+  },
+  {
+    "source": "Art.10(1) - mechanisms to promptly detect anomalous activities and incidents",
+    "target": "ISO27001:2022 A.8.16 (Monitoring activities)",
+    "relationship": "equivalent",
+    "rationale": "Art.10(1) requires anomaly detection mechanisms for ICT networks and incidents; A.8.16 requires monitoring of networks, systems and applications to detect anomalous behaviour — this is a detection control, not continuity."
+  },
+  {
+    "source": "Art.10(1) second subpara - detection mechanisms regularly tested",
+    "target": "ISO27001:2022 A.5.36 (Compliance with policies, rules and standards for information security)",
+    "relationship": "related",
+    "rationale": "Art.10(1) requires periodic testing of detection mechanisms; ISO 27001 A.5.36 requires regular review of compliance with security policies but testing of detection tools is more specifically addressed in DORA Art.25."
+  },
+  {
+    "source": "Art.10(2) - multi-layer controls, alert thresholds, automatic alert mechanisms",
+    "target": "ISO27001:2022 A.8.16 (Monitoring activities) + A.5.25 (Assessment and decision on information security events)",
+    "relationship": "superset",
+    "rationale": "Art.10(2) explicitly requires automatic alert mechanisms with defined thresholds triggering incident response; A.8.16 and A.5.25 address monitoring and event assessment but do not mandate automated alert thresholds or multi-layer controls specifically."
+  },
+  {
+    "source": "Art.10(3) - sufficient resources to monitor user activity, ICT anomalies, cyber-attacks",
+    "target": "ISO27001:2022 Cl.7.1 (Resources) + A.8.16 (Monitoring activities)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.10(3) requires dedicated resource allocation for security monitoring including user activity monitoring; ISO 27001 Cl.7.1 covers general resource allocation and A.8.16 covers monitoring but neither combines both requirements explicitly."
+  },
+  {
+    "source": "Art.11(1) - ICT business continuity policy as part of ICT risk framework",
+    "target": "ISO27001:2022 A.5.30 (ICT readiness for business continuity)",
+    "relationship": "equivalent",
+    "rationale": "Art.11(1) and A.5.30 are co-extensive: both require financial/information entities to maintain a documented ICT business continuity policy covering critical functions within their risk management framework."
+  },
+  {
+    "source": "Art.11(2)(a) - ensure continuity of critical or important functions",
+    "target": "ISO27001:2022 A.5.29 (Information security during disruption)",
+    "relationship": "equivalent",
+    "rationale": "Art.11(2)(a) requires continuity arrangements for critical ICT functions; A.5.29 requires information security controls to be maintained and protected during disruption."
+  },
+  {
+    "source": "Art.11(2)(b) - quickly respond to and resolve all ICT-related incidents",
+    "target": "ISO27001:2022 A.5.26 (Response to information security incidents)",
+    "relationship": "equivalent",
+    "rationale": "Art.11(2)(b) and A.5.26 both require documented response and resolution procedures for security incidents."
+  },
+  {
+    "source": "Art.11(2)(c) - activate containment measures and recovery procedures per Art.12",
+    "target": "ISO27001:2022 A.5.26 (Response to information security incidents) + A.8.13 (Information backup)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.11(2)(c) requires activation of both containment and recovery procedures referencing backup Art.12; ISO A.5.26 covers incident response and A.8.13 covers backup but neither specifically links containment to recovery activation."
+  },
+  {
+    "source": "Art.11(2)(d) - estimate preliminary impacts, damages and losses",
+    "target": "ISO27001:2022 A.5.25 (Assessment and decision on information security events)",
+    "relationship": "equivalent",
+    "rationale": "Art.11(2)(d) requires preliminary impact and damage estimation as part of BCP; A.5.25 requires assessment and decision-making for information security events including severity and impact analysis."
+  },
+  {
+    "source": "Art.11(2)(e) - communication and crisis management actions",
+    "target": "ISO27001:2022 Cl.7.4 (Communication) + A.5.24 (Information security incident management planning)",
+    "relationship": "equivalent",
+    "rationale": "Art.11(2)(e) and ISO 27001 Cl.7.4 and A.5.24 both require planned communication procedures during crises and incidents."
+  },
+  {
+    "source": "Art.11(5) - annual testing of ICT business continuity plans including cyber-attack scenarios",
+    "target": "ISO27001:2022 A.5.30 (ICT readiness for business continuity)",
+    "relationship": "superset",
+    "rationale": "Art.11(5) mandates annual testing of BCPs including cyber-attack and switchover scenarios; A.5.30 requires testing ICT continuity but does not specify cyber-attack scenarios or annual minimum frequency explicitly."
+  },
+  {
+    "source": "Art.11(6) - crisis communication strategy including client notification",
+    "target": "ISO27001:2022 Cl.7.4 (Communication)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.11(6) requires a specific crisis communication strategy for clients, partners and public; ISO 27001 Cl.7.4 requires planned internal and external communication but does not specify client-facing incident notification requirements."
+  },
+  {
+    "source": "Art.12(1) - backup policies specifying scope and minimum frequency",
+    "target": "ISO27001:2022 A.8.13 (Information backup)",
+    "relationship": "equivalent",
+    "rationale": "Art.12(1) and A.8.13 are co-extensive: both require documented backup policies defining scope of data, backup frequency based on criticality, and restoration and recovery procedures."
+  },
+  {
+    "source": "Art.12(2) - restoration and recovery procedures and methods",
+    "target": "ISO27001:2022 A.8.13 (Information backup)",
+    "relationship": "equivalent",
+    "rationale": "Art.12(2) and A.8.13 both require documented restoration and recovery procedures as part of backup management."
+  },
+  {
+    "source": "Art.12(3) - backup systems physically and logically segregated from source systems",
+    "target": "ISO27001:2022 A.8.13 (Information backup) + A.8.22 (Segregation of networks)",
+    "relationship": "superset",
+    "rationale": "Art.12(3) explicitly requires both physical and logical segregation of backup ICT systems from source; A.8.13 covers backup policy and A.8.22 covers network segregation but neither specifically mandates this dual segregation for backup systems."
+  },
+  {
+    "source": "Art.12(4) - data integrity checks during recovery and reconciliation",
+    "target": "ISO27001:2022 A.8.13 (Information backup)",
+    "relationship": "superset",
+    "rationale": "Art.12(4) specifically requires multiple integrity checks and reconciliations after restoring backup data; A.8.13 addresses backup and restoration but does not mandate specific post-restore integrity verification steps."
+  },
+  {
+    "source": "Art.13(1) - learn from ICT-related incidents, post-incident reviews",
+    "target": "ISO27001:2022 A.5.27 (Learning from information security incidents)",
+    "relationship": "equivalent",
+    "rationale": "Art.13(1) and A.5.27 are co-extensive: both require post-incident review processes to identify lessons learned and improve controls."
+  },
+  {
+    "source": "Art.13(2) - evolve defences based on threat analysis and post-incident learnings",
+    "target": "ISO27001:2022 A.5.7 (Threat intelligence) + Cl.10.1 (Continual improvement)",
+    "relationship": "equivalent",
+    "rationale": "Art.13(2) requires using threat analysis and incident learnings to update defences; A.5.7 covers threat intelligence and Cl.10.1 requires continual improvement based on findings."
+  },
+  {
+    "source": "Art.13(3) - digital operational resilience testing plan as part of overall framework",
+    "target": "ISO27001:2022 Cl.9.1 (Monitoring, measurement, analysis and evaluation)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.13(3) requires a testing plan specifically for digital operational resilience; ISO 27001 Cl.9.1 requires monitoring and evaluation of ISMS performance but does not mandate an explicit resilience-testing plan."
+  },
+  {
+    "source": "Art.14(1) - crisis communication plan for major ICT incidents",
+    "target": "ISO27001:2022 Cl.7.4 (Communication)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.14(1) requires a specific crisis communication plan for major ICT incidents; ISO 27001 Cl.7.4 requires planned communication procedures but at a broader ISMS level without mandatory crisis-specific plans."
+  },
+  {
+    "source": "Art.14(2) - disclosure policy for significant cyber threats",
+    "target": "ISO27001:2022 A.5.14 (Information transfer) + A.6.8 (Information security event reporting)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.14(2) requires a public/client disclosure policy for significant cyber threats; A.5.14 governs information transfer and A.6.8 covers employee incident reporting, neither of which specifically addresses public threat disclosure policy."
+  },
+  {
+    "source": "Art.17(1) - define, establish and implement ICT incident management process",
+    "target": "ISO27001:2022 A.5.24 (Information security incident management planning and preparation)",
+    "relationship": "equivalent",
+    "rationale": "Art.17(1) and A.5.24 are co-extensive: both require a formally defined, established and implemented incident management process for detecting, managing and notifying incidents."
+  },
+  {
+    "source": "Art.17(2) - record all ICT-related incidents and significant cyber threats",
+    "target": "ISO27001:2022 A.5.28 (Collection of evidence)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.17(2) requires recording of all incidents and significant cyber threats; A.5.28 addresses collection and preservation of evidence related to incidents, which is a subset of the recording requirement."
+  },
+  {
+    "source": "Art.17(3) - detect, manage and notify ICT-related incidents; ensure root cause identification",
+    "target": "ISO27001:2022 A.5.26 (Response to information security incidents)",
+    "relationship": "equivalent",
+    "rationale": "Art.17(3) and A.5.26 both require detection, management, notification and root-cause analysis of information security incidents."
+  },
+  {
+    "source": "Art.17(4) - incident handling procedures covering monitoring, handling and follow-up",
+    "target": "ISO27001:2022 A.5.26 (Response to information security incidents) + A.5.27 (Learning from information security incidents)",
+    "relationship": "equivalent",
+    "rationale": "Art.17(4) requires integrated monitoring, handling and follow-up procedures; A.5.26 and A.5.27 together cover response and post-incident learning, making them co-extensive at this granularity."
+  },
+  {
+    "source": "Art.18(1) - classify ICT incidents using materiality criteria (number of clients, duration, data loss, economic impact)",
+    "target": "ISO27001:2022 A.5.25 (Assessment and decision on information security events)",
+    "relationship": "superset",
+    "rationale": "Art.18(1) prescribes specific mandatory materiality criteria for incident classification (client count, duration, geographic spread, economic loss); A.5.25 requires assessment of events to determine if they are incidents but does not mandate specific quantitative thresholds."
+  },
+  {
+    "source": "Art.18(2) - classify operational or security payment-related incidents",
+    "target": "ISO27001:2022 A.5.25 (Assessment and decision on information security events)",
+    "relationship": "superset",
+    "rationale": "Art.18(2) extends classification to payment-specific incidents with sector-specific criteria; A.5.25 addresses general event assessment without financial-sector-specific payment incident categories."
+  },
+  {
+    "source": "Art.18(3) - EBA/ESMA/EIOPA to develop common classification criteria",
+    "target": "ISO27001:2022 A.5.1 (Policies for information security)",
+    "relationship": "related",
+    "rationale": "Art.18(3) assigns regulatory authorities to develop sector-wide classification criteria; ISO A.5.1 requires internal security policies and is only loosely related as it does not address external regulatory standard-setting."
+  },
+  {
+    "source": "Art.19(1) - initial notification for major ICT incidents within set timeframe",
+    "target": "ISO27001:2022 A.6.8 (Information security event reporting)",
+    "relationship": "superset",
+    "rationale": "Art.19(1) requires mandatory initial notification to competent authorities within a prescribed timeframe for major ICT incidents; A.6.8 requires employees to report information security events through defined channels but does not address regulatory authority notification or timeframes."
+  },
+  {
+    "source": "Art.19(2) - intermediate report when situation significantly evolved",
+    "target": "ISO27001:2022 A.6.8 (Information security event reporting)",
+    "relationship": "superset",
+    "rationale": "Art.19(2) requires intermediate regulatory reports on evolving major incidents; A.6.8 only covers initial event reporting by employees and does not address ongoing regulatory reporting cadence."
+  },
+  {
+    "source": "Art.19(3) - final report after root cause analysis is complete",
+    "target": "ISO27001:2022 A.5.27 (Learning from information security incidents)",
+    "relationship": "subset",
+    "rationale": "Art.19(3) requires a final report to regulators after root cause analysis; A.5.27 requires learning from incidents (which would include root cause analysis) but the reporting obligation is to regulators, making A.5.27 broader as an internal learning control."
+  },
+  {
+    "source": "Art.19(4) - notify clients of major incidents affecting their financial interests without undue delay",
+    "target": "ISO27001:2022 A.6.8 (Information security event reporting)",
+    "relationship": "superset",
+    "rationale": "Art.19(4) requires external client notification for incidents impacting financial interests; A.6.8 covers internal event reporting by employees and does not address client-facing disclosure obligations."
+  },
+  {
+    "source": "Art.19(5) - voluntary notification of significant cyber threats",
+    "target": "ISO27001:2022 A.5.7 (Threat intelligence)",
+    "relationship": "related",
+    "rationale": "Art.19(5) encourages voluntary sharing of significant cyber threat information with regulators; A.5.7 requires collecting and using threat intelligence but does not address voluntary sharing with authorities."
+  },
+  {
+    "source": "Art.24(1) - testing programme for ICT systems supporting critical/important functions",
+    "target": "ISO27001:2022 Cl.9.1 (Monitoring, measurement, analysis and evaluation)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.24(1) requires an ICT resilience testing programme including vulnerability assessments for critical functions; ISO 27001 Cl.9.1 requires monitoring and evaluation of ISMS effectiveness but does not mandate a structured resilience testing programme."
+  },
+  {
+    "source": "Art.25(1) - vulnerability assessments and scans at least annually",
+    "target": "ISO27001:2022 A.8.8 (Management of technical vulnerabilities)",
+    "relationship": "equivalent",
+    "rationale": "Art.25(1) and A.8.8 are co-extensive: both require regular vulnerability assessments and scans to identify and manage technical vulnerabilities in ICT systems."
+  },
+  {
+    "source": "Art.25(2) - network security assessments, penetration testing",
+    "target": "ISO27001:2022 A.8.8 (Management of technical vulnerabilities)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.25(2) requires network security assessments and penetration testing as part of the resilience testing programme; A.8.8 addresses vulnerability management broadly but penetration testing is not explicitly required in the control text."
+  },
+  {
+    "source": "Art.25(3) - scenario-based and open-source analyses, compatibility and performance testing",
+    "target": "ISO27001:2022 A.8.29 (Security testing in development and acceptance)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.25(3) requires a broad range of testing types including scenario-based tests; A.8.29 requires security testing in development and acceptance, which partially overlaps with scenario testing but does not cover all DORA-required test types."
+  },
+  {
+    "source": "Art.25(4) - testing plans subject to risk-based prioritisation; findings documented and remediated",
+    "target": "ISO27001:2022 Cl.6.1.2 (Risk assessment) + Cl.10.1 (Nonconformity and corrective action)",
+    "relationship": "equivalent",
+    "rationale": "Art.25(4) requires risk-based testing prioritisation and documented remediation of findings; ISO 27001 Cl.6.1.2 (risk assessment) and Cl.10.1 (corrective action) together cover the same requirement."
+  },
+  {
+    "source": "Art.25(5) - testing conducted by independent internal or qualified external parties",
+    "target": "ISO27001:2022 A.5.35 (Independent review of information security)",
+    "relationship": "equivalent",
+    "rationale": "Art.25(5) and A.5.35 both require independent review/testing of security controls, whether by internal or external qualified parties."
+  },
+  {
+    "source": "Art.26(1) - TLPT programme for identified financial entities (once every 3 years)",
+    "target": "ISO27001:2022 A.5.35 (Independent review of information security)",
+    "relationship": "superset",
+    "rationale": "Art.26(1) mandates TLPT on live production systems using threat intelligence by qualified red-teamers every 3 years; A.5.35 requires independent review but does not specify TLPT methodology, production system scope, or frequency."
+  },
+  {
+    "source": "Art.26(2) - TLPT must cover critical or important functions and ICT third-party providers",
+    "target": "ISO27001:2022 A.5.21 (Managing information security in the ICT supply chain)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.26(2) requires TLPT scope to include live production systems of third-party ICT providers; A.5.21 addresses ICT supply chain security management but does not specifically require penetration testing of third-party systems."
+  },
+  {
+    "source": "Art.26(3) - TLPT based on threat intelligence specific to financial entity",
+    "target": "ISO27001:2022 A.5.7 (Threat intelligence)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.26(3) requires TLPT to be driven by specific threat intelligence about the entity; A.5.7 requires collecting and using threat intelligence for security decisions but does not specifically link it to penetration test design."
+  },
+  {
+    "source": "Art.26(6) - competent authority validation of TLPT scope and results",
+    "target": "ISO27001:2022 Cl.9.3 (Management review)",
+    "relationship": "related",
+    "rationale": "Art.26(6) requires regulatory authority validation of TLPT scope and test certificates; ISO 27001 Cl.9.3 requires internal management review of ISMS performance — external regulatory validation is a DORA-specific requirement without ISO equivalent."
+  },
+  {
+    "source": "Art.26(7) - remediation of vulnerabilities identified through TLPT",
+    "target": "ISO27001:2022 Cl.10.1 (Nonconformity and corrective action) + A.8.8 (Management of technical vulnerabilities)",
+    "relationship": "equivalent",
+    "rationale": "Art.26(7) requires remediation of findings from TLPT; ISO 27001 Cl.10.1 and A.8.8 together require corrective action for nonconformities and remediation of identified vulnerabilities."
+  },
+  {
+    "source": "Art.27(1)(a) - TLPT testers must have highest suitability and reputability",
+    "target": "ISO27001:2022 Cl.7.2 (Competence)",
+    "relationship": "subset",
+    "rationale": "Art.27(1)(a) requires specific suitability and reputability standards for external TLPT testers; ISO 27001 Cl.7.2 requires competence for persons working under the ISMS but applies to all workers and does not prescribe the specific standards for external penetration testers."
+  },
+  {
+    "source": "Art.27(1)(b) - TLPT testers must possess specific expertise in threat intelligence, penetration testing, red teaming",
+    "target": "ISO27001:2022 Cl.7.2 (Competence)",
+    "relationship": "subset",
+    "rationale": "Art.27(1)(b) specifies technical expertise requirements for TLPT testers (threat intel, pentest, red team); ISO 27001 Cl.7.2 requires competence but does not enumerate specific pentesting skills."
+  },
+  {
+    "source": "Art.27(2) - TLPT testers must be certified by accreditation body or adhere to professional codes",
+    "target": "ISO27001:2022 A.5.35 (Independent review of information security)",
+    "relationship": "subset",
+    "rationale": "Art.27(2) requires formal certification or professional code adherence for TLPT testers; A.5.35 requires independent review but does not mandate specific certifications or professional codes for reviewers."
+  },
+  {
+    "source": "Art.28(1) - manage ICT third-party risk as integral component of ICT risk framework",
+    "target": "ISO27001:2022 A.5.19 (Information security in supplier relationships)",
+    "relationship": "equivalent",
+    "rationale": "Art.28(1) and A.5.19 are co-extensive: both require third-party/supplier ICT risk to be managed as an integral part of the organisation's information security management framework."
+  },
+  {
+    "source": "Art.28(2) - financial entity remains fully responsible despite third-party outsourcing",
+    "target": "ISO27001:2022 A.5.19 (Information security in supplier relationships)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.28(2) establishes a non-delegation principle for regulatory compliance; A.5.19 requires security requirements in supplier relationships but does not explicitly address non-transferability of regulatory responsibility."
+  },
+  {
+    "source": "Art.28(3) - due diligence on ICT third-party providers before contracting",
+    "target": "ISO27001:2022 A.5.20 (Addressing information security within supplier agreements)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.28(3) requires pre-contract due diligence including risk and conflict-of-interest assessment; A.5.20 addresses security requirements in agreements but does not specifically require pre-contract due diligence as a distinct process."
+  },
+  {
+    "source": "Art.28(4) - risk assessment before contracting for critical or important functions including ICT concentration risk",
+    "target": "ISO27001:2022 Cl.6.1.2 (Information security risk assessment) + A.5.21 (Managing information security in the ICT supply chain)",
+    "relationship": "subset",
+    "rationale": "Art.28(4) requires specific assessment of ICT concentration risk (over-reliance on single provider) before contracting; ISO 27001 Cl.6.1.2 and A.5.21 require supply chain risk assessment but do not specifically address concentration risk."
+  },
+  {
+    "source": "Art.28(5) - maintain and update a register of all contractual arrangements with ICT third-party providers",
+    "target": "ISO27001:2022 A.5.9 (Inventory of information and other associated assets) + A.5.21 (Managing information security in the ICT supply chain)",
+    "relationship": "superset",
+    "rationale": "Art.28(5) requires a specific register of all ICT third-party contracts at entity and group level with prescribed content; ISO 27001 A.5.9 and A.5.21 address asset inventory and supply chain management but do not mandate a specific contract register."
+  },
+  {
+    "source": "Art.28(8) - exit strategies for ICT services supporting critical or important functions",
+    "target": "ISO27001:2022 A.5.30 (ICT readiness for business continuity) + A.5.22 (Monitoring, review and change management of supplier services)",
+    "relationship": "superset",
+    "rationale": "Art.28(8) requires documented exit strategies accounting for provider failure, service degradation or termination; ISO 27001 A.5.30 and A.5.22 address continuity and supplier management but do not specifically require exit strategies."
+  },
+  {
+    "source": "Art.29(1) - assess concentration risk from single or interconnected ICT third-party providers",
+    "target": "ISO27001:2022 Cl.6.1.2 (Information security risk assessment)",
+    "relationship": "subset",
+    "rationale": "Art.29(1) requires assessment of ICT provider concentration risk including non-substitutability; ISO 27001 Cl.6.1.2 requires general risk assessment but does not specifically address provider concentration risk as a distinct risk category."
+  },
+  {
+    "source": "Art.29(2) - assess subcontracting risks especially for critical functions from third countries",
+    "target": "ISO27001:2022 A.5.21 (Managing information security in the ICT supply chain)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.29(2) requires assessment of risks from sub-contractors in third countries supporting critical functions; A.5.21 requires ICT supply chain risk management but does not specifically address sub-contracting chains or third-country provider risk."
+  },
+  {
+    "source": "Art.30(1) - contractual arrangements must include clear description of all ICT services and functions",
+    "target": "ISO27001:2022 A.5.20 (Addressing information security within supplier agreements)",
+    "relationship": "equivalent",
+    "rationale": "Art.30(1) and A.5.20 are co-extensive: both require ICT supply agreements to contain a clear description of services, functions and information security requirements."
+  },
+  {
+    "source": "Art.30(2)(a) - contract: full description of ICT services, whether subcontracting is permitted, locations",
+    "target": "ISO27001:2022 A.5.20 (Addressing information security within supplier agreements)",
+    "relationship": "equivalent",
+    "rationale": "Art.30(2)(a) specifies contractual content requirements (service description, subcontracting, locations) that align directly with A.5.20 requirements for supplier agreement content."
+  },
+  {
+    "source": "Art.30(2)(b) - contract: provisions on data availability, authenticity, integrity and confidentiality",
+    "target": "ISO27001:2022 A.5.20 (Addressing information security within supplier agreements)",
+    "relationship": "equivalent",
+    "rationale": "Art.30(2)(b) requires contractual guarantees for data AAIC; A.5.20 requires security requirements including confidentiality, integrity and availability obligations in supplier agreements."
+  },
+  {
+    "source": "Art.30(2)(c) - contract: access, recovery and return of data including in insolvency",
+    "target": "ISO27001:2022 A.8.13 (Information backup) + A.5.20 (Addressing information security within supplier agreements)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.30(2)(c) requires contractual provisions for data access, recovery and return including insolvency scenarios; A.8.13 covers backup and recovery and A.5.20 covers agreements, but insolvency-scenario data return is a DORA-specific requirement."
+  },
+  {
+    "source": "Art.30(2)(d) - contract: service level descriptions, response and recovery time objectives",
+    "target": "ISO27001:2022 A.5.30 (ICT readiness for business continuity)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.30(2)(d) requires contractual RTO/RPO-equivalent SLDs for critical functions; A.5.30 requires ICT continuity planning but does not specifically mandate contractual SLDs with third-party providers."
+  },
+  {
+    "source": "Art.30(2)(e) - contract: provider must implement and test business contingency plans",
+    "target": "ISO27001:2022 A.5.30 (ICT readiness for business continuity) + A.5.20 (Addressing information security within supplier agreements)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.30(2)(e) requires contractual obligations for provider BCP implementation and testing; A.5.30 and A.5.20 together address ICT continuity and supplier agreements but do not specifically require contractual BCP testing obligations on providers."
+  },
+  {
+    "source": "Art.30(2)(f) - contract: cooperation with competent authorities and financial entity on audits/inspections",
+    "target": "ISO27001:2022 A.5.35 (Independent review of information security)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.30(2)(f) requires contractual provisions for regulatory authority access and audit rights over ICT providers; A.5.35 requires independent security review but does not address contractual rights for regulatory authority access to third parties."
+  },
+  {
+    "source": "Art.30(2)(g) - contract: unrestricted rights of access, inspection and audit for financial entity and competent authority",
+    "target": "ISO27001:2022 A.5.20 (Addressing information security within supplier agreements)",
+    "relationship": "superset",
+    "rationale": "Art.30(2)(g) requires contractual unrestricted audit rights for both the financial entity and competent authorities over ICT third-party providers; A.5.20 requires right of audit in supplier agreements but does not extend this right to competent authorities."
+  },
+  {
+    "source": "Art.30(3) - contract: termination rights and minimum notice periods",
+    "target": "ISO27001:2022 A.5.20 (Addressing information security within supplier agreements)",
+    "relationship": "partial_overlap",
+    "rationale": "Art.30(3) requires contractual termination rights including for regulatory non-compliance; A.5.20 addresses agreement content but does not prescribe minimum notice periods or regulatory non-compliance termination triggers."
+  },
+  {
+    "source": "Art.30(4) - contract: participation in financial entity's digital operational resilience testing programmes",
+    "target": "ISO27001:2022 A.5.20 (Addressing information security within supplier agreements) + A.5.35 (Independent review of information security)",
+    "relationship": "superset",
+    "rationale": "Art.30(4) requires contractual obligations for ICT providers to participate in DORA testing programmes including TLPT; ISO 27001 A.5.20 and A.5.35 do not address contractual testing participation obligations with third-party ICT providers."
+  }
+]
