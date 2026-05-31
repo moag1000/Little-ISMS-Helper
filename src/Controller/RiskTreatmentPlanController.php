@@ -103,7 +103,7 @@ class RiskTreatmentPlanController extends AbstractController
             $this->entityManager->persist($riskTreatmentPlan);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.created')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.created', [], 'messages'));
             return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $riskTreatmentPlan->getId()]);
         }
 
@@ -141,7 +141,7 @@ class RiskTreatmentPlanController extends AbstractController
             $riskTreatmentPlan->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $riskTreatmentPlan->getId()]);
         }
 
@@ -162,7 +162,7 @@ class RiskTreatmentPlanController extends AbstractController
             $this->entityManager->remove($riskTreatmentPlan);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.deleted')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_risk_treatment_plan_index');

@@ -85,9 +85,9 @@ class ContextController extends AbstractController
             $inheritanceInfo = $this->ismsContextService->getContextInheritanceInfo($context);
             $parentName = $inheritanceInfo['inheritedFrom'] ? $inheritanceInfo['inheritedFrom']->getName() : '';
 
-            $this->addFlash('danger', $this->translator->trans('corporate.inheritance.cannot_edit_inherited_long', [ // @todo H-06 flash-domain
+            $this->addFlash('danger', $this->translator->trans('corporate.inheritance.cannot_edit_inherited_long', [
                 '%parent%' => $parentName
-            ]));
+            ], 'messages'));
 
             return $this->redirectToRoute('app_context_index');
         }
@@ -104,7 +104,7 @@ class ContextController extends AbstractController
 
             $this->ismsContextService->saveContext($context);
 
-            $this->addFlash('success', $this->translator->trans('context.success.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('context.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_context_index');
         }
 

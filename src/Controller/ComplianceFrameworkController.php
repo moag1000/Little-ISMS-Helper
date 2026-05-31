@@ -93,7 +93,7 @@ class ComplianceFrameworkController extends AbstractController
             $this->entityManager->persist($complianceFramework);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.created')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.created', [], 'messages'));
 
             return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
         }
@@ -229,7 +229,7 @@ class ComplianceFrameworkController extends AbstractController
             $complianceFramework->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.updated')); // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.updated', [], 'messages'));
 
             return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
         }
@@ -252,10 +252,10 @@ class ComplianceFrameworkController extends AbstractController
 
             // Check if framework has requirements
             if ($complianceFramework->requirements->count() > 0) {
-                $this->addFlash('warning', $this->translator->trans('compliance.framework.flash.has_requirements', [ // @todo H-06 flash-domain
+                $this->addFlash('warning', $this->translator->trans('compliance.framework.flash.has_requirements', [
                     '%name%' => $frameworkName,
                     '%count%' => $complianceFramework->requirements->count(),
-                ]));
+                ], 'messages'));
 
                 return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
             }
@@ -263,9 +263,9 @@ class ComplianceFrameworkController extends AbstractController
             $this->entityManager->remove($complianceFramework);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.deleted', [ // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.deleted', [
                 '%name%' => $frameworkName,
-            ]));
+            ], 'messages'));
         }
 
         return $this->redirectToRoute('app_compliance_framework_index');
@@ -280,9 +280,9 @@ class ComplianceFrameworkController extends AbstractController
             $this->entityManager->flush();
 
             $status = $complianceFramework->isActive() ? 'activated' : 'deactivated';
-            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.' . $status, [ // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.' . $status, [
                 '%name%' => $complianceFramework->getName(),
-            ]));
+            ], 'messages'));
         }
 
         return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
@@ -307,9 +307,9 @@ class ComplianceFrameworkController extends AbstractController
             $this->entityManager->persist($newFramework);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.duplicated', [ // @todo H-06 flash-domain
+            $this->addFlash('success', $this->translator->trans('compliance.framework.flash.duplicated', [
                 '%name%' => $complianceFramework->getName(),
-            ]));
+            ], 'messages'));
 
             return $this->redirectToRoute('app_compliance_framework_edit', ['id' => $newFramework->id]);
         }
