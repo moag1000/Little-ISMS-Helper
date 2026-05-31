@@ -155,6 +155,10 @@ wizard:
     gap:
         controls_not_implemented: "Controls not fully implemented"
         controls_description: "%count% controls are not yet or only partially implemented."
+        maturity_not_assessed: "Maturity not yet assessed"
+        maturity_not_assessed_description: "No maturity assessment exists for this module yet. Upload your VDA-ISA workbook and assess the requirements."
+        maturity_below_target: "Maturity below target level"
+        maturity_below_target_description: "%count% requirements have not yet reached the target level (maturity 3 - established)."
         high_risks_untreated: "High risks without treatment"
         high_risks_description: "%count% high/critical risks have no treatment strategy."
         risks_need_treatment: "Risks need treatment"
@@ -189,6 +193,8 @@ wizard:
     # Actions
     action:
         implement_controls: "Implement controls"
+        import_maturity: "Upload & assess VDA-ISA workbook"
+        improve_maturity: "Raise maturity to target level"
         treat_risks: "Treat risks"
         review_risks: "Review risks"
         classify_assets: "Classify assets"
