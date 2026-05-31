@@ -1,4 +1,5 @@
 import './stimulus_bootstrap.js';
+import { applyAuroraDefaults } from './chart-theme.js';
 
 // FairyAurora v4.0 — Alva Companion Event Bus (singleton, exposes window.alvaBus)
 import './js/alva-bus.js';
@@ -32,15 +33,24 @@ import {
     Chart,
     ArcElement, BarElement, LineElement, PointElement,
     CategoryScale, LinearScale, RadialLinearScale, TimeScale,
-    Title, Tooltip, Legend, Filler, SubTitle
+    Title, Tooltip, Legend, Filler, SubTitle, Colors
 } from 'chart.js';
 
+// Colors plugin registered for parity with the old CDN UMD bundle (which had
+// auto-registration), so pages that rely on Chart.js auto-colouring keep
+// working after the CDN <script> tags were removed in favour of this global.
 Chart.register(
     ArcElement, BarElement, LineElement, PointElement,
     CategoryScale, LinearScale, RadialLinearScale, TimeScale,
-    Title, Tooltip, Legend, Filler, SubTitle
+    Title, Tooltip, Legend, Filler, SubTitle, Colors
 );
 window.Chart = Chart;
+
+// Apply the Aurora theme defaults to the shared global ONCE here, so EVERY
+// chart — Stimulus-controller AND in-body inline scripts (mapping_quality,
+// portfolio, analytics) — inherits Aurora fonts / grid / axis colours, not
+// Chart.js' raw gray defaults. Controllers may still re-apply on theme:changed.
+applyAuroraDefaults(Chart);
 
 // Initialize Bootstrap tooltips on page load and Turbo navigation
 function initTooltips() {

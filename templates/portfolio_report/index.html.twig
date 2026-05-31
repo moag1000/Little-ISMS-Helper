@@ -99,10 +99,19 @@
                 </p>
             {% endblock %}
         {% endembed %}
-        <script type="module">
-            import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js/+esm';
+        <script>
+        // Uses the app.js global window.Chart (registered + Aurora-themed) instead
+        // of a CDN ES-module import. turbo:load guarantees app.js has run and
+        // function-scopes the const declarations against Turbo re-execution.
+        document.addEventListener('turbo:load', function () {
+            if (!window.Chart) { return; }
+            const Chart = window.Chart;
             const el = document.getElementById('reuseTrendChart');
             if (el) {
+                // Canvas can't parse `var(--token)` — resolve Aurora tokens to
+                // computed colours first (raw var() strings render as fallbacks).
+                const _cs = getComputedStyle(document.documentElement);
+                const _t = (name, fb) => (_cs.getPropertyValue(name).trim() || fb);
                 const labels = JSON.parse(el.dataset.labels);
                 const fte = JSON.parse(el.dataset.fte);
                 const pct = JSON.parse(el.dataset.pct);
@@ -112,9 +121,9 @@
                         labels: labels,
                         datasets: [
                             { label: '{{ 'portfolio_report.reuse_trend.fte_label'|trans({}, 'portfolio_report') }}',
-                              data: fte, yAxisID: 'y1', borderColor: 'var(--success)', backgroundColor: 'var(--success-glow)', tension: 0.3, fill: true },
+                              data: fte, yAxisID: 'y1', borderColor: _t('--success', '#28a745'), backgroundColor: _t('--success-glow', 'rgba(40,167,69,0.15)'), tension: 0.3, fill: true },
                             { label: '{{ 'portfolio_report.reuse_trend.pct_label'|trans({}, 'portfolio_report') }}',
-                              data: pct, yAxisID: 'y2', borderColor: 'var(--primary)', borderDash: [4,4], tension: 0.3 }
+                              data: pct, yAxisID: 'y2', borderColor: _t('--primary', '#0284c7'), borderDash: [4,4], tension: 0.3 }
                         ]
                     },
                     options: {
@@ -127,6 +136,7 @@
                     }
                 });
             }
+        });
         </script>
     {% elseif reuse_trend is defined %}
         {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: 'portfolio_report.reuse_trend.empty'|trans({}, 'portfolio_report') }) }}
