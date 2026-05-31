@@ -42,9 +42,11 @@
     </script>
 
     {% block stylesheets %}
-        {# Bootstrap zuerst — Aurora-Styles kommen via importmap danach und überschreiben. #}
+        {# Bootstrap zuerst — Aurora-Layer danach (Cascade-Order). #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-        {{ importmap(['app', 'styles']) }}
+        {# Aurora-Layer als parallele <link> (kein @import-Barrel → kein FOUC). #}
+        {{ include('_aurora_styles.html.twig') }}
+        {{ importmap(['app']) }}
     {% endblock %}
 </head>
 <body class="fa-auth-body">

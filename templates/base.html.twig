@@ -78,8 +78,11 @@
     </style>
 
     {% block stylesheets %}
-        {# Bootstrap zuerst — Aurora (via importmap unten) kommt danach und überschreibt. #}
+        {# Bootstrap zuerst — Aurora kommt danach und überschreibt (Cascade-Order). #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+        {# Aurora-Layer als parallele <link> (kein @import-Barrel → kein FOUC). #}
+        {{ include('_aurora_styles.html.twig') }}
 
         {# Custom styles #}
         <style>
@@ -157,10 +160,10 @@
     {% endblock %}
 
     {% block importmap %}
-        {# Aurora-Styles + App-JS — MUSS nach Bootstrap kommen, damit
-           Aurora-Overrides die Bootstrap-Defaults schlagen. #}
+        {# Nur App-JS via importmap. Aurora-CSS liegt als parallele head-<link>
+           im stylesheets-Block (siehe dort) — NICHT als @import-Barrel hier. #}
         <div data-turbo-permanent id="importmap-container">
-            {{ importmap(['app', 'styles']) }}
+            {{ importmap(['app']) }}
         </div>
     {% endblock %}
 </head>
