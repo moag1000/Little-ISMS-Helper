@@ -25,7 +25,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -263,9 +262,10 @@ class AnalyticsController extends AbstractController
     #[Route('/export/{type}/dispatch', name: 'app_analytics_export_dispatch', methods: ['POST'])]
     #[IsCsrfTokenValid('analytics_export_dispatch')]
     public function exportDataDispatch(
+        Request $request,
         string $type,
         \App\Service\Job\JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        \App\Service\Job\JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         if (!in_array($type, ['risks', 'assets', 'compliance'], true)) {
@@ -284,19 +284,20 @@ class AnalyticsController extends AbstractController
             '_download_url' => $this->generateUrl('app_analytics_export_download', ['id' => $jobId, 'type' => $type]),
         ]);
 
-        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
-            jobClass: \App\Job\ExportAnalyticsJob::class,
-            args: ['type' => $type],
-            jobId: $jobId,
-        ));
-
-        // PRG: 303 redirect to the shared progress page. Required for Hotwire
-        // Turbo — see App\Controller\Admin\DataRepairController::runIntegrityCheck()
-        // for the full rationale.
-        return $this->redirectToRoute('admin_job_progress_page', [
+        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
             'id'     => $jobId,
             'return' => $this->generateUrl('app_analytics_dashboard'),
         ], Response::HTTP_SEE_OTHER);
+
+        // Dispatch through the configured runner (in_request by default —
+        // runs in this request, no worker needed; messenger mode queues it).
+        return $jobDispatcher->dispatch(
+            \App\Job\ExportAnalyticsJob::class,
+            ['type' => $type],
+            $jobId,
+            $progressResponse,
+            $request->getSession(),
+        );
     }
 
     /**

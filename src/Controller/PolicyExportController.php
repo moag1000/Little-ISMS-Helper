@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -178,7 +177,7 @@ final class PolicyExportController extends AbstractController
     public function exportTenantZipDispatch(
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        \App\Service\Job\JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -214,17 +213,20 @@ final class PolicyExportController extends AbstractController
             '_download_url' => $this->generateUrl('app_policy_export_tenant_zip_download', ['id' => $jobId]),
         ]);
 
-        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
-            jobClass: \App\Job\ExportPolicyTenantZipJob::class,
-            args: $args,
-            jobId: $jobId,
-        ));
-
-        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
-        return $this->redirectToRoute('admin_job_progress_page', [
+        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
             'id'     => $jobId,
             'return' => $this->generateUrl('app_dashboard'),
         ], Response::HTTP_SEE_OTHER);
+
+        // Dispatch through the configured runner (in_request by default —
+        // runs in this request, no worker needed; messenger mode queues it).
+        return $jobDispatcher->dispatch(
+            \App\Job\ExportPolicyTenantZipJob::class,
+            $args,
+            $jobId,
+            $progressResponse,
+            $request->getSession(),
+        );
     }
 
     /**

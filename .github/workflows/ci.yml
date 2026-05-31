@@ -494,6 +494,11 @@ jobs:
       - name: "Gate 56: template path()/url() routes must exist"
         # A literal path('typo') throws -> 500 at render; PHP unit tests miss it.
         run: python3 scripts/quality/check_template_route_refs.py --quiet
+      - name: "Gate 57: controllers must not dispatch ExecuteJobMessage directly"
+        # Direct $messageBus->dispatch(new ExecuteJobMessage(...)) bypasses the
+        # in_request runner (the default) → job hangs at "pending". Use the
+        # JobDispatcher facade instead (fixed 7 such sites).
+        run: python3 scripts/quality/check_no_direct_job_messenger.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
