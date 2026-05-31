@@ -364,6 +364,11 @@ audit_finding:
         no_findings: 'No findings yet.'
     empty:
         body: 'No open findings — your ISMS is currently compliance-clean. From the audit module you can document new findings from internal or external audits at any time.'
+        no_audit:
+            title: 'Create an audit first'
+            text: 'A finding always belongs to an internal audit. Create an audit first — then you can document findings against it here.'
+            cta: 'Create audit'
+            back: 'Back to overview'
     confirm:
         delete: 'Delete this finding?'
     flash:
@@ -393,6 +398,12 @@ corrective_action:
         title: 'Corrective Actions'
         new: 'New Corrective Action'
         edit: 'Edit Corrective Action'
+    empty:
+        no_finding:
+            title: 'Create a finding first'
+            text: 'A corrective action addresses a specific audit finding. Create a finding first — then you can document the matching action against it here.'
+            cta: 'Create finding'
+            back: 'Back to overview'
     action:
         new: 'Add Corrective Action'
     field:

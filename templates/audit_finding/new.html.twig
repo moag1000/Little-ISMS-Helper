@@ -20,6 +20,22 @@
         badge: { icon: 'plus', label: '' }
     }) }}
 
+    {# Empty-state: a finding is structurally tied to an internal audit
+       (audit_id NOT NULL), so without any audit the required audit-select is
+       empty and the form is a dead end. Guide the user to create an audit
+       first instead of showing an un-submittable form. #}
+    {% if form.audit.vars.choices|length == 0 %}
+        {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+        {{ _fa_empty_state.render({
+            icon: 'nav-clipboard-check',
+            title: 'audit_finding.empty.no_audit.title'|trans({}, 'audits'),
+            text: 'audit_finding.empty.no_audit.text'|trans({}, 'audits'),
+            actions: [
+                { label: 'audit_finding.empty.no_audit.cta'|trans({}, 'audits'), variant: 'primary', icon: 'plus', href: path('app_audit_new', {_locale: app.request.locale}) },
+                { label: 'audit_finding.empty.no_audit.back'|trans({}, 'audits'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_audit_finding_index', {_locale: app.request.locale}) }
+            ]
+        }) }}
+    {% else %}
     {# C5-03 — Severity × Type correlation help (ISO 19011 Cl. 6.4.8). #}
     {# P-19 — Form-Step-Inline-Hint controller. See assets/controllers/alva_hint_in_form_controller.js. #}
     {{ form_start(form, {'attr': {
@@ -106,5 +122,6 @@
         }
     } %}
     {{ form_end(form) }}
+    {% endif %}
 </div>
 {% endblock %}
