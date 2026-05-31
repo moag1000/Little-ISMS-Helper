@@ -1109,6 +1109,12 @@ form:
         too_long: 'Too long (max. %max% characters)'
     section:
         overview: 'Overview'
+        applicability: 'Applicability'
+        effectiveness: 'Effectiveness'
+        review: 'Review'
+        references: 'Framework References'
+        relations: 'Relations'
+        cloud: 'Cloud'
         recovery: 'Recovery'
         team: 'Team'
         communication: 'Communication'

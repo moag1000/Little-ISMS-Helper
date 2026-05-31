@@ -37,7 +37,12 @@ import { Controller } from '@hotwired/stimulus';
  * radio group with name ending in `[applicable]`.
  */
 export default class extends Controller {
-    static targets = ['justification'];
+    // `collapse` (F3): sections (e.g. implementation + effectiveness fieldsets)
+    // that become irrelevant when applicable=false. They are visually
+    // collapsed + their inputs disabled so the user is not asked to fill out
+    // implementation detail for a control that does not apply. Server-side the
+    // justification requirement is unchanged.
+    static targets = ['justification', 'collapse'];
     static values = {
         triggerName: { type: String, default: '' },
         requiredWhen: { type: String, default: 'false' },
@@ -63,6 +68,33 @@ export default class extends Controller {
         const isRequired = this.#isRequired();
         this.justificationTargets.forEach((field) => {
             this.#applyState(field, isRequired);
+        });
+        // F3: when the justification is required (applicable=false), collapse +
+        // disable the implementation/effectiveness sections.
+        this.#applyCollapse(isRequired);
+    }
+
+    #applyCollapse(collapsed) {
+        if (!this.hasCollapseTarget) {
+            return;
+        }
+        this.collapseTargets.forEach((section) => {
+            section.classList.toggle('is-collapsed', collapsed);
+            section.style.display = collapsed ? 'none' : '';
+            section.setAttribute('aria-hidden', collapsed ? 'true' : 'false');
+            section.querySelectorAll('input, select, textarea').forEach((el) => {
+                // Don't re-enable a field that was disabled for another reason
+                // (track our own disabling via a data flag).
+                if (collapsed) {
+                    if (!el.disabled) {
+                        el.dataset.applicabilityDisabled = '1';
+                        el.disabled = true;
+                    }
+                } else if (el.dataset.applicabilityDisabled === '1') {
+                    el.disabled = false;
+                    delete el.dataset.applicabilityDisabled;
+                }
+            });
         });
     }
 

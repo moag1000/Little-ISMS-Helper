@@ -34,6 +34,7 @@ control:
     control_maturity: Reifegrad (ISO 33001)
     last_effectiveness_test: Letzter Wirksamkeitstest
     next_effectiveness_test: Nächster Wirksamkeitstest
+    evidence_documents: Nachweisdokumente
     framework_references: Framework-Referenzen (JSON)
     related_risks: Verknüpfte Risiken
     cloud_control_reference: Cloud-Control-Referenz (ISO 27017)
@@ -44,6 +45,9 @@ control:
     control_id: ISO 27001:2022 Annex A Maßnahmen-ID
     applicable_explained: "Anwendbarkeit (ISO 27001 6.1.3 d): 'Anwendbar' = diese Massnahme ist für Ihre Organisation relevant und MUSS umgesetzt werden. 'Nicht anwendbar' = diese Massnahme ist für Ihren ISMS-Scope nicht relevant — Begruendung im Feld 'Justification' PFLICHT. Beispiel: A.7.4 (Physische Ueberwachung) kann für ein reines Cloud-Unternehmen 'nicht anwendbar' sein."
     implementation_status_explained: "Umsetzungsstatus: not_started = noch nicht begonnen, planned = geplant (Termin gesetzt), in_progress = in Umsetzung (teilweise wirksam), implemented = vollstaendig umgesetzt und wirksam, verified = durch Audit/Test als wirksam bestaetigt. Hinweis: Nur 'anwendbare' Controls zaehlen für die Compliance-Berechnung."
+    implementation_status_caveat: "Hinweis: Nur als 'anwendbar' markierte Controls zählen für die Compliance-Berechnung."
+    evidence_documents: "Verknüpfte Nachweisdokumente (ISO 27001 §7.5). Mehrfachauswahl möglich."
+    owner_required_marker: "Pflicht: Benutzer ODER Person aus den Stammdaten als Verantwortliche/r (Freitext allein genügt nicht)."
     justification: Pflicht für ISO 27001 Statement of Applicability (SoA)
     implementation_percentage: Implementierungsfortschritt in Prozent (0-100)
     implementation_notes: Beschreiben Sie wie das Control implementiert ist
@@ -91,6 +95,20 @@ control:
     in_progress: In Umsetzung
     implemented: Implementiert
     verified: Verifiziert
+  implementation_status_desc:
+    not_started: "Noch nicht begonnen."
+    planned: "Geplant — Zieltermin gesetzt, Umsetzung steht aus."
+    in_progress: "In Umsetzung — teilweise wirksam."
+    implemented: "Vollständig umgesetzt und wirksam."
+    verified: "Durch Audit/Test als wirksam bestätigt (100% Umsetzung erforderlich)."
+  evidence:
+    outdated_title: "Nachweise veraltet"
+    outdated_body: "Ein verknüpftes Nachweisdokument wurde durch eine neuere Version ersetzt. Die Wirksamkeit dieses Controls muss erneut geprüft werden."
+  status_hint:
+    verified_full: "Verifiziert = vollständig umgesetzt (100%)."
+    implemented_confirm: "Als vollständig umgesetzt (100%) markieren?"
+  disclosure:
+    legacy_owner: "Externer/Legacy-Verantwortlicher (Freitext)"
   effectiveness:
     not_assessed: Nicht bewertet
     ineffective: Unwirksam
@@ -150,6 +168,12 @@ control:
   error:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
     justification_required_when_not_applicable: 'Begründung erforderlich, wenn der Control als "nicht anwendbar" markiert ist (ISO 27001 6.1.3 d).'
+    verified_requires_date: 'Verifizierte Controls benötigen ein Datum (letzter Wirksamkeitstest oder letzte Überprüfung).'
+    verified_requires_effectiveness: 'Verifizierte Controls benötigen eine Wirksamkeitsbewertung (nicht "Nicht bewertet").'
+    verified_requires_full_percentage: 'Verifizierte Controls müssen zu 100% umgesetzt sein.'
+    effectiveness_requires_test: 'Eine Wirksamkeitsbewertung erfordert ein Datum des letzten Wirksamkeitstests (ISO 27001 9.1).'
+    next_review_after_last: 'Die nächste Überprüfung muss nach der letzten Überprüfung liegen.'
+    next_test_after_last: 'Der nächste Wirksamkeitstest muss nach dem letzten Wirksamkeitstest liegen.'
 inverse_coverage:
   total: 'Deckt %count% Anforderung(en) in %frameworks% Framework(s)'
   document:

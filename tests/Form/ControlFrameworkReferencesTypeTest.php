@@ -6,6 +6,8 @@ namespace App\Tests\Form;
 
 use App\Form\ControlFrameworkReferencesType;
 use App\Form\DataTransformer\FrameworkReferencesTransformer;
+use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementRepository;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Form\Test\TypeTestCase;
 
@@ -22,7 +24,11 @@ final class ControlFrameworkReferencesTypeTest extends TypeTestCase
      */
     protected function getTypes(): array
     {
-        return [new ControlFrameworkReferencesType()];
+        $frameworkRepository = $this->createMock(ComplianceFrameworkRepository::class);
+        $frameworkRepository->method('findAll')->willReturn([]);
+        $requirementRepository = $this->createMock(ComplianceRequirementRepository::class);
+
+        return [new ControlFrameworkReferencesType($frameworkRepository, $requirementRepository)];
     }
 
     #[Test]
