@@ -34,6 +34,7 @@ control:
     control_maturity: Control Maturity (ISO 33001)
     last_effectiveness_test: Last Effectiveness Test
     next_effectiveness_test: Next Effectiveness Test
+    evidence_documents: Evidence Documents
     framework_references: Framework References (JSON)
     related_risks: Related Risks
     cloud_control_reference: Cloud Control Reference (ISO 27017)
@@ -44,6 +45,9 @@ control:
     control_id: ISO 27001:2022 Annex A Control ID
     applicable_explained: "Applicability (ISO 27001 6.1.3 d): 'Applicable' = this control is relevant and MUST be implemented. 'Not applicable' = not relevant for your ISMS scope — justification in 'Justification' field is MANDATORY. Example: A.7.4 (Physical monitoring) may be 'not applicable' for a cloud-only company."
     implementation_status_explained: "Implementation status: not_started = not yet begun, planned = planned (deadline set), in_progress = being implemented (partially effective), implemented = fully implemented and effective, verified = confirmed effective through audit/testing. Note: Only 'applicable' controls count toward compliance percentage."
+    implementation_status_caveat: "Note: Only controls marked 'applicable' count toward the compliance percentage."
+    evidence_documents: "Linked evidence documents (ISO 27001 §7.5). Multiple selection possible."
+    owner_required_marker: "Required: a User OR a master-data Person as owner (free text alone is not sufficient)."
     justification: Required for ISO 27001 Statement of Applicability (SoA)
     implementation_percentage: Implementation progress in percent (0-100)
     implementation_notes: Describe how the control is implemented
@@ -91,6 +95,20 @@ control:
     in_progress: In Progress
     implemented: Implemented
     verified: Verified
+  implementation_status_desc:
+    not_started: "Not yet begun."
+    planned: "Planned — target date set, implementation pending."
+    in_progress: "Being implemented — partially effective."
+    implemented: "Fully implemented and effective."
+    verified: "Confirmed effective through audit/testing (requires 100% implementation)."
+  evidence:
+    outdated_title: "Evidence outdated"
+    outdated_body: "A linked evidence document was superseded by a newer version. This control's effectiveness must be re-verified."
+  status_hint:
+    verified_full: "Verified = fully implemented (100%)."
+    implemented_confirm: "Mark as fully implemented (100%)?"
+  disclosure:
+    legacy_owner: "External/legacy owner (free text)"
   effectiveness:
     not_assessed: Not Assessed
     ineffective: Ineffective
@@ -150,6 +168,12 @@ control:
   error:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
     justification_required_when_not_applicable: 'Justification is required when the control is marked as "not applicable" (ISO 27001 6.1.3 d).'
+    verified_requires_date: 'Verified controls require a date (last effectiveness test or last review).'
+    verified_requires_effectiveness: 'Verified controls require an effectiveness rating (not "Not assessed").'
+    verified_requires_full_percentage: 'Verified controls must be 100% implemented.'
+    effectiveness_requires_test: 'An effectiveness rating requires a last-effectiveness-test date (ISO 27001 9.1).'
+    next_review_after_last: 'The next review date must be after the last review date.'
+    next_test_after_last: 'The next effectiveness test must be after the last effectiveness test.'
 inverse_coverage:
   total: 'Covers %count% requirement(s) across %frameworks% framework(s)'
   document:

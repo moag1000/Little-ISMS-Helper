@@ -19,24 +19,39 @@
  #}
 
 {%- block control_framework_references_widget -%}
+    {%- set framework_options = framework_options|default({}) -%}
     <div class="fa-framework-refs"
          data-controller="framework-refs"
          role="group"
          aria-label="{{ 'control.field.framework_references'|trans({}, 'control') }}">
         {%- for child in form.children -%}
-            <div class="fa-framework-refs__row">
-                <label for="{{ child.vars.id }}" class="fa-framework-refs__label">
+            {#- E — populated rows stay open; empty rows collapse into a
+               <details> disclosure so the form is not a wall of empty inputs. -#}
+            {%- set slug = child.vars.name -%}
+            {%- set has_value = child.vars.value is not empty -%}
+            {%- set opts = framework_options[slug]|default([]) -%}
+            <details class="fa-framework-refs__row"{% if has_value %} open{% endif %}>
+                <summary class="fa-framework-refs__label">
                     {{ child.vars.label|trans({}, 'control') }}
-                </label>
+                    {%- if has_value -%}
+                        <span class="fa-framework-refs__badge badge bg-info-subtle text-info-emphasis">{{ child.vars.value|split(',')|length }}</span>
+                    {%- endif -%}
+                </summary>
                 <div class="fa-framework-refs__input-wrap">
-                    {{ form_widget(child, { attr: child.vars.attr|merge({
+                    {#- Seed the TomSelect with the framework's catalogue of
+                       requirement-ids. Empty list ⇒ free-entry only. -#}
+                    {%- set catalogue_attr = {} -%}
+                    {%- if opts is not empty -%}
+                        {%- set catalogue_attr = { 'data-framework-refs-options': opts|json_encode } -%}
+                    {%- endif -%}
+                    {{ form_widget(child, { attr: child.vars.attr|merge(catalogue_attr)|merge({
                         'class': (child.vars.attr.class|default('')) ~ ' form-control form-control-sm fa-framework-refs__input'
                     }) }) }}
                 </div>
-            </div>
-            {%- if not form_errors(child) is empty -%}
-                {{ form_errors(child) }}
-            {%- endif -%}
+                {%- if not form_errors(child) is empty -%}
+                    {{ form_errors(child) }}
+                {%- endif -%}
+            </details>
         {%- endfor -%}
     </div>
 {%- endblock -%}

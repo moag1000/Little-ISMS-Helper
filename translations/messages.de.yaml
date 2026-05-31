@@ -1123,6 +1123,12 @@ form:
         too_long: 'Zu lang (max. %max% Zeichen)'
     section:
         overview: 'Übersicht'
+        applicability: 'Anwendbarkeit'
+        effectiveness: 'Wirksamkeit'
+        review: 'Überprüfung'
+        references: 'Framework-Referenzen'
+        relations: 'Verknüpfungen'
+        cloud: 'Cloud'
         recovery: 'Wiederherstellung'
         team: 'Team'
         communication: 'Kommunikation'

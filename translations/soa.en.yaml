@@ -170,6 +170,7 @@ soa:
         implementation_notes: 'Implementation notes'
         responsible_person: 'Responsible person'
         unassigned: Unassigned
+        deputies: 'Deputies'
         target_date: 'Target date'
         not_set: 'Not set'
         cia: CIA

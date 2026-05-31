@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Form\DataTransformer\FrameworkReferencesTransformer;
+use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -69,6 +71,12 @@ final class ControlFrameworkReferencesType extends AbstractType
         'soc2',
     ];
 
+    public function __construct(
+        private readonly ComplianceFrameworkRepository $frameworkRepository,
+        private readonly ComplianceRequirementRepository $requirementRepository,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $known = self::KNOWN_FRAMEWORKS;
@@ -118,6 +126,81 @@ final class ControlFrameworkReferencesType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['known_frameworks'] = self::KNOWN_FRAMEWORKS;
+
+        // E — seed each per-framework TomSelect with the catalogue of known
+        // requirement-ids for that framework, so the user can autocomplete
+        // instead of typing references blind. Keyed by the framework slug used
+        // as the child-form name. Frameworks without a catalogue simply get an
+        // empty list (free-entry still works via create=true).
+        $catalogue = $this->buildCatalogue();
+        $frameworkOptions = [];
+        foreach (array_keys($form->all()) as $slug) {
+            $frameworkOptions[(string) $slug] = $catalogue[(string) $slug] ?? [];
+        }
+        $view->vars['framework_options'] = $frameworkOptions;
+    }
+
+    /**
+     * Build a slug → list<{value,label}> map of catalogue requirement-ids for
+     * every framework whose normalised code matches a row slug.
+     *
+     * @return array<string, list<array{value: string, label: string}>>
+     */
+    private function buildCatalogue(): array
+    {
+        $catalogue = [];
+        foreach ($this->frameworkRepository->findAll() as $framework) {
+            $slug = $this->resolveSlug($framework->getCode());
+            if ($slug === null) {
+                continue;
+            }
+            $entries = [];
+            foreach ($this->requirementRepository->findByFramework($framework) as $requirement) {
+                $value = trim((string) $requirement->getRequirementId());
+                if ($value === '') {
+                    continue;
+                }
+                $title = trim((string) $requirement->getTitle());
+                $entries[$value] = [
+                    'value' => $value,
+                    'label' => $title !== '' ? ($value . ' — ' . $title) : $value,
+                ];
+            }
+            if ($entries !== []) {
+                // array_values to drop the de-dup string keys.
+                $catalogue[$slug] = array_merge($catalogue[$slug] ?? [], array_values($entries));
+            }
+        }
+
+        return $catalogue;
+    }
+
+    /**
+     * Map a framework code (e.g. "ISO27001", "BSI_GRUNDSCHUTZ", "NIST-CSF") to
+     * one of the KNOWN_FRAMEWORKS row slugs via normalised prefix matching.
+     */
+    private function resolveSlug(?string $code): ?string
+    {
+        if ($code === null) {
+            return null;
+        }
+        $normalised = strtolower((string) preg_replace('/[^a-z0-9]/i', '', $code));
+        if ($normalised === '') {
+            return null;
+        }
+
+        // Direct/prefix match against the known slugs (longest first so e.g.
+        // "bsic5" beats "bsi", "nistcsf" beats "nist").
+        $known = self::KNOWN_FRAMEWORKS;
+        usort($known, static fn(string $a, string $b): int => strlen($b) <=> strlen($a));
+        foreach ($known as $slug) {
+            $needle = str_replace('_', '', $slug);
+            if (str_starts_with($normalised, $needle)) {
+                return $slug;
+            }
+        }
+
+        return null;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -168,6 +168,7 @@ soa:
         implementation_notes: Implementierungsnotizen
         responsible_person: 'Verantwortliche Person'
         unassigned: 'Nicht zugewiesen'
+        deputies: 'Stellvertreter'
         target_date: Zieldatum
         not_set: 'Nicht festgelegt'
         cia: CIA
