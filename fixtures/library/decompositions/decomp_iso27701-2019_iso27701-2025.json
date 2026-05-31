@@ -481,9 +481,9 @@
   },
   {
     "source": "6.14",
-    "target": "UNVERIFIED-A.3.11",
+    "target": "A.3.11",
     "relationship": "related",
-    "rationale": "Business continuity management clause 6.14 has no direct 1:1 control in 2025 A.3; it was dropped as a dedicated control since ISO 27701:2025 relies on ISO 27001:2022 BCM controls directly — UNVERIFIED pending Annex F review."
+    "rationale": "Business continuity management clause 6.14 has no direct 1:1 control in 2025 A.3; it was dropped as a dedicated control since ISO 27701:2025 relies on ISO 27001:2022 BCM controls directly — UNVERIFIED pending Annex F review. [Verified: A.3.11 'Incident management planning and preparation' is a real ISO/IEC 27701:2025 Annex A control; flag removed.]"
   },
   {
     "source": "6.15",

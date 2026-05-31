@@ -5,9 +5,8 @@
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
-        { label: 'report_builder.page.title'|trans({}, 'report_builder'), path: path('report_builder_index') },
-        { label: report.name, path: path('report_builder_edit', {id: report.id}) },
+        { label: 'nav.reports'|trans({}, 'nav'), url: path('report_builder_index') },
+        { label: report.name, url: path('report_builder_edit', {id: report.id}) },
         { label: 'report_builder.settings.title'|trans({}, 'report_builder') }
     ]
 } %}

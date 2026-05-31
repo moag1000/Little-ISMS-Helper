@@ -14,7 +14,7 @@
 
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'compliance_manager.title'|trans, path: 'app_dashboard_compliance_manager' },
+            { label: 'compliance_manager.title'|trans, url: path('app_dashboard_compliance_manager') },
             { label: 'compliance_manager.heatmap.drill.breadcrumb'|trans }
         ]
     } only %}

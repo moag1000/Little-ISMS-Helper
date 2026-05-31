@@ -9,7 +9,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.privacy'|trans({}, 'nav') },
+            { label: 'nav.privacy'|trans({}, 'nav'), url: path('app_processing_activity_index') },
             { label: 'nav.dpia'|trans({}, 'nav') }
         ]
     } %}

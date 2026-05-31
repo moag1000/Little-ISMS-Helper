@@ -9,8 +9,7 @@
 <div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'common.dashboard'|trans({}, 'messages'), url: path('app_dashboard') },
-            { label: 'document.title'|trans({}, 'document'), url: path('app_document_index') },
+            { label: 'nav.policy_wizard'|trans({}, 'nav'), url: path('app_policy_wizard_index') },
             { label: 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }
         ]
     } %}

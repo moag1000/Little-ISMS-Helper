@@ -109,14 +109,17 @@ guided_tour:
     isb:
         meta:
             label: 'ISB orientation'
-            description: 'Operational tools: SoA, incidents, workflows, audit log — daily ISB work.'
+            description: 'Operational tools: SoA, risk register, incidents, workflows, audit log — daily ISB work.'
         step:
             welcome:
                 title: 'Welcome, ISB'
-                body: 'Four minutes, five operational stops — SoA, incidents, workflows, audit log, command palette. Your core tools for daily work.'
+                body: 'Five minutes, six operational stops — SoA, risk register, incidents, workflows, audit log, command palette. Your core tools for daily work.'
             soa:
                 title: 'SoA with bulk edit'
                 body: '/soa lists all 93 Annex A controls plus module-specific ones. The bulk edit toolbar allows N/A marking with mandatory justification for multiple controls at once — one filter click is enough.'
+            risk:
+                title: 'Risk register — your central working tool'
+                body: '/risk is the heart of the ISMS (ISO 27001 Cl. 6.1.2). Each risk = threat × vulnerability, scored by likelihood × impact. The live heatmap shows severity instantly; link assets, controls and treatment plans — captured once, referenced everywhere.'
             incidents:
                 title: 'Incidents with status filter + 72h timer'
                 body: '/incident shows open incidents with severity filter. For GDPR data breaches the 72h timer (Art. 33) runs visibly — the workflow notifies automatically.'

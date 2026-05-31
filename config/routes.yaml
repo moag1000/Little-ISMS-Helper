@@ -126,6 +126,13 @@ app_routes:
         - '../src/Controller/QuickFixJobStatusController.php'
         - '../src/Controller/SsoController.php'
         - '../src/Controller/LifecycleController.php'
+        - '../src/Controller/GlossaryApiController.php'
+
+# Glossary API WITHOUT locale prefix — the fa-glossary-tooltip component fetches
+# /api/glossary/{acronym} directly; UI locale is passed as ?locale.
+glossary_api_routes:
+    resource: ../src/Controller/GlossaryApiController.php
+    type: attribute
 
 # Lifecycle API routes WITHOUT locale prefix — machine-to-machine JSON endpoints;
 # locale prefix would break client URLs and is unnecessary for API-style routes.

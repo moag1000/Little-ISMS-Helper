@@ -283,6 +283,7 @@ risk:
     decision_approved_by_user: 'Person who formally approved the risk treatment decision (ROLE_MANAGER or higher required).'
     decision_approval_date: Date of formal approval of the risk treatment decision.
     iso27005: 'ISO 27005 — Information Security Risk Management. Defines risk identification, assessment and treatment as a deep-dive companion to ISO 27001 Cl. 6.1.2 / 6.1.3.'
+    concepts_intro: 'Unsure about the terms? Hover the core concepts for a short definition:'
   tooltip:
     probability: '<strong>🎲 How likely is this to happen?</strong><br><em>Question:
       How often could this risk occur?</em><br><br><strong>1</strong> = Very Unlikely

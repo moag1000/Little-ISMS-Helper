@@ -34,7 +34,7 @@ library:
 mappings:
   - source: 'Art.5'
     target: '7.2.1'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       DSGVO Art. 5 (Grundsätze der Verarbeitung) wird in ISO 27701:2025
@@ -44,7 +44,7 @@ mappings:
 
   - source: 'Art.6'
     target: '7.2.2'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       DSGVO Art. 6 (Rechtmäßigkeit der Verarbeitung) entspricht
@@ -52,8 +52,8 @@ mappings:
     audit_evidence_hint: 'Pro RoPA-Eintrag: dokumentierte Rechtsgrundlage.'
 
   - source: 'Art.7'
-    target: '7.2.3'
-    relationship: 'equivalent'
+    target: '7.2.4'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       DSGVO Art. 7 (Bedingungen für die Einwilligung) entspricht ISO 27701
@@ -70,27 +70,27 @@ mappings:
     audit_evidence_hint: 'Datenschutzerklärung-Versionen + Aktualisierungen.'
 
   - source: 'Art.15'
-    target: '7.3.3'
-    relationship: 'equivalent'
+    target: '7.3.8'
+    relationship: 'subset'
     confidence: 'high'
     rationale: 'DSGVO Art. 15 (Auskunftsrecht) → ISO 27701 7.3.3 "Providing mechanisms to modify or withdraw consent".'
 
   - source: 'Art.17'
     target: '7.3.6'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: 'DSGVO Art. 17 (Recht auf Löschung) → ISO 27701 7.3.6 "Access, correction and/or erasure".'
     audit_evidence_hint: 'Lösch-Konzept, Löschprotokolle, Backup-Lösch-Strategie.'
 
   - source: 'Art.20'
-    target: '7.3.7'
+    target: '7.3.8'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: 'DSGVO Art. 20 (Datenübertragbarkeit) → ISO 27701 7.3.7 "PII principals'' obligation to provide their PII".'
 
   - source: 'Art.25'
     target: '7.4.1'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       DSGVO Art. 25 (Privacy by Design / by Default) → ISO 27701 7.4.1
@@ -99,7 +99,7 @@ mappings:
 
   - source: 'Art.28'
     target: '8.5.1'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       DSGVO Art. 28 (Auftragsverarbeiter) → ISO 27701 8.5.1 "Customer
@@ -138,7 +138,7 @@ mappings:
     audit_evidence_hint: 'Breach-Notification-Prozess mit 72-h-SLA-Tracking.'
 
   - source: 'Art.34'
-    target: '6.13.2'
+    target: '6.13.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: 'DSGVO Art. 34 (Benachrichtigung der betroffenen Personen) → ISO 27701 6.13.2.'
@@ -154,7 +154,7 @@ mappings:
 
   - source: 'Art.37'
     target: '6.3.1'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       DSGVO Art. 37-39 (DSB) → ISO 27701 6.3.1 "PII protection officer" +
@@ -170,3 +170,15 @@ mappings:
       "Identify basis for PII transfer between jurisdictions" + 7.5.2-7.5.4.
     cross_refs: ['7.5.2', '7.5.3', '7.5.4']
     audit_evidence_hint: 'SCC-Verträge, TIA-Dokumente, Drittland-Risikoanalyse.'
+  - source: 'Art.19'
+    target: '7.3.7'
+    relationship: 'equivalent'
+    rationale: 'GDPR Art.19 (notification re rectification/erasure/restriction) -> ISO 27701 7.3.7 inform third parties. Audit 2026-05-31.'
+  - source: 'Art.22'
+    target: '7.3.10'
+    relationship: 'equivalent'
+    rationale: 'GDPR Art.22 (automated decision-making) -> ISO 27701 7.3.10 automated decision making. Audit 2026-05-31, was missing.'
+  - source: 'Art.26'
+    target: '7.2.7'
+    relationship: 'equivalent'
+    rationale: 'GDPR Art.26 (joint controllers) -> ISO 27701 7.2.7 joint PII controller. Audit 2026-05-31, was missing.'

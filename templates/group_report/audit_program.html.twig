@@ -11,7 +11,7 @@
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'group_report.title'|trans({}, 'group_report'), path: 'app_group_report_tree' },
+            { label: 'group_report.title'|trans({}, 'group_report'), url: path('app_group_report_tree') },
             { label: 'group_report.audit_program.title'|trans({}, 'group_report') }
         ]
     } %}

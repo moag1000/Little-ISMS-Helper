@@ -109,14 +109,17 @@ guided_tour:
     isb:
         meta:
             label: 'Einweisung für ISB'
-            description: 'Operative Werkzeuge: SoA, Incidents, Workflows, Audit-Log — tägliche ISB-Arbeit.'
+            description: 'Operative Werkzeuge: SoA, Risikoregister, Incidents, Workflows, Audit-Log — tägliche ISB-Arbeit.'
         step:
             welcome:
                 title: 'Willkommen, ISB'
-                body: 'Vier Minuten, fünf operative Stopps — SoA, Incidents, Workflows, Audit-Log, Command-Palette. Ihre Kern-Werkzeuge für den Alltag.'
+                body: 'Fünf Minuten, sechs operative Stopps — SoA, Risikoregister, Incidents, Workflows, Audit-Log, Command-Palette. Ihre Kern-Werkzeuge für den Alltag.'
             soa:
                 title: 'SoA mit Bulk-Edit'
                 body: '/soa zeigt alle 93 Annex-A-Controls plus modul-spezifische. Der Bulk-Edit-Toolbar erlaubt N/A-Markierung mit Pflicht-Begründung für mehrere Controls gleichzeitig — ein Filter-Klick reicht.'
+            risk:
+                title: 'Risikoregister — Ihr zentrales Arbeitsmittel'
+                body: '/risk ist das Herzstück (ISO 27001 Cl. 6.1.2). Jedes Risiko = Bedrohung × Schwachstelle, bewertet mit Wahrscheinlichkeit × Auswirkung. Die Live-Heatmap zeigt sofort die Schwere; verknüpfen Sie Assets, Controls und Behandlungspläne — einmal erfasst, überall referenzierbar.'
             incidents:
                 title: 'Incidents mit Status-Filter + 72h-Timer'
                 body: '/incident zeigt offene Vorfälle mit Severity-Filter. Bei GDPR-Data-Breaches läuft der 72h-Timer (Art. 33) sichtbar mit — der Workflow benachrichtigt automatisch.'

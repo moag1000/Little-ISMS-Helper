@@ -16,7 +16,7 @@
     {% else %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'audit_freeze.title'|trans({}, 'audit_freeze'), path: 'app_audit_freeze_index' },
+            { label: 'audit_freeze.title'|trans({}, 'audit_freeze'), url: path('app_audit_freeze_index') },
             { label: freeze.freezeName }
         ]
     } %}

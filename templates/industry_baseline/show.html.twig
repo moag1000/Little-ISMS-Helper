@@ -7,7 +7,7 @@
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'industry_baseline.title'|trans({}, 'industry_baseline'), path: 'app_industry_baseline_index' },
+            { label: 'industry_baseline.title'|trans({}, 'industry_baseline'), url: path('app_industry_baseline_index') },
             { label: baseline.name }
         ]
     } %}

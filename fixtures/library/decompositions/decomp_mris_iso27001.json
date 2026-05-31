@@ -97,9 +97,9 @@
   },
   {
     "source": "MHC-04.e",
-    "target": "UNVERIFIED-A.8.16",
+    "target": "A.8.16",
     "relationship": "superset",
-    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-04.e (dedicated workload identities and audit trail for AI coding agents — Claude Code, Cursor, Copilot Workspace — correlated to initiating human identity) has no direct counterpart in ISO 27001:2022; A.8.16 (monitoring) is the closest anchor but does not cover agentic AI identity governance."
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-04.e (dedicated workload identities and audit trail for AI coding agents — Claude Code, Cursor, Copilot Workspace — correlated to initiating human identity) has no direct counterpart in ISO 27001:2022; A.8.16 (monitoring) is the closest anchor but does not cover agentic AI identity governance. [Verified: A.8.16 'Monitoring activities' is a real ISO/IEC 27001:2022 Annex A control; flag removed.]"
   },
   {
     "source": "MHC-05.a",
@@ -229,9 +229,9 @@
   },
   {
     "source": "MHC-09.e",
-    "target": "UNVERIFIED-A.6.3",
+    "target": "A.6.3",
     "relationship": "superset",
-    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-09.e (vibe-coded / AI-generated code designated as a separate risk category in the SoA) has no ISO 27001 counterpart; A.6.3 (information security awareness) is the nearest anchor but does not address AI-generated code risk categorisation in the SoA."
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-09.e (vibe-coded / AI-generated code designated as a separate risk category in the SoA) has no ISO 27001 counterpart; A.6.3 (information security awareness) is the nearest anchor but does not address AI-generated code risk categorisation in the SoA. [Verified: A.6.3 'Information security awareness, education and training' is a real ISO/IEC 27001:2022 Annex A control; flag removed.]"
   },
   {
     "source": "MHC-10.a",
@@ -283,15 +283,15 @@
   },
   {
     "source": "MHC-11.d",
-    "target": "UNVERIFIED-A.5.24",
+    "target": "A.5.24",
     "relationship": "superset",
-    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-11.d (Mythos-specific playbooks for mass data exfiltration, parallel multi-vector attack, supply-chain compromise, credential-stuffing wave, MFA-fatigue) are scenario-specific IR playbooks not required by ISO 27001; A.5.24 covers planning without mandating these specific scenarios."
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-11.d (Mythos-specific playbooks for mass data exfiltration, parallel multi-vector attack, supply-chain compromise, credential-stuffing wave, MFA-fatigue) are scenario-specific IR playbooks not required by ISO 27001; A.5.24 covers planning without mandating these specific scenarios. [Verified: A.5.24 'Information security incident management planning and preparation' is a real ISO/IEC 27001:2022 Annex A control; flag removed.]"
   },
   {
     "source": "MHC-11.e",
-    "target": "UNVERIFIED-A.5.24",
+    "target": "A.5.24",
     "relationship": "superset",
-    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-11.e (SOAR automation-layer hardening — signed trigger events, playbook audit trail, rate limits, human-in-the-loop for high-blast-radius actions, playbook definitions treated as source code) has no equivalent in ISO 27001 which does not address security of the IR toolchain itself."
+    "rationale": "ADDITIVE — no ISO 27001 equivalent: MHC-11.e (SOAR automation-layer hardening — signed trigger events, playbook audit trail, rate limits, human-in-the-loop for high-blast-radius actions, playbook definitions treated as source code) has no equivalent in ISO 27001 which does not address security of the IR toolchain itself. [Verified: A.5.24 'Information security incident management planning and preparation' is a real ISO/IEC 27001:2022 Annex A control; flag removed.]"
   },
   {
     "source": "MHC-11.f",

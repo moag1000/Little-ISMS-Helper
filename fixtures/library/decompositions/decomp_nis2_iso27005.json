@@ -43,21 +43,21 @@
   },
   {
     "source": "NIS2-Art21(2)(a)-risk-identification",
-    "target": "UNVERIFIED-ISO27005:2022-Cl7.2",
+    "target": "7.2",
     "relationship": "equivalent",
-    "rationale": "Art.21(2)(a) implicitly requires risk identification as a component of risk analysis; ISO 27005 Cl.7.2 (confirmed by PECB/Scribd sources to cover risk identification with event-based and asset-based approaches) is the direct process step — clause number unverified against official text."
+    "rationale": "Art.21(2)(a) implicitly requires risk identification as a component of risk analysis; ISO 27005 Cl.7.2 (confirmed by PECB/Scribd sources to cover risk identification with event-based and asset-based approaches) is the direct process step — clause number unverified against official text. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): 7.2 'Identifying information security risks' confirmed; UNVERIFIED flag removed.]"
   },
   {
     "source": "NIS2-Art21(2)(a)-risk-analysis-likelihood-severity",
-    "target": "UNVERIFIED-ISO27005:2022-Cl7.3",
+    "target": "7.3",
     "relationship": "equivalent",
-    "rationale": "Art.21(1) instructs that proportionality account for likelihood and severity; Art.21(2)(a) requires risk analysis policy address same; ISO 27005 Cl.7.3 (risk analysis — likelihood and consequence estimation) is the direct process step but exact sub-clause number unverified against official text."
+    "rationale": "Art.21(1) instructs that proportionality account for likelihood and severity; Art.21(2)(a) requires risk analysis policy address same; ISO 27005 Cl.7.3 (risk analysis — likelihood and consequence estimation) is the direct process step but exact sub-clause number unverified against official text. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): 7.3 'Analysing information security risks' confirmed; UNVERIFIED flag removed.]"
   },
   {
     "source": "NIS2-Art21(2)(a)-risk-evaluation-acceptance-criteria",
-    "target": "UNVERIFIED-ISO27005:2022-Cl7.4",
+    "target": "7.4",
     "relationship": "equivalent",
-    "rationale": "Art.21(2)(a) policy on risk analysis implicitly requires a risk evaluation step to decide on treatment; ISO 27005 Cl.7.4 (risk evaluation — comparing analysis results against risk criteria) operationalises this — clause number unverified against official text."
+    "rationale": "Art.21(2)(a) policy on risk analysis implicitly requires a risk evaluation step to decide on treatment; ISO 27005 Cl.7.4 (risk evaluation — comparing analysis results against risk criteria) operationalises this — clause number unverified against official text. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): 7.4 'Evaluating the information security risks' confirmed; UNVERIFIED flag removed.]"
   },
   {
     "source": "NIS2-Art21(2)(a)-information-system-security-policy",
@@ -85,33 +85,33 @@
   },
   {
     "source": "NIS2-Art21(2)(f)-what-to-measure",
-    "target": "UNVERIFIED-ISO27005:2022-Cl9.1",
+    "target": "10.5",
     "relationship": "equivalent",
-    "rationale": "CIR 2024/2690 Section 7.1 requires entities to determine what measures are to be monitored/measured; ISO 27005 Cl.9.1 (Monitoring, measurement, analysis and evaluation — per ISO 27001-aligned structure) covers exactly this obligation — exact sub-clause number for 27005 unverified."
+    "rationale": "CIR 2024/2690 Section 7.1 requires entities to determine what measures are to be monitored/measured; ISO 27005 Cl.9.1 (Monitoring, measurement, analysis and evaluation — per ISO 27001-aligned structure) covers exactly this obligation — exact sub-clause number for 27005 unverified. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.9.1 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 10.5 'Monitoring and review'.]"
   },
   {
     "source": "NIS2-Art21(2)(f)-methods-for-measurement",
-    "target": "UNVERIFIED-ISO27005:2022-Cl9.1",
+    "target": "10.5",
     "relationship": "equivalent",
-    "rationale": "CIR 2024/2690 Section 7.1 requires entities to determine measurement methods to ensure valid results; ISO 27005 Cl.9.1 covers methods for monitoring and measuring effectiveness of the risk management process — exact sub-clause number unverified."
+    "rationale": "CIR 2024/2690 Section 7.1 requires entities to determine measurement methods to ensure valid results; ISO 27005 Cl.9.1 covers methods for monitoring and measuring effectiveness of the risk management process — exact sub-clause number unverified. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.9.1 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 10.5 'Monitoring and review'.]"
   },
   {
     "source": "NIS2-Art21(2)(f)-when-to-measure",
-    "target": "UNVERIFIED-ISO27005:2022-Cl9.1",
+    "target": "10.5",
     "relationship": "equivalent",
-    "rationale": "CIR 2024/2690 Section 7.1 requires specifying when monitoring and measuring is to be performed; ISO 27005 Cl.9.1 includes timing/frequency of monitoring and review activities — exact sub-clause number unverified."
+    "rationale": "CIR 2024/2690 Section 7.1 requires specifying when monitoring and measuring is to be performed; ISO 27005 Cl.9.1 includes timing/frequency of monitoring and review activities — exact sub-clause number unverified. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.9.1 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 10.5 'Monitoring and review'.]"
   },
   {
     "source": "NIS2-Art21(2)(f)-who-is-responsible",
-    "target": "UNVERIFIED-ISO27005:2022-Cl10.1",
+    "target": "10.2",
     "relationship": "related",
-    "rationale": "CIR 2024/2690 Section 7.1 requires designation of responsibility for monitoring effectiveness; ISO 27005 Cl.10.1 (Leveraging related ISMS processes — operation) addresses integration with ISMS responsibilities, but explicit accountability assignment is primarily an ISO 27001 Cl.5.3 obligation rather than a 27005 process step — clause number unverified."
+    "rationale": "CIR 2024/2690 Section 7.1 requires designation of responsibility for monitoring effectiveness; ISO 27005 Cl.10.1 (Leveraging related ISMS processes — operation) addresses integration with ISMS responsibilities, but explicit accountability assignment is primarily an ISO 27001 Cl.5.3 obligation rather than a 27005 process step — clause number unverified. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.10.1 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 10.2 'Leadership and commitment'.]"
   },
   {
     "source": "NIS2-Art21(2)(f)-independent-review",
-    "target": "UNVERIFIED-ISO27005:2022-Cl9.2",
+    "target": "10.5",
     "relationship": "partial_overlap",
-    "rationale": "CIR 2024/2690 Section 7.2 requires independent reviews at planned intervals and after significant incidents; ISO 27005 Cl.9.2 (internal audit of the risk management process — aligned to ISO 27001 structure) covers periodic review but 27005 does not explicitly mandate independence — clause number unverified."
+    "rationale": "CIR 2024/2690 Section 7.2 requires independent reviews at planned intervals and after significant incidents; ISO 27005 Cl.9.2 (internal audit of the risk management process — aligned to ISO 27001 structure) covers periodic review but 27005 does not explicitly mandate independence — clause number unverified. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.9.2 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 10.5 'Monitoring and review'.]"
   },
   {
     "source": "NIS2-Art21(2)(f)-effectiveness-feeds-risk-treatment",
@@ -139,9 +139,9 @@
   },
   {
     "source": "NIS2-Art21(1)-continuous-risk-management",
-    "target": "UNVERIFIED-ISO27005:2022-Cl9.3",
+    "target": "10.5",
     "relationship": "equivalent",
-    "rationale": "Art.21(1) implies ongoing/continuous risk management to maintain appropriate security levels; ISO 27005 Cl.9.3 (management review — aligned to ISO 27001 Cl.9.3 structure) covers periodic management review of the risk management programme — clause number for 27005 unverified."
+    "rationale": "Art.21(1) implies ongoing/continuous risk management to maintain appropriate security levels; ISO 27005 Cl.9.3 (management review — aligned to ISO 27001 Cl.9.3 structure) covers periodic management review of the risk management programme — clause number for 27005 unverified. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.9.3 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 10.5 'Monitoring and review'.]"
   },
   {
     "source": "NIS2-Art21(2)(a)-risk-criteria-definition",
@@ -205,9 +205,9 @@
   },
   {
     "source": "NIS2-Art21(2)(f)-communication-of-effectiveness-results",
-    "target": "UNVERIFIED-ISO27005:2022-Cl10.2",
+    "target": "10.3",
     "relationship": "related",
-    "rationale": "Art.21(2)(f) effectiveness assessment results must inform management and relevant stakeholders to enable corrective action; ISO 27005 Cl.10.2 (communication and consultation — aligned with ISO 31000 structure) covers communication of risk information to stakeholders — exact sub-clause number for 27005:2022 unverified."
+    "rationale": "Art.21(2)(f) effectiveness assessment results must inform management and relevant stakeholders to enable corrective action; ISO 27005 Cl.10.2 (communication and consultation — aligned with ISO 31000 structure) covers communication of risk information to stakeholders — exact sub-clause number for 27005:2022 unverified. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.10.2 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 10.3 'Communication and consultation'.]"
   },
   {
     "source": "NIS2-Art21(2)(a)-risk-treatment-planning",
@@ -217,21 +217,21 @@
   },
   {
     "source": "NIS2-Art21(2)(a)-risk-treatment-options",
-    "target": "UNVERIFIED-ISO27005:2022-Cl8.3",
+    "target": "8.3",
     "relationship": "equivalent",
-    "rationale": "Art.21(2)(a) risk analysis policy must address selection of appropriate security measures (controls) to treat identified risks; ISO 27005 Cl.8.3 (Information security risk treatment — aligned sub-clause for treatment option selection) covers the process of identifying, selecting and planning risk treatment options — exact sub-clause number unverified."
+    "rationale": "Art.21(2)(a) risk analysis policy must address selection of appropriate security measures (controls) to treat identified risks; ISO 27005 Cl.8.3 (Information security risk treatment — aligned sub-clause for treatment option selection) covers the process of identifying, selecting and planning risk treatment options — exact sub-clause number unverified. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): 8.3 'Determining all controls necessary to implement the risk treatment options' confirmed; UNVERIFIED flag removed.]"
   },
   {
     "source": "NIS2-Art21(2)(a)-risk-treatment-plan",
-    "target": "UNVERIFIED-ISO27005:2022-Cl8.4",
+    "target": "8.6",
     "relationship": "equivalent",
-    "rationale": "Art.21(2)(a) requires that the risk management policy result in actionable treatment plans; ISO 27005 Cl.8.4 (risk treatment plan formulation — unverified sub-clause) covers the formal documentation of treatment plans including timelines and responsibilities."
+    "rationale": "Art.21(2)(a) requires that the risk management policy result in actionable treatment plans; ISO 27005 Cl.8.4 (risk treatment plan formulation — unverified sub-clause) covers the formal documentation of treatment plans including timelines and responsibilities. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.8.4 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 8.6 'Information security risk treatment plan'.]"
   },
   {
     "source": "NIS2-Art21(2)(a)-risk-owner-approval",
-    "target": "UNVERIFIED-ISO27005:2022-Cl8.5",
+    "target": "8.6",
     "relationship": "related",
-    "rationale": "Art.21(2)(a) risk analysis policy effectiveness requires management accountability for risk decisions; ISO 27005 Cl.8.5 (risk owner approval of treatment plan and acceptance of residual risk — unverified sub-clause) addresses formal risk owner sign-off, which is implied but not explicitly stated in NIS2 text."
+    "rationale": "Art.21(2)(a) risk analysis policy effectiveness requires management accountability for risk decisions; ISO 27005 Cl.8.5 (risk owner approval of treatment plan and acceptance of residual risk — unverified sub-clause) addresses formal risk owner sign-off, which is implied but not explicitly stated in NIS2 text. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.8.5 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 8.6 'Information security risk treatment plan'.]"
   },
   {
     "source": "NIS2-Art21(1)-supply-chain-risk-scope",
@@ -241,8 +241,8 @@
   },
   {
     "source": "NIS2-Art21(2)(a)-periodic-risk-reassessment",
-    "target": "UNVERIFIED-ISO27005:2022-Cl9.1",
+    "target": "10.5",
     "relationship": "equivalent",
-    "rationale": "Art.21(2)(a) policy on risk analysis implicitly requires that risk analysis be repeated periodically and after significant changes; ISO 27005 Cl.9.1 monitoring and review process includes triggers for re-initiating risk assessment — exact sub-clause number for 27005 unverified."
+    "rationale": "Art.21(2)(a) policy on risk analysis implicitly requires that risk analysis be repeated periodically and after significant changes; ISO 27005 Cl.9.1 monitoring and review process includes triggers for re-initiating risk assessment — exact sub-clause number for 27005 unverified. [Verified against ISO/IEC 27005:2022 official Contents (ISO sample): Sonnet had Cl.9.1 assuming ISO 27001-aligned numbering, but in 27005:2022 this concept maps to 10.5 'Monitoring and review'.]"
   }
 ]
