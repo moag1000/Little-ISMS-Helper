@@ -46,6 +46,12 @@ export default class extends Controller {
         this._post(target);
     }
 
+    /** Explicit "back to my own (Compliance) view" action. */
+    revert() {
+        if (this._busy) return;
+        this._post('revert');
+    }
+
     async _post(persona) {
         if (!this.endpointValue) return;
 
@@ -65,9 +71,15 @@ export default class extends Controller {
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}`);
             }
-            // acting-as persona lives in the session and re-shapes the whole UI;
-            // reload so it takes effect everywhere.
-            window.location.reload();
+            // The acting-as persona lives in the session and re-shapes the whole
+            // UI; navigate straight into the target cockpit (or back to the
+            // Compliance dashboard on revert). Falls back to a reload.
+            const data = await res.json().catch(() => ({}));
+            if (data && typeof data.redirect === 'string' && data.redirect) {
+                window.location.assign(data.redirect);
+            } else {
+                window.location.reload();
+            }
         } catch {
             this._busy = false;
             this.optionTargets.forEach(opt => { opt.disabled = false; });
