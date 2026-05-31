@@ -404,7 +404,7 @@
             </div>
         {% elseif _unmapped_fields|length > 0 and not skip_other %}
             <div class="alert alert-warning small mb-3" role="alert">
-                <strong>[dev] @todo H-03 section-policy:</strong>
+                <strong>[dev] NOTE H-03 section-policy:</strong>
                 {{ _unmapped_fields|length }} field(s) rendered via catch-all
                 (no section-policy whitelist):
                 <code>{{ _unmapped_fields|join(', ') }}</code>.
