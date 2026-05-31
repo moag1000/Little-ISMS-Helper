@@ -92,23 +92,17 @@ final class DoraRegisterOfInformationExporter
     }
 
     /**
-     * Resolve the reporting entity's own LEI.
+     * Resolve the reporting entity's own LEI (ISO 17442) from the tenant.
      *
-     * @todo 2026-05-14 (MINOR-6) Tenant entity currently exposes no LEI field. Once the
-     * reporting entity's LEI is captured (e.g. Tenant::getLeiCode()), plug it
-     * in here. Until then the `entity_lei` column is emitted as an empty
-     * string — the ITS allows blank fields but flags them for review.
-     * Blocked by: Tenant::$leiCode field addition (Sprint 9+).
+     * Emits an empty string when the tenant has no LEI captured — the ITS
+     * allows blank fields but flags them for review, so tenants should fill
+     * {@see Tenant::$leiCode} (Organisation settings) for a clean filing.
      */
     private function resolveEntityLei(Tenant $tenant): string
     {
-        if (method_exists($tenant, 'getLeiCode')) {
-            $lei = $tenant->getLeiCode();
-            if (is_string($lei) && $lei !== '') {
-                return $lei;
-            }
-        }
-        return '';
+        $lei = $tenant->getLeiCode();
+
+        return $lei !== null && $lei !== '' ? $lei : '';
     }
 
     /**
