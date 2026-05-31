@@ -56,6 +56,8 @@ final class PersonaSwitcherControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
         self::assertSame('PERSONA_CISO', $data['acting_as']);
+        // The switcher lands the user directly in the persona's cockpit.
+        self::assertStringContainsString('/dashboards/ciso', $data['redirect']);
     }
 
     public function testRevertPersona(): void
@@ -78,6 +80,8 @@ final class PersonaSwitcherControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         $data = json_decode($client->getResponse()->getContent(), true);
         self::assertNull($data['acting_as']);
+        // Reverting returns the user to their own Compliance-Manager cockpit.
+        self::assertStringContainsString('/dashboards/compliance-manager', $data['redirect']);
     }
 
     public function testInvalidPersonaReturns400(): void
