@@ -179,6 +179,16 @@
                             {% set chosen_target_topics = sammelpolitik_topic_keys %}
                         {% endif %}
                     {% endif %}
+                    {# Safety net: every row's action-<select> is `required`. Rows that
+                       are neither top-level nor Sammelpolitik (and have no persisted
+                       decision) would otherwise render with the empty placeholder
+                       selected, so a single un-decided row makes the whole form invalid
+                       and HTML5 silently blocks submit — the "Weiter"/Next button then
+                       appears to do nothing even after the user set other rows. Default
+                       the rest to the safe, non-destructive 'keep'. #}
+                    {% if chosen_action == '' %}
+                        {% set chosen_action = 'keep' %}
+                    {% endif %}
                     <tr class="fa-table__row"
                         data-controller="bestandsaufnahme-row"
                         data-bestandsaufnahme-row-action-value="{{ chosen_action }}"
