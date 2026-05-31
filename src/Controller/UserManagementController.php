@@ -29,7 +29,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
@@ -390,8 +389,9 @@ class UserManagementController extends AbstractController
     #[IsGranted(UserVoter::VIEW_ALL)]
     #[IsCsrfTokenValid('user_management_export_dispatch')]
     public function exportDispatch(
+        Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        \App\Service\Job\JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         $jobId = $jobStatusService->create('user_management.export', [
@@ -403,17 +403,20 @@ class UserManagementController extends AbstractController
             '_download_url' => $this->generateUrl('user_management_export_download', ['id' => $jobId]),
         ]);
 
-        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
-            jobClass: \App\Job\ExportUsersJob::class,
-            args: [],
-            jobId: $jobId,
-        ));
-
-        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
-        return $this->redirectToRoute('admin_job_progress_page', [
+        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
             'id'     => $jobId,
             'return' => $this->generateUrl('user_management_index'),
         ], Response::HTTP_SEE_OTHER);
+
+        // Dispatch through the configured runner (in_request by default —
+        // runs in this request, no worker needed; messenger mode queues it).
+        return $jobDispatcher->dispatch(
+            \App\Job\ExportUsersJob::class,
+            [],
+            $jobId,
+            $progressResponse,
+            $request->getSession(),
+        );
     }
 
     /**

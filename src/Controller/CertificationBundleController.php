@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Translation\LocaleSwitcher;
@@ -180,7 +179,7 @@ class CertificationBundleController extends AbstractController
     public function exportDispatch(
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        \App\Service\Job\JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         $submittedToken = $request->request->get('_token');
@@ -221,17 +220,20 @@ class CertificationBundleController extends AbstractController
             '_download_url' => $this->generateUrl('app_certification_bundle_export_download', ['id' => $jobId]),
         ]);
 
-        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
-            jobClass: \App\Job\ExportCertificationBundleJob::class,
-            args: $args,
-            jobId: $jobId,
-        ));
-
-        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
-        return $this->redirectToRoute('admin_job_progress_page', [
+        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
             'id'     => $jobId,
             'return' => $this->generateUrl('app_certification_bundle_index'),
         ], Response::HTTP_SEE_OTHER);
+
+        // Dispatch through the configured runner (in_request by default —
+        // runs in this request, no worker needed; messenger mode queues it).
+        return $jobDispatcher->dispatch(
+            \App\Job\ExportCertificationBundleJob::class,
+            $args,
+            $jobId,
+            $progressResponse,
+            $request->getSession(),
+        );
     }
 
     /**
@@ -454,7 +456,7 @@ class CertificationBundleController extends AbstractController
     public function konzernExportDispatch(
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        \App\Service\Job\JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         $submittedToken = $request->request->get('_token');
@@ -517,16 +519,19 @@ class CertificationBundleController extends AbstractController
             '_download_url' => $this->generateUrl('app_certification_bundle_export_download', ['id' => $jobId]),
         ]);
 
-        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
-            jobClass: \App\Job\ExportKonzernCertificationBundleJob::class,
-            args: $args,
-            jobId: $jobId,
-        ));
-
-        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
-        return $this->redirectToRoute('admin_job_progress_page', [
+        $progressResponse = $this->redirectToRoute('admin_job_progress_page', [
             'id'     => $jobId,
             'return' => $this->generateUrl('app_certification_bundle_index'),
         ], Response::HTTP_SEE_OTHER);
+
+        // Dispatch through the configured runner (in_request by default —
+        // runs in this request, no worker needed; messenger mode queues it).
+        return $jobDispatcher->dispatch(
+            \App\Job\ExportKonzernCertificationBundleJob::class,
+            $args,
+            $jobId,
+            $progressResponse,
+            $request->getSession(),
+        );
     }
 }
