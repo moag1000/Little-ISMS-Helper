@@ -18,8 +18,8 @@
                     {{ plan.title|default('(ohne Titel)') }}
                 </p>
                 <p style="margin: 0; font-family: 'Courier New', monospace; font-size: 11px; color: #b91c1c;">
-                    {% if plan.deadline is defined %}Deadline: {{ plan.deadline|date('d.m.Y') }}{% endif %}
-                    {% if plan.daysOverdue is defined %} · {{ plan.daysOverdue }} Tage überfällig{% endif %}
+                    {% if plan.targetCompletionDate %}Deadline: {{ plan.targetCompletionDate|date('d.m.Y') }}{% endif %}
+                    {% if plan.daysOverdue is not null %} · {{ plan.daysOverdue }} Tage überfällig{% endif %}
                 </p>
             </td>
         </tr>
