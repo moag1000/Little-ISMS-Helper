@@ -50,7 +50,61 @@ library:
 
 mappings:
   - source: '21.2.a'
-    target: 'DORA.Art.5-6'
+    target: 'DORA-5.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(a) verlangt allgemein "Konzepte für Risikoanalyse und
+      Sicherheit der Informationssysteme". DORA Art. 5 (Governance + interne
+      Kontrolle) und Art. 6 (ICT-Risk-Management-Framework) konkretisieren
+      dies für Finanzunternehmen mit Pflicht zu dokumentiertem ICT-Risk-Framework,
+      jährlicher Board-Genehmigung und expliziter Verantwortlichkeit des
+      Leitungsorgans. DORA geht damit deutlich über die NIS2-Anforderung hinaus.
+    gap_warning: |
+      DORA fordert Board-Approval und jährliche Review-Zyklen explizit (Art. 5(2));
+      NIS2 fordert dies nur implizit über "Verantwortlichkeit der Leitungsorgane"
+      (Art. 20). Wer NUR DORA Art. 5-6 nachweist, hat NIS2 21(2)(a) komplett
+      abgedeckt — kein Gap aus NIS2-Sicht.
+    audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll der letzten 12 Monate, Risikoinventar, jährlicher Review-Bericht.'
+
+  - source: '21.2.a'
+    target: 'DORA-5.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(a) verlangt allgemein "Konzepte für Risikoanalyse und
+      Sicherheit der Informationssysteme". DORA Art. 5 (Governance + interne
+      Kontrolle) und Art. 6 (ICT-Risk-Management-Framework) konkretisieren
+      dies für Finanzunternehmen mit Pflicht zu dokumentiertem ICT-Risk-Framework,
+      jährlicher Board-Genehmigung und expliziter Verantwortlichkeit des
+      Leitungsorgans. DORA geht damit deutlich über die NIS2-Anforderung hinaus.
+    gap_warning: |
+      DORA fordert Board-Approval und jährliche Review-Zyklen explizit (Art. 5(2));
+      NIS2 fordert dies nur implizit über "Verantwortlichkeit der Leitungsorgane"
+      (Art. 20). Wer NUR DORA Art. 5-6 nachweist, hat NIS2 21(2)(a) komplett
+      abgedeckt — kein Gap aus NIS2-Sicht.
+    audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll der letzten 12 Monate, Risikoinventar, jährlicher Review-Bericht.'
+
+  - source: '21.2.a'
+    target: 'DORA-6.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(a) verlangt allgemein "Konzepte für Risikoanalyse und
+      Sicherheit der Informationssysteme". DORA Art. 5 (Governance + interne
+      Kontrolle) und Art. 6 (ICT-Risk-Management-Framework) konkretisieren
+      dies für Finanzunternehmen mit Pflicht zu dokumentiertem ICT-Risk-Framework,
+      jährlicher Board-Genehmigung und expliziter Verantwortlichkeit des
+      Leitungsorgans. DORA geht damit deutlich über die NIS2-Anforderung hinaus.
+    gap_warning: |
+      DORA fordert Board-Approval und jährliche Review-Zyklen explizit (Art. 5(2));
+      NIS2 fordert dies nur implizit über "Verantwortlichkeit der Leitungsorgane"
+      (Art. 20). Wer NUR DORA Art. 5-6 nachweist, hat NIS2 21(2)(a) komplett
+      abgedeckt — kein Gap aus NIS2-Sicht.
+    audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll der letzten 12 Monate, Risikoinventar, jährlicher Review-Bericht.'
+
+  - source: '21.2.a'
+    target: 'DORA-6.2'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -68,7 +122,64 @@ mappings:
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll der letzten 12 Monate, Risikoinventar, jährlicher Review-Bericht.'
 
   - source: '21.2.b'
-    target: 'DORA.Art.17-19'
+    target: 'DORA-17.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(b) verlangt "Bewältigung von Sicherheitsvorfällen". DORA
+      Art. 17 (ICT-Incident-Management-Prozess), Art. 18 (Klassifizierung +
+      Schwellwerte) und Art. 19 (Meldepflicht) konkretisieren dies mit
+      verbindlichen Klassifizierungskriterien (RTS 2024/1772) und Meldefristen
+      (Initial 4h ab Klassifizierung, Intermediate 72h, Final 1 Monat).
+      DORA-Schwellwerte sind quantitativ und bindend; NIS2 lässt nationalen
+      CSIRTs Spielraum.
+    gap_warning: |
+      DORA-Meldefristen (4h/72h/1M) sind strenger als NIS2-Frühwarnung 24h.
+      Wer DORA Art. 19 erfüllt, erfüllt auch NIS2 Art. 23 — aber nur, wenn
+      die Meldung an BEIDE zuständigen Behörden geht (BaFin für DORA,
+      BSI/CSIRT für NIS2). Single-Reporting reicht NICHT.
+    audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS, Meldeprotokolle der letzten 12 Monate mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung.'
+
+  - source: '21.2.b'
+    target: 'DORA-17.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(b) verlangt "Bewältigung von Sicherheitsvorfällen". DORA
+      Art. 17 (ICT-Incident-Management-Prozess), Art. 18 (Klassifizierung +
+      Schwellwerte) und Art. 19 (Meldepflicht) konkretisieren dies mit
+      verbindlichen Klassifizierungskriterien (RTS 2024/1772) und Meldefristen
+      (Initial 4h ab Klassifizierung, Intermediate 72h, Final 1 Monat).
+      DORA-Schwellwerte sind quantitativ und bindend; NIS2 lässt nationalen
+      CSIRTs Spielraum.
+    gap_warning: |
+      DORA-Meldefristen (4h/72h/1M) sind strenger als NIS2-Frühwarnung 24h.
+      Wer DORA Art. 19 erfüllt, erfüllt auch NIS2 Art. 23 — aber nur, wenn
+      die Meldung an BEIDE zuständigen Behörden geht (BaFin für DORA,
+      BSI/CSIRT für NIS2). Single-Reporting reicht NICHT.
+    audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS, Meldeprotokolle der letzten 12 Monate mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung.'
+
+  - source: '21.2.b'
+    target: 'DORA-17.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(b) verlangt "Bewältigung von Sicherheitsvorfällen". DORA
+      Art. 17 (ICT-Incident-Management-Prozess), Art. 18 (Klassifizierung +
+      Schwellwerte) und Art. 19 (Meldepflicht) konkretisieren dies mit
+      verbindlichen Klassifizierungskriterien (RTS 2024/1772) und Meldefristen
+      (Initial 4h ab Klassifizierung, Intermediate 72h, Final 1 Monat).
+      DORA-Schwellwerte sind quantitativ und bindend; NIS2 lässt nationalen
+      CSIRTs Spielraum.
+    gap_warning: |
+      DORA-Meldefristen (4h/72h/1M) sind strenger als NIS2-Frühwarnung 24h.
+      Wer DORA Art. 19 erfüllt, erfüllt auch NIS2 Art. 23 — aber nur, wenn
+      die Meldung an BEIDE zuständigen Behörden geht (BaFin für DORA,
+      BSI/CSIRT für NIS2). Single-Reporting reicht NICHT.
+    audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS, Meldeprotokolle der letzten 12 Monate mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung.'
+
+  - source: '21.2.b'
+    target: 'DORA-19.1'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -87,7 +198,25 @@ mappings:
     audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS, Meldeprotokolle der letzten 12 Monate mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung.'
 
   - source: '21.2.c'
-    target: 'DORA.Art.11-12'
+    target: 'DORA-11.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(c) verlangt "Aufrechterhaltung des Betriebs" (BC + DR).
+      DORA Art. 11 (ICT-Business-Continuity-Policy) und Art. 12 (Backup +
+      Restoration) gehen darüber hinaus mit Pflicht zu jährlichen Tests,
+      RTO/RPO-Definition, Severe-Scenario-Testing und expliziter Trennung
+      zwischen Backup- und Produktionssystemen.
+    gap_warning: |
+      DORA Art. 11(6) fordert Krisenkommunikationsplan inklusive externer
+      Stakeholder; NIS2 21(2)(c) ist hier weniger explizit. Wer DORA Art. 11-12
+      vollständig erfüllt, deckt NIS2 21(2)(c) komplett ab. Achtung: NIS2 erwartet
+      zusätzlich Behörden-Meldewege an BSI — diese sind in DORA-BC-Plänen oft
+      nicht explizit dokumentiert.
+    audit_evidence_hint: 'BC-Policy mit Board-Approval, jährliche BC-Test-Berichte, Severe-Scenario-Test-Report, RTO/RPO-Tabelle pro kritischer ICT-Funktion, Restore-Test-Logs.'
+
+  - source: '21.2.c'
+    target: 'Art.12'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -105,7 +234,58 @@ mappings:
     audit_evidence_hint: 'BC-Policy mit Board-Approval, jährliche BC-Test-Berichte, Severe-Scenario-Test-Report, RTO/RPO-Tabelle pro kritischer ICT-Funktion, Restore-Test-Logs.'
 
   - source: '21.2.d'
-    target: 'DORA.Art.28-30'
+    target: 'DORA-28.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(d) "Sicherheit der Lieferkette" wird durch DORA Kapitel V
+      (Art. 28-30) deutlich detaillierter geregelt: Art. 28 (TPP-Risk-Management
+      Framework + Register of Information), Art. 29 (Pre-Contractual Assessment),
+      Art. 30 (verpflichtende Vertragsklauseln inkl. Audit-Rights, Exit-Strategien,
+      SLA-Definition). RTS 2024/1773 spezifiziert Subcontracting-Anforderungen.
+      DORA ist hier weltweit der detaillierteste Standard.
+    gap_warning: |
+      DORA-Register of Information (Art. 28(3)) muss alle ICT-TPPs erfassen,
+      nicht nur kritische — NIS2 fordert dies nicht. Wer DORA Art. 28-30 erfüllt,
+      übererfüllt NIS2 21(2)(d). KEIN Gap.
+    audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
+
+  - source: '21.2.d'
+    target: 'DORA-28.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(d) "Sicherheit der Lieferkette" wird durch DORA Kapitel V
+      (Art. 28-30) deutlich detaillierter geregelt: Art. 28 (TPP-Risk-Management
+      Framework + Register of Information), Art. 29 (Pre-Contractual Assessment),
+      Art. 30 (verpflichtende Vertragsklauseln inkl. Audit-Rights, Exit-Strategien,
+      SLA-Definition). RTS 2024/1773 spezifiziert Subcontracting-Anforderungen.
+      DORA ist hier weltweit der detaillierteste Standard.
+    gap_warning: |
+      DORA-Register of Information (Art. 28(3)) muss alle ICT-TPPs erfassen,
+      nicht nur kritische — NIS2 fordert dies nicht. Wer DORA Art. 28-30 erfüllt,
+      übererfüllt NIS2 21(2)(d). KEIN Gap.
+    audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
+
+  - source: '21.2.d'
+    target: 'DORA-28.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(d) "Sicherheit der Lieferkette" wird durch DORA Kapitel V
+      (Art. 28-30) deutlich detaillierter geregelt: Art. 28 (TPP-Risk-Management
+      Framework + Register of Information), Art. 29 (Pre-Contractual Assessment),
+      Art. 30 (verpflichtende Vertragsklauseln inkl. Audit-Rights, Exit-Strategien,
+      SLA-Definition). RTS 2024/1773 spezifiziert Subcontracting-Anforderungen.
+      DORA ist hier weltweit der detaillierteste Standard.
+    gap_warning: |
+      DORA-Register of Information (Art. 28(3)) muss alle ICT-TPPs erfassen,
+      nicht nur kritische — NIS2 fordert dies nicht. Wer DORA Art. 28-30 erfüllt,
+      übererfüllt NIS2 21(2)(d). KEIN Gap.
+    audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
+
+  - source: '21.2.d'
+    target: 'DORA-30.1'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -122,7 +302,109 @@ mappings:
     audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
 
   - source: '21.2.e'
-    target: 'DORA.Art.8-9'
+    target: 'DORA-8.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, Entwicklung und Wartung von
+      Netz- und Informationssystemen" entspricht DORA Art. 8 (Identification +
+      Asset-Inventory inkl. Klassifizierung kritischer Funktionen) und Art. 9
+      (Protection + Prevention inkl. Secure-Development-Lifecycle, Change-Mgmt,
+      Patch-Management). DORA geht über NIS2 hinaus durch Pflicht zur
+      Klassifizierung "kritischer oder wichtiger Funktionen".
+    gap_warning: |
+      DORA Art. 8(4) fordert mindestens jährliches Asset-Re-Assessment plus
+      bei wesentlichen Änderungen — NIS2 lässt Frequenz offen. Wer DORA Art. 8-9
+      erfüllt, deckt NIS2 21(2)(e) komplett ab.
+    audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
+
+  - source: '21.2.e'
+    target: 'DORA-8.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, Entwicklung und Wartung von
+      Netz- und Informationssystemen" entspricht DORA Art. 8 (Identification +
+      Asset-Inventory inkl. Klassifizierung kritischer Funktionen) und Art. 9
+      (Protection + Prevention inkl. Secure-Development-Lifecycle, Change-Mgmt,
+      Patch-Management). DORA geht über NIS2 hinaus durch Pflicht zur
+      Klassifizierung "kritischer oder wichtiger Funktionen".
+    gap_warning: |
+      DORA Art. 8(4) fordert mindestens jährliches Asset-Re-Assessment plus
+      bei wesentlichen Änderungen — NIS2 lässt Frequenz offen. Wer DORA Art. 8-9
+      erfüllt, deckt NIS2 21(2)(e) komplett ab.
+    audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
+
+  - source: '21.2.e'
+    target: 'DORA-8.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, Entwicklung und Wartung von
+      Netz- und Informationssystemen" entspricht DORA Art. 8 (Identification +
+      Asset-Inventory inkl. Klassifizierung kritischer Funktionen) und Art. 9
+      (Protection + Prevention inkl. Secure-Development-Lifecycle, Change-Mgmt,
+      Patch-Management). DORA geht über NIS2 hinaus durch Pflicht zur
+      Klassifizierung "kritischer oder wichtiger Funktionen".
+    gap_warning: |
+      DORA Art. 8(4) fordert mindestens jährliches Asset-Re-Assessment plus
+      bei wesentlichen Änderungen — NIS2 lässt Frequenz offen. Wer DORA Art. 8-9
+      erfüllt, deckt NIS2 21(2)(e) komplett ab.
+    audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
+
+  - source: '21.2.e'
+    target: 'DORA-9.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, Entwicklung und Wartung von
+      Netz- und Informationssystemen" entspricht DORA Art. 8 (Identification +
+      Asset-Inventory inkl. Klassifizierung kritischer Funktionen) und Art. 9
+      (Protection + Prevention inkl. Secure-Development-Lifecycle, Change-Mgmt,
+      Patch-Management). DORA geht über NIS2 hinaus durch Pflicht zur
+      Klassifizierung "kritischer oder wichtiger Funktionen".
+    gap_warning: |
+      DORA Art. 8(4) fordert mindestens jährliches Asset-Re-Assessment plus
+      bei wesentlichen Änderungen — NIS2 lässt Frequenz offen. Wer DORA Art. 8-9
+      erfüllt, deckt NIS2 21(2)(e) komplett ab.
+    audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
+
+  - source: '21.2.e'
+    target: 'DORA-9.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, Entwicklung und Wartung von
+      Netz- und Informationssystemen" entspricht DORA Art. 8 (Identification +
+      Asset-Inventory inkl. Klassifizierung kritischer Funktionen) und Art. 9
+      (Protection + Prevention inkl. Secure-Development-Lifecycle, Change-Mgmt,
+      Patch-Management). DORA geht über NIS2 hinaus durch Pflicht zur
+      Klassifizierung "kritischer oder wichtiger Funktionen".
+    gap_warning: |
+      DORA Art. 8(4) fordert mindestens jährliches Asset-Re-Assessment plus
+      bei wesentlichen Änderungen — NIS2 lässt Frequenz offen. Wer DORA Art. 8-9
+      erfüllt, deckt NIS2 21(2)(e) komplett ab.
+    audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
+
+  - source: '21.2.e'
+    target: 'DORA-9.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, Entwicklung und Wartung von
+      Netz- und Informationssystemen" entspricht DORA Art. 8 (Identification +
+      Asset-Inventory inkl. Klassifizierung kritischer Funktionen) und Art. 9
+      (Protection + Prevention inkl. Secure-Development-Lifecycle, Change-Mgmt,
+      Patch-Management). DORA geht über NIS2 hinaus durch Pflicht zur
+      Klassifizierung "kritischer oder wichtiger Funktionen".
+    gap_warning: |
+      DORA Art. 8(4) fordert mindestens jährliches Asset-Re-Assessment plus
+      bei wesentlichen Änderungen — NIS2 lässt Frequenz offen. Wer DORA Art. 8-9
+      erfüllt, deckt NIS2 21(2)(e) komplett ab.
+    audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
+
+  - source: '21.2.e'
+    target: 'DORA-9.4'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -139,7 +421,92 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
 
   - source: '21.2.f'
-    target: 'DORA.Art.13'
+    target: 'DORA-13.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(f) "Konzepte und Verfahren zur Bewertung der Wirksamkeit
+      von Risikomanagementmaßnahmen" entspricht DORA Art. 13 "Learning and Evolving"
+      mit Pflicht zu Post-Incident-Reviews, ICT-Risk-Awareness-Programmen und
+      Threat-Intelligence-Integration. DORA ist hier prozessorientierter,
+      NIS2 fokussiert Wirksamkeitsbewertung breiter.
+    gap_warning: |
+      DORA Art. 13 deckt Wirksamkeitsbewertung über Lessons-Learned-Loop ab,
+      aber NIS2 21(2)(f) erwartet auch quantitative KPIs/Metriken zur
+      Maßnahmen-Wirksamkeit. Empfehlung: DORA Art. 13 + ergänzende KPI-Dashboards
+      (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
+    audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
+
+  - source: '21.2.f'
+    target: 'DORA-13.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(f) "Konzepte und Verfahren zur Bewertung der Wirksamkeit
+      von Risikomanagementmaßnahmen" entspricht DORA Art. 13 "Learning and Evolving"
+      mit Pflicht zu Post-Incident-Reviews, ICT-Risk-Awareness-Programmen und
+      Threat-Intelligence-Integration. DORA ist hier prozessorientierter,
+      NIS2 fokussiert Wirksamkeitsbewertung breiter.
+    gap_warning: |
+      DORA Art. 13 deckt Wirksamkeitsbewertung über Lessons-Learned-Loop ab,
+      aber NIS2 21(2)(f) erwartet auch quantitative KPIs/Metriken zur
+      Maßnahmen-Wirksamkeit. Empfehlung: DORA Art. 13 + ergänzende KPI-Dashboards
+      (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
+    audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
+
+  - source: '21.2.f'
+    target: 'DORA-13.3'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(f) "Konzepte und Verfahren zur Bewertung der Wirksamkeit
+      von Risikomanagementmaßnahmen" entspricht DORA Art. 13 "Learning and Evolving"
+      mit Pflicht zu Post-Incident-Reviews, ICT-Risk-Awareness-Programmen und
+      Threat-Intelligence-Integration. DORA ist hier prozessorientierter,
+      NIS2 fokussiert Wirksamkeitsbewertung breiter.
+    gap_warning: |
+      DORA Art. 13 deckt Wirksamkeitsbewertung über Lessons-Learned-Loop ab,
+      aber NIS2 21(2)(f) erwartet auch quantitative KPIs/Metriken zur
+      Maßnahmen-Wirksamkeit. Empfehlung: DORA Art. 13 + ergänzende KPI-Dashboards
+      (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
+    audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
+
+  - source: '21.2.f'
+    target: 'DORA-13.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(f) "Konzepte und Verfahren zur Bewertung der Wirksamkeit
+      von Risikomanagementmaßnahmen" entspricht DORA Art. 13 "Learning and Evolving"
+      mit Pflicht zu Post-Incident-Reviews, ICT-Risk-Awareness-Programmen und
+      Threat-Intelligence-Integration. DORA ist hier prozessorientierter,
+      NIS2 fokussiert Wirksamkeitsbewertung breiter.
+    gap_warning: |
+      DORA Art. 13 deckt Wirksamkeitsbewertung über Lessons-Learned-Loop ab,
+      aber NIS2 21(2)(f) erwartet auch quantitative KPIs/Metriken zur
+      Maßnahmen-Wirksamkeit. Empfehlung: DORA Art. 13 + ergänzende KPI-Dashboards
+      (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
+    audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
+
+  - source: '21.2.f'
+    target: 'DORA-13.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(f) "Konzepte und Verfahren zur Bewertung der Wirksamkeit
+      von Risikomanagementmaßnahmen" entspricht DORA Art. 13 "Learning and Evolving"
+      mit Pflicht zu Post-Incident-Reviews, ICT-Risk-Awareness-Programmen und
+      Threat-Intelligence-Integration. DORA ist hier prozessorientierter,
+      NIS2 fokussiert Wirksamkeitsbewertung breiter.
+    gap_warning: |
+      DORA Art. 13 deckt Wirksamkeitsbewertung über Lessons-Learned-Loop ab,
+      aber NIS2 21(2)(f) erwartet auch quantitative KPIs/Metriken zur
+      Maßnahmen-Wirksamkeit. Empfehlung: DORA Art. 13 + ergänzende KPI-Dashboards
+      (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
+    audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
+
+  - source: '21.2.f'
+    target: 'DORA-13.6'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -156,7 +523,7 @@ mappings:
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
 
   - source: '21.2.g'
-    target: 'DORA.Art.13'
+    target: 'DORA-13.6'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -173,7 +540,7 @@ mappings:
     audit_evidence_hint: 'Schulungs-Curriculum mit Mindestthemen, Phishing-Simulationen mit Klickraten, Schulungsquote pro Mitarbeiter, separate Board-Schulungsbelege.'
 
   - source: '21.2.h'
-    target: 'DORA.Art.9.3'
+    target: 'DORA-9.3'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -189,7 +556,58 @@ mappings:
     audit_evidence_hint: 'Krypto-Policy mit Algorithmus-Whitelist, Key-Management-Verfahren (Generation/Storage/Rotation/Revocation), HSM-Inventar, Krypto-Audit-Reports.'
 
   - source: '21.2.i'
-    target: 'DORA.Art.9'
+    target: 'DORA-9.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(i) "Sicherheit des Personals, Konzepte für Zugriffskontrolle
+      und Management von Anlagen" wird durch DORA Art. 9 (Protection + Prevention)
+      mit Schwerpunkt Zugriffsmanagement (Need-to-know, Least-Privilege),
+      physische Sicherheit kritischer ICT-Assets und Personalsicherheit
+      adressiert. DORA ist hier weniger explizit zu Personalsicherheit als NIS2.
+    gap_warning: |
+      DORA Art. 9 deckt physische + logische Zugriffskontrolle ab, aber HR-Aspekte
+      (Background-Checks, NDA, Onboarding/Offboarding) sind NICHT explizit in
+      DORA — diese müssen über MaRisk AT 7.1 oder ergänzende Personalrichtlinien
+      nachgewiesen werden. NIS2 21(2)(i) erwartet diese Aspekte explizit.
+    audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, physische Zutrittsprotokolle Rechenzentrum.'
+
+  - source: '21.2.i'
+    target: 'DORA-9.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(i) "Sicherheit des Personals, Konzepte für Zugriffskontrolle
+      und Management von Anlagen" wird durch DORA Art. 9 (Protection + Prevention)
+      mit Schwerpunkt Zugriffsmanagement (Need-to-know, Least-Privilege),
+      physische Sicherheit kritischer ICT-Assets und Personalsicherheit
+      adressiert. DORA ist hier weniger explizit zu Personalsicherheit als NIS2.
+    gap_warning: |
+      DORA Art. 9 deckt physische + logische Zugriffskontrolle ab, aber HR-Aspekte
+      (Background-Checks, NDA, Onboarding/Offboarding) sind NICHT explizit in
+      DORA — diese müssen über MaRisk AT 7.1 oder ergänzende Personalrichtlinien
+      nachgewiesen werden. NIS2 21(2)(i) erwartet diese Aspekte explizit.
+    audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, physische Zutrittsprotokolle Rechenzentrum.'
+
+  - source: '21.2.i'
+    target: 'DORA-9.3'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(i) "Sicherheit des Personals, Konzepte für Zugriffskontrolle
+      und Management von Anlagen" wird durch DORA Art. 9 (Protection + Prevention)
+      mit Schwerpunkt Zugriffsmanagement (Need-to-know, Least-Privilege),
+      physische Sicherheit kritischer ICT-Assets und Personalsicherheit
+      adressiert. DORA ist hier weniger explizit zu Personalsicherheit als NIS2.
+    gap_warning: |
+      DORA Art. 9 deckt physische + logische Zugriffskontrolle ab, aber HR-Aspekte
+      (Background-Checks, NDA, Onboarding/Offboarding) sind NICHT explizit in
+      DORA — diese müssen über MaRisk AT 7.1 oder ergänzende Personalrichtlinien
+      nachgewiesen werden. NIS2 21(2)(i) erwartet diese Aspekte explizit.
+    audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, physische Zutrittsprotokolle Rechenzentrum.'
+
+  - source: '21.2.i'
+    target: 'DORA-9.4'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -206,7 +624,64 @@ mappings:
     audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, physische Zutrittsprotokolle Rechenzentrum.'
 
   - source: '21.2.j'
-    target: 'DORA.Art.9'
+    target: 'DORA-9.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(j) "Multi-Faktor-Authentifizierung oder kontinuierliche
+      Authentifizierung, gesicherte Sprach-, Video- und Textkommunikation und
+      gesicherte Notfallkommunikation" wird durch DORA Art. 9(4)(d) (strong
+      authentication) und RTS zu IDS/Identitäts-Management konkretisiert.
+      DORA fordert MFA für alle privilegierten Zugriffe explizit.
+    gap_warning: |
+      DORA fordert MFA primär für privilegierte Konten (RTS Art. 21); NIS2
+      21(2)(j) erwartet MFA breiter ("wo angemessen"). Notfall-Kommunikation
+      ist in DORA Art. 11(6) (BC-Communication) abgedeckt, aber nur indirekt.
+      Wer DORA Art. 9 + Art. 11(6) erfüllt, deckt NIS2 21(2)(j) ab — Achtung
+      auf Out-of-Band-Notfallkanäle.
+    cross_refs: ['DORA.Art.11.6']
+    audit_evidence_hint: 'MFA-Coverage-Report (privilegierte vs. Standard-Accounts), Notfall-Kommunikationsplan mit Out-of-Band-Kanälen, Test-Protokolle der Notfall-Kommunikation.'
+
+  - source: '21.2.j'
+    target: 'DORA-9.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(j) "Multi-Faktor-Authentifizierung oder kontinuierliche
+      Authentifizierung, gesicherte Sprach-, Video- und Textkommunikation und
+      gesicherte Notfallkommunikation" wird durch DORA Art. 9(4)(d) (strong
+      authentication) und RTS zu IDS/Identitäts-Management konkretisiert.
+      DORA fordert MFA für alle privilegierten Zugriffe explizit.
+    gap_warning: |
+      DORA fordert MFA primär für privilegierte Konten (RTS Art. 21); NIS2
+      21(2)(j) erwartet MFA breiter ("wo angemessen"). Notfall-Kommunikation
+      ist in DORA Art. 11(6) (BC-Communication) abgedeckt, aber nur indirekt.
+      Wer DORA Art. 9 + Art. 11(6) erfüllt, deckt NIS2 21(2)(j) ab — Achtung
+      auf Out-of-Band-Notfallkanäle.
+    cross_refs: ['DORA.Art.11.6']
+    audit_evidence_hint: 'MFA-Coverage-Report (privilegierte vs. Standard-Accounts), Notfall-Kommunikationsplan mit Out-of-Band-Kanälen, Test-Protokolle der Notfall-Kommunikation.'
+
+  - source: '21.2.j'
+    target: 'DORA-9.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(j) "Multi-Faktor-Authentifizierung oder kontinuierliche
+      Authentifizierung, gesicherte Sprach-, Video- und Textkommunikation und
+      gesicherte Notfallkommunikation" wird durch DORA Art. 9(4)(d) (strong
+      authentication) und RTS zu IDS/Identitäts-Management konkretisiert.
+      DORA fordert MFA für alle privilegierten Zugriffe explizit.
+    gap_warning: |
+      DORA fordert MFA primär für privilegierte Konten (RTS Art. 21); NIS2
+      21(2)(j) erwartet MFA breiter ("wo angemessen"). Notfall-Kommunikation
+      ist in DORA Art. 11(6) (BC-Communication) abgedeckt, aber nur indirekt.
+      Wer DORA Art. 9 + Art. 11(6) erfüllt, deckt NIS2 21(2)(j) ab — Achtung
+      auf Out-of-Band-Notfallkanäle.
+    cross_refs: ['DORA.Art.11.6']
+    audit_evidence_hint: 'MFA-Coverage-Report (privilegierte vs. Standard-Accounts), Notfall-Kommunikationsplan mit Out-of-Band-Kanälen, Test-Protokolle der Notfall-Kommunikation.'
+
+  - source: '21.2.j'
+    target: 'DORA-9.4'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
