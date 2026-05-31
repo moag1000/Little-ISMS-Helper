@@ -1,4 +1,5 @@
 import './stimulus_bootstrap.js';
+import { applyAuroraDefaults } from './chart-theme.js';
 
 // FairyAurora v4.0 — Alva Companion Event Bus (singleton, exposes window.alvaBus)
 import './js/alva-bus.js';
@@ -44,6 +45,12 @@ Chart.register(
     Title, Tooltip, Legend, Filler, SubTitle, Colors
 );
 window.Chart = Chart;
+
+// Apply the Aurora theme defaults to the shared global ONCE here, so EVERY
+// chart — Stimulus-controller AND in-body inline scripts (mapping_quality,
+// portfolio, analytics) — inherits Aurora fonts / grid / axis colours, not
+// Chart.js' raw gray defaults. Controllers may still re-apply on theme:changed.
+applyAuroraDefaults(Chart);
 
 // Initialize Bootstrap tooltips on page load and Turbo navigation
 function initTooltips() {

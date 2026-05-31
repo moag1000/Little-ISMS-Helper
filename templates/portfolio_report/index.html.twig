@@ -108,6 +108,10 @@
             const Chart = window.Chart;
             const el = document.getElementById('reuseTrendChart');
             if (el) {
+                // Canvas can't parse `var(--token)` — resolve Aurora tokens to
+                // computed colours first (raw var() strings render as fallbacks).
+                const _cs = getComputedStyle(document.documentElement);
+                const _t = (name, fb) => (_cs.getPropertyValue(name).trim() || fb);
                 const labels = JSON.parse(el.dataset.labels);
                 const fte = JSON.parse(el.dataset.fte);
                 const pct = JSON.parse(el.dataset.pct);
@@ -117,9 +121,9 @@
                         labels: labels,
                         datasets: [
                             { label: '{{ 'portfolio_report.reuse_trend.fte_label'|trans({}, 'portfolio_report') }}',
-                              data: fte, yAxisID: 'y1', borderColor: 'var(--success)', backgroundColor: 'var(--success-glow)', tension: 0.3, fill: true },
+                              data: fte, yAxisID: 'y1', borderColor: _t('--success', '#28a745'), backgroundColor: _t('--success-glow', 'rgba(40,167,69,0.15)'), tension: 0.3, fill: true },
                             { label: '{{ 'portfolio_report.reuse_trend.pct_label'|trans({}, 'portfolio_report') }}',
-                              data: pct, yAxisID: 'y2', borderColor: 'var(--primary)', borderDash: [4,4], tension: 0.3 }
+                              data: pct, yAxisID: 'y2', borderColor: _t('--primary', '#0284c7'), borderDash: [4,4], tension: 0.3 }
                         ]
                     },
                     options: {
