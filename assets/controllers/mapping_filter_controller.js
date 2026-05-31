@@ -52,12 +52,33 @@ export default class extends Controller {
 
         let visible = 0;
         this.rowTargets.forEach(row => {
+            // Detail rows (expandable sub-rows) are controlled by the expand button,
+            // not the filter counter. When their parent is hidden by filter, hide them too.
+            if (row.dataset.detailRow === 'true') {
+                // Will be handled in a second pass below.
+                return;
+            }
             const d = row.dataset;
             const ok =
                 (q === '' || (d.search || '').includes(q)) &&
                 this.constructor.SELECT_FACETS.every(f => active[f] === '' || d[f] === active[f]);
             row.style.display = ok ? '' : 'none';
             if (ok) visible++;
+
+            // If the main row is hidden, collapse its associated detail row too.
+            const detailId = row.querySelector('[aria-controls]')?.getAttribute('aria-controls');
+            if (detailId) {
+                const detailRow = document.getElementById(detailId);
+                if (detailRow && !ok) {
+                    detailRow.hidden = true;
+                    const btn = row.querySelector('.mapping-expand-btn');
+                    if (btn) {
+                        btn.setAttribute('aria-expanded', 'false');
+                        const chevron = btn.querySelector('.chevron-icon');
+                        if (chevron) chevron.style.transform = '';
+                    }
+                }
+            }
         });
 
         if (this.hasCountTarget) this.countTarget.textContent = visible;
