@@ -36,5 +36,5 @@ src/Service/ComplianceFrameworkLoaderService.php:LOC=631 deps=31
 src/Service/ScheduledReportService.php:LOC=619 deps=22
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=457 deps=17
 src/Service/DataIntegrityService.php:LOC=438 deps=34
-src/Service/ComplianceLoaderFixerService.php:LOC=256 deps=28
+src/Service/ComplianceLoaderFixerService.php:LOC=263 deps=27
 src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=18
