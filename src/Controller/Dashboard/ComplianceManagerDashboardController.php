@@ -193,7 +193,9 @@ class ComplianceManagerDashboardController extends AbstractController
         $gapRequirements = [];
 
         if ($framework !== null) {
-            $requirements = $this->requirementRepo->findByFramework($framework);
+            // Top-level only — sub-requirements roll up via their parent and must
+            // not be counted separately in the covered/gap coverage breakdown.
+            $requirements = $this->requirementRepo->findTopLevelByFramework($framework);
             foreach ($requirements as $req) {
                 $category = $req->getCategory() ?? '';
                 // Filter by section when provided; empty section shows all
@@ -237,7 +239,7 @@ class ComplianceManagerDashboardController extends AbstractController
         // Collect distinct sections for the framework (for section selector)
         $availableSections = [];
         if ($framework !== null) {
-            foreach ($this->requirementRepo->findByFramework($framework) as $req) {
+            foreach ($this->requirementRepo->findTopLevelByFramework($framework) as $req) {
                 $cat = $req->getCategory();
                 if ($cat !== null && !in_array($cat, $availableSections, true)) {
                     $availableSections[] = $cat;

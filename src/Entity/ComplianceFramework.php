@@ -344,18 +344,29 @@ class ComplianceFramework
      */
     public function getCompliancePercentage(): float
     {
-        $total = $this->requirements->count();
-        if ($total === 0) {
-            return 0.0;
-        }
-
+        // Denominator = top-level requirements only. The EU-mapping decomposition
+        // import added ~5000 sub_requirements (parentRequirement set); these roll
+        // up via their parent and must NOT dilute the compliance %.
+        $total = 0;
         $fulfilled = 0;
         foreach ($this->requirements as $req) {
             /** @var \App\Entity\ComplianceRequirement $req */
+            // Top-level only: no parent AND a core/detailed type. Sub-requirements
+            // (parent set, or requirementType='sub_requirement') are excluded.
+            if ($req->getParentRequirement() !== null
+                || !in_array($req->getRequirementType(), ['core', 'detailed'], true)) {
+                continue;
+            }
+            $total++;
+
             $status = method_exists($req, 'getStatus') ? $req->getStatus() : null;
             if (in_array($status, ['fulfilled', 'compliant'], true)) {
                 $fulfilled++;
             }
+        }
+
+        if ($total === 0) {
+            return 0.0;
         }
 
         return round(($fulfilled / $total) * 100, 1);

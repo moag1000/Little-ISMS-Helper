@@ -177,7 +177,7 @@ class ComplianceAnalyticsService
             'frameworks' => array_map(fn($f) => [
                 'code' => $f->getCode(),
                 'name' => $f->getName(),
-                'requirement_count' => count($this->requirementRepository->findByFramework($f)),
+                'requirement_count' => $this->requirementRepository->countTopLevelByFramework($f),
             ], $frameworks),
         ];
     }

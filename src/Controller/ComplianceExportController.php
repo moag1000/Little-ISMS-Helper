@@ -356,7 +356,7 @@ class ComplianceExportController extends AbstractController
 
         $tenant = $this->tenantContext->getCurrentTenant();
         $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
-        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findTopLevelByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
 
         // Analyze each gap
@@ -496,7 +496,7 @@ class ComplianceExportController extends AbstractController
 
         $tenant = $this->tenantContext->getCurrentTenant();
         $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
-        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findTopLevelByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
 
         // Analyze gaps
@@ -627,7 +627,7 @@ class ComplianceExportController extends AbstractController
         // Get current tenant for fulfillment data
         $tenant = $this->tenantContext->getCurrentTenant();
         $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
-        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findTopLevelByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
         if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');

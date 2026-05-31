@@ -54,6 +54,12 @@ final class GuidedTourService
      * zur Auto-Detect-Rollentour angeboten (ROLE_USER, nicht ROLE_AUDITOR).
      */
     public const TOUR_MRIS = 'mris';
+    /**
+     * Topic-Tour MAPPING — themenbezogen, nicht rollenbezogen. Erklärt
+     * Junior-ISBs (IT-/9001-Hintergrund) das Mapping-Konzept: Brücke,
+     * Data-Reuse/Vererbung, Coverage, Confidence/MQS, Lifecycle.
+     */
+    public const TOUR_MAPPING = 'mapping';
 
     /** @var list<string> */
     public const ALL_TOURS = [
@@ -64,6 +70,7 @@ final class GuidedTourService
         self::TOUR_RISK_OWNER,
         self::TOUR_AUDITOR,
         self::TOUR_MRIS,
+        self::TOUR_MAPPING,
     ];
 
     public function __construct(
@@ -168,6 +175,7 @@ final class GuidedTourService
             self::TOUR_RISK_OWNER => $this->riskOwnerSteps(),
             self::TOUR_AUDITOR => $this->auditorSteps(),
             self::TOUR_MRIS => $this->mrisSteps(),
+            self::TOUR_MAPPING => $this->mappingSteps(),
             default => [],
         };
 
@@ -402,6 +410,70 @@ final class GuidedTourService
     }
 
     /**
+     * MAPPING-Topic-Tour — themenbezogen, nicht rollenbezogen.
+     * 6 Stopps, die das Mapping-Konzept für Junior-ISBs (IT-/9001-Hintergrund)
+     * von Grund auf erklären: Was ist ein Mapping → Data-Reuse/Vererbung →
+     * Coverage lesen → Confidence vs. MQS → Lifecycle (draft→published) →
+     * Wo nutze ich es. Alle Stopps sind hinter dem `compliance`-Modul gegated.
+     *
+     * Selektoren zeigen auf `data-tour`-Anker in den Mapping-Templates; bei
+     * fehlendem Anker fällt der Controller auf zentriertes Popover zurück.
+     *
+     * @return list<array{id: string, module?: string, icon: string|null, target: string|null, title_key: string, body_key: string, url: string|null, placement: string}>
+     */
+    private function mappingSteps(): array
+    {
+        $hub = $this->urlFor('app_compliance_mapping_hub');
+        $transitive = $this->urlFor('app_compliance_transitive');
+        $quality = $this->urlFor('app_mapping_quality_dashboard');
+
+        return [
+            [
+                'id' => 'what-is-mapping', 'module' => 'compliance', 'icon' => 'nav-process',
+                'target' => '[data-tour="mapping-intro"]',
+                'title_key' => 'guided_tour.mapping.step.what_is_mapping.title',
+                'body_key' => 'guided_tour.mapping.step.what_is_mapping.body',
+                'url' => $hub, 'placement' => 'bottom',
+            ],
+            [
+                'id' => 'why-reuse', 'module' => 'compliance', 'icon' => 'util-refresh',
+                'target' => '[data-tour="mapping-reuse"]',
+                'title_key' => 'guided_tour.mapping.step.why_reuse.title',
+                'body_key' => 'guided_tour.mapping.step.why_reuse.body',
+                'url' => $hub, 'placement' => 'center',
+            ],
+            [
+                'id' => 'read-coverage', 'module' => 'compliance', 'icon' => 'nav-grid',
+                'target' => '[data-tour="mapping-coverage"]',
+                'title_key' => 'guided_tour.mapping.step.read_coverage.title',
+                'body_key' => 'guided_tour.mapping.step.read_coverage.body',
+                'url' => $transitive, 'placement' => 'top',
+            ],
+            [
+                'id' => 'quality', 'module' => 'compliance', 'icon' => 'ui-check',
+                'target' => '[data-tour="mapping-quality"]',
+                'title_key' => 'guided_tour.mapping.step.quality.title',
+                'body_key' => 'guided_tour.mapping.step.quality.body',
+                'url' => $quality, 'placement' => 'center',
+            ],
+            [
+                'id' => 'lifecycle', 'module' => 'compliance', 'icon' => 'nav-workflow',
+                'target' => '[data-tour="mapping-lifecycle"]',
+                'title_key' => 'guided_tour.mapping.step.lifecycle.title',
+                'body_key' => 'guided_tour.mapping.step.lifecycle.body',
+                'url' => $quality, 'placement' => 'center',
+            ],
+            [
+                'id' => 'where-used', 'module' => 'compliance', 'icon' => 'nav-book',
+                'target' => '[data-tour="mapping-where-used"]',
+                'title_key' => 'guided_tour.mapping.step.where_used.title',
+                'body_key' => 'guided_tour.mapping.step.where_used.body',
+                'url' => $hub, 'placement' => 'center',
+            ],
+        ];
+    }
+
+    /**
      * Prüft ob ein User für die MRIS-Topic-Tour-Auto-Suggestion berechtigt
      * ist. Nur ROLE_USER (Standard-User), explizit nicht ROLE_AUDITOR
      * (zu viele Re-Suggestions im Read-only-Workflow).
@@ -436,6 +508,7 @@ final class GuidedTourService
                 self::TOUR_RISK_OWNER => 1,
                 self::TOUR_AUDITOR => 2,
                 self::TOUR_MRIS => 6,
+                self::TOUR_MAPPING => 4,
                 default => 3,
             },
         ];

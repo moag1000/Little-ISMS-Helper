@@ -12,7 +12,7 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-start mb-3">
+    <div class="d-flex justify-content-between align-items-start mb-3" data-tour="mapping-intro">
         <div>
             <h1 class="h3 mb-1">
                 <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
@@ -20,9 +20,24 @@
             </h1>
             <p class="text-muted mb-0">{{ 'compliance.mapping.hub.subtitle'|trans({}, 'compliance') }}</p>
         </div>
+        {# Mapping-Tour starten — Topic-Tour für Junior-ISBs (IT/9001-Hintergrund) #}
+        <button type="button"
+                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm flex-shrink-0"
+                data-action="click->guided-tour#start"
+                data-guided-tour-role-param="mapping"
+                data-turbo="false">
+            <i class="fa-icon fa-icon--ui-stars" aria-hidden="true"></i>
+            {{ 'compliance.mapping.tour.start'|trans({}, 'compliance') }}
+        </button>
     </div>
 
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'mapping' } %}
+
+    {# Tenant-globale Alva-Hints für die Mapping-Hub-Seite #}
+    {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+    {% for _h in alva_hints('app_compliance_mapping_hub') %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
 
     {# KPI-Strip — 8H.4: migrated to _card.html.twig component #}
     <div class="row g-2 mb-4">
@@ -158,8 +173,8 @@
             </a>
         </div>
 
-        <div class="col-md-6 col-lg-4">
-            <a href="{{ path('app_data_reuse_hub') }}" class="text-decoration-none">
+        <div class="col-md-6 col-lg-4" data-tour="mapping-reuse">
+            <a href="{{ path('app_data_reuse_hub') }}" class="text-decoration-none" data-tour="mapping-where-used">
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
                         <div class="h5">

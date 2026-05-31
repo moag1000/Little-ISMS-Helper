@@ -185,6 +185,12 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
                 ->setMappingRationale('E2E test mapping: ISO27001 → NIS2 inheritance candidate.')
                 ->setSource('e2e_reuse_journey_test')
                 ->setVersion(1)
+                // Only operational (approved/published) mappings drive inheritance
+                // suggestions — draft/review/deprecated are excluded by
+                // findMappingsToRequirement()'s operational-state filter. The
+                // ~7000 imported decomposition drafts must NOT auto-inherit
+                // before review, so the test fixtures must be explicitly approved.
+                ->setLifecycleState('approved')
                 ->setValidFrom(new DateTimeImmutable('-1 day'));
             $this->em->persist($mapping);
             $mappingsCreated++;
