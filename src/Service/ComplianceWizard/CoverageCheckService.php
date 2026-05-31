@@ -124,12 +124,24 @@ final class CoverageCheckService
                 : [];
         }
 
-        $totalControls = count($controls);
+        $totalControls = 0;
+        $excludedControls = 0;
         $implementedControls = 0;
         $partialControls = 0;
         $notImplemented = [];
 
         foreach ($controls as $control) {
+            // Controls explicitly marked not-applicable (SoA "Ausschluss") are a
+            // documented, justified exclusion — NOT an implementation gap. They
+            // must be dropped from both the denominator and the not-implemented
+            // list, otherwise a fully-handled SoA (only implemented + excluded)
+            // wrongly scores ~50% with phantom "not implemented" gaps.
+            if ($control->isApplicable() === false) {
+                $excludedControls++;
+                continue;
+            }
+
+            $totalControls++;
             $status = $control->getImplementationStatus();
             $percentage = $control->getImplementationPercentage() ?? 0;
 
@@ -145,9 +157,11 @@ final class CoverageCheckService
             }
         }
 
+        // No applicable controls: if everything was excluded (Ausschluss) the
+        // scope is fully handled (100%); only a genuinely empty control set is 0.
         $score = $totalControls > 0
             ? round((($implementedControls + ($partialControls * 0.5)) / $totalControls) * 100, 1)
-            : 0;
+            : ($excludedControls > 0 ? 100.0 : 0);
 
         $gap = null;
         if ($score < 100) {
@@ -169,6 +183,7 @@ final class CoverageCheckService
                 'implemented' => $implementedControls,
                 'partial' => $partialControls,
                 'not_implemented' => count($notImplemented),
+                'excluded' => $excludedControls,
             ],
             'gap' => $gap,
         ];

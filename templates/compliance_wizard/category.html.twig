@@ -134,7 +134,7 @@
                                     {% block alert_body %}
                                         <strong>{{ item.gap.title|trans({}, 'wizard') }}</strong>
                                         {% if item.gap.description is defined %}
-                                            <br>{{ item.gap.description|trans({}, 'wizard') }}
+                                            <br>{{ item.gap.description|trans(item.gap.description_params|default({}), 'wizard') }}
                                         {% endif %}
                                     {% endblock %}
                                 {% endembed %}
@@ -202,7 +202,7 @@
                             {% include '_components/_badge.html.twig' with { variant: priority_variant, content: gap.priority|default('medium') } %}
                         </div>
                         {% if gap.description is defined %}
-                            <p class="text-muted small mb-2">{{ gap.description|trans({}, 'wizard') }}</p>
+                            <p class="text-muted small mb-2">{{ gap.description|trans(gap.description_params|default({}), 'wizard') }}</p>
                         {% endif %}
                         {% if gap.action is defined %}
                             <p class="small mb-2">
