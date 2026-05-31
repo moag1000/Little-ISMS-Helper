@@ -1176,6 +1176,11 @@ admin:
                 gxp: 'Hersteller, Distributoren oder Service-Provider von Arzneimitteln, Medizinprodukten oder deren IT-Systemen (GMP-/GxP-regulierte Branchen).'
                 bdsg: 'Verantwortliche oder Auftragsverarbeiter mit Sitz oder PII-Verarbeitung in Deutschland.'
                 eu_ai_act: 'Anbieter oder Deployer von KI-Systemen, die als High-Risk nach EU AI Act Anhang III klassifiziert sind.'
+                iso42001: 'Organisationen, die KI-Systeme entwickeln, bereitstellen oder nutzen und ein zertifizierbares KI-Managementsystem aufbauen wollen (ergänzt EU AI Act).'
+                iso27017: 'Cloud-Service-Anbieter oder -Nutzer, die cloud-spezifische Sicherheitscontrols zusätzlich zu ISO 27001/27002 nachweisen wollen.'
+                iso27018: 'Public-Cloud-Anbieter, die personenbezogene Daten (PII) im Auftrag verarbeiten und Datenschutz-Controls nachweisen müssen.'
+                eu_cra: 'Hersteller, Importeure oder Händler von Produkten mit digitalen Elementen (Hardware/Software) mit EU-Marktzugang.'
+                pci_dss: 'Organisationen, die Karteninhaberdaten speichern, verarbeiten oder übertragen (Händler, Acquirer, Payment-Provider).'
 
 fulfillment:
     field:
