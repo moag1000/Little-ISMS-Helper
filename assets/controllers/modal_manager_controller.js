@@ -27,7 +27,12 @@ export default class extends Controller {
             ...document.querySelectorAll('.command-palette-modal'),
             ...document.querySelectorAll('.keyboard-shortcuts-modal'),
             ...document.querySelectorAll('.global-search-modal'),
-            ...document.querySelectorAll('.preferences-modal'),
+            // NOTE: .preferences-modal is intentionally NOT force-hidden here.
+            // It was migrated to the fa-modal controller, which owns visibility
+            // via the `.is-open` class. Force-hiding it (inline display:none +
+            // d-none) silently won over fa-modal's `.is-open` (Bootstrap d-none
+            // is !important), so opening it only locked body scroll while the
+            // dialog stayed invisible. fa-modal handles its own hide/show/escape.
             ...document.querySelectorAll('.quick-view-modal'),
             ...document.querySelectorAll('.notification-panel')
         ];
@@ -100,11 +105,7 @@ export default class extends Controller {
             modals.push(globalSearch);
         }
 
-        // Preferences
-        const preferences = document.querySelector('.preferences-modal');
-        if (preferences && isVisible(preferences)) {
-            modals.push(preferences);
-        }
+        // Preferences is owned by the fa-modal controller (its own escape/close).
 
         // Quick View
         const quickView = document.querySelector('.quick-view-modal');
