@@ -17,6 +17,97 @@
 {% set current_route = app.request.attributes.get('_route') %}
 {% set _locale = app.request.locale %}
 
+{# ─── nav-active resolver ──────────────────────────────────────────────────
+ # Single source of truth for which L1 main area is highlighted. ORDERED,
+ # most-specific-first, FIRST MATCH WINS — derived 1:1 from the flyout-panel
+ # membership in _mega_menu_panel_only.html.twig. Replaces the previous 11
+ # independent `starts with` blocks, which (a) double-highlighted (e.g.
+ # app_audit_log_* lit operations AND compliance) and (b) left ~24 routes
+ # highlighting nothing (prefix in no block). Keep ordered: a more specific
+ # prefix (app_audit_log_) MUST precede a broader one (app_audit_); the persona
+ # dashboards (app_dashboard_*) precede the generic dashboard area (app_dashboard).
+ # When adding a flyout link, add its route prefix here in the right position.
+ #}
+{% set nav_active = null %}
+{% set _nav_map = [
+    { p: 'app_dashboard_board', c: 'compliance' },
+    { p: 'app_dashboard_', c: 'cockpit' },
+    { p: 'app_portfolio_', c: 'portfolio' },
+    { p: 'app_group_report_', c: 'portfolio' },
+    { p: 'app_analytics_', c: 'dashboard' },
+    { p: 'analytics_fte_', c: 'dashboard' },
+    { p: 'app_management_reports', c: 'dashboard' },
+    { p: 'app_home', c: 'dashboard' },
+    { p: 'app_dashboard', c: 'dashboard' },
+    { p: 'app_context_', c: 'isms-core' },
+    { p: 'app_interested_party_', c: 'isms-core' },
+    { p: 'app_soa_', c: 'isms-core' },
+    { p: 'app_objective_', c: 'isms-core' },
+    { p: 'app_effectiveness_monitor', c: 'isms-core' },
+    { p: 'app_bulk_import_', c: 'isms-core' },
+    { p: 'app_asset_', c: 'assets-risk' },
+    { p: 'app_supplier_', c: 'assets-risk' },
+    { p: 'app_location_', c: 'assets-risk' },
+    { p: 'app_person_', c: 'assets-risk' },
+    { p: 'app_risk_', c: 'assets-risk' },
+    { p: 'app_business_process_', c: 'bcm' },
+    { p: 'app_bc_plan_', c: 'bcm' },
+    { p: 'app_bc_exercise_', c: 'bcm' },
+    { p: 'app_crisis_team_', c: 'bcm' },
+    { p: 'bcm_exercise_log_', c: 'bcm' },
+    { p: 'app_processing_activity_', c: 'privacy' },
+    { p: 'app_dpia_', c: 'privacy' },
+    { p: 'app_data_breach_', c: 'privacy' },
+    { p: 'app_consent_', c: 'privacy' },
+    { p: 'app_data_subject_request_', c: 'privacy' },
+    { p: 'app_vvt_', c: 'privacy' },
+    { p: 'app_authority_notification_', c: 'privacy' },
+    { p: 'authority_hub_', c: 'privacy' },
+    { p: 'nis2_registration_', c: 'privacy' },
+    { p: 'dora_roi_', c: 'privacy' },
+    { p: 'app_audit_log_', c: 'operations' },
+    { p: 'app_document_', c: 'operations' },
+    { p: 'app_change_request_', c: 'operations' },
+    { p: 'app_workflow_', c: 'operations' },
+    { p: 'app_incident_', c: 'operations' },
+    { p: 'app_vulnerability_', c: 'operations' },
+    { p: 'app_patch_', c: 'operations' },
+    { p: 'app_policy_ack_', c: 'operations' },
+    { p: 'app_four_eyes_', c: 'operations' },
+    { p: 'app_threat_intelligence_', c: 'operations' },
+    { p: 'app_alva_hint_', c: 'operations' },
+    { p: 'app_notification_center', c: 'operations' },
+    { p: 'admin_notification_', c: 'operations' },
+    { p: 'admin_workflow_overlay_', c: 'operations' },
+    { p: 'app_audit_', c: 'compliance' },
+    { p: 'app_training_', c: 'compliance' },
+    { p: 'app_management_review_', c: 'compliance' },
+    { p: 'app_compliance_', c: 'compliance' },
+    { p: 'app_mapping_quality_', c: 'compliance' },
+    { p: 'app_nis2_', c: 'compliance' },
+    { p: 'app_corrective_action_', c: 'compliance' },
+    { p: 'app_data_reuse_', c: 'compliance' },
+    { p: 'app_industry_baseline_', c: 'compliance' },
+    { p: 'app_evidence_', c: 'compliance' },
+    { p: 'app_policy_wizard_', c: 'compliance' },
+    { p: 'app_bsi_grundschutz_', c: 'compliance' },
+    { p: 'app_prototype_protection_', c: 'compliance' },
+    { p: 'app_tisax_', c: 'compliance' },
+    { p: 'app_dora_', c: 'compliance' },
+    { p: 'app_mris_', c: 'compliance' },
+    { p: 'app_ai_agents_', c: 'compliance' },
+    { p: 'app_certification_bundle_', c: 'compliance' },
+    { p: 'report_builder_', c: 'compliance' },
+    { p: 'app_scheduled_report_', c: 'compliance' },
+    { p: 'user_management_', c: 'admin' },
+    { p: 'role_management_', c: 'admin' },
+    { p: 'tenant_management_', c: 'admin' },
+    { p: 'admin_', c: 'admin' },
+    { p: 'app_my_day', c: 'help' },
+    { p: 'app_help_', c: 'help' },
+] %}
+{% for _m in _nav_map %}{% if nav_active is null and (current_route == _m.p or current_route starts with _m.p) %}{% set nav_active = _m.c %}{% endif %}{% endfor %}
+
 {# Phase 4.4: locale-aware URL for the live-counts endpoint (locale-prefixed route) #}
 {% set _live_counts_url = path('api_live_counts') %}
 
@@ -68,7 +159,7 @@
 
     {# Mein Cockpit — Persona-Dashboard-Eingang #}
     {% if is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('PERSONA_DPO') or is_granted('PERSONA_COMPLIANCE') or is_granted('PERSONA_ISB') or is_granted('PERSONA_BCM') or is_granted('ROLE_AUDITOR') %}
-    <button class="sb-link {% if current_route starts with 'app_dashboard_' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'cockpit' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -86,7 +177,7 @@
     {# Portfolio — multi-tenant only #}
     {% set _is_corporate = app.user and app.user.tenant and app.user.tenant.isPartOfCorporateStructure() %}
     {% if _is_corporate and (is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_ADMIN')) %}
-    <button class="sb-link {% if current_route starts with 'app_portfolio_' or current_route starts with 'app_group_report_' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'portfolio' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -102,7 +193,7 @@
     {% endif %}
 
     {# Dashboard #}
-    <button class="sb-link {% if current_route starts with 'app_home' or current_route starts with 'app_dashboard' or current_route starts with 'app_analytics_' or current_route starts with 'analytics_fte_' or current_route starts with 'app_management_reports' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'dashboard' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -118,7 +209,7 @@
 
     {# ISMS Kern #}
     {% if is_module_active('core') or is_module_active('controls') %}
-    <button class="sb-link {% if current_route starts with 'app_context_' or current_route starts with 'app_interested_party_' or current_route starts with 'app_soa_' or current_route starts with 'app_objective_' or current_route starts with 'app_effectiveness_monitor' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'isms-core' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -135,7 +226,7 @@
 
     {# Assets & Risiken #}
     {% if is_module_active('assets') or is_module_active('risks') %}
-    <button class="sb-link {% if current_route starts with 'app_asset_' or current_route starts with 'app_supplier_' or current_route starts with 'app_location_' or current_route starts with 'app_person_' or current_route starts with 'app_risk_' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'assets-risk' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -152,7 +243,7 @@
 
     {# BCM #}
     {% if is_module_active('bcm') %}
-    <button class="sb-link {% if current_route starts with 'app_business_process_' or current_route starts with 'app_bc_plan_' or current_route starts with 'app_bc_exercise_' or current_route starts with 'app_crisis_team_' or current_route starts with 'bcm_exercise_log_' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'bcm' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -169,7 +260,7 @@
 
     {# Datenschutz & DSGVO #}
     {% if is_module_active('privacy') %}
-    <button class="sb-link {% if current_route starts with 'app_processing_activity_' or current_route starts with 'app_dpia_' or current_route starts with 'app_data_breach_' or current_route starts with 'app_consent_' or current_route starts with 'app_data_subject_request_' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'privacy' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -186,7 +277,7 @@
 
     {# Tägliche Arbeit #}
     {% if is_module_active('core') or is_module_active('incidents') %}
-    <button class="sb-link {% if current_route starts with 'app_document_' or current_route starts with 'app_change_request_' or current_route starts with 'app_workflow_' or current_route starts with 'app_incident_' or current_route starts with 'app_vulnerability_' or current_route starts with 'app_patch_' or current_route starts with 'app_policy_ack_' or current_route starts with 'app_four_eyes_' or current_route starts with 'app_audit_log_' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'operations' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -203,7 +294,7 @@
 
     {# Compliance & Audits #}
     {% if is_module_active('audits') or is_module_active('compliance') %}
-    <button class="sb-link {% if current_route starts with 'app_audit_' or current_route starts with 'app_training_' or current_route starts with 'app_management_review_' or current_route starts with 'app_compliance_' or current_route starts with 'app_mapping_quality_' or current_route starts with 'app_nis2_' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'compliance' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -220,7 +311,7 @@
 
     {# Administration #}
     {% if is_granted('ROLE_ADMIN') %}
-    <button class="sb-link {% if current_route starts with 'admin_' or current_route starts with 'user_management_' or current_route starts with 'role_management_' or current_route starts with 'tenant_management_' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'admin' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
@@ -236,7 +327,7 @@
     {% endif %}
 
     {# Hilfe & Ressourcen #}
-    <button class="sb-link {% if current_route starts with 'app_help_' %}is-active{% endif %}"
+    <button class="sb-link {% if nav_active == 'help' %}is-active{% endif %}"
             type="button"
             role="menuitem"
             data-mega-menu-target="trigger"
