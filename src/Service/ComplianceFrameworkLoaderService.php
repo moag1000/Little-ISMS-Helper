@@ -25,7 +25,7 @@ use App\Command\LoadTkgRequirementsCommand;
 use App\Command\LoadGxpRequirementsCommand;
 use App\Command\LoadBdsgRequirementsCommand;
 use App\Command\LoadCisControlsRequirementsCommand;
-use App\Command\LoadEuAiActRequirementsCommand;
+use App\Command\LoadEuAiActFullCommand;
 use App\Command\LoadIso22301RequirementsCommand;
 use App\Command\LoadIso27005RequirementsCommand;
 use App\Command\LoadMrisRequirementsCommand;
@@ -65,7 +65,7 @@ final class ComplianceFrameworkLoaderService
         private readonly LoadGxpRequirementsCommand $loadGxpRequirementsCommand,
         private readonly LoadBdsgRequirementsCommand $loadBdsgRequirementsCommand,
         private readonly LoadCisControlsRequirementsCommand $loadCisControlsRequirementsCommand,
-        private readonly LoadEuAiActRequirementsCommand $loadEuAiActRequirementsCommand,
+        private readonly LoadEuAiActFullCommand $loadEuAiActFullCommand,
         private readonly LoadIso22301RequirementsCommand $loadIso22301RequirementsCommand,
         private readonly LoadIso27005RequirementsCommand $loadIso27005RequirementsCommand,
         private readonly LoadNis2UmsuCGRequirementsCommand $loadNis2UmsuCGRequirementsCommand,
@@ -385,7 +385,7 @@ final class ComplianceFrameworkLoaderService
             [
                 'code' => 'EU-AI-ACT',
                 'name' => 'EU AI Act (Regulation (EU) 2024/1689)',
-                'description' => 'Risk-based AI regulation with obligations for Providers/Deployers of High-Risk systems (~10 governance requirements)',
+                'description' => 'Risk-based AI regulation — full article-level catalogue (113 Articles + 13 Annexes, Art.X scheme) for Providers/Deployers of High-Risk and GPAI systems',
                 'industry' => 'all_sectors',
                 'regulatory_body' => 'European Union',
                 'mandatory' => false,
@@ -528,7 +528,12 @@ final class ComplianceFrameworkLoaderService
             'ISO-22301' => $this->loadIso22301RequirementsCommand,
             'ISO27005' => $this->loadIso27005RequirementsCommand,
             'BDSG' => $this->loadBdsgRequirementsCommand,
-            'EU-AI-ACT' => $this->loadEuAiActRequirementsCommand,
+            // Full article-level catalogue (113 articles + 13 annexes, Art.X
+            // scheme) replaces the 10-entry thematic AIACT-n loader. The Art.X
+            // scheme matches every eu-ai-act library mapping/decomposition, so
+            // those mappings stop being orphaned. Existing AIACT-1..10 rows are
+            // re-keyed to their Art.X equivalents by the migration.
+            'EU-AI-ACT' => $this->loadEuAiActFullCommand,
             'NIS2UMSUCG' => $this->loadNis2UmsuCGRequirementsCommand,
             'MRIS-v1.5' => $this->loadMrisRequirementsCommand,
             'ISO42001' => $this->loadIso42001FullCommand,
