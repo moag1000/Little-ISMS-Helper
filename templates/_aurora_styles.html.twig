@@ -1,0 +1,21 @@
+{# Aurora-Layer als EINZELNE parallele <link> statt @import-Barrel.
+   Grund: assets/styles.css ist ein 27-fach-@import-File. Als ein <link> geladen
+   entsteht ein serieller @import-Wasserfall (Browser entdeckt Layer erst nach
+   Parse von styles.css) → FOUC. 27 parallele render-blocking <link> laden
+   gleichzeitig → voll gestyltes First-Paint, kein Flash.
+   ⚠ Reihenfolge MUSS assets/styles.css spiegeln (Cascade: Token-Layer zuerst).
+   Beim Hinzufügen eines @imports dort: hier den Eintrag spiegeln.
+   Eingebunden von: base.html.twig · base_auth.html.twig · setup/_layout.html.twig #}
+{% for css in [
+    'styles/fairy-aurora.css', 'styles/fairy-aurora-icons.css', 'styles/app.css',
+    'styles/components.css', 'styles/ui-components.css', 'styles/mega-menu.css',
+    'styles/command-palette.css', 'styles/toast.css', 'styles/keyboard-shortcuts.css',
+    'styles/skeleton.css', 'styles/bulk-actions.css', 'styles/premium.css',
+    'styles/dark-mode.css', 'styles/analytics.css', 'styles/guided-tour.css',
+    'styles/fairy-aurora-components.css', 'styles/alva.css', 'styles/alva-dock.css',
+    'styles/fairy-aurora-responsive.css', 'styles/fairy-aurora-edge.css',
+    'styles/fairy-aurora-print.css', 'styles/admin-panel.css', 'styles/policy-wizard-mobile.css',
+    'styles/policy-doc.css', 'styles/report-doc.css', 'styles/gdpr-wizard.css', 'styles/fa-modal.css'
+] %}
+<link href="{{ asset(css) }}" rel="stylesheet">
+{% endfor %}
