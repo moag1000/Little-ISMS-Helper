@@ -1,0 +1,1052 @@
+[
+  {
+    "source": "BC-01",
+    "target": "GC-01",
+    "relationship": "equivalent",
+    "rationale": "Renumbered BC->GC; title extended to explicitly list multi-region/zone/partition specificity; content equivalent."
+  },
+  {
+    "source": "BC-02",
+    "target": "GC-02",
+    "relationship": "equivalent",
+    "rationale": "Renumbered BC->GC; availability and incident-handling transparency information unchanged in substance."
+  },
+  {
+    "source": "BC-03",
+    "target": "GC-03",
+    "relationship": "equivalent",
+    "rationale": "Renumbered BC->GC; recovery parameter transparency information unchanged in substance."
+  },
+  {
+    "source": "BC-04",
+    "target": "GC-04",
+    "relationship": "superset",
+    "rationale": "Renumbered BC->GC; title broadened from 'data centre availability' to 'approach to ensuring service availability', scope extended."
+  },
+  {
+    "source": "BC-05",
+    "target": "GC-05",
+    "relationship": "equivalent",
+    "rationale": "Renumbered BC->GC; government investigation request handling transparency information unchanged in substance."
+  },
+  {
+    "source": "BC-06",
+    "target": "GC-06",
+    "relationship": "equivalent",
+    "rationale": "Renumbered BC->GC; certifications/attestations transparency information unchanged in substance."
+  },
+  {
+    "source": "OIS-01",
+    "target": "OIS-01",
+    "relationship": "superset",
+    "rationale": "OIS-01 extends/refines OIS-01: Extended list of aspects included in the documentation by the context of the clo"
+  },
+  {
+    "source": "OIS-02",
+    "target": "OIS-02",
+    "relationship": "superset",
+    "rationale": "OIS-02 extends/refines OIS-02: Extended list of aspects to be described by the information security policy by t"
+  },
+  {
+    "source": "OIS-03",
+    "target": "OIS-03",
+    "relationship": "superset",
+    "rationale": "OIS-03 extends/refines OIS-03: Realigned criterion to center around the establishment, documentation and commun"
+  },
+  {
+    "source": "OIS-04",
+    "target": "OIS-04",
+    "relationship": "superset",
+    "rationale": "OIS-04 extends/refines OIS-04: Specified which data types the criterion applies to.\n\nExtended area to be covere"
+  },
+  {
+    "source": null,
+    "target": "OIS-05",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Threat Intelligence."
+  },
+  {
+    "source": "OIS-05",
+    "target": "OIS-06",
+    "relationship": "superset",
+    "rationale": "OIS-06 updates OIS-05: Removed former basic criterion. Instead, the former additional criterion was tur"
+  },
+  {
+    "source": "OIS-06",
+    "target": "OIS-07",
+    "relationship": "superset",
+    "rationale": "OIS-07 extends/refines OIS-06: Added requirement that risk assessment methodology enables reproducability and c"
+  },
+  {
+    "source": "OIS-07",
+    "target": "OIS-08",
+    "relationship": "subset",
+    "rationale": "OIS-08 narrows OIS-07: Specified which data types the criterion applies to.\n\nRemoved conflicting tasks"
+  },
+  {
+    "source": null,
+    "target": "OIS-09",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Application of the Risk Management Policy - Risk Treatment."
+  },
+  {
+    "source": null,
+    "target": "OIS-10",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Information Security in Project Management."
+  },
+  {
+    "source": "SP-01",
+    "target": "SP-01",
+    "relationship": "superset",
+    "rationale": "SP-01 updates SP-01: Changed order of requirements within the criterion.\n\nBullet points are now sorte"
+  },
+  {
+    "source": "SP-02",
+    "target": "SP-02",
+    "relationship": "superset",
+    "rationale": "SP-02 extends/refines SP-02: Further specified frequency of reviews by requiring them to be performed in case"
+  },
+  {
+    "source": "SP-03",
+    "target": "SP-03",
+    "relationship": "superset",
+    "rationale": "SP-03 extends/refines SP-03: Added requirement that cloud service providers need to maintain a list of except"
+  },
+  {
+    "source": "HR-01",
+    "target": "HR-01",
+    "relationship": "superset",
+    "rationale": "HR-01 extends/refines HR-01: Added requirement for determining which roles within the organisation have acces"
+  },
+  {
+    "source": "HR-02",
+    "target": "HR-02",
+    "relationship": "superset",
+    "rationale": "HR-02 extends/refines HR-02: Specified which data types the criterion applies to.\n\nAdded requirements further"
+  },
+  {
+    "source": "HR-03",
+    "target": "HR-03",
+    "relationship": "superset",
+    "rationale": "HR-03 extends/refines HR-03: Further specified frequency of personnel undergoing training by requiring it to"
+  },
+  {
+    "source": "HR-04",
+    "target": "HR-04",
+    "relationship": "superset",
+    "rationale": "HR-04 extends/refines HR-04: Added requirement that  policies and instructions concerning disciplinary measur"
+  },
+  {
+    "source": "HR-05",
+    "target": "HR-05",
+    "relationship": "superset",
+    "rationale": "HR-05 updates HR-05: Slightly adjusted used terminology."
+  },
+  {
+    "source": "HR-06",
+    "target": "HR-06",
+    "relationship": "superset",
+    "rationale": "HR-06 extends/refines HR-06: Specified which data types the criterion applies to.\n\nFurther specified frequenc"
+  },
+  {
+    "source": null,
+    "target": "HR-07",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Remote Working - Policy."
+  },
+  {
+    "source": null,
+    "target": "HR-08",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Remote Working - Implementation."
+  },
+  {
+    "source": null,
+    "target": "AM-01",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Asset Management Concept."
+  },
+  {
+    "source": "AM-01",
+    "target": "AM-02",
+    "relationship": "superset",
+    "rationale": "AM-02 extends/refines AM-01: Replaced requirement for inventorying assets with the more specific requirement"
+  },
+  {
+    "source": null,
+    "target": "AM-03",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Hardware Asset Inventory."
+  },
+  {
+    "source": null,
+    "target": "AM-04",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Software Asset Inventory."
+  },
+  {
+    "source": "AM-02",
+    "target": "AM-05",
+    "relationship": "subset",
+    "rationale": "AM-05 narrows AM-02: Specified which data types the criterion applies to.\n\nRemoved inventory from the"
+  },
+  {
+    "source": "AM-03",
+    "target": "AM-06",
+    "relationship": "equivalent",
+    "rationale": "AM-03 -> AM-06: renumbered; content unchanged."
+  },
+  {
+    "source": "AM-04",
+    "target": "AM-07",
+    "relationship": "superset",
+    "rationale": "AM-07 extends/refines AM-04: Specified which data types the criterion applies to.\n\nSlight linguistic adaptati"
+  },
+  {
+    "source": "AM-05",
+    "target": "AM-08",
+    "relationship": "superset",
+    "rationale": "AM-08 extends/refines AM-05: Slight linguistic adaptations.\n\nAdded requirements regarding assets that cannot"
+  },
+  {
+    "source": "AM-06",
+    "target": "AM-09",
+    "relationship": "superset",
+    "rationale": "AM-09 extends/refines AM-06: Specified which data types the criterion applies to.\n\nAdded requirement regardin"
+  },
+  {
+    "source": null,
+    "target": "AM-10",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Protection of Hardware on Hold."
+  },
+  {
+    "source": null,
+    "target": "AM-11",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Transfer of Hardware."
+  },
+  {
+    "source": null,
+    "target": "AM-12",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Policy for Removable Media and Endpoint Devices."
+  },
+  {
+    "source": "PS-01",
+    "target": "PS-01",
+    "relationship": "superset",
+    "rationale": "PS-01 extends/refines PS-01: Added requirements regarding the definition of security areas.\n\nSpecified which"
+  },
+  {
+    "source": "PS-02",
+    "target": "PS-02",
+    "relationship": "superset",
+    "rationale": "PS-02 extends/refines PS-02: Specified that the two locations should provide each other with resilience as we"
+  },
+  {
+    "source": "PS-03",
+    "target": "PS-03",
+    "relationship": "subset",
+    "rationale": "PS-03 narrows PS-03: Removed specification the the detection of unauthorised access is to occur in a"
+  },
+  {
+    "source": "PS-04",
+    "target": "PS-04",
+    "relationship": "superset",
+    "rationale": "PS-04 extends/refines PS-04: Linguistic adaptations, changed order of requirements within the criterion.\n\nLin"
+  },
+  {
+    "source": "PS-05",
+    "target": "PS-05",
+    "relationship": "superset",
+    "rationale": "PS-05 extends/refines PS-05: Extended criterion to address not just fire and smoke, but also lightning and un"
+  },
+  {
+    "source": "PS-06",
+    "target": "PS-06",
+    "relationship": "superset",
+    "rationale": "PS-06 extends/refines PS-06: Restructured the list of aspects to be covered by the security requirements to b"
+  },
+  {
+    "source": "PS-07",
+    "target": "PS-07",
+    "relationship": "equivalent",
+    "rationale": "PS-07 -> PS-07: content unchanged, same identifier retained."
+  },
+  {
+    "source": null,
+    "target": "PS-08",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Workplace Security Requirements."
+  },
+  {
+    "source": "OPS-01",
+    "target": "OPS-01",
+    "relationship": "equivalent",
+    "rationale": "OPS-01 -> OPS-01: content unchanged, same identifier retained."
+  },
+  {
+    "source": "OPS-02",
+    "target": "OPS-02",
+    "relationship": "superset",
+    "rationale": "OPS-02 extends/refines OPS-02: Slight linguistic adaptations.\n\nLinked this criterion to the process for notifyi"
+  },
+  {
+    "source": "OPS-03",
+    "target": "OPS-03",
+    "relationship": "superset",
+    "rationale": "OPS-03 extends/refines OPS-03: Added requirement for the cloud service provider informing the cloud service cus"
+  },
+  {
+    "source": "OPS-04",
+    "target": "OPS-04",
+    "relationship": "superset",
+    "rationale": "OPS-04 extends/refines OPS-04: Added requirement for the operation of protection programmes on all incoming flo"
+  },
+  {
+    "source": "OPS-05",
+    "target": "OPS-05",
+    "relationship": "superset",
+    "rationale": "OPS-05 extends/refines OPS-05: Modified requirement regarding the frequency of signature updates to whenever su"
+  },
+  {
+    "source": "OPS-06",
+    "target": "OPS-06",
+    "relationship": "superset",
+    "rationale": "OPS-06 extends/refines OPS-06: Specified which data types the criterion applies to.\n\nExtended aspects to be add"
+  },
+  {
+    "source": "OPS-07",
+    "target": "OPS-07",
+    "relationship": "superset",
+    "rationale": "OPS-07 extends/refines OPS-07: Specified which data types the criterion applies to.\n\nLinked criterion to the po"
+  },
+  {
+    "source": "OPS-08",
+    "target": "OPS-08",
+    "relationship": "superset",
+    "rationale": "OPS-08 extends/refines OPS-08: Specified which data types the criterion applies to.\n\nAdded requirement regardin"
+  },
+  {
+    "source": "OPS-09",
+    "target": "OPS-09",
+    "relationship": "superset",
+    "rationale": "OPS-09 extends/refines OPS-09: Specified which data types the criterion applies to.\n\nAdded requirement for appl"
+  },
+  {
+    "source": "OPS-10",
+    "target": "OPS-10",
+    "relationship": "superset",
+    "rationale": "OPS-10 updates OPS-10: Extend aspects to be addressed by the policies by log data that may be forwarded"
+  },
+  {
+    "source": "OPS-11",
+    "target": "OPS-11",
+    "relationship": "subset",
+    "rationale": "OPS-11 narrows OPS-11: Specified which data types the criterion applies to.\n\nLinguistic adaptations and"
+  },
+  {
+    "source": "OPS-12",
+    "target": "OPS-12",
+    "relationship": "superset",
+    "rationale": "OPS-12 updates OPS-12: Linked criterion the mentioned criteria.\n\nBullet points are now sorted to ease d"
+  },
+  {
+    "source": "OPS-13",
+    "target": "OPS-13",
+    "relationship": "superset",
+    "rationale": "OPS-13 extends/refines OPS-13: Realigned criterion to center around the deployment and use of a SIEM for monito"
+  },
+  {
+    "source": "OPS-14",
+    "target": "OPS-14",
+    "relationship": "superset",
+    "rationale": "OPS-14 extends/refines OPS-14: Extended criterion to include SIEM log data as well."
+  },
+  {
+    "source": "OPS-15",
+    "target": "OPS-15",
+    "relationship": "superset",
+    "rationale": "OPS-15 extends/refines OPS-15: Specified which data types the criterion applies to.\n\nAdded further description"
+  },
+  {
+    "source": "OPS-16",
+    "target": "OPS-16",
+    "relationship": "superset",
+    "rationale": "OPS-16 updates OPS-16: Moved the requirement for the use of multi factor authentication from the additi"
+  },
+  {
+    "source": "OPS-17",
+    "target": "OPS-17",
+    "relationship": "superset",
+    "rationale": "OPS-17 extends/refines OPS-17: No change."
+  },
+  {
+    "source": "OPS-18",
+    "target": "OPS-18",
+    "relationship": "superset",
+    "rationale": "OPS-18 extends/refines OPS-18: Extended aspects to be addressed by the guidelines and instructions by the deplo"
+  },
+  {
+    "source": null,
+    "target": "OPS-19",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Managing Incidents and Crashes - Concept."
+  },
+  {
+    "source": null,
+    "target": "OPS-20",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Managing Incidents - Implementation."
+  },
+  {
+    "source": null,
+    "target": "OPS-21",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Managing Crashes - Implementation."
+  },
+  {
+    "source": "OPS-19",
+    "target": "OPS-22",
+    "relationship": "superset",
+    "rationale": "OPS-22 extends/refines OPS-19: Modified requirement regarding the frequency of performed penetration tests to i"
+  },
+  {
+    "source": "OPS-20",
+    "target": "OPS-23",
+    "relationship": "equivalent",
+    "rationale": "OPS-20 -> OPS-23: renumbered; content unchanged."
+  },
+  {
+    "source": "OPS-21",
+    "target": "OPS-24",
+    "relationship": "superset",
+    "rationale": "OPS-24 updates OPS-21: Linguistic adaptation without changes in content."
+  },
+  {
+    "source": "OPS-22",
+    "target": "OPS-25",
+    "relationship": "superset",
+    "rationale": "OPS-25 extends/refines OPS-22: Reworded existing basic criterion to explicitly use the term \"vulnerability scan"
+  },
+  {
+    "source": "OPS-23",
+    "target": "OPS-26",
+    "relationship": "superset",
+    "rationale": "OPS-26 extends/refines OPS-23: Specified which data types the criterion applies to.\n\nAdded requirements for mon"
+  },
+  {
+    "source": null,
+    "target": "OPS-27",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Managing Vulnerabilities - Patch Management Concept."
+  },
+  {
+    "source": null,
+    "target": "OPS-28",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Managing Vulnerabilities - Patch Management Implementation."
+  },
+  {
+    "source": null,
+    "target": "OPS-29",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Managing Vulnerabilities, Malfunctions and Errors - Externally Sourced."
+  },
+  {
+    "source": null,
+    "target": "OPS-30",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Separation of Datasets - Guideline."
+  },
+  {
+    "source": "OPS-24",
+    "target": "OPS-31",
+    "relationship": "superset",
+    "rationale": "OPS-31 extends/refines OPS-24: Linked criterion to the newly included guideline for the separation of data sets"
+  },
+  {
+    "source": null,
+    "target": "OPS-32",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Confidential Computing - Policies and Instructions."
+  },
+  {
+    "source": null,
+    "target": "OPS-33",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Confidential Computing - Remote Attestation."
+  },
+  {
+    "source": null,
+    "target": "OPS-34",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Container Management - Guideline."
+  },
+  {
+    "source": null,
+    "target": "OPS-35",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Container Management - Implementation."
+  },
+  {
+    "source": "IDM-01",
+    "target": "IAM-01",
+    "relationship": "superset",
+    "rationale": "IAM-01 extends/refines IDM-01: Specified which data types the criterion applies to.\n\nSplit up first requirement"
+  },
+  {
+    "source": "IDM-02",
+    "target": "IAM-02",
+    "relationship": "superset",
+    "rationale": "IAM-02 extends/refines IDM-02: Specified further requirments regarding the specified provedures for granting an"
+  },
+  {
+    "source": "IDM-03",
+    "target": "IAM-03",
+    "relationship": "superset",
+    "rationale": "IAM-03 extends/refines IDM-03: Generalised requirements for locking and withdrawing access to allow cloud servi"
+  },
+  {
+    "source": "IDM-04",
+    "target": "IAM-04",
+    "relationship": "superset",
+    "rationale": "IAM-04 extends/refines IDM-04: Added requirement regarding temporary access."
+  },
+  {
+    "source": "IDM-05",
+    "target": "IAM-05",
+    "relationship": "superset",
+    "rationale": "IAM-05 extends/refines IDM-05: Modified requirement regarding the frequency of performed access rights review t"
+  },
+  {
+    "source": "IDM-06",
+    "target": "IAM-06",
+    "relationship": "superset",
+    "rationale": "IAM-06 extends/refines IDM-06: Added requirement regarding access to anonymous technical users.\n\nAdded requirem"
+  },
+  {
+    "source": "IDM-07",
+    "target": "IAM-07",
+    "relationship": "superset",
+    "rationale": "IAM-07 extends/refines IDM-07: Specified which data types the criterion applies to.\n\nAdded requirements for par"
+  },
+  {
+    "source": "IDM-08",
+    "target": "IAM-08",
+    "relationship": "superset",
+    "rationale": "IAM-08 extends/refines IDM-08: Added requirement regarding the security level of authentication credentials.\n\nE"
+  },
+  {
+    "source": "IDM-09",
+    "target": "IAM-09",
+    "relationship": "superset",
+    "rationale": "IAM-09 extends/refines IDM-09: Rephrased requirement to enforce multi-factor authentication for access to the p"
+  },
+  {
+    "source": "CRY-01",
+    "target": "CRY-01",
+    "relationship": "superset",
+    "rationale": "CRY-01 extends/refines CRY-01: Extended aspects to be covered by the procedures and technical safeguards by the"
+  },
+  {
+    "source": null,
+    "target": "CRY-02",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Cryptographic Change Management."
+  },
+  {
+    "source": null,
+    "target": "CRY-03",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Review of Cryptography Practices."
+  },
+  {
+    "source": "CRY-02",
+    "target": "CRY-04",
+    "relationship": "superset",
+    "rationale": "CRY-04 extends/refines CRY-02: Replaced requirement for strong encryption and authentication with requirement f"
+  },
+  {
+    "source": "CRY-03",
+    "target": "CRY-05",
+    "relationship": "superset",
+    "rationale": "CRY-05 extends/refines CRY-03: Rephrased requirements regarding keys being only accessible by the cloud service"
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-06",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-06 covers 'Secure Key Generation' aspect."
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-07",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-07 covers 'Rotation of Cryptographic Keys' aspect."
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-08",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-08 covers 'Public-Key Certificate Issuance' aspect."
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-09",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-09 covers 'Secure Key Provisioning' aspect."
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-10",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-10 covers 'Secure Storage of Keys' aspect."
+  },
+  {
+    "source": null,
+    "target": "CRY-11",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Cryptographic Key Archival."
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-12",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-12 covers 'Cryptographic Key Transition Management' aspect."
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-13",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-13 covers 'Handling of Compromised Keys' aspect."
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-14",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-14 covers 'Secure Deactivation of Cryptographic Keys' aspect."
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-15",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-15 covers 'Requirements for Pre-Shared Keys' aspect."
+  },
+  {
+    "source": null,
+    "target": "CRY-16",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Operational Continuity for Key Management."
+  },
+  {
+    "source": "CRY-04",
+    "target": "CRY-17",
+    "relationship": "subset",
+    "rationale": "CRY-04 dissolved/split into granular criteria; CRY-17 covers 'Cryptographic Key Lifecycle Management' aspect."
+  },
+  {
+    "source": null,
+    "target": "CRY-18",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Usage of External Key Management Systems."
+  },
+  {
+    "source": null,
+    "target": "CRY-19",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Secure Handling of Customer Managed Keys."
+  },
+  {
+    "source": "COS-01",
+    "target": "COS-01",
+    "relationship": "superset",
+    "rationale": "COS-01 extends/refines COS-01: Specified which data types the criterion applies to.\n\nAdded requirement to emplo"
+  },
+  {
+    "source": "COS-02",
+    "target": "COS-02",
+    "relationship": "equivalent",
+    "rationale": "COS-02 -> COS-02: content unchanged, same identifier retained."
+  },
+  {
+    "source": "COS-03",
+    "target": "COS-03",
+    "relationship": "subset",
+    "rationale": "COS-03 narrows COS-03: Rephrased the requirement for assessing the configuration of the connections. Re"
+  },
+  {
+    "source": "COS-04",
+    "target": "COS-04",
+    "relationship": "equivalent",
+    "rationale": "COS-04 -> COS-04: content unchanged, same identifier retained."
+  },
+  {
+    "source": "COS-05",
+    "target": "COS-05",
+    "relationship": "superset",
+    "rationale": "COS-05 updates COS-05: No change."
+  },
+  {
+    "source": "COS-06",
+    "target": "COS-06",
+    "relationship": "superset",
+    "rationale": "COS-06 updates COS-06: No change."
+  },
+  {
+    "source": "COS-07",
+    "target": "COS-07",
+    "relationship": "superset",
+    "rationale": "COS-07 extends/refines COS-07: Restructured the requirement regarding the content of the content of the documen"
+  },
+  {
+    "source": "COS-08",
+    "target": "COS-08",
+    "relationship": "superset",
+    "rationale": "COS-08 extends/refines COS-08: Specified which data types the criterion applies to.\n\nAdded requirement regardin"
+  },
+  {
+    "source": "PI-01",
+    "target": "PI-01",
+    "relationship": "superset",
+    "rationale": "PI-01 extends/refines PI-01: Moved requirement regarding the documentation of inbound and outbound interfaces"
+  },
+  {
+    "source": "PI-02",
+    "target": "PI-02",
+    "relationship": "superset",
+    "rationale": "PI-02 extends/refines PI-02: Specified which data types the criterion applies to.\n\nRealigned criterion to be"
+  },
+  {
+    "source": "PI-03",
+    "target": "PI-03",
+    "relationship": "superset",
+    "rationale": "PI-03 extends/refines PI-03: Specified which data types the criterion applies to.\n\nIncluded exception case da"
+  },
+  {
+    "source": "DEV-01",
+    "target": "DEV-01",
+    "relationship": "superset",
+    "rationale": "DEV-01 extends/refines DEV-01: Extended aspects to be addressed in the policies by quality in software developm"
+  },
+  {
+    "source": "DEV-02",
+    "target": "DEV-02",
+    "relationship": "superset",
+    "rationale": "DEV-02 extends/refines DEV-02: Extended requirement for security in software development by the demand that the"
+  },
+  {
+    "source": "DEV-03",
+    "target": "DEV-03",
+    "relationship": "superset",
+    "rationale": "DEV-03 extends/refines DEV-03: Extended aspects to be addressed by the policies by requirements for handling un"
+  },
+  {
+    "source": "DEV-04",
+    "target": "DEV-04",
+    "relationship": "superset",
+    "rationale": "DEV-04 extends/refines DEV-04: Specified training programme to be role-based rather than target group-oriented."
+  },
+  {
+    "source": null,
+    "target": "DEV-05",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Design Documentation for Security Features."
+  },
+  {
+    "source": "DEV-05",
+    "target": "DEV-06",
+    "relationship": "superset",
+    "rationale": "DEV-06 extends/refines DEV-05: Extended requirement for the risk assessment of changes to consider cumulative e"
+  },
+  {
+    "source": "DEV-06",
+    "target": "DEV-07",
+    "relationship": "superset",
+    "rationale": "DEV-07 extends/refines DEV-06: Specified the testing during software development and deployment to follow docum"
+  },
+  {
+    "source": "DEV-07",
+    "target": "DEV-08",
+    "relationship": "superset",
+    "rationale": "DEV-08 updates DEV-07: Linguistic adaptation without changes in content."
+  },
+  {
+    "source": "DEV-08",
+    "target": "DEV-09",
+    "relationship": "superset",
+    "rationale": "DEV-09 extends/refines DEV-08: Added further specfications about the required configuration of the  version con"
+  },
+  {
+    "source": "DEV-09",
+    "target": "DEV-10",
+    "relationship": "superset",
+    "rationale": "DEV-10 updates DEV-09: No change."
+  },
+  {
+    "source": null,
+    "target": "DEV-11",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Protection of Development and Test Environments."
+  },
+  {
+    "source": "DEV-10",
+    "target": "DEV-12",
+    "relationship": "superset",
+    "rationale": "DEV-12 extends/refines DEV-10: Specified which data types the criterion applies to.\n\nAdded option for cloud ser"
+  },
+  {
+    "source": null,
+    "target": "DEV-13",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Transparency about Software Components."
+  },
+  {
+    "source": null,
+    "target": "DEV-14",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Secure Use of Third Party Hardware and Software."
+  },
+  {
+    "source": null,
+    "target": "DEV-15",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Exceptions to the Change Management Process."
+  },
+  {
+    "source": "SSO-01",
+    "target": "SSO-01",
+    "relationship": "superset",
+    "rationale": "SSO-01 extends/refines SSO-01: Specified third parties to which this criterion applies to be service organisati"
+  },
+  {
+    "source": "SSO-02",
+    "target": "SSO-02",
+    "relationship": "superset",
+    "rationale": "SSO-02 extends/refines SSO-02: Specified which data types the criterion applies to.\n\nChanged the order of the r"
+  },
+  {
+    "source": null,
+    "target": "SSO-03",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Data Processing of Service Organisations."
+  },
+  {
+    "source": "SSO-03",
+    "target": "SSO-04",
+    "relationship": "superset",
+    "rationale": "SSO-04 extends/refines SSO-03: Specified which data types the criterion applies to.\n\nSpecified address to mean"
+  },
+  {
+    "source": "SSO-04",
+    "target": "SSO-05",
+    "relationship": "subset",
+    "rationale": "SSO-05 narrows SSO-04: Specified third parties to which this criterion applies to be service organisati"
+  },
+  {
+    "source": "SSO-05",
+    "target": "SSO-06",
+    "relationship": "equivalent",
+    "rationale": "SSO-05 -> SSO-06: renumbered; content unchanged."
+  },
+  {
+    "source": null,
+    "target": "SSO-07",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Ensuring Transparency within Service Organisations."
+  },
+  {
+    "source": null,
+    "target": "SSO-08",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Controlling Exchanges with Suppliers of Functional Components."
+  },
+  {
+    "source": "SIM-01",
+    "target": "SIM-01",
+    "relationship": "superset",
+    "rationale": "SIM-01 extends/refines SIM-01: Replaced the term CERT with the term CSIRT.\n\nAdded requirement for the identific"
+  },
+  {
+    "source": null,
+    "target": "SIM-02",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Security Incident Response Plans."
+  },
+  {
+    "source": "SIM-02",
+    "target": "SIM-03",
+    "relationship": "superset",
+    "rationale": "SIM-03 extends/refines SIM-02: Added requirementr defining how to further process the results of the root cause"
+  },
+  {
+    "source": "SIM-03",
+    "target": "SIM-04",
+    "relationship": "superset",
+    "rationale": "SIM-04 updates SIM-03: Moved requirement for information on security incidents or confirmed security br"
+  },
+  {
+    "source": "SIM-04",
+    "target": "SIM-05",
+    "relationship": "superset",
+    "rationale": "SIM-05 updates SIM-04: Added requirment to communicate the information security incident reporting mech"
+  },
+  {
+    "source": "SIM-05",
+    "target": "SIM-06",
+    "relationship": "superset",
+    "rationale": "SIM-06 extends/refines SIM-05: Added requirement regarding the implementation of a knowledge repository. Furthe"
+  },
+  {
+    "source": "BCM-01",
+    "target": "BCM-01",
+    "relationship": "superset",
+    "rationale": "BCM-01 extends/refines BCM-01: Added requirement to operate a business continuity and emergency management syst"
+  },
+  {
+    "source": "BCM-02",
+    "target": "BCM-02",
+    "relationship": "superset",
+    "rationale": "BCM-02 extends/refines BCM-02: Specified which data types the criterion applies to.\n\nRephrased the first two se"
+  },
+  {
+    "source": "BCM-03",
+    "target": "BCM-03",
+    "relationship": "superset",
+    "rationale": "BCM-03 extends/refines BCM-03: Restricted scope to business continuity plans.\n\nRemoved requirement that busines"
+  },
+  {
+    "source": "BCM-04",
+    "target": "BCM-04",
+    "relationship": "superset",
+    "rationale": "BCM-04 extends/refines BCM-04: Restricted scope of the first requirement to business continuity plans."
+  },
+  {
+    "source": "COM-01",
+    "target": "COM-01",
+    "relationship": "superset",
+    "rationale": "COM-01 updates COM-01: No change."
+  },
+  {
+    "source": "COM-02",
+    "target": "COM-02",
+    "relationship": "superset",
+    "rationale": "COM-02 extends/refines COM-02: Added requirements for the implementation of an audit programme over multiple ye"
+  },
+  {
+    "source": "COM-03",
+    "target": "COM-03",
+    "relationship": "superset",
+    "rationale": "COM-03 extends/refines COM-03: Included effectiveness of organisational and operational measures to manage the"
+  },
+  {
+    "source": "COM-04",
+    "target": "COM-04",
+    "relationship": "superset",
+    "rationale": "COM-04 updates COM-04: No change."
+  },
+  {
+    "source": "INQ-01",
+    "target": "INQ-01",
+    "relationship": "subset",
+    "rationale": "INQ-01 + INQ-03 merged into INQ-01: Merged the former INQ-01 and INQ-03 into one criterion.\n\nSpecified which data ty"
+  },
+  {
+    "source": "INQ-03",
+    "target": "INQ-01",
+    "relationship": "subset",
+    "rationale": "INQ-01 + INQ-03 merged into INQ-01: Merged the former INQ-01 and INQ-03 into one criterion.\n\nSpecified which data ty"
+  },
+  {
+    "source": "INQ-02",
+    "target": "INQ-02",
+    "relationship": "superset",
+    "rationale": "INQ-02 extends/refines INQ-02: Specified that it is the government agency's request that is based on the applic"
+  },
+  {
+    "source": "INQ-04",
+    "target": "INQ-03",
+    "relationship": "superset",
+    "rationale": "INQ-03 extends/refines INQ-04: Specified which data types the criterion applies to.\n\nOtherwise, linguistic adap"
+  },
+  {
+    "source": null,
+    "target": "INQ-04",
+    "relationship": "additive",
+    "rationale": "ADDITIVE — new in C5:2026: Communication of Technical Procedures for Data Disclosure in Investiga."
+  },
+  {
+    "source": "PSS-01",
+    "target": "PSS-01",
+    "relationship": "superset",
+    "rationale": "PSS-01 extends/refines PSS-01: Excluded installation of the cloud service from and included implementation of c"
+  },
+  {
+    "source": "PSS-02",
+    "target": "PSS-02",
+    "relationship": "superset",
+    "rationale": "PSS-02 extends/refines PSS-02: Extended the activities to be covered by the procedures by conducting security c"
+  },
+  {
+    "source": "PSS-03",
+    "target": "PSS-03",
+    "relationship": "superset",
+    "rationale": "PSS-03 extends/refines PSS-03: Modified requirement for the daily update of the register with requirement for t"
+  },
+  {
+    "source": "PSS-04",
+    "target": "PSS-04",
+    "relationship": "superset",
+    "rationale": "PSS-04 extends/refines PSS-04: Specified which data types the criterion applies to.\n\nAdded requirement for erro"
+  },
+  {
+    "source": "PSS-05",
+    "target": "PSS-05",
+    "relationship": "superset",
+    "rationale": "PSS-05 extends/refines PSS-05: Replaced requirement for strong authentication with requirement for multi-factor"
+  },
+  {
+    "source": "PSS-06",
+    "target": "PSS-06",
+    "relationship": "superset",
+    "rationale": "PSS-06 extends/refines PSS-06: Replaced requirement for session management that complies with the state of the"
+  },
+  {
+    "source": "PSS-07",
+    "target": "PSS-07",
+    "relationship": "superset",
+    "rationale": "PSS-07 extends/refines PSS-07: Realigned requirement regarding the procedures for protecting the confidentialit"
+  },
+  {
+    "source": "PSS-08",
+    "target": "PSS-08",
+    "relationship": "superset",
+    "rationale": "PSS-08 extends/refines PSS-08: Added requirement for the cloud service customers to be able to configure releva"
+  },
+  {
+    "source": "PSS-09",
+    "target": "PSS-09",
+    "relationship": "superset",
+    "rationale": "PSS-09 updates PSS-09: Replaced previous requirements regarding vulnerabilities with the requirement th"
+  },
+  {
+    "source": "PSS-10",
+    "target": "PSS-10",
+    "relationship": "equivalent",
+    "rationale": "PSS-10 -> PSS-10: content unchanged, same identifier retained."
+  },
+  {
+    "source": "PSS-11",
+    "target": "PSS-11",
+    "relationship": "superset",
+    "rationale": "PSS-11 extends/refines PSS-11: Extended aspects to be covered by the equipped functionalities by images being l"
+  },
+  {
+    "source": "PSS-12",
+    "target": "PSS-12",
+    "relationship": "superset",
+    "rationale": "PSS-12 extends/refines PSS-12: Specified which data types the criterion applies to.\n\nSpecified that data being"
+  }
+]
