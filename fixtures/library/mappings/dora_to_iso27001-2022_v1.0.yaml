@@ -38,7 +38,7 @@ library:
       - { state: 'published', date: '2025-01-15', actor: 'ciso-signoff' }
 
 mappings:
-  - source: 'Art.5'
+  - source: 'DORA-5.1'
     target: 'A.5.1'
     relationship: 'superset'
     confidence: 'high'
@@ -51,7 +51,32 @@ mappings:
     gap_warning: 'A.5.1 allein erfüllt DORA Art. 5 NICHT — Board-Approval-Prozess und ICT-Strategie sind zusätzlich nötig.'
     audit_evidence_hint: 'Board-Beschluss zur ICT-Strategie, Policy-Hierarchie, jährliche Review-Protokolle.'
 
-  - source: 'Art.6'
+  - source: 'DORA-5.2'
+    target: 'A.5.1'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      DORA Art. 5 "Governance und Organisation" verlangt explizit Leitungs-
+      organ-Verantwortung, dokumentierte ICT-Strategie und jährliche
+      Überprüfung. A.5.1 "Policies for information security" liefert nur
+      die Policy-Komponente. Aus DORA-Sicht ist A.5.1 Baustein, deckt aber
+      Board-Verantwortung und Strategie-Review nicht ab.
+    gap_warning: 'A.5.1 allein erfüllt DORA Art. 5 NICHT — Board-Approval-Prozess und ICT-Strategie sind zusätzlich nötig.'
+    audit_evidence_hint: 'Board-Beschluss zur ICT-Strategie, Policy-Hierarchie, jährliche Review-Protokolle.'
+
+  - source: 'DORA-6.1'
+    target: 'A.5.1'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      DORA Art. 6 fordert ein vollständiges ICT-Risk-Management-Framework
+      mit Strategie, Policies, Prozeduren, Protokollen und Tools. A.5.1
+      ist nur die Policy-Spitze; das DORA-Framework verlangt zusätzlich
+      Risk-Tolerance, Recovery-Objectives und kontinuierliche Verbesserung.
+    cross_refs: ['A.5.2', 'A.5.3']
+    gap_warning: 'DORA Art. 6 erwartet ein Framework mit klaren Risk-Tolerance-Niveaus — nicht durch A.5.1 allein abgedeckt.'
+
+  - source: 'DORA-6.2'
     target: 'A.5.1'
     relationship: 'superset'
     confidence: 'high'
@@ -76,7 +101,7 @@ mappings:
     cross_refs: ['A.5.10', 'A.8.9']
     audit_evidence_hint: 'Asset-Inventar mit Kritikalitätseinstufung, Architektur-Dokumentation, Risk-Assessment-Reports pro ICT-System.'
 
-  - source: 'Art.8'
+  - source: 'DORA-8.1'
     target: 'A.8.8'
     relationship: 'superset'
     confidence: 'high'
@@ -87,7 +112,29 @@ mappings:
       System-Risiken und Geschäftsfunktions-Mapping.
     gap_warning: 'A.8.8 deckt nur technische Vulns ab — DORA Art. 8 fordert breiteres Risk-ID inkl. Legacy.'
 
-  - source: 'Art.9'
+  - source: 'DORA-8.2'
+    target: 'A.8.8'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      DORA Art. 8 verlangt explizit kontinuierliche Identifikation aller
+      ICT-Risiken inkl. veralteter Systeme. A.8.8 "Management of technical
+      vulnerabilities" ist Teilaspekt; DORA fordert zusätzlich Legacy-
+      System-Risiken und Geschäftsfunktions-Mapping.
+    gap_warning: 'A.8.8 deckt nur technische Vulns ab — DORA Art. 8 fordert breiteres Risk-ID inkl. Legacy.'
+
+  - source: 'DORA-8.3'
+    target: 'A.8.8'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      DORA Art. 8 verlangt explizit kontinuierliche Identifikation aller
+      ICT-Risiken inkl. veralteter Systeme. A.8.8 "Management of technical
+      vulnerabilities" ist Teilaspekt; DORA fordert zusätzlich Legacy-
+      System-Risiken und Geschäftsfunktions-Mapping.
+    gap_warning: 'A.8.8 deckt nur technische Vulns ab — DORA Art. 8 fordert breiteres Risk-ID inkl. Legacy.'
+
+  - source: 'DORA-9.1'
     target: 'A.8.7'
     relationship: 'superset'
     confidence: 'medium'
@@ -100,7 +147,46 @@ mappings:
     cross_refs: ['A.8.20', 'A.8.24', 'A.5.10', 'A.8.5']
     audit_evidence_hint: 'AV/EDR-Reports, Netzwerk-Segmentierungs-Diagramme, Krypto-Inventar, IAM-Policies.'
 
-  - source: 'Art.10'
+  - source: 'DORA-9.2'
+    target: 'A.8.7'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 9 "Schutz und Prävention" listet Malware-Schutz,
+      Netzwerksegmentierung, Datenklassifizierung, Identity-Management und
+      Krypto. A.8.7 "Protection against malware" deckt nur den
+      Malware-Anteil ab; weitere DORA-Forderungen liegen in A.8.20-A.8.24,
+      A.5.10, A.8.5.
+    cross_refs: ['A.8.20', 'A.8.24', 'A.5.10', 'A.8.5']
+    audit_evidence_hint: 'AV/EDR-Reports, Netzwerk-Segmentierungs-Diagramme, Krypto-Inventar, IAM-Policies.'
+
+  - source: 'DORA-9.3'
+    target: 'A.8.7'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 9 "Schutz und Prävention" listet Malware-Schutz,
+      Netzwerksegmentierung, Datenklassifizierung, Identity-Management und
+      Krypto. A.8.7 "Protection against malware" deckt nur den
+      Malware-Anteil ab; weitere DORA-Forderungen liegen in A.8.20-A.8.24,
+      A.5.10, A.8.5.
+    cross_refs: ['A.8.20', 'A.8.24', 'A.5.10', 'A.8.5']
+    audit_evidence_hint: 'AV/EDR-Reports, Netzwerk-Segmentierungs-Diagramme, Krypto-Inventar, IAM-Policies.'
+
+  - source: 'DORA-9.4'
+    target: 'A.8.7'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 9 "Schutz und Prävention" listet Malware-Schutz,
+      Netzwerksegmentierung, Datenklassifizierung, Identity-Management und
+      Krypto. A.8.7 "Protection against malware" deckt nur den
+      Malware-Anteil ab; weitere DORA-Forderungen liegen in A.8.20-A.8.24,
+      A.5.10, A.8.5.
+    cross_refs: ['A.8.20', 'A.8.24', 'A.5.10', 'A.8.5']
+    audit_evidence_hint: 'AV/EDR-Reports, Netzwerk-Segmentierungs-Diagramme, Krypto-Inventar, IAM-Policies.'
+
+  - source: 'DORA-10.1'
     target: 'A.8.16'
     relationship: 'superset'
     confidence: 'high'
@@ -113,7 +199,7 @@ mappings:
     cross_refs: ['A.8.15']
     audit_evidence_hint: 'SIEM-Alarming-Konfiguration, Schwellenwert-Dokumentation, Alarm-Review-Logs.'
 
-  - source: 'Art.11'
+  - source: 'DORA-11.1'
     target: 'A.5.30'
     relationship: 'superset'
     confidence: 'high'
@@ -140,7 +226,7 @@ mappings:
     cross_refs: ['A.5.30']
     audit_evidence_hint: 'Backup-Policy, Restore-Test-Reports der letzten 12 Monate, Standortkonzept Primär/Sekundär.'
 
-  - source: 'Art.13'
+  - source: 'DORA-13.1'
     target: 'A.5.27'
     relationship: 'superset'
     confidence: 'medium'
@@ -153,7 +239,72 @@ mappings:
     cross_refs: ['A.5.24', 'A.5.25']
     audit_evidence_hint: 'Post-Incident-Review-Templates, Lessons-Learned-Register, Board-Reports zu Trends.'
 
-  - source: 'Art.14'
+  - source: 'DORA-13.2'
+    target: 'A.5.27'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 13 "Lernen und Weiterentwickeln" verlangt Post-Incident-
+      Reviews und kontinuierliche Anpassung des ICT-Risk-Frameworks.
+      A.5.27 "Learning from information security incidents" liefert die
+      ISO-Verankerung; DORA fordert zusätzlich Quantifizierung und
+      Reporting an Leitungsorgan.
+    cross_refs: ['A.5.24', 'A.5.25']
+    audit_evidence_hint: 'Post-Incident-Review-Templates, Lessons-Learned-Register, Board-Reports zu Trends.'
+
+  - source: 'DORA-13.3'
+    target: 'A.5.27'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 13 "Lernen und Weiterentwickeln" verlangt Post-Incident-
+      Reviews und kontinuierliche Anpassung des ICT-Risk-Frameworks.
+      A.5.27 "Learning from information security incidents" liefert die
+      ISO-Verankerung; DORA fordert zusätzlich Quantifizierung und
+      Reporting an Leitungsorgan.
+    cross_refs: ['A.5.24', 'A.5.25']
+    audit_evidence_hint: 'Post-Incident-Review-Templates, Lessons-Learned-Register, Board-Reports zu Trends.'
+
+  - source: 'DORA-13.4'
+    target: 'A.5.27'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 13 "Lernen und Weiterentwickeln" verlangt Post-Incident-
+      Reviews und kontinuierliche Anpassung des ICT-Risk-Frameworks.
+      A.5.27 "Learning from information security incidents" liefert die
+      ISO-Verankerung; DORA fordert zusätzlich Quantifizierung und
+      Reporting an Leitungsorgan.
+    cross_refs: ['A.5.24', 'A.5.25']
+    audit_evidence_hint: 'Post-Incident-Review-Templates, Lessons-Learned-Register, Board-Reports zu Trends.'
+
+  - source: 'DORA-13.5'
+    target: 'A.5.27'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 13 "Lernen und Weiterentwickeln" verlangt Post-Incident-
+      Reviews und kontinuierliche Anpassung des ICT-Risk-Frameworks.
+      A.5.27 "Learning from information security incidents" liefert die
+      ISO-Verankerung; DORA fordert zusätzlich Quantifizierung und
+      Reporting an Leitungsorgan.
+    cross_refs: ['A.5.24', 'A.5.25']
+    audit_evidence_hint: 'Post-Incident-Review-Templates, Lessons-Learned-Register, Board-Reports zu Trends.'
+
+  - source: 'DORA-13.6'
+    target: 'A.5.27'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 13 "Lernen und Weiterentwickeln" verlangt Post-Incident-
+      Reviews und kontinuierliche Anpassung des ICT-Risk-Frameworks.
+      A.5.27 "Learning from information security incidents" liefert die
+      ISO-Verankerung; DORA fordert zusätzlich Quantifizierung und
+      Reporting an Leitungsorgan.
+    cross_refs: ['A.5.24', 'A.5.25']
+    audit_evidence_hint: 'Post-Incident-Review-Templates, Lessons-Learned-Register, Board-Reports zu Trends.'
+
+  - source: 'DORA-14.1'
     target: 'A.6.3'
     relationship: 'superset'
     confidence: 'high'
@@ -166,7 +317,7 @@ mappings:
     gap_warning: 'A.6.3 allein deckt DORA Art. 14 NICHT — Krisenkommunikations-Plan separat.'
     audit_evidence_hint: 'Schulungs-Quoten inkl. Board, Krisenkommunikations-Plan, Tabletop-Übungen mit Geschäftsleitung.'
 
-  - source: 'Art.15'
+  - source: 'DORA-15.1'
     target: 'A.5.36'
     relationship: 'equivalent'
     confidence: 'medium'
@@ -178,7 +329,7 @@ mappings:
       grundsätzlich erreichbar.
     cross_refs: ['A.5.35']
 
-  - source: 'Art.28'
+  - source: 'DORA-28.1'
     target: 'A.5.19'
     relationship: 'superset'
     confidence: 'high'
@@ -192,7 +343,35 @@ mappings:
     gap_warning: 'A.5.19 deckt DORA Art. 28 NICHT vollständig — DORA-Register (RoI) und Konzentrations-Risiko-Analyse zusätzlich nötig.'
     audit_evidence_hint: 'Drittanbieter-Strategie, RoI gemäß ITS, Konzentrations-Risiko-Bericht.'
 
-  - source: 'Art.30'
+  - source: 'DORA-28.2'
+    target: 'A.5.19'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      DORA Art. 28 "ICT-Drittanbieter-Risiken — allgemeine Grundsätze"
+      verlangt Strategie, Register und Konzentrations-Risikoanalyse für
+      ICT-Drittanbieter. A.5.19 "Information security in supplier
+      relationships" liefert die ISO-Basis; Konzentrations-Risiko und
+      Register-of-Information sind DORA-Spezifika.
+    cross_refs: ['A.5.20', 'A.5.21']
+    gap_warning: 'A.5.19 deckt DORA Art. 28 NICHT vollständig — DORA-Register (RoI) und Konzentrations-Risiko-Analyse zusätzlich nötig.'
+    audit_evidence_hint: 'Drittanbieter-Strategie, RoI gemäß ITS, Konzentrations-Risiko-Bericht.'
+
+  - source: 'DORA-28.3'
+    target: 'A.5.19'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      DORA Art. 28 "ICT-Drittanbieter-Risiken — allgemeine Grundsätze"
+      verlangt Strategie, Register und Konzentrations-Risikoanalyse für
+      ICT-Drittanbieter. A.5.19 "Information security in supplier
+      relationships" liefert die ISO-Basis; Konzentrations-Risiko und
+      Register-of-Information sind DORA-Spezifika.
+    cross_refs: ['A.5.20', 'A.5.21']
+    gap_warning: 'A.5.19 deckt DORA Art. 28 NICHT vollständig — DORA-Register (RoI) und Konzentrations-Risiko-Analyse zusätzlich nötig.'
+    audit_evidence_hint: 'Drittanbieter-Strategie, RoI gemäß ITS, Konzentrations-Risiko-Bericht.'
+
+  - source: 'DORA-30.1'
     target: 'A.5.20'
     relationship: 'superset'
     confidence: 'high'
@@ -204,7 +383,7 @@ mappings:
     cross_refs: ['A.5.22']
     audit_evidence_hint: 'Vertragsmuster mit DORA-Pflichtklauseln, Vertragsregister, Exit-Pläne kritischer Anbieter.'
 
-  - source: 'Art.24'
+  - source: 'DORA-24.1'
     target: 'A.8.29'
     relationship: 'superset'
     confidence: 'medium'
@@ -218,7 +397,49 @@ mappings:
     gap_warning: 'TLPT nach DORA Art. 26/27 ist NICHT durch A.8.29 abgedeckt — separate TLPT-Programmatik nötig.'
     audit_evidence_hint: 'Test-Programm, Pentest-Reports, TLPT-Reports (falls anwendbar), Vulnerability-Scans.'
 
-  - source: 'Art.17'
+  - source: 'DORA-24.2'
+    target: 'A.8.29'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      DORA Art. 24 "Digital Operational Resilience Testing" verlangt
+      jährliche Tests aller kritischen ICT-Systeme inkl. Penetration-Tests
+      und Vulnerability-Assessments. A.8.29 "Security testing in development
+      and acceptance" ist Baustein; DORA-spezifische TLPT (Threat-Led
+      Penetration Testing) gehen darüber hinaus.
+    cross_refs: ['A.8.8', 'A.8.25']
+    gap_warning: 'TLPT nach DORA Art. 26/27 ist NICHT durch A.8.29 abgedeckt — separate TLPT-Programmatik nötig.'
+    audit_evidence_hint: 'Test-Programm, Pentest-Reports, TLPT-Reports (falls anwendbar), Vulnerability-Scans.'
+
+  - source: 'DORA-17.1'
+    target: 'A.5.24'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      DORA Art. 17 "ICT-Vorfall-Management-Prozess" verlangt strukturierten
+      Prozess, Klassifikation und Eskalation. A.5.24 "Information security
+      incident management planning and preparation" entspricht weitgehend;
+      DORA-Klassifizierungskriterien (Art. 18) und Meldefristen (Art. 19)
+      sind explizite Zusatzanforderungen.
+    cross_refs: ['A.5.25', 'A.5.26']
+    gap_warning: 'A.5.24 deckt DORA-Klassifikation und 24h/72h/1m-Meldefristen NICHT ab — separate DORA-Meldeprozesse nötig.'
+    audit_evidence_hint: 'IR-Prozess, Klassifizierungs-Matrix, Meldefrist-Logs, BaFin/EBA-Meldungen der letzten 12 Monate.'
+
+  - source: 'DORA-17.2'
+    target: 'A.5.24'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      DORA Art. 17 "ICT-Vorfall-Management-Prozess" verlangt strukturierten
+      Prozess, Klassifikation und Eskalation. A.5.24 "Information security
+      incident management planning and preparation" entspricht weitgehend;
+      DORA-Klassifizierungskriterien (Art. 18) und Meldefristen (Art. 19)
+      sind explizite Zusatzanforderungen.
+    cross_refs: ['A.5.25', 'A.5.26']
+    gap_warning: 'A.5.24 deckt DORA-Klassifikation und 24h/72h/1m-Meldefristen NICHT ab — separate DORA-Meldeprozesse nötig.'
+    audit_evidence_hint: 'IR-Prozess, Klassifizierungs-Matrix, Meldefrist-Logs, BaFin/EBA-Meldungen der letzten 12 Monate.'
+
+  - source: 'DORA-17.3'
     target: 'A.5.24'
     relationship: 'superset'
     confidence: 'high'
