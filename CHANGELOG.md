@@ -5,6 +5,10 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [3.8.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.7.0...v3.8.0) (2026-05-25)
 
+> **Zurueckgezogen.** 3.8.0 wurde als defekt zurueckgezogen (kein `v3.8.0`-Tag).
+> Die hier gelisteten Aenderungen sind kumulativ in 3.9.0 enthalten -- bitte
+> 3.9.0 oder neuer verwenden.
+
 
 ### Added
 
