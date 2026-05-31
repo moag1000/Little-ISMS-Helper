@@ -78,7 +78,7 @@ mappings:
 
   # --- A.1 Consent and choice ---
   - source: 'A.1.1'
-    target: 'Art.12'
+    target: 'GDPR-12'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -92,7 +92,7 @@ mappings:
 
   # --- A.2 Purpose legitimacy and specification ---
   - source: 'A.2.1'
-    target: 'Art.28'
+    target: 'GDPR-28'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -104,7 +104,7 @@ mappings:
     audit_evidence_hint: 'AVV mit Zweckbeschraenkung, Weisungsdokumentation, Logs ueber Processor-Verarbeitungs-Aktivitaeten.'
 
   - source: 'A.2.2'
-    target: 'Art.6'
+    target: 'GDPR-6'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -116,7 +116,7 @@ mappings:
 
   # --- A.3 Collection limitation ---
   - source: 'A.3.1'
-    target: 'Art.28'
+    target: 'GDPR-28'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -128,7 +128,7 @@ mappings:
 
   # --- A.4 Data minimization ---
   - source: 'A.4.1'
-    target: 'Art.30'
+    target: 'GDPR-30'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -141,7 +141,7 @@ mappings:
 
   # --- A.5 Use, retention and disclosure limitation ---
   - source: 'A.5.1'
-    target: 'Art.30'
+    target: 'GDPR-30'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -154,7 +154,7 @@ mappings:
     audit_evidence_hint: 'Disclosure-Register, Government-Request-Logs, Customer-Notification-Templates.'
 
   - source: 'A.5.2'
-    target: 'Art.17'
+    target: 'GDPR-17'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -168,7 +168,7 @@ mappings:
 
   # --- A.6 Accuracy and quality ---
   - source: 'A.6.1'
-    target: 'Art.28'
+    target: 'GDPR-28'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -178,7 +178,7 @@ mappings:
     cross_refs: ['Art.32']
 
   - source: 'A.6.2'
-    target: 'Art.18'
+    target: 'GDPR-18'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -191,7 +191,7 @@ mappings:
 
   # --- A.7 Openness, transparency and notice ---
   - source: 'A.7.1'
-    target: 'Art.44'
+    target: 'GDPR-44'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -203,7 +203,7 @@ mappings:
     audit_evidence_hint: 'Datacenter-Standorte-Liste, Sub-Processor-Standorte, Datenfluss-Diagramme.'
 
   - source: 'A.7.2'
-    target: 'Art.46'
+    target: 'GDPR-46'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -215,7 +215,7 @@ mappings:
 
   # --- A.8 Individual participation and access ---
   - source: 'A.8.1'
-    target: 'Art.33'
+    target: 'GDPR-33'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -229,7 +229,7 @@ mappings:
 
   # --- A.9 Accountability ---
   - source: 'A.9.1'
-    target: 'Art.28'
+    target: 'GDPR-28'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -241,7 +241,7 @@ mappings:
     audit_evidence_hint: 'Subprozessoren-Liste, Sub-AVV-Vertragskaskade, Genehmigungs-Workflow bei Sub-Wechsel.'
 
   - source: 'A.9.2'
-    target: 'Art.28'
+    target: 'GDPR-28'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -252,7 +252,7 @@ mappings:
 
   # --- A.10 Information security ---
   - source: 'A.10.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -261,7 +261,7 @@ mappings:
       der Verarbeitung" plus Art.28(3)(b) decken die Pflicht.
 
   - source: 'A.10.2'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -269,7 +269,7 @@ mappings:
       der TOMs nach GDPR Art.32.
 
   - source: 'A.10.3'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -277,7 +277,7 @@ mappings:
       TOMs nach GDPR Art.32 (Wiederherstellbarkeit).
 
   - source: 'A.10.4'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -285,7 +285,7 @@ mappings:
       Teil der TOMs nach GDPR Art.32.
 
   - source: 'A.10.5'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -294,7 +294,7 @@ mappings:
       verlangt Verschluesselung als TOM.
 
   - source: 'A.10.6'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -304,7 +304,7 @@ mappings:
     audit_evidence_hint: 'TLS-Konfig (mindestens TLS 1.2), Kryptokonzept, Algorithmen-Inventar.'
 
   - source: 'A.10.7'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -312,14 +312,14 @@ mappings:
       nach GDPR Art.32 plus Art.5(1)(f).
 
   - source: 'A.10.8'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27018 A.10.8 (Unique use of user IDs) Teil der TOMs nach Art.32.
 
   - source: 'A.10.9'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -327,14 +327,14 @@ mappings:
       Art.32 plus Art.30.
 
   - source: 'A.10.10'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27018 A.10.10 (User ID management) Teil der TOMs nach Art.32.
 
   - source: 'A.10.11'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -343,7 +343,7 @@ mappings:
     cross_refs: ['Art.28']
 
   - source: 'A.10.12'
-    target: 'Art.30'
+    target: 'GDPR-30'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -352,7 +352,7 @@ mappings:
     cross_refs: ['Art.28']
 
   - source: 'A.10.13'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -374,7 +374,7 @@ mappings:
     audit_evidence_hint: 'TIA (Transfer Impact Assessment) post-Schrems-II, SCC-Vertraege, BCR-Genehmigungen, Adaequatheits-Liste.'
 
   - source: 'A.11.2'
-    target: 'Art.13'
+    target: 'GDPR-13'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -385,7 +385,7 @@ mappings:
   # ===== ISO 27002:2013 Carryover (PII-relevante Controls) =====
 
   - source: '5.1.1'
-    target: 'Art.24'
+    target: 'GDPR-24'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -394,7 +394,7 @@ mappings:
       (Datenschutz-Policies als TOM).
 
   - source: '6.1.1'
-    target: 'Art.37'
+    target: 'GDPR-37'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -403,14 +403,14 @@ mappings:
     cross_refs: ['Art.39']
 
   - source: '7.1.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
       27002:2013 7.1.1 (Screening) Teil der TOMs nach GDPR Art.32.
 
   - source: '7.2.2'
-    target: 'Art.39'
+    target: 'GDPR-39'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -419,7 +419,7 @@ mappings:
     cross_refs: ['Art.32']
 
   - source: '8.2.1'
-    target: 'Art.5'
+    target: 'GDPR-5.1.a'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -427,7 +427,7 @@ mappings:
       (Datenminimierung, Speicherbegrenzung) plus Art.32 (TOMs).
 
   - source: '8.3.2'
-    target: 'Art.17'
+    target: 'GDPR-17'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -436,7 +436,7 @@ mappings:
     cross_refs: ['Art.32']
 
   - source: '9.1.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -444,14 +444,14 @@ mappings:
       Art.32(1)(b) "Vertraulichkeit, Integritaet, Verfuegbarkeit".
 
   - source: '9.2.3'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       27002:2013 9.2.3 (Privileged access rights) Teil der TOMs nach Art.32.
 
   - source: '9.4.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -459,7 +459,7 @@ mappings:
       Art.32 (Need-to-Know-Prinzip).
 
   - source: '10.1.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -467,14 +467,14 @@ mappings:
       GDPR Art.32(1)(a) (Verschluesselung).
 
   - source: '10.1.2'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       27002:2013 10.1.2 (Key management) Teil der TOMs nach Art.32.
 
   - source: '11.1.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -482,7 +482,7 @@ mappings:
       Art.32 (physische Sicherheit).
 
   - source: '11.2.7'
-    target: 'Art.17'
+    target: 'GDPR-17'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -490,14 +490,14 @@ mappings:
       plus Art.32.
 
   - source: '12.1.2'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
       27002:2013 12.1.2 (Change management) Teil der TOMs (Resilienz).
 
   - source: '12.3.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -505,7 +505,7 @@ mappings:
       "Wiederherstellbarkeit" plus (1)(b) "Verfuegbarkeit".
 
   - source: '12.4.1'
-    target: 'Art.30'
+    target: 'GDPR-30'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -514,28 +514,28 @@ mappings:
     cross_refs: ['Art.32']
 
   - source: '12.4.2'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       27002:2013 12.4.2 (Protection of log information) Teil der TOMs.
 
   - source: '12.6.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       27002:2013 12.6.1 (Vulnerability management) Teil der TOMs (Resilienz).
 
   - source: '13.1.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       27002:2013 13.1.1 (Network controls) Teil der TOMs nach Art.32.
 
   - source: '13.2.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -543,7 +543,7 @@ mappings:
       der TOMs (Transport-Verschluesselung).
 
   - source: '15.1.1'
-    target: 'Art.28'
+    target: 'GDPR-28'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -551,14 +551,14 @@ mappings:
       von GDPR Art.28 (Auftragsverarbeitungs-Pflichten).
 
   - source: '15.1.2'
-    target: 'Art.28'
+    target: 'GDPR-28'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       27002:2013 15.1.2 (Supplier agreements) Teil von Art.28 (AVV-Pflichten).
 
   - source: '16.1.1'
-    target: 'Art.33'
+    target: 'GDPR-33'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -567,14 +567,14 @@ mappings:
     cross_refs: ['Art.34']
 
   - source: '16.1.2'
-    target: 'Art.33'
+    target: 'GDPR-33'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
       27002:2013 16.1.2 (Reporting events) Teil von Art.33.
 
   - source: '16.1.7'
-    target: 'Art.33'
+    target: 'GDPR-33'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -582,7 +582,7 @@ mappings:
       Dokumentation) plus forensische Anforderungen.
 
   - source: '17.1.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -600,7 +600,7 @@ mappings:
     cross_refs: ['Art.46']
 
   - source: '18.1.4'
-    target: 'Art.5'
+    target: 'GDPR-5.1.a'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -610,7 +610,7 @@ mappings:
     audit_evidence_hint: 'Datenschutz-Policy, RoPA, TIA, AVV.'
 
   - source: '18.2.1'
-    target: 'Art.32'
+    target: 'GDPR-32'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
