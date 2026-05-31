@@ -467,21 +467,14 @@
             if (!window.Chart) return;
             _built = true;
 
-            // Chart.js 4 requires explicit Colors-plugin registration; without
-            // it auto-generated dataset colours are unavailable. We supply
-            // explicit colours below regardless, so this is belt-and-braces.
-            if (window.Chart.Colors) {
-                try { Chart.register(Chart.Colors); } catch (e) { /* already registered */ }
-            }
+            // NOTE: do NOT register Chart.Colors — that plugin can override our
+            // explicit per-segment colours and re-introduce the all-black render.
+            // We pass concrete Aurora hex directly (canvas cannot parse var()).
 
             // Confidence Distribution Donut Chart
             const confidenceCtx = document.getElementById('confidenceChart');
             if (confidenceCtx && !Chart.getChart(confidenceCtx)) {
-                const confColors = [
-                    token('--success', AURORA.success),
-                    token('--warning', AURORA.warning),
-                    token('--danger', AURORA.danger)
-                ];
+                const confColors = [AURORA.success, AURORA.warning, AURORA.danger];
                 new Chart(confidenceCtx, {
                     type: 'doughnut',
                     data: {
@@ -540,10 +533,10 @@
                 ];
 
                 const backgroundColors = gapLabels.map(function(label) {
-                    if (label === 'CRITICAL') return token('--danger-strong', AURORA.dangerStrong);
-                    if (label === 'HIGH') return token('--danger', AURORA.danger);
-                    if (label === 'MEDIUM') return token('--info', AURORA.info);
-                    return token('--fg-3', AURORA.fg3);
+                    if (label === 'CRITICAL') return AURORA.dangerStrong;
+                    if (label === 'HIGH') return AURORA.danger;
+                    if (label === 'MEDIUM') return AURORA.warning;
+                    return AURORA.fg3;
                 });
 
                 new Chart(gapStatsCtx, {
