@@ -11,7 +11,7 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
 
-![Version](https://img.shields.io/badge/Version-v3.7-informational)
+![Version](https://img.shields.io/badge/Version-v3.9-informational)
 ![Entities](https://img.shields.io/badge/Entities-113-informational)
 ![Frameworks](https://img.shields.io/badge/Frameworks-25_komplett-informational)
 ![Controls](https://img.shields.io/badge/ISO%2027001%20Controls-93-informational)
@@ -93,7 +93,22 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ---
 
-## Was ist neu in v3.7?
+## Was ist neu in v3.9?
+
+v3.9 ist ein grosses Sammel-Release -- viele Wochen an Fixes und Verbesserungen
+gebuendelt in eine Version. Schwerpunkte:
+
+- **Navigation-Korrektheit** -- Hauptbereichs-Hervorhebung und Breadcrumbs nach dem Sidebar-Umbau konsolidiert (ein geordneter Resolver als Single-Source-of-Truth)
+- **Async-Export-Jobs** -- Zertifizierungs-Paket, VVT, DORA-Register, Nutzer-/Policy-/Analytics-Export laufen zuverlaessig (In-Request-Runner statt haengender Messenger-Queue)
+- **Charts** -- kein externes CDN mehr, registriertes + Aurora-gestyltes Chart.js global; Tab-Charts rendern korrekt
+- **Onboarding** -- Glossar-Tooltips auf Norm-Begriffen, ISB-Tour-Risikoschritt, Inline-Form-Hinweise
+- **CI-Qualitaets-Gates** -- neue Guards gegen Navigations-Drift, tote Breadcrumb-Links, ungueltige Routen-Referenzen und Fehl-Dispatch von Jobs
+
+> Hinweis: 3.8.0 wurde als defekt zurueckgezogen -- bitte 3.9.0 oder neuer verwenden.
+
+Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
+
+### Grundlagen (seit v3.7)
 
 | Bereich | Neuerung |
 |---|---|
@@ -276,14 +291,55 @@ Bonus: [**Quickstart-Guide mit 11-Schritte-Setup-Wizard**](docs/QUICKSTART.md) Â
 
 ### Docker (empfohlen)
 
+**Fertiges Image -- All-in-One mit embedded MariaDB.** Das Image wird bei jedem
+Release nach Docker Hub (kanonisch) und GitHub Container Registry (Mirror)
+veroeffentlicht:
+
+```bash
+# Docker Hub (kanonisch)
+docker run -d \
+  --name little-isms-helper \
+  -p 8080:80 \
+  -v isms_data:/var/lib/mysql \
+  -v isms_uploads:/var/www/html/public/uploads \
+  moag2000/little-isms-helper:3.9.0
+
+# ... oder GitHub Container Registry (Mirror)
+#   ghcr.io/moag1000/little-isms-helper:3.9.0
+
+# Oeffnen: http://localhost:8080/setup
+```
+
+Verfuegbare Tags: `:3.9.0` (genaue Version -- fuer Produktion empfohlen),
+`:3.9`, `:latest`. Pinne in Produktion auf die exakte Version.
+
+**Docker Compose:**
+
+```yaml
+services:
+  isms:
+    image: moag2000/little-isms-helper:3.9.0
+    ports:
+      - "8080:80"
+    volumes:
+      - isms_data:/var/lib/mysql
+      - isms_uploads:/var/www/html/public/uploads
+    environment:
+      - APP_ENV=prod
+      - APP_SECRET=<langes-zufaelliges-secret>
+    restart: unless-stopped
+
+volumes:
+  isms_data:
+  isms_uploads:
+```
+
+Alternativ aus dem Quellcode bauen:
+
 ```bash
 git clone https://github.com/moag1000/Little-ISMS-Helper.git
 cd Little-ISMS-Helper
-
-# Production -- All-in-One mit embedded MariaDB
 docker-compose -f docker-compose.prod.yml up -d
-
-# Oeffnen: http://localhost/setup
 ```
 
 Siehe [DOCKER_PRODUCTION.md](docs/deployment/DOCKER_PRODUCTION.md) fuer Details.

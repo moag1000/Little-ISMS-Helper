@@ -2,7 +2,7 @@
 
 **Moderne, webbasierte ISMS-Lösung für KMUs – ISO 27001:2022 konform**
 
-[![Version](https://img.shields.io/badge/Version-3.2.6-success)](https://github.com/moag1000/Little-ISMS-Helper/releases)
+[![Version](https://img.shields.io/badge/Version-3.9.0-success)](https://github.com/moag1000/Little-ISMS-Helper/releases)
 [![PHP](https://img.shields.io/badge/PHP-8.5-777BB4)](https://www.php.net/)
 [![Symfony](https://img.shields.io/badge/Symfony-7.4-000000)](https://symfony.com/)
 [![License](https://img.shields.io/badge/License-AGPL%20v3-blue)](https://github.com/moag1000/Little-ISMS-Helper/blob/main/LICENSE)
