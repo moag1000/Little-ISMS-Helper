@@ -43,6 +43,7 @@ final class ComplianceWizardService
         private readonly EuRegulatoryFrameworkCategoryProvider $euProvider,
         private readonly BsiFrameworkCategoryProvider $bsiProvider,
         private readonly OtherFrameworkCategoryProvider $otherProvider,
+        private readonly \App\Service\Tisax\TisaxMaturityAssessmentService $tisaxMaturityAssessmentService,
     ) {
     }
 
@@ -541,6 +542,7 @@ final class ComplianceWizardService
 
         $result = match ($type) {
             'control_coverage' => $this->coverageCheckService->checkControlCoverage($check, $tenant),
+            'maturity_coverage' => $this->checkMaturityCoverage($check, $tenant),
             'risk_coverage' => $this->coverageCheckService->checkRiskCoverage($check, $tenant),
             'asset_coverage' => $this->coverageCheckService->checkAssetCoverage($check, $tenant),
             'incident_process' => $this->coverageCheckService->checkIncidentProcess($check, $tenant),
@@ -577,6 +579,72 @@ final class ComplianceWizardService
             'gap' => $result['gap'] ?? null,
             'route' => $check['route'] ?? null,
             'module' => $check['module'] ?? null,
+        ];
+    }
+
+    /**
+     * Maturity-based coverage for TISAX/VDA-ISA modules.
+     *
+     * Derives fulfilment from the imported Reifegrad
+     * (ComplianceRequirement.maturityCurrent, AL3 target = level 3 → "established"
+     * counts as 100 %) instead of generic ISO-control implementation, so a
+     * VDA-ISA workbook the tenant uploaded is actually reflected. Requires
+     * $check['framework'] (the framework code whose tenant-uploaded rows hold the
+     * Reifegrad). Returns the standard {score, details, gap} shape.
+     *
+     * @param array<string, mixed> $check
+     * @return array{score: float, details: array<string, mixed>, gap: ?array<string, mixed>}
+     */
+    private function checkMaturityCoverage(array $check, ?Tenant $tenant): array
+    {
+        $frameworkCode = $check['framework'] ?? null;
+        $framework = is_string($frameworkCode)
+            ? $this->frameworkRepository->findOneBy(['code' => $frameworkCode])
+            : null;
+
+        $notAssessedGap = [
+            'title' => 'wizard.gap.maturity_not_assessed',
+            'description' => 'wizard.gap.maturity_not_assessed_description',
+            'priority' => 'high',
+            'action' => 'wizard.action.import_maturity',
+            'route' => $check['route'] ?? null,
+        ];
+
+        if ($framework === null || $tenant === null) {
+            return [
+                'score' => 0.0,
+                'details' => ['type' => 'maturity', 'total' => 0, 'fulfilled' => 0],
+                'gap' => $notAssessedGap,
+            ];
+        }
+
+        $tier = is_string($check['tier'] ?? null) ? $check['tier'] : null;
+        $coverage = $this->tisaxMaturityAssessmentService->computeCoverage($framework, $tenant, $tier);
+
+        $gap = null;
+        if ($coverage['score'] < 100) {
+            $gap = $coverage['total'] === 0
+                ? $notAssessedGap
+                : [
+                    'title' => 'wizard.gap.maturity_below_target',
+                    'description' => 'wizard.gap.maturity_below_target_description',
+                    'description_params' => ['%count%' => count($coverage['not_fulfilled'])],
+                    'priority' => count($coverage['not_fulfilled']) > 5 ? 'critical' : 'high',
+                    'action' => 'wizard.action.improve_maturity',
+                    'route' => $check['route'] ?? null,
+                    'items' => array_slice($coverage['not_fulfilled'], 0, 5),
+                ];
+        }
+
+        return [
+            'score' => $coverage['score'],
+            'details' => [
+                'type' => 'maturity',
+                'total' => $coverage['total'],
+                'fulfilled' => $coverage['fulfilled'],
+                'not_fulfilled' => count($coverage['not_fulfilled']),
+            ],
+            'gap' => $gap,
         ];
     }
 

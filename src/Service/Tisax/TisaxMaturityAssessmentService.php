@@ -499,6 +499,86 @@ final class TisaxMaturityAssessmentService
     }
 
     /**
+     * Binary fulfilment coverage for the readiness wizard.
+     *
+     * A requirement counts as FULFILLED when:
+     *   - IS / PP tier: its Reifegrad reaches the AL3 target level (>= 3,
+     *     "established") — Reifegrad 3 is treated as 100 % fulfilled.
+     *   - DP tier: its tristate state is 'compliant'. 'not_applicable' rows are
+     *     dropped from the denominator (justified exclusion, not a gap);
+     *     'non_compliant' / unassessed count as gaps.
+     *
+     * Only tenant-uploaded rows (the user's own VDA-ISA workbook) are scored, so
+     * a fresh tenant with no upload yields total 0 → score 0 with an "assess"
+     * gap, and a fully-assessed AL3 workbook yields 100 %.
+     *
+     * When $tier is given (information_security | prototype_protection |
+     * data_protection) only that tier is scored — so each TISAX wizard category
+     * reflects its own tier instead of the whole workbook.
+     *
+     * @return array{total:int, fulfilled:int, score:float, not_fulfilled:list<array{id:string,name:string}>}
+     */
+    public function computeCoverage(ComplianceFramework $framework, Tenant $tenant, ?string $tier = null, int $targetLevel = 3): array
+    {
+        /** @var list<ComplianceRequirement> $rows */
+        $rows = $this->em->getRepository(ComplianceRequirement::class)->findBy([
+            'framework'         => $framework,
+            'uploadTenant'      => $tenant,
+            'requirementSource' => 'tenant_upload',
+        ]);
+
+        $levelToInt = array_flip(self::LEVEL_MAP);
+        $assessable = 0;
+        $fulfilled  = 0;
+        $notFulfilled = [];
+
+        foreach ($rows as $req) {
+            $category = $req->getCategory() ?? 'information_security';
+
+            if ($tier !== null && $category !== $tier) {
+                continue;
+            }
+
+            if ($category === 'data_protection') {
+                $state = $req->getAssessmentStateDp();
+                if ($state === 'not_applicable') {
+                    continue; // justified exclusion — out of the denominator
+                }
+                $assessable++;
+                if ($state === 'compliant') {
+                    $fulfilled++;
+                } else {
+                    $notFulfilled[] = ['id' => $req->getRequirementId() ?? '', 'name' => $req->getTitle() ?? ''];
+                }
+                continue;
+            }
+
+            // IS / PP tier — Reifegrad 0-5 (stored as a label, with a numeric
+            // fallback for pre-enum-migration rows).
+            $assessable++;
+            $current = $req->getMaturityCurrent();
+            $level = $current === null
+                ? null
+                : ($levelToInt[$current] ?? (is_numeric($current) ? (int) $current : null));
+
+            if ($level !== null && $level >= $targetLevel) {
+                $fulfilled++;
+            } else {
+                $notFulfilled[] = ['id' => $req->getRequirementId() ?? '', 'name' => $req->getTitle() ?? ''];
+            }
+        }
+
+        $score = $assessable > 0 ? round($fulfilled / $assessable * 100, 1) : 0.0;
+
+        return [
+            'total'         => $assessable,
+            'fulfilled'     => $fulfilled,
+            'score'         => $score,
+            'not_fulfilled' => $notFulfilled,
+        ];
+    }
+
+    /**
      * Invalidate aggregate cache for a specific framework + tenant pair.
      * Call after any write operation that changes requirement scores.
      */
