@@ -482,6 +482,18 @@ jobs:
         # (controls/incidents PDF, training/control emails, treatment-plan emails).
         # Deny-list of known-dead accessors — add the old name here on rename.
         run: python3 scripts/quality/check_template_entity_getters.py --quiet
+      - name: "Gate 54: sidebar main-area highlight parity"
+        # Every flyout-panel route must resolve, via the ordered nav_active
+        # resolver, to its own panel's area. Prevents the menu highlighting the
+        # wrong main area / none (the 44-defect Wave-5 drift, PR #788).
+        run: python3 scripts/quality/check_nav_area_parity.py --quiet
+      - name: "Gate 55: breadcrumb crumbs must link via url:"
+        # _breadcrumb.html.twig links a crumb only from `url:`; `path:`/`href:`
+        # keys render as silent dead text (~50 such crumbs fixed in PR #789).
+        run: python3 scripts/quality/check_breadcrumb_url_key.py --quiet
+      - name: "Gate 56: template path()/url() routes must exist"
+        # A literal path('typo') throws -> 500 at render; PHP unit tests miss it.
+        run: python3 scripts/quality/check_template_route_refs.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
