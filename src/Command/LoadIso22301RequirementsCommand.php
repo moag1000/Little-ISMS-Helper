@@ -205,6 +205,75 @@ class LoadIso22301RequirementsCommand extends Command
                 ],
             ],
 
+            // Clause 7: Support
+            [
+                'id' => 'ISO22301-7.1',
+                'title' => 'Resources',
+                'description' => 'The organization shall determine and provide the resources needed to establish, implement, maintain and continually improve the BCMS.',
+                'category' => 'Support',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_27001_controls' => ['7.1'],
+                ],
+            ],
+            [
+                'id' => 'ISO22301-7.2',
+                'title' => 'Competence',
+                'description' => 'The organization shall determine the necessary competence of persons performing work affecting BCMS performance and ensure those persons are competent.',
+                'category' => 'Support',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_27001_controls' => ['7.2'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'ISO22301-7.3',
+                'title' => 'Awareness',
+                'description' => 'Persons doing work under the organization\'s control shall be aware of the BC policy, their contribution to BCMS effectiveness, and the implications of not conforming.',
+                'category' => 'Support',
+                'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_27001_controls' => ['7.3'],
+                ],
+            ],
+            [
+                'id' => 'ISO22301-7.4',
+                'title' => 'Communication',
+                'description' => 'The organization shall determine the internal and external communications relevant to the BCMS, including what, when, with whom, and how to communicate.',
+                'category' => 'Support',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_27001_controls' => ['7.4'],
+                    'bcm_required' => true,
+                ],
+            ],
+            [
+                'id' => 'ISO22301-7.5',
+                'title' => 'Documented Information',
+                'description' => 'The organization shall include documented information required by the standard and determined as necessary for BCMS effectiveness; controls for creation, update, and availability are required.',
+                'category' => 'Support',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_27001_controls' => ['7.5'],
+                    'audit_evidence' => true,
+                    'bcm_required' => true,
+                ],
+            ],
+
+            // Clause 8.1: Operational Planning and Control
+            [
+                'id' => 'ISO22301-8.1',
+                'title' => 'Operational Planning and Control',
+                'description' => 'The organization shall plan, implement, control, and review the processes needed to meet BCMS requirements and implement the actions determined in Clause 6.',
+                'category' => 'Operations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'bcm_required' => true,
+                    'iso_27001_controls' => ['8.1'],
+                ],
+            ],
+
             // Clause 8.2: Business Impact Analysis
             [
                 'id' => 'ISO22301-8.2.1',
@@ -238,6 +307,18 @@ class LoadIso22301RequirementsCommand extends Command
                 ],
             ],
 
+            [
+                'id' => 'ISO22301-8.2.4',
+                'title' => 'Risk Assessment (BIA Context)',
+                'description' => 'The organization shall identify and assess risks to the prioritized activities and supporting resources identified in the BIA, providing the basis for strategy selection.',
+                'category' => 'Business Impact Analysis',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'bcm_required' => true,
+                    'iso_27001_controls' => ['6.1'],
+                ],
+            ],
+
             // Clause 8.3: Business Continuity Strategy
             [
                 'id' => 'ISO22301-8.3.1',
@@ -257,6 +338,28 @@ class LoadIso22301RequirementsCommand extends Command
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'bcm_required' => true,
+                ],
+            ],
+
+            [
+                'id' => 'ISO22301-8.3.3',
+                'title' => 'Resource Requirements',
+                'description' => 'The organization shall identify and document the resources required to implement the selected BC strategies, including people, information, technology, premises, and supplies.',
+                'category' => 'BC Strategy',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'bcm_required' => true,
+                ],
+            ],
+            [
+                'id' => 'ISO22301-8.3.4',
+                'title' => 'Protection and Mitigation',
+                'description' => 'Where identified as a strategy option, the organization shall implement measures to reduce the likelihood or impact of a disruption on its prioritized activities.',
+                'category' => 'BC Strategy',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'bcm_required' => true,
+                    'iso_27001_controls' => ['8.8'],
                 ],
             ],
 
@@ -306,13 +409,38 @@ class LoadIso22301RequirementsCommand extends Command
                 ],
             ],
 
-            // Clause 8.5: Exercising and Testing
+            [
+                'id' => 'ISO22301-8.4.5',
+                'title' => 'Recovery',
+                'description' => 'The organization shall establish, implement, and maintain documented procedures enabling it to return prioritized activities to normal operating levels within required time frames following a disruption.',
+                'category' => 'BC Plans',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'bcm_required' => true,
+                    'iso_27001_controls' => ['5.30'],
+                ],
+            ],
+
+            // Clause 8.5: Exercise Programme
             [
                 'id' => 'ISO22301-8.5',
-                'title' => 'Exercising and Testing',
-                'description' => 'The organization shall exercise and test its business continuity procedures at planned intervals.',
+                'title' => 'Exercise Programme',
+                'description' => 'The organization shall establish, implement, and maintain an exercise programme to validate BC plans and procedures and identify opportunities for improvement at planned intervals.',
                 'category' => 'Testing',
                 'priority' => 'critical',
+                'data_source_mapping' => [
+                    'bcm_required' => true,
+                    'audit_evidence' => true,
+                ],
+            ],
+
+            // Clause 8.6: Evaluation of Business Continuity Documentation and Capabilities
+            [
+                'id' => 'ISO22301-8.6',
+                'title' => 'Evaluation of Business Continuity Documentation and Capabilities',
+                'description' => 'The organization shall evaluate BC documentation and capabilities to confirm they remain fit for purpose, and shall update them when changes or exercise outcomes indicate a need for improvement.',
+                'category' => 'Testing',
+                'priority' => 'high',
                 'data_source_mapping' => [
                     'bcm_required' => true,
                     'audit_evidence' => true,
