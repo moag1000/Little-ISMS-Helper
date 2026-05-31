@@ -192,6 +192,32 @@ compliance:
             all: 'Alle'
             reset: 'Zurücksetzen'
             no_results: 'Keine Mappings entsprechen den Filtern.'
+        col:
+            relationship: 'Beziehung'
+            mqs: 'MQS'
+            provenance: 'Herkunft'
+            rationale: 'Begründung'
+            mqs_breakdown: 'MQS-Aufschlüsselung'
+            lifecycle: 'Lifecycle'
+        bulk:
+            status_change:
+                label: 'Status setzen'
+                target:
+                    draft: 'Entwurf'
+                    review: 'In Prüfung'
+                    approved: 'Freigegeben'
+                    published: 'Veröffentlicht'
+                    deprecated: 'Veraltet'
+            approve: 'Freigeben'
+            success: '%count% Mapping(s) aktualisiert.'
+            partial: '%changed% aktualisiert, %rejected% abgelehnt.'
+            error: 'Fehler beim Aktualisieren der Mappings.'
+            no_ids: 'Keine Mappings ausgewählt.'
+            invalid_status: 'Ungültiger Zielstatus.'
+        detail:
+            rationale_empty: '(Keine Begründung hinterlegt)'
+            mqs_na: 'n/a'
+            provenance_link: 'Quelle öffnen'
         tour:
             start: 'Mapping-Tour starten'
         # Beziehungstyp-Erklärungen (Glossar-Tooltip + Mapping-Detailseite)

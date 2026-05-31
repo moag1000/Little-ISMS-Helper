@@ -192,6 +192,32 @@ compliance:
             all: 'All'
             reset: 'Reset'
             no_results: 'No mappings match the filters.'
+        col:
+            relationship: 'Relationship'
+            mqs: 'MQS'
+            provenance: 'Provenance'
+            rationale: 'Rationale'
+            mqs_breakdown: 'MQS breakdown'
+            lifecycle: 'Lifecycle'
+        bulk:
+            status_change:
+                label: 'Set status'
+                target:
+                    draft: 'Draft'
+                    review: 'In review'
+                    approved: 'Approved'
+                    published: 'Published'
+                    deprecated: 'Deprecated'
+            approve: 'Approve'
+            success: '%count% mapping(s) updated.'
+            partial: '%changed% updated, %rejected% rejected.'
+            error: 'Error updating mappings.'
+            no_ids: 'No mappings selected.'
+            invalid_status: 'Invalid target status.'
+        detail:
+            rationale_empty: '(No rationale provided)'
+            mqs_na: 'n/a'
+            provenance_link: 'Open source'
         tour:
             start: 'Start mapping tour'
         # Relationship-type explanations (glossary tooltip + mapping detail page)

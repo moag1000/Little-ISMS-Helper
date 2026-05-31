@@ -27,6 +27,7 @@
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'mapping' } %}
 
     {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/compliance/mapping"{% endblock %}
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0">Cross-Framework Mappings
@@ -108,51 +109,146 @@
                 </div>
             </div>
             {% embed '_components/_table.html.twig' with {
-                'class': 'table-hover',
+                'class': 'table-hover mapping-list-table',
                 'theadClass': 'table-light',
                 'noMargin': true
             } %}
                 {% block table_head %}
+                {# Re-import macro inside embed scope (Pitfall #10) #}
+                {% trans_default_domain 'compliance' %}
                     <tr>
-                        <th scope="col">Source</th>
-                        <th scope="col">Target</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Percentage</th>
-                        <th scope="col">Confidence</th>
-                        <th scope="col">Review Status</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col" class="bulk-select-column" style="width:2.5rem;">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
+                        <th scope="col" style="width:1.5rem;" aria-label="{{ 'compliance.mapping.col.expand'|trans({}, 'compliance') }}"></th>
+                        <th scope="col">{{ 'common.source'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.target'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'compliance.mapping.filter.type'|trans({}, 'compliance') }}</th>
+                        <th scope="col">%</th>
+                        <th scope="col">{{ 'compliance.mapping.filter.confidence'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping.col.relationship'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping.col.mqs'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping.col.provenance'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.mapping.filter.status'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+    {% trans_default_domain 'compliance' %}
                     {% for mapping in mappings %}
-                        <tr data-mapping-filter-target="row"
+                        {# Main data row #}
+                        <tr class="mapping-row"
+                            data-mapping-filter-target="row"
                             data-source-fw="{{ mapping.sourceRequirement.framework.code }}"
                             data-target-fw="{{ mapping.targetRequirement.framework.code }}"
                             data-type="{{ mapping.mappingType }}"
                             data-confidence="{{ mapping.confidence }}"
                             data-status="{{ mapping.reviewStatus }}"
                             data-search="{{ (mapping.sourceRequirement.framework.code ~ ' ' ~ mapping.sourceRequirement.requirementId ~ ' ' ~ mapping.targetRequirement.framework.code ~ ' ' ~ mapping.targetRequirement.requirementId)|lower }}">
+                            {# Checkbox cell #}
+                            <td class="bulk-select-column">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       data-bulk-actions-target="item"
+                                       data-action="bulk-actions#selectItem"
+                                       value="{{ mapping.id }}"
+                                       aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ mapping.sourceRequirement.requirementId }} → {{ mapping.targetRequirement.requirementId }}">
+                            </td>
+                            {# Expand/collapse chevron #}
+                            <td class="text-center">
+                                {% if mapping.mappingRationale or mapping.mqsBreakdown %}
+                                <button type="button"
+                                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--xs mapping-expand-btn"
+                                        aria-expanded="false"
+                                        aria-controls="mapping-detail-{{ mapping.id }}"
+                                        aria-label="{{ 'compliance.mapping.col.rationale'|trans({}, 'compliance') }}"
+                                        onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='true'?'false':'true'); document.getElementById('mapping-detail-{{ mapping.id }}').hidden=!document.getElementById('mapping-detail-{{ mapping.id }}').hidden; this.querySelector('.chevron-icon').style.transform=this.getAttribute('aria-expanded')==='true'?'rotate(90deg)':'';">
+                                    <i class="fa-icon fa-icon--util-chevron-right chevron-icon" aria-hidden="true"
+                                       style="transition:transform .2s ease;"></i>
+                                </button>
+                                {% endif %}
+                            </td>
+                            {# Source #}
                             <td>
                                 <small class="text-muted">{{ mapping.sourceRequirement.framework.code }}</small><br>
                                 <strong>{{ mapping.sourceRequirement.requirementId }}</strong>
                             </td>
+                            {# Target #}
                             <td>
                                 <small class="text-muted">{{ mapping.targetRequirement.framework.code }}</small><br>
                                 <strong>{{ mapping.targetRequirement.requirementId }}</strong>
                             </td>
+                            {# Type badge #}
                             <td>
                                 {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.mappingType } %}
                             </td>
+                            {# Percentage progress bar #}
                             <td>
                                 {{ _fa_progress.render({ value: mapping.finalPercentage, tone: mapping.mappingBadgeClass, showText: true }) }}
                             </td>
+                            {# Confidence badge #}
                             <td>
                                 {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.confidence } %}
                             </td>
+                            {# Relationship badge + tooltip #}
+                            <td>
+                                {% if mapping.relationship %}
+                                    {% set relKey = 'compliance.mapping.rel_type.' ~ mapping.relationship ~ '.label' %}
+                                    {% set relDef = 'compliance.mapping.rel_type.' ~ mapping.relationship ~ '.def' %}
+                                    <span class="badge bg-info text-dark"
+                                          title="{{ relDef|trans({}, 'compliance') }}"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-placement="top">
+                                        {{ relKey|trans({}, 'compliance') }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted small">—</span>
+                                {% endif %}
+                            </td>
+                            {# MQS quality score badge #}
+                            <td>
+                                {% if mapping.qualityScore is not null %}
+                                    {% set mqsTone = mapping.qualityScore >= 75 ? 'success' : (mapping.qualityScore >= 50 ? 'warning' : 'danger') %}
+                                    <span class="badge bg-{{ mqsTone }}"
+                                          title="{{ 'compliance.mapping.gloss.mqs'|trans({}, 'compliance') }}"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-placement="top">
+                                        {{ mapping.qualityScore }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted small">{{ 'compliance.mapping.detail.mqs_na'|trans({}, 'compliance') }}</span>
+                                {% endif %}
+                            </td>
+                            {# Provenance: source label + optional URL link #}
+                            <td>
+                                {% if mapping.provenanceSource %}
+                                    <span class="small text-truncate d-inline-block" style="max-width:10rem;" title="{{ mapping.provenanceSource }}">
+                                        {{ mapping.provenanceSource }}
+                                    </span>
+                                    {% if mapping.provenanceUrl %}
+                                        <a href="{{ mapping.provenanceUrl }}"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="ms-1"
+                                           title="{{ 'compliance.mapping.detail.provenance_link'|trans({}, 'compliance') }}"
+                                           aria-label="{{ 'compliance.mapping.detail.provenance_link'|trans({}, 'compliance') }}">
+                                            <i class="fa-icon fa-icon--ui-external-link" aria-hidden="true"></i>
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted small">—</span>
+                                {% endif %}
+                            </td>
+                            {# Review status badge #}
                             <td>
                                 {% include '_components/_badge.html.twig' with { variant: mapping.reviewStatusBadgeClass, content: mapping.reviewStatus } %}
                             </td>
+                            {# Actions #}
                             <td>
                                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                     <a href="{{ path('app_compliance_mapping_show', {id: mapping.id}) }}"
@@ -166,16 +262,82 @@
                                 </div>
                             </td>
                         </tr>
+                        {# Expandable detail row — shows rationale + MQS breakdown on demand #}
+                        {% if mapping.mappingRationale or mapping.mqsBreakdown %}
+                        <tr id="mapping-detail-{{ mapping.id }}"
+                            hidden
+                            class="mapping-detail-row table-light"
+                            data-mapping-filter-target="row"
+                            data-source-fw="{{ mapping.sourceRequirement.framework.code }}"
+                            data-target-fw="{{ mapping.targetRequirement.framework.code }}"
+                            data-type="{{ mapping.mappingType }}"
+                            data-confidence="{{ mapping.confidence }}"
+                            data-status="{{ mapping.reviewStatus }}"
+                            data-search="{{ (mapping.sourceRequirement.framework.code ~ ' ' ~ mapping.sourceRequirement.requirementId ~ ' ' ~ mapping.targetRequirement.framework.code ~ ' ' ~ mapping.targetRequirement.requirementId)|lower }}"
+                            data-detail-row="true">
+                            <td colspan="12" class="ps-5 py-2">
+                                <div class="row g-3">
+                                    {% if mapping.mappingRationale %}
+                                    <div class="col-12 col-md-6">
+                                        <p class="small fw-semibold mb-1 text-muted">
+                                            <i class="fa-icon fa-icon--nav-document me-1" aria-hidden="true"></i>
+                                            {{ 'compliance.mapping.col.rationale'|trans({}, 'compliance') }}
+                                        </p>
+                                        <p class="small mb-0">{{ mapping.mappingRationale }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if mapping.mqsBreakdown %}
+                                    <div class="col-12 col-md-6">
+                                        <p class="small fw-semibold mb-1 text-muted">
+                                            <i class="fa-icon fa-icon--nav-analytics me-1" aria-hidden="true"></i>
+                                            {{ 'compliance.mapping.col.mqs_breakdown'|trans({}, 'compliance') }}
+                                        </p>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            {% for dim, score in mapping.mqsBreakdown %}
+                                                <span class="badge bg-secondary">{{ dim }}: {{ score }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
                     {% endfor %}
                     <tr data-mapping-filter-target="noResults" style="display: none;">
-                        <td colspan="7" class="text-center text-muted py-4">
+                        <td colspan="12" class="text-center text-muted py-4">
                             {{ 'compliance.mapping.filter.no_results'|trans({}, 'compliance') }}
                         </td>
                     </tr>
                 {% endblock %}
             {% endembed %}
+
+            {# Bulk Action Bar — wired to bulk-actions controller on the card wrapper #}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['approve', 'status_change']
+            } %}
+            {# Override status_change dropdown labels with mapping lifecycle states #}
+            <template id="mapping-bulk-status-labels" data-draft="{{ 'compliance.mapping.bulk.status_change.target.draft'|trans({}, 'compliance') }}" data-review="{{ 'compliance.mapping.bulk.status_change.target.review'|trans({}, 'compliance') }}" data-approved="{{ 'compliance.mapping.bulk.status_change.target.approved'|trans({}, 'compliance') }}" data-published="{{ 'compliance.mapping.bulk.status_change.target.published'|trans({}, 'compliance') }}" data-deprecated="{{ 'compliance.mapping.bulk.status_change.target.deprecated'|trans({}, 'compliance') }}"></template>
             {% endif %}
         {% endblock %}
     {% endembed %}
 </div>
+
+{# Initialise Bootstrap tooltips for relationship and MQS badges via Turbo-compatible approach #}
+<script>
+(function () {
+    function initTooltips() {
+        var els = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        if (window.bootstrap && window.bootstrap.Tooltip) {
+            els.forEach(function (el) {
+                if (!el._bsTooltip) {
+                    new window.bootstrap.Tooltip(el);
+                }
+            });
+        }
+    }
+    document.addEventListener('turbo:load', initTooltips);
+    document.addEventListener('DOMContentLoaded', initTooltips);
+}());
+</script>
 {% endblock %}
