@@ -31,6 +31,12 @@
 
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'quality' } %}
 
+    {# Tenant-globale Alva-Hints für das Qualitäts-Dashboard #}
+    {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+    {% for _h in alva_hints('app_mapping_quality_dashboard') %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+
     {# Empty State for No Mappings #}
     {% if quality_stats.total_mappings == 0 %}
     <div class="fa-alert fa-alert--warning" role="alert">
@@ -65,14 +71,14 @@
 
     {# Quality Statistics Cards #}
     {% if quality_stats.total_mappings > 0 %}
-    <div class="row mb-4">
+    <div class="row mb-4" data-tour="mapping-quality">
         <div class="col-md-3">
             {{ _fa_feature_card.render({ label: 'compliance.stats.total_mappings'|trans({}, 'compliance'), value: quality_stats.total_mappings, variant: 'primary' }) }}
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({ label: 'compliance.mapping_quality.progress.analyzed'|trans({}, 'compliance'), value: quality_stats.scored_mappings, hint: quality_stats.analysis_coverage ~ '%', variant: 'success' }) }}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3" data-tour="mapping-lifecycle">
             {{ _fa_feature_card.render({ label: 'compliance.mapping_quality.needs_urgent_review'|trans({}, 'compliance'), value: quality_stats.requires_review, variant: 'warning' }) }}
         </div>
         <div class="col-md-3">

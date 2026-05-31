@@ -145,6 +145,23 @@ help:
             compliance_framework:
                 name: "Compliance Framework"
                 definition: "A set of rules/standards that must be met (e.g., ISO 27001, TISAX, DORA, NIS2)."
+            mapping:
+                name: "Mapping"
+                definition: "A mapping is a bridge between two frameworks: it links a requirement from framework A (e.g. ISO 27001) to one from framework B (e.g. NIS2) and states their relationship (equivalent, subset, superset, partial_overlap, related). This avoids working through a requirement twice."
+                analogy: "Like a QMS cross-reference table — one piece of evidence covers several clauses."
+            coverage:
+                name: "Coverage"
+                definition: "Coverage is the percentage of a framework already covered by your fulfilled controls. The missing percent is your to-do list: unmapped or not-yet-fulfilled requirements (ISO 27001 Cl. 6.1.3)."
+            inheritance:
+                name: "Inheritance / Data reuse"
+                definition: "Inheritance is the mechanism behind mapping: fulfil a requirement in framework A once and, via the mapping, it automatically counts for the linked framework B too. One piece of evidence, multiple ticks."
+                analogy: "Like an ISO 9001 CAPA that covers several processes at once."
+            confidence_mqs:
+                name: "Confidence vs. MQS"
+                definition: "Two numbers, two questions: Confidence says how sure the mapping's content claim is. The MQS (Mapping Quality Score) says how well the mapping is evidenced and maintained (provenance, methodology, lifecycle). High confidence with low MQS means: plausible in content, but thinly documented."
+            mapping_lifecycle:
+                name: "Mapping lifecycle (draft / published)"
+                definition: "A mapping in 'draft' status is not yet reviewed and does NOT count towards coverage. Only after the review gate — i.e. 'published' — does it become operational. Lots of drafts = your review pile."
             audit:
                 name: "Audit"
                 definition: "Systematic review of whether requirements are fulfilled."

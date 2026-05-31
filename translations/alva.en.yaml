@@ -519,3 +519,12 @@ alva_hint:
             title: 'Residual score (%residual%) > initial score (%initial%)'
             body: 'ISO 27005 Cl. 8.4 defines residual risk as "the risk remaining after risk treatment" — i.e. by definition ≤ initial. A higher residual usually points to swapped axes or a typo. Please review residualProbability and residualImpact.'
             action: 'Open risk-matrix guidance'
+        mapping_concept_primer:
+            title: 'New to mappings? In a nutshell'
+            body: 'A mapping is a bridge between two frameworks: it says "this ISO 27001 requirement means the same as that NIS2 one". The trick: fulfil it once and, through inheritance, it automatically counts in the other framework too (data reuse). Like an ISO 9001 CAPA covering several processes. For the full walkthrough, click "Start mapping tour" at the top right.'
+        mapping_coverage_primer:
+            title: 'Reading the coverage %'
+            body: 'Coverage shows what percentage of a framework is already covered by your fulfilled controls. The missing percent is not an error message but your to-do list: unmapped or not-yet-fulfilled requirements. Those gaps are exactly what you tackle next. (ISO 27001 Cl. 6.1.3)'
+        mapping_quality_primer:
+            title: 'Two quality numbers — what do they mean?'
+            body: 'Confidence answers "how sure is the content of the link?". MQS (Mapping Quality Score) answers "how well is it evidenced and maintained?" — provenance, methodology, lifecycle. Important: a mapping in "draft" status does NOT yet count towards coverage — only after review ("published") does it take effect.'

@@ -145,6 +145,23 @@ help:
             compliance_framework:
                 name: "Compliance Framework"
                 definition: "Regelwerk/Standard dem man genuegen muss (z.B. ISO 27001, TISAX, DORA, NIS2)."
+            mapping:
+                name: "Mapping (Zuordnung)"
+                definition: "Ein Mapping ist eine Bruecke zwischen zwei Frameworks: Es verbindet eine Anforderung aus Framework A (z.B. ISO 27001) mit einer aus Framework B (z.B. NIS2) und sagt, in welchem Verhaeltnis sie stehen (equivalent, subset, superset, partial_overlap, related). So muss eine Anforderung nicht doppelt abgearbeitet werden."
+                analogy: "Wie die Querverweistabelle eines QMS — ein Nachweis deckt mehrere Normpunkte ab."
+            coverage:
+                name: "Coverage (Abdeckung)"
+                definition: "Coverage ist der Prozentsatz eines Frameworks, der bereits durch Ihre erfuellten Controls abgedeckt ist. Die fehlenden Prozente sind Ihre To-do-Liste: ungemappte oder noch nicht erfuellte Anforderungen (ISO 27001 Cl. 6.1.3)."
+            inheritance:
+                name: "Vererbung / Data-Reuse"
+                definition: "Vererbung ist der Mechanismus hinter dem Mapping: Erfuellen Sie eine Anforderung in Framework A einmal, zaehlt sie ueber das Mapping automatisch auch fuer das verknuepfte Framework B. Ein Nachweis, mehrere Haekchen."
+                analogy: "Wie eine 9001-CAPA, die gleich mehrere Prozesse abdeckt."
+            confidence_mqs:
+                name: "Confidence vs. MQS"
+                definition: "Zwei Zahlen, zwei Fragen: Confidence sagt, wie sicher die inhaltliche Aussage des Mappings ist. Der MQS (Mapping-Qualitaets-Score) sagt, wie gut das Mapping belegt und gepflegt ist (Herkunft, Methodik, Lebenszyklus). Hohe Confidence bei niedrigem MQS heisst: inhaltlich plausibel, aber duenn dokumentiert."
+            mapping_lifecycle:
+                name: "Mapping-Lifecycle (draft / published)"
+                definition: "Ein Mapping im Status 'draft' (Entwurf) ist noch nicht geprueft und zaehlt NICHT in der Coverage. Erst nach dem Review-Gate, also 'published', wird es operativ wirksam. Viele Entwuerfe = Ihr Review-Stapel."
             audit:
                 name: "Audit"
                 definition: "Systematische Pruefung ob Anforderungen erfuellt sind."

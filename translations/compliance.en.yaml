@@ -181,6 +181,29 @@ compliance:
         confirm_question: 'Do you really want to continue?'
         second_confirm: 'Are you sure? Framework will be permanently deleted!'
     mapping:
+        tour:
+            start: 'Start mapping tour'
+        # Relationship-type explanations (glossary tooltip + mapping detail page)
+        rel_type:
+            equivalent:
+                label: 'equivalent'
+                def: 'Both requirements mean practically the same thing — one to one. Fulfil one and the other is fulfilled too. Example: ISO 27001 A.5.1 ↔ NIS2 "risk-management policy". ISO 9001 analogy: an identical clause in two rulebooks.'
+            subset:
+                label: 'subset'
+                def: 'The source is a part of the broader target requirement. It fulfils the target only partially — other points remain open. Example: "password policy" (subset) covers only part of "access control" (target).'
+            superset:
+                label: 'superset'
+                def: 'The source is broader than the target and fully covers it — plus more. Fulfilling the source automatically fulfils the narrower target. The reverse does not hold.'
+            partial_overlap:
+                label: 'partial_overlap'
+                def: 'Source and target overlap only in part; each has its own aspects the other does not cover. Fulfilment counts only proportionally here — review the gap.'
+            related:
+                label: 'related'
+                def: 'Related in content but not congruent. Useful as a context reference, but not valid as direct evidence of fulfilment. ISO 9001 analogy: a "see also" cross-reference.'
+        # Glossary definitions for tooltips
+        gloss:
+            confidence: 'Confidence says: "how sure is the mapping''s content claim?" High = the two requirements match with high certainty. It says NOTHING about evidence quality — that is the MQS''s job.'
+            mqs: 'The Mapping Quality Score (MQS) rates how well a mapping is evidenced and maintained: provenance, methodology and lifecycle. High confidence with low MQS means: plausible in content, but thinly documented.'
         quality:
             no_mappings: 'No mappings found. Please create compliance mappings first.'
             no_analysis: 'No analysis performed yet. Run "php bin/console app:analyze-mapping-quality" first.'
@@ -328,6 +351,9 @@ compliance:
             type: 'Mapping Type'
             calculated: Calculated
             analysis_confidence: 'Analysis Confidence'
+            mapping_type: 'Relationship type'
+            confidence: 'Confidence'
+            mqs: 'Mapping Quality Score (MQS)'
         action:
             create: 'Create Mapping'
         help:

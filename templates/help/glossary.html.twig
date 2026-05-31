@@ -706,6 +706,82 @@
                     </div>
                 </div>
 
+                {# Mapping #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-mapping" aria-expanded="false" aria-controls="glossary-mapping">
+                            <strong>{{ 'help.glossary.term.mapping.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-mapping" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.mapping.definition'|trans({}, 'help') }}</p>
+                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'util-arrow-left', class: 'mb-0' } } %}
+                                {% block alert_body %}<strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong> {{ 'help.glossary.term.mapping.analogy'|trans({}, 'help') }}{% endblock %}
+                            {% endembed %}
+                        </div>
+                    </div>
+                </div>
+
+                {# Coverage #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-coverage" aria-expanded="false" aria-controls="glossary-coverage">
+                            <strong>{{ 'help.glossary.term.coverage.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-coverage" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.coverage.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Inheritance / Vererbung #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-inheritance" aria-expanded="false" aria-controls="glossary-inheritance">
+                            <strong>{{ 'help.glossary.term.inheritance.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-inheritance" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.inheritance.definition'|trans({}, 'help') }}</p>
+                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'util-arrow-left', class: 'mb-0' } } %}
+                                {% block alert_body %}<strong>{{ 'help.glossary.analogy_label'|trans({}, 'help') }}</strong> {{ 'help.glossary.term.inheritance.analogy'|trans({}, 'help') }}{% endblock %}
+                            {% endembed %}
+                        </div>
+                    </div>
+                </div>
+
+                {# Confidence vs. MQS #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-confidence-mqs" aria-expanded="false" aria-controls="glossary-confidence-mqs">
+                            <strong>{{ 'help.glossary.term.confidence_mqs.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-confidence-mqs" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.confidence_mqs.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Mapping-Lifecycle (draft / published) #}
+                <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#glossary-mapping-lifecycle" aria-expanded="false" aria-controls="glossary-mapping-lifecycle">
+                            <strong>{{ 'help.glossary.term.mapping_lifecycle.name'|trans({}, 'help') }}</strong>
+                        </button>
+                    </h2>
+                    <div id="glossary-mapping-lifecycle" class="accordion-collapse collapse" data-bs-parent="#glossaryCompliance">
+                        <div class="accordion-body">
+                            <p>{{ 'help.glossary.term.mapping_lifecycle.definition'|trans({}, 'help') }}</p>
+                        </div>
+                    </div>
+                </div>
+
                 {# Audit #}
                 <div class="accordion-item" data-filter-target="filterableRow" data-category="compliance">
                     <h2 class="accordion-header">
