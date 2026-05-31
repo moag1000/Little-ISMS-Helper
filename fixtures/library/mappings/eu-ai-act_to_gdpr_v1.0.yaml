@@ -168,7 +168,7 @@ mappings:
 
   - source: 'Art.13'
     target: 'Art.13'
-    relationship: 'partial_overlap'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       AI Act Art. 13 (Transparenz und Informationsbereitstellung für

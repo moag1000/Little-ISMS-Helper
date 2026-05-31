@@ -79,7 +79,7 @@ mappings:
   # --- A.1 Consent and choice ---
   - source: 'A.1.1'
     target: 'Art.12'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27018 A.1.1 "Obligation to co-operate regarding PII principals'
@@ -117,7 +117,7 @@ mappings:
   # --- A.3 Collection limitation ---
   - source: 'A.3.1'
     target: 'Art.28'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27018 A.3.1 "Contract measures" verlangt vertragliche Pflichten
@@ -129,7 +129,7 @@ mappings:
   # --- A.4 Data minimization ---
   - source: 'A.4.1'
     target: 'Art.30'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27018 A.4.1 "Secure erasure of temporary files" verlangt Loeschung
@@ -192,7 +192,7 @@ mappings:
   # --- A.7 Openness, transparency and notice ---
   - source: 'A.7.1'
     target: 'Art.44'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27018 A.7.1 "Geographic location of PII" verlangt Transparenz
@@ -204,7 +204,7 @@ mappings:
 
   - source: 'A.7.2'
     target: 'Art.46'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27018 A.7.2 (Intended destination of PII) verlangt Information
@@ -230,7 +230,7 @@ mappings:
   # --- A.9 Accountability ---
   - source: 'A.9.1'
     target: 'Art.28'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       ISO 27018 A.9.1 "PII return, transfer and disposal" verlangt vertragliche
@@ -601,7 +601,7 @@ mappings:
 
   - source: '18.1.4'
     target: 'Art.5'
-    relationship: 'equivalent'
+    relationship: 'subset'
     confidence: 'high'
     rationale: |
       27002:2013 18.1.4 "Privacy and protection of PII" entspricht direkt
