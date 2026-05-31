@@ -50,9 +50,11 @@
         })();
     </script>
 
-    {# Bootstrap zuerst — Aurora (via importmap) kommt danach und überschreibt. #}
+    {# Bootstrap zuerst — Aurora-Layer danach (Cascade-Order). #}
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    {{ importmap(['app', 'styles']) }}
+    {# Aurora-Layer als parallele <link> (kein @import-Barrel → kein FOUC). #}
+    {{ include('_aurora_styles.html.twig') }}
+    {{ importmap(['app']) }}
     <meta name="turbo-cache-control" content="no-cache">
     {% block step_head %}{% endblock %}
 </head>
