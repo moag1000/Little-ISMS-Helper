@@ -99,8 +99,13 @@
                 </p>
             {% endblock %}
         {% endembed %}
-        <script type="module">
-            import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js/+esm';
+        <script>
+        // Uses the app.js global window.Chart (registered + Aurora-themed) instead
+        // of a CDN ES-module import. turbo:load guarantees app.js has run and
+        // function-scopes the const declarations against Turbo re-execution.
+        document.addEventListener('turbo:load', function () {
+            if (!window.Chart) { return; }
+            const Chart = window.Chart;
             const el = document.getElementById('reuseTrendChart');
             if (el) {
                 const labels = JSON.parse(el.dataset.labels);
@@ -127,6 +132,7 @@
                     }
                 });
             }
+        });
         </script>
     {% elseif reuse_trend is defined %}
         {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: 'portfolio_report.reuse_trend.empty'|trans({}, 'portfolio_report') }) }}

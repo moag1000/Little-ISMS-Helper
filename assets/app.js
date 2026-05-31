@@ -32,13 +32,16 @@ import {
     Chart,
     ArcElement, BarElement, LineElement, PointElement,
     CategoryScale, LinearScale, RadialLinearScale, TimeScale,
-    Title, Tooltip, Legend, Filler, SubTitle
+    Title, Tooltip, Legend, Filler, SubTitle, Colors
 } from 'chart.js';
 
+// Colors plugin registered for parity with the old CDN UMD bundle (which had
+// auto-registration), so pages that rely on Chart.js auto-colouring keep
+// working after the CDN <script> tags were removed in favour of this global.
 Chart.register(
     ArcElement, BarElement, LineElement, PointElement,
     CategoryScale, LinearScale, RadialLinearScale, TimeScale,
-    Title, Tooltip, Legend, Filler, SubTitle
+    Title, Tooltip, Legend, Filler, SubTitle, Colors
 );
 window.Chart = Chart;
 
