@@ -18,8 +18,8 @@
                     {{ plan.title|default('(ohne Titel)') }}
                 </p>
                 <p style="margin: 0; font-family: 'Courier New', monospace; font-size: 11px; color: #b45309;">
-                    {% if plan.deadline is defined %}Deadline: {{ plan.deadline|date('d.m.Y') }}{% endif %}
-                    {% if plan.daysRemaining is defined %} · Noch {{ plan.daysRemaining }} Tage{% endif %}
+                    {% if plan.targetCompletionDate %}Deadline: {{ plan.targetCompletionDate|date('d.m.Y') }}{% endif %}
+                    {% if plan.daysUntilTarget is not null %} · Noch {{ plan.daysUntilTarget }} Tage{% endif %}
                 </p>
             </td>
         </tr>
