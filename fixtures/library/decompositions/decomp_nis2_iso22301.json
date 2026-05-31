@@ -1,0 +1,266 @@
+[
+  {
+    "source": "NIS2-Art21(2)(c)-BC-general",
+    "target": "ISO22301:2019-8.1",
+    "relationship": "related",
+    "rationale": "NIS2 Art.21(2)(c) mandates business continuity measures at policy level; ISO 22301 §8.1 sets the operational planning and control baseline for the entire BCMS operation."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-backup-management",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "subset",
+    "rationale": "NIS2 backup management is a narrow sub-aspect of business continuity; ISO 22301 §8.2.2 (Business Impact Analysis) identifies which activities and data require backup/protection based on criticality and RTO/RPO analysis."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-backup-management",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "subset",
+    "rationale": "Backup solutions are a concrete continuity solution; ISO 22301 §8.3.2 (Identification of strategies and solutions) requires identification of resource-level solutions including data backup as a recovery mechanism."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-backup-management",
+    "target": "ISO22301:2019-8.3.3",
+    "relationship": "subset",
+    "rationale": "Selection of appropriate backup technology and frequency is governed by ISO 22301 §8.3.3 (Selection of strategies and solutions), which requires evaluating and selecting solutions that meet defined RTO/RPO."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-backup-management",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "subset",
+    "rationale": "Backup procedures and restore processes must be documented in the business continuity plans per ISO 22301 §8.4.4 (Business continuity plans), including responsible roles and restoration sequences."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-backup-management",
+    "target": "ISO22301:2019-8.4.5",
+    "relationship": "subset",
+    "rationale": "Recovery of data from backup directly maps to ISO 22301 §8.4.5 (Recovery), which mandates documented restoration procedures to return activities to normal operation."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-backup-management",
+    "target": "ISO22301:2019-8.5",
+    "relationship": "subset",
+    "rationale": "NIS2 implicitly requires verifying backup effectiveness through testing; ISO 22301 §8.5 (Exercise program) mandates scheduled exercises that must include restore-from-backup scenarios to validate recoverability."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-disaster-recovery",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "subset",
+    "rationale": "Disaster recovery scoping (what to recover, in what order) depends on the Business Impact Analysis outputs defined in ISO 22301 §8.2.2, particularly maximum tolerable periods of disruption and RTO."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-disaster-recovery",
+    "target": "ISO22301:2019-8.2.3",
+    "relationship": "subset",
+    "rationale": "Identifying disaster scenarios and their likelihood is addressed in ISO 22301 §8.2.3 (Risk assessment), which feeds the probability and impact data required to prioritise disaster recovery investments."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-disaster-recovery",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "subset",
+    "rationale": "Disaster recovery solutions (alternate sites, cloud failover, mirrored systems) are identified in ISO 22301 §8.3.2 as part of continuity strategy and solution identification."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-disaster-recovery",
+    "target": "ISO22301:2019-8.3.3",
+    "relationship": "subset",
+    "rationale": "Selecting the disaster recovery approach (hot/warm/cold standby, RTO targets) is formally governed by ISO 22301 §8.3.3 (Selection of strategies and solutions)."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-disaster-recovery",
+    "target": "ISO22301:2019-8.4.1",
+    "relationship": "equivalent",
+    "rationale": "ISO 22301 §8.4.1 (General — business continuity plans and procedures) requires documentation of procedures covering disruption response and recovery, which is the core operational content of a disaster recovery plan."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-disaster-recovery",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "subset",
+    "rationale": "ISO 22301 §8.4.2 (Response structure) defines the incident command and recovery team hierarchy activated during a disaster, which NIS2 DR implicitly requires but does not detail."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-disaster-recovery",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "equivalent",
+    "rationale": "ISO 22301 §8.4.4 (Business continuity plans) directly contains disaster recovery plan content requirements — scope, objectives, activation criteria, roles, recovery procedures — making it an equivalent mapping target."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-disaster-recovery",
+    "target": "ISO22301:2019-8.4.5",
+    "relationship": "equivalent",
+    "rationale": "ISO 22301 §8.4.5 (Recovery) prescribes documented restoration procedures to return to normal operations, which is the terminal phase of every disaster recovery process."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-disaster-recovery",
+    "target": "ISO22301:2019-8.5",
+    "relationship": "subset",
+    "rationale": "NIS2 requires proving DR plans work; ISO 22301 §8.5 (Exercise program) mandates a formal exercise schedule including DR simulations, failover drills, and evaluation of results."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-crisis-management",
+    "target": "ISO22301:2019-8.4.1",
+    "relationship": "partial_overlap",
+    "rationale": "Crisis management is broader than BCMS scope (it includes stakeholder communication, reputation, and legal dimensions); ISO 22301 §8.4.1 (General) overlaps by requiring operational procedures for managing disruptive incidents but does not prescribe full crisis governance."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-crisis-management",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "subset",
+    "rationale": "Crisis command structure, escalation thresholds, and executive decision authority are addressed in ISO 22301 §8.4.2 (Response structure), which NIS2 crisis management requires but does not detail."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-crisis-management",
+    "target": "ISO22301:2019-8.4.3",
+    "relationship": "equivalent",
+    "rationale": "ISO 22301 §8.4.3 (Warning and communication) governs internal and external crisis communications including authority, channels, and stakeholder notification — the core of crisis management communications."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-crisis-management",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "subset",
+    "rationale": "Crisis management plans must be documented; ISO 22301 §8.4.4 (Business continuity plans) includes requirements for documented plans with activation criteria and roles that serve as the documentary backbone of crisis management."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-crisis-management",
+    "target": "ISO22301:2019-8.5",
+    "relationship": "subset",
+    "rationale": "Crisis management exercises (tabletop, simulation) are required to validate plans; ISO 22301 §8.5 (Exercise program) mandates documented exercises with objectives, participants, and post-exercise evaluation."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-rto-rpo-definition",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "equivalent",
+    "rationale": "Defining acceptable downtime and data loss targets (RTO/RPO) is formally required by ISO 22301 §8.2.2 (Business impact analysis) as the MTPD and MBCO outputs that drive all recovery planning."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-rto-rpo-definition",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "related",
+    "rationale": "RTO/RPO values directly constrain which continuity strategies are acceptable; ISO 22301 §8.3.2 (Identification of strategies and solutions) uses these values to filter candidate solutions."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-resource-continuity",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "superset",
+    "rationale": "ISO 22301 §8.3.2 explicitly requires identifying resource requirements (people, information, technology, premises, supplies) to support continuity, which is more granular than NIS2's generic BC obligation."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-resource-continuity",
+    "target": "ISO22301:2019-8.3.3",
+    "relationship": "superset",
+    "rationale": "ISO 22301 §8.3.3 requires formal evaluation and selection of solutions per resource category with documented justification — more prescriptive than NIS2's outcome-based language."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-supply-chain-continuity",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "related",
+    "rationale": "ISO 22301 §8.2.2 requires identifying dependencies including supplier dependencies in the BIA, which overlaps with NIS2 Art.21(2)(c) where supply chain disruptions trigger BC obligations."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-supply-chain-continuity",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "related",
+    "rationale": "ISO 22301 §8.3.2 includes supply-chain continuity solutions (alternative suppliers, dual-sourcing) as an identification requirement, aligning with NIS2's expectation that BC covers supply chain scenarios."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-detection",
+    "target": "ISO22301:2019-8.4.1",
+    "relationship": "partial_overlap",
+    "rationale": "ISO 22301 §8.4.1 (General) requires awareness of incident nature and scope as a prerequisite to activating continuity plans, partially covering NIS2 incident detection but not the cybersecurity-specific detection tooling."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-detection",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "partial_overlap",
+    "rationale": "ISO 22301 §8.4.2 (Response structure) requires establishing triggers and thresholds for invoking the response structure, which partially covers NIS2's detection obligation but lacks cybersecurity-specific detection procedures."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-analysis",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "partial_overlap",
+    "rationale": "ISO 22301 §8.4.2 (Response structure) requires assessing incident scope and severity to determine appropriate response level, overlapping with NIS2's incident analysis obligation but not covering forensics or root-cause analysis."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-containment",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "partial_overlap",
+    "rationale": "ISO 22301 §8.4.4 (Business continuity plans) addresses limiting impact of disruptions through planned responses but focuses on operational continuity rather than cybersecurity-specific containment measures."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-response-procedures",
+    "target": "ISO22301:2019-8.4.4",
+    "relationship": "partial_overlap",
+    "rationale": "ISO 22301 §8.4.4 requires documented response procedures for each scenario, which overlaps with NIS2 incident response plan requirements, but the standard does not mandate cybersecurity playbooks or IR runbooks."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-response-procedures",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "partial_overlap",
+    "rationale": "ISO 22301 §8.4.2 (Response structure) defines roles, escalation paths, and decision authorities that parallel NIS2 IH response procedure requirements but with a broader operational rather than security-specific scope."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-recovery-from-incident",
+    "target": "ISO22301:2019-8.4.5",
+    "relationship": "equivalent",
+    "rationale": "ISO 22301 §8.4.5 (Recovery) directly mandates documented procedures for restoring normal operations after a disruption, which is equivalent to NIS2's requirement for incident recovery processes."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-post-incident-review",
+    "target": "ISO22301:2019-8.5",
+    "relationship": "partial_overlap",
+    "rationale": "ISO 22301 §8.5 (Exercise program) requires evaluation and improvement after exercises; NIS2 requires post-incident review after real incidents — the standard's exercise debrief process partially models but does not fully cover real-incident lessons-learned obligations."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-communication-stakeholders",
+    "target": "ISO22301:2019-8.4.3",
+    "relationship": "partial_overlap",
+    "rationale": "ISO 22301 §8.4.3 (Warning and communication) governs stakeholder communication during incidents, partially covering NIS2's requirement for incident communication, but NIS2 additionally mandates regulatory notification timelines under Art.23 not addressed by ISO 22301."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)-IH-exercise-and-testing",
+    "target": "ISO22301:2019-8.5",
+    "relationship": "subset",
+    "rationale": "NIS2 requires demonstrating effectiveness of incident handling through testing; ISO 22301 §8.5 (Exercise program) provides a superset structure including program design, scenario diversity, evaluation criteria, and improvement feedback loops."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-periodic-review",
+    "target": "ISO22301:2019-8.5",
+    "relationship": "subset",
+    "rationale": "NIS2 requires business continuity arrangements to be regularly tested and reviewed; ISO 22301 §8.5 (Exercise program) fully covers this through a mandatory, scheduled exercise program with documented outcomes and continual improvement."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-periodic-review",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "related",
+    "rationale": "Periodic review of BC arrangements includes re-running the BIA to capture changes in critical activities and dependencies; ISO 22301 §8.2.2 requires the BIA to be maintained and updated, supporting NIS2's review obligation."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-crisis-mgmt-escalation",
+    "target": "ISO22301:2019-8.4.2",
+    "relationship": "equivalent",
+    "rationale": "ISO 22301 §8.4.2 (Response structure) defines the escalation chain, decision authorities, and activation criteria for crisis response — directly equivalent to NIS2's crisis management escalation requirement."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-crisis-mgmt-communication-plan",
+    "target": "ISO22301:2019-8.4.3",
+    "relationship": "equivalent",
+    "rationale": "ISO 22301 §8.4.3 (Warning and communication) mandates a documented communication plan covering internal alerts, external notifications, and media/stakeholder messaging — equivalent to the NIS2 crisis management communication requirement."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-resource-requirements-people",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "superset",
+    "rationale": "ISO 22301 §8.3.2 explicitly decomposes resource requirements to personnel level (skills, numbers, locations) — more granular than NIS2's generic 'business continuity' obligation but directly fulfilling it."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-resource-requirements-technology",
+    "target": "ISO22301:2019-8.3.2",
+    "relationship": "superset",
+    "rationale": "ISO 22301 §8.3.2 requires identifying ICT, data, and infrastructure resource requirements for continuity — more detailed than NIS2's technology-neutral BC mandate but satisfying it."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)-BC-scope-critical-services",
+    "target": "ISO22301:2019-8.2.2",
+    "relationship": "equivalent",
+    "rationale": "ISO 22301 §8.2.2 (BIA) formally scopes which activities are critical and establishes MTPD/MBCO thresholds — directly equivalent to the NIS2 obligation to identify critical service continuity scope."
+  }
+]

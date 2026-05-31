@@ -1,0 +1,662 @@
+[
+  {
+    "source": "DORA.Art5.1",
+    "target": "ISO27005:2022.5",
+    "relationship": "related",
+    "rationale": "DORA Art.5(1) mandates an internal ICT governance/control framework for prudent ICT risk management; ISO 27005 cl.5 defines the information security risk management process that operationalises such a framework."
+  },
+  {
+    "source": "DORA.Art5.2.a",
+    "target": "ISO27005:2022.10.2",
+    "relationship": "related",
+    "rationale": "DORA requires the management body to bear ultimate ICT risk responsibility; ISO 27005 cl.10.2 addresses leadership commitment and accountability for the risk management process."
+  },
+  {
+    "source": "DORA.Art5.2.b",
+    "target": "ISO27005:2022.6.4.3.2",
+    "relationship": "related",
+    "rationale": "DORA requires policies for data availability, authenticity, integrity, and confidentiality; ISO 27005 cl.6.4.3.2 defines consequence criteria that must capture impacts on those same security properties."
+  },
+  {
+    "source": "DORA.Art5.2.c",
+    "target": "ISO27005:2022.6.1",
+    "relationship": "related",
+    "rationale": "DORA requires clear roles/responsibilities for ICT functions; ISO 27005 cl.6.1 requires establishing the organisational context including roles and responsibilities for the risk management process."
+  },
+  {
+    "source": "DORA.Art5.2.d",
+    "target": "ISO27005:2022.6.4",
+    "relationship": "subset",
+    "rationale": "DORA mandates setting and approving a digital operational resilience strategy including risk tolerance; ISO 27005 cl.6.4 is broader, requiring establishment and maintenance of all risk criteria including acceptance criteria and assessment criteria."
+  },
+  {
+    "source": "DORA.Art5.2.e",
+    "target": "ISO27005:2022.8.6",
+    "relationship": "related",
+    "rationale": "DORA requires the management body to approve and review ICT business continuity and response/recovery plans; ISO 27005 cl.8.6 covers risk treatment planning and approval by risk owners."
+  },
+  {
+    "source": "DORA.Art5.2.f",
+    "target": "ISO27005:2022.10.6",
+    "relationship": "related",
+    "rationale": "DORA requires the management body to approve and review ICT internal audit plans; ISO 27005 cl.10.6 covers management review of the risk management process."
+  },
+  {
+    "source": "DORA.Art5.2.g",
+    "target": "ISO27005:2022.10.2",
+    "relationship": "related",
+    "rationale": "DORA requires periodic budget allocation for digital resilience; ISO 27005 cl.10.2 addresses leadership providing necessary resources for the risk management process."
+  },
+  {
+    "source": "DORA.Art5.2.h",
+    "target": "ISO27005:2022.6.2",
+    "relationship": "related",
+    "rationale": "DORA requires a policy on use of ICT third-party service providers; ISO 27005 cl.6.2 requires identifying requirements of interested parties, which includes supply-chain/third-party context."
+  },
+  {
+    "source": "DORA.Art5.2.i",
+    "target": "ISO27005:2022.10.3",
+    "relationship": "related",
+    "rationale": "DORA requires reporting channels for third-party arrangements and major incidents; ISO 27005 cl.10.3 covers communication and consultation as a supporting ISMS process."
+  },
+  {
+    "source": "DORA.Art5.3",
+    "target": "ISO27005:2022.7.2.2",
+    "relationship": "related",
+    "rationale": "DORA requires a dedicated function/role to monitor third-party ICT relationships; ISO 27005 cl.7.2.2 requires identifying risk owners who are accountable for identified risks."
+  },
+  {
+    "source": "DORA.Art5.4",
+    "target": "ISO27005:2022.10.2",
+    "relationship": "related",
+    "rationale": "DORA requires management body members to maintain ICT knowledge through training; ISO 27005 cl.10.2 addresses leadership competence and commitment to support the risk process."
+  },
+  {
+    "source": "DORA.Art6.1",
+    "target": "ISO27005:2022.5",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.6(1) requires a sound, comprehensive, well-documented ICT risk management framework integrated into overall risk management; ISO 27005 cl.5 defines the equivalent comprehensive information security risk management process."
+  },
+  {
+    "source": "DORA.Art6.2",
+    "target": "ISO27005:2022.6.1",
+    "relationship": "subset",
+    "rationale": "DORA requires the framework to encompass strategies, policies, and tools protecting information and ICT assets; ISO 27005 cl.6.1 is broader, establishing full organisational context for risk management including asset scope."
+  },
+  {
+    "source": "DORA.Art6.3",
+    "target": "ISO27005:2022.8.2",
+    "relationship": "related",
+    "rationale": "DORA requires measures to reduce ICT risk impact and provide complete risk information to authorities; ISO 27005 cl.8.2 covers selecting appropriate risk treatment options to reduce risk to acceptable levels."
+  },
+  {
+    "source": "DORA.Art6.4",
+    "target": "ISO27005:2022.10.2",
+    "relationship": "related",
+    "rationale": "DORA requires independent ICT risk oversight following three-lines-of-defence; ISO 27005 cl.10.2 addresses leadership and independence in the risk management process."
+  },
+  {
+    "source": "DORA.Art6.5",
+    "target": "ISO27005:2022.10.8",
+    "relationship": "equivalent",
+    "rationale": "DORA requires annual review of the framework with continuous improvement and updates following incidents; ISO 27005 cl.10.8 covers continual improvement of the risk management process."
+  },
+  {
+    "source": "DORA.Art6.6",
+    "target": "ISO27005:2022.10.6",
+    "relationship": "related",
+    "rationale": "DORA requires regular internal audit of the ICT risk framework by qualified auditors; ISO 27005 cl.10.6 covers management review which subsumes internal audit findings."
+  },
+  {
+    "source": "DORA.Art6.7",
+    "target": "ISO27005:2022.10.7",
+    "relationship": "equivalent",
+    "rationale": "DORA requires formal follow-up and timely remediation of critical ICT audit findings; ISO 27005 cl.10.7 covers corrective action arising from identified nonconformities."
+  },
+  {
+    "source": "DORA.Art6.8.a",
+    "target": "ISO27005:2022.6.1",
+    "relationship": "equivalent",
+    "rationale": "DORA requires the resilience strategy to explain how the framework supports business strategy; ISO 27005 cl.6.1 requires establishing organisational context by aligning risk management with business objectives."
+  },
+  {
+    "source": "DORA.Art6.8.b",
+    "target": "ISO27005:2022.6.4.2",
+    "relationship": "equivalent",
+    "rationale": "DORA requires establishing risk tolerance and impact tolerance for ICT disruptions; ISO 27005 cl.6.4.2 directly specifies establishing risk acceptance criteria."
+  },
+  {
+    "source": "DORA.Art6.8.c",
+    "target": "ISO27005:2022.6.4.3",
+    "relationship": "equivalent",
+    "rationale": "DORA requires clear information security objectives with KPIs and KRMs; ISO 27005 cl.6.4.3 establishes criteria for performing risk assessments including consequence and likelihood criteria."
+  },
+  {
+    "source": "DORA.Art6.8.d",
+    "target": "ISO27005:2022.6.3",
+    "relationship": "related",
+    "rationale": "DORA requires documenting ICT reference architecture; ISO 27005 cl.6.3 covers applying risk assessment scope which includes defining architecture boundaries."
+  },
+  {
+    "source": "DORA.Art6.8.e",
+    "target": "ISO27005:2022.7.2",
+    "relationship": "related",
+    "rationale": "DORA requires outlining detection and prevention mechanisms; ISO 27005 cl.7.2 covers identifying risks including threat/vulnerability identification that underpins detection and prevention design."
+  },
+  {
+    "source": "DORA.Art6.8.f",
+    "target": "ISO27005:2022.9.1",
+    "relationship": "related",
+    "rationale": "DORA requires evidencing current resilience situation via incident reporting metrics; ISO 27005 cl.9.1 covers performing the risk assessment process operationally to reflect current risk posture."
+  },
+  {
+    "source": "DORA.Art6.8.g",
+    "target": "ISO27005:2022.9.1",
+    "relationship": "related",
+    "rationale": "DORA requires implementing digital operational resilience testing per Chapter IV; ISO 27005 cl.9.1 covers performing the risk assessment process which provides the inputs tested controls are validated against."
+  },
+  {
+    "source": "DORA.Art6.8.h",
+    "target": "ISO27005:2022.10.3",
+    "relationship": "equivalent",
+    "rationale": "DORA requires an incident communication strategy; ISO 27005 cl.10.3 addresses communication and consultation as an explicit ISMS process supporting risk management."
+  },
+  {
+    "source": "DORA.Art6.9",
+    "target": "ISO27005:2022.6.2",
+    "relationship": "related",
+    "rationale": "DORA allows documenting multi-vendor ICT strategies identifying third-party dependencies; ISO 27005 cl.6.2 requires identifying interested-party requirements including supply-chain dependencies."
+  },
+  {
+    "source": "DORA.Art7.a",
+    "target": "ISO27005:2022.6.1",
+    "relationship": "related",
+    "rationale": "DORA requires ICT systems to be appropriate to the magnitude of operations (proportionality); ISO 27005 cl.6.1 establishes the organisational context including scale and scope that determines proportionate risk controls."
+  },
+  {
+    "source": "DORA.Art7.b",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "related",
+    "rationale": "DORA requires ICT systems to be reliable; ISO 27005 cl.8.3 covers determining necessary controls, including reliability controls, needed to treat identified risks."
+  },
+  {
+    "source": "DORA.Art7.c",
+    "target": "ISO27005:2022.7.3.2",
+    "relationship": "related",
+    "rationale": "DORA requires ICT systems to have sufficient capacity to handle peak transaction volumes; ISO 27005 cl.7.3.2 assesses potential consequences of risk materialisation including capacity exhaustion scenarios."
+  },
+  {
+    "source": "DORA.Art7.d",
+    "target": "ISO27005:2022.7.3.3",
+    "relationship": "related",
+    "rationale": "DORA requires ICT systems to be technologically resilient under stressed conditions; ISO 27005 cl.7.3.3 assesses likelihood including stressed-scenario likelihoods that drive resilience design."
+  },
+  {
+    "source": "DORA.Art8.1",
+    "target": "ISO27005:2022.7.2.1",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.8(1) requires identifying, classifying, and documenting all ICT-supported business functions and assets with yearly reviews; ISO 27005 cl.7.2.1 directly covers identifying and describing information security risks including asset identification."
+  },
+  {
+    "source": "DORA.Art8.2",
+    "target": "ISO27005:2022.7.2.1",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.8(2) requires continuous identification of ICT risk sources, cyber threats, vulnerabilities, and yearly risk scenario reviews; ISO 27005 cl.7.2.1 covers identifying and describing risks using asset-based or event-based approaches."
+  },
+  {
+    "source": "DORA.Art8.2",
+    "target": "ISO27005:2022.7.3",
+    "relationship": "partial_overlap",
+    "rationale": "DORA Art.8(2) requires assessment of cyber threats and ICT vulnerabilities; ISO 27005 cl.7.3 covers analysing risks including assessing consequences and likelihood of threat-vulnerability combinations."
+  },
+  {
+    "source": "DORA.Art8.3",
+    "target": "ISO27005:2022.9.1",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.8(3) requires risk assessments following major infrastructure or procedural changes; ISO 27005 cl.9.1 covers performing the risk assessment process, including trigger conditions for reassessment."
+  },
+  {
+    "source": "DORA.Art8.4",
+    "target": "ISO27005:2022.7.2.1",
+    "relationship": "subset",
+    "rationale": "DORA Art.8(4) requires identifying and mapping all information and ICT assets including remote sites and interdependencies; ISO 27005 cl.7.2.1 is broader, covering full risk identification including assets, threats, vulnerabilities, and impacts."
+  },
+  {
+    "source": "DORA.Art8.5",
+    "target": "ISO27005:2022.6.2",
+    "relationship": "related",
+    "rationale": "DORA Art.8(5) requires documenting third-party service provider dependencies and interconnections; ISO 27005 cl.6.2 identifies requirements of interested parties including supply-chain dependencies that are part of context."
+  },
+  {
+    "source": "DORA.Art8.5",
+    "target": "ISO27005:2022.7.2.1",
+    "relationship": "partial_overlap",
+    "rationale": "DORA Art.8(5) requires mapping ICT processes reliant on third-party providers; ISO 27005 cl.7.2.1 risk identification includes identifying risks from third-party dependencies as a risk source."
+  },
+  {
+    "source": "DORA.Art8.6",
+    "target": "ISO27005:2022.10.4",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.8(6) requires maintaining and periodically updating relevant inventories; ISO 27005 cl.10.4 covers documented information requirements, including maintaining records of the risk assessment outputs."
+  },
+  {
+    "source": "DORA.Art8.7",
+    "target": "ISO27005:2022.7.2.1",
+    "relationship": "subset",
+    "rationale": "DORA Art.8(7) requires yearly assessment of legacy ICT systems and evaluations before connecting new technologies; ISO 27005 cl.7.2.1 is broader, covering full risk identification applicable to legacy and new system scenarios."
+  },
+  {
+    "source": "DORA.Art9.1",
+    "target": "ISO27005:2022.8.2",
+    "relationship": "related",
+    "rationale": "DORA Art.9(1) requires continuous monitoring and minimisation of ICT risk impact through security tools and policies; ISO 27005 cl.8.2 covers selecting appropriate risk treatment options to minimise risk."
+  },
+  {
+    "source": "DORA.Art9.2",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "related",
+    "rationale": "DORA Art.9(2) requires security measures for resilience, continuity, and availability across all data states; ISO 27005 cl.8.3 covers determining the specific controls necessary for implementing chosen treatment options."
+  },
+  {
+    "source": "DORA.Art9.3.a",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "subset",
+    "rationale": "DORA Art.9(3)(a) requires securing means of data transfer; ISO 27005 cl.8.3 is broader, covering determination of all controls needed to implement risk treatment including data-in-transit controls."
+  },
+  {
+    "source": "DORA.Art9.3.b",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "subset",
+    "rationale": "DORA Art.9(3)(b) requires reducing risks of data corruption, loss, and unauthorised entry; ISO 27005 cl.8.3 determines all necessary controls to treat risks including integrity and access controls."
+  },
+  {
+    "source": "DORA.Art9.3.c",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "subset",
+    "rationale": "DORA Art.9(3)(c) requires preventing unavailability, authenticity/integrity breaches, and data loss; ISO 27005 cl.8.3 covers control selection for CIA risk treatment which subsumes these objectives."
+  },
+  {
+    "source": "DORA.Art9.3.d",
+    "target": "ISO27005:2022.7.3.2",
+    "relationship": "related",
+    "rationale": "DORA Art.9(3)(d) requires protecting against management risks including human error; ISO 27005 cl.7.3.2 assesses potential consequences including those arising from human error and process failures."
+  },
+  {
+    "source": "DORA.Art9.4.a",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "subset",
+    "rationale": "DORA Art.9(4)(a) requires documented information security policies for data availability, authenticity, integrity, and confidentiality; ISO 27005 cl.8.3 determines necessary controls including policy-based controls."
+  },
+  {
+    "source": "DORA.Art9.4.b",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "subset",
+    "rationale": "DORA Art.9(4)(b) requires network management using automated isolation mechanisms for cyber-attacks; ISO 27005 cl.8.3 covers determining necessary technical controls including network segmentation and isolation."
+  },
+  {
+    "source": "DORA.Art9.4.c",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "subset",
+    "rationale": "DORA Art.9(4)(c) requires access limitation policies with appropriate controls; ISO 27005 cl.8.3 covers determining necessary access controls as part of risk treatment implementation."
+  },
+  {
+    "source": "DORA.Art9.4.d",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "subset",
+    "rationale": "DORA Art.9(4)(d) requires strong authentication and encryption based on risk assessments; ISO 27005 cl.8.3 specifies that controls must be determined based on the risk assessment outputs, which drives authentication and encryption strength."
+  },
+  {
+    "source": "DORA.Art9.4.e",
+    "target": "ISO27005:2022.8.6.1",
+    "relationship": "related",
+    "rationale": "DORA Art.9(4)(e) requires documented ICT change management policies for recorded and tested changes; ISO 27005 cl.8.6.1 covers formulation of the risk treatment plan which must account for changes in ICT environment."
+  },
+  {
+    "source": "DORA.Art9.4.f",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "subset",
+    "rationale": "DORA Art.9(4)(f) requires comprehensive patch and update procedures; ISO 27005 cl.8.3 covers determining necessary controls including vulnerability management controls."
+  },
+  {
+    "source": "DORA.Art10.1",
+    "target": "ISO27005:2022.7.2.1",
+    "relationship": "related",
+    "rationale": "DORA Art.10(1) requires mechanisms to promptly detect anomalous activities and material single points of failure; ISO 27005 cl.7.2.1 covers identifying risks including identifying single points of failure as risk scenarios."
+  },
+  {
+    "source": "DORA.Art10.1",
+    "target": "ISO27005:2022.10.5",
+    "relationship": "partial_overlap",
+    "rationale": "DORA Art.10(1) requires ongoing detection mechanisms regularly tested; ISO 27005 cl.10.5 covers monitoring and review to ensure controls remain effective and risks are detected."
+  },
+  {
+    "source": "DORA.Art10.2",
+    "target": "ISO27005:2022.6.4.3.4",
+    "relationship": "related",
+    "rationale": "DORA Art.10(2) requires multi-layer controls, alert thresholds, and incident response triggers; ISO 27005 cl.6.4.3.4 establishes criteria for determining the level of risk including threshold criteria."
+  },
+  {
+    "source": "DORA.Art10.3",
+    "target": "ISO27005:2022.10.5",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.10(3) requires sufficient resources to monitor user activity, ICT anomalies, and cyber-attacks; ISO 27005 cl.10.5 covers performing monitoring and review of risk-related events."
+  },
+  {
+    "source": "DORA.Art11.1",
+    "target": "ISO27005:2022.8.6.1",
+    "relationship": "related",
+    "rationale": "DORA Art.11(1) requires an ICT business continuity policy as part of the risk framework; ISO 27005 cl.8.6.1 covers formulating the risk treatment plan which includes continuity-related controls."
+  },
+  {
+    "source": "DORA.Art11.2",
+    "target": "ISO27005:2022.8.6.1",
+    "relationship": "related",
+    "rationale": "DORA Art.11(2) requires documented arrangements ensuring continuity of critical functions through incident response and containment; ISO 27005 cl.8.6.1 covers formulating the risk treatment plan including incident response planning."
+  },
+  {
+    "source": "DORA.Art11.3",
+    "target": "ISO27005:2022.9.2",
+    "relationship": "related",
+    "rationale": "DORA Art.11(3) requires implementing ICT response and recovery plans with audit reviews; ISO 27005 cl.9.2 covers performing the risk treatment process operationally."
+  },
+  {
+    "source": "DORA.Art11.4",
+    "target": "ISO27005:2022.9.2",
+    "relationship": "related",
+    "rationale": "DORA Art.11(4) requires maintaining and periodically testing business continuity plans including outsourced critical functions; ISO 27005 cl.9.2 covers performing and validating risk treatment including continuity controls."
+  },
+  {
+    "source": "DORA.Art11.5",
+    "target": "ISO27005:2022.7.3.2",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.11(5) requires a business impact analysis evaluating severe disruption exposures using quantitative and qualitative methods; ISO 27005 cl.7.3.2 directly covers assessing potential consequences of risk materialisation."
+  },
+  {
+    "source": "DORA.Art11.5",
+    "target": "ISO27005:2022.7.3.4",
+    "relationship": "related",
+    "rationale": "DORA Art.11(5) requires BIA to determine risk levels for critical functions; ISO 27005 cl.7.3.4 covers determining levels of risk by combining consequence and likelihood assessments."
+  },
+  {
+    "source": "DORA.Art11.6",
+    "target": "ISO27005:2022.9.1",
+    "relationship": "related",
+    "rationale": "DORA Art.11(6) requires annual testing of continuity and crisis communication plans with review based on test results; ISO 27005 cl.9.1 covers performing risk assessments that must be triggered by test outcomes."
+  },
+  {
+    "source": "DORA.Art11.6",
+    "target": "ISO27005:2022.10.8",
+    "relationship": "related",
+    "rationale": "DORA Art.11(6) requires plans to be regularly reviewed and updated based on test results; ISO 27005 cl.10.8 covers continual improvement driven by review results."
+  },
+  {
+    "source": "DORA.Art11.7",
+    "target": "ISO27005:2022.10.3",
+    "relationship": "related",
+    "rationale": "DORA Art.11(7) requires a crisis management function with internal and external communication procedures; ISO 27005 cl.10.3 covers communication and consultation as a supporting ISMS process."
+  },
+  {
+    "source": "DORA.Art11.8",
+    "target": "ISO27005:2022.10.4",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.11(8) requires disruption event records to remain readily accessible; ISO 27005 cl.10.4 covers documented information requirements for recording risk management process results."
+  },
+  {
+    "source": "DORA.Art13.1",
+    "target": "ISO27005:2022.7.2.1",
+    "relationship": "related",
+    "rationale": "DORA Art.13(1) requires capabilities to gather and analyse information on vulnerabilities and cyber threats; ISO 27005 cl.7.2.1 covers identifying and describing risks, including threat intelligence as an input to identification."
+  },
+  {
+    "source": "DORA.Art13.2",
+    "target": "ISO27005:2022.10.7",
+    "relationship": "related",
+    "rationale": "DORA Art.13(2) requires post-incident reviews analysing disruption causes and identifying improvements; ISO 27005 cl.10.7 covers corrective action following identified nonconformities."
+  },
+  {
+    "source": "DORA.Art13.2.a",
+    "target": "ISO27005:2022.10.5",
+    "relationship": "related",
+    "rationale": "DORA Art.13(2)(a) requires evaluating response speed to security alerts; ISO 27005 cl.10.5 covers monitoring and review including evaluating effectiveness of risk controls."
+  },
+  {
+    "source": "DORA.Art13.2.b",
+    "target": "ISO27005:2022.10.5",
+    "relationship": "related",
+    "rationale": "DORA Art.13(2)(b) requires evaluating quality and speed of forensic analysis; ISO 27005 cl.10.5 covers reviewing whether risk monitoring processes delivered timely and accurate information."
+  },
+  {
+    "source": "DORA.Art13.2.c",
+    "target": "ISO27005:2022.10.5",
+    "relationship": "related",
+    "rationale": "DORA Art.13(2)(c) requires evaluating effectiveness of internal incident escalation; ISO 27005 cl.10.5 covers reviewing whether risk-related events were escalated appropriately."
+  },
+  {
+    "source": "DORA.Art13.2.d",
+    "target": "ISO27005:2022.10.3",
+    "relationship": "related",
+    "rationale": "DORA Art.13(2)(d) requires evaluating effectiveness of internal and external communication during incidents; ISO 27005 cl.10.3 covers the communication and consultation process used during risk events."
+  },
+  {
+    "source": "DORA.Art13.3",
+    "target": "ISO27005:2022.9.1",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.13(3) requires lessons from testing and incidents to be incorporated into ICT risk assessments and trigger framework reviews; ISO 27005 cl.9.1 covers performing risk assessments as an operational activity triggered by such events."
+  },
+  {
+    "source": "DORA.Art13.3",
+    "target": "ISO27005:2022.10.8",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.13(3) requires continual incorporation of lessons learned into the risk management framework; ISO 27005 cl.10.8 covers continual improvement driven by lessons learned and review outcomes."
+  },
+  {
+    "source": "DORA.Art13.4",
+    "target": "ISO27005:2022.10.5",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.13(4) requires monitoring resilience strategy effectiveness and analysing ICT incident frequency, types, and patterns; ISO 27005 cl.10.5 covers monitoring and review of risk-related events and risk management performance."
+  },
+  {
+    "source": "DORA.Art13.4",
+    "target": "ISO27005:2022.7.4",
+    "relationship": "related",
+    "rationale": "DORA Art.13(4) requires analysing incident patterns to understand risk exposure levels; ISO 27005 cl.7.4 covers evaluating risks by comparing analysis results with risk criteria to determine treatment priorities."
+  },
+  {
+    "source": "DORA.Art13.5",
+    "target": "ISO27005:2022.10.6",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.13(5) requires senior ICT staff to report yearly findings and recommendations to management bodies; ISO 27005 cl.10.6 covers management review of the risk management process."
+  },
+  {
+    "source": "DORA.Art13.6",
+    "target": "ISO27005:2022.10.2",
+    "relationship": "related",
+    "rationale": "DORA Art.13(6) requires mandatory ICT security awareness programs and resilience training for all staff; ISO 27005 cl.10.2 addresses leadership commitment including ensuring competence and awareness for risk management."
+  },
+  {
+    "source": "DORA.Art13.7",
+    "target": "ISO27005:2022.10.5",
+    "relationship": "related",
+    "rationale": "DORA Art.13(7) requires continuous monitoring of technological developments affecting ICT security; ISO 27005 cl.10.5 covers monitoring risk-related events including technology changes that alter the risk landscape."
+  },
+  {
+    "source": "DORA.Art16.1.a",
+    "target": "ISO27005:2022.5",
+    "relationship": "subset",
+    "rationale": "DORA Art.16(1)(a) requires a simplified but sound and documented ICT risk management framework for microenterprises; ISO 27005 cl.5 defines the full information security risk management process, of which this is a proportionate subset."
+  },
+  {
+    "source": "DORA.Art16.1.b",
+    "target": "ISO27005:2022.10.5",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.16(1)(b) requires continuous monitoring of ICT system security and functionality; ISO 27005 cl.10.5 covers monitoring and review of risk-related events on an ongoing basis."
+  },
+  {
+    "source": "DORA.Art16.1.c",
+    "target": "ISO27005:2022.8.3",
+    "relationship": "related",
+    "rationale": "DORA Art.16(1)(c) requires sound, resilient, and updated ICT systems to minimise risk impact; ISO 27005 cl.8.3 covers determining necessary controls to treat risks including system resilience controls."
+  },
+  {
+    "source": "DORA.Art16.1.d",
+    "target": "ISO27005:2022.7.2.1",
+    "relationship": "related",
+    "rationale": "DORA Art.16(1)(d) requires prompt identification of ICT risk sources and swift incident handling; ISO 27005 cl.7.2.1 covers identifying and describing information security risks including risk source identification."
+  },
+  {
+    "source": "DORA.Art16.1.e",
+    "target": "ISO27005:2022.6.2",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.16(1)(e) requires identifying dependencies on third-party ICT service providers; ISO 27005 cl.6.2 covers identifying requirements and dependencies of interested parties including third parties."
+  },
+  {
+    "source": "DORA.Art16.1.f",
+    "target": "ISO27005:2022.8.6.1",
+    "relationship": "related",
+    "rationale": "DORA Art.16(1)(f) requires business continuity and recovery plans for critical function continuity; ISO 27005 cl.8.6.1 covers formulating the risk treatment plan including continuity-based risk treatment."
+  },
+  {
+    "source": "DORA.Art16.1.g",
+    "target": "ISO27005:2022.9.2",
+    "relationship": "related",
+    "rationale": "DORA Art.16(1)(g) requires regular testing of plans and control effectiveness; ISO 27005 cl.9.2 covers performing the risk treatment process including verification of control effectiveness."
+  },
+  {
+    "source": "DORA.Art16.1.h",
+    "target": "ISO27005:2022.10.8",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.16(1)(h) requires implementing testing conclusions into risk assessments and developing security awareness programs; ISO 27005 cl.10.8 covers continual improvement driven by operational results."
+  },
+  {
+    "source": "DORA.Art16.2",
+    "target": "ISO27005:2022.10.4",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.16(2) requires documented frameworks that are periodically reviewed with continuous improvement; ISO 27005 cl.10.4 covers documented information requirements for recording and maintaining risk management artefacts."
+  },
+  {
+    "source": "DORA.Art16.2",
+    "target": "ISO27005:2022.10.8",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.16(2) requires frameworks to improve continuously; ISO 27005 cl.10.8 covers continual improvement as a foundational ISMS process."
+  },
+  {
+    "source": "DORA.Art8.2",
+    "target": "ISO27005:2022.7.4",
+    "relationship": "related",
+    "rationale": "DORA Art.8(2) requires at least yearly review of risk scenarios; ISO 27005 cl.7.4 covers evaluating risks to prioritise treatment, which feeds the periodic scenario review cycle."
+  },
+  {
+    "source": "DORA.Art9.1",
+    "target": "ISO27005:2022.8.1",
+    "relationship": "related",
+    "rationale": "DORA Art.9(1) requires continuously minimising ICT risk through security tools; ISO 27005 cl.8.1 provides the general risk treatment framework that governs selection and deployment of such tools."
+  },
+  {
+    "source": "DORA.Art11.5",
+    "target": "ISO27005:2022.7.4.2",
+    "relationship": "related",
+    "rationale": "DORA Art.11(5) BIA must determine which disruptions are severe enough to require treatment action; ISO 27005 cl.7.4.2 covers prioritising risks for treatment using risk evaluation results."
+  },
+  {
+    "source": "DORA.Art13.4",
+    "target": "ISO27005:2022.7.4.1",
+    "relationship": "related",
+    "rationale": "DORA Art.13(4) requires comparing observed incident patterns against risk exposure levels; ISO 27005 cl.7.4.1 covers comparing risk analysis results with risk criteria to determine whether risks are acceptable."
+  },
+  {
+    "source": "DORA.Art6.5",
+    "target": "ISO27005:2022.10.6",
+    "relationship": "related",
+    "rationale": "DORA Art.6(5) requires annual review of the ICT risk framework including post-incident updates; ISO 27005 cl.10.6 covers management review which drives framework updates."
+  },
+  {
+    "source": "DORA.Art8.4",
+    "target": "ISO27005:2022.6.3",
+    "relationship": "related",
+    "rationale": "DORA Art.8(4) requires identification and mapping of all ICT assets and interdependencies as scope inputs; ISO 27005 cl.6.3 covers applying risk assessment scope including defining what is in scope for assessment."
+  },
+  {
+    "source": "DORA.Art10.2",
+    "target": "ISO27005:2022.7.3.4",
+    "relationship": "related",
+    "rationale": "DORA Art.10(2) requires defining alert thresholds to trigger incident response; ISO 27005 cl.7.3.4 covers determining risk levels by combining consequence and likelihood, which underpins threshold calibration."
+  },
+  {
+    "source": "DORA.Art9.2",
+    "target": "ISO27005:2022.8.2",
+    "relationship": "related",
+    "rationale": "DORA Art.9(2) requires high standards of data protection resilience across all data states; ISO 27005 cl.8.2 covers selecting appropriate risk treatment options including reduce/avoid/transfer/retain decisions."
+  },
+  {
+    "source": "DORA.Art6.8.b",
+    "target": "ISO27005:2022.8.6.3",
+    "relationship": "related",
+    "rationale": "DORA Art.6(8)(b) requires determining impact tolerance for ICT disruptions; ISO 27005 cl.8.6.3 covers formal acceptance of residual information security risks after treatment."
+  },
+  {
+    "source": "DORA.Art11.3",
+    "target": "ISO27005:2022.8.6.2",
+    "relationship": "related",
+    "rationale": "DORA Art.11(3) requires ICT response and recovery plans with audit reviews and approval; ISO 27005 cl.8.6.2 covers approval of the risk treatment plan by risk owners."
+  },
+  {
+    "source": "DORA.Art6.3",
+    "target": "ISO27005:2022.10.4",
+    "relationship": "related",
+    "rationale": "DORA Art.6(3) requires providing complete and updated risk information to authorities upon request; ISO 27005 cl.10.4 covers documented information including results that must be maintained and accessible."
+  },
+  {
+    "source": "DORA.Art13.1",
+    "target": "ISO27005:2022.7.3.3",
+    "relationship": "related",
+    "rationale": "DORA Art.13(1) requires analysing vulnerability and threat information to assess effects on resilience; ISO 27005 cl.7.3.3 covers assessing likelihood of risk scenarios based on threat and vulnerability intelligence."
+  },
+  {
+    "source": "DORA.Art5.2.d",
+    "target": "ISO27005:2022.6.4.2",
+    "relationship": "equivalent",
+    "rationale": "DORA Art.5(2)(d) requires the management body to set the risk tolerance level for ICT risk; ISO 27005 cl.6.4.2 directly requires establishing risk acceptance criteria including tolerance thresholds."
+  },
+  {
+    "source": "DORA.Art8.7",
+    "target": "ISO27005:2022.9.1",
+    "relationship": "related",
+    "rationale": "DORA Art.8(7) requires risk assessments before/after connecting new technologies and yearly legacy reviews; ISO 27005 cl.9.1 covers the trigger conditions for performing risk assessments, including technology change events."
+  },
+  {
+    "source": "DORA.Art13.2",
+    "target": "ISO27005:2022.9.1",
+    "relationship": "related",
+    "rationale": "DORA Art.13(2) post-incident reviews must feed into the ICT risk assessment framework; ISO 27005 cl.9.1 covers performing risk assessments as an operational activity triggered by incidents."
+  },
+  {
+    "source": "DORA.Art16.1.d",
+    "target": "ISO27005:2022.10.5",
+    "relationship": "related",
+    "rationale": "DORA Art.16(1)(d) requires swift incident handling and prompt risk source identification for microenterprises; ISO 27005 cl.10.5 covers monitoring risk-related events to enable prompt detection and response."
+  },
+  {
+    "source": "DORA.Art6.4",
+    "target": "ISO27005:2022.6.3",
+    "relationship": "related",
+    "rationale": "DORA Art.6(4) requires an independent control function following three-lines-of-defence; ISO 27005 cl.6.3 covers applying the risk assessment including defining organisational roles and independence for the process."
+  },
+  {
+    "source": "DORA.Art9.4.d",
+    "target": "ISO27005:2022.7.4",
+    "relationship": "related",
+    "rationale": "DORA Art.9(4)(d) requires authentication and encryption to be based on standards and risk assessments; ISO 27005 cl.7.4 covers evaluating risk results against criteria, which determines the appropriate strength of cryptographic controls."
+  },
+  {
+    "source": "DORA.Art11.6",
+    "target": "ISO27005:2022.7.4",
+    "relationship": "related",
+    "rationale": "DORA Art.11(6) requires cyber-attack scenarios and infrastructure switchover drills in testing; ISO 27005 cl.7.4 covers evaluating risks including prioritising which scenarios warrant testing."
+  },
+  {
+    "source": "DORA.Art13.3",
+    "target": "ISO27005:2022.7.2",
+    "relationship": "related",
+    "rationale": "DORA Art.13(3) requires supervisory review information to inform risk assessments; ISO 27005 cl.7.2 covers identifying information security risks using all available intelligence including external supervisory inputs."
+  }
+]

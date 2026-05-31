@@ -1,0 +1,1850 @@
+[
+  {
+    "source": "AM-01",
+    "source_title": "Asset Inventory",
+    "target": "5.9",
+    "target_title": "Inventory of information and other associated assets",
+    "relationship": "equivalent",
+    "rationale": "C5 AM-01 (asset inventory) directly implements ISO 5.9 (inventory of information and assets)."
+  },
+  {
+    "source": "AM-02",
+    "source_title": "Acceptable Use and Safe Handling of Assets",
+    "target": "5.10",
+    "target_title": "Acceptable use of information and other associated assets",
+    "relationship": "equivalent",
+    "rationale": "C5 AM-02 (acceptable use and safe handling) directly implements ISO 5.10."
+  },
+  {
+    "source": "AM-03",
+    "source_title": "Commissioning of Hardware",
+    "target": "7.10",
+    "target_title": "Storage media",
+    "relationship": "subset",
+    "rationale": "C5 AM-03 (commissioning hardware) implements the acquisition aspect of ISO 7.10 (storage media); ISO 7.10 is broader."
+  },
+  {
+    "source": "AM-04",
+    "source_title": "Decommissioning of Hardware",
+    "target": "7.10",
+    "target_title": "Storage media",
+    "relationship": "equivalent",
+    "rationale": "C5 AM-04 (secure decommissioning) is co-extensive with the disposal aspect of ISO 7.10."
+  },
+  {
+    "source": "AM-05",
+    "source_title": "Commitment to Permissible Use, Safe Handling and Return of Assets",
+    "target": "5.11",
+    "target_title": "Return of assets",
+    "relationship": "equivalent",
+    "rationale": "C5 AM-05 return-of-assets commitment directly implements ISO 5.11."
+  },
+  {
+    "source": "AM-05",
+    "source_title": "Commitment to Permissible Use, Safe Handling and Return of Assets",
+    "target": "5.12",
+    "target_title": "Classification of information",
+    "relationship": "subset",
+    "rationale": "C5 AM-05 classification commitment is a user-facing subset of ISO 5.12 (classification of information)."
+  },
+  {
+    "source": "AM-06",
+    "source_title": "Asset Classification and Labelling",
+    "target": "5.10",
+    "target_title": "Acceptable use of information and other associated assets",
+    "relationship": "partial_overlap",
+    "rationale": "C5 AM-06 handling of assets partially overlaps ISO 5.10 (acceptable use and handling)."
+  },
+  {
+    "source": "AM-06",
+    "source_title": "Asset Classification and Labelling",
+    "target": "5.13",
+    "target_title": "Labelling of information",
+    "relationship": "equivalent",
+    "rationale": "C5 AM-06 (classification and labelling) is co-extensive with ISO 5.13 (labelling of information)."
+  },
+  {
+    "source": "BCM-01",
+    "source_title": "Top management responsibility",
+    "target": "5.29",
+    "target_title": "Information security during disruption",
+    "relationship": "subset",
+    "rationale": "C5 BCM-01 top management BCM responsibility is a subset of ISO 5.29 (IS during disruption) management commitment."
+  },
+  {
+    "source": "BCM-02",
+    "source_title": "Business impact analysis policies and instructions",
+    "target": "5.29",
+    "target_title": "Information security during disruption",
+    "relationship": "subset",
+    "rationale": "C5 BCM-02 (BIA policies) is a subset of the planning component of ISO 5.29 (IS during disruption)."
+  },
+  {
+    "source": "BCM-03",
+    "source_title": "Planning business continuity",
+    "target": "5.29",
+    "target_title": "Information security during disruption",
+    "relationship": "equivalent",
+    "rationale": "C5 BCM-03 (BCM planning) is co-extensive with ISO 5.29 (IS during disruption)."
+  },
+  {
+    "source": "BCM-03",
+    "source_title": "Planning business continuity",
+    "target": "5.30",
+    "target_title": "ICT readiness for business continuity",
+    "relationship": "subset",
+    "rationale": "C5 BCM-03 is also a subset of ISO 5.30 (ICT readiness for business continuity)."
+  },
+  {
+    "source": "BCM-04",
+    "source_title": "Verification, updating and testing of the BCM",
+    "target": "5.29",
+    "target_title": "Information security during disruption",
+    "relationship": "equivalent",
+    "rationale": "C5 BCM-04 (testing and verification of BCM) directly implements ISO 5.29."
+  },
+  {
+    "source": "COM-01",
+    "source_title": "Identification of applicable legal, regulatory, self-imposed and contractual requirements",
+    "target": "5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "equivalent",
+    "rationale": "C5 COM-01 (identification of applicable legal/regulatory requirements) is co-extensive with ISO 5.31."
+  },
+  {
+    "source": "COM-02",
+    "source_title": "Policy for planning and conducting audits",
+    "target": "8.34",
+    "target_title": "Protection of information systems during audit and testing",
+    "relationship": "equivalent",
+    "rationale": "C5 COM-02 (audit planning policies) is co-extensive with ISO 8.34 (protection of information systems during audit testing)."
+  },
+  {
+    "source": "COM-03",
+    "source_title": "Internal audits of the information security management system",
+    "target": "5.35",
+    "target_title": "Independent review of information security",
+    "relationship": "equivalent",
+    "rationale": "C5 COM-03 (internal IS audits) is co-extensive with ISO 5.35 (independent review of IS)."
+  },
+  {
+    "source": "COM-03",
+    "source_title": "Internal audits of the information security management system",
+    "target": "5.36",
+    "target_title": "Compliance with policies and standards for information security",
+    "relationship": "equivalent",
+    "rationale": "C5 COM-03 management review is co-extensive with ISO 5.36 (compliance with policies and standards)."
+  },
+  {
+    "source": "COM-03",
+    "source_title": "Internal audits of the information security management system",
+    "target": "8.34",
+    "target_title": "Protection of information systems during audit and testing",
+    "relationship": "subset",
+    "rationale": "C5 COM-03 internal audit execution is a subset of ISO 8.34; also implements ISO 5.35."
+  },
+  {
+    "source": "COM-04",
+    "source_title": "Information on information security performance",
+    "target": "5.36",
+    "target_title": "Compliance with policies and standards for information security",
+    "relationship": "superset",
+    "rationale": "C5 COM-04 requires explicit top-management IS performance reporting to leadership—an accountability mechanism beyond ISO 5.36."
+  },
+  {
+    "source": "COM-04",
+    "source_title": "Information on information security performance",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 COM-04 (Information on information security performance) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "COS-01",
+    "source_title": "Technical safeguards",
+    "target": "8.20",
+    "target_title": "Network controls",
+    "relationship": "equivalent",
+    "rationale": "C5 COS-01 (network technical safeguards) is co-extensive with ISO 8.20 (network controls)."
+  },
+  {
+    "source": "COS-01",
+    "source_title": "Technical safeguards",
+    "target": "8.21",
+    "target_title": "Security of network services",
+    "relationship": "subset",
+    "rationale": "C5 COS-01 network service security is a subset of ISO 8.21 (security of network services)."
+  },
+  {
+    "source": "COS-02",
+    "source_title": "Security requirements for connections in the Cloud Service Provider infrastructure",
+    "target": "5.14",
+    "target_title": "Information transfer",
+    "relationship": "subset",
+    "rationale": "C5 COS-02 information transfer policies are a subset of ISO 5.14."
+  },
+  {
+    "source": "COS-02",
+    "source_title": "Security requirements for connections in the Cloud Service Provider infrastructure",
+    "target": "8.20",
+    "target_title": "Network controls",
+    "relationship": "equivalent",
+    "rationale": "C5 COS-02 (connection security requirements) directly implements ISO 8.20."
+  },
+  {
+    "source": "COS-02",
+    "source_title": "Security requirements for connections in the Cloud Service Provider infrastructure",
+    "target": "8.21",
+    "target_title": "Security of network services",
+    "relationship": "subset",
+    "rationale": "C5 COS-02 security requirements for network services are a subset of ISO 8.21."
+  },
+  {
+    "source": "COS-02",
+    "source_title": "Security requirements for connections in the Cloud Service Provider infrastructure",
+    "target": "8.22",
+    "target_title": "Segregation in networks",
+    "relationship": "subset",
+    "rationale": "C5 COS-02 segregation requirements are a subset of ISO 8.22 (segregation in networks)."
+  },
+  {
+    "source": "COS-03",
+    "source_title": "Monitoring of connections in the Cloud Service Provider infrastructure",
+    "target": "5.14",
+    "target_title": "Information transfer",
+    "relationship": "subset",
+    "rationale": "C5 COS-03 monitored data transfers are a subset of ISO 5.14 (information transfer)."
+  },
+  {
+    "source": "COS-03",
+    "source_title": "Monitoring of connections in the Cloud Service Provider infrastructure",
+    "target": "8.20",
+    "target_title": "Network controls",
+    "relationship": "subset",
+    "rationale": "C5 COS-03 (connection monitoring) is a monitoring subset of ISO 8.20 (network controls)."
+  },
+  {
+    "source": "COS-03",
+    "source_title": "Monitoring of connections in the Cloud Service Provider infrastructure",
+    "target": "8.21",
+    "target_title": "Security of network services",
+    "relationship": "subset",
+    "rationale": "C5 COS-03 monitoring of network service connections is a subset of ISO 8.21."
+  },
+  {
+    "source": "COS-04",
+    "source_title": "Cross-network access",
+    "target": "8.21",
+    "target_title": "Security of network services",
+    "relationship": "subset",
+    "rationale": "C5 COS-04 (firewall-controlled cross-network access) is a subset of ISO 8.21 (network service security)."
+  },
+  {
+    "source": "COS-04",
+    "source_title": "Cross-network access",
+    "target": "8.22",
+    "target_title": "Segregation in networks",
+    "relationship": "equivalent",
+    "rationale": "C5 COS-04 (cross-network access via firewalls) directly implements ISO 8.22 (segregation in networks)."
+  },
+  {
+    "source": "COS-05",
+    "source_title": "Networks for administration",
+    "target": "8.22",
+    "target_title": "Segregation in networks",
+    "relationship": "superset",
+    "rationale": "C5 COS-05 requires dedicated administration networks in cloud infra, going beyond ISO 8.22's generic segregation requirement."
+  },
+  {
+    "source": "COS-06",
+    "source_title": "Segregation of data traffic in jointly used networks",
+    "target": "8.22",
+    "target_title": "Segregation in networks",
+    "relationship": "superset",
+    "rationale": "C5 COS-06 requires customer traffic segregation in multi-tenant environments, a cloud-specific extension of ISO 8.22."
+  },
+  {
+    "source": "COS-07",
+    "source_title": "Documentation of the network topology",
+    "target": "8.20",
+    "target_title": "Network controls",
+    "relationship": "superset",
+    "rationale": "C5 COS-07 requires documented network topology, an explicit cloud transparency requirement beyond ISO 8.20."
+  },
+  {
+    "source": "COS-07",
+    "source_title": "Documentation of the network topology",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 COS-07 (Documentation of the network topology) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "COS-08",
+    "source_title": "Policies for data transmission",
+    "target": "5.14",
+    "target_title": "Information transfer",
+    "relationship": "equivalent",
+    "rationale": "C5 COS-08 (data transmission policies) is co-extensive with ISO 5.14 (information transfer)."
+  },
+  {
+    "source": "COS-08",
+    "source_title": "Policies for data transmission",
+    "target": "5.8",
+    "target_title": "Information security in project management",
+    "relationship": "subset",
+    "rationale": "C5 COS-08 (Policies for data transmission) implements a cloud-scoped subset of ISO 27001:2022 5.8 (Information security in project management)."
+  },
+  {
+    "source": "COS-08",
+    "source_title": "Policies for data transmission",
+    "target": "8.26",
+    "target_title": "Application security requirements",
+    "relationship": "subset",
+    "rationale": "C5 COS-08 application-layer transmission requirements are a subset of ISO 8.26 (application security requirements)."
+  },
+  {
+    "source": "CRY-01",
+    "source_title": "Policy for the use of encryption procedures and cryptographic keys",
+    "target": "5.14",
+    "target_title": "Information transfer",
+    "relationship": "subset",
+    "rationale": "C5 CRY-01 transmission encryption policy is a subset of ISO 5.14 (information transfer)."
+  },
+  {
+    "source": "CRY-01",
+    "source_title": "Policy for the use of encryption procedures and cryptographic keys",
+    "target": "5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "subset",
+    "rationale": "C5 CRY-01 cryptography regulatory compliance is a subset of ISO 5.31 (legal/regulatory requirements)."
+  },
+  {
+    "source": "CRY-01",
+    "source_title": "Policy for the use of encryption procedures and cryptographic keys",
+    "target": "8.24",
+    "target_title": "Use of cryptography",
+    "relationship": "equivalent",
+    "rationale": "C5 CRY-01 cryptography policy is co-extensive with ISO 8.24 (use of cryptography)."
+  },
+  {
+    "source": "CRY-02",
+    "source_title": "Encryption of data for transmission (transport encryption)",
+    "target": "5.14",
+    "target_title": "Information transfer",
+    "relationship": "subset",
+    "rationale": "C5 CRY-02 encrypted data transmission is a subset of ISO 5.14 (information transfer)."
+  },
+  {
+    "source": "CRY-02",
+    "source_title": "Encryption of data for transmission (transport encryption)",
+    "target": "5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "subset",
+    "rationale": "C5 CRY-02 cryptography legal compliance is a subset of ISO 5.31."
+  },
+  {
+    "source": "CRY-02",
+    "source_title": "Encryption of data for transmission (transport encryption)",
+    "target": "8.20",
+    "target_title": "Network controls",
+    "relationship": "subset",
+    "rationale": "C5 CRY-02 encrypted network connections is a subset of ISO 8.20 (network controls)."
+  },
+  {
+    "source": "CRY-02",
+    "source_title": "Encryption of data for transmission (transport encryption)",
+    "target": "8.24",
+    "target_title": "Use of cryptography",
+    "relationship": "equivalent",
+    "rationale": "C5 CRY-02 (transport encryption) directly implements the encryption aspect of ISO 8.24."
+  },
+  {
+    "source": "CRY-02",
+    "source_title": "Encryption of data for transmission (transport encryption)",
+    "target": "8.26",
+    "target_title": "Application security requirements",
+    "relationship": "subset",
+    "rationale": "C5 CRY-02 application-layer transport encryption is a subset of ISO 8.26 (application security requirements)."
+  },
+  {
+    "source": "CRY-03",
+    "source_title": "Encryption of sensitive data for storage (storage encryption)",
+    "target": "5.34",
+    "target_title": "Privacy and protection of PII",
+    "relationship": "subset",
+    "rationale": "C5 CRY-03 encryption of PII at rest is a subset of ISO 5.34 (privacy and protection of PII)."
+  },
+  {
+    "source": "CRY-03",
+    "source_title": "Encryption of sensitive data for storage (storage encryption)",
+    "target": "8.24",
+    "target_title": "Use of cryptography",
+    "relationship": "equivalent",
+    "rationale": "C5 CRY-03 (storage encryption) directly implements the encryption-at-rest aspect of ISO 8.24."
+  },
+  {
+    "source": "CRY-04",
+    "source_title": "Secure key management",
+    "target": "8.24",
+    "target_title": "Use of cryptography",
+    "relationship": "equivalent",
+    "rationale": "C5 CRY-04 (secure key management) is co-extensive with the key management aspect of ISO 8.24."
+  },
+  {
+    "source": "DEV-01",
+    "source_title": "Policies for the development/procurement, modification and testing of information systems",
+    "target": "5.8",
+    "target_title": "Information security in project management",
+    "relationship": "equivalent",
+    "rationale": "C5 DEV-01 IS requirements in development lifecycle directly implements ISO 5.8 (IS in project management)."
+  },
+  {
+    "source": "DEV-01",
+    "source_title": "Policies for the development/procurement, modification and testing of information systems",
+    "target": "8.25",
+    "target_title": "Secure development lifecycle",
+    "relationship": "subset",
+    "rationale": "C5 DEV-01 secure development policy is a subset of ISO 8.25 (secure development lifecycle)."
+  },
+  {
+    "source": "DEV-01",
+    "source_title": "Policies for the development/procurement, modification and testing of information systems",
+    "target": "8.26",
+    "target_title": "Application security requirements",
+    "relationship": "subset",
+    "rationale": "C5 DEV-01 application security requirements are a subset of ISO 8.26."
+  },
+  {
+    "source": "DEV-01",
+    "source_title": "Policies for the development/procurement, modification and testing of information systems",
+    "target": "8.27",
+    "target_title": "Secure system architecture and engineering principles",
+    "relationship": "subset",
+    "rationale": "C5 DEV-01 secure engineering principles are a subset of ISO 8.27 (secure system architecture)."
+  },
+  {
+    "source": "DEV-01",
+    "source_title": "Policies for the development/procurement, modification and testing of information systems",
+    "target": "8.31",
+    "target_title": "Separation of development, test and production environments",
+    "relationship": "subset",
+    "rationale": "C5 DEV-01 environment separation requirement is a subset of ISO 8.31."
+  },
+  {
+    "source": "DEV-02",
+    "source_title": "Outsourcing of the development",
+    "target": "8.29",
+    "target_title": "Security testing in development and acceptance",
+    "relationship": "subset",
+    "rationale": "C5 DEV-02 outsourced test coverage requirement is a subset of ISO 8.29 (security testing in development)."
+  },
+  {
+    "source": "DEV-02",
+    "source_title": "Outsourcing of the development",
+    "target": "8.30",
+    "target_title": "Outsourced development",
+    "relationship": "equivalent",
+    "rationale": "C5 DEV-02 (outsourced development governance) is co-extensive with ISO 8.30 (outsourced development)."
+  },
+  {
+    "source": "DEV-03",
+    "source_title": "Policies for changes to information systems",
+    "target": "8.32",
+    "target_title": "Change management",
+    "relationship": "equivalent",
+    "rationale": "C5 DEV-03 (change management policies) is co-extensive with ISO 8.32 (change management)."
+  },
+  {
+    "source": "DEV-04",
+    "source_title": "Safety training and awareness programme for development",
+    "target": "6.3",
+    "target_title": "Information security awareness, education and training",
+    "relationship": "equivalent",
+    "rationale": "C5 DEV-04 (security training for developers) is co-extensive with ISO 6.3 (IS awareness, education and training)."
+  },
+  {
+    "source": "DEV-04",
+    "source_title": "Safety training and awareness programme for development",
+    "target": "8.32",
+    "target_title": "Change management",
+    "relationship": "subset",
+    "rationale": "C5 DEV-04 change-specific developer training is a training subset of ISO 8.32 (change management)."
+  },
+  {
+    "source": "DEV-05",
+    "source_title": "Risk assessment, categorisation and prioritisation of changes",
+    "target": "8.32",
+    "target_title": "Change management",
+    "relationship": "subset",
+    "rationale": "C5 DEV-05 (risk assessment and prioritisation of changes) is a subset of ISO 8.32 (change management)."
+  },
+  {
+    "source": "DEV-06",
+    "source_title": "Testing changes",
+    "target": "8.29",
+    "target_title": "Security testing in development and acceptance",
+    "relationship": "equivalent",
+    "rationale": "C5 DEV-06 security testing of changes directly implements ISO 8.29 (security testing in development and acceptance)."
+  },
+  {
+    "source": "DEV-06",
+    "source_title": "Testing changes",
+    "target": "8.32",
+    "target_title": "Change management",
+    "relationship": "subset",
+    "rationale": "C5 DEV-06 (testing changes before deployment) is a testing subset of ISO 8.32 (change management)."
+  },
+  {
+    "source": "DEV-07",
+    "source_title": "Logging of changes",
+    "target": "8.29",
+    "target_title": "Security testing in development and acceptance",
+    "relationship": "subset",
+    "rationale": "C5 DEV-07 test evidence logging is a subset of ISO 8.29."
+  },
+  {
+    "source": "DEV-07",
+    "source_title": "Logging of changes",
+    "target": "8.32",
+    "target_title": "Change management",
+    "relationship": "subset",
+    "rationale": "C5 DEV-07 change logging is a subset of ISO 8.32 (change management)."
+  },
+  {
+    "source": "DEV-07",
+    "source_title": "Logging of changes",
+    "target": "8.4",
+    "target_title": "Access to source code",
+    "relationship": "equivalent",
+    "rationale": "C5 DEV-07 (source code change logging) is co-extensive with ISO 8.4 (access to source code)."
+  },
+  {
+    "source": "DEV-08",
+    "source_title": "Version Control",
+    "target": "8.32",
+    "target_title": "Change management",
+    "relationship": "equivalent",
+    "rationale": "C5 DEV-08 (version control) directly implements the documentation aspect of ISO 8.32 (change management)."
+  },
+  {
+    "source": "DEV-09",
+    "source_title": "Approvals for provision in the production environment",
+    "target": "8.32",
+    "target_title": "Change management",
+    "relationship": "equivalent",
+    "rationale": "C5 DEV-09 (production deployment approval) is co-extensive with the authorisation aspect of ISO 8.32."
+  },
+  {
+    "source": "DEV-10",
+    "source_title": "Separation of environments",
+    "target": "8.31",
+    "target_title": "Separation of development, test and production environments",
+    "relationship": "equivalent",
+    "rationale": "C5 DEV-10 (separation of environments) is co-extensive with ISO 8.31 (separation of development, test and production environments)."
+  },
+  {
+    "source": "HR-01",
+    "source_title": "Verification of qualification and trustworthiness",
+    "target": "6.1",
+    "target_title": "Screening",
+    "relationship": "equivalent",
+    "rationale": "C5 HR-01 (screening) directly implements ISO 6.1 (Screening)."
+  },
+  {
+    "source": "HR-02",
+    "source_title": "Employment terms and conditions",
+    "target": "6.2",
+    "target_title": "Terms and conditions of employment",
+    "relationship": "equivalent",
+    "rationale": "C5 HR-02 (employment terms) directly implements ISO 6.2 (Terms and conditions of employment)."
+  },
+  {
+    "source": "HR-03",
+    "source_title": "Security training and awareness programme",
+    "target": "6.3",
+    "target_title": "Information security awareness, education and training",
+    "relationship": "equivalent",
+    "rationale": "C5 HR-03 (security training and awareness) directly implements ISO 6.3."
+  },
+  {
+    "source": "HR-04",
+    "source_title": "Disciplinary measures",
+    "target": "6.4",
+    "target_title": "Disciplinary process",
+    "relationship": "equivalent",
+    "rationale": "C5 HR-04 (disciplinary measures) directly implements ISO 6.4."
+  },
+  {
+    "source": "HR-05",
+    "source_title": "Responsibilities in the event of termination or change of employment",
+    "target": "6.5",
+    "target_title": "Responsibilities after termination or change of employment",
+    "relationship": "equivalent",
+    "rationale": "C5 HR-05 (termination responsibilities) directly implements ISO 6.5."
+  },
+  {
+    "source": "HR-06",
+    "source_title": "Confidentiality agreements",
+    "target": "6.2",
+    "target_title": "Terms and conditions of employment",
+    "relationship": "partial_overlap",
+    "rationale": "C5 HR-06 confidentiality agreements overlap with ISO 6.2 employment terms; the NDA specifics also map to 6.6."
+  },
+  {
+    "source": "HR-06",
+    "source_title": "Confidentiality agreements",
+    "target": "6.6",
+    "target_title": "Confidentiality or non-disclosure agreements",
+    "relationship": "equivalent",
+    "rationale": "C5 HR-06 (confidentiality/NDA agreements) is co-extensive with ISO 6.6."
+  },
+  {
+    "source": "IDM-01",
+    "source_title": "Policy for user accounts and access rights",
+    "target": "5.15",
+    "target_title": "Access control",
+    "relationship": "equivalent",
+    "rationale": "C5 IDM-01 (access control policy) is co-extensive with ISO 5.15 (access control)."
+  },
+  {
+    "source": "IDM-01",
+    "source_title": "Policy for user accounts and access rights",
+    "target": "8.3",
+    "target_title": "Information access restriction",
+    "relationship": "subset",
+    "rationale": "C5 IDM-01 access restriction policy is a policy-level subset of ISO 8.3 (information access restriction)."
+  },
+  {
+    "source": "IDM-01",
+    "source_title": "Policy for user accounts and access rights",
+    "target": "8.5",
+    "target_title": "Secure authentication",
+    "relationship": "subset",
+    "rationale": "C5 IDM-01 secure logon requirements are a policy-level subset of ISO 8.5 (secure authentication)."
+  },
+  {
+    "source": "IDM-02",
+    "source_title": "Granting and change of user accounts and access rights",
+    "target": "5.18",
+    "target_title": "Access rights",
+    "relationship": "equivalent",
+    "rationale": "C5 IDM-02 access rights removal is co-extensive with ISO 5.18 (access rights)."
+  },
+  {
+    "source": "IDM-02",
+    "source_title": "Granting and change of user accounts and access rights",
+    "target": "8.2",
+    "target_title": "Privileged access rights",
+    "relationship": "subset",
+    "rationale": "C5 IDM-02 privileged access provisioning is a subset of ISO 8.2 (privileged access rights)."
+  },
+  {
+    "source": "IDM-03",
+    "source_title": "Locking and withdrawal of user accounts and access rights",
+    "target": "5.18",
+    "target_title": "Access rights",
+    "relationship": "equivalent",
+    "rationale": "C5 IDM-03 (account locking and withdrawal) directly implements ISO 5.18 (access rights) termination aspect."
+  },
+  {
+    "source": "IDM-04",
+    "source_title": "Withdraw or adjust access rights as the work assignment changes",
+    "target": "5.18",
+    "target_title": "Access rights",
+    "relationship": "equivalent",
+    "rationale": "C5 IDM-04 (adjust access rights on role change) is co-extensive with ISO 5.18."
+  },
+  {
+    "source": "IDM-04",
+    "source_title": "Withdraw or adjust access rights as the work assignment changes",
+    "target": "8.2",
+    "target_title": "Privileged access rights",
+    "relationship": "subset",
+    "rationale": "C5 IDM-04 withdrawal/adjustment of privileged access is a subset of ISO 8.2 (privileged access rights)."
+  },
+  {
+    "source": "IDM-05",
+    "source_title": "Regular review of access rights",
+    "target": "5.18",
+    "target_title": "Access rights",
+    "relationship": "equivalent",
+    "rationale": "C5 IDM-05 (regular access rights review) directly implements the review aspect of ISO 5.18."
+  },
+  {
+    "source": "IDM-06",
+    "source_title": "Privileged access rights",
+    "target": "5.3",
+    "target_title": "Segregation of duties",
+    "relationship": "related",
+    "rationale": "C5 IDM-06 privileged access SoD relates to ISO 5.3 (segregation of duties) as a prerequisite."
+  },
+  {
+    "source": "IDM-06",
+    "source_title": "Privileged access rights",
+    "target": "8.15",
+    "target_title": "Logging",
+    "relationship": "subset",
+    "rationale": "C5 IDM-06 privileged access logging is a subset of ISO 8.15 (logging)."
+  },
+  {
+    "source": "IDM-06",
+    "source_title": "Privileged access rights",
+    "target": "8.2",
+    "target_title": "Privileged access rights",
+    "relationship": "equivalent",
+    "rationale": "C5 IDM-06 (privileged access rights management) is co-extensive with ISO 8.2."
+  },
+  {
+    "source": "IDM-07",
+    "source_title": "Access to cloud customer data",
+    "target": "5.15",
+    "target_title": "Access control",
+    "relationship": "superset",
+    "rationale": "C5 IDM-07 requires explicit transparency to cloud customers about data access—extends ISO 5.15 with cloud-specific customer-facing requirement."
+  },
+  {
+    "source": "IDM-07",
+    "source_title": "Access to cloud customer data",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 IDM-07 (Access to cloud customer data) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "IDM-08",
+    "source_title": "Confidentiality of authentication information",
+    "target": "5.17",
+    "target_title": "Authentication information",
+    "relationship": "equivalent",
+    "rationale": "C5 IDM-08 (confidentiality of authentication information) is co-extensive with ISO 5.17 (authentication information)."
+  },
+  {
+    "source": "IDM-09",
+    "source_title": "Authentication mechanisms",
+    "target": "5.17",
+    "target_title": "Authentication information",
+    "relationship": "equivalent",
+    "rationale": "C5 IDM-09 (authentication mechanisms) is co-extensive with ISO 5.17 (authentication information) technical implementation."
+  },
+  {
+    "source": "INQ-01",
+    "source_title": "Legal Assessment of Investigative Inquiries",
+    "target": "5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "superset",
+    "rationale": "C5 INQ-01 legal assessment of government investigation requests goes beyond ISO 5.31's identification of legal requirements."
+  },
+  {
+    "source": "INQ-01",
+    "source_title": "Legal Assessment of Investigative Inquiries",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 INQ-01 (Legal Assessment of Investigative Inquiries) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "INQ-02",
+    "source_title": "Informing Cloud Customers about Investigation Requests",
+    "target": "5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "superset",
+    "rationale": "C5 INQ-02 customer notification of investigation requests is a cloud-specific transparency obligation not in ISO 5.31."
+  },
+  {
+    "source": "INQ-02",
+    "source_title": "Informing Cloud Customers about Investigation Requests",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 INQ-02 (Informing Cloud Customers about Investigation Requests) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "INQ-03",
+    "source_title": "Conditions for Access to or Disclosure of Cloud Customer Data",
+    "target": "5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "superset",
+    "rationale": "C5 INQ-03 defines conditions for customer data disclosure—a cloud sovereignty requirement beyond ISO 5.31."
+  },
+  {
+    "source": "INQ-03",
+    "source_title": "Conditions for Access to or Disclosure of Cloud Customer Data",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 INQ-03 (Conditions for Access to or Disclosure of Cloud Customer Data) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "INQ-04",
+    "source_title": "Limiting Access to or Disclosure of Data",
+    "target": "5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "superset",
+    "rationale": "C5 INQ-04 limiting disclosure to legal minimum is a cloud data-sovereignty measure beyond ISO 5.31."
+  },
+  {
+    "source": "INQ-04",
+    "source_title": "Limiting Access to or Disclosure of Data",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 INQ-04 (Limiting Access to or Disclosure of Data) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "OIS-01",
+    "source_title": "Information Security Management System",
+    "target": "ISO-27001-CLAUSE-4.1-10.2",
+    "target_title": "ISO-27001-CLAUSE-4.1-10.2",
+    "relationship": "equivalent",
+    "rationale": "C5 OIS-01 requires operating an ISMS scope-compliant with ISO 27001:2022 clauses 4.1–10.2; the C5 scope is cloud-service-specific, making it a cloud-instantiation of the standard."
+  },
+  {
+    "source": "OIS-01",
+    "source_title": "Information Security Management System",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 OIS-01 (Information Security Management System) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "OIS-02",
+    "source_title": "Information Security Policy",
+    "target": "5.1",
+    "target_title": "Policies for information security",
+    "relationship": "equivalent",
+    "rationale": "C5 OIS-02 requires top-management IS policy covering cloud service objectives, directly equivalent to ISO 5.1 (policies for information security)."
+  },
+  {
+    "source": "OIS-02",
+    "source_title": "Information Security Policy",
+    "target": "5.2",
+    "target_title": "Information security roles and responsibilities",
+    "relationship": "subset",
+    "rationale": "C5 OIS-02 touches roles/responsibilities only as a secondary element of the policy, while ISO 5.2 comprehensively covers the role structure."
+  },
+  {
+    "source": "OIS-03",
+    "source_title": "Interfaces and Dependencies",
+    "target": "5.2",
+    "target_title": "Information security roles and responsibilities",
+    "relationship": "superset",
+    "rationale": "C5 OIS-03 adds cloud-specific interface and dependency management beyond what ISO 5.2 requires for IS roles."
+  },
+  {
+    "source": "OIS-03",
+    "source_title": "Interfaces and Dependencies",
+    "target": "5.3",
+    "target_title": "Segregation of duties",
+    "relationship": "related",
+    "rationale": "C5 OIS-03 references segregation only indirectly via interface ownership; ISO 5.3 is the specific control."
+  },
+  {
+    "source": "OIS-04",
+    "source_title": "Segregation of Duties",
+    "target": "5.3",
+    "target_title": "Segregation of duties",
+    "relationship": "equivalent",
+    "rationale": "C5 OIS-04 (Segregation of Duties) is co-extensive with ISO 27001:2022 5.3 at this level."
+  },
+  {
+    "source": "OIS-05",
+    "source_title": "Contact with Relevant Government Agencies and Interest Groups",
+    "target": "5.5",
+    "target_title": "Contact with authorities",
+    "relationship": "equivalent",
+    "rationale": "C5 OIS-05 contact with government agencies directly implements ISO 5.5."
+  },
+  {
+    "source": "OIS-05",
+    "source_title": "Contact with Relevant Government Agencies and Interest Groups",
+    "target": "5.6",
+    "target_title": "Contact with special interest groups",
+    "relationship": "equivalent",
+    "rationale": "C5 OIS-05 contact with interest groups directly implements ISO 5.6."
+  },
+  {
+    "source": "OIS-06",
+    "source_title": "Risk Management Policy",
+    "target": "CLAUSE-6.1",
+    "target_title": "CLAUSE-6.1",
+    "relationship": "equivalent",
+    "rationale": "C5 OIS-06 risk management policy maps to ISO clause 6.1 (actions to address risks and opportunities)."
+  },
+  {
+    "source": "OIS-06",
+    "source_title": "Risk Management Policy",
+    "target": "ISO-27001:2022-cl.6.1,8.2,8.3",
+    "target_title": "ISO 27001:2022 ISMS Clause(s) 6.1,8.2,8.3",
+    "relationship": "equivalent",
+    "rationale": "C5 OIS-06 risk management policy maps to ISO clause 6.1 (actions to address risks and opportunities)."
+  },
+  {
+    "source": "OIS-07",
+    "source_title": "Application of the Risk Management Policy",
+    "target": "CLAUSE-6.1",
+    "target_title": "CLAUSE-6.1",
+    "relationship": "subset",
+    "rationale": "C5 OIS-07 (executing the risk management process) is a subset of ISO clause 6.1 which also requires risk treatment planning."
+  },
+  {
+    "source": "OIS-07",
+    "source_title": "Application of the Risk Management Policy",
+    "target": "ISO-27001:2022-cl.6.1,8.2,8.3",
+    "target_title": "ISO 27001:2022 ISMS Clause(s) 6.1,8.2,8.3",
+    "relationship": "subset",
+    "rationale": "C5 OIS-07 (executing the risk management process) is a subset of ISO clause 6.1 which also requires risk treatment planning."
+  },
+  {
+    "source": "OPS-01",
+    "source_title": "Capacity Management - Planning",
+    "target": "8.6",
+    "target_title": "Capacity management",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-01 (capacity planning) directly implements ISO 8.6 (capacity management)."
+  },
+  {
+    "source": "OPS-02",
+    "source_title": "Capacity Management - Monitoring",
+    "target": "8.6",
+    "target_title": "Capacity management",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-02 (capacity monitoring) directly implements the monitoring aspect of ISO 8.6."
+  },
+  {
+    "source": "OPS-03",
+    "source_title": "Capacity Management - Controlling of Resources",
+    "target": "8.6",
+    "target_title": "Capacity management",
+    "relationship": "subset",
+    "rationale": "C5 OPS-03 (controlling resources) is a subset of ISO 8.6 (capacity management)."
+  },
+  {
+    "source": "OPS-03",
+    "source_title": "Capacity Management - Controlling of Resources",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 OPS-03 (Capacity Management - Controlling of Resources) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "OPS-04",
+    "source_title": "Protection Against Malware - Concept",
+    "target": "8.7",
+    "target_title": "Protection against malware",
+    "relationship": "subset",
+    "rationale": "C5 OPS-04 (malware protection concept) is the policy/concept subset of ISO 8.7 (protection against malware)."
+  },
+  {
+    "source": "OPS-04",
+    "source_title": "Protection Against Malware - Concept",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 OPS-04 (Protection Against Malware - Concept) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "OPS-05",
+    "source_title": "Protection Against Malware - Implementation",
+    "target": "8.7",
+    "target_title": "Protection against malware",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-05 (malware protection implementation) is co-extensive with ISO 8.7."
+  },
+  {
+    "source": "OPS-06",
+    "source_title": "Data Protection and Recovery - Concept",
+    "target": "8.13",
+    "target_title": "Information backup",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-06 (backup concept) directly implements ISO 8.13 (information backup)."
+  },
+  {
+    "source": "OPS-07",
+    "source_title": "Data Backup and Recovery - Monitoring",
+    "target": "8.13",
+    "target_title": "Information backup",
+    "relationship": "subset",
+    "rationale": "C5 OPS-07 (backup monitoring) is a monitoring subset of ISO 8.13 (information backup)."
+  },
+  {
+    "source": "OPS-07",
+    "source_title": "Data Backup and Recovery - Monitoring",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 OPS-07 (Data Backup and Recovery - Monitoring) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "OPS-08",
+    "source_title": "Data Backup and Recovery - Regular Testing",
+    "target": "8.13",
+    "target_title": "Information backup",
+    "relationship": "subset",
+    "rationale": "C5 OPS-08 (restore testing) is a testing subset of ISO 8.13 (information backup)."
+  },
+  {
+    "source": "OPS-09",
+    "source_title": "Data Backup and Recovery - Storage",
+    "target": "8.13",
+    "target_title": "Information backup",
+    "relationship": "subset",
+    "rationale": "C5 OPS-09 (offsite backup storage) is a geographic-separation subset of ISO 8.13."
+  },
+  {
+    "source": "OPS-09",
+    "source_title": "Data Backup and Recovery - Storage",
+    "target": "8.14",
+    "target_title": "Redundancy of information processing facilities",
+    "relationship": "subset",
+    "rationale": "C5 OPS-09 offsite backup also contributes to ISO 8.14 (redundancy) but is narrower in scope."
+  },
+  {
+    "source": "OPS-10",
+    "source_title": "Logging and Monitoring - Concept",
+    "target": "8.15",
+    "target_title": "Logging",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-10 (logging and monitoring concept) is co-extensive with ISO 8.15 (logging)."
+  },
+  {
+    "source": "OPS-11",
+    "source_title": "Logging and Monitoring - Metadata Management",
+    "target": "8.15",
+    "target_title": "Logging",
+    "relationship": "subset",
+    "rationale": "C5 OPS-11 (log metadata management) is a metadata-protection subset of ISO 8.15 (logging)."
+  },
+  {
+    "source": "OPS-12",
+    "source_title": "Logging and Monitoring - Access, Storage and Retention",
+    "target": "8.15",
+    "target_title": "Logging",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-12 (log access, storage and retention) directly implements ISO 8.15 (logging)."
+  },
+  {
+    "source": "OPS-13",
+    "source_title": "Logging and Monitoring - Identification of Anomalies",
+    "target": "8.16",
+    "target_title": "8.16",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-13 (anomaly identification in logs) is co-extensive with ISO 8.16 (monitoring activities)."
+  },
+  {
+    "source": "OPS-13",
+    "source_title": "Logging and Monitoring - Identification of Anomalies",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 OPS-13 (Logging and Monitoring - Identification of Anomalies) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "OPS-14",
+    "source_title": "Logging and Monitoring - Storage of Generated Log Data",
+    "target": "8.15",
+    "target_title": "Logging",
+    "relationship": "subset",
+    "rationale": "C5 OPS-14 (log retention period) is a retention-period subset of ISO 8.15 (logging)."
+  },
+  {
+    "source": "OPS-15",
+    "source_title": "Logging and Monitoring - Accountability",
+    "target": "8.15",
+    "target_title": "Logging",
+    "relationship": "subset",
+    "rationale": "C5 OPS-15 (log accountability) is an accountability subset of ISO 8.15 (logging)."
+  },
+  {
+    "source": "OPS-15",
+    "source_title": "Logging and Monitoring - Accountability",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 OPS-15 (Logging and Monitoring - Accountability) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "OPS-16",
+    "source_title": "Logging and Monitoring - Configuration",
+    "target": "8.15",
+    "target_title": "Logging",
+    "relationship": "subset",
+    "rationale": "C5 OPS-16 log configuration protection is a subset of ISO 8.15 (logging)."
+  },
+  {
+    "source": "OPS-16",
+    "source_title": "Logging and Monitoring - Configuration",
+    "target": "8.18",
+    "target_title": "Use of privileged utility programs",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-16 (logging system access via privileged accounts) directly implements ISO 8.18 (use of privileged utility programs)."
+  },
+  {
+    "source": "OPS-17",
+    "source_title": "Logging and Monitoring - Availability of Audit Trails to Customer",
+    "target": "8.14",
+    "target_title": "Redundancy of information processing facilities",
+    "relationship": "subset",
+    "rationale": "C5 OPS-17 monitoring service availability for customers is a subset of ISO 8.14 (redundancy of processing facilities)."
+  },
+  {
+    "source": "OPS-18",
+    "source_title": "Managing Vulnerabilities, Malfunctions and Errors - Concept",
+    "target": "8.8",
+    "target_title": "Management of technical vulnerabilities",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-18 (vulnerability management concept) directly implements ISO 8.8 (management of technical vulnerabilities)."
+  },
+  {
+    "source": "OPS-19",
+    "source_title": "Managing Vulnerabilities, Malfunctions and Errors - Penetration Tests",
+    "target": "5.36",
+    "target_title": "Compliance with policies and standards for information security",
+    "relationship": "subset",
+    "rationale": "C5 OPS-19 penetration testing for compliance is a subset of ISO 5.36 (compliance review)."
+  },
+  {
+    "source": "OPS-19",
+    "source_title": "Managing Vulnerabilities, Malfunctions and Errors - Penetration Tests",
+    "target": "8.20",
+    "target_title": "Network controls",
+    "relationship": "subset",
+    "rationale": "C5 OPS-19 penetration testing of networks is a subset of ISO 8.20 (network controls); also relates to 5.36."
+  },
+  {
+    "source": "OPS-20",
+    "source_title": "Managing Vulnerabilities - Measurement of Residual Risk",
+    "target": "8.8",
+    "target_title": "Management of technical vulnerabilities",
+    "relationship": "subset",
+    "rationale": "C5 OPS-20 (residual risk measurement) is a risk-measurement subset of ISO 8.8 (vulnerability management)."
+  },
+  {
+    "source": "OPS-21",
+    "source_title": "Involvement of Cloud Customers in Vulnerability Evaluation",
+    "target": "8.8",
+    "target_title": "Management of technical vulnerabilities",
+    "relationship": "superset",
+    "rationale": "C5 OPS-21 requires active customer communication about vulnerabilities — an explicit transparency obligation beyond ISO 8.8."
+  },
+  {
+    "source": "OPS-22",
+    "source_title": "Testing and Documentation of Known Vulnerabilities - Change Management",
+    "target": "8.32",
+    "target_title": "Change management",
+    "relationship": "equivalent",
+    "rationale": "C5 OPS-22 vulnerability testing in change management directly implements ISO 8.32 (change management)."
+  },
+  {
+    "source": "OPS-22",
+    "source_title": "Testing and Documentation of Known Vulnerabilities - Change Management",
+    "target": "8.8",
+    "target_title": "Management of technical vulnerabilities",
+    "relationship": "subset",
+    "rationale": "C5 OPS-22 also implements the change-related vulnerability testing aspect of ISO 8.8."
+  },
+  {
+    "source": "OPS-23",
+    "source_title": "Managing Vulnerabilities - Production Environment",
+    "target": "8.8",
+    "target_title": "Management of technical vulnerabilities",
+    "relationship": "subset",
+    "rationale": "C5 OPS-23 (production patching) is a patch-implementation subset of ISO 8.8."
+  },
+  {
+    "source": "OPS-23",
+    "source_title": "Managing Vulnerabilities - Production Environment",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 OPS-23 (Managing Vulnerabilities - Production Environment) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "OPS-24",
+    "source_title": "Separation of Datasets in the Cloud Infrastructure",
+    "target": "8.22",
+    "target_title": "Segregation in networks",
+    "relationship": "superset",
+    "rationale": "C5 OPS-24 requires strict multi-tenant data separation in cloud infrastructure, exceeding the generic network segregation of ISO 8.22."
+  },
+  {
+    "source": "PI-01",
+    "source_title": "Documentation and safety of input and output interfaces",
+    "target": "5.8",
+    "target_title": "Information security in project management",
+    "relationship": "superset",
+    "rationale": "C5 PI-01 requires formal documentation and safety requirements for all cloud service I/O interfaces, exceeding generic ISO 5.8 project security."
+  },
+  {
+    "source": "PI-01",
+    "source_title": "Documentation and safety of input and output interfaces",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 PI-01 (Documentation and safety of input and output interfaces) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "PI-02",
+    "source_title": "Contractual agreements for the provision and use of the cloud service",
+    "target": "7.10",
+    "target_title": "Storage media",
+    "relationship": "superset",
+    "rationale": "C5 PI-02 requires contractual data portability and asset return rights specific to cloud service agreements—not covered by ISO 7.10 (storage media)."
+  },
+  {
+    "source": "PI-03",
+    "source_title": "Secure deletion of data",
+    "target": "7.14",
+    "target_title": "Secure disposal or re-use of equipment",
+    "relationship": "equivalent",
+    "rationale": "C5 PI-03 (secure deletion of customer data on termination) is co-extensive with ISO 7.14 (secure disposal or re-use of equipment)."
+  },
+  {
+    "source": "PS-01",
+    "source_title": "Physical Security and Environmental Controls - Concept",
+    "target": "7.1",
+    "target_title": "Physical security perimeter",
+    "relationship": "superset",
+    "rationale": "C5 PS-01 requires a comprehensive physical security concept document not explicitly required by ISO 7.1."
+  },
+  {
+    "source": "PS-01",
+    "source_title": "Physical Security and Environmental Controls - Concept",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 PS-01 (Physical Security and Environmental Controls - Concept) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "PS-02",
+    "source_title": "Redundancy model",
+    "target": "8.14",
+    "target_title": "Redundancy of information processing facilities",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-02 (redundancy model at two sites) directly implements ISO 8.14 (redundancy of information processing facilities)."
+  },
+  {
+    "source": "PS-03",
+    "source_title": "Perimeter Protection",
+    "target": "7.1",
+    "target_title": "Physical security perimeter",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-03 (perimeter protection - structural) is co-extensive with ISO 7.1 (physical security perimeter)."
+  },
+  {
+    "source": "PS-03",
+    "source_title": "Perimeter Protection",
+    "target": "7.2",
+    "target_title": "Physical entry controls",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-03 (entry controls) is co-extensive with ISO 7.2 (physical entry controls)."
+  },
+  {
+    "source": "PS-03",
+    "source_title": "Perimeter Protection",
+    "target": "7.3",
+    "target_title": "Securing offices, rooms and facilities",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-03 (securing facilities) is co-extensive with ISO 7.3 (securing offices, rooms and facilities)."
+  },
+  {
+    "source": "PS-04",
+    "source_title": "Physical site access control",
+    "target": "5.16",
+    "target_title": "Identity management",
+    "relationship": "subset",
+    "rationale": "C5 PS-04 physical access user registration is a physical-access subset of ISO 5.16 (identity management)."
+  },
+  {
+    "source": "PS-04",
+    "source_title": "Physical site access control",
+    "target": "5.18",
+    "target_title": "Access rights",
+    "relationship": "subset",
+    "rationale": "C5 PS-04 physical access provisioning/deprovisioning is a physical-access subset of ISO 5.18 (access rights)."
+  },
+  {
+    "source": "PS-04",
+    "source_title": "Physical site access control",
+    "target": "7.2",
+    "target_title": "Physical entry controls",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-04 physical entry controls directly implement ISO 7.2."
+  },
+  {
+    "source": "PS-04",
+    "source_title": "Physical site access control",
+    "target": "7.3",
+    "target_title": "Securing offices, rooms and facilities",
+    "relationship": "subset",
+    "rationale": "C5 PS-04 site access is a subset of the broader office/facility securing requirements of ISO 7.3."
+  },
+  {
+    "source": "PS-04",
+    "source_title": "Physical site access control",
+    "target": "8.2",
+    "target_title": "Privileged access rights",
+    "relationship": "subset",
+    "rationale": "C5 PS-04 physical privileged access is a physical-access subset of ISO 8.2 (privileged access rights)."
+  },
+  {
+    "source": "PS-05",
+    "source_title": "Protection against threats from outside and environment",
+    "target": "7.3",
+    "target_title": "Securing offices, rooms and facilities",
+    "relationship": "subset",
+    "rationale": "C5 PS-05 external/environmental threats overlaps ISO 7.3 (securing facilities) at the perimeter level."
+  },
+  {
+    "source": "PS-05",
+    "source_title": "Protection against threats from outside and environment",
+    "target": "7.5",
+    "target_title": "Protecting against physical and environmental threats",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-05 (protection against physical/environmental threats) is co-extensive with ISO 7.5."
+  },
+  {
+    "source": "PS-06",
+    "source_title": "Protection against interruptions caused by environmental influences",
+    "target": "7.11",
+    "target_title": "Supporting utilities",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-06 supporting utilities directly implements ISO 7.11."
+  },
+  {
+    "source": "PS-06",
+    "source_title": "Protection against interruptions caused by environmental influences",
+    "target": "7.12",
+    "target_title": "Cabling security",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-06 cabling security directly implements ISO 7.12."
+  },
+  {
+    "source": "PS-06",
+    "source_title": "Protection against interruptions caused by environmental influences",
+    "target": "7.13",
+    "target_title": "Equipment maintenance",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-06 equipment maintenance directly implements ISO 7.13."
+  },
+  {
+    "source": "PS-06",
+    "source_title": "Protection against interruptions caused by environmental influences",
+    "target": "7.8",
+    "target_title": "Equipment siting and protection",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-06 equipment siting/protection directly implements ISO 7.8."
+  },
+  {
+    "source": "PS-06",
+    "source_title": "Protection against interruptions caused by environmental influences",
+    "target": "8.14",
+    "target_title": "Redundancy of information processing facilities",
+    "relationship": "subset",
+    "rationale": "C5 PS-06 environmental redundancy is a physical-layer subset of ISO 8.14 (redundancy of information processing facilities)."
+  },
+  {
+    "source": "PS-07",
+    "source_title": "Surveillance of operational and environmental parameters",
+    "target": "7.4",
+    "target_title": "Physical security monitoring",
+    "relationship": "equivalent",
+    "rationale": "C5 PS-07 (surveillance of operational and environmental parameters) is co-extensive with ISO 7.4 (physical security monitoring)."
+  },
+  {
+    "source": "PS-07",
+    "source_title": "Surveillance of operational and environmental parameters",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 PS-07 (Surveillance of operational and environmental parameters) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "PSS-01",
+    "source_title": "Guidelines and Recommendations for Cloud Customers",
+    "target": "5.1",
+    "target_title": "Policies for information security",
+    "relationship": "superset",
+    "rationale": "C5 PSS-01 requires customer-facing IS guidelines published by the CSP—an external transparency obligation beyond ISO 5.1 (IS policies)."
+  },
+  {
+    "source": "PSS-01",
+    "source_title": "Guidelines and Recommendations for Cloud Customers",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 PSS-01 (Guidelines and Recommendations for Cloud Customers) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "PSS-02",
+    "source_title": "Identification of Vulnerabilities of the Cloud Service",
+    "target": "8.8",
+    "target_title": "Management of technical vulnerabilities",
+    "relationship": "equivalent",
+    "rationale": "C5 PSS-02 (vulnerability identification of cloud service) directly implements ISO 8.8 (management of technical vulnerabilities)."
+  },
+  {
+    "source": "PSS-03",
+    "source_title": "Online Register of Known Vulnerabilities",
+    "target": "8.8",
+    "target_title": "Management of technical vulnerabilities",
+    "relationship": "superset",
+    "rationale": "C5 PSS-03 requires a publicly accessible vulnerability register for the cloud service, exceeding ISO 8.8's internal vulnerability management."
+  },
+  {
+    "source": "PSS-03",
+    "source_title": "Online Register of Known Vulnerabilities",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 PSS-03 (Online Register of Known Vulnerabilities) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "PSS-04",
+    "source_title": "Error handling and Logging Mechanisms",
+    "target": "8.15",
+    "target_title": "Logging",
+    "relationship": "superset",
+    "rationale": "C5 PSS-04 requires customer-accessible error handling and logging capabilities—a cloud service transparency requirement beyond ISO 8.15."
+  },
+  {
+    "source": "PSS-04",
+    "source_title": "Error handling and Logging Mechanisms",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 PSS-04 (Error handling and Logging Mechanisms) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "PSS-05",
+    "source_title": "Authentication Mechanisms",
+    "target": "5.17",
+    "target_title": "Authentication information",
+    "relationship": "equivalent",
+    "rationale": "C5 PSS-05 (authentication mechanisms for customers) is co-extensive with ISO 5.17 (authentication information)."
+  },
+  {
+    "source": "PSS-06",
+    "source_title": "Session Management",
+    "target": "5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "subset",
+    "rationale": "C5 PSS-06 cryptographic session compliance is a subset of ISO 5.31 (legal/regulatory requirements)."
+  },
+  {
+    "source": "PSS-06",
+    "source_title": "Session Management",
+    "target": "8.24",
+    "target_title": "Use of cryptography",
+    "relationship": "subset",
+    "rationale": "C5 PSS-06 session management encryption is a subset of ISO 8.24 (use of cryptography)."
+  },
+  {
+    "source": "PSS-07",
+    "source_title": "Confidentiality of Authentication Information",
+    "target": "5.17",
+    "target_title": "Authentication information",
+    "relationship": "equivalent",
+    "rationale": "C5 PSS-07 (confidentiality of customer authentication information) is co-extensive with ISO 5.17."
+  },
+  {
+    "source": "PSS-07",
+    "source_title": "Confidentiality of Authentication Information",
+    "target": "8.24",
+    "target_title": "Use of cryptography",
+    "relationship": "subset",
+    "rationale": "C5 PSS-07 password hashing and transmission protection is a subset of ISO 8.24 (use of cryptography)."
+  },
+  {
+    "source": "PSS-08",
+    "source_title": "Roles and Rights Concept",
+    "target": "5.15",
+    "target_title": "Access control",
+    "relationship": "superset",
+    "rationale": "C5 PSS-08 requires CSP to provide a customer IAM capability (roles/rights concept as a service feature)—a cloud service model requirement beyond ISO 5.15."
+  },
+  {
+    "source": "PSS-08",
+    "source_title": "Roles and Rights Concept",
+    "target": "8.3",
+    "target_title": "Information access restriction",
+    "relationship": "subset",
+    "rationale": "C5 PSS-08 customer access restriction capability is a subset of ISO 8.3 (information access restriction)."
+  },
+  {
+    "source": "PSS-08",
+    "source_title": "Roles and Rights Concept",
+    "target": "8.5",
+    "target_title": "Secure authentication",
+    "relationship": "subset",
+    "rationale": "C5 PSS-08 customer authentication requirement is a subset of ISO 8.5 (secure authentication)."
+  },
+  {
+    "source": "PSS-09",
+    "source_title": "Authorisation Mechanisms",
+    "target": "5.15",
+    "target_title": "Access control",
+    "relationship": "superset",
+    "rationale": "C5 PSS-09 requires CSP-provided authorisation mechanisms for customers—extends ISO 5.15 with cloud-service-model obligations."
+  },
+  {
+    "source": "PSS-09",
+    "source_title": "Authorisation Mechanisms",
+    "target": "8.3",
+    "target_title": "Information access restriction",
+    "relationship": "equivalent",
+    "rationale": "C5 PSS-09 (authorisation mechanisms for customers) is co-extensive with ISO 8.3 (information access restriction)."
+  },
+  {
+    "source": "PSS-09",
+    "source_title": "Authorisation Mechanisms",
+    "target": "8.5",
+    "target_title": "Secure authentication",
+    "relationship": "subset",
+    "rationale": "C5 PSS-09 customer secure authentication is a subset of ISO 8.5 (secure authentication)."
+  },
+  {
+    "source": "PSS-10",
+    "source_title": "Software Defined Networking",
+    "target": "5.14",
+    "target_title": "Information transfer",
+    "relationship": "subset",
+    "rationale": "C5 PSS-10 SDN-protected information transfer is a subset of ISO 5.14 (information transfer)."
+  },
+  {
+    "source": "PSS-10",
+    "source_title": "Software Defined Networking",
+    "target": "8.19",
+    "target_title": "Installation of software on operational systems",
+    "relationship": "subset",
+    "rationale": "C5 PSS-10 SDN software installation controls are a subset of ISO 8.19 (installation of software)."
+  },
+  {
+    "source": "PSS-10",
+    "source_title": "Software Defined Networking",
+    "target": "8.22",
+    "target_title": "Segregation in networks",
+    "relationship": "superset",
+    "rationale": "C5 PSS-10 (SDN-based tenant isolation) is a cloud-specific technology implementation beyond generic ISO 8.22 network segregation."
+  },
+  {
+    "source": "PSS-10",
+    "source_title": "Software Defined Networking",
+    "target": "8.26",
+    "target_title": "Application security requirements",
+    "relationship": "subset",
+    "rationale": "C5 PSS-10 SDN application security requirements are a subset of ISO 8.26 (application security requirements)."
+  },
+  {
+    "source": "PSS-11",
+    "source_title": "Images for Virtual Machines and Containers",
+    "target": "8.9",
+    "target_title": "Configuration management",
+    "relationship": "equivalent",
+    "rationale": "C5 PSS-11 (hardened VM/container images) is co-extensive with ISO 8.9 (configuration management)."
+  },
+  {
+    "source": "PSS-11",
+    "source_title": "Images for Virtual Machines and Containers",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 PSS-11 (Images for Virtual Machines and Containers) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "PSS-12",
+    "source_title": "Locations of Data Processing and Storage",
+    "target": "5.31",
+    "target_title": "Identification of legal, statutory, regulatory and contractual requirements",
+    "relationship": "superset",
+    "rationale": "C5 PSS-12 requires customer-selectable data locations to meet data residency obligations—a cloud-specific regulatory transparency beyond ISO 5.31."
+  },
+  {
+    "source": "PSS-12",
+    "source_title": "Locations of Data Processing and Storage",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 PSS-12 (Locations of Data Processing and Storage) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "SIM-01",
+    "source_title": "Policy for security incident management",
+    "target": "5.24",
+    "target_title": "Information security incident management planning and preparation",
+    "relationship": "equivalent",
+    "rationale": "C5 SIM-01 (incident management policy) is co-extensive with ISO 5.24 (IS incident management planning and preparation)."
+  },
+  {
+    "source": "SIM-01",
+    "source_title": "Policy for security incident management",
+    "target": "5.25",
+    "target_title": "Assessment and decision on information security events",
+    "relationship": "subset",
+    "rationale": "C5 SIM-01 event assessment is a subset of ISO 5.25 (assessment and decision on IS events)."
+  },
+  {
+    "source": "SIM-01",
+    "source_title": "Policy for security incident management",
+    "target": "5.26",
+    "target_title": "Response to information security incidents",
+    "relationship": "subset",
+    "rationale": "C5 SIM-01 incident response is a subset of ISO 5.26 (response to IS incidents)."
+  },
+  {
+    "source": "SIM-01",
+    "source_title": "Policy for security incident management",
+    "target": "5.27",
+    "target_title": "Learning from information security incidents",
+    "relationship": "subset",
+    "rationale": "C5 SIM-01 lessons-learned is a subset of ISO 5.27 (learning from IS incidents)."
+  },
+  {
+    "source": "SIM-01",
+    "source_title": "Policy for security incident management",
+    "target": "6.8",
+    "target_title": "Information security event reporting",
+    "relationship": "subset",
+    "rationale": "C5 SIM-01 event reporting provisions are a subset of ISO 6.8 (IS event reporting)."
+  },
+  {
+    "source": "SIM-02",
+    "source_title": "Processing of security incidents",
+    "target": "5.24",
+    "target_title": "Information security incident management planning and preparation",
+    "relationship": "subset",
+    "rationale": "C5 SIM-02 (Processing of security incidents) implements a cloud-scoped subset of ISO 27001:2022 5.24 (Information security incident management planning and preparation)."
+  },
+  {
+    "source": "SIM-02",
+    "source_title": "Processing of security incidents",
+    "target": "5.25",
+    "target_title": "Assessment and decision on information security events",
+    "relationship": "equivalent",
+    "rationale": "C5 SIM-02 (incident processing and escalation) is co-extensive with ISO 5.25 (assessment and decision on IS events)."
+  },
+  {
+    "source": "SIM-02",
+    "source_title": "Processing of security incidents",
+    "target": "5.26",
+    "target_title": "Response to information security incidents",
+    "relationship": "equivalent",
+    "rationale": "C5 SIM-02 also implements ISO 5.26 (response to IS incidents)."
+  },
+  {
+    "source": "SIM-02",
+    "source_title": "Processing of security incidents",
+    "target": "5.5",
+    "target_title": "Contact with authorities",
+    "relationship": "subset",
+    "rationale": "C5 SIM-02 authority contact during incidents is a subset of ISO 5.5 (contact with authorities)."
+  },
+  {
+    "source": "SIM-02",
+    "source_title": "Processing of security incidents",
+    "target": "5.6",
+    "target_title": "Contact with special interest groups",
+    "relationship": "subset",
+    "rationale": "C5 SIM-02 interest-group contact during incidents is a subset of ISO 5.6."
+  },
+  {
+    "source": "SIM-03",
+    "source_title": "Documentation and reporting of security incidents",
+    "target": "5.24",
+    "target_title": "Information security incident management planning and preparation",
+    "relationship": "subset",
+    "rationale": "C5 SIM-03 documentation and reporting is a subset of ISO 5.24 (incident management planning)."
+  },
+  {
+    "source": "SIM-03",
+    "source_title": "Documentation and reporting of security incidents",
+    "target": "5.28",
+    "target_title": "Collection of evidence",
+    "relationship": "equivalent",
+    "rationale": "C5 SIM-03 evidence collection and incident documentation is co-extensive with ISO 5.28 (collection of evidence)."
+  },
+  {
+    "source": "SIM-03",
+    "source_title": "Documentation and reporting of security incidents",
+    "target": "6.8",
+    "target_title": "Information security event reporting",
+    "relationship": "subset",
+    "rationale": "C5 SIM-03 incident reporting is a subset of ISO 6.8 (IS event reporting)."
+  },
+  {
+    "source": "SIM-04",
+    "source_title": "Duty of the users to report security incidents",
+    "target": "6.8",
+    "target_title": "Information security event reporting",
+    "relationship": "equivalent",
+    "rationale": "C5 SIM-04 reporting of IS weaknesses directly implements ISO 6.8."
+  },
+  {
+    "source": "SIM-05",
+    "source_title": "Evaluation and learning process",
+    "target": "5.25",
+    "target_title": "Assessment and decision on information security events",
+    "relationship": "subset",
+    "rationale": "C5 SIM-05 incident evaluation is a subset of ISO 5.25."
+  },
+  {
+    "source": "SIM-05",
+    "source_title": "Evaluation and learning process",
+    "target": "5.26",
+    "target_title": "Response to information security incidents",
+    "relationship": "subset",
+    "rationale": "C5 SIM-05 response effectiveness measurement is a subset of ISO 5.26."
+  },
+  {
+    "source": "SIM-05",
+    "source_title": "Evaluation and learning process",
+    "target": "5.27",
+    "target_title": "Learning from information security incidents",
+    "relationship": "equivalent",
+    "rationale": "C5 SIM-05 (evaluation and learning from incidents) is co-extensive with ISO 5.27."
+  },
+  {
+    "source": "SIM-05",
+    "source_title": "Evaluation and learning process",
+    "target": "6.8",
+    "target_title": "Information security event reporting",
+    "relationship": "subset",
+    "rationale": "C5 SIM-05 weakness reporting integration is a subset of ISO 6.8."
+  },
+  {
+    "source": "SP-01",
+    "source_title": "Documentation, communication and provision of policies and instructions",
+    "target": "5.1",
+    "target_title": "Policies for information security",
+    "relationship": "equivalent",
+    "rationale": "C5 SP-01 (documentation, communication and provision of policies) is co-extensive with ISO 5.1's documentation and communication requirements."
+  },
+  {
+    "source": "SP-02",
+    "source_title": "Review and Approval of Policies and Instructions",
+    "target": "5.1",
+    "target_title": "Policies for information security",
+    "relationship": "equivalent",
+    "rationale": "C5 SP-02 (policy review and approval) directly implements the review component of ISO 5.1."
+  },
+  {
+    "source": "SP-03",
+    "source_title": "Exceptions from Existing Policies and Instructions",
+    "target": "5.1",
+    "target_title": "Policies for information security",
+    "relationship": "superset",
+    "rationale": "C5 SP-03 adds a formal exception-management process not explicitly required by ISO 5.1."
+  },
+  {
+    "source": "SP-03",
+    "source_title": "Exceptions from Existing Policies and Instructions",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 SP-03 (Exceptions from Existing Policies and Instructions) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "SSO-01",
+    "source_title": "Policies and instructions for controlling service providers and suppliers",
+    "target": "5.19",
+    "target_title": "Information security in supplier relationships",
+    "relationship": "equivalent",
+    "rationale": "C5 SSO-01 (supplier IS policies) is co-extensive with ISO 5.19 (IS in supplier relationships)."
+  },
+  {
+    "source": "SSO-01",
+    "source_title": "Policies and instructions for controlling service providers and suppliers",
+    "target": "5.20",
+    "target_title": "Addressing information security within supplier agreements",
+    "relationship": "subset",
+    "rationale": "C5 SSO-01 supplier agreement IS requirements are a subset of ISO 5.20 (addressing IS within supplier agreements)."
+  },
+  {
+    "source": "SSO-01",
+    "source_title": "Policies and instructions for controlling service providers and suppliers",
+    "target": "5.21",
+    "target_title": "Managing information security in the ICT supply chain",
+    "relationship": "subset",
+    "rationale": "C5 SSO-01 ICT supply chain requirements are a subset of ISO 5.21 (managing IS in ICT supply chain)."
+  },
+  {
+    "source": "SSO-01",
+    "source_title": "Policies and instructions for controlling service providers and suppliers",
+    "target": "6.3",
+    "target_title": "Information security awareness, education and training",
+    "relationship": "subset",
+    "rationale": "C5 SSO-01 supplier IS awareness training is a subset of ISO 6.3 (IS awareness and training)."
+  },
+  {
+    "source": "SSO-02",
+    "source_title": "Risk assessment of service providers and suppliers",
+    "target": "5.19",
+    "target_title": "Information security in supplier relationships",
+    "relationship": "equivalent",
+    "rationale": "C5 SSO-02 (supplier risk assessment) directly implements ISO 5.19."
+  },
+  {
+    "source": "SSO-02",
+    "source_title": "Risk assessment of service providers and suppliers",
+    "target": "5.20",
+    "target_title": "Addressing information security within supplier agreements",
+    "relationship": "equivalent",
+    "rationale": "C5 SSO-02 IS requirements in supplier agreements implements ISO 5.20."
+  },
+  {
+    "source": "SSO-02",
+    "source_title": "Risk assessment of service providers and suppliers",
+    "target": "5.21",
+    "target_title": "Managing information security in the ICT supply chain",
+    "relationship": "subset",
+    "rationale": "C5 SSO-02 supply chain IS is a subset of the broader ISO 5.21 (ICT supply chain management)."
+  },
+  {
+    "source": "SSO-02",
+    "source_title": "Risk assessment of service providers and suppliers",
+    "target": "5.22",
+    "target_title": "Monitoring, review and change management of supplier services",
+    "relationship": "subset",
+    "rationale": "C5 SSO-02 monitoring processes definition is a subset of ISO 5.22 (monitoring and review of supplier services)."
+  },
+  {
+    "source": "SSO-03",
+    "source_title": "Directory of service providers and suppliers",
+    "target": "5.19",
+    "target_title": "Information security in supplier relationships",
+    "relationship": "superset",
+    "rationale": "C5 SSO-03 requires maintaining a formal supplier directory beyond what ISO 5.19 prescribes."
+  },
+  {
+    "source": "SSO-03",
+    "source_title": "Directory of service providers and suppliers",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 SSO-03 (Directory of service providers and suppliers) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  },
+  {
+    "source": "SSO-04",
+    "source_title": "Monitoring of compliance with requirements for service providers and suppliers",
+    "target": "5.22",
+    "target_title": "Monitoring, review and change management of supplier services",
+    "relationship": "equivalent",
+    "rationale": "C5 SSO-04 (monitoring supplier compliance) is co-extensive with ISO 5.22."
+  },
+  {
+    "source": "SSO-05",
+    "source_title": "Exit strategy for the receipt of benefits from service providers and suppliers",
+    "target": "5.22",
+    "target_title": "Monitoring, review and change management of supplier services",
+    "relationship": "superset",
+    "rationale": "C5 SSO-05 requires a documented exit strategy for each critical supplier—an explicit cloud-resilience requirement beyond ISO 5.22."
+  },
+  {
+    "source": "SSO-05",
+    "source_title": "Exit strategy for the receipt of benefits from service providers and suppliers",
+    "target": "NONE",
+    "target_title": "No direct ISO 27001:2022 equivalent",
+    "relationship": "related",
+    "rationale": "C5 SSO-05 (Exit strategy for the receipt of benefits from service providers and suppliers) is a cloud-specific criterion with no direct ISO 27001:2022 Annex A or clause equivalent."
+  }
+]

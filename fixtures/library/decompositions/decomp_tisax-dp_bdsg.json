@@ -1,0 +1,260 @@
+[
+  {
+    "source": "9.1.1-a",
+    "target": "BDSG-§38(1)",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.1.1 requires a documented data protection policy; BDSG §38(1) mandates DPO appointment for private-sector organisations with ≥20 persons in automated processing, implying a governance structure but not requiring a written policy document per se — the policy sub-requirement is narrower."
+  },
+  {
+    "source": "9.1.1-b",
+    "target": "BDSG-§38(2)",
+    "relationship": "related",
+    "rationale": "The policy must reflect mandatory DPO appointment triggers (DPIA-obligatory processing, commercial data trading) per BDSG §38(2); policy scope and DPO mandate scope overlap but neither fully subsumes the other."
+  },
+  {
+    "source": "9.1.1-c",
+    "target": "BDSG-§26(1)",
+    "relationship": "partial_overlap",
+    "rationale": "Where the data protection policy covers employee data processing, it must reflect the BDSG §26(1) lawfulness condition (employment-relationship necessity); automotive supplier context involves employees processing OEM data, creating partial overlap."
+  },
+  {
+    "source": "9.2.1-a",
+    "target": "BDSG-§38(1)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.2.1 requires designation of a qualified DPO or equivalent privacy responsible; BDSG §38(1) is the German-specific DPO appointment obligation (20-person threshold) that co-extensively covers the same designation requirement for private bodies."
+  },
+  {
+    "source": "9.2.1-b",
+    "target": "BDSG-§6(4)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.2.1 requires the DPO to be protected from dismissal and conflicts of interest; BDSG §6(4) (applied to private bodies via §38) prohibits dismissal or disadvantage for performance of DPO tasks, directly co-extensive."
+  },
+  {
+    "source": "9.2.1-c",
+    "target": "BDSG-§7",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.2.1 lists DPO tasks (advising, monitoring, DPIA cooperation); BDSG §7 specifies public-body DPO tasks, applied analogously to private bodies via §38 — source is a subset as BDSG §7 also covers cooperation with supervisory authority."
+  },
+  {
+    "source": "9.3.1-a",
+    "target": "BDSG-§38(1)",
+    "relationship": "related",
+    "rationale": "VDA ISA 9.3.1 mandates a Record of Processing Activities (RoPA); BDSG §38(1) is related because organisations below the DPO threshold still require a RoPA under GDPR Art. 30 — BDSG does not separately legislate the RoPA for private non-public bodies (GDPR Art. 30 applies directly), so the link is contextual rather than direct."
+  },
+  {
+    "source": "9.3.1-b",
+    "target": "BDSG-§26(1)",
+    "relationship": "subset",
+    "rationale": "Where the RoPA documents employee data processing activities, the legal basis entry must reflect BDSG §26(1) (employment necessity); the VDA requirement to record legal bases is a subset of §26(1)'s broader employment data lawfulness regime."
+  },
+  {
+    "source": "9.3.1-c",
+    "target": "BDSG-§26(2)",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.3.1 requires recording consent-based processing activities; BDSG §26(2) imposes form, voluntariness and documentation requirements for employee consent — VDA records the existence of consent but §26(2) adds materiality conditions beyond mere recording."
+  },
+  {
+    "source": "9.3.1-d",
+    "target": "BDSG-§22(2)",
+    "relationship": "partial_overlap",
+    "rationale": "Where the RoPA covers special-category data (health, biometric, union membership), BDSG §22(2) requires additional safeguards to be documented; VDA ISA 9.3.1 captures the processing activity, §22(2) adds the safeguard-documentation obligation — partial overlap at the record level."
+  },
+  {
+    "source": "9.4.1-a",
+    "target": "BDSG-§38(2)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.4.1 requires a DPIA for high-risk processing; BDSG §38(2) makes DPO appointment mandatory where Art. 35 GDPR DPIA is required — both provisions are triggered by the same high-risk processing threshold, making the VDA criterion and §38(2) trigger co-extensive."
+  },
+  {
+    "source": "9.4.1-b",
+    "target": "BDSG-§22(2)",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.4.1 requires DPIA for processing special categories (Art. 9 GDPR); BDSG §22(2) requires appropriate and specific measures when processing special categories — VDA DPIA is one such measure but §22(2) mandates a broader set of technical and organisational safeguards."
+  },
+  {
+    "source": "9.4.1-c",
+    "target": "BDSG-§26(1)",
+    "relationship": "related",
+    "rationale": "DPIA obligations under 9.4.1 apply where employee monitoring or profiling occurs; BDSG §26(1) governs lawfulness of employment data processing including monitoring measures — related because DPIA necessity often arises from §26(1) processing at scale."
+  },
+  {
+    "source": "9.5.1-a",
+    "target": "BDSG-§24(1)",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.5.1 requires data processing agreements (AVV) for commissioned processors; BDSG §24(1) restricts further processing by private non-public bodies for incompatible purposes — AVV governs scope of permissible processing, §24(1) adds a purpose-limitation restriction layer that extends beyond the contract obligation."
+  },
+  {
+    "source": "9.5.1-b",
+    "target": "BDSG-§26(4)",
+    "relationship": "related",
+    "rationale": "Where AVV covers processors handling employee data (e.g. HR SaaS), BDSG §26(4) extends employee data protections to processing by works-council bodies — VDA criterion requires the contract; §26(4) adds a substantive constraint on contractual scope."
+  },
+  {
+    "source": "9.5.2-a",
+    "target": "BDSG-§25(1)",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.5.2 requires transfer impact assessments for data transfers to sub-processors in third countries; BDSG §25(1) permits public-body transfers abroad only under listed conditions — VDA is narrower (private automotive context); §25(1) covers public body transfers with additional regulatory conditions."
+  },
+  {
+    "source": "9.5.2-b",
+    "target": "BDSG-§24(1)",
+    "relationship": "partial_overlap",
+    "rationale": "Third-country transfer controls in 9.5.2 must ensure the transfer purpose is compatible with the original purpose; BDSG §24(1) prohibits non-public body processing for incompatible purposes — same compatibility principle applies to cross-border onward transfers."
+  },
+  {
+    "source": "9.5.3-a",
+    "target": "BDSG-§25(1)",
+    "relationship": "related",
+    "rationale": "VDA ISA 9.5.3 addresses intra-group and special-category cross-border transfers; BDSG §25(1) is the public-body analogue — for private automotive suppliers the GDPR standard safeguards (SCCs/BCRs) apply directly, with §25 as a reference point for adequacy-equivalent conditions."
+  },
+  {
+    "source": "9.5.3-b",
+    "target": "BDSG-§22(2)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.5.3 requires heightened safeguards when transferring special-category data (Art. 9) internationally; BDSG §22(2) independently requires specific measures for special-category processing — both mandate documented protective measures co-extensively for this data category."
+  },
+  {
+    "source": "9.6.1-a",
+    "target": "BDSG-§32(1)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.6.1 requires processes to handle data subject information requests (Art. 13/14 GDPR); BDSG §32(1) specifies the information-obligation content when collecting data from the subject directly — VDA operationalises the procedure §32 prescribes, making them co-extensive at the obligation level."
+  },
+  {
+    "source": "9.6.1-b",
+    "target": "BDSG-§33(1)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.6.1 covers information obligations where data is collected indirectly (e.g. from OEM); BDSG §33(1) sets out information to be provided when data is not collected from the data subject — both cover the same indirect-collection transparency obligation."
+  },
+  {
+    "source": "9.6.1-c",
+    "target": "BDSG-§34(1)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.6.1 requires a defined process for access requests; BDSG §34(1) specifies the access right (Auskunftsrecht) including restrictions for non-public bodies — both address the same right; VDA adds a procedural maturity dimension (response within deadlines) that §34 does not prescribe."
+  },
+  {
+    "source": "9.6.1-d",
+    "target": "BDSG-§35(1)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.6.1 process scope includes erasure requests; BDSG §35(1) supplements GDPR Art. 17 erasure right with a German-specific restriction for non-automated files — VDA obligation to handle erasure is co-extensive, with §35(1) adding a specific analogue-file caveat."
+  },
+  {
+    "source": "9.6.1-e",
+    "target": "BDSG-§36(1)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.6.1 includes objection requests in the data-subject-rights process; BDSG §36(1) limits the objection right vis-à-vis public bodies for overriding public interest — for private automotive suppliers this operates as a GDPR Art. 21 supplement, making the VDA process requirement co-extensive."
+  },
+  {
+    "source": "9.6.1-f",
+    "target": "BDSG-§37(1)",
+    "relationship": "related",
+    "rationale": "Where VDA ISA 9.6.1 process covers automated-decision opt-out requests, BDSG §37(1) supplements GDPR Art. 22 on automated individual decisions — related because TISAX automotive context rarely involves fully automated decisions but the handler process must cater for this."
+  },
+  {
+    "source": "9.6.2-a",
+    "target": "BDSG-§43(1)",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.6.2 requires a data breach response process including internal and external notification; BDSG §43(1) establishes administrative fines for breaches of specific processing obligations — VDA control establishes the preventive/detective procedure; §43 is the enforcement backstop rather than a process specification, so VDA is a subset of the broader compliance regime."
+  },
+  {
+    "source": "9.6.2-b",
+    "target": "BDSG-§42(2)",
+    "relationship": "related",
+    "rationale": "VDA ISA 9.6.2 requires breach notification procedures; BDSG §42(2) establishes criminal liability for unauthorised disclosure of personal data — the VDA incident process is preventive; §42(2) is the criminal sanction for intentional or negligent breach, related as deterrent backdrop."
+  },
+  {
+    "source": "9.6.2-c",
+    "target": "BDSG-§38(1)",
+    "relationship": "related",
+    "rationale": "VDA ISA 9.6.2 requires DPO involvement in breach response; BDSG §38(1) mandates DPO appointment which in turn creates the DPO role that must be notified — the breach process in VDA presupposes §38(1) DPO existence."
+  },
+  {
+    "source": "9.7.1-a",
+    "target": "BDSG-§26(1)",
+    "relationship": "superset",
+    "rationale": "VDA ISA 9.7.1 requires data protection training and awareness for all employees handling personal data; BDSG §26(1) is narrower — it legitimises processing for employment purposes but does not independently mandate training programmes, so VDA training obligation exceeds §26(1) in scope."
+  },
+  {
+    "source": "9.7.1-b",
+    "target": "BDSG-§53",
+    "relationship": "related",
+    "rationale": "VDA ISA 9.7.1 training obligation on confidentiality mirrors §53 Datengeheimnis (data secrecy) in the law-enforcement part of BDSG; while §53 applies to public law-enforcement bodies, it articulates the same confidentiality-training principle that VDA extends to private automotive processors — related by normative analogy."
+  },
+  {
+    "source": "9.7.2-a",
+    "target": "BDSG-§26(2)",
+    "relationship": "partial_overlap",
+    "rationale": "VDA ISA 9.7.2 requires role-based authorisation and least-privilege for employees accessing personal data; BDSG §26(2) requires voluntary and documented consent for employment-data processing when consent is the basis — partial overlap because access-control applies across all legal bases, not only consent-based ones."
+  },
+  {
+    "source": "9.7.2-b",
+    "target": "BDSG-§26(1)",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.7.2 role-based access limitation is a technical implementation of the necessity principle; BDSG §26(1) requires processing to be necessary for the employment relationship — VDA operationalises the §26(1) necessity requirement at the technical-access level."
+  },
+  {
+    "source": "9.8.1-a",
+    "target": "BDSG-§38(1)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.8.1 requires processors to follow documented controller instructions; this is the contractual obligation that underpins the DPO-overseen compliance regime — §38(1) DPO mandate exists precisely because processors operating under such instructions require independent oversight, making the governance scope co-extensive."
+  },
+  {
+    "source": "9.8.1-b",
+    "target": "BDSG-§26(3)",
+    "relationship": "partial_overlap",
+    "rationale": "VDA ISA 9.8.1 instructions must cover lawfulness of processing; BDSG §26(3) preserves collective-agreement rights of employee representatives to co-determine data processing rules — instructions from the controller intersect with §26(3) works-council co-determination rights when employee data is involved."
+  },
+  {
+    "source": "9.8.1-c",
+    "target": "BDSG-§43(2)",
+    "relationship": "related",
+    "rationale": "VDA ISA 9.8.1 requires documented lawful instruction basis to avoid unlawful processing; BDSG §43(2) sets administrative fines for processing without adequate legal basis — instructions control is the compliance measure; §43(2) is the sanction for absence of such control, related as enforcement backstop."
+  },
+  {
+    "source": "9.3.1-e",
+    "target": "BDSG-§27(1)",
+    "relationship": "related",
+    "rationale": "Where the RoPA includes research or statistical processing purposes (e.g. OEM quality analytics), BDSG §27(1) provides a German-specific research privilege — VDA requires documentation of purpose; §27(1) is the legal basis that must appear in that RoPA entry."
+  },
+  {
+    "source": "9.4.1-d",
+    "target": "BDSG-§22(2)-lit-g",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.4.1 DPIA must document technical and organisational safeguards for special-category processing; BDSG §22(2) lit. g explicitly lists designation of a DPO as a required safeguard — both converge on requiring documented protective measures including DPO designation."
+  },
+  {
+    "source": "9.6.1-g",
+    "target": "BDSG-§32(2)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.6.1 requires information to be provided within a reasonable delay when a temporary obstacle exists; BDSG §32(2) sets a two-week maximum for deferred information provision after the obstacle lapses — both operationalise the same deferred-notification deadline."
+  },
+  {
+    "source": "9.6.1-h",
+    "target": "BDSG-§33(2)",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.6.1 information process must handle exceptions (e.g. confidentiality obligations); BDSG §33(2) enumerates specific exemptions from the indirect-collection information duty — VDA requires a documented exception process; §33(2) provides the exhaustive list of permissible exceptions that process must reflect."
+  },
+  {
+    "source": "9.6.1-i",
+    "target": "BDSG-§29(1)",
+    "relationship": "related",
+    "rationale": "VDA ISA 9.6.1 must handle access requests where data is subject to professional secrecy obligations; BDSG §29(1) restricts data subject rights where disclosure would harm legally protected confidentiality interests — related because automotive supplier HR data can include data under legal secrecy."
+  },
+  {
+    "source": "9.5.1-c",
+    "target": "BDSG-§22(2)-lit-d",
+    "relationship": "subset",
+    "rationale": "VDA ISA 9.5.1 requires contractual obligations on sub-processors regarding special-category data; BDSG §22(2) lit. d requires contractual clauses restricting access to special-category data as a mandatory safeguard — VDA AVV obligation is a subset; §22(2) lit. d adds specific contractual content requirements beyond mere existence of the agreement."
+  },
+  {
+    "source": "9.2.1-d",
+    "target": "BDSG-§38(5)",
+    "relationship": "equivalent",
+    "rationale": "VDA ISA 9.2.1 requires DPO to report to highest management level; BDSG §38(5) references §5(3) requiring DPO to report directly to top management — both impose identical reporting-chain requirements making them co-extensive."
+  },
+  {
+    "source": "9.1.1-d",
+    "target": "BDSG-§43(1)-Nr7",
+    "relationship": "related",
+    "rationale": "VDA ISA 9.1.1 data protection policy must include obligations to maintain processing records; BDSG §43(1) Nr. 7 imposes fines for failure to maintain RoPA — policy obligation and sanction norm are related as the policy establishes the compliance intent §43 enforces."
+  }
+]
