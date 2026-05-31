@@ -8,6 +8,7 @@ use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceFramework;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -1227,9 +1228,20 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
 
+        // "Analyzed" via the text-similarity heuristic (legacy column).
         $analyzedMappings = $this->createQueryBuilder('cm')
             ->select('COUNT(cm.id)')
             ->where('cm.calculatedPercentage IS NOT NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // "Scored" = has EITHER a heuristic percentage OR an MQS quality score.
+        // Metadata-rich decomposition mappings get an authoritative MQS at
+        // import/backfill time and must NOT be treated as "waiting for analysis"
+        // just because the slow text-similarity column is still NULL.
+        $scoredMappings = $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.calculatedPercentage IS NOT NULL OR cm.qualityScore IS NOT NULL')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -1283,8 +1295,11 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         return [
             'total_mappings' => (int) $totalMappings,
             'analyzed_mappings' => (int) $analyzedMappings,
-            'unanalyzed_mappings' => (int) ($totalMappings - $analyzedMappings),
-            'analysis_coverage' => (int) $totalMappings > 0 ? round(((int) $analyzedMappings / (int) $totalMappings) * 100, 1) : 0,
+            'scored_mappings' => (int) $scoredMappings,
+            // "Waiting for analysis" = genuinely metadata-poor: lacks BOTH the
+            // heuristic percentage AND an MQS quality score.
+            'unanalyzed_mappings' => (int) ($totalMappings - $scoredMappings),
+            'analysis_coverage' => (int) $totalMappings > 0 ? round(((int) $scoredMappings / (int) $totalMappings) * 100, 1) : 0,
             'high_confidence' => (int) $highConfidence,
             'medium_confidence' => (int) $mediumConfidence,
             'low_confidence' => (int) $lowConfidence,
@@ -1293,6 +1308,69 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             'avg_quality_score' => round((float) $avgQualityScore, 1),
             'avg_confidence' => round((float) $avgConfidence, 1),
         ];
+    }
+
+    /**
+     * Add the "genuinely metadata-poor" filter to a query builder: mappings
+     * that have NEITHER a heuristic calculatedPercentage NOR an MQS qualityScore.
+     * These are the only rows the slow text-similarity batch should target.
+     */
+    public function applyMetadataPoorFilter(QueryBuilder $qb, string $alias = 'cm'): QueryBuilder
+    {
+        return $qb->andWhere(sprintf('%s.calculatedPercentage IS NULL AND %s.qualityScore IS NULL', $alias, $alias));
+    }
+
+    /**
+     * Count mappings that still require the text-similarity heuristic, i.e. they
+     * lack BOTH a calculatedPercentage and an MQS qualityScore.
+     */
+    public function countMetadataPoorUnscored(): int
+    {
+        $qb = $this->createQueryBuilder('cm')->select('COUNT(cm.id)');
+        $this->applyMetadataPoorFilter($qb);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Find mappings eligible for MQS backfill: authoritative metadata present
+     * (provenanceUrl + an explicit confidence) but no MQS qualityScore yet.
+     *
+     * @return list<ComplianceMapping>
+     */
+    public function findMqsBackfillCandidates(?int $limit = null, int $offset = 0): array
+    {
+        $qb = $this->createQueryBuilder('cm')
+            ->where('cm.qualityScore IS NULL')
+            ->andWhere('cm.provenanceUrl IS NOT NULL')
+            ->andWhere("cm.provenanceUrl <> ''")
+            ->andWhere("cm.confidence IN ('high', 'medium', 'low')")
+            ->orderBy('cm.id', 'ASC')
+            ->setFirstResult($offset);
+
+        if ($limit !== null) {
+            $qb->setMaxResults($limit);
+        }
+
+        /** @var list<ComplianceMapping> $result */
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
+    }
+
+    /**
+     * Count MQS-backfill candidates (see findMqsBackfillCandidates()).
+     */
+    public function countMqsBackfillCandidates(): int
+    {
+        return (int) $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.qualityScore IS NULL')
+            ->andWhere('cm.provenanceUrl IS NOT NULL')
+            ->andWhere("cm.provenanceUrl <> ''")
+            ->andWhere("cm.confidence IN ('high', 'medium', 'low')")
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

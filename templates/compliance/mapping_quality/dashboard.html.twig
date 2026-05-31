@@ -47,7 +47,7 @@
         <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
         </div>
     </div>
-    {% elseif quality_stats.analyzed_mappings == 0 %}
+    {% elseif quality_stats.scored_mappings == 0 %}
     <div class="fa-alert fa-alert--info" role="alert">
         <i class="fa-icon fa-icon--status-info" fa-alert__icon" aria-hidden="true"></i>
         <div class="fa-alert__body"><div class="fa-alert__title">{{ 'compliance.mapping_quality.no_analysis_yet.title'|trans({}, 'compliance') }}</div>
@@ -70,7 +70,7 @@
             {{ _fa_feature_card.render({ label: 'compliance.stats.total_mappings'|trans({}, 'compliance'), value: quality_stats.total_mappings, variant: 'primary' }) }}
         </div>
         <div class="col-md-3">
-            {{ _fa_feature_card.render({ label: 'compliance.mapping_quality.progress.analyzed'|trans({}, 'compliance'), value: quality_stats.analyzed_mappings, hint: quality_stats.analysis_coverage ~ '%', variant: 'success' }) }}
+            {{ _fa_feature_card.render({ label: 'compliance.mapping_quality.progress.analyzed'|trans({}, 'compliance'), value: quality_stats.scored_mappings, hint: quality_stats.analysis_coverage ~ '%', variant: 'success' }) }}
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({ label: 'compliance.mapping_quality.needs_urgent_review'|trans({}, 'compliance'), value: quality_stats.requires_review, variant: 'warning' }) }}
@@ -128,14 +128,22 @@
 
     {# Batch Analysis UI - Always visible #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-        {% block card_attrs %}id="batchAnalysisCard" data-controller="batch-analysis" data-batch-analysis-url-value="{{ path('app_mapping_quality_batch_analyze') }}" data-total-unanalyzed="{{ quality_stats.unanalyzed_mappings }}"{% endblock %}
+        {% block card_attrs %}id="batchAnalysisCard" data-controller="batch-analysis"
+            data-batch-analysis-url-value="{{ path('app_mapping_quality_batch_analyze') }}"
+            data-batch-analysis-stats-url-value="{{ path('app_mapping_quality_stats') }}"
+            data-batch-analysis-status-analyzing-value="{{ 'compliance.status.analyzing'|trans({}, 'compliance') }}"
+            data-batch-analysis-status-done-value="{{ 'compliance.status.done'|trans({}, 'compliance') }}"
+            data-batch-analysis-status-cancelled-value="{{ 'compliance.status.cancelled'|trans({}, 'compliance') }}"
+            data-batch-analysis-status-error-value="{{ 'compliance.status.error'|trans({}, 'compliance') }}"
+            data-batch-analysis-results-template-value="{{ 'compliance.mapping_quality.batch_analysis.results_summary'|trans({'%analyzed%': '__A__', '%errors%': '__E__'}, 'compliance') }}"
+            data-total-unanalyzed="{{ quality_stats.unanalyzed_mappings }}"{% endblock %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">{{ 'compliance.mapping_quality.batch_analysis.title'|trans({}, 'compliance') }}</h3>
                 {% if quality_stats.unanalyzed_mappings > 0 %}
-                    <span class="fa-status-pill fa-status-pill--info">{{ 'compliance.mapping_quality.batch_analysis.progress.status'|trans({}, 'compliance') }}</span>
+                    <span class="fa-status-pill fa-status-pill--info" data-batch-analysis-target="headerPill">{{ 'compliance.mapping_quality.batch_analysis.pending_count'|trans({'%count%': quality_stats.unanalyzed_mappings}, 'compliance') }}</span>
                 {% else %}
-                    <span class="fa-status-pill fa-status-pill--success">{{ 'compliance.mapping_quality.batch_analysis.progress.ready'|trans({}, 'compliance') }}</span>
+                    <span class="fa-status-pill fa-status-pill--success" data-batch-analysis-target="headerPill">{{ 'compliance.mapping_quality.batch_analysis.progress.ready'|trans({}, 'compliance') }}</span>
                 {% endif %}
             </div>
         {% endblock %}
@@ -420,152 +428,165 @@
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-        // Chart.js 4 requires explicit Colors-plugin registration; without it
-        // datasets fall back to black/no-fill (was unrelated in v3 because the
-        // default-color generator was always-on).
-        if (window.Chart && window.Chart.Colors) {
-            Chart.register(Chart.Colors);
+    (function () {
+        // Aurora palette — concrete hex fallbacks so the canvas NEVER renders
+        // black if the CSS custom-property is empty/undefined at chart-build
+        // time (it cannot parse `var(--token)` strings, and getComputedStyle()
+        // may resolve to '' before the stylesheet cascade completes).
+        const AURORA = {
+            success: '#059669',   // --success  (High confidence)
+            warning: '#d97706',   // --warning  (Medium confidence / MEDIUM gaps)
+            danger:  '#dc2626',   // --danger   (Low confidence / HIGH gaps)
+            dangerStrong: '#b91c1c', // --danger-strong (CRITICAL gaps)
+            info:    '#0284c7',   // --info
+            fg3:     '#6d6b92'    // --fg-3 (neutral / LOW gaps)
+        };
+
+        // Resolve an Aurora token to a concrete colour, preferring the live
+        // CSS custom-property (so dark-mode forks apply) but falling back to a
+        // guaranteed-non-empty hex.
+        function token(name, fallback) {
+            try {
+                const v = getComputedStyle(document.documentElement)
+                    .getPropertyValue(name).trim();
+                return v || fallback;
+            } catch (e) {
+                return fallback;
+            }
         }
 
-        // Canvas can't parse `var(--token)` strings — resolve to computed
-        // values from :root before passing to Chart.js.
-        const _rootStyle = getComputedStyle(document.documentElement);
-        function _cssVar(name, fallback) {
-            const v = _rootStyle.getPropertyValue(name).trim();
-            return v || fallback;
-        }
-        function _resolveColors(arr) {
-            return arr.map(c => {
-                const m = typeof c === 'string' && c.match(/^var\((--[a-zA-Z0-9-]+)(?:\s*,\s*(.+))?\)$/);
-                return m ? _cssVar(m[1], m[2] || c) : c;
-            });
-        }
+        let _built = false;
+        function buildCharts() {
+            if (_built) return;
+            if (!window.Chart) return;
+            _built = true;
 
-        // Confidence Distribution Donut Chart
-        const confidenceCtx = document.getElementById('confidenceChart');
-        if (confidenceCtx) {
-            new Chart(confidenceCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['High (≥80)', 'Medium (60-79)', 'Low (<60)'],
-                    datasets: [{
-                        data: [
-                            {{ quality_stats.high_confidence }},
-                            {{ quality_stats.medium_confidence }},
-                            {{ quality_stats.low_confidence }}
+            // Chart.js 4 requires explicit Colors-plugin registration; without
+            // it auto-generated dataset colours are unavailable. We supply
+            // explicit colours below regardless, so this is belt-and-braces.
+            if (window.Chart.Colors) {
+                try { Chart.register(Chart.Colors); } catch (e) { /* already registered */ }
+            }
+
+            // Confidence Distribution Donut Chart
+            const confidenceCtx = document.getElementById('confidenceChart');
+            if (confidenceCtx && !Chart.getChart(confidenceCtx)) {
+                const confColors = [
+                    token('--success', AURORA.success),
+                    token('--warning', AURORA.warning),
+                    token('--danger', AURORA.danger)
+                ];
+                new Chart(confidenceCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [
+                            {{ ('compliance.mapping_quality.confidence.high'|trans({}, 'compliance'))|json_encode|raw }},
+                            {{ ('compliance.mapping_quality.confidence.medium'|trans({}, 'compliance'))|json_encode|raw }},
+                            {{ ('compliance.mapping_quality.confidence.low'|trans({}, 'compliance'))|json_encode|raw }}
                         ],
-                        backgroundColor: _resolveColors([
-                            'var(--success)',
-                            'var(--warning)',
-                            'var(--danger)'
-                        ]),
-                        borderColor: _resolveColors([
-                            'var(--success)',
-                            'var(--warning)',
-                            'var(--danger)'
-                        ]),
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.parsed || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                                    return label + ': ' + value + ' (' + percentage + '%)';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Gap Stats Bar Chart
-        const gapStatsCtx = document.getElementById('gapStatsChart');
-        if (gapStatsCtx) {
-            {% if gap_stats is not empty %}
-            const gapLabels = [
-                {% for stat in gap_stats %}
-                    '{{ stat.priority|upper }}'{% if not loop.last %},{% endif %}
-                {% endfor %}
-            ];
-            const gapCounts = [
-                {% for stat in gap_stats %}
-                    {{ stat.count }}{% if not loop.last %},{% endif %}
-                {% endfor %}
-            ];
-            const gapImpacts = [
-                {% for stat in gap_stats %}
-                    {{ stat.totalImpact|round }}{% if not loop.last %},{% endif %}
-                {% endfor %}
-            ];
-            const gapEfforts = [
-                {% for stat in gap_stats %}
-                    {{ stat.avgEffort|round(1) }}{% if not loop.last %},{% endif %}
-                {% endfor %}
-            ];
-
-            const backgroundColors = _resolveColors(gapLabels.map(label => {
-                if (label === 'CRITICAL') return 'var(--danger-strong)';
-                if (label === 'HIGH') return 'var(--danger)';
-                if (label === 'MEDIUM') return 'var(--warning)';
-                return 'var(--fg-3)';
-            }));
-
-            new Chart(gapStatsCtx, {
-                type: 'bar',
-                data: {
-                    labels: gapLabels,
-                    datasets: [{
-                        label: 'Anzahl Gaps',
-                        data: gapCounts,
-                        backgroundColor: backgroundColors,
-                        borderColor: backgroundColors,
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                afterLabel: function(context) {
-                                    const index = context.dataIndex;
-                                    return [
-                                        'Impact: ' + gapImpacts[index] + '%',
-                                        'Ø Effort: ' + gapEfforts[index] + 'h'
-                                    ];
-                                }
-                            }
-                        }
+                        datasets: [{
+                            data: [
+                                {{ quality_stats.high_confidence }},
+                                {{ quality_stats.medium_confidence }},
+                                {{ quality_stats.low_confidence }}
+                            ],
+                            backgroundColor: confColors,
+                            borderColor: confColors,
+                            borderWidth: 2
+                        }]
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return label + ': ' + value + ' (' + percentage + '%)';
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            });
-            {% endif %}
+                });
+            }
+
+            // Gap Stats Bar Chart
+            const gapStatsCtx = document.getElementById('gapStatsChart');
+            if (gapStatsCtx && !Chart.getChart(gapStatsCtx)) {
+                {% if gap_stats is not empty %}
+                const gapLabels = [
+                    {% for stat in gap_stats %}'{{ stat.priority|upper }}'{% if not loop.last %},{% endif %}{% endfor %}
+                ];
+                const gapCounts = [
+                    {% for stat in gap_stats %}{{ stat.count }}{% if not loop.last %},{% endif %}{% endfor %}
+                ];
+                const gapImpacts = [
+                    {% for stat in gap_stats %}{{ stat.totalImpact|round }}{% if not loop.last %},{% endif %}{% endfor %}
+                ];
+                const gapEfforts = [
+                    {% for stat in gap_stats %}{{ stat.avgEffort|round(1) }}{% if not loop.last %},{% endif %}{% endfor %}
+                ];
+
+                const backgroundColors = gapLabels.map(function(label) {
+                    if (label === 'CRITICAL') return token('--danger-strong', AURORA.dangerStrong);
+                    if (label === 'HIGH') return token('--danger', AURORA.danger);
+                    if (label === 'MEDIUM') return token('--info', AURORA.info);
+                    return token('--fg-3', AURORA.fg3);
+                });
+
+                new Chart(gapStatsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: gapLabels,
+                        datasets: [{
+                            label: {{ ('compliance.mapping_quality.charts.gap_count'|trans({}, 'compliance'))|json_encode|raw }},
+                            data: gapCounts,
+                            backgroundColor: backgroundColors,
+                            borderColor: backgroundColors,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    afterLabel: function(context) {
+                                        const index = context.dataIndex;
+                                        return [
+                                            'Impact: ' + gapImpacts[index] + '%',
+                                            'Ø Effort: ' + gapEfforts[index] + 'h'
+                                        ];
+                                    }
+                                }
+                            }
+                        },
+                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                    }
+                });
+                {% endif %}
+            }
         }
 
-        // Batch analysis is now handled by batch-analysis Stimulus controller
+        // Build after the stylesheet cascade is settled. Handle both initial
+        // load and Turbo navigation; the `_built`/getChart() guards make this
+        // idempotent.
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', buildCharts);
+        } else {
+            buildCharts();
+        }
+        document.addEventListener('turbo:load', function () { _built = false; buildCharts(); });
+
+        // Batch analysis is handled by the batch-analysis Stimulus controller.
+    })();
     </script>
 {% endblock %}

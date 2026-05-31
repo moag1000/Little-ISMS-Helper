@@ -66,8 +66,8 @@ class MappingQualityController extends AbstractController
             $gapStats = $this->mappingGapItemRepository->getGapStatisticsByPriority();
             $frameworkComparison = $this->complianceMappingRepository->getFrameworkQualityComparison();
 
-            // Check if analysis has been run
-            if ($qualityStats['analyzed_mappings'] === 0) {
+            // Check if anything has been scored yet (heuristic OR MQS).
+            if (($qualityStats['scored_mappings'] ?? $qualityStats['analyzed_mappings']) === 0) {
                 $this->flashInfo('compliance.mapping.quality.no_analysis');
             }
 
@@ -417,9 +417,12 @@ class MappingQualityController extends AbstractController
             $qb->select('cm.id')
                 ->from(ComplianceMapping::class, 'cm');
 
-            // Filter by analysis status
+            // Filter by analysis status. The text-similarity heuristic only
+            // targets genuinely metadata-poor rows (no MQS qualityScore AND no
+            // calculatedPercentage) — metadata-rich decomposition mappings are
+            // scored by MQS instead and must not flood this slow backlog.
             if (!$reanalyze) {
-                $qb->where('cm.calculatedPercentage IS NULL OR cm.analysisConfidence IS NULL');
+                $this->complianceMappingRepository->applyMetadataPoorFilter($qb, 'cm');
             }
 
             // Order by priority
@@ -508,16 +511,15 @@ class MappingQualityController extends AbstractController
             $this->entityManager->flush();
             $this->entityManager->clear();
 
-            // Get remaining count
-            $remainingQb = $this->entityManager->createQueryBuilder();
-            $remainingQb->select('COUNT(cm.id)')
-                ->from(ComplianceMapping::class, 'cm');
-
-            if (!$reanalyze) {
-                $remainingQb->where('cm.calculatedPercentage IS NULL OR cm.analysisConfidence IS NULL');
+            // Get remaining count (genuinely metadata-poor rows only).
+            if ($reanalyze) {
+                $remainingQb = $this->entityManager->createQueryBuilder();
+                $remainingQb->select('COUNT(cm.id)')
+                    ->from(ComplianceMapping::class, 'cm');
+                $remaining = (int) $remainingQb->getQuery()->getSingleScalarResult();
+            } else {
+                $remaining = $this->complianceMappingRepository->countMetadataPoorUnscored();
             }
-
-            $remaining = (int) $remainingQb->getQuery()->getSingleScalarResult();
 
             return $this->json([
                 'success' => true,
@@ -550,18 +552,22 @@ class MappingQualityController extends AbstractController
 
             $total = (int) $qb->getQuery()->getSingleScalarResult();
 
+            // "Scored" = has EITHER a heuristic percentage OR an MQS quality
+            // score. "Remaining" is only the genuinely metadata-poor backlog
+            // for the text-similarity heuristic.
             $qb2 = $this->entityManager->createQueryBuilder();
             $qb2->select('COUNT(cm.id)')
                 ->from(ComplianceMapping::class, 'cm')
-                ->where('cm.calculatedPercentage IS NOT NULL AND cm.analysisConfidence IS NOT NULL');
+                ->where('cm.calculatedPercentage IS NOT NULL OR cm.qualityScore IS NOT NULL');
 
             $analyzed = (int) $qb2->getQuery()->getSingleScalarResult();
+            $remaining = $this->complianceMappingRepository->countMetadataPoorUnscored();
 
             return $this->json([
                 'success' => true,
                 'total' => $total,
                 'analyzed' => $analyzed,
-                'remaining' => $total - $analyzed,
+                'remaining' => $remaining,
                 'percentage' => $total > 0 ? round(($analyzed / $total) * 100, 1) : 0,
             ]);
 

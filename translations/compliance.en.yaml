@@ -781,6 +781,10 @@ compliance:
         fulfilled: __compliance.status.fulfilled
         partial: __compliance.status.partial
         gap: Gap
+        analyzing: 'Analyzing…'
+        done: 'Done'
+        cancelled: 'Cancelled'
+        error: 'Error'
     tooltip:
         not_started: 'Not started - No implementation yet'
         planning_phase: 'Planning phase - Requirements analyzed, plan drafted'
@@ -841,6 +845,8 @@ compliance:
             all_analyzed_desc: 'You can start a re-analysis to recalculate quality values with the latest algorithm.'
             analyze_count: 'Analyze %count%'
             analyze_all: 'Analyze all'
+            pending_count: '%count% pending'
+            results_summary: '%analyzed% mappings analyzed, %errors% errors'
             progress:
                 status: 'Analyzing…'
                 ready: 'Ready'
@@ -852,6 +858,10 @@ compliance:
             ready: 'Ready'
             complete: 'Analysis complete!'
             reload: 'Reload page'
+        confidence:
+            high: 'High (≥80)'
+            medium: 'Medium (60-79)'
+            low: 'Low (<60)'
         charts:
             confidence_distribution: 'Confidence Distribution'
             gap_stats_priority: 'Gap Statistics by Priority'

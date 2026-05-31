@@ -10,6 +10,7 @@ use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\AuditLogger;
 use App\Service\Compliance\SubRequirementResolver;
+use App\Service\MappingQualityScoreService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -76,6 +77,7 @@ final class ImportSubMappingsCommand extends Command
         private readonly ComplianceMappingRepository $mappingRepository,
         private readonly SubRequirementResolver $resolver,
         private readonly AuditLogger $auditLogger,
+        private readonly MappingQualityScoreService $mqsService,
         private readonly string $projectDir,
     ) {
         parent::__construct();
@@ -110,6 +112,8 @@ final class ImportSubMappingsCommand extends Command
         $allMissing = [];
         /** @var list<array<string, mixed>> $perEntity */
         $perEntity = [];
+        /** @var list<ComplianceMapping> $persisted */
+        $persisted = [];
 
         foreach ($files as $file) {
             $base = basename($file, '.json');
@@ -204,6 +208,7 @@ final class ImportSubMappingsCommand extends Command
 
                 if (!$dryRun) {
                     $this->em->persist($mapping);
+                    $persisted[] = $mapping;
                 }
 
                 $perEntity[] = [
@@ -236,6 +241,17 @@ final class ImportSubMappingsCommand extends Command
         }
 
         if (!$dryRun && $grandImported > 0) {
+            $this->em->flush();
+
+            // Compute the Mapping-Quality-Score (MQS) from the explicit, rich
+            // metadata (confidence/provenance/relationship/lifecycle) so these
+            // rows are honestly scored without ever entering the slow
+            // text-similarity backlog. lifecycleState stays 'draft' (review
+            // gate) — MQS reflects "high provenance/confidence, review pending".
+            // Done AFTER flush so coverage/bidirectional queries see all rows.
+            foreach ($persisted as $mapping) {
+                $this->mqsService->compute($mapping);
+            }
             $this->em->flush();
 
             // ISO 27001 7.5.3 — batch audit trail (1 batch + N per-entity entries).

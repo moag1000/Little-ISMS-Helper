@@ -781,6 +781,10 @@ compliance:
         fulfilled: Erfüllt
         partial: 'Teilweise erfüllt'
         gap: 'Lücke'
+        analyzing: 'Analyse läuft…'
+        done: 'Fertig'
+        cancelled: 'Abgebrochen'
+        error: 'Fehler'
     tooltip:
         not_started: 'Nicht begonnen - Keine Umsetzung bisher'
         planning_phase: 'Planungsphase - Anforderungen analysiert, Plan erstellt'
@@ -841,6 +845,8 @@ compliance:
             all_analyzed_desc: 'Sie können eine Re-Analyse starten um die Qualitätswerte mit dem neuesten Algorithmus neu zu berechnen.'
             analyze_count: '%count% analysieren'
             analyze_all: 'Alle analysieren'
+            pending_count: '%count% ausstehend'
+            results_summary: '%analyzed% Mappings analysiert, %errors% Fehler'
             progress:
                 status: 'Analyse läuft…'
                 ready: 'Bereit'
@@ -852,6 +858,10 @@ compliance:
             ready: 'Bereit'
             complete: 'Analyse abgeschlossen!'
             reload: 'Seite neu laden'
+        confidence:
+            high: 'Hoch (≥80)'
+            medium: 'Mittel (60-79)'
+            low: 'Niedrig (<60)'
         charts:
             confidence_distribution: 'Confidence-Verteilung'
             gap_stats_priority: 'Gap-Statistiken nach Priorität'
