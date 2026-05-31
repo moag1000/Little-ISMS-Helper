@@ -50,9 +50,10 @@
 
             <div class="field">
                 <span class="label">{{ 'emails.control_due.progress'|trans({}, 'emails') }}:</span>
+                {% set _pct = control.implementationPercentage ?? 0 %}
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: {{ control.implementationProgress }}%;">
-                        {{ control.implementationProgress }}%
+                    <div class="progress-fill" style="width: {{ _pct }}%;">
+                        {{ _pct }}%
                     </div>
                 </div>
             </div>
