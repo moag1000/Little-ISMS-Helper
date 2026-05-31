@@ -85,10 +85,10 @@ final class LoadNis2UmsuCGFullCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2-UmsuCG'])
-            ?? $this->frameworkRepository->findOneBy(['name' => 'NIS2-UmsuCG']);
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2UMSUCG'])
+            ?? $this->frameworkRepository->findOneBy(['name' => 'NIS2-Umsetzungs- und Cybersicherheitsstärkungsgesetz']);
         if ($framework === null) {
-            $io->error('Framework NIS2-UmsuCG not in DB.');
+            $io->error('Framework NIS2UMSUCG not in DB.');
             return Command::FAILURE;
         }
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
