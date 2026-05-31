@@ -1,0 +1,326 @@
+[
+  {
+    "source": "NIS2-Art4(1)",
+    "target": "DORA-Art1(2)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.4(1) establishes the lex specialis carve-out mechanism ('shall not apply where sector-specific Union acts require at least equivalent obligations'), and DORA Art.1(2) explicitly declares DORA as such a lex specialis for financial entities, creating a mutual cross-reference that operationalises the displacement."
+  },
+  {
+    "source": "NIS2-Art21(1)",
+    "target": "DORA-Art6(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(1) requires 'appropriate and proportionate technical, operational and organisational measures' based on an all-hazards approach, while DORA Art.6(1) requires a 'sound, comprehensive and well-documented ICT risk management framework' with additional prescriptive detail on components (strategies, policies, procedures, ICT protocols and tools), making DORA a superset for financial entities."
+  },
+  {
+    "source": "NIS2-Art21(2)(a)",
+    "target": "DORA-Art6(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(a) requires policies on risk analysis and information system security as a minimum measure; DORA Art.6(1)-(2) mandates a comprehensive, documented ICT risk management framework including strategies, policies, procedures, ICT protocols and tools — more prescriptive on scope, documentation, and governance than the NIS2 baseline."
+  },
+  {
+    "source": "NIS2-Art21(2)(a)",
+    "target": "DORA-Art6(8)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(a) requires risk analysis policies; DORA Art.6(8) mandates a digital operational resilience strategy with defined risk tolerance, impact tolerance, KPIs/KRMs, and ICT reference architecture — substantially more specific and quantified than the NIS2 minimum."
+  },
+  {
+    "source": "NIS2-Art21(2)(a)",
+    "target": "DORA-Art8(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(a) covers risk analysis policies generally; DORA Art.8(1) adds a concrete obligation to identify, classify, and document all ICT-supported business functions, information assets, and ICT assets with annual review cycles, which operationalises the NIS2 risk analysis requirement with financial-sector-specific granularity."
+  },
+  {
+    "source": "NIS2-Art21(2)(a)",
+    "target": "DORA-Art8(2)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(a) covers risk analysis policies; DORA Art.8(2) requires continuous identification of all ICT risk sources including risks from other financial entities and annual review of risk scenarios, adding sector-specific systemic-risk dimensions absent from NIS2."
+  },
+  {
+    "source": "NIS2-Art21(2)(a)",
+    "target": "DORA-Art8(7)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(a) requires general risk analysis; DORA Art.8(7) mandates regular (at least annual) specific ICT risk assessments for legacy ICT systems, which is a prescriptive financial-sector obligation not present in NIS2."
+  },
+  {
+    "source": "NIS2-Art21(2)(f)",
+    "target": "DORA-Art6(3)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.21(2)(f) requires policies and procedures to assess effectiveness of cybersecurity risk management measures; DORA Art.6(3) requires financial entities to minimise ICT risk impact and provide complete and updated information on ICT risk and the framework to competent authorities, covering the same effectiveness-assessment and reporting-upward obligation."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)",
+    "target": "DORA-Art17(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(b) requires incident handling as a minimum measure; DORA Art.17(1) mandates a structured ICT-related incident management process with detect, manage, and notify sub-components, procedures for identification, tracking, logging, categorisation and classification by priority, severity, and impact — materially more prescriptive."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)",
+    "target": "DORA-Art11(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(b) requires incident handling; DORA Art.11(1) requires ICT business continuity policy implemented through documented arrangements to ensure continuity of critical/important functions and specifies activation without delay of containment plans — substantially more detailed than the NIS2 baseline."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)",
+    "target": "DORA-Art11(3)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(b) requires incident handling; DORA Art.11(3) requires a dedicated crisis management function (for non-microenterprises) to set clear procedures for internal and external crisis communications when ICT business continuity or response/recovery plans are activated."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)",
+    "target": "DORA-Art13(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(b) covers incident handling generally; DORA Art.13(1) specifically requires post-ICT-incident reviews after major incidents that disrupt core activities, with analysis of causes and identification of improvements to ICT operations."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)",
+    "target": "DORA-Art11(1)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.21(2)(c) requires business continuity and crisis management including backup management, disaster recovery, and crisis management; DORA Art.11(1) maps directly to the same obligation set — both cover BCM plans, continuity of critical functions, and crisis response — making the core obligation equivalent (DORA adds financial-sector implementation detail)."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)",
+    "target": "DORA-Art12(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(c) requires backup management and disaster recovery as minimum measures; DORA Art.12(1) requires financial entities to develop and document backup policies specifying data scope and minimum backup frequency based on criticality and confidentiality level — more operationally prescriptive."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)",
+    "target": "DORA-Art12(2)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(c) requires backup management; DORA Art.12(2) requires backup systems that can be activated without jeopardising the security, availability, authenticity, integrity, or confidentiality of data — adding explicit security-of-backup constraints absent from NIS2."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)",
+    "target": "DORA-Art11(6)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(c) requires business continuity and crisis management; DORA Art.11(6) requires annual testing of ICT business continuity and response/recovery plans, including cyber-attack scenarios and infrastructure switchovers for non-microenterprises, specifying frequency and test scope beyond the NIS2 minimum."
+  },
+  {
+    "source": "NIS2-Art21(2)(d)",
+    "target": "DORA-Art28(2)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(d) requires supply chain security addressing cybersecurity risks in supplier and service-provider relationships; DORA Art.28(2) mandates a documented policy on ICT third-party risk as an integral part of the ICT risk management framework, specifically for financial entities with more prescriptive contract and concentration risk dimensions."
+  },
+  {
+    "source": "NIS2-Art21(2)(d)",
+    "target": "DORA-Art28(3)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(d) requires supply chain security measures; DORA Art.28(3) requires a register of information on all ICT contractual arrangements with ICT third-party service providers, creating a traceability and oversight obligation not explicitly required by NIS2."
+  },
+  {
+    "source": "NIS2-Art21(2)(d)",
+    "target": "DORA-Art30(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(d) requires supply chain security; DORA Art.30(1) prescribes mandatory contractual provisions for ICT service agreements (SLAs, termination rights, security standards, audit rights, concentration risk disclosures) — far more prescriptive than the NIS2 supply chain security baseline."
+  },
+  {
+    "source": "NIS2-Art21(2)(e)",
+    "target": "DORA-Art9(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(e) requires security in NIS acquisition, development and maintenance including vulnerability handling; DORA Art.9(1) requires continuous monitoring and control of security and functioning of ICT systems through appropriate ICT security tools, policies and procedures — broader continuous-monitoring framing specific to financial entities."
+  },
+  {
+    "source": "NIS2-Art21(2)(e)",
+    "target": "DORA-Art9(2)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(e) covers security in system acquisition, development and maintenance; DORA Art.9(2) requires designing, procuring, and implementing ICT security policies, procedures, protocols and tools to ensure resilience, continuity and availability, and to maintain high standards of availability, authenticity, integrity and confidentiality of data at rest, in use or in transit — adding explicit CIA triad and data lifecycle requirements."
+  },
+  {
+    "source": "NIS2-Art21(2)(e)",
+    "target": "DORA-Art9(4)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(e) includes vulnerability handling and disclosure; DORA Art.9(4) requires financial entities to implement tools and procedures for vulnerability management, including patch management and ICT change management — operationally more detailed."
+  },
+  {
+    "source": "NIS2-Art21(2)(e)",
+    "target": "DORA-Art10(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(e) requires security in NIS acquisition, development and maintenance; DORA Art.10(1) specifically requires deploying mechanisms to swiftly identify anomalous activities, track trade report accuracy, and detect ICT-related incidents — adds detection-specific financial-sector requirements."
+  },
+  {
+    "source": "NIS2-Art21(2)(g)",
+    "target": "DORA-Art5(4)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(g) requires basic cyber hygiene practices and cybersecurity training; DORA Art.5(4) requires members of the management body to actively keep up to date with sufficient knowledge and skills through specific regular training commensurate with ICT risk — prescribing training at board level, which goes beyond NIS2's general training obligation."
+  },
+  {
+    "source": "NIS2-Art21(2)(g)",
+    "target": "DORA-Art13(2)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(g) requires cybersecurity training; DORA Art.13(2) requires financial entities other than microenterprises to continuously monitor relevant technological developments and keep up to date with latest ICT risk management processes to combat current and new cyber-attacks — a continuous learning obligation beyond NIS2 training baseline."
+  },
+  {
+    "source": "NIS2-Art21(2)(h)",
+    "target": "DORA-Art9(2)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.21(2)(h) requires policies and procedures on the use of cryptography and encryption; DORA Art.9(2) requires maintaining high standards of authenticity and integrity of data at rest, in use or in transit, which encompasses cryptographic protection — the obligation scope is equivalent, though DORA frames it as a data protection standard rather than an explicit cryptography policy."
+  },
+  {
+    "source": "NIS2-Art21(2)(i)",
+    "target": "DORA-Art5(2)(b)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.21(2)(i) requires human resources security, access control and asset management; DORA Art.5(2)(b) requires management body to put in place policies to ensure maintenance of high standards of availability, authenticity, integrity and confidentiality of data — the access control and asset security obligations are substantively equivalent."
+  },
+  {
+    "source": "NIS2-Art21(2)(i)",
+    "target": "DORA-Art9(4)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(i) requires access control and asset management; DORA Art.9(4) requires policies covering access rights management, identity management, and privileged access management — more operationally prescriptive on access control than the NIS2 baseline."
+  },
+  {
+    "source": "NIS2-Art21(2)(j)",
+    "target": "DORA-Art9(4)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(j) requires multi-factor authentication (MFA) or continuous authentication, secured communications and secured emergency communication systems; DORA Art.9(4) subsumes MFA and secure communications requirements within the broader ICT security tool and procedure obligations — equivalent scope, but DORA does not use the explicit term MFA, making the NIS2 provision slightly more specific on authentication method."
+  },
+  {
+    "source": "NIS2-Art20(1)",
+    "target": "DORA-Art5(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.20(1) requires management bodies to approve cybersecurity risk-management measures and bear responsibility for compliance; DORA Art.5(1) requires an internal governance and control framework for effective and prudent ICT risk management, with Art.5(2) enumerating specific management body responsibilities including ultimate accountability, policy setting, role assignment, and digital resilience strategy approval — substantially more prescriptive on board-level governance."
+  },
+  {
+    "source": "NIS2-Art20(1)",
+    "target": "DORA-Art5(2)(a)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.20(1) assigns management body ultimate responsibility for cybersecurity risk management; DORA Art.5(2)(a) explicitly states the management body 'shall bear the ultimate responsibility for managing the financial entity's ICT risk' — direct textual equivalent."
+  },
+  {
+    "source": "NIS2-Art20(1)",
+    "target": "DORA-Art5(2)(d)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.20(1) requires management body oversight; DORA Art.5(2)(d) requires management body to bear overall responsibility for setting and approving the digital operational resilience strategy including risk tolerance levels — adds strategy approval and quantified risk tolerance dimensions."
+  },
+  {
+    "source": "NIS2-Art20(2)",
+    "target": "DORA-Art5(4)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.20(2) requires members of management bodies to follow training to gain knowledge and skills for assessing cybersecurity risks; DORA Art.5(4) requires management body members to actively keep up to date through specific regular training commensurate with ICT risk — substantively equivalent obligations on board-level training."
+  },
+  {
+    "source": "NIS2-Art23(1)",
+    "target": "DORA-Art17(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.23(1) requires entities to notify the CSIRT or competent authority without undue delay of significant incidents; DORA Art.17(1) mandates a structured ICT-related incident management process including detection, management, and notification procedures with classification requirements — DORA is more prescriptive on the pre-notification management process."
+  },
+  {
+    "source": "NIS2-Art23(1)",
+    "target": "DORA-Art19(1)",
+    "relationship": "partial_overlap",
+    "rationale": "Both NIS2 Art.23(1) and DORA Art.19(1) require notification of major incidents to competent authorities, but NIS2 applies to all sectors covered by the directive while DORA applies specifically to financial entities; the DORA notification regime (4h initial / 72h intermediate / 1 month final) is more granular than NIS2 (24h early warning / 72h incident notification / 1 month final report), making them partially overlapping but not identical."
+  },
+  {
+    "source": "NIS2-Art23(1)(a)",
+    "target": "DORA-Art19(4)(a)",
+    "relationship": "partial_overlap",
+    "rationale": "NIS2 Art.23(1)(a) requires an early warning without undue delay and within 24 hours of becoming aware of the significant incident; DORA Art.19(4)(a) requires an initial notification within 4 hours of classifying the incident as major (not of becoming aware) — different trigger events and shorter DORA timeline indicate DORA is more stringent in classification speed but uses a different clock start."
+  },
+  {
+    "source": "NIS2-Art23(1)(b)",
+    "target": "DORA-Art19(4)(b)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.23(1)(b) requires an incident notification within 72 hours including initial assessment, severity, impact, and indicators of compromise; DORA Art.19(4)(b) requires an intermediate report within 72 hours of the initial notification updating impact and preliminary root-cause analysis — both cover the 72-hour intermediate update obligation, though the clock differs (NIS2: from awareness; DORA: from initial notification)."
+  },
+  {
+    "source": "NIS2-Art23(1)(c)",
+    "target": "DORA-Art19(4)(c)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.23(1)(c) requires a final report not later than one month after the incident notification including full analysis, cross-border impact assessment, and response measures; DORA Art.19(4)(c) requires a final report within one month of the intermediate report including confirmed root cause analysis, impact assessment, and remediation actions — substantively equivalent final-reporting obligation."
+  },
+  {
+    "source": "NIS2-Art23(2)",
+    "target": "DORA-Art19(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.23(2) requires notification of significant incidents having impact on service recipients; DORA Art.19(1) requires financial entities to inform clients about major ICT-related incidents and mitigation measures without undue delay as soon as they become aware — both mandate client notification, but DORA specifies the obligation is triggered by awareness and covers financial interests, making them equivalent in scope with DORA more specific."
+  },
+  {
+    "source": "NIS2-Art23(3)",
+    "target": "DORA-Art19(2)",
+    "relationship": "partial_overlap",
+    "rationale": "NIS2 Art.23(3) allows CSIRT to provide feedback and guidance within 24 hours; DORA Art.19(2) establishes that competent authorities shall acknowledge receipt and provide initial feedback — both establish a two-way reporting relationship with authority response, but differ on the feedback timeline and the authority involved (CSIRT vs. competent authority under ESA framework)."
+  },
+  {
+    "source": "NIS2-Art23(6)",
+    "target": "DORA-Art19(6)",
+    "relationship": "related",
+    "rationale": "NIS2 Art.23(6) allows the competent authority or CSIRT to share incident information with other national authorities for public interest purposes; DORA Art.19(6) establishes a hub-and-spoke information sharing structure through the ESAs (EBA, EIOPA, ESMA) and national competent authorities for financial entities — related coordination obligations but operating through different authority structures."
+  },
+  {
+    "source": "NIS2-Art21(2)(f)",
+    "target": "DORA-Art13(3)",
+    "relationship": "equivalent",
+    "rationale": "NIS2 Art.21(2)(f) requires policies and procedures to assess effectiveness of cybersecurity risk management measures; DORA Art.13(3) requires financial entities to monitor the effectiveness of their digital operational resilience strategy and map ICT risk evolution over time, analysing frequency, types, magnitude and evolution of ICT-related incidents — equivalent effectiveness-assessment obligations with DORA adding quantitative mapping requirements."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)",
+    "target": "DORA-Art14(1)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(b) requires incident handling; DORA Art.14(1) requires crisis communication plans enabling responsible disclosure of major ICT-related incidents or vulnerabilities to clients, counterparts, and the public — adds an explicit external communication and public disclosure obligation specific to the incident-handling process."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)",
+    "target": "DORA-Art14(2)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(b) requires incident handling; DORA Art.14(2) requires distinct communication policies for internal staff (differentiating ICT risk management staff from staff needing to be informed) and for external stakeholders — prescribes stakeholder segmentation in crisis communication not specified in NIS2."
+  },
+  {
+    "source": "NIS2-Art21(2)(b)",
+    "target": "DORA-Art14(3)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(b) requires incident handling; DORA Art.14(3) requires designating at least one person as responsible for implementing the ICT communication strategy and fulfilling the public and media function — a specific governance role requirement absent from NIS2."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)",
+    "target": "DORA-Art11(4)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(c) requires business continuity and disaster recovery; DORA Art.11(4) requires financial entities other than microenterprises to have associated ICT response and recovery plans subject to independent internal audit reviews — adds an explicit independent audit requirement for BCM plans not present in NIS2."
+  },
+  {
+    "source": "NIS2-Art21(2)(c)",
+    "target": "DORA-Art11(7)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(c) requires business continuity plans; DORA Art.11(7) requires financial entities to keep readily accessible records of activities before and during disruption events when BCM plans are activated — adds an evidence-preservation obligation for post-incident analysis not specified in NIS2."
+  },
+  {
+    "source": "NIS2-Art21(2)(a)",
+    "target": "DORA-Art5(2)(c)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(a) requires risk analysis and information security policies; DORA Art.5(2)(c) requires the management body to set clear roles and responsibilities for all ICT-related functions and establish governance arrangements for effective communication, cooperation and coordination — adds a specific governance-design obligation at board level beyond NIS2's policy requirement."
+  },
+  {
+    "source": "NIS2-Art23(4)",
+    "target": "DORA-Art19(3)",
+    "relationship": "related",
+    "rationale": "NIS2 Art.23(4) requires entities to notify recipients of their services that are potentially affected by a significant incident; DORA Art.19(3) permits voluntary notification of significant cyber threats that could potentially develop into a major incident — related notification scope obligations but DORA covers threat-level voluntary reporting whereas NIS2 mandates incident-level notification to service recipients."
+  },
+  {
+    "source": "NIS2-Art21(2)(e)",
+    "target": "DORA-Art8(4)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(e) covers security in system acquisition and maintenance; DORA Art.8(4) requires mapping the configuration of all information assets and ICT assets and the links and interdependencies between them — adds a dependency-mapping obligation that supports secure acquisition decisions and is more prescriptive than the NIS2 baseline."
+  },
+  {
+    "source": "NIS2-Art21(2)(e)",
+    "target": "DORA-Art8(5)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(e) covers supply-chain-adjacent security in ICT acquisition; DORA Art.8(5) requires financial entities to identify and document all processes dependent on ICT third-party service providers, and to identify interconnections with providers supporting critical or important functions — more operationally specific on third-party dependency documentation."
+  },
+  {
+    "source": "NIS2-Art21(2)(e)",
+    "target": "DORA-Art8(6)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(e) requires security practices including maintenance; DORA Art.8(6) requires maintaining and periodically updating relevant inventories of ICT assets and information assets, and updating them every time a major change occurs — prescribes concrete inventory maintenance cadence beyond NIS2 general maintenance security requirements."
+  },
+  {
+    "source": "NIS2-Art21(2)(d)",
+    "target": "DORA-Art6(9)",
+    "relationship": "subset",
+    "rationale": "NIS2 Art.21(2)(d) requires supply chain security policies; DORA Art.6(9) allows financial entities to define a holistic ICT multi-vendor strategy showing key dependencies on third-party providers and explaining procurement mix rationale — provides a strategic planning tool for supply chain risk that operationalises NIS2 supply chain security at group and entity level."
+  },
+  {
+    "source": "NIS2-Art21(2)(f)",
+    "target": "DORA-Art6(10)",
+    "relationship": "related",
+    "rationale": "NIS2 Art.21(2)(f) requires assessment of cybersecurity risk management effectiveness; DORA Art.6(10) permits outsourcing ICT compliance verification to intra-group or external undertakings while maintaining full financial entity responsibility — related governance obligation addressing how effectiveness assessments can be conducted, not an equivalent obligation."
+  }
+]

@@ -1,0 +1,272 @@
+[
+  {
+    "source": "TKG-165-2-general",
+    "target": "ISO27005:2022-Cl.7",
+    "relationship": "related",
+    "rationale": "§165(2) sentence 1 imposes a general duty to manage risks to telecom network/service security, which is the domain-level equivalent of the ISO 27005 risk assessment process as a whole."
+  },
+  {
+    "source": "TKG-165-2-risk-proportionality",
+    "target": "ISO27005:2022-Cl.6",
+    "relationship": "subset",
+    "rationale": "§165(2) requires risk management measures to be proportionate to the existing risk, considering operator size, probability, and severity — directly corresponding to ISO 27005 Cl.6 context establishment which defines scope, risk criteria, and acceptance thresholds."
+  },
+  {
+    "source": "TKG-165-2-state-of-the-art",
+    "target": "ISO27005:2022-Cl.6",
+    "relationship": "partial_overlap",
+    "rationale": "§165(2) mandates alignment with state-of-the-art and relevant European/international standards when scoping measures, which ISO 27005 Cl.6 addresses through context establishment including external context and regulatory requirements."
+  },
+  {
+    "source": "TKG-165-2-risk-criteria",
+    "target": "ISO27005:2022-Cl.7.4",
+    "relationship": "subset",
+    "rationale": "§165(2) criteria for assessing appropriateness — probability of occurrence, severity, societal/economic impact — correspond to ISO 27005 Cl.7.4 risk evaluation which compares risk levels against pre-defined risk criteria."
+  },
+  {
+    "source": "TKG-165-2-unauthorized-access",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "subset",
+    "rationale": "§165(2) specifies protecting telecoms and data-processing systems against unauthorized access as a threat category to be managed, which ISO 27005 Cl.7.2 addresses as part of risk identification (identifying threats, vulnerabilities, and risk scenarios)."
+  },
+  {
+    "source": "TKG-165-2-disruption-protection",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "subset",
+    "rationale": "§165(2) No.1 requires protection against disruptions causing significant impairments (including from external attacks and disasters), which ISO 27005 Cl.7.2 addresses through identification of risk scenarios covering availability threats."
+  },
+  {
+    "source": "TKG-165-2-impact-minimization",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2) sentence on keeping security violation impacts minimal for users and interconnected networks maps to ISO 27005 Cl.8 risk treatment — selecting controls to reduce consequence (impact) of realized risk scenarios."
+  },
+  {
+    "source": "TKG-165-2-encryption",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2) explicitly names encryption as a required protective measure category; ISO 27005 Cl.8 covers selection of risk modification controls (including cryptographic controls) as part of the treatment process."
+  },
+  {
+    "source": "TKG-165-6-proportionality",
+    "target": "ISO27005:2022-Cl.7.4",
+    "relationship": "equivalent",
+    "rationale": "§165(6) defines appropriateness as cost-to-asset-value proportionality, directly mapping to ISO 27005 Cl.7.4 risk evaluation where risk levels are compared against risk acceptance criteria to determine if risk is tolerable."
+  },
+  {
+    "source": "TKG-165-2a-1-risk-analysis",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) No.1 mandates risk analysis and information security concepts as the first cross-hazard measure, directly equivalent to ISO 27005 Cl.7.2 risk identification which initiates the risk assessment cycle."
+  },
+  {
+    "source": "TKG-165-2a-1-isms-concept",
+    "target": "ISO27005:2022-Cl.6",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.1 requirement for information security concepts corresponds to ISO 27005 Cl.6 context establishment, which defines the organizational framework and criteria underpinning the ISMS risk process."
+  },
+  {
+    "source": "TKG-165-2a-1-risk-analysis-process",
+    "target": "ISO27005:2022-Cl.7.3",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) No.1 explicit 'Risikoanalyse' (risk analysis) requirement for KRITIS telecom operators maps directly to ISO 27005 Cl.7.3 which requires assessing likelihood and consequence to determine risk level."
+  },
+  {
+    "source": "TKG-165-2a-2-incident-handling",
+    "target": "ISO27005:2022-Cl.10.5",
+    "relationship": "partial_overlap",
+    "rationale": "§165(2a) No.2 security incident management obligation overlaps with ISO 27005 Cl.10.5 monitoring of risk-related events, as detected incidents serve as input signals for updating risk scenarios and treatment responses."
+  },
+  {
+    "source": "TKG-165-2a-2-incident-detection",
+    "target": "ISO27005:2022-Cl.10.5",
+    "relationship": "related",
+    "rationale": "§165(2a) No.2 incident handling requires detection capability, corresponding to ISO 27005 Cl.10.5 which introduces monitoring scenarios translating risk scenarios into correlation rules (e.g., SIEM detection rules)."
+  },
+  {
+    "source": "TKG-165-2a-3-bcm-availability",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "partial_overlap",
+    "rationale": "§165(2a) No.3 business continuity and backup/disaster recovery requirement implies availability risk scenarios must be identified, corresponding to ISO 27005 Cl.7.2 risk identification of availability-impacting threat scenarios."
+  },
+  {
+    "source": "TKG-165-2a-3-bcm-treatment",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.3 BCM measures (backup, disaster recovery, crisis management) are risk treatment controls addressing availability risks, mapping to ISO 27005 Cl.8 risk treatment process for selecting and implementing controls."
+  },
+  {
+    "source": "TKG-165-2a-4-supply-chain-risk",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.4 supply chain security obligation requires identification of risks from suppliers and service providers, directly corresponding to ISO 27005 Cl.7.2 risk identification which includes threat sources from the supply chain."
+  },
+  {
+    "source": "TKG-165-2a-4-supply-chain-treatment",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.4 supply chain security controls (screening suppliers, contractual requirements) are risk treatment measures addressing third-party risk, mapping to ISO 27005 Cl.8 treatment option selection."
+  },
+  {
+    "source": "TKG-165-2a-5-system-acquisition",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.5 security in system acquisition, development, and maintenance addresses the identification of risks introduced through system development lifecycle, mapping to ISO 27005 Cl.7.2 identification of vulnerability-based risk scenarios."
+  },
+  {
+    "source": "TKG-165-2a-5-vulnerability-management",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.5 vulnerability management within system maintenance maps to ISO 27005 Cl.7.2 risk identification requiring assessment of vulnerabilities in network and information systems."
+  },
+  {
+    "source": "TKG-165-2a-5-system-treatment",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.5 measures to secure systems during acquisition and maintenance represent risk modification controls, corresponding to ISO 27005 Cl.8 treatment actions to reduce risk likelihood through secure development practices."
+  },
+  {
+    "source": "TKG-165-2a-6-effectiveness-assessment",
+    "target": "ISO27005:2022-Cl.10.5",
+    "relationship": "equivalent",
+    "rationale": "§165(2a) No.6 requires procedures for assessing effectiveness of network and service security measures, directly equivalent to ISO 27005 Cl.10.5 monitoring of risk-related events to verify that implemented controls remain effective."
+  },
+  {
+    "source": "TKG-165-2a-6-review-cycle",
+    "target": "UNVERIFIED-ISO27005:2022-Cl.10.3",
+    "relationship": "related",
+    "rationale": "§165(2a) No.6 effectiveness evaluation cycle corresponds to ISO 27005 periodic review activities (likely Cl.10.3, exact sub-clause title unverified) which require reviewing whether risk assessment results remain valid."
+  },
+  {
+    "source": "TKG-165-2a-7-security-training",
+    "target": "ISO27005:2022-Cl.7.3",
+    "relationship": "related",
+    "rationale": "§165(2a) No.7 basic security hygiene training and procedures reduces human-factor risk likelihood, which ISO 27005 Cl.7.3 risk analysis requires quantifying; training is a contributing factor to likelihood estimation."
+  },
+  {
+    "source": "TKG-165-2a-7-procedures",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.7 security procedures represent documented risk treatment controls, mapping to ISO 27005 Cl.8 treatment process which selects and documents controls to modify identified risks."
+  },
+  {
+    "source": "TKG-165-2a-8-cryptography",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.8 cryptography and encryption concepts are specific risk treatment controls (modifying risk by protecting confidentiality and integrity), directly mapping to ISO 27005 Cl.8 risk modification through control selection."
+  },
+  {
+    "source": "TKG-165-2a-8-crypto-key-management",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "related",
+    "rationale": "§165(2a) No.8 encryption concepts imply identifying risks to key management and encrypted data as distinct risk scenarios, corresponding to ISO 27005 Cl.7.2 risk identification for asset-based scenarios involving cryptographic assets."
+  },
+  {
+    "source": "TKG-165-2a-9-personnel-security",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.9 personnel security and access control requirements presuppose identification of insider threat and access-related risk scenarios, mapping to ISO 27005 Cl.7.2 risk identification for human threat sources."
+  },
+  {
+    "source": "TKG-165-2a-9-access-control-treatment",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.9 access controls and asset management are risk treatment controls reducing unauthorized access risk, mapping to ISO 27005 Cl.8 treatment via risk modification by implementing access management controls."
+  },
+  {
+    "source": "TKG-165-2a-10-mfa",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.10 multi-factor authentication is a specific risk treatment control targeting authentication bypass threats, mapping to ISO 27005 Cl.8 risk modification through technical control selection."
+  },
+  {
+    "source": "TKG-165-2a-10-secure-comms",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.10 secured voice/video/text communications and emergency communication systems are confidentiality risk treatment controls, mapping to ISO 27005 Cl.8 treatment options for data-in-transit risk scenarios."
+  },
+  {
+    "source": "TKG-165-3-intrusion-detection",
+    "target": "ISO27005:2022-Cl.10.5",
+    "relationship": "equivalent",
+    "rationale": "§165(3) intrusion detection system requirement for high-risk operators maps precisely to ISO 27005 Cl.10.5 monitoring of risk-related events, translating risk scenarios into detection rules for continuous operational monitoring."
+  },
+  {
+    "source": "TKG-165-3-ids-mandatory-risk",
+    "target": "ISO27005:2022-Cl.7.4",
+    "relationship": "related",
+    "rationale": "§165(3) triggers mandatory IDS deployment for operators with elevated risk, implying a risk evaluation threshold has been crossed — corresponding to ISO 27005 Cl.7.4 risk evaluation comparing assessed risk level against acceptance criteria."
+  },
+  {
+    "source": "TKG-165-4-critical-components",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "subset",
+    "rationale": "§165(4) pre-deployment certification of critical network components addresses risks from unvetted components (supply chain integrity), corresponding to ISO 27005 Cl.7.2 identification of risk scenarios involving critical asset vulnerabilities."
+  },
+  {
+    "source": "TKG-165-4-critical-components-treatment",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(4) certification requirement for critical components is a risk treatment control (risk modification through procurement requirements), mapping to ISO 27005 Cl.8 treatment actions including contractual and procurement controls."
+  },
+  {
+    "source": "TKG-165-5-availability-operations",
+    "target": "ISO27005:2022-Cl.7.2",
+    "relationship": "subset",
+    "rationale": "§165(5) obligation to ensure service availability through operational measures requires identification of availability risk scenarios including cascading failure and overload threats, mapping to ISO 27005 Cl.7.2 risk identification."
+  },
+  {
+    "source": "TKG-165-5-availability-treatment",
+    "target": "ISO27005:2022-Cl.8",
+    "relationship": "subset",
+    "rationale": "§165(5) operational availability measures are risk treatment controls (risk modification) targeting service disruption risk scenarios, corresponding to ISO 27005 Cl.8 treatment option selection and implementation."
+  },
+  {
+    "source": "TKG-165-2b-management-responsibility",
+    "target": "ISO27005:2022-Cl.6",
+    "relationship": "related",
+    "rationale": "§165(2b) management board implementation and monitoring responsibility aligns with ISO 27005 Cl.6 context establishment requiring leadership commitment and accountability for the risk management process."
+  },
+  {
+    "source": "TKG-165-2c-management-liability",
+    "target": "UNVERIFIED-ISO27005:2022-Cl.10.4",
+    "relationship": "related",
+    "rationale": "§165(2c) management liability for negligent security measure violations corresponds to accountability mechanisms in ISO 27005 documentation requirements (likely Cl.10.4, exact sub-clause unverified) ensuring documented evidence of risk decisions."
+  },
+  {
+    "source": "TKG-165-2d-cybersecurity-training",
+    "target": "ISO27005:2022-Cl.7.3",
+    "relationship": "related",
+    "rationale": "§165(2d) mandatory cybersecurity training for management reduces organizational risk likelihood, which ISO 27005 Cl.7.3 risk analysis must factor in when estimating likelihood of human-factor risk scenarios."
+  },
+  {
+    "source": "TKG-165-9-biennial-audit",
+    "target": "ISO27005:2022-Cl.10.5",
+    "relationship": "subset",
+    "rationale": "§165(9) (UNVERIFIED numbering — biennial audit requirement for high-risk operators) maps to ISO 27005 Cl.10.5 monitoring process requiring periodic review and update of risk assessments to capture changed threat landscape."
+  },
+  {
+    "source": "TKG-165-general-risk-based-approach",
+    "target": "ISO27005:2022-Cl.7",
+    "relationship": "superset",
+    "rationale": "TKG §165 as a whole imposes a sector-specific risk-based security obligation that is broader in regulatory scope (covering telecom-specific threats, proportionality, enforcement) than ISO 27005 Cl.7 alone, making the TKG a superset relative to the assessment process."
+  },
+  {
+    "source": "TKG-165-2a-cross-hazard-scope",
+    "target": "ISO27005:2022-Cl.6",
+    "relationship": "partial_overlap",
+    "rationale": "§165(2a) gefahrenübergreifender Ansatz (cross-hazard approach covering physical and cyber threats) expands the risk scope beyond ISO 27005 Cl.6 context establishment which sets organizational and information-system scope but does not explicitly mandate cross-domain physical threat inclusion."
+  },
+  {
+    "source": "TKG-165-2-risk-assessment-criteria",
+    "target": "ISO27005:2022-Cl.7.4",
+    "relationship": "equivalent",
+    "rationale": "§165(2) paragraph requiring risk-appropriate security level considering probability, severity, and societal/economic impact as evaluation criteria is functionally equivalent to ISO 27005 Cl.7.4 which evaluates assessed risk against criteria including likelihood, impact magnitude, and organizational risk appetite."
+  },
+  {
+    "source": "TKG-165-2a-1-iterative-risk",
+    "target": "ISO27005:2022-Cl.7",
+    "relationship": "subset",
+    "rationale": "§165(2a) No.1 risk analysis concepts encompass the full assessment loop (identification → analysis → evaluation), which as a unit corresponds to ISO 27005 Cl.7 information security risk assessment process."
+  }
+]

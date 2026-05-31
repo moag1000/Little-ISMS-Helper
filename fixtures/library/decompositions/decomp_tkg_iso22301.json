@@ -1,0 +1,416 @@
+[
+  {
+    "source": "TKG-§164-Abs1",
+    "target": "ISO22301-4.2",
+    "relationship": "partial_overlap",
+    "rationale": "§164 Abs.1 obliges network operators to guarantee access to emergency call services at all times; ISO 22301 cl.4.2 identifies the needs and expectations of interested parties (incl. regulators and users dependent on continuity), but does not mandate a specific emergency-call obligation."
+  },
+  {
+    "source": "TKG-§164-Abs2",
+    "target": "ISO22301-8.4.3",
+    "relationship": "partial_overlap",
+    "rationale": "§164 Abs.2 requires continuous routing of emergency calls even during network disruptions; ISO 22301 cl.8.4.3 covers warning, communication and information procedures during a disruption, partially covering this continuity-of-communication requirement."
+  },
+  {
+    "source": "TKG-§164-Abs3",
+    "target": "ISO22301-8.4.4",
+    "relationship": "partial_overlap",
+    "rationale": "§164 Abs.3 mandates caller-location accuracy for emergency services; ISO 22301 cl.8.4.4 addresses recovery activities and restoring normal operations, only partially related to mandatory emergency-service capabilities."
+  },
+  {
+    "source": "TKG-§164a-Abs1",
+    "target": "ISO22301-4.2",
+    "relationship": "related",
+    "rationale": "§164a Abs.1 requires mobile network operators to support public warning systems (DE-Alert/Cell Broadcast); ISO 22301 cl.4.2 captures stakeholder requirements but does not specifically address public warning obligations."
+  },
+  {
+    "source": "TKG-§164a-Abs2",
+    "target": "ISO22301-8.4.3",
+    "relationship": "subset",
+    "rationale": "§164a Abs.2 mandates that providers transmit official public warnings without alteration and with defined response times; ISO 22301 cl.8.4.3 (warning and communication procedures) is the broader BCMS framework into which this specific warning-dissemination obligation fits."
+  },
+  {
+    "source": "TKG-§164a-Abs3",
+    "target": "ISO22301-8.3.3",
+    "relationship": "related",
+    "rationale": "§164a Abs.3 requires technical readiness of systems to distribute warnings; ISO 22301 cl.8.3.3 covers resource requirements for continuity strategies, which encompasses technical capability maintenance, though not specifically for public alerting."
+  },
+  {
+    "source": "TKG-§165-Abs1-S1",
+    "target": "ISO22301-4.1",
+    "relationship": "related",
+    "rationale": "§165 Abs.1 S.1 requires any provider of telecom services to implement appropriate technical and organisational measures for protection; ISO 22301 cl.4.1 requires understanding internal and external context, which underpins but does not mandate the specific measures."
+  },
+  {
+    "source": "TKG-§165-Abs1-Nr1",
+    "target": "ISO22301-8.2.3",
+    "relationship": "partial_overlap",
+    "rationale": "§165 Abs.1 Nr.1 requires protection of telecommunications secrecy; ISO 22301 cl.8.2.3 addresses risk assessment identifying threats to continuity, providing a procedural framework to identify risks to confidentiality, but the primary standard for secrecy is ISO 27001."
+  },
+  {
+    "source": "TKG-§165-Abs1-Nr2",
+    "target": "ISO22301-8.2.2",
+    "relationship": "partial_overlap",
+    "rationale": "§165 Abs.1 Nr.2 mandates protection of personal data in telecom processing; ISO 22301 cl.8.2.2 (BIA) identifies critical activities whose disruption impacts data integrity, but the primary standard for personal data protection is GDPR/ISO 27701."
+  },
+  {
+    "source": "TKG-§165-Abs2-S1",
+    "target": "ISO22301-6.2",
+    "relationship": "subset",
+    "rationale": "§165 Abs.2 S.1 obliges public network operators to take measures ensuring proper network operation and continued availability of services; ISO 22301 cl.6.2 establishes BCMS objectives for continuity of operations, providing the management-system objective layer for this legal obligation."
+  },
+  {
+    "source": "TKG-§165-Abs2-S1",
+    "target": "ISO22301-8.3.1",
+    "relationship": "subset",
+    "rationale": "The availability obligation in §165 Abs.2 S.1 requires identifying strategies to sustain services; ISO 22301 cl.8.3.1 (determination of business continuity strategies) directly captures the selection and documentation of those strategies."
+  },
+  {
+    "source": "TKG-§165-Abs2-S2",
+    "target": "ISO22301-8.3.2",
+    "relationship": "subset",
+    "rationale": "§165 Abs.2 S.2 requires measures against significant disruptions to TK networks and services (risk management); ISO 22301 cl.8.3.2 (resource requirements) defines how resource capacity underpins continuity strategies, directly addressing disruption-prevention resources."
+  },
+  {
+    "source": "TKG-§165-Abs2-Nr1",
+    "target": "ISO22301-8.3.3",
+    "relationship": "equivalent",
+    "rationale": "§165 Abs.2 Nr.1 mandates measures to ensure adequate network integrity and availability including encryption of network systems; ISO 22301 cl.8.3.3 (protection and mitigation measures) equivalently requires implementing technical and organisational measures to protect prioritised activities."
+  },
+  {
+    "source": "TKG-§165-Abs2-Nr2",
+    "target": "ISO22301-8.3.1",
+    "relationship": "partial_overlap",
+    "rationale": "§165 Abs.2 Nr.2 requires measures to minimise the impact of security incidents on users and interconnected networks; ISO 22301 cl.8.3.1 covers business continuity strategies for limiting disruption impact, but focuses on the organisation's own operations rather than third-party impact."
+  },
+  {
+    "source": "TKG-§165-Abs3-S1",
+    "target": "ISO22301-8.3.3",
+    "relationship": "subset",
+    "rationale": "§165 Abs.3 S.1 permits (and for high-risk operators mandates) intrusion detection systems as a protective measure; ISO 22301 cl.8.3.3 requires implementing protection and mitigation measures as part of continuity strategies, encompassing technical monitoring controls."
+  },
+  {
+    "source": "TKG-§165-Abs3-S2",
+    "target": "ISO22301-8.3.3",
+    "relationship": "subset",
+    "rationale": "§165 Abs.3 S.2 mandates that IDS systems automatically detect threats, avert dangers and remediate disruptions; ISO 22301 cl.8.3.3 covers mitigation measures and remediation actions within the continuity strategy framework."
+  },
+  {
+    "source": "TKG-§165-Abs4",
+    "target": "ISO22301-7.1",
+    "relationship": "related",
+    "rationale": "§165 Abs.4 requires that critical components used by high-risk network operators be certified before initial use; ISO 22301 cl.7.1 requires the organisation to determine and provide necessary resources for the BCMS, which includes competent and certified infrastructure, though certification of individual components is more specific than cl.7.1 covers."
+  },
+  {
+    "source": "TKG-§165-Abs5",
+    "target": "ISO22301-8.2.2",
+    "relationship": "subset",
+    "rationale": "§165 Abs.5 requires operators to ensure proper operation of networks and continuous availability of services provided over those networks (the core availability mandate); ISO 22301 cl.8.2.2 (BIA) requires identifying and prioritising critical activities and their RTO/RPO, which operationalises this availability requirement at process level."
+  },
+  {
+    "source": "TKG-§165-Abs5",
+    "target": "ISO22301-8.4.1",
+    "relationship": "subset",
+    "rationale": "§165 Abs.5 continuous-availability obligation requires operational plans to maintain service delivery; ISO 22301 cl.8.4.1 (business continuity plans and procedures — general) requires documented procedures to manage a disruption and maintain prioritised activities."
+  },
+  {
+    "source": "TKG-§165-Abs6",
+    "target": "ISO22301-6.1",
+    "relationship": "related",
+    "rationale": "§165 Abs.6 establishes a proportionality principle: technical measures are appropriate when their effort is not disproportionate to the importance of the protected network/service; ISO 22301 cl.6.1 requires addressing risks and opportunities proportionate to context, which is analogous but expressed at BCMS planning level."
+  },
+  {
+    "source": "TKG-§165-Abs7",
+    "target": "ISO22301-7.1",
+    "relationship": "related",
+    "rationale": "§165 Abs.7 clarifies obligations for shared infrastructure (co-location): each participant must fulfil protective-measure obligations unless allocated to one party; ISO 22301 cl.7.1 addresses resource determination for the BCMS including shared infrastructure responsibilities, though BCMS scope allocation is more explicitly addressed in cl.4.3."
+  },
+  {
+    "source": "TKG-§165-Abs7",
+    "target": "ISO22301-4.3",
+    "relationship": "partial_overlap",
+    "rationale": "§165 Abs.7 shared-location provision affects which legal entity bears the compliance obligation; ISO 22301 cl.4.3 requires defining BCMS scope and boundaries including relationships to other organisations, which must capture shared-infrastructure arrangements."
+  },
+  {
+    "source": "TKG-§166-Abs1-Nr1",
+    "target": "ISO22301-5.1",
+    "relationship": "subset",
+    "rationale": "§166 Abs.1 Nr.1 mandates designation of a Sicherheitsbeauftragter (security officer) responsible for TK security; ISO 22301 cl.5.1 requires top management leadership and commitment including assignment of roles and responsibilities for BCMS, of which the security officer role is a specific instantiation."
+  },
+  {
+    "source": "TKG-§166-Abs1-Nr2",
+    "target": "ISO22301-5.3",
+    "relationship": "subset",
+    "rationale": "§166 Abs.1 Nr.2 requires designation of a contact person resident in the EU as regulatory liaison; ISO 22301 cl.5.3 requires top management to assign relevant BCMS roles, responsibilities and authorities, which encompasses the regulatory contact role."
+  },
+  {
+    "source": "TKG-§166-Abs1-Nr3-a",
+    "target": "ISO22301-4.1",
+    "relationship": "subset",
+    "rationale": "§166 Abs.1 Nr.3(a) requires the security concept to describe which public TK network is operated and which services are provided; ISO 22301 cl.4.1 requires understanding the organisation and its context, including products and services that define BCMS scope."
+  },
+  {
+    "source": "TKG-§166-Abs1-Nr3-b",
+    "target": "ISO22301-8.2.3",
+    "relationship": "equivalent",
+    "rationale": "§166 Abs.1 Nr.3(b) requires the security concept to document which threats are to be assumed; ISO 22301 cl.8.2.3 (risk assessment) equivalently requires identifying, analysing and evaluating risks that could cause disruption."
+  },
+  {
+    "source": "TKG-§166-Abs1-Nr3-c",
+    "target": "ISO22301-8.3.1",
+    "relationship": "equivalent",
+    "rationale": "§166 Abs.1 Nr.3(c) requires the security concept to document which technical and organisational protective measures are taken or planned to fulfil §165 obligations; ISO 22301 cl.8.3.1 equivalently requires selecting and documenting business continuity strategies and solutions."
+  },
+  {
+    "source": "TKG-§166-Abs2-S1",
+    "target": "ISO22301-9.1",
+    "relationship": "subset",
+    "rationale": "§166 Abs.2 S.1 requires public network operators to submit the security concept to the Bundesnetzagentur immediately after starting network operations; ISO 22301 cl.9.1 requires monitoring, measurement, analysis and evaluation of BCMS performance, which includes maintaining documented evidence of compliance as submitted to regulators."
+  },
+  {
+    "source": "TKG-§166-Abs2-S2",
+    "target": "ISO22301-7.5",
+    "relationship": "subset",
+    "rationale": "§166 Abs.2 S.2 allows the Bundesnetzagentur to oblige service providers to submit the security concept; ISO 22301 cl.7.5 requires maintaining documented information (including the security concept equivalent — BCMS documentation) as controlled documents."
+  },
+  {
+    "source": "TKG-§166-Abs3",
+    "target": "ISO22301-9.1",
+    "relationship": "partial_overlap",
+    "rationale": "§166 Abs.3 requires submission of a declaration that all protective measures shown in the security concept are implemented or will be implemented immediately; ISO 22301 cl.9.1 performance evaluation requires assessing whether BCMS objectives and measures are effectively implemented, though the regulatory declaration mechanism is more specific."
+  },
+  {
+    "source": "TKG-§166-Abs3",
+    "target": "ISO22301-10.1",
+    "relationship": "partial_overlap",
+    "rationale": "§166 Abs.3 implementation declaration includes commitment to immediate implementation of planned measures; ISO 22301 cl.10.1 on nonconformity and corrective action requires addressing gaps between planned and implemented controls, which is analogous to the TKG implementation commitment mechanism."
+  },
+  {
+    "source": "TKG-§167-Abs1-S1",
+    "target": "ISO22301-4.2",
+    "relationship": "related",
+    "rationale": "§167 Abs.1 S.1 mandates the Bundesnetzagentur to establish a catalog of security requirements concretising §165 obligations; ISO 22301 cl.4.2 requires understanding applicable requirements of interested parties including regulators, of which this catalog is a primary regulatory requirement."
+  },
+  {
+    "source": "TKG-§167-Abs1-S2",
+    "target": "ISO22301-8.3.3",
+    "relationship": "superset",
+    "rationale": "§167 Abs.1 S.2 defines critical functions realised by critical components under BSI law, with specific requirements for high-risk operators; ISO 22301 cl.8.3.3 (protection and mitigation) requires implementing protective measures for critical activities, but the TKG/Katalog adds mandatory certification and supply-chain requirements that go beyond cl.8.3.3."
+  },
+  {
+    "source": "TKG-§167-Abs2",
+    "target": "ISO22301-6.2",
+    "relationship": "subset",
+    "rationale": "§167 Abs.2 requires operators to implement catalog requirements within one year of its entry into force; ISO 22301 cl.6.2 requires establishing BCMS objectives with defined timelines and plans, providing the management framework for time-bound implementation of continuity measures."
+  },
+  {
+    "source": "TKG-§167-Abs3",
+    "target": "ISO22301-9.2",
+    "relationship": "subset",
+    "rationale": "§167 Abs.3 empowers the Bundesnetzagentur to verify compliance with security requirements (supervisory audit); ISO 22301 cl.9.2 requires internal BCMS audits to assess conformance, which is the internal parallel to the external regulatory verification mechanism."
+  },
+  {
+    "source": "TKG-§167-Kat-BCM",
+    "target": "ISO22301-8.4.1",
+    "relationship": "equivalent",
+    "rationale": "The Katalog von Sicherheitsanforderungen (§167-based, 2025 draft) explicitly mandates Business Continuity Management plans including an all-hazards approach; ISO 22301 cl.8.4.1 defines the general requirements for documented business continuity plans and procedures — these are directly equivalent objectives."
+  },
+  {
+    "source": "TKG-§167-Kat-BCM",
+    "target": "ISO22301-8.2.2",
+    "relationship": "equivalent",
+    "rationale": "The Katalog 2025 BCM mandate includes business impact analysis to identify critical TK services; ISO 22301 cl.8.2.2 defines BIA requirements for identifying critical activities and their maximum acceptable downtime — equivalent in intent and method."
+  },
+  {
+    "source": "TKG-§167-Kat-Redundanz",
+    "target": "ISO22301-8.3.2",
+    "relationship": "equivalent",
+    "rationale": "The Katalog specifies redundancy requirements for network elements to maintain availability; ISO 22301 cl.8.3.2 requires identifying resource requirements (including redundant systems) to support continuity strategies."
+  },
+  {
+    "source": "TKG-§167-Kat-ISMS",
+    "target": "ISO22301-4.4",
+    "relationship": "related",
+    "rationale": "The Katalog requires an information security management system (referencing ISO 27001) as foundational requirement; ISO 22301 cl.4.4 requires establishing, implementing and maintaining a BCMS — the two management system standards are intended to be integrated."
+  },
+  {
+    "source": "TKG-§167-Kat-Notfall",
+    "target": "ISO22301-8.4.2",
+    "relationship": "equivalent",
+    "rationale": "The Katalog requires documented emergency/contingency procedures (Notfallpläne) for TK service continuity; ISO 22301 cl.8.4.2 requires the organisation to implement a response structure with designated teams, escalation procedures and documented response plans."
+  },
+  {
+    "source": "TKG-§167-Kat-Notfall",
+    "target": "ISO22301-8.5",
+    "relationship": "subset",
+    "rationale": "Katalog Notfallplanungs-requirement implicitly requires tested procedures to be effective; ISO 22301 cl.8.5 (exercise programme) is broader, requiring a formally planned and evaluated exercise programme to validate continuity arrangements."
+  },
+  {
+    "source": "TKG-§168-Abs1-S1",
+    "target": "ISO22301-8.4.3",
+    "relationship": "subset",
+    "rationale": "§168 Abs.1 S.1 requires the early initial notification (Erstmeldung) to BNetzA and BSI without delay within 24 hours of becoming aware of a significant security incident; ISO 22301 cl.8.4.3 addresses internal and external communication procedures during disruptions, which is broader and includes but does not prescribe the 24h regulatory reporting timeline."
+  },
+  {
+    "source": "TKG-§168-Abs1-S2",
+    "target": "ISO22301-8.4.3",
+    "relationship": "subset",
+    "rationale": "§168 Abs.1 S.2 requires a 72-hour follow-up incident notification including severity assessment and compromise indicators; ISO 22301 cl.8.4.3 covers communication procedures during response, of which this regulatory reporting obligation is a specific externally-mandated sub-requirement."
+  },
+  {
+    "source": "TKG-§168-Abs1-S3",
+    "target": "ISO22301-8.4.4",
+    "relationship": "subset",
+    "rationale": "§168 Abs.1 S.3 requires a final incident report (Abschlussmeldung) within one month documenting resolution; ISO 22301 cl.8.4.4 addresses restoration and return-to-normal activities, which provides the operational framework for the post-incident closure this report documents."
+  },
+  {
+    "source": "TKG-§168-Abs2",
+    "target": "ISO22301-8.4.4",
+    "relationship": "subset",
+    "rationale": "§168 Abs.2 requires a progress report (Fortschrittsmeldung) when an incident is still ongoing at the one-month mark; ISO 22301 cl.8.4.4 (restoration and return to normal) covers the ongoing recovery operations that this progress report would reflect."
+  },
+  {
+    "source": "TKG-§168-Abs3",
+    "target": "ISO22301-8.2.3",
+    "relationship": "subset",
+    "rationale": "§168 Abs.3 defines the threshold for a 'significant' security incident (substantial operational disruption or financial loss, or significant harm to persons); ISO 22301 cl.8.2.3 requires risk assessment that identifies and evaluates the impact and likelihood of disruption scenarios, providing the analytical basis for applying this threshold."
+  },
+  {
+    "source": "TKG-§168-Abs4",
+    "target": "ISO22301-7.4",
+    "relationship": "subset",
+    "rationale": "§168 Abs.4 empowers the Bundesnetzagentur to define reporting procedure details and demand detailed incident reports including remediation measures; ISO 22301 cl.7.4 requires the organisation to establish communication procedures with relevant authorities, encompassing the regulatory reporting channel this provision mandates."
+  },
+  {
+    "source": "TKG-§168-Abs5",
+    "target": "ISO22301-7.4",
+    "relationship": "related",
+    "rationale": "§168 Abs.5 requires the Bundesnetzagentur to acknowledge receipt of reports within 24 hours; ISO 22301 cl.7.4 covers communication with interested parties but does not directly address regulatory acknowledgment procedures — this is a process obligation on the regulator rather than the operator."
+  },
+  {
+    "source": "TKG-§169-Abs1",
+    "target": "ISO22301-8.3.3",
+    "relationship": "partial_overlap",
+    "rationale": "§169 Abs.1 requires providers to report personal data breaches to supervisory authorities; ISO 22301 cl.8.3.3 includes protective measures for critical information assets, but the primary mapping for data breach reporting is to GDPR Art.33/ISO 27701 rather than 22301."
+  },
+  {
+    "source": "TKG-§169-Abs2",
+    "target": "ISO22301-8.4.3",
+    "relationship": "partial_overlap",
+    "rationale": "§169 Abs.2 requires notification of affected individuals when a data breach is likely to significantly impair their rights; ISO 22301 cl.8.4.3 covers stakeholder communication during disruptions, which includes user notification obligations, though GDPR Art.34 is the more direct primary standard."
+  },
+  {
+    "source": "TKG-§170-Abs1",
+    "target": "ISO22301-9.2",
+    "relationship": "related",
+    "rationale": "§170 Abs.1 grants the Bundesnetzagentur powers to inspect and audit compliance with security obligations; ISO 22301 cl.9.2 requires internal BCMS audits — both serve conformance assurance, but §170 is an external regulatory supervisory power while cl.9.2 is an internal management-system requirement."
+  },
+  {
+    "source": "TKG-§170-Abs2",
+    "target": "ISO22301-10.1",
+    "relationship": "related",
+    "rationale": "§170 Abs.2 authorises the Bundesnetzagentur to order remediation of identified security deficiencies; ISO 22301 cl.10.1 requires the organisation to address nonconformities and take corrective action — the external regulatory order parallels the internal corrective action obligation."
+  },
+  {
+    "source": "TKG-§170-Abs3",
+    "target": "ISO22301-9.3",
+    "relationship": "related",
+    "rationale": "§170 Abs.3 permits the authority to conduct on-site inspections; ISO 22301 cl.9.3 requires management review of BCMS performance against objectives — both are oversight mechanisms, but §170 is external regulatory oversight while cl.9.3 is internal management review."
+  },
+  {
+    "source": "TKG-§165-Abs2-BCM-allgemein",
+    "target": "ISO22301-4.4",
+    "relationship": "subset",
+    "rationale": "§165 Abs.2 as a whole obliges network operators to implement a systematic set of availability and resilience measures; ISO 22301 cl.4.4 requires formally establishing, implementing, maintaining and continually improving a BCMS — the TKG creates the legal obligation whose fulfilment a certified BCMS demonstrates."
+  },
+  {
+    "source": "TKG-§166-Abs1-Nr3",
+    "target": "ISO22301-7.5",
+    "relationship": "equivalent",
+    "rationale": "§166 Abs.1 Nr.3 requires a documented security concept covering network description, threat landscape and planned measures; ISO 22301 cl.7.5 requires maintaining documented information including the documented BCMS scope, policies, BIA, strategies and plans — these documentation requirements are equivalent in purpose."
+  },
+  {
+    "source": "TKG-§165-Abs2-S1",
+    "target": "ISO22301-8.1",
+    "relationship": "subset",
+    "rationale": "§165 Abs.2 S.1 requires planned and systematic protective measures for network operations; ISO 22301 cl.8.1 requires the organisation to plan, implement, control, and evaluate processes needed to meet BCMS requirements — this clause provides the operational control framework implementing the TKG obligation."
+  },
+  {
+    "source": "TKG-§167-Kat-Ueberwachung",
+    "target": "ISO22301-9.1",
+    "relationship": "equivalent",
+    "rationale": "The Katalog requirements for continuous monitoring of network security (monitoring and logging requirements) map equivalently to ISO 22301 cl.9.1, which requires monitoring, measurement, analysis and evaluation of BCMS performance and control effectiveness."
+  },
+  {
+    "source": "TKG-§167-Kat-Lieferkette",
+    "target": "ISO22301-8.3.2",
+    "relationship": "partial_overlap",
+    "rationale": "The Katalog addresses supply-chain security requirements for critical components and third-party dependencies; ISO 22301 cl.8.3.2 requires identifying resource requirements including those sourced from suppliers, but BCMS coverage of supply chain is less prescriptive than the Katalog's certification/vetting obligations."
+  },
+  {
+    "source": "TKG-§167-Kat-Schulung",
+    "target": "ISO22301-7.2",
+    "relationship": "equivalent",
+    "rationale": "The Katalog requires security awareness and training for personnel operating critical TK infrastructure; ISO 22301 cl.7.2 requires ensuring persons doing work under the organisation's control are competent and maintaining evidence of competence."
+  },
+  {
+    "source": "TKG-§167-Kat-Schulung",
+    "target": "ISO22301-7.3",
+    "relationship": "equivalent",
+    "rationale": "The Katalog's training requirement covers awareness of security procedures and incident roles; ISO 22301 cl.7.3 requires personnel to be aware of the BCMS policy, their contribution to BCMS effectiveness and implications of non-conformance."
+  },
+  {
+    "source": "TKG-§167-Kat-Revision",
+    "target": "ISO22301-10.2",
+    "relationship": "equivalent",
+    "rationale": "The Katalog requires regular review and updating of the security concept and measures; ISO 22301 cl.10.2 requires continual improvement of the BCMS suitability, adequacy and effectiveness — both mandate a structured improvement cycle."
+  },
+  {
+    "source": "TKG-§166-Abs2-Aktualisierung",
+    "target": "ISO22301-10.2",
+    "relationship": "related",
+    "rationale": "§166 Abs.2 implies the security concept must be updated to reflect current implemented measures when regulatory changes occur; ISO 22301 cl.10.2 on continual improvement requires the BCMS to evolve in response to lessons learned and changing context."
+  },
+  {
+    "source": "TKG-§165-Abs2-Nr2-Wiederherstellung",
+    "target": "ISO22301-8.4.4",
+    "relationship": "equivalent",
+    "rationale": "§165 Abs.2 Nr.2 requires minimising impact of security incidents and restoring affected networks/services; ISO 22301 cl.8.4.4 covers restoration and return to normal operations, which is the equivalent BCMS requirement for post-disruption recovery."
+  },
+  {
+    "source": "TKG-§168-Abs1-Klassifizierung",
+    "target": "ISO22301-8.2.2",
+    "relationship": "partial_overlap",
+    "rationale": "§168 Abs.1 in combination with Abs.3 requires classification of incidents by severity and assessment of impacts on service continuity; ISO 22301 cl.8.2.2 (BIA) requires determining the impact of disruptions over time as the basis for continuity planning, which provides the classification framework this reporting obligation presupposes."
+  },
+  {
+    "source": "TKG-§167-Kat-Notfalltest",
+    "target": "ISO22301-8.5",
+    "relationship": "equivalent",
+    "rationale": "The Katalog (2025 draft) explicitly requires testing of emergency and continuity procedures (Notfalltests/Übungen); ISO 22301 cl.8.5 equivalently mandates an exercise programme to confirm that BC plans and procedures are consistent with BC objectives and fit for purpose."
+  },
+  {
+    "source": "TKG-§167-Kat-Notfalltest",
+    "target": "ISO22301-8.6",
+    "relationship": "equivalent",
+    "rationale": "The Katalog requires post-exercise evaluation and updating of procedures; ISO 22301 cl.8.6 (evaluation of business continuity documentation and capabilities) equivalently requires periodic evaluation to confirm that documented plans remain accurate, current and effective."
+  },
+  {
+    "source": "TKG-§165-Abs2-Netzintegrität",
+    "target": "ISO22301-8.3.1",
+    "relationship": "subset",
+    "rationale": "§165 Abs.2 requires maintaining network integrity as a prerequisite for service availability; ISO 22301 cl.8.3.1 covers selection of strategies to maintain critical activities including infrastructure integrity strategies, providing the BC planning layer for this technical requirement."
+  },
+  {
+    "source": "TKG-§167-Kat-Risikomanagement",
+    "target": "ISO22301-6.1",
+    "relationship": "equivalent",
+    "rationale": "The Katalog mandates a risk management process for TK security threats and vulnerabilities; ISO 22301 cl.6.1 requires identifying and addressing risks and opportunities affecting the BCMS — both mandate systematic risk-based planning using analogous methodologies."
+  },
+  {
+    "source": "TKG-§166-Abs1-Nr1-Verantwortung",
+    "target": "ISO22301-5.3",
+    "relationship": "equivalent",
+    "rationale": "§166 Abs.1 Nr.1 requires formal designation of a Sicherheitsbeauftragter with defined responsibility for TK security; ISO 22301 cl.5.3 equivalently requires top management to assign responsibility and authority for BCMS roles including a person accountable for BCMS performance."
+  }
+]
