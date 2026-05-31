@@ -181,6 +181,17 @@ compliance:
         confirm_question: 'Möchten Sie wirklich fortfahren?'
         second_confirm: 'Sind Sie sicher? Framework wird unwiderruflich gelöscht!'
     mapping:
+        filter:
+            search: 'Suche'
+            search_ph: 'Quelle/Ziel-ID oder Framework…'
+            source_fw: 'Quell-Framework'
+            target_fw: 'Ziel-Framework'
+            type: 'Typ'
+            confidence: 'Confidence'
+            status: 'Review-Status'
+            all: 'Alle'
+            reset: 'Zurücksetzen'
+            no_results: 'Keine Mappings entsprechen den Filtern.'
         tour:
             start: 'Mapping-Tour starten'
         # Beziehungstyp-Erklärungen (Glossar-Tooltip + Mapping-Detailseite)

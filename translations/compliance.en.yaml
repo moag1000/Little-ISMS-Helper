@@ -181,6 +181,17 @@ compliance:
         confirm_question: 'Do you really want to continue?'
         second_confirm: 'Are you sure? Framework will be permanently deleted!'
     mapping:
+        filter:
+            search: 'Search'
+            search_ph: 'Source/target ID or framework…'
+            source_fw: 'Source framework'
+            target_fw: 'Target framework'
+            type: 'Type'
+            confidence: 'Confidence'
+            status: 'Review status'
+            all: 'All'
+            reset: 'Reset'
+            no_results: 'No mappings match the filters.'
         tour:
             start: 'Start mapping tour'
         # Relationship-type explanations (glossary tooltip + mapping detail page)
