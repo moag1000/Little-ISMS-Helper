@@ -146,6 +146,8 @@
 </style>
 
 <script>
+// Turbo re-eval guard: IIFE prevents re-declare crash on body-swap navigation
+(function () {
     function initRoleHelp() {
         const collapseEl = document.getElementById('roleHelpContent');
         if (collapseEl) {
@@ -163,4 +165,5 @@
     }
     document.addEventListener('DOMContentLoaded', initRoleHelp);
     document.addEventListener('turbo:load', initRoleHelp);
+})();
 </script>

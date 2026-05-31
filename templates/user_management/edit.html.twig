@@ -120,6 +120,8 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
+    // Turbo re-eval guard: wrap in IIFE so top-level symbols are not re-declared on body-swap
+    (function () {
     // Initialize Bootstrap tooltips for role checkboxes
     function initUserEditTooltips() {
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -129,5 +131,6 @@
     }
     document.addEventListener('DOMContentLoaded', initUserEditTooltips);
     document.addEventListener('turbo:load', initUserEditTooltips);
+    })();
 </script>
 {% endblock %}

@@ -166,6 +166,8 @@
 {# framework-card styles live in assets/styles/fairy-aurora-components.css #}
 
 <script>
+// Turbo re-eval guard: wrap in IIFE so top-level symbols are not re-declared on body-swap
+(function () {
 {# Aurora migration complete: JS template-literals below use `fa-icon fa-icon--*` markup
    (status-ok / status-critical / nav-download / ui-refresh) — no bi-* remnants. #}
 function initializeFrameworkButtons() {
@@ -394,5 +396,6 @@ setTimeout(function() {
         initializeDeleteButtons();
     }
 }, 100);
+})();
 </script>
 {% endblock admin_content %}

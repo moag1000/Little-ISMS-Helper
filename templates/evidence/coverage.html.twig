@@ -123,8 +123,11 @@
 {% endembed %}
 
 <script>
+// IIFE: Turbo re-eval guard — prevents re-declaration errors on body-swap.
+// toggleMissing is exposed on window because it is called from an inline onclick attribute.
+(function () {
     let showMissingOnly = false;
-    function toggleMissing() {
+    window.toggleMissing = function toggleMissing() {
         showMissingOnly = !showMissingOnly;
         const rows = document.querySelectorAll('.evidence-row');
         const btn = document.getElementById('toggle-missing');
@@ -137,7 +140,8 @@
         });
         btn.classList.toggle('fa-cyber-btn--primary', showMissingOnly);
         btn.classList.toggle('fa-cyber-btn--ghost', !showMissingOnly);
-    }
+    };
+})();
 </script>
 
 <style>

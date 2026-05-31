@@ -497,6 +497,8 @@
 {# JavaScript for conditional subsidiaries field #}
 {% if form.auditedSubsidiaries is defined %}
 <script>
+// Turbo re-eval guard: wrap in IIFE so top-level declarations are not re-declared on body-swap
+(function () {
 function initAuditFormSubsidiaries() {
     const scopeTypeSelect = document.querySelector('[data-corporate-scope]');
     const subsidiariesContainer = document.getElementById('subsidiaries-container');
@@ -540,5 +542,6 @@ function initAuditFormSubsidiaries() {
 
 document.addEventListener('DOMContentLoaded', initAuditFormSubsidiaries);
 document.addEventListener('turbo:load', initAuditFormSubsidiaries);
+})();
 </script>
 {% endif %}
