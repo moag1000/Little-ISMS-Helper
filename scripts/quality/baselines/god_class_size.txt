@@ -32,7 +32,7 @@ src/Controller/AuditController.php:LOC=682 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=667 deps=0
 src/Controller/DataBreachController.php:LOC=633 deps=0
 src/Controller/TrainingController.php:LOC=633 deps=0
-src/Service/ComplianceFrameworkLoaderService.php:LOC=622 deps=31
+src/Service/ComplianceFrameworkLoaderService.php:LOC=626 deps=31
 src/Service/ScheduledReportService.php:LOC=619 deps=22
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=457 deps=17
 src/Service/DataIntegrityService.php:LOC=438 deps=34
