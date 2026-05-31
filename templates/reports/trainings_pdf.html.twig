@@ -96,7 +96,7 @@
         training.title|length > 35 ? training.title|slice(0, 35) ~ '...' : training.title,
         training.trainingType,
         training.scheduledDate|date('Y-m-d'),
-        training.duration ~ ' min',
+        (training.durationMinutes ?? 0) ~ ' min',
         training.participants|length,
         _mandatory_html,
         training.status,

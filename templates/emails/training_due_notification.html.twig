@@ -28,7 +28,7 @@
 
             <div class="training-date">
                 <strong>📅 {{ 'emails.training.scheduled'|trans({}, 'emails') }}:</strong>
-                {{ training.trainingDate|date('d.m.Y') }}
+                {% if training.scheduledDate %}{{ training.scheduledDate|date('d.m.Y') }}{% endif %}
                 {% if training.durationMinutes %}
                     <br><strong>{{ 'emails.training.duration'|trans({}, 'emails') }}:</strong> {{ training.durationMinutes }} {{ 'emails.training.minutes'|trans({}, 'emails') }}
                 {% endif %}
