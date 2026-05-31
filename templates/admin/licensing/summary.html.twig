@@ -9,7 +9,7 @@
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Reports', url: path('app_reports_overview') },
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
             { label: 'Lizenzen', url: path('admin_licensing_index') },
             { label: 'Zusammenfassung' }
         ]

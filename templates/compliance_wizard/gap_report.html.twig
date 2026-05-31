@@ -12,8 +12,8 @@
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'wizard.title'|trans({}, 'wizard'),         path: 'app_compliance_wizard_index' },
-            { label: config.name,                                  path: 'app_compliance_wizard_assess', pathParams: {wizard: wizard} },
+            { label: 'wizard.title'|trans({}, 'wizard'),         url: path('app_compliance_wizard_index') },
+            { label: config.name,                                  url: path('app_compliance_wizard_assess', {wizard: wizard}) },
             { label: 'gap_report.title'|trans({}, 'gap_report') }
         ]
     } %}
