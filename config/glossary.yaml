@@ -1,0 +1,91 @@
+# ISMS glossary — short, newcomer-friendly definitions for the terms a junior
+# ISB / 9001-implementer stumbles over. Surfaced via the fa-glossary-tooltip
+# component (async-loaded through /api/glossary/{acronym}) and the help page.
+#
+# Keys are matched case-insensitively. Keep definitions to 1–2 sentences; add a
+# 9001 analogy where it genuinely helps a newcomer.
+terms:
+    SoA:
+        term: { de: 'Anwendbarkeitserklärung', en: 'Statement of Applicability' }
+        norm_ref: 'ISO 27001:2022 Cl. 6.1.3 d'
+        definition:
+            de: 'Liste aller ISO-27001-Anhang-A-Maßnahmen mit Begründung, warum sie anwendbar (oder nicht) und ob sie umgesetzt sind. In ISO 9001 am ehesten die Prozesslandkarte.'
+            en: 'List of all ISO 27001 Annex A controls with justification for whether each is applicable (or not) and implemented. Closest ISO 9001 analogy: the process map.'
+    ISMS:
+        term: { de: 'Informationssicherheits-Managementsystem', en: 'Information Security Management System' }
+        norm_ref: 'ISO 27001:2022'
+        definition:
+            de: 'Der gemanagte Rahmen aus Richtlinien, Prozessen und Maßnahmen, mit dem eine Organisation Informationssicherheit steuert — analog zum QM-System in ISO 9001.'
+            en: 'The managed framework of policies, processes and controls an organisation uses to govern information security — analogous to the QMS in ISO 9001.'
+    Schutzbedarf:
+        term: { de: 'Schutzbedarf', en: 'Protection requirement' }
+        norm_ref: 'BSI IT-Grundschutz'
+        definition:
+            de: 'Wie schützenswert ein Asset bezüglich Vertraulichkeit, Integrität und Verfügbarkeit ist (z.B. normal / hoch / sehr hoch). Steuert, wie streng die Maßnahmen sein müssen.'
+            en: 'How protection-worthy an asset is regarding confidentiality, integrity and availability (e.g. normal / high / very high). Drives how strict the controls must be.'
+    Restrisiko:
+        term: { de: 'Restrisiko', en: 'Residual risk' }
+        norm_ref: 'ISO 27001:2022 Cl. 6.1.3 / 8.3'
+        definition:
+            de: 'Das Risiko, das NACH Umsetzung der Behandlungsmaßnahmen verbleibt. Muss vom Risikoeigentümer akzeptiert werden.'
+            en: 'The risk that remains AFTER the treatment controls are applied. Must be accepted by the risk owner.'
+    Bedrohung:
+        term: { de: 'Bedrohung', en: 'Threat' }
+        norm_ref: 'ISO/IEC 27000'
+        definition:
+            de: 'Eine potenzielle Schadensursache (z.B. Cyberangriff, Feuer, Innentäter). Eine Bedrohung wird gefährlich, wenn sie eine Schwachstelle ausnutzen kann.'
+            en: 'A potential cause of harm (e.g. cyber-attack, fire, insider). A threat becomes dangerous when it can exploit a vulnerability.'
+    Schwachstelle:
+        term: { de: 'Schwachstelle', en: 'Vulnerability' }
+        norm_ref: 'ISO/IEC 27000'
+        definition:
+            de: 'Eine Schwäche oder Lücke (z.B. fehlendes Patch, schwaches Passwort), die eine Bedrohung ausnutzen kann. Bedrohung = Ursache, Schwachstelle = Einfallstor.'
+            en: 'A weakness or gap (e.g. missing patch, weak password) that a threat can exploit. Threat = cause, vulnerability = entry point.'
+    Risikoakzeptanz:
+        term: { de: 'Risikoakzeptanz', en: 'Risk acceptance' }
+        norm_ref: 'ISO 27001:2022 Cl. 6.1.3 d'
+        definition:
+            de: 'Das bewusste Nicht-Behandeln eines Risikos durch den verantwortlichen Risikoeigentümer — mit Begründung und idealerweise Ablaufdatum. Keine stille Ignoranz.'
+            en: 'The risk owner deliberately deciding NOT to treat a risk — with justification and ideally an expiry date. Not silent neglect.'
+    Wirksamkeit:
+        term: { de: 'Wirksamkeit', en: 'Effectiveness' }
+        norm_ref: 'ISO 27001:2022 Cl. 9.1'
+        definition:
+            de: 'Ob eine Maßnahme das Risiko tatsächlich reduziert — nicht nur, dass sie umgesetzt wurde. Wird per Wirksamkeitsprüfung belegt.'
+            en: 'Whether a control actually reduces the risk — not merely that it was implemented. Demonstrated through an effectiveness review.'
+    DSFA:
+        term: { de: 'Datenschutz-Folgenabschätzung', en: 'Data Protection Impact Assessment' }
+        norm_ref: 'DSGVO Art. 35'
+        definition:
+            de: 'Pflicht-Analyse der Datenschutzrisiken bei voraussichtlich hohem Risiko für Betroffene (z.B. umfangreiches Profiling). Englisch: DPIA.'
+            en: 'Mandatory analysis of privacy risks where processing is likely to result in a high risk to individuals (e.g. large-scale profiling).'
+    VVT:
+        term: { de: 'Verzeichnis von Verarbeitungstätigkeiten', en: 'Records of Processing Activities' }
+        norm_ref: 'DSGVO Art. 30'
+        definition:
+            de: 'Pflicht-Register aller Verarbeitungen personenbezogener Daten (Zweck, Kategorien, Empfänger, Löschfristen). Englisch: RoPA.'
+            en: 'Mandatory register of all processing of personal data (purpose, categories, recipients, retention). German: VVT.'
+    RTO:
+        term: { de: 'Recovery Time Objective', en: 'Recovery Time Objective' }
+        norm_ref: 'ISO 22301'
+        definition:
+            de: 'Die maximal tolerierbare Ausfallzeit eines Prozesses/Systems, bevor untragbarer Schaden entsteht — das Ziel für „wie schnell muss es wieder laufen?".'
+            en: 'The maximum tolerable downtime of a process/system before unacceptable harm — the target for "how fast must it be back?".'
+    RPO:
+        term: { de: 'Recovery Point Objective', en: 'Recovery Point Objective' }
+        norm_ref: 'ISO 22301'
+        definition:
+            de: 'Der maximal tolerierbare Datenverlust, gemessen in Zeit — „wie viel Arbeit darf verloren gehen?" (z.B. RPO 1h = max. 1h Daten weg).'
+            en: 'The maximum tolerable data loss, measured in time — "how much work may be lost?" (e.g. RPO 1h = at most 1h of data gone).'
+    CAPA:
+        term: { de: 'Korrektur- und Vorbeugemaßnahme', en: 'Corrective and Preventive Action' }
+        norm_ref: 'ISO 27001:2022 Cl. 10.1'
+        definition:
+            de: 'Maßnahme, die einen Audit-Befund/Vorfall behebt (Korrektur) und sein erneutes Auftreten verhindert (Vorbeugung). In ISO 9001 schlicht „Maßnahme".'
+            en: 'Action that fixes an audit finding/incident (corrective) and prevents its recurrence (preventive). In ISO 9001 simply "action".'
+    Nonconformity:
+        term: { de: 'Nichtkonformität', en: 'Nonconformity' }
+        norm_ref: 'ISO 27001:2022 Cl. 10.1'
+        definition:
+            de: 'Eine Abweichung von einer Anforderung (Norm, Richtlinie, Gesetz), meist als Audit-Befund. Erfordert eine Korrekturmaßnahme (CAPA).'
+            en: 'A deviation from a requirement (standard, policy, law), usually raised as an audit finding. Requires a corrective action (CAPA).'

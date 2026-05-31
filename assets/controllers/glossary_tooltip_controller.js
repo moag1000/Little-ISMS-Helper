@@ -52,7 +52,8 @@ export default class extends Controller {
         if (this.defTarget.dataset.loaded) return
         this._loaded = true
         try {
-            const res  = await fetch(`/api/glossary/${encodeURIComponent(this.acronymValue)}`, {
+            const locale = (document.documentElement.lang || 'de').slice(0, 2)
+            const res  = await fetch(`/api/glossary/${encodeURIComponent(this.acronymValue)}?locale=${locale}`, {
                 headers: { Accept: 'application/json' },
             })
             if (!res.ok) return
