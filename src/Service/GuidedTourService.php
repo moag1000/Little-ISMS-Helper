@@ -277,6 +277,7 @@ final class GuidedTourService
     {
         $dashboard = $this->urlFor('app_dashboard');
         $soa = $this->urlFor('app_soa_index');
+        $risks = $this->urlFor('app_risk_index');
         $incidents = $this->urlFor('app_incident_index');
         $workflows = $this->urlFor('app_workflow_index');
         $auditLog = $this->urlFor('app_audit_log_index');
@@ -284,6 +285,8 @@ final class GuidedTourService
             ['id' => 'welcome', 'icon' => 'ui-stars', 'target' => null, 'title_key' => 'guided_tour.isb.step.welcome.title', 'body_key' => 'guided_tour.isb.step.welcome.body', 'url' => $dashboard, 'placement' => 'center'],
             // module: controls — SoA requires the controls module
             ['id' => 'soa', 'module' => 'controls', 'icon' => 'nav-clipboard-check', 'target' => null, 'title_key' => 'guided_tour.isb.step.soa.title', 'body_key' => 'guided_tour.isb.step.soa.body', 'url' => $soa, 'placement' => 'center'],
+            // module: risks — the risk register is the ISB's daily core artefact (ISO 27001 Cl. 6.1.2)
+            ['id' => 'risk', 'module' => 'risks', 'icon' => 'status-warning', 'target' => null, 'title_key' => 'guided_tour.isb.step.risk.title', 'body_key' => 'guided_tour.isb.step.risk.body', 'url' => $risks, 'placement' => 'center'],
             // module: incidents — incident management requires the incidents module
             ['id' => 'incidents', 'module' => 'incidents', 'icon' => 'status-warning', 'target' => null, 'title_key' => 'guided_tour.isb.step.incidents.title', 'body_key' => 'guided_tour.isb.step.incidents.body', 'url' => $incidents, 'placement' => 'center'],
             // workflows module: core (workflows are always available with core)

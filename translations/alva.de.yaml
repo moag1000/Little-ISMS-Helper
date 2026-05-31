@@ -457,6 +457,9 @@ alva_hint:
             title: 'Kritisches Risiko (Score %score%) — Board-Approval prüfen'
             body: 'Dieses Risiko erreicht mit Score %score% das kritische Niveau. ISO 27001 Cl. 5.3 + 6.1.3 f verlangt einen Risk-Owner mit ausreichender Entscheidungskompetenz — bei kritischen Risiken üblicherweise C-Level / Board (ROLE_CISO). Bitte Owner-Eintragung und Behandlungsentscheidung entsprechend planen.'
             action: 'Risk-Owner-Konvention öffnen'
+        risk_score_explainer:
+            title: 'Risikowert = %probability% × %impact% = %score%'
+            body: 'Kurz erklärt: Aus Wahrscheinlichkeit (%probability%) und Auswirkung (%impact%) bildet das Tool automatisch den Risikowert %score%. Danach wird das Register sortiert — je höher der Wert, desto dringender die Behandlung. So vergleichst du Risiken einheitlich (ISO 27005). Die Live-Heatmap rechts zeigt die Einstufung sofort farblich.'
         # ── Form-Coverage-Expansion (P-19 follow-up) ─────────────────────────
         # Inline-Hints für 9 weitere FormTypes, alle pre-save Warnungen.
         asset_critical_confidentiality:
