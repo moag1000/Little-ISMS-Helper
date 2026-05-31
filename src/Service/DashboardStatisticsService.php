@@ -85,6 +85,7 @@ class DashboardStatisticsService
         private readonly ?KpiThresholdConfigResolver $kpiThresholdConfigResolver = null,
         private readonly ?CacheInterface $cache = null,
         private readonly ?BsiGrundschutzCheckService $bsiGrundschutzCheckService = null,
+        private readonly ?\Psr\Log\LoggerInterface $logger = null,
     ) {
     }
 
@@ -964,7 +965,15 @@ class DashboardStatisticsService
         }
         try {
             $comparison = $this->complianceAnalyticsService->getFrameworkComparison();
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            // Degrade gracefully (dashboard still renders) but do NOT swallow
+            // silently — an analytics failure here previously showed "0
+            // frameworks" indistinguishably from "no frameworks configured".
+            $this->logger?->warning('Dashboard per-framework KPIs unavailable: {msg}', [
+                'msg' => $e->getMessage(),
+                'exception' => $e,
+            ]);
+
             return [];
         }
 

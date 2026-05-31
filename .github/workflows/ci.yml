@@ -474,6 +474,14 @@ jobs:
         # throws a SyntaxError at runtime — caused 67+ test failures in
         # PR #689. Replace with {% if condition %}...{% endif %} in the loop.
         run: python3 scripts/quality/check_twig_unsupported_tags.py --baseline scripts/quality/baselines/twig_unsupported_tags.txt --quiet
+      - name: "Gate 53: renamed entity getters used in templates"
+        # A Twig accessor like incident.detectedDate resolves to getDetectedDate().
+        # When a field is renamed on the entity but a rarely-rendered email/PDF
+        # template still uses the old name, Twig throws a runtime RuntimeError
+        # (500) that lint:twig + unit tests never catch. Bitten us repeatedly
+        # (controls/incidents PDF, training/control emails, treatment-plan emails).
+        # Deny-list of known-dead accessors — add the old name here on rename.
+        run: python3 scripts/quality/check_template_entity_getters.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
