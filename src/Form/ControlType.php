@@ -113,7 +113,7 @@ final class ControlType extends AbstractType implements SectionMapInterface
                 'attr' => [
                     'rows' => 3,
                     'placeholder' => 'control.placeholder.justification',
-                    'data-applicability-toggle-target' => 'field',
+                    'data-applicability-toggle-target' => 'justification',
                 ],
                 'help' => 'control.help.justification',
             ])
