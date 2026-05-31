@@ -32,6 +32,11 @@ use App\Command\LoadMrisRequirementsCommand;
 use App\Command\LoadNis2UmsuCGRequirementsCommand;
 use App\Command\LoadNistCsfRequirementsCommand;
 use App\Command\LoadSoc2RequirementsCommand;
+use App\Command\LoadIso42001FullCommand;
+use App\Command\LoadIso27017FullCommand;
+use App\Command\LoadIso27018FullCommand;
+use App\Command\LoadEuCraFullCommand;
+use App\Command\LoadPciDss401FullCommand;
 use App\Repository\ComplianceFrameworkRepository;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -67,6 +72,11 @@ final class ComplianceFrameworkLoaderService
         private readonly LoadNistCsfRequirementsCommand $loadNistCsfRequirementsCommand,
         private readonly LoadSoc2RequirementsCommand $loadSoc2RequirementsCommand,
         private readonly LoadMrisRequirementsCommand $loadMrisRequirementsCommand,
+        private readonly LoadIso42001FullCommand $loadIso42001FullCommand,
+        private readonly LoadIso27017FullCommand $loadIso27017FullCommand,
+        private readonly LoadIso27018FullCommand $loadIso27018FullCommand,
+        private readonly LoadEuCraFullCommand $loadEuCraFullCommand,
+        private readonly LoadPciDss401FullCommand $loadPciDss401FullCommand,
     ) {}
 
     /**
@@ -387,6 +397,76 @@ final class ComplianceFrameworkLoaderService
                 'required_modules' => ['compliance', 'controls', 'risks', 'audit_logging'],
             ],
             [
+                'code' => 'ISO42001',
+                'name' => 'ISO/IEC 42001:2023 - AI Management System (AIMS)',
+                'description' => 'AI-Managementsystem-Norm: Governance, Risikobeurteilung, 38 Annex-A-Controls für verantwortungsvolle KI + Klauseln 4-10. Ergänzt den EU AI Act (Art.X-Mapping).',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'ISO/IEC',
+                'mandatory' => false,
+                'applicability' => 'conditional',
+                'applicability_condition_key' => 'admin.compliance.applicability.condition.iso42001',
+                'version' => '2023',
+                'loaded' => in_array('ISO42001', $loadedCodes),
+                'icon' => '🤖',
+                'required_modules' => ['compliance', 'controls', 'risks'],
+            ],
+            [
+                'code' => 'ISO27017',
+                'name' => 'ISO/IEC 27017:2015 - Cloud Security',
+                'description' => 'Cloud-spezifische Sicherheitscontrols (7 CLD-Controls) + cloud-bezogene Umsetzungsleitlinien zu ISO 27002.',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'ISO/IEC',
+                'mandatory' => false,
+                'applicability' => 'conditional',
+                'applicability_condition_key' => 'admin.compliance.applicability.condition.iso27017',
+                'version' => '2015',
+                'loaded' => in_array('ISO27017', $loadedCodes),
+                'icon' => '☁️',
+                'required_modules' => ['compliance', 'controls'],
+            ],
+            [
+                'code' => 'ISO27018',
+                'name' => 'ISO/IEC 27018:2019 - Cloud Privacy (PII)',
+                'description' => 'Schutz personenbezogener Daten (PII) in Public-Cloud-Diensten — Annex-A-Privacy-Controls auf Basis ISO 27002.',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'ISO/IEC',
+                'mandatory' => false,
+                'applicability' => 'conditional',
+                'applicability_condition_key' => 'admin.compliance.applicability.condition.iso27018',
+                'version' => '2019',
+                'loaded' => in_array('ISO27018', $loadedCodes),
+                'icon' => '☁️',
+                'required_modules' => ['compliance', 'controls', 'privacy'],
+            ],
+            [
+                'code' => 'EU-CRA',
+                'name' => 'EU Cyber Resilience Act (Regulation 2024/2847)',
+                'description' => 'Cybersicherheitsanforderungen für Produkte mit digitalen Elementen — Annex-I-Sicherheitsanforderungen + Schwachstellenbehandlung + Hersteller-Pflichten.',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'European Union',
+                'mandatory' => false,
+                'applicability' => 'conditional',
+                'applicability_condition_key' => 'admin.compliance.applicability.condition.eu_cra',
+                'version' => '2024/2847',
+                'loaded' => in_array('EU-CRA', $loadedCodes),
+                'icon' => '🛡️',
+                'required_modules' => ['compliance', 'controls', 'risks'],
+            ],
+            [
+                'code' => 'PCI-DSS-4.0.1',
+                'name' => 'PCI DSS v4.0.1 - Payment Card Industry Data Security Standard',
+                'description' => '12 Anforderungen für die Sicherheit von Karteninhaberdaten (Netzwerk, Zugriff, Verschlüsselung, Monitoring, Tests).',
+                'industry' => 'finance',
+                'regulatory_body' => 'PCI Security Standards Council',
+                'mandatory' => false,
+                'applicability' => 'conditional',
+                'applicability_condition_key' => 'admin.compliance.applicability.condition.pci_dss',
+                'version' => '4.0.1',
+                'loaded' => in_array('PCI-DSS-4.0.1', $loadedCodes),
+                'icon' => '💳',
+                'required_modules' => ['compliance', 'controls'],
+            ],
+            [
                 'code' => 'NIS2UMSUCG',
                 'name' => 'NIS-2-Umsetzungs- und Cybersicherheitsstärkungsgesetz (NIS2UmsuCG)',
                 'description' => 'Deutsche Umsetzung der NIS2-Richtlinie mit zusätzlichen BSI-spezifischen Anforderungen',
@@ -447,6 +527,11 @@ final class ComplianceFrameworkLoaderService
             'EU-AI-ACT' => $this->loadEuAiActRequirementsCommand,
             'NIS2UMSUCG' => $this->loadNis2UmsuCGRequirementsCommand,
             'MRIS-v1.5' => $this->loadMrisRequirementsCommand,
+            'ISO42001' => $this->loadIso42001FullCommand,
+            'ISO27017' => $this->loadIso27017FullCommand,
+            'ISO27018' => $this->loadIso27018FullCommand,
+            'EU-CRA' => $this->loadEuCraFullCommand,
+            'PCI-DSS-4.0.1' => $this->loadPciDss401FullCommand,
             default => null,
         };
 

@@ -53,7 +53,8 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $frameworks = $this->service->getAvailableFrameworks();
 
         $this->assertIsArray($frameworks);
-        $this->assertCount(24, $frameworks);
+        // 24 base + 5 newly-wired catalogues (ISO42001, ISO27017, ISO27018, EU-CRA, PCI-DSS).
+        $this->assertCount(29, $frameworks);
 
         // Verify TISAX framework structure
         $this->assertEquals('TISAX', $frameworks[0]['code']);

@@ -1173,6 +1173,11 @@ admin:
                 gxp: 'Manufacturers, distributors, or service providers for pharmaceuticals, medical devices, or their IT systems (GMP/GxP-regulated industries).'
                 bdsg: 'Controllers or processors established in or processing PII in Germany.'
                 eu_ai_act: 'Providers or deployers of AI systems classified as High-Risk per EU AI Act Annex III.'
+                iso42001: 'Organizations developing, providing or using AI systems that want a certifiable AI management system (complements the EU AI Act).'
+                iso27017: 'Cloud service providers or customers wanting to evidence cloud-specific security controls on top of ISO 27001/27002.'
+                iso27018: 'Public-cloud providers processing personally identifiable information (PII) on behalf of customers who must evidence privacy controls.'
+                eu_cra: 'Manufacturers, importers or distributors of products with digital elements (hardware/software) with EU market access.'
+                pci_dss: 'Organizations that store, process or transmit cardholder data (merchants, acquirers, payment providers).'
 
 fulfillment:
     field:
