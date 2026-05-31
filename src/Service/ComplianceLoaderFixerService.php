@@ -7,7 +7,6 @@ namespace App\Service;
 use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -33,7 +32,6 @@ final class ComplianceLoaderFixerService
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
-        private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
         \App\Command\LoadIso27001RequirementsCommand $iso27001,
@@ -145,8 +143,17 @@ final class ComplianceLoaderFixerService
             $output->writeln('EXCEPTION: ' . $e->getMessage());
         }
 
-        // Clear EM to force a fresh count after the inner flush.
-        $this->entityManager->clear(ComplianceFramework::class);
+        // NOTE: do NOT clear() the EntityManager here. Under Doctrine ORM 3.x
+        // EntityManager::clear() takes no argument — the ComplianceFramework::class
+        // hint is silently ignored and the WHOLE identity map is detached,
+        // including the security token's Tenant/User. The result page then renders
+        // the global mega-menu (which reads app.user.tenant) against detached
+        // entities and throws an identity-map collision ("another object of class
+        // Tenant was already present for the same ID"), 500-ing the page so the
+        // fixer appears to "do nothing". A fresh count is not needed anyway:
+        // countRequirementsFor() runs a COUNT query (hits the DB, sees the inner
+        // flush) and snapshotFrameworkMetadata() reads the same managed framework
+        // instance the loader just upserted.
         $after = $this->countRequirementsFor($code);
         $added = max(0, $after - $before);
         $afterMetadata = $this->snapshotFrameworkMetadata($code);
