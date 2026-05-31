@@ -155,6 +155,10 @@ wizard:
     gap:
         controls_not_implemented: "Controls nicht vollständig implementiert"
         controls_description: "%count% Controls sind noch nicht oder nur teilweise implementiert."
+        maturity_not_assessed: "Reifegrad noch nicht bewertet"
+        maturity_not_assessed_description: "Für dieses Modul liegt noch keine Reifegrad-Bewertung vor. Laden Sie Ihr VDA-ISA-Workbook hoch und bewerten Sie die Anforderungen."
+        maturity_below_target: "Reifegrad unter Zielniveau"
+        maturity_below_target_description: "%count% Anforderungen erreichen das Zielniveau (Reifegrad 3 - etabliert) noch nicht."
         high_risks_untreated: "Hohe Risiken ohne Behandlung"
         high_risks_description: "%count% hohe/kritische Risiken haben keine Behandlungsstrategie."
         risks_need_treatment: "Risiken benötigen Behandlung"
@@ -189,6 +193,8 @@ wizard:
     # Actions
     action:
         implement_controls: "Controls implementieren"
+        import_maturity: "VDA-ISA-Workbook hochladen & bewerten"
+        improve_maturity: "Reifegrad auf Zielniveau anheben"
         treat_risks: "Risiken behandeln"
         review_risks: "Risiken überprüfen"
         classify_assets: "Assets klassifizieren"

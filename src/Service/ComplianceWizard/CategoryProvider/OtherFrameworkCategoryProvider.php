@@ -32,7 +32,9 @@ final class OtherFrameworkCategoryProvider
                 'checks' => [
                     'isms_controls' => [
                         'name' => 'wizard.check.tisax_controls',
-                        'type' => 'control_coverage',
+                        'type' => 'maturity_coverage',
+                        'framework' => 'TISAX',
+                        'tier' => 'information_security',
                         'module' => 'controls',
                         'route' => 'app_soa_index',
                     ],
@@ -48,7 +50,9 @@ final class OtherFrameworkCategoryProvider
                 'checks' => [
                     'asset_protection' => [
                         'name' => 'wizard.check.tisax_assets',
-                        'type' => 'asset_coverage',
+                        'type' => 'maturity_coverage',
+                        'framework' => 'TISAX',
+                        'tier' => 'prototype_protection',
                         'module' => 'assets',
                         'route' => 'app_asset_index',
                     ],
@@ -64,8 +68,9 @@ final class OtherFrameworkCategoryProvider
                 'checks' => [
                     'privacy_controls' => [
                         'name' => 'wizard.check.tisax_privacy',
-                        'type' => 'control_coverage',
-                        'control_ids' => ['5.34', '5.35', '5.36'],
+                        'type' => 'maturity_coverage',
+                        'framework' => 'TISAX',
+                        'tier' => 'data_protection',
                         'module' => 'controls',
                         'route' => 'app_soa_index',
                     ],
