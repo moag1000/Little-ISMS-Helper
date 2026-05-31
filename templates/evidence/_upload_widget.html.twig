@@ -94,7 +94,10 @@
 {% endembed %}
 
 <script>
-async function unlinkEvidence(documentId, entityType, entityId) {
+// window-assignment (not `function …`) so Turbo re-running this in-body script
+// on navigation re-assigns instead of throwing "already declared"; the inline
+// onclick handler still reaches it via the global.
+window.unlinkEvidence = async function (documentId, entityType, entityId) {
     if (!await window.faConfirm('{{ 'evidence.unlink_confirm'|trans({}, 'evidence') }}', { tone: 'danger' })) {
         return;
     }

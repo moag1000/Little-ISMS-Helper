@@ -89,6 +89,8 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
+    // Turbo re-eval guard: wrap in IIFE so top-level declarations are not re-declared on body-swap
+    (function () {
     // Initialize Bootstrap tooltips for role checkboxes
     function initUserNewTooltips() {
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -98,5 +100,6 @@
     }
     document.addEventListener('DOMContentLoaded', initUserNewTooltips);
     document.addEventListener('turbo:load', initUserNewTooltips);
+    })();
 </script>
 {% endblock %}

@@ -76,6 +76,8 @@
 }) }}
 
 <script>
+// Turbo re-eval guard: IIFE prevents re-declare crash on body-swap navigation
+(function () {
 // Create Cross-Framework Mappings
 function initializeMappingButton() {
     const createBtn = document.getElementById('createMappingsBtn');
@@ -279,5 +281,6 @@ function initializeHeaderMappingButton() {
 
 document.addEventListener('DOMContentLoaded', initializeHeaderMappingButton);
 document.addEventListener('turbo:load', initializeHeaderMappingButton);
+})();
 </script>
 {% endblock %}

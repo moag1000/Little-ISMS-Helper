@@ -112,6 +112,8 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+    // Turbo re-eval guard: IIFE prevents re-declare crash on body-swap navigation
+    (function () {
     const backupCodes = {{ backup_codes|json_encode|raw }};
     const userEmail = '{{ mfa_token.user.email }}';
 
@@ -287,5 +289,6 @@
             btn.classList.add('btn-outline-secondary');
         }, 2000);
     }
+    })();
     </script>
 {% endblock %}
