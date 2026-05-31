@@ -89,7 +89,8 @@ final class ReuseEstimationService
                 continue;
             }
 
-            $totalRequirements = count($this->requirementRepository->findByFramework($newFramework));
+            // Top-level requirements only — sub-requirements roll up via parent.
+            $totalRequirements = $this->requirementRepository->countTopLevelByFramework($newFramework);
 
             $reusableTargets = [];
             $sourcesContributing = [];

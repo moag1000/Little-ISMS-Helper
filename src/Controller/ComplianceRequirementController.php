@@ -67,11 +67,13 @@ class ComplianceRequirementController extends AbstractController
 
         if ($frameworkId) {
             $framework = $this->complianceFrameworkRepository->find($frameworkId);
+            // Top-level only — sub-requirements appear nested under their parent
+            // on the detail view, not as standalone list rows.
             $requirements = $framework
-                ? $this->complianceRequirementRepository->findByFramework($framework)
+                ? $this->complianceRequirementRepository->findTopLevelByFramework($framework)
                 : [];
         } else {
-            $requirements = $this->complianceRequirementRepository->findAll();
+            $requirements = $this->complianceRequirementRepository->findAllTopLevel();
         }
 
         // BSI 3.3: Filter by Absicherungsstufe (basis/standard/kern) and Anforderungstyp (MUSS/SOLLTE/KANN)
