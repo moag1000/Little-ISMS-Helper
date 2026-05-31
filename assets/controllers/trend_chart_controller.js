@@ -192,7 +192,7 @@ export default class extends Controller {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { stepSize: 1, color: colors.textMuted },
+                        ticks: { precision: 0, maxTicksLimit: 8, color: colors.textMuted },
                         grid: { color: colors.gridColor }
                     },
                     x: {
@@ -242,7 +242,7 @@ export default class extends Controller {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { stepSize: 1, color: colors.textMuted },
+                        ticks: { precision: 0, maxTicksLimit: 8, color: colors.textMuted },
                         grid: { color: colors.gridColor }
                     },
                     x: {
