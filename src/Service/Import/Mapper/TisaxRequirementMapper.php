@@ -13,17 +13,38 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Maps parsed VdaIsaControlRow DTOs to ComplianceRequirement entities
- * under the global TISAX-VDA-ISA-6 framework.
+ * under the canonical TISAX framework.
  *
  * Delta strategy:
  *  - Match by (framework + requirementId + uploadTenant) composite
  *  - Existing row → update title/description/metadata
  *  - No row → create new with requirementSource='tenant_upload'
+ *
+ * Framework code history (§4.1 consolidation, 2026-06-01):
+ *  - 'TISAX-VDA-ISA-6' was the code used by the BYO import prior to
+ *    consolidation. 'TISAX' is the canonical code used by all dashboards,
+ *    mappings, reports and the compliance wizard. The old code is kept in
+ *    LEGACY_CODE_ALIASES so that any saved session or lookup referencing
+ *    'TISAX-VDA-ISA-6' still resolves to the canonical framework during
+ *    the deprecation window.
  */
 final class TisaxRequirementMapper
 {
-    /** Canonical framework code for the TISAX VDA-ISA 6 framework. */
-    public const FRAMEWORK_CODE = 'TISAX-VDA-ISA-6';
+    /** Canonical framework code for the TISAX VDA-ISA framework. */
+    public const FRAMEWORK_CODE = 'TISAX';
+
+    /**
+     * Backward-compatibility alias map.
+     * Key = deprecated code → Value = canonical code.
+     * Used by findOrCreateFramework() and can be consumed by any caller
+     * that needs to resolve a legacy code stored in sessions / YAML keys.
+     *
+     * @var array<string, string>
+     * @deprecated aliases — resolve to FRAMEWORK_CODE; will be removed after P4
+     */
+    public const LEGACY_CODE_ALIASES = [
+        'TISAX-VDA-ISA-6' => self::FRAMEWORK_CODE,
+    ];
 
     /** ISO 27001 anchor mapping prefix stored in dataSourceMapping. */
     private const ISO_KEY = 'iso27001';
@@ -46,18 +67,35 @@ final class TisaxRequirementMapper
     ) {}
 
     /**
-     * Find or create the global TISAX-VDA-ISA-6 framework.
+     * Find or create the canonical TISAX framework.
      * Idempotent — safe to call on every import run.
+     *
+     * Resolution order (§4.1 alias deprecation window):
+     *  1. Look up canonical code 'TISAX'.
+     *  2. If not found, fall back to the legacy alias 'TISAX-VDA-ISA-6' so that
+     *     installations that were created before the consolidation still resolve
+     *     correctly without a full data migration having been run yet.
+     *  3. If neither exists, create a new framework with the canonical code.
      */
     public function findOrCreateFramework(): ComplianceFramework
     {
         $repo = $this->em->getRepository(ComplianceFramework::class);
 
+        // 1. Try canonical code first.
         $framework = $repo->findOneBy(['code' => self::FRAMEWORK_CODE]);
         if ($framework !== null) {
             return $framework;
         }
 
+        // 2. Try legacy alias codes (deprecation window — remove after P4).
+        foreach (array_keys(self::LEGACY_CODE_ALIASES) as $legacyCode) {
+            $framework = $repo->findOneBy(['code' => $legacyCode]);
+            if ($framework !== null) {
+                return $framework;
+            }
+        }
+
+        // 3. Create with the canonical code.
         $framework = new ComplianceFramework();
         $framework->setCode(self::FRAMEWORK_CODE);
         $framework->setName('TISAX VDA-ISA 6.0');

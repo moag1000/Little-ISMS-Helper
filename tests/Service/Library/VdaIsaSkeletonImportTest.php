@@ -47,9 +47,11 @@ final class VdaIsaSkeletonImportTest extends TestCase
 
     private static function skeletonYaml(): string
     {
+        // Uses canonical code 'TISAX' (§4.1 consolidation, 2026-06-01).
+        // The legacy alias 'TISAX-VDA-ISA-6' is resolved by VdaIsaImporter to 'TISAX'.
         return <<<YAML
 metadata:
-  code: TISAX-VDA-ISA-6
+  code: TISAX
   name: TISAX VDA ISA v6.0 (Skeleton)
   version: "6.0"
   body: VDA / ENX Association

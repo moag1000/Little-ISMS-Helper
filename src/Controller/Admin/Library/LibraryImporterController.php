@@ -7,6 +7,7 @@ namespace App\Controller\Admin\Library;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
+use App\Service\Import\Mapper\TisaxRequirementMapper;
 use App\Service\Library\BsiKompendiumImporter;
 use App\Service\Library\LibraryRoundtripService;
 use App\Service\Library\VdaIsaImporter;
@@ -93,7 +94,7 @@ class LibraryImporterController extends AbstractController
 
         if ($type === 'tisax') {
             $stats = $this->vdaImporter->importDefault();
-            $frameworkCode = 'TISAX-VDA-ISA-6';
+            $frameworkCode = TisaxRequirementMapper::FRAMEWORK_CODE; // 'TISAX' (canonical)
         } else {
             // Default: BSI
             $stats = $this->bsiImporter->importDefault();
@@ -209,7 +210,7 @@ class LibraryImporterController extends AbstractController
             if (str_contains($filename, 'tisax') || str_contains($filename, 'vda')) {
                 $type = 'tisax';
                 $label = 'TISAX VDA ISA v6.0';
-                $code = 'TISAX-VDA-ISA-6';
+                $code = TisaxRequirementMapper::FRAMEWORK_CODE; // 'TISAX' (canonical)
             } elseif (str_contains($filename, 'bsi') && str_contains($filename, 'grundschutz')) {
                 $type = 'bsi';
                 $label = 'BSI IT-Grundschutz 2024';
