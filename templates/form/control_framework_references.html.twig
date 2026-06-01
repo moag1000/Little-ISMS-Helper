@@ -20,6 +20,7 @@
 
 {%- block control_framework_references_widget -%}
     {%- set framework_options = framework_options|default({}) -%}
+    {%- set framework_examples = framework_examples|default({}) -%}
     <div class="fa-framework-refs"
          data-controller="framework-refs"
          role="group"
@@ -44,7 +45,13 @@
                     {%- if opts is not empty -%}
                         {%- set catalogue_attr = { 'data-framework-refs-options': opts|json_encode } -%}
                     {%- endif -%}
-                    {{ form_widget(child, { attr: child.vars.attr|merge(catalogue_attr)|merge({
+                    {#- Framework-appropriate placeholder example (TISAX "1.1.1",
+                       not generic ISO "A.5.1"). -#}
+                    {%- set example = framework_examples[slug]|default('A.5.1, A.8.16') -%}
+                    {%- set placeholder_attr = {
+                        'placeholder': 'control.placeholder.framework_reference_example'|trans({'%example%': example}, 'control')
+                    } -%}
+                    {{ form_widget(child, { attr: child.vars.attr|merge(catalogue_attr)|merge(placeholder_attr)|merge({
                         'class': (child.vars.attr.class|default('')) ~ ' form-control form-control-sm fa-framework-refs__input'
                     }) }) }}
                 </div>

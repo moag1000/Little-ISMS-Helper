@@ -10,6 +10,7 @@ import 'tom-select/dist/css/tom-select.default.min.css'
  *   data-tom-select-max-options-value="500"
  *   data-tom-select-placeholder-value="Pick some..."
  *   data-tom-select-remove-button-value="true"  (default: true when multiple)
+ *   data-tom-select-dropdown-parent-value="body" (escape ancestor overflow:hidden)
  */
 export default class extends Controller {
     static values = {
@@ -18,6 +19,7 @@ export default class extends Controller {
         removeButton: { type: Boolean, default: true },
         create: { type: Boolean, default: false },
         delimiter: { type: String, default: ',' },
+        dropdownParent: { type: String, default: '' },
     }
 
     connect() {
@@ -34,6 +36,13 @@ export default class extends Controller {
             closeAfterSelect: !isMultiple,
             hidePlaceholder: false,
             allowEmptyOption: true,
+        }
+
+        // Render the dropdown under a different parent (e.g. <body>) so it is
+        // not clipped by an ancestor with `overflow: hidden` — the case for
+        // TomSelects inside rounded form-section cards (framework-references).
+        if (this.dropdownParentValue) {
+            opts.dropdownParent = this.dropdownParentValue
         }
 
         // Free-tag input: accept new values typed by the user (Enter / comma).
