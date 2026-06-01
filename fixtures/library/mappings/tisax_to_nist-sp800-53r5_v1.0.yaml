@@ -1,7 +1,7 @@
 schema_version: '1.1'
 library:
   type: mapping
-  id: 'tisax-vda-isa-6_to_nist-sp800-53r5_v1.0'
+  id: 'tisax_to_nist-sp800-53r5_v1.0'
   source_framework: 'TISAX'
   target_framework: 'nist-sp800-53r5'
   version: 1
@@ -33,7 +33,7 @@ library:
       - { state: 'published', date: '2026-05-28', actor: 'maintainer' }
 
 mappings:
-  - source: 'ISA 1.1.1'
+  - source: '1.1.1'
     targets:
       - 'AC-1'
       - 'AT-1'
@@ -62,7 +62,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.2.1'
+  - source: '1.2.1'
     targets:
       - 'PL-7'
       - 'PL-8'
@@ -77,7 +77,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.2.2'
+  - source: '1.2.2'
     targets:
       - 'AC-5'
       - 'CP-2'
@@ -90,7 +90,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.2.3'
+  - source: '1.2.3'
     targets:
       - 'PL-2'
       - 'PM-11'
@@ -98,7 +98,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.2.4'
+  - source: '1.2.4'
     targets:
       - 'MA-4'
       - 'PL-2'
@@ -106,7 +106,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.3.1'
+  - source: '1.3.1'
     targets:
       - 'CM-8'
       - 'CP-2'
@@ -122,7 +122,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.3.2'
+  - source: '1.3.2'
     targets:
       - 'CP-2'
       - 'MA-2'
@@ -139,7 +139,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.3.3'
+  - source: '1.3.3'
     targets:
       - 'CM-5'
       - 'CM-6'
@@ -149,7 +149,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.3.4'
+  - source: '1.3.4'
     targets:
       - 'CM-10'
       - 'CM-11'
@@ -162,7 +162,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.4.1'
+  - source: '1.4.1'
     targets:
       - 'CA-7(4)'
       - 'PM-28'
@@ -174,7 +174,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.5.1'
+  - source: '1.5.1'
     targets:
       - 'CA-2'
       - 'CA-5'
@@ -186,14 +186,14 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.5.2'
+  - source: '1.5.2'
     targets:
       - 'CA-2(1)'
       - 'CA-7(1)'
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.6.1'
+  - source: '1.6.1'
     targets:
       - 'AC-3(10)'
       - 'IR-4(10)'
@@ -202,12 +202,12 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.6.2'
+  - source: '1.6.2'
     targets: ['IR-6']
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 1.6.3'
+  - source: '1.6.3'
     targets:
       - 'CP-10'
       - 'CP-11'
@@ -233,7 +233,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 2.1.1'
+  - source: '2.1.1'
     targets:
       - 'PS-2'
       - 'PS-3'
@@ -243,7 +243,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 2.1.2'
+  - source: '2.1.2'
     targets:
       - 'PL-4'
       - 'PS-4'
@@ -252,7 +252,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 2.1.3'
+  - source: '2.1.3'
     targets:
       - 'AC-21(1)'
       - 'AT-2(2)'
@@ -269,12 +269,12 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 2.1.4'
+  - source: '2.1.4'
     targets: ['PE-17']
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 3.1.1'
+  - source: '3.1.1'
     targets:
       - 'MA-5'
       - 'MP-3'
@@ -294,7 +294,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 3.1.3'
+  - source: '3.1.3'
     targets:
       - 'MP-6(2)'
       - 'PE-4'
@@ -302,14 +302,14 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 3.1.4'
+  - source: '3.1.4'
     targets:
       - 'SC-41'
       - 'SC-42'
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 4.1.1'
+  - source: '4.1.1'
     targets:
       - 'AC-2'
       - 'IA-10'
@@ -320,7 +320,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 4.1.2'
+  - source: '4.1.2'
     targets:
       - 'AC-10'
       - 'AC-11'
@@ -342,7 +342,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 4.1.3'
+  - source: '4.1.3'
     targets:
       - 'AC-16'
       - 'AC-2(2)'
@@ -359,7 +359,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 4.2.1'
+  - source: '4.2.1'
     targets:
       - 'AC-19'
       - 'AC-2(3)'
@@ -376,7 +376,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.1.1'
+  - source: '5.1.1'
     targets:
       - 'CM-3(6)'
       - 'SC-12'
@@ -386,7 +386,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.1.2'
+  - source: '5.1.2'
     targets:
       - 'SC-23'
       - 'SC-37'
@@ -394,7 +394,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.2.1'
+  - source: '5.2.1'
     targets:
       - 'CM-2'
       - 'CM-3'
@@ -403,14 +403,14 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.2.2'
+  - source: '5.2.2'
     targets:
       - 'CM-4(1)'
       - 'SA-17(6)'
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.2.3'
+  - source: '5.2.3'
     targets:
       - 'CM-7(2)'
       - 'RA-10'
@@ -419,7 +419,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.2.4'
+  - source: '5.2.4'
     targets:
       - 'AC-2(12)'
       - 'AC-2(4)'
@@ -441,7 +441,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.2.5'
+  - source: '5.2.5'
     targets:
       - 'CM-8'
       - 'RA-10'
@@ -454,7 +454,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.2.6'
+  - source: '5.2.6'
     targets:
       - 'AU-5'
       - 'AU-6'
@@ -472,7 +472,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.2.7'
+  - source: '5.2.7'
     targets:
       - 'SC-10'
       - 'SC-11'
@@ -499,7 +499,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.2.8'
+  - source: '5.2.8'
     targets:
       - 'CP-2'
       - 'CP-9'
@@ -509,7 +509,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.2.9'
+  - source: '5.2.9'
     targets:
       - 'CP-2'
       - 'CP-9'
@@ -519,7 +519,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.3.1'
+  - source: '5.3.1'
     targets:
       - 'SA-20'
       - 'SA-3'
@@ -531,7 +531,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.3.2'
+  - source: '5.3.2'
     targets:
       - 'SA-17'
       - 'SA-3'
@@ -539,7 +539,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.3.3'
+  - source: '5.3.3'
     targets:
       - 'MP-6'
       - 'MP-8'
@@ -547,7 +547,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 5.3.4'
+  - source: '5.3.4'
     targets:
       - 'SA-9'
       - 'SC-4'
@@ -555,7 +555,7 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
-  - source: 'ISA 6.1.1'
+  - source: '6.1.1'
     targets:
       - 'CA-3'
       - 'CA-6'

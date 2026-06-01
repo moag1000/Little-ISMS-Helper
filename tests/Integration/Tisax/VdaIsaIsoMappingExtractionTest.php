@@ -23,7 +23,7 @@ final class VdaIsaIsoMappingExtractionTest extends TestCase
     private const EN_FIXTURE   = __DIR__ . '/../../Fixtures/vda_isa_6_en_official.xlsx';
     private const DE_FIXTURE   = __DIR__ . '/../../Fixtures/vda_isa_6_de_official.xlsx';
     private const SCRIPT       = __DIR__ . '/../../../scripts/import/extract_vda_isa_iso_mapping.php';
-    private const MAPPING_FILE = __DIR__ . '/../../../fixtures/library/mappings/tisax-vda-isa-6_to_iso27001-2022_v1.0.yaml';
+    private const MAPPING_FILE = __DIR__ . '/../../../fixtures/library/mappings/tisax_to_iso27001-2022_v1.0.yaml';
 
     #[Test]
     public function extraction_script_has_valid_php_syntax(): void

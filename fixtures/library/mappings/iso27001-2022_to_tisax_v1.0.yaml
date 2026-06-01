@@ -1,7 +1,7 @@
 schema_version: '1.1'
 library:
   type: mapping
-  id: 'iso27001-2022_to_tisax-vda-isa-6_v1.0'
+  id: 'iso27001-2022_to_tisax_v1.0'
   source_framework: 'ISO27001'
   target_framework: 'TISAX'
   version: 1
@@ -44,7 +44,7 @@ library:
 
 mappings:
   - source: 'A.5.1'
-    target: 'ISA 1.1.1'
+    target: '1.1.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -57,7 +57,7 @@ mappings:
     audit_evidence_hint: 'InfoSec-Policy mit Management-Freigabe-Stempel, Kommunikations-Nachweis (Intranet/Schulung), letzter Review-Vermerk innerhalb 12 Monaten.'
 
   - source: 'A.5.2'
-    target: 'ISA 1.2.1'
+    target: '1.2.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -72,7 +72,7 @@ mappings:
     audit_evidence_hint: 'Rollen-Matrix mit ISB/CISO-Bestellung, Stellenbeschreibungen, Org-Chart mit Berichtslinie an Geschäftsleitung.'
 
   - source: 'A.5.7'
-    target: 'ISA 1.5.1'
+    target: '1.5.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -86,7 +86,7 @@ mappings:
     audit_evidence_hint: 'Liste der Threat-Intel-Quellen (CERT-Bund, Auto-ISAC, kommerzielle Feeds), Auswertungs-Protokolle, Eskalations-Beispiele letzte 12 Monate.'
 
   - source: 'A.5.20'
-    target: 'ISA 6.1.1'
+    target: '6.1.1'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -106,7 +106,7 @@ mappings:
     audit_evidence_hint: 'Lieferantenregister mit TISAX-Label-Status, AVV/InfoSec-Anhang in Standardvertrag, Vor-Ort-Audit-Reports der Tier-1-Supplier.'
 
   - source: 'A.5.23'
-    target: 'ISA 1.6.4'
+    target: '1.6.4'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -119,7 +119,7 @@ mappings:
     audit_evidence_hint: 'Cloud-Service-Register mit Provider-Bewertung (z.B. C5-Testat), Exit-Strategie pro Service, Incident-Kontakte beim Provider.'
 
   - source: 'A.5.24'
-    target: 'ISA 1.6.1'
+    target: '1.6.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -131,7 +131,7 @@ mappings:
     audit_evidence_hint: 'IR-Plan mit Eskalationsmatrix, IR-Tabletop-Protokoll letzte 12 Monate, Ticket-Auswertung mit Kategorisierung.'
 
   - source: 'A.5.30'
-    target: 'ISA 1.6.3'
+    target: '1.6.3'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -144,7 +144,7 @@ mappings:
     audit_evidence_hint: 'BIA mit RTO/RPO pro kritischem Prozess, ICT-DR-Plan, letzter DR-Test mit Protokoll und Lessons Learned.'
 
   - source: 'A.6.3'
-    target: 'ISA 2.1.3'
+    target: '2.1.3'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -157,7 +157,7 @@ mappings:
     audit_evidence_hint: 'Schulungsmatrix mit Quote ≥ 95 %, Phishing-Simulations-Reports, rollenspezifische Curricula.'
 
   - source: 'A.7.10'
-    target: 'ISA 4.1.1'
+    target: '4.1.1'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -175,7 +175,7 @@ mappings:
     audit_evidence_hint: 'MDM-Konfiguration, Verschlüsselungs-Policy für mobile Geräte, Datenträger-Entsorgungsnachweise.'
 
   - source: 'A.8.7'
-    target: 'ISA 5.1.1'
+    target: '5.1.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -187,7 +187,7 @@ mappings:
     audit_evidence_hint: 'AV/EDR-Coverage-Report ≥ 99 %, Pattern-Aktualität, Incident-Reports zu Malware-Detections.'
 
   - source: 'A.8.8'
-    target: 'ISA 5.2.6'
+    target: '5.2.6'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -198,7 +198,7 @@ mappings:
     audit_evidence_hint: 'Schwachstellen-Scan-Reports, Patch-SLA-Dashboard mit Compliance-Quote, Ausnahmenliste mit Risk-Acceptance.'
 
   - source: 'A.8.16'
-    target: 'ISA 1.6.2'
+    target: '1.6.2'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -210,7 +210,7 @@ mappings:
     audit_evidence_hint: 'SIEM-Use-Case-Katalog, Log-Coverage-Report kritische Systeme, Alert-Trends letzte 6 Monate.'
 
   - source: 'A.8.24'
-    target: 'ISA 1.4.1'
+    target: '1.4.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -221,7 +221,7 @@ mappings:
     audit_evidence_hint: 'Krypto-Konzept mit zugelassenen Algorithmen, KMS-Konfiguration, Schlüssel-Rotation-Protokolle.'
 
   - source: 'A.5.15'
-    target: 'ISA 4.1.2'
+    target: '4.1.2'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -235,7 +235,7 @@ mappings:
     audit_evidence_hint: 'Berechtigungskonzept, letzter Rezertifizierungs-Lauf, Rollenmatrix mit SoD-Konflikt-Check.'
 
   - source: 'A.7.4'
-    target: 'ISA 3.1.4'
+    target: '3.1.4'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |

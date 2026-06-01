@@ -7,7 +7,7 @@
 schema_version: '1.1'
 library:
   type: mapping
-  id: 'tisax-vda-isa-6_to_iso27001-2022_v1.0'
+  id: 'tisax_to_iso27001-2022_v1.0'
   source_framework: 'TISAX'
   target_framework: 'ISO27001'
   version: 1
@@ -39,402 +39,402 @@ library:
     controls_without_iso27001_anchors: 40
 
 mappings:
-  - source: 'ISA 1.1.1'
+  - source: '1.1.1'
     targets: ['A.5.1']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.2.1'
+  - source: '1.2.1'
     targets: []
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.2.2'
+  - source: '1.2.2'
     targets: ['A.5.2', 'A.5.3']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.2.3'
+  - source: '1.2.3'
     targets: ['A.5.8']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.2.4'
+  - source: '1.2.4'
     targets: ['A.8.9']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.3.1'
+  - source: '1.3.1'
     targets: ['A.5.9']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.3.2'
+  - source: '1.3.2'
     targets: ['A.5.10', 'A.5.12', 'A.5.13', 'A.8.10']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.3.3'
+  - source: '1.3.3'
     targets: []
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.3.4'
+  - source: '1.3.4'
     targets: ['A.5.19']
     category: 'information_security'
     maturity: ['must', 'should', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.4.1'
+  - source: '1.4.1'
     targets: ['A.5.3', 'A.5.5']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.5.1'
+  - source: '1.5.1'
     targets: ['A.5.36', 'A.8.8']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.5.2'
+  - source: '1.5.2'
     targets: ['A.5.35']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.6.1'
+  - source: '1.6.1'
     targets: ['A.5.24', 'A.6.8']
     category: 'information_security'
     maturity: ['must', 'should', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.6.2'
+  - source: '1.6.2'
     targets: ['A.5.24', 'A.5.25', 'A.5.26', 'A.5.27']
     category: 'information_security'
     maturity: ['must', 'should', 'high', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 1.6.3'
+  - source: '1.6.3'
     targets: ['A.5.29']
     category: 'information_security'
     maturity: ['must', 'should', 'high', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 2.1.1'
+  - source: '2.1.1'
     targets: ['A.6.1']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 2.1.2'
+  - source: '2.1.2'
     targets: ['A.6.2', 'A.6.5']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 2.1.3'
+  - source: '2.1.3'
     targets: []
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 2.1.4'
+  - source: '2.1.4'
     targets: ['A.6.7', 'A.8.1']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 3.1.1'
+  - source: '3.1.1'
     targets: ['A.7.1', 'A.7.6']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 3.1.2'
+  - source: '3.1.2'
     targets: []
     category: 'information_security'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 3.1.3'
+  - source: '3.1.3'
     targets: ['A.5.10', 'A.5.11']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 3.1.4'
+  - source: '3.1.4'
     targets: ['A.6.7', 'A.7.10', 'A.8.1']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 4.1.1'
+  - source: '4.1.1'
     targets: ['A.5.18']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 4.1.2'
+  - source: '4.1.2'
     targets: ['A.5.15', 'A.8.5']
     category: 'information_security'
     maturity: ['must', 'should', 'high', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 4.1.3'
+  - source: '4.1.3'
     targets: ['A.5.16', 'A.5.17', 'A.5.18', 'A.8.9']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 4.2.1'
+  - source: '4.2.1'
     targets: []
     category: 'information_security'
     maturity: ['must', 'should', 'high', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.1.1'
+  - source: '5.1.1'
     targets: ['A.8.24']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.1.2'
+  - source: '5.1.2'
     targets: ['A.5.14']
     category: 'information_security'
     maturity: ['must', 'should', 'high', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.2.1'
+  - source: '5.2.1'
     targets: ['A.8.32']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.2.2'
+  - source: '5.2.2'
     targets: ['A.8.31']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.2.3'
+  - source: '5.2.3'
     targets: ['A.8.1']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.2.4'
+  - source: '5.2.4'
     targets: ['A.5.17', 'A.8.15']
     category: 'information_security'
     maturity: ['must', 'should', 'high', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.2.5'
+  - source: '5.2.5'
     targets: ['A.8.8', 'A.8.19']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.2.6'
+  - source: '5.2.6'
     targets: ['A.5.36', 'A.8.34', 'A.8.8']
     category: 'information_security'
     maturity: ['must', 'should', 'high', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.2.7'
+  - source: '5.2.7'
     targets: ['A.8.20', 'A.8.22']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.2.8'
+  - source: '5.2.8'
     targets: ['A.5.30']
     category: 'information_security'
     maturity: ['must', 'should', 'high', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.2.9'
+  - source: '5.2.9'
     targets: ['A.8.13']
     category: 'information_security'
     maturity: ['must', 'should', 'high', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.3.1'
+  - source: '5.3.1'
     targets: ['A.5.8', 'A.8.25']
     category: 'information_security'
     maturity: ['must', 'should', 'very_high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.3.2'
+  - source: '5.3.2'
     targets: ['A.8.21']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.3.3'
+  - source: '5.3.3'
     targets: ['A.5.23']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 5.3.4'
+  - source: '5.3.4'
     targets: []
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 6.1.1'
+  - source: '6.1.1'
     targets: ['A.5.19', 'A.5.22']
     category: 'information_security'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 6.1.2'
+  - source: '6.1.2'
     targets: ['A.5.14', 'A.6.6']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 7.1.1'
+  - source: '7.1.1'
     targets: ['A.5.31', 'A.5.32', 'A.5.33']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 7.1.2'
+  - source: '7.1.2'
     targets: ['A.5.34']
     category: 'information_security'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.1.1'
+  - source: '8.1.1'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.1.2'
+  - source: '8.1.2'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.1.3'
+  - source: '8.1.3'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.1.4'
+  - source: '8.1.4'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.1.5'
+  - source: '8.1.5'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.1.6'
+  - source: '8.1.6'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.1.7'
+  - source: '8.1.7'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.1.8'
+  - source: '8.1.8'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should', 'high']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.2.1'
+  - source: '8.2.1'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.2.2'
+  - source: '8.2.2'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.2.3'
+  - source: '8.2.3'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.2.4'
+  - source: '8.2.4'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.2.5'
+  - source: '8.2.5'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.2.6'
+  - source: '8.2.6'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.2.7'
+  - source: '8.2.7'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.3.1'
+  - source: '8.3.1'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.3.2'
+  - source: '8.3.2'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.4.1'
+  - source: '8.4.1'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.4.2'
+  - source: '8.4.2'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.4.3'
+  - source: '8.4.3'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.5.1'
+  - source: '8.5.1'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 8.5.2'
+  - source: '8.5.2'
     targets: []
     category: 'prototype_protection'
     maturity: ['must', 'should']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.1.1'
+  - source: '9.1.1'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.2.1'
+  - source: '9.2.1'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.3.1'
+  - source: '9.3.1'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.4.1'
+  - source: '9.4.1'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.5.1'
+  - source: '9.5.1'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.5.2'
+  - source: '9.5.2'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.5.3'
+  - source: '9.5.3'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.6.1'
+  - source: '9.6.1'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.6.2'
+  - source: '9.6.2'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.7.1'
+  - source: '9.7.1'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.7.2'
+  - source: '9.7.2'
     targets: []
     category: 'data_protection'
     maturity: ['must']
     rationale: 'ISO 27001:2022 anchor per ENX ISA 6 Reference column (authoritative).'
-  - source: 'ISA 9.8.1'
+  - source: '9.8.1'
     targets: []
     category: 'data_protection'
     maturity: ['must']
