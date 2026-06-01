@@ -65,6 +65,17 @@
     src: url("/fonts/jetbrains-mono-600.woff2") format("woff2");
 }
 
+/* Space Grotesk — Fallback-Familie mit ähnlicher x-Height wie Inter;
+   reduziert Layout-Shift in Formularen, wenn Inter noch lädt. Siehe D07. */
+@font-face {
+    font-family: "Space Grotesk";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("/fonts/space-grotesk-variable.woff2") format("woff2-variations"),
+         url("/fonts/space-grotesk-variable.woff2") format("woff2");
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    Light-Palette (Default)
    ═══════════════════════════════════════════════════════════════════ */
@@ -87,6 +98,7 @@
 
     /* — Primär (Cyan) — */
     --primary:        #0284c7;   /* display: icons, sparklines, borders (AA-Large) */
+    --primary-rgb:    2, 132, 199;
     --primary-strong: #0369a1;   /* WCAG-AA body-text on white (5.93:1) — button-bg */
     --primary-hover:  #075985;   /* hover-state auf primary-strong */
     --primary-glow:   rgba(2, 132, 199, 0.2);
@@ -94,6 +106,7 @@
 
     /* — Accent (Violett) — */
     --accent:        #7c3aed;    /* display (AA 5.28:1 auf bg) */
+    --accent-rgb:    124, 58, 237;
     --accent-strong: #6d28d9;    /* button-bg (AA-safe white on it: 7.21:1) */
     --accent-hover:  #5b21b6;
     --accent-glow:   rgba(124, 58, 237, 0.2);
@@ -144,8 +157,23 @@
     --alva-dock-offset-y: 72px;  /* clears footer / status-bar / Symfony dev-toolbar */
     --alva-z: 9500;
 
-    /* — Typografie — */
-    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    /* — Z-Index-Stack (Layer-Token-System) — */
+    --z-base:           0;
+    --z-dropdown:      10;
+    --z-sticky:       100;
+    --z-fixed:        500;   /* Sidebar, floating-pinned UI */
+    --z-modal-backdrop: 1000;
+    --z-modal:        1001;
+    --z-popover:     1100;
+    --z-tooltip:     1200;
+    --z-toast:       9999;
+    --z-turbo-bar:  999999;
+
+    /* — Typografie — D07: Inter primär → Space Grotesk (Geometric-Sans-Fallback)
+       → system-ui → OS-Stack. Reihenfolge ist bewusst gewählt: Space Grotesk
+       hat ähnliche Metriken wie Inter und dämpft Reflow in Form-Inputs. */
+    --font-sans: "Inter", "Space Grotesk", system-ui,
+                 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                  "Helvetica Neue", Arial, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
@@ -158,6 +186,17 @@
     --r-2xl: 16px;
     --r-pill: 999px;
 
+    /* — Spacing — D05: --spacing-* ist Canon, 7 Stufen inkl. 3xl 64px.
+       Bootstrap-Utilities (p-3, m-2) bleiben unberührt; --space-* in
+       colors_and_type.css ist Deprecation-Alias. */
+    --spacing-xs:  4px;
+    --spacing-sm:  8px;
+    --spacing-md:  16px;
+    --spacing-lg:  24px;
+    --spacing-xl:  32px;
+    --spacing-2xl: 48px;
+    --spacing-3xl: 64px;
+
     /* — Timing-Tokens (Motion-Policy § 14) — */
     --t-instant: 80ms;
     --t-fast:    120ms;
@@ -166,6 +205,73 @@
     --t-magic:   600ms;
     --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ═══════════════════════════════════════════════════════════════
+       Welle-1-Tokens (Designer-Brief 2026-05-27)
+       Density · Persona · Coverage-Heat · Reuse · Mega-Menu · Glossary
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* C.1 — Density-Padding (Basic / Standard / Expert) — Theme-unabhängig */
+    --density-padding-x-basic:    1rem;
+    --density-padding-y-basic:    0.75rem;
+    --density-padding-x-standard: 0.75rem;
+    --density-padding-y-standard: 0.5rem;
+    --density-padding-x-expert:   0.5rem;
+    --density-padding-y-expert:   0.375rem;
+
+    /* C.2 — Persona-Accent (8 Personas) · derived from Aurora primitives via color-mix
+       (keeps the palette in-family · auto-adapts to dark mode via token-overrides below) */
+    --persona-ciso:       var(--accent-strong);                                                  /* Violett · Executive */
+    --persona-isb:        var(--primary);                                                         /* Sky · Operations */
+    --persona-dpo:        color-mix(in oklab, var(--accent) 65%, var(--danger) 35%);              /* Magenta · Privacy */
+    --persona-risk:       color-mix(in oklab, var(--warning) 70%, var(--danger) 30%);             /* Burnt Orange · Risk */
+    --persona-compliance: color-mix(in oklab, var(--success) 80%, #000 15%);                      /* Forest Green · Compliance */
+    --persona-bcm:        var(--warning);                                                         /* Amber · Continuity */
+    --persona-auditor:    var(--fg-3);                                                            /* Neutral Gray · Auditor */
+    --persona-board:      color-mix(in oklab, var(--primary) 60%, #000 30%);                      /* Deep Blue · Board */
+
+    /* C.3 — Coverage-Heat (5 Stufen) · derived from Aurora semantic-colors via color-mix
+       Heat-0 = neutral surface tint, Heat-4 = full success. Linear interpolation through
+       warning at midpoint preserves colorblind-safe lightness curve. */
+    --coverage-heat-0: var(--surface-3);                                                       /* leer · neutral */
+    --coverage-heat-1: color-mix(in oklab, var(--danger) 18%, var(--surface));                 /* schwach · danger-tint */
+    --coverage-heat-2: color-mix(in oklab, var(--warning) 32%, var(--surface));                /* mittel-schwach · warning-tint */
+    --coverage-heat-3: color-mix(in oklab, var(--success) 38%, var(--surface));                /* mittel · success-tint */
+    --coverage-heat-4: color-mix(in oklab, var(--success) 70%, var(--surface));                /* erfüllt · success */
+
+    /* C.4 — Reuse-ROI-Counter Glow · uses Aurora primary-glow + accent-glow */
+    --reuse-roi-glow:        0 0 24px var(--primary-glow), 0 0 12px var(--accent-glow);
+    --reuse-roi-glow-strong: 0 0 32px var(--primary-glow), 0 0 18px var(--accent-glow);
+
+    /* C.5 — Mega-Menu Tenant-Stempel */
+    --mega-menu-header-bg:       var(--surface-2);
+    --mega-menu-header-fg:       var(--fg-2);
+    --mega-menu-header-border:   var(--border);
+    --mega-menu-tenant-stamp-bg: var(--primary-tint);
+    --mega-menu-tenant-stamp-fg: var(--primary-strong);
+
+    /* C.6 — Quick-Action-Button Shadow · uses Aurora primary-glow for hover */
+    --quick-action-shadow:       0 1px 3px rgba(0,0,0,0.1);
+    --quick-action-shadow-hover: 0 4px 12px rgba(0,0,0,0.15), 0 0 16px var(--primary-glow);
+
+    /* C.7 — Onboarding-Banner-Surface · uses Aurora primary-glow */
+    --onboarding-banner-bg:     linear-gradient(135deg, var(--primary-tint), var(--accent-tint));
+    --onboarding-banner-border: var(--primary);
+    --onboarding-banner-glow:   0 0 32px var(--primary-glow);
+
+    /* C.8 — Audit-Program-Timeline */
+    --audit-timeline-today:        var(--accent);
+    --audit-timeline-today-glow:   0 0 8px var(--accent-glow);
+    --audit-timeline-overdue:      var(--danger);
+    --audit-timeline-overdue-glow: 0 0 8px var(--danger-glow);
+    --audit-timeline-pin-radius:   12px;
+
+    /* C.9 — Glossary-Tooltip-Indicator */
+    --glossary-indicator-bg:   var(--primary-tint);
+    --glossary-indicator-fg:   var(--primary-strong);
+    --glossary-tooltip-bg:     var(--surface-3, var(--surface-2));
+    --glossary-tooltip-border: var(--border-strong);
+    --glossary-tooltip-shadow: 0 8px 24px rgba(0,0,0,0.15);
 
     /* — Alva-CSS-Custom-Properties (für Logo-SVG und zentralen Character) —
        Fee hat IMMER hellen Körper + dunkle Augen/Mund in beiden Modi.
@@ -195,12 +301,14 @@ html[data-theme="dark"] {
     --fg-3: #6d6f99;
 
     --primary:        #38bdf8;
+    --primary-rgb:    56, 189, 248;
     --primary-strong: #38bdf8;   /* dark-mode: hell auf dunkel = AAA, strong == primary */
     --primary-hover:  #7dd3fc;
     --primary-glow:   rgba(56, 189, 248, 0.3);
     --primary-tint:   rgba(56, 189, 248, 0.12);
 
     --accent:        #a78bfa;
+    --accent-rgb:    167, 139, 250;
     --accent-strong: #a78bfa;
     --accent-hover:  #c4b5fd;
     --accent-glow:   rgba(167, 139, 250, 0.3);
@@ -235,6 +343,10 @@ html[data-theme="dark"] {
         radial-gradient(at 80% 70%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
         linear-gradient(180deg, #0a0e1a 0%, #141829 100%);
     --brand-gradient: linear-gradient(135deg, var(--primary), var(--accent));
+
+    /* C.2–C.7 Dark · alle Tokens autoadaptieren über color-mix() von --primary/--accent/--success/--warning/--danger/--surface (theme-aware primitives) — kein eigener Override mehr nötig.
+       Einzig --quick-action-shadow bekommt im Dark-Mode kräftigeren Shadow-Schwarzwert: */
+    --quick-action-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -252,11 +364,11 @@ html[data-theme="dark"] {
         --fg:   #e9eaf5;
         --fg-2: #b9bad4;
         --fg-3: #6d6f99;
-        --primary:        #38bdf8; --primary-strong: #38bdf8;
+        --primary:        #38bdf8; --primary-rgb: 56, 189, 248; --primary-strong: #38bdf8;
         --primary-hover:  #7dd3fc;
         --primary-glow:   rgba(56, 189, 248, 0.3);
         --primary-tint:   rgba(56, 189, 248, 0.12);
-        --accent:        #a78bfa; --accent-strong: #a78bfa;
+        --accent:        #a78bfa; --accent-rgb: 167, 139, 250; --accent-strong: #a78bfa;
         --accent-hover:  #c4b5fd;
         --accent-glow:   rgba(167, 139, 250, 0.3);
         --accent-tint:   rgba(167, 139, 250, 0.12);
