@@ -84,7 +84,7 @@ final class TisaxEvidenceLinker
         // Record the typed review list. Always (re)write the keys so a re-run
         // that has since matched a document clears the stale unmatched entry.
         if ($unlinked !== []) {
-            $mapping['unlinked_citations']       = array_values($unlinked);
+            $mapping['unlinked_citations']       = $unlinked;
             $mapping['unlinked_citations_count'] = count($unlinked);
         } else {
             unset($mapping['unlinked_citations'], $mapping['unlinked_citations_count']);
@@ -94,7 +94,7 @@ final class TisaxEvidenceLinker
         return [
             'linked'             => $linked,
             'unlinked'           => count($unlinked),
-            'unlinked_citations' => array_values($unlinked),
+            'unlinked_citations' => $unlinked,
         ];
     }
 
