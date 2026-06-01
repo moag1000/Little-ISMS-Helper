@@ -622,6 +622,86 @@ final class TisaxRequirementMapperTest extends TestCase
         self::assertSame('level-4', $mapping['tisax_veryHigh']);
     }
 
+    #[Test]
+    public function map_rows_persists_implementation_measure_and_document_references(): void
+    {
+        // The assessor's "Beschreibung der Umsetzung" (Maßnahme) and "Referenz
+        // Dokumentation" (Dokumente) were previously dropped — assert they now
+        // survive the import into dataSourceMapping.
+        $row = new VdaIsaControlRow(
+            controlId: '1.1.1',
+            title: 'Policy',
+            titleEn: null,
+            description: null,
+            mustLevel: null,
+            shouldLevel: null,
+            highLevel: null,
+            veryHighLevel: null,
+            iso27001Ref: null,
+            auditEvidenceHint: null,
+            rawRowIndex: 1,
+            maturityCurrent: 3,
+            dimension: 'information_security',
+            implementationDescription: 'Richtlinien sind etabliert und freigegeben.',
+            referenceDocumentation: 'RL-G-Informationssicherheit-2.0',
+        );
+
+        $this->requirementRepo->method('findOneBy')->willReturn(null);
+        $createdEntity = null;
+        $this->em->method('persist')
+            ->willReturnCallback(static function (object $entity) use (&$createdEntity): void {
+                $createdEntity = $entity;
+            });
+        $this->em->method('flush');
+
+        $this->mapper->mapRows([$row], $this->framework, $this->tenant);
+
+        self::assertInstanceOf(ComplianceRequirement::class, $createdEntity);
+        $mapping = $createdEntity->getDataSourceMapping();
+        self::assertSame('Richtlinien sind etabliert und freigegeben.', $mapping['implementation']);
+        self::assertSame('RL-G-Informationssicherheit-2.0', $mapping['referenceDocumentation']);
+        self::assertSame('established', $createdEntity->getMaturityCurrent());
+        self::assertSame('established', $createdEntity->getMaturityTarget());
+    }
+
+    #[Test]
+    public function map_rows_maps_data_protection_ok_to_established(): void
+    {
+        // Data Protection uses a tristate cell ("OK"/"Nicht OK"/"na"), NOT the
+        // 0-5 Reifegrad. "OK" must resolve to a compliant level.
+        $okRow = new VdaIsaControlRow(
+            controlId: '9.1.1',
+            title: 'DP compliant',
+            titleEn: null, description: null, mustLevel: null, shouldLevel: null,
+            highLevel: null, veryHighLevel: null, iso27001Ref: null,
+            auditEvidenceHint: null, rawRowIndex: 1, maturityCurrent: null,
+            dimension: 'data_protection', maturityRaw: 'OK',
+        );
+        $notOkRow = new VdaIsaControlRow(
+            controlId: '9.2.1',
+            title: 'DP non-compliant',
+            titleEn: null, description: null, mustLevel: null, shouldLevel: null,
+            highLevel: null, veryHighLevel: null, iso27001Ref: null,
+            auditEvidenceHint: null, rawRowIndex: 2, maturityCurrent: null,
+            dimension: 'data_protection', maturityRaw: 'Nicht OK',
+        );
+
+        $this->requirementRepo->method('findOneBy')->willReturn(null);
+        $created = [];
+        $this->em->method('persist')
+            ->willReturnCallback(static function (object $entity) use (&$created): void {
+                $created[] = $entity;
+            });
+        $this->em->method('flush');
+
+        $this->mapper->mapRows([$okRow, $notOkRow], $this->framework, $this->tenant);
+
+        self::assertCount(2, $created);
+        self::assertSame('established', $created[0]->getMaturityCurrent());
+        self::assertSame('data_protection', $created[0]->getCategory());
+        self::assertSame('incomplete', $created[1]->getMaturityCurrent());
+    }
+
     // ──────────────────────────────────────────────────────────────────────────
     // Tier / category assignment (via getTier() on VdaIsaControlRow)
     // ──────────────────────────────────────────────────────────────────────────
@@ -647,9 +727,10 @@ final class TisaxRequirementMapperTest extends TestCase
     }
 
     #[Test]
-    public function map_rows_assigns_prototype_protection_tier_for_domain_7_to_9(): void
+    public function map_rows_assigns_category_from_prototype_protection_dimension(): void
     {
-        $row = $this->makeRow('8.1.1', 'Prototype Handling');
+        // Category is taken from the SOURCE SHEET (dimension), not the ID prefix.
+        $row = $this->makeRow('8.1.1', 'Prototype Handling', dimension: 'prototype_protection');
 
         $this->requirementRepo->method('findOneBy')->willReturn(null);
 
@@ -667,9 +748,11 @@ final class TisaxRequirementMapperTest extends TestCase
     }
 
     #[Test]
-    public function map_rows_assigns_data_protection_tier_for_domain_10_to_12(): void
+    public function map_rows_assigns_category_from_data_protection_dimension(): void
     {
-        $row = $this->makeRow('11.2.1', 'Data Subject Rights');
+        // Data Protection restarts numbering at 9.x — proving the category must
+        // come from the sheet dimension, not an ID-prefix guess.
+        $row = $this->makeRow('9.1.1', 'Data Subject Rights', dimension: 'data_protection');
 
         $this->requirementRepo->method('findOneBy')->willReturn(null);
 
@@ -699,6 +782,7 @@ final class TisaxRequirementMapperTest extends TestCase
         ?string $veryHighLevel = null,
         ?string $iso27001Ref   = null,
         ?int    $maturityCurrent = null,
+        string  $dimension     = 'information_security',
     ): VdaIsaControlRow {
         return new VdaIsaControlRow(
             controlId:         $controlId,
@@ -713,6 +797,7 @@ final class TisaxRequirementMapperTest extends TestCase
             auditEvidenceHint: null,
             rawRowIndex:       1,
             maturityCurrent:   $maturityCurrent,
+            dimension:         $dimension,
         );
     }
 }

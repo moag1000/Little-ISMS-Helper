@@ -52,6 +52,44 @@ final readonly class VdaIsaControlRow
          * new requirements only — never overwrites an existing assessment.
          */
         public ?int $maturityCurrent = null,
+
+        /**
+         * Assessment dimension, set from the SOURCE SHEET the row came from —
+         * 'information_security' | 'prototype_protection' | 'data_protection'.
+         * Authoritative over {@see getTier()} (which only guesses from the ID
+         * prefix), because Prototype/Data-Protection sheets restart numbering.
+         */
+        public string $dimension = 'information_security',
+
+        /**
+         * "Implementation description" (EN col E) / "Beschreibung der Umsetzung"
+         * (DE col E) — the assessor's documented MEASURE for this control.
+         * Previously dropped on the floor; this is the user's "Maßnahme".
+         */
+        public ?string $implementationDescription = null,
+
+        /**
+         * "Reference documentation" (EN col F) / "Verweis auf Dokumentation"
+         * (DE col F) — document references backing the implementation.
+         * Previously dropped; this is the user's "Dokumente".
+         */
+        public ?string $referenceDocumentation = null,
+
+        /**
+         * Raw maturity/assessment cell (col D) verbatim. IS/PP carry a 0-5
+         * Reifegrad (mirrored into {@see $maturityCurrent}); Data Protection
+         * uses a tristate label ("OK"/"NOK"/…) that does NOT fit the 0-5 scale,
+         * so the verbatim value is preserved here for the DP path.
+         */
+        public ?string $maturityRaw = null,
+
+        /**
+         * Simplified Group Assessment (SGA) additional requirement text — the
+         * VDA-ISA 6 "Zusätzliche Anforderungen für das vereinfachte Gruppen
+         * Assessment" column (Information Security only). Distinct from the
+         * protection-need tiers; applies to the simplified group-audit scope.
+         */
+        public ?string $sgaLevel = null,
     ) {}
 
     /**

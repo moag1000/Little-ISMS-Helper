@@ -239,21 +239,46 @@ final class TisaxRequirementMapper
     // ──────────────────────────────────────────────────────────────────────────
 
     /**
-     * Resolve the pre-filled workbook Reifegrad (0-5 int) into the canonical
-     * level string ('incomplete'…'optimising'), or null when the row carries no
-     * usable score. DP-tier rows use a tristate model, not the 0-5 Reifegrad —
-     * so they are deliberately excluded.
+     * Resolve the pre-filled workbook assessment into the canonical level string
+     * ('incomplete'…'optimising'), or null when the row carries no usable score.
+     *
+     * - Information Security / Prototype Protection: 0-5 Reifegrad → LEVEL_MAP.
+     * - Data Protection: tristate cell ("OK" / "Nicht OK" / "Not OK" / "na").
+     *   "OK" → established (target met); "Nicht OK"/"Not OK" → incomplete;
+     *   "na"/"n.a." (not applicable) → null. Some DP rows DO carry a 0-5 value
+     *   (the workbook allows both validation lists) — honour that too.
      */
     private function resolvePrefilledLevel(VdaIsaControlRow $row): ?string
     {
-        if ($row->maturityCurrent === null
-            || $row->getTier() === 'data_protection'
-            || !isset(self::LEVEL_MAP[$row->maturityCurrent])
-        ) {
+        if ($row->dimension === 'data_protection') {
+            return $this->resolveDataProtectionLevel($row);
+        }
+
+        if ($row->maturityCurrent === null || !isset(self::LEVEL_MAP[$row->maturityCurrent])) {
             return null;
         }
 
         return self::LEVEL_MAP[$row->maturityCurrent];
+    }
+
+    /**
+     * Map the Data-Protection tristate / numeric assessment cell to a level.
+     */
+    private function resolveDataProtectionLevel(VdaIsaControlRow $row): ?string
+    {
+        // Numeric 0-5 path (DP cells whose validation list is {NA,0-5}).
+        if ($row->maturityCurrent !== null && isset(self::LEVEL_MAP[$row->maturityCurrent])) {
+            return self::LEVEL_MAP[$row->maturityCurrent];
+        }
+
+        $raw = strtolower(trim((string) $row->maturityRaw));
+        $raw = rtrim($raw, '.'); // "n.a." → "n.a"
+
+        return match (true) {
+            $raw === 'ok'                              => 'established', // compliant
+            $raw === 'nicht ok', $raw === 'not ok'     => 'incomplete',  // non-compliant
+            default                                    => null,          // "na"/"n.a"/blank → not applicable
+        };
     }
 
     /**
@@ -277,11 +302,19 @@ final class TisaxRequirementMapper
         $req->setTitle(mb_substr($row->title, 0, 255));
         $req->setDescription($row->description ?? $row->title);
         $req->setPriority($this->derivePriority($row));
-        $req->setCategory($row->getTier());
+        // Authoritative dimension from the source sheet (information_security /
+        // prototype_protection / data_protection) — not the ID-prefix guess.
+        $req->setCategory($row->dimension);
         $req->setRequirementType('core');
         $req->setRequirementSource('tenant_upload');
         $req->setUploadTenant($tenant);
         $req->setUpdatedAt(new DateTimeImmutable());
+
+        // VDA-ISA target Reifegrad is uniformly 3 ("established") in ISA 6 — set
+        // it so the assess-page shows the gap-to-target, not a blank target.
+        if ($row->dimension !== 'data_protection' && $this->isEmptyMaturity($req->getMaturityTarget())) {
+            $req->setMaturityTarget('established');
+        }
 
         // Persist ISO 27001 anchors + evidence hints in dataSourceMapping JSON
         $mapping = $req->getDataSourceMapping() ?? [];
@@ -294,8 +327,25 @@ final class TisaxRequirementMapper
         if ($row->titleEn !== null && $row->titleEn !== $row->title) {
             $mapping['titleEn'] = $row->titleEn;
         }
+        // The assessor's documented MEASURE ("Beschreibung der Umsetzung",
+        // col E) — previously dropped on the floor. This is the user's
+        // "Maßnahme" and MUST survive the import.
+        if ($row->implementationDescription !== null) {
+            $mapping['implementation'] = $row->implementationDescription;
+        }
+        // Referenced documents ("Referenz Dokumentation", col F) — the user's
+        // "Dokumente". Stored as text references (free-text document names; the
+        // workbook does not carry file handles, so we keep the citation).
+        if ($row->referenceDocumentation !== null) {
+            $mapping['referenceDocumentation'] = $row->referenceDocumentation;
+        }
+        // Verbatim maturity cell — preserves the Data-Protection tristate
+        // ("OK"/"Nicht OK"/"Not OK"/"na") that the 0-5 scale cannot express.
+        if ($row->maturityRaw !== null) {
+            $mapping['maturityRaw'] = $row->maturityRaw;
+        }
         // Store TISAX maturity targets in dataSourceMapping
-        foreach (['mustLevel' => 'must', 'shouldLevel' => 'should', 'highLevel' => 'high', 'veryHighLevel' => 'veryHigh'] as $prop => $key) {
+        foreach (['mustLevel' => 'must', 'shouldLevel' => 'should', 'highLevel' => 'high', 'veryHighLevel' => 'veryHigh', 'sgaLevel' => 'sga'] as $prop => $key) {
             if ($row->$prop !== null) {
                 $mapping["tisax_{$key}"] = $row->$prop;
             }
