@@ -1,9 +1,9 @@
 schema_version: '1.1'
 library:
   type: mapping
-  id: 'bsi-grundschutz-2024_to_tisax-vda-isa-6_v1.0'
+  id: 'bsi-grundschutz-2024_to_tisax_v1.0'
   source_framework: 'BSI-GRUNDSCHUTZ-2024'
-  target_framework: 'TISAX-VDA-ISA-6'
+  target_framework: 'TISAX'
   version: 1
   effective_from: '2024-04-01'
   effective_until: null
@@ -20,7 +20,7 @@ library:
     type: 'expert_derived'
     description: |
       Transitive Ableitung: BSI-Baustein → ISO 27001:2022 (via bsi-grundschutz-2024_to_iso27001-2022)
-      → TISAX ISA (via iso27001-2022_to_tisax-vda-isa-6). Keine direkte offizielle
+      → TISAX ISA (via iso27001-2022_to_tisax). Keine direkte offizielle
       BSI ↔ TISAX-Kreuzreferenztabelle verfuegbar. Alle Eintraege sind 'expert_derived';
       Confidence max. 'medium' sofern kein offizielles Sekundaerdokument vorliegt.
 
@@ -40,7 +40,7 @@ library:
 mappings:
   # --- ISMS-Schicht → TISAX Kapitel 1 ---
   - source: 'ISMS.1.A3'
-    target: 'ISA 1.1.1'
+    target: '1.1.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -52,7 +52,7 @@ mappings:
     audit_evidence_hint: 'IS-Leitlinie mit Management-Unterschrift, Kommunikationsnachweis, Review-Protokoll.'
 
   - source: 'ISMS.1.A4'
-    target: 'ISA 1.2.1'
+    target: '1.2.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -62,7 +62,7 @@ mappings:
     audit_evidence_hint: 'Bestellungsschreiben ISB, Organigramm mit IS-Verantwortungsstruktur.'
 
   - source: 'ISMS.1.A2'
-    target: 'ISA 1.3.1'
+    target: '1.3.1'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
@@ -73,7 +73,7 @@ mappings:
 
   # --- ORP-Schicht → TISAX Kapitel 2 ---
   - source: 'ORP.2.A1'
-    target: 'ISA 2.1.1'
+    target: '2.1.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -83,7 +83,7 @@ mappings:
     audit_evidence_hint: 'Einarbeitungsprotokoll, Fuehrungs- und Strafregister-Abfrage-Nachweis, Verpflichtungserklaerung.'
 
   - source: 'ORP.3.A3'
-    target: 'ISA 2.2.1'
+    target: '2.2.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -93,7 +93,7 @@ mappings:
     audit_evidence_hint: 'Schulungsplan, Teilnehmerlisten, Phishing-Simulationsergebnisse.'
 
   - source: 'ORP.3.A1'
-    target: 'ISA 2.2.1'
+    target: '2.2.1'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -104,7 +104,7 @@ mappings:
 
   # --- INF-Schicht → TISAX Kapitel 3 ---
   - source: 'INF.1.A1'
-    target: 'ISA 3.1.1'
+    target: '3.1.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -114,7 +114,7 @@ mappings:
     audit_evidence_hint: 'Zutrittskonzept, Gebaeude-Sicherheitsplan, Zutrittslog-Auswertung.'
 
   - source: 'INF.1.A2'
-    target: 'ISA 3.1.1'
+    target: '3.1.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -125,7 +125,7 @@ mappings:
 
   # --- OPS-Schicht → TISAX Kapitel 5 ---
   - source: 'OPS.1.1.3.A1'
-    target: 'ISA 5.1.1'
+    target: '5.1.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -135,7 +135,7 @@ mappings:
     audit_evidence_hint: 'Patch-Konzept, Vulnerability-Scan-Berichte, Patch-Rollout-Statistik.'
 
   - source: 'CON.1.A1'
-    target: 'ISA 5.1.1'
+    target: '5.1.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -146,7 +146,7 @@ mappings:
 
   # --- ORP.1 → TISAX Kapitel 4 ---
   - source: 'ORP.1.A4'
-    target: 'ISA 4.2.1'
+    target: '4.2.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -157,7 +157,7 @@ mappings:
 
   # --- OPS.2.2 → TISAX Kapitel 6 ---
   - source: 'OPS.2.2.A3'
-    target: 'ISA 6.1.1'
+    target: '6.1.1'
     relationship: 'equivalent'
     confidence: 'medium'
     rationale: |
@@ -168,7 +168,7 @@ mappings:
     audit_evidence_hint: 'Cloud-Provider-Bewertung, ISO-27001-Zertifikat des Providers, SLA mit Sicherheitsklauseln.'
 
   - source: 'ORP.1.A3'
-    target: 'ISA 6.1.1'
+    target: '6.1.1'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -179,7 +179,7 @@ mappings:
 
   # --- DER-Schicht → TISAX (allg. Detektion) ---
   - source: 'DER.2.1.A2'
-    target: 'ISA 1.3.1'
+    target: '1.3.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -189,7 +189,7 @@ mappings:
     audit_evidence_hint: 'Incident-Response-Plan, Eskalationsmatrix, Vorfallregister.'
 
   - source: 'DER.1.A3'
-    target: 'ISA 4.2.1'
+    target: '4.2.1'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |

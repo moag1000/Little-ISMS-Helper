@@ -151,7 +151,14 @@ mappings:
 | ISO 27001:2022 ↔ EUCS | both | ... |
 | CRA ↔ NIS2 Art. 21 | both | `cra_to_nis2-art21_v1.0.yaml` + reverse |
 | NIST CSF 2.0 → ISO 27001:2022 | one-way | ... |
-| TISAX VDA ISA 6 → ISO 27001:2022 | one-way | ... |
+| TISAX → ISO 27001:2022 | one-way | `tisax_to_iso27001-2022_v1.0.yaml` |
+| TISAX → ISO 27002 | one-way | `tisax_to_iso27002_v1.0.yaml` |
+| TISAX → ISO 27017 | one-way | `tisax_to_iso27017_v1.0.yaml` |
+| TISAX ↔ BSI IT-Grundschutz 2024 | both | `tisax_to_bsi-grundschutz_v1.0.yaml` + reverse |
+| TISAX → NIST SP800-53r5 | one-way | `tisax_to_nist-sp800-53r5_v1.0.yaml` |
+| TISAX → IEC/ISA-62443 | one-way | `tisax_to_iec-isa-62443_v1.0.yaml` |
+| TISAX → NIST CSF 1.1 | one-way | `tisax_to_nist-csf-1.1_v1.0.yaml` |
+| ISO 27001:2022 → TISAX | one-way | `iso27001-2022_to_tisax_v1.0.yaml` |
 
 ---
 
@@ -186,7 +193,7 @@ Use lowercase, hyphenated identifiers matching the format of existing files:
 | NIS2 Art. 21 | `nis2-art21` |
 | EU AI Act | `eu-ai-act` |
 | NIST CSF 2.0 | `nist-csf-2-0` |
-| TISAX VDA ISA 6 | `tisax-vda-isa-6` |
+| TISAX VDA ISA 6 | `tisax` |
 
 ### Quality Bar for Community PRs
 
