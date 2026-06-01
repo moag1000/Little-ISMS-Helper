@@ -71,6 +71,30 @@ final class ControlFrameworkReferencesType extends AbstractType
         'soc2',
     ];
 
+    /**
+     * Framework-appropriate placeholder examples, so the user sees references in
+     * the right notation per framework (TISAX VDA-ISA "1.1.1", not ISO "A.5.1").
+     * Junior-Implementer feedback: generic "A.5.1" placeholder under every
+     * framework is misleading. Used by the form theme to build the placeholder.
+     *
+     * @var array<string, string>
+     */
+    public const EXAMPLE_REFERENCES = [
+        'iso27001' => 'A.5.1, A.8.16',
+        'iso27017' => 'CLD.6.3.1, CLD.12.1.5',
+        'iso27018' => 'A.5.1, A.10.1',
+        'iso27701' => '6.5, A.7.2.1',
+        'iso22301' => '8.4.2, 8.4.4',
+        'bsi' => 'ORP.1.A1, OPS.1.1.2.A5',
+        'bsi_c5' => 'OPS-01, IDM-09',
+        'nist' => 'AC-2, SC-7',
+        'nist_csf' => 'PR.AA-01, DE.CM-01',
+        'dora' => 'Art. 6, Art. 9',
+        'nis2' => 'Art. 21(2)(a), Art. 23',
+        'tisax' => '1.1.1, 1.2.1',
+        'soc2' => 'CC6.1, CC7.2',
+    ];
+
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
@@ -138,6 +162,7 @@ final class ControlFrameworkReferencesType extends AbstractType
             $frameworkOptions[(string) $slug] = $catalogue[(string) $slug] ?? [];
         }
         $view->vars['framework_options'] = $frameworkOptions;
+        $view->vars['framework_examples'] = self::EXAMPLE_REFERENCES;
     }
 
     /**
@@ -233,6 +258,9 @@ final class ControlFrameworkReferencesType extends AbstractType
                 'class' => 'fa-framework-ref-input',
                 'data-controller' => 'tom-select',
                 'data-tom-select-create-value' => 'true',
+                // Render the option-dropdown under <body> so it is not clipped
+                // by the rounded form-section card (overflow:hidden ancestor).
+                'data-tom-select-dropdown-parent-value' => 'body',
                 'data-framework-slug' => $slug,
                 'placeholder' => 'control.placeholder.framework_reference',
             ],
