@@ -12,7 +12,7 @@
     {# Designer Header #}
     <div class="designer-header bg-body text-body py-2 px-3 d-flex justify-content-between align-items-center border-bottom">
         <div class="d-flex align-items-center gap-3">
-            <a href="{{ path('report_builder_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+            <a href="{{ path('report_builder_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.back'|trans({}, 'messages') }}">
                 <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
             </a>
             <div>
@@ -95,10 +95,12 @@
                             <span class="widget-title small text-muted">{{ widget.title|default(widget.type) }}</span>
                             <div class="widget-actions">
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm p-0 text-muted"
+                                        aria-label="{{ 'report_builder.modal.widget_config.title'|trans({}, 'report_builder') }}"
                                         data-action="click->report-designer#configureWidget">
                                     <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
                                 </button>
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm p-0"
+                                        aria-label="{{ 'report_builder.action.delete'|trans({}, 'report_builder') }}"
                                         data-action="click->report-designer#removeWidget">
                                     <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                 </button>

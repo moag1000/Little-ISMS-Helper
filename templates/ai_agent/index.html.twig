@@ -112,7 +112,7 @@
                                     {{ _fa_progress.render({ value: comp.percentage, tone: comp.percentage >= 80 ? 'success' : (comp.percentage >= 50 ? 'warning' : 'danger') }) }}
                                 </td>
                                 <td class="fa-table__cell fa-table__cell--actions">
-                                    <a href="{{ path('app_asset_show', {id: agent.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                    <a href="{{ path('app_asset_show', {id: agent.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                     </a>
                                 </td>
