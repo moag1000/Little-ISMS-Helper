@@ -27,6 +27,13 @@ final readonly class ParsedWorkbookResult
          * organisation than the current tenant.
          */
         public ?string $workbookCompany = null,
+
+        /**
+         * VDA-ISA version read from the cover sheet "Version:" field
+         * (e.g. "6.0.2", "6.0.3"). Null when not found. Only major version 6
+         * is supported by the importer; older workbooks are rejected upstream.
+         */
+        public ?string $workbookVersion = null,
     ) {}
 
     public function getControlCount(): int
@@ -43,7 +50,9 @@ final readonly class ParsedWorkbookResult
     {
         $groups = [];
         foreach ($this->controls as $control) {
-            $groups[$control->getTier()][] = $control;
+            // Authoritative dimension from the source sheet — not the ID-prefix
+            // guess (DP restarts numbering at 9.x, which getTier() misreads).
+            $groups[$control->dimension][] = $control;
         }
         return $groups;
     }

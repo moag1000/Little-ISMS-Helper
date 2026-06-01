@@ -227,6 +227,19 @@ final class TisaxImportWizardController extends AbstractController
 
         $validation = $this->validator->validate($parsed);
 
+        // ISA 5.x is a subset of ISA 6 — accepted as a PARTIAL import. Warn the
+        // user that the older workbook fills its matching ISA-6 controls and the
+        // 6.x-only controls (e.g. the expanded Data-Protection module) remain
+        // unassessed.
+        $isPartialFive = $parsed->workbookVersion !== null && str_starts_with($parsed->workbookVersion, '5.');
+        if ($isPartialFive) {
+            $this->addFlash('warning', $this->translator->trans(
+                'tisax.import.validate.legacy_five_partial',
+                ['%version%' => $parsed->workbookVersion, '%count%' => $parsed->getControlCount()],
+                'tisax_isa',
+            ));
+        }
+
         // Serialise parsed controls into session for next step
         $serialisedControls = $this->importSupport->serialiseControls($parsed->controls);
         $request->getSession()->set(self::SESSION_PARSED_CONTROLS, $serialisedControls);
@@ -245,6 +258,8 @@ final class TisaxImportWizardController extends AbstractController
             'controlCount' => $parsed->getControlCount(),
             'sheetName'   => $parsed->sheetName,
             'columnMap'   => $parsed->detectedColumnMap,
+            'workbookVersion' => $parsed->workbookVersion,
+            'isPartialFive'   => $isPartialFive,
             'stepIndex'   => 2,
             'canProceed'  => $validation['ok'],
         ]);
