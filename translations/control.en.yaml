@@ -76,6 +76,7 @@ control:
     control_maturity: -- Select maturity level --
     responsibility: -- Select responsibility --
     framework_reference: 'e.g. A.5.1, A.5.2 (comma-separated)'
+    framework_reference_example: 'e.g. %example% (comma-separated)'
   status:
     implemented: Implemented
     in_progress: In Progress

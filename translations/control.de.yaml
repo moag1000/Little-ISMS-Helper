@@ -76,6 +76,7 @@ control:
     control_maturity: -- Reifegrad wählen --
     responsibility: -- Verantwortlichkeit wählen --
     framework_reference: 'z. B. A.5.1, A.5.2 (Komma-getrennt)'
+    framework_reference_example: 'z. B. %example% (Komma-getrennt)'
   status:
     implemented: Implementiert
     in_progress: In Bearbeitung
