@@ -435,6 +435,7 @@ src/Controller/ThreatIntelligenceController.php:166
 src/Controller/ThreatIntelligenceController.php:167
 src/Controller/ThreatIntelligenceController.php:214
 src/Controller/ThreatIntelligenceController.php:222
+src/Controller/Tisax/TisaxImportWizardController.php:370
 src/Controller/TrainingController.php:114
 src/Controller/TrainingController.php:115
 src/Controller/TrainingController.php:178
