@@ -370,12 +370,25 @@ final class TisaxConsolidateCommand extends Command
         $junkKept = 0;
 
         // Index canonical rows by normalised requirement id for fast match.
+        // When TWO canonical rows normalise to the same id (e.g. numeric "1.1.1"
+        // AND a superseded stub "ISA 1.1.1"), PREFER the row whose raw id is
+        // already the canonical numeric form — otherwise the move can target the
+        // ISA stub, which the seed-junk cleanup then deletes, losing the moved
+        // assessment (data-loss bug caught by the E2E run).
         $canonicalByNormId = [];
         if ($canonical !== null) {
             foreach ($this->requirementsOf($canonical) as $req) {
-                $norm = $this->normaliseId((string) $req->getRequirementId(), $confirmedTargets);
-                if ($norm['id'] !== null) {
-                    $canonicalByNormId[$norm['id']] ??= $req;
+                $rawId = (string) $req->getRequirementId();
+                $norm = $this->normaliseId($rawId, $confirmedTargets);
+                if ($norm['id'] === null) {
+                    continue;
+                }
+                $existing = $canonicalByNormId[$norm['id']] ?? null;
+                $rawIsCanonical = ($rawId === $norm['id']);
+                $existingIsCanonical = $existing !== null
+                    && (string) $existing->getRequirementId() === $norm['id'];
+                if ($existing === null || ($rawIsCanonical && !$existingIsCanonical)) {
+                    $canonicalByNormId[$norm['id']] = $req;
                 }
             }
         }
@@ -436,6 +449,17 @@ final class TisaxConsolidateCommand extends Command
             }
         }
 
+        // Collect every canonical row that will RECEIVE a moved assessment, so the
+        // seed-junk pass below never deletes a move target (defense-in-depth on top
+        // of the numeric-preference above — the junk plan is computed pre-move, so
+        // a move target would otherwise still look like an empty stub).
+        $moveTargets = new \SplObjectStorage();
+        foreach ($perTenant as $tenantPlan) {
+            foreach ($tenantPlan['move'] as $moveRow) {
+                $moveTargets->attach($moveRow['canonical']);
+            }
+        }
+
         // 2. Seed-junk deletion candidates across both frameworks (system rows only,
         //    no tenant assessment): ISA-KAP-* and superseded `ISA x.y.z` stubs.
         foreach ([$canonical, $legacy] as $fw) {
@@ -452,7 +476,7 @@ final class TisaxConsolidateCommand extends Command
                 if (!$isKap && !$isIsaStub) {
                     continue;
                 }
-                if ($this->hasTenantAssessment($req)) {
+                if ($this->hasTenantAssessment($req) || $moveTargets->contains($req)) {
                     $junkKept++;
                     continue;
                 }
