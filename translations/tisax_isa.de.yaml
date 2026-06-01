@@ -158,12 +158,19 @@ tisax:
         predictable: 'Vorhersagbar — gemessen'
         optimising: 'Optimierend — kontinuierlich verbessert'
       req_levels:
-        aria: 'Anforderungsebenen M/S/H/VH'
+        aria: 'Anforderungsebenen M/S/H/VH/SGA'
+        none: 'keine Ebenen'
       req_level:
         must_tooltip: 'Muss-Anforderung (Spalte J) — Präsenz im ENX-Workbook'
         should_tooltip: 'Sollte-Anforderung (Spalte K) — Präsenz im ENX-Workbook'
         high_tooltip: 'Zusatzanforderung bei hohem Schutzbedarf (Spalte L) — Präsenz im ENX-Workbook'
         very_high_tooltip: 'Zusatzanforderung bei sehr hohem Schutzbedarf (Spalte M) — Präsenz im ENX-Workbook'
+        sga_tooltip: 'Zusatzanforderung Simplified Group Assessment (SGA) — Präsenz im ENX-Workbook'
+        must_abbr: 'M'
+        should_abbr: 'S'
+        high_abbr: 'H'
+        very_high_abbr: 'VH'
+        sga_abbr: 'SGA'
         schutzbedarf_note: 'Schutzbedarf-Ergänzung verfügbar'
         byo_hint: 'Text im eigenen ENX-Workbook (BYO-Assistent)'
       dp:

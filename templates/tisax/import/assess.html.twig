@@ -115,6 +115,9 @@
                                 <th>{{ 'tisax.import.assess.col.id'|trans({}, 'tisax_isa') }}</th>
                                 <th>{{ 'tisax.import.assess.col.title'|trans({}, 'tisax_isa') }}</th>
                                 <th>{{ 'tisax.import.assess.col.tier'|trans({}, 'tisax_isa') }}</th>
+                                <th title="{{ 'tisax.import.assess.col.req_levels_tooltip'|trans({}, 'tisax_isa') }}">
+                                    {{ 'tisax.import.assess.col.req_levels'|trans({}, 'tisax_isa') }}
+                                </th>
                                 <th>{{ 'tisax.import.assess.col.assessment'|trans({}, 'tisax_isa') }}</th>
                                 <th>{{ 'tisax.import.assess.col.target'|trans({}, 'tisax_isa') }}</th>
                             </tr>
@@ -135,6 +138,33 @@
                                             {{ req.category|replace({'_': ' '}) }}
                                         </span>
                                     {% endif %}
+                                </td>
+                                <td>
+                                    {# ── Requirement tiers M/S/H/VH/SGA (B3 tiers-first-class, §9.2) ── #}
+                                    {% set tierMap = req.dataSourceMapping ?? {} %}
+                                    {% set tiers = [
+                                        { key: 'tisax_must',     abbr: 'must',     css: 'bg-secondary' },
+                                        { key: 'tisax_should',   abbr: 'should',   css: 'bg-secondary' },
+                                        { key: 'tisax_high',     abbr: 'high',     css: 'bg-warning text-dark' },
+                                        { key: 'tisax_veryHigh', abbr: 'very_high', css: 'bg-danger' },
+                                        { key: 'tisax_sga',      abbr: 'sga',      css: 'bg-info text-dark' }
+                                    ] %}
+                                    <div class="d-flex gap-1 flex-wrap" role="group"
+                                         aria-label="{{ 'tisax.import.assess.req_levels.aria'|trans({}, 'tisax_isa') }}">
+                                        {% set anyTier = false %}
+                                        {% for tier in tiers %}
+                                            {% if tierMap[tier.key] is defined and tierMap[tier.key] is not empty %}
+                                                {% set anyTier = true %}
+                                                <span class="badge {{ tier.css }}"
+                                                      title="{{ ('tisax.import.assess.req_level.' ~ tier.abbr ~ '_tooltip')|trans({}, 'tisax_isa') }}">
+                                                    {{ ('tisax.import.assess.req_level.' ~ tier.abbr ~ '_abbr')|trans({}, 'tisax_isa') }}
+                                                </span>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if not anyTier %}
+                                            <span class="text-muted small">{{ 'tisax.import.assess.req_levels.none'|trans({}, 'tisax_isa') }}</span>
+                                        {% endif %}
+                                    </div>
                                 </td>
                                 <td>
                                     {% if isDataProtection %}
@@ -206,7 +236,7 @@
                             </tr>
                             {% else %}
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
+                                <td colspan="6" class="text-center text-muted py-4">
                                     {{ 'tisax.import.assess.no_requirements'|trans({}, 'tisax_isa') }}
                                 </td>
                             </tr>
