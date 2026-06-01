@@ -3,6 +3,21 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.10.1](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.10.0...v3.10.1) (2026-06-01)
+
+
+### Fixed
+
+* **a11y:** label icon-only controls + repair empty workflow cancel buttons ([#825](https://github.com/moag1000/Little-ISMS-Helper/issues/825)) ([14d1121](https://github.com/moag1000/Little-ISMS-Helper/commit/14d11211997b3b1b09b714cfa124c88b4c878d76))
+* **docker:** run pending migrations on embedded-DB upgrade (500 on start) ([#819](https://github.com/moag1000/Little-ISMS-Helper/issues/819)) ([5999d75](https://github.com/moag1000/Little-ISMS-Helper/commit/5999d75160819c59f511a27f0984b9ce2e663181))
+* **soa+ui:** framework-appropriate ref examples + un-clip TomSelect dropdown ([#823](https://github.com/moag1000/Little-ISMS-Helper/issues/823)) ([e5d5d98](https://github.com/moag1000/Little-ISMS-Helper/commit/e5d5d98dd95467382a6ca6dfd109118c660fb6f5))
+* **ui:** replace native browser alert()/confirm() with Aurora toast/confirm ([#822](https://github.com/moag1000/Little-ISMS-Helper/issues/822)) ([4557dbd](https://github.com/moag1000/Little-ISMS-Helper/commit/4557dbd4010fb2ddd5898279ac6f9050fe88622a))
+
+
+### Documentation
+
+* **design-system:** sync DESIGN_SYSTEM, mirror CSS + alva section ([#821](https://github.com/moag1000/Little-ISMS-Helper/issues/821)) ([bbb2b8d](https://github.com/moag1000/Little-ISMS-Helper/commit/bbb2b8d7bd03a0c82564b80d565d270d4e32be99))
+
 ## [3.10.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.9.0...v3.10.0) (2026-05-31)
 
 
