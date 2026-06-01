@@ -14,6 +14,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use App\Service\Tisax\EnxScheduleExporter;
 use App\Service\Tisax\TisaxConfirmationService;
+use App\Service\Tisax\TisaxEvidenceLinker;
 use App\Service\Tisax\TisaxImportSupportService;
 use App\Service\Tisax\RequirementLevelMetadataLoader;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -78,6 +79,7 @@ final class TisaxImportWizardController extends AbstractController
         private readonly FileUploadSecurityService $uploadSecurity,
         private readonly AuditLogger $auditLogger,
         private readonly TisaxConfirmationService $confirmationService,
+        private readonly TisaxEvidenceLinker $evidenceLinker,
         private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
@@ -358,14 +360,27 @@ final class TisaxImportWizardController extends AbstractController
             $applyIds    = array_map('strval', (array) $request->request->all('apply_maturity'));
             $overwritten = $this->importSupport->applyMaturityOverwrites($applyIds, $controls, $framework, $tenant, $user);
 
+            // B3 — evidence linkage: resolve the imported "Referenz Dokumentation"
+            // free-text citations to real Document evidence (exact/normalised
+            // filename match only). Unmatched citations land in the typed
+            // dataSourceMapping.unlinked_citations review list, never dropped.
+            $evidence = ['linked' => 0, 'unlinked' => 0, 'requirements_with_unlinked' => 0];
+            if ($tenant !== null) {
+                $evidence = $this->evidenceLinker->linkBatch($result['entities'], $tenant);
+                $this->em->flush();
+            }
+
             $this->auditLogger->logImport(
                 'ComplianceRequirement',
                 $result['created'] + $result['updated'],
                 sprintf(
-                    'TISAX BYO import: %d created, %d updated, %d Reifegrad overwritten — framework %s',
+                    'TISAX BYO import: %d created, %d updated, %d Reifegrad overwritten, '
+                    . '%d evidence linked, %d citations unlinked — framework %s',
                     $result['created'],
                     $result['updated'],
                     $overwritten,
+                    $evidence['linked'],
+                    $evidence['unlinked'],
                     $framework->getCode(),
                 ),
             );

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceRequirement;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Repository\PortfolioSnapshotRepository;
 use App\Repository\RiskRepository;
@@ -29,9 +31,20 @@ use DateTimeInterface;
  */
 final class AuditFreezeSnapshotBuilder
 {
+    /**
+     * Framework codes whose per-requirement TISAX Reifegrad-Stand must be frozen
+     * into the snapshot (B2). Canonical 'TISAX' plus the deprecation-window alias
+     * so a tenant who has not yet run the consolidation migration is still
+     * captured. Mirrors TisaxRequirementMapper::FRAMEWORK_CODE / LEGACY_CODE_ALIASES.
+     *
+     * @var list<string>
+     */
+    private const TISAX_FRAMEWORK_CODES = ['TISAX', 'TISAX-VDA-ISA-6'];
+
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly ControlRepository $controlRepository,
         private readonly RiskRepository $riskRepository,
         private readonly PortfolioSnapshotRepository $portfolioSnapshotRepository,
@@ -68,6 +81,7 @@ final class AuditFreezeSnapshotBuilder
             ],
             'soa_entries' => $this->buildSoaEntries($tenant),
             'requirement_fulfillments' => $this->buildRequirementFulfillments($tenant, $frameworks),
+            'tisax_maturity' => $this->buildTisaxMaturity($tenant, $frameworks),
             'risks' => $this->buildRisks($tenant),
             'kpi' => $this->buildKpi($tenant, $frameworks),
             'portfolio_snapshot_refs' => $this->buildPortfolioSnapshotRefs($tenant, $stichtagImmutable),
@@ -150,6 +164,90 @@ final class AuditFreezeSnapshotBuilder
             return $cmp !== 0 ? $cmp : strcmp($a['requirement_id'], $b['requirement_id']);
         });
         return $rows;
+    }
+
+    /**
+     * TISAX Reifegrad-Stand snapshot (B2, spec §9.1).
+     *
+     * Per assessed TISAX ComplianceRequirement (keyed by the canonical VDA-ISA
+     * control number, e.g. 1.1.1) this captures the values that turn a freeze
+     * into a signed, point-in-time Reifegrad statement an auditor can rely on:
+     *  - maturityCurrent / maturityTarget  (the gap-to-target),
+     *  - maturityReviewedAt                (the Stichtag — a Reifegrad without a
+     *                                       review date is not auditable),
+     *  - category/dimension                (information_security / prototype_
+     *                                       protection / data_protection),
+     *  - assessment_state_dp               (the Data-Protection tristate state),
+     *  - maturityRaw                       (the verbatim DP tristate cell from
+     *                                       dataSourceMapping — "OK"/"Nicht OK"/
+     *                                       "na" — which the 0-5 scale can't hold),
+     *  - applicable tiers                  (must/should/high/veryHigh/sga).
+     *
+     * Without this the audit-freeze captured only ComplianceRequirementFulfillment
+     * rows, never the requirement's own Reifegrad — so a TISAX certification
+     * cut-off could not be frozen (no answer to §9.4's auditor question).
+     *
+     * @param list<ComplianceFramework> $frameworks
+     * @return list<array<string,mixed>>
+     */
+    private function buildTisaxMaturity(Tenant $tenant, array $frameworks): array
+    {
+        $rows = [];
+        foreach ($frameworks as $framework) {
+            $code = (string) $framework->getCode();
+            if (!in_array($code, self::TISAX_FRAMEWORK_CODES, true)) {
+                continue;
+            }
+
+            $requirements = $this->requirementRepository
+                ->findTisaxAssessedByFrameworkAndTenant($framework, $tenant);
+
+            foreach ($requirements as $requirement) {
+                $rows[] = $this->mapTisaxMaturityRow($framework, $requirement);
+            }
+        }
+
+        usort($rows, static function (array $a, array $b): int {
+            $cmp = strcmp($a['framework'], $b['framework']);
+            return $cmp !== 0 ? $cmp : strcmp($a['requirement_id'], $b['requirement_id']);
+        });
+
+        return $rows;
+    }
+
+    /**
+     * Map one TISAX requirement to its frozen Reifegrad row.
+     *
+     * @return array<string,mixed>
+     */
+    private function mapTisaxMaturityRow(
+        ComplianceFramework $framework,
+        ComplianceRequirement $requirement,
+    ): array {
+        $mapping = $requirement->getDataSourceMapping() ?? [];
+
+        $tiers = [];
+        foreach (['must', 'should', 'high', 'veryHigh', 'sga'] as $tier) {
+            $key = 'tisax_' . $tier;
+            if (isset($mapping[$key]) && $mapping[$key] !== '') {
+                $tiers[$tier] = (string) $mapping[$key];
+            }
+        }
+
+        $reviewedAt = $requirement->getMaturityReviewedAt();
+
+        return [
+            'framework' => (string) $framework->getCode(),
+            'requirement_id' => (string) $requirement->getRequirementId(),
+            'title' => (string) $requirement->getTitle(),
+            'category' => $requirement->getCategory(),
+            'maturity_current' => $requirement->getMaturityCurrent(),
+            'maturity_target' => $requirement->getMaturityTarget(),
+            'maturity_reviewed_at' => $reviewedAt?->format(DATE_ATOM),
+            'assessment_state_dp' => $requirement->getAssessmentStateDp(),
+            'maturity_raw' => isset($mapping['maturityRaw']) ? (string) $mapping['maturityRaw'] : null,
+            'tiers' => $tiers,
+        ];
     }
 
     /**

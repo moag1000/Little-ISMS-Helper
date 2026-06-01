@@ -51,6 +51,34 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find the tenant's assessed TISAX requirements for a framework, for the
+     * audit-freeze snapshot (B2). Scopes to rows that belong to the tenant
+     * (either tenant-uploaded via uploadTenant, or global system rows the tenant
+     * shares) and that carry an assessment (maturityCurrent / assessmentStateDp /
+     * maturityReviewedAt set). Sorted by requirementId for deterministic hashing.
+     *
+     * @return ComplianceRequirement[]
+     */
+    public function findTisaxAssessedByFrameworkAndTenant(
+        ComplianceFramework $complianceFramework,
+        Tenant $tenant,
+    ): array {
+        return $this->createQueryBuilder('cr')
+            ->where('cr.framework = :framework')
+            ->andWhere('(cr.uploadTenant = :tenant OR cr.uploadTenant IS NULL)')
+            ->andWhere(
+                'cr.maturityCurrent IS NOT NULL '
+                . 'OR cr.assessmentStateDp IS NOT NULL '
+                . 'OR cr.maturityReviewedAt IS NOT NULL'
+            )
+            ->setParameter('framework', $complianceFramework)
+            ->setParameter('tenant', $tenant)
+            ->orderBy('cr.requirementId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find all requirements for a specific compliance framework.
      *
      * @param ComplianceFramework $complianceFramework Compliance framework entity
