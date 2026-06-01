@@ -98,6 +98,11 @@ final class VdaIsaWorkbookParser
             // ENX ISA 6 exact column headers (most specific first)
             'control number',       // EN col C: "Control number"
             'kontrollnummer',       // DE col C: "Kontrollnummer"
+            // ISA 5.x dual-id layout: "ISA New" carries the 6-compatible id
+            // (e.g. 1.1.1). "ISA Classic" (old numbering) is deliberately NOT an
+            // alias — it sits left of "ISA New" and would win the leftmost-column
+            // match, yielding ids that do not line up with the ISA-6 framework.
+            'isa new',
             // Legacy / alternate
             'control no', 'control id', 'req. no', 'req no',
             'kontroll-nr', 'kontroll-id', 'steuerungs-id',
@@ -128,6 +133,23 @@ final class VdaIsaWorkbookParser
             'further info', 'weiterführende information', 'comments', 'kommentar',
             'kontrollziel', 'steuerungsziel',
             'info',
+        ],
+        // ENX ISA 6 col E: the assessor's documented MEASURE ("Maßnahme").
+        // Verbatim headers first; DP sheet uses the EN label even in the DE
+        // workbook ("Description of implementation").
+        'implementationDescription' => [
+            'beschreibung der umsetzung',
+            'description of implementation',
+            'implementation description',
+            'umsetzungsbeschreibung',
+        ],
+        // ENX ISA 6 col F: document references backing the implementation
+        // ("Dokumente"). DP sheet uses the EN label ("Reference Documentation").
+        'referenceDocumentation' => [
+            'referenz dokumentation',
+            'reference documentation',
+            'referenzdokumentation',
+            'verweis auf dokumentation',
         ],
         'mustLevel' => [
             // ENX ISA 6 col J: "Requirements\n(must)" / DE "Anforderungen\n(muss)"
@@ -187,14 +209,30 @@ final class VdaIsaWorkbookParser
         // Pre-filled Reifegrad column (integer 0-5) — when a user uploads an
         // already-assessed workbook, mirror the score into ComplianceRequirement
         // so the assess-page does not show 0 for every row.
-        // ENX ISA 6 col D: "Reifegrad" (DE) / "Result" (EN).
+        // ENX ISA 6 col D: "Reifegrad" (DE, IS+PP) / "Bewertung" (DE, DP) /
+        // "Result" (EN). DP carries a tristate ("OK"/…) rather than 0-5.
         'maturityCurrent' => [
             'reifegrad',
+            'bewertung',
             'result',
             'maturity level', 'maturity-level', 'maturitylevel',
             'level achieved', 'achieved level',
             'maturity',
         ],
+    ];
+
+    /**
+     * The three VDA-ISA assessment dimensions and their content-sheet name
+     * candidates (case-insensitive, first match wins). Each dimension is parsed
+     * independently so a workbook contributes Information Security, Prototype
+     * Protection AND Data Protection controls — not just the first sheet found.
+     *
+     * @var array<string, list<string>>
+     */
+    private const CONTENT_SHEETS = [
+        'information_security' => ['Information Security', 'Informationssicherheit'],
+        'prototype_protection' => ['Prototype Protection', 'Prototypenschutz'],
+        'data_protection'      => ['Data Protection', 'Datenschutz'],
     ];
 
     public function __construct(
@@ -216,29 +254,167 @@ final class VdaIsaWorkbookParser
         $reader->setReadDataOnly(true);
         $spreadsheet = $reader->load($filePath);
 
-        $worksheet = $this->resolveSheet($spreadsheet);
+        // Version gate — the importer maps controls into the ISA-6 framework.
+        // ISA 5.x is a strict subset of ISA 6 (every 5.1 control id also exists
+        // in 6.x; 6.x merely adds ~17 controls incl. the revised Data-Protection
+        // module), so a 5.x workbook is accepted as a PARTIAL import — its
+        // controls match their ISA-6 counterparts and the 6.x-only controls
+        // stay unassessed. ISA 4.x, however, is a different catalogue (ISO
+        // 27001:2013 basis; "Entfernung der Kompatibilität mit ISA 4" per the
+        // ISA-6 change log) and is rejected with a clear, user-facing message.
+        $version = $this->detectVersion($spreadsheet);
+        if ($version !== null && $this->majorVersion($version) < 5) {
+            throw new ErrorException(sprintf(
+                'Diese VDA-ISA-Version (%1$s) wird vom Import nicht unterstützt. '
+                . 'Unterstützt werden ISA 5.x (Teilimport) und ISA 6.x '
+                . '(ISA6_DE_6.0.x.xlsx / ISA6_EN_6.0.x.xlsx). '
+                . 'ISA 4.x basiert auf einem anderen Control-Katalog (ISO 27001:2013) '
+                . 'und ist nicht kompatibel. — '
+                . 'VDA-ISA version %1$s is not supported; please upload an ISA 5.x or 6.x workbook.',
+                $version,
+            ));
+        }
 
-        [$headerRow, $headerMap] = $this->detectHeader($worksheet);
+        // Parse ALL THREE content dimensions independently — a workbook
+        // contributes Information Security + Prototype Protection + Data
+        // Protection, each with its own restarted numbering. Previously only
+        // the first matching sheet was read, silently dropping PP and DP.
+        $controls       = [];
+        $parsedSheets   = [];
+        $firstHeaderRow = 0;
+        $firstHeaderMap = [];
 
-        $controls = $this->extractControlRows($worksheet, $headerRow, $headerMap);
+        // ISA 5.x Data Protection used coarse two-part control ids (9.1 … 9.4)
+        // that ISA 6 refined to three-part leaves (9.1.1 … 9.4.1, one leaf per
+        // section for 9.1–9.4). For a 5.x partial import we normalise those DP
+        // ids to their 6.x counterpart so the four DP controls map cleanly.
+        $isLegacyFive = $version !== null && $this->majorVersion($version) === 5;
+
+        foreach (self::CONTENT_SHEETS as $dimension => $sheetNames) {
+            $worksheet = $this->resolveSheetByNames($spreadsheet, $sheetNames);
+            if ($worksheet === null) {
+                continue; // dimension not present in this workbook
+            }
+
+            try {
+                [$headerRow, $headerMap] = $this->detectHeader($worksheet);
+            } catch (ErrorException $e) {
+                // A present-but-headerless sheet must not abort the whole import.
+                $this->logger->warning('VdaIsaWorkbookParser: skipping sheet without header', [
+                    'sheet' => $worksheet->getTitle(), 'dimension' => $dimension, 'reason' => $e->getMessage(),
+                ]);
+                continue;
+            }
+
+            $normaliseTwoPartIds = $isLegacyFive && $dimension === 'data_protection';
+            $rows = $this->extractControlRows($worksheet, $headerRow, $headerMap, $dimension, $normaliseTwoPartIds);
+            foreach ($rows as $r) {
+                $controls[] = $r;
+            }
+            $parsedSheets[] = $worksheet->getTitle();
+            if ($firstHeaderRow === 0) {
+                $firstHeaderRow = $headerRow;
+                $firstHeaderMap = $headerMap;
+            }
+        }
+
+        // Fallback for legacy / non-standard workbooks that do not use the three
+        // canonical sheet names — parse a single best-guess sheet as before.
+        if ($controls === []) {
+            $worksheet = $this->resolveSheet($spreadsheet);
+            [$firstHeaderRow, $firstHeaderMap] = $this->detectHeader($worksheet);
+            $controls     = $this->extractControlRows($worksheet, $firstHeaderRow, $firstHeaderMap, 'information_security');
+            $parsedSheets = [$worksheet->getTitle()];
+        }
 
         $company = $this->extractCompany($spreadsheet);
 
         $this->logger->info('VdaIsaWorkbookParser: parsed workbook', [
             'file'    => basename($filePath),
-            'sheet'   => $worksheet->getTitle(),
-            'headers' => array_keys($headerMap),
+            'sheets'  => $parsedSheets,
+            'headers' => array_keys($firstHeaderMap),
             'rows'    => count($controls),
             'company' => $company,
         ]);
 
         return new ParsedWorkbookResult(
             controls: $controls,
-            sheetName: $worksheet->getTitle(),
-            headerRowIndex: $headerRow,
-            detectedColumnMap: $headerMap,
+            sheetName: implode(', ', $parsedSheets),
+            headerRowIndex: $firstHeaderRow,
+            detectedColumnMap: $firstHeaderMap,
             workbookCompany: $company,
+            workbookVersion: $version,
         );
+    }
+
+    /**
+     * Cover sheets that carry the "Version: X.Y.Z | date" field.
+     */
+    private const VERSION_SHEETS = ['Deckblatt', 'Cover'];
+
+    /**
+     * Read the VDA-ISA version from the cover sheet "Version:" field
+     * (e.g. "Version: 6.0.2 | 2024-04-04" → "6.0.2"). Returns null when no
+     * recognisable version token is found.
+     */
+    private function detectVersion(\PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet): ?string
+    {
+        foreach (self::VERSION_SHEETS as $sheetName) {
+            $ws = $this->resolveSheetByNames($spreadsheet, [$sheetName]);
+            if ($ws === null) {
+                continue;
+            }
+
+            $highestRow = min(30, $ws->getHighestDataRow());
+            $highestCol = $ws->getHighestDataColumn();
+
+            for ($row = 1; $row <= $highestRow; $row++) {
+                $cells = $ws->rangeToArray('A' . $row . ':' . $highestCol . $row, null, true, false, false)[0] ?? [];
+                foreach ($cells as $cell) {
+                    $text = trim((string) ($cell ?? ''));
+                    if ($text === '') {
+                        continue;
+                    }
+                    // "Version: 6.0.2 | 2024-04-04" / "Version: 5.1 | 04/27/2022"
+                    if (preg_match('/version[:\s]+(\d+\.\d+(?:\.\d+)?)/i', $text, $m) === 1) {
+                        return $m[1];
+                    }
+                }
+            }
+        }
+
+        // ISA 4.x has no "Version:" cover field but a tell-tale sheet layout:
+        // parenthesised module numbers ("Data protection (24)", "Prototype
+        // protection (25)") and a "Connection to 3rd parties" module dropped in
+        // later versions. Recognise it so the version gate can reject it cleanly
+        // instead of failing later with a cryptic "no header row" error.
+        foreach ($spreadsheet->getSheetNames() as $sheetName) {
+            if (preg_match('/protection \(2[45]\)|connection to 3rd parties/i', $sheetName) === 1) {
+                return '4.1';
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolve the first worksheet whose title matches one of $names
+     * (case-insensitive). Returns null when none is present.
+     *
+     * @param list<string> $names
+     */
+    private function resolveSheetByNames(
+        \PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet,
+        array $names,
+    ): ?Worksheet {
+        foreach ($names as $name) {
+            foreach ($spreadsheet->getSheetNames() as $sheetName) {
+                if (strcasecmp($sheetName, $name) === 0) {
+                    return $spreadsheet->getSheetByName($sheetName);
+                }
+            }
+        }
+        return null;
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -303,6 +479,14 @@ final class VdaIsaWorkbookParser
         }
 
         return null;
+    }
+
+    /**
+     * Major version number from a "X.Y.Z" string (e.g. "5.1" → 5).
+     */
+    private function majorVersion(string $version): int
+    {
+        return (int) (explode('.', $version)[0] ?? 0);
     }
 
     /**
@@ -444,12 +628,19 @@ final class VdaIsaWorkbookParser
      *   like "1", "1.1", "8" are category headings, not leaf controls).
      *
      * @param array<string, int> $headerMap
+     * @param string             $dimension  source-sheet dimension, stamped on
+     *                                        every row (authoritative tier).
+     * @param bool $normaliseTwoPartIds  when true (ISA 5.x Data Protection),
+     *                                    two-part control ids (9.1) are kept and
+     *                                    upgraded to their 6.x leaf form (9.1.1).
      * @return list<VdaIsaControlRow>
      */
     private function extractControlRows(
         Worksheet $worksheet,
         int $headerRowIndex,
         array $headerMap,
+        string $dimension = 'information_security',
+        bool $normaliseTwoPartIds = false,
     ): array {
         $highestRow = $worksheet->getHighestDataRow();
         $highestCol = $worksheet->getHighestDataColumn();
@@ -483,10 +674,23 @@ final class VdaIsaWorkbookParser
                 continue; // skip rows without an ID (footnotes, blank content rows)
             }
 
-            // Skip section/subsection IDs (bare integers or two-part IDs like "1", "1.1", "8").
-            // Real control IDs have at least 2 dots: "1.1.1", "8.2.3", "9.5.1".
-            // Two-part IDs like "1.1" are subsection headings, not leaf controls.
-            if (substr_count($controlId, '.') < 2) {
+            // Skip section/subsection IDs (bare integers or two-part IDs like
+            // "1", "1.1", "8"). Real control IDs have at least 2 dots:
+            // "1.1.1", "8.2.3", "9.5.1". Two-part IDs like "1.1" are subsection
+            // headings, not leaf controls — EXCEPT in ISA 5.x Data Protection,
+            // where the leaf controls themselves are two-part (9.1 … 9.4). The
+            // ENX "Row_Format = header" section rows were already dropped above,
+            // so a surviving two-part DP id here is a genuine leaf → upgrade it
+            // to the 6.x form (9.1 → 9.1.1) so it maps onto the ISA-6 framework.
+            $dotCount = substr_count($controlId, '.');
+            if ($normaliseTwoPartIds) {
+                if ($dotCount < 1) {
+                    continue; // bare section number ("9")
+                }
+                if ($dotCount === 1) {
+                    $controlId .= '.1'; // 9.1 → 9.1.1
+                }
+            } elseif ($dotCount < 2) {
                 continue;
             }
 
@@ -499,11 +703,14 @@ final class VdaIsaWorkbookParser
             }
 
             // Pre-filled Reifegrad: parse the cell as int and clamp to 0-5.
-            // Non-numeric or out-of-range values map to null (treat as unrated).
-            $maturityCurrent = null;
-            $maturityRaw     = trim((string) $get('maturityCurrent'));
-            if ($maturityRaw !== '' && is_numeric($maturityRaw)) {
-                $maturityInt = (int) $maturityRaw;
+            // The workbook data-validation domain is {na, n.a., 0-5} for IS/PP
+            // and {na, 0-5} OR {na, OK, Nicht OK} for Data Protection. We keep
+            // the verbatim value in $maturityRawValue (so the DP tristate is not
+            // lost) and only mirror a numeric 0-5 into $maturityCurrent.
+            $maturityCurrent  = null;
+            $maturityRawValue = $this->sanitizeCellValue(trim((string) $get('maturityCurrent')));
+            if ($maturityRawValue !== '' && is_numeric($maturityRawValue)) {
+                $maturityInt = (int) $maturityRawValue;
                 if ($maturityInt >= 0 && $maturityInt <= 5) {
                     $maturityCurrent = $maturityInt;
                 }
@@ -522,6 +729,10 @@ final class VdaIsaWorkbookParser
                 auditEvidenceHint: ($v = $this->sanitizeCellValue(trim((string) $get('evidenceHint')))) !== '' ? $v : null,
                 rawRowIndex: $row,
                 maturityCurrent: $maturityCurrent,
+                dimension: $dimension,
+                implementationDescription: ($v = $this->sanitizeCellValue(trim((string) $get('implementationDescription')))) !== '' ? $v : null,
+                referenceDocumentation: ($v = $this->sanitizeCellValue(trim((string) $get('referenceDocumentation')))) !== '' ? $v : null,
+                maturityRaw: $maturityRawValue !== '' ? $maturityRawValue : null,
             );
         }
 

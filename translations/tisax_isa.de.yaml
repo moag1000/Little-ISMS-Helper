@@ -92,6 +92,7 @@ tisax:
       ok: 'Das Workbook hat alle Validierungsprüfungen bestanden. Sie können fortfahren.'
       proceed: 'Weiter zur Vorschau'
       no_workbook: 'Kein Workbook in der Sitzung gefunden. Bitte laden Sie es erneut hoch.'
+      legacy_five_partial: 'ISA %version%-Workbook erkannt: Teilimport mit %count% Controls. ISA 5.x ist eine Teilmenge von ISA 6 — passende Controls werden übernommen, die nur in ISA 6 enthaltenen Controls (u. a. erweitertes Datenschutz-Modul) bleiben unbewertet.'
 
     preview:
       title: 'Import-Vorschau'

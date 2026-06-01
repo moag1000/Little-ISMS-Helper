@@ -92,6 +92,7 @@ tisax:
       ok: 'Workbook passed all validation checks. You may proceed.'
       proceed: 'Continue to Preview'
       no_workbook: 'No workbook found in session. Please upload again.'
+      legacy_five_partial: 'ISA %version% workbook detected: partial import with %count% controls. ISA 5.x is a subset of ISA 6 — matching controls are imported; controls only present in ISA 6 (incl. the expanded data-protection module) remain unassessed.'
 
     preview:
       title: 'Import Preview'
