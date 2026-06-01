@@ -2,4 +2,4 @@
 # Format: <relative-path>:<line>
 src/Controller/AuditProgramController.php:33
 src/Controller/EffectivenessMonitorController.php:31
-src/Controller/Tisax/TisaxImportWizardController.php:49
+src/Controller/Tisax/TisaxImportWizardController.php:50
