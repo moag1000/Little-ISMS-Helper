@@ -204,10 +204,26 @@ if [ "$NEEDS_MIGRATION" = "1" ]; then
     php bin/console cache:warmup --env=prod 2>&1 || echo "Cache warmup failed"
     echo "Cache rebuilt"
 else
-    # Even if no migration needed, clear cache to ensure correct DATABASE_URL is used
-    echo "Clearing application cache to apply DATABASE_URL configuration..."
+    # Existing database — this branch runs on every restart AND on every image
+    # UPGRADE (the MariaDB data dir already exists, so NEEDS_MIGRATION stays 0).
     cd /var/www/html
     export DATABASE_URL="mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4"
+
+    # Apply any migrations the upgraded image ships BEFORE serving traffic.
+    # Without this, an upgrade leaves the schema at the previous version while
+    # the new code expects new columns/tables → HTTP 500 on the first request.
+    # --allow-no-migration makes it a clean no-op on a plain restart. Failures
+    # are non-fatal here: residual schema drift (e.g. from legacy PREPARE/EXECUTE
+    # migrations, see CLAUDE.md pitfall #6) is reconciled via the
+    # /admin/quick-fix Schema-Maintenance UI.
+    echo "Existing database — applying pending migrations..."
+    php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 \
+        || echo "Migrations reported errors (non-fatal — reconcile via /admin/quick-fix Schema-Maintenance)"
+
+    # Clear cache so the upgraded code compiles a fresh container (var/cache lives
+    # on the persisted volume, so the previous version's compiled cache would
+    # otherwise be reused → also a 500 source) and the correct DATABASE_URL is used.
+    echo "Clearing application cache..."
     php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"
     echo "Cache cleared"
 fi
