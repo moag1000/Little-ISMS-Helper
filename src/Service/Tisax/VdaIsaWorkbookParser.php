@@ -501,7 +501,7 @@ final class VdaIsaWorkbookParser
      */
     private function majorVersion(string $version): int
     {
-        return (int) (explode('.', $version)[0] ?? 0);
+        return (int) explode('.', $version)[0];
     }
 
     /**
