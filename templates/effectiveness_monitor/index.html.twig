@@ -167,7 +167,7 @@
                 { value: row.nextDue|date('d.m.Y') },
                 { value: row.daysUntilDue ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
                 { value: (row.control.effectiveResponsiblePerson ?? '—')|e },
-                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
+                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
             ]
         }),
         empty: 'effectiveness_monitor.empty.no_due_soon'|trans({}, 'control')
@@ -197,7 +197,7 @@
                 { value: row.control.name|e },
                 { value: row.lastChecked|date('d.m.Y') },
                 { value: row.daysSinceCheck ~ ' ' ~ 'effectiveness_monitor.label.days'|trans({}, 'control'), align: 'right' },
-                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
+                { value: '<a href="' ~ path('app_soa_show', {id: row.control.id}) ~ '" class="btn btn-xs btn-ghost" aria-label="' ~ 'common.view'|trans({}, 'messages')|e ~ '"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>' }
             ]
         }),
         empty: 'effectiveness_monitor.empty.no_recent'|trans({}, 'control')

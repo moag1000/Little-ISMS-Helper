@@ -176,7 +176,7 @@
                                         </span>
                                     {% else %}—{% endif %}
                                 </td>
-                                <td class="fa-table__cell fa-table__cell--actions"><a href="{{ path('app_corrective_action_show', {id: ca.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a></td>
+                                <td class="fa-table__cell fa-table__cell--actions"><a href="{{ path('app_corrective_action_show', {id: ca.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a></td>
                             </tr>
                         {% endfor %}
                     {% endblock %}
