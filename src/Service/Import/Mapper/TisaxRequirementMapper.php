@@ -345,7 +345,7 @@ final class TisaxRequirementMapper
             $mapping['maturityRaw'] = $row->maturityRaw;
         }
         // Store TISAX maturity targets in dataSourceMapping
-        foreach (['mustLevel' => 'must', 'shouldLevel' => 'should', 'highLevel' => 'high', 'veryHighLevel' => 'veryHigh'] as $prop => $key) {
+        foreach (['mustLevel' => 'must', 'shouldLevel' => 'should', 'highLevel' => 'high', 'veryHighLevel' => 'veryHigh', 'sgaLevel' => 'sga'] as $prop => $key) {
             if ($row->$prop !== null) {
                 $mapping["tisax_{$key}"] = $row->$prop;
             }

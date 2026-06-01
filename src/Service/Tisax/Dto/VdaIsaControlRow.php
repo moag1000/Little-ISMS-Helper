@@ -82,6 +82,14 @@ final readonly class VdaIsaControlRow
          * so the verbatim value is preserved here for the DP path.
          */
         public ?string $maturityRaw = null,
+
+        /**
+         * Simplified Group Assessment (SGA) additional requirement text — the
+         * VDA-ISA 6 "Zusätzliche Anforderungen für das vereinfachte Gruppen
+         * Assessment" column (Information Security only). Distinct from the
+         * protection-need tiers; applies to the simplified group-audit scope.
+         */
+        public ?string $sgaLevel = null,
     ) {}
 
     /**

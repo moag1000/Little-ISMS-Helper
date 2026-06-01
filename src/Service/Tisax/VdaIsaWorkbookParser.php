@@ -168,11 +168,26 @@ final class VdaIsaWorkbookParser
             'for high protection needs',
             // ENX ISA 6 DE col L: "Zusatzanforderungen\nbei hohem Schutzbedarf"
             'bei hohem schutzbedarf',
+            // Prototype Protection col K has no high/very-high split — instead a
+            // single escalation tier for protection-classified vehicles. Capture
+            // it as the PP "high" tier so the escalation requirement is not lost.
+            'schutzbedürftig klassifizierten fahrzeugen',
+            'vehicles classified', 'protection-worthy vehicles',
             // Legacy / alternate
             'additional requirements in case of high',
             'zusatzanforderungen bei hohem',
             'high protection', 'hoher schutzbedarf',
             'high', 'hoch', 'erhöhter schutzbedarf',
+        ],
+        // VDA-ISA 6 Information-Security col N: "Zusätzliche Anforderungen für
+        // das vereinfachte Gruppen Assessment (SGA / Simplified Group
+        // Assessments)" — a scope-specific tier, separate from protection needs.
+        'sgaLevel' => [
+            'vereinfachte gruppen assessment',
+            'simplified group assessment',
+            'vereinfachte gruppen',
+            'simplified group',
+            'sga',
         ],
         'veryHighLevel' => [
             // ENX ISA 6 EN col M: "Additional requirements\nfor very high protection needs"
@@ -733,6 +748,7 @@ final class VdaIsaWorkbookParser
                 implementationDescription: ($v = $this->sanitizeCellValue(trim((string) $get('implementationDescription')))) !== '' ? $v : null,
                 referenceDocumentation: ($v = $this->sanitizeCellValue(trim((string) $get('referenceDocumentation')))) !== '' ? $v : null,
                 maturityRaw: $maturityRawValue !== '' ? $maturityRawValue : null,
+                sgaLevel: ($v = $this->sanitizeCellValue(trim((string) $get('sgaLevel')))) !== '' ? $v : null,
             );
         }
 
