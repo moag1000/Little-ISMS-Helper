@@ -171,22 +171,29 @@ final class TisaxDeriveCrosswalkCommand extends Command
     }
 
     /**
+     * Write the derived targets to a LOCAL, git-ignored file under var/ — never
+     * into the committed crosswalk fixture. The derived canonical 1.1.1 numbers
+     * come from the tenant's licensed VDA-ISA workbook; embedding them in a
+     * version-controlled fixture would ship copyrighted catalogue numbering. The
+     * local file is the assessor's working artifact for confirming the bridge
+     * proposals before they are (manually, per-tenant) trusted.
+     *
      * @param array<string, array{target: string, domain: string, via: mixed, confidence: string}> $derived
      */
     private function appendConfirmedToCrosswalk(array $derived, SymfonyStyle $io): void
     {
-        $path = $this->projectDir . '/fixtures/library/mappings/tisax-legacy-id-crosswalk.yaml';
-        if (!is_file($path)) {
-            $io->warning('Crosswalk fixture missing; skipping --write-confirmed.');
-            return;
-        }
-        $doc = Yaml::parseFile($path) ?: [];
-        $doc['iso_anchor_derived'] = array_map(
-            static fn (array $d): array => ['target' => $d['target'], 'domain' => $d['domain'], 'confidence' => 'derived', 'via' => $d['via']],
-            $derived,
-        );
-        $doc['version'] = (int) ($doc['version'] ?? 1) + 1;
+        $path = $this->projectDir . '/var/tisax-crosswalk-confirmed.local.yaml';
+        @mkdir(\dirname($path), 0o775, true);
+        $doc = [
+            'note' => 'LOCAL ONLY — derived from the tenant licensed VDA-ISA workbook. '
+                . 'Do NOT commit (copyrighted catalogue numbering).',
+            'generated_by' => 'app:tisax:derive-crosswalk --write-confirmed',
+            'iso_anchor_derived' => array_map(
+                static fn (array $d): array => ['target' => $d['target'], 'domain' => $d['domain'], 'confidence' => 'derived', 'via' => $d['via']],
+                $derived,
+            ),
+        ];
         file_put_contents($path, Yaml::dump($doc, 6, 2));
-        $io->success(sprintf('Wrote %d derived targets into %s (version bumped).', count($derived), $path));
+        $io->success(sprintf('Wrote %d derived targets to LOCAL %s (NOT the committed fixture).', count($derived), $path));
     }
 }

@@ -14,13 +14,13 @@ final class VdaIsaCrossFrameworkMappingTest extends TestCase
     public static function crossFrameworkMappingProvider(): array {
         return [
             // Col P (Verweisung auf andere Normen) — extracted by extract_vda_isa_all_mappings.php
-            'ISA/IEC 62443'     => ['tisax-vda-isa-6_to_iec-isa-62443_v1.0.yaml',   20, '/^\d+\.\d+(\.\d+)?$/'],
-            'NIST CSF 1.1'      => ['tisax-vda-isa-6_to_nist-csf-1.1_v1.0.yaml',    25, '/^[A-Z]{2,3}[.\-][A-Z]{2,4}-\d+$/'],
-            'ISO 27017'         => ['tisax-vda-isa-6_to_iso27017_v1.0.yaml',          3, '/^(CLD\.\d+\.\d+(\.\d+)?|\d+\.\d+\.\d+)$/'],
-            'ISO 27002'         => ['tisax-vda-isa-6_to_iso27002_v1.0.yaml',          1, '/^A\.\d+\.\d+(\.\d+)?$/'],
+            'ISA/IEC 62443'     => ['tisax_to_iec-isa-62443_v1.0.yaml',   20, '/^\d+\.\d+(\.\d+)?$/'],
+            'NIST CSF 1.1'      => ['tisax_to_nist-csf-1.1_v1.0.yaml',    25, '/^[A-Z]{2,3}[.\-][A-Z]{2,4}-\d+$/'],
+            'ISO 27017'         => ['tisax_to_iso27017_v1.0.yaml',          3, '/^(CLD\.\d+\.\d+(\.\d+)?|\d+\.\d+\.\d+)$/'],
+            'ISO 27002'         => ['tisax_to_iso27002_v1.0.yaml',          1, '/^A\.\d+\.\d+(\.\d+)?$/'],
             // Col Q (Verweisung auf Implementierungsanleitung) — extracted by extract_vda_isa_col_q_mappings.php
-            'BSI IT-Grundschutz' => ['tisax-vda-isa-6_to_bsi-grundschutz_v1.0.yaml', 35, '/^[A-Z]{2,5}\.\d+(\.\d+)*$/'],
-            'NIST SP800-53r5'   => ['tisax-vda-isa-6_to_nist-sp800-53r5_v1.0.yaml',  35, '/^[A-Z]{2,3}-\d+(\(\d+\))?$/'],
+            'BSI IT-Grundschutz' => ['tisax_to_bsi-grundschutz_v1.0.yaml', 35, '/^[A-Z]{2,5}\.\d+(\.\d+)*$/'],
+            'NIST SP800-53r5'   => ['tisax_to_nist-sp800-53r5_v1.0.yaml',  35, '/^[A-Z]{2,3}-\d+(\(\d+\))?$/'],
         ];
     }
     #[Test] #[DataProvider('crossFrameworkMappingProvider')]
@@ -51,7 +51,7 @@ final class VdaIsaCrossFrameworkMappingTest extends TestCase
     #[Test] #[DataProvider('crossFrameworkMappingProvider')]
     public function sourceIdsMatchVdaIsaPattern(string $f, int $min, string $pat): void {
         $d=Yaml::parseFile($this->dir().'/'.$f);
-        foreach($d['mappings'] as $i=>$m){ self::assertMatchesRegularExpression('/^ISA \d+\.\d+(\.\d+)?$/',$m['source'],"[$i]:'{$m['source']}' not ISA X.Y.Z"); }
+        foreach($d['mappings'] as $i=>$m){ self::assertMatchesRegularExpression('/^\d+\.\d+(\.\d+)?$/',$m['source'],"[$i]:'{$m['source']}' not ISA X.Y.Z"); }
     }
     #[Test] #[DataProvider('crossFrameworkMappingProvider')]
     public function sourceIdsAreUniquePerFile(string $f, int $min, string $pat): void {
