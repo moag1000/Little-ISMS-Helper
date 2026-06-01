@@ -54,8 +54,14 @@ export default class extends Controller {
         if (status === 'implemented' && interactive) {
             const current = parseInt(input.value, 10);
             if (Number.isNaN(current) || current < 100) {
-                // Non-blocking confirm — keep it simple/robust.
-                if (window.confirm(this.#confirmMessage())) {
+                // Aurora confirm dialog (window.faConfirm) instead of the native
+                // browser confirm() — the native popup is jarring and off-brand.
+                // faConfirm returns a Promise<boolean>; fall back to just applying
+                // the value if the helper is not yet loaded.
+                if (typeof window.faConfirm === 'function') {
+                    window.faConfirm(this.#confirmMessage(), { tone: 'info' })
+                        .then((ok) => { if (ok) { this.#setValue(100); } });
+                } else {
                     this.#setValue(100);
                 }
             }
