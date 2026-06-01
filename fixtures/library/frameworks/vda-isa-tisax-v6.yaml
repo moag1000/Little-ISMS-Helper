@@ -10,7 +10,7 @@
 # Legal reference: ENX_VDA_ISA_LICENSING_ANALYSIS.md OQ-1
 
 metadata:
-  code: TISAX-VDA-ISA-6
+  code: TISAX
   name: TISAX VDA ISA v6.0 (Skeleton)
   version: "6.0"
   releaseDate: "2024-03-01"

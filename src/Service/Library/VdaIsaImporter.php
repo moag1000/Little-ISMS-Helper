@@ -8,6 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\Import\Mapper\TisaxRequirementMapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -137,7 +138,11 @@ final class VdaIsaImporter
      */
     private function upsertFramework(array $meta, array &$stats): ComplianceFramework
     {
-        $code = (string) ($meta['code'] ?? 'TISAX-VDA-ISA-6');
+        // Default to canonical 'TISAX'; 'TISAX-VDA-ISA-6' is the deprecated alias
+        // (kept for the vda-isa-tisax-v6.yaml skeleton during the P2→P4 window).
+        $code = (string) ($meta['code'] ?? 'TISAX');
+        // Resolve legacy alias → canonical (§4.1 deprecation window).
+        $code = TisaxRequirementMapper::LEGACY_CODE_ALIASES[$code] ?? $code;
         $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
 
         if ($framework === null) {
