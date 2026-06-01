@@ -67,9 +67,14 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             ->where('cr.framework = :framework')
             ->andWhere('(cr.uploadTenant = :tenant OR cr.uploadTenant IS NULL)')
             ->andWhere(
-                'cr.maturityCurrent IS NOT NULL '
+                // Parenthesise the OR-group: Doctrine does NOT auto-wrap a single
+                // andWhere() argument, and SQL AND binds tighter than OR — without
+                // these parens the DP/reviewedAt branches escape the framework AND
+                // tenant scope and leak rows from other frameworks/tenants into the
+                // signed freeze snapshot (tenant-isolation defect).
+                '(cr.maturityCurrent IS NOT NULL '
                 . 'OR cr.assessmentStateDp IS NOT NULL '
-                . 'OR cr.maturityReviewedAt IS NOT NULL'
+                . 'OR cr.maturityReviewedAt IS NOT NULL)'
             )
             ->setParameter('framework', $complianceFramework)
             ->setParameter('tenant', $tenant)
