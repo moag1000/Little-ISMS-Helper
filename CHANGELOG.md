@@ -3,6 +3,29 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.10.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.9.0...v3.10.0) (2026-05-31)
+
+
+### Added
+
+* **compliance:** mapping-list evaluation info + bulk-marking ([#814](https://github.com/moag1000/Little-ISMS-Helper/issues/814)) ([9e34266](https://github.com/moag1000/Little-ISMS-Helper/commit/9e34266dc678eeeb0964454f20839f64646a22f4))
+* **soa:** control-form overhaul (sections + evidence + validation + status&lt;-&gt;% + framework-ref autocomplete) ([#813](https://github.com/moag1000/Little-ISMS-Helper/issues/813)) ([dca5af2](https://github.com/moag1000/Little-ISMS-Helper/commit/dca5af26405ba0ffa15e01ff00d05a1184d90418))
+
+
+### Fixed
+
+* **admin:** loader-fixer 500 — EntityManager::clear() detached the whole identity map ([#808](https://github.com/moag1000/Little-ISMS-Helper/issues/808)) ([ba76f53](https://github.com/moag1000/Little-ISMS-Helper/commit/ba76f53502dd62ea61874dbc48c8b678c6f1d7c8))
+* **audits:** empty-state for finding/CAPA forms when no parent exists ([#816](https://github.com/moag1000/Little-ISMS-Helper/issues/816)) ([063d458](https://github.com/moag1000/Little-ISMS-Helper/commit/063d458cef8332e6487632e1731f375be7b17417))
+* **compliance:** expand DORA mapping IDs to catalogue sub-articles (de-orphan) ([#815](https://github.com/moag1000/Little-ISMS-Helper/issues/815)) ([c98b6f1](https://github.com/moag1000/Little-ISMS-Helper/commit/c98b6f150e77fc14eb96301f3a946bd13aa60aee))
+* **policy-wizard:** Bestandsaufnahme "Weiter" silently blocked by empty required select ([#810](https://github.com/moag1000/Little-ISMS-Helper/issues/810)) ([b3774c5](https://github.com/moag1000/Little-ISMS-Helper/commit/b3774c5970651e58b04dda465be71f5e3c6623cf))
+* **wizard:** exclude not-applicable controls from coverage + render %count% gap params ([#809](https://github.com/moag1000/Little-ISMS-Helper/issues/809)) ([bf963ce](https://github.com/moag1000/Little-ISMS-Helper/commit/bf963ce9b8318541d6e78ce9e1e7bf5ac73163ae))
+* **wizard:** TISAX readiness scores imported Reifegrad (maturity_coverage) ([#812](https://github.com/moag1000/Little-ISMS-Helper/issues/812)) ([c8ecaa0](https://github.com/moag1000/Little-ISMS-Helper/commit/c8ecaa0a3eaa01bb37ef5a127d1b639fb8cc940e))
+
+
+### Documentation
+
+* **testing:** 3 complete E2E ISMS workflows as reusable test scenarios ([#817](https://github.com/moag1000/Little-ISMS-Helper/issues/817)) ([e3742a1](https://github.com/moag1000/Little-ISMS-Helper/commit/e3742a1030950f9c6585ef6db66fd778d98b1a01))
+
 ## [3.9.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.8.0...v3.9.0) (2026-05-31)
 
 
