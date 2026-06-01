@@ -150,22 +150,32 @@ export default class extends Controller {
             const data = await res.json();
 
             if (res.status === 409) {
-                window.alert(data.message ?? 'Conflict — please reload.');
+                this.#notify(data.message ?? 'Conflict — please reload.', 'warning');
                 window.location.reload();
                 return;
             }
             if (!res.ok) {
-                window.alert(data.message ?? `Error (${res.status})`);
+                this.#notify(data.message ?? `Error (${res.status})`, 'danger');
                 return;
             }
             // Success — reload to reflect new status
             window.location.reload();
         } catch (err) {
-            window.alert(err.message ?? 'Network error.');
+            this.#notify(err.message ?? 'Network error.', 'danger');
         }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
+
+    // Aurora toast instead of the native browser alert() — non-blocking and
+    // on-brand. Falls back to alert() only if the global helper is unavailable.
+    #notify(message, type = 'info') {
+        if (typeof window.faToast === 'function') {
+            window.faToast(message, type);
+        } else {
+            window.alert(message);
+        }
+    }
 
     _transitionLabel(name) {
         // Try to find pre-rendered label via a hidden data store on the page,
