@@ -49,12 +49,17 @@ final class VdaIsaImporterTest extends TestCase
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->frameworkRepo = $this->createMock(ComplianceFrameworkRepository::class);
         $this->requirementRepo = $this->createMock(ComplianceRequirementRepository::class);
+        // Sample YAML uses code TISAX-TEST → generic kontrollen path; the
+        // canonical-catalogue provider is never consulted. Mock satisfies the
+        // constructor only.
+        $catalogueProvider = $this->createMock(\App\Service\Tisax\TisaxCatalogueProvider::class);
 
         $this->importer = new VdaIsaImporter(
             $this->entityManager,
             $this->frameworkRepo,
             $this->requirementRepo,
             $this->projectDir,
+            $catalogueProvider,
         );
     }
 
