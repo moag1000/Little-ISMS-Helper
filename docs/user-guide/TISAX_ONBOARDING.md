@@ -63,6 +63,20 @@ Only needed for installs that ran the old seed loaders (legacy framework 132 +
    ```bash
    php bin/console app:tisax:reconcile
    ```
+5. **Rebuild to the single canonical catalogue** — collapses everything to ONE
+   clean 80-control VDA-ISA 6.0 catalogue (numbers only) and removes the legacy
+   pollution. Dry-run first (default); it prints the Phase B blast radius:
+   ```bash
+   php bin/console app:tisax:rebuild-catalogue            # dry-run report
+   php bin/console app:tisax:rebuild-catalogue --force    # Phase A: reseed 80 + flatten + drop FW132
+   php bin/console app:tisax:rebuild-catalogue --force --purge-legacy   # + Phase B: purge legacy rows/mappings/fulfilments
+   ```
+   Phase A is always safe (snapshot + reseed + flatten + drop the empty legacy
+   framework). Phase B deletes the 182 legacy shared rows, the ~1517 legacy-id
+   ComplianceMapping rows and the 128 superseded pre-BYO fulfilments; the
+   canonical number-keyed reuse graph (~270 edges on the tenant rows) survives.
+   Every run snapshots to `var/backups/tisax_rebuild_snapshot_*.json` first.
+   **Run on deploy with the matching code** — not ad-hoc against a shared dev DB.
 
 ### Rollback
 Every `--force` run snapshots the prior state to `var/backups/tisax_consolidate_snapshot_*.json`.
