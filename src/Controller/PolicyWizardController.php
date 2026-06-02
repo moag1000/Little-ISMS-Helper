@@ -1167,6 +1167,51 @@ final class PolicyWizardController extends AbstractController
                     'value_type' => 'text',
                 ];
             }
+            if (isset($op['access_review_cadence_months'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.access_review_cadence_months',
+                    'value' => (int) $op['access_review_cadence_months'],
+                    'value_type' => 'months_with_label',
+                ];
+            }
+            if (!empty($op['mfa_scope'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.mfa_scope',
+                    'value' => (string) $op['mfa_scope'],
+                    'value_type' => 'text',
+                ];
+            }
+            $logRet = is_array($op['logging_retention_months'] ?? null) ? $op['logging_retention_months'] : [];
+            if ($logRet !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.logging_retention_months',
+                    'value' => array_keys($logRet),
+                    'value_type' => 'badges',
+                ];
+            }
+            $vulnScan = is_array($op['vuln_scan_cadence'] ?? null) ? $op['vuln_scan_cadence'] : [];
+            if (!empty($vulnScan['external_cadence'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.vuln_scan_cadence',
+                    'value' => (string) $vulnScan['external_cadence'],
+                    'value_type' => 'text',
+                ];
+            }
+            $workingModes = is_array($op['working_modes'] ?? null) ? $op['working_modes'] : [];
+            if ($workingModes !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.working_modes',
+                    'value' => $workingModes,
+                    'value_type' => 'badges',
+                ];
+            }
+            if (isset($op['cloud_onprem_mix_pct'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.cloud_onprem_mix_pct',
+                    'value' => (int) $op['cloud_onprem_mix_pct'],
+                    'value_type' => 'text',
+                ];
+            }
             $sections[] = [
                 'step_key' => WizardStepKeys::STEP_OPERATIONAL_BASELINES,
                 'title_key' => 'policy_wizard.step.operational_baselines.title',
