@@ -204,6 +204,7 @@ final class PolicyWizardController extends AbstractController
             'hierarchy_conflicts' => $hierarchyConflicts,
             'errors' => [],
             'industry_preset_bundles' => $industryPresetBundles,
+            'industry_preset_bundles_expected' => \count(IndustryPresetBundle::ALLOWED_KEYS),
             'inventory_rows' => $bestandsaufnahmePayload['inventory_rows'],
             'topic_suggestions_by_doc' => $bestandsaufnahmePayload['topic_suggestions_by_doc'],
             'available_topics' => $bestandsaufnahmePayload['available_topics'],
@@ -275,6 +276,7 @@ final class PolicyWizardController extends AbstractController
                 'hierarchy_conflicts' => $hierarchyConflicts,
                 'errors' => $e->errors,
                 'industry_preset_bundles' => $industryPresetBundles,
+                'industry_preset_bundles_expected' => \count(IndustryPresetBundle::ALLOWED_KEYS),
                 'inventory_rows' => $bestandsaufnahmePayload['inventory_rows'],
                 'topic_suggestions_by_doc' => $bestandsaufnahmePayload['topic_suggestions_by_doc'],
                 'available_topics' => $bestandsaufnahmePayload['available_topics'],
@@ -1164,6 +1166,51 @@ final class PolicyWizardController extends AbstractController
                 $rows[] = [
                     'label_key' => 'policy_wizard.review.op.bcm_officer',
                     'value' => $userDisplay[$op['bcm_officer_user_id']] ?? ('User #' . $op['bcm_officer_user_id']),
+                    'value_type' => 'text',
+                ];
+            }
+            if (isset($op['access_review_cadence_months'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.access_review_cadence_months',
+                    'value' => (int) $op['access_review_cadence_months'],
+                    'value_type' => 'months_with_label',
+                ];
+            }
+            if (!empty($op['mfa_scope'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.mfa_scope',
+                    'value' => (string) $op['mfa_scope'],
+                    'value_type' => 'text',
+                ];
+            }
+            $logRet = is_array($op['logging_retention_months'] ?? null) ? $op['logging_retention_months'] : [];
+            if ($logRet !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.logging_retention_months',
+                    'value' => array_keys($logRet),
+                    'value_type' => 'badges',
+                ];
+            }
+            $vulnScan = is_array($op['vuln_scan_cadence'] ?? null) ? $op['vuln_scan_cadence'] : [];
+            if (!empty($vulnScan['external_cadence'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.vuln_scan_cadence',
+                    'value' => (string) $vulnScan['external_cadence'],
+                    'value_type' => 'text',
+                ];
+            }
+            $workingModes = is_array($op['working_modes'] ?? null) ? $op['working_modes'] : [];
+            if ($workingModes !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.working_modes',
+                    'value' => $workingModes,
+                    'value_type' => 'badges',
+                ];
+            }
+            if (isset($op['cloud_onprem_mix_pct'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.cloud_onprem_mix_pct',
+                    'value' => (int) $op['cloud_onprem_mix_pct'],
                     'value_type' => 'text',
                 ];
             }

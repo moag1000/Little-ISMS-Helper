@@ -68,6 +68,14 @@ final class OperationalBaselinesStep extends AbstractStep
 
     public const CONTINUITY_CRITICALITY_LEVELS = ['high', 'medium', 'low'];
 
+    public const MFA_SCOPE_OPTIONS = ['all_users', 'privileged_only', 'external_facing_only'];
+
+    public const LOGGING_RETENTION_CATEGORIES = ['security', 'app', 'system'];
+
+    public const VULN_SCAN_CADENCE_OPTIONS = ['weekly', 'monthly', 'quarterly'];
+
+    public const WORKING_MODES_OPTIONS = ['office', 'hybrid', 'fully_remote'];
+
     public const DORA_ENTITY_TYPES = [
         'kreditinstitut',
         'wertpapierfirma',
@@ -125,6 +133,49 @@ final class OperationalBaselinesStep extends AbstractStep
             || $existing['crypto_allowlist'] === []
         ) {
             $existing['crypto_allowlist'] = self::BSI_TR02102_DEFAULT_ALGOS;
+        }
+
+        // Access review cadence (months)
+        if (!isset($existing['access_review_cadence_months'])) {
+            $existing['access_review_cadence_months'] = 6;
+        }
+
+        // MFA scope
+        if (!isset($existing['mfa_scope']) || !in_array($existing['mfa_scope'], self::MFA_SCOPE_OPTIONS, true)) {
+            $existing['mfa_scope'] = 'all_users';
+        }
+
+        // Logging retention months per category
+        if (!isset($existing['logging_retention_months']) || !is_array($existing['logging_retention_months'])) {
+            $existing['logging_retention_months'] = ['security' => 12, 'app' => 3, 'system' => 3];
+        } else {
+            foreach (['security' => 12, 'app' => 3, 'system' => 3] as $cat => $defaultVal) {
+                if (!isset($existing['logging_retention_months'][$cat])) {
+                    $existing['logging_retention_months'][$cat] = $defaultVal;
+                }
+            }
+        }
+
+        // Vulnerability scan cadence
+        if (!isset($existing['vuln_scan_cadence']) || !is_array($existing['vuln_scan_cadence'])) {
+            $existing['vuln_scan_cadence'] = ['external_cadence' => 'monthly', 'internal_cadence' => 'weekly'];
+        } else {
+            if (!isset($existing['vuln_scan_cadence']['external_cadence'])) {
+                $existing['vuln_scan_cadence']['external_cadence'] = 'monthly';
+            }
+            if (!isset($existing['vuln_scan_cadence']['internal_cadence'])) {
+                $existing['vuln_scan_cadence']['internal_cadence'] = 'weekly';
+            }
+        }
+
+        // Working modes (multi-select)
+        if (!isset($existing['working_modes']) || !is_array($existing['working_modes']) || $existing['working_modes'] === []) {
+            $existing['working_modes'] = ['office', 'hybrid'];
+        }
+
+        // Cloud/on-prem mix percentage
+        if (!isset($existing['cloud_onprem_mix_pct'])) {
+            $existing['cloud_onprem_mix_pct'] = 50;
         }
 
         // DORA-not-applicable detection — only when DORA is in scope.
@@ -310,6 +361,95 @@ final class OperationalBaselinesStep extends AbstractStep
             ? (int) $bcmOfficerUserId
             : null;
 
+        // ── New baselines (plan spec: 6 missing fields) ─────────────────────
+
+        // 1. Access review cadence (months, 1..24)
+        $accessReviewCadence = $input['access_review_cadence_months'] ?? null;
+        if ($accessReviewCadence === null || $accessReviewCadence === '') {
+            $accessReviewCadence = 6;
+        } elseif (is_numeric($accessReviewCadence)) {
+            $accessReviewCadence = (int) $accessReviewCadence;
+            if ($accessReviewCadence < 1 || $accessReviewCadence > 24) {
+                $errors['access_review_cadence_months'][] = 'policy_wizard.error.access_review_cadence_invalid';
+                $accessReviewCadence = 6;
+            }
+        } else {
+            $errors['access_review_cadence_months'][] = 'policy_wizard.error.access_review_cadence_invalid';
+            $accessReviewCadence = 6;
+        }
+
+        // 2. MFA scope
+        $mfaScope = is_string($input['mfa_scope'] ?? null) ? trim($input['mfa_scope']) : 'all_users';
+        if (!in_array($mfaScope, self::MFA_SCOPE_OPTIONS, true)) {
+            $errors['mfa_scope'][] = 'policy_wizard.error.mfa_scope_invalid';
+            $mfaScope = 'all_users';
+        }
+
+        // 3. Logging retention months per category (1..120)
+        $loggingRetentionRaw = $input['logging_retention_months'] ?? [];
+        if (!is_array($loggingRetentionRaw)) {
+            $errors['logging_retention_months'][] = 'policy_wizard.error.logging_retention_invalid';
+            $loggingRetentionRaw = [];
+        }
+        $loggingRetentionDefaults = ['security' => 12, 'app' => 3, 'system' => 3];
+        $loggingRetention = [];
+        foreach (self::LOGGING_RETENTION_CATEGORIES as $cat) {
+            $val = $loggingRetentionRaw[$cat] ?? null;
+            if ($val === null || $val === '') {
+                $loggingRetention[$cat] = $loggingRetentionDefaults[$cat];
+            } elseif (is_numeric($val) && (int) $val >= 1 && (int) $val <= 120) {
+                $loggingRetention[$cat] = (int) $val;
+            } else {
+                $errors['logging_retention_months'][] = 'policy_wizard.error.logging_retention_invalid.' . $cat;
+                $loggingRetention[$cat] = $loggingRetentionDefaults[$cat];
+            }
+        }
+
+        // 4. Vulnerability scan cadence
+        $vulnScanRaw = $input['vuln_scan_cadence'] ?? [];
+        if (!is_array($vulnScanRaw)) {
+            $errors['vuln_scan_cadence'][] = 'policy_wizard.error.vuln_scan_cadence_invalid';
+            $vulnScanRaw = [];
+        }
+        $vulnScanCadence = [];
+        foreach (['external_cadence' => 'monthly', 'internal_cadence' => 'weekly'] as $key => $default) {
+            $val = is_string($vulnScanRaw[$key] ?? null) ? trim($vulnScanRaw[$key]) : '';
+            if (in_array($val, self::VULN_SCAN_CADENCE_OPTIONS, true)) {
+                $vulnScanCadence[$key] = $val;
+            } else {
+                $vulnScanCadence[$key] = $default;
+            }
+        }
+
+        // 5. Working modes (multi-select, at least one)
+        $workingModesRaw = $input['working_modes'] ?? [];
+        if (!is_array($workingModesRaw)) {
+            $errors['working_modes'][] = 'policy_wizard.error.working_modes_invalid';
+            $workingModesRaw = [];
+        }
+        $workingModes = array_values(array_filter(
+            array_map(static fn ($v): string => is_string($v) ? trim($v) : '', $workingModesRaw),
+            static fn (string $v): bool => in_array($v, self::WORKING_MODES_OPTIONS, true),
+        ));
+        if ($workingModes === []) {
+            $workingModes = ['office', 'hybrid'];
+        }
+
+        // 6. Cloud/on-prem mix percentage (0..100)
+        $cloudMixPct = $input['cloud_onprem_mix_pct'] ?? null;
+        if ($cloudMixPct === null || $cloudMixPct === '') {
+            $cloudMixPct = 50;
+        } elseif (is_numeric($cloudMixPct)) {
+            $cloudMixPct = (int) $cloudMixPct;
+            if ($cloudMixPct < 0 || $cloudMixPct > 100) {
+                $errors['cloud_onprem_mix_pct'][] = 'policy_wizard.error.cloud_onprem_mix_pct_invalid';
+                $cloudMixPct = 50;
+            }
+        } else {
+            $errors['cloud_onprem_mix_pct'][] = 'policy_wizard.error.cloud_onprem_mix_pct_invalid';
+            $cloudMixPct = 50;
+        }
+
         // IndustryPresetBundle picker — optional one-shot apply hint.
         // Accept multi-key (canonical) or single-key (backwards-compat).
         $rawMultiKeys = $input['industry_preset_bundle_keys'] ?? null;
@@ -340,6 +480,13 @@ final class OperationalBaselinesStep extends AbstractStep
             'industry_preset_bundle_keys' => $industryPresetBundleKeys,
             // Single-key (backwards-compat).
             'industry_preset_bundle_key' => $industryPresetBundleKey,
+            // New baselines (plan spec: 6 missing fields).
+            'access_review_cadence_months' => $accessReviewCadence,
+            'mfa_scope' => $mfaScope,
+            'logging_retention_months' => $loggingRetention,
+            'vuln_scan_cadence' => $vulnScanCadence,
+            'working_modes' => $workingModes,
+            'cloud_onprem_mix_pct' => $cloudMixPct,
         ];
 
         return [

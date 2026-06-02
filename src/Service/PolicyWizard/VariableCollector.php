@@ -94,6 +94,57 @@ class VariableCollector
                 $vars['crypto.algorithms'] = implode(', ', array_map('strval', $crypto));
             }
             $vars['backup.rpo_hours'] = $this->scalarOrNull($opsSlot['backup_rpo_hours'] ?? null);
+
+            // Patch-SLA per severity (assoc critical|high|medium => hours).
+            $patchSla = $opsSlot['patch_sla_hours'] ?? null;
+            if (is_array($patchSla)) {
+                $vars['patch.sla_critical_hours'] = $this->scalarOrNull($patchSla['critical'] ?? null);
+                $vars['patch.sla_high_hours'] = $this->scalarOrNull($patchSla['high'] ?? null);
+                $vars['patch.sla_medium_hours'] = $this->scalarOrNull($patchSla['medium'] ?? null);
+            }
+
+            // Continuity RTO (BCM in scope) — freeform criticality => hours map.
+            // Exposed as a readable "tier: Nh, …" summary marker.
+            $continuityRto = $opsSlot['continuity_rto_hours'] ?? null;
+            if (is_array($continuityRto) && $continuityRto !== []) {
+                $pairs = [];
+                foreach ($continuityRto as $criticality => $hours) {
+                    if (is_scalar($hours)) {
+                        $pairs[] = sprintf('%s: %sh', (string) $criticality, (string) $hours);
+                    }
+                }
+                if ($pairs !== []) {
+                    $vars['continuity.rto_summary'] = implode(', ', $pairs);
+                }
+            }
+
+            // New baselines (plan spec: 6 missing fields)
+            $vars['access.review_cadence_months'] = $this->scalarOrNull(
+                $opsSlot['access_review_cadence_months'] ?? null,
+            );
+            $vars['mfa.scope'] = $this->scalarOrNull($opsSlot['mfa_scope'] ?? null);
+
+            $logRet = $opsSlot['logging_retention_months'] ?? null;
+            if (is_array($logRet)) {
+                $vars['logging.retention_security_months'] = $this->scalarOrNull($logRet['security'] ?? null);
+                $vars['logging.retention_app_months'] = $this->scalarOrNull($logRet['app'] ?? null);
+                $vars['logging.retention_system_months'] = $this->scalarOrNull($logRet['system'] ?? null);
+            }
+
+            $vulnScan = $opsSlot['vuln_scan_cadence'] ?? null;
+            if (is_array($vulnScan)) {
+                $vars['vuln.scan_external_cadence'] = $this->scalarOrNull($vulnScan['external_cadence'] ?? null);
+                $vars['vuln.scan_internal_cadence'] = $this->scalarOrNull($vulnScan['internal_cadence'] ?? null);
+            }
+
+            $workingModes = $opsSlot['working_modes'] ?? null;
+            if (is_array($workingModes) && $workingModes !== []) {
+                $vars['working.modes'] = implode(', ', array_map('strval', $workingModes));
+            }
+
+            $vars['cloud.onprem_mix_pct'] = $this->scalarOrNull(
+                $opsSlot['cloud_onprem_mix_pct'] ?? null,
+            );
         }
 
         // ── Lifecycle slot ──────────────────────────────────────────

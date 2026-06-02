@@ -215,6 +215,50 @@ final class VariableCollectorTest extends TestCase
     }
 
     #[Test]
+    public function collectsAllTenOperationalBaselinesAsSubstitutionVars(): void
+    {
+        $tenant = $this->makeTenant();
+        $run = $this->makeRun($tenant, [
+            WizardStepKeys::STEP_OPERATIONAL_BASELINES => [
+                // pre-existing 4
+                'crypto_allowlist' => ['AES-256', 'RSA-2048'],
+                'backup_rpo_hours' => 4,
+                'patch_sla_hours' => ['critical' => 4, 'high' => 24, 'medium' => 168],
+                'continuity_rto_hours' => ['mission_critical' => 2, 'important' => 8],
+                // 6 added in #829
+                'access_review_cadence_months' => 6,
+                'mfa_scope' => 'privileged_only',
+                'logging_retention_months' => ['security' => 12, 'app' => 3, 'system' => 3],
+                'vuln_scan_cadence' => ['external_cadence' => 'monthly', 'internal_cadence' => 'weekly'],
+                'working_modes' => ['office', 'hybrid'],
+                'cloud_onprem_mix_pct' => 50,
+            ],
+        ]);
+        $collector = $this->makeCollector();
+
+        $vars = $collector->collectFor($run);
+
+        // pre-existing 4 — now ALL exposed (patch + continuity were the gap)
+        self::assertSame('AES-256, RSA-2048', $vars['crypto.algorithms']);
+        self::assertSame(4, $vars['backup.rpo_hours']);
+        self::assertSame(4, $vars['patch.sla_critical_hours']);
+        self::assertSame(24, $vars['patch.sla_high_hours']);
+        self::assertSame(168, $vars['patch.sla_medium_hours']);
+        self::assertSame('mission_critical: 2h, important: 8h', $vars['continuity.rto_summary']);
+
+        // 6 added in #829
+        self::assertSame(6, $vars['access.review_cadence_months']);
+        self::assertSame('privileged_only', $vars['mfa.scope']);
+        self::assertSame(12, $vars['logging.retention_security_months']);
+        self::assertSame(3, $vars['logging.retention_app_months']);
+        self::assertSame(3, $vars['logging.retention_system_months']);
+        self::assertSame('monthly', $vars['vuln.scan_external_cadence']);
+        self::assertSame('weekly', $vars['vuln.scan_internal_cadence']);
+        self::assertSame('office, hybrid', $vars['working.modes']);
+        self::assertSame(50, $vars['cloud.onprem_mix_pct']);
+    }
+
+    #[Test]
     public function dropsKeysWithNoSourceSoNoLeftoverMarkers(): void
     {
         $tenant = $this->makeTenant(legalName: null, name: null);

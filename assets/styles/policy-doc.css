@@ -476,6 +476,41 @@
     padding: 32px 0;
 }
 
+/* ── GFM table rendered by markdownToHtml() ─────────────────────── */
+.fa-policy-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-family: "Inter", "Helvetica", sans-serif;
+    font-size: 12px;
+    page-break-inside: avoid;
+}
+
+.fa-policy-table th {
+    background: var(--surface-2, #f6f6fa);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 10px;
+    color: var(--fg-2, #2a2540);
+    border: 0.5pt solid var(--border-strong, #c8c8d0);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.fa-policy-table td {
+    border: 0.5pt solid var(--border-strong, #c8c8d0);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+    color: var(--fg-1, #0e0a1f);
+}
+
+.fa-policy-table tbody tr:nth-child(even) td {
+    background: var(--surface-2, #f6f6fa);
+}
+
 /* ── Slot 5 · Signature footer ───────────────────────────────────── */
 .policy-doc__signature {
     padding: 36px 56px 44px;
