@@ -85,6 +85,18 @@
             {% endif %}
         </div>
 
+        {# Reifegrad / 9001-Brücke — orient the assessor before they fill 80 rows. #}
+        <div class="alert alert-light border d-flex align-items-start mb-3" role="note">
+            <i class="fa-icon fa-icon--nav-info-circle me-2 mt-1 flex-shrink-0"></i>
+            <div class="small">
+                <strong>So bewerten Sie:</strong> Der <em>Reifegrad</em> ist ein Reifegradmodell wie bei einer
+                ISO-9001-Prozessbewertung — <strong>0</strong> = nicht umgesetzt … <strong>3 (Etabliert)</strong> =
+                Zielwert für TISAX … <strong>5</strong> = optimiert. Diese Liste ist im Grunde Ihre
+                <em>Selbstbewertungs-Checkliste</em>. Pro Anforderung den passenden Reifegrad wählen;
+                Datenschutz-Anforderungen werden stattdessen mit <em>OK / Nicht OK</em> beantwortet.
+            </div>
+        </div>
+
         {# DP tier info banner #}
         {% if aggregate.dp.total > 0 %}
         <div class="alert alert-info d-flex align-items-start mb-4" role="alert">
@@ -240,7 +252,10 @@
                                             {{ 'tisax.import.assess.dp.target_label'|trans({}, 'tisax_isa') }}
                                         </span>
                                     {% elseif req.maturityTarget %}
-                                        <span class="text-muted">{{ req.maturityTarget }}</span>
+                                        {% set targetInt = {'incomplete':0,'performed':1,'managed':2,'established':3,'predictable':4,'optimising':5} %}
+                                        <span class="text-muted" title="TISAX-Zielreifegrad (Standard: 3 = Etabliert)">
+                                            {{ targetInt[req.maturityTarget]|default('?') }} — {{ ('tisax.import.assess.level.' ~ req.maturityTarget)|trans({}, 'tisax_isa') }}
+                                        </span>
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
