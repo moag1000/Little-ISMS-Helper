@@ -81,9 +81,17 @@
         }) }}
     {% endif %}
 
+    {# novalidate + wizard-form-guard: native HTML5 validation silently blocks
+       the POST when a required control is invalid AND off-screen (the "Weiter"
+       button then appears dead). The guard runs our own check on submit and,
+       if anything is missing, highlights every offender + scrolls + toasts —
+       so the button always responds and the user sees exactly what's missing. #}
     <form method="post"
           action="{{ path('app_policy_wizard_step_submit', { runId: run.id, step: step }) }}"
-          class="mt-3">
+          class="mt-3"
+          novalidate
+          data-controller="wizard-form-guard"
+          data-wizard-form-guard-missing-template="{{ 'policy_wizard.step.guard.missing_fields'|trans({'%count%': '%count%'})|e('html_attr') }}">
         <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_step') }}">
 
         {# Step-key → template-filename mapping. Default 7-step flow plus
