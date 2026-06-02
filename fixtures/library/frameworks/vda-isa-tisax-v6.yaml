@@ -1,14 +1,16 @@
-# TISAX VDA ISA v6.0 - Skeleton-only (ENX-licence compliant, OQ-1)
+# TISAX VDA ISA v6.0 - number-enumerated catalogue (ENX-licence compliant)
 #
-# This skeleton creates the framework row in the database and establishes
-# the category structure, but does NOT contain any ENX-licensed control
-# content (titles, descriptions, objectives, or Prueffragen).
+# Ships the canonical VDA-ISA 6.0 control-NUMBER enumeration (80 controls) plus
+# the category structure. Control NUMBERS are non-copyrightable facts and ARE
+# shipped; the ENX-licensed Volltext (Kontrollfrage / Ziel / Massnahme / Doku)
+# is NEVER shipped and arrives solely via the user's BYO workbook upload,
+# matched onto these rows by controlId.
 #
-# To populate this framework with real ISA controls, use the BYO-Import
-# Wizard. You need a valid ENX licence to access the VDA ISA workbook.
+# A fresh tenant therefore gets the full applicable catalogue as Reifegrad-0
+# gaps; the BYO-Import wizard (requires a valid ENX licence) supplies the text
+# and Reifegrad. Single canonical catalogue -- no parallel pre-seeded set.
 #
-# Legal reference: ENX_VDA_ISA_LICENSING_ANALYSIS.md OQ-1
-
+# Legal reference: ENX_VDA_ISA_LICENSING_ANALYSIS.md (numbers-shippable premise)
 metadata:
   code: TISAX
   name: TISAX VDA ISA v6.0 (Skeleton)
@@ -40,5 +42,332 @@ categories:
   - code: data_protection
     name: Data Protection
 
-# No controls -- use BYO-Import wizard to populate from your licensed copy
-kontrollen: []
+# Canonical VDA-ISA 6.0 control-number enumeration (ENX-licence compliant).
+# NUMBERS ONLY -- a control number is a non-copyrightable fact; the ENX-
+# licensed Volltext (Kontrollfrage / Ziel / Massnahme) is NEVER shipped here
+# and arrives solely via the user's BYO workbook upload, matched by controlId.
+# Verified against the official ISA6_DE_6.0.2 workbook: 80 controls
+# (Information Security 46 + Prototype Protection 22 + Data Protection 12).
+# These rows are the shared catalogue baseline: a fresh tenant sees the full
+# applicable catalogue as Reifegrad-0 gaps; the upload fills text + Reifegrad.
+requirements:
+  - controlId: '1.1.1'
+    title: 'VDA-ISA 1.1.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.1'
+  - controlId: '1.2.1'
+    title: 'VDA-ISA 1.2.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.2'
+  - controlId: '1.2.2'
+    title: 'VDA-ISA 1.2.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.2'
+  - controlId: '1.2.3'
+    title: 'VDA-ISA 1.2.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.2'
+  - controlId: '1.2.4'
+    title: 'VDA-ISA 1.2.4'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.2'
+  - controlId: '1.3.1'
+    title: 'VDA-ISA 1.3.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.3'
+  - controlId: '1.3.2'
+    title: 'VDA-ISA 1.3.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.3'
+  - controlId: '1.3.3'
+    title: 'VDA-ISA 1.3.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.3'
+  - controlId: '1.3.4'
+    title: 'VDA-ISA 1.3.4'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.3'
+  - controlId: '1.4.1'
+    title: 'VDA-ISA 1.4.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.4'
+  - controlId: '1.5.1'
+    title: 'VDA-ISA 1.5.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.5'
+  - controlId: '1.5.2'
+    title: 'VDA-ISA 1.5.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.5'
+  - controlId: '1.6.1'
+    title: 'VDA-ISA 1.6.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.6'
+  - controlId: '1.6.2'
+    title: 'VDA-ISA 1.6.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.6'
+  - controlId: '1.6.3'
+    title: 'VDA-ISA 1.6.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '1.6'
+  - controlId: '2.1.1'
+    title: 'VDA-ISA 2.1.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '2.1'
+  - controlId: '2.1.2'
+    title: 'VDA-ISA 2.1.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '2.1'
+  - controlId: '2.1.3'
+    title: 'VDA-ISA 2.1.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '2.1'
+  - controlId: '2.1.4'
+    title: 'VDA-ISA 2.1.4'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '2.1'
+  - controlId: '3.1.1'
+    title: 'VDA-ISA 3.1.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '3.1'
+  - controlId: '3.1.2'
+    title: 'VDA-ISA 3.1.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '3.1'
+  - controlId: '3.1.3'
+    title: 'VDA-ISA 3.1.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '3.1'
+  - controlId: '3.1.4'
+    title: 'VDA-ISA 3.1.4'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '3.1'
+  - controlId: '4.1.1'
+    title: 'VDA-ISA 4.1.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '4.1'
+  - controlId: '4.1.2'
+    title: 'VDA-ISA 4.1.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '4.1'
+  - controlId: '4.1.3'
+    title: 'VDA-ISA 4.1.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '4.1'
+  - controlId: '4.2.1'
+    title: 'VDA-ISA 4.2.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '4.2'
+  - controlId: '5.1.1'
+    title: 'VDA-ISA 5.1.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.1'
+  - controlId: '5.1.2'
+    title: 'VDA-ISA 5.1.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.1'
+  - controlId: '5.2.1'
+    title: 'VDA-ISA 5.2.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.2'
+  - controlId: '5.2.2'
+    title: 'VDA-ISA 5.2.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.2'
+  - controlId: '5.2.3'
+    title: 'VDA-ISA 5.2.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.2'
+  - controlId: '5.2.4'
+    title: 'VDA-ISA 5.2.4'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.2'
+  - controlId: '5.2.5'
+    title: 'VDA-ISA 5.2.5'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.2'
+  - controlId: '5.2.6'
+    title: 'VDA-ISA 5.2.6'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.2'
+  - controlId: '5.2.7'
+    title: 'VDA-ISA 5.2.7'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.2'
+  - controlId: '5.2.8'
+    title: 'VDA-ISA 5.2.8'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.2'
+  - controlId: '5.2.9'
+    title: 'VDA-ISA 5.2.9'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.2'
+  - controlId: '5.3.1'
+    title: 'VDA-ISA 5.3.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.3'
+  - controlId: '5.3.2'
+    title: 'VDA-ISA 5.3.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.3'
+  - controlId: '5.3.3'
+    title: 'VDA-ISA 5.3.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.3'
+  - controlId: '5.3.4'
+    title: 'VDA-ISA 5.3.4'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '5.3'
+  - controlId: '6.1.1'
+    title: 'VDA-ISA 6.1.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '6.1'
+  - controlId: '6.1.2'
+    title: 'VDA-ISA 6.1.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '6.1'
+  - controlId: '7.1.1'
+    title: 'VDA-ISA 7.1.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '7.1'
+  - controlId: '7.1.2'
+    title: 'VDA-ISA 7.1.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'information_security'
+    section: '7.1'
+  - controlId: '8.1.1'
+    title: 'VDA-ISA 8.1.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.1'
+  - controlId: '8.1.2'
+    title: 'VDA-ISA 8.1.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.1'
+  - controlId: '8.1.3'
+    title: 'VDA-ISA 8.1.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.1'
+  - controlId: '8.1.4'
+    title: 'VDA-ISA 8.1.4'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.1'
+  - controlId: '8.1.5'
+    title: 'VDA-ISA 8.1.5'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.1'
+  - controlId: '8.1.6'
+    title: 'VDA-ISA 8.1.6'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.1'
+  - controlId: '8.1.7'
+    title: 'VDA-ISA 8.1.7'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.1'
+  - controlId: '8.1.8'
+    title: 'VDA-ISA 8.1.8'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.1'
+  - controlId: '8.2.1'
+    title: 'VDA-ISA 8.2.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.2'
+  - controlId: '8.2.2'
+    title: 'VDA-ISA 8.2.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.2'
+  - controlId: '8.2.3'
+    title: 'VDA-ISA 8.2.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.2'
+  - controlId: '8.2.4'
+    title: 'VDA-ISA 8.2.4'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.2'
+  - controlId: '8.2.5'
+    title: 'VDA-ISA 8.2.5'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.2'
+  - controlId: '8.2.6'
+    title: 'VDA-ISA 8.2.6'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.2'
+  - controlId: '8.2.7'
+    title: 'VDA-ISA 8.2.7'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.2'
+  - controlId: '8.3.1'
+    title: 'VDA-ISA 8.3.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.3'
+  - controlId: '8.3.2'
+    title: 'VDA-ISA 8.3.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.3'
+  - controlId: '8.4.1'
+    title: 'VDA-ISA 8.4.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.4'
+  - controlId: '8.4.2'
+    title: 'VDA-ISA 8.4.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.4'
+  - controlId: '8.4.3'
+    title: 'VDA-ISA 8.4.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.4'
+  - controlId: '8.5.1'
+    title: 'VDA-ISA 8.5.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.5'
+  - controlId: '8.5.2'
+    title: 'VDA-ISA 8.5.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'prototype_protection'
+    section: '8.5'
+  - controlId: '9.1.1'
+    title: 'VDA-ISA 9.1.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.1'
+  - controlId: '9.2.1'
+    title: 'VDA-ISA 9.2.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.2'
+  - controlId: '9.3.1'
+    title: 'VDA-ISA 9.3.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.3'
+  - controlId: '9.4.1'
+    title: 'VDA-ISA 9.4.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.4'
+  - controlId: '9.5.1'
+    title: 'VDA-ISA 9.5.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.5'
+  - controlId: '9.5.2'
+    title: 'VDA-ISA 9.5.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.5'
+  - controlId: '9.5.3'
+    title: 'VDA-ISA 9.5.3'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.5'
+  - controlId: '9.6.1'
+    title: 'VDA-ISA 9.6.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.6'
+  - controlId: '9.6.2'
+    title: 'VDA-ISA 9.6.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.6'
+  - controlId: '9.7.1'
+    title: 'VDA-ISA 9.7.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.7'
+  - controlId: '9.7.2'
+    title: 'VDA-ISA 9.7.2'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.7'
+  - controlId: '9.8.1'
+    title: 'VDA-ISA 9.8.1'   # placeholder -- real Kontrollfrage via BYO upload
+    category: 'data_protection'
+    section: '9.8'
