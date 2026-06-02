@@ -28,8 +28,10 @@ use Symfony\Component\Yaml\Yaml;
  * VDA-ISA 6.0 control NUMBERS enumerated there — numbers + structure only, no
  * ENX-licensed text (that arrives via the user's BYO workbook upload, matched
  * by control number onto tenant-scoped rows).
+ *
+ * Not final so it can be mocked in tests.
  */
-final class TisaxCatalogueProvider
+class TisaxCatalogueProvider
 {
     /** Human-readable dimension labels keyed by category code. */
     private const DIMENSION_LABEL = [
