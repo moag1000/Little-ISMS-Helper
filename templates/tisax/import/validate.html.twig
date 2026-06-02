@@ -42,22 +42,16 @@
                         <dt class="col-sm-4">{{ 'tisax.import.validate.control_count'|trans({}, 'tisax_isa') }}</dt>
                         <dd class="col-sm-8">
                             {{ controlCount }}
-                            <span class="text-muted small">(ein vollständiges ISA-6-Workbook hat ca. 80 Anforderungen)</span>
+                            <span class="text-muted small">({{ 'tisax.import.validate.workbook_size_hint'|trans({}, 'tisax_isa') }})</span>
                         </dd>
                         <dt class="col-sm-4">{{ 'tisax.import.validate.detected_columns'|trans({}, 'tisax_isa') }}</dt>
                         <dd class="col-sm-8">
-                            {% set colLabels = {
-                                'controlId': 'Kontroll-Nummer', 'titleDe': 'Kontrollfrage', 'titleEn': 'Kontrollfrage (EN)',
-                                'description': 'Ziel', 'maturityCurrent': 'Reifegrad', 'implementationDescription': 'Umsetzung (Maßnahme)',
-                                'referenceDocumentation': 'Referenz-Dokumentation', 'iso27001Ref': 'ISO-27001-Bezug', 'evidenceHint': 'Nachweis-Hinweis',
-                                'mustLevel': 'Muss', 'shouldLevel': 'Sollte', 'highLevel': 'Hoher Schutzbedarf', 'veryHighLevel': 'Sehr hoher Schutzbedarf', 'sgaLevel': 'SGA'
-                            } %}
-                            {{ columnMap|keys|map(k => colLabels[k]|default(k))|join(', ') }}
+                            {{ columnMap|keys|map(k => ('tisax.import.validate.col_label.' ~ k)|trans({}, 'tisax_isa') != ('tisax.import.validate.col_label.' ~ k) ? ('tisax.import.validate.col_label.' ~ k)|trans({}, 'tisax_isa') : k)|join(', ') }}
                         </dd>
                     </dl>
                     <p class="text-muted small mb-0 mt-2">
                         <i class="fa-icon fa-icon--info-circle me-1"></i>
-                        Grün = alles ok, weiter. Gelb = Hinweis (z. B. ältere Version), Sie dürfen trotzdem weiter. Rot = Stopp, bitte eine ISA-6-Datei laden.
+                        {{ 'tisax.import.validate.legend_desc'|trans({}, 'tisax_isa') }}
                     </p>
                 </div>
             </div>

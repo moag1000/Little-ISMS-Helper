@@ -79,6 +79,8 @@ tisax:
         de_label: 'Deutsch'
         expected_sheets_title: 'Erwartete Tabellenblatt-Namen (der Parser wählt den ersten Treffer):'
         troubleshoot_hint: 'Wenn der Parser Ihr Workbook ablehnt, prüfen Sie, ob es ein Tabellenblatt "Informationssicherheit" (DE) oder "Information Security" (EN) enthält. Workbooks, bei denen diese Tabellenblätter umbenannt wurden, werden nicht erkannt.'
+        sheets_en_label: 'EN'
+        sheets_de_label: 'DE'
 
     validate:
       title: 'Workbook-Validierung'
@@ -93,6 +95,23 @@ tisax:
       proceed: 'Weiter zur Vorschau'
       no_workbook: 'Kein Workbook in der Sitzung gefunden. Bitte laden Sie es erneut hoch.'
       legacy_five_partial: 'ISA %version%-Workbook erkannt: Teilimport mit %count% Controls. ISA 5.x ist eine Teilmenge von ISA 6 — passende Controls werden übernommen, die nur in ISA 6 enthaltenen Controls (u. a. erweitertes Datenschutz-Modul) bleiben unbewertet.'
+      workbook_size_hint: 'ein vollständiges ISA-6-Workbook hat ca. 80 Anforderungen'
+      legend_desc: 'Grün = alles ok, weiter. Gelb = Hinweis (z. B. ältere Version), Sie dürfen trotzdem weiter. Rot = Stopp, bitte eine ISA-6-Datei laden.'
+      col_label:
+        controlId: 'Kontroll-Nummer'
+        titleDe: 'Kontrollfrage'
+        titleEn: 'Kontrollfrage (EN)'
+        description: 'Ziel'
+        maturityCurrent: 'Reifegrad'
+        implementationDescription: 'Umsetzung (Maßnahme)'
+        referenceDocumentation: 'Referenz-Dokumentation'
+        iso27001Ref: 'ISO-27001-Bezug'
+        evidenceHint: 'Nachweis-Hinweis'
+        mustLevel: 'Muss'
+        shouldLevel: 'Sollte'
+        highLevel: 'Hoher Schutzbedarf'
+        veryHighLevel: 'Sehr hoher Schutzbedarf'
+        sgaLevel: 'SGA'
 
     preview:
       title: 'Import-Vorschau'
@@ -136,6 +155,15 @@ tisax:
       avg_reifegrad: 'Durchschnittlicher Reifegrad'
       assessed: 'Bewertet'
       requirements_heading: 'Anforderungen'
+      reifegrad_hint: '<strong>So bewerten Sie:</strong> Der <em>Reifegrad</em> ist ein Reifegradmodell wie bei einer ISO-9001-Prozessbewertung — <strong>0</strong> = nicht umgesetzt … <strong>3 (Etabliert)</strong> = Zielwert für TISAX … <strong>5</strong> = optimiert. Diese Liste ist im Grunde Ihre <em>Selbstbewertungs-Checkliste</em>. Pro Anforderung den passenden Reifegrad wählen; Datenschutz-Anforderungen werden stattdessen mit <em>OK / Nicht OK</em> beantwortet.'
+      dp_note: 'Bewertung mit OK / Nicht OK (kein Reifegrad)'
+      success_heading: 'Import abgeschlossen.'
+      success_desc: 'Ihre TISAX-Bewertung ist gespeichert — sehen Sie Abdeckung, Bereiche und Lücken in der Übersicht.'
+      view_overview: 'Zur TISAX-Übersicht'
+      dimension:
+        information_security: 'Informationssicherheit'
+        prototype_protection: 'Prototypenschutz'
+        data_protection: 'Datenschutz'
       col:
         id: 'Kontroll-ID'
         title: 'Anforderung'

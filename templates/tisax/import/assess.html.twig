@@ -89,11 +89,7 @@
         <div class="alert alert-light border d-flex align-items-start mb-3" role="note">
             <i class="fa-icon fa-icon--nav-info-circle me-2 mt-1 flex-shrink-0"></i>
             <div class="small">
-                <strong>So bewerten Sie:</strong> Der <em>Reifegrad</em> ist ein Reifegradmodell wie bei einer
-                ISO-9001-Prozessbewertung — <strong>0</strong> = nicht umgesetzt … <strong>3 (Etabliert)</strong> =
-                Zielwert für TISAX … <strong>5</strong> = optimiert. Diese Liste ist im Grunde Ihre
-                <em>Selbstbewertungs-Checkliste</em>. Pro Anforderung den passenden Reifegrad wählen;
-                Datenschutz-Anforderungen werden stattdessen mit <em>OK / Nicht OK</em> beantwortet.
+                {{ 'tisax.import.assess.reifegrad_hint'|trans({}, 'tisax_isa')|raw }}
             </div>
         </div>
 
@@ -136,9 +132,9 @@
                         </thead>
                         <tbody>
                             {% set dimLabels = {
-                                'information_security': 'Informationssicherheit',
-                                'prototype_protection': 'Prototypenschutz',
-                                'data_protection': 'Datenschutz'
+                                'information_security': 'tisax.import.assess.dimension.information_security'|trans({}, 'tisax_isa'),
+                                'prototype_protection': 'tisax.import.assess.dimension.prototype_protection'|trans({}, 'tisax_isa'),
+                                'data_protection': 'tisax.import.assess.dimension.data_protection'|trans({}, 'tisax_isa')
                             } %}
                             {% set prevCat = null %}
                             {% for req in requirements %}
@@ -148,7 +144,7 @@
                                     <th colspan="6" class="py-2">
                                         <i class="fa-icon fa-icon--folder me-1"></i>
                                         {{ dimLabels[req.category]|default(req.category|replace({'_': ' '})|capitalize) }}
-                                        {% if isDataProtection %}<span class="text-muted fw-normal small ms-2">— Bewertung mit OK / Nicht OK (kein Reifegrad)</span>{% endif %}
+                                        {% if isDataProtection %}<span class="text-muted fw-normal small ms-2">— {{ 'tisax.import.assess.dp_note'|trans({}, 'tisax_isa') }}</span>{% endif %}
                                     </th>
                                 </tr>
                                 {% set prevCat = req.category %}
@@ -292,11 +288,11 @@
         <div class="card border-success mt-3">
             <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
-                    <strong>Import abgeschlossen.</strong>
-                    <span class="text-muted">Ihre TISAX-Bewertung ist gespeichert — sehen Sie Abdeckung, Bereiche und Lücken in der Übersicht.</span>
+                    <strong>{{ 'tisax.import.assess.success_heading'|trans({}, 'tisax_isa') }}</strong>
+                    <span class="text-muted">{{ 'tisax.import.assess.success_desc'|trans({}, 'tisax_isa') }}</span>
                 </div>
                 <a href="{{ path('app_compliance_framework_show', { id: framework.id }) }}" class="btn btn-success">
-                    <i class="fa-icon fa-icon--arrow-right me-1"></i> Zur TISAX-Übersicht
+                    <i class="fa-icon fa-icon--arrow-right me-1"></i> {{ 'tisax.import.assess.view_overview'|trans({}, 'tisax_isa') }}
                 </a>
             </div>
         </div>

@@ -79,6 +79,8 @@ tisax:
         de_label: 'German'
         expected_sheets_title: 'Expected sheet names (parser selects the first match):'
         troubleshoot_hint: 'If the parser rejects your workbook, check that it contains a sheet named "Information Security" (EN) or "Informationssicherheit" (DE). Workbooks modified to rename these sheets will not be recognised.'
+        sheets_en_label: 'EN'
+        sheets_de_label: 'DE'
 
     validate:
       title: 'Workbook Validation'
@@ -93,6 +95,23 @@ tisax:
       proceed: 'Continue to Preview'
       no_workbook: 'No workbook found in session. Please upload again.'
       legacy_five_partial: 'ISA %version% workbook detected: partial import with %count% controls. ISA 5.x is a subset of ISA 6 — matching controls are imported; controls only present in ISA 6 (incl. the expanded data-protection module) remain unassessed.'
+      workbook_size_hint: 'a complete ISA-6 workbook has approx. 80 requirements'
+      legend_desc: 'Green = all OK, continue. Yellow = note (e.g. older version), you may still proceed. Red = stop, please load an ISA-6 file.'
+      col_label:
+        controlId: 'Control number'
+        titleDe: 'Control question'
+        titleEn: 'Control question (EN)'
+        description: 'Objective'
+        maturityCurrent: 'Maturity level'
+        implementationDescription: 'Implementation (measure)'
+        referenceDocumentation: 'Reference documentation'
+        iso27001Ref: 'ISO 27001 reference'
+        evidenceHint: 'Evidence hint'
+        mustLevel: 'Must'
+        shouldLevel: 'Should'
+        highLevel: 'High protection need'
+        veryHighLevel: 'Very high protection need'
+        sgaLevel: 'SGA'
 
     preview:
       title: 'Import Preview'
@@ -136,6 +155,15 @@ tisax:
       avg_reifegrad: 'Average Reifegrad'
       assessed: 'Assessed'
       requirements_heading: 'Requirements'
+      reifegrad_hint: '<strong>How to assess:</strong> The <em>Reifegrad</em> (maturity level) works like an ISO-9001 process assessment — <strong>0</strong> = not implemented … <strong>3 (Established)</strong> = the TISAX target … <strong>5</strong> = optimised. This list is essentially your <em>self-assessment checklist</em>. Pick the matching maturity level per requirement; data-protection requirements are answered with <em>OK / Not OK</em> instead.'
+      dp_note: 'Assessed with OK / Not OK (no maturity level)'
+      success_heading: 'Import complete.'
+      success_desc: 'Your TISAX assessment is saved — see coverage, dimensions and gaps in the overview.'
+      view_overview: 'Go to TISAX overview'
+      dimension:
+        information_security: 'Information Security'
+        prototype_protection: 'Prototype Protection'
+        data_protection: 'Data Protection'
       col:
         id: 'Control ID'
         title: 'Requirement'
