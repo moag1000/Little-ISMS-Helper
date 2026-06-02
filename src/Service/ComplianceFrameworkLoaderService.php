@@ -77,6 +77,7 @@ final class ComplianceFrameworkLoaderService
         private readonly LoadIso27018FullCommand $loadIso27018FullCommand,
         private readonly LoadEuCraFullCommand $loadEuCraFullCommand,
         private readonly LoadPciDss401FullCommand $loadPciDss401FullCommand,
+        private readonly \App\Service\Tisax\TisaxCatalogueProvider $tisaxCatalogue,
     ) {}
 
     /**
@@ -87,17 +88,21 @@ final class ComplianceFrameworkLoaderService
         $loadedFrameworks = $this->complianceFrameworkRepository->findAll();
         $loadedCodes = array_map(fn(ComplianceFramework $f): ?string => $f->getCode(), $loadedFrameworks);
 
+        // Single metadata source: name/version/description come from the YAML via
+        // the catalogue provider (no hardcoded drift).
+        $tisaxMeta = $this->tisaxCatalogue->getMetadata();
+
         return [
             [
-                'code' => 'TISAX',
-                'name' => 'TISAX (Trusted Information Security Assessment Exchange)',
-                'description' => 'Information security assessment standard for the automotive industry based on VDA ISA',
+                'code' => $tisaxMeta['code'],
+                'name' => $tisaxMeta['name'],
+                'description' => $tisaxMeta['description'],
                 'industry' => 'automotive',
                 'regulatory_body' => 'VDA (Verband der Automobilindustrie)',
                 'mandatory' => false,
                 'applicability' => 'conditional',
                 'applicability_condition_key' => 'admin.compliance.applicability.condition.tisax',
-                'version' => '6.0.2',
+                'version' => $tisaxMeta['version'],
                 'loaded' => in_array('TISAX', $loadedCodes),
                 'icon' => '🚗',
                 'required_modules' => ['compliance', 'controls', 'risks', 'assets', 'incidents'],

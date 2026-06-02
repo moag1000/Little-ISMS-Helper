@@ -28,6 +28,7 @@ final class VdaIsaImporter
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly string $projectDir,
+        private readonly \App\Service\Tisax\TisaxCatalogueProvider $catalogueProvider,
     ) {
     }
 
@@ -74,8 +75,24 @@ final class VdaIsaImporter
 
         $meta = $data['metadata'];
 
-        // Skeleton-only guard: requiresUpload=true means ENX-licensed content
-        // has not been included. Create the framework row only; seed no requirements.
+        // The canonical TISAX catalogue is owned by TisaxCatalogueProvider — the
+        // single importer/metadata source. Delegate to it instead of seeding a
+        // second time here (this is what unified the previously-duplicated load
+        // paths). The provider seeds the 80 control NUMBERS (numbers only, ENX
+        // compliant); ENX-licensed full text still arrives via BYO upload, which
+        // isSkeletonOnly()=true continues to advertise in the UI.
+        $code = (string) ($meta['code'] ?? '');
+        $code = TisaxRequirementMapper::LEGACY_CODE_ALIASES[$code] ?? $code;
+        if ($code === TisaxRequirementMapper::FRAMEWORK_CODE) {
+            $existing = $this->frameworkRepository->findOneBy(['code' => $code]);
+            $r = $this->catalogueProvider->loadCatalogue(true);
+            $stats['frameworks_' . ($existing === null ? 'created' : 'updated')]++;
+            $stats['requirements_created'] = $r['created'];
+            $stats['requirements_updated'] = $r['updated'];
+            return $stats;
+        }
+
+        // Skeleton-only guard for any OTHER requiresUpload library fixture.
         if (!empty($meta['requiresUpload'])) {
             $stats['skeleton_only'] = true;
             $this->upsertFramework($meta, $stats);

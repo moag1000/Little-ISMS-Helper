@@ -64,6 +64,7 @@ final class TisaxRequirementMapper
 
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly \App\Service\Tisax\TisaxCatalogueProvider $catalogueProvider,
     ) {}
 
     /**
@@ -79,41 +80,11 @@ final class TisaxRequirementMapper
      */
     public function findOrCreateFramework(): ComplianceFramework
     {
-        $repo = $this->em->getRepository(ComplianceFramework::class);
-
-        // 1. Try canonical code first.
-        $framework = $repo->findOneBy(['code' => self::FRAMEWORK_CODE]);
-        if ($framework !== null) {
-            return $framework;
-        }
-
-        // 2. Try legacy alias codes (deprecation window — remove after P4).
-        foreach (array_keys(self::LEGACY_CODE_ALIASES) as $legacyCode) {
-            $framework = $repo->findOneBy(['code' => $legacyCode]);
-            if ($framework !== null) {
-                return $framework;
-            }
-        }
-
-        // 3. Create with the canonical code.
-        $framework = new ComplianceFramework();
-        $framework->setCode(self::FRAMEWORK_CODE);
-        $framework->setName('TISAX VDA-ISA 6.0');
-        $framework->setVersion('6.0');
-        $framework->setDescription(
-            'VDA Information Security Assessment (VDA-ISA) — customer-supplied workbook. '
-            . 'ENX-licensed content; tenant-specific requirements only.',
-        );
-        $framework->setRegulatoryBody('VDA / ENX Association');
-        $framework->setApplicableIndustry('Automotive');
-        $framework->setMandatory(false);
-        $framework->setActive(true);
-        $framework->setRequiredModules(['prototype_protection']);
-
-        $this->em->persist($framework);
-        $this->em->flush();
-
-        return $framework;
+        // Single source of truth: the catalogue provider owns the framework row +
+        // metadata (from the YAML). The BYO import never defines its own
+        // name/version — that previously caused the metadata to flip depending on
+        // whether an upload or the loader created the framework first.
+        return $this->catalogueProvider->upsertFramework();
     }
 
     /**

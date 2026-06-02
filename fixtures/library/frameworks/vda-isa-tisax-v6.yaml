@@ -13,8 +13,9 @@
 # Legal reference: ENX_VDA_ISA_LICENSING_ANALYSIS.md (numbers-shippable premise)
 metadata:
   code: TISAX
-  name: TISAX VDA ISA v6.0 (Skeleton)
+  name: TISAX (VDA-ISA 6.0)
   version: "6.0"
+  description: Information security assessment standard for the automotive industry (VDA-ISA 6.0). Control numbers shipped; full text via licensed BYO workbook upload.
   releaseDate: "2024-03-01"
   body: Verband der Automobilindustrie (VDA) / ENX Association
   language: de
