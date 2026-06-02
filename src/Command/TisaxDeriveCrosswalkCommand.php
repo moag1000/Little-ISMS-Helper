@@ -43,6 +43,7 @@ final class TisaxDeriveCrosswalkCommand extends Command
 
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly \App\Repository\TisaxCrosswalkEntryRepository $crosswalkRepository,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -52,7 +53,10 @@ final class TisaxDeriveCrosswalkCommand extends Command
     protected function configure(): void
     {
         $this->addOption('write-confirmed', null, InputOption::VALUE_NONE,
-            'Append the unique high-confidence (derived) targets to the crosswalk fixture.');
+            'Write the unique high-confidence (derived) targets to a local var/ file.');
+        $this->addOption('persist', null, InputOption::VALUE_NONE,
+            'Persist the derived targets to the per-tenant DB crosswalk (survives re-runs; needs --tenant).');
+        $this->addOption('tenant', null, InputOption::VALUE_REQUIRED, 'Tenant id (required with --persist).');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -126,6 +130,10 @@ final class TisaxDeriveCrosswalkCommand extends Command
             $this->appendConfirmedToCrosswalk($derived, $io);
         }
 
+        if ($input->getOption('persist')) {
+            $this->persistToTenant($derived, $input->getOption('tenant'), $io);
+        }
+
         return Command::SUCCESS;
     }
 
@@ -180,6 +188,31 @@ final class TisaxDeriveCrosswalkCommand extends Command
      *
      * @param array<string, array{target: string, domain: string, via: mixed, confidence: string}> $derived
      */
+    /**
+     * Persist the unique-derived legacy→canonical map to the tenant's DB crosswalk
+     * so it survives re-runs and the next ISA revision (no per-engagement redo).
+     * Copyright-safe: the canonical numbering lives only in the tenant's own DB.
+     *
+     * @param array<string, array{target: string, domain: string, via: mixed, confidence: string}> $derived
+     */
+    private function persistToTenant(array $derived, mixed $tenantOpt, SymfonyStyle $io): void
+    {
+        if ($tenantOpt === null) {
+            $io->warning('--persist needs --tenant <id>; skipped.');
+            return;
+        }
+        $tenant = $this->em->getRepository(\App\Entity\Tenant::class)->find((int) $tenantOpt);
+        if ($tenant === null) {
+            $io->warning('Tenant not found; --persist skipped.');
+            return;
+        }
+        foreach ($derived as $legacyId => $d) {
+            $this->crosswalkRepository->upsert($tenant, (string) $legacyId, $d['target'], 'derived', 'iso_anchor_bridge');
+        }
+        $this->em->flush();
+        $io->success(sprintf('Persisted %d derived crosswalk entries to tenant %d.', count($derived), (int) $tenantOpt));
+    }
+
     private function appendConfirmedToCrosswalk(array $derived, SymfonyStyle $io): void
     {
         $path = $this->projectDir . '/var/tisax-crosswalk-confirmed.local.yaml';

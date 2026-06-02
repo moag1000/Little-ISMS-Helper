@@ -72,6 +72,7 @@ final class TisaxConsolidateCommand extends Command
         private readonly EntityManagerInterface $em,
         private readonly AuditLogger $auditLogger,
         private readonly \App\Service\Tisax\TisaxFulfillmentSync $fulfillmentSync,
+        private readonly \App\Repository\TisaxCrosswalkEntryRepository $crosswalkRepository,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -238,6 +239,13 @@ final class TisaxConsolidateCommand extends Command
                     }
                 }
             }
+        }
+        // Merge the per-tenant confirmed crosswalk persisted in the DB (the
+        // ISO-anchor-derived ACC-/INF-→1.1.1 entries the committed fixture can't
+        // carry for copyright reasons). A legacy id resolves to the same control
+        // number across tenants, so a flat merge is correct; DB confirmations win.
+        foreach ($this->crosswalkRepository->findAll() as $entry) {
+            $map[$entry->getLegacyId()] = $entry->getCanonicalId();
         }
         return $map;
     }
