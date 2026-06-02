@@ -31,13 +31,20 @@
     'audit_checklist_due':                { icon: 'nav-clipboard-check',    tone: 'primary' },
     'change_requests_pending_approval':   { icon: 'util-refresh',           tone: 'primary' },
     'management_review_upcoming':         { icon: 'nav-clipboard-data',     tone: 'primary' },
+    'evidence_reverification_due':        { icon: 'nav-clipboard-check',    tone: 'danger'  },
+    'control_effectiveness_overdue':      { icon: 'ui-search',              tone: 'danger'  },
+    'supplier_reassessment_due':          { icon: 'nav-truck',              tone: 'warning' },
+    'dpia_review_overdue':                { icon: 'file-person',            tone: 'danger'  },
+    'bc_plan_review_overdue':             { icon: 'util-refresh',           tone: 'warning' },
+    'risk_review_overdue':                { icon: 'nav-shield-alert',       tone: 'warning' },
+    'risk_acceptance_no_expiry':          { icon: 'nav-shield-alert',       tone: 'danger'  },
     'documents_pending_approval_for_me':  { icon: 'nav-file-check',         tone: 'warning' },
     'wizard_overdue':                     { icon: 'ui-hourglass',           tone: 'warning' },
     'framework_gaps_critical':            { icon: 'nav-bar-chart',          tone: 'danger'  },
 } %}
 {# Ordered category list. Items come from inbox.<key>; the three CM-only buckets
    default to [] when the aggregator did not provide them. #}
-{% set order = ['workflows_pending','workflows_overdue','four_eyes','acknowledgements','findings','dsrs','corrective_actions_overdue','risk_acceptance_expiring','documents_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
+{% set order = ['workflows_pending','workflows_overdue','four_eyes','acknowledgements','findings','dsrs','corrective_actions_overdue','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
 {# Build the active list and the zero counter in one pass — avoids relying on a
    lazy |filter iterator being consumed twice. #}
 {% set activeCategories = [] %}
@@ -125,7 +132,9 @@
                                         'risk_acceptance': 'nav-shield-alert', 'document_review': 'nav-document', 'training': 'nav-mortarboard',
                                         'incident': 'status-critical', 'data_breach': 'nav-shield-alert', 'vulnerability': 'util-bug',
                                         'audit_checklist': 'nav-clipboard-check', 'change_request': 'ui-refresh', 'management_review': 'nav-clipboard-data',
-                                        'document_pending_approval': 'nav-file-check', 'wizard_overdue': 'ui-hourglass', 'framework_gap': 'nav-bar-chart'
+                                        'document_pending_approval': 'nav-file-check', 'wizard_overdue': 'ui-hourglass', 'framework_gap': 'nav-bar-chart',
+                                        'evidence_reverification': 'nav-clipboard-check', 'control': 'ui-search', 'supplier': 'nav-truck',
+                                        'dpia': 'ui-file-person', 'bc_plan': 'util-refresh', 'risk_review': 'nav-shield-alert'
                                     } %}
                                     {% if entityIcon[item.entity_type] is defined %}
                                         <i class="fa-icon fa-icon--{{ entityIcon[item.entity_type] }}" aria-hidden="true"></i>

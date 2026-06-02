@@ -125,6 +125,11 @@ final class MyDayAggregator
         private readonly ManagementReviewRepository $managementReviewRepo,
         private readonly WizardSessionRepository $wizardSessionRepo,
         private readonly ComplianceAnalyticsService $complianceAnalytics,
+        private readonly \App\Repository\EvidenceReverificationTaskRepository $evidenceReverificationRepo,
+        private readonly \App\Repository\ControlRepository $controlRepo,
+        private readonly \App\Repository\SupplierRepository $supplierRepo,
+        private readonly \App\Repository\DataProtectionImpactAssessmentRepository $dpiaRepo,
+        private readonly \App\Repository\BusinessContinuityPlanRepository $bcPlanRepo,
         private readonly UrlGeneratorInterface $urls,
     ) {
     }
@@ -182,6 +187,16 @@ final class MyDayAggregator
         $checklistDue      = $tenant ? $this->buildAuditChecklistDue($user, $tenant) : [];
         $changesPending    = $tenant ? $this->buildChangeRequestsPendingApproval($user, $tenant) : [];
         $reviewsUpcoming   = $tenant ? $this->buildManagementReviewUpcoming($user, $tenant) : [];
+        // Completeness round — further ISMS daily-action sources with a due/review
+        // date. Module-less by design: when the module/entity is unused the bucket
+        // is simply empty and folds away in the UI (no explicit gating needed).
+        $evidenceReverif   = $tenant ? $this->buildEvidenceReverificationDue($user, $tenant) : [];
+        $controlEffOverdue = $tenant ? $this->buildControlEffectivenessOverdue($tenant) : [];
+        $supplierReassess  = $tenant ? $this->buildSupplierReassessmentDue($tenant) : [];
+        $dpiaReviewOverdue = $tenant ? $this->buildDpiaReviewOverdue($tenant) : [];
+        $bcPlanReviewOver  = $tenant ? $this->buildBcPlanReviewOverdue($tenant) : [];
+        $riskReviewOverdue = $tenant ? $this->buildRiskReviewOverdue($tenant) : [];
+        $riskAcceptNoExp   = $tenant ? $this->buildRiskAcceptanceNoExpiry($tenant) : [];
         // V4-EF-7 — Compliance-Manager CM-Buckets (visibility-gated to ROLE_COMPLIANCE_MANAGER).
         $docsPendingApproval = ($tenant && $this->isComplianceManager($user))
             ? $this->buildDocumentsPendingApproval($tenant)
@@ -199,6 +214,9 @@ final class MyDayAggregator
             + count($riskAcceptance) + count($docsReviewOver) + count($trainingsPending)
             + count($incidentsAssigned) + count($breaches72h) + count($vulnsCritical)
             + count($checklistDue) + count($changesPending) + count($reviewsUpcoming)
+            + count($evidenceReverif) + count($controlEffOverdue) + count($supplierReassess)
+            + count($dpiaReviewOverdue) + count($bcPlanReviewOver) + count($riskReviewOverdue)
+            + count($riskAcceptNoExp)
             + count($docsPendingApproval) + count($wizardOverdue) + count($frameworkGaps);
 
         return [
@@ -219,6 +237,13 @@ final class MyDayAggregator
                 'audit_checklist_due' => count($checklistDue),
                 'change_requests_pending_approval' => count($changesPending),
                 'management_review_upcoming' => count($reviewsUpcoming),
+                'evidence_reverification_due' => count($evidenceReverif),
+                'control_effectiveness_overdue' => count($controlEffOverdue),
+                'supplier_reassessment_due' => count($supplierReassess),
+                'dpia_review_overdue' => count($dpiaReviewOverdue),
+                'bc_plan_review_overdue' => count($bcPlanReviewOver),
+                'risk_review_overdue' => count($riskReviewOverdue),
+                'risk_acceptance_no_expiry' => count($riskAcceptNoExp),
                 'documents_pending_approval_for_me' => count($docsPendingApproval),
                 'wizard_overdue' => count($wizardOverdue),
                 'framework_gaps_critical' => count($frameworkGaps),
@@ -239,6 +264,13 @@ final class MyDayAggregator
             'audit_checklist_due' => $checklistDue,
             'change_requests_pending_approval' => $changesPending,
             'management_review_upcoming' => $reviewsUpcoming,
+            'evidence_reverification_due' => $evidenceReverif,
+            'control_effectiveness_overdue' => $controlEffOverdue,
+            'supplier_reassessment_due' => $supplierReassess,
+            'dpia_review_overdue' => $dpiaReviewOverdue,
+            'bc_plan_review_overdue' => $bcPlanReviewOver,
+            'risk_review_overdue' => $riskReviewOverdue,
+            'risk_acceptance_no_expiry' => $riskAcceptNoExp,
             'documents_pending_approval_for_me' => $docsPendingApproval,
             'wizard_overdue'    => $wizardOverdue,
             'framework_gaps_critical' => $frameworkGaps,
@@ -1049,6 +1081,213 @@ final class MyDayAggregator
                 'title'       => sprintf('%s — %s', $f['code'] ?? '?', $f['name'] ?? '—'),
                 'subtitle'    => sprintf('%.1f%% compliant', $f['compliance_percentage']),
                 'badge'       => $f['mandatory'] ? 'mandatory' : 'optional',
+            ];
+        }
+        return $items;
+    }
+
+    /**
+     * Evidence re-verification tasks assigned to me, overdue or due within 7 days.
+     * (ISO 27001 7.5.3 / 9.1 — keeping evidence current is an explicit task.)
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildEvidenceReverificationDue(User $user, Tenant $tenant): array
+    {
+        $items = [];
+        $today = new DateTimeImmutable('today');
+        $horizon = $today->modify('+7 days');
+        foreach ($this->evidenceReverificationRepo->findBy([
+            'tenant' => $tenant,
+            'assignedTo' => $user,
+            'status' => \App\Entity\EvidenceReverificationTask::STATUS_PENDING,
+        ]) as $task) {
+            $due = $task->getDueDate();
+            if ($due === null || $due > $horizon) {
+                continue;
+            }
+            $overdue = $due < $today;
+            $items[] = [
+                'priority'    => $overdue ? 'high' : 'medium',
+                'due_date'    => $due,
+                'link'        => $this->urls->generate('app_evidence_reverification_show', ['id' => $task->getId()]),
+                'entity_type' => 'evidence_reverification',
+                'tone'        => $overdue ? 'danger' : 'warning',
+                'title'       => $task->getControl()?->getName() ?? 'Evidence re-verification',
+                'subtitle'    => $overdue ? 'overdue' : 'due_soon',
+                'badge'       => $overdue ? 'overdue' : 'due',
+            ];
+        }
+        return $items;
+    }
+
+    /**
+     * Controls whose effectiveness test / review date has passed (ISO 27001 9.1).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildControlEffectivenessOverdue(Tenant $tenant): array
+    {
+        $items = [];
+        $today = new DateTimeImmutable('today');
+        foreach ($this->controlRepo->findBy(['tenant' => $tenant]) as $control) {
+            $next = $control->getNextEffectivenessTest() ?? $control->getNextReviewDate();
+            if ($next === null || $next >= $today) {
+                continue;
+            }
+            $items[] = [
+                'priority'    => 'high',
+                'due_date'    => $next,
+                'link'        => $this->urls->generate('app_analytics_control_effectiveness'),
+                'entity_type' => 'control',
+                'tone'        => 'danger',
+                'title'       => (string) ($control->getName() ?? ('Control #' . $control->getId())),
+                'subtitle'    => 'effectiveness_overdue',
+                'badge'       => 'overdue',
+            ];
+        }
+        return $items;
+    }
+
+    /**
+     * Suppliers whose reassessment date has passed (ISO 27001 A.5.22).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildSupplierReassessmentDue(Tenant $tenant): array
+    {
+        $items = [];
+        $today = new DateTimeImmutable('today');
+        foreach ($this->supplierRepo->findBy(['tenant' => $tenant]) as $supplier) {
+            $next = $supplier->getNextAssessmentDate();
+            if ($next === null || $next >= $today) {
+                continue;
+            }
+            $items[] = [
+                'priority'    => 'medium',
+                'due_date'    => $next,
+                'link'        => $this->urls->generate('app_supplier_show', ['id' => $supplier->getId()]),
+                'entity_type' => 'supplier',
+                'tone'        => 'warning',
+                'title'       => (string) ($supplier->getName() ?? 'Supplier'),
+                'subtitle'    => 'reassessment_due',
+                'badge'       => 'overdue',
+            ];
+        }
+        return $items;
+    }
+
+    /**
+     * DPIAs whose review date has passed (GDPR Art. 35(11)). Draft/archived skip.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildDpiaReviewOverdue(Tenant $tenant): array
+    {
+        $items = [];
+        $today = new DateTimeImmutable('today');
+        foreach ($this->dpiaRepo->findBy(['tenant' => $tenant]) as $dpia) {
+            $next = $dpia->getNextReviewDate();
+            if ($next === null || $next >= $today) {
+                continue;
+            }
+            if (in_array($dpia->getStatus(), ['draft', 'archived'], true)) {
+                continue;
+            }
+            $items[] = [
+                'priority'    => 'high',
+                'due_date'    => $next,
+                'link'        => $this->urls->generate('app_dpia_show', ['id' => $dpia->getId()]),
+                'entity_type' => 'dpia',
+                'tone'        => 'danger',
+                'title'       => (string) ($dpia->getTitle() ?? 'DPIA'),
+                'subtitle'    => 'review_overdue',
+                'badge'       => 'overdue',
+            ];
+        }
+        return $items;
+    }
+
+    /**
+     * Business-continuity plans whose review date has passed (ISO 22301 8.4/9.1).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildBcPlanReviewOverdue(Tenant $tenant): array
+    {
+        $items = [];
+        $today = new DateTimeImmutable('today');
+        foreach ($this->bcPlanRepo->findBy(['tenant' => $tenant]) as $plan) {
+            $next = $plan->getNextReviewDate();
+            if ($next === null || $next >= $today) {
+                continue;
+            }
+            $items[] = [
+                'priority'    => 'medium',
+                'due_date'    => $next,
+                'link'        => $this->urls->generate('app_bc_plan_show', ['id' => $plan->getId()]),
+                'entity_type' => 'bc_plan',
+                'tone'        => 'warning',
+                'title'       => (string) ($plan->getName() ?? 'BC plan'),
+                'subtitle'    => 'review_overdue',
+                'badge'       => 'overdue',
+            ];
+        }
+        return $items;
+    }
+
+    /**
+     * Risks whose periodic review date has passed (ISO 27001 8.2).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildRiskReviewOverdue(Tenant $tenant): array
+    {
+        $items = [];
+        $today = new DateTimeImmutable('today');
+        foreach ($this->riskRepo->findBy(['tenant' => $tenant]) as $risk) {
+            $next = $risk->getReviewDate();
+            if ($next === null || $next >= $today) {
+                continue;
+            }
+            $items[] = [
+                'priority'    => 'medium',
+                'due_date'    => $next,
+                'link'        => $this->urls->generate('app_risk_show', ['id' => $risk->getId()]),
+                'entity_type' => 'risk_review',
+                'tone'        => 'warning',
+                'title'       => (string) $risk->getTitle(),
+                'subtitle'    => 'review_overdue',
+                'badge'       => 'overdue',
+            ];
+        }
+        return $items;
+    }
+
+    /**
+     * Accepted risks WITHOUT an acceptance expiry date — the classic audit-finding
+     * magnet (accepted residual risk with no review trigger, ISO 27001 6.1.3 e).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildRiskAcceptanceNoExpiry(Tenant $tenant): array
+    {
+        $items = [];
+        foreach ($this->riskRepo->findBy(['tenant' => $tenant]) as $risk) {
+            $isAccepted = $risk->getTreatmentStrategy() === \App\Enum\TreatmentStrategy::Accept
+                || $risk->getStatus() === \App\Enum\RiskStatus::Accepted;
+            if (!$isAccepted || $risk->getAcceptanceExpiryDate() !== null) {
+                continue;
+            }
+            $items[] = [
+                'priority'    => 'high',
+                'due_date'    => null,
+                'link'        => $this->urls->generate('app_risk_show', ['id' => $risk->getId()]),
+                'entity_type' => 'risk_acceptance',
+                'tone'        => 'danger',
+                'title'       => (string) $risk->getTitle(),
+                'subtitle'    => 'no_expiry',
+                'badge'       => 'no_expiry',
             ];
         }
         return $items;
