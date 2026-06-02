@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\Tenant;
 use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -70,6 +71,7 @@ final class TisaxConsolidateCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly AuditLogger $auditLogger,
+        private readonly \App\Service\Tisax\TisaxFulfillmentSync $fulfillmentSync,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -161,6 +163,18 @@ final class TisaxConsolidateCommand extends Command
         }
 
         $this->em->flush();
+
+        // Materialise fulfilment from maturity for every migrated tenant so the
+        // consolidated assessment actually counts (coverage / SoA / inheritance).
+        if ($canonical !== null) {
+            foreach (array_keys($plan['per_tenant']) as $tenantId) {
+                $tenant = $this->em->getRepository(Tenant::class)->find((int) $tenantId);
+                if ($tenant !== null) {
+                    $r = $this->fulfillmentSync->sync($canonical, $tenant);
+                    $io->writeln(sprintf('Fulfilment synced for tenant %d: %d synced, %d covered.', $tenantId, $r['synced'], $r['covered']));
+                }
+            }
+        }
 
         $io->success(sprintf(
             'Consolidation applied. Snapshot: %s. Crosswalk v%s.',
@@ -661,6 +675,7 @@ final class TisaxConsolidateCommand extends Command
                     $req->setFramework($canonical);
                 }
                 $req->setRequirementId($r['target_id']);
+                $req->setCategory($this->dimensionCategory($r['target_id'], $req->getCategory()));
                 $perEntity[] = [
                     'entity_id' => $req->getId(),
                     'action' => 'update',
@@ -702,6 +717,15 @@ final class TisaxConsolidateCommand extends Command
             }
         }
 
+        // 1b. Normalise the canonical catalogue: leaf controls → dimension
+        //     category, sections → 'section', legacy ad-hoc rows → parked. Fixes
+        //     the wrong assess "Bereiche" + inflated requirement count.
+        $cat = $this->normaliseCanonicalCatalogue($canonical);
+        $io->writeln(sprintf(
+            'Catalogue normalised: <info>%d</info> leaf→dimension, %d sections, %d legacy parked.',
+            $cat['leaf'], $cat['section'], $cat['parked'],
+        ));
+
         // 2. Delete seed junk (system stubs, no assessment).
         if ($plan['junk'] !== []) {
             $perEntity = [];
@@ -734,6 +758,59 @@ final class TisaxConsolidateCommand extends Command
     }
 
     /**
+     * Derive the canonical TISAX assessment DIMENSION (used as `category`) from a
+     * VDA-ISA control id. Chapter 8 = Prototype Protection, 9 = Data Protection,
+     * 1-7 = Information Security. Non-numeric ids fall back to $fallback (or IS).
+     */
+    private function dimensionCategory(string $controlId, ?string $fallback = null): string
+    {
+        $domain = (int) (explode('.', $controlId)[0] ?? 0);
+        return match (true) {
+            $domain === 9            => 'data_protection',
+            $domain === 8            => 'prototype_protection',
+            $domain >= 1 && $domain <= 7 => 'information_security',
+            default                  => $fallback ?? 'information_security',
+        };
+    }
+
+    /**
+     * Normalise the canonical framework's catalogue so the assess/coverage views
+     * are clean (fixes the wrong "Bereiche" + inflated requirement count):
+     *  - leaf VDA-ISA controls (N.N.N) → category = their dimension.
+     *  - section headers (N.N)         → category 'section' (excluded from counts).
+     *  - legacy ad-hoc rows (INF-/ACC-/ISA …, system, no tenant assessment) →
+     *    parked under 'legacy_unmapped' (kept for mapping FK safety, out of the
+     *    catalogue). Rows carrying a tenant assessment are never touched.
+     *
+     * @return array{leaf:int, section:int, parked:int}
+     */
+    private function normaliseCanonicalCatalogue(?ComplianceFramework $canonical): array
+    {
+        $leaf = 0;
+        $section = 0;
+        $parked = 0;
+        if ($canonical === null) {
+            return ['leaf' => 0, 'section' => 0, 'parked' => 0];
+        }
+        foreach ($this->requirementsOf($canonical) as $req) {
+            $id = (string) $req->getRequirementId();
+            if (preg_match('/^\d+\.\d+\.\d+/', $id) === 1) {
+                $req->setCategory($this->dimensionCategory($id, $req->getCategory()));
+                $leaf++;
+            } elseif (preg_match('/^\d+\.\d+$/', $id) === 1) {
+                $req->setCategory('section');
+                $section++;
+            } elseif ($req->getRequirementSource() === 'system' && !$this->hasTenantAssessment($req)) {
+                // Legacy ad-hoc id (INF-/ACC-/ISA …) with no assessment — park out
+                // of the catalogue (kept for the ISO-mapping FK references).
+                $req->setCategory(self::LEGACY_UNMAPPED_CATEGORY);
+                $parked++;
+            }
+        }
+        return ['leaf' => $leaf, 'section' => $section, 'parked' => $parked];
+    }
+
+    /**
      * Move the full assessment from a legacy source row onto the canonical dst row.
      * Only fills empty target fields so a real canonical assessment is never
      * silently overwritten; dataSourceMapping keys are merged (source wins for the
@@ -760,6 +837,11 @@ final class TisaxConsolidateCommand extends Command
             $dst->setUploadTenant($src->getUploadTenant());
         }
         $dst->setRequirementSource('tenant_upload');
+        // Preserve the assessment DIMENSION as the category — otherwise the
+        // canonical (dst) stub keeps its legacy/empty category and Prototype
+        // Protection (8.x) / Data Protection (9.x) controls render under the
+        // wrong "Bereich" on the assess page.
+        $dst->setCategory($this->dimensionCategory((string) $dst->getRequirementId(), $src->getCategory()));
 
         // Merge dataSourceMapping: implementation / referenceDocumentation /
         // maturityRaw / iso27001 + tisax_* tiers. Source provenance keys win.

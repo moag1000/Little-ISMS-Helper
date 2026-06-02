@@ -80,6 +80,7 @@ final class TisaxImportWizardController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly TisaxConfirmationService $confirmationService,
         private readonly TisaxEvidenceLinker $evidenceLinker,
+        private readonly \App\Service\Tisax\TisaxFulfillmentSync $fulfillmentSync,
         private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
@@ -368,6 +369,11 @@ final class TisaxImportWizardController extends AbstractController
             if ($tenant !== null) {
                 $evidence = $this->evidenceLinker->linkBatch($result['entities'], $tenant);
                 $this->em->flush();
+                // Materialise ComplianceRequirementFulfillment from the imported
+                // maturity so catalogue coverage / SoA / cross-framework
+                // inheritance actually reflect the assessment (otherwise the
+                // import set maturity but had no further effect).
+                $this->fulfillmentSync->sync($framework, $tenant);
             }
 
             $this->auditLogger->logImport(
