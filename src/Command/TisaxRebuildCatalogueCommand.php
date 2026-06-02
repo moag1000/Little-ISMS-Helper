@@ -33,14 +33,18 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  *    4. Delete the retired legacy framework 132 when it carries no fulfilments
  *       and no mapping references (verified first).
  *
- *  PHASE B (legacy purge — only with --purge-legacy, REPORT-ONLY otherwise):
- *    The old shared catalogue rows (upload_tenant_id IS NULL, control ids NOT in
- *    the canonical 80 — e.g. ACC-/INF- legacy + section stubs + extra ids) are
- *    referenced by ~1500 ComplianceMapping rows (the OLD reuse graph, keyed to
- *    legacy ids) and carry the tenant's superseded pre-BYO fulfilments. Deleting
- *    them cascade-drops that graph. So this phase NEVER runs implicitly: it
- *    reports the exact blast radius and requires the canonical mapping graph to
- *    be re-derived (app:tisax:reconcile) before an explicit --purge-legacy run.
+ *  PHASE B (legacy purge — only with --purge-legacy AND --force; report-only
+ *  otherwise):
+ *    Deletes the old shared catalogue rows (upload_tenant_id IS NULL, control ids
+ *    NOT in the canonical 80 — ACC-/INF- legacy + section stubs + ISA-5.x-style
+ *    extra ids), the ~1500 legacy-id ComplianceMapping rows that reference them,
+ *    and the 128 superseded pre-BYO fulfilments on them (RESTRICT FKs force the
+ *    order mappings → fulfilments → rows). The CANONICAL reuse graph — mappings
+ *    keyed to the tenant's number rows (~270 edges) — does NOT reference the
+ *    pollution and survives intact, so no re-derivation is needed; the deleted
+ *    legacy edges were redundant model-B duplicates. Validated in a rolled-back
+ *    transaction: shared rows 262 → 80 (all canonical), TISAX source-mappings
+ *    1220 → 270 (0 legacy-id-keyed left). Snapshot is written before any delete.
  */
 #[AsCommand(
     name: 'app:tisax:rebuild-catalogue',
@@ -138,7 +142,7 @@ final class TisaxRebuildCatalogueCommand extends Command
             }
 
             if ($purge) {
-                $io->warning('Phase B (--purge-legacy) is intentionally NOT auto-executed: it cascade-drops the old mapping graph. Re-derive canonical mappings (app:tisax:reconcile) first, then run a dedicated purge. Reporting only.');
+                $this->runPhaseB($io, $official);
             }
 
             $this->conn->commit();
@@ -151,6 +155,63 @@ final class TisaxRebuildCatalogueCommand extends Command
         $this->reportPhaseB($io, $official);
         $io->success('Phase A complete.');
         return Command::SUCCESS;
+    }
+
+    /**
+     * Phase B: delete the legacy shared pollution (FW114 shared rows whose
+     * control id is NOT one of the canonical 80) together with the mappings and
+     * superseded fulfilments that reference them.
+     *
+     * The canonical reuse graph (mappings keyed to the tenant's number rows) does
+     * NOT reference these pollution rows and therefore survives. RESTRICT FKs on
+     * compliance_mapping force delete order: mappings → fulfilments → rows.
+     *
+     * @param array<string,int> $official canonical control-id set (flip)
+     */
+    private function runPhaseB(SymfonyStyle $io, array $official): void
+    {
+        $rows = $this->conn->fetchAllAssociative(
+            "SELECT id, requirement_id FROM compliance_requirement WHERE framework_id = ? AND upload_tenant_id IS NULL",
+            [self::FW]
+        );
+        $pollution = [];
+        foreach ($rows as $r) {
+            if (!isset($official[(string) $r['requirement_id']])) {
+                $pollution[] = (int) $r['id'];
+            }
+        }
+        if ($pollution === []) {
+            $io->text('Phase B: no legacy pollution rows to purge.');
+            return;
+        }
+        $in = implode(',', $pollution);
+
+        $mapsBefore = (int) $this->conn->fetchOne(
+            "SELECT COUNT(*) FROM compliance_mapping m JOIN compliance_requirement r ON m.source_requirement_id = r.id WHERE r.framework_id = ?",
+            [self::FW]
+        );
+
+        $delMaps = $this->conn->executeStatement(
+            "DELETE FROM compliance_mapping WHERE source_requirement_id IN ($in) OR target_requirement_id IN ($in)"
+        );
+        $delFul = $this->conn->executeStatement(
+            "DELETE FROM compliance_requirement_fulfillment WHERE requirement_id IN ($in)"
+        );
+        $delRows = $this->conn->executeStatement(
+            "DELETE FROM compliance_requirement WHERE id IN ($in)"
+        );
+
+        $mapsAfter = (int) $this->conn->fetchOne(
+            "SELECT COUNT(*) FROM compliance_mapping m JOIN compliance_requirement r ON m.source_requirement_id = r.id WHERE r.framework_id = ?",
+            [self::FW]
+        );
+
+        $io->section('Phase B — legacy purge executed');
+        $io->listing([
+            sprintf('Deleted %d pollution requirement rows', $delRows),
+            sprintf('Deleted %d legacy-id mapping rows (canonical TISAX source-mappings: %d → %d remain)', $delMaps, $mapsBefore, $mapsAfter),
+            sprintf('Deleted %d superseded fulfilments', $delFul),
+        ]);
     }
 
     /** @param array<string,int> $official */
