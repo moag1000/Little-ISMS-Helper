@@ -100,15 +100,20 @@ final class TisaxFulfillmentSync
 
     /**
      * @return array{0:int, 1:string} [percentage, status]
+     *
+     * NB: an imported Reifegrad is a SELF-DECLARED assessment (TISAX AL1). It is
+     * therefore never promoted to status 'verified' — that label asserts
+     * independent (AL2/AL3) verification, which an import cannot establish. RG ≥ 3
+     * ("established"+, = the VDA-ISA target) → 'implemented' (self-declared);
+     * RG 1-2 → 'in_progress'; RG 0/unrated → 'not_started'.
      */
     private function mapLevel(int $level): array
     {
         return match (true) {
-            $level >= 4 => [100, 'verified'],
-            $level === 3 => [100, 'implemented'],
+            $level >= 3  => [100, 'implemented'],
             $level === 2 => [67, 'in_progress'],
             $level === 1 => [33, 'in_progress'],
-            default => [0, 'not_started'],
+            default      => [0, 'not_started'],
         };
     }
 }

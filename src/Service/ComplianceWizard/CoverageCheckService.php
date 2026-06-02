@@ -77,35 +77,50 @@ final class CoverageCheckService
         if ($framework === null) {
             return ['total' => 0, 'covered' => 0, 'percent' => 0.0];
         }
-        // Catalogue total = real requirements only. Exclude non-catalogue rows:
-        // 'section' headers and 'legacy_unmapped' parked ad-hoc ids (the TISAX
-        // consolidation parks superseded INF-/ACC- rows there). Counting those
-        // inflated the TISAX catalogue to 262 instead of its real size.
-        $total = (int) $this->requirementRepository->createQueryBuilder('r')
+        // Denominator = the in-scope catalogue. For a BYO/tenant-uploaded
+        // framework (e.g. TISAX, where the assessor uploaded their own VDA-ISA
+        // workbook) the in-scope controls are the tenant's OWN uploaded rows —
+        // NOT the full library skeleton. Counting the skeleton (134) instead of
+        // the uploaded scope (~80) understates coverage and shows the client
+        // controls they never assessed. For shared-catalogue frameworks
+        // (ISO/NIS2/…) there is no per-tenant upload, so the catalogue is all
+        // requirements. In both cases exclude non-catalogue rows ('section'
+        // headers, 'legacy_unmapped' parked ad-hoc ids).
+        $notJunk = "(r.category IS NULL OR r.category NOT IN ('section', 'legacy_unmapped'))";
+
+        $uploadedTotal = $tenant === null ? 0 : (int) $this->requirementRepository->createQueryBuilder('r')
             ->select('COUNT(r.id)')
             ->where('r.framework = :fw')
-            ->andWhere("(r.category IS NULL OR r.category NOT IN ('section', 'legacy_unmapped'))")
-            ->setParameter('fw', $framework)
-            ->getQuery()
-            ->getSingleScalarResult();
-        if ($total === 0 || $tenant === null) {
-            return ['total' => $total, 'covered' => 0, 'percent' => 0.0];
-        }
-        // Covered must be scoped to THIS framework (the old query counted the
-        // tenant's fulfilments across ALL frameworks) and to catalogue rows only.
-        $covered = (int) $this->fulfillmentRepository->createQueryBuilder('f')
-            ->select('COUNT(f.id)')
-            ->join('f.requirement', 'r')
-            ->where('r.framework = :fw')
-            ->andWhere('f.tenant = :tenant')
-            ->andWhere('f.status IN (:status)')
-            ->andWhere("(r.category IS NULL OR r.category NOT IN ('section', 'legacy_unmapped'))")
+            ->andWhere('r.uploadTenant = :tenant')
+            ->andWhere($notJunk)
             ->setParameter('fw', $framework)
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', ['implemented', 'verified'])
-            ->getQuery()
-            ->getSingleScalarResult();
-        $covered = min($covered, $total);
+            ->getQuery()->getSingleScalarResult();
+
+        if ($uploadedTotal > 0) {
+            $total = $uploadedTotal;
+            $coveredQb = $this->fulfillmentRepository->createQueryBuilder('f')
+                ->select('COUNT(f.id)')->join('f.requirement', 'r')
+                ->where('r.framework = :fw')->andWhere('r.uploadTenant = :tenant')
+                ->andWhere('f.tenant = :tenant')->andWhere('f.status IN (:status)')->andWhere($notJunk)
+                ->setParameter('fw', $framework)->setParameter('tenant', $tenant)
+                ->setParameter('status', ['implemented', 'verified']);
+        } else {
+            $total = (int) $this->requirementRepository->createQueryBuilder('r')
+                ->select('COUNT(r.id)')->where('r.framework = :fw')->andWhere($notJunk)
+                ->setParameter('fw', $framework)->getQuery()->getSingleScalarResult();
+            if ($total === 0 || $tenant === null) {
+                return ['total' => $total, 'covered' => 0, 'percent' => 0.0];
+            }
+            $coveredQb = $this->fulfillmentRepository->createQueryBuilder('f')
+                ->select('COUNT(f.id)')->join('f.requirement', 'r')
+                ->where('r.framework = :fw')->andWhere('f.tenant = :tenant')
+                ->andWhere('f.status IN (:status)')->andWhere($notJunk)
+                ->setParameter('fw', $framework)->setParameter('tenant', $tenant)
+                ->setParameter('status', ['implemented', 'verified']);
+        }
+
+        $covered = min((int) $coveredQb->getQuery()->getSingleScalarResult(), $total);
         $percent = round(($covered / $total) * 100, 1);
         return ['total' => $total, 'covered' => $covered, 'percent' => $percent];
     }

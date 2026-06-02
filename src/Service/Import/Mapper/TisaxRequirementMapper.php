@@ -156,6 +156,7 @@ final class TisaxRequirementMapper
                     && ($level = $this->resolvePrefilledLevel($row)) !== null
                 ) {
                     $existing->setMaturityCurrent($level);
+                    $this->stampAssessmentDate($existing);
                 }
                 $entities[] = $existing;
                 $updated++;
@@ -165,6 +166,7 @@ final class TisaxRequirementMapper
                 $this->hydrateEntity($req, $row, $framework, $tenant);
                 if (($level = $this->resolvePrefilledLevel($row)) !== null) {
                     $req->setMaturityCurrent($level);
+                    $this->stampAssessmentDate($req);
                 }
                 if (!$dryRun) {
                     $this->em->persist($req);
@@ -286,6 +288,26 @@ final class TisaxRequirementMapper
      *   "na"/"n.a." (not applicable) → null. Some DP rows DO carry a 0-5 value
      *   (the workbook allows both validation lists) — honour that too.
      */
+    /**
+     * Stamp a Stichtag on an imported Reifegrad (audit requirement: a Reifegrad
+     * without an assessment date is not auditable, spec §9.2 G8). The workbook
+     * does not reliably carry a per-control assessment date, so we record the
+     * import time as the system-recorded Stichtag and flag its provenance as
+     * 'import' in dataSourceMapping — never silently presenting an import date as
+     * a hand-recorded assessment date. Only set when not already dated, so a real
+     * later assessment date is preserved.
+     */
+    private function stampAssessmentDate(ComplianceRequirement $req): void
+    {
+        if ($req->getMaturityReviewedAt() !== null) {
+            return;
+        }
+        $req->setMaturityReviewedAt(new DateTimeImmutable());
+        $mapping = $req->getDataSourceMapping() ?? [];
+        $mapping['maturityReviewedAtSource'] = 'import';
+        $req->setDataSourceMapping($mapping);
+    }
+
     private function resolvePrefilledLevel(VdaIsaControlRow $row): ?string
     {
         if ($row->dimension === 'data_protection') {
@@ -350,8 +372,14 @@ final class TisaxRequirementMapper
 
         // VDA-ISA target Reifegrad is uniformly 3 ("established") in ISA 6 — set
         // it so the assess-page shows the gap-to-target, not a blank target.
+        // Flag the provenance (system default vs. owner-confirmed) in the
+        // mapping so an auditor can tell a management decision from a default
+        // (spec §9.2 G5 / Soll-Ist separation).
         if ($row->dimension !== 'data_protection' && $this->isEmptyMaturity($req->getMaturityTarget())) {
             $req->setMaturityTarget('established');
+            $mappingNow = $req->getDataSourceMapping() ?? [];
+            $mappingNow['maturityTargetSource'] = 'vda_isa_default';
+            $req->setDataSourceMapping($mappingNow);
         }
 
         // Persist ISO 27001 anchors + evidence hints in dataSourceMapping JSON

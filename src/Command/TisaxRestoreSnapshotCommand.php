@@ -32,8 +32,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class TisaxRestoreSnapshotCommand extends Command
 {
-    public function __construct(private readonly Connection $db)
-    {
+    public function __construct(
+        private readonly Connection $db,
+        private readonly \App\Service\AuditLogger $auditLogger,
+    ) {
         parent::__construct();
     }
 
@@ -131,6 +133,16 @@ final class TisaxRestoreSnapshotCommand extends Command
             $io->error('Restore failed: ' . $e->getMessage());
             return Command::FAILURE;
         }
+
+        // Audit the rollback itself — it mutates compliance data via raw SQL and
+        // must not be invisible in the trail (ISO 27001 Cl. 7.5.3 / project
+        // Security Checklist: never bypass the audit on a destructive data op).
+        $this->auditLogger->logImport(
+            'ComplianceRequirement',
+            $updates + $inserts,
+            sprintf('TISAX consolidation ROLLBACK from snapshot %s: %d updated, %d re-inserted, legacy framework reactivated.',
+                basename($path), $updates, $inserts),
+        );
 
         $io->success(sprintf('Restored: %d updated, %d re-inserted; framework reactivated.', $updates, $inserts));
         return Command::SUCCESS;
