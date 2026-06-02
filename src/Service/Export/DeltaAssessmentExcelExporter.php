@@ -297,12 +297,12 @@ final class DeltaAssessmentExcelExporter
             $rows[] = [
                 $requirementId,
                 (string) $requirement->getTitle(),
-                (string) ($requirement->getCategory() ?? ''),
+                $this->categoryLabel((string) ($requirement->getCategory() ?? '')),
                 (string) ($requirement->getPriority() ?? ''),
                 $pct,
-                $fulfillment?->getStatus() ?? 'not_started',
+                $this->statusLabel($fulfillment?->getStatus() ?? 'not_started'),
                 $sourceMappingsText,
-                $inheritanceState ?? '',
+                $this->inheritanceLabel($inheritanceState),
                 (string) ($fulfillment?->getApplicabilityJustification() ?? ''),
                 $gapDays,
                 $this->t('compliance_wizard.delta.action.' . $action),
@@ -579,5 +579,41 @@ final class DeltaAssessmentExcelExporter
     {
         $cleaned = preg_replace('/[\[\]\:\*\?\/\\\\]/', '', $name) ?? $name;
         return substr($cleaned, 0, 31);
+    }
+
+    /** Translate the fulfilment status enum to a German export label. */
+    private function statusLabel(string $status): string
+    {
+        return match ($status) {
+            'not_started' => 'Nicht begonnen',
+            'in_progress' => 'In Bearbeitung',
+            'implemented' => 'Umgesetzt',
+            'verified'    => 'Verifiziert',
+            default       => $status,
+        };
+    }
+
+    /** Translate the inheritance-state enum to a German export label. */
+    private function inheritanceLabel(?string $state): string
+    {
+        return match ($state) {
+            null, ''                   => '',
+            'confirmed'                => 'Bestätigt',
+            'overridden'               => 'Überschrieben',
+            'implemented'              => 'Umgesetzt',
+            'inherited_pending_review' => 'Geerbt — Prüfung offen',
+            default                    => $state,
+        };
+    }
+
+    /** Translate the TISAX dimension category to a German export label. */
+    private function categoryLabel(string $category): string
+    {
+        return match ($category) {
+            'information_security'  => 'Informationssicherheit',
+            'prototype_protection'  => 'Prototypenschutz',
+            'data_protection'       => 'Datenschutz',
+            default                 => ucfirst(str_replace('_', ' ', $category)),
+        };
     }
 }

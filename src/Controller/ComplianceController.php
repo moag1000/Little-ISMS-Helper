@@ -211,11 +211,29 @@ class ComplianceController extends AbstractController
             $totalTimeSavings += $reuseValue['estimated_hours_saved'];
         }
 
+        // The template expects aggregate stats + three list datasets. Provide the
+        // stats from the per-requirement analysis; the richer opportunity/element/
+        // coverage datasets are not computed here, so pass empty lists — the
+        // template renders their empty-states gracefully (previously these vars
+        // were missing entirely → "Variable does not exist" 500).
+        $totalDataPoints = count($requirements);
+        $reusedDataPoints = 0;
+        foreach ($dataReuseAnalysis as $row) {
+            if (($row['value']['estimated_hours_saved'] ?? 0) > 0) {
+                ++$reusedDataPoints;
+            }
+        }
+
         return $this->render('compliance/data_reuse_insights.html.twig', [
             'framework' => $framework,
             'analysis' => $dataReuseAnalysis,
             'total_time_savings' => $totalTimeSavings,
             'total_days_savings' => round($totalTimeSavings / 8, 1),
+            'totalDataPoints' => $totalDataPoints,
+            'reusedDataPoints' => $reusedDataPoints,
+            'reuseOpportunities' => [],
+            'dataElements' => [],
+            'frameworkCoverage' => [],
         ]);
     }
 

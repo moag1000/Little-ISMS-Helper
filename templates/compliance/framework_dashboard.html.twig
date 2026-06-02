@@ -95,7 +95,7 @@
     {# Workflow Steps Checklist - NEW! #}
     <div class="workflow-steps-card">
         <div class="workflow-header">
-            <h2><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> Your Compliance Workflow</h2>
+            <h2><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> Ihr Compliance-Ablauf</h2>
             <p class="text-muted">{{ 'compliance.framework_dashboard.compliance_steps'|trans({}, 'compliance') }}</p>
         </div>
         <div class="workflow-steps">
@@ -196,7 +196,7 @@
                                 <a href="{{ path('admin_modules_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                                    data-bs-toggle="tooltip" data-bs-placement="top"
                                    title="{{ 'common.tooltip.activate_module'|trans({}, 'messages') }}">
-                                    {{ 'common.activate'|trans({}, 'messages') }} Module →
+                                    {{ 'common.activate'|trans({}, 'messages') }} Modul →
                                 </a>
                             {% endif %}
                         </div>
@@ -211,17 +211,17 @@
     {% set next_action = null %}
     {% if dashboard.gaps.total > 0 and dashboard.gaps.critical > 0 %}
         {% set next_action = {
-            'title': 'Address Critical Gaps',
+            'title': 'Kritische Lücken angehen',
             'description': 'You have ' ~ dashboard.gaps.critical ~ ' critical requirement(s) with low fulfillment',
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id ~ '&priority=critical&sort=fulfillment',
-            'action_text': 'View Critical Requirements',
+            'action_text': 'Kritische Anforderungen ansehen',
             'icon': '<i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>',
             'priority': 'high'
         } %}
     {% elseif dashboard.statistics.applicable < dashboard.statistics.total %}
         {% set next_action = {
-            'title': 'Review Remaining Requirements',
-            'description': (dashboard.statistics.total - dashboard.statistics.applicable) ~ ' requirements need applicability review',
+            'title': 'Verbleibende Anforderungen prüfen',
+            'description': (dashboard.statistics.total - dashboard.statistics.applicable) ~ ' Anforderungen brauchen eine Anwendbarkeits-Prüfung',
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id,
             'action_text': 'Review Requirements',
             'icon': '<i class="fa-icon fa-icon--ui-edit text-primary" aria-hidden="true"></i>',
@@ -229,17 +229,17 @@
         } %}
     {% elseif dashboard.gaps.total > 0 %}
         {% set next_action = {
-            'title': 'Fill Compliance Gaps',
-            'description': dashboard.gaps.total ~ ' requirements need controls or improved implementation',
+            'title': 'Compliance-Lücken schließen',
+            'description': dashboard.gaps.total ~ ' Anforderungen brauchen Maßnahmen oder bessere Umsetzung',
             'action_url': path('app_compliance_gaps', {id: framework.id}),
-            'action_text': 'View Gap Analysis',
+            'action_text': 'Lückenanalyse ansehen',
             'icon': '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>',
             'priority': 'medium'
         } %}
     {% elseif dashboard.compliance_percentage < 100 %}
         {% set next_action = {
-            'title': 'Complete Remaining Items',
-            'description': 'You\'re at ' ~ dashboard.compliance_percentage ~ '% - almost there!',
+            'title': 'Restliche Punkte abschließen',
+            'description': 'Sie sind bei ' ~ dashboard.compliance_percentage ~ '% — fast geschafft!',
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id ~ '&sort=fulfillment',
             'action_text': 'View All Requirements',
             'icon': '<i class="fa-icon fa-icon--nav-bullseye text-success" aria-hidden="true"></i>',
@@ -262,10 +262,10 @@
     <div class="next-action-card success">
         <div class="next-action-icon">🎉</div>
         <div class="next-action-content">
-            <p class="fw-bold fs-4">Congratulations!</p>
-            <p>You have achieved 100% compliance with {{ framework.name }}!</p>
+            <p class="fw-bold fs-4">Geschafft!</p>
+            <p>Sie haben 100% Compliance mit {{ framework.name }} erreicht!</p>
             <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--success">
-                Back to All Frameworks →
+                Zurück zu allen Frameworks →
             </a>
         </div>
     </div>
