@@ -51,6 +51,12 @@
 {% set gdpr_in_scope = 'gdpr' in standards %}
 {% set bsi_in_scope = 'bsi' in standards %}
 {% set dora_not_applicable_hint = defaults._dora_not_applicable_hint|default(false) %}
+{% set access_review_default = defaults.access_review_cadence_months|default(6) %}
+{% set mfa_scope_default = defaults.mfa_scope|default('all_users') %}
+{% set logging_default = defaults.logging_retention_months|default({'security': 12, 'app': 3, 'system': 3}) %}
+{% set vuln_default = defaults.vuln_scan_cadence|default({'external_cadence': 'monthly', 'internal_cadence': 'weekly'}) %}
+{% set working_modes_default = defaults.working_modes|default(['office', 'hybrid']) %}
+{% set cloud_mix_default = defaults.cloud_onprem_mix_pct|default(50) %}
 
 {# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
@@ -185,6 +191,127 @@
         </div>
     {% endfor %}
 </div>
+
+{# ── Access, Identity & Logging baselines ───────────────────────── #}
+{% set access_identity_body %}
+    <div class="row g-3">
+        {# ── Access review cadence ──────────────────────────────── #}
+        <div class="col-md-4">
+            {{ _fa_cyber.text('access_review_cadence_months', {
+                id: 'op-access-review',
+                type: 'number',
+                label: 'policy_wizard.step.operational_baselines.access_review_cadence_label'|trans,
+                help: 'policy_wizard.step.operational_baselines.access_review_cadence_help'|trans,
+                value: access_review_default,
+                extra_attrs: {
+                    'min': '1',
+                    'max': '24'
+                }
+            }) }}
+        </div>
+
+        {# ── MFA scope ─────────────────────────────────────────── #}
+        <div class="col-md-4">
+            {% set mfa_options = [] %}
+            {% for opt in ['all_users', 'privileged_only', 'external_facing_only'] %}
+                {% set mfa_options = mfa_options|merge([{
+                    value: opt,
+                    label: ('policy_wizard.step.operational_baselines.mfa_scope.' ~ opt)|trans
+                }]) %}
+            {% endfor %}
+            {{ _fa_cyber.select('mfa_scope', mfa_options, {
+                id: 'op-mfa-scope',
+                label: 'policy_wizard.step.operational_baselines.mfa_scope_label'|trans,
+                help: 'policy_wizard.step.operational_baselines.mfa_scope_help'|trans,
+                value: mfa_scope_default
+            }) }}
+        </div>
+
+        {# ── Cloud/on-prem mix ─────────────────────────────────── #}
+        <div class="col-md-4">
+            {{ _fa_cyber.text('cloud_onprem_mix_pct', {
+                id: 'op-cloud-mix',
+                type: 'number',
+                label: 'policy_wizard.step.operational_baselines.cloud_onprem_mix_pct_label'|trans,
+                help: 'policy_wizard.step.operational_baselines.cloud_onprem_mix_pct_help'|trans,
+                value: cloud_mix_default,
+                extra_attrs: {
+                    'min': '0',
+                    'max': '100'
+                }
+            }) }}
+        </div>
+
+        {# ── Logging retention per category ──────────────────────── #}
+        {% for cat in ['security', 'app', 'system'] %}
+            <div class="col-md-4">
+                {{ _fa_cyber.text('logging_retention_months[' ~ cat ~ ']', {
+                    id: 'op-log-ret-' ~ cat,
+                    type: 'number',
+                    label: ('policy_wizard.step.operational_baselines.logging_retention_' ~ cat ~ '_label')|trans,
+                    help: ('policy_wizard.step.operational_baselines.logging_retention_' ~ cat ~ '_help')|trans,
+                    value: logging_default[cat]|default(''),
+                    extra_attrs: {
+                        'min': '1',
+                        'max': '120'
+                    }
+                }) }}
+            </div>
+        {% endfor %}
+
+        {# ── Vuln scan cadence ─────────────────────────────────── #}
+        {% for key in ['external_cadence', 'internal_cadence'] %}
+            <div class="col-md-3">
+                {% set cadence_options = [] %}
+                {% for opt in ['weekly', 'monthly', 'quarterly'] %}
+                    {% set cadence_options = cadence_options|merge([{
+                        value: opt,
+                        label: ('policy_wizard.step.operational_baselines.vuln_scan_cadence.' ~ opt)|trans
+                    }]) %}
+                {% endfor %}
+                {{ _fa_cyber.select('vuln_scan_cadence[' ~ key ~ ']', cadence_options, {
+                    id: 'op-vuln-' ~ key,
+                    label: ('policy_wizard.step.operational_baselines.vuln_scan_cadence_' ~ key ~ '_label')|trans,
+                    help: ('policy_wizard.step.operational_baselines.vuln_scan_cadence_' ~ key ~ '_help')|trans,
+                    value: vuln_default[key]|default('')
+                }) }}
+            </div>
+        {% endfor %}
+
+        {# ── Working modes ─────────────────────────────────────── #}
+        <div class="col-md-6">
+            <div class="fa-form-row mb-2">
+                <label class="form-label" for="op-working-modes">
+                    {{ 'policy_wizard.step.operational_baselines.working_modes_label'|trans }}
+                    <i class="fa-icon fa-icon--ui-info text-muted ms-1"
+                       data-bs-toggle="tooltip"
+                       title="{{ 'policy_wizard.step.operational_baselines.tooltip.working_modes'|trans }}"
+                       aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.working_modes'|trans }}"></i>
+                </label>
+                <select id="op-working-modes"
+                        name="working_modes[]"
+                        multiple
+                        class="form-select fa-cyber-input__field"
+                        data-controller="tom-select"
+                        aria-describedby="op-working-modes-help">
+                    {% for mode in ['office', 'hybrid', 'fully_remote'] %}
+                        <option value="{{ mode }}" {% if mode in working_modes_default %}selected{% endif %}>
+                            {{ ('policy_wizard.step.operational_baselines.working_modes.' ~ mode)|trans }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div id="op-working-modes-help" class="form-text">
+                    {{ 'policy_wizard.step.operational_baselines.working_modes_help'|trans }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endset %}
+{{ _fa_section.render({
+    title: 'policy_wizard.step.operational_baselines.access_identity_section_title'|trans,
+    subtitle: 'policy_wizard.step.operational_baselines.access_identity_section_subtitle'|trans,
+    body: access_identity_body
+}) }}
 
 {# ── Continuity RTO (BCM only) ───────────────────────────────────── #}
 {% if bcm_in_scope %}

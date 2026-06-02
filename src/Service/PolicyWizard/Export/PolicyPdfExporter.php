@@ -280,53 +280,81 @@ class PolicyPdfExporter
         $lines = preg_split('/\R/u', $markdown) ?: [];
         $html = '';
         $listOpen = false;
+        /** @var list<string> $paragraph */
         $paragraph = [];
+        $idx = 0;
+        $total = count($lines);
 
         $flushParagraph = function () use (&$paragraph, &$html): void {
+            /** @var list<string> $paragraph */
             if ($paragraph === []) {
                 return;
             }
             $text = implode(' ', $paragraph);
             $html .= '<p>' . $this->inlineMd($text) . "</p>\n";
+            /** @var list<string> $paragraph */
             $paragraph = [];
         };
 
         $closeList = function () use (&$listOpen, &$html): void {
+            /** @var bool $listOpen */
             if ($listOpen) {
                 $html .= "</ul>\n";
                 $listOpen = false;
             }
         };
 
-        foreach ($lines as $line) {
+        while ($idx < $total) {
+            $line = $lines[$idx];
             $trim = trim($line);
+
             if ($trim === '') {
                 $flushParagraph();
                 $closeList();
+                ++$idx;
                 continue;
             }
+
+            // GFM table detection: header row (| … |) immediately followed by
+            // a separator row (| :?-+:? | … |). Both must start and end with |
+            // or at least contain | as a cell delimiter.
+            if (str_contains($trim, '|') && isset($lines[$idx + 1])) {
+                $sepTrim = trim($lines[$idx + 1]);
+                if ($this->isGfmSeparatorRow($sepTrim)) {
+                    $flushParagraph();
+                    $closeList();
+                    $html .= $this->renderGfmTable($lines, $idx, $total);
+                    // $idx has been advanced by renderGfmTable via pass-by-ref.
+                    continue;
+                }
+            }
+
             if (str_starts_with($trim, '### ')) {
                 $flushParagraph();
                 $closeList();
                 $html .= '<h3>' . $this->inlineMd(substr($trim, 4)) . "</h3>\n";
+                ++$idx;
                 continue;
             }
             if (str_starts_with($trim, '## ')) {
                 $flushParagraph();
                 $closeList();
                 $html .= '<h2>' . $this->inlineMd(substr($trim, 3)) . "</h2>\n";
+                ++$idx;
                 continue;
             }
             if (str_starts_with($trim, '# ')) {
                 $flushParagraph();
                 $closeList();
                 $html .= '<h1>' . $this->inlineMd(substr($trim, 2)) . "</h1>\n";
+                ++$idx;
                 continue;
             }
             if (str_starts_with($trim, '> ')) {
                 $flushParagraph();
                 $closeList();
                 $html .= '<blockquote>' . $this->inlineMd(substr($trim, 2)) . "</blockquote>\n";
+                ++$idx;
                 continue;
             }
             if (str_starts_with($trim, '- ') || str_starts_with($trim, '* ')) {
@@ -336,14 +364,121 @@ class PolicyPdfExporter
                     $listOpen = true;
                 }
                 $html .= '<li>' . $this->inlineMd(substr($trim, 2)) . "</li>\n";
+                ++$idx;
                 continue;
             }
             $paragraph[] = $trim;
+            ++$idx;
         }
         $flushParagraph();
         $closeList();
 
         return $html;
+    }
+
+    /**
+     * Returns true when the given trimmed line is a GFM table separator row,
+     * e.g. `| --- | :---: | ---: |` (dashes required, colons optional).
+     */
+    private function isGfmSeparatorRow(string $trim): bool
+    {
+        if (!str_contains($trim, '|')) {
+            return false;
+        }
+        // Strip leading/trailing pipe.
+        $inner = trim($trim, '| ');
+        $cells = explode('|', $inner);
+        foreach ($cells as $cell) {
+            $c = trim($cell);
+            // Each cell must be one or more dashes optionally preceded/followed by colons.
+            if (!preg_match('/^:?-+:?$/', $c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Parse GFM cells from one pipe-delimited row, returning an array of
+     * trimmed cell strings.
+     *
+     * @return list<string>
+     */
+    private function parseGfmCells(string $trim): array
+    {
+        // Strip leading/trailing pipe if present.
+        $inner = trim($trim, '| ');
+        return array_map('trim', explode('|', $inner));
+    }
+
+    /**
+     * Parse optional alignment from a separator cell.
+     * Returns 'left'|'center'|'right'|null.
+     */
+    private function parseGfmAlign(string $sepCell): ?string
+    {
+        $c = trim($sepCell);
+        $left = str_starts_with($c, ':');
+        $right = str_ends_with($c, ':');
+        if ($left && $right) {
+            return 'center';
+        }
+        if ($right) {
+            return 'right';
+        }
+        return null; // default left — no attribute needed
+    }
+
+    /**
+     * Render a complete GFM table starting at $lines[$idx].
+     * Advances $idx past all consumed table lines.
+     *
+     * @param list<string> $lines
+     */
+    private function renderGfmTable(array $lines, int &$idx, int $total): string
+    {
+        $headerLine = trim($lines[$idx]);
+        $sepLine = trim($lines[$idx + 1]);
+        $idx += 2;
+
+        $headers = $this->parseGfmCells($headerLine);
+        $sepCells = $this->parseGfmCells($sepLine);
+
+        // Build alignment map (indexed by column position).
+        $colCount = count($headers);
+        $aligns = [];
+        for ($c = 0; $c < $colCount; ++$c) {
+            $aligns[$c] = $this->parseGfmAlign($sepCells[$c] ?? '---');
+        }
+
+        $out = "<table class=\"fa-policy-table\">\n<thead>\n<tr>\n";
+        foreach ($headers as $i => $cell) {
+            $align = $aligns[$i] ?? null;
+            $styleAttr = $align !== null ? ' style="text-align:' . $align . '"' : '';
+            $out .= '<th' . $styleAttr . '>' . $this->inlineMd($cell) . "</th>\n";
+        }
+        $out .= "</tr>\n</thead>\n<tbody>\n";
+
+        // Consume body rows until a non-pipe or empty line.
+        while ($idx < $total) {
+            $rowTrim = trim($lines[$idx]);
+            if ($rowTrim === '' || !str_contains($rowTrim, '|')) {
+                break;
+            }
+            $cells = $this->parseGfmCells($rowTrim);
+            $out .= "<tr>\n";
+            for ($c = 0; $c < $colCount; ++$c) {
+                $cell = $cells[$c] ?? '';
+                $align = $aligns[$c] ?? null;
+                $styleAttr = $align !== null ? ' style="text-align:' . $align . '"' : '';
+                $out .= '<td' . $styleAttr . '>' . $this->inlineMd($cell) . "</td>\n";
+            }
+            $out .= "</tr>\n";
+            ++$idx;
+        }
+
+        $out .= "</tbody>\n</table>\n";
+        return $out;
     }
 
     private function inlineMd(string $text): string
