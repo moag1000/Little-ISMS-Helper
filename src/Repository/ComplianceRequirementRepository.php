@@ -125,6 +125,49 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     }
 
     /**
+     * In-scope requirements for the requirement LIST of a single framework.
+     *
+     * Mirrors CoverageCheckService::getCatalogueCoverage scoping so the list and
+     * the coverage % agree on what "in scope" means:
+     *  - BYO / tenant-uploaded framework (TISAX VDA-ISA): the in-scope rows are
+     *    the tenant's OWN uploaded controls, returned REGARDLESS of nesting —
+     *    imported VDA-ISA controls (1.1.1 …) hang as children under the shared
+     *    section skeleton (1.1 …), so the top-level filter would hide them.
+     *  - Shared catalogue framework (ISO/NIS2/…): no per-tenant upload exists, so
+     *    fall back to the framework's own top-level assessable requirements.
+     * Both exclude non-catalogue rows ('section' headers, 'legacy_unmapped'
+     * parked ad-hoc ids) — those are not requirements the user assesses and
+     * previously polluted the list (the "TISAX 1.1" stubs + ACC-/INF- remnants).
+     *
+     * @return ComplianceRequirement[]
+     */
+    public function findInScopeForFrameworkListing(ComplianceFramework $complianceFramework, ?Tenant $tenant): array
+    {
+        $notJunk = "(cr.category IS NULL OR cr.category NOT IN ('section', 'legacy_unmapped'))";
+
+        if ($tenant instanceof Tenant) {
+            $uploaded = $this->createQueryBuilder('cr')
+                ->where('cr.framework = :framework')
+                ->andWhere('cr.uploadTenant = :tenant')
+                ->andWhere($notJunk)
+                ->setParameter('framework', $complianceFramework)
+                ->setParameter('tenant', $tenant)
+                ->orderBy('cr.requirementId', 'ASC')
+                ->getQuery()
+                ->getResult();
+            if ($uploaded !== []) {
+                return $uploaded;
+            }
+        }
+
+        return $this->topLevelQueryBuilder($complianceFramework)
+            ->andWhere($notJunk)
+            ->orderBy('cr.requirementId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find ALL top-level requirements across every framework (for the global
      * requirement index). Excludes imported sub-requirements which appear nested
      * under their parent on the detail view.
