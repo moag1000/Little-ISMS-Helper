@@ -88,9 +88,24 @@ final class TisaxFulfillmentSync
         return ['synced' => $synced, 'covered' => $covered];
     }
 
-    /** Reverse-map the requirement's current maturity to an ordinal 0-5, or null. */
+    /**
+     * Map the requirement's assessment to a fulfilment ordinal 0-5, or null.
+     *
+     * Data Protection is a tristate CONFORMITY statement (Art. 28), NOT a 0-5
+     * Reifegrad — so DP fulfilment is derived from assessmentStateDp, never from
+     * the synthesised maturityCurrent. This keeps DP out of the Information-
+     * Security maturity/coverage semantics (spec §9.2 ISB-G3): compliant → met
+     * (3), non-compliant → not met (0), not-applicable → null (skipped).
+     */
     private function levelOf(ComplianceRequirement $requirement): ?int
     {
+        if ($requirement->getCategory() === 'data_protection') {
+            return match ($requirement->getAssessmentStateDp()) {
+                'compliant'     => 3,
+                'non_compliant' => 0,
+                default         => null, // not_applicable / unrated → skip
+            };
+        }
         $maturity = $requirement->getMaturityCurrent();
         if ($maturity === null || $maturity === '') {
             return null;
