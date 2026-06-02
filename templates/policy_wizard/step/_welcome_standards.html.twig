@@ -107,6 +107,36 @@
                 </div>
             </div>
 
+            {# Incompleteness hint — when fewer bundles are seeded than the
+               catalogue ships (e.g. a deploy predating the sector-bundle
+               seed-migration, or a DB where the seeder never ran), tell the
+               operator how many sector presets are missing and how to load
+               them. Threshold derives from IndustryPresetBundle::ALLOWED_KEYS
+               passed as industry_preset_bundles_expected. #}
+            {% set _expected = industry_preset_bundles_expected|default(0) %}
+            {% if _expected > bundles|length %}
+                {% embed '_components/_fa_alert.html.twig' with { props: {
+                    variant: 'info',
+                    icon: 'status-info',
+                    class: 'mt-2 mb-0'
+                } } %}
+                    {% block alert_body %}
+                        {% trans_default_domain 'policy_wizard' %}
+                        <div class="fa-alert__title">{{ 'policy_wizard.preset.incomplete.title'|trans }}</div>
+                        <p class="fa-alert__message mb-1 small">
+                            {{ 'policy_wizard.preset.incomplete.body'|trans({
+                                '%missing%': _expected - bundles|length,
+                                '%total%': _expected,
+                            }) }}
+                        </p>
+                        <p class="fa-alert__message mb-0 small">
+                            {{ 'policy_wizard.preset.incomplete.howto'|trans }}
+                            <code>php bin/console app:policy-wizard:seed-bundles</code>
+                        </p>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
             {# Conflict notice — shown when two selected bundles disagree on
                a scalar field. Server populates _preset_flags.bundle_conflicts
                in the inputs bag after the welcome step is submitted. #}

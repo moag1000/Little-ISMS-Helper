@@ -1334,6 +1334,10 @@ policy_wizard:
         placeholder: 'Optional: Industrie-Preset wählen'
         help: 'Vorbefüllt sektor-spezifische Defaults. Sie können jeden Wert anschließend anpassen.'
         help_multi: 'Mehrere Presets kombinierbar (z. B. „Bank" + „Cloud-SaaS"). Bei Konflikten gewinnt das zuletzt gewählte Preset.'
+        incomplete:
+            title: 'Weitere Industrie-Presets verfügbar'
+            body: 'Es sind %missing% von %total% Sektor-Presets (z. B. Healthcare, BaFin/DORA, KRITIS Energie, OT/IEC 62443) auf dieser Installation noch nicht geladen.'
+            howto: 'Administrator: einmalig die Migration ausführen (doctrine:migrations:migrate) oder den Seed-Befehl starten:'
         conflict:
             title: 'Preset-Konflikt erkannt'
             later_wins: 'zuletzt ausgewähltes Preset gewinnt — manuell anpassbar im nächsten Schritt'
