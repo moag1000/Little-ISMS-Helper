@@ -149,7 +149,7 @@ common:
     person_picker:
         placeholder: 'Person auswählen…'
         empty_state:
-            title: 'Keine Personen im Organisationen'
+            title: 'Keine Personen in dieser Organisation'
             body: 'Bitte zuerst eine Person anlegen, bevor diese Rolle vergeben werden kann.'
     owner_picker:
         section_label: 'Verantwortlich'

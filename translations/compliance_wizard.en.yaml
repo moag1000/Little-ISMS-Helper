@@ -24,6 +24,10 @@ diff:
     section:
         unchanged_badge: 'unchanged'
 delta:
+    glossary:
+        what_is: 'A delta assessment shows how much of a new framework is already covered by an existing one — so you only work on the gap instead of everything from scratch.'
+        baseline_framework: 'Baseline framework = the already-implemented framework you compare against (the source of reuse, e.g. ISO 27001).'
+        pre_fill_rate: 'Pre-fill rate = share of target requirements already pre-filled by the baseline framework (no new work). Target configurable (default 60%).'
     title: 'Delta Assessment'
     sheet:
         summary: 'Summary'
@@ -80,3 +84,6 @@ delta:
 'compliance_wizard.delta.summary.pre_fill_rate': 'Pre-fill rate target %target%%, current %actual%%'
 'compliance_wizard.delta.action.download_excel': 'Export Delta-Assessment (Excel)'
 'compliance_wizard.delta.action.baseline_required': 'Baseline framework required (no other framework active in this tenant)'
+'compliance_wizard.delta.glossary.what_is': 'A delta assessment shows how much of a new framework is already covered by an existing one — so you only work on the gap instead of everything from scratch.'
+'compliance_wizard.delta.glossary.baseline_framework': 'Baseline framework = the already-implemented framework you compare against (the source of reuse, e.g. ISO 27001).'
+'compliance_wizard.delta.glossary.pre_fill_rate': 'Pre-fill rate = share of target requirements already pre-filled by the baseline framework (no new work). Target configurable (default 60%).'

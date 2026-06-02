@@ -107,6 +107,8 @@ tisax:
         title: 'Question / Requirement'
         iso_ref: 'ISO 27001 Ref'
         tier: 'Tier'
+        req_levels: 'Requirement Levels'
+        req_levels_tooltip: 'M=Must, S=Should, H=additionally at high protection need, VH=additionally at very high protection need, SGA=Simplified Group Assessment. Which level applies depends on your required protection level. The badges only indicate that requirement text exists for that level.'
       proceed: 'Commit to Database'
 
     commit:
