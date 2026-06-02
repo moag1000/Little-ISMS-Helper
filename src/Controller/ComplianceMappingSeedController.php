@@ -101,17 +101,11 @@ class ComplianceMappingSeedController extends AbstractController
                 'rationale_source' => 'EBA Guidelines on ICT Risk + ENISA DORA Technical Guidance + BaFin FAQ',
                 'icon' => 'nav-building',
             ],
-            [
-                'id' => 'tisax-iso27001',
-                'command' => 'app:seed-tisax-iso27001-mappings',
-                'source_code' => 'TISAX',
-                'target_code' => 'ISO27001',
-                'source_label' => 'TISAX (VDA-ISA)',
-                'target_label' => 'ISO/IEC 27001:2022 Annex A',
-                'mapping_count' => 98,
-                'rationale_source' => 'VDA-ISA direkt abgeleitet aus ISO 27001:2013 Annex A, umgebildet auf 2022er Struktur',
-                'icon' => 'nav-truck',
-            ],
+            // TISAX→ISO27001 mappings ship as the canonical library fixture
+            // (fixtures/library/mappings/tisax_to_iso27001-2022_v1.0.yaml, 80
+            // entries keyed by VDA-ISA control number) and are loaded via the
+            // library importer. The former app:seed-tisax-iso27001-mappings seed
+            // used legacy ACC-/INF- ids (model B) and was removed.
             [
                 'id' => 'gdpr-iso27001',
                 'command' => 'app:seed-gdpr-iso27001-mappings',
