@@ -1,14 +1,22 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance_policy' %}
 
 {% block body %}
 <div class="container py-4">
-    <h1 class="h3 mb-1">Parameter-Register</h1>
+    <h1 class="h3 mb-1">{{ 'compliance_policy.policy_profile.register.title'|trans({}, 'compliance_policy') }}</h1>
     <p class="text-muted">
-        Cross-Framework-Audit-Register{% if frameworks is not empty %} — Rahmenwerke: <strong>{{ frameworks|join(', ')|upper }}</strong>{% endif %}.
-        Gelb hinterlegt = regulatorische Pflicht.
+        {{ 'compliance_policy.policy_profile.register.lead'|trans({}, 'compliance_policy') }}{% if frameworks is not empty %} — {{ 'compliance_policy.policy_profile.register.lead'|trans({}, 'compliance_policy') }}: <strong>{{ frameworks|join(', ')|upper }}</strong>{% endif %}.
+        {{ 'compliance_policy.policy_profile.register.regulatory_hint'|trans({}, 'compliance_policy') }}
     </p>
     <table class="table table-sm">
-        <thead><tr><th>Parameter</th><th>Wert</th><th>Autorität</th><th>Quelle</th><th>ISO-Klausel</th><th>Frameworks</th></tr></thead>
+        <thead><tr>
+            <th>{{ 'compliance_policy.policy_profile.th.parameter'|trans({}, 'compliance_policy') }}</th>
+            <th>{{ 'compliance_policy.policy_profile.th.value'|trans({}, 'compliance_policy') }}</th>
+            <th>{{ 'compliance_policy.policy_profile.th.authority'|trans({}, 'compliance_policy') }}</th>
+            <th>{{ 'compliance_policy.policy_profile.th.source'|trans({}, 'compliance_policy') }}</th>
+            <th>{{ 'compliance_policy.policy_profile.th.iso_clause'|trans({}, 'compliance_policy') }}</th>
+            <th>{{ 'compliance_policy.policy_profile.th.frameworks'|trans({}, 'compliance_policy') }}</th>
+        </tr></thead>
         <tbody>
             {% for row in rows %}
                 <tr class="{{ row.isRegulatory() ? 'table-warning' : '' }}">
@@ -22,6 +30,6 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{ path('app_policy_profile_index', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">Zurück zum Profil</a>
+    <a href="{{ path('app_policy_profile_index', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">{{ 'compliance_policy.policy_profile.register.back'|trans({}, 'compliance_policy') }}</a>
 </div>
 {% endblock %}

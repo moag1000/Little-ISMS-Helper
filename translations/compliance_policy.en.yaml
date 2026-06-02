@@ -26,3 +26,26 @@ compliance_policy:
         lead: "Removes the DB override so the YAML default applies again."
         action: "Reset"
         confirm: "Really reset to default?"
+    policy_profile:
+        page:
+            title: "Organisation Security Profile"
+            lead: "Select sector → parameters pre-filled → audit-ready policy values + coverage per framework. Values are editable."
+            sector_label: "Sector"
+            apply_baseline: "Apply baseline"
+            current_sector: "Current sector"
+            framework_coverage: "Framework Coverage"
+            save_params: "Save parameters"
+            view_register: "View Parameter Register"
+            mandatory_gap: "Mandatory gap"
+        register:
+            title: "Parameter Register"
+            lead: "Cross-Framework Audit Register"
+            regulatory_hint: "Yellow = regulatory requirement."
+            back: "Back to profile"
+        th:
+            parameter: "Parameter"
+            value: "Value"
+            iso_clause: "ISO Clause"
+            authority: "Authority"
+            source: "Source"
+            frameworks: "Frameworks"

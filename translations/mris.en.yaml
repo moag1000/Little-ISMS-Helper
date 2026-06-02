@@ -134,3 +134,9 @@ mris:
             value: 'Value'
             weight: 'Weight'
             contribution: 'Contribution'
+        resilience:
+            standfest: 'Standfest (S)'
+            degradiert: 'Partially Degraded (T)'
+            reibung: 'Pure Friction (R)'
+            nicht_betroffen: 'Not Affected (N)'
+            unklassifiziert: 'Not Classified'

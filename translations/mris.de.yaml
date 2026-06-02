@@ -134,3 +134,9 @@ mris:
             value: 'Wert'
             weight: 'Gewicht'
             contribution: 'Beitrag'
+        resilience:
+            standfest: 'Standfest (S)'
+            degradiert: 'Teilweise degradiert (T)'
+            reibung: 'Reine Reibung (R)'
+            nicht_betroffen: 'Nicht betroffen (N)'
+            unklassifiziert: 'Nicht klassifiziert'

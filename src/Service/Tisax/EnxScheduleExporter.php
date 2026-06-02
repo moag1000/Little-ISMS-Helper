@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * ENX Assessment Schedule Exporter
@@ -26,11 +27,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 final class EnxScheduleExporter
 {
-    /** Tier => sheet tab label */
-    private const TIER_LABELS = [
-        'information_security'   => 'Information Security (IS)',
-        'prototype_protection'   => 'Prototype Protection (Proto)',
-        'data_protection'        => 'Data Protection (DataPro)',
+    /** Tier => translation key suffix for sheet tab label (resolved at runtime via TranslatorInterface) */
+    private const TIER_TRANSLATION_KEYS = [
+        'information_security' => 'tisax.enx.sheet.information_security',
+        'prototype_protection' => 'tisax.enx.sheet.prototype_protection',
+        'data_protection'      => 'tisax.enx.sheet.data_protection',
     ];
 
     /** Columns for IS / PP tier sheets (Reifegrad 0-5) */
@@ -76,6 +77,7 @@ final class EnxScheduleExporter
         private readonly EntityManagerInterface $em,
         private readonly ExcelExportService $excelService,
         private readonly TisaxMaturityAssessmentService $maturityService,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     /**
@@ -128,7 +130,14 @@ final class EnxScheduleExporter
         }
 
         $sheetIndex = 0;
-        foreach (self::TIER_LABELS as $tier => $sheetTitle) {
+        foreach (self::TIER_TRANSLATION_KEYS as $tier => $translationKey) {
+            // Resolve localised sheet title; truncate to Excel's 31-character sheet-name limit
+            $sheetTitle = mb_substr(
+                $this->translator->trans($translationKey, [], 'tisax_isa'),
+                0,
+                31
+            );
+
             if ($sheetIndex === 0) {
                 $sheet = $spreadsheet->getActiveSheet();
                 $sheet->setTitle($sheetTitle);

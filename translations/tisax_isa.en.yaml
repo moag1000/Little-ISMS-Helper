@@ -5,6 +5,12 @@
 # The domain name (tisax_isa) is only the filename — it doesn't affect key lookup.
 
 tisax:
+  enx:
+    sheet:
+      information_security: 'Information Security (IS)'
+      prototype_protection: 'Prototype Protection (Proto)'
+      data_protection: 'Data Protection (DataPro)'
+
   nav:
     title: 'TISAX VDA-ISA Import'
 

@@ -224,17 +224,19 @@ public function __construct()
     }
 
     /**
-     * Get human-readable status
+     * Get translation key for the verification status label (domain: audits).
+     * Call-sites must pass this through |trans({}, 'audits') (Twig) or
+     * $translator->trans($key, [], 'audits') (PHP).
      */
     public function getStatusLabel(): string
     {
         return match($this->verificationStatus) {
-            'compliant' => 'Konform',
-            'partial' => 'Teilweise konform',
-            'non_compliant' => 'Nicht konform',
-            'not_applicable' => 'Nicht anwendbar',
-            'not_checked' => 'Nicht geprüft',
-            default => 'Unbekannt',
+            'compliant'      => 'audits.verification_status.compliant',
+            'partial'        => 'audits.verification_status.partial',
+            'non_compliant'  => 'audits.verification_status.non_compliant',
+            'not_applicable' => 'audits.verification_status.not_applicable',
+            'not_checked'    => 'audits.verification_status.not_checked',
+            default          => 'audits.verification_status.unknown',
         };
     }
 

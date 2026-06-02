@@ -1,11 +1,41 @@
 audits:
     page:
         title: Audits
+    audit_package:
+        cover:
+            title: 'Audit-Paket'
+            label:
+                framework: 'Framework'
+                tenant: 'Organisation'
+                generated: 'Generiert'
+        section:
+            summary: 'Zusammenfassung'
+            requirements_detail: 'Anforderungen im Detail'
+        table:
+            requirements_total: 'Anforderungen gesamt'
+            evidence_docs: 'Evidence-Dokumente im Paket'
+            requirements_without_evidence: 'Anforderungen ohne Evidence'
+        col:
+            id: 'ID'
+            category: 'Kategorie'
+            fulfillment: 'Füllung'
+            evidence: 'Evidence'
+        status:
+            fulfilled: 'erfüllt'
+            open: 'offen'
+            missing: 'Nachweis fehlt'
+            complete: 'vollständig'
+        footer:
+            note: 'Das vorliegende Paket enthält pro Anforderung einen Ordner mit README.txt und allen verknüpften Evidence-Dokumenten. INDEX.csv im Root führt das komplette Mapping zusammen.'
     error:
         owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
     field:
         finding_source: 'Feststellungsquelle'
         action_type: 'Maßnahmentyp'
+        audit_number: 'Audit-Nummer'
+        title: 'Titel'
+        planned_date: 'Geplantes Datum'
+        status: 'Status'
     placeholder:
         finding_source: '-- Quelle auswählen --'
         action_type: '-- Maßnahmentyp auswählen --'
@@ -521,3 +551,11 @@ iso_9001_bridge:
     minor_nc: 'In ISO 9001 entspricht das einer "Nebenabweichung" (Minor Nonconformity) — Klausel 10.2 Nichtkonformität und Korrekturmaßnahme.'
     corrective_action: 'Identisch mit dem CAPA-Cycle aus ISO 9001 Klausel 10.2 (Korrekturmaßnahme nach Nichtkonformität).'
     audit: 'Identisch mit ISO 9001 Klausel 9.2 "Internes Audit" — gleicher Audit-Plan, gleiche Audit-Berichte, gleiche Audit-Folgeaktionen.'
+
+verification_status:
+    compliant: 'Konform'
+    partial: 'Teilweise konform'
+    non_compliant: 'Nicht konform'
+    not_applicable: 'Nicht anwendbar'
+    not_checked: 'Nicht geprüft'
+    unknown: 'Unbekannt'

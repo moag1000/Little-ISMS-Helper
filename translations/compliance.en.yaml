@@ -193,6 +193,7 @@ compliance:
             reset: 'Reset'
             no_results: 'No mappings match the filters.'
         col:
+            expand: 'Expand details'
             relationship: 'Relationship'
             mqs: 'MQS'
             provenance: 'Provenance'
@@ -575,6 +576,23 @@ compliance:
             applicable: __compliance.framework.stats.applicable
             fulfilled: __compliance.framework.stats.fulfilled
             compliance: __compliance.framework.stats.compliance
+        tisax:
+            tier_is_label: 'Information Security (Avg. Reifegrad → Target AL3: 3)'
+            tier_is_value: 'Avg. %avg% / Target 3.0 → gap %gap%'
+            tier_pp_label: 'Prototype Protection (Avg. Reifegrad → Target AL3: 3)'
+            tier_dp_label: 'Data Protection (%compliant% / %total% compliant)'
+            tier_dp_value: '%compliant% / %total% measures compliant (%pct% %%)'
+            schutzbedarf_cascade_title: 'Protection-need addenda relevant — BSI 3.6 Maximum Principle'
+            schutzbedarf_cascade_body: >
+                %high_asset_count% asset(s) with high protection need (C/I/A ≥ 4) and
+                %very_high_asset_count% asset(s) with very high protection need (C/I/A ≥ 5) found.
+                %high_control_count% VDA-ISA controls have additional requirements for high protection needs (column L),
+                %very_high_control_count% controls for very high protection needs (column M).
+            schutzbedarf_cascade_byo: 'Please read the requirement text in your licensed ENX workbook (BYO wizard).'
+    framework_show:
+        tisax_skeleton_hint: 'This TISAX framework has no requirements yet. The VDA-ISA workbook is ENX-licensed and not redistributable. Use the BYO-Import Wizard to populate requirements from your licensed copy.'
+        action:
+            open_byo_wizard: 'Open BYO-Import Wizard'
     requirement:
         aria:
             current: 'Current maturity'
@@ -1314,6 +1332,9 @@ export:
         framework1_requirements: 'Framework 1 Requirements'
         framework2_requirements: 'Framework 2 Requirements'
         mapped: 'Mapped'
+        reuse_pct: 'Reuse %'
+        coverage_pct: 'Coverage (%)'
+        total: 'Total'
     sheet:
         reuse_details: 'Reuse Details'
         gap_details: 'Gap Details'
@@ -1338,24 +1359,3 @@ export:
         partially_implemented_short: 'Partial'
         implemented: 'Implemented'
         not_assessed: 'Not Assessed'
-
-    # TISAX per-tier assessment KPI tiles (framework show page)
-    tisax:
-        tier_is_label: 'Information Security (Avg. Reifegrad → Target AL3: 3)'
-        tier_is_value: 'Avg. %avg% / Target 3.0 → gap %gap%'
-        tier_pp_label: 'Prototype Protection (%compliant% / %total% compliant)'
-        tier_pp_value: '%compliant% / %total% controls compliant (%pct% %%)'
-        tier_dp_label: 'Data Protection (%in_place% / %total% in place)'
-        tier_dp_value: '%in_place% / %total% measures in place (%pct% %%)'
-        schutzbedarf_cascade_title: 'Protection-need addenda relevant — BSI 3.6 Maximum Principle'
-        schutzbedarf_cascade_body: >
-          %high_asset_count% asset(s) with high protection need (C/I/A ≥ 4) and
-          %very_high_asset_count% asset(s) with very high protection need (C/I/A ≥ 5) found.
-          %high_control_count% VDA-ISA controls have additional requirements for high protection needs (column L),
-          %very_high_control_count% controls for very high protection needs (column M).
-        schutzbedarf_cascade_byo: 'Please read the requirement text in your licensed ENX workbook (BYO wizard).'
-
-framework_show:
-    tisax_skeleton_hint: 'This TISAX framework has no controls seeded. The VDA-ISA workbook is ENX-licensed and not redistributable. Use the BYO-Import Wizard to populate controls from your licensed copy.'
-    action:
-        open_byo_wizard: 'Open BYO-Import Wizard'

@@ -2418,3 +2418,5 @@ owner_picker:
 
 # Missing common action keys
 'common.update': 'Aktualisieren'
+'common.source': 'Quelle'
+'common.target': 'Ziel'

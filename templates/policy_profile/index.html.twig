@@ -1,35 +1,36 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance_policy' %}
 
 {% block body %}
 <div class="container py-4">
-    <h1 class="h3 mb-1">Organisations-Sicherheitsprofil</h1>
-    <p class="text-muted">Branche wählen → Parameter vorbelegt → audit-feste Policy-Werte + Abdeckung je Rahmenwerk. Werte sind editierbar.</p>
+    <h1 class="h3 mb-1">{{ 'compliance_policy.policy_profile.page.title'|trans({}, 'compliance_policy') }}</h1>
+    <p class="text-muted">{{ 'compliance_policy.policy_profile.page.lead'|trans({}, 'compliance_policy') }}</p>
 
     <div class="card mb-4">
         <div class="card-body">
             <form method="post" action="{{ path('app_policy_profile_apply_sector', {_locale: app.request.locale}) }}" class="row g-2 align-items-end">
                 <input type="hidden" name="_token" value="{{ csrf_token('policy_profile_sector') }}">
                 <div class="col-auto">
-                    <label class="form-label mb-1">Branche</label>
+                    <label class="form-label mb-1">{{ 'compliance_policy.policy_profile.page.sector_label'|trans({}, 'compliance_policy') }}</label>
                     <select name="sector" class="form-select">
                         {% for key, b in sectors %}
                             <option value="{{ key }}"{{ profile.sectorKey == key ? ' selected' : '' }}>{{ b.labels.de ?? key }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-auto"><button class="btn btn-primary">Baseline anwenden</button></div>
-                {% if profile.sectorKey %}<div class="col-auto text-muted">Aktuelle Branche: <strong>{{ profile.sectorKey }}</strong></div>{% endif %}
+                <div class="col-auto"><button class="btn btn-primary">{{ 'compliance_policy.policy_profile.page.apply_baseline'|trans({}, 'compliance_policy') }}</button></div>
+                {% if profile.sectorKey %}<div class="col-auto text-muted">{{ 'compliance_policy.policy_profile.page.current_sector'|trans({}, 'compliance_policy') }}: <strong>{{ profile.sectorKey }}</strong></div>{% endif %}
             </form>
         </div>
     </div>
 
     {% if coverage is not empty %}
-        <h2 class="h5">Framework-Abdeckung</h2>
+        <h2 class="h5">{{ 'compliance_policy.policy_profile.page.framework_coverage'|trans({}, 'compliance_policy') }}</h2>
         <div class="d-flex flex-wrap gap-2 mb-4">
             {% for fw, c in coverage %}
                 {% set blocking = c.blockingViolations()|length %}
                 <span class="badge {{ blocking > 0 ? 'bg-danger' : (c.violations|length > 0 ? 'bg-warning text-dark' : 'bg-success') }}">
-                    {{ fw|upper }}: {{ c.satisfiedCount() }}/{{ c.totalConstrained }}{% if blocking > 0 %} · {{ blocking }} Pflicht-Gap{% endif %}
+                    {{ fw|upper }}: {{ c.satisfiedCount() }}/{{ c.totalConstrained }}{% if blocking > 0 %} · {{ blocking }} {{ 'compliance_policy.policy_profile.page.mandatory_gap'|trans({}, 'compliance_policy') }}{% endif %}
                 </span>
             {% endfor %}
         </div>
@@ -38,7 +39,11 @@
     <form method="post" action="{{ path('app_policy_profile_save', {_locale: app.request.locale}) }}">
         <input type="hidden" name="_token" value="{{ csrf_token('policy_profile_save') }}">
         <table class="table align-middle">
-            <thead><tr><th>Parameter</th><th style="width: 30%">Wert</th><th>ISO-Klausel</th></tr></thead>
+            <thead><tr>
+                <th>{{ 'compliance_policy.policy_profile.th.parameter'|trans({}, 'compliance_policy') }}</th>
+                <th style="width: 30%">{{ 'compliance_policy.policy_profile.th.value'|trans({}, 'compliance_policy') }}</th>
+                <th>{{ 'compliance_policy.policy_profile.th.iso_clause'|trans({}, 'compliance_policy') }}</th>
+            </tr></thead>
             <tbody>
                 {% for key, def in definitions %}
                     <tr>
@@ -57,8 +62,8 @@
                 {% endfor %}
             </tbody>
         </table>
-        <button class="btn btn-success">Parameter speichern</button>
-        <a href="{{ path('app_policy_profile_register', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">Parameter-Register ansehen</a>
+        <button class="btn btn-success">{{ 'compliance_policy.policy_profile.page.save_params'|trans({}, 'compliance_policy') }}</button>
+        <a href="{{ path('app_policy_profile_register', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">{{ 'compliance_policy.policy_profile.page.view_register'|trans({}, 'compliance_policy') }}</a>
     </form>
 </div>
 {% endblock %}

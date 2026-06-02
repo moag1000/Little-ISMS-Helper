@@ -5,6 +5,12 @@
 # Domänenname (tisax_isa) bleibt unverändert — er bestimmt nur die Datei.
 
 tisax:
+  enx:
+    sheet:
+      information_security: 'Informationssicherheit (IS)'
+      prototype_protection: 'Prototypenschutz (Proto)'
+      data_protection: 'Datenschutz (DataPro)'
+
   nav:
     title: 'TISAX VDA-ISA Import'
 

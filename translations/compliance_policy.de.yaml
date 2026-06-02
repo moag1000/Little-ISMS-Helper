@@ -26,3 +26,26 @@ compliance_policy:
         lead: "Entfernt den DB-Override, die YAML-Default wird wieder wirksam."
         action: "Zurücksetzen"
         confirm: "Wirklich auf Default zurücksetzen?"
+    policy_profile:
+        page:
+            title: "Organisations-Sicherheitsprofil"
+            lead: "Branche wählen → Parameter vorbelegt → audit-feste Policy-Werte + Abdeckung je Rahmenwerk. Werte sind editierbar."
+            sector_label: "Branche"
+            apply_baseline: "Baseline anwenden"
+            current_sector: "Aktuelle Branche"
+            framework_coverage: "Framework-Abdeckung"
+            save_params: "Parameter speichern"
+            view_register: "Parameter-Register ansehen"
+            mandatory_gap: "Pflicht-Gap"
+        register:
+            title: "Parameter-Register"
+            lead: "Cross-Framework-Audit-Register"
+            regulatory_hint: "Gelb hinterlegt = regulatorische Pflicht."
+            back: "Zurück zum Profil"
+        th:
+            parameter: "Parameter"
+            value: "Wert"
+            iso_clause: "ISO-Klausel"
+            authority: "Autorität"
+            source: "Quelle"
+            frameworks: "Frameworks"

@@ -101,29 +101,30 @@ class ComplianceExportController extends AbstractController
 
         // Create CSV content
         $csv = [];
+        $tr = $this->getTranslator();
 
         // CSV Header - Title
         $csv[] = ['Data Reuse Insights - ' . $framework->getName()];
         $csv[] = [];
 
         // Summary section
-        $csv[] = ['Zusammenfassung'];
-        $csv[] = ['Framework', $framework->getName() . ' (' . $framework->getCode() . ')'];
-        $csv[] = ['Gesamt Zeitersparnis (Stunden)', $totalTimeSavings];
-        $csv[] = ['Gesamt Zeitersparnis (Tage)', round($totalTimeSavings / 8, 1)];
-        $csv[] = ['Anzahl analysierten Anforderungen', count($dataReuseAnalysis)];
+        $csv[] = [$tr->trans('export.section.summary', [], 'compliance')];
+        $csv[] = [$tr->trans('export.column.framework', [], 'compliance'), $framework->getName() . ' (' . $framework->getCode() . ')'];
+        $csv[] = [$tr->trans('export.column.total_time_savings_hours', [], 'compliance'), $totalTimeSavings];
+        $csv[] = [$tr->trans('export.column.total_time_savings_days', [], 'compliance'), round($totalTimeSavings / 8, 1)];
+        $csv[] = [$tr->trans('export.column.analyzed_requirements', [], 'compliance'), count($dataReuseAnalysis)];
         $csv[] = [];
 
         // CSV Header - Requirements
         $csv[] = [
-            'Anforderungs-ID',
-            'Titel',
-            'Kategorie',
-            'Wiederverwendbare Daten',
-            'Datenquelle',
-            'Geschätzte Zeitersparnis (h)',
-            'Reuse-Prozentsatz (%)',
-            'Confidence',
+            $tr->trans('export.column.requirement_id', [], 'compliance'),
+            $tr->trans('export.column.title', [], 'compliance'),
+            $tr->trans('export.column.category', [], 'compliance'),
+            $tr->trans('export.column.reusable_data', [], 'compliance'),
+            $tr->trans('export.column.data_source', [], 'compliance'),
+            $tr->trans('export.column.estimated_time_savings_h', [], 'compliance'),
+            $tr->trans('export.column.reuse_percentage', [], 'compliance'),
+            $tr->trans('export.column.confidence', [], 'compliance'),
         ];
 
         // CSV Data - Requirements
@@ -230,7 +231,7 @@ class ComplianceExportController extends AbstractController
         // Tab 2: Details
         $detailsSheet = $this->excelExportService->createSheet($spreadsheet, $te->trans('export.sheet.reuse_details', [], 'compliance'));
 
-        $headers = ['ID', $te->trans('export.column.title', [], 'compliance'), $te->trans('export.column.category', [], 'compliance'), $te->trans('export.column.reusable_data', [], 'compliance'), $te->trans('export.column.sources', [], 'compliance'), $te->trans('export.column.time_savings_h', [], 'compliance'), 'Reuse %', $te->trans('export.column.confidence', [], 'compliance')];
+        $headers = ['ID', $te->trans('export.column.title', [], 'compliance'), $te->trans('export.column.category', [], 'compliance'), $te->trans('export.column.reusable_data', [], 'compliance'), $te->trans('export.column.sources', [], 'compliance'), $te->trans('export.column.time_savings_h', [], 'compliance'), $te->trans('export.column.reuse_pct', [], 'compliance'), $te->trans('export.column.confidence', [], 'compliance')];
         $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
 
         $data = [];
@@ -921,7 +922,7 @@ class ComplianceExportController extends AbstractController
         // Tab 2: Framework Relationships
         $relationshipsSheet = $this->excelExportService->createSheet($spreadsheet, $tx->trans('export.sheet.framework_relations', [], 'compliance'));
 
-        $headers = [$tx->trans('export.column.source_framework', [], 'compliance'), $tx->trans('export.column.target_framework', [], 'compliance'), $tx->trans('export.label.mapped', [], 'compliance'), 'Total', 'Coverage %'];
+        $headers = [$tx->trans('export.column.source_framework', [], 'compliance'), $tx->trans('export.column.target_framework', [], 'compliance'), $tx->trans('export.label.mapped', [], 'compliance'), $tx->trans('export.column.total', [], 'compliance'), $tx->trans('export.column.coverage_pct', [], 'compliance')];
         $this->excelExportService->addFormattedHeaderRow($relationshipsSheet, $headers, 1, true);
 
         $data = [];
@@ -1388,7 +1389,7 @@ class ComplianceExportController extends AbstractController
         if ($framework1Unique !== []) {
             $unique1Sheet = $this->excelExportService->createSheet($spreadsheet, 'Unique ' . substr((string) $framework1->getCode(), 0, 10));
 
-            $uniqueHeaders = ['ID', 'Titel', 'Kategorie', 'Beschreibung'];
+            $uniqueHeaders = ['ID', $tce->trans('export.column.title', [], 'compliance'), $tce->trans('export.column.category', [], 'compliance'), $tce->trans('export.column.description', [], 'compliance')];
             $this->excelExportService->addFormattedHeaderRow($unique1Sheet, $uniqueHeaders, 1, true);
 
             $uniqueData = [];
