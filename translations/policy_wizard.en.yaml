@@ -1331,6 +1331,10 @@ policy_wizard:
         placeholder: 'Optional: pick an industry preset'
         help: 'Pre-fills sector-specific defaults. You can still tweak every value afterwards.'
         help_multi: 'Combine multiple presets (e.g. "Bank" + "Cloud-SaaS"). When presets conflict on a scalar field, the last selected preset wins.'
+        incomplete:
+            title: 'More industry presets available'
+            body: '%missing% of %total% sector presets (e.g. Healthcare, BaFin/DORA, KRITIS Energy, OT/IEC 62443) are not yet loaded on this installation.'
+            howto: 'Administrator: run the migration once (doctrine:migrations:migrate) or trigger the seed command:'
         conflict:
             title: 'Preset conflict detected'
             later_wins: 'last selected preset wins — adjustable in the next step'
