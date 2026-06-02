@@ -52,10 +52,14 @@
                     <a href="{{ path('app_delta_assessment_excel', {targetFrameworkCode: framework.code}) }}?baseline={{ baseline_code }}"
                        class="fa-cyber-btn fa-cyber-btn--primary"
                        data-bs-toggle="tooltip" data-bs-placement="top"
-                       title="{{ 'compliance_wizard.delta.action.download_excel'|trans({}, 'compliance_wizard') }}">
+                       title="{{ 'compliance_wizard.delta.glossary.what_is'|trans({}, 'compliance_wizard') }}">
                         <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
                         {{ 'compliance_wizard.delta.action.download_excel'|trans({}, 'compliance_wizard') }}
                     </a>
+                    <p class="text-muted small mt-1 mb-0">
+                        {{ 'compliance_wizard.delta.glossary.what_is'|trans({}, 'compliance_wizard') }}
+                        <br>{{ 'compliance_wizard.delta.glossary.baseline_framework'|trans({}, 'compliance_wizard') }}
+                    </p>
                 {% else %}
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" disabled
                             data-bs-toggle="tooltip" data-bs-placement="top"

@@ -63,6 +63,8 @@ final class DeltaAssessmentExcelExporter
         private readonly InheritanceMetricsService $inheritanceMetricsService,
         private readonly GapEffortCalculator $gapEffortCalculator,
         private readonly TranslatorInterface $translator,
+        #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%tisax.delta.pre_fill_target%')]
+        private readonly int $preFillTargetPercent = 60,
     ) {
     }
 
@@ -210,7 +212,7 @@ final class DeltaAssessmentExcelExporter
         );
 
         // Pre-fill call-out block ─────────────────────────────────────────────
-        $targetPct = (int) self::PRE_FILL_TARGET_PERCENT;
+        $targetPct = $this->preFillTargetPercent;
         $meetsTarget = $preFillPct >= $targetPct;
         $calloutLabel = $this->translator->trans(
             'compliance_wizard.delta.summary.pre_fill_rate',

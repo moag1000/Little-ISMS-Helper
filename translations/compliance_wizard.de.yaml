@@ -24,6 +24,10 @@ diff:
     section:
         unchanged_badge: 'unverändert'
 delta:
+    glossary:
+        what_is: 'Das Delta-Assessment zeigt, wie viel eines neuen Frameworks bereits durch ein vorhandenes abgedeckt ist — damit Sie nur die Lücke bearbeiten statt alles neu.'
+        baseline_framework: 'Baseline-Framework = das bereits umgesetzte Framework, gegen das verglichen wird (die Quelle der Wiederverwendung, z. B. ISO 27001).'
+        pre_fill_rate: 'Pre-Fill-Rate = Anteil der Ziel-Anforderungen, die durch das Baseline-Framework bereits vorausgefüllt sind (ohne neue Arbeit). Zielwert konfigurierbar (Standard 60 %).'
     title: 'Delta-Assessment'
     sheet:
         summary: 'Zusammenfassung'
