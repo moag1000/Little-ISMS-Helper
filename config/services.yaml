@@ -14,12 +14,6 @@ parameters:
     # Pagination
     app.pagination_items_per_page: 30
 
-    # Session Configuration
-    app.session_lifetime: 86400  # 24 hours in seconds
-
-    # Password Reset
-    app.password_reset_token_lifetime: 3600  # 1 hour in seconds
-
     # Risk Management thresholds are owned by App\Risk\RiskMatrixThresholds
     # (single source of truth, ISO 27001 Cl. 6.1.2 b). Do not re-introduce
     # parameters here — change the constants in that class instead.
@@ -74,7 +68,8 @@ parameters:
     app.tisax.ip_retention_days: 365
 
     # Backup notifier defaults (override via env if needed).
-    app.backup_notifier.from_email: 'noreply@little-isms-helper.local'
+    app_backup_notifier_from_email_default: 'noreply@little-isms-helper.local'
+    app.backup_notifier.from_email: '%env(default:app_backup_notifier_from_email_default:APP_BACKUP_NOTIFIER_FROM_EMAIL)%'
     app.backup_notifier.subject_prefix: '[ISMS Backup]'
 
     # Async-job execution strategy. Default 'in_request' works on commodity
@@ -181,6 +176,10 @@ services:
         # can resolve them.
         App\Job\AsyncJobInterface:
             tags: ['app.async_job']
+        # F2.3: Bulk-Import mappers auto-register so EntityMapperRegistry's
+        # !tagged_iterator app.import.mapper collects all implementations.
+        App\Service\Import\Mapper\EntityMapperInterface:
+            tags: ['app.import.mapper']
 
     # Async-job dispatch facade. Selects between InRequestJobRunner (shared
     # hosting default) and MessengerJobRunner (opt-in for worker daemons)
@@ -580,23 +579,8 @@ services:
         public: true
 
     # ── F2.3: Bulk-Import Mapper Registry ────────────────────────────────────
-    # Mappers are collected via tagged-service iterator; each mapper must be
-    # tagged with `app.import.mapper` to be picked up by EntityMapperRegistry.
-
-    App\Service\Import\Mapper\AssetMapper:
-        tags: ['app.import.mapper']
-
-    App\Service\Import\Mapper\SupplierMapper:
-        tags: ['app.import.mapper']
-
-    App\Service\Import\Mapper\ControlMapper:
-        tags: ['app.import.mapper']
-
-    App\Service\Import\Mapper\RiskMapper:
-        tags: ['app.import.mapper']
-
-    App\Service\Import\Mapper\BusinessProcessMapper:
-        tags: ['app.import.mapper']
+    # Mappers auto-register via the _instanceof rule for EntityMapperInterface
+    # above. No explicit per-mapper entries needed.
 
     App\Service\Import\EntityMapperRegistry:
         arguments:

@@ -8,6 +8,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 final class PersonaSwitcherControllerTest extends WebTestCase
 {
@@ -36,6 +37,7 @@ final class PersonaSwitcherControllerTest extends WebTestCase
         return $tokenValue;
     }
 
+    #[Test]
     public function testSwitchToCisoPersona(): void
     {
         $client = static::createClient();
@@ -60,6 +62,7 @@ final class PersonaSwitcherControllerTest extends WebTestCase
         self::assertStringContainsString('/dashboards/ciso', $data['redirect']);
     }
 
+    #[Test]
     public function testRevertPersona(): void
     {
         $client = static::createClient();
@@ -84,6 +87,7 @@ final class PersonaSwitcherControllerTest extends WebTestCase
         self::assertStringContainsString('/dashboards/compliance-manager', $data['redirect']);
     }
 
+    #[Test]
     public function testInvalidPersonaReturns400(): void
     {
         $client = static::createClient();
@@ -104,6 +108,7 @@ final class PersonaSwitcherControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
+    #[Test]
     public function testInvalidCsrfReturns403(): void
     {
         $client = static::createClient();

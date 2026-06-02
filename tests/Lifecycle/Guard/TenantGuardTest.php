@@ -13,9 +13,11 @@ use Symfony\Component\Workflow\Event\GuardEvent;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
 use Symfony\Component\Workflow\WorkflowInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 class TenantGuardTest extends TestCase
 {
+    #[Test]
     public function testBlocksCrossTenant(): void
     {
         $reqTenant = $this->mockTenant(1);
@@ -31,6 +33,7 @@ class TenantGuardTest extends TestCase
         $this->assertTrue($event->isBlocked());
     }
 
+    #[Test]
     public function testPassesSameTenant(): void
     {
         $tenant = $this->mockTenant(1);
@@ -45,6 +48,7 @@ class TenantGuardTest extends TestCase
         $this->assertFalse($event->isBlocked());
     }
 
+    #[Test]
     public function testBlocksWhenNoCurrentTenant(): void
     {
         $doc = $this->mockDocument($this->mockTenant(1));

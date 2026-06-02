@@ -12,9 +12,11 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
 use Symfony\Component\Workflow\WorkflowInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 class AlvaHintInvalidatorTest extends TestCase
 {
+    #[Test]
     public function testInvalidatesHintsForEntity(): void
     {
         $doc = $this->createStub(Document::class);
@@ -36,6 +38,7 @@ class AlvaHintInvalidatorTest extends TestCase
         (new AlvaHintInvalidator($repo))->onCompleted($event);
     }
 
+    #[Test]
     public function testSkipsSubjectWithoutGetId(): void
     {
         $subject = new \stdClass();
