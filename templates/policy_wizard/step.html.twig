@@ -91,7 +91,7 @@
           class="mt-3"
           novalidate
           data-controller="wizard-form-guard"
-          data-wizard-form-guard-missing-template="{{ 'policy_wizard.step.guard.missing_fields'|trans({'%count%': '%count%'})|e('html_attr') }}">
+          data-wizard-form-guard-missing-template="{{ 'policy_wizard.step.guard.missing_fields'|trans({'%count%': '%count%'}, 'policy_wizard')|e('html_attr') }}">
         <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_step') }}">
 
         {# Step-key → template-filename mapping. Default 7-step flow plus
