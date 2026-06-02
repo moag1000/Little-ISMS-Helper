@@ -12,9 +12,11 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
 use Symfony\Component\Workflow\WorkflowInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 class AuditLogListenerTest extends TestCase
 {
+    #[Test]
     public function testLogsStatusChangeAction(): void
     {
         $doc = $this->createStub(Document::class);

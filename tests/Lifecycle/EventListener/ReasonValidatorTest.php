@@ -13,9 +13,11 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
 use Symfony\Component\Workflow\WorkflowInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 class ReasonValidatorTest extends TestCase
 {
+    #[Test]
     public function testThrowsWhenReasonRequiredAndMissing(): void
     {
         $this->expectException(ReasonRequiredException::class);
@@ -23,6 +25,7 @@ class ReasonValidatorTest extends TestCase
         $validator->onTransition($this->makeEvent(context: []));
     }
 
+    #[Test]
     public function testThrowsWhenReasonEmpty(): void
     {
         $this->expectException(ReasonRequiredException::class);
@@ -30,6 +33,7 @@ class ReasonValidatorTest extends TestCase
         $validator->onTransition($this->makeEvent(context: ['reason' => '   ']));
     }
 
+    #[Test]
     public function testPassesWhenReasonProvided(): void
     {
         $validator = $this->makeValidator(required: true);
@@ -37,6 +41,7 @@ class ReasonValidatorTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testPassesWhenNotRequired(): void
     {
         $validator = $this->makeValidator(required: false);

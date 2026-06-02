@@ -11,7 +11,7 @@ use DateTimeImmutable;
  *
  * Runs daily at 3:00 AM to remove expired session records
  */
-class CleanupExpiredSessionsMessage
+final readonly class CleanupExpiredSessionsMessage
 {
     public function __construct(
         private readonly DateTimeImmutable $scheduledAt = new DateTimeImmutable()

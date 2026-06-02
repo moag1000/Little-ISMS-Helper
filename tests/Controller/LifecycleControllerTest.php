@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class LifecycleControllerTest extends WebTestCase
 {
+    #[Test]
     public function testUnknownEntityTypeReturns404(): void
     {
         $client = static::createClient();
@@ -20,6 +22,7 @@ class LifecycleControllerTest extends WebTestCase
         $this->assertContains($client->getResponse()->getStatusCode(), [302, 403, 404]);
     }
 
+    #[Test]
     public function testRoutesRegisteredViaContainer(): void
     {
         $client = static::createClient();
@@ -30,26 +33,31 @@ class LifecycleControllerTest extends WebTestCase
         $this->assertNotNull($router->getRouteCollection()->get('app_lifecycle_allowed'));
     }
 
+    #[Test]
     public function testSingleTransitionSuccess(): void
     {
         $this->markTestSkipped('Requires DocumentFixtureFactory; deferred to Sprint X.3.');
     }
 
+    #[Test]
     public function testVersionConflictReturns409(): void
     {
         $this->markTestSkipped('Requires DocumentFixtureFactory; deferred to Sprint X.3.');
     }
 
+    #[Test]
     public function testInvalidTransitionReturns422(): void
     {
         $this->markTestSkipped('Requires DocumentFixtureFactory; deferred to Sprint X.3.');
     }
 
+    #[Test]
     public function testVoterDeniedReturns403(): void
     {
         $this->markTestSkipped('Requires DocumentFixtureFactory; deferred to Sprint X.3.');
     }
 
+    #[Test]
     public function testBulkBestEffort(): void
     {
         $this->markTestSkipped('Requires DocumentFixtureFactory; deferred to Sprint X.3.');

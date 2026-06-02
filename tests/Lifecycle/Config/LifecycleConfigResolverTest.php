@@ -17,9 +17,11 @@ use Symfony\Component\Workflow\SupportStrategy\WorkflowSupportStrategyInterface;
 use Symfony\Component\Workflow\Transition;
 use Symfony\Component\Workflow\Workflow;
 use Symfony\Component\Workflow\WorkflowInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 class LifecycleConfigResolverTest extends TestCase
 {
+    #[Test]
     public function testYamlOnlyReturnsYamlValue(): void
     {
         $resolver = $this->makeResolver(yamlMeta: ['roles' => ['ROLE_MANAGER'], 'reason_required' => false], overrides: []);
@@ -31,6 +33,7 @@ class LifecycleConfigResolverTest extends TestCase
         $this->assertFalse($effective['reason_required']);
     }
 
+    #[Test]
     public function testDbOverlayOverridesYaml(): void
     {
         $resolver = $this->makeResolver(
@@ -45,6 +48,7 @@ class LifecycleConfigResolverTest extends TestCase
         $this->assertTrue($effective['reason_required']);
     }
 
+    #[Test]
     public function testMissingKeyReturnsDefault(): void
     {
         $resolver = $this->makeResolver(yamlMeta: [], overrides: []);

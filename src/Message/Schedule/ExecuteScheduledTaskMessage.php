@@ -9,7 +9,7 @@ use DateTimeImmutable;
 /**
  * Message to execute a database-defined scheduled task
  */
-class ExecuteScheduledTaskMessage
+final readonly class ExecuteScheduledTaskMessage
 {
     public function __construct(
         private readonly int $taskId,

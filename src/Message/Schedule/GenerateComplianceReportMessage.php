@@ -11,7 +11,7 @@ use DateTimeImmutable;
  *
  * Runs every Monday at 6:00 AM to generate compliance summary reports
  */
-class GenerateComplianceReportMessage
+final readonly class GenerateComplianceReportMessage
 {
     public function __construct(
         private readonly DateTimeImmutable $scheduledAt = new DateTimeImmutable()

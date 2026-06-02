@@ -338,7 +338,7 @@ class AuditController extends AbstractController
     {
         $data = json_decode($request->getContent(), true) ?? [];
         if (!isset($data['_token']) || !$this->isCsrfTokenValid('audit_checklist_save_' . $internalAudit->getId(), (string) $data['_token'])) {
-            return new Response(json_encode(['error' => 'Invalid CSRF token']), Response::HTTP_FORBIDDEN, ['Content-Type' => 'application/json']);
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
         $items = $data['items'] ?? [];

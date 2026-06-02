@@ -7,9 +7,11 @@ namespace App\Tests\System;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
+use PHPUnit\Framework\Attributes\Test;
 
 class WorkflowDumpTest extends KernelTestCase
 {
+    #[Test]
     public function testDocumentLifecycleDumpsToGraphviz(): void
     {
         self::bootKernel();
@@ -30,6 +32,7 @@ class WorkflowDumpTest extends KernelTestCase
     /**
      * Lifecycle X.1 — ProcessingActivity state-machine dump.
      */
+    #[Test]
     public function testProcessingActivityLifecycleDumpsToGraphviz(): void
     {
         self::bootKernel();
@@ -51,6 +54,7 @@ class WorkflowDumpTest extends KernelTestCase
     /**
      * Lifecycle X.1 — ISMSObjective state-machine dump.
      */
+    #[Test]
     public function testIsmsObjectiveLifecycleDumpsToGraphviz(): void
     {
         self::bootKernel();

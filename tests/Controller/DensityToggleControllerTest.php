@@ -9,6 +9,7 @@ use App\Enum\MenuDensity;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\Test;
 
 final class DensityToggleControllerTest extends WebTestCase
 {
@@ -36,6 +37,7 @@ final class DensityToggleControllerTest extends WebTestCase
         return $tokenValue;
     }
 
+    #[Test]
     public function testSetDensityToBasic(): void
     {
         $client = static::createClient();
@@ -61,6 +63,7 @@ final class DensityToggleControllerTest extends WebTestCase
         self::assertSame(MenuDensity::BASIC, $refreshed->getMenuDensity());
     }
 
+    #[Test]
     public function testSetDensityToExpert(): void
     {
         $client = static::createClient();
@@ -82,6 +85,7 @@ final class DensityToggleControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 
+    #[Test]
     public function testInvalidDensityReturns400(): void
     {
         $client = static::createClient();
@@ -103,6 +107,7 @@ final class DensityToggleControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
+    #[Test]
     public function testInvalidCsrfReturns403(): void
     {
         $client = static::createClient();
