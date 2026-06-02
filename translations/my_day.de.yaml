@@ -84,6 +84,9 @@ my_day:
     item:
         due: 'Fällig'
 
+    tiles:
+        all_clear: '%count% weitere Kategorien ohne offene Punkte'
+
     priority:
-        high: 'High'
-        medium: 'Med'
+        high: 'Hoch'
+        medium: 'Mittel'

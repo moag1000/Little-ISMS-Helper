@@ -84,6 +84,9 @@ my_day:
     item:
         due: 'Due'
 
+    tiles:
+        all_clear: '%count% more categories with nothing to do'
+
     priority:
         high: 'High'
         medium: 'Med'
