@@ -751,10 +751,10 @@ class AdminBackupController extends AbstractController
     /**
      * Create JSON export response
      */
-    private function createJsonExportResponse(array $data): Response
+    private function createJsonExportResponse(array $data): JsonResponse
     {
-        $response = new Response(json_encode($data, JSON_PRETTY_PRINT));
-        $response->headers->set('Content-Type', 'application/json');
+        $response = new JsonResponse($data);
+        $response->setEncodingOptions(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $response->headers->set('Content-Disposition',
             'attachment; filename="export_' . date('Y-m-d_H-i-s') . '.json"');
 

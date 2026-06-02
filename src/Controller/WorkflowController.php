@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\CurrentUserTrait;
 use App\Entity\WorkflowStep;
 use DateTimeImmutable;
 use App\Entity\Workflow;
@@ -28,6 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class WorkflowController extends AbstractController
 {
+    use CurrentUserTrait;
     public function __construct(
         private readonly WorkflowRepository $workflowRepository,
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
@@ -72,7 +74,7 @@ class WorkflowController extends AbstractController
         $instances = $this->workflowInstanceRepository->findBy([], ['startedAt' => 'DESC'], 10);
 
         // Check approval permissions and eligibility for each instance
-        $currentUser = $this->getUser();
+        $currentUser = $this->currentUser();
         $userCanApprove = [];
         $hasEligibleApprovers = [];
         foreach ($instances as $instance) {
@@ -109,7 +111,7 @@ class WorkflowController extends AbstractController
     #[Route('/workflow/pending', name: 'app_workflow_pending', methods: ['GET'])]
     public function pending(): Response
     {
-        $user = $this->getUser();
+        $user = $this->currentUser();
         $pendingApprovals = $this->workflowService->getPendingApprovals($user);
 
         // Check approval permissions for each instance
@@ -128,7 +130,7 @@ class WorkflowController extends AbstractController
     #[Route('/workflow/instance/{id}', name: 'app_workflow_instance_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function showInstance(WorkflowInstance $workflowInstance): Response
     {
-        $currentUser = $this->getUser();
+        $currentUser = $this->currentUser();
         $currentStep = $workflowInstance->getCurrentStep();
         $canApprove = $currentStep instanceof WorkflowStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
 
@@ -159,7 +161,7 @@ class WorkflowController extends AbstractController
         }
 
         $comments = $request->request->get('comments');
-        $success = $this->workflowService->approveStep($workflowInstance, $this->getUser(), $comments);
+        $success = $this->workflowService->approveStep($workflowInstance, $this->currentUser(), $comments);
 
         if ($success) {
             $this->addFlash('success', $this->translator->trans('workflow.success.approved', [], 'messages'));
@@ -185,7 +187,7 @@ class WorkflowController extends AbstractController
             return $this->getSmartRedirect($request, $workflowInstance);
         }
 
-        $success = $this->workflowService->rejectStep($workflowInstance, $this->getUser(), $comments);
+        $success = $this->workflowService->rejectStep($workflowInstance, $this->currentUser(), $comments);
 
         if ($success) {
             $this->addFlash('warning', $this->translator->trans('workflow.warning.rejected', [], 'messages'));
@@ -219,7 +221,7 @@ class WorkflowController extends AbstractController
             return $this->getSmartRedirect($request, $workflowInstance);
         }
 
-        $currentUser = $this->getUser();
+        $currentUser = $this->currentUser();
         $currentStep = $workflowInstance->getCurrentStep();
         if (!$currentStep instanceof WorkflowStep || !$this->workflowService->canUserApprove($currentUser, $currentStep)) {
             $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_approve', [], 'messages'));
@@ -237,10 +239,8 @@ class WorkflowController extends AbstractController
             'action'         => 'clarification_requested',
             'event'          => 'clarification_requested',
             'step_name'      => $currentStep->getName(),
-            'asker_user_id'  => method_exists($currentUser, 'getId') ? $currentUser->getId() : null,
-            'asker_name'     => method_exists($currentUser, 'getFirstName')
-                ? trim(((string) $currentUser->getFirstName()) . ' ' . ((string) $currentUser->getLastName()))
-                : (string) $currentUser->getUserIdentifier(),
+            'asker_user_id'  => $currentUser->getId(),
+            'asker_name'     => trim(((string) $currentUser->getFirstName()) . ' ' . ((string) $currentUser->getLastName())),
             'question'       => $question,
             'comments'       => $question,
             'timestamp'      => (new \DateTimeImmutable())->format(DATE_ATOM),
@@ -326,7 +326,7 @@ class WorkflowController extends AbstractController
         $activeWorkflows = $this->workflowService->getActiveWorkflows();
 
         // Check approval permissions for each instance
-        $currentUser = $this->getUser();
+        $currentUser = $this->currentUser();
         $userCanApprove = [];
         foreach ($activeWorkflows as $instance) {
             $currentStep = $instance->getCurrentStep();
@@ -346,7 +346,7 @@ class WorkflowController extends AbstractController
         $overdueWorkflows = $this->workflowService->getOverdueWorkflows();
 
         // Check approval permissions for each instance
-        $currentUser = $this->getUser();
+        $currentUser = $this->currentUser();
         $userCanApprove = [];
         foreach ($overdueWorkflows as $instance) {
             $currentStep = $instance->getCurrentStep();

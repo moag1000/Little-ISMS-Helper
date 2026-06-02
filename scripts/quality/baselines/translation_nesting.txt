@@ -350,9 +350,9 @@ translations/validators.de.yaml:343:tenant
 translations/validators.de.yaml:352:user
 translations/validators.de.yaml:364:context
 translations/validators.de.yaml:368:workflow_step
-translations/validators.de.yaml:573:supplier_criticality
-translations/validators.de.yaml:577:risk_approval_config
-translations/validators.de.yaml:586:gstool_import
+translations/validators.de.yaml:566:supplier_criticality
+translations/validators.de.yaml:570:risk_approval_config
+translations/validators.de.yaml:579:gstool_import
 translations/validators.en.yaml:110:Error
 translations/validators.en.yaml:224:setup
 translations/validators.en.yaml:244:document
@@ -372,9 +372,9 @@ translations/validators.en.yaml:343:tenant
 translations/validators.en.yaml:352:user
 translations/validators.en.yaml:364:context
 translations/validators.en.yaml:368:workflow_step
-translations/validators.en.yaml:545:supplier_criticality
-translations/validators.en.yaml:549:risk_approval_config
-translations/validators.en.yaml:558:gstool_import
+translations/validators.en.yaml:538:supplier_criticality
+translations/validators.en.yaml:542:risk_approval_config
+translations/validators.en.yaml:551:gstool_import
 translations/vulnerabilities.de.yaml:1:vulnerability
 translations/vulnerabilities.en.yaml:1:vulnerability
 translations/wizard.de.yaml:1597:compliance_check

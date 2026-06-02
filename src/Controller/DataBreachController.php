@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use RuntimeException;
 use DateTime;
+use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
@@ -37,6 +38,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class DataBreachController extends AbstractController
 {
+    use CurrentUserTrait;
     use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
@@ -175,7 +177,7 @@ class DataBreachController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Form data is already bound to $breach via handleRequest
             // Just save it
-            $this->dataBreachService->update($breach, $this->getUser());
+            $this->dataBreachService->update($breach, $this->currentUser());
 
             $this->addFlash('success', sprintf(
                 'Data breach %s created successfully.',
@@ -242,7 +244,7 @@ class DataBreachController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->dataBreachService->update($dataBreach, $this->getUser());
+            $this->dataBreachService->update($dataBreach, $this->currentUser());
 
             $this->flashSuccess('data_breach.success.updated');
 
@@ -301,7 +303,7 @@ class DataBreachController extends AbstractController
         }
 
         try {
-            $this->dataBreachService->submitForAssessment($dataBreach, $this->getUser());
+            $this->dataBreachService->submitForAssessment($dataBreach, $this->currentUser());
             $this->flashSuccess('data_breach.success.submitted_for_assessment');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
@@ -442,7 +444,7 @@ class DataBreachController extends AbstractController
         }
 
         try {
-            $this->dataBreachService->close($dataBreach, $this->getUser());
+            $this->dataBreachService->close($dataBreach, $this->currentUser());
             $this->flashSuccess('data_breach.success.closed');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
@@ -474,7 +476,7 @@ class DataBreachController extends AbstractController
         }
 
         try {
-            $this->dataBreachService->reopen($dataBreach, $this->getUser(), $reopenReason);
+            $this->dataBreachService->reopen($dataBreach, $this->currentUser(), $reopenReason);
             $this->flashSuccess('data_breach.success.reopened');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());

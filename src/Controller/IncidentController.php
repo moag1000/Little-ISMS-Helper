@@ -32,6 +32,7 @@ use App\Repository\RiskIncidentLinkRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Controller\Trait\BulkActionTrait;
+use App\Controller\Trait\CurrentUserTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -46,6 +47,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class IncidentController extends AbstractController
 {
     use BulkActionTrait;
+    use CurrentUserTrait;
 
     public function __construct(
         private readonly IncidentRepository $incidentRepository,
@@ -413,7 +415,7 @@ class IncidentController extends AbstractController
             $workflowInstance = $workflowStatus['workflow_instance'];
             $currentStep = $workflowInstance->getCurrentStep();
             if ($currentStep) {
-                $canApproveWorkflow = $this->workflowService->canUserApprove($this->getUser(), $currentStep);
+                $canApproveWorkflow = $this->workflowService->canUserApprove($this->currentUser(), $currentStep);
             }
         }
 

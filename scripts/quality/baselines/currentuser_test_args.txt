@@ -22,7 +22,7 @@ tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:129
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:159
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:191
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:214
-tests/Controller/DensityToggleControllerTest.php:35
+tests/Controller/DensityToggleControllerTest.php:36
 tests/Controller/DocumentControllerTest.php:357
 tests/Controller/DocumentControllerTest.php:428
 tests/Controller/DocumentControllerTest.php:486
@@ -31,7 +31,7 @@ tests/Controller/IncidentControllerTest.php:357
 tests/Controller/IncidentControllerTest.php:384
 tests/Controller/IncidentControllerTest.php:436
 tests/Controller/InternalAuditApprovalWorkflowTest.php:163
-tests/Controller/PersonaSwitcherControllerTest.php:35
+tests/Controller/PersonaSwitcherControllerTest.php:36
 tests/Controller/PolicyAcknowledgementControllerTest.php:159
 tests/Controller/PolicyExportControllerTest.php:177
 tests/Controller/PolicyWizardBestandsaufnahmeFlowTest.php:179
@@ -45,10 +45,10 @@ tests/Service/Import/SpreadsheetParserTest.php:269
 tests/Service/IndustryBaselineApplierTest.php:192
 tests/Service/IndustryBaselineApplierTest.php:193
 tests/Service/IndustryBaselineApplierTest.php:194
+tests/Service/PolicyParameter/PolicyBaselineApplierTest.php:27
+tests/Service/PolicyParameter/PolicyBaselineApplierTest.php:40
 tests/Service/TenantContextTest.php:208
 tests/Template/SystemTemplateApplierTest.php:52
 tests/Template/SystemTemplateApplierTest.php:90
 tests/Template/SystemTemplateApplierTest.php:120
 tests/Template/SystemTemplateApplierTest.php:152
-tests/Service/PolicyParameter/PolicyBaselineApplierTest.php:27
-tests/Service/PolicyParameter/PolicyBaselineApplierTest.php:40
