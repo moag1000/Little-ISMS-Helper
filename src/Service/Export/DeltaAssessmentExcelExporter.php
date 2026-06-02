@@ -583,39 +583,34 @@ final class DeltaAssessmentExcelExporter
         return substr($cleaned, 0, 31);
     }
 
-    /** Translate the fulfilment status enum to a German export label. */
+    /** Translate the fulfilment status enum to a locale-aware export label. */
     private function statusLabel(string $status): string
     {
         return match ($status) {
-            'not_started' => 'Nicht begonnen',
-            'in_progress' => 'In Bearbeitung',
-            'implemented' => 'Umgesetzt',
-            'verified'    => 'Verifiziert',
-            default       => $status,
+            'not_started', 'in_progress', 'implemented', 'verified'
+                => $this->translator->trans('delta.export.status.' . $status, [], 'compliance_wizard'),
+            default => $status,
         };
     }
 
-    /** Translate the inheritance-state enum to a German export label. */
+    /** Translate the inheritance-state enum to a locale-aware export label. */
     private function inheritanceLabel(?string $state): string
     {
         return match ($state) {
-            null, ''                   => '',
-            'confirmed'                => 'Bestätigt',
-            'overridden'               => 'Überschrieben',
-            'implemented'              => 'Umgesetzt',
-            'inherited_pending_review' => 'Geerbt — Prüfung offen',
-            default                    => $state,
+            null, '' => '',
+            'confirmed', 'overridden', 'implemented', 'inherited_pending_review'
+                => $this->translator->trans('delta.export.inheritance.' . $state, [], 'compliance_wizard'),
+            default => $state,
         };
     }
 
-    /** Translate the TISAX dimension category to a German export label. */
+    /** Translate the TISAX dimension category to a locale-aware export label. */
     private function categoryLabel(string $category): string
     {
         return match ($category) {
-            'information_security'  => 'Informationssicherheit',
-            'prototype_protection'  => 'Prototypenschutz',
-            'data_protection'       => 'Datenschutz',
-            default                 => ucfirst(str_replace('_', ' ', $category)),
+            'information_security', 'prototype_protection', 'data_protection'
+                => $this->translator->trans('delta.export.category.' . $category, [], 'compliance_wizard'),
+            default => ucfirst(str_replace('_', ' ', $category)),
         };
     }
 }
