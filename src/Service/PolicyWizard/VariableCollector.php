@@ -95,6 +95,29 @@ class VariableCollector
             }
             $vars['backup.rpo_hours'] = $this->scalarOrNull($opsSlot['backup_rpo_hours'] ?? null);
 
+            // Patch-SLA per severity (assoc critical|high|medium => hours).
+            $patchSla = $opsSlot['patch_sla_hours'] ?? null;
+            if (is_array($patchSla)) {
+                $vars['patch.sla_critical_hours'] = $this->scalarOrNull($patchSla['critical'] ?? null);
+                $vars['patch.sla_high_hours'] = $this->scalarOrNull($patchSla['high'] ?? null);
+                $vars['patch.sla_medium_hours'] = $this->scalarOrNull($patchSla['medium'] ?? null);
+            }
+
+            // Continuity RTO (BCM in scope) — freeform criticality => hours map.
+            // Exposed as a readable "tier: Nh, …" summary marker.
+            $continuityRto = $opsSlot['continuity_rto_hours'] ?? null;
+            if (is_array($continuityRto) && $continuityRto !== []) {
+                $pairs = [];
+                foreach ($continuityRto as $criticality => $hours) {
+                    if (is_scalar($hours)) {
+                        $pairs[] = sprintf('%s: %sh', (string) $criticality, (string) $hours);
+                    }
+                }
+                if ($pairs !== []) {
+                    $vars['continuity.rto_summary'] = implode(', ', $pairs);
+                }
+            }
+
             // New baselines (plan spec: 6 missing fields)
             $vars['access.review_cadence_months'] = $this->scalarOrNull(
                 $opsSlot['access_review_cadence_months'] ?? null,
