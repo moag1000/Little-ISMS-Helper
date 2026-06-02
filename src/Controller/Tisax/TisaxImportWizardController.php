@@ -483,6 +483,19 @@ final class TisaxImportWizardController extends AbstractController
             'requirementSource' => 'tenant_upload',
         ]);
 
+        // Order by assessment dimension (Information Security → Prototype
+        // Protection → Data Protection) then by NATURAL control number, so the
+        // assessor works one Bereich at a time top-to-bottom and "1.10.1" sorts
+        // after "1.2.1" (findBy returns DB/insertion order — controls of all
+        // three dimensions were intermixed and unsortable).
+        $dimensionRank = ['information_security' => 0, 'prototype_protection' => 1, 'data_protection' => 2];
+        usort($requirements, static function ($a, $b) use ($dimensionRank): int {
+            $ra = $dimensionRank[(string) $a->getCategory()] ?? 9;
+            $rb = $dimensionRank[(string) $b->getCategory()] ?? 9;
+            return $ra <=> $rb
+                ?: strnatcmp((string) $a->getRequirementId(), (string) $b->getRequirementId());
+        });
+
         // Build per-requirement level-flag map (Must/Sollte/High/VeryHigh) from YAML fixture.
         // Empty when RequirementLevelMetadataLoader is not wired (graceful degradation).
         $requirementLevelFlags = [];

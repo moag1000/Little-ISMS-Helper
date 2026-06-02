@@ -123,20 +123,32 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% set dimLabels = {
+                                'information_security': 'Informationssicherheit',
+                                'prototype_protection': 'Prototypenschutz',
+                                'data_protection': 'Datenschutz'
+                            } %}
+                            {% set prevCat = null %}
                             {% for req in requirements %}
                             {% set isDataProtection = req.category == 'data_protection' %}
+                            {% if req.category != prevCat %}
+                                <tr class="table-active">
+                                    <th colspan="6" class="py-2">
+                                        <i class="fa-icon fa-icon--folder me-1"></i>
+                                        {{ dimLabels[req.category]|default(req.category|replace({'_': ' '})|capitalize) }}
+                                        {% if isDataProtection %}<span class="text-muted fw-normal small ms-2">— Bewertung mit OK / Nicht OK (kein Reifegrad)</span>{% endif %}
+                                    </th>
+                                </tr>
+                                {% set prevCat = req.category %}
+                            {% endif %}
                             <tr>
                                 <td><code>{{ req.requirementId }}</code></td>
                                 <td class="text-truncate" style="max-width:300px" title="{{ req.title }}">{{ req.title }}</td>
                                 <td>
                                     {% if isDataProtection %}
-                                        <span class="badge bg-info text-dark text-capitalize">
-                                            {{ 'tisax.import.assess.dp.tier_badge'|trans({}, 'tisax_isa') }}
-                                        </span>
+                                        <span class="badge bg-info text-dark">{{ dimLabels['data_protection'] }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary text-capitalize">
-                                            {{ req.category|replace({'_': ' '}) }}
-                                        </span>
+                                        <span class="badge bg-secondary">{{ dimLabels[req.category]|default(req.category|replace({'_': ' '})|capitalize) }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -245,7 +257,11 @@
                     </table>
                 </div>
                 {% if requirements|length > 0 %}
-                <div class="card-footer text-end">
+                <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span class="text-muted small">
+                        {{ aggregate.assessed|default(0) }} / {{ requirements|length }} bewertet.
+                        Unbewertete Zeilen stehen auf „Bitte wählen …" und zählen als offen.
+                    </span>
                     <button type="submit" class="btn btn-primary">
                         <i class="fa-icon fa-icon--save me-1"></i>
                         {{ 'tisax.import.assess.save_button'|trans({}, 'tisax_isa') }}
@@ -254,6 +270,21 @@
                 {% endif %}
             </div>
         </form>
+
+        {# Done / result — the import's red thread ends here: send the user to the
+           TISAX overview so they actually SEE their readiness (the wizard never
+           linked the result before). #}
+        <div class="card border-success mt-3">
+            <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <strong>Import abgeschlossen.</strong>
+                    <span class="text-muted">Ihre TISAX-Bewertung ist gespeichert — sehen Sie Abdeckung, Bereiche und Lücken in der Übersicht.</span>
+                </div>
+                <a href="{{ path('app_compliance_framework_show', { id: framework.id }) }}" class="btn btn-success">
+                    <i class="fa-icon fa-icon--arrow-right me-1"></i> Zur TISAX-Übersicht
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
