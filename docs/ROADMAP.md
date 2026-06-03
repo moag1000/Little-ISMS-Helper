@@ -119,11 +119,9 @@
 - **Aktueller Stand**: ~60% Coverage ✅ (Ziel erreicht nach 15 neuen Service-Tests)
 - **Ziel**: 60% Coverage
 - **Fortschritt** (November 2025):
-  - ✅ **26 Service-Tests** (11 existierend + 15 neu):
+  - ✅ **24 Service-Tests** (11 existierend + 13 neu, 2 dead-code tests removed):
     - TenantContextTest ✅
     - RiskMatrixServiceTest ✅
-    - RiskIntelligenceServiceTest ✅
-    - RiskImpactCalculatorServiceTest ✅
     - ProtectionRequirementServiceTest ✅
     - ComplianceMappingServiceTest ✅
     - EmailNotificationServiceTest ✅
