@@ -43,7 +43,8 @@ final class TisaxRequirementMapperTest extends TestCase
         $this->em->method('getRepository')
             ->willReturn($this->requirementRepo);
 
-        $this->mapper = new TisaxRequirementMapper($this->em);
+        $catalogueProvider = $this->createMock(\App\Service\Tisax\TisaxCatalogueProvider::class);
+        $this->mapper = new TisaxRequirementMapper($this->em, $catalogueProvider);
 
         $this->framework = new ComplianceFramework();
         $this->framework->setCode(TisaxRequirementMapper::FRAMEWORK_CODE);
