@@ -140,6 +140,7 @@ management_review.status	4
 mapping_gap_item.status	1
 mfa.token_type	1
 mfa_token.type	2
+my_day.hint	1
 my_day.kpi	1
 my_day.section	1
 nis2.art21.measure	1
