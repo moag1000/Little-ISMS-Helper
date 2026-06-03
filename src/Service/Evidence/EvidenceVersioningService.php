@@ -16,6 +16,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * F4 Evidence-Versioning — versioning lifecycle service.
@@ -103,9 +105,11 @@ final class EvidenceVersioningService
 
         $this->entityManager->persist($version);
 
-        // Store undo info in session (5s window)
-        $session = $this->requestStack->getSession();
-        $session->set(self::SESSION_UNDO_KEY, [
+        // Store undo info in session (5s window).
+        // tryGetSession() returns null in CLI / async-job contexts (no active request);
+        // in that case the undo buffer is simply skipped — flush + audit still run.
+        $session = $this->tryGetSession();
+        $session?->set(self::SESSION_UNDO_KEY, [
             'version_id' => null, // Set after flush gives us the ID
             'document_id' => $document->getId(),
             'previous_version_id' => $previousVersion?->getId(),
@@ -115,7 +119,7 @@ final class EvidenceVersioningService
         $this->entityManager->flush();
 
         // Now update session with actual ID
-        $session->set(self::SESSION_UNDO_KEY, [
+        $session?->set(self::SESSION_UNDO_KEY, [
             'version_id' => $version->getId(),
             'document_id' => $document->getId(),
             'previous_version_id' => $previousVersion?->getId(),
@@ -157,8 +161,8 @@ final class EvidenceVersioningService
         $version->setPublishedAt(new DateTimeImmutable());
         $this->entityManager->flush();
 
-        // Clear undo session key
-        $this->requestStack->getSession()->remove(self::SESSION_UNDO_KEY);
+        // Clear undo session key (no-op in CLI / async context where no session exists)
+        $this->tryGetSession()?->remove(self::SESSION_UNDO_KEY);
     }
 
     /**
@@ -169,7 +173,10 @@ final class EvidenceVersioningService
      */
     public function undo(int $versionId): bool
     {
-        $session = $this->requestStack->getSession();
+        $session = $this->tryGetSession();
+        if ($session === null) {
+            return false; // No active request — undo buffer unavailable in CLI / async context
+        }
         $undoData = $session->get(self::SESSION_UNDO_KEY);
 
         if (!is_array($undoData)
@@ -223,7 +230,10 @@ final class EvidenceVersioningService
      */
     public function canUndo(int $versionId): bool
     {
-        $session = $this->requestStack->getSession();
+        $session = $this->tryGetSession();
+        if ($session === null) {
+            return false; // No active request — undo buffer unavailable in CLI / async context
+        }
         $undoData = $session->get(self::SESSION_UNDO_KEY);
 
         if (!is_array($undoData) || ($undoData['version_id'] ?? null) !== $versionId) {
@@ -232,6 +242,24 @@ final class EvidenceVersioningService
 
         $elapsed = (new DateTimeImmutable())->getTimestamp() - (int) $undoData['created_at'];
         return $elapsed <= self::UNDO_WINDOW_SECONDS;
+    }
+
+    /**
+     * Returns the active session, or null when no current request exists
+     * (CLI commands, async jobs after fastcgi_finish_request(), Messenger workers).
+     * Callers must treat null as "session unavailable" and skip session reads/writes.
+     */
+    private function tryGetSession(): ?SessionInterface
+    {
+        // RequestStack::getSession() throws SessionNotFoundException when there
+        // is no active request/session (CLI, async jobs after
+        // fastcgi_finish_request(), Messenger workers). Catch it and treat as
+        // "session unavailable" so callers skip session reads/writes.
+        try {
+            return $this->requestStack->getSession();
+        } catch (SessionNotFoundException) {
+            return null;
+        }
     }
 
     /**
