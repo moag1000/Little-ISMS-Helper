@@ -55,7 +55,7 @@ import { Controller } from '@hotwired/stimulus';
  *   ctrl.getSelectedItems()  → checked input nodes
  */
 export default class extends Controller {
-    static targets = ['item', 'actionBar', 'bar', 'count', 'selectAllCheckbox'];
+    static targets = ['item', 'actionBar', 'bar', 'count', 'selectAllCheckbox', 'tagPicker', 'tagCheckbox'];
     static values = {
         endpoint: String,
         csrfToken: { type: String, default: '' },
@@ -73,7 +73,12 @@ export default class extends Controller {
         statusChangeError: { type: String, default: 'Update failed' },
         // Applicability change (SoA)
         applicabilityUrl: { type: String, default: '' },
-        applicabilityCsrfToken: { type: String, default: '' }
+        applicabilityCsrfToken: { type: String, default: '' },
+        // WS-5 Tag-Apply mode (tag_mode = true in _bulk_action_bar.html.twig)
+        entityClass: { type: String, default: '' },
+        tagAddUrl: { type: String, default: '' },
+        tagRemoveUrl: { type: String, default: '' },
+        exportUrl: { type: String, default: '' }
     };
 
     connect() {
@@ -495,6 +500,138 @@ export default class extends Controller {
 
         document.body.appendChild(form);
         form.submit();
+    }
+
+    /**
+     * Bulk assign — wires to entity-specific /bulk-assign endpoints (Asset, Risk,
+     * Training). A full assignee-picker UI is not yet implemented, so this method
+     * shows a non-blocking toast informing the user that the action is not yet
+     * available via the bulk bar. The button renders conditionally in
+     * _bulk_action_bar.html.twig when 'assign' is in the actions array, so it
+     * would be a dead click without this guard.
+     *
+     * Decision: prefer graceful no-op over removing 'assign' from 3 callers
+     * (asset/index, risk/index, training/index) because the backend endpoint
+     * exists and a picker modal can be wired here in a follow-up sprint without
+     * touching templates.
+     */
+    bulkAssign(event) {
+        event.preventDefault();
+        this.showToast(
+            window.translations?.bulk_actions?.assign_not_available ?? 'Assign via bulk-bar not yet available — use the row action instead.',
+            'warning'
+        );
+    }
+
+    /**
+     * WS-5 Tag-Apply mode — open the inline tag-picker for adding tags.
+     * Sets a data attribute on the picker so submitTagApply knows which URL to use.
+     */
+    openTagAdd(event) {
+        event.preventDefault();
+        const picker = this.hasTagPickerTarget ? this.tagPickerTarget : null;
+        if (!picker) return;
+        picker.dataset.tagMode = 'add';
+        picker.hidden = false;
+        // Uncheck all tag checkboxes for a clean slate
+        if (this.hasTagCheckboxTarget) {
+            this.tagCheckboxTargets.forEach(cb => { cb.checked = false; });
+        }
+    }
+
+    /**
+     * WS-5 Tag-Apply mode — open the inline tag-picker for removing tags.
+     */
+    openTagRemove(event) {
+        event.preventDefault();
+        const picker = this.hasTagPickerTarget ? this.tagPickerTarget : null;
+        if (!picker) return;
+        picker.dataset.tagMode = 'remove';
+        picker.hidden = false;
+        if (this.hasTagCheckboxTarget) {
+            this.tagCheckboxTargets.forEach(cb => { cb.checked = false; });
+        }
+    }
+
+    /**
+     * WS-5 Tag-Apply mode — submit selected tags to the backend.
+     * Uses tagAddUrlValue or tagRemoveUrlValue depending on picker mode,
+     * falling back to the TagController /admin/tags/bulk/{entityClass} endpoint
+     * when no explicit URL is provided.
+     *
+     * The backend (TagController::bulkApply) expects:
+     *   Content-Type: application/json
+     *   X-CSRF-Token: <token>
+     *   body: { entity_ids: [...], tag_ids: [...] }
+     */
+    async submitTagApply(event) {
+        event.preventDefault();
+
+        const ids = this.selectedIds();
+        if (ids.length === 0) return;
+
+        const picker = this.hasTagPickerTarget ? this.tagPickerTarget : null;
+        const mode = picker?.dataset.tagMode ?? 'add';
+
+        // Collect checked tag IDs from the picker checkboxes
+        const tagIds = this.hasTagCheckboxTarget
+            ? this.tagCheckboxTargets.filter(cb => cb.checked).map(cb => cb.value)
+            : [];
+
+        if (tagIds.length === 0) {
+            this.showToast(this.tagErrorValue + ': no tags selected', 'warning');
+            return;
+        }
+
+        // Resolve submit URL: explicit value → fallback to TagController endpoint
+        let url = (mode === 'remove' ? this.tagRemoveUrlValue : this.tagAddUrlValue) || '';
+        if (!url && this.entityClassValue) {
+            // Short class name (e.g. "Asset") extracted from FQCN for the route param
+            const shortClass = this.entityClassValue.split('\\').pop();
+            url = `/admin/tags/bulk/${encodeURIComponent(shortClass)}`;
+        }
+
+        if (!url) {
+            this.showToast(this.tagErrorValue, 'error');
+            return;
+        }
+
+        const csrfToken = this._getCsrfToken();
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
+                },
+                body: JSON.stringify({ entity_ids: ids.map(Number), tag_ids: tagIds.map(Number) }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            this.showToast(this.tagSuccessValue, 'success');
+            this.closeTagPicker();
+            setTimeout(() => window.location.reload(), 800);
+
+        } catch (error) {
+            this.showToast(this.tagErrorValue + ': ' + error.message, 'error');
+        }
+    }
+
+    /**
+     * WS-5 Tag-Apply mode — close the inline tag-picker without submitting.
+     */
+    closeTagPicker(event) {
+        if (event) event.preventDefault();
+        const picker = this.hasTagPickerTarget ? this.tagPickerTarget : null;
+        if (picker) {
+            picker.hidden = true;
+            delete picker.dataset.tagMode;
+        }
     }
 
     deselectAll() {
