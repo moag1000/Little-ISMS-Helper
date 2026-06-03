@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\CurrentUserTrait;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\IncidentStatus;
@@ -18,7 +19,6 @@ use App\Service\ModuleConfigurationService;
 use App\Service\RiskReviewService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +29,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 class WelcomeController extends AbstractController
 {
+    use CurrentUserTrait;
+
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleConfigurationService,
@@ -47,7 +49,7 @@ class WelcomeController extends AbstractController
     public function index(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        $user = $this->getUser();
+        $user = $this->currentUser();
 
         // Get active modules with counts
         $activeModules = $this->getActiveModulesWithStats($tenant);
@@ -56,10 +58,10 @@ class WelcomeController extends AbstractController
         $urgentTasks = $this->getUrgentTasks($tenant, $user);
 
         // Get pending workflows for current user
-        $pendingWorkflows = $user ? $this->workflowInstanceRepository->findPendingForUser($user) : [];
+        $pendingWorkflows = $this->workflowInstanceRepository->findPendingForUser($user);
 
         // Check if user prefers to skip welcome page (entity-persisted, session fallback)
-        $skipWelcome = ($user instanceof User && $user->isSkipWelcomePage())
+        $skipWelcome = $user->isSkipWelcomePage()
             || $request->getSession()->get('skip_welcome_page', false);
 
         // Get compliance wizard status for incomplete wizards
@@ -229,7 +231,7 @@ class WelcomeController extends AbstractController
         return $modules;
     }
 
-    private function getUrgentTasks(?Tenant $tenant, ?UserInterface $user): array
+    private function getUrgentTasks(?Tenant $tenant, ?User $user): array
     {
         $tasks = [];
 

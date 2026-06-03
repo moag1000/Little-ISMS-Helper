@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use RuntimeException;
 use DateTime;
+use App\Controller\Trait\CurrentUserTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
@@ -38,6 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class DPIAController extends AbstractController
 {
+    use CurrentUserTrait;
     use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
@@ -254,7 +256,7 @@ class DPIAController extends AbstractController
         $comments = $request->request->get('approval_comments');
 
         try {
-            $this->dataProtectionImpactAssessmentService->approve($dataProtectionImpactAssessment, $this->getUser(), $comments);
+            $this->dataProtectionImpactAssessmentService->approve($dataProtectionImpactAssessment, $this->currentUser(), $comments);
             $this->addFlash('success', $this->translator->trans('dpia.approved', [], 'privacy'));
         } catch (RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
@@ -285,7 +287,7 @@ class DPIAController extends AbstractController
         }
 
         try {
-            $this->dataProtectionImpactAssessmentService->reject($dataProtectionImpactAssessment, $this->getUser(), $reason);
+            $this->dataProtectionImpactAssessmentService->reject($dataProtectionImpactAssessment, $this->currentUser(), $reason);
             $this->addFlash('success', $this->translator->trans('dpia.rejected', [], 'privacy'));
         } catch (RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
@@ -373,7 +375,7 @@ class DPIAController extends AbstractController
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
 
-        $this->dataProtectionImpactAssessmentService->recordDPOConsultation($dataProtectionImpactAssessment, $this->getUser(), $advice);
+        $this->dataProtectionImpactAssessmentService->recordDPOConsultation($dataProtectionImpactAssessment, $this->currentUser(), $advice);
         $this->addFlash('success', $this->translator->trans('dpia.dpo_consulted', [], 'privacy'));
 
         return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);

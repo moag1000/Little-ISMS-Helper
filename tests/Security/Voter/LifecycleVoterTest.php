@@ -11,9 +11,11 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use PHPUnit\Framework\Attributes\Test;
 
 class LifecycleVoterTest extends TestCase
 {
+    #[Test]
     public function testGrantsWhenUserHasRequiredRole(): void
     {
         $voter = $this->makeVoter(yamlRoles: ['ROLE_MANAGER'], userRoles: ['ROLE_MANAGER']);
@@ -21,6 +23,7 @@ class LifecycleVoterTest extends TestCase
         $this->assertSame(Voter::ACCESS_GRANTED, $result);
     }
 
+    #[Test]
     public function testDeniesWhenUserMissingRole(): void
     {
         $voter = $this->makeVoter(yamlRoles: ['ROLE_MANAGER'], userRoles: ['ROLE_USER']);
@@ -28,6 +31,7 @@ class LifecycleVoterTest extends TestCase
         $this->assertSame(Voter::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testEmptyRolesListDeniesAll(): void
     {
         $voter = $this->makeVoter(yamlRoles: [], userRoles: ['ROLE_ADMIN']);
@@ -35,6 +39,7 @@ class LifecycleVoterTest extends TestCase
         $this->assertSame(Voter::ACCESS_DENIED, $result);
     }
 
+    #[Test]
     public function testAbstainsOnNonLifecycleAttribute(): void
     {
         $voter = $this->makeVoter(yamlRoles: ['ROLE_MANAGER'], userRoles: ['ROLE_MANAGER']);

@@ -8,6 +8,7 @@ use App\Validator\Constraint\NoInternalIp;
 use App\Validator\Constraint\NoInternalIpValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class NoInternalIpValidatorTest extends ConstraintValidatorTestCase
 {
@@ -16,18 +17,21 @@ class NoInternalIpValidatorTest extends ConstraintValidatorTestCase
         return new NoInternalIpValidator();
     }
 
+    #[Test]
     public function testValidPublicUrl(): void
     {
         $this->validator->validate('https://example.com/path', new NoInternalIp());
         $this->assertNoViolation();
     }
 
+    #[Test]
     public function testNullValue(): void
     {
         $this->validator->validate(null, new NoInternalIp());
         $this->assertNoViolation();
     }
 
+    #[Test]
     public function testEmptyString(): void
     {
         $this->validator->validate('', new NoInternalIp());
@@ -35,6 +39,7 @@ class NoInternalIpValidatorTest extends ConstraintValidatorTestCase
     }
 
     #[DataProvider('blockedIpProvider')]
+    #[Test]
     public function testBlocksInternalIp(string $url): void
     {
         $this->validator->validate($url, new NoInternalIp());

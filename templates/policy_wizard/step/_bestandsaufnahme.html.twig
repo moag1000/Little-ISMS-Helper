@@ -61,6 +61,9 @@
              data-controller="bestandsaufnahme-bulk"
              data-bestandsaufnahme-bulk-replace-body="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_replace_body'|trans }}"
              data-bestandsaufnahme-bulk-keep-body="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_keep_body'|trans }}"
+             data-bestandsaufnahme-bulk-keep-all-body="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_keep_all_body'|trans }}"
+             data-bestandsaufnahme-bulk-replace-all-body="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_replace_all_body'|trans }}"
+             data-bestandsaufnahme-bulk-suggestions-body="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_suggestions_body'|trans }}"
              data-bestandsaufnahme-bulk-applied-template="{{ 'policy_wizard.step.bestandsaufnahme.bulk.applied'|trans }}"
              data-bestandsaufnahme-bulk-no-targets-message="{{ 'policy_wizard.step.bestandsaufnahme.bulk.no_targets'|trans }}">
         <div class="fa-section__body">
@@ -82,6 +85,28 @@
                         title="{{ 'policy_wizard.step.bestandsaufnahme.bulk.keep_all_wizard_tagged_help'|trans }}">
                     <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.bestandsaufnahme.bulk.keep_all_wizard_tagged'|trans }}
+                </button>
+                <span class="vr d-none d-md-inline mx-1" aria-hidden="true"></span>
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                        data-action="bestandsaufnahme-bulk#applySuggestions"
+                        title="{{ 'policy_wizard.step.bestandsaufnahme.bulk.apply_suggestions_help'|trans }}">
+                    <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
+                    {{ 'policy_wizard.step.bestandsaufnahme.bulk.apply_suggestions'|trans }}
+                </button>
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                        data-action="bestandsaufnahme-bulk#keepAll"
+                        title="{{ 'policy_wizard.step.bestandsaufnahme.bulk.keep_all_help'|trans }}">
+                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                    {{ 'policy_wizard.step.bestandsaufnahme.bulk.keep_all'|trans }}
+                </button>
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm"
+                        data-action="bestandsaufnahme-bulk#replaceAll"
+                        title="{{ 'policy_wizard.step.bestandsaufnahme.bulk.replace_all_help'|trans }}">
+                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
+                    {{ 'policy_wizard.step.bestandsaufnahme.bulk.replace_all'|trans }}
                 </button>
             </div>
             <div class="small text-success mt-2"
@@ -179,14 +204,17 @@
                             {% set chosen_target_topics = sammelpolitik_topic_keys %}
                         {% endif %}
                     {% endif %}
-                    {# Safety net: every row's action-<select> is `required`. Rows that
-                       are neither top-level nor Sammelpolitik (and have no persisted
-                       decision) would otherwise render with the empty placeholder
-                       selected, so a single un-decided row makes the whole form invalid
-                       and HTML5 silently blocks submit — the "Weiter"/Next button then
-                       appears to do nothing even after the user set other rows. Default
-                       the rest to the safe, non-destructive 'keep'. #}
-                    {% if chosen_action == '' %}
+                    {# Safety net: every row's action-<select> is `required` and only
+                       offers ['replace','keep','merge_into_topic','split_to_topics'].
+                       If chosen_action is empty OR a value outside that set (e.g. a
+                       legacy/persisted decision from an earlier run whose action key
+                       no longer maps to an <option>), NO option renders `selected`,
+                       so the browser falls back to the empty placeholder. That makes
+                       the required select invalid and HTML5 silently blocks the POST —
+                       the "Weiter"/Next button then appears to do nothing even after
+                       the user set every other row. Coerce anything unknown to the
+                       safe, non-destructive 'keep'. #}
+                    {% if chosen_action not in ['replace', 'keep', 'merge_into_topic', 'split_to_topics'] %}
                         {% set chosen_action = 'keep' %}
                     {% endif %}
                     <tr class="fa-table__row"

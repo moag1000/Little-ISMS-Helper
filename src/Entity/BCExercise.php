@@ -911,7 +911,7 @@ class BCExercise
         $total = count($this->successCriteria);
         $met = count(array_filter($this->successCriteria, fn($value): bool => $value === true));
 
-        return $total > 0 ? (int)(($met / $total) * 100) : 0;
+        return (int)(($met / $total) * 100);
     }
 
     /**

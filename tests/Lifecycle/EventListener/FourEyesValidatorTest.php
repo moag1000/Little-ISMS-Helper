@@ -16,9 +16,11 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
 use Symfony\Component\Workflow\WorkflowInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 class FourEyesValidatorTest extends TestCase
 {
+    #[Test]
     public function testPassesWhenFourEyesNotRequired(): void
     {
         $validator = $this->makeValidator(metadata: ['four_eyes' => false]);
@@ -26,6 +28,7 @@ class FourEyesValidatorTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testThrowsWhenApproverMissing(): void
     {
         $this->expectException(FourEyesRequiredException::class);
@@ -36,6 +39,7 @@ class FourEyesValidatorTest extends TestCase
         $validator->onTransition($this->makeEvent(context: ['user' => $this->makeUser(1, ['ROLE_MANAGER'])]));
     }
 
+    #[Test]
     public function testThrowsWhenApproverIsSameUserAndTenantHasMultipleApprovers(): void
     {
         $this->expectException(FourEyesRequiredException::class);
@@ -50,6 +54,7 @@ class FourEyesValidatorTest extends TestCase
         ]));
     }
 
+    #[Test]
     public function testThrowsWhenApproverLacksRequiredRole(): void
     {
         $this->expectException(FourEyesRequiredException::class);
@@ -63,6 +68,7 @@ class FourEyesValidatorTest extends TestCase
         ]));
     }
 
+    #[Test]
     public function testPassesWhenApproverIsDifferentAndHasRequiredRole(): void
     {
         $validator = $this->makeValidator(
@@ -76,6 +82,7 @@ class FourEyesValidatorTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testPassesWhenApproverIsSuperAdminEvenIfNotInRequiredRoles(): void
     {
         $validator = $this->makeValidator(
@@ -89,6 +96,7 @@ class FourEyesValidatorTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testSingleUserTenantPermitsSelfApprovalWithReason(): void
     {
         $u = $this->makeUser(1, ['ROLE_MANAGER']);
@@ -104,6 +112,7 @@ class FourEyesValidatorTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testSingleUserTenantStillRequiresReason(): void
     {
         $this->expectException(FourEyesRequiredException::class);
@@ -119,6 +128,7 @@ class FourEyesValidatorTest extends TestCase
         ]));
     }
 
+    #[Test]
     public function testSingleUserTenantWithApproverOmittedPermitsTransitionWithReason(): void
     {
         $u = $this->makeUser(1, ['ROLE_MANAGER']);

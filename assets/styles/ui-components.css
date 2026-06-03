@@ -2760,3 +2760,17 @@
         white-space: nowrap;
     }
 }
+
+/* Policy-Wizard form-guard — visible "what's missing" highlight.
+   Set by wizard_form_guard_controller.js when a required field is empty on
+   submit, so the user sees exactly which row/field blocks "Weiter". */
+.wizard-row-invalid > td,
+.wizard-row-invalid > th {
+    background: var(--danger-tint, rgba(220, 38, 38, 0.08));
+}
+.fa-cyber-input__field.is-invalid,
+select.is-invalid,
+textarea.is-invalid {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 2px var(--danger-tint, rgba(220, 38, 38, 0.18)) !important;
+}

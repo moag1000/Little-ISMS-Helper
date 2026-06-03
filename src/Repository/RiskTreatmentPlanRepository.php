@@ -159,8 +159,6 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
      */
     public function findCriticalPlans(?Tenant $tenant): array
     {
-        new DateTime();
-
         return $this->createQueryBuilder('rtp')
             ->where('rtp.priority IN (:high_priorities)')
             ->andWhere('rtp.status NOT IN (:completed_statuses)')

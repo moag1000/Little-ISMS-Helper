@@ -13,9 +13,11 @@ use Symfony\Component\Workflow\Event\GuardEvent;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
 use Symfony\Component\Workflow\WorkflowInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 class ModuleGateGuardTest extends TestCase
 {
+    #[Test]
     public function testBlocksWhenModuleInactive(): void
     {
         $guard = $this->makeGuard(moduleKey: 'documents', isActive: false);
@@ -26,6 +28,7 @@ class ModuleGateGuardTest extends TestCase
         $this->assertTrue($event->isBlocked());
     }
 
+    #[Test]
     public function testPassesWhenModuleActive(): void
     {
         $guard = $this->makeGuard(moduleKey: 'documents', isActive: true);
@@ -36,6 +39,7 @@ class ModuleGateGuardTest extends TestCase
         $this->assertFalse($event->isBlocked());
     }
 
+    #[Test]
     public function testPassesWhenNoModuleSpecified(): void
     {
         $guard = $this->makeGuard(moduleKey: null, isActive: false);
