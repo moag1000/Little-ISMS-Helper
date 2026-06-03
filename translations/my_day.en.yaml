@@ -97,6 +97,21 @@ my_day:
 
     item:
         due: 'Due'
+        overdue_by: '%days% d overdue'
+        due_in: 'due in %days% d'
+        hours_left: '%hours% h left (72h deadline)'
+        sla_breached: '72h deadline missed!'
+
+    hint:
+        four_eyes: 'You confirm as the second person (segregation of duties, four-eyes).'
+        dsrs: 'Data-subject request (DSR) — access/erasure under GDPR, mind the deadline.'
+        risk_acceptance_expiring: 'Consciously accepted residual risk — acceptance is expiring, re-decide.'
+        risk_acceptance_no_expiry: 'Accepted risk with no expiry date — missing review trigger (audit finding).'
+        wizard_overdue: 'A setup/assessment that was started but never finished.'
+        framework_gaps_critical: 'A framework with critically low coverage (< 60%).'
+        data_breaches_72h_ticking: 'Data breach — statutory 72h notification deadline (GDPR Art. 33).'
+        evidence_reverification_due: 'Evidence must be re-confirmed as current (Cl. 7.5.3).'
+        control_effectiveness_overdue: 'Control effectiveness must be reviewed (Cl. 9.1).'
 
     tiles:
         all_clear: '%count% more categories with nothing to do'

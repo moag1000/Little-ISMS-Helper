@@ -97,6 +97,21 @@ my_day:
 
     item:
         due: 'Fällig'
+        overdue_by: 'seit %days% Tg. überfällig'
+        due_in: 'in %days% Tg. fällig'
+        hours_left: 'noch %hours% h (72h-Frist)'
+        sla_breached: '72h-Frist überschritten!'
+
+    hint:
+        four_eyes: 'Du bestätigst als zweite Person (Funktionstrennung, 4-Augen-Prinzip).'
+        dsrs: 'Betroffenenanfrage (DSR) — Auskunft/Löschung nach DSGVO, Frist beachten.'
+        risk_acceptance_expiring: 'Bewusst akzeptiertes Restrisiko — Akzeptanz läuft ab, neu entscheiden.'
+        risk_acceptance_no_expiry: 'Akzeptiertes Risiko ohne Ablaufdatum — Wiedervorlage fehlt (Audit-Finding).'
+        wizard_overdue: 'Begonnenes Setup/Assessment, das nicht zu Ende geklickt wurde.'
+        framework_gaps_critical: 'Norm/Framework mit kritisch niedriger Abdeckung (< 60 %).'
+        data_breaches_72h_ticking: 'Datenpanne — gesetzliche 72h-Meldefrist (DSGVO Art. 33).'
+        evidence_reverification_due: 'Nachweis muss erneut als aktuell bestätigt werden (Cl. 7.5.3).'
+        control_effectiveness_overdue: 'Wirksamkeit der Maßnahme muss geprüft werden (Cl. 9.1).'
 
     tiles:
         all_clear: '%count% weitere Kategorien ohne offene Punkte'
