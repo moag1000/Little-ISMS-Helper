@@ -295,4 +295,139 @@ final class PolicyWizardBestandsaufnahmeFlowTest extends WebTestCase
             self::assertArrayHasKey('decisions', $inputs[WizardStepKeys::STEP_BESTANDSAUFNAHME]);
         }
     }
+
+    #[Test]
+    public function persistedDecisionsPreFillTheInventoryForm(): void
+    {
+        $doc = $this->seedLegacyDocument('Crypto Policy Prefill', 'policy');
+        $docId = $doc->getId();
+        self::assertNotNull($docId);
+
+        $this->client->loginUser($this->cisoUser);
+        $run = $this->startFullRun();
+        self::assertSame(WizardStepKeys::STEP_BESTANDSAUFNAHME, $run->getStep());
+
+        // Persist a prior decision directly on the run inputs (same shape a
+        // submit stores) WITHOUT advancing the step, then re-render the step.
+        $managed = $this->reloadRun($run->getId());
+        self::assertNotNull($managed);
+        $managed->setInputs([
+            WizardStepKeys::STEP_BESTANDSAUFNAHME => [
+                'decisions' => [
+                    (string) $docId => [
+                        'action' => 'replace',
+                        'rationale' => 'Outdated — superseded by wizard output',
+                    ],
+                ],
+            ],
+        ]);
+        $this->entityManager->flush();
+        $this->entityManager->clear();
+
+        $crawler = $this->client->request(
+            'GET',
+            '/en/policy-wizard/run/' . $run->getId() . '/step/' . WizardStepKeys::STEP_BESTANDSAUFNAHME,
+        );
+        self::assertResponseIsSuccessful();
+
+        // The action-<select> for this document must pre-select the persisted
+        // 'replace' decision — not fall back to the empty placeholder.
+        $selected = $crawler->filter('#action-' . $docId . ' option[selected]');
+        self::assertGreaterThan(
+            0,
+            $selected->count(),
+            'A persisted decision must leave exactly one <option selected> (regression: persisted_decisions was never passed to the template).',
+        );
+        self::assertSame(
+            'replace',
+            $selected->first()->attr('value'),
+            'The previously chosen action must pre-fill on re-render.',
+        );
+    }
+
+    #[Test]
+    public function bestandsaufnahmeExposesFiveBulkActionsAndGuardWiring(): void
+    {
+        $this->seedLegacyDocument('Legacy Policy Alpha', 'policy');
+        $this->client->loginUser($this->cisoUser);
+        $run = $this->startFullRun();
+        self::assertSame(WizardStepKeys::STEP_BESTANDSAUFNAHME, $run->getStep());
+
+        $this->client->request(
+            'GET',
+            '/en/policy-wizard/run/' . $run->getId() . '/step/' . WizardStepKeys::STEP_BESTANDSAUFNAHME,
+        );
+        self::assertResponseIsSuccessful();
+        $body = (string) $this->client->getResponse()->getContent();
+
+        // Submit-guard wiring — the "Weiter silently does nothing" hardening.
+        self::assertStringContainsString('novalidate', $body, 'Step form must carry novalidate for the JS guard.');
+        self::assertStringContainsString('data-controller="wizard-form-guard"', $body);
+
+        // All five bulk actions must be wired.
+        foreach ([
+            'bestandsaufnahme-bulk#replaceAllOutdated',
+            'bestandsaufnahme-bulk#keepAllWizardTagged',
+            'bestandsaufnahme-bulk#applySuggestions',
+            'bestandsaufnahme-bulk#keepAll',
+            'bestandsaufnahme-bulk#replaceAll',
+        ] as $action) {
+            self::assertStringContainsString($action, $body, "Bulk action {$action} must be wired.");
+        }
+
+        // New labels resolve to real text (no raw translation keys leaking).
+        self::assertStringContainsString('Apply suggestions', $body);
+        self::assertStringNotContainsString('bestandsaufnahme.bulk.apply_suggestions', $body);
+    }
+
+    #[Test]
+    public function everyActionTypeIsAcceptedOnSubmit(): void
+    {
+        $docs = [
+            'keep'             => $this->seedLegacyDocument('Doc Keep', 'policy'),
+            'replace'          => $this->seedLegacyDocument('Doc Replace', 'policy'),
+            'merge_into_topic' => $this->seedLegacyDocument('Doc Merge', 'policy'),
+            'split_to_topics'  => $this->seedLegacyDocument('Doc Split', 'policy'),
+        ];
+
+        $this->client->loginUser($this->cisoUser);
+        $run = $this->startFullRun();
+        self::assertSame(WizardStepKeys::STEP_BESTANDSAUFNAHME, $run->getStep());
+
+        $decisions = [];
+        foreach ($docs as $action => $doc) {
+            $id = $doc->getId();
+            self::assertNotNull($id);
+            $entry = ['action' => $action, 'rationale' => 'test ' . $action];
+            if ($action === 'merge_into_topic') {
+                $entry['target_topic'] = 'general';
+            }
+            if ($action === 'split_to_topics') {
+                $entry['target_topics'] = ['general'];
+            }
+            $decisions[$id] = $entry;
+        }
+
+        $token = $this->generateCsrfToken('policy_wizard_step');
+        $this->client->request(
+            'POST',
+            '/en/policy-wizard/run/' . $run->getId() . '/step/' . WizardStepKeys::STEP_BESTANDSAUFNAHME,
+            ['_token' => $token, 'decisions' => $decisions],
+        );
+
+        $status = $this->client->getResponse()->getStatusCode();
+        self::assertNotSame(500, $status, 'Mixed keep/replace/merge/split submit must not 500.');
+        self::assertContains(
+            $status,
+            [Response::HTTP_OK, Response::HTTP_FOUND, Response::HTTP_UNPROCESSABLE_ENTITY],
+            'Unexpected status from mixed-action submit: ' . $status,
+        );
+
+        $reloaded = $this->reloadRun($run->getId());
+        self::assertNotNull($reloaded);
+        self::assertContains(
+            $reloaded->getStep(),
+            [WizardStepKeys::STEP_WELCOME, WizardStepKeys::STEP_BESTANDSAUFNAHME],
+        );
+    }
 }
