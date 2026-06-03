@@ -64,7 +64,7 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('four_eyes_reject_' ~ r.id) }}">
                             <header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-critical"></i></span><div class="fa-modal__heading"><h5 class="fa-modal__title" id="reject-{{ r.id }}-label">
                                     {{ 'four_eyes.reject_modal.title'|trans({}, 'four_eyes') }}
-                                </h5></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                                </h5></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
                             <div class="fa-modal__body">
                                 <label class="form-label">{{ 'four_eyes.reject_modal.reason'|trans({}, 'four_eyes') }}</label>
                                 <textarea name="reason" class="form-control fa-cyber-input__field" rows="3" minlength="20" required></textarea>

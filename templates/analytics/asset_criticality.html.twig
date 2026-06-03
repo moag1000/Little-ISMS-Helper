@@ -275,6 +275,8 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        // TB-6: { once: true } — anonymous handler is re-registered on each page render by Turbo;
+        // once:true prevents global accumulation. Charts use destroy-before-create for back-nav safety.
         document.addEventListener('turbo:load', function() {
             // Resolve Aurora design-tokens to color strings for Chart.js
             // (Chart.js doesn't resolve CSS custom properties).
@@ -306,6 +308,7 @@
                     else criticalityGroups['{{ 'analytics.assets.criticality.low'|trans({}, 'analytics') }}']++;
                 });
 
+                const __existingCriticality = Chart.getChart(criticalityCtx); if (__existingCriticality) { __existingCriticality.destroy(); }
                 new Chart(criticalityCtx, {
                     type: 'pie',
                     data: {
@@ -345,6 +348,7 @@
                     else probabilityGroups['81-100%']++;
                 });
 
+                const __existingProbability = Chart.getChart(probabilityCtx); if (__existingProbability) { __existingProbability.destroy(); }
                 new Chart(probabilityCtx, {
                     type: 'bar',
                     data: {
@@ -367,6 +371,6 @@
                     }
                 });
             }
-        });
+        }, { once: true });
     </script>
 {% endblock %}

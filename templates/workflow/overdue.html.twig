@@ -203,7 +203,7 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ instance.id) }}">
                         <header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-critical"></i></span><div class="fa-modal__heading"><h2  id="rejectWorkflow{{ instance.id }}Label" class="fa-modal__title">
                                 {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
-                            </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                            </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
                         <div class="fa-modal__body">
                             <p>{{ 'workflow.widget.confirm.reject'|trans({workflow: instance.workflow.name}, 'workflows') }}</p>
                             {{ _fa_alert.render({ variant: 'warning', class: 'mb-3', body: '<strong>' ~ 'workflow.field.entity'|trans({}, 'workflows') ~ ':</strong> ' ~ instance.entityType|split('\\')|last ~ ' #' ~ instance.entityId }) }}

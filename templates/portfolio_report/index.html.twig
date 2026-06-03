@@ -103,6 +103,7 @@
         // Uses the app.js global window.Chart (registered + Aurora-themed) instead
         // of a CDN ES-module import. turbo:load guarantees app.js has run and
         // function-scopes the const declarations against Turbo re-execution.
+        // TB-6: { once: true } — anonymous handler re-registered on each render; prevents accumulation.
         document.addEventListener('turbo:load', function () {
             if (!window.Chart) { return; }
             const Chart = window.Chart;
@@ -115,6 +116,7 @@
                 const labels = JSON.parse(el.dataset.labels);
                 const fte = JSON.parse(el.dataset.fte);
                 const pct = JSON.parse(el.dataset.pct);
+                const __existingReuse = Chart.getChart(el); if (__existingReuse) { __existingReuse.destroy(); }
                 new Chart(el, {
                     type: 'line',
                     data: {
@@ -136,7 +138,7 @@
                     }
                 });
             }
-        });
+        }, { once: true });
         </script>
     {% elseif reuse_trend is defined %}
         {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: 'portfolio_report.reuse_trend.empty'|trans({}, 'portfolio_report') }) }}
