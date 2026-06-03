@@ -332,17 +332,12 @@ class CreateCrossFrameworkMappingsCommand
         // - Number of ISO controls mapped (more = higher specificity but potentially lower per-control coverage)
         // - Priority of the requirement
 
-        $basePercentage = 85; // Default high confidence mapping
-
-        if ($complianceRequirement->getPriority() === 'critical') {
-            $basePercentage = 95;
-        } elseif ($complianceRequirement->getPriority() === 'high') {
-            $basePercentage = 90;
-        } elseif ($complianceRequirement->getPriority() === 'medium') {
-            $basePercentage = 80;
-        } else {
-            $basePercentage = 70;
-        }
+        $basePercentage = match ($complianceRequirement->getPriority()) {
+            'critical' => 95,
+            'high' => 90,
+            'medium' => 80,
+            default => 70,
+        };
 
         // Adjust based on number of controls - more controls might mean broader scope
         $controlCount = count($isoControls);
@@ -362,13 +357,11 @@ class CreateCrossFrameworkMappingsCommand
         // When mapping FROM ISO 27001 TO other frameworks
         // One ISO control might partially satisfy a broader requirement
 
-        if ($targetControlCount === 1) {
-            return 100; // 1:1 mapping
-        } elseif ($targetControlCount <= 3) {
-            return 75; // ISO control partially satisfies multi-control requirement
-        } else {
-            return 50; // ISO control is one of many needed
-        }
+        return match (true) {
+            $targetControlCount === 1 => 100, // 1:1 mapping
+            $targetControlCount <= 3  => 75,  // ISO control partially satisfies multi-control requirement
+            default                   => 50,  // ISO control is one of many needed
+        };
     }
 
     private function getMappingType(int $percentage): string

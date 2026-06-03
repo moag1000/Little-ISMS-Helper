@@ -32,6 +32,7 @@ class RestoreBackupCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -48,6 +49,7 @@ class RestoreBackupCommand extends Command
             ->addOption('json', null, InputOption::VALUE_NONE, 'Output machine-readable JSON instead of human-readable text');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

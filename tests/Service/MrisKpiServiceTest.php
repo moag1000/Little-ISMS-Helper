@@ -11,11 +11,9 @@ use App\Service\MrisKpiService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Result;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-#[AllowMockObjectsWithoutExpectations]
 final class MrisKpiServiceTest extends TestCase
 {
     private function makeTenant(int $id = 1): Tenant
@@ -27,21 +25,21 @@ final class MrisKpiServiceTest extends TestCase
 
     private function makeService(?Connection $conn = null): MrisKpiService
     {
-        $conn ??= $this->createMock(Connection::class);
-        $em = $this->createMock(EntityManagerInterface::class);
+        $conn ??= $this->createStub(Connection::class);
+        $em = $this->createStub(EntityManagerInterface::class);
         $em->method('getConnection')->willReturn($conn);
         return new MrisKpiService(
             $em,
-            $this->createMock(IncidentRepository::class),
-            $this->createMock(BCExerciseRepository::class),
+            $this->createStub(IncidentRepository::class),
+            $this->createStub(BCExerciseRepository::class),
         );
     }
 
     #[Test]
     public function testComputeAllReturnsEightKpis(): void
     {
-        $conn = $this->createMock(Connection::class);
-        $result = $this->createMock(Result::class);
+        $conn = $this->createStub(Connection::class);
+        $result = $this->createStub(Result::class);
         $result->method('fetchOne')->willReturn(0);
         $result->method('fetchAssociative')->willReturn(['total' => 0, 'passing' => 0]);
         $conn->method('executeQuery')->willReturn($result);
@@ -65,8 +63,8 @@ final class MrisKpiServiceTest extends TestCase
     #[Test]
     public function testEachKpiHasMandatoryFields(): void
     {
-        $conn = $this->createMock(Connection::class);
-        $result = $this->createMock(Result::class);
+        $conn = $this->createStub(Connection::class);
+        $result = $this->createStub(Result::class);
         $result->method('fetchOne')->willReturn(0);
         $result->method('fetchAssociative')->willReturn(['total' => 0, 'passing' => 0]);
         $conn->method('executeQuery')->willReturn($result);
@@ -88,8 +86,8 @@ final class MrisKpiServiceTest extends TestCase
     #[Test]
     public function testComputableKpisAreThree(): void
     {
-        $conn = $this->createMock(Connection::class);
-        $result = $this->createMock(Result::class);
+        $conn = $this->createStub(Connection::class);
+        $result = $this->createStub(Result::class);
         $result->method('fetchOne')->willReturn(0);
         $result->method('fetchAssociative')->willReturn(['total' => 0, 'passing' => 0]);
         $conn->method('executeQuery')->willReturn($result);
@@ -103,8 +101,8 @@ final class MrisKpiServiceTest extends TestCase
     #[Test]
     public function testManualKpisCarrySourceHint(): void
     {
-        $conn = $this->createMock(Connection::class);
-        $result = $this->createMock(Result::class);
+        $conn = $this->createStub(Connection::class);
+        $result = $this->createStub(Result::class);
         $result->method('fetchOne')->willReturn(0);
         $result->method('fetchAssociative')->willReturn(['total' => 0, 'passing' => 0]);
         $conn->method('executeQuery')->willReturn($result);
@@ -122,8 +120,8 @@ final class MrisKpiServiceTest extends TestCase
     #[Test]
     public function testMttcReturnsHoursWhenIncidentDataPresent(): void
     {
-        $conn = $this->createMock(Connection::class);
-        $result = $this->createMock(Result::class);
+        $conn = $this->createStub(Connection::class);
+        $result = $this->createStub(Result::class);
         // Returns 360 minutes = 6 hours
         $result->method('fetchOne')->willReturn(360);
         $result->method('fetchAssociative')->willReturn(['total' => 0, 'passing' => 0]);
@@ -139,8 +137,8 @@ final class MrisKpiServiceTest extends TestCase
     #[Test]
     public function testRestoreTestRateComputesCorrectPercentage(): void
     {
-        $conn = $this->createMock(Connection::class);
-        $result = $this->createMock(Result::class);
+        $conn = $this->createStub(Connection::class);
+        $result = $this->createStub(Result::class);
         $result->method('fetchOne')->willReturn(0);
         // 8 of 10 tests passed (rating>=4) → 80%
         $result->method('fetchAssociative')->willReturn(['total' => 10, 'passing' => 8]);
@@ -155,8 +153,8 @@ final class MrisKpiServiceTest extends TestCase
     #[Test]
     public function testManualKpiReadsValueFromTenantSettings(): void
     {
-        $conn = $this->createMock(Connection::class);
-        $result = $this->createMock(Result::class);
+        $conn = $this->createStub(Connection::class);
+        $result = $this->createStub(Result::class);
         $result->method('fetchOne')->willReturn(0);
         $result->method('fetchAssociative')->willReturn(['total' => 0, 'passing' => 0]);
         $conn->method('executeQuery')->willReturn($result);
@@ -182,14 +180,14 @@ final class MrisKpiServiceTest extends TestCase
     #[Test]
     public function testSetManualKpisStoresValuesAndSkipsEmpties(): void
     {
-        $conn = $this->createMock(Connection::class);
-        $em = $this->createMock(EntityManagerInterface::class);
+        $conn = $this->createStub(Connection::class);
+        $em = $this->createStub(EntityManagerInterface::class);
         $em->method('getConnection')->willReturn($conn);
 
         $service = new \App\Service\MrisKpiService(
             $em,
-            $this->createMock(\App\Repository\IncidentRepository::class),
-            $this->createMock(\App\Repository\BCExerciseRepository::class),
+            $this->createStub(\App\Repository\IncidentRepository::class),
+            $this->createStub(\App\Repository\BCExerciseRepository::class),
         );
 
         $tenant = $this->makeTenant();

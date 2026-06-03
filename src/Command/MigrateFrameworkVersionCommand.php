@@ -42,6 +42,7 @@ class MigrateFrameworkVersionCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -58,6 +59,7 @@ class MigrateFrameworkVersionCommand extends Command
             ->addOption('list-unmatched', null, InputOption::VALUE_NONE, 'Print the full list of requirements with no successor (cropped to 50 by default).');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

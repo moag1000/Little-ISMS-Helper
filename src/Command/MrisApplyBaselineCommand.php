@@ -31,6 +31,7 @@ final class MrisApplyBaselineCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('tenant', null, InputOption::VALUE_REQUIRED, 'Mandanten-ID.');
@@ -39,6 +40,7 @@ final class MrisApplyBaselineCommand extends Command
         $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Nur Vorschau.');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

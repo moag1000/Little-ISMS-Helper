@@ -30,6 +30,7 @@ class CreateBackupCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -41,6 +42,7 @@ class CreateBackupCommand extends Command
             ->addOption('json', null, InputOption::VALUE_NONE, 'Output JSON result instead of human-readable text');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

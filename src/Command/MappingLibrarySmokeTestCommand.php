@@ -48,12 +48,14 @@ class MappingLibrarySmokeTestCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('skip-stubs', null, InputOption::VALUE_NONE, 'Stub-Erstellung überspringen.');
         $this->addOption('cleanup', null, InputOption::VALUE_NONE, 'Stub-Frameworks und Mappings entfernen (NUR development!).');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

@@ -8,15 +8,13 @@ use App\Entity\ComplianceMapping;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\MappingQualityScoreService;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 
-#[AllowMockObjectsWithoutExpectations]
 class MappingQualityScoreServiceTest extends TestCase
 {
     private function makeService(array $coverage = ['source_total' => 100, 'source_with_mapping' => 80, 'target_total' => 100, 'target_with_mapping' => 80], float $coherence = 0.9): MappingQualityScoreService
     {
-        $repo = $this->createMock(ComplianceMappingRepository::class);
+        $repo = $this->createStub(ComplianceMappingRepository::class);
         $repo->method('coverageBetweenFrameworks')->willReturn($coverage);
         $repo->method('reciprocityCoherence')->willReturn($coherence);
         return new MappingQualityScoreService($repo);

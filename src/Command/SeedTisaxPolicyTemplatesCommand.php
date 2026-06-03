@@ -247,6 +247,7 @@ final class SeedTisaxPolicyTemplatesCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption(
@@ -263,6 +264,7 @@ final class SeedTisaxPolicyTemplatesCommand extends Command
         );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

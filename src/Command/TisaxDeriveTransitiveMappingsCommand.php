@@ -44,11 +44,13 @@ final class TisaxDeriveTransitiveMappingsCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('force', null, InputOption::VALUE_NONE, 'Write the derived edges (default: dry-run).');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

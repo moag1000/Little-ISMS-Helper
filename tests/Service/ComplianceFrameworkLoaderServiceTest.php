@@ -8,9 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\ComplianceFrameworkLoaderService;
 use Doctrine\Common\Collections\ArrayCollection;
-use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -20,11 +18,10 @@ use PHPUnit\Framework\Attributes\Test;
  * actual Command instances. These should be tested via integration tests with the
  * real container.
  */
-#[AllowMockObjectsWithoutExpectations]
 class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
 {
     private ComplianceFrameworkLoaderService $service;
-    private MockObject $frameworkRepository;
+    private ComplianceFrameworkRepository $frameworkRepository;
 
     protected function setUp(): void
     {
@@ -37,7 +34,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $this->service = $container->get(ComplianceFrameworkLoaderService::class);
 
         // Create a mock repository for statistics tests
-        $this->frameworkRepository = $this->createMock(ComplianceFrameworkRepository::class);
+        $this->frameworkRepository = $this->createStub(ComplianceFrameworkRepository::class);
     }
 
     protected function tearDown(): void

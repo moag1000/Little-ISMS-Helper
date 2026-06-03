@@ -64,12 +64,14 @@ final class TisaxRebuildCatalogueCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('force', null, InputOption::VALUE_NONE, 'Execute Phase A writes (default: dry-run report only)')
             ->addOption('purge-legacy', null, InputOption::VALUE_NONE, 'Also execute Phase B (delete legacy shared pollution + cascade old mapping graph). Requires --force.');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

@@ -34,6 +34,7 @@ class PruneBackupsCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -42,6 +43,7 @@ class PruneBackupsCommand extends Command
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'List what would be deleted without deleting');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

@@ -14,11 +14,9 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Service\AiAgentInventoryService;
 use App\Service\MrisScoreService;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-#[AllowMockObjectsWithoutExpectations]
 final class MrisScoreServiceTest extends TestCase
 {
     private function makeService(
@@ -27,16 +25,16 @@ final class MrisScoreServiceTest extends TestCase
         array $requirements = [],
         array $aiStats = ['total' => 0, 'avg_completeness' => 0.0],
     ): MrisScoreService {
-        $controlRepo = $this->createMock(ControlRepository::class);
+        $controlRepo = $this->createStub(ControlRepository::class);
         $controlRepo->method('findByTenant')->willReturn($controls);
 
-        $fwRepo = $this->createMock(ComplianceFrameworkRepository::class);
+        $fwRepo = $this->createStub(ComplianceFrameworkRepository::class);
         $fwRepo->method('findOneBy')->willReturn($framework);
 
-        $reqRepo = $this->createMock(ComplianceRequirementRepository::class);
+        $reqRepo = $this->createStub(ComplianceRequirementRepository::class);
         $reqRepo->method('findBy')->willReturn($requirements);
 
-        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo = $this->createStub(AssetRepository::class);
 
         // AiAgentInventoryService is final → use anonymous override.
         $aiInventory = new class($assetRepo, $aiStats) extends AiAgentInventoryService {

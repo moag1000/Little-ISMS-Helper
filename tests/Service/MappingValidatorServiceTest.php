@@ -10,18 +10,16 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\MappingValidatorService;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 
-#[AllowMockObjectsWithoutExpectations]
 class MappingValidatorServiceTest extends TestCase
 {
     private function makeService(?ComplianceFramework $foundFw = null, ?ComplianceRequirement $foundReq = null): MappingValidatorService
     {
-        $fwRepo = $this->createMock(ComplianceFrameworkRepository::class);
+        $fwRepo = $this->createStub(ComplianceFrameworkRepository::class);
         $fwRepo->method('findOneBy')->willReturn($foundFw);
 
-        $reqRepo = $this->createMock(ComplianceRequirementRepository::class);
+        $reqRepo = $this->createStub(ComplianceRequirementRepository::class);
         $reqRepo->method('findOneBy')->willReturn($foundReq);
         $reqRepo->method('findBy')->willReturn(array_fill(0, 100, $foundReq ?? new ComplianceRequirement()));
 

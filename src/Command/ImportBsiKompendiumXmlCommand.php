@@ -37,6 +37,7 @@ class ImportBsiKompendiumXmlCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -44,6 +45,7 @@ class ImportBsiKompendiumXmlCommand extends Command
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Nur parsen und zählen — keine DB-Writes.');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

@@ -14,13 +14,11 @@ use App\Service\MrisBaselineService;
 use App\Service\MrisMaturityService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Exception\BusinessRule\BusinessRuleException;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-#[AllowMockObjectsWithoutExpectations]
 final class MrisBaselineServiceTest extends TestCase
 {
     private string $projectDir;
@@ -32,17 +30,17 @@ final class MrisBaselineServiceTest extends TestCase
 
     private function makeService(?ComplianceFramework $framework = null, array $requirements = []): MrisBaselineService
     {
-        $em = $this->createMock(EntityManagerInterface::class);
-        $frameworkRepo = $this->createMock(ComplianceFrameworkRepository::class);
+        $em = $this->createStub(EntityManagerInterface::class);
+        $frameworkRepo = $this->createStub(ComplianceFrameworkRepository::class);
         $frameworkRepo->method('findOneBy')->willReturn($framework);
 
-        $reqRepo = $this->createMock(ComplianceRequirementRepository::class);
+        $reqRepo = $this->createStub(ComplianceRequirementRepository::class);
         $reqRepo->method('findOneBy')->willReturnCallback(
             static fn(array $criteria): ?ComplianceRequirement
                 => $requirements[$criteria['requirementId'] ?? ''] ?? null,
         );
 
-        $audit = $this->createMock(AuditLogger::class);
+        $audit = $this->createStub(AuditLogger::class);
         $maturity = new MrisMaturityService($em, $audit);
 
         return new MrisBaselineService($em, $frameworkRepo, $reqRepo, $maturity, new RequestStack(), $this->projectDir);

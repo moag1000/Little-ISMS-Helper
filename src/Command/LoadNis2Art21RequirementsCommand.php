@@ -28,6 +28,7 @@ class LoadNis2Art21RequirementsCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -36,6 +37,7 @@ class LoadNis2Art21RequirementsCommand extends Command
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Preview changes without writing to the database');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

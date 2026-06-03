@@ -44,6 +44,7 @@ class MrisSeedClassificationCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption(
@@ -56,6 +57,7 @@ class MrisSeedClassificationCommand extends Command
         $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Nur Vorschau, keine DB-Änderungen.');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
