@@ -63,6 +63,8 @@ final class DeltaAssessmentExcelExporter
         private readonly InheritanceMetricsService $inheritanceMetricsService,
         private readonly GapEffortCalculator $gapEffortCalculator,
         private readonly TranslatorInterface $translator,
+        #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%tisax.delta.pre_fill_target%')]
+        private readonly int $preFillTargetPercent = 60,
     ) {
     }
 
@@ -210,7 +212,7 @@ final class DeltaAssessmentExcelExporter
         );
 
         // Pre-fill call-out block ─────────────────────────────────────────────
-        $targetPct = (int) self::PRE_FILL_TARGET_PERCENT;
+        $targetPct = $this->preFillTargetPercent;
         $meetsTarget = $preFillPct >= $targetPct;
         $calloutLabel = $this->translator->trans(
             'compliance_wizard.delta.summary.pre_fill_rate',
@@ -297,12 +299,12 @@ final class DeltaAssessmentExcelExporter
             $rows[] = [
                 $requirementId,
                 (string) $requirement->getTitle(),
-                (string) ($requirement->getCategory() ?? ''),
+                $this->categoryLabel((string) ($requirement->getCategory() ?? '')),
                 (string) ($requirement->getPriority() ?? ''),
                 $pct,
-                $fulfillment?->getStatus() ?? 'not_started',
+                $this->statusLabel($fulfillment?->getStatus() ?? 'not_started'),
                 $sourceMappingsText,
-                $inheritanceState ?? '',
+                $this->inheritanceLabel($inheritanceState),
                 (string) ($fulfillment?->getApplicabilityJustification() ?? ''),
                 $gapDays,
                 $this->t('compliance_wizard.delta.action.' . $action),
@@ -579,5 +581,36 @@ final class DeltaAssessmentExcelExporter
     {
         $cleaned = preg_replace('/[\[\]\:\*\?\/\\\\]/', '', $name) ?? $name;
         return substr($cleaned, 0, 31);
+    }
+
+    /** Translate the fulfilment status enum to a locale-aware export label. */
+    private function statusLabel(string $status): string
+    {
+        return match ($status) {
+            'not_started', 'in_progress', 'implemented', 'verified'
+                => $this->translator->trans('delta.export.status.' . $status, [], 'compliance_wizard'),
+            default => $status,
+        };
+    }
+
+    /** Translate the inheritance-state enum to a locale-aware export label. */
+    private function inheritanceLabel(?string $state): string
+    {
+        return match ($state) {
+            null, '' => '',
+            'confirmed', 'overridden', 'implemented', 'inherited_pending_review'
+                => $this->translator->trans('delta.export.inheritance.' . $state, [], 'compliance_wizard'),
+            default => $state,
+        };
+    }
+
+    /** Translate the TISAX dimension category to a locale-aware export label. */
+    private function categoryLabel(string $category): string
+    {
+        return match ($category) {
+            'information_security', 'prototype_protection', 'data_protection'
+                => $this->translator->trans('delta.export.category.' . $category, [], 'compliance_wizard'),
+            default => ucfirst(str_replace('_', ' ', $category)),
+        };
     }
 }

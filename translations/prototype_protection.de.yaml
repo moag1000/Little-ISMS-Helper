@@ -10,7 +10,7 @@ prototype_protection:
     pdf:
         title: 'Prototype-Protection — %title%'
         heading: 'Prototype-Protection Assessment (TISAX / VDA ISA 6, Kapitel 8)'
-        standard_ref: 'TISAX VDA ISA 6.0.4 — Kapitel 8 Prototype Protection'
+        standard_ref: 'TISAX VDA ISA 6.0 — Kapitel 8 Prototypenschutz'
         generated_at: 'Generiert am'
         footer: 'Vertraulich — Prototype-Protection Assessment (%tenant%)'
         section:

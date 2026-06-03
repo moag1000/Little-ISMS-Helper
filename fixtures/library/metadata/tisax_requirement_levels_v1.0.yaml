@@ -20,7 +20,7 @@
 #   very_high addendum — Sehr hoher Schutzbedarf (M) present
 
 metadata:
-  source: 'vda-isa-tisax-v6'
+  source: 'TISAX'
   type: 'requirement-level-metadata'
   version: 1
   provenance:

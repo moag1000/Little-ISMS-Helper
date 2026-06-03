@@ -108,40 +108,37 @@
 {# Executive Summary #}
 <h1>{{ 'soa.title'|trans({}, 'soa')}}</h1>
 <p class="text-center text-muted mb-medium">
-    ISO 27001:2022 Annex A - Anwendbarkeitserklärung der Controls
+    {{ 'report.pdf.subtitle'|trans({}, 'soa') }}
 </p>
 
 <div class="mb-large">
-    <h2>Zusammenfassung</h2>
+    <h2>{{ 'report.pdf.section_summary'|trans({}, 'soa') }}</h2>
     <p>
-        Dieses Dokument beschreibt die Anwendbarkeit und den Implementierungsstatus der ISO 27001:2022
-        Annex A Controls für das Informationssicherheits-Managementsystem (ISMS) der Organisation
-        <strong>{{ tenant_name|default('Organisation') }}</strong>.
+        {{ 'report.pdf.intro_line1'|trans({'%tenant%': '<strong>' ~ tenant_name|default('report.pdf.default_tenant'|trans({}, 'soa')) ~ '</strong>'}, 'soa')|raw }}
     </p>
     <p>
-        Die nachfolgenden Controls wurden auf Basis einer Risikoanalyse und unter Berücksichtigung
-        rechtlicher, regulatorischer und vertraglicher Anforderungen bewertet.
+        {{ 'report.pdf.intro_line2'|trans({}, 'soa') }}
     </p>
 </div>
 
 {# Statistics Overview #}
-<h2>Implementierungsübersicht</h2>
+<h2>{{ 'section.implementation_overview'|trans({}, 'soa') }}</h2>
 <div class="stats-grid">
     <div class="stats-row">
         <div class="stats-cell">
-            <div class="stats-label">Gesamt Controls</div>
+            <div class="stats-label">{{ 'kpi.total_controls'|trans({}, 'soa') }}</div>
             <div class="stats-value">{{ stats.total }}</div>
         </div>
         <div class="stats-cell">
-            <div class="stats-label">Anwendbar</div>
+            <div class="stats-label">{{ 'kpi.applicable_controls'|trans({}, 'soa') }}</div>
             <div class="stats-value">{{ stats.total }}</div>
         </div>
         <div class="stats-cell">
-            <div class="stats-label">Implementiert</div>
+            <div class="stats-label">{{ 'status.implemented'|trans({}, 'soa') }}</div>
             <div class="stats-value">{{ stats.implemented }}</div>
         </div>
         <div class="stats-cell">
-            <div class="stats-label">Compliance-Rate</div>
+            <div class="stats-label">{{ 'kpi.compliance_rate'|trans({}, 'soa') }}</div>
             <div class="stats-value">
                 <span class="percentage">{% if stats.total > 0 %}{{ ((stats.implemented / stats.total) * 100)|round }}%{% else %}0%{% endif %}</span>
             </div>
@@ -150,18 +147,18 @@
 </div>
 
 <div class="mb-large">
-    <p><strong>Implementierungsstatus:</strong></p>
+    <p><strong>{{ 'report.pdf.implementation_status_heading'|trans({}, 'soa') }}</strong></p>
     <ul>
-        <li>Vollständig implementiert: {{ stats.implemented }} Controls</li>
-        <li>In Bearbeitung: {{ stats.in_progress }} Controls</li>
-        <li>Noch nicht begonnen: {{ stats.not_started }} Controls</li>
-        <li>Nicht anwendbar: {{ stats.not_applicable }} Controls (mit Begründung)</li>
+        <li>{{ 'report.pdf.stat_fully_implemented'|trans({'%count%': stats.implemented}, 'soa') }}</li>
+        <li>{{ 'report.pdf.stat_in_progress'|trans({'%count%': stats.in_progress}, 'soa') }}</li>
+        <li>{{ 'report.pdf.stat_not_started'|trans({'%count%': stats.not_started}, 'soa') }}</li>
+        <li>{{ 'report.pdf.stat_not_applicable'|trans({'%count%': stats.not_applicable}, 'soa') }}</li>
     </ul>
 </div>
 
 {# Controls by Category #}
 <div class="page-break"></div>
-<h2>Controls nach Kategorien</h2>
+<h2>{{ 'section.controls_by_category'|trans({}, 'soa') }}</h2>
 
 {% for categoryName, categoryControls in controlsByCategory %}
 <div class="category-header">{{ categoryName }}</div>
@@ -169,13 +166,13 @@
 <table class="control-table">
     <thead>
         <tr>
-            <th scope="col" style="width: 8%;">Control ID</th>
-            <th scope="col" style="width: 22%;">Name</th>
-            <th scope="col" style="width: 30%;">Beschreibung</th>
-            <th scope="col" style="width: 12%;" class="text-center">MRIS<br><span style="font-weight:normal;font-size:10px;">(Peddi 2026)</span></th>
-            <th scope="col" style="width: 8%;" class="text-center">Anwendbar</th>
-            <th scope="col" style="width: 10%;" class="text-center">Status</th>
-            <th scope="col" style="width: 10%;" class="text-center">Progress</th>
+            <th scope="col" style="width: 8%;">{{ 'table.control_id'|trans({}, 'soa') }}</th>
+            <th scope="col" style="width: 22%;">{{ 'table.name'|trans({}, 'soa') }}</th>
+            <th scope="col" style="width: 30%;">{{ 'section.description'|trans({}, 'soa') }}</th>
+            <th scope="col" style="width: 12%;" class="text-center">{{ 'table.mris'|trans({}, 'soa') }}<br><span style="font-weight:normal;font-size:10px;">(Peddi 2026)</span></th>
+            <th scope="col" style="width: 8%;" class="text-center">{{ 'table.applicable'|trans({}, 'soa') }}</th>
+            <th scope="col" style="width: 10%;" class="text-center">{{ 'field.status'|trans({}, 'soa') }}</th>
+            <th scope="col" style="width: 10%;" class="text-center">{{ 'table.progress'|trans({}, 'soa') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -185,10 +182,10 @@
             <td><strong>{{ control.name }}</strong></td>
             <td class="text-muted">{{ control.description|slice(0, 200) }}{% if control.description|length > 200 %}...{% endif %}</td>
             <td class="text-center">
-                {% if control.mythosResilience == 'standfest' %}<span class="badge" style="background:#d1e7dd;color:#0f5132;">Standfest</span>
-                {% elseif control.mythosResilience == 'degradiert' %}<span class="badge" style="background:#fff3cd;color:#664d03;">Tlw. degradiert</span>
-                {% elseif control.mythosResilience == 'reibung' %}<span class="badge" style="background:#f8d7da;color:#842029;">Reine Reibung</span>
-                {% elseif control.mythosResilience == 'nicht_betroffen' %}<span class="badge" style="background:#e2e3e5;color:#41464b;">Nicht betroffen</span>
+                {% if control.mythosResilience == 'standfest' %}<span class="badge" style="background:#d1e7dd;color:#0f5132;">{{ 'mris.standfest'|trans({}, 'soa') }}</span>
+                {% elseif control.mythosResilience == 'degradiert' %}<span class="badge" style="background:#fff3cd;color:#664d03;">{{ 'report.pdf.mris_degradiert_short'|trans({}, 'soa') }}</span>
+                {% elseif control.mythosResilience == 'reibung' %}<span class="badge" style="background:#f8d7da;color:#842029;">{{ 'mris.reibung'|trans({}, 'soa') }}</span>
+                {% elseif control.mythosResilience == 'nicht_betroffen' %}<span class="badge" style="background:#e2e3e5;color:#41464b;">{{ 'mris.nicht_betroffen'|trans({}, 'soa') }}</span>
                 {% else %}<span class="text-muted" style="font-size:10px;">—</span>
                 {% endif %}
                 {% if control.mythosFlankingMhcs is not empty %}
@@ -197,24 +194,24 @@
             </td>
             <td class="text-center">
                 {% if control.applicable %}
-                    <span class="badge badge-applicable">✓ Ja</span>
+                    <span class="badge badge-applicable">✓ {{ 'value.yes'|trans({}, 'soa') }}</span>
                 {% else %}
-                    <span class="badge badge-not-applicable">✗ Nein</span>
+                    <span class="badge badge-not-applicable">✗ {{ 'value.no'|trans({}, 'soa') }}</span>
                 {% endif %}
             </td>
             <td class="text-center">
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge badge-implemented">Implementiert</span>
+                        <span class="badge badge-implemented">{{ 'status.implemented'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'partial' %}
-                        <span class="badge badge-partial">Teilweise</span>
+                        <span class="badge badge-partial">{{ 'status.partial'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'planned' %}
-                        <span class="badge badge-planned">Geplant</span>
+                        <span class="badge badge-planned">{{ 'status.planned'|trans({}, 'soa') }}</span>
                     {% else %}
-                        <span class="badge badge-not-implemented">Offen</span>
+                        <span class="badge badge-not-implemented">{{ 'report.pdf.status_open'|trans({}, 'soa') }}</span>
                     {% endif %}
                 {% else %}
-                    <span class="badge badge-not-applicable">N/A</span>
+                    <span class="badge badge-not-applicable">{{ 'value.na'|trans({}, 'soa') }}</span>
                 {% endif %}
             </td>
             <td class="text-center">
@@ -228,7 +225,7 @@
         {% if not control.applicable and control.justification %}
         <tr>
             <td colspan="6" style="background-color: #fef3c7; padding: 5pt;">
-                <strong>Begründung für Nicht-Anwendbarkeit:</strong> {{ control.justification }}
+                <strong>{{ 'report.pdf.justification_prefix'|trans({}, 'soa') }}</strong> {{ control.justification }}
             </td>
         </tr>
         {% endif %}
@@ -239,9 +236,9 @@
 
 {# Detailed Justifications #}
 <div class="page-break"></div>
-<h2>Detaillierte Begründungen</h2>
+<h2>{{ 'report.pdf.section_detailed_justifications'|trans({}, 'soa') }}</h2>
 
-<h3>Nicht anwendbare Controls</h3>
+<h3>{{ 'report.pdf.section_non_applicable'|trans({}, 'soa') }}</h3>
 {% set hasNonApplicable = false %}
 {% for control in controls %}
     {% if not control.applicable %}
@@ -249,16 +246,16 @@
         <div class="no-break mb-medium">
             <p><strong>{{ control.controlId }} - {{ control.name }}</strong></p>
             <p class="text-muted" style="margin-left: 15pt;">
-                <em>Begründung:</em> {{ control.justification|default('Keine Begründung angegeben') }}
+                <em>{{ 'field.justification'|trans({}, 'soa') }}:</em> {{ control.justification|default('empty.no_justification'|trans({}, 'soa')) }}
             </p>
         </div>
     {% endif %}
 {% endfor %}
 {% if not hasNonApplicable %}
-<p class="text-muted">Alle Controls sind anwendbar.</p>
+<p class="text-muted">{{ 'report.pdf.all_controls_applicable'|trans({}, 'soa') }}</p>
 {% endif %}
 
-<h3>Geplante Implementierungen</h3>
+<h3>{{ 'report.pdf.section_planned'|trans({}, 'soa') }}</h3>
 {% set hasPlanned = false %}
 {% for control in controls %}
     {% if control.applicable and control.implementationStatus == 'planned' %}
@@ -266,14 +263,14 @@
         <div class="no-break mb-medium">
             <p><strong>{{ control.controlId }} - {{ control.name }}</strong></p>
             <p class="text-muted" style="margin-left: 15pt;">
-                <em>Ziel-Implementierungsdatum:</em> {{ control.targetDate|default('TBD')|date('d.m.Y') }}<br>
-                <em>Verantwortlich:</em> {{ control.responsiblePerson|default('Nicht zugewiesen') }}
+                <em>{{ 'field.target_date'|trans({}, 'soa') }}:</em> {{ control.targetDate|default('TBD')|date('d.m.Y') }}<br>
+                <em>{{ 'label.responsible'|trans({}, 'soa') }}</em> {{ control.responsiblePerson|default('field.unassigned'|trans({}, 'soa')) }}
             </p>
         </div>
     {% endif %}
 {% endfor %}
 {% if not hasPlanned %}
-<p class="text-muted">Keine geplanten Implementierungen.</p>
+<p class="text-muted">{{ 'report.pdf.no_planned_implementations'|trans({}, 'soa') }}</p>
 {% endif %}
 
 {% endblock %}
@@ -284,9 +281,9 @@
 <table>
     <thead>
         <tr>
-            <th scope="col" style="width: 20%;">Dokument</th>
-            <th scope="col" style="width: 15%;">Typ</th>
-            <th scope="col">Beschreibung</th>
+            <th scope="col" style="width: 20%;">{{ 'report.pdf.ref_col_document'|trans({}, 'soa') }}</th>
+            <th scope="col" style="width: 15%;">{{ 'report.pdf.ref_col_type'|trans({}, 'soa') }}</th>
+            <th scope="col">{{ 'section.description'|trans({}, 'soa') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -303,12 +300,12 @@
         <tr>
             <td>ISMS-POL-001</td>
             <td>Policy</td>
-            <td>Informationssicherheitspolitik</td>
+            <td>{{ 'report.pdf.ref_isms_policy'|trans({}, 'soa') }}</td>
         </tr>
         <tr>
             <td>ISMS-RISK-001</td>
             <td>Risk Assessment</td>
-            <td>Aktuelle Risikoanalyse</td>
+            <td>{{ 'report.pdf.ref_risk_assessment'|trans({}, 'soa') }}</td>
         </tr>
     </tbody>
 </table>

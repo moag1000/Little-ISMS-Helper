@@ -45,10 +45,20 @@ final class EnxScheduleExporterTest extends TestCase
         // this service; no instance methods are called in buildSpreadsheet().
         $maturityService = new TisaxMaturityAssessmentService($this->entityManager);
 
+        // Sheet titles now resolve via the translator (tisax.enx.sheet.*).
+        $translator = $this->createMock(\Symfony\Contracts\Translation\TranslatorInterface::class);
+        $translator->method('trans')->willReturnCallback(static fn (string $id): string => match ($id) {
+            'tisax.enx.sheet.information_security' => 'Information Security (IS)',
+            'tisax.enx.sheet.prototype_protection' => 'Prototype Protection (Proto)',
+            'tisax.enx.sheet.data_protection'      => 'Data Protection (DataPro)',
+            default => $id,
+        });
+
         $this->exporter = new EnxScheduleExporter(
             $this->entityManager,
             $this->excelService,
             $maturityService,
+            $translator,
         );
     }
 

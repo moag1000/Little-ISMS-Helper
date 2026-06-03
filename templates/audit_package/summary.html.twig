@@ -1,8 +1,9 @@
+{% trans_default_domain 'audits' %}
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Audit-Paket — {{ framework.name }}</title>
+    <title>{{ 'audits.audit_package.cover.title'|trans }} — {{ framework.name }}</title>
     <style>
         @page { size: A4; margin: 18mm 15mm; }
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; color: #222; }
@@ -20,44 +21,44 @@
 </head>
 <body>
     <div class="cover">
-        <h1>Audit-Paket</h1>
-        <div><strong>Framework:</strong> {{ framework.name }} ({{ framework.code }}{% if framework.version %} — {{ framework.version }}{% endif %})</div>
-        <div><strong>Tenant:</strong> {{ tenant.name }}</div>
-        <div><strong>Generiert:</strong> {{ generated_at|date('d.m.Y H:i') }}</div>
+        <h1>{{ 'audits.audit_package.cover.title'|trans }}</h1>
+        <div><strong>{{ 'audits.audit_package.cover.label.framework'|trans }}:</strong> {{ framework.name }} ({{ framework.code }}{% if framework.version %} — {{ framework.version }}{% endif %})</div>
+        <div><strong>{{ 'audits.audit_package.cover.label.tenant'|trans }}:</strong> {{ tenant.name }}</div>
+        <div><strong>{{ 'audits.audit_package.cover.label.generated'|trans }}:</strong> {{ generated_at|date('d.m.Y H:i') }}</div>
     </div>
 
-    <h2>Zusammenfassung</h2>
+    <h2>{{ 'audits.audit_package.section.summary'|trans }}</h2>
     <table>
         <tr>
-            <th>Anforderungen gesamt</th>
+            <th>{{ 'audits.audit_package.table.requirements_total'|trans }}</th>
             <td>{{ requirements|length }}</td>
         </tr>
         <tr>
-            <th>Evidence-Dokumente im Paket</th>
+            <th>{{ 'audits.audit_package.table.evidence_docs'|trans }}</th>
             <td>{{ document_count }}</td>
         </tr>
         <tr>
-            <th>Anforderungen ohne Evidence</th>
+            <th>{{ 'audits.audit_package.table.requirements_without_evidence'|trans }}</th>
             <td>
                 {% if missing_count > 0 %}
-                    <span class="st-open">{{ missing_count }} — Nachweis fehlt</span>
+                    <span class="st-open">{{ missing_count }} — {{ 'audits.audit_package.status.missing'|trans }}</span>
                 {% else %}
-                    <span class="st-fulfilled">0 — vollständig</span>
+                    <span class="st-fulfilled">0 — {{ 'audits.audit_package.status.complete'|trans }}</span>
                 {% endif %}
             </td>
         </tr>
     </table>
 
-    <h2>Anforderungen im Detail</h2>
+    <h2>{{ 'audits.audit_package.section.requirements_detail'|trans }}</h2>
     <table>
         <thead>
             <tr>
-                <th style="width: 15%;">ID</th>
-                <th>Titel</th>
-                <th style="width: 12%;">Kategorie</th>
-                <th style="width: 10%;">Status</th>
-                <th style="width: 10%;">Füllung</th>
-                <th style="width: 10%;">Evidence</th>
+                <th style="width: 15%;">{{ 'audits.audit_package.col.id'|trans }}</th>
+                <th>{{ 'audit.field.title'|trans }}</th>
+                <th style="width: 12%;">{{ 'audits.audit_package.col.category'|trans }}</th>
+                <th style="width: 10%;">{{ 'audit.field.status'|trans }}</th>
+                <th style="width: 10%;">{{ 'audits.audit_package.col.fulfillment'|trans }}</th>
+                <th style="width: 10%;">{{ 'audits.audit_package.col.evidence'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -70,9 +71,9 @@
                     <td class="small">{{ req.category|default('—') }}</td>
                     <td>
                         {% if pct >= 80 %}
-                            <span class="st-fulfilled">erfüllt</span>
+                            <span class="st-fulfilled">{{ 'audits.audit_package.status.fulfilled'|trans }}</span>
                         {% else %}
-                            <span class="st-open">offen</span>
+                            <span class="st-open">{{ 'audits.audit_package.status.open'|trans }}</span>
                         {% endif %}
                     </td>
                     <td>{{ pct }}%</td>
@@ -88,6 +89,6 @@
         </tbody>
     </table>
 
-    <p class="small">Das vorliegende Paket enthält pro Anforderung einen Ordner mit README.txt und allen verknüpften Evidence-Dokumenten. INDEX.csv im Root führt das komplette Mapping zusammen.</p>
+    <p class="small">{{ 'audits.audit_package.footer.note'|trans }}</p>
 </body>
 </html>

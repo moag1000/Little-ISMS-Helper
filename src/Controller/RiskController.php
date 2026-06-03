@@ -266,27 +266,29 @@ class RiskController extends AbstractController
         // Create CSV content
         $csv = [];
 
+        $t = fn(string $key): string => $this->translator->trans('risk.export.' . $key, [], 'risk');
+
         // CSV Header
         $csv[] = [
-            'ID',
-            'Titel',
-            'Beschreibung',
-            'Bedrohung',
-            'Schwachstelle',
-            'Asset',
-            'Wahrscheinlichkeit',
-            'Auswirkung',
-            'Risiko-Score',
-            'Risikolevel',
-            'Rest-Wahrscheinlichkeit',
-            'Rest-Auswirkung',
-            'Rest-Risiko-Score',
-            'Rest-Risikolevel',
-            'Behandlungsstrategie',
-            'Status',
-            'Risikoinhaber',
-            'Erstellt am',
-            'Überprüfungsdatum',
+            $t('header.id'),
+            $t('header.title'),
+            $t('header.description'),
+            $t('header.threat'),
+            $t('header.vulnerability'),
+            $t('header.asset'),
+            $t('header.probability'),
+            $t('header.impact'),
+            $t('header.risk_score'),
+            $t('header.risk_level'),
+            $t('header.residual_probability'),
+            $t('header.residual_impact'),
+            $t('header.residual_score'),
+            $t('header.residual_level'),
+            $t('header.treatment_strategy'),
+            $t('header.status'),
+            $t('header.risk_owner'),
+            $t('header.created_at'),
+            $t('header.review_date'),
         ];
 
         // CSV Data
@@ -294,41 +296,32 @@ class RiskController extends AbstractController
             $riskScore = $risk->getRiskScore();
             $residualScore = $risk->getResidualRiskLevel();
 
-            // Determine risk levels
+            // Determine risk levels (locale-aware)
             $riskLevel = match(true) {
-                $riskScore >= 15 => 'Kritisch',
-                $riskScore >= 8 => 'Hoch',
-                $riskScore >= 4 => 'Mittel',
-                default => 'Niedrig'
+                $riskScore >= 15 => $t('level.critical'),
+                $riskScore >= 8 => $t('level.high'),
+                $riskScore >= 4 => $t('level.medium'),
+                default => $t('level.low'),
             };
 
             $residualRiskLevel = match(true) {
-                $residualScore >= 15 => 'Kritisch',
-                $residualScore >= 8 => 'Hoch',
-                $residualScore >= 4 => 'Mittel',
-                default => 'Niedrig'
+                $residualScore >= 15 => $t('level.critical'),
+                $residualScore >= 8 => $t('level.high'),
+                $residualScore >= 4 => $t('level.medium'),
+                default => $t('level.low'),
             };
 
-            // Translate treatment strategy
-            $treatmentMap = [
-                'accept' => 'Akzeptieren',
-                'mitigate' => 'Mindern',
-                'transfer' => 'Übertragen',
-                'avoid' => 'Vermeiden',
-            ];
+            // Translate treatment strategy (locale-aware; falls back to raw value for unknown strategies)
+            $treatmentValue = $risk->getTreatmentStrategy()?->value ?? '';
+            $treatmentKey = 'risk.export.treatment.' . $treatmentValue;
+            $treatmentTranslated = $this->translator->trans($treatmentKey, [], 'risk');
+            $treatmentLabel = ($treatmentTranslated !== $treatmentKey) ? $treatmentTranslated : $treatmentValue;
 
-            // Translate status
-            $statusMap = [
-                'identified' => 'Identifiziert',
-                'assessed' => 'Bewertet',
-                'in_treatment' => 'In Behandlung',
-                'treated' => 'Behandelt',
-                'mitigated' => 'Mitigiert',
-                'monitored' => 'Überwacht',
-                'closed' => 'Geschlossen',
-                'accepted' => 'Akzeptiert',
-                'open' => 'Offen',
-            ];
+            // Translate status (locale-aware; falls back to raw value for unknown statuses)
+            $statusValue = $risk->getStatus()?->value ?? '';
+            $statusKey = 'risk.export.status.' . $statusValue;
+            $statusTranslated = $this->translator->trans($statusKey, [], 'risk');
+            $statusLabel = ($statusTranslated !== $statusKey) ? $statusTranslated : $statusValue;
 
             $csv[] = [
                 $risk->getId(),
@@ -345,8 +338,8 @@ class RiskController extends AbstractController
                 $risk->getResidualImpact(),
                 $residualScore,
                 $residualRiskLevel,
-                $treatmentMap[$risk->getTreatmentStrategy()?->value] ?? $risk->getTreatmentStrategy()?->value,
-                $statusMap[$risk->getStatus()?->value] ?? $risk->getStatus()?->value,
+                $treatmentLabel,
+                $statusLabel,
                 $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
                 $risk->getCreatedAt() ? $risk->getCreatedAt()->format('Y-m-d H:i') : '-',
                 $risk->getReviewDate() ? $risk->getReviewDate()->format('Y-m-d') : '-',
@@ -1536,10 +1529,10 @@ class RiskController extends AbstractController
                     (string) $r->getId(),
                     (string) $r->getTitle(),
                     (string) $r->getCategory(),
-                    (string) ($r->getStatus()?->value ?? ''),
+                    (string) ($r->getStatus() !== null ? $r->getStatus()->value : ''),
                     (string) $r->getProbability(),
                     (string) $r->getImpact(),
-                    (string) ($r->getTreatmentStrategy()?->value ?? ''),
+                    (string) ($r->getTreatmentStrategy() !== null ? $r->getTreatmentStrategy()->value : ''),
                     (string) ($r->getRiskOwnerName() ?? ''),
                 ];
             },

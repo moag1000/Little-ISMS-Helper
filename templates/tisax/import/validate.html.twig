@@ -40,10 +40,19 @@
                         <dt class="col-sm-4">{{ 'tisax.import.validate.sheet'|trans({}, 'tisax_isa') }}</dt>
                         <dd class="col-sm-8">{{ sheetName }}</dd>
                         <dt class="col-sm-4">{{ 'tisax.import.validate.control_count'|trans({}, 'tisax_isa') }}</dt>
-                        <dd class="col-sm-8">{{ controlCount }}</dd>
+                        <dd class="col-sm-8">
+                            {{ controlCount }}
+                            <span class="text-muted small">({{ 'tisax.import.validate.workbook_size_hint'|trans({}, 'tisax_isa') }})</span>
+                        </dd>
                         <dt class="col-sm-4">{{ 'tisax.import.validate.detected_columns'|trans({}, 'tisax_isa') }}</dt>
-                        <dd class="col-sm-8">{{ columnMap|keys|join(', ') }}</dd>
+                        <dd class="col-sm-8">
+                            {{ columnMap|keys|map(k => ('tisax.import.validate.col_label.' ~ k)|trans({}, 'tisax_isa') != ('tisax.import.validate.col_label.' ~ k) ? ('tisax.import.validate.col_label.' ~ k)|trans({}, 'tisax_isa') : k)|join(', ') }}
+                        </dd>
                     </dl>
+                    <p class="text-muted small mb-0 mt-2">
+                        <i class="fa-icon fa-icon--info-circle me-1"></i>
+                        {{ 'tisax.import.validate.legend_desc'|trans({}, 'tisax_isa') }}
+                    </p>
                 </div>
             </div>
 

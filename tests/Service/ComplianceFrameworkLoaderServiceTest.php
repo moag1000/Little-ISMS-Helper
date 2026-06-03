@@ -58,7 +58,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
 
         // Verify TISAX framework structure
         $this->assertEquals('TISAX', $frameworks[0]['code']);
-        $this->assertEquals('TISAX (Trusted Information Security Assessment Exchange)', $frameworks[0]['name']);
+        $this->assertEquals('TISAX (VDA-ISA 6.0)', $frameworks[0]['name']);
         $this->assertFalse($frameworks[0]['mandatory']);
         $this->assertEquals('automotive', $frameworks[0]['industry']);
     }

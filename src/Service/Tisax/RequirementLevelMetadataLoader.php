@@ -16,14 +16,14 @@ use Symfony\Component\Yaml\Yaml;
  * Customers must read the actual requirement text from their own licensed
  * ENX workbook copy (https://portal.enx.com/).
  *
- * Data source: fixtures/library/metadata/tisax-vda-isa-6_requirement_levels_v1.0.yaml
+ * Data source: fixtures/library/metadata/tisax_requirement_levels_v1.0.yaml
  * Extractor: scripts/import/extract_vda_isa_requirement_metadata.php
  *
  * Cached per-request in $metadataIndex to avoid re-parsing YAML on every call.
  */
 final class RequirementLevelMetadataLoader
 {
-    private const FIXTURE_RELATIVE = '/fixtures/library/metadata/tisax-vda-isa-6_requirement_levels_v1.0.yaml';
+    private const FIXTURE_RELATIVE = '/fixtures/library/metadata/tisax_requirement_levels_v1.0.yaml';
 
     /**
      * Per-request cache. Key: controlId (e.g. "1.1.1"), value: metadata array.

@@ -162,6 +162,11 @@ final class LiveCountAggregatorTest extends TestCase
             $mgmtReviewRepo,
             $wizardRepo,
             $complianceAnalytics,
+            $this->createMock(\App\Repository\EvidenceReverificationTaskRepository::class),
+            $this->createMock(\App\Repository\ControlRepository::class),
+            $this->createMock(\App\Repository\SupplierRepository::class),
+            $this->createMock(\App\Repository\DataProtectionImpactAssessmentRepository::class),
+            $this->createMock(\App\Repository\BusinessContinuityPlanRepository::class),
             $urls,
         );
     }

@@ -15,7 +15,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 final class TisaxIso27001MappingTest extends TestCase
 {
-    private const MAPPING_FILE = __DIR__ . '/../../../fixtures/library/mappings/tisax-vda-isa-6_to_iso27001-2022_v1.0.yaml';
+    private const MAPPING_FILE = __DIR__ . '/../../../fixtures/library/mappings/tisax_to_iso27001-2022_v1.0.yaml';
 
     /** @var array<mixed> */
     private static array $data = [];
@@ -60,7 +60,7 @@ final class TisaxIso27001MappingTest extends TestCase
     {
         foreach (self::$data['mappings'] as $entry) {
             self::assertMatchesRegularExpression(
-                '/^ISA \d{1,2}\.\d{1,2}\.\d{1,2}$/',
+                '/^\d{1,2}\.\d{1,2}\.\d{1,2}$/',
                 $entry['source'],
                 "Invalid VDA-ISA ID: {$entry['source']}"
             );

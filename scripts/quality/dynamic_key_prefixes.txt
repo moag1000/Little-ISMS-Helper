@@ -79,6 +79,9 @@ dashboard.kpi	2
 data_breach.data_categories	1
 data_breach.data_subject_categories	1
 data_breach.severity	1
+delta.export.category	1
+delta.export.inheritance	1
+delta.export.status	1
 diff.change_type	1
 diff.section	1
 document.evidence.source	1
@@ -137,6 +140,9 @@ management_review.status	4
 mapping_gap_item.status	1
 mfa.token_type	1
 mfa_token.type	2
+my_day.hint	1
+my_day.kpi	1
+my_day.section	1
 nis2.art21.measure	1
 nis2.dashboard.letter	1
 nis2.dashboard.status	1
@@ -195,6 +201,9 @@ reauth.action.confirm_sso	1
 report.doc.audience	1
 report.doc.chart.type	1
 risk.acceptance.approval_levels	1
+risk.export	1
+risk.export.status	1
+risk.export.treatment	1
 risk.index.treatment	1
 risk.level	1
 risk.link_incident.link_type	2
@@ -229,6 +238,8 @@ supplier.lksg_risk	1
 tags.type	1
 template	2
 tisax.import.assess.level	2
+tisax.import.assess.req_level	1
+tisax.import.validate.col_label	1
 tisax.tier	1
 tlpt.status	1
 training.delivery	2

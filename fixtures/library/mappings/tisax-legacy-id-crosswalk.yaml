@@ -1,0 +1,1468 @@
+# ==============================================================================
+# TISAX Legacy Requirement-ID Crosswalk Fixture
+# ==============================================================================
+# Purpose: Maps every legacy TISAX requirement-id scheme to the official
+#          VDA-ISA control number (format: 1.1.1).
+#
+# This fixture is the authoritative reference for Phase P2 of the TISAX
+# framework consolidation (spec §4.2 + §9.2).  It ships in version control
+#   so every id-normalisation decision is reviewable and auditable.
+#
+# No-silent-cap rule (spec §4.2): every legacy id MUST appear here —
+# either with a 'target' (canonical id) or under 'needs_human_review'
+# with a documented reason.  Nothing is silently dropped.
+#
+# Domain facet (spec §9.2 Consultant G3): each entry carries a 'domain'
+# field (the 2–6-letter VDA-ISA domain code).  The domain survives the
+# crosswalk so by-domain grouping, filtering, and reporting remain intact.
+#
+# Crosswalk versioning contract (spec §9.2 G8): bump 'version' when any
+# entry is added/changed; bump 'appliesToIsaVersion' on ISA catalogue
+# revision (6.0.x → 6.1 etc.).
+# ==============================================================================
+
+version: 1
+appliesToIsaVersion: "6.x"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §1  Deterministic rules (no catalogue required)
+# ──────────────────────────────────────────────────────────────────────────────
+
+deterministic_rules:
+
+  isa_prefix_strip:
+    # 'ISA x.y.z' → 'x.y.z'  (pure prefix-strip, no ambiguity)
+    # Applied at runtime by app:tisax:consolidate.
+    # All 9 YAML mapping files in fixtures/library/mappings/ were already
+    # re-keyed by this rule (see var/rekey-legacy-ids.txt).
+    pattern: "^ISA (\\d+\\.\\d+\\.\\d+)$"
+    transform: "strip_prefix"
+    prefix: "ISA "
+    result_format: "x.y.z"
+    rationale: |
+      The 'ISA ' prefix was added ad-hoc by the original seeding code.
+      Stripping it yields the official VDA-ISA control number verbatim.
+    examples:
+      - legacy: "ISA 1.1.1"
+        canonical: "1.1.1"
+      - legacy: "ISA 3.1.4"
+        canonical: "3.1.4"
+      - legacy: "ISA 5.2.7"
+        canonical: "5.2.7"
+
+  isa_kap_chapter_stubs:
+    # 'ISA-KAP-n' → chapter_stub (delete-candidate, not a control)
+    pattern: "^ISA-KAP-(\\d+)$"
+    transform: "mark_chapter_stub"
+    action: "delete_if_no_tenant_assessment"
+    rationale: |
+      ISA-KAP-1 … ISA-KAP-6 are chapter-level skeleton rows, not real
+      TISAX controls.  They were introduced by loader commands to anchor
+      chapter structure but carry no assessable requirement.  Delete them
+      during consolidation (step 4 of spec §4.3) provided they have no
+      tenant_upload assessment attached.
+    known_instances:
+      - "ISA-KAP-1"
+      - "ISA-KAP-2"
+      - "ISA-KAP-3"
+      - "ISA-KAP-4"
+      - "ISA-KAP-5"
+      - "ISA-KAP-6"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §2  Domain-prefixed ids (INF / ACC / BCM / CMP / COM / CRY / DEV /
+#     HRS / INC / MOB / OPS / PHY / PROT / SUP)
+#
+# These ids were authored by LoadTisaxRequirementsCommand and
+# SeedTisaxIso27001MappingsCommand as a human-readable domain shorthand.
+# They are NOT official VDA-ISA ids — the catalogue uses numeric 1.1.1
+# notation exclusively.
+#
+# Confident mappings can only be derived from the licensed VDA-ISA
+# workbook (ENX-licensed, not redistributable).  Cross-referencing via
+# shared ISO 27001 targets is non-1:1 (one ISO control maps to multiple
+# VDA-ISA controls and vice versa), so ISO-pivot inferences are recorded
+# as hints only, NOT as authoritative targets.
+#
+# Entries that cannot be resolved without the catalogue are listed under
+# §3 needs_human_review.
+# ──────────────────────────────────────────────────────────────────────────────
+
+domain_prefixed_entries:
+
+  # ── Information Security (INF) ─────────────────────────────────────────────
+  # Domain code: INF  |  VDA-ISA chapter: 1 (Information Security)
+  # Source command: LoadTisaxRequirementsCommand
+  # The INF-x.y scheme maps to VDA-ISA chapter 1 controls.
+  # 14 entries, all needs_human_review (see §3 below).
+
+  - legacy_id: "INF-1.1"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.1"
+    status: needs_human_review
+    review_reason: >
+      Requires licensed VDA-ISA catalogue to confirm canonical id.
+      ISO 27001 anchor A.5.1 matches canonical '1.1.1' in
+      tisax_to_iso27001-2022_v1.0.yaml — probable candidate but
+      non-1:1 ISO pivot is not authoritative.
+
+  - legacy_id: "INF-1.2"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.1"
+    status: needs_human_review
+    review_reason: >
+      Two INF ids share the A.5.1 anchor (INF-1.1 and INF-1.2).
+      'Review of policy' sub-control — requires catalogue to distinguish
+      which canonical sub-id (e.g. 1.1.1 vs a sibling) applies.
+
+  - legacy_id: "INF-2.1"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.2"
+    status: needs_human_review
+    review_reason: >
+      Management responsibility control.  ISO A.5.2/A.5.3 anchors appear
+      in canonical '1.2.2'.  Requires catalogue confirmation.
+
+  - legacy_id: "INF-3.1"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.9"
+    status: needs_human_review
+    review_reason: >
+      Asset inventory.  ISO A.5.9 matches canonical '1.3.1'.
+      Probable candidate; requires catalogue confirmation.
+
+  - legacy_id: "INF-3.2"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.9"
+    status: needs_human_review
+    review_reason: >
+      Asset ownership sub-control.  Shares A.5.9 anchor with INF-3.1;
+      may map to same canonical id or a sibling — catalogue required.
+
+  - legacy_id: "INF-3.3"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.10"
+    status: needs_human_review
+    review_reason: >
+      Acceptable use.  A.5.10 appears in canonical '1.3.2'.
+      Requires catalogue confirmation.
+
+  - legacy_id: "INF-3.4"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.11"
+    status: needs_human_review
+    review_reason: >
+      Return of assets.  A.5.10/A.5.11 anchors in canonical '1.3.2/1.3.3'.
+      Catalogue required to determine sub-id.
+
+  - legacy_id: "INF-4.1"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.12"
+    status: needs_human_review
+    review_reason: >
+      Information classification.  A.5.12/A.5.13/A.8.10 anchors appear
+      in canonical '1.3.2'.  May overlap; catalogue required.
+
+  - legacy_id: "INF-4.2"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.13"
+    status: needs_human_review
+    review_reason: >
+      Information labelling.  Shares A.5.13 with INF-4.1 cluster;
+      catalogue required to assign sub-id.
+
+  - legacy_id: "INF-4.3"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.10"
+    status: needs_human_review
+    review_reason: >
+      Handling of assets.  A.5.10 shared with INF-3.3; catalogue required.
+
+  - legacy_id: "INF-5.1"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.7"
+    status: needs_human_review
+    review_reason: >
+      Risk assessment.  ISO hints A.5.7/A.5.8 do not uniquely identify
+      a single canonical id (A.5.8 appears in '1.2.3' and '5.3.1').
+      Catalogue required.
+
+  - legacy_id: "INF-5.2"
+    domain: "INF"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.8"
+    status: needs_human_review
+    review_reason: >
+      Risk treatment.  A.8.8 appears in multiple canonical ids
+      ('1.5.1', '5.2.5', '5.2.6').  Catalogue required.
+
+  # ── Access Control (ACC) ───────────────────────────────────────────────────
+  # Domain code: ACC  |  VDA-ISA chapter: 4 (Access Control)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+  # 11 entries, all needs_human_review.
+
+  - legacy_id: "ACC-1.1"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.15"
+    status: needs_human_review
+    review_reason: >
+      Access-control policy.  ISO A.5.15 appears in canonical '4.1.2'
+      alongside A.8.5.  Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "ACC-2.1"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.16"
+    status: needs_human_review
+    review_reason: >
+      User registration.  A.5.16 appears in canonical '4.1.3' together
+      with A.5.17/A.5.18/A.8.9 — broad cluster.  Catalogue required.
+
+  - legacy_id: "ACC-2.2"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.18"
+    status: needs_human_review
+    review_reason: >
+      User access provisioning.  A.5.18 appears in canonical '4.1.1' and
+      '4.1.3'.  Non-unique ISO pivot; catalogue required.
+
+  - legacy_id: "ACC-2.3"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.2"
+    status: needs_human_review
+    review_reason: >
+      Privileged access.  A.8.2 does not appear as a standalone anchor in
+      the canonical YAML set; closest is '4.2.1' (Privileged access mgmt,
+      no ISO target listed).  Catalogue required.
+
+  - legacy_id: "ACC-2.4"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.18"
+    status: needs_human_review
+    review_reason: >
+      Access rights review.  Shares A.5.18 anchor with ACC-2.1/2.2;
+      may map to same or sibling canonical id.  Catalogue required.
+
+  - legacy_id: "ACC-2.5"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.18"
+    status: needs_human_review
+    review_reason: >
+      Access rights removal on termination.  Same A.5.18 cluster as
+      ACC-2.1/2.2/2.4.  Catalogue required.
+
+  - legacy_id: "ACC-3.1"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.17"
+    status: needs_human_review
+    review_reason: >
+      Secret authentication information.  A.5.17 appears in '4.1.3'
+      together with other anchors.  Catalogue required.
+
+  - legacy_id: "ACC-3.2"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.5"
+    status: needs_human_review
+    review_reason: >
+      Secure log-on.  A.8.5 appears in canonical '4.1.2' together with
+      A.5.15.  Probable overlap with ACC-1.1; catalogue required.
+
+  - legacy_id: "ACC-3.3"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.17"
+    status: needs_human_review
+    review_reason: >
+      Password management system.  Shares A.5.17 with ACC-3.1;
+      catalogue required to distinguish sub-id.
+
+  - legacy_id: "ACC-3.4"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.18"
+    status: needs_human_review
+    review_reason: >
+      Privileged utility programs.  A.8.18 not present as a standalone
+      canonical anchor in the re-keyed YAML files; sub-id unknown.
+      Catalogue required.
+
+  - legacy_id: "ACC-3.5"
+    domain: "ACC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.4"
+    status: needs_human_review
+    review_reason: >
+      Source code access.  A.8.4 not present as a standalone canonical
+      anchor in the re-keyed YAML files.  Catalogue required.
+
+  # ── Business Continuity Management (BCM) ───────────────────────────────────
+  # Domain code: BCM  |  VDA-ISA chapter: 1 (sub-area) or mapped to IS section
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "BCM-1.1"
+    domain: "BCM"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.29"
+    status: needs_human_review
+    review_reason: >
+      IS continuity planning.  A.5.29 appears in canonical '1.6.3'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "BCM-1.2"
+    domain: "BCM"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.30"
+    status: needs_human_review
+    review_reason: >
+      IS continuity implementation.  A.5.30 appears in canonical '5.2.8'.
+      May also be in IS chapter.  Catalogue required.
+
+  # ── Compliance (CMP) ───────────────────────────────────────────────────────
+  # Domain code: CMP  |  VDA-ISA chapter: 7 (Compliance)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "CMP-1.1"
+    domain: "CMP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.31"
+    status: needs_human_review
+    review_reason: >
+      Legal/regulatory requirements identification.  A.5.31/A.5.32/A.5.33
+      all appear in canonical '7.1.1'.  CMP-1.1 likely maps there but
+      catalogue confirmation required.
+
+  - legacy_id: "CMP-1.2"
+    domain: "CMP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.32"
+    status: needs_human_review
+    review_reason: >
+      IP rights.  A.5.32 is part of the '7.1.1' anchor cluster.
+      Catalogue required to determine if CMP-1.2 is a sub-id of 7.1.1
+      or a separate control.
+
+  - legacy_id: "CMP-1.3"
+    domain: "CMP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.33"
+    status: needs_human_review
+    review_reason: >
+      Protection of records.  A.5.33 is in '7.1.1' cluster.
+      Catalogue required.
+
+  - legacy_id: "CMP-1.4"
+    domain: "CMP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.34"
+    status: needs_human_review
+    review_reason: >
+      Privacy and PII.  A.5.34 maps to canonical '7.1.2'.
+      Probable candidate; catalogue confirmation required.
+
+  - legacy_id: "CMP-2.1"
+    domain: "CMP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.35"
+    status: needs_human_review
+    review_reason: >
+      Independent IS review.  A.5.35 appears in canonical '1.5.2'.
+      Also referenced by CMP-2.3/OPS-7.1 area.  Catalogue required.
+
+  - legacy_id: "CMP-2.2"
+    domain: "CMP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.36"
+    status: needs_human_review
+    review_reason: >
+      Compliance with policies.  A.5.36 appears in '1.5.1' and '5.2.6'.
+      Non-unique; catalogue required.
+
+  - legacy_id: "CMP-2.3"
+    domain: "CMP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.8"
+    status: needs_human_review
+    review_reason: >
+      Technical compliance review.  A.8.8 is highly reused (appears in
+      '1.5.1', '5.2.5', '5.2.6').  Catalogue required.
+
+  # ── Communications Security (COM) ──────────────────────────────────────────
+  # Domain code: COM  |  VDA-ISA chapter: 5 (sub-area)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "COM-1.1"
+    domain: "COM"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.20"
+    status: needs_human_review
+    review_reason: >
+      Network controls.  A.8.20/A.8.22 appear in canonical '5.2.7'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "COM-1.2"
+    domain: "COM"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.21"
+    status: needs_human_review
+    review_reason: >
+      Network services security.  A.8.21 appears in canonical '5.3.2'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "COM-1.3"
+    domain: "COM"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.22"
+    status: needs_human_review
+    review_reason: >
+      Network segregation.  A.8.22 shared with COM-1.1 (both in 5.2.7
+      cluster).  Catalogue required.
+
+  - legacy_id: "COM-2.1"
+    domain: "COM"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.14"
+    status: needs_human_review
+    review_reason: >
+      Information transfer policies.  A.5.14 appears in canonical '5.1.2'
+      and '6.1.2'.  Non-unique; catalogue required.
+
+  - legacy_id: "COM-2.2"
+    domain: "COM"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.14"
+    status: needs_human_review
+    review_reason: >
+      Transfer agreements.  Shares A.5.14 with COM-2.1/COM-2.3/COM-2.4.
+      Catalogue required.
+
+  - legacy_id: "COM-2.3"
+    domain: "COM"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.14"
+    status: needs_human_review
+    review_reason: >
+      Electronic messaging.  Shares A.5.14 cluster; COM command also
+      references A.8.23 which does not appear in canonical YAML.
+      Catalogue required.
+
+  - legacy_id: "COM-2.4"
+    domain: "COM"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.6.6"
+    status: needs_human_review
+    review_reason: >
+      NDAs.  A.6.6/A.5.14 appear in canonical '6.1.2'.
+      Probable candidate; catalogue confirmation required.
+
+  # ── Cryptography (CRY) ─────────────────────────────────────────────────────
+  # Domain code: CRY  |  VDA-ISA chapter: 5 (sub-area)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "CRY-1.1"
+    domain: "CRY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.24"
+    status: needs_human_review
+    review_reason: >
+      Crypto policy.  A.8.24 appears in canonical '5.1.1'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "CRY-1.2"
+    domain: "CRY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.24"
+    status: needs_human_review
+    review_reason: >
+      Key management.  Shares A.8.24 with CRY-1.1 — both may map to
+      '5.1.1' or one may be a sub-id.  Catalogue required.
+
+  # ── Development Security (DEV) ─────────────────────────────────────────────
+  # Domain code: DEV  |  VDA-ISA chapter: 5 (sub-area)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "DEV-1.1"
+    domain: "DEV"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.26"
+    status: needs_human_review
+    review_reason: >
+      Security requirements.  A.8.26 not present as a standalone anchor
+      in re-keyed YAML.  A.8.25/A.8.27 appear in '5.3.1'.  Catalogue req.
+
+  - legacy_id: "DEV-1.2"
+    domain: "DEV"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.27"
+    status: needs_human_review
+    review_reason: >
+      Secure architecture.  A.8.27 appears as part of '5.3.1' cluster.
+      Catalogue required.
+
+  - legacy_id: "DEV-2.1"
+    domain: "DEV"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.25"
+    status: needs_human_review
+    review_reason: >
+      Secure dev policy.  A.8.25 appears in '5.3.1' with A.5.8.
+      Non-unique; catalogue required.
+
+  - legacy_id: "DEV-2.2"
+    domain: "DEV"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.32"
+    status: needs_human_review
+    review_reason: >
+      Change control.  A.8.32 appears in canonical '5.2.1'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "DEV-2.3"
+    domain: "DEV"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.32"
+    status: needs_human_review
+    review_reason: >
+      Technical review after platform change.  Shares A.8.32 with
+      DEV-2.2; may be same canonical id or a sibling.  Catalogue required.
+
+  - legacy_id: "DEV-3.1"
+    domain: "DEV"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.29"
+    status: needs_human_review
+    review_reason: >
+      Security testing.  A.8.29 not a standalone anchor in re-keyed YAML;
+      appears in '5.3.1' cluster.  Catalogue required.
+
+  - legacy_id: "DEV-3.2"
+    domain: "DEV"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.33"
+    status: needs_human_review
+    review_reason: >
+      Test data protection.  A.8.33 not present as a standalone anchor
+      in re-keyed YAML.  Catalogue required.
+
+  # ── Human Resources Security (HRS) ─────────────────────────────────────────
+  # Domain code: HRS  |  VDA-ISA chapter: 2 (Personnel)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "HRS-1.1"
+    domain: "HRS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.6.1"
+    status: needs_human_review
+    review_reason: >
+      Screening.  A.6.1 appears in canonical '2.1.1'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "HRS-1.2"
+    domain: "HRS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.6.2"
+    status: needs_human_review
+    review_reason: >
+      Terms of employment.  A.6.2/A.6.5 appear in canonical '2.1.2'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "HRS-2.1"
+    domain: "HRS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.4"
+    status: needs_human_review
+    review_reason: >
+      Management responsibilities.  A.5.4 not a standalone anchor in
+      re-keyed YAML (A.5.3/A.5.5 in '1.4.1').  Catalogue required.
+
+  - legacy_id: "HRS-2.2"
+    domain: "HRS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.6.3"
+    status: needs_human_review
+    review_reason: >
+      Awareness and training.  A.6.3 not a standalone anchor in re-keyed
+      YAML.  Catalogue required.
+
+  - legacy_id: "HRS-2.3"
+    domain: "HRS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.6.4"
+    status: needs_human_review
+    review_reason: >
+      Disciplinary process.  A.6.4 not a standalone anchor in re-keyed
+      YAML.  Catalogue required.
+
+  - legacy_id: "HRS-3.1"
+    domain: "HRS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.6.5"
+    status: needs_human_review
+    review_reason: >
+      Termination responsibilities.  A.6.5 appears as secondary anchor in
+      '2.1.2' cluster.  Catalogue required.
+
+  # ── Incident Management (INC) ──────────────────────────────────────────────
+  # Domain code: INC  |  VDA-ISA chapter: 1 (sub-area) or chapter 6
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "INC-1.1"
+    domain: "INC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.24"
+    status: needs_human_review
+    review_reason: >
+      IR responsibilities.  A.5.24/A.6.8 appear in canonical '1.6.1'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "INC-1.2"
+    domain: "INC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.6.8"
+    status: needs_human_review
+    review_reason: >
+      Reporting IS events.  A.6.8 shared with INC-1.1 (both in '1.6.1').
+      Catalogue required.
+
+  - legacy_id: "INC-1.3"
+    domain: "INC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.25"
+    status: needs_human_review
+    review_reason: >
+      Event assessment.  A.5.25 is part of '1.6.2' cluster.
+      Catalogue required.
+
+  - legacy_id: "INC-1.4"
+    domain: "INC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.26"
+    status: needs_human_review
+    review_reason: >
+      Response to incidents.  A.5.26 is part of '1.6.2' cluster.
+      Catalogue required.
+
+  - legacy_id: "INC-1.5"
+    domain: "INC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.27"
+    status: needs_human_review
+    review_reason: >
+      Learning from incidents.  A.5.27 is part of '1.6.2' cluster.
+      Catalogue required.
+
+  - legacy_id: "INC-1.6"
+    domain: "INC"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.28"
+    status: needs_human_review
+    review_reason: >
+      Evidence collection.  A.5.28 not present as standalone anchor
+      in re-keyed YAML.  Catalogue required.
+
+  # ── Mobile Devices / Teleworking (MOB) ─────────────────────────────────────
+  # Domain code: MOB  |  VDA-ISA chapter: 3 (sub-area) or elsewhere
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "MOB-1.1"
+    domain: "MOB"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.1"
+    status: needs_human_review
+    review_reason: >
+      Mobile device policy.  A.8.1 appears in canonical '2.1.4' and
+      '3.1.4'.  Non-unique; catalogue required.
+
+  - legacy_id: "MOB-1.2"
+    domain: "MOB"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.6.7"
+    status: needs_human_review
+    review_reason: >
+      Teleworking.  A.6.7/A.8.1 appear in canonical '2.1.4' and '3.1.4'.
+      Non-unique; catalogue required.
+
+  # ── Operations Security (OPS) ──────────────────────────────────────────────
+  # Domain code: OPS  |  VDA-ISA chapter: 5 (Operations)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "OPS-1.1"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.37"
+    status: needs_human_review
+    review_reason: >
+      Documented operating procedures.  A.5.37 not present as a standalone
+      anchor in re-keyed YAML.  Catalogue required.
+
+  - legacy_id: "OPS-1.2"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.32"
+    status: needs_human_review
+    review_reason: >
+      Change management.  A.8.32 appears in '5.2.1'.  Probable candidate;
+      catalogue confirmation needed (overlaps with DEV-2.2).
+
+  - legacy_id: "OPS-1.3"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.6"
+    status: needs_human_review
+    review_reason: >
+      Capacity management.  A.8.6 not a standalone anchor in re-keyed YAML.
+      Catalogue required.
+
+  - legacy_id: "OPS-1.4"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.31"
+    status: needs_human_review
+    review_reason: >
+      Dev/test/prod separation.  A.8.31 appears in canonical '5.2.2'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "OPS-2.1"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.7"
+    status: needs_human_review
+    review_reason: >
+      Malware protection.  A.8.7 not a standalone anchor in re-keyed YAML.
+      Catalogue required.
+
+  - legacy_id: "OPS-3.1"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.13"
+    status: needs_human_review
+    review_reason: >
+      Backup.  A.8.13 appears in canonical '5.2.9'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "OPS-4.1"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.15"
+    status: needs_human_review
+    review_reason: >
+      Event logging.  A.8.15/A.5.17 appear in canonical '5.2.4'.
+      Non-unique; catalogue required.
+
+  - legacy_id: "OPS-4.2"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.15"
+    status: needs_human_review
+    review_reason: >
+      Log protection.  Shares A.8.15 with OPS-4.1; may be same canonical
+      id or sub-id.  Catalogue required.
+
+  - legacy_id: "OPS-4.3"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.15"
+    status: needs_human_review
+    review_reason: >
+      Admin and operator logs.  Shares A.8.15 with OPS-4.1/4.2 cluster.
+      Catalogue required.
+
+  - legacy_id: "OPS-4.4"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.17"
+    status: needs_human_review
+    review_reason: >
+      Clock synchronisation.  A.8.17 not a standalone anchor in re-keyed
+      YAML.  Catalogue required.
+
+  - legacy_id: "OPS-5.1"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.19"
+    status: needs_human_review
+    review_reason: >
+      SW installation on operational systems.  A.8.19/A.8.8 appear in
+      '5.2.5'.  Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "OPS-6.1"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.8"
+    status: needs_human_review
+    review_reason: >
+      Technical vulnerability management.  A.8.8 appears in '1.5.1',
+      '5.2.5', '5.2.6'.  Non-unique; catalogue required.
+
+  - legacy_id: "OPS-7.1"
+    domain: "OPS"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.34"
+    status: needs_human_review
+    review_reason: >
+      IS audit controls.  A.8.34 appears in '5.2.6' together with other
+      anchors.  Non-unique; catalogue required.
+
+  # ── Physical and Environmental Security (PHY) ──────────────────────────────
+  # Domain code: PHY  |  VDA-ISA chapter: 3 (Physical Security)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "PHY-1.1"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.1"
+    status: needs_human_review
+    review_reason: >
+      Physical perimeter.  A.7.1/A.7.6 appear in canonical '3.1.1'.
+      Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "PHY-1.2"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.2"
+    status: needs_human_review
+    review_reason: >
+      Physical entry controls.  A.7.2 not a standalone anchor in re-keyed
+      YAML (A.7.1/A.7.6 in '3.1.1').  Catalogue required.
+
+  - legacy_id: "PHY-1.3"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.3"
+    status: needs_human_review
+    review_reason: >
+      Securing offices.  A.7.3 not a standalone anchor in re-keyed YAML.
+      Catalogue required.
+
+  - legacy_id: "PHY-1.4"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.5"
+    status: needs_human_review
+    review_reason: >
+      Protecting against environmental threats.  A.7.5 not a standalone
+      anchor in re-keyed YAML.  Catalogue required.
+
+  - legacy_id: "PHY-1.5"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.6"
+    status: needs_human_review
+    review_reason: >
+      Working in secure areas.  A.7.6 appears in '3.1.1' cluster.
+      Catalogue required.
+
+  - legacy_id: "PHY-1.6"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.2"
+    status: needs_human_review
+    review_reason: >
+      Delivery/loading areas.  A.7.2 cluster; catalogue required.
+
+  - legacy_id: "PHY-2.1"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.8"
+    status: needs_human_review
+    review_reason: >
+      Equipment siting.  A.7.8 not a standalone anchor in re-keyed YAML.
+      Catalogue required.
+
+  - legacy_id: "PHY-2.2"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.11"
+    status: needs_human_review
+    review_reason: >
+      Supporting utilities.  A.7.11 not a standalone anchor in re-keyed
+      YAML.  Catalogue required.
+
+  - legacy_id: "PHY-2.3"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.12"
+    status: needs_human_review
+    review_reason: >
+      Cabling security.  A.7.12 not a standalone anchor in re-keyed YAML.
+      Catalogue required.
+
+  - legacy_id: "PHY-2.4"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.13"
+    status: needs_human_review
+    review_reason: >
+      Equipment maintenance.  A.7.13 not a standalone anchor in re-keyed
+      YAML.  Catalogue required.
+
+  - legacy_id: "PHY-2.5"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.10"
+    status: needs_human_review
+    review_reason: >
+      Removal of assets.  A.7.10 appears in canonical '3.1.4' cluster.
+      Catalogue required.
+
+  - legacy_id: "PHY-2.6"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.9"
+    status: needs_human_review
+    review_reason: >
+      Assets off-premises.  A.7.9 not a standalone anchor in re-keyed YAML.
+      Catalogue required.
+
+  - legacy_id: "PHY-2.7"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.14"
+    status: needs_human_review
+    review_reason: >
+      Secure disposal.  A.7.14 not a standalone anchor in re-keyed YAML.
+      Catalogue required.
+
+  - legacy_id: "PHY-2.8"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.8.1"
+    status: needs_human_review
+    review_reason: >
+      Unattended equipment.  A.8.1 appears in '2.1.4' and '3.1.4'.
+      Non-unique; catalogue required.
+
+  - legacy_id: "PHY-2.9"
+    domain: "PHY"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.7"
+    status: needs_human_review
+    review_reason: >
+      Clear desk/screen.  A.7.7 not a standalone anchor in re-keyed YAML.
+      Catalogue required.
+
+  # ── Prototype Protection (PROT) ────────────────────────────────────────────
+  # Domain code: PROT  |  VDA-ISA chapter: 8 (Prototype Protection)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+  # Note: VDA-ISA PP controls are 8.x.y in canonical scheme.
+
+  - legacy_id: "PROT-1.1"
+    domain: "PROT"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.12"
+    status: needs_human_review
+    review_reason: >
+      Prototype classification.  VDA-ISA chapter 8 covers PP.  A.5.12 is
+      in IS chapter controls (1.3.x range).  The canonical PP id is in
+      the 8.x.y range — exact sub-id requires catalogue.
+
+  - legacy_id: "PROT-1.2"
+    domain: "PROT"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.3"
+    status: needs_human_review
+    review_reason: >
+      Physical prototype protection.  PP chapter 8.x.y; catalogue required.
+
+  - legacy_id: "PROT-1.3"
+    domain: "PROT"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.14"
+    status: needs_human_review
+    review_reason: >
+      Prototype handling/transport.  PP chapter 8.x.y; catalogue required.
+
+  - legacy_id: "PROT-2.1"
+    domain: "PROT"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.12"
+    status: needs_human_review
+    review_reason: >
+      Prototype data protection.  PP chapter 8.x.y; catalogue required.
+
+  - legacy_id: "PROT-2.2"
+    domain: "PROT"
+    source_command: "LoadTisaxRequirementsCommand"
+    iso_hint: "A.7.1"
+    status: needs_human_review
+    review_reason: >
+      Camouflage and concealment.  PP chapter 8.x.y; catalogue required.
+
+  # ── Supplier Relationships (SUP) ───────────────────────────────────────────
+  # Domain code: SUP  |  VDA-ISA chapter: 6 (Supplier Relationships)
+  # Source command: SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand
+
+  - legacy_id: "SUP-1.1"
+    domain: "SUP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.19"
+    status: needs_human_review
+    review_reason: >
+      Supplier information security policy.  A.5.19/A.5.22 appear in
+      canonical '6.1.1'.  Probable candidate; catalogue confirmation needed.
+
+  - legacy_id: "SUP-1.2"
+    domain: "SUP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.20"
+    status: needs_human_review
+    review_reason: >
+      Supplier agreements.  A.5.14/A.6.6 appear in '6.1.2'.  A.5.20 not
+      standalone in re-keyed YAML.  Catalogue required.
+
+  - legacy_id: "SUP-2.1"
+    domain: "SUP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.22"
+    status: needs_human_review
+    review_reason: >
+      Monitoring/review of supplier services.  A.5.22 is part of '6.1.1'.
+      Probable candidate (along with SUP-1.1); catalogue required.
+
+  - legacy_id: "SUP-2.2"
+    domain: "SUP"
+    source_command: "SeedTisaxIso27001MappingsCommand + LoadTisaxRequirementsCommand"
+    iso_hint: "A.5.22"
+    status: needs_human_review
+    review_reason: >
+      Changes to supplier services.  Shares A.5.22 with SUP-2.1.
+      Seed command references A.5.23 which is not in re-keyed YAML.
+      Catalogue required.
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §3  TISAX-CONF-SC-x.y scheme (LoadTisaxAl3RequirementsCommand)
+#     Domain code: CONF  (Strictly Confidential / AL3 overlay)
+#
+# These ids were invented by the local AL3 requirements command.  They do
+# NOT correspond to official VDA-ISA control numbers — they represent
+# elaborated sub-requirements for the 'Strictly Confidential' label tier.
+# They must either be re-homed onto the canonical IS/PP/DP controls they
+# overlay (spec §8.1a) or retired in favour of the tier metadata already
+# imported by PR #824.
+# ──────────────────────────────────────────────────────────────────────────────
+
+  - legacy_id: "TISAX-CONF-SC-1.1"
+    domain: "CONF"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.12,A.5.13"
+    status: needs_human_review
+    review_reason: >
+      AL3 Strictly Confidential — data classification overlay.
+      Not an official VDA-ISA control id.  Must be re-homed onto the
+      canonical IS control covering classification (likely 1.3.x range)
+      with the 'very_high' tier metadata from the workbook import.
+      Catalogue required to determine exact canonical id.
+
+  - legacy_id: "TISAX-CONF-SC-1.2"
+    domain: "CONF"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.15,A.5.17,A.5.18"
+    status: needs_human_review
+    review_reason: >
+      AL3 enhanced access control overlay.  Not an official VDA-ISA id.
+      Re-home onto access control canonical ids (4.x.y range) with
+      'very_high' tier.  Catalogue required.
+
+  - legacy_id: "TISAX-CONF-SC-1.3"
+    domain: "CONF"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.24"
+    status: needs_human_review
+    review_reason: >
+      AL3 encryption overlay.  Maps conceptually to canonical '5.1.1'
+      but is NOT a standalone VDA-ISA control.  Re-home + tier metadata.
+
+  - legacy_id: "TISAX-CONF-SC-1.4"
+    domain: "CONF"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.11,A.8.12"
+    status: needs_human_review
+    review_reason: >
+      AL3 DLP overlay.  Not an official VDA-ISA id; re-home with tier.
+      Catalogue required for canonical target.
+
+  - legacy_id: "TISAX-CONF-SC-1.5"
+    domain: "CONF"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.15"
+    status: needs_human_review
+    review_reason: >
+      AL3 enhanced audit logging overlay.  Shares A.8.15 with OPS-4.x
+      cluster.  Re-home onto canonical logging control + tier metadata.
+
+  - legacy_id: "TISAX-CONF-SC-1.6"
+    domain: "CONF"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.10"
+    status: needs_human_review
+    review_reason: >
+      AL3 secure disposal overlay.  A.8.10 not a standalone anchor in
+      re-keyed YAML.  Catalogue required.
+
+  - legacy_id: "TISAX-CONF-SC-1.7"
+    domain: "CONF"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.1,A.7.2,A.7.7"
+    status: needs_human_review
+    review_reason: >
+      AL3 physical security overlay.  Maps to PHY chapter.  Re-home onto
+      canonical physical controls + tier metadata.  Catalogue required.
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §4  Additional AL3-scheme ids (TISAX-AVAIL-VH-*, TISAX-PROTO-*, TISAX-DATA-*,
+#     TISAX-SDATA-*)
+#
+# All produced by LoadTisaxAl3RequirementsCommand.  None are official VDA-ISA
+# control ids.  All need re-homing onto canonical chapter 8 (PP) or chapter 9
+# (DP) ids with appropriate tier metadata.
+# ──────────────────────────────────────────────────────────────────────────────
+
+  # Availability overlays
+  - legacy_id: "TISAX-AVAIL-VH-1.1"
+    domain: "AVAIL"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.29,A.5.30"
+    status: needs_human_review
+    review_reason: >
+      AL3 Very High Availability — BIA overlay.  Not an official VDA-ISA
+      id.  Re-home onto BCM/continuity canonical ids with 'very_high' tier.
+
+  - legacy_id: "TISAX-AVAIL-VH-1.2"
+    domain: "AVAIL"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.30"
+    status: needs_human_review
+    review_reason: >
+      AL3 RTO definition overlay.  Re-home onto BCM canonical ids.
+
+  - legacy_id: "TISAX-AVAIL-VH-1.3"
+    domain: "AVAIL"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.13"
+    status: needs_human_review
+    review_reason: >
+      AL3 RPO definition overlay.  Re-home onto backup/BCM canonical ids.
+
+  - legacy_id: "TISAX-AVAIL-VH-1.4"
+    domain: "AVAIL"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.14"
+    status: needs_human_review
+    review_reason: >
+      AL3 redundant infrastructure overlay.  A.8.14 not standalone in
+      re-keyed YAML.  Catalogue required.
+
+  - legacy_id: "TISAX-AVAIL-VH-1.5"
+    domain: "AVAIL"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.30,A.8.14"
+    status: needs_human_review
+    review_reason: >
+      AL3 DR site overlay.  Re-home onto BCM canonical ids.
+
+  - legacy_id: "TISAX-AVAIL-VH-1.6"
+    domain: "AVAIL"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.30"
+    status: needs_human_review
+    review_reason: >
+      AL3 IT service continuity testing overlay.  Re-home onto BCM ids.
+
+  - legacy_id: "TISAX-AVAIL-VH-1.7"
+    domain: "AVAIL"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.13"
+    status: needs_human_review
+    review_reason: >
+      AL3 backup/restore procedures overlay.  Re-home onto OPS backup ids.
+
+  - legacy_id: "TISAX-AVAIL-VH-1.8"
+    domain: "AVAIL"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.29,A.5.30"
+    status: needs_human_review
+    review_reason: >
+      AL3 crisis management overlay.  Re-home onto BCM canonical ids.
+
+  # Prototype protection general overlays
+  - legacy_id: "TISAX-PROTO-GEN-1.1"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.12,A.5.13"
+    status: needs_human_review
+    review_reason: >
+      Prototype classification system overlay.  Chapter 8 canonical ids
+      (8.x.y); catalogue required.
+
+  - legacy_id: "TISAX-PROTO-GEN-1.2"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.9"
+    status: needs_human_review
+    review_reason: >
+      Prototype inventory overlay.  Chapter 8 canonical ids; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-GEN-1.3"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.7,A.8.1"
+    status: needs_human_review
+    review_reason: >
+      Recording device prohibition overlay.  Chapter 8; catalogue required.
+
+  - legacy_id: "TISAX-PROTO-GEN-1.4"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.11,A.8.12,A.8.24"
+    status: needs_human_review
+    review_reason: >
+      Prototype digital security overlay.  Chapter 8; catalogue required.
+
+  # Proto Parts overlays
+  - legacy_id: "TISAX-PROTO-PARTS-1.1"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.1,A.7.2,A.7.4"
+    status: needs_human_review
+    review_reason: >
+      Secure storage for proto parts overlay.  Chapter 8; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-PARTS-1.2"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.1"
+    status: needs_human_review
+    review_reason: >
+      Proto parts handling procedures overlay.  Chapter 8; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-PARTS-1.3"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.14"
+    status: needs_human_review
+    review_reason: >
+      Proto parts transport security overlay.  Chapter 8; catalogue req.
+
+  # Proto Vehicles overlays
+  - legacy_id: "TISAX-PROTO-VEH-1.1"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.1,A.7.2,A.7.4"
+    status: needs_human_review
+    review_reason: >
+      Secure garage for proto vehicles overlay.  Chapter 8; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-VEH-1.2"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.1"
+    status: needs_human_review
+    review_reason: >
+      Vehicle camouflage requirements overlay.  Chapter 8; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-VEH-1.3"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.1"
+    status: needs_human_review
+    review_reason: >
+      Proto vehicle movement control overlay.  Chapter 8; catalogue req.
+
+  # Test Vehicles overlays
+  - legacy_id: "TISAX-PROTO-TEST-1.1"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.1"
+    status: needs_human_review
+    review_reason: >
+      Test vehicle route planning overlay.  Chapter 8; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-TEST-1.2"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.6.3"
+    status: needs_human_review
+    review_reason: >
+      Test driver security training overlay.  Chapter 8; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-TEST-1.3"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.4"
+    status: needs_human_review
+    review_reason: >
+      Test vehicle GPS/communication overlay.  Chapter 8; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-TEST-1.4"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.24"
+    status: needs_human_review
+    review_reason: >
+      Test vehicle incident response overlay.  Chapter 8; catalogue req.
+
+  # Events & Shootings overlays
+  - legacy_id: "TISAX-PROTO-EVENT-1.1"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.7.1,A.7.2"
+    status: needs_human_review
+    review_reason: >
+      Event venue security assessment overlay.  Chapter 8; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-EVENT-1.2"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.6.2"
+    status: needs_human_review
+    review_reason: >
+      Media personnel vetting overlay.  Chapter 8; catalogue req.
+
+  - legacy_id: "TISAX-PROTO-EVENT-1.3"
+    domain: "PROTO"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.11"
+    status: needs_human_review
+    review_reason: >
+      Photo and video material control overlay.  Chapter 8; catalogue req.
+
+  # Data Protection overlays (TISAX-DATA-*, TISAX-SDATA-*)
+  - legacy_id: "TISAX-DATA-1.1"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.34"
+    status: needs_human_review
+    review_reason: >
+      Data Processing Agreement overlay.  VDA-ISA chapter 9 canonical ids
+      (9.x.y); catalogue required.
+
+  - legacy_id: "TISAX-DATA-1.2"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.34"
+    status: needs_human_review
+    review_reason: >
+      Processing activities documentation overlay.  Chapter 9; catalogue req.
+
+  - legacy_id: "TISAX-DATA-1.3"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.34"
+    status: needs_human_review
+    review_reason: >
+      Data subject rights overlay.  Chapter 9; catalogue required.
+
+  - legacy_id: "TISAX-DATA-1.4"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.24,A.5.26"
+    status: needs_human_review
+    review_reason: >
+      Data breach notification overlay.  Chapter 9; catalogue required.
+
+  - legacy_id: "TISAX-DATA-1.5"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.19,A.5.20"
+    status: needs_human_review
+    review_reason: >
+      Sub-processor management overlay.  Chapter 9; catalogue required.
+
+  - legacy_id: "TISAX-SDATA-1.1"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.34"
+    status: needs_human_review
+    review_reason: >
+      Special categories processing justification overlay.  Chapter 9;
+      catalogue required.
+
+  - legacy_id: "TISAX-SDATA-1.2"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.11,A.8.24,A.5.15"
+    status: needs_human_review
+    review_reason: >
+      Enhanced security for special categories overlay.  Chapter 9;
+      catalogue required.
+
+  - legacy_id: "TISAX-SDATA-1.3"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.34"
+    status: needs_human_review
+    review_reason: >
+      DPIA overlay.  Chapter 9; catalogue required.
+
+  - legacy_id: "TISAX-SDATA-1.4"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.8.11"
+    status: needs_human_review
+    review_reason: >
+      Pseudonymisation/anonymisation overlay.  Chapter 9; catalogue req.
+
+  - legacy_id: "TISAX-SDATA-1.5"
+    domain: "DP"
+    source_command: "LoadTisaxAl3RequirementsCommand"
+    iso_hint: "A.5.34"
+    status: needs_human_review
+    review_reason: >
+      International transfer safeguards overlay.  Chapter 9; catalogue req.
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §5  Summary statistics
+# ──────────────────────────────────────────────────────────────────────────────
+
+summary:
+  total_legacy_ids: 147
+  deterministic:
+    isa_prefix_strip: "runtime rule (no explicit count — matches all 'ISA x.y.z' in DB)"
+    isa_kap_chapter_stubs: 6
+  needs_human_review: 141
+  needs_human_review_breakdown:
+    INF: 12
+    ACC: 11
+    BCM: 2
+    CMP: 7
+    COM: 7
+    CRY: 2
+    DEV: 7
+    HRS: 6
+    INC: 6
+    MOB: 2
+    OPS: 13
+    PHY: 15
+    PROT: 5
+    SUP: 4
+    CONF: 7
+    AVAIL: 8
+    PROTO: 17
+    DP: 10
+  blocker: "requires_licensed_vda_isa_catalogue (ENX-licensed, not redistributable)"
+  action_for_human_reviewer: |
+    Open the licensed VDA-ISA 6.x Excel workbook.  For each entry in
+    'needs_human_review', find the control row in the workbook, read the
+    canonical control number (column A / first column), and fill in:
+      target: "<canonical 1.1.1 number>"
+      target_confirmed_by: "<reviewer name + date>"
+    Remove the 'status: needs_human_review' line once confirmed.
+    Bump 'version' in this file after each batch review.
+  estimated_effort_fte_days: "3-5 (for a person with the licensed VDA-ISA workbook open)"

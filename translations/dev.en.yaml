@@ -1,0 +1,7 @@
+dev:
+    design_system:
+        filter_chip:
+            group_with_hrefs: 'Chip group with hrefs:'
+        wizard:
+            breach:
+                placeholder_description: 'What happened? Which data is affected?'

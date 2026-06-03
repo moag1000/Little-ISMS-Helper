@@ -83,6 +83,11 @@ final class MyDayAggregatorTest extends TestCase
     private MockObject $wizardSessionRepo;
     private MockObject $complianceAnalytics;
     private MockObject $urls;
+    private MockObject $evidenceReverificationRepo;
+    private MockObject $controlRepo;
+    private MockObject $supplierRepo;
+    private MockObject $dpiaRepo;
+    private MockObject $bcPlanRepo;
     private MyDayAggregator $aggregator;
 
     protected function setUp(): void
@@ -105,6 +110,11 @@ final class MyDayAggregatorTest extends TestCase
         $this->managementReviewRepo = $this->createMock(ManagementReviewRepository::class);
         $this->wizardSessionRepo = $this->createMock(WizardSessionRepository::class);
         $this->complianceAnalytics = $this->createMock(ComplianceAnalyticsService::class);
+        $this->evidenceReverificationRepo = $this->createMock(\App\Repository\EvidenceReverificationTaskRepository::class);
+        $this->controlRepo = $this->createMock(\App\Repository\ControlRepository::class);
+        $this->supplierRepo = $this->createMock(\App\Repository\SupplierRepository::class);
+        $this->dpiaRepo = $this->createMock(\App\Repository\DataProtectionImpactAssessmentRepository::class);
+        $this->bcPlanRepo = $this->createMock(\App\Repository\BusinessContinuityPlanRepository::class);
         $this->urls = $this->createMock(UrlGeneratorInterface::class);
 
         $this->aggregator = new MyDayAggregator(
@@ -126,6 +136,11 @@ final class MyDayAggregatorTest extends TestCase
             $this->managementReviewRepo,
             $this->wizardSessionRepo,
             $this->complianceAnalytics,
+            $this->evidenceReverificationRepo,
+            $this->controlRepo,
+            $this->supplierRepo,
+            $this->dpiaRepo,
+            $this->bcPlanRepo,
             $this->urls,
         );
     }

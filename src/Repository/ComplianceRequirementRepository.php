@@ -51,6 +51,39 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find the tenant's assessed TISAX requirements for a framework, for the
+     * audit-freeze snapshot (B2). Scopes to rows that belong to the tenant
+     * (either tenant-uploaded via uploadTenant, or global system rows the tenant
+     * shares) and that carry an assessment (maturityCurrent / assessmentStateDp /
+     * maturityReviewedAt set). Sorted by requirementId for deterministic hashing.
+     *
+     * @return ComplianceRequirement[]
+     */
+    public function findTisaxAssessedByFrameworkAndTenant(
+        ComplianceFramework $complianceFramework,
+        Tenant $tenant,
+    ): array {
+        return $this->createQueryBuilder('cr')
+            ->where('cr.framework = :framework')
+            ->andWhere('(cr.uploadTenant = :tenant OR cr.uploadTenant IS NULL)')
+            ->andWhere(
+                // Parenthesise the OR-group: Doctrine does NOT auto-wrap a single
+                // andWhere() argument, and SQL AND binds tighter than OR — without
+                // these parens the DP/reviewedAt branches escape the framework AND
+                // tenant scope and leak rows from other frameworks/tenants into the
+                // signed freeze snapshot (tenant-isolation defect).
+                '(cr.maturityCurrent IS NOT NULL '
+                . 'OR cr.assessmentStateDp IS NOT NULL '
+                . 'OR cr.maturityReviewedAt IS NOT NULL)'
+            )
+            ->setParameter('framework', $complianceFramework)
+            ->setParameter('tenant', $tenant)
+            ->orderBy('cr.requirementId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find all requirements for a specific compliance framework.
      *
      * @param ComplianceFramework $complianceFramework Compliance framework entity
@@ -86,6 +119,49 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     public function findTopLevelByFramework(ComplianceFramework $complianceFramework): array
     {
         return $this->topLevelQueryBuilder($complianceFramework)
+            ->orderBy('cr.requirementId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * In-scope requirements for the requirement LIST of a single framework.
+     *
+     * Mirrors CoverageCheckService::getCatalogueCoverage scoping so the list and
+     * the coverage % agree on what "in scope" means:
+     *  - BYO / tenant-uploaded framework (TISAX VDA-ISA): the in-scope rows are
+     *    the tenant's OWN uploaded controls, returned REGARDLESS of nesting —
+     *    imported VDA-ISA controls (1.1.1 …) hang as children under the shared
+     *    section skeleton (1.1 …), so the top-level filter would hide them.
+     *  - Shared catalogue framework (ISO/NIS2/…): no per-tenant upload exists, so
+     *    fall back to the framework's own top-level assessable requirements.
+     * Both exclude non-catalogue rows ('section' headers, 'legacy_unmapped'
+     * parked ad-hoc ids) — those are not requirements the user assesses and
+     * previously polluted the list (the "TISAX 1.1" stubs + ACC-/INF- remnants).
+     *
+     * @return ComplianceRequirement[]
+     */
+    public function findInScopeForFrameworkListing(ComplianceFramework $complianceFramework, ?Tenant $tenant): array
+    {
+        $notJunk = "(cr.category IS NULL OR cr.category NOT IN ('section', 'legacy_unmapped'))";
+
+        if ($tenant instanceof Tenant) {
+            $uploaded = $this->createQueryBuilder('cr')
+                ->where('cr.framework = :framework')
+                ->andWhere('cr.uploadTenant = :tenant')
+                ->andWhere($notJunk)
+                ->setParameter('framework', $complianceFramework)
+                ->setParameter('tenant', $tenant)
+                ->orderBy('cr.requirementId', 'ASC')
+                ->getQuery()
+                ->getResult();
+            if ($uploaded !== []) {
+                return $uploaded;
+            }
+        }
+
+        return $this->topLevelQueryBuilder($complianceFramework)
+            ->andWhere($notJunk)
             ->orderBy('cr.requirementId', 'ASC')
             ->getQuery()
             ->getResult();

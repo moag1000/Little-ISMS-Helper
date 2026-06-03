@@ -9,12 +9,13 @@ use App\AlvaHint\AlvaHint;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Import\Mapper\TisaxRequirementMapper;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * Tier-3 info hint: a newer library YAML version exists for an imported framework.
  *
- * Fires when a tenant has imported framework X (BSI-GRUNDSCHUTZ-2024 or TISAX-VDA-ISA-6)
+ * Fires when a tenant has imported framework X (BSI-GRUNDSCHUTZ-2024 or TISAX)
  * but the local YAML fixture has a higher version than the DB record. This signals
  * that the admin should re-run the library import to pick up new Bausteine / controls.
  *
@@ -27,12 +28,16 @@ class LibraryUpdatedRule extends AbstractGlobalAlvaHintRule
 {
     /**
      * Map of framework codes to their local YAML fixture paths (relative to project root).
+     * Key = canonical framework code (post-consolidation).
      *
      * @var array<string, string>
      */
     private const array FRAMEWORK_YAML_PATHS = [
         'BSI-GRUNDSCHUTZ-2024' => 'fixtures/library/frameworks/bsi-it-grundschutz-2024.yaml',
-        'TISAX-VDA-ISA-6' => 'fixtures/library/frameworks/vda-isa-tisax-v6.yaml',
+        // 'TISAX' is the canonical code (§4.1 consolidation, 2026-06-01).
+        // The YAML skeleton still contains code='TISAX-VDA-ISA-6' until the fixture
+        // is updated; VdaIsaImporter normalises it to 'TISAX' at import time.
+        TisaxRequirementMapper::FRAMEWORK_CODE => 'fixtures/library/frameworks/vda-isa-tisax-v6.yaml',
     ];
 
     public function __construct(
@@ -79,6 +84,24 @@ class LibraryUpdatedRule extends AbstractGlobalAlvaHintRule
             }
 
             $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
+
+            // Deprecation-window fallback (§4.1, 2026-06-01): if the canonical code
+            // is not yet in DB (tenant has not run the P3 consolidation migration),
+            // try the legacy alias codes so the hint still fires and prompts re-import.
+            if ($framework === null) {
+                $reverseLegacyCodes = array_keys(
+                    array_filter(
+                        TisaxRequirementMapper::LEGACY_CODE_ALIASES,
+                        static fn (string $canonical): bool => $canonical === $code,
+                    ),
+                );
+                foreach ($reverseLegacyCodes as $legacyCode) {
+                    $framework = $this->frameworkRepository->findOneBy(['code' => $legacyCode]);
+                    if ($framework !== null) {
+                        break;
+                    }
+                }
+            }
 
             if ($framework === null) {
                 // Not yet imported — different hint type; not our concern here.

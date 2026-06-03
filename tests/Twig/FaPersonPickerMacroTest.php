@@ -64,7 +64,7 @@ final class FaPersonPickerMacroTest extends KernelTestCase
         // S17 B1 (#681) renamed "Mandant" → "Organisation" in the DE string,
         // pattern broadened to accept both forms without regressing EN.
         self::assertMatchesRegularExpression(
-            '/(No persons in tenant|Keine Personen im (Mandanten|Organisationen?))/',
+            '/(No persons in tenant|Keine Personen i[mn] (dieser Organisation|Mandanten|Organisationen?))/',
             $output,
         );
     }

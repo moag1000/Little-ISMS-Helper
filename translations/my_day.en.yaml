@@ -23,6 +23,13 @@ my_day:
         audit_checklist_due: 'Audit checklist due'
         change_requests_pending_approval: 'CRs pending approval'
         management_review_upcoming: 'Mgmt review upcoming'
+        evidence_reverification_due: 'Evidence re-verification'
+        control_effectiveness_overdue: 'Control effectiveness overdue'
+        supplier_reassessment_due: 'Supplier reassessment'
+        dpia_review_overdue: 'DPIA review overdue'
+        bc_plan_review_overdue: 'BC plan review overdue'
+        risk_review_overdue: 'Risk review overdue'
+        risk_acceptance_no_expiry: 'Risk acceptance w/o expiry'
         documents_pending_approval_for_me: 'Documents pending approval'
         wizard_overdue: 'Wizard assessments stalled'
         framework_gaps_critical: 'Framework gaps critical'
@@ -44,6 +51,13 @@ my_day:
         audit_checklist_due: 'Audit checklist — due within 7 days'
         change_requests_pending_approval: 'Change requests — pending approval'
         management_review_upcoming: 'Management review — upcoming (90-day window)'
+        evidence_reverification_due: 'Evidence re-verification — due/overdue (Cl. 7.5.3)'
+        control_effectiveness_overdue: 'Control effectiveness review — overdue (Cl. 9.1)'
+        supplier_reassessment_due: 'Supplier reassessment — due (A.5.22)'
+        dpia_review_overdue: 'DPIA review — overdue (GDPR Art. 35)'
+        bc_plan_review_overdue: 'BC plan — review overdue (ISO 22301)'
+        risk_review_overdue: 'Risk review — overdue (Cl. 8.2)'
+        risk_acceptance_no_expiry: 'Risk acceptance — no expiry date (Cl. 6.1.3 e)'
         documents_pending_approval_for_me: 'Documents in review — pending CM approval'
         wizard_overdue: 'Wizard assessments — stalled (90+ days)'
         framework_gaps_critical: 'Framework coverage gaps — critical (< 60 %)'
@@ -83,6 +97,24 @@ my_day:
 
     item:
         due: 'Due'
+        overdue_by: '%days% d overdue'
+        due_in: 'due in %days% d'
+        hours_left: '%hours% h left (72h deadline)'
+        sla_breached: '72h deadline missed!'
+
+    hint:
+        four_eyes: 'You confirm as the second person (segregation of duties, four-eyes).'
+        dsrs: 'Data-subject request (DSR) — access/erasure under GDPR, mind the deadline.'
+        risk_acceptance_expiring: 'Consciously accepted residual risk — acceptance is expiring, re-decide.'
+        risk_acceptance_no_expiry: 'Accepted risk with no expiry date — missing review trigger (audit finding).'
+        wizard_overdue: 'A setup/assessment that was started but never finished.'
+        framework_gaps_critical: 'A framework with critically low coverage (< 60%).'
+        data_breaches_72h_ticking: 'Data breach — statutory 72h notification deadline (GDPR Art. 33).'
+        evidence_reverification_due: 'Evidence must be re-confirmed as current (Cl. 7.5.3).'
+        control_effectiveness_overdue: 'Control effectiveness must be reviewed (Cl. 9.1).'
+
+    tiles:
+        all_clear: '%count% more categories with nothing to do'
 
     priority:
         high: 'High'
