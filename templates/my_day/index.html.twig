@@ -73,11 +73,11 @@
 
 <main class="fa-aurora-surface my-day">
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-inbox', label: 'my_day.badge'|trans },
-        title:    'my_day.title'|trans,
+        badge:    { icon: 'nav-inbox', label: 'my_day.badge'|trans({}, 'my_day') },
+        title:    'my_day.title'|trans({}, 'my_day'),
         subtitle: 'my_day.subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}, 'my_day'),
         actions: [
-            { label: 'my_day.action.standard_dashboard'|trans, variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
+            { label: 'my_day.action.standard_dashboard'|trans({}, 'my_day'), variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
         ]
     }) }}
 
@@ -85,8 +85,8 @@
         <div class="my-4">
             {{ _fa_empty_state.render({
                 mood: 'happy',
-                title: 'my_day.empty.title'|trans,
-                text: 'my_day.empty.text'|trans,
+                title: 'my_day.empty.title'|trans({}, 'my_day'),
+                text: 'my_day.empty.text'|trans({}, 'my_day'),
             }) }}
         </div>
     {% else %}
@@ -98,7 +98,7 @@
         {% for c in activeCategories %}
             {{ _fa_feature_card.render({
                 icon: c.icon,
-                label: ('my_day.kpi.' ~ c.key)|trans,
+                label: ('my_day.kpi.' ~ c.key)|trans({}, 'my_day'),
                 value: c.count,
                 variant: c.tone,
                 href: '#' ~ c.anchor,
@@ -108,7 +108,7 @@
     {% if zeroCount > 0 %}
         <p class="text-muted small mb-4">
             <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-            {{ 'my_day.tiles.all_clear'|trans({'%count%': zeroCount}) }}
+            {{ 'my_day.tiles.all_clear'|trans({'%count%': zeroCount}, 'my_day') }}
         </p>
     {% endif %}
 
@@ -122,10 +122,10 @@
             <summary class="fa-section__header my-day-section__summary">
                 <span class="fa-section__title d-flex align-items-center gap-2">
                     <i class="fa-icon fa-icon--{{ c.icon }}" aria-hidden="true"></i>
-                    {{ ('my_day.section.' ~ c.key)|trans }}
+                    {{ ('my_day.section.' ~ c.key)|trans({}, 'my_day') }}
                     {% if c.key in hinted %}
                         <i class="fa-icon fa-icon--nav-info-circle text-muted" style="font-size:.8em;"
-                           title="{{ ('my_day.hint.' ~ c.key)|trans }}" aria-label="{{ ('my_day.hint.' ~ c.key)|trans }}"></i>
+                           title="{{ ('my_day.hint.' ~ c.key)|trans({}, 'my_day') }}" aria-label="{{ ('my_day.hint.' ~ c.key)|trans({}, 'my_day') }}"></i>
                     {% endif %}
                     {{ pill.render(c.count, c.tone == 'danger' ? 'danger' : 'neutral', {class: 'ms-1'}) }}
                 </span>
@@ -159,15 +159,15 @@
                                         {# GDPR Art. 33 — the one place where hours matter. #}
                                         {% set hoursLeft = (secsLeft / 3600)|round(0, 'floor') %}
                                         <small class="d-block fw-semibold {{ overdue ? 'text-danger' : (hoursLeft < 24 ? 'text-danger' : 'text-warning') }}">
-                                            {% if overdue %}{{ 'my_day.item.sla_breached'|trans }}
-                                            {% else %}{{ 'my_day.item.hours_left'|trans({'%hours%': hoursLeft}) }}{% endif %}
+                                            {% if overdue %}{{ 'my_day.item.sla_breached'|trans({}, 'my_day') }}
+                                            {% else %}{{ 'my_day.item.hours_left'|trans({'%hours%': hoursLeft}, 'my_day') }}{% endif %}
                                         </small>
                                     {% else %}
                                         {% set daysAbs = (secsLeft / 86400)|abs|round(0, 'floor') %}
                                         <small class="d-block {{ overdue ? 'text-danger fw-semibold' : 'text-muted' }}">
                                             {{ item.due_date|date('d.m.Y') }} —
-                                            {% if overdue %}{{ 'my_day.item.overdue_by'|trans({'%days%': daysAbs}) }}
-                                            {% else %}{{ 'my_day.item.due_in'|trans({'%days%': daysAbs}) }}{% endif %}
+                                            {% if overdue %}{{ 'my_day.item.overdue_by'|trans({'%days%': daysAbs}, 'my_day') }}
+                                            {% else %}{{ 'my_day.item.due_in'|trans({'%days%': daysAbs}, 'my_day') }}{% endif %}
                                         </small>
                                     {% endif %}
                                 {% endif %}
@@ -181,9 +181,9 @@
                                     {{ pill.render(item.badge, pillTone) }}
                                 {% endif %}
                                 {% if item.priority == 'high' %}
-                                    {{ pill.render('my_day.priority.high'|trans, 'danger', {class: 'ms-1'}) }}
+                                    {{ pill.render('my_day.priority.high'|trans({}, 'my_day'), 'danger', {class: 'ms-1'}) }}
                                 {% elseif item.priority == 'medium' %}
-                                    {{ pill.render('my_day.priority.medium'|trans, 'warning', {class: 'ms-1'}) }}
+                                    {{ pill.render('my_day.priority.medium'|trans({}, 'my_day'), 'warning', {class: 'ms-1'}) }}
                                 {% endif %}
                             </div>
                         </a>
