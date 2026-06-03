@@ -1,0 +1,53 @@
+{#
+  Turbo-Frame HTML fragment for the BCM statistics tiles.
+
+  Rendered by BusinessProcessController::statsApi() when the request carries
+  a "Turbo-Frame: bcm-stats" header (lazy-loaded <turbo-frame> from index.html.twig).
+  The outer <turbo-frame> wrapper with the matching id is required so Turbo can
+  swap only the frame content without replacing the full page.
+
+  Stats keys (passed from controller):
+    total                         int
+    by_criticality.critical       int
+    avg_rto                       float
+    processes_with_high_risks     int
+#}
+{% trans_default_domain 'business_process' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+<turbo-frame id="bcm-stats">
+    <div class="row mb-4">
+        <div class="col-md-3">
+            {{ _fa_feature_card.render({
+                label: 'business_process.index.stats.total'|trans({}, 'business_process'),
+                value: stats.total,
+                hint: 'business_process.index.stats.total_subtitle'|trans({}, 'business_process'),
+                variant: 'primary'
+            }) }}
+        </div>
+        <div class="col-md-3">
+            {{ _fa_feature_card.render({
+                label: 'business_process.index.stats.critical'|trans({}, 'business_process'),
+                value: stats.by_criticality.critical,
+                hint: 'business_process.index.stats.critical_subtitle'|trans({}, 'business_process'),
+                variant: 'danger'
+            }) }}
+        </div>
+        <div class="col-md-3">
+            {{ _fa_feature_card.render({
+                label: 'business_process.index.stats.avg_rto'|trans({}, 'business_process'),
+                value: stats.avg_rto ~ 'business_process.index.stats.rto_unit'|trans({}, 'business_process'),
+                hint: 'business_process.index.stats.rto_subtitle'|trans({}, 'business_process'),
+                variant: 'info'
+            }) }}
+        </div>
+        <div class="col-md-3">
+            {{ _fa_feature_card.render({
+                label: 'business_process.index.stats.with_risks'|trans({}, 'business_process'),
+                value: stats.processes_with_high_risks,
+                hint: 'business_process.index.stats.with_risks_subtitle'|trans({}, 'business_process'),
+                variant: 'warning'
+            }) }}
+        </div>
+    </div>
+</turbo-frame>

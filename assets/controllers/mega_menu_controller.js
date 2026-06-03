@@ -32,31 +32,48 @@ export default class extends Controller {
     static targets = ['trigger', 'panel'];
 
     connect() {
+        // Store bound refs once so the same reference can be used in both
+        // addEventListener and removeEventListener. Creating a new .bind() in
+        // disconnect() would produce a different function object — never matching
+        // the one added here — causing a document-level listener leak on every
+        // Turbo navigation.
+        this._boundKeyboard         = this.handleKeyboard.bind(this);
+        this._boundGlobalKeydown    = this.handleGlobalKeydown.bind(this);
+        this._boundOutsideClick     = this.handleOutsideClick.bind(this);
+        this._handlePanelKeyboardBound = this.handlePanelKeyboard.bind(this);
+        this._boundMouseLeave       = this.handleMouseLeave.bind(this);
+
         // Keyboard navigation on sidebar triggers (ArrowUp/Down/Left/Right, Home, End, Enter, Space)
-        this.element.addEventListener('keydown', this.handleKeyboard.bind(this));
+        this.element.addEventListener('keydown', this._boundKeyboard);
 
         // Global ESC key + outside-click to close
-        document.addEventListener('keydown', this.handleGlobalKeydown.bind(this));
-        document.addEventListener('click', this.handleOutsideClick.bind(this));
+        document.addEventListener('keydown', this._boundGlobalKeydown);
+        document.addEventListener('click', this._boundOutsideClick);
 
         // Phase 4.1: Keyboard navigation inside open flyout panels (ArrowUp/Down within sub-panel)
-        this._handlePanelKeyboardBound = this.handlePanelKeyboard.bind(this);
         document.addEventListener('keydown', this._handlePanelKeyboardBound);
 
-        // Hover: open flyout on mouseenter over L1 trigger
+        // Hover: open flyout on mouseenter over L1 trigger — store per-trigger
+        // bound refs so they can be removed individually in disconnect().
+        this._boundMouseEnterMap = new WeakMap();
         this.triggerTargets.forEach(trigger => {
-            trigger.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
+            const bound = this.handleMouseEnter.bind(this);
+            this._boundMouseEnterMap.set(trigger, bound);
+            trigger.addEventListener('mouseenter', bound);
         });
 
         // Hover: close when leaving the sidebar
-        const sidebar = document.querySelector('.app__sidebar, .app-sidebar');
-        if (sidebar) {
-            sidebar.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
+        this._sidebar = document.querySelector('.app__sidebar, .app-sidebar');
+        if (this._sidebar) {
+            this._sidebar.addEventListener('mouseleave', this._boundMouseLeave);
         }
 
         // Hover: also handle mouseleave on individual flyout panels
+        this._boundPanelMouseLeaveMap = new WeakMap();
         this.panelTargets.forEach(panel => {
-            panel.addEventListener('mouseleave', this.handlePanelMouseLeave.bind(this));
+            const bound = this.handlePanelMouseLeave.bind(this);
+            this._boundPanelMouseLeaveMap.set(panel, bound);
+            panel.addEventListener('mouseleave', bound);
         });
 
         // Restore density from localStorage (initial render — density-toggle-controller also does this)
@@ -64,10 +81,33 @@ export default class extends Controller {
     }
 
     disconnect() {
-        document.removeEventListener('keydown', this.handleGlobalKeydown.bind(this));
-        document.removeEventListener('click', this.handleOutsideClick.bind(this));
-        if (this._handlePanelKeyboardBound) {
-            document.removeEventListener('keydown', this._handlePanelKeyboardBound);
+        this.element.removeEventListener('keydown', this._boundKeyboard);
+        document.removeEventListener('keydown', this._boundGlobalKeydown);
+        document.removeEventListener('click', this._boundOutsideClick);
+        document.removeEventListener('keydown', this._handlePanelKeyboardBound);
+
+        // Remove per-trigger mouseenter listeners using stored bound refs
+        if (this._boundMouseEnterMap) {
+            this.triggerTargets.forEach(trigger => {
+                const bound = this._boundMouseEnterMap.get(trigger);
+                if (bound) trigger.removeEventListener('mouseenter', bound);
+            });
+            this._boundMouseEnterMap = null;
+        }
+
+        // Remove sidebar mouseleave listener
+        if (this._sidebar) {
+            this._sidebar.removeEventListener('mouseleave', this._boundMouseLeave);
+            this._sidebar = null;
+        }
+
+        // Remove per-panel mouseleave listeners using stored bound refs
+        if (this._boundPanelMouseLeaveMap) {
+            this.panelTargets.forEach(panel => {
+                const bound = this._boundPanelMouseLeaveMap.get(panel);
+                if (bound) panel.removeEventListener('mouseleave', bound);
+            });
+            this._boundPanelMouseLeaveMap = null;
         }
     }
 
