@@ -1529,10 +1529,10 @@ class RiskController extends AbstractController
                     (string) $r->getId(),
                     (string) $r->getTitle(),
                     (string) $r->getCategory(),
-                    (string) ($r->getStatus()?->value ?? ''),
+                    (string) ($r->getStatus() !== null ? $r->getStatus()->value : ''),
                     (string) $r->getProbability(),
                     (string) $r->getImpact(),
-                    (string) ($r->getTreatmentStrategy()?->value ?? ''),
+                    (string) ($r->getTreatmentStrategy() !== null ? $r->getTreatmentStrategy()->value : ''),
                     (string) ($r->getRiskOwnerName() ?? ''),
                 ];
             },

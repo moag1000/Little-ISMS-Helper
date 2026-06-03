@@ -56,10 +56,8 @@ final class TisaxRebuildCatalogueCommand extends Command
     private const FW_LEGACY = 132;
 
     public function __construct(
-        private readonly EntityManagerInterface $em,
         private readonly Connection $conn,
         private readonly TisaxCatalogueProvider $catalogue,
-        private readonly ComplianceFrameworkRepository $frameworkRepository,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -269,7 +267,7 @@ final class TisaxRebuildCatalogueCommand extends Command
     private function officialControlIds(): array
     {
         $ids = [];
-        foreach (($this->catalogue->getMetadata() !== [] ? $this->yamlRequirements() : []) as $r) {
+        foreach ($this->yamlRequirements() as $r) {
             if (isset($r['controlId'])) {
                 $ids[] = (string) $r['controlId'];
             }

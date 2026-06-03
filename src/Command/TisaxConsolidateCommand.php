@@ -772,7 +772,7 @@ final class TisaxConsolidateCommand extends Command
      */
     private function dimensionCategory(string $controlId, ?string $fallback = null): string
     {
-        $domain = (int) (explode('.', $controlId)[0] ?? 0);
+        $domain = (int) explode('.', $controlId)[0];
         return match (true) {
             $domain === 9            => 'data_protection',
             $domain === 8            => 'prototype_protection',

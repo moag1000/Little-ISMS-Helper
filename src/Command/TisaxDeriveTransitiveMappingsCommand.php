@@ -133,7 +133,7 @@ final class TisaxDeriveTransitiveMappingsCommand extends Command
             ++$created;
             if ($created % 200 === 0) {
                 $this->em->flush();
-                $this->em->clear(ComplianceMapping::class);
+                $this->em->clear();
             }
         }
         if ($force) {

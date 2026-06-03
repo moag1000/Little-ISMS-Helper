@@ -31,7 +31,6 @@ final class TisaxSyncFulfillmentCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly TisaxFulfillmentSync $sync,
-        private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
     ) {
         parent::__construct();
     }
