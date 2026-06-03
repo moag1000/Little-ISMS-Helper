@@ -243,6 +243,20 @@ Follow-up read-only pass hunting unintentionally dead or incorrectly-implemented
 
 **Notes.** The 5 dead services (DC-2/3/4/5/7) appear in every DI `removed-ids.php` snapshot (never injected in any env) and in no Twig/route/YAML/handler. They could be wired later — current state is "compiles, nothing calls it." Removal is a product decision, **not done here.** Deprecated `WorkflowAutoProgressionService` callers are intentional bridges (v4.0 removal), not flagged.
 
+### Dead-service investigation (2026-06-03)
+
+Per-service probe — git history (`--diff-filter=A`, `git log -S` across controllers/commands), doc/roadmap mentions, and historical injection. **Result: none of the 5 was ever wired** (zero historical injection in any controller/command). Each was built + unit-tested in isolation during the Phase 6/7 push (Nov-Dec 2025); the consuming UI/endpoint never landed. No open roadmap item proposes wiring any of them (ROADMAP only ticks their *tests* as done). Classification + recommendation:
+
+| Service | Added | Footprint | Finding | Recommendation |
+|---|---|---|---|---|
+| `RiskIntelligenceService` | 2025-11-07 (#26) | **Misrepresented as live** — `docs/architecture/SOLUTION_DESCRIPTION.md:139,145` presents it as the engine for "Restrisiken nach Control-Implementierung", but it is unwired AND carries the DC-1 bug (`findRelatedRisks()` always `[]`) | **Decide:** wire it (fix DC-1 first) **or** delete + correct SOLUTION_DESCRIPTION so the architecture doc stops claiming a feature that isn't connected |
+| `WizardProgressService` | 2025-12-16 (Phase 7E) | Zero docs, zero refs, never injected — pure orphan (wizard-session feature whose wiring never shipped) | **Safe to delete** (lowest-risk; no footprint anywhere) |
+| `SiemExportService` | 2025-11-08 | Orphan, but SIEM log-export is a plausibly-wanted security feature; carries the DC-6 bug (date params ignored) | **Keep as wire-candidate** (fix DC-6 when wiring to a `/admin/security/export` endpoint) **or** delete if SIEM export is out of scope |
+| `RiskProbabilityAdjustmentService` | 2025-11-10 (Phase 6F-D) | Orphan risk-calc helper; never injected | Delete **or** wire into `RiskService` (data-reuse "probability from incident frequency") |
+| `RiskImpactCalculatorService` | 2025-11-10 (Phase 6F-D) | Orphan risk-calc helper; ROADMAP ticks its test only | Delete **or** wire into `RiskService` |
+
+No deletion performed — these are product calls. The cheap, unambiguous one is `WizardProgressService` (delete). `RiskIntelligenceService` needs a doc-accuracy decision regardless of wire-vs-delete.
+
 ---
 
 ## Remediation Log
@@ -253,7 +267,11 @@ Fixes landed after the audit (each its own PR, CI-green, only-changed-files):
 - **#835 — Turbo UX:** TB-1 mega_menu listener leak, TB-2/3 missing bulk/tag Stimulus methods, TB-4 BCM stats turbo-frame content-negotiation, TB-5 orphaned stream templates deleted.
 - **#836 — Backend correctness:** S-9 `EvidenceVersioningService` session async-guard; DC-8/9/10/11/12 dead-logic cleanup.
 
-**Still open (backlog, your call):** dead-service removal vs wiring (DC-2/3/4/5/7 + the DC-1/DC-6 logic bugs inside them); Bucket 2 structural (S-1 container-get, S-2 commands-as-services, S-3 drop deprecated WAPS, E-6 tenant-scope ComplianceMapping, C-7 fat-controller services); Bucket 3 sweeps (S-4 `#[AsEventListener]`, S-5 `#[Autowire]` project_dir, TB-6/7/8 turbo:load accumulation, TB-9 audit `data-turbo` removal, T-1/2/3 frontend Stimulus, etc.).
+**Paused on 2026-06-03 (deliberate stop — not abandoned).** The following remain for a future session:
+
+- **Dead services** (DC-2/3/4/5/7): investigated (see *Dead-service investigation* in §8) — none ever wired. Decisions pending per service; the unambiguous one is `WizardProgressService` (safe delete) and `RiskIntelligenceService` (correct or remove the SOLUTION_DESCRIPTION claim).
+- **Bucket 2 — structural:** S-1 container-get (`WorkflowOverlayController`), S-3 drop deprecated `WorkflowAutoProgressionService` (4 callers), S-2 commands-as-services → extract `RequirementsLoaderService` (15), E-6 tenant-scope `ComplianceMapping` (unguarded `findAll()`), C-7 fat-controller → service extraction (Vulnerability / BusinessContinuityPlan / CorrectiveAction).
+- **Bucket 3 — sweeps:** S-4 `#[AsEventListener]` (19), S-5 `#[Autowire('%kernel.project_dir%')]` (40), C-3 CSRF attribute (static-token subset), TB-6 `turbo:load` accumulation (39), TB-7 Chart re-init guards (5), TB-8 tooltip dispose (5), TB-9 audit `data-turbo="false"` removal (7), TB-10 redundant download `data-turbo`, TB-13 inline `<script>`→Stimulus (53), T-8 inline `<style>`→tokens (60), P-6 `match`, P-7 `#[\Override]`, P-8 `createStub`, T-11 a11y `aria-label`.
 
 ---
 
