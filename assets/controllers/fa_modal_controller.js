@@ -134,14 +134,20 @@ export default class extends Controller {
         const isOpen = this.openValue;
 
         this.element.classList.toggle('is-open', isOpen);
-        // Use `inert` (not `aria-hidden`) so that focused descendants inside a
-        // closed modal don't trigger the "Blocked aria-hidden on element with
-        // focused descendant" browser a11y violation (WAI-ARIA 1.2 §6.6.1).
-        // `inert` removes focusability AND hides from the a11y tree in one step.
+        // Closed: `inert` removes focusability AND hides from the a11y tree, so a
+        // focused descendant can never sit inside an aria-hidden ancestor (the
+        // "Blocked aria-hidden on element with focused descendant" violation,
+        // WAI-ARIA 1.2 §6.6.1). We also mirror aria-hidden for older AT.
+        // Open: BOTH must be cleared — templates render the shell with a static
+        // aria-hidden="true", and leaving it set hides the *open* dialog from
+        // screen readers (and re-triggers the focus violation once the close
+        // button is focused). This is the actual bug being fixed.
         if (isOpen) {
             this.element.removeAttribute('inert');
+            this.element.removeAttribute('aria-hidden');
         } else {
             this.element.setAttribute('inert', '');
+            this.element.setAttribute('aria-hidden', 'true');
         }
 
         if (isOpen) {
