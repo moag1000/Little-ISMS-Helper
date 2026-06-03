@@ -65,15 +65,27 @@ class ComplianceRequirementController extends AbstractController
         $absicherungsStufe = $request->query->get('absicherungs_stufe');
         $anforderungsTyp = $request->query->get('anforderungs_typ');
 
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
+        }
+
         if ($frameworkId) {
             $framework = $this->complianceFrameworkRepository->find($frameworkId);
-            // Top-level only — sub-requirements appear nested under their parent
-            // on the detail view, not as standalone list rows.
+            // In-scope rows for THIS framework. For a BYO framework (TISAX) this is
+            // the tenant's uploaded controls regardless of nesting; for shared
+            // catalogues it is the top-level assessable requirements. Both exclude
+            // 'section' headers + 'legacy_unmapped' parked ids. See repo method.
             $requirements = $framework
-                ? $this->complianceRequirementRepository->findTopLevelByFramework($framework)
+                ? $this->complianceRequirementRepository->findInScopeForFrameworkListing($framework, $tenant instanceof Tenant ? $tenant : null)
                 : [];
         } else {
-            $requirements = $this->complianceRequirementRepository->findAllTopLevel();
+            // Global index: top-level rows across every framework, minus the
+            // non-assessable VDA-ISA 'section' / 'legacy_unmapped' rows.
+            $requirements = array_values(array_filter(
+                $this->complianceRequirementRepository->findAllTopLevel(),
+                static fn (ComplianceRequirement $r): bool => !in_array($r->getCategory(), ['section', 'legacy_unmapped'], true),
+            ));
         }
 
         // BSI 3.3: Filter by Absicherungsstufe (basis/standard/kern) and Anforderungstyp (MUSS/SOLLTE/KANN)
@@ -91,10 +103,6 @@ class ComplianceRequirementController extends AbstractController
         }
 
         $frameworks = $this->complianceFrameworkRepository->findAll();
-        $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
-        }
 
         // Load tenant-specific fulfillments for all requirements (batch)
         // For SUPER_ADMIN without tenant, show empty fulfillments

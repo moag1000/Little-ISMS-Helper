@@ -9,249 +9,167 @@
 {% import '_components/_status_pill.html.twig' as pill %}
 
 {% block body %}
+{# Category metadata — single source for both the KPI tiles and the accordion
+   sections. tone drives the tile colour AND whether the section auto-expands
+   (danger = urgent → open by default; everything else collapsed to a counter,
+   so a junior is not faced with 20 open lists). Display density is the global
+   body[data-density] toggle. #}
+{% set meta = {
+    'workflows_pending':                  { icon: 'ui-undo',                tone: 'warning' },
+    'workflows_overdue':                  { icon: 'status-critical',        tone: 'danger'  },
+    'four_eyes':                          { icon: 'nav-people',             tone: 'warning' },
+    'acknowledgements':                   { icon: 'ui-check',               tone: 'primary' },
+    'findings':                           { icon: 'ui-search',              tone: 'warning' },
+    'dsrs':                               { icon: 'file-person',            tone: 'danger'  },
+    'corrective_actions_overdue':         { icon: 'ui-hourglass',           tone: 'danger'  },
+    'risk_acceptance_expiring':           { icon: 'nav-shield-alert',       tone: 'warning' },
+    'documents_review_overdue':           { icon: 'nav-file-earmark-text',  tone: 'danger'  },
+    'trainings_pending':                  { icon: 'nav-mortarboard',        tone: 'primary' },
+    'incidents_open_assigned':            { icon: 'status-critical',        tone: 'danger'  },
+    'data_breaches_72h_ticking':          { icon: 'nav-shield-alert',       tone: 'danger'  },
+    'vulnerabilities_critical_unpatched': { icon: 'bug',                    tone: 'warning' },
+    'audit_checklist_due':                { icon: 'nav-clipboard-check',    tone: 'primary' },
+    'change_requests_pending_approval':   { icon: 'util-refresh',           tone: 'primary' },
+    'management_review_upcoming':         { icon: 'nav-clipboard-data',     tone: 'primary' },
+    'evidence_reverification_due':        { icon: 'nav-clipboard-check',    tone: 'danger'  },
+    'control_effectiveness_overdue':      { icon: 'ui-search',              tone: 'danger'  },
+    'supplier_reassessment_due':          { icon: 'nav-truck',              tone: 'warning' },
+    'dpia_review_overdue':                { icon: 'file-person',            tone: 'danger'  },
+    'bc_plan_review_overdue':             { icon: 'util-refresh',           tone: 'warning' },
+    'risk_review_overdue':                { icon: 'nav-shield-alert',       tone: 'warning' },
+    'risk_acceptance_no_expiry':          { icon: 'nav-shield-alert',       tone: 'danger'  },
+    'documents_pending_approval_for_me':  { icon: 'nav-file-check',         tone: 'warning' },
+    'wizard_overdue':                     { icon: 'ui-hourglass',           tone: 'warning' },
+    'framework_gaps_critical':            { icon: 'nav-bar-chart',          tone: 'danger'  },
+} %}
+{# Ordered category list. Items come from inbox.<key>; the three CM-only buckets
+   default to [] when the aggregator did not provide them. #}
+{% set order = ['workflows_pending','workflows_overdue','four_eyes','acknowledgements','findings','dsrs','corrective_actions_overdue','risk_acceptance_expiring','risk_acceptance_no_expiry','risk_review_overdue','documents_review_overdue','evidence_reverification_due','control_effectiveness_overdue','supplier_reassessment_due','dpia_review_overdue','bc_plan_review_overdue','trainings_pending','incidents_open_assigned','data_breaches_72h_ticking','vulnerabilities_critical_unpatched','audit_checklist_due','change_requests_pending_approval','management_review_upcoming','documents_pending_approval_for_me','wizard_overdue','framework_gaps_critical'] %}
+{# Build the active list and the zero counter in one pass — avoids relying on a
+   lazy |filter iterator being consumed twice. #}
+{# Jargon categories that get a hover-tooltip (junior aid) — the ones a 9001-
+   background user would not recognise. The plain ones (trainings, incidents …)
+   need none. #}
+{% set hinted = ['four_eyes','dsrs','risk_acceptance_expiring','risk_acceptance_no_expiry','wizard_overdue','framework_gaps_critical','data_breaches_72h_ticking','evidence_reverification_due','control_effectiveness_overdue'] %}
+{% set activeCategories = [] %}
+{% set zeroCount = 0 %}
+{% for key in order %}
+    {% set items = attribute(inbox, key) ?? [] %}
+    {% if items|length > 0 %}
+        {# Triage sort: overdue/sooner-due first; items without a date sink to the bottom. #}
+        {% set items = items|sort((a, b) => (a.due_date ? a.due_date|date('U') : 99999999999) <=> (b.due_date ? b.due_date|date('U') : 99999999999)) %}
+        {% set activeCategories = activeCategories|merge([{
+            key: key,
+            anchor: key|replace({'_': '-'}),
+            icon: meta[key].icon,
+            tone: meta[key].tone,
+            items: items,
+            count: items|length,
+        }]) %}
+    {% else %}
+        {% set zeroCount = zeroCount + 1 %}
+    {% endif %}
+{% endfor %}
+
 <main class="fa-aurora-surface my-day">
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-inbox', label: 'my_day.badge'|trans },
-        title:    'my_day.title'|trans,
+        badge:    { icon: 'nav-inbox', label: 'my_day.badge'|trans({}, 'my_day') },
+        title:    'my_day.title'|trans({}, 'my_day'),
         subtitle: 'my_day.subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}, 'my_day'),
         actions: [
-            { label: 'my_day.action.standard_dashboard'|trans, variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
+            { label: 'my_day.action.standard_dashboard'|trans({}, 'my_day'), variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
         ]
     }) }}
-
-    {# KPI tile bar — Counts per category #}
-    <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
-        {{ _fa_feature_card.render({
-            icon: 'ui-undo',
-            label: 'my_day.kpi.workflows_pending'|trans,
-            value: inbox.summary.workflows_pending,
-            variant: inbox.summary.workflows_pending > 0 ? 'warning' : 'success',
-            href: '#workflows-pending'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'status-critical',
-            label: 'my_day.kpi.workflows_overdue'|trans,
-            value: inbox.summary.workflows_overdue,
-            variant: inbox.summary.workflows_overdue > 0 ? 'danger' : 'success',
-            href: '#workflows-overdue'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'nav-people',
-            label: 'my_day.kpi.four_eyes'|trans,
-            value: inbox.summary.four_eyes,
-            variant: inbox.summary.four_eyes > 0 ? 'warning' : 'success',
-            href: '#four-eyes'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'ui-check',
-            label: 'my_day.kpi.acknowledgements'|trans,
-            value: inbox.summary.acknowledgements,
-            variant: inbox.summary.acknowledgements > 0 ? 'primary' : 'success',
-            href: '#acknowledgements'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'ui-search',
-            label: 'my_day.kpi.findings'|trans,
-            value: inbox.summary.findings,
-            variant: inbox.summary.findings > 0 ? 'warning' : 'success',
-            href: '#findings'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'file-person',
-            label: 'my_day.kpi.dsrs'|trans,
-            value: inbox.summary.dsrs,
-            variant: inbox.summary.dsrs > 0 ? 'danger' : 'success',
-            href: '#dsrs'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'ui-hourglass',
-            label: 'my_day.kpi.corrective_actions_overdue'|trans,
-            value: inbox.summary.corrective_actions_overdue,
-            variant: inbox.summary.corrective_actions_overdue > 0 ? 'danger' : 'success',
-            href: '#corrective-actions'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'nav-shield-alert',
-            label: 'my_day.kpi.risk_acceptance_expiring'|trans,
-            value: inbox.summary.risk_acceptance_expiring,
-            variant: inbox.summary.risk_acceptance_expiring > 0 ? 'warning' : 'success',
-            href: '#risk-acceptance-expiring'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'nav-file-earmark-text',
-            label: 'my_day.kpi.documents_review_overdue'|trans,
-            value: inbox.summary.documents_review_overdue,
-            variant: inbox.summary.documents_review_overdue > 0 ? 'danger' : 'success',
-            href: '#documents-review-overdue'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'nav-mortarboard',
-            label: 'my_day.kpi.trainings_pending'|trans,
-            value: inbox.summary.trainings_pending,
-            variant: inbox.summary.trainings_pending > 0 ? 'primary' : 'success',
-            href: '#trainings-pending'
-        }) }}
-        {# Audit V4 V4-LB-1 Round-2 — 6 ISB-Tagesgeschäft tiles #}
-        {{ _fa_feature_card.render({
-            icon: 'status-critical',
-            label: 'my_day.kpi.incidents_open_assigned'|trans,
-            value: inbox.summary.incidents_open_assigned,
-            variant: inbox.summary.incidents_open_assigned > 0 ? 'danger' : 'success',
-            href: '#incidents-open-assigned'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'nav-shield-alert',
-            label: 'my_day.kpi.data_breaches_72h_ticking'|trans,
-            value: inbox.summary.data_breaches_72h_ticking,
-            variant: inbox.summary.data_breaches_72h_ticking > 0 ? 'danger' : 'success',
-            href: '#data-breaches-72h-ticking'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'bug',
-            label: 'my_day.kpi.vulnerabilities_critical_unpatched'|trans,
-            value: inbox.summary.vulnerabilities_critical_unpatched,
-            variant: inbox.summary.vulnerabilities_critical_unpatched > 0 ? 'warning' : 'success',
-            href: '#vulnerabilities-critical-unpatched'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'nav-clipboard-check',
-            label: 'my_day.kpi.audit_checklist_due'|trans,
-            value: inbox.summary.audit_checklist_due,
-            variant: inbox.summary.audit_checklist_due > 0 ? 'primary' : 'success',
-            href: '#audit-checklist-due'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'util-refresh',
-            label: 'my_day.kpi.change_requests_pending_approval'|trans,
-            value: inbox.summary.change_requests_pending_approval,
-            variant: inbox.summary.change_requests_pending_approval > 0 ? 'primary' : 'success',
-            href: '#change-requests-pending-approval'
-        }) }}
-        {{ _fa_feature_card.render({
-            icon: 'nav-clipboard-data',
-            label: 'my_day.kpi.management_review_upcoming'|trans,
-            value: inbox.summary.management_review_upcoming,
-            variant: inbox.summary.management_review_upcoming > 0 ? 'success' : 'success',
-            href: '#management-review-upcoming'
-        }) }}
-        {# V4-EF-7 — Compliance-Manager CM-Buckets (only shown when non-zero) #}
-        {% if inbox.summary.documents_pending_approval_for_me is defined %}
-        {{ _fa_feature_card.render({
-            icon: 'nav-file-check',
-            label: 'my_day.kpi.documents_pending_approval_for_me'|trans,
-            value: inbox.summary.documents_pending_approval_for_me,
-            variant: inbox.summary.documents_pending_approval_for_me > 0 ? 'warning' : 'success',
-            href: '#documents-pending-approval'
-        }) }}
-        {% endif %}
-        {% if inbox.summary.wizard_overdue is defined %}
-        {{ _fa_feature_card.render({
-            icon: 'ui-hourglass',
-            label: 'my_day.kpi.wizard_overdue'|trans,
-            value: inbox.summary.wizard_overdue,
-            variant: inbox.summary.wizard_overdue > 0 ? 'warning' : 'success',
-            href: '#wizard-overdue'
-        }) }}
-        {% endif %}
-        {% if inbox.summary.framework_gaps_critical is defined %}
-        {{ _fa_feature_card.render({
-            icon: 'nav-bar-chart',
-            label: 'my_day.kpi.framework_gaps_critical'|trans,
-            value: inbox.summary.framework_gaps_critical,
-            variant: inbox.summary.framework_gaps_critical > 0 ? 'danger' : 'success',
-            href: '#framework-gaps-critical'
-        }) }}
-        {% endif %}
-    </div>
 
     {% if inbox.total == 0 %}
         <div class="my-4">
             {{ _fa_empty_state.render({
                 mood: 'happy',
-                title: 'my_day.empty.title'|trans,
-                text: 'my_day.empty.text'|trans,
+                title: 'my_day.empty.title'|trans({}, 'my_day'),
+                text: 'my_day.empty.text'|trans({}, 'my_day'),
             }) }}
         </div>
     {% else %}
 
-    {% set sections = [
-        { id: 'workflows-pending', title: 'my_day.section.workflows_pending'|trans, items: inbox.workflows_pending },
-        { id: 'workflows-overdue', title: 'my_day.section.workflows_overdue'|trans, items: inbox.workflows_overdue },
-        { id: 'four-eyes', title: 'my_day.section.four_eyes'|trans, items: inbox.four_eyes },
-        { id: 'acknowledgements', title: 'my_day.section.acknowledgements'|trans, items: inbox.acknowledgements },
-        { id: 'findings', title: 'my_day.section.findings'|trans, items: inbox.findings },
-        { id: 'dsrs', title: 'my_day.section.dsrs'|trans, items: inbox.dsrs },
-        { id: 'corrective-actions', title: 'my_day.section.corrective_actions_overdue'|trans, items: inbox.corrective_actions_overdue },
-        { id: 'risk-acceptance-expiring', title: 'my_day.section.risk_acceptance_expiring'|trans, items: inbox.risk_acceptance_expiring },
-        { id: 'documents-review-overdue', title: 'my_day.section.documents_review_overdue'|trans, items: inbox.documents_review_overdue },
-        { id: 'trainings-pending', title: 'my_day.section.trainings_pending'|trans, items: inbox.trainings_pending },
-        { id: 'incidents-open-assigned', title: 'my_day.section.incidents_open_assigned'|trans, items: inbox.incidents_open_assigned },
-        { id: 'data-breaches-72h-ticking', title: 'my_day.section.data_breaches_72h_ticking'|trans, items: inbox.data_breaches_72h_ticking },
-        { id: 'vulnerabilities-critical-unpatched', title: 'my_day.section.vulnerabilities_critical_unpatched'|trans, items: inbox.vulnerabilities_critical_unpatched },
-        { id: 'audit-checklist-due', title: 'my_day.section.audit_checklist_due'|trans, items: inbox.audit_checklist_due },
-        { id: 'change-requests-pending-approval', title: 'my_day.section.change_requests_pending_approval'|trans, items: inbox.change_requests_pending_approval },
-        { id: 'management-review-upcoming', title: 'my_day.section.management_review_upcoming'|trans, items: inbox.management_review_upcoming },
-        { id: 'documents-pending-approval', title: 'my_day.section.documents_pending_approval_for_me'|trans, items: inbox.documents_pending_approval_for_me ?? [] },
-        { id: 'wizard-overdue', title: 'my_day.section.wizard_overdue'|trans, items: inbox.wizard_overdue ?? [] },
-        { id: 'framework-gaps-critical', title: 'my_day.section.framework_gaps_critical'|trans, items: inbox.framework_gaps_critical ?? [] },
-    ] %}
+    {# KPI tiles — only categories WITH open actions are shown prominently.
+       Zero-action categories are folded into one quiet line below, so the
+       page leads with what actually needs doing (no 20-tile green wall). #}
+    <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
+        {% for c in activeCategories %}
+            {{ _fa_feature_card.render({
+                icon: c.icon,
+                label: ('my_day.kpi.' ~ c.key)|trans({}, 'my_day'),
+                value: c.count,
+                variant: c.tone,
+                href: '#' ~ c.anchor,
+            }) }}
+        {% endfor %}
+    </div>
+    {% if zeroCount > 0 %}
+        <p class="text-muted small mb-4">
+            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+            {{ 'my_day.tiles.all_clear'|trans({'%count%': zeroCount}, 'my_day') }}
+        </p>
+    {% endif %}
 
-    {% for section in sections %}
-        {% if section.items|length > 0 %}
-        <section class="fa-section mb-4" id="{{ section.id }}">
-            <div class="fa-section__header">
-                <h2 class="fa-section__title">{{ section.title }}
-                    {{ pill.render(section.items|length, 'neutral', {class: 'ms-2'}) }}
-                </h2>
-            </div>
+    {# Accordion sections. Urgent (danger) categories open by default so the ISB
+       sees them immediately; the rest stay collapsed to a title + counter so a
+       junior gets a compact overview and expands only what they want. Native
+       <details> — keyboard-accessible, works without JavaScript. #}
+    {% for c in activeCategories %}
+        {% set hasHigh = c.items|filter(i => i.priority == 'high')|length > 0 %}
+        <details class="fa-section my-day-section mb-3" id="{{ c.anchor }}"{{ (c.tone == 'danger' or hasHigh) ? ' open' : '' }}>
+            <summary class="fa-section__header my-day-section__summary">
+                <span class="fa-section__title d-flex align-items-center gap-2">
+                    <i class="fa-icon fa-icon--{{ c.icon }}" aria-hidden="true"></i>
+                    {{ ('my_day.section.' ~ c.key)|trans({}, 'my_day') }}
+                    {% if c.key in hinted %}
+                        <i class="fa-icon fa-icon--nav-info-circle text-muted" style="font-size:.8em;"
+                           title="{{ ('my_day.hint.' ~ c.key)|trans({}, 'my_day') }}" aria-label="{{ ('my_day.hint.' ~ c.key)|trans({}, 'my_day') }}"></i>
+                    {% endif %}
+                    {{ pill.render(c.count, c.tone == 'danger' ? 'danger' : 'neutral', {class: 'ms-1'}) }}
+                </span>
+            </summary>
             <div class="fa-section__body">
                 <div class="list-group">
-                    {% for item in section.items %}
+                    {% for item in c.items %}
                         <a href="{{ item.link }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
                             <div class="ms-2 me-auto">
                                 <div class="fw-bold">
-                                    {% if item.entity_type == 'workflow' %}
-                                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'four_eyes' %}
-                                        <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'acknowledgement' %}
-                                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'audit_finding' %}
-                                        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'dsr' %}
-                                        <i class="fa-icon fa-icon--ui-file-person" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'corrective_action' %}
-                                        <i class="fa-icon fa-icon--ui-hourglass" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'risk_acceptance' %}
-                                        <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'document_review' %}
-                                        <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'training' %}
-                                        <i class="fa-icon fa-icon--nav-mortarboard" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'incident' %}
-                                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'data_breach' %}
-                                        <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'vulnerability' %}
-                                        <i class="fa-icon fa-icon--util-bug" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'audit_checklist' %}
-                                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'change_request' %}
-                                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'management_review' %}
-                                        <i class="fa-icon fa-icon--nav-clipboard-data" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'document_pending_approval' %}
-                                        <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'wizard_overdue' %}
-                                        <i class="fa-icon fa-icon--ui-hourglass" aria-hidden="true"></i>
-                                    {% elseif item.entity_type == 'framework_gap' %}
-                                        <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
+                                    {% set entityIcon = {
+                                        'workflow': 'ui-refresh', 'four_eyes': 'nav-people', 'acknowledgement': 'ui-check',
+                                        'audit_finding': 'ui-search', 'dsr': 'ui-file-person', 'corrective_action': 'ui-hourglass',
+                                        'risk_acceptance': 'nav-shield-alert', 'document_review': 'nav-document', 'training': 'nav-mortarboard',
+                                        'incident': 'status-critical', 'data_breach': 'nav-shield-alert', 'vulnerability': 'util-bug',
+                                        'audit_checklist': 'nav-clipboard-check', 'change_request': 'ui-refresh', 'management_review': 'nav-clipboard-data',
+                                        'document_pending_approval': 'nav-file-check', 'wizard_overdue': 'ui-hourglass', 'framework_gap': 'nav-bar-chart',
+                                        'evidence_reverification': 'nav-clipboard-check', 'control': 'ui-search', 'supplier': 'nav-truck',
+                                        'dpia': 'ui-file-person', 'bc_plan': 'util-refresh', 'risk_review': 'nav-shield-alert'
+                                    } %}
+                                    {% if entityIcon[item.entity_type] is defined %}
+                                        <i class="fa-icon fa-icon--{{ entityIcon[item.entity_type] }}" aria-hidden="true"></i>
                                     {% endif %}
                                     {{ item.title }}
                                 </div>
                                 <small class="text-muted">{{ item.subtitle }}</small>
                                 {% if item.due_date %}
-                                    <small class="d-block text-muted">{{ 'my_day.item.due'|trans }}: {{ item.due_date|date('d.m.Y') }}</small>
+                                    {% set secsLeft = item.due_date|date('U') - 'now'|date('U') %}
+                                    {% set overdue = secsLeft < 0 %}
+                                    {% if item.entity_type == 'data_breach' %}
+                                        {# GDPR Art. 33 — the one place where hours matter. #}
+                                        {% set hoursLeft = (secsLeft / 3600)|round(0, 'floor') %}
+                                        <small class="d-block fw-semibold {{ overdue ? 'text-danger' : (hoursLeft < 24 ? 'text-danger' : 'text-warning') }}">
+                                            {% if overdue %}{{ 'my_day.item.sla_breached'|trans({}, 'my_day') }}
+                                            {% else %}{{ 'my_day.item.hours_left'|trans({'%hours%': hoursLeft}, 'my_day') }}{% endif %}
+                                        </small>
+                                    {% else %}
+                                        {% set daysAbs = (secsLeft / 86400)|abs|round(0, 'floor') %}
+                                        <small class="d-block {{ overdue ? 'text-danger fw-semibold' : 'text-muted' }}">
+                                            {{ item.due_date|date('d.m.Y') }} —
+                                            {% if overdue %}{{ 'my_day.item.overdue_by'|trans({'%days%': daysAbs}, 'my_day') }}
+                                            {% else %}{{ 'my_day.item.due_in'|trans({'%days%': daysAbs}, 'my_day') }}{% endif %}
+                                        </small>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class="text-end">
@@ -263,19 +181,30 @@
                                     {{ pill.render(item.badge, pillTone) }}
                                 {% endif %}
                                 {% if item.priority == 'high' %}
-                                    {{ pill.render('my_day.priority.high'|trans, 'danger', {class: 'ms-1'}) }}
+                                    {{ pill.render('my_day.priority.high'|trans({}, 'my_day'), 'danger', {class: 'ms-1'}) }}
                                 {% elseif item.priority == 'medium' %}
-                                    {{ pill.render('my_day.priority.medium'|trans, 'warning', {class: 'ms-1'}) }}
+                                    {{ pill.render('my_day.priority.medium'|trans({}, 'my_day'), 'warning', {class: 'ms-1'}) }}
                                 {% endif %}
                             </div>
                         </a>
                     {% endfor %}
                 </div>
             </div>
-        </section>
-        {% endif %}
+        </details>
     {% endfor %}
 
     {% endif %}
 </main>
+
+<style>
+/* My-Day accordion — collapsed sections show only the summary (title + count).
+   Density-aware spacing comes from the global body[data-density] tokens. */
+.my-day-section { border: 1px solid var(--border); border-radius: var(--radius-md, .5rem); overflow: hidden; }
+.my-day-section__summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .75rem 1rem; }
+.my-day-section__summary::-webkit-details-marker { display: none; }
+.my-day-section__summary::after { content: '\203A'; font-size: 1.25rem; line-height: 1; color: var(--fg-2); transition: transform .15s ease; }
+.my-day-section[open] > .my-day-section__summary::after { transform: rotate(90deg); }
+.my-day-section__summary:hover { background: var(--surface-2); }
+body[data-density='compact'] .my-day-section__summary { padding: .4rem .75rem; }
+</style>
 {% endblock %}

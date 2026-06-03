@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * Unit tests for RequirementLevelMetadataLoader.
  *
  * Tests use the real YAML fixture at
- * fixtures/library/metadata/tisax-vda-isa-6_requirement_levels_v1.0.yaml
+ * fixtures/library/metadata/tisax_requirement_levels_v1.0.yaml
  * to verify structural invariants — NOT licensed ENX content.
  */
 class RequirementLevelMetadataLoaderTest extends TestCase

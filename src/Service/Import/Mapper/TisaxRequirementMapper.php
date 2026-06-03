@@ -13,17 +13,38 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Maps parsed VdaIsaControlRow DTOs to ComplianceRequirement entities
- * under the global TISAX-VDA-ISA-6 framework.
+ * under the canonical TISAX framework.
  *
  * Delta strategy:
  *  - Match by (framework + requirementId + uploadTenant) composite
  *  - Existing row → update title/description/metadata
  *  - No row → create new with requirementSource='tenant_upload'
+ *
+ * Framework code history (§4.1 consolidation, 2026-06-01):
+ *  - 'TISAX-VDA-ISA-6' was the code used by the BYO import prior to
+ *    consolidation. 'TISAX' is the canonical code used by all dashboards,
+ *    mappings, reports and the compliance wizard. The old code is kept in
+ *    LEGACY_CODE_ALIASES so that any saved session or lookup referencing
+ *    'TISAX-VDA-ISA-6' still resolves to the canonical framework during
+ *    the deprecation window.
  */
 final class TisaxRequirementMapper
 {
-    /** Canonical framework code for the TISAX VDA-ISA 6 framework. */
-    public const FRAMEWORK_CODE = 'TISAX-VDA-ISA-6';
+    /** Canonical framework code for the TISAX VDA-ISA framework. */
+    public const FRAMEWORK_CODE = 'TISAX';
+
+    /**
+     * Backward-compatibility alias map.
+     * Key = deprecated code → Value = canonical code.
+     * Used by findOrCreateFramework() and can be consumed by any caller
+     * that needs to resolve a legacy code stored in sessions / YAML keys.
+     *
+     * @var array<string, string>
+     * @deprecated aliases — resolve to FRAMEWORK_CODE; will be removed after P4
+     */
+    public const LEGACY_CODE_ALIASES = [
+        'TISAX-VDA-ISA-6' => self::FRAMEWORK_CODE,
+    ];
 
     /** ISO 27001 anchor mapping prefix stored in dataSourceMapping. */
     private const ISO_KEY = 'iso27001';
@@ -43,39 +64,27 @@ final class TisaxRequirementMapper
 
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly \App\Service\Tisax\TisaxCatalogueProvider $catalogueProvider,
     ) {}
 
     /**
-     * Find or create the global TISAX-VDA-ISA-6 framework.
+     * Find or create the canonical TISAX framework.
      * Idempotent — safe to call on every import run.
+     *
+     * Resolution order (§4.1 alias deprecation window):
+     *  1. Look up canonical code 'TISAX'.
+     *  2. If not found, fall back to the legacy alias 'TISAX-VDA-ISA-6' so that
+     *     installations that were created before the consolidation still resolve
+     *     correctly without a full data migration having been run yet.
+     *  3. If neither exists, create a new framework with the canonical code.
      */
     public function findOrCreateFramework(): ComplianceFramework
     {
-        $repo = $this->em->getRepository(ComplianceFramework::class);
-
-        $framework = $repo->findOneBy(['code' => self::FRAMEWORK_CODE]);
-        if ($framework !== null) {
-            return $framework;
-        }
-
-        $framework = new ComplianceFramework();
-        $framework->setCode(self::FRAMEWORK_CODE);
-        $framework->setName('TISAX VDA-ISA 6.0');
-        $framework->setVersion('6.0');
-        $framework->setDescription(
-            'VDA Information Security Assessment (VDA-ISA) — customer-supplied workbook. '
-            . 'ENX-licensed content; tenant-specific requirements only.',
-        );
-        $framework->setRegulatoryBody('VDA / ENX Association');
-        $framework->setApplicableIndustry('Automotive');
-        $framework->setMandatory(false);
-        $framework->setActive(true);
-        $framework->setRequiredModules(['prototype_protection']);
-
-        $this->em->persist($framework);
-        $this->em->flush();
-
-        return $framework;
+        // Single source of truth: the catalogue provider owns the framework row +
+        // metadata (from the YAML). The BYO import never defines its own
+        // name/version — that previously caused the metadata to flip depending on
+        // whether an upload or the loader created the framework first.
+        return $this->catalogueProvider->upsertFramework();
     }
 
     /**
@@ -118,6 +127,7 @@ final class TisaxRequirementMapper
                     && ($level = $this->resolvePrefilledLevel($row)) !== null
                 ) {
                     $existing->setMaturityCurrent($level);
+                    $this->stampAssessmentDate($existing);
                 }
                 $entities[] = $existing;
                 $updated++;
@@ -127,6 +137,7 @@ final class TisaxRequirementMapper
                 $this->hydrateEntity($req, $row, $framework, $tenant);
                 if (($level = $this->resolvePrefilledLevel($row)) !== null) {
                     $req->setMaturityCurrent($level);
+                    $this->stampAssessmentDate($req);
                 }
                 if (!$dryRun) {
                     $this->em->persist($req);
@@ -248,6 +259,26 @@ final class TisaxRequirementMapper
      *   "na"/"n.a." (not applicable) → null. Some DP rows DO carry a 0-5 value
      *   (the workbook allows both validation lists) — honour that too.
      */
+    /**
+     * Stamp a Stichtag on an imported Reifegrad (audit requirement: a Reifegrad
+     * without an assessment date is not auditable, spec §9.2 G8). The workbook
+     * does not reliably carry a per-control assessment date, so we record the
+     * import time as the system-recorded Stichtag and flag its provenance as
+     * 'import' in dataSourceMapping — never silently presenting an import date as
+     * a hand-recorded assessment date. Only set when not already dated, so a real
+     * later assessment date is preserved.
+     */
+    private function stampAssessmentDate(ComplianceRequirement $req): void
+    {
+        if ($req->getMaturityReviewedAt() !== null) {
+            return;
+        }
+        $req->setMaturityReviewedAt(new DateTimeImmutable());
+        $mapping = $req->getDataSourceMapping() ?? [];
+        $mapping['maturityReviewedAtSource'] = 'import';
+        $req->setDataSourceMapping($mapping);
+    }
+
     private function resolvePrefilledLevel(VdaIsaControlRow $row): ?string
     {
         if ($row->dimension === 'data_protection') {
@@ -312,8 +343,14 @@ final class TisaxRequirementMapper
 
         // VDA-ISA target Reifegrad is uniformly 3 ("established") in ISA 6 — set
         // it so the assess-page shows the gap-to-target, not a blank target.
+        // Flag the provenance (system default vs. owner-confirmed) in the
+        // mapping so an auditor can tell a management decision from a default
+        // (spec §9.2 G5 / Soll-Ist separation).
         if ($row->dimension !== 'data_protection' && $this->isEmptyMaturity($req->getMaturityTarget())) {
             $req->setMaturityTarget('established');
+            $mappingNow = $req->getDataSourceMapping() ?? [];
+            $mappingNow['maturityTargetSource'] = 'vda_isa_default';
+            $req->setDataSourceMapping($mappingNow);
         }
 
         // Persist ISO 27001 anchors + evidence hints in dataSourceMapping JSON

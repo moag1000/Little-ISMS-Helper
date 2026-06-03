@@ -65,7 +65,7 @@ final class ComplianceLoaderFixerService
             'NIS2'            => ['label' => 'NIS2 Directive (2022/2555)',         'invoker' => fn(SymfonyStyle $io) => $nis2($io)],
             'NIS2UMSUCG'      => ['label' => 'NIS2UmsuCG (DE)',                    'invoker' => fn(SymfonyStyle $io) => $nis2UmsuCg($io)],
             'DORA'            => ['label' => 'EU-DORA (2022/2554)',                'invoker' => fn(SymfonyStyle $io) => $dora($io)],
-            'TISAX'           => ['label' => 'TISAX (VDA ISA 6.0.4)',              'invoker' => fn(SymfonyStyle $io) => $tisax($io)],
+            'TISAX'           => ['label' => 'TISAX (VDA-ISA 6.0)',                'invoker' => fn(SymfonyStyle $io) => $tisax($io)],
             'BSI_GRUNDSCHUTZ' => ['label' => 'BSI IT-Grundschutz',                 'invoker' => fn(SymfonyStyle $io) => $bsiGrundschutz($io)],
             'BSI-C5'          => ['label' => 'BSI C5:2020',                        'invoker' => fn(SymfonyStyle $io) => $c5($io)],
             'BSI-C5-2026'     => ['label' => 'BSI C5:2026',                        'invoker' => fn(SymfonyStyle $io) => $c52026($io)],

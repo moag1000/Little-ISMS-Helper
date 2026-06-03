@@ -14,6 +14,7 @@ use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use App\Service\Tisax\EnxScheduleExporter;
 use App\Service\Tisax\TisaxConfirmationService;
+use App\Service\Tisax\TisaxEvidenceLinker;
 use App\Service\Tisax\TisaxImportSupportService;
 use App\Service\Tisax\RequirementLevelMetadataLoader;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
@@ -78,6 +79,8 @@ final class TisaxImportWizardController extends AbstractController
         private readonly FileUploadSecurityService $uploadSecurity,
         private readonly AuditLogger $auditLogger,
         private readonly TisaxConfirmationService $confirmationService,
+        private readonly TisaxEvidenceLinker $evidenceLinker,
+        private readonly \App\Service\Tisax\TisaxFulfillmentSync $fulfillmentSync,
         private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
@@ -358,14 +361,32 @@ final class TisaxImportWizardController extends AbstractController
             $applyIds    = array_map('strval', (array) $request->request->all('apply_maturity'));
             $overwritten = $this->importSupport->applyMaturityOverwrites($applyIds, $controls, $framework, $tenant, $user);
 
+            // B3 — evidence linkage: resolve the imported "Referenz Dokumentation"
+            // free-text citations to real Document evidence (exact/normalised
+            // filename match only). Unmatched citations land in the typed
+            // dataSourceMapping.unlinked_citations review list, never dropped.
+            $evidence = ['linked' => 0, 'unlinked' => 0, 'requirements_with_unlinked' => 0];
+            if ($tenant !== null) {
+                $evidence = $this->evidenceLinker->linkBatch($result['entities'], $tenant);
+                $this->em->flush();
+                // Materialise ComplianceRequirementFulfillment from the imported
+                // maturity so catalogue coverage / SoA / cross-framework
+                // inheritance actually reflect the assessment (otherwise the
+                // import set maturity but had no further effect).
+                $this->fulfillmentSync->sync($framework, $tenant);
+            }
+
             $this->auditLogger->logImport(
                 'ComplianceRequirement',
                 $result['created'] + $result['updated'],
                 sprintf(
-                    'TISAX BYO import: %d created, %d updated, %d Reifegrad overwritten — framework %s',
+                    'TISAX BYO import: %d created, %d updated, %d Reifegrad overwritten, '
+                    . '%d evidence linked, %d citations unlinked — framework %s',
                     $result['created'],
                     $result['updated'],
                     $overwritten,
+                    $evidence['linked'],
+                    $evidence['unlinked'],
                     $framework->getCode(),
                 ),
             );
@@ -461,6 +482,19 @@ final class TisaxImportWizardController extends AbstractController
             'uploadTenant'      => $tenant,
             'requirementSource' => 'tenant_upload',
         ]);
+
+        // Order by assessment dimension (Information Security → Prototype
+        // Protection → Data Protection) then by NATURAL control number, so the
+        // assessor works one Bereich at a time top-to-bottom and "1.10.1" sorts
+        // after "1.2.1" (findBy returns DB/insertion order — controls of all
+        // three dimensions were intermixed and unsortable).
+        $dimensionRank = ['information_security' => 0, 'prototype_protection' => 1, 'data_protection' => 2];
+        usort($requirements, static function ($a, $b) use ($dimensionRank): int {
+            $ra = $dimensionRank[(string) $a->getCategory()] ?? 9;
+            $rb = $dimensionRank[(string) $b->getCategory()] ?? 9;
+            return $ra <=> $rb
+                ?: strnatcmp((string) $a->getRequirementId(), (string) $b->getRequirementId());
+        });
 
         // Build per-requirement level-flag map (Must/Sollte/High/VeryHigh) from YAML fixture.
         // Empty when RequirementLevelMetadataLoader is not wired (graceful degradation).

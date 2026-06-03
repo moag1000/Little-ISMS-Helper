@@ -286,7 +286,7 @@ class AuditChecklistTest extends TestCase
         $checklist = new AuditChecklist();
         $checklist->setVerificationStatus('compliant');
 
-        $this->assertEquals('Konform', $checklist->getStatusLabel());
+        $this->assertEquals('audits.verification_status.compliant', $checklist->getStatusLabel());
     }
 
     #[Test]
@@ -295,7 +295,7 @@ class AuditChecklistTest extends TestCase
         $checklist = new AuditChecklist();
         $checklist->setVerificationStatus('partial');
 
-        $this->assertEquals('Teilweise konform', $checklist->getStatusLabel());
+        $this->assertEquals('audits.verification_status.partial', $checklist->getStatusLabel());
     }
 
     #[Test]
@@ -304,7 +304,7 @@ class AuditChecklistTest extends TestCase
         $checklist = new AuditChecklist();
         $checklist->setVerificationStatus('non_compliant');
 
-        $this->assertEquals('Nicht konform', $checklist->getStatusLabel());
+        $this->assertEquals('audits.verification_status.non_compliant', $checklist->getStatusLabel());
     }
 
     #[Test]
@@ -313,7 +313,7 @@ class AuditChecklistTest extends TestCase
         $checklist = new AuditChecklist();
         $checklist->setVerificationStatus('not_applicable');
 
-        $this->assertEquals('Nicht anwendbar', $checklist->getStatusLabel());
+        $this->assertEquals('audits.verification_status.not_applicable', $checklist->getStatusLabel());
     }
 
     #[Test]
@@ -322,7 +322,7 @@ class AuditChecklistTest extends TestCase
         $checklist = new AuditChecklist();
         $checklist->setVerificationStatus('not_checked');
 
-        $this->assertEquals('Nicht geprüft', $checklist->getStatusLabel());
+        $this->assertEquals('audits.verification_status.not_checked', $checklist->getStatusLabel());
     }
 
     #[Test]
@@ -331,7 +331,7 @@ class AuditChecklistTest extends TestCase
         $checklist = new AuditChecklist();
         $checklist->setVerificationStatus('unknown_status');
 
-        $this->assertEquals('Unbekannt', $checklist->getStatusLabel());
+        $this->assertEquals('audits.verification_status.unknown', $checklist->getStatusLabel());
     }
 
     #[Test]

@@ -149,11 +149,11 @@ final class MrisAuditReportController extends AbstractController
         }
         $total = count($controls);
         $labels = [
-            'standfest' => 'Standfest (S)',
-            'degradiert' => 'Teilweise degradiert (T)',
-            'reibung' => 'Reine Reibung (R)',
-            'nicht_betroffen' => 'Nicht betroffen (N)',
-            'unklassifiziert' => 'Nicht klassifiziert',
+            'standfest' => $this->translator->trans('mris.audit_report.resilience.standfest', [], 'mris'),
+            'degradiert' => $this->translator->trans('mris.audit_report.resilience.degradiert', [], 'mris'),
+            'reibung' => $this->translator->trans('mris.audit_report.resilience.reibung', [], 'mris'),
+            'nicht_betroffen' => $this->translator->trans('mris.audit_report.resilience.nicht_betroffen', [], 'mris'),
+            'unklassifiziert' => $this->translator->trans('mris.audit_report.resilience.unklassifiziert', [], 'mris'),
         ];
         $rows = [];
         foreach ($buckets as $key => $count) {

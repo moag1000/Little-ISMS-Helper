@@ -180,7 +180,7 @@
                         <div class="col-md-6">
                             <dl>
                                 <dt>{{ 'compliance.framework.field.industry'|trans({}, 'compliance') }}</dt>
-                                <dd>{{ framework.applicableIndustry }}</dd>
+                                <dd>{{ {'automotive': 'Automobil', 'finance': 'Finanzwesen', 'healthcare': 'Gesundheitswesen', 'energy': 'Energie', 'public': 'Öffentlicher Sektor'}[framework.applicableIndustry]|default(framework.applicableIndustry|capitalize) }}</dd>
 
                                 <dt>{{ 'compliance.framework.field.regulatory_body'|trans({}, 'compliance') }}</dt>
                                 <dd>{{ framework.regulatoryBody }}</dd>
@@ -230,7 +230,7 @@
                                         <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#category{{ loop.index }}">
-                                            {{ category }}
+                                            {{ {'information_security': 'Informationssicherheit', 'prototype_protection': 'Prototypenschutz', 'data_protection': 'Datenschutz'}[category]|default(category|replace({'_': ' '})|capitalize) }}
                                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: requirements|length, class: 'ms-2' } %}
                                         </button>
                                     </h2>

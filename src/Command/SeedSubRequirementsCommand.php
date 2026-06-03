@@ -68,8 +68,23 @@ final class SeedSubRequirementsCommand extends Command
         'decomp_dora_iso27001' => ['source' => 'DORA', 'target' => 'ISO27001'],
         'decomp_ai-act_iso42001' => ['source' => 'EU-AI-ACT', 'target' => 'ISO42001'],
         'decomp_gdpr_iso27018' => ['source' => 'GDPR', 'target' => 'ISO27018'],
-        'decomp_tisax_iso27001' => ['source' => 'TISAX', 'target' => 'ISO27001'],
         'decomp_nis2_nis2umsucg' => ['source' => 'NIS2', 'target' => 'NIS2-UmsuCG'],
+    ];
+
+    /**
+     * Decomposition fixtures deliberately NOT seeded as sub-requirements.
+     *
+     * TISAX is a fixed 80-control catalogue (VDA-ISA 6.0). Materialising
+     * decomposition sub-clauses (e.g. 9.1.1-a/b/c) + coarse parent STUBs as
+     * ComplianceRequirement rows would add rows outside the canonical 80 and
+     * re-introduce section/parent-stub pollution — breaking the one-catalogue
+     * invariant. The decomposition JSON remains available for cross-framework
+     * reuse views that read it directly.
+     *
+     * @var array<string, true>
+     */
+    private const EXCLUDED_FIXTURES = [
+        'decomp_tisax_iso27001' => true,
     ];
 
     public function __construct(
@@ -112,6 +127,10 @@ final class SeedSubRequirementsCommand extends Command
 
         foreach ($files as $file) {
             $base = basename($file, '.json');
+            if (isset(self::EXCLUDED_FIXTURES[$base])) {
+                $io->note(sprintf('%s: excluded from sub-requirement seeding (one-catalogue invariant). Skipping.', $base));
+                continue;
+            }
             $pair = self::FRAMEWORK_PAIRS[$base] ?? null;
             if ($pair === null) {
                 $io->warning(sprintf('Unknown fixture %s — no framework mapping, skipping.', $base));

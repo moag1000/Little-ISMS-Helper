@@ -1,11 +1,41 @@
 audits:
     page:
         title: Audits
+    audit_package:
+        cover:
+            title: 'Audit Package'
+            label:
+                framework: 'Framework'
+                tenant: 'Organization'
+                generated: 'Generated'
+        section:
+            summary: 'Summary'
+            requirements_detail: 'Requirements in Detail'
+        table:
+            requirements_total: 'Requirements total'
+            evidence_docs: 'Evidence documents in package'
+            requirements_without_evidence: 'Requirements without evidence'
+        col:
+            id: 'ID'
+            category: 'Category'
+            fulfillment: 'Fulfillment'
+            evidence: 'Evidence'
+        status:
+            fulfilled: 'fulfilled'
+            open: 'open'
+            missing: 'Evidence missing'
+            complete: 'complete'
+        footer:
+            note: 'This package contains one folder per requirement with README.txt and all linked evidence documents. INDEX.csv in the root consolidates the complete mapping.'
     error:
         owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
     field:
         finding_source: 'Finding Source'
         action_type: 'Action Type'
+        audit_number: 'Audit Number'
+        title: 'Title'
+        planned_date: 'Planned Date'
+        status: 'Status'
     placeholder:
         finding_source: '-- Select source --'
         action_type: '-- Select action type --'
@@ -490,3 +520,11 @@ iso_9001_bridge:
     minor_nc: 'In ISO 9001 this corresponds to a "Minor Nonconformity" — Clause 10.2 Nonconformity and Corrective Action.'
     corrective_action: 'Identical to the CAPA cycle from ISO 9001 Clause 10.2 (corrective action after a nonconformity).'
     audit: 'Identical to ISO 9001 Clause 9.2 "Internal Audit" — same audit plan, same audit reports, same audit follow-up actions.'
+
+verification_status:
+    compliant: 'Compliant'
+    partial: 'Partially Compliant'
+    non_compliant: 'Non-Compliant'
+    not_applicable: 'Not Applicable'
+    not_checked: 'Not Checked'
+    unknown: 'Unknown'

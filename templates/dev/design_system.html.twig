@@ -399,7 +399,7 @@
                 </div>
 
                 {# Group with hrefs #}
-                <p class="mb-2" style="color:var(--fg-2); font-size:.875rem;">Chip group with hrefs:</p>
+                <p class="mb-2" style="color:var(--fg-2); font-size:.875rem;">{{ 'dev.design_system.filter_chip.group_with_hrefs'|trans({}, 'dev') }}</p>
                 <div class="mb-3">
                     {{ _fa_filter_chip.group([
                         { label: 'Offen',       href: '?status=open'   },
@@ -974,7 +974,7 @@
                                 required: true,
                                 validationHint: 'Bitte Beschreibung ausfüllen.',
                                 body: '<div style="display:grid;gap:14px;">'
-                                    ~ '<div class="fa-cyber-input"><div class="fa-cyber-input__header"><label class="fa-cyber-input__label">Beschreibung der Datenpanne <span class="fa-cyber-input__req">*</span></label></div><div class="fa-cyber-input__frame"><textarea class="fa-cyber-input__field" rows="4" placeholder="Was ist passiert? Welche Daten sind betroffen?" required></textarea></div></div>'
+                                    ~ '<div class="fa-cyber-input"><div class="fa-cyber-input__header"><label class="fa-cyber-input__label">Beschreibung der Datenpanne <span class="fa-cyber-input__req">*</span></label></div><div class="fa-cyber-input__frame"><textarea class="fa-cyber-input__field" rows="4" placeholder="' ~ 'dev.design_system.wizard.breach.placeholder_description'|trans({}, 'dev') ~ '" required></textarea></div></div>'
                                     ~ '<div class="fa-cyber-input"><div class="fa-cyber-input__header"><label class="fa-cyber-input__label">Beweise / Anhänge <span style="color:var(--fg-3);font-weight:400;">(optional)</span></label></div><div class="fa-cyber-input__frame"><input class="fa-cyber-input__field" type="text" placeholder="Dateiname oder Ticket-Referenz"></div></div>'
                                     ~ '</div>'
                             },

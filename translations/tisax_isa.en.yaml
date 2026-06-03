@@ -5,6 +5,12 @@
 # The domain name (tisax_isa) is only the filename — it doesn't affect key lookup.
 
 tisax:
+  enx:
+    sheet:
+      information_security: 'Information Security (IS)'
+      prototype_protection: 'Prototype Protection (Proto)'
+      data_protection: 'Data Protection (DataPro)'
+
   nav:
     title: 'TISAX VDA-ISA Import'
 
@@ -79,6 +85,8 @@ tisax:
         de_label: 'German'
         expected_sheets_title: 'Expected sheet names (parser selects the first match):'
         troubleshoot_hint: 'If the parser rejects your workbook, check that it contains a sheet named "Information Security" (EN) or "Informationssicherheit" (DE). Workbooks modified to rename these sheets will not be recognised.'
+        sheets_en_label: 'EN'
+        sheets_de_label: 'DE'
 
     validate:
       title: 'Workbook Validation'
@@ -93,6 +101,23 @@ tisax:
       proceed: 'Continue to Preview'
       no_workbook: 'No workbook found in session. Please upload again.'
       legacy_five_partial: 'ISA %version% workbook detected: partial import with %count% controls. ISA 5.x is a subset of ISA 6 — matching controls are imported; controls only present in ISA 6 (incl. the expanded data-protection module) remain unassessed.'
+      workbook_size_hint: 'a complete ISA-6 workbook has approx. 80 requirements'
+      legend_desc: 'Green = all OK, continue. Yellow = note (e.g. older version), you may still proceed. Red = stop, please load an ISA-6 file.'
+      col_label:
+        controlId: 'Control number'
+        titleDe: 'Control question'
+        titleEn: 'Control question (EN)'
+        description: 'Objective'
+        maturityCurrent: 'Maturity level'
+        implementationDescription: 'Implementation (measure)'
+        referenceDocumentation: 'Reference documentation'
+        iso27001Ref: 'ISO 27001 reference'
+        evidenceHint: 'Evidence hint'
+        mustLevel: 'Must'
+        shouldLevel: 'Should'
+        highLevel: 'High protection need'
+        veryHighLevel: 'Very high protection need'
+        sgaLevel: 'SGA'
 
     preview:
       title: 'Import Preview'
@@ -107,6 +132,8 @@ tisax:
         title: 'Question / Requirement'
         iso_ref: 'ISO 27001 Ref'
         tier: 'Tier'
+        req_levels: 'Requirement Levels'
+        req_levels_tooltip: 'M=Must, S=Should, H=additionally at high protection need, VH=additionally at very high protection need, SGA=Simplified Group Assessment. Which level applies depends on your required protection level. The badges only indicate that requirement text exists for that level.'
       proceed: 'Commit to Database'
 
     commit:
@@ -134,6 +161,15 @@ tisax:
       avg_reifegrad: 'Average Reifegrad'
       assessed: 'Assessed'
       requirements_heading: 'Requirements'
+      reifegrad_hint: '<strong>How to assess:</strong> The <em>Reifegrad</em> (maturity level) works like an ISO-9001 process assessment — <strong>0</strong> = not implemented … <strong>3 (Established)</strong> = the TISAX target … <strong>5</strong> = optimised. This list is essentially your <em>self-assessment checklist</em>. Pick the matching maturity level per requirement; data-protection requirements are answered with <em>OK / Not OK</em> instead.'
+      dp_note: 'Assessed with OK / Not OK (no maturity level)'
+      success_heading: 'Import complete.'
+      success_desc: 'Your TISAX assessment is saved — see coverage, dimensions and gaps in the overview.'
+      view_overview: 'Go to TISAX overview'
+      dimension:
+        information_security: 'Information Security'
+        prototype_protection: 'Prototype Protection'
+        data_protection: 'Data Protection'
       col:
         id: 'Control ID'
         title: 'Requirement'
@@ -144,12 +180,19 @@ tisax:
         assessment: 'Assessment'
         target: 'Target'
       req_levels:
-        aria: 'Requirement levels M/S/H/VH'
+        aria: 'Requirement levels M/S/H/VH/SGA'
+        none: 'no levels'
       req_level:
         must_tooltip: 'Must requirement (column J) — presence in ENX workbook'
         should_tooltip: 'Should requirement (column K) — presence in ENX workbook'
         high_tooltip: 'Additional requirements for high protection needs (column L) — presence in ENX workbook'
         very_high_tooltip: 'Additional requirements for very high protection needs (column M) — presence in ENX workbook'
+        sga_tooltip: 'Additional requirement Simplified Group Assessment (SGA) — presence in ENX workbook'
+        must_abbr: 'M'
+        should_abbr: 'S'
+        high_abbr: 'H'
+        very_high_abbr: 'VH'
+        sga_abbr: 'SGA'
         schutzbedarf_note: 'Protection-need addendum available'
         byo_hint: 'Read text in your licensed ENX workbook (BYO wizard)'
       save_button: 'Save Assessment'

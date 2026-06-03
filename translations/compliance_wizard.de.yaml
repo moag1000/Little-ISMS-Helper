@@ -24,6 +24,25 @@ diff:
     section:
         unchanged_badge: 'unverändert'
 delta:
+    glossary:
+        what_is: 'Das Delta-Assessment zeigt, wie viel eines neuen Frameworks bereits durch ein vorhandenes abgedeckt ist — damit Sie nur die Lücke bearbeiten statt alles neu.'
+        baseline_framework: 'Baseline-Framework = das bereits umgesetzte Framework, gegen das verglichen wird (die Quelle der Wiederverwendung, z. B. ISO 27001).'
+        pre_fill_rate: 'Pre-Fill-Rate = Anteil der Ziel-Anforderungen, die durch das Baseline-Framework bereits vorausgefüllt sind (ohne neue Arbeit). Zielwert konfigurierbar (Standard 60 %).'
+    export:
+        status:
+            not_started: 'Nicht begonnen'
+            in_progress: 'In Bearbeitung'
+            implemented: 'Umgesetzt'
+            verified: 'Verifiziert'
+        inheritance:
+            confirmed: 'Bestätigt'
+            overridden: 'Überschrieben'
+            implemented: 'Umgesetzt'
+            inherited_pending_review: 'Geerbt — Prüfung offen'
+        category:
+            information_security: 'Informationssicherheit'
+            prototype_protection: 'Prototypenschutz'
+            data_protection: 'Datenschutz'
     title: 'Delta-Assessment'
     sheet:
         summary: 'Zusammenfassung'
@@ -72,11 +91,14 @@ delta:
         new_assessment: 'Neubewertung erforderlich'
         gap_close: 'Gap schließen'
         download_excel: 'Delta-Assessment exportieren (Excel)'
-        baseline_required: 'Baseline-Framework benötigt (kein anderes aktives Framework im Organisationen)'
+        baseline_required: 'Baseline-Framework benötigt (kein anderes aktives Framework in dieser Organisation)'
     flash:
         no_baseline_selected: 'Kein Baseline-Framework gewählt — es wird nur der Zustand des Ziel-Frameworks gezeigt.'
 
 # Aliases — einige Aufrufer nutzen den Legacy `compliance_wizard.*`-Flat-Key-Pfad
 'compliance_wizard.delta.summary.pre_fill_rate': 'Pre-Fill-Rate Ziel %target%%%, aktuell %actual%%%'
 'compliance_wizard.delta.action.download_excel': 'Delta-Assessment exportieren (Excel)'
-'compliance_wizard.delta.action.baseline_required': 'Baseline-Framework benötigt (kein anderes aktives Framework im Organisationen)'
+'compliance_wizard.delta.action.baseline_required': 'Baseline-Framework benötigt (kein anderes aktives Framework in dieser Organisation)'
+'compliance_wizard.delta.glossary.what_is': 'Das Delta-Assessment zeigt, wie viel eines neuen Frameworks bereits durch ein vorhandenes abgedeckt ist — damit Sie nur die Lücke bearbeiten statt alles neu.'
+'compliance_wizard.delta.glossary.baseline_framework': 'Baseline-Framework = das bereits umgesetzte Framework, gegen das verglichen wird (die Quelle der Wiederverwendung, z. B. ISO 27001).'
+'compliance_wizard.delta.glossary.pre_fill_rate': 'Pre-Fill-Rate = Anteil der Ziel-Anforderungen, die durch das Baseline-Framework bereits vorausgefüllt sind (ohne neue Arbeit). Zielwert konfigurierbar (Standard 60 %).'
