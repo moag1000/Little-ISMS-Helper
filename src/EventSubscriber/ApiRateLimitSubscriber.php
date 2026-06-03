@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -34,18 +34,12 @@ use Symfony\Component\RateLimiter\RateLimiterFactory;
  * - Limiter: apiLimiter (configured in rate_limiter.yaml)
  * - Strategy: Token bucket with 100 tokens/minute
  */
-final class ApiRateLimitSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest', priority: 10)]
+final class ApiRateLimitSubscriber
 {
     public function __construct(
         private readonly RateLimiterFactory $rateLimiterFactory
     ) {}
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::REQUEST => ['onKernelRequest', 10],
-        ];
-    }
 
     public function onKernelRequest(RequestEvent $requestEvent): void
     {

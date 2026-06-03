@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use App\Security\SetupAccessChecker;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -22,28 +22,23 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * - After setup completion: /setup requires ROLE_ADMIN
  *
  * This prevents unauthorized access to the setup wizard after initial configuration.
+ *
+ * Priority 4: AFTER Symfony firewall (priority 8 in REQUEST event).
+ * Höhere Priority würde vor Firewall laufen — dann gäbe es keinen
+ * resolved User aus der Session, und der Subscriber würde Admins
+ * fälschlich als unauthenticated zum Login leiten (Login-Loop für
+ * bereits eingeloggte User). Lower-priority garantiert dass
+ * $security->getUser() den authentifizierten User aus der Session
+ * korrekt zurückliefert.
  */
-final class SetupSecuritySubscriber implements EventSubscriberInterface
+#[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest', priority: 4)]
+final class SetupSecuritySubscriber
 {
     public function __construct(
         private readonly SetupAccessChecker $setupAccessChecker,
         private readonly Security $security,
         private readonly UrlGeneratorInterface $urlGenerator
     ) {
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        // Priority 4: AFTER Symfony firewall (priority 8 in REQUEST event).
-        // Höhere Priority würde vor Firewall laufen — dann gäbe es keinen
-        // resolved User aus der Session, und der Subscriber würde Admins
-        // fälschlich als unauthenticated zum Login leiten (Login-Loop für
-        // bereits eingeloggte User). Lower-priority garantiert dass
-        // $security->getUser() den authentifizierten User aus der Session
-        // korrekt zurückliefert.
-        return [
-            KernelEvents::REQUEST => ['onKernelRequest', 4],
-        ];
     }
 
     public function onKernelRequest(RequestEvent $requestEvent): void

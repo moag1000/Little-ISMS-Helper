@@ -6,26 +6,20 @@ namespace App\Lifecycle\Guard;
 
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Service\ModuleConfigurationService;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Workflow\Event\GuardEvent;
 
 /**
  * Blocks transition if its YAML/DB-overlay metadata includes
  * `module: <key>` and that module is not active for the current tenant.
  */
-final class ModuleGateGuard implements EventSubscriberInterface
+#[AsEventListener(event: 'workflow.guard', method: 'onGuard', priority: 80)]
+final class ModuleGateGuard
 {
     public function __construct(
         private readonly LifecycleConfigResolverInterface $resolver,
         private readonly ModuleConfigurationService $moduleService,
     ) {}
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            'workflow.guard' => ['onGuard', 80],
-        ];
-    }
 
     public function onGuard(GuardEvent $event): void
     {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,19 +17,13 @@ use Doctrine\ORM\EntityManagerInterface;
  * When no user is authenticated or user has no tenant (super admin),
  * the parameter is set to 'null' which disables filtering (admin mode).
  */
-final class TenantFilterSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest', priority: 7)]
+final class TenantFilterSubscriber
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly Security $security,
     ) {
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::REQUEST => ['onKernelRequest', 7],
-        ];
     }
 
     public function onKernelRequest(RequestEvent $event): void

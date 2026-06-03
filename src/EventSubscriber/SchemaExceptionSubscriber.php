@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping\MappingException as ORMMappingException;
 use Doctrine\Persistence\Mapping\MappingException as PersistenceMappingException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -29,8 +29,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * Disabled when {@see QuickFixGuard::fallbackUiEnabled()} returns false —
  * audit-critical environments fall back to the standard 500.
+ *
+ * Priority 64 — before profiler (-128) and Symfony's default
+ * ExceptionListener (-128). Stays out of the way of more
+ * specific listeners (TenantNotFoundSubscriber priority 0,
+ * SecurityEventSubscriber default).
  */
-final class SchemaExceptionSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: KernelEvents::EXCEPTION, method: 'onKernelException', priority: 64)]
+final class SchemaExceptionSubscriber
 {
     public function __construct(
         private readonly QuickFixGuard $guard,
@@ -38,17 +44,6 @@ final class SchemaExceptionSubscriber implements EventSubscriberInterface
         private readonly SchemaMaintenanceService $maintenance,
         private readonly LoggerInterface $logger = new NullLogger(),
     ) {
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            // Priority 64 — before profiler (-128) and Symfony's default
-            // ExceptionListener (-128). Stays out of the way of more
-            // specific listeners (TenantNotFoundSubscriber priority 0,
-            // SecurityEventSubscriber default).
-            KernelEvents::EXCEPTION => ['onKernelException', 64],
-        ];
     }
 
     public function onKernelException(ExceptionEvent $event): void

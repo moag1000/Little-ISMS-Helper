@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\Tenant;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -17,19 +17,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Handles 404 errors when Tenant entities are not found
  * Provides user-friendly error messages and redirects
  */
-final class TenantNotFoundSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: KernelEvents::EXCEPTION, method: 'onKernelException')]
+final class TenantNotFoundSubscriber
 {
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly RequestStack $requestStack
     ) {
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::EXCEPTION => ['onKernelException', 0],
-        ];
     }
 
     public function onKernelException(ExceptionEvent $exceptionEvent): void

@@ -8,7 +8,7 @@ use App\Entity\User;
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Repository\UserRepository;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
 /**
@@ -46,19 +46,13 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
  * so a UI can show "missing reason" + "missing approver" in the same
  * round-trip if both are absent.
  */
-final class FourEyesValidator implements EventSubscriberInterface
+#[AsEventListener(event: 'workflow.transition', method: 'onTransition', priority: 40)]
+final class FourEyesValidator
 {
     public function __construct(
         private readonly LifecycleConfigResolverInterface $resolver,
         private readonly UserRepository $userRepository,
     ) {}
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            'workflow.transition' => ['onTransition', 40],
-        ];
-    }
 
     public function onTransition(TransitionEvent $event): void
     {

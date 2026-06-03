@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Lifecycle\EventListener;
 
 use App\Service\AuditLogger;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Workflow\Event\CompletedEvent;
 
 /**
@@ -16,18 +16,12 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
  * The listener defensively wraps AuditLogger to keep transitions from
  * failing on audit-log errors (e.g. closed EM after a different bug).
  */
-final class AuditLogListener implements EventSubscriberInterface
+#[AsEventListener(event: 'workflow.completed', method: 'onCompleted', priority: 50)]
+final class AuditLogListener
 {
     public function __construct(
         private readonly AuditLogger $auditLogger,
     ) {}
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            'workflow.completed' => ['onCompleted', 50],
-        ];
-    }
 
     public function onCompleted(CompletedEvent $event): void
     {
