@@ -122,7 +122,7 @@ class RiskAppetitePrioritizationService
     /**
      * Get detailed appetite analysis for a risk
      *
-     * @return array{appetite: RiskAppetite|null, within_appetite: bool, priority: string, exceedance: int, percentage: float, requires_action: bool, recommendation: string}
+     * @return array{appetite: RiskAppetite|null, within_appetite: bool|null, priority: string, exceedance: int, percentage: float, requires_action: bool, recommendation: string}
      */
     public function analyzeRiskAppetite(Risk $risk): array
     {

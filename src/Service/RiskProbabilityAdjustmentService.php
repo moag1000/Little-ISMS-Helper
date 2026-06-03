@@ -123,7 +123,6 @@ final class RiskProbabilityAdjustmentService
      */
     private function analyzeIncidentFrequency(array $incidents): array
     {
-        new DateTime();
         $oneYearAgo = new DateTime('-1 year');
         $sixMonthsAgo = new DateTime('-6 months');
         $threeMonthsAgo = new DateTime('-3 months');

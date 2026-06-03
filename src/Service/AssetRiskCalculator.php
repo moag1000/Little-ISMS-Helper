@@ -99,7 +99,7 @@ final class AssetRiskCalculator
             return 'adequately_protected';
         }
 
-        return 'unknown';
+        return 'unknown'; // defensive — branches above are exhaustive (covers controlCount >= riskCount incl. 0==0)
     }
 
     /**
