@@ -174,11 +174,16 @@ class BusinessProcessController extends AbstractController
         ], new Response(status: $status));
     }
     #[Route('/bcm/business-process/api/stats', name: 'app_business_process_stats_api', methods: ['GET'])]
-    public function statsApi(BusinessProcessRepository $businessProcessRepository): Response
+    public function statsApi(Request $request, BusinessProcessRepository $businessProcessRepository): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
 
-        $processes = $businessProcessRepository->findAll();
+        $user   = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        $processes = $tenant !== null
+            ? $businessProcessRepository->findByTenant($tenant)
+            : $businessProcessRepository->findAll();
 
         $stats = [
             'total' => count($processes),
@@ -213,6 +218,15 @@ class BusinessProcessController extends AbstractController
         if ($stats['total'] > 0) {
             $stats['avg_rto'] = round($totalRto / $stats['total'], 1);
             $stats['avg_rpo'] = round($totalRpo / $stats['total'], 1);
+        }
+
+        // Turbo Frame requests (Turbo-Frame: bcm-stats) require an HTML fragment
+        // containing a matching <turbo-frame id="bcm-stats"> wrapper.
+        // Direct / API / test requests without the header receive JSON as before.
+        if ($request->headers->has('Turbo-Frame')) {
+            return $this->render('business_process/_stats_frame.html.twig', [
+                'stats' => $stats,
+            ]);
         }
 
         return $this->json($stats);

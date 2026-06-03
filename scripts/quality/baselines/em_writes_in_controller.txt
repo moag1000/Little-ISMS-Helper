@@ -172,9 +172,9 @@ src/Controller/BusinessContinuityPlanController.php:236
 src/Controller/BusinessContinuityPlanController.php:244
 src/Controller/BusinessProcessController.php:160
 src/Controller/BusinessProcessController.php:161
-src/Controller/BusinessProcessController.php:251
-src/Controller/BusinessProcessController.php:273
-src/Controller/BusinessProcessController.php:274
+src/Controller/BusinessProcessController.php:265
+src/Controller/BusinessProcessController.php:287
+src/Controller/BusinessProcessController.php:288
 src/Controller/ChangeRequestController.php:66
 src/Controller/ChangeRequestController.php:67
 src/Controller/ChangeRequestController.php:99
