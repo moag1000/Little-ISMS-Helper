@@ -109,16 +109,13 @@ class ComplianceMappingAdminController extends AbstractController
             $existingMappings = $this->complianceMappingRepository->findAll();
             $existingPairs = [];
             foreach ($existingMappings as $mapping) {
-                // Defensive: an orphaned mapping (source/target requirement gone,
-                // e.g. a framework deleted around a non-cascading edge) would make
-                // getId() throw `on null` — a \TypeError that the catch (Exception)
-                // below does NOT catch, surfacing as a hard 500 to the batch loop.
+                // Skip orphaned mappings: null source/target → getId()-on-null
+                // \TypeError (uncaught by catch(Exception)) → hard 500.
                 $source = $mapping->getSourceRequirement();
                 $target = $mapping->getTargetRequirement();
-                if ($source === null || $target === null) {
-                    continue;
+                if ($source !== null && $target !== null) {
+                    $existingPairs[$source->getId() . '-' . $target->getId()] = true;
                 }
-                $existingPairs[$source->getId() . '-' . $target->getId()] = true;
             }
 
             $mappingsCreated = 0;
@@ -386,16 +383,13 @@ class ComplianceMappingAdminController extends AbstractController
             $existingMappings = $this->complianceMappingRepository->findAll();
             $existingPairs = [];
             foreach ($existingMappings as $mapping) {
-                // Defensive: an orphaned mapping (source/target requirement gone,
-                // e.g. a framework deleted around a non-cascading edge) would make
-                // getId() throw `on null` — a \TypeError that the catch (Exception)
-                // below does NOT catch, surfacing as a hard 500 to the batch loop.
+                // Skip orphaned mappings: null source/target → getId()-on-null
+                // \TypeError (uncaught by catch(Exception)) → hard 500.
                 $source = $mapping->getSourceRequirement();
                 $target = $mapping->getTargetRequirement();
-                if ($source === null || $target === null) {
-                    continue;
+                if ($source !== null && $target !== null) {
+                    $existingPairs[$source->getId() . '-' . $target->getId()] = true;
                 }
-                $existingPairs[$source->getId() . '-' . $target->getId()] = true;
             }
 
             $mappingsCreated = 0;
