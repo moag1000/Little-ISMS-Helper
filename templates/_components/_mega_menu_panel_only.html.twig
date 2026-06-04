@@ -435,6 +435,15 @@
                     <span class="fly-item__sub">{{ 'nav.mega.desc.data_subject_request'|trans({}, 'nav') }}</span>
                 </span>
             </a>
+            {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_privacy_import_hub') }}" class="fly-item {% if current_route starts with 'app_privacy_import_' or (current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') in ['processing_activity', 'data_subject_request', 'consent']) %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+                <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i></span>
+                <span class="fly-item__body">
+                    <span class="fly-item__title">{{ 'privacy_import.hub.title'|trans({}, 'data_import') }}</span>
+                    <span class="fly-item__sub">{{ 'privacy_import.hub.subtitle'|trans({}, 'data_import') }}</span>
+                </span>
+            </a>
+            {% endif %}
             {% if is_granted('PERSONA_DPO') %}
             <a href="{{ path('app_vvt_export_xlsx') }}" class="fly-item {% if current_route starts with 'app_vvt_export_' %}is-active{% endif %}" data-turbo="false" data-turbo-prefetch="false" role="menuitem" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i></span>

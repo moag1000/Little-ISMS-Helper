@@ -99,6 +99,11 @@ services:
             # W3-D — PolicyTopicPresentCheck is parameterised; the 24
             # tenant-scoped instances are wired explicitly below.
             - '../src/Service/ComplianceWizard/Check/PolicyWizard/PolicyTopicPresentCheck.php'
+            # Schema-driven import value objects + the per-schema mapper are not
+            # services — they are plain VOs / built on demand by ImportSchemaRegistry.
+            - '../src/Service/Import/Schema/ImportFieldSpec.php'
+            - '../src/Service/Import/Schema/EntityImportSchema.php'
+            - '../src/Service/Import/Schema/SchemaDrivenMapper.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -170,6 +175,10 @@ services:
         # !tagged_iterator app.import.mapper collects all implementations.
         App\Service\Import\Mapper\EntityMapperInterface:
             tags: ['app.import.mapper']
+        # Schema-driven import: every ImportSchemaProvider auto-registers so
+        # ImportSchemaRegistry can build a SchemaDrivenMapper on demand.
+        App\Service\Import\Schema\ImportSchemaProviderInterface:
+            tags: ['app.import.schema_provider']
         # S-2 Compliance-Framework-Loader refactor: every FrameworkLoaderInterface
         # implementation (Load*RequirementsCommand thin-wrappers + any future
         # loader services) auto-registers so FrameworkLoaderRegistry can collect
@@ -436,9 +445,14 @@ services:
     # Mappers auto-register via the _instanceof rule for EntityMapperInterface
     # above. No explicit per-mapper entries needed.
 
+    App\Service\Import\Schema\ImportSchemaRegistry:
+        arguments:
+            $providers: !tagged_iterator app.import.schema_provider
+
     App\Service\Import\EntityMapperRegistry:
         arguments:
             $mappers: !tagged_iterator app.import.mapper
+            $schemaRegistry: '@App\Service\Import\Schema\ImportSchemaRegistry'
 
     # ── F2.5: Bulk-Import Orchestrator ───────────────────────────────────────
     App\Service\Import\BulkImportOrchestrator:

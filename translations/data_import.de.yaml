@@ -10,6 +10,19 @@ nav:
         risks_desc: 'Risikoregister aus Excel/CSV importieren'
         business_processes: 'Geschäftsprozesse-Bulk-Import'
         business_processes_desc: 'BIA-Prozessliste aus Excel/CSV importieren'
+        processing_activities: 'Verarbeitungstätigkeiten-Import'
+        processing_activities_desc: 'VVT (Art. 30) aus Excel/CSV importieren'
+        data_subject_requests: 'Betroffenenanfragen-Import'
+        data_subject_requests_desc: 'DSAR-Vorgänge aus Excel/CSV importieren'
+        consents: 'Einwilligungen-Import'
+        consents_desc: 'Einwilligungs-Datensätze aus Excel/CSV importieren'
+
+privacy_import:
+    hub:
+        badge: 'Datenschutz-Import'
+        title: 'Datenschutz – Bulk-Import'
+        subtitle: 'Importieren Sie Datenschutz-Datensätze aus Excel/CSV – so sparen Sie Migrationsaufwand.'
+        help: 'Jede Kachel öffnet den Import-Assistenten: Datei hochladen, Spalten zuordnen, Vorschau prüfen, übernehmen.'
 
 import:
     page:
@@ -22,6 +35,9 @@ import:
         control: 'Controls'
         risk: 'Risiko'
         business_process: 'Geschäftsprozess'
+        processing_activity: 'Verarbeitungstätigkeiten'
+        data_subject_request: 'Betroffenenanfragen'
+        consent: 'Einwilligungen'
 
     entity_type:
         asset: 'Asset'
@@ -29,6 +45,9 @@ import:
         control: 'Control'
         risk: 'Risiko'
         business_process: 'Geschäftsprozess'
+        processing_activity: 'Verarbeitungstätigkeit'
+        data_subject_request: 'Betroffenenanfrage'
+        consent: 'Einwilligung'
 
     wizard:
         step:
