@@ -29,7 +29,7 @@ src/Controller/AnalyticsController.php:LOC=743 deps=0
 src/Controller/MonitoringController.php:LOC=727 deps=0
 src/Controller/QuickFixController.php:LOC=712 deps=0
 src/Controller/AuditController.php:LOC=682 deps=0
-src/Controller/ComplianceMappingAdminController.php:LOC=669 deps=0
+src/Controller/ComplianceMappingAdminController.php:LOC=677 deps=0
 src/Service/ComplianceFrameworkLoaderService.php:LOC=636 deps=32
 src/Controller/DataBreachController.php:LOC=635 deps=0
 src/Controller/TrainingController.php:LOC=633 deps=0
