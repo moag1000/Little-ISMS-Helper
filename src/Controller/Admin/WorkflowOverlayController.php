@@ -12,6 +12,7 @@ use App\Repository\LifecycleConfigRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
+use App\Workflow\Loader\RegulatoryWorkflowLoader;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,6 +48,7 @@ final class WorkflowOverlayController extends AbstractController
         private readonly EntityManagerInterface $em,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
+        private readonly RegulatoryWorkflowLoader $workflowLoader,
     ) {}
 
     /**
@@ -328,24 +330,17 @@ final class WorkflowOverlayController extends AbstractController
     /**
      * Load steps for a workflow name.
      *
-     * Tries RegulatoryWorkflowLoader first (Y.2 contract — may not be bound yet).
-     * Falls back to parsing the YAML metadata.steps block directly.
+     * Uses RegulatoryWorkflowLoader (injected via constructor) as the primary source.
+     * Falls back to parsing the YAML metadata.steps block directly when the loader
+     * returns null (workflow not registered in the Symfony Workflow Registry).
      *
      * @return list<array<string, mixed>>
      */
     private function loadStepsForWorkflow(string $name): array
     {
-        // Y.2 contract: if RegulatoryWorkflowLoader exists, use it
-        // This avoids a hard dependency so Y.3 ships before Y.2 is merged.
-        if ($this->container->has('App\Workflow\Loader\RegulatoryWorkflowLoader')) {
-            /** @var object $loader */
-            $loader = $this->container->get('App\Workflow\Loader\RegulatoryWorkflowLoader');
-            if (method_exists($loader, 'getStepsForWorkflow')) {
-                $steps = $loader->getStepsForWorkflow($name);
-                if (!empty($steps)) {
-                    return array_values($steps);
-                }
-            }
+        $steps = $this->workflowLoader->getStepsForWorkflow($name);
+        if (!empty($steps)) {
+            return $steps;
         }
 
         return $this->parseStepsFromYaml($name);
