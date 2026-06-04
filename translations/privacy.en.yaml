@@ -508,6 +508,8 @@ processing_activity:
         involves_processors: 'Involves Processors'
         processor_suppliers: Processors
         is_joint_controller: 'Is Joint Controller'
+        is_processor: 'Processor role (GDPR Art. 30(2))'
+        processor_client_controller: 'Controller(s) processed on behalf of (Art. 30(2)(a))'
         joint_controller_details: 'Joint Controllers (GDPR Art. 26)'
         is_high_risk: 'Is High Risk'
         dpia_completed: 'Dpia Completed'
@@ -559,6 +561,8 @@ processing_activity:
         involves_processors: 'Are processors (Auftragsverarbeiter) involved (Art. 28)?'
         processor_suppliers: 'External processors acting on your behalf in this processing activity (GDPR Art. 28).'
         is_joint_controller: 'Is this a joint controller arrangement (Art. 26)?'
+        is_processor: 'Does the organisation process here on behalf of another controller (Art. 30(2))?'
+        processor_client_controller: 'Identity (and DPO where relevant) of the controller(s) on whose behalf processing is carried out (Art. 30(2)(a)).'
         joint_controller_details_json: 'List the joint controllers as a JSON array with fields: name, contact, responsibilities (split of duties per Art. 26(1)), arrangement_reference (link to the agreement). The essence must be made available to data subjects (Art. 26(2)).'
         is_high_risk: 'Is this considered high-risk processing?'
         dpia_completed: 'Has a Data Protection Impact Assessment (DPIA) been conducted?'
@@ -634,6 +638,7 @@ processing_activity:
         processor_suppliers_required: 'At least one Auftragsverarbeiter must be linked as a typed entity (GDPR Art. 28(1) + Art. 30(1)(d)). When "involves processors" is checked, the concrete suppliers are mandatory for the recipients-disclosure duty.'
         criminal_data_legal_basis_required: 'When criminal-conviction data (Art. 10 GDPR) is processed, the legal basis/authority must be documented (official authority or Union/Member-State law, e.g. § 26 BDSG).'
         recipient_categories_required: 'At least one recipient category is required (GDPR Art. 30(1)(d)) — even "internal only" must be stated explicitly.'
+        processor_client_controller_required: 'For a processor role (Art. 30(2)), the controller(s) processed on behalf of must be named (Art. 30(2)(a)).'
 data_breach:
     dashboard:
         title: 'Data Breach Dashboard'
