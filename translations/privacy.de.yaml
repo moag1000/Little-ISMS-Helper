@@ -467,6 +467,7 @@ processing_activity:
         personal_data_categories: 'Kategorien personenbezogener Daten'
         processes_special_categories: 'Verarbeitet besondere Kategorien (Art. 9 DSGVO)'
         processes_criminal_data: 'Verarbeitet Daten zu strafrechtlichen Verurteilungen (Art. 10 DSGVO)'
+        criminal_data_legal_basis: 'Rechtsgrundlage/Befugnis für strafrechtliche Daten (Art. 10 DSGVO)'
         special_categories_details: 'Details zu besonderen Kategorien (Gesundheit, biometrische Daten, etc.)'
         legal_basis_special_categories: 'Rechtsgrundlage für besondere Kategorien (Art. 9(2) DSGVO)'
         recipient_categories: 'Kategorien von Empfängern (intern/extern)'
@@ -526,6 +527,7 @@ processing_activity:
         personal_data_categories: 'Kategorien personenbezogener Daten'
         processes_special_categories: 'Verarbeitet besondere Kategorien (Art. 9 DSGVO)'
         processes_criminal_data: 'Verarbeitet Daten zu strafrechtlichen Verurteilungen (Art. 10 DSGVO)'
+        criminal_data_legal_basis: 'Rechtsgrundlage/Befugnis für strafrechtliche Daten (Art. 10 DSGVO)'
         special_categories_details: 'Details zu besonderen Kategorien (Gesundheit, biometrische Daten, etc.)'
         legal_basis_special_categories: 'Rechtsgrundlage für besondere Kategorien (Art. 9(2) DSGVO)'
         recipient_categories: 'Kategorien von Empfängern (intern/extern)'
@@ -568,6 +570,7 @@ processing_activity:
         processes_special_categories: 'Werden besondere Kategorien von Daten verarbeitet (Art. 9 DSGVO)?'
         special_categories_details: 'Welche besonderen Kategorien werden verarbeitet (Art. 9 DSGVO)?'
         processes_criminal_data: 'Werden Daten zu strafrechtlichen Verurteilungen verarbeitet (Art. 10 DSGVO)?'
+        criminal_data_legal_basis: 'Art. 10 verlangt behördliche Aufsicht ODER eine unions-/mitgliedstaatliche Befugnis mit Garantien (z.B. § 26 BDSG für Beschäftigtenkontext).'
         recipient_categories: 'Kategorien von Empfängern (Art. 30(1)(d))'
         recipient_details: 'Spezifische Empfänger (optional, für Transparenz)'
         has_third_country_transfer: 'Werden Daten in Länder außerhalb EU/EWR übermittelt (Art. 30(1)(e))?'
@@ -712,6 +715,8 @@ processing_activity:
     validation:
         tom_or_controls_required: 'Mindestens eine Nachweisform ist erforderlich (DSGVO Art. 32): entweder eine qualitative TOM-Beschreibung (≥ 50 Zeichen) ODER mindestens eine implementierte ISO 27001 Kontrolle.'
         processor_suppliers_required: 'Mindestens ein Auftragsverarbeiter muss strukturiert verlinkt sein (DSGVO Art. 28(1) + Art. 30(1)(d)). Wenn "Auftragsverarbeiter involviert" markiert ist, sind die konkreten Lieferanten als Empfänger-Disclosure pflichtig.'
+        criminal_data_legal_basis_required: 'Bei Verarbeitung strafrechtlicher Daten (Art. 10 DSGVO) muss die Rechtsgrundlage/Befugnis dokumentiert werden (behördliche Aufsicht oder unions-/mitgliedstaatliche Befugnis, z.B. § 26 BDSG).'
+        recipient_categories_required: 'Mindestens eine Empfängerkategorie ist erforderlich (DSGVO Art. 30(1)(d)) — auch "nur intern" muss explizit angegeben werden.'
     # S3 P-4: canonical 5-stage lifecycle (draft → in_review → approved → published → archived).
     # Legacy `active` key kept as fallback label for any historical row not yet migrated.
     status:

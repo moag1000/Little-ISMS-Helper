@@ -109,6 +109,49 @@ final class ProcessingActivityValidationTest extends TestCase
         );
     }
 
+    // ── M-6 — Art. 10 criminal-data legal-basis gate ─────────────────────
+
+    #[Test]
+    public function entityDeclaresCriminalDataLegalBasisField(): void
+    {
+        $source = self::getEntitySource();
+
+        self::assertStringContainsString('private ?string $criminalDataLegalBasis = null;', $source);
+        self::assertStringContainsString('public function getCriminalDataLegalBasis(): ?string', $source);
+        self::assertStringContainsString('public function setCriminalDataLegalBasis(', $source);
+    }
+
+    #[Test]
+    public function criminalDataValidatorIsCallbackGatedOnProcessesCriminalData(): void
+    {
+        $source = self::getEntitySource();
+
+        self::assertMatchesRegularExpression(
+            "/#\[Assert\\\\Callback\]\s*\n\s*public\s+function\s+validateCriminalDataLegalBasis\s*\(/",
+            $source,
+            'M-6: validateCriminalDataLegalBasis must carry #[Assert\\Callback].'
+        );
+        self::assertStringContainsString('$this->processesCriminalData &&', $source);
+        self::assertStringContainsString("'processing_activity.validation.criminal_data_legal_basis_required'", $source);
+        self::assertStringContainsString("->atPath('criminalDataLegalBasis')", $source);
+    }
+
+    // ── M-8 — Art. 30(1)(d) recipient-categories mandatory ───────────────
+
+    #[Test]
+    public function recipientCategoriesValidatorIsCallbackEnforcingPresence(): void
+    {
+        $source = self::getEntitySource();
+
+        self::assertMatchesRegularExpression(
+            "/#\[Assert\\\\Callback\]\s*\n\s*public\s+function\s+validateRecipientCategoriesPresent\s*\(/",
+            $source,
+            'M-8: validateRecipientCategoriesPresent must carry #[Assert\\Callback].'
+        );
+        self::assertStringContainsString("'processing_activity.validation.recipient_categories_required'", $source);
+        self::assertStringContainsString("->atPath('recipientCategories')", $source);
+    }
+
     // ── Audit markers (grep-ability when the roadmap is closed out) ───────
 
     #[Test]
