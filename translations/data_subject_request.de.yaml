@@ -155,6 +155,7 @@ dsr:
         view: "Anzeigen"
         complete: "Als abgeschlossen markieren"
         mark_complete: "Anfrage abschliessen"
+        export_personal_data: "Personenbezogene Daten exportieren (Art. 15/20)"
         reject: "Anfrage ablehnen"
         reject_request: "Ablehnen (Art. 12(5))"
         extend: "Frist verlaengern"
@@ -189,6 +190,7 @@ dsr:
         deleted: "Betroffenenanfrage geloescht."
         cannot_edit_terminal: "Eine abgeschlossene oder abgelehnte Anfrage kann nicht bearbeitet werden."
         response_required: "Eine Antwortbeschreibung ist erforderlich, um die Anfrage abzuschliessen."
+        identity_required_for_export: "Die Identitaet muss zuerst geprueft werden, bevor personenbezogene Daten exportiert werden duerfen (Art. 12(6) DSGVO)."
         rejection_reason_required: "Ein Grund ist erforderlich, um die Anfrage abzulehnen."
         extension_reason_required: "Ein Grund ist erforderlich, um die Frist zu verlaengern."
 

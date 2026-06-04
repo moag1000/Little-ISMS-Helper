@@ -155,6 +155,7 @@ dsr:
         view: "View"
         complete: "Mark as Completed"
         mark_complete: "Complete Request"
+        export_personal_data: "Export personal data (Art. 15/20)"
         reject: "Reject Request"
         reject_request: "Reject (Art. 12(5))"
         extend: "Extend Deadline"
@@ -189,6 +190,7 @@ dsr:
         deleted: "Data subject request deleted."
         cannot_edit_terminal: "Cannot edit a completed or rejected request."
         response_required: "Response description is required to complete the request."
+        identity_required_for_export: "Identity must be verified before personal data may be exported (Art. 12(6) GDPR)."
         rejection_reason_required: "A reason is required to reject the request."
         extension_reason_required: "A reason is required to extend the deadline."
 
