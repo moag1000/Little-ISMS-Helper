@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Import;
 
-use App\Entity\Tenant;
 use App\Service\Import\EntityMapperRegistry;
 use App\Service\Import\Mapper\EntityMapperInterface;
+use App\Service\Import\Schema\EntityImportSchema;
+use App\Service\Import\Schema\ImportSchemaProviderInterface;
+use App\Service\Import\Schema\ImportSchemaRegistry;
+use App\Service\ModuleConfigurationService;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -26,6 +30,38 @@ final class EntityMapperRegistryTest extends TestCase
                ->willReturnCallback(fn (string $t): bool => $t === $supportedType);
 
         return $mapper;
+    }
+
+    /**
+     * Build a real ImportSchemaRegistry backed by stub providers for the given
+     * entity types (the generic supported-type set is now schema-driven).
+     */
+    private function makeSchemaRegistry(string ...$types): ImportSchemaRegistry
+    {
+        $providers = array_map(
+            fn (string $type): ImportSchemaProviderInterface => new class ($type) implements ImportSchemaProviderInterface {
+                public function __construct(private readonly string $type)
+                {
+                }
+
+                public function supports(string $entityType): bool
+                {
+                    return $entityType === $this->type;
+                }
+
+                public function getSchema(): EntityImportSchema
+                {
+                    return new EntityImportSchema($this->type, \stdClass::class, []);
+                }
+            },
+            $types,
+        );
+
+        return new ImportSchemaRegistry(
+            $providers,
+            $this->createMock(EntityManagerInterface::class),
+            $this->createMock(ModuleConfigurationService::class),
+        );
     }
 
     #[Test]
@@ -54,7 +90,7 @@ final class EntityMapperRegistryTest extends TestCase
     #[Test]
     public function getMapperForThrowsIncludesSupportedTypesInMessage(): void
     {
-        $registry = new EntityMapperRegistry([$this->makeMapper('Asset')]);
+        $registry = new EntityMapperRegistry([], $this->makeSchemaRegistry('Asset'));
 
         try {
             $registry->getMapperFor('Missing');
@@ -83,11 +119,7 @@ final class EntityMapperRegistryTest extends TestCase
     #[Test]
     public function getSupportedEntityTypesReturnsAllRegisteredTypes(): void
     {
-        $registry = new EntityMapperRegistry([
-            $this->makeMapper('Asset'),
-            $this->makeMapper('Supplier'),
-            $this->makeMapper('Control'),
-        ]);
+        $registry = new EntityMapperRegistry([], $this->makeSchemaRegistry('Asset', 'Supplier', 'Control'));
 
         $types = $registry->getSupportedEntityTypes();
 

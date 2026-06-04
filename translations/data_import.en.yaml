@@ -29,6 +29,18 @@ import:
         title: 'Bulk Import'
         subtitle: 'Import assets, suppliers, or controls from an Excel file'
 
+    hub:
+        badge: 'Data import'
+        title: 'Bulk import – overview'
+        subtitle: 'Import ISMS data from Excel/CSV to save migration effort. Each tile opens the import wizard.'
+        help: 'Per entry: upload a file, map columns, review the preview, commit. Only imports for active modules are shown.'
+        area:
+            governance: 'Governance & audit'
+            assets_risk: 'Assets & risks'
+            suppliers_people: 'Suppliers, people & locations'
+            continuity: 'Processes, BCM & incidents'
+            privacy: 'Privacy'
+
     entity:
         asset: 'Assets'
         supplier: 'Suppliers'
@@ -38,6 +50,24 @@ import:
         processing_activity: 'Processing activities'
         data_subject_request: 'Data subject requests'
         consent: 'Consents'
+        incident: 'Incidents'
+        interested_party: 'Interested parties'
+        vulnerability: 'Vulnerabilities'
+        person: 'People'
+        location: 'Locations'
+        audit_finding: 'Audit findings'
+        corrective_action: 'Corrective actions'
+        training: 'Trainings'
+        isms_objective: 'ISMS objectives'
+        threat_intelligence: 'Threat intelligence'
+        data_breach: 'Data breaches'
+        change_request: 'Change requests'
+        patch: 'Patches'
+        business_continuity_plan: 'Continuity plans (BCP)'
+        internal_audit: 'Internal audits'
+        data_protection_impact_assessment: 'DPIAs'
+        management_review: 'Management reviews'
+        isms_context: 'ISMS context'
 
     entity_type:
         asset: 'Asset'
@@ -48,6 +78,24 @@ import:
         processing_activity: 'Processing activity'
         data_subject_request: 'Data subject request'
         consent: 'Consent'
+        incident: 'Incident'
+        interested_party: 'Interested party'
+        vulnerability: 'Vulnerability'
+        person: 'Person'
+        location: 'Location'
+        audit_finding: 'Audit finding'
+        corrective_action: 'Corrective action'
+        training: 'Training'
+        isms_objective: 'ISMS objective'
+        threat_intelligence: 'Threat intelligence'
+        data_breach: 'Data breach'
+        change_request: 'Change request'
+        patch: 'Patch'
+        business_continuity_plan: 'Continuity plan (BCP)'
+        internal_audit: 'Internal audit'
+        data_protection_impact_assessment: 'DPIA'
+        management_review: 'Management review'
+        isms_context: 'ISMS context'
 
     wizard:
         step:

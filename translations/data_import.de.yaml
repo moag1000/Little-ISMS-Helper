@@ -29,6 +29,18 @@ import:
         title: 'Bulk-Import'
         subtitle: 'Importieren Sie Assets, Lieferanten oder Controls aus einer Excel-Datei'
 
+    hub:
+        badge: 'Daten-Import'
+        title: 'Bulk-Import – Übersicht'
+        subtitle: 'Importieren Sie ISMS-Daten aus Excel/CSV – so sparen Sie Migrationsaufwand. Jede Kachel öffnet den Import-Assistenten.'
+        help: 'Pro Eintrag: Datei hochladen, Spalten zuordnen, Vorschau prüfen, übernehmen. Es werden nur Importe für aktive Module angezeigt.'
+        area:
+            governance: 'Governance & Audit'
+            assets_risk: 'Assets & Risiken'
+            suppliers_people: 'Lieferanten, Personen & Standorte'
+            continuity: 'Prozesse, BCM & Vorfälle'
+            privacy: 'Datenschutz'
+
     entity:
         asset: 'Assets'
         supplier: 'Lieferanten'
@@ -38,6 +50,24 @@ import:
         processing_activity: 'Verarbeitungstätigkeiten'
         data_subject_request: 'Betroffenenanfragen'
         consent: 'Einwilligungen'
+        incident: 'Vorfälle'
+        interested_party: 'Interessierte Parteien'
+        vulnerability: 'Schwachstellen'
+        person: 'Personen'
+        location: 'Standorte'
+        audit_finding: 'Audit-Feststellungen'
+        corrective_action: 'Korrekturmaßnahmen'
+        training: 'Schulungen'
+        isms_objective: 'ISMS-Ziele'
+        threat_intelligence: 'Threat Intelligence'
+        data_breach: 'Datenschutzverletzungen'
+        change_request: 'Änderungsanträge'
+        patch: 'Patches'
+        business_continuity_plan: 'Notfallpläne (BCP)'
+        internal_audit: 'Interne Audits'
+        data_protection_impact_assessment: 'Datenschutz-Folgenabschätzungen (DSFA)'
+        management_review: 'Management-Bewertungen'
+        isms_context: 'ISMS-Kontext'
 
     entity_type:
         asset: 'Asset'
@@ -48,6 +78,24 @@ import:
         processing_activity: 'Verarbeitungstätigkeit'
         data_subject_request: 'Betroffenenanfrage'
         consent: 'Einwilligung'
+        incident: 'Vorfall'
+        interested_party: 'Interessierte Partei'
+        vulnerability: 'Schwachstelle'
+        person: 'Person'
+        location: 'Standort'
+        audit_finding: 'Audit-Feststellung'
+        corrective_action: 'Korrekturmaßnahme'
+        training: 'Schulung'
+        isms_objective: 'ISMS-Ziel'
+        threat_intelligence: 'Threat Intelligence'
+        data_breach: 'Datenschutzverletzung'
+        change_request: 'Änderungsantrag'
+        patch: 'Patch'
+        business_continuity_plan: 'Notfallplan (BCP)'
+        internal_audit: 'Internes Audit'
+        data_protection_impact_assessment: 'Datenschutz-Folgenabschätzung (DSFA)'
+        management_review: 'Management-Bewertung'
+        isms_context: 'ISMS-Kontext'
 
     wizard:
         step:
