@@ -112,10 +112,12 @@ final class ProcessingActivityTypeTest extends TestCase
     #[Test]
     public function entityAssertChoiceUsesCanonicalLifecycle(): void
     {
-        // Belt-and-suspenders: confirm ProcessingActivity::$status now constrains
-        // values to LifecycleRegistry::STANDARD_5_STAGE rather than the legacy
-        // 3-stage list. Reads the entity source directly via path (not Reflection)
-        // to remain robust against shared-vendor multi-worktree setups.
+        // Confirm ProcessingActivity::$status constrains values to the canonical
+        // lifecycle via the LifecycleRegistry — but to its KEYS, not the map.
+        // `choices: STANDARD_5_STAGE` compared against the map's array VALUES and
+        // rejected every status (incl. 'draft'), breaking all edits; the canonical
+        // form is `callback: standardStageKeys`. Reads the entity source directly
+        // via path (not Reflection) to remain robust against shared-vendor setups.
         $entityFile = __DIR__ . '/../../src/Entity/ProcessingActivity.php';
         self::assertFileExists($entityFile);
 
@@ -123,16 +125,21 @@ final class ProcessingActivityTypeTest extends TestCase
         self::assertIsString($source);
 
         self::assertStringContainsString(
-            'Assert\Choice(choices: LifecycleRegistry::STANDARD_5_STAGE)',
+            "Assert\\Choice(callback: [LifecycleRegistry::class, 'standardStageKeys'])",
             $source,
-            'ProcessingActivity::$status Assert\\Choice must reference the canonical registry constant.'
+            'ProcessingActivity::$status Assert\\Choice must validate against the registry stage KEYS via callback.'
         );
 
-        // Reject leftover legacy hard-coded list.
+        // Reject both the legacy hard-coded list AND the broken choices-against-map.
         self::assertStringNotContainsString(
             "Assert\\Choice(choices: ['draft', 'active', 'archived'])",
             $source,
             'Legacy hard-coded 3-stage Assert\\Choice must be removed.'
+        );
+        self::assertStringNotContainsString(
+            'Assert\Choice(choices: LifecycleRegistry::STANDARD_5_STAGE)',
+            $source,
+            'Choice must not compare against the STAGE MAP values (rejects every status).'
         );
     }
 

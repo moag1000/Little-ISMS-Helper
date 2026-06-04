@@ -125,6 +125,22 @@ final class LifecycleRegistry
     ];
 
     /**
+     * Valid status STRINGS of the canonical 5-stage flow — i.e. the KEYS of
+     * STANDARD_5_STAGE, not the stage maps themselves.
+     *
+     * Use this (not the const) as the `callback` for `#[Assert\Choice]` on
+     * status properties: `Assert\Choice(choices: STANDARD_5_STAGE)` compares the
+     * stored value against the map's *values* (the per-stage arrays), so it
+     * rejects every legitimate status — including 'draft'.
+     *
+     * @return list<string>
+     */
+    public static function standardStageKeys(): array
+    {
+        return array_keys(self::STANDARD_5_STAGE);
+    }
+
+    /**
      * Returns the lifecycle map for the given entity class.
      * Defaults to {@see STANDARD_5_STAGE} if no `#[Lifecycle]` attribute
      * is set on the class.
