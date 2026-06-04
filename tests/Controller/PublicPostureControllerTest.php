@@ -153,8 +153,10 @@ final class PublicPostureControllerTest extends WebTestCase
         try {
             $container = static::getContainer();
             $em = $container->get('doctrine.orm.entity_manager');
-            $em->getConnection()->connect();
-        } catch (\Exception $e) {
+            // executeQuery() is public + forces a real connection (connect() is
+            // protected in DBAL 4.x). Throws if the DB is unreachable.
+            $em->getConnection()->executeQuery('SELECT 1');
+        } catch (\Throwable $e) {
             self::markTestSkipped('Database not available: ' . $e->getMessage());
         }
     }
