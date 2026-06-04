@@ -120,6 +120,29 @@ final class OwnerPickerFormTraitTest extends KernelTestCase
         );
     }
 
+    #[Test]
+    public function defaultCommonPrefixPinsMessagesDomainSoCommonKeysResolve(): void
+    {
+        // prefix='common' → common.* keys live in `messages`; without pinning,
+        // a privacy/training/bcm form would look them up in its own domain and
+        // render raw `common.field.owner_user` strings.
+        $form = $this->formFactory->create(OwnerPickerTraitFixtureType_Minimal::class);
+
+        self::assertSame('messages', $form->get('ownerUser')->getConfig()->getOption('translation_domain'));
+        self::assertSame('messages', $form->get('ownerPerson')->getConfig()->getOption('translation_domain'));
+    }
+
+    #[Test]
+    public function customPrefixInheritsHostFormDomain(): void
+    {
+        // prefix='asset' → keys live in the host form's own domain; the trait
+        // must NOT pin `messages` (that would break asset/risk/... forms). null
+        // = inherit from parent form (existing, working behaviour).
+        $form = $this->formFactory->create(OwnerPickerTraitFixtureType_Full::class);
+
+        self::assertNull($form->get('ownerUser')->getConfig()->getOption('translation_domain'));
+    }
+
     /**
      * Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish.
      *
