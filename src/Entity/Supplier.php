@@ -867,6 +867,17 @@ class Supplier
     #[ORM\Column(length: 2, nullable: true)]
     private ?string $countryOfHeadOffice = null;  // ISO-3166 alpha-2
 
+    // ── GDPR Art. 44–49 — third-country transfer at the processor level (M-7) ──
+    // Mirrors the safeguard fields on ProcessingActivity, but on the supplier
+    // itself — the transfer originates where the (sub-)processor sits, so the
+    // SCC/adequacy status belongs here too, not only on each linked activity.
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $thirdCountryTransfer = false;
+
+    /** Art. 45–49 safeguard: adequacy_decision|scc|bcr|certification|derogation|none */
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $transferSafeguards = null;
+
     // ── LkSG (Lieferkettensorgfaltspflichtengesetz) ──────────────────────────
     // Mandatory due-diligence tracking for human-rights and environmental
     // risks across own business and direct + indirect suppliers. Pflicht ab
@@ -946,6 +957,11 @@ class Supplier
 
     public function getCountryOfHeadOffice(): ?string { return $this->countryOfHeadOffice; }
     public function setCountryOfHeadOffice(?string $v): self { $this->countryOfHeadOffice = $v; return $this; }
+
+    public function hasThirdCountryTransfer(): bool { return $this->thirdCountryTransfer; }
+    public function setThirdCountryTransfer(bool $v): self { $this->thirdCountryTransfer = $v; return $this; }
+    public function getTransferSafeguards(): ?string { return $this->transferSafeguards; }
+    public function setTransferSafeguards(?string $v): self { $this->transferSafeguards = $v; return $this; }
 
     public function getLeiCode(): ?string { return $this->leiCode; }
     public function setLeiCode(?string $v): self { $this->leiCode = $v; return $this; }
