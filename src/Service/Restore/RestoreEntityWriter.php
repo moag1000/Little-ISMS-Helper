@@ -804,6 +804,34 @@ class RestoreEntityWriter
                 }
             }
 
+            // Coerce a backing scalar back into its BackedEnum.
+            // Doctrine `enumType:` columns hydrate the entity property as an enum
+            // instance, so BackupService serialises the enum object — but once the
+            // backup is written to disk as JSON the enum collapses to its backing
+            // scalar ("identified", 1, …). On restore that scalar must be turned
+            // back into the enum, otherwise PropertyAccessor::setValue() throws a
+            // TypeError (which is an \Error, NOT an \Exception, so the catch below
+            // would miss it and the whole row would be dropped / the restore rolled
+            // back). In-memory round-trips never hit this — only file restores do.
+            if ($value !== null && (is_string($value) || is_int($value))) {
+                $enumClass = $this->resolveEnumType($meta, $fieldName);
+                if ($enumClass !== null) {
+                    $coerced = $enumClass::tryFrom($value);
+                    if ($coerced === null) {
+                        // Unknown legacy enum value (enum case removed since backup) —
+                        // keep the property's PHP default rather than crash the row.
+                        $warnings[] = sprintf(
+                            'Warning: %s.%s had unknown enum value "%s"; kept default.',
+                            $entityName,
+                            $fieldName,
+                            (string) $value,
+                        );
+                        continue;
+                    }
+                    $value = $coerced;
+                }
+            }
+
             // Convert ISO 8601 strings back to DateTime/DateTimeImmutable
             if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'time', 'time_immutable'])) {
                 try {
@@ -833,13 +861,34 @@ class RestoreEntityWriter
                         $reflection->getProperty($fieldName)->setValue($entity, $value);
                     }
                 }
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
+                // \Throwable (not just \Exception) so a TypeError from a property
+                // type-mismatch degrades to a skipped field + warning instead of
+                // aborting the entire row / restore.
                 $this->logger->warning('Failed to set property', [
                     'entity' => $entityName, 'field' => $fieldName,
                     'value_type' => get_debug_type($value), 'error' => $e->getMessage(),
                 ]);
                 $warnings[] = sprintf('Warning: Could not set %s.%s: %s', $entityName, $fieldName, $e->getMessage());
             }
+        }
+    }
+
+    /**
+     * Return the BackedEnum class declared via `enumType:` for a field, or null.
+     *
+     * Handles both the ORM 3.x FieldMapping object and the legacy array shape.
+     *
+     * @return class-string<\BackedEnum>|null
+     */
+    private function resolveEnumType(ClassMetadata $meta, string $fieldName): ?string
+    {
+        try {
+            // Doctrine ORM 3.x: getFieldMapping() returns a FieldMapping whose
+            // ->enumType is class-string<\BackedEnum>|null (null for non-enum fields).
+            return $meta->getFieldMapping($fieldName)->enumType;
+        } catch (\Throwable) {
+            return null;
         }
     }
 
