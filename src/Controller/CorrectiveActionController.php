@@ -9,12 +9,11 @@ use App\Entity\CorrectiveAction;
 use App\Entity\Tenant;
 use App\Enum\CorrectiveActionStatus;
 use App\Form\CorrectiveActionType;
+use App\Repository\AuditFindingRepository;
 use App\Repository\CommentRepository;
 use App\Repository\CorrectiveActionRepository;
-use App\Service\AuditLogger;
+use App\Service\CorrectiveActionService;
 use App\Service\TenantContext;
-use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,10 +32,10 @@ class CorrectiveActionController extends AbstractController
 {
     public function __construct(
         private readonly CorrectiveActionRepository $repository,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly CorrectiveActionService $correctiveActionService,
         private readonly TenantContext $tenantContext,
-        private readonly AuditLogger $auditLogger,
         private readonly Security $security,
+        private readonly AuditFindingRepository $auditFindingRepository,
         private readonly ?CommentRepository $commentRepository = null,
     ) {
     }
@@ -102,7 +101,7 @@ class CorrectiveActionController extends AbstractController
 
         $findingLocked = false;
         if ($findingId !== null) {
-            $finding = $this->entityManager->getRepository(AuditFinding::class)->find($findingId);
+            $finding = $this->auditFindingRepository->find($findingId);
             if ($finding instanceof AuditFinding) {
                 $action->setFinding($finding);
                 $findingLocked = true;
@@ -139,19 +138,7 @@ class CorrectiveActionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($action);
-            $this->entityManager->flush();
-
-            $this->auditLogger->logCreate(
-                'CorrectiveAction',
-                $action->getId(),
-                [
-                    'title' => $action->getTitle(),
-                    'status' => $action->getStatus(),
-                    'previousCapaId' => $action->getPreviousCapa()?->getId(),
-                ],
-                'CorrectiveAction created'
-            );
+            $this->correctiveActionService->create($action);
 
             $this->addFlash('success', 'corrective_action.flash.created');
             return $this->redirectToRoute('app_corrective_action_show', ['id' => $action->getId()]);
@@ -195,15 +182,7 @@ class CorrectiveActionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->flush();
-
-            $this->auditLogger->logUpdate(
-                'CorrectiveAction',
-                $action->getId(),
-                [],
-                ['status' => $action->getStatus()],
-                'CorrectiveAction updated'
-            );
+            $this->correctiveActionService->update($action);
 
             $this->addFlash('success', 'corrective_action.flash.updated');
             return $this->redirectToRoute('app_corrective_action_show', ['id' => $action->getId()]);
@@ -229,9 +208,7 @@ class CorrectiveActionController extends AbstractController
         }
 
         $findingId = $action->getFinding()?->getId();
-        $this->auditLogger->logDelete('CorrectiveAction', $action->getId(), ['title' => $action->getTitle()], 'CorrectiveAction deleted');
-        $this->entityManager->remove($action);
-        $this->entityManager->flush();
+        $this->correctiveActionService->delete($action);
 
         $this->addFlash('success', 'corrective_action.flash.deleted');
         return $findingId
@@ -274,30 +251,9 @@ class CorrectiveActionController extends AbstractController
         }
 
         $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $action = $this->repository->find($id);
-                if (!$action) {
-                    $errors[] = "CorrectiveAction ID $id not found";
-                    continue;
-                }
-                if ($tenant && $action->getTenant() !== $tenant) {
-                    $errors[] = "CorrectiveAction ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($action);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting CorrectiveAction ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
+        $result = $this->correctiveActionService->bulkDelete($ids, $tenant?->getId());
+        $deleted = $result['deleted'];
+        $errors  = $result['errors'];
 
         return $this->json([
             'success' => $deleted > 0,
