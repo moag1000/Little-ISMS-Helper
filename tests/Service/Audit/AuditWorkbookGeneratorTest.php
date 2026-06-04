@@ -19,16 +19,17 @@ final class AuditWorkbookGeneratorTest extends TestCase
     // ── getSupportedExportTypes ───────────────────────────────────────────────
 
     #[Test]
-    public function itReturnsFourSupportedExportTypes(): void
+    public function itReturnsFiveSupportedExportTypes(): void
     {
         $orchestrator = new AuditWorkbookGenerator([]);
         $types = $orchestrator->getSupportedExportTypes();
 
-        self::assertCount(4, $types);
+        self::assertCount(5, $types);
         self::assertContains('soa', $types);
         self::assertContains('control-implementation', $types);
         self::assertContains('compliance-fulfillment', $types);
         self::assertContains('risk-register', $types);
+        self::assertContains('access-review', $types); // F45 — UAR campaign export
     }
 
     // ── getGeneratorFor ───────────────────────────────────────────────────────
