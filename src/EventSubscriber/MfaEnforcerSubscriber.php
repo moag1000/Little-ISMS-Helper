@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -37,8 +37,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *
  * NIS2 Compliance: Art. 21.2.b (Multi-Factor Authentication)
  * ISO 27001:2022: A.8.5 (Secure Authentication)
+ *
+ * Priority 5: AFTER Symfony firewall (priority 8) and SetupRequiredSubscriber (10)
+ * so that $security->getUser() is already resolved from the session.
+ * SetupSecuritySubscriber runs at priority 4, meaning we run BEFORE it,
+ * but that is intentional — MFA enforcement must happen before setup
+ * access checks to prevent escalation paths.
  */
-final class MfaEnforcerSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest', priority: 5)]
+final class MfaEnforcerSubscriber
 {
     /**
      * Path prefixes that are always allowed while MFA is pending.
@@ -61,18 +68,6 @@ final class MfaEnforcerSubscriber implements EventSubscriberInterface
         private readonly Security $security,
         private readonly UrlGeneratorInterface $urlGenerator
     ) {
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        // Priority 5: AFTER Symfony firewall (priority 8) and SetupRequiredSubscriber (10)
-        // so that $security->getUser() is already resolved from the session.
-        // SetupSecuritySubscriber runs at priority 4, meaning we run BEFORE it,
-        // but that is intentional — MFA enforcement must happen before setup
-        // access checks to prevent escalation paths.
-        return [
-            KernelEvents::REQUEST => ['onKernelRequest', 5],
-        ];
     }
 
     public function onKernelRequest(RequestEvent $event): void

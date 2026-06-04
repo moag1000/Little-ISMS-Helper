@@ -8,7 +8,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Service\SecurityEventLogger;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -42,21 +42,15 @@ use Symfony\Component\Security\Http\Event\LogoutEvent;
  * - Unauthorized access monitoring
  * - Audit trail for compliance (ISO 27001, GDPR)
  */
-final class SecurityEventSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: LoginSuccessEvent::class, method: 'onLoginSuccess')]
+#[AsEventListener(event: LoginFailureEvent::class, method: 'onLoginFailure')]
+#[AsEventListener(event: LogoutEvent::class, method: 'onLogout')]
+#[AsEventListener(event: KernelEvents::EXCEPTION, method: 'onKernelException')]
+final class SecurityEventSubscriber
 {
     public function __construct(
         private readonly SecurityEventLogger $securityEventLogger
     ) {}
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            LoginSuccessEvent::class => 'onLoginSuccess',
-            LoginFailureEvent::class => 'onLoginFailure',
-            LogoutEvent::class => 'onLogout',
-            KernelEvents::EXCEPTION => 'onKernelException',
-        ];
-    }
 
     /**
      * Security: Log successful login

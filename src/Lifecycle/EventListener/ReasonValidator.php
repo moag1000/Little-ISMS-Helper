@@ -6,7 +6,7 @@ namespace App\Lifecycle\EventListener;
 
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\Exception\ReasonRequiredException;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Workflow\Event\TransitionEvent;
 
 /**
@@ -16,18 +16,12 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
  * Otherwise throws ReasonRequiredException (caught by LifecycleService
  * + translated to 422 in LifecycleController).
  */
-final class ReasonValidator implements EventSubscriberInterface
+#[AsEventListener(event: 'workflow.transition', method: 'onTransition', priority: 50)]
+final class ReasonValidator
 {
     public function __construct(
         private readonly LifecycleConfigResolverInterface $resolver,
     ) {}
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            'workflow.transition' => ['onTransition', 50],
-        ];
-    }
 
     public function onTransition(TransitionEvent $event): void
     {
