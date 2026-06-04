@@ -136,37 +136,20 @@ Die Software implementiert ein **datenzentrisches ISMS-Managementsystem mit inte
 
 **Entity:** `src/Entity/Risk.php`
 **Controller:** `src/Controller/RiskController.php`
-**Service:** `src/Service/RiskIntelligenceService.php`, `src/Service/RiskMatrixService.php`
+**Service:** `src/Service/RiskMatrixService.php`
 
 **Funktionalität:**
 - Risikoidentifikation mit Bedrohungen und Schwachstellen
 - Risikobewertung nach Likelihood (1-5) × Impact (1-5) = Risk Level (1-25)
 - Risikobehandlungsstrategien: Accept, Mitigate, Transfer, Avoid
-- Berechnung von Restrisiken nach Control-Implementierung (RiskIntelligenceService)
-- Risk Matrix Visualisierung mit Heat Map
+- Restrisiken werden als `residualProbability` / `residualImpact` direkt am `Risk`-Entity erfasst (nutzergeführt)
+- Risk Matrix Visualisierung mit Heat Map (`RiskMatrixService`)
 - Workflow-Integration für Risiko-Genehmigungen
 
 **Datenwiederverwendung:**
 - Vorfallshistorie validiert Risikobewertungen (wurden Risiken tatsächlich realisiert?)
-- Implementierte Controls reduzieren Restrisiken automatisch (30% max Reduktion pro Control, 80% cap)
-- Aus Vorfällen werden neue Risiken vorgeschlagen (Threat Intelligence via `suggestRisksFromIncidents()`)
-
-**Risk Intelligence Service:**
-```php
-// RiskIntelligenceService.php
-public function calculateResidualRisk(Risk $risk): array
-{
-    // 30% max Reduktion pro implementiertem Control
-    // 80% cap für maximale Risikoreduktion
-    // Zeile 85-93
-}
-
-public function suggestRisksFromIncidents(): array
-{
-    // Threat Intelligence aus Incident-Historie
-    // Zeile 31-59
-}
-```
+- Implementierte Controls reduzieren dokumentierte Restrisiken (nutzergeführt über `residualProbability`/`residualImpact`)
+- Vorfallsdaten stehen für manuelle Risiko-Neubewertung zur Verfügung
 
 #### **4.3 Statement of Applicability (SoA)**
 
@@ -184,7 +167,7 @@ public function suggestRisksFromIncidents(): array
 - Control-Wirksamkeits-Scoring basierend auf Vorfallsreduktion
 
 **Datenwiederverwendung:**
-- Control-Implementierungsstatus fließt in Restrisiko-Berechnung ein (RiskIntelligenceService)
+- Control-Implementierungsstatus fließt in die Bewertung des Restrisikos ein (nutzergeführt über `Risk.residualProbability`/`residualImpact`)
 - Implementierte Controls werden für Compliance-Nachweise mehrerer Frameworks verwendet (ComplianceMappingService)
 - Control-Wirksamkeit wird durch Vorfallsanalyse validiert (`getEffectivenessScore()`)
 
@@ -215,7 +198,7 @@ getTrainingStatus(): array             // Zeile 460 - Identifiziert Training-Gap
 
 **Datenwiederverwendung:**
 - Vorfälle werden mit Assets, Risiken und Controls verknüpft
-- Vorfallsmuster fließen in Risikobewertungen ein (RiskIntelligenceService.analyzeIncidentTrends())
+- Vorfallsmuster stehen für manuelle Risikobewertungen zur Verfügung (verlinkte Incidents am Risk-Entity)
 - Erfolgreiche Incident-Response-Maßnahmen werden als Control-Empfehlungen vorgeschlagen
 - Vorfallsdaten erfüllen Compliance-Anforderungen für Incident-Management-Nachweise
 
