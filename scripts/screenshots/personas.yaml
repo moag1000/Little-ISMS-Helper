@@ -169,6 +169,9 @@ personas:
       - { name: bcm-exercise-log-calendar, path: /de/bcm/exercise-log/calendar }
       - { name: data-subject-requests, path: /de/data-subject-request }
       - { name: consent-list,          path: /de/consent/ }
+      # VVT (Art. 30) — central RoPA register; criminal-data/recipients/processor-role,
+      # third-country, per-category retention and the status lifecycle all live here.
+      - { name: processing-activities, path: /de/processing-activity }
 
   # ─────────────────────────────────────────────────────────────────
   # Tool-Tester / QA-Engineer — implementation reality + i18n + UX

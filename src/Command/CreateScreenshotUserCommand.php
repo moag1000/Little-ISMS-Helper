@@ -28,6 +28,7 @@ class CreateScreenshotUserCommand
         private readonly UserRepository $userRepository,
         private readonly TenantRepository $tenantRepository,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly \App\Service\ModuleConfigurationService $moduleConfiguration,
         #[Autowire(param: 'kernel.environment')]
         private readonly string $kernelEnvironment,
     ) {
@@ -73,6 +74,20 @@ class CreateScreenshotUserCommand
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        // The screenshot/demo tenant must show the FULL product. Optional modules
+        // (privacy, bcm, nis2_dora, …) default to OFF, so without this every
+        // gated persona page (VVT, DSR, consent, DPIA, BC exercises, DORA, …)
+        // would redirect on its checkModuleActive() guard and the persona
+        // walkthrough would capture an empty redirect instead of the feature.
+        $activated = 0;
+        foreach (array_keys($this->moduleConfiguration->getAllModules()) as $moduleKey) {
+            $result = $this->moduleConfiguration->activateModule((string) $moduleKey);
+            if (($result['success'] ?? false) && ($result['already_active'] ?? false) === false) {
+                ++$activated;
+            }
+        }
+        $symfonyStyle->writeln(sprintf('Activated %d optional module(s) so all persona pages are reachable.', $activated));
 
         $symfonyStyle->success(sprintf(
             '%s screenshot user: %s (tenant: %s)',
