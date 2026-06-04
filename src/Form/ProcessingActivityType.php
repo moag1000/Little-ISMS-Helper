@@ -292,6 +292,12 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
+            ->add('retentionPerCategory', JsonStructuredType::class, [
+                'label' => 'processing_activity.form.retention_per_category',
+                'help' => 'processing_activity.help.retention_per_category',
+                'required' => false,
+                'attr' => ['rows' => 4],
+            ])
 
             // ============================================================================
             // Technical and Organizational Measures (Art. 30(1)(g))
@@ -732,6 +738,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'retentionPeriod',
                 'retentionPeriodDays',
                 'retentionLegalBasis',
+                'retentionPerCategory',
             ],
             'measures' => [
                 'technicalOrganizationalMeasures',

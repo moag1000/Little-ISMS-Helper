@@ -215,6 +215,18 @@ class ProcessingActivity
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $retentionLegalBasis = null;
 
+    /**
+     * GDPR Art. 30(1)(f) (N-4): retention period per data category, "where
+     * possible". The global retentionPeriod above covers the simple case; this
+     * optional JSON map (category => period) handles mixed activities where
+     * different categories have different statutory periods (e.g. applicant data
+     * 6 months vs. payroll data 10 years).
+     *
+     * @var array<string, string>|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $retentionPerCategory = null;
+
     // ============================================================================
     // GDPR Art. 30(1)(g): Technical and organizational measures (TOMs)
     // ============================================================================
@@ -860,6 +872,23 @@ class ProcessingActivity
     public function setRetentionLegalBasis(?string $retentionLegalBasis): static
     {
         $this->retentionLegalBasis = $retentionLegalBasis;
+        return $this;
+    }
+
+    /**
+     * @return array<string, string>|null
+     */
+    public function getRetentionPerCategory(): ?array
+    {
+        return $this->retentionPerCategory;
+    }
+
+    /**
+     * @param array<string, string>|null $retentionPerCategory
+     */
+    public function setRetentionPerCategory(?array $retentionPerCategory): static
+    {
+        $this->retentionPerCategory = $retentionPerCategory;
         return $this;
     }
 

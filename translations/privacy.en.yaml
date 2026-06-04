@@ -465,6 +465,7 @@ processing_activity:
         retention_reason: 'Retention Justification'
         retention_period_days: 'Retention Period (days)'
         retention_legal_basis: 'Retention Legal Basis'
+        retention_per_category: 'Retention period per data category (Art. 30(1)(f))'
         technical_organizational_measures: 'Technical and Organizational Measures — qualitative description (TOMs, Art. 32 GDPR)'
         implemented_controls: 'Implemented Controls'
         criminal_data_legal_basis: 'Legal basis / authority for criminal data (Art. 10 GDPR)'
@@ -492,6 +493,7 @@ processing_activity:
         retention_reason: 'Retention Justification'
         retention_period_days: 'Retention Period Days'
         retention_legal_basis: 'Retention Legal Basis'
+        retention_per_category: 'Retention period per data category (Art. 30(1)(f))'
         technical_organizational_measures: 'Technical and Organizational Measures — qualitative description'
         implemented_controls: 'Implemented Controls'
         assets: 'Linked Assets'
@@ -537,6 +539,7 @@ processing_activity:
         retention_reason: 'Justification for the retention duration (e.g. statutory period, contract). For the structured value see "Retention Period (days)". (Art. 30(1)(f) GDPR)'
         retention_period_days: 'Numeric retention duration in days (canonical, for automated deletion). For the justification see "Retention Justification".'
         retention_legal_basis: 'Legal basis for retention period (e.g., HGB §257, Tax Code)'
+        retention_per_category: 'Optional: JSON map data-category → period, when categories have different statutory periods (e.g. {"applicant_data":"6 months","payroll":"10 years"}).'
         technical_organizational_measures: 'Technical and organizational measures — qualitative description (Art. 32 GDPR). For structured evidence see "Implemented Controls". At least ONE evidence form is required.'
         implemented_controls: 'Select ISO 27001 controls protecting this activity (structured evidence). For the qualitative description see the TOMs field.'
         assets: 'Assets (servers, databases, applications) used by this processing activity.
