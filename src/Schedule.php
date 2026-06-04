@@ -6,6 +6,7 @@ namespace App;
 
 use App\Message\Schedule\CheckRiskReviewsMessage;
 use App\Message\Schedule\CleanupExpiredSessionsMessage;
+use App\Message\Schedule\EnforceRetentionMessage;
 use App\Message\Schedule\ExecuteScheduledTaskMessage;
 use App\Message\Schedule\GenerateComplianceReportMessage;
 use App\Repository\ScheduledTaskRepository;
@@ -69,8 +70,14 @@ class Schedule implements ScheduleProviderInterface
             RecurringMessage::cron('0 6 * * 1', new GenerateComplianceReportMessage())
         );
 
+        // Enforce data-retention weekly (Sundays at 4:00 AM) — GDPR Art. 5(1)(e):
+        // per-tenant auto_delete policies + audit-log retention (NIS2 floor).
+        $schedule->add(
+            RecurringMessage::cron('0 4 * * 0', new EnforceRetentionMessage())
+        );
+
         $this->logger->info('Built-in scheduled tasks loaded', [
-            'count' => 3,
+            'count' => 4,
         ]);
     }
 

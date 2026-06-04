@@ -150,36 +150,11 @@ final class ConsentType extends AbstractType
                 ],
             ])
 
-            // ═══════════════════════════════════════════════════════════
-            // Section 7: Withdrawal — GDPR Art. 7(3)
-            // ═══════════════════════════════════════════════════════════
-            ->add('withdrawnAt', DateTimeType::class, [
-                'widget' => 'single_text',
-                'label' => 'consent.field.withdrawn_at',
-                'required' => false,
-                'input' => 'datetime_immutable',
-                'help' => 'consent.help.withdrawn_at',
-            ])
-            ->add('withdrawalReason', TextareaType::class, [
-                'label' => 'consent.field.withdrawal_reason',
-                'required' => false,
-                'attr' => [
-                    'rows' => 2,
-                    'placeholder' => 'consent.placeholder.withdrawal_reason',
-                ],
-            ])
-            ->add('withdrawalChannel', ChoiceType::class, [
-                'label' => 'consent.field.withdrawal_channel',
-                'choices' => [
-                    'consent.withdrawal_channel.web' => 'web',
-                    'consent.withdrawal_channel.email' => 'email',
-                    'consent.withdrawal_channel.phone' => 'phone',
-                    'consent.withdrawal_channel.letter' => 'letter',
-                    'consent.withdrawal_channel.in_person' => 'in_person',
-                ],
-                'required' => false,
-                'placeholder' => 'consent.placeholder.withdrawal_channel',
-            ])
+            // Section 7 (Withdrawal) intentionally removed (GDPR Art. 7(3),
+            // M-1): withdrawal is recorded ONLY via the dedicated revoke action
+            // (Consent::recordWithdrawal), which sets the revocation + withdrawal
+            // field groups atomically. Editing them here previously created a
+            // second, unsynchronised withdrawal path.
         ;
     }
 

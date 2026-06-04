@@ -169,6 +169,8 @@ consent:
         phone: 'Telefon'
         letter: 'Brief'
         in_person: 'Persönlich'
+    withdrawal:
+        via_revoke_note: 'Der Widerruf wird über die Aktion „Einwilligung widerrufen" auf der Detailseite erfasst — so bleiben Widerrufs- und Revocation-Felder konsistent (DSGVO Art. 7(3)).'
     validation:
         withdrawal_reason_required_when_withdrawn: 'Bei Widerruf muss eine Begründung erfasst werden.'
         withdrawal_channel_required_when_withdrawn: 'Bei Widerruf muss der Kanal des Widerrufs erfasst werden.'

@@ -388,6 +388,26 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['maxlength' => 2, 'placeholder' => 'supplier.placeholder.country_of_head_office'],
             ])
+            // GDPR Art. 44–49 — third-country transfer safeguards at processor level (M-7)
+            ->add('thirdCountryTransfer', CheckboxType::class, [
+                'label' => 'supplier.field.third_country_transfer',
+                'help' => 'supplier.help.third_country_transfer',
+                'required' => false,
+            ])
+            ->add('transferSafeguards', ChoiceType::class, [
+                'label' => 'supplier.field.transfer_safeguards',
+                'help' => 'supplier.help.transfer_safeguards',
+                'required' => false,
+                'placeholder' => 'supplier.value.na',
+                'choices' => [
+                    'supplier.transfer_safeguards.adequacy_decision' => 'adequacy_decision',
+                    'supplier.transfer_safeguards.scc' => 'scc',
+                    'supplier.transfer_safeguards.bcr' => 'bcr',
+                    'supplier.transfer_safeguards.certification' => 'certification',
+                    'supplier.transfer_safeguards.derogation' => 'derogation',
+                    'supplier.transfer_safeguards.none' => 'none',
+                ],
+            ])
             ->add('ictCriticality', ChoiceType::class, [
                 'label' => 'supplier.field.ict_criticality',
                 'help' => 'supplier.help.ict_criticality',
@@ -646,6 +666,8 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'leiCode',
                 'naceCode',
                 'countryOfHeadOffice',
+                'thirdCountryTransfer',
+                'transferSafeguards',
                 'ictCriticality',
                 'ictFunctionType',
                 'substitutability',

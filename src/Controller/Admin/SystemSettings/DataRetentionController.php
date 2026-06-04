@@ -17,7 +17,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * Data retention policy settings UI.
  * Persists per-entity-type retention in Tenant.dataRetentionPolicies JSON column.
- * NOTE: Auto-delete cron is NOT implemented here (Wave 2). UI only.
+ * Enforcement (auto_delete) is performed by RetentionEnforcementService —
+ * weekly via the scheduler (EnforceRetentionMessage) and on demand via
+ * `php bin/console app:enforce-retention [--force]` (dry-run by default).
  */
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/settings/data-retention')]

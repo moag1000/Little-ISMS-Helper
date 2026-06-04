@@ -91,6 +91,8 @@ supplier:
         risk_level: 'Risikostufe (ISO 27001 Anhang A 5.19: Lieferantenbeziehungen)'
         nace_code: 'NACE-Code (Rev.2)'
         country_of_head_office: 'Hauptsitz (ISO-3166)'
+        third_country_transfer: 'Drittlandübermittlung (Art. 44ff DSGVO)'
+        transfer_safeguards: 'Garantie für Drittlandübermittlung (Art. 45-49)'
         # DORA (Digital Operational Resilience Act) — Art. 28 Register of Information
         is_dora_relevant: 'DORA-relevant (Art. 28 ICT-Drittdienstleister)'
         lei_code: 'LEI-Code (ISO 17442)'
@@ -167,6 +169,8 @@ supplier:
         nace_code: 'EU NACE Rev.2 Branchencode des ICT-Drittdienstleisters (z.B. 62.01).'
         nace_code_format: 'Format: NN oder NN.NN (1-2 Ziffern Section, optional Punkt + 1-2 Ziffern Subclass). Beispiele: 62, 62.01, 64.92'
         country_of_head_office: 'ISO-3166 alpha-2 Ländercode des Hauptsitzes (z.B. DE, IE, US).'
+        third_country_transfer: 'Werden im Rahmen der Beauftragung Daten in Länder außerhalb EU/EWR übermittelt?'
+        transfer_safeguards: 'Geeignete Garantie nach Art. 45-49 (Angemessenheitsbeschluss, SCC, BCR, Zertifizierung, Ausnahme).'
         ict_criticality: 'DORA-Einstufung des ICT-Dienstes. Kritisch = Ausfall beeinträchtigt operative Kontinuität.'
         ict_function_type: 'Art des ICT-Dienstes (z.B. Cloud, SaaS, Managed Service, Datenzentrum).'
         substitutability: 'Wie leicht kann der Lieferant kurzfristig ersetzt werden? Relevant für DORA Exit-Strategie.'
@@ -247,6 +251,14 @@ supplier:
         terminated: Beendet
     badge:
         overdue: Überfällig
+    transfer_safeguards:
+        adequacy_decision: 'Angemessenheitsbeschluss (Art. 45)'
+        scc: 'Standardvertragsklauseln (Art. 46)'
+        bcr: 'Verbindliche interne Datenschutzvorschriften / BCR (Art. 47)'
+        certification: 'Zertifizierung (Art. 42)'
+        derogation: 'Ausnahme für den Einzelfall (Art. 49)'
+        none: 'Keine Garantie'
+
     value:
         'yes': Ja
         'no': Nein

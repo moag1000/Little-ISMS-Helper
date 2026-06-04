@@ -182,6 +182,11 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'required' => true,
                 'choice_translation_domain' => 'privacy',
             ])
+            ->add('criminalDataLegalBasis', TextType::class, [
+                'label' => 'processing_activity.form.criminal_data_legal_basis',
+                'help' => 'processing_activity.help.criminal_data_legal_basis',
+                'required' => false,
+            ])
 
             // ============================================================================
             // Recipients (Art. 30(1)(d))
@@ -708,6 +713,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'processesSpecialCategories',
                 'specialCategoriesDetails',
                 'processesCriminalData',
+                'criminalDataLegalBasis',
             ],
             'recipients' => [
                 'recipientCategories',

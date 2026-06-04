@@ -72,7 +72,7 @@ src/Controller/Admin/SupplierCriticalityController.php:169
 src/Controller/Admin/SupplierCriticalityController.php:170
 src/Controller/Admin/SystemSettings/ApiRateLimitsController.php:73
 src/Controller/Admin/SystemSettings/BackupSettingsController.php:70
-src/Controller/Admin/SystemSettings/DataRetentionController.php:100
+src/Controller/Admin/SystemSettings/DataRetentionController.php:102
 src/Controller/Admin/SystemSettings/FiscalYearController.php:73
 src/Controller/Admin/SystemSettings/NotificationPreferencesController.php:76
 src/Controller/Admin/SystemSettings/WorkflowSlaDefaultsController.php:91
@@ -218,9 +218,9 @@ src/Controller/ConsentController.php:135
 src/Controller/ConsentController.php:136
 src/Controller/ConsentController.php:183
 src/Controller/ConsentController.php:224
-src/Controller/ConsentController.php:276
-src/Controller/ConsentController.php:296
+src/Controller/ConsentController.php:277
 src/Controller/ConsentController.php:297
+src/Controller/ConsentController.php:298
 src/Controller/CorporateStructureController.php:131
 src/Controller/CorporateStructureController.php:140
 src/Controller/CorporateStructureController.php:184
