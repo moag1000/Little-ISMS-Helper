@@ -8,15 +8,11 @@ use App\Exception\InvalidArgument\InvalidArgumentException;
 use App\Exception\Io\IoException;
 use App\Service\EnvironmentWriter;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use PHPUnit\Framework\Attributes\Test;
 
-#[AllowMockObjectsWithoutExpectations]
 class EnvironmentWriterTest extends TestCase
 {
     private EnvironmentWriter $service;
-    private ParameterBagInterface $parameterBag;
     private string $testDir;
     private string $testEnvFile;
 
@@ -29,11 +25,7 @@ class EnvironmentWriterTest extends TestCase
 
         $this->testEnvFile = $this->testDir . '/.env.local';
 
-        $this->parameterBag = $this->createMock(ParameterBagInterface::class);
-        $this->parameterBag->method('get')
-            ->willReturn($this->testDir);
-
-        $this->service = new EnvironmentWriter($this->parameterBag);
+        $this->service = new EnvironmentWriter($this->testDir);
     }
 
     protected function tearDown(): void
@@ -521,11 +513,7 @@ class EnvironmentWriterTest extends TestCase
         $testDir2 = sys_get_temp_dir() . '/isms_test_2_' . uniqid();
         mkdir($testDir2, 0755, true);
 
-        $parameterBag2 = $this->createMock(ParameterBagInterface::class);
-        $parameterBag2->method('get')
-            ->willReturn($testDir2);
-
-        $service2 = new EnvironmentWriter($parameterBag2);
+        $service2 = new EnvironmentWriter($testDir2);
         $service2->ensureAppSecret();
         $vars2 = $service2->readEnvLocal();
         $secret2 = $vars2['APP_SECRET'];

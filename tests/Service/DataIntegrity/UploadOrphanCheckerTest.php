@@ -22,7 +22,7 @@ final class UploadOrphanCheckerTest extends TestCase
     #[Test]
     public function testReturnsEmptyWhenProjectDirIsNull(): void
     {
-        $checker = new UploadOrphanChecker($this->entityManager, null);
+        $checker = new UploadOrphanChecker($this->entityManager, '');
         $result = $checker->findOrphanedUploads();
 
         $this->assertIsArray($result);
@@ -64,7 +64,7 @@ final class UploadOrphanCheckerTest extends TestCase
     #[Test]
     public function testReturnStructureHasExpectedKeys(): void
     {
-        $checker = new UploadOrphanChecker($this->entityManager, null);
+        $checker = new UploadOrphanChecker($this->entityManager, '');
         $result = $checker->findOrphanedUploads();
 
         // Verify the return-type contract matches what callers (DataRepairController,
