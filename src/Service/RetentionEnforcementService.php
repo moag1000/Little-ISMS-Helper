@@ -37,6 +37,16 @@ final class RetentionEnforcementService
      * Only these types can be auto-enforced; any other configured type is
      * reported as "no enforcer" instead of being silently skipped.
      *
+     * DELIBERATELY EXCLUDED — DataSubjectRequest, Consent and Person.
+     * These are accountability / proof records, not free-floating operational
+     * data: a Consent IS the Art. 7(1) proof of what the subject agreed to, a
+     * DataSubjectRequest IS the Art. 5(2) evidence that a right was handled, and
+     * Person carries BDSG § 26 employee records under their own statutory holds.
+     * Blanket time-based auto-deletion would destroy exactly the evidence the
+     * GDPR requires us to keep. Their erasure is governed by the dedicated
+     * Art. 17 data-subject-request workflow and consent-withdrawal lifecycle
+     * (case-by-case, legal-hold aware), NOT by this storage-limitation sweep.
+     *
      * @var array<string, array{0: class-string, 1: string}>
      */
     private const array REGISTRY = [
