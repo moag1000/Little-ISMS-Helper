@@ -150,6 +150,13 @@
             </a>
             {% endif %}
             {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_import_hub') }}" class="fly-item {% if current_route == 'app_import_hub' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem">
+                <span class="fly-item__icon"><i class="fa-icon fa-icon--ui-upload" aria-hidden="true"></i></span>
+                <span class="fly-item__body">
+                    <span class="fly-item__title">{{ 'import.hub.title'|trans({}, 'data_import') }}</span>
+                    <span class="fly-item__sub">{{ 'import.hub.subtitle'|trans({}, 'data_import') }}</span>
+                </span>
+            </a>
             <a href="{{ path('app_bulk_import_index', {entityType: 'control'}) }}" class="fly-item {% if current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') == 'control' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
