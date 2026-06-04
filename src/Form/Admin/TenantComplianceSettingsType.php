@@ -6,7 +6,9 @@ namespace App\Form\Admin;
 
 use App\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -123,6 +125,33 @@ final class TenantComplianceSettingsType extends AbstractType
             ])
             ->add('representativeContact', TextType::class, [
                 'label' => 'admin.tenant_settings.representative_contact',
+                'required' => false,
+                'translation_domain' => 'admin',
+                'constraints' => [new Assert\Length(['max' => 255])],
+            ])
+            // BDSG § 38 / GDPR Art. 37 — DPO appointment register (N-4)
+            ->add('dpoAppointmentDate', DateType::class, [
+                'label' => 'admin.tenant_settings.dpo_appointment_date',
+                'widget' => 'single_text',
+                'required' => false,
+                'input' => 'datetime_immutable',
+                'translation_domain' => 'admin',
+            ])
+            ->add('dpoIsExternal', CheckboxType::class, [
+                'label' => 'admin.tenant_settings.dpo_is_external',
+                'required' => false,
+                'translation_domain' => 'admin',
+            ])
+            ->add('dpoAuthorityNotifiedAt', DateType::class, [
+                'label' => 'admin.tenant_settings.dpo_authority_notified_at',
+                'help' => 'admin.tenant_settings.dpo_authority_notified_at_help',
+                'widget' => 'single_text',
+                'required' => false,
+                'input' => 'datetime_immutable',
+                'translation_domain' => 'admin',
+            ])
+            ->add('dpoDeputyName', TextType::class, [
+                'label' => 'admin.tenant_settings.dpo_deputy_name',
                 'required' => false,
                 'translation_domain' => 'admin',
                 'constraints' => [new Assert\Length(['max' => 255])],

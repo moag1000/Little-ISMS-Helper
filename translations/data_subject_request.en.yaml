@@ -70,6 +70,7 @@ dsr:
         response_at: "Response Sent At"
         extended_deadline: "Extended Deadline (Art. 12(3))"
         extension_reason: "Extension Reason"
+        extension_notified_at: "Data subject informed of extension on (Art. 12(3))"
         response_document: "Response Artefact (file path / UUID)"
         response_method: "Response Channel"
         rejection_reason: "Rejection Reason (Art. 12(5)(b))"
@@ -88,6 +89,7 @@ dsr:
             response_description: "Describe what was done to fulfill the request..."
             rejection_reason: "Reason for rejection (Art. 12(5))..."
             extension_reason: "Reason for extending deadline (complexity, number of requests)..."
+            extension_notified_at: "Proof the data subject was informed of the extension within the first month (Art. 12(3))."
             response_document: "e.g. /responses/dsr-2024-001.pdf or UUID"
             response_method: "-- Select response channel --"
         help:

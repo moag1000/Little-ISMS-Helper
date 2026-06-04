@@ -1,13 +1,13 @@
 # check_translation_nesting.py baseline
 # Format: <relative-path>:<line>:<key>
-translations/admin.de.yaml:1468:data_management
-translations/admin.de.yaml:1576:setup
-translations/admin.de.yaml:1647:kpi_threshold
-translations/admin.de.yaml:1690:industry_preset
-translations/admin.en.yaml:1452:data_management
-translations/admin.en.yaml:1561:setup
-translations/admin.en.yaml:1632:kpi_threshold
-translations/admin.en.yaml:1675:industry_preset
+translations/admin.de.yaml:1473:data_management
+translations/admin.de.yaml:1581:setup
+translations/admin.de.yaml:1652:kpi_threshold
+translations/admin.de.yaml:1695:industry_preset
+translations/admin.en.yaml:1457:data_management
+translations/admin.en.yaml:1566:setup
+translations/admin.en.yaml:1637:kpi_threshold
+translations/admin.en.yaml:1680:industry_preset
 translations/alva.de.yaml:56:vulnerability
 translations/alva.de.yaml:62:data_subject_request
 translations/alva.de.yaml:68:asset
