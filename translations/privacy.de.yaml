@@ -568,6 +568,7 @@ processing_activity:
         end_date: 'Ende der Verarbeitung'
         next_review_date: 'Nächstes Überprüfungsdatum'
     help:
+        status_readonly: 'Status wird über den Lebenszyklus gesteuert (Entwurf → in Prüfung → freigegeben → veröffentlicht → archiviert), nicht direkt im Formular.'
         name: 'Name/Bezeichnung der Verarbeitungstätigkeit (z.B. "Kundenverwaltung", "Lohnbuchhaltung")'
         description: 'Detaillierte Beschreibung der Verarbeitungstätigkeit'
         purposes: 'Zweck(e) der Verarbeitung (Art. 30(1)(a))'

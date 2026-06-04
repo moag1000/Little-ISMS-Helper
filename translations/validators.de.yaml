@@ -637,6 +637,12 @@ gstool_import:
 'consent.validation.identifier_type_required': 'Kennungstyp ist erforderlich.'
 'consent.validation.identifier_type_invalid': 'Ungültiger Kennungstyp.'
 'consent.validation.processing_activity_required': 'Verarbeitungstätigkeit ist erforderlich.'
+# ProcessingActivity Callback-Validatoren — Symfony übersetzt Constraint-Messages in der `validators`-Domain, nicht im Form-translation_domain.
+'processing_activity.validation.tom_or_controls_required': 'Mindestens eine Nachweisform ist erforderlich (DSGVO Art. 32): entweder eine qualitative TOM-Beschreibung (≥ 50 Zeichen) ODER mindestens eine implementierte ISO 27001 Kontrolle.'
+'processing_activity.validation.processor_suppliers_required': 'Mindestens ein Auftragsverarbeiter muss strukturiert verlinkt sein (DSGVO Art. 28(1) + Art. 30(1)(d)). Wenn "Auftragsverarbeiter involviert" markiert ist, sind die konkreten Lieferanten als Empfänger-Disclosure pflichtig.'
+'processing_activity.validation.recipient_categories_required': 'Mindestens eine Empfängerkategorie ist erforderlich (DSGVO Art. 30(1)(d)) — auch "nur intern" muss explizit angegeben werden.'
+'processing_activity.validation.criminal_data_legal_basis_required': 'Bei Verarbeitung strafrechtlicher Daten (Art. 10 DSGVO) muss die Rechtsgrundlage/Befugnis dokumentiert werden (behördliche Aufsicht oder unions-/mitgliedstaatliche Befugnis, z.B. § 26 BDSG).'
+'processing_activity.validation.processor_client_controller_required': 'Bei Auftragsverarbeiter-Rolle (Art. 30(2)) muss der/die Verantwortliche im Auftrag benannt werden (Art. 30(2)(a)).'
 'consent.validation.granted_at_required': 'Erteilungsdatum ist erforderlich.'
 'consent.validation.consent_method_required': 'Einwilligungsmethode ist erforderlich.'
 'consent.validation.consent_method_invalid': 'Ungültige Einwilligungsmethode.'
