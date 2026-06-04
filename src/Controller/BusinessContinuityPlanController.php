@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use DateTimeImmutable;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\BusinessContinuityPlan;
 use App\Form\BusinessContinuityPlanType;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Service\AuditLogger;
+use App\Service\BusinessContinuityPlanService;
 use App\Service\Clone\BusinessContinuityPlanCloner;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,6 +32,7 @@ class BusinessContinuityPlanController extends AbstractController
 
     public function __construct(
         private readonly BusinessContinuityPlanRepository $businessContinuityPlanRepository,
+        private readonly BusinessContinuityPlanService $businessContinuityPlanService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
@@ -73,8 +73,7 @@ class BusinessContinuityPlanController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($businessContinuityPlan);
-            $this->entityManager->flush();
+            $this->businessContinuityPlanService->create($businessContinuityPlan);
 
             $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.created', [], 'messages'));
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $businessContinuityPlan->getId()]);
@@ -121,14 +120,7 @@ class BusinessContinuityPlanController extends AbstractController
             null,
             trim((string) $request->request->get('title_override', '')) ?: null,
         );
-        $this->entityManager->flush();
-
-        $this->auditLogger?->logCreate(
-            entityType: 'BusinessContinuityPlan',
-            entityId: $clone->getId(),
-            newValues: ['cloned_from_id' => $businessContinuityPlan->getId(), 'name' => $clone->getName()],
-            description: 'Cloned from BC-Plan #' . $businessContinuityPlan->getId(),
-        );
+        $this->businessContinuityPlanService->persistClone($clone, $businessContinuityPlan);
 
         $this->addFlash('success', $this->translator->trans('bc_plans.clone.success', [], 'bc_plans'));
         return $this->redirectToRoute('app_bc_plan_edit', ['id' => $clone->getId()]);
@@ -144,8 +136,7 @@ class BusinessContinuityPlanController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $businessContinuityPlan->setUpdatedAt(new DateTimeImmutable());
-            $this->entityManager->flush();
+            $this->businessContinuityPlanService->update($businessContinuityPlan);
 
             $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $businessContinuityPlan->getId()]);
@@ -167,8 +158,7 @@ class BusinessContinuityPlanController extends AbstractController
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
 
         if ($this->isCsrfTokenValid('delete'.$businessContinuityPlan->getId(), $request->request->get('_token'))) {
-            $this->entityManager->remove($businessContinuityPlan);
-            $this->entityManager->flush();
+            $this->businessContinuityPlanService->delete($businessContinuityPlan);
 
             $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.deleted', [], 'messages'));
         }
@@ -219,30 +209,9 @@ class BusinessContinuityPlanController extends AbstractController
         }
 
         $tenant = $this->security->getUser()?->getTenant();
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $plan = $this->businessContinuityPlanRepository->find($id);
-                if (!$plan) {
-                    $errors[] = "BC Plan ID $id not found";
-                    continue;
-                }
-                if ($tenant && $plan->getTenant() !== $tenant) {
-                    $errors[] = "BC Plan ID $id does not belong to your organization";
-                    continue;
-                }
-                $this->entityManager->remove($plan);
-                $deleted++;
-            } catch (Exception $e) {
-                $errors[] = "Error deleting BC Plan ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
+        $result = $this->businessContinuityPlanService->bulkDelete($ids, $tenant?->getId());
+        $deleted = $result['deleted'];
+        $errors  = $result['errors'];
 
         return $this->json([
             'success' => $deleted > 0,
