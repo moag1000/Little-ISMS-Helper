@@ -31,9 +31,9 @@ final class PublicPostureControllerTest extends WebTestCase
     #[Test]
     public function invalidTokenReturns404(): void
     {
-        $this->skipIfNoDatabaseConnection();
-
         $client = static::createClient();
+        $this->skipIfNoDatabaseConnection($client);
+
         $client->request('GET', '/trust/this-token-does-not-exist-at-all-99999');
 
         self::assertResponseStatusCodeSame(404);
@@ -42,9 +42,9 @@ final class PublicPostureControllerTest extends WebTestCase
     #[Test]
     public function routeHasNoLocalePrefix(): void
     {
-        $this->skipIfNoDatabaseConnection();
-
         $client = static::createClient();
+        $this->skipIfNoDatabaseConnection($client);
+
         // A locale-prefixed variant must NOT match (would redirect to login or 404 for wrong locale)
         // The un-prefixed /trust/... path must not redirect to a /{locale}/... path
         $client->request('GET', '/trust/nonexistent-token-xyz');
@@ -59,11 +59,10 @@ final class PublicPostureControllerTest extends WebTestCase
     #[Test]
     public function validEnabledTokenReturns200(): void
     {
-        $this->skipIfNoDatabaseConnection();
-
         // Attempt to find (or create) a tenant with an enabled token for smoke-test.
         // We use the container to look up an existing enabled tenant, if any.
         $client = static::createClient();
+        $this->skipIfNoDatabaseConnection($client);
         $container = static::getContainer();
 
         $tenantRepo = $container->get(TenantRepository::class);
@@ -148,11 +147,13 @@ final class PublicPostureControllerTest extends WebTestCase
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    private function skipIfNoDatabaseConnection(): void
+    private function skipIfNoDatabaseConnection(KernelBrowser $client): void
     {
         try {
-            $container = static::getContainer();
-            $em = $container->get('doctrine.orm.entity_manager');
+            // Use the client's already-booted container — calling static::getContainer()
+            // before createClient() would boot the kernel twice (LogicException in CI
+            // where the DB is present so the skip-branch is not taken).
+            $em = $client->getContainer()->get('doctrine.orm.entity_manager');
             // executeQuery() is public + forces a real connection (connect() is
             // protected in DBAL 4.x). Throws if the DB is unreachable.
             $em->getConnection()->executeQuery('SELECT 1');
