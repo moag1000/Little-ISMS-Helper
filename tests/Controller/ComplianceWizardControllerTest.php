@@ -198,6 +198,59 @@ class ComplianceWizardControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function testConfirmManualCheckCreatesAndRemovesConfirmation(): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $token = $this->generateCsrfToken('wizard_manual_confirm');
+
+        // Confirm a genuinely-manual clause (ISO 27001 Cl. 5.1, no backing entity).
+        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/leadership_commitment/confirm', [
+            '_token' => $token,
+            'category' => 'leadership',
+            'confirmed' => '1',
+        ]);
+        $this->assertResponseRedirects();
+
+        $repo = $this->entityManager->getRepository(\App\Entity\WizardManualConfirmation::class);
+        $row = $repo->findOneBy([
+            'tenant' => $this->testTenant,
+            'wizardKey' => 'iso27001',
+            'checkKey' => 'leadership_commitment',
+        ]);
+        $this->assertNotNull($row, 'Confirmation row should be created');
+        $this->assertTrue($row->isConfirmed());
+
+        // Un-confirm removes the row again.
+        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/leadership_commitment/confirm', [
+            '_token' => $token,
+            'category' => 'leadership',
+            'confirmed' => '0',
+        ]);
+        $this->assertResponseRedirects();
+
+        $this->entityManager->clear();
+        $gone = $repo->findOneBy([
+            'tenant' => $this->testTenant,
+            'wizardKey' => 'iso27001',
+            'checkKey' => 'leadership_commitment',
+        ]);
+        $this->assertNull($gone, 'Confirmation row should be removed after un-confirm');
+    }
+
+    #[Test]
+    public function testConfirmManualCheckRequiresManagerRole(): void
+    {
+        $this->client->loginUser($this->testUser);
+        $token = $this->generateCsrfToken('wizard_manual_confirm');
+        $this->client->request('POST', '/en/compliance-wizard/iso27001/check/leadership_commitment/confirm', [
+            '_token' => $token,
+            'category' => 'leadership',
+            'confirmed' => '1',
+        ]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
     public function testApiAssessRequiresManagerRole(): void
     {
         $this->client->loginUser($this->testUser);
@@ -353,5 +406,23 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->client->request('GET', '/de/compliance-wizard/soc2');
         $status = $this->client->getResponse()->getStatusCode();
         $this->assertContains($status, [200, 302]);
+    }
+
+    /**
+     * Bootstrap the client's session via a GET, write the CSRF token into THAT
+     * same session, then save+close — so the subsequent POST sees it. Mirrors
+     * the established pattern in AssetControllerTest. Call after loginUser().
+     */
+    private function generateCsrfToken(string $tokenId): string
+    {
+        $this->client->request('GET', '/en/compliance-wizard');
+        $session = $this->client->getRequest()->getSession();
+
+        $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
+        $tokenValue = $tokenGenerator->generateToken();
+        $session->set('_csrf/' . $tokenId, $tokenValue);
+        $session->save();
+
+        return $tokenValue;
     }
 }

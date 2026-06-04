@@ -12,6 +12,7 @@ use App\Repository\ComplianceMappingRepository;
 use App\Repository\WizardSessionRepository;
 use App\Service\AuditLogger;
 use App\Service\ComplianceWizardService;
+use App\Service\WizardManualConfirmationService;
 use App\Service\MappingLibraryLoader;
 use App\Service\GapEffortCalculator;
 use App\Service\ModuleConfigurationService;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -192,6 +194,48 @@ class ComplianceWizardController extends AbstractController
             'category' => $result['categories'][$category],
             'overall_result' => $result,
         ]);
+    }
+
+    /**
+     * Toggle a manual-check confirmation (clauses with no backing entity, e.g.
+     * ISO 27001 Cl. 5.1 leadership commitment). Marking it done stops the wizard
+     * reporting it as a permanent critical gap; un-marking reverts it.
+     */
+    #[Route('/{wizard}/check/{checkKey}/confirm', name: 'app_compliance_wizard_confirm_manual', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra', 'checkKey' => '[a-z0-9_]+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid('wizard_manual_confirm')]
+    public function confirmManual(
+        string $wizard,
+        string $checkKey,
+        Request $request,
+        WizardManualConfirmationService $confirmationService,
+    ): Response {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $category = (string) $request->request->get('category', '');
+        $redirect = $category !== ''
+            ? $this->redirectToRoute('app_compliance_wizard_category', ['wizard' => $wizard, 'category' => $category])
+            : $this->redirectToRoute('app_compliance_wizard_assess', ['wizard' => $wizard]);
+
+        if ($tenant === null) {
+            return $redirect;
+        }
+
+        if ($request->request->getBoolean('confirmed', true)) {
+            $user = $this->getUser();
+            $confirmationService->confirm(
+                $tenant,
+                $wizard,
+                $checkKey,
+                $user instanceof User ? $user : null,
+                (string) $request->request->get('note', ''),
+            );
+            $this->addFlash('success', $this->translator->trans('wizard.manual.confirmed_flash', [], 'wizard'));
+        } else {
+            $confirmationService->unconfirm($tenant, $wizard, $checkKey);
+            $this->addFlash('info', $this->translator->trans('wizard.manual.unconfirmed_flash', [], 'wizard'));
+        }
+
+        return $redirect;
     }
 
     /**

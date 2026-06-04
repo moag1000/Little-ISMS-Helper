@@ -72,7 +72,8 @@ final class IsoFrameworkCategoryProvider
                     'understanding_organization' => [
                         'name' => 'wizard.check.iso_4_1_organization',
                         'description' => 'wizard.check.iso_4_1_organization_desc',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'isms_context',
                         'priority' => 'critical',
                         'clause' => '4.1',
                         'route' => 'app_context_index',
@@ -81,7 +82,8 @@ final class IsoFrameworkCategoryProvider
                     'interested_parties' => [
                         'name' => 'wizard.check.iso_4_2_interested_parties',
                         'description' => 'wizard.check.iso_4_2_interested_parties_desc',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'interested_party',
                         'priority' => 'critical',
                         'clause' => '4.2',
                         'route' => 'app_interested_party_index',
@@ -90,7 +92,8 @@ final class IsoFrameworkCategoryProvider
                     'isms_scope' => [
                         'name' => 'wizard.check.iso_4_3_scope',
                         'description' => 'wizard.check.iso_4_3_scope_desc',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'isms_context',
                         'priority' => 'critical',
                         'clause' => '4.3',
                         'route' => 'app_context_index',
@@ -186,7 +189,8 @@ final class IsoFrameworkCategoryProvider
                     'security_objectives' => [
                         'name' => 'wizard.check.iso_6_2_objectives',
                         'description' => 'wizard.check.iso_6_2_objectives_desc',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'isms_objective',
                         'priority' => 'high',
                         'clause' => '6.2',
                         'route' => 'app_objective_index',
@@ -322,7 +326,8 @@ final class IsoFrameworkCategoryProvider
                     'management_review' => [
                         'name' => 'wizard.check.iso_9_3_review',
                         'description' => 'wizard.check.iso_9_3_review_desc',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'management_review',
                         'priority' => 'critical',
                         'clause' => '9.3',
                         'route' => 'app_management_review_index',
@@ -615,7 +620,8 @@ final class IsoFrameworkCategoryProvider
                 'checks' => [
                     'scope_definition' => [
                         'name' => 'wizard.check.iso22301_scope',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'isms_context',
                         'priority' => 'high',
                         'description' => 'wizard.check.iso22301_scope_desc',
                         'route' => 'app_context_edit',
@@ -818,7 +824,8 @@ final class IsoFrameworkCategoryProvider
                 'checks' => [
                     'controller_processor_role' => [
                         'name' => 'wizard.check.iso27701_role',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'isms_context',
                         'priority' => 'high',
                         'description' => 'wizard.check.iso27701_role_desc',
                         'route' => 'app_context_edit',
@@ -884,7 +891,8 @@ final class IsoFrameworkCategoryProvider
                 'checks' => [
                     'processing_records' => [
                         'name' => 'wizard.check.iso27701_records',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'processing_activity',
                         'priority' => 'critical',
                         'route' => 'app_processing_activity_index',
                     ],
@@ -1021,7 +1029,8 @@ final class IsoFrameworkCategoryProvider
                 'checks' => [
                     'iso27017_shared_responsibility' => [
                         'name' => 'wizard.check.iso27017_shared_responsibility',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'supplier',
                         'priority' => 'high',
                         'route' => 'app_supplier_index',
                     ],
@@ -1149,7 +1158,8 @@ final class IsoFrameworkCategoryProvider
                 'checks' => [
                     'iso27018_purpose' => [
                         'name' => 'wizard.check.iso27018_purpose',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'processing_activity',
                         'priority' => 'high',
                         'route' => 'app_processing_activity_index',
                     ],
@@ -1163,7 +1173,8 @@ final class IsoFrameworkCategoryProvider
                 'checks' => [
                     'iso27018_retention' => [
                         'name' => 'wizard.check.iso27018_retention',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'processing_activity',
                         'priority' => 'high',
                         'route' => 'app_processing_activity_index',
                     ],
@@ -1233,7 +1244,8 @@ final class IsoFrameworkCategoryProvider
                 'checks' => [
                     'iso42001_context' => [
                         'name' => 'wizard.check.iso42001_context',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'isms_context',
                         'priority' => 'high',
                         'route' => 'app_context_edit',
                     ],
@@ -1313,7 +1325,8 @@ final class IsoFrameworkCategoryProvider
                 'checks' => [
                     'iso42001_oversight' => [
                         'name' => 'wizard.check.iso42001_oversight',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'asset',
                         'priority' => 'high',
                         'route' => 'app_asset_index',
                     ],
@@ -1329,7 +1342,8 @@ final class IsoFrameworkCategoryProvider
                 'checks' => [
                     'iso42001_transparency' => [
                         'name' => 'wizard.check.iso42001_transparency',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'document',
                         'priority' => 'high',
                         'route' => 'app_document_index',
                     ],
