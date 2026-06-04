@@ -1,0 +1,137 @@
+{% trans_default_domain 'dpa_template' %}
+# {{ 'title'|trans }}
+
+**{{ 'subtitle'|trans }}**
+
+---
+
+## {{ 'parties.heading'|trans }}
+
+**{{ 'parties.controller_label'|trans }}:**
+{{ controller_name }}
+{{ controller_address }}
+
+**{{ 'parties.processor_label'|trans }}:**
+{{ processor_name }}
+{{ processor_address }}
+
+---
+
+## {{ 'subject_matter.heading'|trans }}
+
+**{{ 'subject_matter.pa_name_label'|trans }}:** {{ pa_name }}
+
+**{{ 'subject_matter.purposes_label'|trans }}:** {{ purposes }}
+
+**{{ 'subject_matter.legal_basis_label'|trans }}:** {{ legal_basis }}
+
+**{{ 'subject_matter.data_categories_label'|trans }}:** {{ data_categories }}
+
+**{{ 'subject_matter.data_subject_categories_label'|trans }}:** {{ data_subject_categories }}
+
+**{{ 'subject_matter.retention_period_label'|trans }}:** {{ retention_period }}
+
+{% if contract_start %}
+**{{ 'subject_matter.contract_start_label'|trans }}:** {{ contract_start }}
+{% endif %}
+{% if contract_end %}
+**{{ 'subject_matter.contract_end_label'|trans }}:** {{ contract_end }}
+{% endif %}
+
+---
+
+## {{ 'clauses.heading'|trans }}
+
+### {{ 'clauses.a.heading'|trans }} (Art. 28(3)(a) DSGVO)
+
+{{ 'clauses.a.body'|trans }}
+
+### {{ 'clauses.b.heading'|trans }} (Art. 28(3)(b) DSGVO)
+
+{{ 'clauses.b.body'|trans }}
+
+### {{ 'clauses.c.heading'|trans }} (Art. 28(3)(c) DSGVO)
+
+{{ 'clauses.c.body'|trans }}
+
+### {{ 'clauses.d.heading'|trans }} (Art. 28(3)(d) DSGVO)
+
+{{ 'clauses.d.body'|trans }}
+
+### {{ 'clauses.e.heading'|trans }} (Art. 28(3)(e) DSGVO)
+
+{{ 'clauses.e.body'|trans }}
+
+### {{ 'clauses.f.heading'|trans }} (Art. 28(3)(f) DSGVO)
+
+{{ 'clauses.f.body'|trans }}
+
+### {{ 'clauses.g.heading'|trans }} (Art. 28(3)(g) DSGVO)
+
+{{ 'clauses.g.body'|trans }}
+
+### {{ 'clauses.h.heading'|trans }} (Art. 28(3)(h) DSGVO)
+
+{{ 'clauses.h.body'|trans }}
+
+---
+
+## {{ 'tom.heading'|trans }} (Art. 32 DSGVO)
+
+{% if tom_description %}
+{{ tom_description }}
+{% else %}
+{{ 'tom.placeholder'|trans }}
+{% endif %}
+
+---
+
+## {{ 'subprocessors.heading'|trans }} (Art. 28(2) DSGVO)
+
+{% if has_sub_processors %}
+{{ 'subprocessors.consent_granted'|trans }}
+
+{% for sp in sub_processors %}
+- {{ sp }}
+{% endfor %}
+{% else %}
+{{ 'subprocessors.no_subprocessors'|trans }}
+{% endif %}
+
+---
+
+{% if has_third_country_transfer %}
+## {{ 'third_country.heading'|trans }} (Art. 44–49 DSGVO)
+
+{{ 'third_country.applies'|trans }}
+
+**{{ 'third_country.countries_label'|trans }}:** {{ third_countries }}
+
+**{{ 'third_country.safeguards_label'|trans }}:** {{ transfer_safeguards }}
+
+---
+{% endif %}
+
+## {{ 'signatures.heading'|trans }}
+
+**{{ 'signatures.controller_label'|trans }} ({{ controller_name }})**
+
+{{ 'signatures.place_date_label'|trans }}: ___________________________
+
+{{ 'signatures.name_label'|trans }}: ___________________________
+
+{{ 'signatures.signature_label'|trans }}: ___________________________
+
+---
+
+**{{ 'signatures.processor_label'|trans }} ({{ processor_name }})**
+
+{{ 'signatures.place_date_label'|trans }}: ___________________________
+
+{{ 'signatures.name_label'|trans }}: ___________________________
+
+{{ 'signatures.signature_label'|trans }}: ___________________________
+
+---
+
+*{{ 'footer.generated_on'|trans }}: {{ _generated_on }} — {{ 'footer.generated_by'|trans }}: {{ _generated_by }}*

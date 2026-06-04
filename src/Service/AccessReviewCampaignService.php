@@ -9,6 +9,7 @@ use App\Entity\AccessReviewItem;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\EmailNotificationService;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -59,10 +60,17 @@ final class AccessReviewCampaignService
     /** AuditLogger action constant for campaign close. */
     public const ACTION_ACCESS_REVIEW_CLOSED   = 'access_review.campaign_closed';
 
+    /** AuditLogger action constant for bulk decide. */
+    public const ACTION_ACCESS_REVIEW_BULK_DECIDE = 'access_review.bulk_decide';
+
+    /** AuditLogger action constant for XLSX export (chain-of-custody). */
+    public const ACTION_ACCESS_REVIEW_EXPORT = 'access_review.export';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger            $auditLogger,
         private readonly UserRepository         $userRepository,
+        private readonly EmailNotificationService $emailNotificationService,
     ) {}
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -223,6 +231,157 @@ final class AccessReviewCampaignService
                 'UAR campaign "%s" closed by %s',
                 $campaign->getName(),
                 $closer->getEmail(),
+            ),
+        );
+    }
+
+    /**
+     * Apply one decision to multiple items in a single call.
+     *
+     * Each item still receives its own HMAC-chained AuditLog entry via decide()
+     * (ISO 27001 A.5.18 — individual recertification evidence per item).
+     *
+     * Items that already have a non-pending decision are silently skipped so
+     * a double-click on the bulk-bar does not overwrite an earlier deliberate
+     * decision. The caller receives decided/skipped counts for flash messaging.
+     *
+     * @param AccessReviewItem[] $items
+     * @return array{decided: int, skipped: int}
+     */
+    public function bulkDecide(
+        array $items,
+        string $decision,
+        User $reviewer,
+        ?string $comment = null,
+    ): array {
+        $decided = 0;
+        $skipped = 0;
+
+        foreach ($items as $item) {
+            // Guard: campaign must be open
+            if (!$item->getCampaign()?->isOpen()) {
+                $skipped++;
+                continue;
+            }
+
+            // Only re-decide pending items (idempotency guard)
+            if (!$item->isPending()) {
+                $skipped++;
+                continue;
+            }
+
+            $this->decide($item, $decision, $reviewer, $comment);
+            $decided++;
+        }
+
+        if ($decided > 0) {
+            $campaignId = !empty($items) ? $items[0]->getCampaign()?->getId() : null;
+            $this->auditLogger->logCustom(
+                action:      self::ACTION_ACCESS_REVIEW_BULK_DECIDE,
+                entityType:  'AccessReviewCampaign',
+                entityId:    $campaignId,
+                oldValues:   null,
+                newValues:   [
+                    'decision' => $decision,
+                    'decided'  => $decided,
+                    'skipped'  => $skipped,
+                    'reviewer' => $reviewer->getEmail(),
+                ],
+                description: sprintf(
+                    'Bulk UAR decision "%s": %d decided, %d skipped (by %s)',
+                    $decision,
+                    $decided,
+                    $skipped,
+                    $reviewer->getEmail(),
+                ),
+            );
+        }
+
+        return ['decided' => $decided, 'skipped' => $skipped];
+    }
+
+    /**
+     * Send an escalation notification email to CISO/Manager-role users in the tenant.
+     *
+     * Reuses EmailNotificationService::sendGenericNotification() with a Twig template.
+     * Returns the number of recipients notified.
+     *
+     * @param AccessReviewItem[] $escalatedItems
+     */
+    public function notifyEscalation(
+        array $escalatedItems,
+        AccessReviewCampaign $campaign,
+        User $escalatingReviewer,
+    ): int {
+        if ($escalatedItems === []) {
+            return 0;
+        }
+
+        $tenant = $campaign->getTenant();
+        if ($tenant === null) {
+            return 0;
+        }
+
+        // Notify CISO and Manager-role users in the same tenant
+        $cisoRecipients    = $this->userRepository->findByRoleInTenant('ROLE_CISO', $tenant);
+        $managerRecipients = $this->userRepository->findByRoleInTenant('ROLE_MANAGER', $tenant);
+
+        // Merge and de-duplicate by user ID
+        $recipientMap = [];
+        foreach (array_merge($cisoRecipients, $managerRecipients) as $u) {
+            if ($u->getId() !== null) {
+                $recipientMap[$u->getId()] = $u;
+            }
+        }
+        $allRecipients = array_values($recipientMap);
+
+        if ($allRecipients === []) {
+            return 0;
+        }
+
+        $firstItem = $escalatedItems[0];
+        $subject   = sprintf(
+            'UAR Escalation: %s for %s requires your review',
+            $firstItem->getReviewedRole() ?? '?',
+            $firstItem->getSubjectUser()?->getEmail() ?? '?',
+        );
+
+        $this->emailNotificationService->sendGenericNotification(
+            subject:    $subject,
+            template:   'emails/access_review/escalation.html.twig',
+            context:    [
+                'campaign'           => $campaign,
+                'escalatedItems'     => $escalatedItems,
+                'escalatingReviewer' => $escalatingReviewer,
+                'count'              => count($escalatedItems),
+            ],
+            recipients: $allRecipients,
+        );
+
+        return count($allRecipients);
+    }
+
+    /**
+     * Log an XLSX export event for chain-of-custody (ISO 27001 A.5.18).
+     * Called from the controller export action — isolated here so the controller
+     * does not need direct access to AuditLogger.
+     */
+    public function logExport(AccessReviewCampaign $campaign, User $exporter, string $filename): void
+    {
+        $this->auditLogger->logCustom(
+            action:      self::ACTION_ACCESS_REVIEW_EXPORT,
+            entityType:  'AccessReviewCampaign',
+            entityId:    $campaign->getId(),
+            oldValues:   null,
+            newValues:   [
+                'filename'    => $filename,
+                'exported_by' => $exporter->getEmail(),
+                'tenant_id'   => $campaign->getTenant()?->getId(),
+            ],
+            description: sprintf(
+                'UAR campaign "%s" XLSX exported by %s',
+                $campaign->getName(),
+                $exporter->getEmail(),
             ),
         );
     }

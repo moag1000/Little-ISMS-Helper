@@ -12,9 +12,11 @@ use App\Form\AccessReviewCampaignType;
 use App\Repository\AccessReviewCampaignRepository;
 use App\Repository\AccessReviewItemRepository;
 use App\Service\AccessReviewCampaignService;
+use App\Service\Audit\AuditWorkbookGenerator;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -46,6 +48,7 @@ class AccessReviewController extends AbstractController
         private readonly TenantContext                  $tenantContext,
         private readonly ModuleConfigurationService     $moduleService,
         private readonly TranslatorInterface            $translator,
+        private readonly AuditWorkbookGenerator         $workbookGenerator,
     ) {}
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -133,7 +136,8 @@ class AccessReviewController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $items = $this->itemRepository->findByCampaign($campaign);
+        $items          = $this->itemRepository->findByCampaign($campaign);
+        $escalatedItems = $this->itemRepository->findEscalatedByCampaign($campaign);
 
         // Build stages array for _isms_approval_stages
         $pendingCount  = 0;
@@ -175,12 +179,13 @@ class AccessReviewController extends AbstractController
         ];
 
         return $this->render('access_review/show.html.twig', [
-            'campaign'      => $campaign,
-            'items'         => $items,
-            'stages'        => $stages,
-            'pendingCount'  => $pendingCount,
-            'approvedCount' => $approvedCount,
-            'revokedCount'  => $revokedCount,
+            'campaign'       => $campaign,
+            'items'          => $items,
+            'escalatedItems' => $escalatedItems,
+            'stages'         => $stages,
+            'pendingCount'   => $pendingCount,
+            'approvedCount'  => $approvedCount,
+            'revokedCount'   => $revokedCount,
         ]);
     }
 
@@ -273,5 +278,173 @@ class AccessReviewController extends AbstractController
             '_locale' => $request->getLocale(),
             'id'      => $id,
         ]);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Bulk-decide — POST JSON, CSRF in body, returns JSON for Stimulus controller
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Route alias that matches the Stimulus bulk-actions controller path pattern
+     * (controller appends '/bulk-status-change' to the endpoint value).
+     * Delegates to bulkDecide() which contains all the logic.
+     */
+    #[Route('/{id}/bulk-status-change', name: 'bulk_status_change',
+        methods: ['POST'],
+        requirements: ['id' => '\d+'],
+    )]
+    public function bulkStatusChange(int $id, Request $request): JsonResponse
+    {
+        return $this->bulkDecide($id, $request);
+    }
+
+    /**
+     * Core bulk-decide implementation.
+     * Callable from both the bulk-status-change alias and directly from tests.
+     *
+     * CSRF token validated from JSON body field `_token`
+     * (compatible with Stimulus bulk_actions_controller.js which sends `_token`).
+     */
+    #[Route('/{id}/bulk-decide', name: 'bulk_decide',
+        methods: ['POST'],
+        requirements: ['id' => '\d+'],
+    )]
+    public function bulkDecide(int $id, Request $request): JsonResponse
+    {
+        if ($redirect = $this->checkModuleActive('access_review')) {
+            return new JsonResponse(['error' => 'Module not active.'], Response::HTTP_FORBIDDEN);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            return new JsonResponse(['error' => 'No tenant context.'], Response::HTTP_FORBIDDEN);
+        }
+
+        $campaign = $this->campaignRepository->findOneForTenant($id, $tenant);
+        if ($campaign === null) {
+            return new JsonResponse(['error' => 'Campaign not found.'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$campaign->isOpen()) {
+            return new JsonResponse(
+                ['error' => $this->translator->trans('access_review.flash.campaign_already_closed', [], 'access_review')],
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
+
+        $data = json_decode($request->getContent(), true) ?? [];
+
+        // CSRF validation — token sent in JSON body as '_token'
+        if (!$this->isCsrfTokenValid('access_review_bulk_decide', (string) ($data['_token'] ?? ''))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token.'], Response::HTTP_FORBIDDEN);
+        }
+
+        $rawIds   = (array) ($data['ids'] ?? []);
+        $decision = (string) ($data['newStatus'] ?? $data['decision'] ?? '');
+
+        if ($rawIds === []) {
+            return new JsonResponse(
+                ['error' => $this->translator->trans('access_review.bulk.none_selected', [], 'access_review')],
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
+
+        // Map Lifecycle-style status names to AccessReviewItem decision constants
+        $decisionMap = [
+            'approved'  => AccessReviewItem::DECISION_APPROVED,
+            'revoked'   => AccessReviewItem::DECISION_REVOKED,
+            'escalated' => AccessReviewItem::DECISION_ESCALATED,
+        ];
+        $mappedDecision = $decisionMap[$decision] ?? null;
+
+        if ($mappedDecision === null) {
+            return new JsonResponse(['error' => 'Invalid decision value.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Validate + scope IDs to tenant (single query)
+        $ids   = array_map('intval', $rawIds);
+        $items = $this->itemRepository->findManyForTenant($ids, $tenant);
+
+        // Guard: all items must belong to this specific campaign
+        $items = array_values(array_filter(
+            $items,
+            fn(AccessReviewItem $it): bool => $it->getCampaign()?->getId() === $campaign->getId(),
+        ));
+
+        $result = $this->campaignService->bulkDecide(
+            items:    $items,
+            decision: $mappedDecision,
+            reviewer: $this->currentUser(),
+        );
+
+        // If items were escalated, notify CISO/Manager
+        if ($mappedDecision === AccessReviewItem::DECISION_ESCALATED && $result['decided'] > 0) {
+            $justEscalated = array_values(array_filter(
+                $items,
+                fn(AccessReviewItem $it): bool => $it->getDecision() === AccessReviewItem::DECISION_ESCALATED,
+            ));
+            $this->campaignService->notifyEscalation($justEscalated, $campaign, $this->currentUser());
+        }
+
+        $message = $result['skipped'] > 0
+            ? $this->translator->trans(
+                'access_review.bulk.partial',
+                ['%done%' => $result['decided'], '%skipped%' => $result['skipped']],
+                'access_review',
+            )
+            : $this->translator->trans(
+                'access_review.bulk.success',
+                ['%count%' => $result['decided']],
+                'access_review',
+            );
+
+        return new JsonResponse([
+            'ok'      => true,
+            'changed' => $result['decided'],
+            'rejected' => $result['skipped'] > 0 ? [$result['skipped'] . ' skipped'] : [],
+            'message' => $message,
+        ]);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Export — GET, streams XLSX, requires ROLE_AUDITOR
+    // ─────────────────────────────────────────────────────────────────────────
+
+    #[Route('/{id}/export.xlsx', name: 'export',
+        methods: ['GET'],
+        requirements: ['id' => '\d+'],
+    )]
+    #[IsGranted('ROLE_AUDITOR')]
+    public function export(int $id, Request $request): Response
+    {
+        if ($redirect = $this->checkModuleActive('access_review')) {
+            return $redirect;
+        }
+
+        $tenant   = $this->tenantContext->getCurrentTenant();
+        $campaign = $tenant
+            ? $this->campaignRepository->findOneForTenant($id, $tenant)
+            : null;
+
+        if ($campaign === null) {
+            throw $this->createNotFoundException();
+        }
+
+        $date     = (new \DateTimeImmutable())->format('Y-m-d');
+        $filename = sprintf(
+            'uar-campaign-%s-%s.xlsx',
+            preg_replace('/[^a-zA-Z0-9_-]/', '-', $campaign->getName() ?? 'export'),
+            $date,
+        );
+
+        // Chain-of-custody: log the export before streaming (ISO 27001 A.5.18)
+        $this->campaignService->logExport($campaign, $this->currentUser(), $filename);
+
+        return $this->workbookGenerator->streamToResponse(
+            'access-review',
+            $tenant,
+            ['campaign_id' => $id],
+            $filename,
+        );
     }
 }

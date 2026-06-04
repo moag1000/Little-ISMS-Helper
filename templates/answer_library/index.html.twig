@@ -1,0 +1,221 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'answer_library' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block title %}{{ 'answer_library.page.index_title'|trans({}, 'answer_library') }} – {{ parent() }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index', {_locale: app.request.locale}) },
+        { label: 'answer_library.page.index_title'|trans({}, 'answer_library') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge:    { icon: 'nav-shield-check', label: 'answer_library.badge'|trans({}, 'answer_library') },
+    title:    'answer_library.page.index_title'|trans({}, 'answer_library'),
+    subtitle: 'answer_library.page.index_subtitle'|trans({}, 'answer_library'),
+    tooltip:  {
+        title: 'answer_library.tooltip.title'|trans({}, 'answer_library'),
+        body:  'answer_library.tooltip.body'|trans({}, 'answer_library')
+    },
+    actions: is_granted('ROLE_MANAGER') ? [
+        { label: 'answer_library.action.new'|trans({}, 'answer_library'), variant: 'primary', icon: 'plus',
+          href: path('app_answer_library_new', {_locale: app.request.locale}) }
+    ] : []
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container-fluid py-4">
+
+{# ── KPI row ──────────────────────────────────────────────────────────────── #}
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        {{ _fa_feature_card.render({
+            icon:        'nav-list-check',
+            label:       'answer_library.kpi.total_entries'|trans({}, 'answer_library'),
+            value:       total_entries,
+            borderColor: 'primary'
+        }) }}
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        {{ _fa_feature_card.render({
+            icon:        'nav-arrow-repeat',
+            label:       'answer_library.kpi.total_reuses'|trans({}, 'answer_library'),
+            value:       total_reuses,
+            borderColor: 'success'
+        }) }}
+    </div>
+</div>
+
+{# ── Search / Filter bar ──────────────────────────────────────────────────── #}
+<form method="get" action="{{ path('app_answer_library_index', {_locale: app.request.locale}) }}"
+      class="row g-2 mb-4" id="answer-library-filter">
+    <div class="col-md-6">
+        <input type="search" name="q" value="{{ keyword }}"
+               class="form-control fa-cyber-input__field"
+               placeholder="{{ 'answer_library.search.placeholder'|trans({}, 'answer_library') }}"
+               aria-label="{{ 'answer_library.search.label'|trans({}, 'answer_library') }}">
+    </div>
+    <div class="col-md-4">
+        <select name="category" class="form-select fa-cyber-input__field"
+                aria-label="{{ 'answer_library.field.category'|trans({}, 'answer_library') }}">
+            <option value="">{{ 'answer_library.filter.all_categories'|trans({}, 'answer_library') }}</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}" {{ category == cat ? 'selected' }}>
+                    {{ ('answer_library.category.' ~ cat)|trans({}, 'answer_library') }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--secondary w-100">
+            <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
+            {{ 'common.search'|trans({}, 'messages') }}
+        </button>
+    </div>
+</form>
+
+{# ── Table ────────────────────────────────────────────────────────────────── #}
+{% if entries|length == 0 %}
+    {{ _fa_empty_state.render({
+        mood:    'thinking',
+        title:   'answer_library.empty.title'|trans({}, 'answer_library'),
+        text:    'answer_library.empty.body'|trans({}, 'answer_library'),
+        actions: is_granted('ROLE_MANAGER') ? [
+            { label: 'answer_library.action.new'|trans({}, 'answer_library'),
+              variant: 'primary', icon: 'plus',
+              href: path('app_answer_library_new', {_locale: app.request.locale}) }
+        ] : []
+    }) }}
+{% else %}
+
+    {# Bulk-action bar — MANAGER-only actions #}
+    {% if is_granted('ROLE_MANAGER') %}
+        {% include '_components/_bulk_action_bar.html.twig' with {
+            actions: ['delete'],
+            variant: 'neutral'
+        } %}
+    {% endif %}
+
+    {% embed '_components/_fa_table.html.twig' with {
+        stickyHead: true,
+        bulkSelect: is_granted('ROLE_MANAGER'),
+        id: 'answer-library-table'
+    } %}
+        {% block table_head %}
+            <tr>
+                {% if is_granted('ROLE_MANAGER') %}
+                    <th class="fa-table__th fa-table__th--checkbox">
+                        <input type="checkbox"
+                               data-action="fa-bulk-select#selectAll"
+                               aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
+                    </th>
+                {% endif %}
+                <th scope="col" class="fa-table__th">
+                    {{ 'answer_library.field.question'|trans({}, 'answer_library') }}
+                </th>
+                <th scope="col" class="fa-table__th">
+                    {{ 'answer_library.field.category'|trans({}, 'answer_library') }}
+                </th>
+                <th scope="col" class="fa-table__th">
+                    {{ 'answer_library.field.tags'|trans({}, 'answer_library') }}
+                </th>
+                <th scope="col" class="fa-table__th text-end">
+                    {{ 'answer_library.field.use_count'|trans({}, 'answer_library') }}
+                </th>
+                <th scope="col" class="fa-table__th">
+                    {{ 'answer_library.field.last_used_at'|trans({}, 'answer_library') }}
+                </th>
+                <th class="fa-table__th fa-table__th--actions">
+                    <span class="visually-hidden">{{ 'common.actions'|trans({}, 'messages') }}</span>
+                </th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for entry in entries %}
+                <tr class="fa-table__row" data-fa-bulk-select-target="row">
+                    {% if is_granted('ROLE_MANAGER') %}
+                        <td class="fa-table__cell fa-table__cell--checkbox">
+                            <input type="checkbox"
+                                   value="{{ entry.id }}"
+                                   data-fa-bulk-select-target="item"
+                                   data-action="change->fa-bulk-select#updateBar"
+                                   aria-label="{{ 'common.select'|trans({}, 'messages') }}">
+                        </td>
+                    {% endif %}
+                    <td class="fa-table__cell">
+                        <a href="{{ path('app_answer_library_show', {id: entry.id, _locale: app.request.locale}) }}"
+                           class="fa-cyber-link fw-semibold">
+                            {{ entry.question|u.truncate(80, '…') }}
+                        </a>
+                    </td>
+                    <td class="fa-table__cell">
+                        <span class="badge bg-secondary">
+                            {{ ('answer_library.category.' ~ entry.category)|trans({}, 'answer_library') }}
+                        </span>
+                    </td>
+                    <td class="fa-table__cell">
+                        {% for tag in entry.tags %}
+                            <span class="badge bg-light text-dark border me-1">{{ tag }}</span>
+                        {% endfor %}
+                    </td>
+                    <td class="fa-table__cell text-end">
+                        <span class="fw-semibold{% if entry.useCount > 0 %} text-success{% endif %}">
+                            {{ entry.useCount }}
+                        </span>
+                    </td>
+                    <td class="fa-table__cell text-muted small">
+                        {{ entry.lastUsedAt ? entry.lastUsedAt|date('d.m.Y') : '—' }}
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--actions">
+                        <div class="d-flex gap-1 justify-content-end">
+                            {# Use / Copy — records FTE reuse #}
+                            <form method="post"
+                                  action="{{ path('app_answer_library_use', {id: entry.id, _locale: app.request.locale}) }}"
+                                  data-controller="answer-library-use">
+                                <input type="hidden" name="_token"
+                                       value="{{ csrf_token('answer_library_use_' ~ entry.id) }}">
+                                <button type="submit"
+                                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--secondary"
+                                        title="{{ 'answer_library.action.use'|trans({}, 'answer_library') }}"
+                                        aria-label="{{ 'answer_library.action.use'|trans({}, 'answer_library') }}">
+                                    <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
+                                    {{ 'answer_library.action.use'|trans({}, 'answer_library') }}
+                                </button>
+                            </form>
+                            {% if is_granted('ROLE_MANAGER') %}
+                                <a href="{{ path('app_answer_library_edit', {id: entry.id, _locale: app.request.locale}) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                                   title="{{ 'common.edit'|trans({}, 'messages') }}">
+                                    <i class="fa-icon fa-icon--pencil" aria-hidden="true"></i>
+                                </a>
+                                <form method="post"
+                                      action="{{ path('app_answer_library_delete', {id: entry.id, _locale: app.request.locale}) }}"
+                                      data-controller="fa-confirm"
+                                      data-fa-confirm-message-value="{{ 'answer_library.confirm.delete'|trans({}, 'answer_library') }}">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token"
+                                           value="{{ csrf_token('delete_' ~ entry.id) }}">
+                                    <button type="submit"
+                                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
+                                            title="{{ 'common.delete'|trans({}, 'messages') }}"
+                                            aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
+                                        <i class="fa-icon fa-icon--trash" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+{% endif %}
+
+</div>
+</main>
+{% endblock %}

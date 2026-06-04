@@ -101,3 +101,53 @@ access_review:
     pending: Pending
     approved: Approved
     revoked: Revoked/Escalated
+
+  bulk:
+    title: Bulk Decision
+    action_approve: Approve selected
+    action_revoke: Revoke selected
+    success: '%count% decision(s) saved.'
+    partial: '%done% saved, %skipped% skipped (already decided or campaign closed).'
+    none_selected: No items selected.
+    tooltip: >
+      Select multiple items using checkboxes, then click a bulk decision.
+      Each item receives its own audit log entry.
+
+  escalation:
+    notify_subject: 'UAR Escalation: %role% for %user% requires your review'
+    notify_body: >
+      An access review item has been escalated and awaits your decision
+      (CISO/Manager).
+    notify_cta: >
+      Please log in and review these items. Each item can be approved,
+      revoked, or re-escalated via the Access Review module.
+    escalated_items_title: Escalated Items
+    escalated_hint: >
+      These items have been referred to a higher authority. Please review and
+      decide (as CISO/ROLE_MANAGER) directly in the table below.
+
+  export:
+    button: Export as XLSX
+    tooltip: >
+      Exports all campaign results (user, role, decision, timestamp) as an
+      audit workbook for handover to external auditors (ISO 27001 A.5.18).
+    filename_prefix: uar-campaign
+    flash_success: XLSX export downloaded and logged in the audit trail.
+    aria_download: 'Download campaign %name% as XLSX'
+
+  progress:
+    tile_decided: Decided
+    tile_pending: Pending
+    tile_overdue: Overdue
+    tile_total: Total
+    decided_of_total: '%decided% / %total%'
+    overdue_label: 'due: %date%'
+    progress_aria: 'Campaign progress: %pct%% complete'
+    open_badge: Open
+    closed_badge: Completed
+
+  flash:
+    bulk_decide_success: '%count% decision(s) saved successfully.'
+    bulk_decide_partial: '%done% saved, %skipped% skipped.'
+    export_ok: XLSX export started.
+    escalation_notified: 'Escalation notification sent for %count% item(s).'

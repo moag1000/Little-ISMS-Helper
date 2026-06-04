@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'answer_library' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'answer_library.page.new_title'|trans({}, 'answer_library') }} – {{ parent() }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'answer_library.page.index_title'|trans({}, 'answer_library'),
+          url: path('app_answer_library_index', {_locale: app.request.locale}) },
+        { label: 'answer_library.page.new_title'|trans({}, 'answer_library') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge:  { icon: 'nav-shield-check', label: 'answer_library.badge'|trans({}, 'answer_library') },
+    title:  'answer_library.page.new_title'|trans({}, 'answer_library'),
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container-fluid py-4" style="max-width: 800px;">
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+
+            <div class="mb-3">
+                {{ form_label(form.question) }}
+                {{ form_widget(form.question, {attr: {class: 'form-control fa-cyber-input__field'}}) }}
+                {{ form_errors(form.question) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category) }}
+                {{ form_errors(form.category) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.tags) }}
+                {{ form_widget(form.tags) }}
+                {{ form_errors(form.tags) }}
+                <div class="form-text text-muted">
+                    {{ 'answer_library.help.tags'|trans({}, 'answer_library') }}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(form.answer) }}
+                {{ form_widget(form.answer, {attr: {class: 'form-control fa-cyber-input__field'}}) }}
+                {{ form_errors(form.answer) }}
+                <div class="form-text text-muted">
+                    {{ 'answer_library.help.answer'|trans({}, 'answer_library') }}
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--save" aria-hidden="true"></i>
+                    {{ 'answer_library.action.save'|trans({}, 'answer_library') }}
+                </button>
+                <a href="{{ path('app_answer_library_index', {_locale: app.request.locale}) }}"
+                   class="fa-cyber-btn fa-cyber-btn--ghost">
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+</main>
+{% endblock %}

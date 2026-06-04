@@ -1,0 +1,100 @@
+answer_library:
+  # Page titles
+  page:
+    index_title: Answer Library
+    index_subtitle: 'Reusable answers for inbound customer security questionnaires — answer once, reuse always.'
+    new_title: Create New Answer
+    edit_title: Edit Answer
+    show_title: Answer Detail
+
+  badge: Questionnaires
+
+  # Junior-UX tooltip
+  tooltip:
+    title: What is the Answer Library?
+    body: >
+      The Answer Library stores pre-written answers to common security-questionnaire questions
+      (RFP, customer audits, due-diligence reviews). Select a stored answer, copy it into your
+      questionnaire, and the system automatically counts the reuse as saved FTE time — visible
+      in the ROI dashboard (F11). Answer once, reuse forever.
+
+  # KPI card labels
+  kpi:
+    total_entries: Stored Answers
+    total_reuses: Total Reuses
+
+  # Field labels
+  field:
+    question: Question
+    answer: Answer
+    category: Category
+    tags: Tags
+    use_count: Reuse Count
+    last_used_at: Last Used
+    created_at: Created At
+    created_by: Created By
+
+  # Placeholders
+  placeholder:
+    question: 'e.g. How do you ensure encryption of data at rest?'
+    answer: 'Enter the prepared answer here. You can use %PLACEHOLDER% for variable text.'
+    tags: 'e.g. ISO 27001, Encryption, A.8.24 (comma-separated)'
+
+  # Help texts
+  help:
+    tags: 'Comma-separated tags for search. Optional.'
+    answer: 'Tip: Use %ORGANIZATION% or %DATE% as placeholders for variable content.'
+    use_action: 'Copies the answer and records the reuse in the ROI report.'
+
+  # Category labels
+  category:
+    access_control: Access Control
+    encryption: Encryption
+    bcm: Business Continuity
+    privacy: Data Privacy
+    incident_management: Incident Management
+    physical_security: Physical Security
+    supplier_management: Supplier Management
+    risk_management: Risk Management
+    general: General
+
+  # Sections
+  section:
+    question: Question
+    answer: Answer
+
+  # Actions
+  action:
+    new: New Answer
+    save: Save Answer
+    use: Use Answer
+
+  # Search/filter
+  search:
+    label: Search question text
+    placeholder: 'Search questions or answers…'
+  filter:
+    all_categories: All Categories
+
+  # Flash messages
+  flash:
+    created: Answer saved successfully.
+    updated: Answer updated successfully.
+    deleted: Answer deleted successfully.
+    reused: Answer marked as used — the reuse has been recorded in the ROI dashboard.
+
+  # Confirm dialogs
+  confirm:
+    delete: 'Really delete this answer? The reuse statistics will be lost.'
+
+  # Empty state
+  empty:
+    title: No Answers Yet
+    body: >
+      Store frequently used answers to security questionnaires and reuse them for every
+      customer questionnaire. This saves time and ensures consistent, reviewed wording.
+
+  # Validation
+  validation:
+    question_required: The question must not be empty.
+    answer_required: The answer must not be empty.

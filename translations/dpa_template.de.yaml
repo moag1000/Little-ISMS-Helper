@@ -1,0 +1,97 @@
+title: 'Auftragsverarbeitungsvertrag gemäß Art. 28 DSGVO'
+subtitle: 'Vertrag zur Auftragsverarbeitung personenbezogener Daten'
+
+parties:
+    heading: 'Parteien'
+    controller_label: 'Auftraggeber (Verantwortlicher)'
+    processor_label: 'Auftragnehmer (Auftragsverarbeiter)'
+
+subject_matter:
+    heading: 'Gegenstand und Dauer der Verarbeitung'
+    pa_name_label: 'Verarbeitungstätigkeit'
+    purposes_label: 'Zweck(e) der Verarbeitung'
+    legal_basis_label: 'Rechtsgrundlage'
+    data_categories_label: 'Kategorien personenbezogener Daten'
+    data_subject_categories_label: 'Kategorien betroffener Personen'
+    retention_period_label: 'Lösch- / Aufbewahrungsfrist'
+    contract_start_label: 'Vertragsbeginn'
+    contract_end_label: 'Vertragsende'
+
+clauses:
+    heading: 'Pflichtklauseln nach Art. 28 Abs. 3 DSGVO'
+    a:
+        heading: 'Weisungsgebundenheit'
+        body: >
+            Der Auftragnehmer verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des
+            Auftraggebers. Erhält der Auftragnehmer eine behördliche Anordnung zur Offenlegung, unterrichtet er
+            den Auftraggeber unverzüglich, sofern dies rechtlich zulässig ist.
+    b:
+        heading: 'Vertraulichkeit'
+        body: >
+            Der Auftragnehmer stellt sicher, dass sich die zur Verarbeitung befugten Personen zur Vertraulichkeit
+            verpflichtet haben oder einer angemessenen gesetzlichen Verschwiegenheitspflicht unterliegen.
+    c:
+        heading: 'Technische und organisatorische Maßnahmen'
+        body: >
+            Der Auftragnehmer ergreift alle erforderlichen Maßnahmen gemäß Art. 32 DSGVO zur Sicherheit der
+            Verarbeitung. Die konkret implementierten Maßnahmen sind im Abschnitt »TOMs« dieses Vertrags
+            dokumentiert.
+    d:
+        heading: 'Hinzuziehung weiterer Auftragsverarbeiter'
+        body: >
+            Der Auftragnehmer darf weitere Auftragsverarbeiter (Unterauftragnehmer) nur mit vorheriger
+            ausdrücklicher oder allgemeiner schriftlicher Genehmigung des Auftraggebers hinzuziehen. Im Fall
+            einer allgemeinen Genehmigung informiert der Auftragnehmer den Auftraggeber über beabsichtigte
+            Änderungen und räumt ihm die Möglichkeit ein, diese zu untersagen.
+    e:
+        heading: 'Unterstützung bei Betroffenenrechten'
+        body: >
+            Der Auftragnehmer unterstützt den Auftraggeber durch geeignete technische und organisatorische
+            Maßnahmen dabei, seiner Verpflichtung zur Beantwortung von Anträgen auf Ausübung der Rechte
+            betroffener Personen (Art. 15–22 DSGVO) nachzukommen.
+    f:
+        heading: 'Unterstützung bei Sicherheitspflichten'
+        body: >
+            Der Auftragnehmer unterstützt den Auftraggeber unter Berücksichtigung der Art der Verarbeitung
+            und der ihm zur Verfügung stehenden Informationen bei der Einhaltung der Pflichten gemäß
+            Art. 32–36 DSGVO (Sicherheit, Meldung von Verletzungen, DSFA, Vorabkonsultation).
+    g:
+        heading: 'Löschung oder Rückgabe der Daten'
+        body: >
+            Nach Abschluss der Verarbeitungsleistungen löscht oder gibt der Auftragnehmer — nach Wahl des
+            Auftraggebers — alle personenbezogenen Daten zurück und löscht vorhandene Kopien, sofern keine
+            Pflicht zur Speicherung nach dem Unionsrecht oder dem Recht der Mitgliedstaaten besteht.
+    h:
+        heading: 'Nachweispflichten und Auditrechte'
+        body: >
+            Der Auftragnehmer stellt dem Auftraggeber alle erforderlichen Informationen zum Nachweis der
+            Einhaltung der in diesem Artikel niedergelegten Pflichten zur Verfügung und ermöglicht Prüfungen
+            einschließlich Inspektionen, die vom Auftraggeber oder einem anderen vom Auftraggeber beauftragten
+            Prüfer durchgeführt werden, und trägt dazu bei.
+
+tom:
+    heading: 'Technische und organisatorische Maßnahmen (TOMs)'
+    placeholder: '[Es wurden noch keine TOMs dokumentiert. Bitte ergänzen Sie die Verarbeitungstätigkeit um eine TOM-Beschreibung.]'
+
+subprocessors:
+    heading: 'Unterauftragnehmer'
+    consent_granted: 'Der Auftraggeber erteilt hiermit die allgemeine Genehmigung für die nachfolgend genannten Unterauftragnehmer:'
+    no_subprocessors: 'Es werden keine Unterauftragnehmer eingesetzt.'
+
+third_country:
+    heading: 'Drittlandtransfer'
+    applies: 'Es werden personenbezogene Daten in ein Drittland außerhalb des EWR übermittelt. Die Übermittlung erfolgt auf Basis der nachfolgend genannten Garantien gemäß Art. 44–49 DSGVO.'
+    countries_label: 'Empfängerländer'
+    safeguards_label: 'Übermittlungsgarantien'
+
+signatures:
+    heading: 'Unterschriften'
+    controller_label: 'Auftraggeber'
+    processor_label: 'Auftragnehmer'
+    place_date_label: 'Ort, Datum'
+    name_label: 'Name / Funktion'
+    signature_label: 'Unterschrift'
+
+footer:
+    generated_on: 'Generiert am'
+    generated_by: 'Generiert von'

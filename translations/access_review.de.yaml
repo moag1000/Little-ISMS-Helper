@@ -102,3 +102,53 @@ access_review:
     pending: Ausstehend
     approved: Genehmigt
     revoked: Widerrufen/Eskaliert
+
+  bulk:
+    title: Massenentscheidung
+    action_approve: Alle gewählten genehmigen
+    action_revoke: Alle gewählten widerrufen
+    success: '%count% Entscheidung(en) gespeichert.'
+    partial: '%done% gespeichert, %skipped% übersprungen (bereits entschieden oder Kampagne geschlossen).'
+    none_selected: Keine Items ausgewählt.
+    tooltip: >
+      Wählen Sie mehrere Items per Checkbox aus, dann klicken Sie auf eine
+      Massenentscheidung. Jedes Item erhält seinen eigenen Audit-Eintrag.
+
+  escalation:
+    notify_subject: 'UAR Eskalation: %role% für %user% erfordert Ihre Prüfung'
+    notify_body: >
+      Ein Zugriffsrezertifizierungs-Item wurde eskaliert und wartet auf
+      Ihre Entscheidung (CISO/Manager).
+    notify_cta: >
+      Bitte melden Sie sich an und prüfen Sie die Items. Jedes Item kann
+      direkt im Zugriffsrezertifizierungs-Modul genehmigt, widerrufen oder erneut eskaliert werden.
+    escalated_items_title: Eskalierte Items
+    escalated_hint: >
+      Diese Items wurden an eine höhere Instanz weitergegeben. Bitte prüfen und
+      entscheiden Sie (als CISO/ROLE_MANAGER) direkt in der Tabelle.
+
+  export:
+    button: Als XLSX exportieren
+    tooltip: >
+      Exportiert alle Kampagnen-Ergebnisse (Nutzer, Rolle, Entscheidung, Zeitstempel)
+      als Audit-Arbeitsmappe für die Weitergabe an externe Prüfer (ISO 27001 A.5.18).
+    filename_prefix: uar-kampagne
+    flash_success: XLSX-Export erfolgreich heruntergeladen und in Audit-Log eingetragen.
+    aria_download: 'Kampagne %name% als XLSX herunterladen'
+
+  progress:
+    tile_decided: Entschieden
+    tile_pending: Ausstehend
+    tile_overdue: Überfällig
+    tile_total: Gesamt
+    decided_of_total: '%decided% / %total%'
+    overdue_label: 'fällig: %date%'
+    progress_aria: 'Kampagnenfortschritt: %pct%% abgeschlossen'
+    open_badge: Offen
+    closed_badge: Abgeschlossen
+
+  flash:
+    bulk_decide_success: '%count% Entscheidung(en) erfolgreich gespeichert.'
+    bulk_decide_partial: '%done% gespeichert, %skipped% übersprungen.'
+    export_ok: XLSX-Export gestartet.
+    escalation_notified: 'Eskalations-Benachrichtigung für %count% Item(s) versendet.'
