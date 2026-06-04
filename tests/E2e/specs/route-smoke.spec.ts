@@ -3,6 +3,7 @@ import { readFileSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import yaml from 'js-yaml';
 import { loginAs } from '../fixtures/auth';
+import { findRawKeys } from '../fixtures/i18n';
 
 /**
  * L1 Browser-Smoke: navigates every GET-able route the route-exporter found
@@ -69,6 +70,7 @@ interface RouteResult {
     pageErrors: string[];
     failedRequests: string[];   // sub-resource (asset/AJAX) 4xx/5xx hits
     bannerSeen: boolean;
+    rawKeys: string[];          // visible untranslated i18n keys (e.g. policy_wizard.step.x)
     ok: boolean;
     reason?: string;
 }
@@ -177,11 +179,16 @@ async function probeOne(page: Page, route: RouteEntry): Promise<RouteResult> {
     // is a coverage signal, not a hard failure. Skip on download routes
     // where the page has no DOM to inspect.
     let bannerSeen = false;
+    let rawKeys: string[] = [];
     if (!isDownload) {
         try {
             bannerSeen = await page.locator('text=ist nicht aktiviert').first().isVisible({ timeout: 250 });
         } catch {
             bannerSeen = false;
+        }
+        // Only scan rendered HTML pages (skip 5xx / error bodies).
+        if (status !== null && status < 500) {
+            rawKeys = (await findRawKeys(page)).slice(0, 10);
         }
     }
 
@@ -189,12 +196,14 @@ async function probeOne(page: Page, route: RouteEntry): Promise<RouteResult> {
     const ok = status !== null
         && status < 500
         && pageErrors.length === 0
-        && failedRequests.length === 0;
+        && failedRequests.length === 0
+        && rawKeys.length === 0;
 
     const reasonParts: string[] = [];
     if (reason) reasonParts.push(reason);
     if (is5xx) reasonParts.push(`HTTP ${status}`);
     if (failedRequests.length > 0) reasonParts.push(`${failedRequests.length} sub-request fail`);
+    if (rawKeys.length > 0) reasonParts.push(`untranslated keys: ${rawKeys.join(', ')}`);
 
     return {
         persona: DEFAULT_PERSONA,
@@ -207,6 +216,7 @@ async function probeOne(page: Page, route: RouteEntry): Promise<RouteResult> {
         pageErrors,
         failedRequests,
         bannerSeen,
+        rawKeys,
         ok,
         reason: reasonParts.length > 0 ? reasonParts.join('; ') : undefined,
     };
