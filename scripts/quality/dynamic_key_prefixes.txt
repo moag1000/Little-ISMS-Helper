@@ -118,7 +118,8 @@ fte_tracking.source	2
 group_report.nis2.class	2
 guided_tour	6
 guided_tour.role	1
-import.entity	6
+import.entity	7
+import.hub.area	1
 import_session.status	1
 incident.category	4
 incident.nis2_category	2
