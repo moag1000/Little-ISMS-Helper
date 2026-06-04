@@ -28,6 +28,10 @@ processing_activity:
         title: 'Drittlandtransfer ohne Garantien'
         body: 'Personenbezogene Daten werden in %countries% übermittelt, aber kein Mechanismus nach DSGVO Art. 46 ist hinterlegt (SCC, BCR, Angemessenheitsbeschluss). Schrems-II-Risiko.'
         action: 'Garantien ergänzen'
+    purpose_legal_basis_mismatch:
+        title: 'Rechtsgrundlage passt nicht zum Marketing-Zweck'
+        body: 'Diese Tätigkeit verfolgt einen Marketing-Zweck, stützt sich aber auf „%basis%". Direktmarketing ist praktisch nur über Einwilligung (Art. 6(1)(a)) oder berechtigtes Interesse (Art. 6(1)(f), ErwGr. 47) zulässig. Bitte die Rechtsgrundlage prüfen.'
+        action: 'Rechtsgrundlage prüfen'
     dpia_required:
         title: 'DPIA erforderlich (Art. 35 DSGVO)'
         body: 'Verarbeitung deutet auf Pflicht-DPIA: automatisierte Entscheidungsfindung, besondere Kategorien im großen Umfang oder selbstklassifiziert als hohes Risiko. Bisher keine DPIA dokumentiert.'
