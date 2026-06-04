@@ -50,6 +50,7 @@ final class TisaxDeriveCrosswalkCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('write-confirmed', null, InputOption::VALUE_NONE,
@@ -59,6 +60,7 @@ final class TisaxDeriveCrosswalkCommand extends Command
         $this->addOption('tenant', null, InputOption::VALUE_REQUIRED, 'Tenant id (required with --persist).');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

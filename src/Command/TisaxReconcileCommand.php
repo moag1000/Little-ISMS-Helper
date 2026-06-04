@@ -28,11 +28,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class TisaxReconcileCommand extends Command
 {
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('framework', null, InputOption::VALUE_REQUIRED, 'Framework code', 'TISAX');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

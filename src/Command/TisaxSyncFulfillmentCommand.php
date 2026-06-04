@@ -35,12 +35,14 @@ final class TisaxSyncFulfillmentCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('framework', null, InputOption::VALUE_REQUIRED, 'Framework code', 'TISAX');
         $this->addOption('tenant', null, InputOption::VALUE_REQUIRED, 'Restrict to a tenant id (default: all)');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

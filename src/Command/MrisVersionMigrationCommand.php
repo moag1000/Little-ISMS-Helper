@@ -61,6 +61,7 @@ final class MrisVersionMigrationCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -70,6 +71,7 @@ final class MrisVersionMigrationCommand extends Command
             ->addOption('apply',   null, InputOption::VALUE_NONE, 'Wendet die Migration verbindlich an. Ohne dieses Flag werden keine Daten geschrieben.');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

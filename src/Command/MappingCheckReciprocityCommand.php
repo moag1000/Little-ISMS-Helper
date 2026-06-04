@@ -35,11 +35,13 @@ class MappingCheckReciprocityCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('threshold', 't', InputOption::VALUE_REQUIRED, 'Coherence-% Schwelle für Warnung', '80');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

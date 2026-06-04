@@ -284,6 +284,7 @@ final class SeedC5PolicyTemplatesCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption(
@@ -300,6 +301,7 @@ final class SeedC5PolicyTemplatesCommand extends Command
         );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

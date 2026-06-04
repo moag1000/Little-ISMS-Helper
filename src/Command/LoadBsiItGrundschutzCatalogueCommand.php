@@ -52,12 +52,14 @@ final class LoadBsiItGrundschutzCatalogueCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping');
         $this->addOption('layer', null, InputOption::VALUE_REQUIRED, 'Only load a specific Schicht (ISMS|ORP|CON|OPS|DER|APP|SYS|IND|NET|INF)');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

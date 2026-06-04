@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Service\HealthAutoFixService;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\Attributes\Test;
 
-#[AllowMockObjectsWithoutExpectations]
 class HealthAutoFixServiceTest extends TestCase
 {
-    private MockObject $logger;
+    private LoggerInterface $logger;
     private string $projectDir;
     private string $cacheDir;
     private string $logsDir;
@@ -22,7 +19,7 @@ class HealthAutoFixServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->logger = $this->createMock(LoggerInterface::class);
+        $this->logger = $this->createStub(LoggerInterface::class);
         $this->projectDir = sys_get_temp_dir() . '/health_test_' . uniqid();
         $this->cacheDir = $this->projectDir . '/var/cache';
         $this->logsDir = $this->projectDir . '/var/log';
