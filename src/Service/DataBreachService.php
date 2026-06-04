@@ -33,7 +33,6 @@ final class DataBreachService
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly LifecycleTransitionInterface $lifecycleService,
     ) {
     }
@@ -199,9 +198,6 @@ final class DataBreachService
                 'reference_number' => $dataBreach->getReferenceNumber(),
             ]);
         }
-
-        // Check and auto-progress workflow if conditions are met
-        $this->workflowAutoProgressionService->checkAndProgressWorkflow($dataBreach, $user);
 
         return $dataBreach;
     }

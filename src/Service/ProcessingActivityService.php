@@ -28,7 +28,6 @@ final class ProcessingActivityService
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
         private readonly AuditLogger $auditLogger,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly ?LifecycleTransitionInterface $lifecycleService = null,
     ) {}
 
@@ -80,12 +79,6 @@ final class ProcessingActivityService
             ],
             'processing_activity.updated'
         );
-
-        // Check and auto-progress workflow if conditions are met
-        $currentUser = $this->security->getUser();
-        if ($currentUser instanceof User) {
-            $this->workflowAutoProgressionService->checkAndProgressWorkflow($processingActivity, $currentUser);
-        }
 
         return $processingActivity;
     }
