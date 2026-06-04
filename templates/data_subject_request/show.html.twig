@@ -243,6 +243,16 @@
                             <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}
                         </a>
 
+                        {# Personal-data export (Art. 15/20) — only for access/portability,
+                           disabled until identity is verified (server enforces it too). #}
+                        {% if dsr.requestType in ['access', 'portability'] %}
+                            <a href="{{ path('app_data_subject_request_export_personal_data', {id: dsr.id}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--ghost w-100 mb-2{{ dsr.identityVerified ? '' : ' disabled' }}"
+                               {{ dsr.identityVerified ? '' : 'aria-disabled="true" tabindex="-1"' }}>
+                                <i class="fa-icon fa-icon--export" aria-hidden="true"></i> {{ 'dsr.action.export_personal_data'|trans({}, 'data_subject_request') }}
+                            </a>
+                        {% endif %}
+
                         {# Complete Action #}
                         <hr>
                         <h6>{{ 'dsr.action.mark_complete'|trans({}, 'data_subject_request') }}</h6>
