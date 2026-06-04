@@ -254,7 +254,7 @@ class Tenant
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Supervisory authorities map keyed by jurisdiction/role (BSI, BaFin, LDA, CSIRT-bund etc.)'])]
     private ?array $supervisoryAuthorities = null;
 
-    /** @var array<string, array{years: int, basis?: string}>|null */
+    /** @var array<string, array{retention_days: int, auto_delete: bool}>|null */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'GDPR retention policies keyed by data category (e.g. crm, contracts, audit_evidence)'])]
     private ?array $dataRetentionPolicies = null;
 
@@ -840,10 +840,10 @@ class Tenant
     /** @param array<string, array{name: string, email: string, phone?: string, scope?: string}>|null $authorities */
     public function setSupervisoryAuthorities(?array $authorities): static { $this->supervisoryAuthorities = $authorities; return $this; }
 
-    /** @return array<string, array{years: int, basis?: string}>|null */
+    /** @return array<string, array{retention_days: int, auto_delete: bool}>|null */
     public function getDataRetentionPolicies(): ?array { return $this->dataRetentionPolicies; }
 
-    /** @param array<string, array{years: int, basis?: string}>|null $policies */
+    /** @param array<string, array{retention_days: int, auto_delete: bool}>|null $policies */
     public function setDataRetentionPolicies(?array $policies): static { $this->dataRetentionPolicies = $policies; return $this; }
 
     public function getRiskMethodology(): ?string { return $this->riskMethodology; }
