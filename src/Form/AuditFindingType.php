@@ -50,15 +50,36 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('audit', EntityType::class, [
+        // F14 — when invoked with `audit_locked: true` (pre-linked from audit show-page),
+        // render the audit field as disabled so the parent audit is locked and cannot
+        // be changed by the user. `mapped: false` on the disabled variant keeps the
+        // EntityType out of the form-data bind path; the controller pre-sets the entity
+        // on the AuditFinding before form-binding, so the relation is still persisted.
+        $auditLocked = $options['audit_locked'] ?? false;
+
+        if ($auditLocked) {
+            $builder->add('audit', EntityType::class, [
+                'label' => 'audit_finding.field.audit',
+                'class' => InternalAudit::class,
+                'choice_label' => fn(InternalAudit $a): string => ($a->getAuditNumber() ?? '') . ' — ' . ($a->getTitle() ?? ''),
+                'placeholder' => 'audit_finding.placeholder.audit',
+                'required' => true,
+                'help' => 'audit_finding.help.audit_locked',
+                'disabled' => true,
+                'mapped' => false,
+            ]);
+        } else {
+            $builder->add('audit', EntityType::class, [
                 'label' => 'audit_finding.field.audit',
                 'class' => InternalAudit::class,
                 'choice_label' => fn(InternalAudit $a): string => ($a->getAuditNumber() ?? '') . ' — ' . ($a->getTitle() ?? ''),
                 'placeholder' => 'audit_finding.placeholder.audit',
                 'required' => true,
                 'help' => 'audit_finding.help.audit',
-            ])
+            ]);
+        }
+
+        $builder
             ->add('findingNumber', TextType::class, [
                 'label' => 'audit_finding.field.finding_number',
                 'required' => false,
@@ -281,7 +302,10 @@ final class AuditFindingType extends AbstractType implements SectionMapInterface
                 new Callback([$this, 'validateAssignedSlot']),
                 new Callback([$this, 'validateNcSlot']),
             ],
+            // F14 — when true the audit field is rendered read-only (pre-linked context).
+            'audit_locked' => false,
         ]);
+        $resolver->setAllowedTypes('audit_locked', 'bool');
     }
 
     public function validateAssignedSlot(?AuditFinding $entity, ExecutionContextInterface $context): void

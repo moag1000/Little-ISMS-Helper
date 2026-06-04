@@ -1,16 +1,46 @@
-# Translation skeleton for ai_act
-# Sprint 0 Task 0.1 — empty skeleton with standard sections.
-# Keys to be filled during feature implementation.
+# EU AI Act — AI-Agent-Inventar (F33)
+# Feature: Asset-Subtyp 'ai_agent', Route: /ai-agents (app_ai_agents_index)
+# Modul: ai_governance
+# Rechtliche Grundlage: EU AI Act Art. 5/6/9-16; ISO 42001:2023 Annex A; MRIS MHC-13
+#
+# HINWEIS: Das Template ai_agent/index.html.twig verwendet derzeit hartcodierte
+# DE-Strings. Die Feld- und Klassifikations-Labels leben unter asset.ai_agent.* im
+# asset-Domain. Diese Datei dokumentiert den vollständigen i18n-Bestand des Features
+# und dient als Referenz für die Internationalisierungsmigration.
 
 ai_act:
-  nav:
-    title: ''
   page:
-    title: ''
-    subtitle: ''
-  field: {}
-  error: {}
-  help: {}
-  audit: {}
-  success: {}
-  warning: {}
+    title: 'AI-Agent-Inventar'
+    subtitle: 'EU AI Act Art. 6/9-16 · ISO 42001 Annex A · MRIS MHC-13 · ISO 27001 A.5.16/A.8.27'
+    breadcrumb: 'AI-Agent-Inventar'
+
+  stat:
+    total: 'AI-Agents gesamt'
+    high_risk: 'Hochrisiko (AI Act Art. 6)'
+    unclassified: 'Nicht klassifiziert'
+    avg_completeness: 'Ø Doku-Vollständigkeit'
+
+  table:
+    header:
+      name: 'Name'
+      provider: 'Anbieter'
+      model: 'Modell'
+      risk_class: 'Risikoklasse'
+      doc_completeness: 'Doku-Vollständigkeit'
+
+  # Risikoklassen gem. EU AI Act
+  classification:
+    prohibited: 'Verboten'
+    prohibited_help: 'Verbotene KI-Praktiken gem. Art. 5 (z. B. Social Scoring, unzulässige biometrische Kategorisierung)'
+    high_risk: 'Hochrisiko'
+    high_risk_help: 'Hochrisiko-KI-System gem. Anhang III — vollständige technische Dokumentation gem. Art. 11 erforderlich'
+    limited_risk: 'Begrenztes Risiko'
+    limited_risk_help: 'Begrenztes Risiko gem. Art. 52 — Transparenzpflichten (Kennzeichnung)'
+    minimal_risk: 'Minimales Risiko'
+    minimal_risk_help: 'Minimales Risiko — keine spezifischen Pflichten, Best-Practice empfohlen'
+    unclassified: 'Nicht klassifiziert'
+
+  alert:
+    high_risk_incomplete: '%count% Hochrisiko-Agent(en) mit unvollständiger Dokumentation. EU AI Act Art. 11 verlangt für High-Risk-Systeme vollständige technische Dokumentation. Vor erster Nutzung ergänzen.'
+    empty_inventory: 'Noch keine AI-Agents im Inventar. Lege ein Asset mit <code>assetType=ai_agent</code> an (z. B. GitHub Copilot, Cursor, Claude Code, eigener MCP-Server).'
+    mandatory_fields: '<strong>Pflichtfelder pro AI-Agent (9):</strong> Risikoklassifikation (AI Act Art. 6), Zweckbestimmung (Art. 11), Datengovernance (Art. 10), Human Oversight (Art. 14), Anbieter (Art. 16), Modell-Version (ISO 42001), Capability-Scope (MHC-13), Bedrohungsmodell (Art. 9 + MHC-13), Extension-Allowlist (MHC-13).'

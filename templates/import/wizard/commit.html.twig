@@ -1,0 +1,177 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'data_import' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
+
+{% block title %}{{ 'import.wizard.step.commit.title'|trans({}, 'data_import') }}{% endblock %}
+
+{% block body %}
+{# ── Status-badge type mapping ─────────────────────────────────────────────── #}
+{% set statusBadgeType = {
+    'completed': 'control',
+    'failed':    'finding',
+    'committing': 'training'
+}[batch.status] ?? 'audit' %}
+
+<div class="container"
+     data-controller="import-progress"
+     data-import-progress-batch-url-value="{{ path('app_bulk_import_commit_status', { _locale: app.request.locale, entityType: entityType, batchId: batch.id }) }}"
+     data-import-progress-poll-interval-value="3000"
+     data-import-progress-status-value="{{ batch.status }}">
+
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'import.page.title'|trans({}, 'data_import'), url: path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) },
+            { label: 'import.wizard.step.commit.title'|trans({}, 'data_import') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-clipboard-check', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        title: 'import.page.title'|trans({}, 'data_import'),
+        subtitle: 'import.wizard.step.commit.title'|trans({}, 'data_import')
+    }) }}
+
+    <main class="fa-aurora-surface mt-4">
+
+        {% include 'import/wizard/_steps_header.html.twig' with {
+            currentStep: 3,
+            entityType: entityType,
+            batchId: batch.id
+        } %}
+
+        {# ── Status banner ─────────────────────────────────────────────────── #}
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <span data-import-progress-target="statusBadge">
+                {{ _fa_entity_badge.render({
+                    type: statusBadgeType,
+                    label: batch.status
+                }) }}
+            </span>
+            {% if not isCompleted %}
+                <span class="spinner-border spinner-border-sm text-primary"
+                      role="status"
+                      aria-hidden="true"></span>
+                <span class="small" style="color: var(--text-muted);" aria-live="polite">
+                    {{ 'import.commit.still_running'|trans({}, 'data_import') }}
+                </span>
+            {% endif %}
+        </div>
+
+        {# ── Context alert ─────────────────────────────────────────────────── #}
+        {% if batch.status == 'failed' %}
+            {{ _fa_alert.render({
+                variant: 'danger',
+                icon:    'status-critical',
+                title:   'import.commit.failed_heading'|trans({}, 'data_import'),
+                body:    'import.commit.failed_body'|trans({}, 'data_import') ~ (batch.notes ? ' <code>' ~ batch.notes|e ~ '</code>' : '')
+            }) }}
+        {% elseif isCompleted %}
+            {{ _fa_alert.render({
+                variant: 'success',
+                icon:    'status-ok',
+                title:   'import.commit.completed_heading'|trans({}, 'data_import'),
+                body:    'import.commit.completed_body'|trans({}, 'data_import')
+            }) }}
+        {% else %}
+            {{ _fa_alert.render({
+                variant: 'info',
+                icon:    'ui-hourglass',
+                title:   'import.commit.heading'|trans({}, 'data_import'),
+                body:    'import.commit.body'|trans({}, 'data_import')
+            }) }}
+        {% endif %}
+
+        {# ── Delta counters (updated live by Stimulus import-progress controller) #}
+        <div class="row mb-4 mt-4" data-import-progress-target="counters">
+            <div class="col-6 col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.creates'|trans({}, 'data_import'),
+                    value: batch.rowCountSuccess - batch.rowCountUpdated,
+                    variant: 'success',
+                    icon: 'plus'
+                }) }}
+            </div>
+            <div class="col-6 col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.updates'|trans({}, 'data_import'),
+                    value: batch.rowCountUpdated,
+                    variant: 'primary',
+                    icon: 'ui-edit'
+                }) }}
+            </div>
+            <div class="col-6 col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.unchanged'|trans({}, 'data_import'),
+                    value: batch.rowCountSkipped,
+                    variant: 'primary',
+                    icon: 'ui-x'
+                }) }}
+            </div>
+            <div class="col-6 col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.errors'|trans({}, 'data_import'),
+                    value: batch.rowCountError,
+                    variant: batch.rowCountError > 0 ? 'danger' : 'primary',
+                    icon: 'status-warning'
+                }) }}
+            </div>
+        </div>
+
+        {# ── Navigation ────────────────────────────────────────────────────── #}
+        <div class="d-flex gap-2 mt-4 flex-wrap" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_bulk_import_diff', { _locale: app.request.locale, entityType: entityType, batchId: batch.id }) }}"
+               class="fa-cyber-btn {{ isCompleted ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}"
+               aria-label="{{ 'import.commit.view_result'|trans({}, 'data_import') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'import.commit.view_result'|trans({}, 'data_import') }}</span>
+            </a>
+            <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost">
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'import.page.title'|trans({}, 'data_import') }}</span>
+            </a>
+        </div>
+
+    </main>
+</div>
+
+{% if not isCompleted %}
+<script>
+    {# Auto-redirect to diff once the batch status transitions to completed/failed.
+       The import-progress Stimulus controller polls the page; if it detects a
+       terminal status it reloads this page. Once isCompleted is true the user
+       gets the "View Result" CTA without the spinner. For a seamless UX we
+       also do a client-side JS redirect after polling detects completion.       #}
+    document.addEventListener('turbo:load', function () {
+        var statusEl = document.querySelector('[data-import-progress-status-value]');
+        var diffUrl  = {{ path('app_bulk_import_diff', { _locale: app.request.locale, entityType: entityType, batchId: batch.id })|json_encode|raw }};
+
+        function checkStatus() {
+            var current = statusEl ? statusEl.dataset.importProgressStatusValue : null;
+            if (current === 'completed' || current === 'failed') {
+                window.location.href = diffUrl;
+            }
+        }
+
+        // Piggyback on the import-progress Stimulus controller's status attribute
+        // update via MutationObserver so we redirect without an extra XHR.
+        if (statusEl) {
+            var observer = new MutationObserver(checkStatus);
+            observer.observe(statusEl, { attributeFilter: ['data-import-progress-status-value'] });
+        }
+
+        // Fallback: hard-reload every 5 s so even without Stimulus the page
+        // eventually shows the completed state and hands off to diff.
+        var fallback = window.setTimeout(function () {
+            window.location.reload();
+        }, 5000);
+        statusEl && statusEl.addEventListener('import-progress:completed', function () {
+            window.clearTimeout(fallback);
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

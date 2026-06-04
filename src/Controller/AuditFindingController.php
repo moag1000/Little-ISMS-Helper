@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\AuditFinding;
+use App\Entity\InternalAudit;
 use App\Entity\Tenant;
 use App\Form\AuditFindingType;
 use App\Repository\AuditFindingRepository;
 use App\Repository\CommentRepository;
+use App\Repository\InternalAuditRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Clone\AuditFindingCloner;
@@ -40,6 +42,7 @@ class AuditFindingController extends AbstractController
         private readonly AutoTaskCreator $autoTaskCreator,
         private readonly Security $security,
         private readonly UserRepository $userRepository,
+        private readonly InternalAuditRepository $internalAuditRepository,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?AuditFindingCloner $auditFindingCloner = null,
     ) {
@@ -117,7 +120,18 @@ class AuditFindingController extends AbstractController
             $finding->setTenant($tenant);
         }
 
-        $form = $this->createForm(AuditFindingType::class, $finding);
+        // F14 — pre-link to parent audit when ?audit=<id> is provided (e.g. from audit show-page).
+        // Validate tenant scope before accepting the param.
+        $prelinkedAudit = $this->resolveAuditParam($request, $tenant);
+        $auditLocked = false;
+        if ($prelinkedAudit instanceof InternalAudit) {
+            $finding->setAudit($prelinkedAudit);
+            $auditLocked = true;
+        }
+
+        $form = $this->createForm(AuditFindingType::class, $finding, [
+            'audit_locked' => $auditLocked,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -135,6 +149,12 @@ class AuditFindingController extends AbstractController
             );
 
             $this->addFlash('success', 'audit_finding.flash.created');
+
+            // F14 — when pre-linked to an audit, redirect back to the audit show-page.
+            if ($prelinkedAudit instanceof InternalAudit) {
+                return $this->redirectToRoute('app_audit_show', ['id' => $prelinkedAudit->getId()]);
+            }
+
             return $this->redirectToRoute('app_audit_finding_show', ['id' => $finding->getId()]);
         }
 
@@ -145,7 +165,117 @@ class AuditFindingController extends AbstractController
         return $this->render('audit_finding/new.html.twig', [
             'form' => $form,
             'nc_user_choices' => $this->getNcUserChoices(),
+            'prelinked_audit' => $prelinkedAudit,
         ], new Response(status: $status));
+    }
+
+    /**
+     * F14 — Quick inline finding capture from the audit show-page modal.
+     *
+     * Accepts a lean POST payload (title, type, severity, description, audit_id)
+     * and creates a minimal AuditFinding pre-linked to the parent audit.
+     * On success redirects back to the audit show-page so context is preserved.
+     * The full-detail edit is available from the finding's own show-page.
+     */
+    #[Route('/new-quick', name: 'new_quick', methods: ['POST'])]
+    public function newQuick(Request $request): Response
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant instanceof Tenant) {
+            throw $this->createAccessDeniedException('No tenant context.');
+        }
+
+        if (!$this->isCsrfTokenValid('quick_finding', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $auditId = (int) $request->request->get('audit_id');
+        $audit = $this->internalAuditRepository->find($auditId);
+        if (!$audit instanceof InternalAudit || $audit->getTenant()?->getId() !== $tenant->getId()) {
+            throw $this->createNotFoundException('Audit not found or access denied.');
+        }
+
+        $title = trim((string) $request->request->get('title', ''));
+        if ($title === '') {
+            $this->addFlash('danger', 'audit_finding.flash.quick_title_required');
+            return $this->redirectToRoute('app_audit_show', ['id' => $auditId]);
+        }
+
+        $finding = new AuditFinding();
+        $finding->setTenant($tenant);
+        $finding->setAudit($audit);
+        $finding->setTitle($title);
+
+        $type = (string) $request->request->get('type', AuditFinding::TYPE_MINOR_NC);
+        $allowedTypes = [
+            AuditFinding::TYPE_MAJOR_NC,
+            AuditFinding::TYPE_MINOR_NC,
+            AuditFinding::TYPE_OBSERVATION,
+            AuditFinding::TYPE_OPPORTUNITY,
+        ];
+        if (!in_array($type, $allowedTypes, true)) {
+            $type = AuditFinding::TYPE_MINOR_NC;
+        }
+        $finding->setType($type);
+
+        $severity = (string) $request->request->get('severity', AuditFinding::SEVERITY_MEDIUM);
+        $allowedSeverities = [
+            AuditFinding::SEVERITY_CRITICAL,
+            AuditFinding::SEVERITY_HIGH,
+            AuditFinding::SEVERITY_MEDIUM,
+            AuditFinding::SEVERITY_LOW,
+        ];
+        if (!in_array($severity, $allowedSeverities, true)) {
+            $severity = AuditFinding::SEVERITY_MEDIUM;
+        }
+        $finding->setSeverity($severity);
+
+        $description = trim((string) $request->request->get('description', ''));
+        if ($description !== '') {
+            $finding->setDescription($description);
+        } else {
+            // description is NOT NULL in the DB; use a sentinel that the user can expand later.
+            $finding->setDescription($title);
+        }
+
+        $this->entityManager->persist($finding);
+        $this->entityManager->flush();
+
+        $this->auditLogger->logCreate(
+            'AuditFinding',
+            $finding->getId(),
+            ['title' => $finding->getTitle(), 'severity' => $finding->getSeverity(), 'source' => 'quick-capture'],
+            'AuditFinding created via quick-capture modal'
+        );
+
+        $this->addFlash('success', 'audit_finding.flash.created');
+        return $this->redirectToRoute('app_audit_show', ['id' => $audit->getId()]);
+    }
+
+    /**
+     * F14 — resolve and validate the ?audit=<id> query parameter.
+     * Returns the InternalAudit only when it belongs to the current tenant
+     * (or the current user is ROLE_ADMIN). Returns null when param is absent
+     * or the lookup fails — callers treat null as "no pre-link requested".
+     */
+    private function resolveAuditParam(Request $request, ?Tenant $tenant): ?InternalAudit
+    {
+        $auditId = $request->query->getInt('audit');
+        if ($auditId <= 0) {
+            return null;
+        }
+        $audit = $this->internalAuditRepository->find($auditId);
+        if (!$audit instanceof InternalAudit) {
+            return null;
+        }
+        // Tenant-scope guard: accept if tenant matches or user is admin.
+        if ($tenant instanceof Tenant && $audit->getTenant()?->getId() === $tenant->getId()) {
+            return $audit;
+        }
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $audit;
+        }
+        return null;
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
