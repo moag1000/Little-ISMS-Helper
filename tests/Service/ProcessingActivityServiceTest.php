@@ -12,7 +12,6 @@ use App\Repository\ProcessingActivityRepository;
 use App\Service\AuditLogger;
 use App\Service\ProcessingActivityService;
 use App\Service\TenantContext;
-use App\Service\WorkflowAutoProgressionService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -30,7 +29,6 @@ class ProcessingActivityServiceTest extends TestCase
     private MockObject $tenantContext;
     private MockObject $security;
     private MockObject $auditLogger;
-    private MockObject $workflowAutoProgressionService;
     private MockObject $lifecycleService;
     private ProcessingActivityService $service;
     private MockObject $tenant;
@@ -43,7 +41,6 @@ class ProcessingActivityServiceTest extends TestCase
         $this->tenantContext = $this->createMock(TenantContext::class);
         $this->security = $this->createMock(Security::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
-        $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
         // C-07: LifecycleService is now required by activate()/archive(); inject a
         // mock so the test exercises the canonical Symfony-Workflow path instead
         // of the removed setStatus() fallback.
@@ -66,7 +63,6 @@ class ProcessingActivityServiceTest extends TestCase
             $this->tenantContext,
             $this->security,
             $this->auditLogger,
-            $this->workflowAutoProgressionService,
             $this->lifecycleService,
         );
     }
