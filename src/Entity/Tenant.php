@@ -250,6 +250,22 @@ class Tenant
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $dpoContactEmail = null;
 
+    // ── BDSG § 38 / GDPR Art. 37 — DPO appointment register (N-4) ────────────
+    // Auditors routinely ask for proof of the DPO appointment: when, internal or
+    // external, whether the supervisory authority was notified (Art. 37(7)), and
+    // the deputy. Contact name/email alone do not evidence the appointment.
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $dpoAppointmentDate = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $dpoIsExternal = false;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $dpoAuthorityNotifiedAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $dpoDeputyName = null;
+
     // ── GDPR Art. 30(1)(a) — postal address of the controller (M-5) ──────────
     // A RoPA must carry the controller's contactable postal address, not just a
     // name; without it the register is formally incomplete for an authority.
@@ -868,6 +884,15 @@ class Tenant
     public function setRepresentativeName(?string $v): static { $this->representativeName = $v; return $this; }
     public function getRepresentativeContact(): ?string { return $this->representativeContact; }
     public function setRepresentativeContact(?string $v): static { $this->representativeContact = $v; return $this; }
+
+    public function getDpoAppointmentDate(): ?\DateTimeImmutable { return $this->dpoAppointmentDate; }
+    public function setDpoAppointmentDate(?\DateTimeImmutable $v): static { $this->dpoAppointmentDate = $v; return $this; }
+    public function isDpoExternal(): bool { return $this->dpoIsExternal; }
+    public function setDpoIsExternal(bool $v): static { $this->dpoIsExternal = $v; return $this; }
+    public function getDpoAuthorityNotifiedAt(): ?\DateTimeImmutable { return $this->dpoAuthorityNotifiedAt; }
+    public function setDpoAuthorityNotifiedAt(?\DateTimeImmutable $v): static { $this->dpoAuthorityNotifiedAt = $v; return $this; }
+    public function getDpoDeputyName(): ?string { return $this->dpoDeputyName; }
+    public function setDpoDeputyName(?string $v): static { $this->dpoDeputyName = $v; return $this; }
 
     /** @return array<string, array{name: string, email: string, phone?: string, scope?: string}>|null */
     public function getSupervisoryAuthorities(): ?array { return $this->supervisoryAuthorities; }

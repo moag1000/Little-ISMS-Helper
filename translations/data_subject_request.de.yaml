@@ -70,6 +70,7 @@ dsr:
         response_at: "Antwort gesendet am"
         extended_deadline: "Verlaengerte Frist (Art. 12(3))"
         extension_reason: "Begruendung Fristverlaengerung"
+        extension_notified_at: "Betroffene Person über Verlaengerung informiert am (Art. 12(3))"
         response_document: "Antwort-Artefakt (Dateipfad / UUID)"
         response_method: "Antwortkanal"
         rejection_reason: "Ablehnungsbegruendung (Art. 12(5)(b))"
@@ -88,6 +89,7 @@ dsr:
             response_description: "Beschreiben Sie, was zur Erfuellung der Anfrage unternommen wurde..."
             rejection_reason: "Grund der Ablehnung (Art. 12(5))..."
             extension_reason: "Grund für Fristverlaengerung (Komplexitaet, Anzahl der Anfragen)..."
+            extension_notified_at: "Nachweis, dass die betroffene Person innerhalb des ersten Monats über die Verlaengerung informiert wurde (Art. 12(3))."
             response_document: "z.B. /antworten/dsr-2024-001.pdf oder UUID"
             response_method: "-- Antwortkanal wählen --"
         help:
