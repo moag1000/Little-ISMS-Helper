@@ -28,6 +28,10 @@ processing_activity:
         title: 'Third-country transfer without safeguards'
         body: 'Personal data is transferred to %countries% but no Art. 46 safeguard is recorded (SCC, BCR, adequacy decision). Schrems-II exposure.'
         action: 'Add safeguards'
+    purpose_legal_basis_mismatch:
+        title: 'Legal basis does not fit the marketing purpose'
+        body: 'This activity pursues a marketing purpose but relies on "%basis%". Direct marketing is practically only lawful under consent (Art. 6(1)(a)) or legitimate interests (Art. 6(1)(f), Recital 47). Please review the legal basis.'
+        action: 'Review legal basis'
     dpia_required:
         title: 'DPIA required (GDPR Art. 35)'
         body: 'Activity indicates a mandatory DPIA: automated decision-making, large-scale special categories, or self-flagged high risk. No DPIA on file yet.'
