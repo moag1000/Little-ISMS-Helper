@@ -24,7 +24,6 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     connect() {
-        this.#onSubmit = this.#onSubmit.bind(this);
         this.element.addEventListener('submit', this.#onSubmit);
     }
 
@@ -32,7 +31,9 @@ export default class extends Controller {
         this.element.removeEventListener('submit', this.#onSubmit);
     }
 
-    #onSubmit(event) {
+    // Arrow field (not a method) so the reference is stable + auto-bound for
+    // add/removeEventListener — assigning to a private *method* throws.
+    #onSubmit = (event) => {
         // `:invalid` still reflects per-element constraint validation even though
         // the form carries `novalidate` (novalidate only suppresses the form's
         // own silent block). So this catches required-empty AND format errors
@@ -68,7 +69,7 @@ export default class extends Controller {
         try { first.focus({ preventScroll: true }); } catch (_) { /* hidden */ }
 
         this.#toast(this.#missingMessage(missing.length), 'warn');
-    }
+    };
 
     #toast(message, tone) {
         if (typeof window.faToast === 'function') {

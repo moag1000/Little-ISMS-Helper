@@ -157,6 +157,25 @@ jobs:
           files: ./coverage.xml
           fail_ci_if_error: false
 
+  js-tests:
+    name: JS Unit Tests (vitest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Run Stimulus controller unit tests
+        run: npm run test:js
+
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
