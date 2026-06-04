@@ -233,6 +233,7 @@ consent:
         proof_document_help: 'Optional. Verknuepfe ein hochgeladenes Dokument (z.B. Screenshot des Opt-In-Formulars, Scan einer Unterschrift) als zusätzlichen Nachweis.'
         purposes: 'Zwecke der Einwilligung'
         purposes_help: 'Pflicht: konkrete Zwecke für die die Einwilligung gilt. Eine Einwilligung darf NUR für die angegebenen Zwecke genutzt werden (Zweckbindung Art. 5(1)(b)).'
+        locked_after_verification: 'Gesperrt — verifizierte Einwilligung. Wortlaut und Zwecke sind der Nachweis (Art. 7(1)); für einen geänderten Zweck eine neue Einwilligung erfassen.'
         purposes_options:
             analytics: 'Web-Analytics / Statistik'
             marketing: 'Marketing-Kommunikation'

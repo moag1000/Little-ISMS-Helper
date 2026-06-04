@@ -15,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 // SectionMap not applicable — template uses col-lg-8/4 layout with a
@@ -61,19 +63,7 @@ final class ConsentType extends AbstractType
                 },
                 'help' => 'consent.form.processing_activity_help',
             ])
-            ->add('purposes', ChoiceType::class, [
-                'label' => 'consent.form.purposes',
-                'choices' => [
-                    'consent.form.purposes_options.marketing' => 'marketing',
-                    'consent.form.purposes_options.profiling' => 'profiling',
-                    'consent.form.purposes_options.analytics' => 'analytics',
-                    'consent.form.purposes_options.newsletter' => 'newsletter',
-                    'consent.form.purposes_options.personalization' => 'personalization',
-                ],
-                'multiple' => true,
-                'required' => false,
-                'help' => 'consent.form.purposes_help',
-            ])
+            ->add('purposes', ChoiceType::class, $this->purposesOptions())
 
             // ═══════════════════════════════════════════════════════════
             // Section 3: Consent Grant
@@ -107,14 +97,7 @@ final class ConsentType extends AbstractType
                 ],
                 'required' => false,
             ])
-            ->add('consentText', TextareaType::class, [
-                'label' => 'consent.form.consent_text',
-                'attr' => [
-                    'rows' => 6,
-                    'placeholder' => 'consent.form.consent_text_placeholder',
-                ],
-                'help' => 'consent.form.consent_text_help',
-            ])
+            ->add('consentText', TextareaType::class, $this->consentTextOptions())
 
             // ═══════════════════════════════════════════════════════════
             // Section 4: Proof Documentation
@@ -156,6 +139,56 @@ final class ConsentType extends AbstractType
             // field groups atomically. Editing them here previously created a
             // second, unsynchronised withdrawal path.
         ;
+
+        // N-1 (GDPR Art. 7(1) accountability): once a consent is verified, its
+        // recorded wording and purposes are the proof of what the data subject
+        // agreed to — they must not be silently overwritten. Lock both fields;
+        // a changed purpose means a NEW consent record, not an in-place edit.
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            $consent = $event->getData();
+            if ($consent instanceof Consent && $consent->getVerifiedAt() !== null) {
+                $form = $event->getForm();
+                $form->add('purposes', ChoiceType::class, $this->purposesOptions(true));
+                $form->add('consentText', TextareaType::class, $this->consentTextOptions(true));
+            }
+        });
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function purposesOptions(bool $locked = false): array
+    {
+        return [
+            'label' => 'consent.form.purposes',
+            'choices' => [
+                'consent.form.purposes_options.marketing' => 'marketing',
+                'consent.form.purposes_options.profiling' => 'profiling',
+                'consent.form.purposes_options.analytics' => 'analytics',
+                'consent.form.purposes_options.newsletter' => 'newsletter',
+                'consent.form.purposes_options.personalization' => 'personalization',
+            ],
+            'multiple' => true,
+            'required' => false,
+            'disabled' => $locked,
+            'help' => $locked ? 'consent.form.locked_after_verification' : 'consent.form.purposes_help',
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function consentTextOptions(bool $locked = false): array
+    {
+        return [
+            'label' => 'consent.form.consent_text',
+            'attr' => [
+                'rows' => 6,
+                'placeholder' => 'consent.form.consent_text_placeholder',
+            ],
+            'disabled' => $locked,
+            'help' => $locked ? 'consent.form.locked_after_verification' : 'consent.form.consent_text_help',
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
