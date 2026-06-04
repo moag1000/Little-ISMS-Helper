@@ -128,7 +128,9 @@ class MappingQualityController extends AbstractController
     public function recompute(): Response
     {
         $count = 0;
-        foreach ($this->mappingRepository->findAll() as $mapping) {
+        // findAllGlobal() is intentional: recomputing MQS is a global admin
+        // operation that must cover all mappings across tenants (E-6).
+        foreach ($this->mappingRepository->findAllGlobal() as $mapping) {
             $this->mqsService->compute($mapping);
             $count++;
         }
