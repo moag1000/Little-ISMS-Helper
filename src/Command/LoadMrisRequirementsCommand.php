@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -29,7 +30,7 @@ use Symfony\Component\Yaml\Yaml;
     name: 'app:load-mris-requirements',
     description: 'Load MRIS v1.5 framework + 13 MHC requirements from fixtures/frameworks/mris-v1.5.yaml',
 )]
-final class LoadMrisRequirementsCommand extends Command
+final class LoadMrisRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -39,13 +40,16 @@ final class LoadMrisRequirementsCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $io = new SymfonyStyle($input, $output);
+        return 'MRIS-v1.5';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
         $path = $this->projectDir . '/fixtures/frameworks/mris-v1.5.yaml';
         if (!is_file($path)) {
-            $io->error(sprintf('MRIS fixture not found: %s', $path));
+            $io?->error(sprintf('MRIS fixture not found: %s', $path));
             return Command::FAILURE;
         }
 
@@ -54,7 +58,7 @@ final class LoadMrisRequirementsCommand extends Command
         $requirements = $data['requirements'] ?? [];
 
         if (!is_array($fw) || empty($requirements)) {
-            $io->error('Invalid YAML structure — framework or requirements key missing.');
+            $io?->error('Invalid YAML structure — framework or requirements key missing.');
             return Command::FAILURE;
         }
 
@@ -77,9 +81,9 @@ final class LoadMrisRequirementsCommand extends Command
 
         if ($isNew) {
             $this->entityManager->persist($framework);
-            $io->text(sprintf('Created framework: %s', $framework->getCode()));
+            $io?->text(sprintf('Created framework: %s', $framework->getCode()));
         } else {
-            $io->text(sprintf('Updated framework: %s', $framework->getCode()));
+            $io?->text(sprintf('Updated framework: %s', $framework->getCode()));
         }
 
         $created = 0;
@@ -107,13 +111,19 @@ final class LoadMrisRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf(
+        $io?->success(sprintf(
             'MRIS framework loaded: %d requirements created, %d updated.',
             $created,
             $updated,
         ));
-        $io->note('Source: Peddi, R. (2026). MRIS v1.5. License: CC BY 4.0.');
+        $io?->note('Source: Peddi, R. (2026). MRIS v1.5. License: CC BY 4.0.');
 
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 }

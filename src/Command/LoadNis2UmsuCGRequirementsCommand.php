@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,11 +19,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-nis2umsucg-requirements',
     description: 'Load NIS-2-Umsetzungs- und Cybersicherheitsstaerkungsgesetz (BGBl. 2025 I Nr. 301) requirements with ISO 27001 control mappings'
 )]
-class LoadNis2UmsuCGRequirementsCommand extends Command
+class LoadNis2UmsuCGRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
+    }
+
+    public function getFrameworkCode(): string
+    {
+        return 'NIS2UMSUCG';
     }
 
     #[\Override]
@@ -34,12 +40,19 @@ class LoadNis2UmsuCGRequirementsCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $update = (bool) $input->getOption('update');
-        $symfonyStyle = new SymfonyStyle($input, $output);
+        return $this->loadRequirements(
+            (bool) $input->getOption('update'),
+            new SymfonyStyle($input, $output),
+        );
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
+        $symfonyStyle = $io;
         $updateMode = $update;
 
-        $symfonyStyle->title('Loading NIS2UmsuCG Requirements');
-        $symfonyStyle->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
+        $symfonyStyle?->title('Loading NIS2UmsuCG Requirements');
+        $symfonyStyle?->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         // Create or get NIS2UmsuCG framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
@@ -60,9 +73,9 @@ class LoadNis2UmsuCGRequirementsCommand extends Command
 
         if ($isNew) {
             $this->entityManager->persist($framework);
-            $symfonyStyle->text('Created framework');
+            $symfonyStyle?->text('Created framework');
         } else {
-            $symfonyStyle->text('Framework exists');
+            $symfonyStyle?->text('Framework exists');
         }
 
         $requirements = $this->getNis2UmsuCGRequirements();
@@ -108,8 +121,8 @@ class LoadNis2UmsuCGRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $symfonyStyle->success('NIS2UmsuCG requirements loaded!');
-        $symfonyStyle->table(
+        $symfonyStyle?->success('NIS2UmsuCG requirements loaded!');
+        $symfonyStyle?->table(
             ['Action', 'Count'],
             [
                 ['Created', $stats['created']],

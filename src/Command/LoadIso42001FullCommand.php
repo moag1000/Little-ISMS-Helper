@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -22,7 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-iso42001-full',
     description: 'Load ISO/IEC 42001:2023 AIMS Annex A (38 controls) + clauses 4-10 as ComplianceRequirement rows.'
 )]
-final class LoadIso42001FullCommand extends Command
+final class LoadIso42001FullCommand extends Command implements FrameworkLoaderInterface
 {
     /** @var array<string, string> */
     private const ANNEX_A = [
@@ -102,14 +104,28 @@ final class LoadIso42001FullCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $io = new SymfonyStyle($input, $output);
+        return 'ISO42001';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
         $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO42001']);
-        if ($framework === null) {
-            $io->error('Framework ISO42001 not in DB.');
-            return Command::FAILURE;
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
+            $framework = new ComplianceFramework();
+            $framework->setCode('ISO42001')
+                ->setName('ISO/IEC 42001:2023 — AI Management System (AIMS)')
+                ->setDescription('AI-Managementsystem-Norm: Governance, Risikobeurteilung, 38 Annex-A-Controls für verantwortungsvolle KI + Klauseln 4-10.')
+                ->setVersion('2023')
+                ->setApplicableIndustry('all')
+                ->setRegulatoryBody('ISO/IEC')
+                ->setMandatory(false)
+                ->setScopeDescription('Requirements for AI management systems — all sectors developing or deploying AI.')
+                ->setActive(true);
+            $this->em->persist($framework);
+            $this->em->flush();
         }
 
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
@@ -134,7 +150,13 @@ final class LoadIso42001FullCommand extends Command
         }
         $this->em->flush();
         $total = count(self::ANNEX_A) + count(self::CLAUSES);
-        $io->success(sprintf('ISO/IEC 42001:2023: %d created, %d updated. Total: %d (%d Annex A + %d clauses).', $created, $updated, $total, count(self::ANNEX_A), count(self::CLAUSES)));
+        $io?->success(sprintf('ISO/IEC 42001:2023: %d created, %d updated. Total: %d (%d Annex A + %d clauses).', $created, $updated, $total, count(self::ANNEX_A), count(self::CLAUSES)));
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 }

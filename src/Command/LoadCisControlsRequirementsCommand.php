@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,11 +19,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-cis-controls-requirements',
     description: 'Load CIS Controls v8 with ISO 27001 control mappings'
 )]
-class LoadCisControlsRequirementsCommand extends Command
+class LoadCisControlsRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
+    }
+
+    public function getFrameworkCode(): string
+    {
+        return 'CIS-CONTROLS';
     }
 
     #[\Override]
@@ -34,12 +40,19 @@ class LoadCisControlsRequirementsCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $update = (bool) $input->getOption('update');
-        $symfonyStyle = new SymfonyStyle($input, $output);
+        return $this->loadRequirements(
+            (bool) $input->getOption('update'),
+            new SymfonyStyle($input, $output),
+        );
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
+        $symfonyStyle = $io;
         $updateMode = $update;
 
-        $symfonyStyle->title('Loading CIS Controls v8 Requirements');
-        $symfonyStyle->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
+        $symfonyStyle?->title('Loading CIS Controls v8 Requirements');
+        $symfonyStyle?->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         // Create or get CIS Controls framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
@@ -60,9 +73,9 @@ class LoadCisControlsRequirementsCommand extends Command
 
         if ($isNew) {
             $this->entityManager->persist($framework);
-            $symfonyStyle->text('✓ Created framework');
+            $symfonyStyle?->text('✓ Created framework');
         } else {
-            $symfonyStyle->text('✓ Framework exists');
+            $symfonyStyle?->text('✓ Framework exists');
         }
 
         $requirements = $this->getCisControlsRequirements();
@@ -108,8 +121,8 @@ class LoadCisControlsRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $symfonyStyle->success('CIS Controls v8 requirements loaded!');
-        $symfonyStyle->table(
+        $symfonyStyle?->success('CIS Controls v8 requirements loaded!');
+        $symfonyStyle?->table(
             ['Action', 'Count'],
             [
                 ['Created', $stats['created']],

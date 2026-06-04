@@ -19,6 +19,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * @deprecated since 3.5.0 — superseded by app:load-bsi-grundschutz-catalogue
  * which reads the canonical YAML tree at fixtures/library/catalogues/
  * bsi-it-grundschutz-2023/. Kept as Compat-Layer.
+ *
+ * Not registered as FrameworkLoaderInterface because LoadBsiItGrundschutzCatalogueCommand
+ * is the canonical loader for BSI_GRUNDSCHUTZ (360+ vs 32 requirements).
  */
 #[AsCommand(
     name: 'app:load-bsi-grundschutz-requirements',
@@ -31,10 +34,9 @@ class LoadBsiItGrundschutzRequirementsCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function loadLegacyRequirements(?SymfonyStyle $io = null): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
+        $symfonyStyle = $io;
         // Create or get BSI IT-Grundschutz framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
@@ -64,7 +66,7 @@ class LoadBsiItGrundschutzRequirementsCommand extends Command
                 // Persist updated metadata before early return so re-runs refresh it.
                 $framework->setUpdatedAt(new DateTimeImmutable());
                 $this->entityManager->flush();
-                $symfonyStyle->warning(sprintf(
+                $symfonyStyle?->warning(sprintf(
                     'Framework BSI IT-Grundschutz already has %d requirements loaded. Skipping to avoid duplicates.',
                     count($existingRequirements)
                 ));
@@ -95,13 +97,19 @@ class LoadBsiItGrundschutzRequirementsCommand extends Command
             $this->entityManager->flush();
             $this->entityManager->commit();
 
-            $symfonyStyle->success(sprintf('Successfully loaded %d BSI IT-Grundschutz requirements', count($requirements)));
+            $symfonyStyle?->success(sprintf('Successfully loaded %d BSI IT-Grundschutz requirements', count($requirements)));
         } catch (Exception $e) {
             $this->entityManager->rollback();
-            $symfonyStyle->error('Failed to load BSI IT-Grundschutz requirements: ' . $e->getMessage());
+            $symfonyStyle?->error('Failed to load BSI IT-Grundschutz requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadLegacyRequirements(new SymfonyStyle($input, $output));
     }
 
     private function getBsiGrundschutzRequirements(): array
