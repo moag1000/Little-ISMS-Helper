@@ -251,6 +251,54 @@ class AuditLoggerTest extends TestCase
     }
 
     #[Test]
+    public function testRedactsPersonalDataValuesForPiiEntities(): void
+    {
+        // Art. 5(1)(c)/(f): PII field VALUES must not leak into the immutable
+        // audit log, but the keys (which-field-changed) and structural values
+        // (status) stay for accountability.
+        $this->setupRequest('127.0.0.1', 'Browser');
+        $this->setupUser('admin@example.com');
+
+        $this->entityManager->expects($this->once())
+            ->method('persist')
+            ->with($this->callback(function (AuditLog $log) {
+                $json = $log->getNewValues();
+                return str_contains($json, '"status":"reported"')              // structural kept
+                    && str_contains($json, '"affectedDataSubjectName":"[pii-redacted]"')
+                    && str_contains($json, '"description":"[pii-redacted]"')
+                    && !str_contains($json, 'Mustermann')                       // actual PII gone
+                    && !str_contains($json, 'Health records');
+            }));
+
+        $this->logger->logCustom('update', 'DataBreach', 5, null, [
+            'status' => 'reported',
+            'affectedDataSubjectName' => 'Max Mustermann',
+            'description' => 'Health records of 200 patients exposed',
+        ]);
+    }
+
+    #[Test]
+    public function testDoesNotRedactForNonPiiEntities(): void
+    {
+        // Scope proof: a Risk is not a PII entity — its 'name' stays readable.
+        $this->setupRequest('127.0.0.1', 'Browser');
+        $this->setupUser('admin@example.com');
+
+        $this->entityManager->expects($this->once())
+            ->method('persist')
+            ->with($this->callback(function (AuditLog $log) {
+                $json = $log->getNewValues();
+                return str_contains($json, '"name":"Server outage risk"')
+                    && !str_contains($json, '[pii-redacted]');
+            }));
+
+        $this->logger->logCustom('update', 'Risk', 1, null, [
+            'name' => 'Server outage risk',
+            'status' => 'open',
+        ]);
+    }
+
+    #[Test]
     public function testConvertsDateTimeObjects(): void
     {
         $this->setupRequest('127.0.0.1', 'Browser');

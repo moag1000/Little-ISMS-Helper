@@ -252,9 +252,10 @@ class ConsentController extends AbstractController
             $revocationMethod = $request->request->get('revocation_method', 'other');
             $revocationNotes = $request->request->get('revocation_notes', '');
 
-            $consent->setIsRevoked(true);
-            $consent->setRevokedAt(new DateTimeImmutable());
-            $consent->setRevocationMethod($revocationMethod);
+            // Single source of truth — sets revocation AND withdrawal groups
+            // atomically (GDPR Art. 7(3)); the edit form no longer offers a
+            // divergent withdrawal path.
+            $consent->recordWithdrawal($revocationMethod, $revocationNotes !== '' ? $revocationNotes : null);
             $consent->setRevocationDocumentedBy($currentUser);
             $consent->setUpdatedAt(new DateTimeImmutable());
 
