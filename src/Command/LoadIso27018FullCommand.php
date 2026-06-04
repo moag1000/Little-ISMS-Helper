@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,7 +26,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-iso27018-full',
     description: 'Load ISO/IEC 27018:2019 PII-in-cloud controls (Annex A extended set + 27002 references with PII guidance) as ComplianceRequirement rows.'
 )]
-final class LoadIso27018FullCommand extends Command
+final class LoadIso27018FullCommand extends Command implements FrameworkLoaderInterface
 {
     /**
      * Annex A — Public Cloud PII Processor extended control set.
@@ -91,14 +93,28 @@ final class LoadIso27018FullCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $io = new SymfonyStyle($input, $output);
+        return 'ISO27018';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
         $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO27018']);
-        if ($framework === null) {
-            $io->error('Framework ISO27018 not in DB. Run alignment migration.');
-            return Command::FAILURE;
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
+            $framework = new ComplianceFramework();
+            $framework->setCode('ISO27018')
+                ->setName('ISO/IEC 27018:2019 — Cloud Privacy (PII)')
+                ->setDescription('Schutz personenbezogener Daten (PII) in Public-Cloud-Diensten — Annex-A-Privacy-Controls auf Basis ISO 27002.')
+                ->setVersion('2019')
+                ->setApplicableIndustry('all')
+                ->setRegulatoryBody('ISO/IEC')
+                ->setMandatory(false)
+                ->setScopeDescription('Public cloud PII processors implementing privacy-enhanced controls.')
+                ->setActive(true);
+            $this->em->persist($framework);
+            $this->em->flush();
         }
 
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
@@ -132,8 +148,14 @@ final class LoadIso27018FullCommand extends Command
         }
         $this->em->flush();
 
-        $io->success(sprintf('ISO/IEC 27018:2019: %d created, %d updated. Total: %d (%d Annex A + %d 27002 refs).',
+        $io?->success(sprintf('ISO/IEC 27018:2019: %d created, %d updated. Total: %d (%d Annex A + %d 27002 refs).',
             $created, $updated, count($combined), count(self::ANNEX_A), count(self::REFERENCED_27002)));
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 }

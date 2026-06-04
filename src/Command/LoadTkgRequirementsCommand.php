@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,11 +19,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-tkg-requirements',
     description: 'Load TKG 2024 (Telekommunikationsgesetz) and TK-Sicherheitsverordnung requirements with ISMS data mappings'
 )]
-class LoadTkgRequirementsCommand extends Command
+class LoadTkgRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
+    }
+
+    public function getFrameworkCode(): string
+    {
+        return 'TKG-2024';
     }
 
     #[\Override]
@@ -34,8 +40,15 @@ class LoadTkgRequirementsCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $update = (bool) $input->getOption('update');
-        $symfonyStyle = new SymfonyStyle($input, $output);
+        return $this->loadRequirements(
+            (bool) $input->getOption('update'),
+            new SymfonyStyle($input, $output),
+        );
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
+        $symfonyStyle = $io;
         // Create or get TKG framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'TKG-2024']);

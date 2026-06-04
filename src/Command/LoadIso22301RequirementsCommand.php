@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,11 +19,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-iso22301-requirements',
     description: 'Load ISO 22301:2019 (Business Continuity) requirements with ISO 27001 mappings'
 )]
-class LoadIso22301RequirementsCommand extends Command
+class LoadIso22301RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
+    }
+
+    public function getFrameworkCode(): string
+    {
+        return 'ISO-22301';
     }
 
     #[\Override]
@@ -34,8 +40,15 @@ class LoadIso22301RequirementsCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $update = (bool) $input->getOption('update');
-        $symfonyStyle = new SymfonyStyle($input, $output);
+        return $this->loadRequirements(
+            (bool) $input->getOption('update'),
+            new SymfonyStyle($input, $output),
+        );
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
+        $symfonyStyle = $io;
         // Create or get ISO 22301 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO-22301']);

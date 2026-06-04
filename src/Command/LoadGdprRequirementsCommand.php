@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Exception;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,17 +20,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-gdpr-requirements',
     description: 'Load GDPR (General Data Protection Regulation) requirements with ISMS data mappings'
 )]
-class LoadGdprRequirementsCommand extends Command
+class LoadGdprRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
+        return 'GDPR';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
         // Create or get GDPR framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'GDPR']);
@@ -59,7 +63,7 @@ class LoadGdprRequirementsCommand extends Command
                 // Persist updated metadata before early return so re-runs refresh it.
                 $framework->setUpdatedAt(new DateTimeImmutable());
                 $this->entityManager->flush();
-                $symfonyStyle->warning(sprintf(
+                $io?->warning(sprintf(
                     'Framework GDPR already has %d requirements loaded. Skipping to avoid duplicates.',
                     count($existingRequirements)
                 ));
@@ -90,13 +94,19 @@ class LoadGdprRequirementsCommand extends Command
             $this->entityManager->flush();
             $this->entityManager->commit();
 
-            $symfonyStyle->success(sprintf('Successfully loaded %d GDPR requirements', count($requirements)));
+            $io?->success(sprintf('Successfully loaded %d GDPR requirements', count($requirements)));
         } catch (Exception $e) {
             $this->entityManager->rollback();
-            $symfonyStyle->error('Failed to load GDPR requirements: ' . $e->getMessage());
+            $io?->error('Failed to load GDPR requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 
     private function getGdprRequirements(): array

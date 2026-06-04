@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Exception;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,17 +20,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-iso27701v2025-requirements',
     description: 'Load ISO 27701:2025 Privacy Information Management System - Standalone privacy standard with AI governance'
 )]
-class LoadIso27701v2025RequirementsCommand extends Command
+class LoadIso27701v2025RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
+        return 'ISO27701_2025';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
+        $symfonyStyle = $io;
         // Create or get ISO 27701:2025 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO27701_2025']);
@@ -59,7 +64,7 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 // Persist updated metadata before early return so re-runs refresh it.
                 $framework->setUpdatedAt(new DateTimeImmutable());
                 $this->entityManager->flush();
-                $symfonyStyle->warning(sprintf(
+                $symfonyStyle?->warning(sprintf(
                     'Framework ISO 27701:2025 already has %d requirements loaded. Skipping to avoid duplicates.',
                     count($existingRequirements)
                 ));
@@ -90,13 +95,19 @@ class LoadIso27701v2025RequirementsCommand extends Command
             $this->entityManager->flush();
             $this->entityManager->commit();
 
-            $symfonyStyle->success(sprintf('Successfully loaded %d ISO 27701:2025 requirements', count($requirements)));
+            $symfonyStyle?->success(sprintf('Successfully loaded %d ISO 27701:2025 requirements', count($requirements)));
         } catch (Exception $e) {
             $this->entityManager->rollback();
-            $symfonyStyle->error('Failed to load ISO 27701:2025 requirements: ' . $e->getMessage());
+            $symfonyStyle?->error('Failed to load ISO 27701:2025 requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 
     private function getIso27701v2025Requirements(): array

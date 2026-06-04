@@ -5,41 +5,14 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\ComplianceFramework;
+use App\Service\Compliance\FrameworkLoaderRegistry;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\Exception\ORMException;
 use Exception;
-use App\Command\LoadTisaxRequirementsCommand;
-use App\Command\LoadDoraRequirementsCommand;
-use App\Command\LoadNis2RequirementsCommand;
-use App\Command\LoadBsiItGrundschutzCatalogueCommand;
-use App\Command\LoadGdprRequirementsCommand;
-use App\Command\LoadIso27001RequirementsCommand;
-use App\Command\LoadIso27701RequirementsCommand;
-use App\Command\LoadIso27701v2025RequirementsCommand;
-use App\Command\LoadC5RequirementsCommand;
-use App\Command\LoadC52026RequirementsCommand;
-use App\Command\LoadKritisRequirementsCommand;
-use App\Command\LoadKritisHealthRequirementsCommand;
-use App\Command\LoadDigavRequirementsCommand;
-use App\Command\LoadTkgRequirementsCommand;
-use App\Command\LoadGxpRequirementsCommand;
-use App\Command\LoadBdsgRequirementsCommand;
-use App\Command\LoadCisControlsRequirementsCommand;
-use App\Command\LoadEuAiActFullCommand;
-use App\Command\LoadIso22301RequirementsCommand;
-use App\Command\LoadIso27005RequirementsCommand;
-use App\Command\LoadMrisRequirementsCommand;
-use App\Command\LoadNis2UmsuCGRequirementsCommand;
-use App\Command\LoadNistCsfRequirementsCommand;
-use App\Command\LoadSoc2RequirementsCommand;
-use App\Command\LoadIso42001FullCommand;
-use App\Command\LoadIso27017FullCommand;
-use App\Command\LoadIso27018FullCommand;
-use App\Command\LoadEuCraFullCommand;
-use App\Command\LoadPciDss401FullCommand;
 use App\Repository\ComplianceFrameworkRepository;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Service to manage and load compliance frameworks via UI
@@ -48,35 +21,7 @@ final class ComplianceFrameworkLoaderService
 {
     public function __construct(
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
-        private readonly LoadTisaxRequirementsCommand $loadTisaxRequirementsCommand,
-        private readonly LoadDoraRequirementsCommand $loadDoraRequirementsCommand,
-        private readonly LoadNis2RequirementsCommand $loadNis2RequirementsCommand,
-        private readonly LoadBsiItGrundschutzCatalogueCommand $loadBsiItGrundschutzCatalogueCommand,
-        private readonly LoadGdprRequirementsCommand $loadGdprRequirementsCommand,
-        private readonly LoadIso27001RequirementsCommand $loadIso27001RequirementsCommand,
-        private readonly LoadIso27701RequirementsCommand $loadIso27701RequirementsCommand,
-        private readonly LoadIso27701v2025RequirementsCommand $loadIso27701v2025RequirementsCommand,
-        private readonly LoadC5RequirementsCommand $loadC5RequirementsCommand,
-        private readonly LoadC52026RequirementsCommand $loadC52026RequirementsCommand,
-        private readonly LoadKritisRequirementsCommand $loadKritisRequirementsCommand,
-        private readonly LoadKritisHealthRequirementsCommand $loadKritisHealthRequirementsCommand,
-        private readonly LoadDigavRequirementsCommand $loadDigavRequirementsCommand,
-        private readonly LoadTkgRequirementsCommand $loadTkgRequirementsCommand,
-        private readonly LoadGxpRequirementsCommand $loadGxpRequirementsCommand,
-        private readonly LoadBdsgRequirementsCommand $loadBdsgRequirementsCommand,
-        private readonly LoadCisControlsRequirementsCommand $loadCisControlsRequirementsCommand,
-        private readonly LoadEuAiActFullCommand $loadEuAiActFullCommand,
-        private readonly LoadIso22301RequirementsCommand $loadIso22301RequirementsCommand,
-        private readonly LoadIso27005RequirementsCommand $loadIso27005RequirementsCommand,
-        private readonly LoadNis2UmsuCGRequirementsCommand $loadNis2UmsuCGRequirementsCommand,
-        private readonly LoadNistCsfRequirementsCommand $loadNistCsfRequirementsCommand,
-        private readonly LoadSoc2RequirementsCommand $loadSoc2RequirementsCommand,
-        private readonly LoadMrisRequirementsCommand $loadMrisRequirementsCommand,
-        private readonly LoadIso42001FullCommand $loadIso42001FullCommand,
-        private readonly LoadIso27017FullCommand $loadIso27017FullCommand,
-        private readonly LoadIso27018FullCommand $loadIso27018FullCommand,
-        private readonly LoadEuCraFullCommand $loadEuCraFullCommand,
-        private readonly LoadPciDss401FullCommand $loadPciDss401FullCommand,
+        private readonly FrameworkLoaderRegistry $frameworkLoaderRegistry,
         private readonly \App\Service\Tisax\TisaxCatalogueProvider $tisaxCatalogue,
     ) {}
 
@@ -507,49 +452,7 @@ final class ComplianceFrameworkLoaderService
      */
     public function loadFramework(string $code): array
     {
-        $command = match($code) {
-            'TISAX' => $this->loadTisaxRequirementsCommand,
-            'DORA' => $this->loadDoraRequirementsCommand,
-            'NIS2' => $this->loadNis2RequirementsCommand,
-            // Canonical 360-Anforderung catalogue (10 Schichten, 117 Bausteine)
-            // replaces the deprecated 32-entry hardcoded loader — the latter
-            // gave only ~3% Basis-coverage. The deprecated command stays
-            // available via CLI for legacy callers.
-            'BSI_GRUNDSCHUTZ' => $this->loadBsiItGrundschutzCatalogueCommand,
-            'GDPR' => $this->loadGdprRequirementsCommand,
-            'ISO27001' => $this->loadIso27001RequirementsCommand,
-            'ISO27701' => $this->loadIso27701RequirementsCommand,
-            'ISO27701_2025' => $this->loadIso27701v2025RequirementsCommand,
-            'BSI-C5' => $this->loadC5RequirementsCommand,
-            'BSI-C5-2026' => $this->loadC52026RequirementsCommand,
-            'KRITIS' => $this->loadKritisRequirementsCommand,
-            'KRITIS-HEALTH' => $this->loadKritisHealthRequirementsCommand,
-            'DIGAV' => $this->loadDigavRequirementsCommand,
-            'TKG-2024' => $this->loadTkgRequirementsCommand,
-            'GXP' => $this->loadGxpRequirementsCommand,
-            'SOC2' => $this->loadSoc2RequirementsCommand,
-            'NIST-CSF' => $this->loadNistCsfRequirementsCommand,
-            'CIS-CONTROLS' => $this->loadCisControlsRequirementsCommand,
-            'ISO-22301' => $this->loadIso22301RequirementsCommand,
-            'ISO27005' => $this->loadIso27005RequirementsCommand,
-            'BDSG' => $this->loadBdsgRequirementsCommand,
-            // Full article-level catalogue (113 articles + 13 annexes, Art.X
-            // scheme) replaces the 10-entry thematic AIACT-n loader. The Art.X
-            // scheme matches every eu-ai-act library mapping/decomposition, so
-            // those mappings stop being orphaned. Existing AIACT-1..10 rows are
-            // re-keyed to their Art.X equivalents by the migration.
-            'EU-AI-ACT' => $this->loadEuAiActFullCommand,
-            'NIS2UMSUCG' => $this->loadNis2UmsuCGRequirementsCommand,
-            'MRIS-v1.5' => $this->loadMrisRequirementsCommand,
-            'ISO42001' => $this->loadIso42001FullCommand,
-            'ISO27017' => $this->loadIso27017FullCommand,
-            'ISO27018' => $this->loadIso27018FullCommand,
-            'EU-CRA' => $this->loadEuCraFullCommand,
-            'PCI-DSS-4.0.1' => $this->loadPciDss401FullCommand,
-            default => null,
-        };
-
-        if (!$command) {
+        if (!$this->frameworkLoaderRegistry->has($code)) {
             return [
                 'success' => false,
                 'message' => 'Framework not found',
@@ -569,12 +472,12 @@ final class ComplianceFrameworkLoaderService
             // Framework exists but has no requirements - allow loading
         }
 
-        // Execute the command
-        $arrayInput = new ArrayInput([]);
+        // Execute the loader via the registry
         $bufferedOutput = new BufferedOutput();
+        $io = new SymfonyStyle(new ArrayInput([]), $bufferedOutput);
 
         try {
-            $returnCode = $command->run($arrayInput, $bufferedOutput);
+            $returnCode = $this->frameworkLoaderRegistry->load($code, false, $io);
 
             if ($returnCode === 0) {
                 // Get framework ID for "Start Working" button

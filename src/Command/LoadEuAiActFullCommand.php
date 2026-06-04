@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,7 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-eu-ai-act-full',
     description: 'Load EU AI Act (Regulation EU 2024/1689) all 113 Articles + 13 Annex headings as ComplianceRequirement rows.'
 )]
-final class LoadEuAiActFullCommand extends Command
+final class LoadEuAiActFullCommand extends Command implements FrameworkLoaderInterface
 {
     /** @var array<string, string> */
     private const ARTICLES = [
@@ -174,14 +176,31 @@ final class LoadEuAiActFullCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $io = new SymfonyStyle($input, $output);
+        return 'EU-AI-ACT';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
+        // Upsert framework row so this command is self-contained as a primary loader.
         $framework = $this->frameworkRepository->findOneBy(['code' => 'EU-AI-ACT']);
-        if ($framework === null) {
-            $io->error('Framework EU-AI-ACT not in DB.');
-            return Command::FAILURE;
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
+            $framework = new ComplianceFramework();
+        }
+        $framework->setCode('EU-AI-ACT')
+            ->setName('EU AI Act (Regulation (EU) 2024/1689)')
+            ->setDescription('Regulation (EU) 2024/1689 laying down harmonised rules on artificial intelligence. Published 13 June 2024; entered into force 1 August 2024.')
+            ->setVersion('(EU) 2024/1689')
+            ->setApplicableIndustry('all')
+            ->setRegulatoryBody('European Union (Council and Parliament)')
+            ->setMandatory(true)
+            ->setScopeDescription('Mandatory for AI providers, deployers, importers, distributors operating in the EU.')
+            ->setActive(true);
+        if ($isNew) {
+            $this->em->persist($framework);
+            $this->em->flush();
         }
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
         $created = 0; $updated = 0;
@@ -222,7 +241,13 @@ final class LoadEuAiActFullCommand extends Command
             $this->em->persist($req);
         }
         $this->em->flush();
-        $io->success(sprintf('EU AI Act: %d created, %d updated. Total: %d (113 Articles + 13 Annexes).', $created, $updated, count(self::ARTICLES)));
+        $io?->success(sprintf('EU AI Act: %d created, %d updated. Total: %d (113 Articles + 13 Annexes).', $created, $updated, count(self::ARTICLES)));
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 }
