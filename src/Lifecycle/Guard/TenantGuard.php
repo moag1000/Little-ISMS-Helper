@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Lifecycle\Guard;
 
 use App\Service\TenantContext;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Workflow\Event\GuardEvent;
 
 /**
@@ -13,18 +13,12 @@ use Symfony\Component\Workflow\Event\GuardEvent;
  * other than the current request's tenant. Defensive against tenant-
  * scoping bugs upstream. Subscribes to ALL workflow guard events.
  */
-final class TenantGuard implements EventSubscriberInterface
+#[AsEventListener(event: 'workflow.guard', method: 'onGuard', priority: 100)]
+final class TenantGuard
 {
     public function __construct(
         private readonly TenantContext $tenantContext,
     ) {}
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            'workflow.guard' => ['onGuard', 100], // highest priority — short-circuit fast
-        ];
-    }
 
     public function onGuard(GuardEvent $event): void
     {

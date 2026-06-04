@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Service\Job\WorkerHealthService;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 
@@ -23,19 +23,13 @@ use Symfony\Component\Messenger\Event\WorkerRunningEvent;
  *
  * Cost: one `touch()` per event — file-system only, no DB roundtrip.
  */
-final class WorkerHeartbeatSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: WorkerMessageHandledEvent::class, method: 'onWorkerEvent')]
+#[AsEventListener(event: WorkerRunningEvent::class, method: 'onWorkerEvent')]
+final class WorkerHeartbeatSubscriber
 {
     public function __construct(
         private readonly WorkerHealthService $workerHealth,
     ) {
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            WorkerMessageHandledEvent::class => 'onWorkerEvent',
-            WorkerRunningEvent::class => 'onWorkerEvent',
-        ];
     }
 
     public function onWorkerEvent(): void

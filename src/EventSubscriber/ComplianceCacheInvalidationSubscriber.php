@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -15,19 +15,12 @@ use Symfony\Contracts\Cache\CacheInterface;
  * This subscriber listens for responses from admin compliance routes that modify
  * frameworks and clears the navigation cache to ensure users see the latest data.
  */
-final class ComplianceCacheInvalidationSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: KernelEvents::RESPONSE, method: 'onKernelResponse', priority: 10)]
+final class ComplianceCacheInvalidationSubscriber
 {
     public function __construct(
         private readonly CacheInterface $cache
     ) {
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            // Use RESPONSE event to ensure cache is invalidated AFTER the operation completes
-            KernelEvents::RESPONSE => ['onKernelResponse', 10],
-        ];
     }
 
     public function onKernelResponse(ResponseEvent $responseEvent): void

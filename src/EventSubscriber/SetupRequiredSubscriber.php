@@ -7,7 +7,7 @@ namespace App\EventSubscriber;
 use Exception;
 use App\Security\SetupAccessChecker;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -18,22 +18,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * This ensures that users are automatically redirected to the setup wizard
  * when the application is first deployed and the database tables don't exist yet.
+ *
+ * Priority 10: Run BEFORE SetupSecuritySubscriber (priority 4) and firewall (priority 8).
  */
-final class SetupRequiredSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: KernelEvents::REQUEST, method: 'onKernelRequest', priority: 10)]
+final class SetupRequiredSubscriber
 {
     public function __construct(
         private readonly SetupAccessChecker $setupAccessChecker,
         private readonly Connection $connection,
         private readonly UrlGeneratorInterface $urlGenerator
     ) {
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            // Run BEFORE SetupSecuritySubscriber (priority 9) and firewall (priority 8)
-            KernelEvents::REQUEST => ['onKernelRequest', 10],
-        ];
     }
 
     public function onKernelRequest(RequestEvent $requestEvent): void

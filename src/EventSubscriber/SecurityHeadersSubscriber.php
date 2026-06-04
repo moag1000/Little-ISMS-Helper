@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -37,18 +37,12 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * - Only enabled on HTTPS requests
  * - Note: Consider includeSubDomains after testing all subdomains support HTTPS
  */
-final class SecurityHeadersSubscriber implements EventSubscriberInterface
+#[AsEventListener(event: KernelEvents::RESPONSE, method: 'onKernelResponse', priority: -10)]
+final class SecurityHeadersSubscriber
 {
     public function __construct(
         private readonly string $environment
     ) {}
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::RESPONSE => ['onKernelResponse', -10],
-        ];
-    }
 
     public function onKernelResponse(ResponseEvent $responseEvent): void
     {

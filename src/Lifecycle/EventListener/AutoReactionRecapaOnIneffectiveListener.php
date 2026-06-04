@@ -9,7 +9,7 @@ use App\Enum\CorrectiveActionStatus;
 use App\Service\AutoReactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Workflow\Event\CompletedEvent;
 
 /**
@@ -32,8 +32,12 @@ use Symfony\Component\Workflow\Event\CompletedEvent;
  * Wird per `workflow.completed`-Event aufgerufen. Filter auf
  * `corrective_action_lifecycle` + Transition `verify_ineffective` —
  * andere Transitions (verify_effective, retry etc.) sind No-Ops.
+ *
+ * Priority 10 — lower than AuditLogListener (50) and AlvaHintInvalidator (30)
+ * so the status-change is already logged when we spawn the Folge-CAPA.
  */
-final class AutoReactionRecapaOnIneffectiveListener implements EventSubscriberInterface
+#[AsEventListener(event: 'workflow.completed', method: 'onCompleted', priority: 10)]
+final class AutoReactionRecapaOnIneffectiveListener
 {
     private const WORKFLOW_NAME = 'corrective_action_lifecycle';
     private const TRIGGER_TRANSITION = 'verify_ineffective';
@@ -43,15 +47,6 @@ final class AutoReactionRecapaOnIneffectiveListener implements EventSubscriberIn
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
     ) {
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        // Lower priority than AuditLogListener (50) and AlvaHintInvalidator (30)
-        // so the status-change is already logged when we spawn the Folge-CAPA.
-        return [
-            'workflow.completed' => ['onCompleted', 10],
-        ];
     }
 
     public function onCompleted(CompletedEvent $event): void
