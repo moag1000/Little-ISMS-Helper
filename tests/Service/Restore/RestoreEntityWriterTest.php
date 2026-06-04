@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Restore;
 
+use App\Enum\RiskStatus;
 use App\Service\Restore\RestoreEntityWriter;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -130,5 +133,57 @@ final class RestoreEntityWriterTest extends TestCase
 
         self::assertSame('Control', $result[0]);
         self::assertSame('Asset',   $result[1]);
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // resolveEnumType — regression guard for the enum round-trip bug.
+    //
+    // Doctrine `enumType:` columns hydrate as a BackedEnum, so a backup serialises
+    // the enum object; once written to JSON it collapses to its backing scalar.
+    // On restore that scalar must be coerced back into the enum, otherwise
+    // PropertyAccessor::setValue() throws a TypeError (an \Error, not \Exception).
+    // resolveEnumType is the detection crux that drives that coercion.
+    // ────────────────────────────────────────────────────────────────────────
+
+    private function callResolveEnumType(ClassMetadata $meta, string $field): ?string
+    {
+        $ref = new \ReflectionMethod(RestoreEntityWriter::class, 'resolveEnumType');
+
+        return $ref->invoke($this->writer, $meta, $field);
+    }
+
+    private function fieldMapping(string $field, ?string $enumType): FieldMapping
+    {
+        $fm = new FieldMapping('string', $field, $field);
+        $fm->enumType = $enumType;
+
+        return $fm;
+    }
+
+    #[Test]
+    public function resolve_enum_type_detects_backed_enum(): void
+    {
+        $meta = $this->createMock(ClassMetadata::class);
+        $meta->method('getFieldMapping')->willReturn($this->fieldMapping('status', RiskStatus::class));
+
+        self::assertSame(RiskStatus::class, $this->callResolveEnumType($meta, 'status'));
+    }
+
+    #[Test]
+    public function resolve_enum_type_returns_null_for_non_enum_field(): void
+    {
+        $meta = $this->createMock(ClassMetadata::class);
+        $meta->method('getFieldMapping')->willReturn($this->fieldMapping('title', null));
+
+        self::assertNull($this->callResolveEnumType($meta, 'title'));
+    }
+
+    #[Test]
+    public function resolve_enum_type_returns_null_when_mapping_lookup_throws(): void
+    {
+        $meta = $this->createMock(ClassMetadata::class);
+        $meta->method('getFieldMapping')->willThrowException(new \RuntimeException('no such field'));
+
+        self::assertNull($this->callResolveEnumType($meta, 'ghost'));
     }
 }

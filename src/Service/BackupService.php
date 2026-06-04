@@ -1040,6 +1040,14 @@ class BackupService
                     $value = $value->format('c');
                 }
 
+                // Collapse Doctrine enumType properties to their backing scalar so the
+                // in-memory backup array matches the on-disk (JSON) shape. Without this
+                // the returned array carries live BackedEnum objects while the file
+                // carries scalars — RestoreEntityWriter coerces the scalar back.
+                if ($value instanceof \BackedEnum) {
+                    $value = $value->value;
+                }
+
                 $serialized[$fieldName] = $value;
             }
 
