@@ -69,6 +69,7 @@ trait OwnerPickerFormTrait
      *     deputies_field?: string|null,
      *     legacy_field?: string|null,
      *     translation_prefix?: string,
+     *     translation_domain?: string|null,
      *     required?: bool,
      *     default_to_current_user?: bool,
      *     user_label?: string,
