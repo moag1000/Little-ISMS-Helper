@@ -215,9 +215,9 @@ src/Controller/ComplianceRequirementController.php:292
 src/Controller/ComplianceRequirementController.php:293
 src/Controller/ComplianceRequirementController.php:400
 src/Controller/ComplianceRequirementController.php:403
-src/Controller/ComplianceWizardController.php:442
-src/Controller/ComplianceWizardController.php:633
-src/Controller/ComplianceWizardController.php:634
+src/Controller/ComplianceWizardController.php:486
+src/Controller/ComplianceWizardController.php:677
+src/Controller/ComplianceWizardController.php:678
 src/Controller/ConsentController.php:130
 src/Controller/ConsentController.php:131
 src/Controller/ConsentController.php:135

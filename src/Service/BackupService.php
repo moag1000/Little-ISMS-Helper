@@ -174,6 +174,7 @@ class BackupService
         // Wizards
         'WizardRun',                // FK: Tenant, User — productive wizard run
         'WizardSession',            // FK: Tenant, User — wizard checkpoint state
+        'WizardManualConfirmation', // FK: Tenant, User — manual compliance-check sign-off (audit evidence)
 
         // User Preferences (optional but useful)
         'DashboardLayout',

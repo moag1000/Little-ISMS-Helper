@@ -15,8 +15,13 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ConsentRepository;
 use App\Repository\ControlRepository;
 use App\Repository\DataSubjectRequestRepository;
+use App\Repository\DocumentRepository;
 use App\Repository\IncidentRepository;
+use App\Repository\InterestedPartyRepository;
 use App\Repository\InternalAuditRepository;
+use App\Repository\ISMSContextRepository;
+use App\Repository\ISMSObjectiveRepository;
+use App\Repository\ManagementReviewRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
@@ -58,8 +63,85 @@ final class CoverageCheckService
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
         private readonly PolicyWizardCheckRegistry $policyWizardCheckRegistry,
+        private readonly ISMSContextRepository $ismsContextRepository,
+        private readonly InterestedPartyRepository $interestedPartyRepository,
+        private readonly ISMSObjectiveRepository $ismsObjectiveRepository,
+        private readonly ManagementReviewRepository $managementReviewRepository,
+        private readonly DocumentRepository $documentRepository,
         private readonly ?ComplianceRequirementRepository $requirementRepository = null,
     ) {
+    }
+
+    /**
+     * Generic "is this clause addressed by ≥1 tenant record?" check.
+     *
+     * Backs the formerly-`manual` ISO/GDPR clauses that DO map to a concrete
+     * entity (Cl. 4.1/4.3 → ISMSContext, Cl. 4.2 → InterestedParty, Cl. 6.2 →
+     * ISMSObjective, Cl. 9.3 → ManagementReview, GDPR Art. 30 → ProcessingActivity,
+     * …). Scores 100 once the tenant has the data, so populated tenants stop
+     * seeing false "critical gap" rows.
+     *
+     * Config keys: `entity` (registry key, required), `min_count` (default 1).
+     *
+     * @param array<string, mixed> $check
+     * @return array{score: float, details: array<string, mixed>, gap: array<string, mixed>|null}
+     */
+    public function checkEntityPresence(array $check, ?Tenant $tenant): array
+    {
+        $entityKey = (string) ($check['entity'] ?? '');
+        $threshold = max(1, (int) ($check['min_count'] ?? 1));
+        $count = $tenant === null ? 0 : $this->countTenantEntities($entityKey, $tenant);
+
+        $score = match (true) {
+            $count >= $threshold => 100.0,
+            $count > 0 => 50.0,
+            default => 0.0,
+        };
+
+        $details = [
+            'type' => 'entity_presence',
+            'entity' => $entityKey,
+            'count' => $count,
+            'threshold' => $threshold,
+        ];
+
+        $gap = null;
+        if ($score < 100.0) {
+            $gap = [
+                'title' => $check['name'] ?? 'wizard.check.generic',
+                'description' => $check['description'] ?? '',
+                'priority' => $check['priority'] ?? 'medium',
+                'action' => $check['action'] ?? null,
+                'route' => $check['route'] ?? null,
+            ];
+        }
+
+        return ['score' => $score, 'details' => $details, 'gap' => $gap];
+    }
+
+    /**
+     * Count tenant-scoped rows for an `entity_presence` registry key.
+     * Unknown keys return 0 (check then renders as an open gap, fail-safe).
+     */
+    private function countTenantEntities(string $entityKey, Tenant $tenant): int
+    {
+        $repository = match ($entityKey) {
+            'isms_context' => $this->ismsContextRepository,
+            'interested_party' => $this->interestedPartyRepository,
+            'isms_objective' => $this->ismsObjectiveRepository,
+            'management_review' => $this->managementReviewRepository,
+            'processing_activity' => $this->processingActivityRepository,
+            'supplier' => $this->supplierRepository,
+            'asset' => $this->assetRepository,
+            'document' => $this->documentRepository,
+            default => null,
+        };
+
+        if ($repository === null) {
+            return 0;
+        }
+
+        return $repository->count(['tenant' => $tenant]);
     }
 
     /**

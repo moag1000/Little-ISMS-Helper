@@ -44,6 +44,7 @@ final class ComplianceWizardService
         private readonly BsiFrameworkCategoryProvider $bsiProvider,
         private readonly OtherFrameworkCategoryProvider $otherProvider,
         private readonly \App\Service\Tisax\TisaxMaturityAssessmentService $tisaxMaturityAssessmentService,
+        private readonly ?\App\Repository\WizardManualConfirmationRepository $manualConfirmationRepository = null,
     ) {
     }
 
@@ -438,7 +439,7 @@ final class ComplianceWizardService
         $criticalGaps = [];
 
         foreach ($config['categories'] as $categoryKey => $category) {
-            $categoryResult = $this->assessCategory($categoryKey, $category, $tenant, $activeModules);
+            $categoryResult = $this->assessCategory($categoryKey, $category, $tenant, $activeModules, $wizardKey);
             $categories[$categoryKey] = $categoryResult;
 
             $weight = $category['weight'] ?? 1;
@@ -491,7 +492,8 @@ final class ComplianceWizardService
         string $categoryKey,
         array $category,
         ?Tenant $tenant,
-        array $activeModules
+        array $activeModules,
+        string $wizardKey = ''
     ): array {
         $checks = $category['checks'] ?? [];
         $totalScore = 0;
@@ -505,7 +507,7 @@ final class ComplianceWizardService
                 continue;
             }
 
-            $result = $this->runCheck($check, $tenant);
+            $result = $this->runCheck($check, $tenant, $wizardKey, (string) $checkKey);
             $items[$checkKey] = $result;
 
             $totalScore += $result['score'];
@@ -536,7 +538,7 @@ final class ComplianceWizardService
     /**
      * Run a single compliance check
      */
-    private function runCheck(array $check, ?Tenant $tenant): array
+    private function runCheck(array $check, ?Tenant $tenant, string $wizardKey = '', string $checkKey = ''): array
     {
         $type = $check['type'] ?? 'manual';
 
@@ -555,19 +557,9 @@ final class ComplianceWizardService
             'consent_coverage' => $this->coverageCheckService->checkConsentCoverage($check, $tenant),
             'dsr_coverage' => $this->coverageCheckService->checkDsrCoverage($check, $tenant),
             'dpia_coverage' => $this->coverageCheckService->checkDpiaCoverage($check, $tenant),
+            'entity_presence' => $this->coverageCheckService->checkEntityPresence($check, $tenant),
             'policy_wizard' => $this->coverageCheckService->dispatchPolicyWizardCheck($check, $tenant),
-            default => [
-                // Manual check - requires user confirmation
-                'score' => 0,
-                'details' => ['type' => 'manual', 'requires_confirmation' => true],
-                'gap' => [
-                    'title' => $check['name'] ?? 'Manual Check Required',
-                    'description' => $check['description'] ?? '',
-                    'priority' => $check['priority'] ?? 'medium',
-                    'action' => $check['action'] ?? null,
-                    'route' => $check['route'] ?? null,
-                ],
-            ],
+            default => $this->runManualCheck($check, $tenant, $wizardKey, $checkKey),
         };
 
         return [
@@ -579,6 +571,45 @@ final class ComplianceWizardService
             'gap' => $result['gap'] ?? null,
             'route' => $check['route'] ?? null,
             'module' => $check['module'] ?? null,
+            'manual_confirmable' => ($check['type'] ?? 'manual') === 'manual',
+            'check_key' => $checkKey,
+        ];
+    }
+
+    /**
+     * Genuinely-manual check (no backing entity). Scores 100 once a
+     * WizardManualConfirmation row exists for (tenant, wizard, check) — i.e.
+     * a user ticked "addressed" — otherwise stays an open gap as before.
+     *
+     * @param array<string, mixed> $check
+     * @return array{score: float, details: array<string, mixed>, gap: ?array<string, mixed>}
+     */
+    private function runManualCheck(array $check, ?Tenant $tenant, string $wizardKey, string $checkKey): array
+    {
+        $confirmed = false;
+        if ($tenant !== null && $this->manualConfirmationRepository !== null && $wizardKey !== '' && $checkKey !== '') {
+            $confirmation = $this->manualConfirmationRepository->findOneForCheck($tenant, $wizardKey, $checkKey);
+            $confirmed = $confirmation !== null && $confirmation->isConfirmed();
+        }
+
+        if ($confirmed) {
+            return [
+                'score' => 100,
+                'details' => ['type' => 'manual', 'confirmed' => true],
+                'gap' => null,
+            ];
+        }
+
+        return [
+            'score' => 0,
+            'details' => ['type' => 'manual', 'requires_confirmation' => true, 'confirmed' => false],
+            'gap' => [
+                'title' => $check['name'] ?? 'Manual Check Required',
+                'description' => $check['description'] ?? '',
+                'priority' => $check['priority'] ?? 'medium',
+                'action' => $check['action'] ?? null,
+                'route' => $check['route'] ?? null,
+            ],
         ];
     }
 

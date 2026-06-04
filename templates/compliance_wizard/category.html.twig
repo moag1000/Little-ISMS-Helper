@@ -170,6 +170,28 @@
                                     <i class="fa-icon fa-icon--ui-flag me-1" aria-hidden="true"></i>{{ 'wizard.fix_gap'|trans({}, 'wizard') }}
                                 </a>
                             {% endif %}
+                            {# Manual-confirm toggle: clauses with no backing entity (ISO 27001 Cl. 5/6/9/10). #}
+                            {% if item.manual_confirmable|default(false) and is_granted('ROLE_MANAGER') %}
+                                {% set _confirmed = item.details.confirmed|default(false) %}
+                                <form method="post"
+                                      action="{{ path('app_compliance_wizard_confirm_manual', {wizard: wizard, checkKey: item.check_key|default(key)}) }}"
+                                      class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('wizard_manual_confirm') }}">
+                                    <input type="hidden" name="category" value="{{ category_key }}">
+                                    <input type="hidden" name="confirmed" value="{{ _confirmed ? '0' : '1' }}">
+                                    {% if _confirmed %}
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                                                title="{{ 'wizard.manual.undo_help'|trans({}, 'wizard') }}">
+                                            <i class="fa-icon fa-icon--ui-check text-success me-1" aria-hidden="true"></i>{{ 'wizard.manual.confirmed_undo'|trans({}, 'wizard') }}
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
+                                                title="{{ 'wizard.manual.mark_done_help'|trans({}, 'wizard') }}">
+                                            <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>{{ 'wizard.manual.mark_done'|trans({}, 'wizard') }}
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

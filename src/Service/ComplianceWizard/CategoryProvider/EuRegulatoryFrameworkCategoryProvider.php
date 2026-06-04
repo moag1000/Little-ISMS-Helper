@@ -1032,7 +1032,8 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'checks' => [
                     'processing_records' => [
                         'name' => 'wizard.check.gdpr_processing',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'processing_activity',
                         'priority' => 'critical',
                         'description' => 'wizard.check.gdpr_processing_desc',
                     ],

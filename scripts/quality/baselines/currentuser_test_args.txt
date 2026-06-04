@@ -18,6 +18,7 @@ tests/Controller/CertificationBundleControllerKonzernTest.php:175
 tests/Controller/CertificationBundleControllerKonzernTest.php:194
 tests/Controller/CommentControllerTest.php:182
 tests/Controller/ComplianceControllerTest.php:159
+tests/Controller/ComplianceWizardControllerTest.php:424
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:129
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:159
 tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:191

@@ -23,6 +23,13 @@ wizard:
     back_to_wizards: "Zurück zur Übersicht"
     compare_with_others: "Mit anderen vergleichen"
     back_to_results: "Zurück zu Ergebnissen"
+    manual:
+        mark_done: "Als erledigt markieren"
+        mark_done_help: "Bestätigen, dass diese Anforderung umgesetzt ist (manueller Nachweis — keine automatische Erkennung möglich)."
+        confirmed_undo: "Erledigt"
+        undo_help: "Bestätigung zurücknehmen — Anforderung wieder als offen markieren."
+        confirmed_flash: "Anforderung als erledigt markiert."
+        unconfirmed_flash: "Bestätigung zurückgenommen — Anforderung wieder offen."
 
     # Wizard descriptions are merged into framework-specific sections below
 

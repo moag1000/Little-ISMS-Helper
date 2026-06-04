@@ -79,6 +79,7 @@ src/Entity/UserSession.php:45  ?string $sessionId
 src/Entity/Vulnerability.php:45  ?string $title
 src/Entity/Vulnerability.php:51  ?string $description
 src/Entity/Vulnerability.php:62  ?string $severity
+src/Entity/WizardManualConfirmation.php:35  ?int $id
 src/Entity/Workflow.php:39  ?string $name
 src/Entity/Workflow.php:45  ?string $entityType
 src/Entity/WorkflowInstance.php:29  ?string $entityType
