@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,26 +19,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-dora-requirements',
     description: 'Load EU-DORA (Digital Operational Resilience Act) requirements with ISMS data mappings'
 )]
-class LoadDoraRequirementsCommand extends Command
+class LoadDoraRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
-    #[\Override]
-    protected function configure(): void
+    public function getFrameworkCode(): string
     {
-        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+        return 'DORA';
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
     {
-        $update = (bool) $input->getOption('update');
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $symfonyStyle?->title('Loading EU-DORA Requirements');
-        $symfonyStyle?->text(sprintf('Mode: %s', $update ? 'UPDATE existing' : 'CREATE new (skip existing)'));
+        $io?->title('Loading EU-DORA Requirements');
+        $io?->text(sprintf('Mode: %s', $update ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         // Create or get DORA framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
@@ -94,8 +91,23 @@ class LoadDoraRequirementsCommand extends Command
             }
         }
         $this->entityManager->flush();
-        $symfonyStyle?->success(sprintf('EU-DORA requirements: %d created, %d updated, %d skipped', $stats['created'], $stats['updated'], $stats['skipped']));
+        $io?->success(sprintf('EU-DORA requirements: %d created, %d updated, %d skipped', $stats['created'], $stats['updated'], $stats['skipped']));
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function configure(): void
+    {
+        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(
+            (bool) $input->getOption('update'),
+            new SymfonyStyle($input, $output),
+        );
     }
 
     private function getDoraRequirements(): array

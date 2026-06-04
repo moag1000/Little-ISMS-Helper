@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -23,7 +25,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-pci-dss-401-full',
     description: 'Load PCI-DSS v4.0.1 (12 main requirements + key sub-requirements) as ComplianceRequirement rows.'
 )]
-final class LoadPciDss401FullCommand extends Command
+final class LoadPciDss401FullCommand extends Command implements FrameworkLoaderInterface
 {
     /** @var array<string, string> */
     private const REQUIREMENTS = [
@@ -123,14 +125,28 @@ final class LoadPciDss401FullCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $io = new SymfonyStyle($input, $output);
+        return 'PCI-DSS-4.0.1';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
         $framework = $this->frameworkRepository->findOneBy(['code' => 'PCI-DSS-4.0.1']);
-        if ($framework === null) {
-            $io->error('Framework PCI-DSS-4.0.1 not in DB.');
-            return Command::FAILURE;
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
+            $framework = new ComplianceFramework();
+            $framework->setCode('PCI-DSS-4.0.1')
+                ->setName('PCI DSS v4.0.1 — Payment Card Industry Data Security Standard')
+                ->setDescription('12 Anforderungen für die Sicherheit von Karteninhaberdaten.')
+                ->setVersion('4.0.1')
+                ->setApplicableIndustry('financial_services')
+                ->setRegulatoryBody('PCI Security Standards Council')
+                ->setMandatory(false)
+                ->setScopeDescription('All entities that store, process, or transmit cardholder data.')
+                ->setActive(true);
+            $this->em->persist($framework);
+            $this->em->flush();
         }
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
         $created = 0; $updated = 0;
@@ -155,7 +171,13 @@ final class LoadPciDss401FullCommand extends Command
             $this->em->persist($req);
         }
         $this->em->flush();
-        $io->success(sprintf('PCI-DSS v4.0.1: %d created, %d updated. Total: %d.', $created, $updated, count(self::REQUIREMENTS)));
+        $io?->success(sprintf('PCI-DSS v4.0.1: %d created, %d updated. Total: %d.', $created, $updated, count(self::REQUIREMENTS)));
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 }

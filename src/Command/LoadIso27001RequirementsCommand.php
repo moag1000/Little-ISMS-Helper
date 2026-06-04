@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-iso27001-requirements',
     description: 'Load ISO 27001:2022 Annex A as ComplianceRequirements for cross-framework mapping (separate from Control entities)'
 )]
-class LoadIso27001RequirementsCommand extends Command
+class LoadIso27001RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -27,21 +28,15 @@ class LoadIso27001RequirementsCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function configure(): void
+    public function getFrameworkCode(): string
     {
-        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+        return 'ISO27001';
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
     {
-        $update = (bool) $input->getOption('update');
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $updateMode = $update;
-
-        $symfonyStyle->title('Loading ISO 27001:2022 Annex A Requirements');
-        $symfonyStyle->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
+        $io?->title('Loading ISO 27001:2022 Annex A Requirements');
+        $io?->text(sprintf('Mode: %s', $update ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         // Create or get ISO 27001 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
@@ -62,9 +57,9 @@ class LoadIso27001RequirementsCommand extends Command
 
         if ($isNew) {
             $this->entityManager->persist($framework);
-            $symfonyStyle->text('✓ Created framework');
+            $io?->text('✓ Created framework');
         } else {
-            $symfonyStyle->text('✓ Framework exists');
+            $io?->text('✓ Framework exists');
         }
 
         $requirements = $this->getIso27001Requirements();
@@ -78,7 +73,7 @@ class LoadIso27001RequirementsCommand extends Command
                 ]);
 
             if ($existing instanceof ComplianceRequirement) {
-                if ($updateMode) {
+                if ($update) {
                     $existing->setTitle($reqData['title'])
                         ->setDescription($reqData['description'])
                         ->setCategory($reqData['category'])
@@ -110,8 +105,8 @@ class LoadIso27001RequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $symfonyStyle->success('ISO 27001:2022 Annex A requirements loaded!');
-        $symfonyStyle->table(
+        $io?->success('ISO 27001:2022 Annex A requirements loaded!');
+        $io?->table(
             ['Action', 'Count'],
             [
                 ['Created', $stats['created']],
@@ -120,16 +115,31 @@ class LoadIso27001RequirementsCommand extends Command
                 ['Total', count($requirements)],
             ]
         );
-        $symfonyStyle->note('These ComplianceRequirements enable cross-framework mappings (separate from Control entities for implementation tracking).');
+        $io?->note('These ComplianceRequirements enable cross-framework mappings (separate from Control entities for implementation tracking).');
 
         // ISO 27001 certification needs the mandatory management Clauses 4-10, not
         // just Annex A. Seed them in the same load so they are never silently
         // missing (the standalone app:load-iso27001-clauses command remains for
         // re-runs). The clauses command is invokable; it finds the framework row
         // this command just created and adds its 28 clause requirements.
-        ($this->loadIso27001ClausesCommand)(update: $update, symfonyStyle: $symfonyStyle);
+        ($this->loadIso27001ClausesCommand)(update: $update, symfonyStyle: $io);
 
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function configure(): void
+    {
+        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(
+            (bool) $input->getOption('update'),
+            new SymfonyStyle($input, $output),
+        );
     }
 
     private function getIso27001Requirements(): array

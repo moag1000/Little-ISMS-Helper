@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,24 +19,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-nis2-requirements',
     description: 'Load NIS2 Directive (EU 2022/2555) requirements with ISO 27001 control mappings'
 )]
-class LoadNis2RequirementsCommand extends Command
+class LoadNis2RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
-    #[\Override]
-    protected function configure(): void
+    public function getFrameworkCode(): string
     {
-        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+        return 'NIS2';
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
     {
-        $update = (bool) $input->getOption('update');
-        $symfonyStyle = new SymfonyStyle($input, $output);
         // Create or get NIS2 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'NIS2']);
@@ -91,8 +88,23 @@ class LoadNis2RequirementsCommand extends Command
             }
         }
         $this->entityManager->flush();
-        $symfonyStyle?->success(sprintf('NIS2 requirements: %d created, %d updated, %d skipped', $stats['created'], $stats['updated'], $stats['skipped']));
+        $io?->success(sprintf('NIS2 requirements: %d created, %d updated, %d skipped', $stats['created'], $stats['updated'], $stats['skipped']));
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function configure(): void
+    {
+        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(
+            (bool) $input->getOption('update'),
+            new SymfonyStyle($input, $output),
+        );
     }
 
     private function getNis2Requirements(): array

@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -22,17 +23,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-iso27005-requirements',
     description: 'Load ISO/IEC 27005:2022 Information Security Risk Management clauses'
 )]
-final class LoadIso27005RequirementsCommand extends Command
+final class LoadIso27005RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $io = new SymfonyStyle($input, $output);
+        return 'ISO27005';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO27005']);
         $isNew = !$framework instanceof ComplianceFramework;
@@ -51,7 +55,7 @@ final class LoadIso27005RequirementsCommand extends Command
 
         if ($isNew) {
             $this->entityManager->persist($framework);
-            $io->text('Created ISO 27005 framework');
+            $io?->text('Created ISO 27005 framework');
         }
 
         foreach ($this->requirements() as $data) {
@@ -72,8 +76,14 @@ final class LoadIso27005RequirementsCommand extends Command
         }
         $this->entityManager->flush();
 
-        $io->success('ISO 27005:2022 core clauses loaded.');
+        $io?->success('ISO 27005:2022 core clauses loaded.');
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 
     private function requirements(): array

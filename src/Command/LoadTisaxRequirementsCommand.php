@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Service\Compliance\FrameworkLoaderInterface;
 use App\Service\Tisax\TisaxCatalogueProvider;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -25,11 +26,29 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-tisax-requirements',
     description: 'Load the canonical VDA-ISA 6.0 control-number catalogue (80 controls, numbers only)'
 )]
-class LoadTisaxRequirementsCommand extends Command
+class LoadTisaxRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly TisaxCatalogueProvider $catalogue)
     {
         parent::__construct();
+    }
+
+    public function getFrameworkCode(): string
+    {
+        return 'TISAX';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
+        $r = $this->catalogue->loadCatalogue($update);
+        $io?->success(sprintf(
+            'TISAX catalogue (numbers only): %d created, %d updated, %d skipped (of %d).',
+            $r['created'],
+            $r['updated'],
+            $r['skipped'],
+            $r['total'],
+        ));
+        return Command::SUCCESS;
     }
 
     #[\Override]
@@ -41,15 +60,9 @@ class LoadTisaxRequirementsCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $r = $this->catalogue->loadCatalogue((bool) $input->getOption('update'));
-        $io->success(sprintf(
-            'TISAX catalogue (numbers only): %d created, %d updated, %d skipped (of %d).',
-            $r['created'],
-            $r['updated'],
-            $r['skipped'],
-            $r['total'],
-        ));
-        return Command::SUCCESS;
+        return $this->loadRequirements(
+            (bool) $input->getOption('update'),
+            new SymfonyStyle($input, $output),
+        );
     }
 }

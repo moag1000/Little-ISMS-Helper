@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,24 +20,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     description: 'Load BSI C5:2026 (Cloud Computing Compliance Criteria Catalogue) requirements with ISMS data mappings',
     aliases: ['app:load-c5-2025-requirements']
 )]
-class LoadC52026RequirementsCommand extends Command
+class LoadC52026RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
-    #[\Override]
-    protected function configure(): void
+    public function getFrameworkCode(): string
     {
-        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+        return 'BSI-C5-2026';
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
     {
-        $update = (bool) $input->getOption('update');
-        $symfonyStyle = new SymfonyStyle($input, $output);
+        $symfonyStyle = $io;
         // Idempotent upgrade path: legacy draft framework BSI-C5-2025 is carried over
         // to the final BSI-C5-2026 release by renaming the code if found.
         $legacy = $this->entityManager->getRepository(ComplianceFramework::class)
@@ -104,6 +102,21 @@ class LoadC52026RequirementsCommand extends Command
         $this->entityManager->flush();
         $symfonyStyle?->success(sprintf('BSI C5:2026 requirements: %d created, %d updated, %d skipped', $stats['created'], $stats['updated'], $stats['skipped']));
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function configure(): void
+    {
+        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(
+            (bool) $input->getOption('update'),
+            new SymfonyStyle($input, $output),
+        );
     }
 
     /**

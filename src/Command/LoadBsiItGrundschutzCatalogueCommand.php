@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -40,7 +41,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
     name: 'app:load-bsi-grundschutz-catalogue',
     description: 'Load BSI IT-Grundschutz-Kompendium 2023 from canonical YAML catalogue tree (10 Schichten, 117 Bausteine, ~360 Anforderungen).',
 )]
-final class LoadBsiItGrundschutzCatalogueCommand extends Command
+final class LoadBsiItGrundschutzCatalogueCommand extends Command implements FrameworkLoaderInterface
 {
     private const CATALOGUE_DIR = 'fixtures/library/catalogues/bsi-it-grundschutz-2023';
     private const FRAMEWORK_CODE = 'BSI_GRUNDSCHUTZ';
@@ -52,6 +53,47 @@ final class LoadBsiItGrundschutzCatalogueCommand extends Command
         private readonly string $projectDir,
     ) {
         parent::__construct();
+    }
+
+    public function getFrameworkCode(): string
+    {
+        return 'BSI_GRUNDSCHUTZ';
+    }
+
+    /**
+     * Loads all layers (ignores the --layer CLI option when called programmatically).
+     */
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
+        $framework = $this->ensureFramework();
+        $stats = ['bausteine' => 0, 'created' => 0, 'updated' => 0, 'skipped' => 0];
+
+        foreach (self::LAYERS as $code) {
+            $path = sprintf('%s/%s/%s.yml', $this->projectDir, self::CATALOGUE_DIR, $code);
+            if (!is_file($path)) {
+                $io?->warning(sprintf('Catalogue file missing: %s', $path));
+                continue;
+            }
+            $data = Yaml::parseFile($path);
+            if (!is_array($data) || !isset($data['bausteine']) || !is_array($data['bausteine'])) {
+                $io?->warning(sprintf('Catalogue file %s.yml has no "bausteine" key — skipping.', $code));
+                continue;
+            }
+            foreach ($data['bausteine'] as $baustein) {
+                $stats['bausteine']++;
+                $this->upsertBaustein($framework, $baustein, $update, $stats);
+            }
+        }
+
+        $this->em->flush();
+        $io?->success(sprintf(
+            'BSI Grundschutz catalogue: %d Bausteine processed — %d Anforderungen created, %d updated, %d skipped.',
+            $stats['bausteine'],
+            $stats['created'],
+            $stats['updated'],
+            $stats['skipped'],
+        ));
+        return Command::SUCCESS;
     }
 
     #[\Override]
@@ -69,37 +111,33 @@ final class LoadBsiItGrundschutzCatalogueCommand extends Command
         /** @var string|null $layer */
         $layer = $input->getOption('layer');
 
-        $framework = $this->ensureFramework();
-
-        $layers = $layer !== null ? [strtoupper($layer)] : self::LAYERS;
-        $stats = ['bausteine' => 0, 'created' => 0, 'updated' => 0, 'skipped' => 0];
-
-        foreach ($layers as $code) {
-            $path = sprintf('%s/%s/%s.yml', $this->projectDir, self::CATALOGUE_DIR, $code);
+        if ($layer !== null) {
+            // Layer-specific load (CLI only) — handle inline without calling loadRequirements()
+            $framework = $this->ensureFramework();
+            $stats = ['bausteine' => 0, 'created' => 0, 'updated' => 0, 'skipped' => 0];
+            $path = sprintf('%s/%s/%s.yml', $this->projectDir, self::CATALOGUE_DIR, strtoupper($layer));
             if (!is_file($path)) {
                 $io->warning(sprintf('Catalogue file missing: %s', $path));
-                continue;
+                return Command::SUCCESS;
             }
             $data = Yaml::parseFile($path);
             if (!is_array($data) || !isset($data['bausteine']) || !is_array($data['bausteine'])) {
-                $io->warning(sprintf('Catalogue file %s.yml has no "bausteine" key — skipping.', $code));
-                continue;
+                $io->warning(sprintf('Catalogue file %s.yml has no "bausteine" key — skipping.', strtoupper($layer)));
+                return Command::SUCCESS;
             }
             foreach ($data['bausteine'] as $baustein) {
                 $stats['bausteine']++;
                 $this->upsertBaustein($framework, $baustein, $update, $stats);
             }
+            $this->em->flush();
+            $io->success(sprintf(
+                'BSI Grundschutz catalogue (layer %s): %d Bausteine — %d created, %d updated, %d skipped.',
+                strtoupper($layer), $stats['bausteine'], $stats['created'], $stats['updated'], $stats['skipped'],
+            ));
+            return Command::SUCCESS;
         }
 
-        $this->em->flush();
-        $io->success(sprintf(
-            'BSI Grundschutz catalogue: %d Bausteine processed — %d Anforderungen created, %d updated, %d skipped.',
-            $stats['bausteine'],
-            $stats['created'],
-            $stats['updated'],
-            $stats['skipped'],
-        ));
-        return Command::SUCCESS;
+        return $this->loadRequirements($update, $io);
     }
 
     private function ensureFramework(): ComplianceFramework

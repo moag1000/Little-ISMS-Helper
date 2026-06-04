@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -23,7 +25,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-eu-cra-full',
     description: 'Load EU Cyber Resilience Act (Regulation 2024/2847) Annex I Part I + Part II + key Articles as ComplianceRequirement rows.'
 )]
-final class LoadEuCraFullCommand extends Command
+final class LoadEuCraFullCommand extends Command implements FrameworkLoaderInterface
 {
     /** @var array<string, string> */
     private const REQUIREMENTS = [
@@ -93,14 +95,28 @@ final class LoadEuCraFullCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $io = new SymfonyStyle($input, $output);
+        return 'EU-CRA';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
         $framework = $this->frameworkRepository->findOneBy(['code' => 'EU-CRA']);
-        if ($framework === null) {
-            $io->error('Framework EU-CRA not in DB.');
-            return Command::FAILURE;
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
+            $framework = new ComplianceFramework();
+            $framework->setCode('EU-CRA')
+                ->setName('EU Cyber Resilience Act (Regulation 2024/2847)')
+                ->setDescription('Cybersicherheitsanforderungen für Produkte mit digitalen Elementen.')
+                ->setVersion('2024/2847')
+                ->setApplicableIndustry('all')
+                ->setRegulatoryBody('European Union')
+                ->setMandatory(false)
+                ->setScopeDescription('Manufacturers, importers and distributors of products with digital elements in the EU.')
+                ->setActive(true);
+            $this->em->persist($framework);
+            $this->em->flush();
         }
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
         $created = 0; $updated = 0;
@@ -129,7 +145,13 @@ final class LoadEuCraFullCommand extends Command
             $this->em->persist($req);
         }
         $this->em->flush();
-        $io->success(sprintf('EU-CRA: %d created, %d updated. Total: %d.', $created, $updated, count(self::REQUIREMENTS)));
+        $io?->success(sprintf('EU-CRA: %d created, %d updated. Total: %d.', $created, $updated, count(self::REQUIREMENTS)));
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 }

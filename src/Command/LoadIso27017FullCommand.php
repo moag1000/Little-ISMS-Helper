@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -26,7 +28,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-iso27017-full',
     description: 'Load ISO/IEC 27017:2015 cloud-security controls (7 CLD.* extensions + ISO 27002 references with cloud guidance) as ComplianceRequirement rows.'
 )]
-final class LoadIso27017FullCommand extends Command
+final class LoadIso27017FullCommand extends Command implements FrameworkLoaderInterface
 {
     /** @var array<string, string> */
     private const CLD_CONTROLS = [
@@ -80,14 +82,28 @@ final class LoadIso27017FullCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function getFrameworkCode(): string
     {
-        $io = new SymfonyStyle($input, $output);
+        return 'ISO27017';
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
         $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO27017']);
-        if ($framework === null) {
-            $io->error('Framework ISO27017 not in DB. Run alignment migration.');
-            return Command::FAILURE;
+        $isNew = !$framework instanceof ComplianceFramework;
+        if ($isNew) {
+            $framework = new ComplianceFramework();
+            $framework->setCode('ISO27017')
+                ->setName('ISO/IEC 27017:2015 — Cloud Security')
+                ->setDescription('Cloud-spezifische Sicherheitscontrols (7 CLD-Controls) + cloud-bezogene Umsetzungsleitlinien zu ISO 27002.')
+                ->setVersion('2015')
+                ->setApplicableIndustry('all')
+                ->setRegulatoryBody('ISO/IEC')
+                ->setMandatory(false)
+                ->setScopeDescription('Cloud service providers and cloud customers implementing ISO 27002 with cloud guidance.')
+                ->setActive(true);
+            $this->em->persist($framework);
+            $this->em->flush();
         }
 
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
@@ -121,8 +137,14 @@ final class LoadIso27017FullCommand extends Command
         }
         $this->em->flush();
 
-        $io->success(sprintf('ISO/IEC 27017:2015: %d created, %d updated. Total: %d (7 CLD + %d 27002 refs).',
+        $io?->success(sprintf('ISO/IEC 27017:2015: %d created, %d updated. Total: %d (7 CLD + %d 27002 refs).',
             $created, $updated, count($combined), count(self::REFERENCED_27002)));
         return Command::SUCCESS;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
     }
 }

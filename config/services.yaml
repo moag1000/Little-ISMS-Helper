@@ -170,6 +170,17 @@ services:
         # !tagged_iterator app.import.mapper collects all implementations.
         App\Service\Import\Mapper\EntityMapperInterface:
             tags: ['app.import.mapper']
+        # S-2 Compliance-Framework-Loader refactor: every FrameworkLoaderInterface
+        # implementation (Load*RequirementsCommand thin-wrappers + any future
+        # loader services) auto-registers so FrameworkLoaderRegistry can collect
+        # them without explicit public: true entries.
+        App\Service\Compliance\FrameworkLoaderInterface:
+            tags: ['app.framework_loader']
+
+    # S-2 Compliance-Framework-Loader registry: receives all tagged loaders.
+    App\Service\Compliance\FrameworkLoaderRegistry:
+        arguments:
+            $loaders: !tagged_iterator app.framework_loader
 
     # Async-job dispatch facade. Selects between InRequestJobRunner (shared
     # hosting default) and MessengerJobRunner (opt-in for worker daemons)
@@ -420,28 +431,6 @@ services:
     Symfony\Component\RateLimiter\RateLimiterFactory $documentUploadLimiter: '@limiter.document_upload'
     # Aliases for Rector-renamed parameters (SecurityController login limiter)
     Symfony\Component\RateLimiter\RateLimiterFactory $rateLimiterFactory: '@limiter.login'
-
-    # Make compliance framework commands public for service injection
-    App\Command\LoadTisaxRequirementsCommand:
-        public: true
-
-    App\Command\LoadDoraRequirementsCommand:
-        public: true
-
-    App\Command\LoadNis2RequirementsCommand:
-        public: true
-
-    App\Command\LoadBsiItGrundschutzRequirementsCommand:
-        public: true
-
-    App\Command\LoadGdprRequirementsCommand:
-        public: true
-
-    App\Command\LoadIso27701RequirementsCommand:
-        public: true
-
-    App\Command\LoadIso27701v2025RequirementsCommand:
-        public: true
 
     # ── F2.3: Bulk-Import Mapper Registry ────────────────────────────────────
     # Mappers auto-register via the _instanceof rule for EntityMapperInterface

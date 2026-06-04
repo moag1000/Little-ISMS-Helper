@@ -5,3 +5,5 @@ src/Controller/AuditFreezeController.php:180
 src/Controller/ManagementReportController.php:966
 src/Entity/ComplianceRequirement.php:600
 src/Repository/ComplianceMappingRepository.php:64
+src/Service/Compliance/FrameworkLoaderRegistry.php:49
+src/Service/ComplianceLoaderFixerService.php:115
