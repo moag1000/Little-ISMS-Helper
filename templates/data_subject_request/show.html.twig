@@ -246,14 +246,23 @@
                         {# Complete Action #}
                         <hr>
                         <h6>{{ 'dsr.action.mark_complete'|trans({}, 'data_subject_request') }}</h6>
+                        {# Mirrors DataSubjectRequest::IDENTITY_REQUIRED_TYPES — the server
+                           enforces the real Art. 12(6) gate; this only disables the UI early. #}
+                        {% set needs_identity = dsr.requestType in ['access', 'rectification', 'erasure', 'portability'] and not dsr.identityVerified %}
+                        {% if needs_identity %}
+                            <div class="alert alert-warning py-2" role="alert">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'dsr.complete.identity_required_hint'|trans({}, 'data_subject_request') }}
+                            </div>
+                        {% endif %}
                         <form method="post" action="{{ path('app_data_subject_request_complete', {id: dsr.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ dsr.id) }}">
                             <div class="mb-2">
                                 <textarea name="response_description" class="form-control fa-cyber-input__field" rows="3"
                                     placeholder="{{ 'dsr.form.placeholder.response_description'|trans({}, 'data_subject_request') }}"
-                                    required></textarea>
+                                    {{ needs_identity ? 'disabled' : 'required' }}></textarea>
                             </div>
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success w-100 mb-2">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success w-100 mb-2"{{ needs_identity ? ' disabled aria-disabled="true"' : '' }}>
                                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'dsr.action.complete'|trans({}, 'data_subject_request') }}
                             </button>
                         </form>
