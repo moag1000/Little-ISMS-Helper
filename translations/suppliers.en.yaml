@@ -91,6 +91,8 @@ supplier:
         risk_level: 'Risk Level'
         nace_code: 'NACE Code (Rev.2)'
         country_of_head_office: 'Country of Head Office (ISO-3166)'
+        third_country_transfer: 'Third-country transfer (Art. 44ff GDPR)'
+        transfer_safeguards: 'Transfer safeguard (Art. 45-49)'
         # DORA (Digital Operational Resilience Act) — Art. 28 Register of Information
         is_dora_relevant: 'DORA-relevant (Art. 28 ICT third-party)'
         lei_code: 'LEI Code (ISO 17442)'
@@ -166,6 +168,8 @@ supplier:
         nace_code: 'EU NACE Rev.2 industry code of the ICT third-party provider (e.g. 62.01).'
         nace_code_format: 'Format: NN or NN.NN (1-2 digit section, optional dot + 1-2 digit subclass). Examples: 62, 62.01, 64.92'
         country_of_head_office: 'ISO-3166 alpha-2 country code of the provider''s head office (e.g. DE, IE, US).'
+        third_country_transfer: 'Does the engagement involve transferring data to countries outside the EU/EEA?'
+        transfer_safeguards: 'Appropriate safeguard under Art. 45-49 (adequacy decision, SCC, BCR, certification, derogation).'
         ict_criticality: 'DORA classification of the ICT service. Critical = outage affects operational continuity.'
         ict_function_type: 'Type of ICT service (e.g. Cloud, SaaS, Managed Service, Data Center).'
         substitutability: 'How easily can this supplier be replaced? Relevant for DORA Exit Strategy.'
@@ -246,6 +250,14 @@ supplier:
         terminated: Terminated
     badge:
         overdue: Overdue
+    transfer_safeguards:
+        adequacy_decision: 'Adequacy decision (Art. 45)'
+        scc: 'Standard contractual clauses (Art. 46)'
+        bcr: 'Binding corporate rules / BCR (Art. 47)'
+        certification: 'Certification (Art. 42)'
+        derogation: 'Derogation for a specific situation (Art. 49)'
+        none: 'No safeguard'
+
     value:
         'yes': 'Yes'
         'no': 'No'

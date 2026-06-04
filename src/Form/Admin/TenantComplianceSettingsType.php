@@ -88,6 +88,45 @@ final class TenantComplianceSettingsType extends AbstractType
                 'translation_domain' => 'admin',
                 'constraints' => [new Assert\Email(), new Assert\Length(['max' => 255])],
             ])
+            // GDPR Art. 30(1)(a) — controller postal address (M-5)
+            ->add('addressStreet', TextType::class, [
+                'label' => 'admin.tenant_settings.address_street',
+                'required' => false,
+                'translation_domain' => 'admin',
+                'constraints' => [new Assert\Length(['max' => 255])],
+            ])
+            ->add('addressPostalCode', TextType::class, [
+                'label' => 'admin.tenant_settings.address_postal_code',
+                'required' => false,
+                'translation_domain' => 'admin',
+                'constraints' => [new Assert\Length(['max' => 20])],
+            ])
+            ->add('addressCity', TextType::class, [
+                'label' => 'admin.tenant_settings.address_city',
+                'required' => false,
+                'translation_domain' => 'admin',
+                'constraints' => [new Assert\Length(['max' => 120])],
+            ])
+            ->add('addressCountry', TextType::class, [
+                'label' => 'admin.tenant_settings.address_country',
+                'help' => 'admin.tenant_settings.address_country_help',
+                'required' => false,
+                'translation_domain' => 'admin',
+                'constraints' => [new Assert\Length(['max' => 2])],
+            ])
+            // GDPR Art. 27 — representative for non-EU controllers (M-5)
+            ->add('representativeName', TextType::class, [
+                'label' => 'admin.tenant_settings.representative_name',
+                'required' => false,
+                'translation_domain' => 'admin',
+                'constraints' => [new Assert\Length(['max' => 255])],
+            ])
+            ->add('representativeContact', TextType::class, [
+                'label' => 'admin.tenant_settings.representative_contact',
+                'required' => false,
+                'translation_domain' => 'admin',
+                'constraints' => [new Assert\Length(['max' => 255])],
+            ])
             ->add('riskMethodology', ChoiceType::class, [
                 'label' => 'admin.tenant_settings.risk_methodology',
                 'help' => 'admin.tenant_settings.risk_methodology_help',
