@@ -112,13 +112,14 @@ final class NotificationDeliveryLifecycleTest extends TestCase
     }
 
     #[Test]
-    public function yamlDefinesExactlySixPlaces(): void
+    public function yamlDefinesExactlySevenPlaces(): void
     {
         $places = $this->workflowConfig()['places'];
         $this->assertEqualsCanonicalizing(
-            ['pending', 'sent', 'delivered', 'failed', 'retrying', 'archived'],
+            // Six canonical delivery states + pending_digest (F3 email-digest mode).
+            ['pending', 'pending_digest', 'sent', 'delivered', 'failed', 'retrying', 'archived'],
             $places,
-            'NotificationDelivery workflow must define exactly the six canonical places (Phase-2).'
+            'NotificationDelivery workflow must define exactly the seven canonical places (incl. pending_digest).'
         );
     }
 
