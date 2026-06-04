@@ -1620,6 +1620,23 @@ dpia.submitted_for_review: 'Zur Prüfung eingereicht.'
 dpia.supervisory_consulted: 'Aufsichtsbehörde konsultiert.'
 dpia.updated: 'DPIA aktualisiert.'
 
+# ─── F31 Sectoral DPIA Templates ────────────────────────────────────────────
+dpia.template.picker.title: 'Branchenvorlage wählen (optional)'
+dpia.template.picker.subtitle: 'Wählen Sie eine Vorlage, um das Formular mit branchenspezifischen Standardtexten vorzubefüllen. Sie können alle Felder danach bearbeiten.'
+dpia.template.picker.skip: 'Ohne Vorlage starten'
+dpia.template.picker.choose: 'Vorlage verwenden'
+dpia.template.picker.selected: 'Vorlage ausgewählt'
+dpia.template.picker.norm_badge.healthcare: '§22 BDSG · Art. 9 DSGVO'
+dpia.template.picker.norm_badge.financial: 'DORA Art. 9–14'
+dpia.template.picker.norm_badge.ai_act: 'EU AI Act Annex III'
+dpia.template.healthcare_bdsg_sect22.name: 'Gesundheitswesen — §22 BDSG'
+dpia.template.healthcare_bdsg_sect22.usage_hint: 'Für Krankenhäuser, Arztpraxen, Labore und Medizinprodukte-Hersteller, die Gesundheitsdaten (Art. 9 DSGVO) verarbeiten.'
+dpia.template.financial_services_dora.name: 'Finanzdienstleistungen — DORA'
+dpia.template.financial_services_dora.usage_hint: 'Für Kreditinstitute, Zahlungsdienstleister und deren IKT-Drittanbieter, die DORA-Anforderungen (Art. 9–14) unterliegen.'
+dpia.template.ai_act_annex_iii.name: 'KI-Hochrisikosystem — EU AI Act Annex III'
+dpia.template.ai_act_annex_iii.usage_hint: 'Für Hochrisiko-KI-Systeme gem. EU AI Act Annex III (z.B. automatisiertes Personalscreening, Kreditbewilligung, biometrische Erkennung).'
+dpia.template.applied_flash: 'Vorlage "%name%" angewendet — bitte alle vorausgefüllten Felder prüfen und anpassen.'
+
 # ─── F32 DPA-Generator UI keys ──────────────────────────────────────────────
 dpa.generate.title: 'Auftragsverarbeitungsvertrag generieren'
 dpa.generate.subtitle: 'Erstellt einen rechtssicheren AVV gemäß Art. 28 DSGVO für den gewählten Auftragsverarbeiter.'

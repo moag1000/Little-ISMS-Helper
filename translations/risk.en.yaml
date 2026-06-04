@@ -719,3 +719,5 @@ risk.heatmap.legend.critical: 'Critical'
 risk.heatmap.legend.high: 'High'
 risk.heatmap.legend.low: 'Low'
 risk.heatmap.legend.medium: 'Medium'
+# F7 Field-Level RBAC — placeholder shown when a sensitive field is hidden from the current role
+field.access.restricted: '— (restricted)'

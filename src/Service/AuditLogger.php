@@ -80,6 +80,9 @@ class AuditLogger
     public const string ACTION_LIBRARY_FRAMEWORK_EXPORTED_CSV   = 'library.framework.exported_csv';
     public const string ACTION_LIBRARY_MAPPING_IMPORTED         = 'library.mapping.imported';
 
+    // F31 DPIA sectoral template events
+    public const string ACTION_DPIA_CREATED_FROM_TEMPLATE = 'dpia.created_from_template';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly RequestStack $requestStack,

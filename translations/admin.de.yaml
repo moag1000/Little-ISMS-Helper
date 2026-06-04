@@ -65,6 +65,7 @@ admin:
             locations: { label: 'Standorte', desc: 'Physische Locations für Asset-Zuordnung' }
             tenant_branding: { label: 'Organisations-Branding', desc: 'E-Mail-Logos und Absender pro Organisation' }
             tenant_compliance_settings: { label: 'Compliance-Einstellungen', desc: 'Locale, TLP, DPO, Risk-Methodik, Eskalation, JSON-Defaults' }
+            trust_center: { label: 'Trust Center', desc: 'Öffentlichen Compliance-Überblick für externe Partner freigeben' }
             policy_style: { label: 'Policy-Optik', desc: 'Layout, Wasserzeichen und Typografie für Richtlinien-Dokumente' }
             report_style: { label: 'Report-Optik', desc: 'Cover-Muster, Audience-Default, Watermark, Diagramm-Farben pro Organisation' }
             users: { label: 'Benutzer', desc: 'Konten, Status, Sperrungen' }

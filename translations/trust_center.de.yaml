@@ -1,0 +1,46 @@
+trust_center:
+    page_title: 'Compliance-Posture — %org%'
+    page_subtitle: 'Diese öffentliche Seite zeigt einen ausgewählten Überblick über den Compliance-Stand der Organisation.'
+
+    snapshot_freshness: 'Dieser Überblick wurde generiert am %date%.'
+
+    section:
+        kpis: 'Schlüsselkennzahlen'
+        frameworks: 'Rahmenwerke und Compliance-Stand'
+
+    kpi:
+        overall_control_pct: 'Kontrollen-Compliance'
+        active_frameworks: 'Aktive Rahmenwerke'
+        last_audit_date: 'Letztes internes Audit'
+        no_data: 'Noch kein Snapshot vorhanden'
+        audit_completed: 'Audit abgeschlossen'
+        no_audit: 'Kein abgeschlossenes Audit gefunden'
+
+    framework:
+        fulfilled: '%fulfilled% von %applicable% anwendbaren Anforderungen erfüllt'
+
+    no_frameworks: 'Derzeit sind keine aktiven Compliance-Rahmenwerke konfiguriert.'
+
+    disclosure:
+        heading: 'Hinweis zur Offenlegung: '
+        body: >
+            Diese Seite zeigt ausschließlich aggregierte Compliance-Kennzahlen.
+            Risikodaten, Vorfälle, Vermögenswerte, personenbezogene Daten oder
+            interne Detailinformationen werden auf dieser Seite nicht veröffentlicht.
+
+    admin:
+        settings_title: 'Trust-Center-Einstellungen'
+        settings_subtitle: 'Freigabe des öffentlichen Compliance-Überblicks für externe Partner oder Kunden.'
+        sharing_enabled: 'Öffentliche Freigabe aktiviert'
+        sharing_disabled: 'Öffentliche Freigabe deaktiviert'
+        enable_label: 'Öffentliche Freigabe aktivieren'
+        disable_label: 'Öffentliche Freigabe deaktivieren'
+        regenerate_token: 'Link neu generieren'
+        public_link_label: 'Öffentlicher Link'
+        public_link_hint: 'Teilen Sie diesen Link mit externen Partnern. Der Link gewährt Zugriff auf den aggregierten Compliance-Überblick.'
+        confirm_regenerate: 'Möchten Sie den Link wirklich neu generieren? Der alte Link verliert sofort seine Gültigkeit.'
+        confirm_disable: 'Möchten Sie die öffentliche Freigabe deaktivieren? Der Link wird ungültig.'
+        flash:
+            enabled: 'Öffentliche Freigabe aktiviert. Neuer Link generiert.'
+            disabled: 'Öffentliche Freigabe deaktiviert.'
+            token_regenerated: 'Öffentlicher Link wurde neu generiert. Der alte Link ist nicht mehr gültig.'

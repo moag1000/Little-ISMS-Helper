@@ -1,0 +1,126 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'trust_center' %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block title %}{{ 'trust_center.admin.settings_title'|trans({}, 'trust_center') }} — {{ parent() }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'trust_center.admin.settings_title'|trans({}, 'trust_center') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'Trust Center' },
+        title: 'trust_center.admin.settings_title'|trans({}, 'trust_center'),
+        subtitle: 'trust_center.admin.settings_subtitle'|trans({}, 'trust_center'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('admin_hub_index') }
+        ]
+    }) }}
+
+    <div class="row g-4">
+        {# Status card #}
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h2 class="card-title h6 fw-semibold mb-0">
+                        <span class="fa-icon fa-icon--shield-check me-2" aria-hidden="true"></span>
+                        {{ 'trust_center.admin.settings_title'|trans({}, 'trust_center') }}
+                    </h2>
+                    {% if tenant.publicPostureEnabled %}
+                        <span class="badge bg-success-subtle text-success-emphasis">
+                            {{ 'trust_center.admin.sharing_enabled'|trans({}, 'trust_center') }}
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary-subtle text-secondary-emphasis">
+                            {{ 'trust_center.admin.sharing_disabled'|trans({}, 'trust_center') }}
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if tenant.publicPostureEnabled and publicUrl %}
+                        {# Show the public link #}
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                {{ 'trust_center.admin.public_link_label'|trans({}, 'trust_center') }}
+                            </label>
+                            <div class="input-group">
+                                <input type="text"
+                                       class="form-control font-monospace small"
+                                       id="posture-public-url"
+                                       value="{{ publicUrl }}"
+                                       readonly
+                                       aria-label="{{ 'trust_center.admin.public_link_label'|trans({}, 'trust_center') }}">
+                                <button type="button"
+                                        class="btn btn-outline-secondary"
+                                        onclick="navigator.clipboard.writeText(document.getElementById('posture-public-url').value)"
+                                        title="{{ 'common.copy'|trans({}, 'messages')|default('Kopieren') }}">
+                                    <span class="fa-icon fa-icon--ui-copy" aria-hidden="true"></span>
+                                    <span class="visually-hidden">{{ 'common.copy'|trans({}, 'messages')|default('Kopieren') }}</span>
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                {{ 'trust_center.admin.public_link_hint'|trans({}, 'trust_center') }}
+                            </div>
+                        </div>
+
+                        {# Regenerate token form #}
+                        <form method="POST"
+                              action="{{ path('admin_trust_center_regenerate') }}"
+                              onsubmit="return confirm('{{ 'trust_center.admin.confirm_regenerate'|trans({}, 'trust_center')|e('js') }}')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('trust_center_regenerate') }}">
+                            <button type="submit" class="btn btn-warning me-2">
+                                <span class="fa-icon fa-icon--arrow-repeat me-1" aria-hidden="true"></span>
+                                {{ 'trust_center.admin.regenerate_token'|trans({}, 'trust_center') }}
+                            </button>
+                        </form>
+
+                        <hr class="my-4">
+
+                        {# Disable sharing form #}
+                        <form method="POST"
+                              action="{{ path('admin_trust_center_disable') }}"
+                              onsubmit="return confirm('{{ 'trust_center.admin.confirm_disable'|trans({}, 'trust_center')|e('js') }}')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('trust_center_disable') }}">
+                            <button type="submit" class="btn btn-outline-danger">
+                                <span class="fa-icon fa-icon--x-circle me-1" aria-hidden="true"></span>
+                                {{ 'trust_center.admin.disable_label'|trans({}, 'trust_center') }}
+                            </button>
+                        </form>
+
+                    {% else %}
+                        {# Sharing is off — show enable form #}
+                        <p class="text-muted mb-4">
+                            {{ 'trust_center.page_subtitle'|trans({}, 'trust_center') }}
+                        </p>
+
+                        <form method="POST" action="{{ path('admin_trust_center_enable') }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('trust_center_enable') }}">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="fa-icon fa-icon--shield-check me-1" aria-hidden="true"></span>
+                                {{ 'trust_center.admin.enable_label'|trans({}, 'trust_center') }}
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Disclosure info panel #}
+        <div class="col-lg-4">
+            <div class="card border-info-subtle">
+                <div class="card-body">
+                    <h3 class="card-title h6 fw-semibold text-info-emphasis mb-3">
+                        <span class="fa-icon fa-icon--nav-info-circle me-1" aria-hidden="true"></span>
+                        {{ 'trust_center.disclosure.heading'|trans({}, 'trust_center') }}
+                    </h3>
+                    <p class="card-text small text-muted">
+                        {{ 'trust_center.disclosure.body'|trans({}, 'trust_center') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,6 +1,7 @@
 # check_route_methods.py baseline
 # Format: <relative-path>:<line>
 src/Controller/AccessReviewController.php:37
+src/Controller/Admin/TrustCenterAdminController.php:29
 src/Controller/AnswerLibraryController.php:33
 src/Controller/AuditProgramController.php:33
 src/Controller/DpaController.php:37

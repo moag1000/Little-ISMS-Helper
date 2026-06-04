@@ -22,6 +22,65 @@
         ]
     }) }}
 
+    {# ── F31 Sectoral DPIA Template Picker ─────────────────────────────────── #}
+    {% if is_module_active('privacy') and sector_templates is defined and sector_templates is not empty %}
+    <div class="mb-4">
+        {% if applied_template_key is defined and applied_template_key %}
+        {# Compact "template active" banner with reset link #}
+        <div class="alert alert-info d-flex align-items-center gap-2 mb-3" role="status">
+            <i data-lucide="check-circle" class="text-info flex-shrink-0" aria-hidden="true"></i>
+            <span>
+                <strong>{{ 'dpia.template.picker.selected'|trans({}, 'privacy') }}</strong>
+                {% for tpl in sector_templates %}
+                    {% if tpl.key == applied_template_key %}
+                        &mdash; {{ tpl.nameTransKey|trans({}, 'privacy') }}
+                    {% endif %}
+                {% endfor %}
+            </span>
+            <a href="{{ path('app_dpia_new', {_locale: app.request.locale}) }}" class="ms-auto btn btn-sm btn-outline-secondary">
+                {{ 'dpia.template.picker.skip'|trans({}, 'privacy') }}
+            </a>
+        </div>
+        {% else %}
+        {# Full picker card row #}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h6 class="fw-semibold mb-1">{{ 'dpia.template.picker.title'|trans({}, 'privacy') }}</h6>
+                <p class="text-muted small mb-3">{{ 'dpia.template.picker.subtitle'|trans({}, 'privacy') }}</p>
+                <div class="row g-3">
+                    {% for tpl in sector_templates %}
+                    <div class="col-md-4">
+                        <a href="{{ path('app_dpia_new', {_locale: app.request.locale, sector_template: tpl.key}) }}"
+                           class="card h-100 text-decoration-none border"
+                           aria-label="{{ tpl.nameTransKey|trans({}, 'privacy') }}">
+                            <div class="card-body d-flex flex-column gap-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i data-lucide="{{ tpl.icon }}" class="text-primary" aria-hidden="true"></i>
+                                    <span class="fw-semibold text-body">{{ tpl.nameTransKey|trans({}, 'privacy') }}</span>
+                                </div>
+                                <p class="text-muted small mb-0 flex-grow-1">{{ tpl.usageHint|trans({}, 'privacy') }}</p>
+                                <span class="badge bg-primary-subtle text-primary-emphasis mt-auto">
+                                    {% if tpl.key starts with 'healthcare' %}{{ 'dpia.template.picker.norm_badge.healthcare'|trans({}, 'privacy') }}
+                                    {% elseif tpl.key starts with 'financial' %}{{ 'dpia.template.picker.norm_badge.financial'|trans({}, 'privacy') }}
+                                    {% else %}{{ 'dpia.template.picker.norm_badge.ai_act'|trans({}, 'privacy') }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-3">
+                    <a href="{{ path('app_dpia_new', {_locale: app.request.locale}) }}" class="btn btn-sm btn-outline-secondary">
+                        {{ 'dpia.template.picker.skip'|trans({}, 'privacy') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
     {{ form_start(form) }}
     {% include '_components/_auto_form.html.twig' with {
         'form': form,

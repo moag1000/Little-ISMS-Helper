@@ -1,0 +1,132 @@
+{% extends 'base_public.html.twig' %}
+{% trans_default_domain 'trust_center' %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
+
+{% block title %}{{ 'trust_center.page_title'|trans({'%org%': snapshot.tenantName}, 'trust_center') }} — {{ parent() }}{% endblock %}
+
+{% block meta_extra %}
+    {# Canonical: no indexing — token URL is the access control #}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block body %}
+    {# Page header #}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'Trust Center' },
+        title: 'trust_center.page_title'|trans({'%org%': snapshot.tenantName}, 'trust_center'),
+        subtitle: 'trust_center.page_subtitle'|trans({}, 'trust_center'),
+    }) }}
+
+    {# Freshness note #}
+    <div class="alert alert-info d-flex align-items-center gap-2 mb-4" role="note">
+        <span class="fa-icon fa-icon--nav-info-circle" aria-hidden="true"></span>
+        <span>
+            {{ 'trust_center.snapshot_freshness'|trans({
+                '%date%': snapshot.snapshotAt|date('Y-m-d H:i') ~ ' UTC'
+            }, 'trust_center') }}
+        </span>
+    </div>
+
+    {# KPI tiles row #}
+    <section class="mb-5" aria-label="{{ 'trust_center.section.kpis'|trans({}, 'trust_center') }}">
+        <div class="row g-3">
+            {# Overall control compliance #}
+            <div class="col-sm-6 col-lg-4">
+                {% if snapshot.overallControlPct is not null %}
+                    {{ _fa_feature_card.render({
+                        label: 'trust_center.kpi.overall_control_pct'|trans({}, 'trust_center'),
+                        value: snapshot.overallControlPct|number_format(1),
+                        unit: '%',
+                        variant: snapshot.overallControlPct >= 80 ? 'success' : (snapshot.overallControlPct >= 50 ? 'warning' : 'danger'),
+                        icon: 'shield-check',
+                    }) }}
+                {% else %}
+                    {{ _fa_feature_card.render({
+                        label: 'trust_center.kpi.overall_control_pct'|trans({}, 'trust_center'),
+                        value: '—',
+                        hint: 'trust_center.kpi.no_data'|trans({}, 'trust_center'),
+                        variant: 'primary',
+                        icon: 'shield-check',
+                    }) }}
+                {% endif %}
+            </div>
+
+            {# Number of active frameworks #}
+            <div class="col-sm-6 col-lg-4">
+                {{ _fa_feature_card.render({
+                    label: 'trust_center.kpi.active_frameworks'|trans({}, 'trust_center'),
+                    value: snapshot.frameworks|length,
+                    variant: 'primary',
+                    icon: 'nav-shield-lock',
+                }) }}
+            </div>
+
+            {# Last internal audit #}
+            <div class="col-sm-6 col-lg-4">
+                {{ _fa_feature_card.render({
+                    label: 'trust_center.kpi.last_audit_date'|trans({}, 'trust_center'),
+                    value: snapshot.lastAuditDate ?? '—',
+                    hint: snapshot.lastAuditDate ? 'trust_center.kpi.audit_completed'|trans({}, 'trust_center') : 'trust_center.kpi.no_audit'|trans({}, 'trust_center'),
+                    variant: snapshot.lastAuditDate ? 'success' : 'neutral',
+                    icon: 'calendar-check',
+                }) }}
+            </div>
+        </div>
+    </section>
+
+    {# Framework compliance breakdown #}
+    {% if snapshot.frameworkCompliance|length > 0 %}
+        <section class="mb-5" aria-label="{{ 'trust_center.section.frameworks'|trans({}, 'trust_center') }}">
+            <h2 class="h5 fw-semibold mb-3">
+                <span class="fa-icon fa-icon--nav-shield-lock me-2" aria-hidden="true"></span>
+                {{ 'trust_center.section.frameworks'|trans({}, 'trust_center') }}
+            </h2>
+
+            <div class="list-group list-group-flush border rounded-3 overflow-hidden">
+                {% for fc in snapshot.frameworkCompliance %}
+                    <div class="list-group-item p-3">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div>
+                                <span class="fw-semibold">{{ fc.name }}</span>
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis ms-2 small">{{ fc.code }}</span>
+                            </div>
+                            <span class="fw-bold {% if fc.percent >= 80 %}text-success{% elseif fc.percent >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ fc.percent|number_format(1) }}%
+                            </span>
+                        </div>
+
+                        {{ _fa_progress.render({
+                            value: fc.percent,
+                            max: 100,
+                            tone: fc.percent >= 80 ? 'success' : (fc.percent >= 50 ? 'warning' : 'danger'),
+                            label: fc.name ~ ': ' ~ fc.percent|number_format(1) ~ '%',
+                            size: 'sm',
+                        }) }}
+
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">
+                                {{ 'trust_center.framework.fulfilled'|trans({
+                                    '%fulfilled%': fc.fulfilled,
+                                    '%applicable%': fc.applicable
+                                }, 'trust_center') }}
+                            </small>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% else %}
+        <section class="mb-5">
+            <p class="text-muted">{{ 'trust_center.no_frameworks'|trans({}, 'trust_center') }}</p>
+        </section>
+    {% endif %}
+
+    {# Disclosure notice #}
+    <div class="alert alert-secondary small" role="note">
+        <strong>{{ 'trust_center.disclosure.heading'|trans({}, 'trust_center') }}</strong>
+        {{ 'trust_center.disclosure.body'|trans({}, 'trust_center') }}
+    </div>
+{% endblock %}

@@ -49,6 +49,7 @@ admin:
             locations: { label: 'Locations', desc: 'Physical sites for asset assignment' }
             tenant_branding: { label: 'Organization branding', desc: 'Per-organization email logos and senders' }
             tenant_compliance_settings: { label: 'Compliance settings', desc: 'Locale, TLP, DPO, risk methodology, escalation, JSON defaults' }
+            trust_center: { label: 'Trust Center', desc: 'Share a public compliance posture overview with external partners' }
             policy_style: { label: 'Policy appearance', desc: 'Layout, watermark and typography for policy documents' }
             report_style: { label: 'Report look', desc: 'Cover pattern, audience default, watermark, chart colors per tenant' }
             users: { label: 'Users', desc: 'Accounts, status, lockouts' }
