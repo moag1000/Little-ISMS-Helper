@@ -234,6 +234,7 @@ consent:
         proof_document_help: 'Optional. Link an uploaded document (e.g. screenshot of opt-in form, signature scan) as additional proof.'
         purposes: 'Purposes of the consent'
         purposes_help: 'Required: concrete purposes the consent applies to. A consent may ONLY be used for the listed purposes (purpose limitation, GDPR Art. 5(1)(b)).'
+        locked_after_verification: 'Locked — verified consent. The wording and purposes are the proof (Art. 7(1)); record a new consent for a changed purpose.'
         purposes_options:
             analytics: 'Web analytics / statistics'
             marketing: 'Marketing communication'
