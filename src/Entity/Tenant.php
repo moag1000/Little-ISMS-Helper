@@ -250,6 +250,28 @@ class Tenant
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $dpoContactEmail = null;
 
+    // ── GDPR Art. 30(1)(a) — postal address of the controller (M-5) ──────────
+    // A RoPA must carry the controller's contactable postal address, not just a
+    // name; without it the register is formally incomplete for an authority.
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $addressStreet = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $addressPostalCode = null;
+
+    #[ORM\Column(length: 120, nullable: true)]
+    private ?string $addressCity = null;
+
+    #[ORM\Column(length: 2, nullable: true, options: ['comment' => 'ISO 3166-1 alpha-2'])]
+    private ?string $addressCountry = null;
+
+    // ── GDPR Art. 27 — representative for non-EU controllers (M-5) ───────────
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $representativeName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $representativeContact = null;
+
     /** @var array<string, array{name: string, email: string, phone?: string, scope?: string}>|null */
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Supervisory authorities map keyed by jurisdiction/role (BSI, BaFin, LDA, CSIRT-bund etc.)'])]
     private ?array $supervisoryAuthorities = null;
@@ -833,6 +855,19 @@ class Tenant
 
     public function getDpoContactEmail(): ?string { return $this->dpoContactEmail; }
     public function setDpoContactEmail(?string $email): static { $this->dpoContactEmail = $email; return $this; }
+
+    public function getAddressStreet(): ?string { return $this->addressStreet; }
+    public function setAddressStreet(?string $v): static { $this->addressStreet = $v; return $this; }
+    public function getAddressPostalCode(): ?string { return $this->addressPostalCode; }
+    public function setAddressPostalCode(?string $v): static { $this->addressPostalCode = $v; return $this; }
+    public function getAddressCity(): ?string { return $this->addressCity; }
+    public function setAddressCity(?string $v): static { $this->addressCity = $v; return $this; }
+    public function getAddressCountry(): ?string { return $this->addressCountry; }
+    public function setAddressCountry(?string $v): static { $this->addressCountry = $v; return $this; }
+    public function getRepresentativeName(): ?string { return $this->representativeName; }
+    public function setRepresentativeName(?string $v): static { $this->representativeName = $v; return $this; }
+    public function getRepresentativeContact(): ?string { return $this->representativeContact; }
+    public function setRepresentativeContact(?string $v): static { $this->representativeContact = $v; return $this; }
 
     /** @return array<string, array{name: string, email: string, phone?: string, scope?: string}>|null */
     public function getSupervisoryAuthorities(): ?array { return $this->supervisoryAuthorities; }
