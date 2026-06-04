@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\DataIntegrity;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Scans the uploads/ filesystem tree and detects files that are no longer
@@ -19,7 +20,8 @@ final class UploadOrphanChecker
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly ?string $projectDir = null,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir = '',
     ) {
     }
 
@@ -36,7 +38,7 @@ final class UploadOrphanChecker
     public function findOrphanedUploads(): array
     {
         $empty = ['files' => [], 'scanned' => 0, 'referenced' => 0, 'uploads_dir' => null];
-        if ($this->projectDir === null) {
+        if ($this->projectDir === '') {
             return $empty;
         }
         $uploadsDir = $this->projectDir . '/public/uploads';

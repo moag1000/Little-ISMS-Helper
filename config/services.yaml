@@ -111,21 +111,12 @@ services:
 
     # FairyAurora v3.0 — App-Version aus composer.json für Brand-Component
     App\Twig\AppVersionExtension:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
         tags: ['twig.extension']
 
     # `path_relative` filter strips kernel.project_dir from displayed paths
     # so monitoring/health does not leak the deployment user's home directory.
     App\Twig\PathExtension:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
         tags: ['twig.extension']
-
-    # Data-Repair file-orphan scanner needs projectDir to find public/uploads/.
-    App\Service\DataIntegrity\UploadOrphanChecker:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
 
     App\Service\DataIntegrityService:
         arguments:
@@ -133,8 +124,6 @@ services:
 
     # MRIS-Hilfetexte aus fixtures/mris/help-texts.yaml fuer Tooltip-Integration
     App\Twig\MrisHelpTextExtension:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
         tags: ['twig.extension']
 
     # FairyAurora v3.0 — Alva-Mood-Resolver (Server-seitig, Plan § 6)
@@ -342,71 +331,6 @@ services:
         arguments:
             $topic: 'physical_security'
 
-    # Configure Data Import Service
-    App\Service\DataImportService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    # Mapping-Library-Loader — liest fixtures/library/mappings/*.yaml
-    App\Service\MappingLibraryLoader:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\EnsureMappingRequirementsCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\SeedSubRequirementsCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\ImportSubMappingsCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\LoadC52026FullCatalogueCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\LoadBsiItGrundschutzCatalogueCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\LoadNistCsf2FullCatalogueCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\LoadC52020FullCatalogueCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\MappingLibraryImportCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\MappingLibrarySmokeTestCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\MrisSeedClassificationCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\MrisVersionMigrationCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Service\MrisBaselineService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Service\IndustryBaselineService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Service\EvidenceCollectionService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
 
     # Runtime-configurable compliance policy (admin UI /admin/compliance/settings).
     # YAML params remain as fallback defaults if no DB override is set.
@@ -447,25 +371,6 @@ services:
     # WS-1 source-update listener: threshold now read at runtime via
     # CompliancePolicyService (admin-configurable). Autowiring covers the rest.
 
-    # Configure Module Configuration Service
-    App\Service\ModuleConfigurationService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    # Configure System Requirements Checker
-    App\Service\SystemRequirementsChecker:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    # Configure Security Audit Service
-    App\Service\SecurityAuditService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    # Configure License Report Service
-    App\Service\LicenseReportService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
 
     # RiskMatrixService thresholds moved to App\Risk\RiskMatrixThresholds (SSoT).
     # Service is now autowired without explicit arguments.
@@ -478,19 +383,9 @@ services:
         arguments:
             $hmacSecret: '%app.audit_log_hmac_key%'
 
-    # Configure Document Controller
-    App\Controller\DocumentController:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    # CM-8: Audit Freeze PDFs land under var/audit_freezes
-    App\Controller\AuditFreezeController:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
     # Junior-ISB-Audit-2026-05-22 9.5: File-Upload for Training.materialFiles
-    # lands under public/uploads/training-materials/. Controller needs the
-    # absolute projectDir to issue the UploadedFile->move() call.
+    # lands under public/uploads/training-materials/. Nullable optional param
+    # kept for unit-test defensive null-guard — do not convert to #[Autowire].
     App\Controller\TrainingController:
         arguments:
             $projectDir: '%kernel.project_dir%'
@@ -500,30 +395,11 @@ services:
         arguments:
             $appSecret: '%env(APP_SECRET)%'
 
-    # Configure Backup Service
-    App\Service\BackupService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
     # Backup notifier — sends plain-text e-mail on success/failure
     App\Service\BackupNotifier:
         arguments:
             $fromEmail: '%app.backup_notifier.from_email%'
             $subjectPrefix: '%app.backup_notifier.subject_prefix%'
-
-    # Backup CLI commands need $projectDir injected explicitly
-    App\Command\PruneBackupsCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Command\RestoreBackupCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    # Configure Web Push Service
-    App\Service\WebPushService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
 
     # Configure Restore Service — inject ManagerRegistry for best-effort EM reset
     App\Service\RestoreService:
@@ -536,13 +412,6 @@ services:
         arguments:
             $mailerDsn: '%env(MAILER_DSN)%'
 
-    # Configure Health Auto Fix Service
-    App\Service\HealthAutoFixService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-            $cacheDir: '%kernel.cache_dir%'
-            $logsDir: '%kernel.logs_dir%'
-
     # Bind rate limiter factories for autowiring
     # Symfony automatically creates services named limiter.<name> from rate_limiter.yaml
     Symfony\Component\RateLimiter\RateLimiterFactory $loginLimiter: '@limiter.login'
@@ -551,11 +420,6 @@ services:
     Symfony\Component\RateLimiter\RateLimiterFactory $documentUploadLimiter: '@limiter.document_upload'
     # Aliases for Rector-renamed parameters (SecurityController login limiter)
     Symfony\Component\RateLimiter\RateLimiterFactory $rateLimiterFactory: '@limiter.login'
-
-    # Configure Security Headers Subscriber
-    App\EventSubscriber\SecurityHeadersSubscriber:
-        arguments:
-            $environment: '%kernel.environment%'
 
     # Make compliance framework commands public for service injection
     App\Command\LoadTisaxRequirementsCommand:
@@ -604,23 +468,6 @@ services:
     App\Command\PurgeTisaxIpAddressesCommand:
         arguments:
             $ipRetentionDays: '%app.tisax.ip_retention_days%'
-
-    # ── Sprint 10A — F5b Library importers + roundtrip ───────────────────────
-    App\Service\Library\BsiKompendiumImporter:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Service\Library\VdaIsaImporter:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Controller\Admin\Library\LibraryImporterController:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\AlvaHint\Rule\Global\LibraryUpdatedRule:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
 
     # ── Lifecycle Foundation (Task 13) — interface aliases ───────────────────
     App\Lifecycle\Config\LifecycleConfigResolverInterface:

@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Lädt und applied Branchen-Baselines für MRIS-MHC-Reifegrade.
@@ -34,6 +35,7 @@ final class MrisBaselineService
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly MrisMaturityService $maturityService,
         private readonly RequestStack $requestStack,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Module Configuration Service
@@ -33,6 +34,7 @@ class ModuleConfigurationService
     private readonly string $configFile;
 
     public function __construct(
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir
     ) {
         $this->configFile = $this->projectDir . '/config/modules.yaml';

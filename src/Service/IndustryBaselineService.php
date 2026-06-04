@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Loads and applies industry-tailored baselines for any compliance framework.
@@ -37,6 +38,7 @@ final class IndustryBaselineService
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly RequestStack $requestStack,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
     }

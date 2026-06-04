@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\Import\Mapper\TisaxRequirementMapper;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Tier-3 info hint: a newer library YAML version exists for an imported framework.
@@ -42,6 +43,7 @@ class LibraryUpdatedRule extends AbstractGlobalAlvaHintRule
 
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
     }

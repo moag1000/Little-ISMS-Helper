@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Service to check if the application setup is complete and enforce access control.
@@ -25,7 +25,10 @@ class SetupAccessChecker
     private const string LEGACY_SETUP_LOCK_FILE = '/config/setup_complete.lock';
 
     public function __construct(
-        private readonly ParameterBagInterface $parameterBag
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
+        #[Autowire('%kernel.environment%')]
+        private readonly string $environment
     ) {
     }
 
@@ -75,7 +78,7 @@ class SetupAccessChecker
      */
     public function resetSetup(): void
     {
-        if ($this->parameterBag->get('kernel.environment') !== 'dev') {
+        if ($this->environment !== 'dev') {
             // @intentional-assertion: programmer-error guard — resetSetup() must never be called in production
             throw new \LogicException('Setup reset is only allowed in development environment');
         }
@@ -92,7 +95,7 @@ class SetupAccessChecker
      */
     private function getSetupLockFilePath(): string
     {
-        return $this->parameterBag->get('kernel.project_dir') . self::SETUP_LOCK_FILE;
+        return $this->projectDir . self::SETUP_LOCK_FILE;
     }
 
     /**
@@ -101,7 +104,7 @@ class SetupAccessChecker
      */
     private function getLegacyLockFilePath(): string
     {
-        return $this->parameterBag->get('kernel.project_dir') . self::LEGACY_SETUP_LOCK_FILE;
+        return $this->projectDir . self::LEGACY_SETUP_LOCK_FILE;
     }
 
     /**
@@ -155,7 +158,7 @@ class SetupAccessChecker
         ];
 
         // Check if .env.local exists and has DATABASE_URL
-        $envLocalPath = $this->parameterBag->get('kernel.project_dir') . '/.env.local';
+        $envLocalPath = $this->projectDir . '/.env.local';
         if (file_exists($envLocalPath)) {
             $content = file_get_contents($envLocalPath);
             if ($content && str_contains($content, 'DATABASE_URL=')) {

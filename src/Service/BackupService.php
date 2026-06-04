@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use ZipArchive;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class BackupService
 {
@@ -227,6 +228,7 @@ class BackupService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
         private readonly ?BackupEncryptionService $backupEncryption = null
     ) {

@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsCommand(
     name: 'app:load-c5-2026-full-catalogue',
@@ -24,6 +25,7 @@ final class LoadC52026FullCatalogueCommand extends Command
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly EntityManagerInterface $em,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
         parent::__construct();
