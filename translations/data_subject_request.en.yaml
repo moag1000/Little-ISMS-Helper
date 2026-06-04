@@ -161,6 +161,10 @@ dsr:
         extend_deadline: "Extend to 90 Days (Art. 12(3))"
         delete: "Delete Request"
 
+    # Completion / identity verification (Art. 12(6))
+    complete:
+        identity_required_hint: "Identity must be verified before this request can be completed (Art. 12(6) GDPR) - otherwise data could be disclosed to the wrong person."
+
     # Deadline labels
     deadline:
         overdue_days: "%days% days overdue"

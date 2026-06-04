@@ -51,6 +51,21 @@ class DataSubjectRequest
         'automated_decision',
     ];
 
+    /**
+     * Request types that disclose, alter or erase the data subject's personal
+     * data and therefore MUST NOT be completed without a verified identity
+     * (Art. 12(6), Art. 5(1)(f) GDPR). Releasing or destroying data for the
+     * wrong person is itself a personal-data breach. `restriction`,
+     * `objection` and `automated_decision` act on the *processing*, not on
+     * data release, so they are intentionally excluded from the hard gate.
+     */
+    public const array IDENTITY_REQUIRED_TYPES = [
+        'access',
+        'rectification',
+        'erasure',
+        'portability',
+    ];
+
     public const array STATUSES = [
         'received',
         'identity_verification',

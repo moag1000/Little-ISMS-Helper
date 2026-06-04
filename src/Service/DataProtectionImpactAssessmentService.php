@@ -296,6 +296,27 @@ final class DataProtectionImpactAssessmentService
             );
         }
 
+        // GDPR Art. 35(2): consulting the DPO is MANDATORY before approval.
+        // The field + audit trail already exist (recordDPOConsultation); this
+        // is the hard gate that the soft validate() hint never enforced.
+        if ($dataProtectionImpactAssessment->getDpoConsultationDate() === null) {
+            throw new \App\Exception\BusinessRule\BusinessRuleException(
+                'DPO consultation is required before a DPIA can be approved (Art. 35(2) GDPR)',
+                'dpo_consultation_required',
+            );
+        }
+
+        // GDPR Art. 36: a DPIA with high/critical residual risk requires prior
+        // consultation of the supervisory authority before the processing —
+        // and therefore before approval — may proceed.
+        if (in_array($dataProtectionImpactAssessment->getResidualRiskLevel(), ['high', 'critical'], true)
+            && $dataProtectionImpactAssessment->getSupervisoryConsultationDate() === null) {
+            throw new \App\Exception\BusinessRule\BusinessRuleException(
+                'Prior consultation with the supervisory authority is required before approving a DPIA with high residual risk (Art. 36 GDPR)',
+                'supervisory_consultation_required',
+            );
+        }
+
         $dataProtectionImpactAssessment->setApprover($user);
         $dataProtectionImpactAssessment->setApprovalDate(new DateTime());
         $dataProtectionImpactAssessment->setApprovalComments($comments);

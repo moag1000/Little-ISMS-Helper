@@ -161,6 +161,10 @@ dsr:
         extend_deadline: "Auf 90 Tage verlaengern (Art. 12(3))"
         delete: "Anfrage loeschen"
 
+    # Abschluss / Identitaetspruefung (Art. 12(6))
+    complete:
+        identity_required_hint: "Identitaet muss zuerst geprueft werden, bevor diese Anfrage abgeschlossen werden kann (Art. 12(6) DSGVO) - sonst droht Datenweitergabe an die falsche Person."
+
     # Fristbezeichnungen
     deadline:
         overdue_days: "%days% Tage ueberfaellig"
