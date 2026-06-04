@@ -152,6 +152,11 @@ security:
         # access is gated by App\Service\QuickFixGuard inside the controller.
         - { path: ^/quick-fix, roles: PUBLIC_ACCESS }
 
+        # F43 Trust-Center — unauthenticated compliance-posture sharing.
+        # Token in URL acts as bearer; controller enforces publicPostureEnabled gate.
+        # No locale prefix — /trust/{token} is a stable bearer URL.
+        - { path: ^/trust/, roles: PUBLIC_ACCESS }
+
         # MFA Challenge (NIS2 Compliance - Art. 21.2.b)
         # User is authenticated but hasn't completed MFA yet
         - { path: '^/(de|en)/mfa-challenge$', roles: IS_AUTHENTICATED_REMEMBERED }

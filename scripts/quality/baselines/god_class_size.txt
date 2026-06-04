@@ -24,7 +24,7 @@ src/Controller/ProcessingActivityController.php:LOC=848 deps=0
 src/Controller/ComplianceWizardController.php:LOC=814 deps=0
 src/Controller/AssetController.php:LOC=812 deps=0
 src/Controller/AdminBackupController.php:LOC=802 deps=0
-src/Controller/DPIAController.php:LOC=763 deps=0
+src/Controller/DPIAController.php:LOC=798 deps=0
 src/Controller/AnalyticsController.php:LOC=743 deps=0
 src/Controller/MonitoringController.php:LOC=727 deps=0
 src/Controller/QuickFixController.php:LOC=712 deps=0

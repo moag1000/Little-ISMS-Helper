@@ -1,0 +1,102 @@
+{#
+ FairyAurora v4 — Public Base Layout
+ For unauthenticated, read-only pages (Trust-Center, /trust/{token}).
+
+ NO session, NO mega-menu, NO tenant-switcher, NO authenticated nav.
+ Aurora CSS stack is loaded via the parallel-<link> pattern (no FOUC).
+
+ Blocks:
+   title           — <title> suffix (defaults to app.title)
+   meta_extra      — optional extra <meta> tags (robots, etc.)
+   stylesheets     — extend for page-level CSS (calls parent())
+   body_class      — extra CSS classes on <body>
+   body            — page content
+   javascripts     — extend for page-level JS (calls parent())
+#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {# Prevent indexing of token-gated pages — the token is the access control #}
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="turbo-cache-control" content="no-cache">
+    <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <meta name="theme-color" content="#0284c7" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#38bdf8" media="(prefers-color-scheme: dark)">
+
+    {% block meta_extra %}{% endblock %}
+
+    <link rel="preload" href="/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin>
+
+    {# Flash theme-mode before first paint to avoid FOUC #}
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('fa-theme');
+                var theme = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    {% block stylesheets %}
+        {# Bootstrap first — Aurora layers after (cascade order).
+           Parallel <link> pattern: no @import barrel = no FOUC (PR #795). #}
+        <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        {{ include('_aurora_styles.html.twig') }}
+        {{ importmap(['app']) }}
+    {% endblock %}
+</head>
+<body class="fa-public-body {% block body_class %}{% endblock %}">
+
+<header class="fa-public-header" role="banner">
+    <div class="container-xl">
+        <div class="d-flex align-items-center justify-content-between py-3">
+            {% import '_components/_brand.html.twig' as faBrand %}
+            <div class="fa-public-header__brand">
+                {{ faBrand.render(size='md')|raw }}
+            </div>
+            <div class="fa-public-header__badge">
+                <span class="badge bg-primary-subtle text-primary-emphasis fw-semibold">
+                    <span class="fa-icon fa-icon--shield-check me-1" aria-hidden="true"></span>
+                    Trust Center
+                </span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="fa-public-main" role="main">
+    <div class="container-xl py-4">
+        {% block body %}{% endblock %}
+    </div>
+</main>
+
+<footer class="fa-public-footer py-4 mt-auto" role="contentinfo">
+    <div class="container-xl">
+        <p class="text-center text-muted small mb-0">
+            {{ 'app.footer'|trans({}, 'messages') }}
+        </p>
+    </div>
+</footer>
+
+{% block javascripts %}
+    <script>
+        window.addEventListener('error', function (event) {
+            if (event.message && (
+                event.message.includes('runtime.lastError') ||
+                event.message.includes('extension port') ||
+                event.message.includes('back/forward cache') ||
+                event.message.includes('Receiving end does not exist')
+            )) { event.preventDefault(); return true; }
+        });
+    </script>
+{% endblock %}
+</body>
+</html>

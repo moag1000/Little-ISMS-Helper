@@ -1,0 +1,46 @@
+trust_center:
+    page_title: 'Compliance Posture — %org%'
+    page_subtitle: 'This public page provides a selected overview of the organization''s compliance posture.'
+
+    snapshot_freshness: 'This overview was generated on %date%.'
+
+    section:
+        kpis: 'Key Metrics'
+        frameworks: 'Frameworks and Compliance Status'
+
+    kpi:
+        overall_control_pct: 'Control Compliance'
+        active_frameworks: 'Active Frameworks'
+        last_audit_date: 'Last Internal Audit'
+        no_data: 'No snapshot available yet'
+        audit_completed: 'Audit completed'
+        no_audit: 'No completed audit found'
+
+    framework:
+        fulfilled: '%fulfilled% of %applicable% applicable requirements fulfilled'
+
+    no_frameworks: 'No active compliance frameworks are currently configured.'
+
+    disclosure:
+        heading: 'Disclosure notice: '
+        body: >
+            This page displays aggregated compliance metrics only.
+            Risk data, incidents, assets, personal data, or internal
+            details are never published on this page.
+
+    admin:
+        settings_title: 'Trust Center Settings'
+        settings_subtitle: 'Share a public compliance posture overview with external partners or customers.'
+        sharing_enabled: 'Public sharing enabled'
+        sharing_disabled: 'Public sharing disabled'
+        enable_label: 'Enable public sharing'
+        disable_label: 'Disable public sharing'
+        regenerate_token: 'Regenerate link'
+        public_link_label: 'Public link'
+        public_link_hint: 'Share this link with external partners. It grants access to the aggregated compliance overview only.'
+        confirm_regenerate: 'Regenerate the link? The old link will immediately become invalid.'
+        confirm_disable: 'Disable public sharing? The link will become invalid.'
+        flash:
+            enabled: 'Public sharing enabled. A new link has been generated.'
+            disabled: 'Public sharing disabled.'
+            token_regenerated: 'Public link regenerated. The old link is no longer valid.'

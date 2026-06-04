@@ -1343,6 +1343,23 @@ dpia.submitted_for_review: 'Submitted for review.'
 dpia.supervisory_consulted: 'Supervisory authority consulted.'
 dpia.updated: 'DPIA updated.'
 
+# ─── F31 Sectoral DPIA Templates ────────────────────────────────────────────
+dpia.template.picker.title: 'Choose a Sector Template (optional)'
+dpia.template.picker.subtitle: 'Select a template to pre-fill the form with sector-specific boilerplate. You can edit all fields afterwards.'
+dpia.template.picker.skip: 'Start without a template'
+dpia.template.picker.choose: 'Use this template'
+dpia.template.picker.selected: 'Template selected'
+dpia.template.picker.norm_badge.healthcare: '§22 BDSG · Art. 9 GDPR'
+dpia.template.picker.norm_badge.financial: 'DORA Art. 9–14'
+dpia.template.picker.norm_badge.ai_act: 'EU AI Act Annex III'
+dpia.template.healthcare_bdsg_sect22.name: 'Healthcare — §22 BDSG'
+dpia.template.healthcare_bdsg_sect22.usage_hint: 'For hospitals, GP practices, laboratories and medical-device manufacturers processing health data (Art. 9 GDPR).'
+dpia.template.financial_services_dora.name: 'Financial Services — DORA'
+dpia.template.financial_services_dora.usage_hint: 'For credit institutions, payment service providers and their ICT third-party providers subject to DORA requirements (Art. 9–14).'
+dpia.template.ai_act_annex_iii.name: 'AI High-Risk System — EU AI Act Annex III'
+dpia.template.ai_act_annex_iii.usage_hint: 'For high-risk AI systems under EU AI Act Annex III (e.g. automated HR screening, credit scoring, biometric identification).'
+dpia.template.applied_flash: 'Template "%name%" applied — please review and adapt all pre-filled fields.'
+
 # ─── F32 DPA-Generator UI keys ──────────────────────────────────────────────
 dpa.generate.title: 'Generate Data Processing Agreement'
 dpa.generate.subtitle: 'Creates a legally compliant DPA pursuant to Art. 28 GDPR for the selected processor.'

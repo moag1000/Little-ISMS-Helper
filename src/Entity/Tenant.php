@@ -328,6 +328,24 @@ class Tenant
     public function isSsoEnforced(): bool { return $this->ssoEnforced; }
     public function setSsoEnforced(bool $v): static { $this->ssoEnforced = $v; return $this; }
 
+    // ── F43 Trust-Center / Public-Posture-Page ────────────────────────────────
+    // publicPostureEnabled: tenant opt-in gate (default off — no disclosure).
+    // publicPostureToken: random 32+ char bearer used in /trust/{token} URL.
+    // TENANT-DISCLOSURE-SAFE: exposes ONLY §4 compliance-posture data;
+    // risk/asset/user/incident/DPO/findings NEVER leave the authenticated perimeter.
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $publicPostureEnabled = false;
+
+    #[ORM\Column(length: 64, nullable: true, unique: true)]
+    private ?string $publicPostureToken = null;
+
+    public function isPublicPostureEnabled(): bool { return $this->publicPostureEnabled; }
+    public function setPublicPostureEnabled(bool $v): static { $this->publicPostureEnabled = $v; return $this; }
+
+    public function getPublicPostureToken(): ?string { return $this->publicPostureToken; }
+    public function setPublicPostureToken(?string $v): static { $this->publicPostureToken = $v; return $this; }
+
     public function getBsiPhase(): ?string
     {
         return $this->bsiPhase;

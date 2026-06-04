@@ -129,6 +129,7 @@ app_routes:
         - '../src/Controller/GlossaryApiController.php'
         - '../src/Controller/ReadinessController.php'
         - '../src/Controller/MetricsController.php'
+        - '../src/Controller/PublicPostureController.php'
 
 # Glossary API WITHOUT locale prefix — the fa-glossary-tooltip component fetches
 # /api/glossary/{acronym} directly; UI locale is passed as ?locale.
@@ -162,4 +163,15 @@ infra_probe_routes:
 
 infra_metrics_routes:
     resource: ../src/Controller/MetricsController.php
+    type: attribute
+
+# F43 Trust-Center public posture routes WITHOUT locale prefix.
+# /trust/{token} is a stable bearer-URL shared with external parties;
+# a locale prefix would change the URL on every locale-switch and invalidate
+# previously shared links. Token = access control — no auth required.
+# Must be declared AFTER app_routes so this registration wins over the
+# locale-prefixed duplicate from the directory scan (PublicPostureController
+# is also excluded from app_routes above).
+public_posture_routes:
+    resource: ../src/Controller/PublicPostureController.php
     type: attribute

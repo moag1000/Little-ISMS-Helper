@@ -22,6 +22,7 @@ use App\Service\DataProtectionImpactAssessmentService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\PreFiller\DpiaPreFiller;
+use App\Service\PreFiller\SectoralDpiaPreFiller;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -67,6 +68,7 @@ class DPIAController extends AbstractController
         private readonly ?DpiaPreFiller $dpiaPreFiller = null,
         private readonly ?RoleDashboardService $roleDashboardService = null,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?SectoralDpiaPreFiller $sectoralDpiaPreFiller = null,
     ) {}
 
     /**
@@ -140,14 +142,45 @@ class DPIAController extends AbstractController
             }
         }
 
+        // F31 — Sectoral DPIA template pre-fill.
+        // Reads the curated template key from ?sector_template=<key> query param.
+        // No free-authoring: key must exist in DpiaTemplateCatalogue (read-only curated library).
+        $appliedTemplate = null;
+        $sectorTemplateKey = $request->query->get('sector_template');
+        if ($sectorTemplateKey !== null && $sectorTemplateKey !== '' && $this->sectoralDpiaPreFiller !== null) {
+            $appliedTemplate = $this->sectoralDpiaPreFiller->applyTemplate(
+                $sectorTemplateKey,
+                $dataProtectionImpactAssessment,
+            );
+        }
+
         $form = $this->createForm(DataProtectionImpactAssessmentType::class, $dataProtectionImpactAssessment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->dataProtectionImpactAssessmentService->create($dataProtectionImpactAssessment);
 
+            // F31 — Audit log: template used at DPIA creation.
+            if ($appliedTemplate !== null) {
+                $this->auditLogger?->logCustom(
+                    action: AuditLogger::ACTION_DPIA_CREATED_FROM_TEMPLATE,
+                    entityType: 'DataProtectionImpactAssessment',
+                    entityId: $dataProtectionImpactAssessment->getId(),
+                    newValues: ['template_key' => $appliedTemplate->key],
+                    description: 'DPIA created from sectoral template: ' . $appliedTemplate->key,
+                );
+                $this->addFlash(
+                    'info',
+                    $this->translator->trans(
+                        'dpia.template.applied_flash',
+                        ['%name%' => $this->translator->trans($appliedTemplate->nameTransKey, [], 'privacy')],
+                        'privacy',
+                    ),
+                );
+            }
+
             $this->addFlash('success', $this->translator->trans('dpia.created', [], 'privacy'));
-            return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()],Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()], Response::HTTP_SEE_OTHER);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
@@ -157,6 +190,8 @@ class DPIAController extends AbstractController
         return $this->render('dpia/new.html.twig', [
             'form' => $form,
             'dpia' => $dataProtectionImpactAssessment,
+            'sector_templates' => $this->sectoralDpiaPreFiller?->getCatalogue()->all() ?? [],
+            'applied_template_key' => $sectorTemplateKey,
         ], new Response(status: $status));
     }
 

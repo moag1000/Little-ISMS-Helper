@@ -171,7 +171,8 @@
             </div>
 
             {# F46 Quantitative Risk — ALE display (module: risk_quant) #}
-            {% if is_module_active('risk_quant') and risk.annualLossExpectancy is not null %}
+            {# F7 field-level RBAC: SLE/ARO/ALE are sensitive monetary fields — ROLE_MANAGER+ only #}
+            {% if is_module_active('risk_quant') and risk.annualLossExpectancy is not null and can_view_field('Risk', 'sle') %}
                 <div class="detail-section">
                     <h3>{{ 'risk.quant.section.title'|trans({}, 'risk') }}</h3>
                     <div class="row g-3 mb-2">
@@ -210,6 +211,12 @@
                         {{ 'risk.quant.display.hint_module_info'|trans({}, 'risk') }}
                     </p>
                 </div>
+            {% elseif is_module_active('risk_quant') and risk.annualLossExpectancy is not null and not can_view_field('Risk', 'sle') %}
+                {# F7: module active + data present, but user role cannot see monetary fields #}
+                <div class="detail-section">
+                    <h3>{{ 'risk.quant.section.title'|trans({}, 'risk') }}</h3>
+                    <p class="text-muted fst-italic">{{ 'field.access.restricted'|trans({}, 'risk') }}</p>
+                </div>
             {% elseif is_module_active('risk_quant') %}
                 {# Module active but no data yet — show edit nudge only in edit mode #}
                 {% if canEdit is defined and canEdit %}
@@ -230,11 +237,15 @@
                 {% endif %}
             </div>
 
-            {# Data Reuse: Risk Owner #}
-            {% if risk.effectiveRiskOwner %}
+            {# Data Reuse: Risk Owner — F7 field-level RBAC (A.5.18): owner identity requires ROLE_MANAGER+ #}
+            {% if risk.effectiveRiskOwner or risk.riskOwner or risk.riskOwnerPerson %}
                 <div class="detail-section">
                     <h3>{{ 'risk.section.risk_owner'|trans({}, 'risk') }}</h3>
-                    <p><strong>{{ risk.effectiveRiskOwner }}</strong>{% if risk.riskOwner %} ({{ risk.riskOwner.email }}){% endif %}</p>
+                    {% if can_view_field('Risk', 'owner') %}
+                        <p><strong>{{ risk.effectiveRiskOwner }}</strong>{% if risk.riskOwner %} ({{ risk.riskOwner.email }}){% endif %}</p>
+                    {% else %}
+                        <p class="text-muted fst-italic">{{ 'field.access.restricted'|trans({}, 'risk') }}</p>
+                    {% endif %}
                 </div>
             {% endif %}
 
