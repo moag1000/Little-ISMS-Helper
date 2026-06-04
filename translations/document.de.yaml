@@ -58,6 +58,8 @@ document:
         training: Schulung
         general: Allgemein
         communication_plan: Kommunikationsplan
+        # F32 DPA-Generator — Art. 28 DSGVO Auftragsverarbeitungsvertrag
+        dpa: 'Auftragsverarbeitungsvertrag (AVV)'
     section:
         type_overview: Typ‑Übersicht
         all_documents: 'Alle Dokumente'

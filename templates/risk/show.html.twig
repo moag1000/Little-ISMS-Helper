@@ -108,6 +108,7 @@
         {% block card_body %}
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% import '_components/_status_pill.html.twig' as pill %}
+            {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
             {# Phase 8H.1: standardised via _detail_group component #}
             {% include '_components/_detail_group.html.twig' with {
                 items: [
@@ -168,6 +169,57 @@
                 </div>
                 {% endif %}
             </div>
+
+            {# F46 Quantitative Risk — ALE display (module: risk_quant) #}
+            {% if is_module_active('risk_quant') and risk.annualLossExpectancy is not null %}
+                <div class="detail-section">
+                    <h3>{{ 'risk.quant.section.title'|trans({}, 'risk') }}</h3>
+                    <div class="row g-3 mb-2">
+                        <div class="col-md-4">
+                            {{ _fa_feature_card.render({
+                                label: 'risk.quant.field.sle'|trans({}, 'risk'),
+                                value: risk.singleLossExpectancy|number_format(0, ',', '.'),
+                                unit: '€',
+                                variant: 'primary',
+                                icon: 'currency-euro',
+                                hint: 'risk.quant.help.sle'|trans({}, 'risk')
+                            }) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ _fa_feature_card.render({
+                                label: 'risk.quant.field.aro'|trans({}, 'risk'),
+                                value: risk.annualRateOfOccurrence|number_format(4, ',', '.'),
+                                unit: 'p.a.',
+                                variant: 'primary',
+                                icon: 'arrow-repeat'
+                            }) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ _fa_feature_card.render({
+                                label: 'risk.quant.field.ale'|trans({}, 'risk'),
+                                value: risk.annualLossExpectancy|number_format(0, ',', '.'),
+                                unit: '€',
+                                variant: risk.annualLossExpectancy >= 1000000 ? 'danger' : (risk.annualLossExpectancy >= 100000 ? 'warning' : 'success'),
+                                icon: 'graph-up-arrow',
+                                hint: 'risk.quant.display.hint_per_year'|trans({}, 'risk')
+                            }) }}
+                        </div>
+                    </div>
+                    <p class="text-muted small">
+                        <i class="fa-icon fa-icon--info" aria-hidden="true"></i>
+                        {{ 'risk.quant.display.hint_module_info'|trans({}, 'risk') }}
+                    </p>
+                </div>
+            {% elseif is_module_active('risk_quant') %}
+                {# Module active but no data yet — show edit nudge only in edit mode #}
+                {% if canEdit is defined and canEdit %}
+                    <div class="detail-section text-muted small">
+                        <i class="fa-icon fa-icon--bank" aria-hidden="true"></i>
+                        {{ 'risk.quant.board_report.no_data'|trans({}, 'risk') }}
+                        — <a href="{{ path('app_risk_edit', {id: risk.id}) }}">{{ 'action.edit'|trans({}, 'messages') }}</a>
+                    </div>
+                {% endif %}
+            {% endif %}
 
             <div class="detail-section">
                 <h3>{{ 'risk.section.treatment_strategy'|trans({}, 'risk') }}</h3>

@@ -14,7 +14,7 @@ use App\Repository\CorporateGovernanceRepository;
 /**
  * Risk Service - Business logic for Risk Management with Corporate Structure awareness
  */
-final class RiskService
+final class RiskService implements RiskQuantSummaryInterface
 {
     public function __construct(
         private readonly RiskRepository $riskRepository,
@@ -161,5 +161,34 @@ final class RiskService
             $riskScore = ($risk->getProbability() ?? 0) * ($risk->getImpact() ?? 0);
             return $riskScore >= $threshold;
         });
+    }
+
+    /**
+     * F46: Aggregate ALE (Annual Loss Expectancy) across all risks for a tenant.
+     *
+     * Returns total ALE sum + count of risks with quantitative data.
+     * Only meaningful when 'risk_quant' module is active; callers should
+     * check module status before calling (BoardReportGenerator does this).
+     *
+     * @return array{total_ale_eur: int, quantified_risk_count: int}
+     */
+    public function getRiskQuantSummary(Tenant $tenant): array
+    {
+        $risks = $this->getRisksForTenant($tenant);
+        $totalAle = 0;
+        $count = 0;
+
+        foreach ($risks as $risk) {
+            $ale = $risk->getAnnualLossExpectancy();
+            if ($ale !== null) {
+                $totalAle += $ale;
+                $count++;
+            }
+        }
+
+        return [
+            'total_ale_eur' => $totalAle,
+            'quantified_risk_count' => $count,
+        ];
     }
 }

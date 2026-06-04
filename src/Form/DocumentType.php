@@ -106,6 +106,8 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                     'document.type.training' => 'training',
                     'document.type.general' => 'general',
                     'document.type.communication_plan' => 'communication_plan',
+                    // F32 DPA-Generator — Art. 28 GDPR Auftragsverarbeitungsvertrag
+                    'document.type.dpa' => 'dpa',
                 ],
                 'required' => true,
                     'choice_translation_domain' => 'document',

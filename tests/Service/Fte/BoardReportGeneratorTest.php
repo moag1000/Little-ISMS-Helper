@@ -7,7 +7,9 @@ namespace App\Tests\Service\Fte;
 use App\Entity\Tenant;
 use App\Repository\Fte\FteTrackingMetricRepository;
 use App\Service\Fte\BoardReportGenerator;
+use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
+use App\Service\RiskQuantSummaryInterface;
 use DateInterval;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Test;
@@ -19,6 +21,8 @@ class BoardReportGeneratorTest extends TestCase
     private FteTrackingMetricRepository $metricRepo;
     private PdfExportService $pdfExportService;
     private Environment $twig;
+    private RiskQuantSummaryInterface $riskQuantSummary;
+    private ModuleConfigurationService $moduleConfig;
     private BoardReportGenerator $generator;
     private Tenant $tenant;
 
@@ -27,12 +31,18 @@ class BoardReportGeneratorTest extends TestCase
         $this->metricRepo = $this->createMock(FteTrackingMetricRepository::class);
         $this->pdfExportService = $this->createMock(PdfExportService::class);
         $this->twig = $this->createMock(Environment::class);
+        $this->riskQuantSummary = $this->createMock(RiskQuantSummaryInterface::class);
+        $this->moduleConfig = $this->createMock(ModuleConfigurationService::class);
+        $this->moduleConfig->method('isModuleActive')->willReturn(false);
+        $this->riskQuantSummary->method('getRiskQuantSummary')->willReturn(['total_ale_eur' => 0, 'quantified_risk_count' => 0]);
         $this->tenant = $this->createStub(Tenant::class);
 
         $this->generator = new BoardReportGenerator(
             $this->metricRepo,
             $this->pdfExportService,
             $this->twig,
+            $this->riskQuantSummary,
+            $this->moduleConfig,
         );
     }
 
@@ -67,6 +77,8 @@ class BoardReportGeneratorTest extends TestCase
             'totals' => ['savings_minutes' => 300, 'savings_hours' => 5.0],
             'by_source' => ['sso_jit' => 180, 'bulk_import' => 120],
             'monthly_trend' => ['2026-05' => 300],
+            'risk_quant_active' => false,
+            'risk_quant' => ['total_ale_eur' => 0, 'quantified_risk_count' => 0],
         ];
 
         $csv = $this->generator->renderAsCsv($data);

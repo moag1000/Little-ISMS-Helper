@@ -357,6 +357,30 @@
                         {% endif %}
                     </div>
 
+                    {# ── F32 DPA-Generator — Art. 28 GDPR AVV action block ── #}
+                    {% if is_module_active('privacy') and processorPas is defined and processorPas|length > 0 %}
+                    <div class="detail-section">
+                        <h3>{{ 'dpa.list.generate_avv'|trans({}, 'privacy') }}</h3>
+                        <p class="text-muted small">
+                            <i class="fa-icon fa-icon--nav-info-circle" aria-hidden="true"></i>
+                            {{ 'dpa.list.generate_avv_hint'|trans({}, 'privacy') }}
+                        </p>
+                        <div class="d-flex flex-column gap-2">
+                            {% for pa in processorPas %}
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-truncate flex-grow-1">{{ pa.name }}</span>
+                                <a href="{{ path('app_dpa_generate_confirm', {supplierId: supplier.id, paId: pa.id}) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                                   title="{{ 'dpa.list.generate_avv_hint'|trans({}, 'privacy') }}">
+                                    <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
+                                    AVV
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
                     <div class="detail-section">
                         <h3>{{ 'supplier.section.contract_info'|trans({}, 'suppliers') }}</h3>
                         <div class="detail-grid">

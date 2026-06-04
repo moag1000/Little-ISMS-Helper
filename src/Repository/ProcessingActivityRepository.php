@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use DateTime;
 use App\Entity\ProcessingActivity;
+use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Enum\ProcessingActivityStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -249,5 +250,25 @@ class ProcessingActivityRepository extends ServiceEntityRepository
         }
 
         return $stats;
+    }
+
+    /**
+     * F32 DPA-Generator — find all ProcessingActivities that list the given
+     * Supplier as a `processorSupplier` (Art. 28 GDPR M:N link), scoped to
+     * the supplier's tenant for tenant-isolation.
+     *
+     * @return list<ProcessingActivity>
+     */
+    public function findByProcessorSupplier(Supplier $supplier): array
+    {
+        return $this->createQueryBuilder('pa')
+            ->innerJoin('pa.processorSuppliers', 's')
+            ->where('s = :supplier')
+            ->andWhere('pa.tenant = :tenant')
+            ->setParameter('supplier', $supplier)
+            ->setParameter('tenant', $supplier->getTenant())
+            ->orderBy('pa.name', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }

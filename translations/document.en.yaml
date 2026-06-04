@@ -58,6 +58,8 @@ document:
         training: Training
         general: General
         communication_plan: Communication Plan
+        # F32 DPA-Generator — Art. 28 GDPR Data Processing Agreement
+        dpa: 'Data Processing Agreement (DPA)'
     section:
         type_overview: 'Type overview'
         all_documents: 'All documents'

@@ -57,4 +57,43 @@ class AccessReviewItemRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * Load many items by ID, all scoped to the given tenant.
+     * Used by the bulk-decide endpoint to validate IDs in one query.
+     *
+     * @param list<int> $ids
+     * @return AccessReviewItem[]
+     */
+    public function findManyForTenant(array $ids, Tenant $tenant): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('ari')
+            ->andWhere('ari.id IN (:ids)')
+            ->andWhere('ari.tenant = :tenant')
+            ->setParameter('ids', $ids)
+            ->setParameter('tenant', $tenant)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * All escalated items for a given campaign.
+     *
+     * @return AccessReviewItem[]
+     */
+    public function findEscalatedByCampaign(AccessReviewCampaign $campaign): array
+    {
+        return $this->createQueryBuilder('ari')
+            ->andWhere('ari.campaign = :campaign')
+            ->andWhere('ari.decision = :decision')
+            ->setParameter('campaign', $campaign)
+            ->setParameter('decision', AccessReviewItem::DECISION_ESCALATED)
+            ->orderBy('ari.decidedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

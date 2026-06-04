@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_table.html.twig' as _fa_table %}
 {% import '_components/_isms_approval_stages.html.twig' as _isms_approval_stages %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ campaign.name|e }} – {{ 'access_review.title'|trans({}, 'access_review') }} – {{ parent() }}{% endblock %}
 
@@ -18,11 +19,23 @@
     badge:   { icon: 'nav-shield', label: 'access_review.badge'|trans({}, 'access_review') },
     title:   campaign.name,
     subtitle: ('access_review.scope.' ~ campaign.scope)|trans({}, 'access_review') ~ ' · ' ~ 'access_review.field.due_date'|trans({}, 'access_review') ~ ': ' ~ (campaign.dueDate ? campaign.dueDate|date('Y-m-d') : '–'),
-    actions: campaign.isOpen ? [
-        { label: 'access_review.close_campaign'|trans({}, 'access_review'), variant: 'danger', icon: 'lock',
-          tag: 'button',
-          attrs: { 'data-action': 'click->fa-modal-dispatcher#open', 'data-fa-modal-id': 'close-modal' } }
-    ] : []
+    actions: [
+        is_granted('ROLE_AUDITOR') ? {
+            label: 'access_review.export.button'|trans({}, 'access_review'),
+            variant: 'ghost',
+            icon: 'ui-download',
+            href: path('app_access_review_export', {_locale: app.request.locale, id: campaign.id}),
+            attrs: {
+                title: 'access_review.export.tooltip'|trans({}, 'access_review'),
+                'aria-label': 'access_review.export.aria_download'|trans({'%name%': campaign.name}, 'access_review')
+            }
+        } : null,
+        campaign.isOpen ? {
+            label: 'access_review.close_campaign'|trans({}, 'access_review'), variant: 'danger', icon: 'lock',
+            tag: 'button',
+            attrs: { 'data-action': 'click->fa-modal-dispatcher#open', 'data-fa-modal-id': 'close-modal' }
+        } : null
+    ]|filter(a => a is not null)
 }) }}
 
 <main class="fa-aurora-surface">
@@ -30,7 +43,7 @@
 
 <div class="row g-4">
 
-    {# Left: approval stages overview #}
+    {# Left: approval stages overview + summary stats #}
     <div class="col-md-4">
         <div class="card mb-4">
             <div class="card-header fw-bold">
@@ -44,7 +57,7 @@
             </div>
         </div>
 
-        {# Summary stats #}
+        {# Summary stats + progress bar #}
         <div class="card">
             <div class="card-body">
                 <dl class="row mb-0">
@@ -66,13 +79,40 @@
                         <span class="badge bg-danger">{{ revokedCount }}</span>
                     </dd>
                 </dl>
+
+                {# Progress bar: decided / total #}
+                {% set decidedTotal = approvedCount + revokedCount %}
+                {% set totalCount = items|length %}
+                {% set pct = totalCount > 0 ? ((decidedTotal / totalCount) * 100)|round : 0 %}
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between mb-1 small">
+                        <span>{{ 'access_review.progress.tile_decided'|trans({}, 'access_review') }}</span>
+                        <span aria-label="{{ 'access_review.progress.progress_aria'|trans({'%pct%': pct}, 'access_review') }}">
+                            {{ 'access_review.progress.decided_of_total'|trans({'%decided%': decidedTotal, '%total%': totalCount}, 'access_review') }}
+                        </span>
+                    </div>
+                    {{ _fa_progress.render({
+                        value: pct,
+                        tone: pct == 100 ? 'success' : (pct >= 50 ? 'primary' : 'warning'),
+                        showText: false,
+                        class: 'mb-0'
+                    }) }}
+                </div>
             </div>
         </div>
     </div>
 
-    {# Right: items table with per-row decide forms #}
+    {# Right: items table with per-row decide forms + bulk-decide bar #}
     <div class="col-md-8">
-        <div class="card">
+        <div class="card"
+             {% if campaign.isOpen %}
+             data-controller="bulk-actions"
+             data-bulk-actions-endpoint-value="{{ path('app_access_review_show', {_locale: app.request.locale, id: campaign.id}) }}"
+             data-bulk-actions-csrf-token-value="{{ csrf_token('access_review_bulk_decide') }}"
+             data-bulk-actions-entity-label="{{ 'access_review.items_title'|trans({}, 'access_review') }}"
+             data-bulk-actions-status-change-success-value="{{ 'access_review.bulk.success'|trans({'%count%': '__COUNT__'}, 'access_review') }}"
+             data-bulk-actions-status-change-error-value="{{ 'access_review.flash.invalid_decision'|trans({}, 'access_review') }}"
+             {% endif %}>
             <div class="card-header fw-bold d-flex justify-content-between align-items-center">
                 <span>{{ 'access_review.items_title'|trans({}, 'access_review') }}</span>
                 <span class="badge bg-secondary">{{ items|length }}</span>
@@ -82,9 +122,18 @@
                     <p class="text-muted m-3">{{ 'access_review.empty_items'|trans({}, 'access_review') }}</p>
                 {% else %}
                     <div class="table-responsive">
-                        <table class="table table-hover table-sm mb-0 fa-table">
+                        <table class="table table-hover table-sm mb-0 fa-table{% if campaign.isOpen %} table-bulk-selectable{% endif %}">
                             <thead>
                                 <tr>
+                                    {% if campaign.isOpen %}
+                                    <th scope="col" class="bulk-select-column">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               data-action="bulk-actions#selectAll"
+                                               data-bulk-actions-target="selectAllCheckbox"
+                                               aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
+                                    </th>
+                                    {% endif %}
                                     <th scope="col">{{ 'access_review.field.subject_user'|trans({}, 'access_review') }}</th>
                                     <th scope="col">{{ 'access_review.field.reviewed_role'|trans({}, 'access_review') }}</th>
                                     <th scope="col">{{ 'access_review.field.decision'|trans({}, 'access_review') }}</th>
@@ -97,6 +146,16 @@
                             <tbody>
                                 {% for item in items %}
                                 <tr id="item-{{ item.id }}">
+                                    {% if campaign.isOpen %}
+                                    <td class="bulk-select-column">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               data-bulk-actions-target="item"
+                                               data-action="bulk-actions#selectItem"
+                                               value="{{ item.id }}"
+                                               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ item.subjectUser ? item.subjectUser.email : item.id }}">
+                                    </td>
+                                    {% endif %}
                                     <td>
                                         {% if item.subjectUser %}
                                             <span title="{{ item.subjectUser.email }}">
@@ -122,6 +181,11 @@
                                             <span class="badge bg-danger">
                                                 {{ 'access_review.decision.revoked'|trans({}, 'access_review') }}
                                             </span>
+                                        {% elseif item.decision == 'escalated' %}
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fa-icon fa-icon--ui-arrow-right me-1" aria-hidden="true"></i>
+                                                {{ 'access_review.decision.escalated'|trans({}, 'access_review') }}
+                                            </span>
                                         {% else %}
                                             <span class="badge bg-secondary">
                                                 {{ ('access_review.decision.' ~ item.decision)|trans({}, 'access_review') }}
@@ -138,7 +202,7 @@
                                     </td>
                                     {% if campaign.isOpen %}
                                     <td>
-                                        {# Inline decide form — approve + revoke buttons #}
+                                        {# Inline decide form — approve + revoke + escalate buttons #}
                                         <div class="d-flex gap-1">
                                             <form method="post"
                                                   action="{{ path('app_access_review_item_decide', {_locale: app.request.locale, campaignId: campaign.id, itemId: item.id}) }}"
@@ -187,12 +251,88 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {# Bulk action bar — shown only for open campaigns #}
+                    {% if campaign.isOpen %}
+                    <div class="fa-bulk-bar" hidden role="region" aria-live="polite"
+                         data-bulk-actions-target="actionBar">
+                        <div class="fa-bulk-bar__count">
+                            <span class="fa-bulk-bar__count-num" data-bulk-actions-target="count">0</span>
+                            <span class="fa-bulk-bar__count-label">{{ 'access_review.items_title'|trans({}, 'access_review') }}</span>
+                        </div>
+                        <div class="fa-bulk-bar__divider"></div>
+                        <div class="fa-bulk-bar__actions">
+                            <button type="button"
+                                    class="fa-bulk-btn fa-bulk-btn--success"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="approved"
+                                    title="{{ 'access_review.bulk.action_approve'|trans({}, 'access_review') }}"
+                                    aria-label="{{ 'access_review.bulk.action_approve'|trans({}, 'access_review') }}">
+                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                                {{ 'access_review.bulk.action_approve'|trans({}, 'access_review') }}
+                            </button>
+                            <button type="button"
+                                    class="fa-bulk-btn fa-bulk-btn--danger"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="revoked"
+                                    title="{{ 'access_review.action.revoke'|trans({}, 'access_review') }}"
+                                    aria-label="{{ 'access_review.action.revoke'|trans({}, 'access_review') }}">
+                                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                                {{ 'access_review.action.revoke'|trans({}, 'access_review') }}
+                            </button>
+                        </div>
+                        <div class="fa-bulk-bar__divider"></div>
+                        <button class="fa-bulk-bar__close"
+                                aria-label="{{ 'common.deselect_all'|trans({}, 'messages') }}"
+                                data-action="click->bulk-actions#deselectAll">
+                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <p class="text-muted small mt-2 px-3 pb-2">
+                        <i class="fa-icon fa-icon--ui-info-circle me-1" aria-hidden="true"></i>
+                        {{ 'access_review.bulk.tooltip'|trans({}, 'access_review') }}
+                    </p>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
     </div>
 
 </div>{# /row #}
+
+{# Escalated items callout — shown only when escalated items exist #}
+{% if escalatedItems is defined and escalatedItems|length > 0 %}
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="alert alert-warning" role="alert">
+            <div class="d-flex align-items-start gap-2">
+                <i class="fa-icon fa-icon--status-warning flex-shrink-0 mt-1" aria-hidden="true"></i>
+                <div class="flex-grow-1">
+                    <strong>{{ 'access_review.escalation.escalated_items_title'|trans({}, 'access_review') }}</strong>
+                    <span class="badge bg-warning text-dark ms-1">{{ escalatedItems|length }}</span>
+                    <p class="mb-2 mt-1 text-muted small">{{ 'access_review.escalation.escalated_hint'|trans({}, 'access_review') }}</p>
+                    <ul class="mb-0 list-unstyled">
+                        {% for eItem in escalatedItems %}
+                        <li class="mb-1">
+                            <code>{{ eItem.reviewedRole }}</code>
+                            &mdash;
+                            {{ eItem.subjectUser ? (eItem.subjectUser.fullName ?? eItem.subjectUser.email) : '–' }}
+                            {% if eItem.decidedBy %}
+                            <small class="text-muted ms-1">
+                                ({{ 'access_review.field.decided_by'|trans({}, 'access_review') }}: {{ eItem.decidedBy.email }})
+                            </small>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 </div>
 </main>
 

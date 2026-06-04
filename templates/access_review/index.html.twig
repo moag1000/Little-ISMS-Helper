@@ -3,6 +3,8 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_table.html.twig' as _fa_table %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'access_review.title'|trans({}, 'access_review') }} – {{ parent() }}{% endblock %}
@@ -50,25 +52,77 @@
         ]
     }) }}
 {% else %}
-    {{ _fa_table.render({
-        caption: 'access_review.table_caption'|trans({}, 'access_review'),
-        head: [
-            { label: 'access_review.field.name'|trans({}, 'access_review') },
-            { label: 'access_review.field.scope'|trans({}, 'access_review') },
-            { label: 'access_review.field.due_date'|trans({}, 'access_review') },
-            { label: 'access_review.field.status'|trans({}, 'access_review') },
-            { label: 'access_review.field.items'|trans({}, 'access_review') },
-            { label: 'common.actions'|trans({}, 'messages') }
-        ],
-        rows: campaigns|map(c => [
-            { content: '<a href="' ~ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) ~ '">' ~ c.name|e ~ '</a>', raw: true },
-            { content: ('access_review.scope.' ~ c.scope)|trans({}, 'access_review') },
-            { content: c.dueDate ? c.dueDate|date('Y-m-d') : '–' },
-            { content: '<span class="badge ' ~ (c.status == 'open' ? 'bg-success' : 'bg-secondary') ~ '">' ~ ('access_review.status.' ~ c.status)|trans({}, 'access_review') ~ '</span>', raw: true },
-            { content: c.totalCount ~ ' (' ~ c.pendingCount ~ ' ' ~ 'access_review.field.pending'|trans({}, 'access_review') ~ ')' },
-            { content: '<a class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" href="' ~ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) ~ '">' ~ 'common.view'|trans({}, 'messages') ~ '</a>', raw: true }
-        ])
+
+{# Campaign progress KPI tiles #}
+{% set totalOpen = campaigns|filter(c => c.status == 'open')|length %}
+{% set totalClosed = campaigns|filter(c => c.status == 'closed')|length %}
+{% set totalOverdue = campaigns|filter(c => c.status == 'open' and c.dueDate is not null and c.dueDate < date())|length %}
+
+<div class="grid grid-responsive-200 mb-4" style="gap: var(--space-4);">
+    {{ _fa_feature_card.render({
+        label:   'access_review.progress.open_badge'|trans({}, 'access_review'),
+        value:   totalOpen,
+        unit:    '',
+        variant: totalOpen > 0 ? 'primary' : 'success',
+        icon:    'nav-shield'
     }) }}
+
+    {{ _fa_feature_card.render({
+        label:   'access_review.progress.closed_badge'|trans({}, 'access_review'),
+        value:   totalClosed,
+        unit:    '',
+        variant: 'success',
+        icon:    'status-ok'
+    }) }}
+
+    {{ _fa_feature_card.render({
+        label:   'access_review.progress.tile_overdue'|trans({}, 'access_review'),
+        value:   totalOverdue,
+        unit:    '',
+        variant: totalOverdue > 0 ? 'danger' : 'success',
+        icon:    'status-warning'
+    }) }}
+</div>
+
+{# Build rows with inline progress bars #}
+{% set tableRows = [] %}
+{% for c in campaigns %}
+    {% set decidedCount = c.totalCount - c.pendingCount %}
+    {% set pct = c.totalCount > 0 ? ((decidedCount / c.totalCount) * 100)|round : 0 %}
+    {% set progressCell %}
+        <div style="min-width:90px">
+            <div class="d-flex justify-content-between mb-1 small">
+                <span>{{ decidedCount }}/{{ c.totalCount }}</span>
+                <span>{{ pct }}%</span>
+            </div>
+            {{ _fa_progress.render({ value: pct, tone: pct == 100 ? 'success' : 'primary', showText: false }) }}
+        </div>
+    {% endset %}
+    {% set tableRows = tableRows|merge([[
+        { content: '<a href="' ~ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) ~ '">' ~ c.name|e ~ '</a>', raw: true },
+        { content: ('access_review.scope.' ~ c.scope)|trans({}, 'access_review') },
+        { content: c.dueDate ? c.dueDate|date('Y-m-d') : '–' },
+        { content: '<span class="badge ' ~ (c.status == 'open' ? 'bg-success' : 'bg-secondary') ~ '">' ~ ('access_review.status.' ~ c.status)|trans({}, 'access_review') ~ '</span>', raw: true },
+        { content: c.totalCount ~ ' (' ~ c.pendingCount ~ ' ' ~ 'access_review.field.pending'|trans({}, 'access_review') ~ ')' },
+        { content: progressCell, raw: true },
+        { content: '<a class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" href="' ~ path('app_access_review_show', {_locale: app.request.locale, id: c.id}) ~ '">' ~ 'common.view'|trans({}, 'messages') ~ '</a>', raw: true }
+    ]]) %}
+{% endfor %}
+
+{{ _fa_table.render({
+    caption: 'access_review.table_caption'|trans({}, 'access_review'),
+    head: [
+        { label: 'access_review.field.name'|trans({}, 'access_review') },
+        { label: 'access_review.field.scope'|trans({}, 'access_review') },
+        { label: 'access_review.field.due_date'|trans({}, 'access_review') },
+        { label: 'access_review.field.status'|trans({}, 'access_review') },
+        { label: 'access_review.field.items'|trans({}, 'access_review') },
+        { label: 'access_review.progress.tile_decided'|trans({}, 'access_review') },
+        { label: 'common.actions'|trans({}, 'messages') }
+    ],
+    rows: tableRows
+}) }}
+
 {% endif %}
 
 </div>

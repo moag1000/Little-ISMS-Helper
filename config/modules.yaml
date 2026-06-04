@@ -279,6 +279,17 @@ modules:
   # but no form/UI exposes them yet. Re-add the module-key once RiskType
   # gates the FAIR field-group via ModuleAwareFormTrait.
 
+  risk_quant:
+    name: 'Quantitative Risikoanalyse (SLE/ARO/ALE)'
+    description: 'Monetäre Risikoquantifizierung nach NIST SP 800-30 / ISO 27005 — Single Loss Expectancy × Annual Rate of Occurrence = Annual Loss Expectancy (€). Ergänzt die qualitative Bewertung, ersetzt sie nicht. Off-by-default.'
+    required: false
+    icon: 'currency-euro'
+    entities:
+      - Risk
+    routes: []
+    dependencies:
+      - risks
+
   notifications:
     name: 'Notification-Rules + Webhooks'
     description: 'Tenant-konfigurierbare Notification-Rules pro Event-Typ, Channels (Email-Digest, Webhook+HMAC, In-App-Center), SLA-Timer-Events für DORA Art. 19 + NIS-2 Art. 23 + GDPR Art. 33 Deadlines'
@@ -308,6 +319,18 @@ modules:
       - authority_hub_index
     dependencies:
       - compliance
+
+  answer_library:
+    name: 'Antwort-Bibliothek (Sicherheits-Fragebögen)'
+    description: 'F44 — Wiederverwendbare Antworten auf inbound Sicherheits-Fragebögen (RFP, Kundenaudits, Due-Diligence). Reuse-Zählung speist den ROI-Rechner (F11). ISO 27001 Cl. 7.5 — dokumentierte Information.'
+    required: false
+    icon: 'journal-text'
+    entities:
+      - AnswerLibraryEntry
+    routes:
+      - app_answer_library_index
+    dependencies:
+      - core
 
   # NOTE: tisax_isa / ai_act / cra_sbom / procedures previously declared here
   # were vaporware (entities not implemented). Removed 2026-05-25 — see

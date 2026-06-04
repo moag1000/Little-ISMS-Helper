@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Fte;
 
+use App\Entity\AnswerLibraryEntry;
 use App\Entity\Document;
 use App\Entity\Fte\FteTrackingMetric;
 use App\Entity\Tenant;
@@ -79,6 +80,45 @@ class FteRecorderService
             );
         } catch (\Throwable $e) {
             $this->logger->warning('FteRecorderService::recordBulkImport failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Record savings when a security-questionnaire answer is reused from the library.
+     *
+     * Called by AnswerLibraryService::recordReuse(). Uses the evidence-reuse
+     * calibration constant as a proxy (answering one question = equivalent effort
+     * to maintaining one piece of compliance evidence).
+     *
+     * Errors are swallowed so core answer-reuse flow is never disrupted.
+     */
+    public function recordAnswerReuse(AnswerLibraryEntry $entry, User $user): void
+    {
+        try {
+            $tenant = $entry->getTenant();
+            if ($tenant === null) {
+                return;
+            }
+
+            // One reuse = savings of one manual evidence-maintenance cycle.
+            $manual = $this->calculator->calculateEvidenceReuseSavings(1, 2, $tenant)
+                + 1; // actual = 1 min to copy/adapt the answer
+            $this->calculator->recordMetric(
+                FteTrackingMetric::SOURCE_EVIDENCE_REUSE,
+                'AnswerLibraryEntry',
+                $entry->getId(),
+                $manual,
+                1,
+                $tenant,
+                [
+                    'entry_id'  => $entry->getId(),
+                    'category'  => $entry->getCategory(),
+                    'use_count' => $entry->getUseCount(),
+                    'user_id'   => $user->getId(),
+                ],
+            );
+        } catch (\Throwable $e) {
+            $this->logger->warning('FteRecorderService::recordAnswerReuse failed: ' . $e->getMessage());
         }
     }
 

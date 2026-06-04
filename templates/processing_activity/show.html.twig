@@ -405,6 +405,38 @@
         {% endif %}
     </div>
 
+    {# ── F32 DPA-Generator — Art. 28 GDPR AVV action block ───────────────── #}
+    {% if is_module_active('privacy') and processing_activity.processorSuppliers|length > 0 %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <section class="fa-section">
+                <header class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'dpa.list.generate_avv'|trans({}, 'privacy') }}</h2>
+                </header>
+                <div class="fa-section__body">
+                    <p class="text-muted small">
+                        <i class="fa-icon fa-icon--nav-info-circle" aria-hidden="true"></i>
+                        {{ 'dpa.list.generate_avv_hint'|trans({}, 'privacy') }}
+                    </p>
+                    <div class="d-flex flex-column gap-2">
+                        {% for supplier in processing_activity.processorSuppliers %}
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="text-truncate flex-grow-1">{{ supplier.name }}</span>
+                            <a href="{{ path('app_dpa_generate_confirm', {supplierId: supplier.id, paId: processing_activity.id}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                               title="{{ 'dpa.list.generate_avv_hint'|trans({}, 'privacy') }}">
+                                <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
+                                AVV
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    {% endif %}
+
     {# Action Forms (hidden) #}
     <form id="cloneForm" method="post" action="{{ path('app_processing_activity_clone', {id: processing_activity.id}) }}" style="display:none;">
         <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ processing_activity.id) }}">

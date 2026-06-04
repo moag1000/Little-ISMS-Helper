@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'answer_library' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'answer_library.page.show_title'|trans({}, 'answer_library') }} – {{ parent() }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'answer_library.page.index_title'|trans({}, 'answer_library'),
+          url: path('app_answer_library_index', {_locale: app.request.locale}) },
+        { label: entry.question|u.truncate(60, '…') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge:  { icon: 'nav-shield-check', label: 'answer_library.badge'|trans({}, 'answer_library') },
+    title:  entry.question|u.truncate(80, '…'),
+    actions: is_granted('ROLE_MANAGER') ? [
+        { label: 'common.edit'|trans({}, 'messages'), variant: 'secondary', icon: 'pencil',
+          href: path('app_answer_library_edit', {id: entry.id, _locale: app.request.locale}) }
+    ] : []
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container-fluid py-4" style="max-width: 900px;">
+
+    <div class="row g-4">
+        {# Main content #}
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>{{ 'answer_library.section.question'|trans({}, 'answer_library') }}</strong>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ entry.question }}</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <strong>{{ 'answer_library.section.answer'|trans({}, 'answer_library') }}</strong>
+                </div>
+                <div class="card-body">
+                    <div class="answer-text">{{ entry.answer|nl2br }}</div>
+                </div>
+                <div class="card-footer">
+                    <form method="post"
+                          action="{{ path('app_answer_library_use', {id: entry.id, _locale: app.request.locale}) }}">
+                        <input type="hidden" name="_token"
+                               value="{{ csrf_token('answer_library_use_' ~ entry.id) }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
+                            {{ 'answer_library.action.use'|trans({}, 'answer_library') }}
+                        </button>
+                        <span class="ms-2 text-muted small">
+                            {{ 'answer_library.help.use_action'|trans({}, 'answer_library') }}
+                        </span>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {# Sidebar metadata #}
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <strong>{{ 'common.details'|trans({}, 'messages') }}</strong>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <span class="text-muted small">{{ 'answer_library.field.category'|trans({}, 'answer_library') }}</span>
+                        <span class="badge bg-secondary">
+                            {{ ('answer_library.category.' ~ entry.category)|trans({}, 'answer_library') }}
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="text-muted small">{{ 'answer_library.field.tags'|trans({}, 'answer_library') }}</span>
+                        <div class="mt-1">
+                            {% for tag in entry.tags %}
+                                <span class="badge bg-light text-dark border me-1">{{ tag }}</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted small">{{ 'answer_library.field.use_count'|trans({}, 'answer_library') }}</span>
+                        <span class="fw-semibold{% if entry.useCount > 0 %} text-success{% endif %}">
+                            {{ entry.useCount }}
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted small">{{ 'answer_library.field.last_used_at'|trans({}, 'answer_library') }}</span>
+                        <span>{{ entry.lastUsedAt ? entry.lastUsedAt|date('d.m.Y') : '—' }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted small">{{ 'answer_library.field.created_at'|trans({}, 'answer_library') }}</span>
+                        <span>{{ entry.createdAt|date('d.m.Y') }}</span>
+                    </li>
+                    {% if entry.createdBy %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted small">{{ 'answer_library.field.created_by'|trans({}, 'answer_library') }}</span>
+                            <span>{{ entry.createdBy.fullName ?? entry.createdBy.email }}</span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            {% if is_granted('ROLE_MANAGER') %}
+                <div class="mt-3">
+                    <form method="post"
+                          action="{{ path('app_answer_library_delete', {id: entry.id, _locale: app.request.locale}) }}"
+                          data-controller="fa-confirm"
+                          data-fa-confirm-message-value="{{ 'answer_library.confirm.delete'|trans({}, 'answer_library') }}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token"
+                               value="{{ csrf_token('delete_' ~ entry.id) }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
+                            <i class="fa-icon fa-icon--trash" aria-hidden="true"></i>
+                            {{ 'common.delete'|trans({}, 'messages') }}
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+</main>
+{% endblock %}
