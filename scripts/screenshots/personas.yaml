@@ -52,6 +52,11 @@ personas:
       - { name: notification-channels, path: /de/admin/notification/channel }
       - { name: notification-rules,    path: /de/admin/notification/rule }
       - { name: notification-templates, path: /de/admin/notification/template }
+      # Operatives Threat/Vuln/Effectiveness-Monitoring
+      - { name: threat-intelligence,   path: /de/threat-intelligence }
+      - { name: vulnerabilities,       path: /de/vulnerability }
+      - { name: effectiveness-monitor, path: /de/effectiveness-monitor }
+      - { name: risk-matrix,           path: /de/risk/matrix }
 
   # ─────────────────────────────────────────────────────────────────
   # CISO / Executive — heatmaps, trends, board reporting
@@ -81,6 +86,21 @@ personas:
       - { name: dora-dashboard,        path: /de/dora-compliance }
       - { name: certification-bundle,  path: /de/certification-bundle, full_page: false }
       - { name: ai-agents,             path: /de/ai-agents }
+      # Authority-Reporting (Aufsichts-Nachweis NIS2/DORA)
+      - { name: authority-hub,         path: /de/authority/hub }
+      - { name: authority-dora-roi,    path: /de/authority/dora-roi }
+      - { name: authority-nis2-reg,    path: /de/authority/nis2-registration }
+      # Konzern-/Holding-Reports (aggregiert über alle Töchter)
+      - { name: group-report-tree,     path: /de/group-report/tree }
+      - { name: group-report-risks,    path: /de/group-report/risks }
+      - { name: group-report-kpi-matrix, path: /de/group-report/kpi-matrix }
+      - { name: group-report-soa-matrix, path: /de/group-report/soa-matrix }
+      - { name: group-report-incidents, path: /de/group-report/incidents }
+      - { name: group-report-audit-prog, path: /de/group-report/audit-program }
+      - { name: group-report-suppliers, path: /de/group-report/suppliers }
+      # Executive-Reports
+      - { name: quarterly-trend-report, path: /de/reports/management/quarterly-trend }
+      - { name: certification-readiness, path: /de/reports/management/certification-readiness }
 
   # ─────────────────────────────────────────────────────────────────
   # Compliance-Manager / Head of GRC — framework portfolio + reuse
@@ -124,6 +144,15 @@ personas:
       # Compliance-policy settings (tenant-level compliance policy defaults)
       - { name: compliance-policy-settings, path: /de/admin/compliance/settings }
       - { name: bcm-data-reuse-insights, path: /de/bcm/data-reuse-insights }
+      # DORA — IKT-Drittparteien-Module (Art. 8/28/29)
+      - { name: dora-data-flow,        path: /de/dora/data-flow }
+      - { name: dora-exit-plan,        path: /de/dora/exit-plan }
+      - { name: dora-subcontractor,    path: /de/dora/subcontractor }
+      # NIS2-Compliance-Cockpit (§30 BSIG / Art. 21)
+      - { name: nis2-compliance,       path: /de/nis2-compliance }
+      - { name: nis2-requirements,     path: /de/nis2-compliance/requirements }
+      # Branchen-Baselines (Compliance-Reuse)
+      - { name: industry-baselines,    path: /de/industry-baselines }
 
   # ─────────────────────────────────────────────────────────────────
   # Junior-Implementer — setup, onboarding, guided paths
@@ -172,6 +201,11 @@ personas:
       # VVT (Art. 30) — central RoPA register; criminal-data/recipients/processor-role,
       # third-country, per-category retention and the status lifecycle all live here.
       - { name: processing-activities, path: /de/processing-activity }
+      - { name: vvt-dashboard,         path: /de/processing-activity/dashboard }
+      # Datenpanne (Art. 33/34) — 72h-Meldepflicht-Workflow
+      - { name: data-breach,           path: /de/data-breach }
+      - { name: data-breach-dashboard, path: /de/data-breach/dashboard }
+      - { name: crisis-team,           path: /de/crisis-team }
 
   # ─────────────────────────────────────────────────────────────────
   # Tool-Tester / QA-Engineer — implementation reality + i18n + UX
@@ -259,3 +293,10 @@ personas:
       - { name: interested-parties,    path: /de/interested-party/ }
       - { name: objectives,            path: /de/objective/ }
       - { name: dpia-list,             path: /de/dpia/ }
+      - { name: dpia-dashboard,        path: /de/dpia/dashboard }
+      # Nachweis-Management (Evidence)
+      - { name: evidence,              path: /de/evidence }
+      - { name: evidence-coverage,     path: /de/evidence/coverage }
+      # Korrekturmaßnahmen (CAPA) + Audit-Workbook-Export
+      - { name: corrective-actions,    path: /de/corrective-action/ }
+      - { name: audit-workbook,        path: /de/audit-workbook/ }
