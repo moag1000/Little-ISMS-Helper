@@ -96,7 +96,7 @@ final class ControlMapper extends AbstractEntityMapper
      * @param array<string, string>|null $columnMapping
      * @return array<string, mixed>
      */
-    public function toEntityData(array $row, ?array $columnMapping = null): array
+    public function toEntityData(array $row, ?array $columnMapping = null, ?Tenant $tenant = null): array
     {
         $get = fn (string $field): mixed => $this->resolveField($row, $field, $columnMapping);
 

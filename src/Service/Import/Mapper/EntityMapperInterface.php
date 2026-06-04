@@ -41,7 +41,7 @@ interface EntityMapperInterface
      * @param array<string, string>|null $columnMapping  optional manual column → field override
      * @return array<string, mixed>
      */
-    public function toEntityData(array $row, ?array $columnMapping = null): array;
+    public function toEntityData(array $row, ?array $columnMapping = null, ?Tenant $tenant = null): array;
 
     /**
      * Attempt to find an existing entity matching the row (for delta / upsert mode).

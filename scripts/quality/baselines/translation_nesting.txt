@@ -174,9 +174,11 @@ translations/dashboards.en.yaml:319:isb
 translations/dashboards.en.yaml:336:bcm_officer
 translations/dashboards.en.yaml:353:tisax
 translations/data_import.de.yaml:1:nav
-translations/data_import.de.yaml:14:import
+translations/data_import.de.yaml:20:privacy_import
+translations/data_import.de.yaml:27:import
 translations/data_import.en.yaml:1:nav
-translations/data_import.en.yaml:14:import
+translations/data_import.en.yaml:20:privacy_import
+translations/data_import.en.yaml:27:import
 translations/data_management.de.yaml:1:data
 translations/data_management.en.yaml:1:data
 translations/data_subject_request.de.yaml:5:dsr
