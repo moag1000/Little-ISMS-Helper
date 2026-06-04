@@ -23,6 +23,13 @@ wizard:
     back_to_wizards: "Back to Overview"
     compare_with_others: "Compare with Others"
     back_to_results: "Back to Results"
+    manual:
+        mark_done: "Mark as addressed"
+        mark_done_help: "Confirm this requirement is implemented (manual evidence — no automatic detection possible)."
+        confirmed_undo: "Addressed"
+        undo_help: "Withdraw confirmation — mark the requirement open again."
+        confirmed_flash: "Requirement marked as addressed."
+        unconfirmed_flash: "Confirmation withdrawn — requirement reopened."
 
     # Wizard descriptions are merged into framework-specific sections below
 

@@ -2,7 +2,7 @@
 # Format: <relative-path>:LOC=NNN deps=MMM
 # NEW file added OR existing file growing beyond LOC will fail CI.
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1901 deps=16
-src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php:LOC=1837 deps=4
+src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php:LOC=1838 deps=4
 src/Controller/DeploymentWizardController.php:LOC=1753 deps=0
 src/Service/DashboardStatisticsService.php:LOC=1746 deps=26
 src/Controller/RiskController.php:LOC=1601 deps=0
@@ -15,15 +15,15 @@ src/Service/MyDayAggregator.php:LOC=1304 deps=25
 src/Controller/ManagementReportController.php:LOC=1294 deps=0
 src/Controller/Admin/DataRepairController.php:LOC=1278 deps=0
 src/Service/ManagementReportService.php:LOC=1164 deps=20
+src/Service/ComplianceWizard/CoverageCheckService.php:LOC=1073 deps=23
 src/Controller/UserManagementController.php:LOC=1025 deps=0
-src/Service/ComplianceWizard/CoverageCheckService.php:LOC=991 deps=18
 src/Controller/IncidentController.php:LOC=941 deps=0
 src/Controller/TenantManagementController.php:LOC=935 deps=0
 src/Controller/Admin/ComplianceImportController.php:LOC=927 deps=0
 src/Controller/ProcessingActivityController.php:LOC=840 deps=0
+src/Controller/ComplianceWizardController.php:LOC=814 deps=0
 src/Controller/AssetController.php:LOC=812 deps=0
 src/Controller/AdminBackupController.php:LOC=802 deps=0
-src/Controller/ComplianceWizardController.php:LOC=770 deps=0
 src/Controller/DPIAController.php:LOC=763 deps=0
 src/Controller/AnalyticsController.php:LOC=743 deps=0
 src/Controller/MonitoringController.php:LOC=727 deps=0
