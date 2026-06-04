@@ -43,13 +43,21 @@ use DOMElement;
  */
 final class DoraRoiXbrlExporter
 {
-    /** XBRL namespace for ESA RoI taxonomy (placeholder until ESA publishes final namespace URI) */
     private const string NS_XBRLI       = 'http://www.xbrl.org/2003/instance';
     private const string NS_XBRLDI      = 'http://xbrl.org/2006/xbrldi';
     private const string NS_LINK        = 'http://www.xbrl.org/2003/linkbase';
     private const string NS_XSI         = 'http://www.w3.org/2001/XMLSchema-instance';
-    /** ESA RoI taxonomy namespace — update when ESA publishes official URI */
-    private const string NS_ESA_ROI     = 'http://esa.europa.eu/xbrl/dora/roi/2024';
+    /**
+     * DORA Register-of-Information framework namespace — EBA/EIOPA/ESMA Joint
+     * Taxonomy 4.0 (architecture v2.0, errata 5, March 2025). Module entry point
+     * (xBRL-CSV `extends`): http://www.eba.europa.eu/eu/fr/xbrl/crr/fws/dora/4.0/mod/dora.json
+     *
+     * NOTE: the ESAs mandate the xBRL-CSV (OIM plain-csv) submission format, not
+     * XBRL-XML. This XML representation carries the correct taxonomy namespace
+     * for internal validation/preview; a CSV-OIM exporter is the canonical
+     * submission path (see docs/decisions if/when that is built).
+     */
+    private const string NS_ESA_ROI     = 'http://www.eba.europa.eu/eu/fr/xbrl/crr/fws/dora/4.0';
     private const string NS_ISO4217     = 'http://www.xbrl.org/2003/iso4217';
 
     public function __construct(
