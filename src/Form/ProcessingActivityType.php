@@ -467,6 +467,28 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                     'placeholder' => 'processing_activity.placeholder.joint_controller_details',
                 ],
             ])
+            // GDPR Art. 30(2) — processor-role record (N-7)
+            ->add('isProcessor', ChoiceType::class, [
+                'label' => 'processing_activity.form.is_processor',
+                'help' => 'processing_activity.help.is_processor',
+                'choices' => [
+                    'common.no' => false,
+                    'common.yes' => true,
+                ],
+                'expanded' => true,
+                'required' => true,
+                'choice_translation_domain' => 'privacy',
+            ])
+            ->add('processorClientController', TextareaType::class, [
+                'label' => 'processing_activity.form.processor_client_controller',
+                'help' => 'processing_activity.help.processor_client_controller',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'data-depends-on' => 'processing_activity_isProcessor',
+                    'data-depends-on-value' => '1',
+                ],
+            ])
 
             // ============================================================================
             // Risk & DPIA (Art. 35)
@@ -733,6 +755,8 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'isJointController',
                 // Junior-ISB-Audit-2026-05-22 M-08: DSGVO Art. 26 Joint-Controller-Doku
                 'jointControllerDetails',
+                'isProcessor',
+                'processorClientController',
             ],
             'retention' => [
                 'retentionPeriod',
