@@ -13,6 +13,8 @@ namespace App\Tests\Controller;
 
 use App\Controller\ComplianceMappingAdminController;
 use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceMapping;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -35,6 +37,7 @@ class ComplianceMappingAdminControllerTest extends TestCase
     private MockObject $complianceRequirementRepository;
     private MockObject $complianceMappingRepository;
     private MockObject $csrfTokenManager;
+    private MockObject $entityManager;
     private ComplianceMappingAdminController $controller;
 
     protected function setUp(): void
@@ -43,6 +46,7 @@ class ComplianceMappingAdminControllerTest extends TestCase
         $this->complianceRequirementRepository = $this->createMock(ComplianceRequirementRepository::class);
         $this->complianceMappingRepository = $this->createMock(ComplianceMappingRepository::class);
         $this->csrfTokenManager = $this->createMock(CsrfTokenManagerInterface::class);
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translator->method('trans')->willReturn('translated message');
@@ -52,6 +56,7 @@ class ComplianceMappingAdminControllerTest extends TestCase
             $this->complianceRequirementRepository,
             $this->complianceMappingRepository,
             $this->csrfTokenManager,
+            $this->entityManager,
             $translator
         );
 
@@ -78,13 +83,20 @@ class ComplianceMappingAdminControllerTest extends TestCase
         $requestStack = $this->createMock(\Symfony\Component\HttpFoundation\RequestStack::class);
         $requestStack->method('getCurrentRequest')->willReturn($request);
 
+        // AbstractController::getParameter() resolves through the 'parameter_bag'
+        // service — provide one (kernel.debug=false) so actions that read params
+        // (e.g. the debug-payload toggle) don't blow up in the unit harness.
+        $parameterBag = $this->createMock(\Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface::class);
+        $parameterBag->method('get')->willReturn(false);
+
         $container = $this->createMock(ContainerInterface::class);
         $container->method('has')->willReturn(true);
-        $container->method('get')->willReturnCallback(function ($id) use ($twig, $router, $requestStack) {
+        $container->method('get')->willReturnCallback(function ($id) use ($twig, $router, $requestStack, $parameterBag) {
             return match ($id) {
                 'twig' => $twig,
                 'router' => $router,
                 'request_stack' => $requestStack,
+                'parameter_bag' => $parameterBag,
                 default => null,
             };
         });
@@ -267,6 +279,51 @@ class ComplianceMappingAdminControllerTest extends TestCase
     }
 
     #[Test]
+    public function testCreateCrossFrameworkMappingsSurvivesEntityManagerAndOrphanedMapping(): void
+    {
+        // Regression for the hard 500 on /compliance/frameworks/create-mappings:
+        //  (a) the action used to call the *protected* repo->getEntityManager()
+        //      externally → a \Error that escaped catch(Exception) → 500. The EM
+        //      is now constructor-injected.
+        //  (b) an orphaned existing mapping (source/target requirement gone) made
+        //      getId()-on-null throw a \TypeError → also a 500. Now skipped.
+        $iso27001 = $this->createFramework(1, 'ISO 27001', 'ISO27001');
+        $other = $this->createFramework(2, 'TISAX', 'TISAX');
+
+        $request = new Request(
+            [],
+            [],
+            [],
+            [],
+            [],
+            ['HTTP_X-CSRF-Token' => 'valid-token'],
+            json_encode(['batch' => 0, 'batch_size' => 50]),
+        );
+
+        $this->csrfTokenManager->method('isTokenValid')->willReturn(true);
+        $this->complianceFrameworkRepository->method('findOneBy')->willReturn($iso27001);
+        $this->complianceFrameworkRepository->method('findAll')->willReturn([$iso27001, $other]);
+        // No requirements → no potential mappings to create (keeps the test focused
+        // on reaching the EntityManager + the orphan-skip guard).
+        $this->complianceRequirementRepository->method('findBy')->willReturn([]);
+
+        // Poisoned existing mapping — its source/target requirement is gone.
+        $orphan = $this->createPartialMock(ComplianceMapping::class, ['getSourceRequirement', 'getTargetRequirement']);
+        $orphan->method('getSourceRequirement')->willReturn(null);
+        $orphan->method('getTargetRequirement')->willReturn(null);
+        $this->complianceMappingRepository->method('findAll')->willReturn([$orphan]);
+
+        $response = $this->controller->createCrossFrameworkMappings($request);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(
+            200,
+            $response->getStatusCode(),
+            'Reaching the EntityManager with an orphaned existing mapping must not 500.',
+        );
+        $data = json_decode($response->getContent(), true);
+        $this->assertTrue($data['success']);
+    }
     public function testCreateCrossFrameworkMappingsWithInvalidCSRFToken(): void
     {
         $request = new Request(

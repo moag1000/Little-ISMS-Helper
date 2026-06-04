@@ -18,6 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -38,6 +39,7 @@ class ComplianceMappingAdminController extends AbstractController
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly ComplianceMappingRepository $complianceMappingRepository,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly EntityManagerInterface $em,
         private readonly ?TranslatorInterface $translator = null,
     ) {}
 
@@ -87,7 +89,7 @@ class ComplianceMappingAdminController extends AbstractController
                 ], Response::HTTP_BAD_REQUEST);
             }
 
-            $em = $this->complianceFrameworkRepository->getEntityManager();
+            $em = $this->em;
 
             // Load frameworks
             $framework1 = $this->complianceFrameworkRepository->find($framework1Id);
@@ -107,9 +109,13 @@ class ComplianceMappingAdminController extends AbstractController
             $existingMappings = $this->complianceMappingRepository->findAll();
             $existingPairs = [];
             foreach ($existingMappings as $mapping) {
-                $sourceId = $mapping->getSourceRequirement()->getId();
-                $targetId = $mapping->getTargetRequirement()->getId();
-                $existingPairs[$sourceId . '-' . $targetId] = true;
+                // Skip orphaned mappings: null source/target → getId()-on-null
+                // \TypeError (uncaught by catch(Exception)) → hard 500.
+                $source = $mapping->getSourceRequirement();
+                $target = $mapping->getTargetRequirement();
+                if ($source !== null && $target !== null) {
+                    $existingPairs[$source->getId() . '-' . $target->getId()] = true;
+                }
             }
 
             $mappingsCreated = 0;
@@ -324,7 +330,7 @@ class ComplianceMappingAdminController extends AbstractController
                 'framework2' => $framework2->getName(),
             ]);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return new JsonResponse([
                 'success' => false,
                 'message' => $this->getTranslator()->trans('compliance.auto_mapping.error', [
@@ -353,7 +359,7 @@ class ComplianceMappingAdminController extends AbstractController
             $currentBatch = $data['batch'] ?? 0;
             $batchSize = $data['batch_size'] ?? 50; // Process 50 mappings per batch
 
-            $em = $this->complianceFrameworkRepository->getEntityManager();
+            $em = $this->em;
 
             // Check if ISO 27001 exists
             $iso27001 = $this->complianceFrameworkRepository->findOneBy(['code' => 'ISO27001']);
@@ -377,9 +383,13 @@ class ComplianceMappingAdminController extends AbstractController
             $existingMappings = $this->complianceMappingRepository->findAll();
             $existingPairs = [];
             foreach ($existingMappings as $mapping) {
-                $sourceId = $mapping->getSourceRequirement()->getId();
-                $targetId = $mapping->getTargetRequirement()->getId();
-                $existingPairs[$sourceId . '-' . $targetId] = true;
+                // Skip orphaned mappings: null source/target → getId()-on-null
+                // \TypeError (uncaught by catch(Exception)) → hard 500.
+                $source = $mapping->getSourceRequirement();
+                $target = $mapping->getTargetRequirement();
+                if ($source !== null && $target !== null) {
+                    $existingPairs[$source->getId() . '-' . $target->getId()] = true;
+                }
             }
 
             $mappingsCreated = 0;
@@ -387,31 +397,13 @@ class ComplianceMappingAdminController extends AbstractController
             $createdPairs = []; // Track created mapping pairs to avoid duplicates
             $potentialMappings = []; // Collect all potential mappings first
 
-            // Preload ALL requirements once and index them. The previous version ran
-            // findBy(framework) inside nested loops (ISO-reqs × frameworks), i.e.
-            // O(n^3) + thousands of N+1 queries, re-executed on EVERY batch request —
-            // which blew past the 30 s limit and returned 500. One pass instead.
-            $reqsByFw = [];   // frameworkId => ComplianceRequirement[]
-            $isoByReqId = []; // ISO requirementId => ComplianceRequirement
-            $isoId = $iso27001->getId();
-            foreach ($this->complianceRequirementRepository->findAll() as $r) {
-                $fwId = $r->getFramework()?->getId();
-                if ($fwId === null) {
-                    continue;
-                }
-                $reqsByFw[$fwId][] = $r;
-                if ($fwId === $isoId) {
-                    $isoByReqId[$r->getRequirementId()] = $r;
-                }
-            }
-
             // 1. Collect potential mappings FROM other frameworks TO ISO 27001
             foreach ($frameworks as $framework) {
                 if ($framework->getCode() === 'ISO27001') {
                     continue;
                 }
 
-                $requirements = $reqsByFw[$framework->getId()] ?? [];
+                $requirements = $this->complianceRequirementRepository->findBy(['framework' => $framework]);
 
                 foreach ($requirements as $requirement) {
                     $dataSourceMapping = $requirement->getDataSourceMapping();
@@ -430,7 +422,10 @@ class ComplianceMappingAdminController extends AbstractController
                     foreach ($isoControls as $isoControl) {
                         $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
 
-                        $isoRequirement = $isoByReqId[$normalizedId] ?? null;
+                        $isoRequirement = $this->complianceRequirementRepository->findOneBy([
+                            'framework' => $iso27001,
+                            'requirementId' => $normalizedId
+                        ]);
 
                         if ($isoRequirement) {
                             $pairKey = $requirement->getId() . '-' . $isoRequirement->getId();
@@ -462,38 +457,50 @@ class ComplianceMappingAdminController extends AbstractController
                 }
             }
 
-            // 2. Transitive mappings between non-ISO frameworks: if Framework A and
-            // Framework B both map to the same ISO control, then A ↔ B. Build the
-            // per-ISO-control buckets in ONE pass over the preloaded requirements
-            // (was O(ISO-reqs × frameworks) with a findBy per inner iteration).
-            $mappedByIso = []; // normalized ISO control id => ComplianceRequirement[]
-            foreach ($frameworks as $framework) {
-                if ($framework->getCode() === 'ISO27001') {
-                    continue;
-                }
-                foreach ($reqsByFw[$framework->getId()] ?? [] as $requirement) {
-                    $dataSourceMapping = $requirement->getDataSourceMapping();
-                    if (empty($dataSourceMapping['iso_controls'])) {
+            // 2. Collect transitive mappings between non-ISO frameworks
+            // If Framework A → ISO Control X and Framework B → ISO Control X, then A ↔ B
+            $isoRequirements = $this->complianceRequirementRepository->findBy(['framework' => $iso27001]);
+
+            foreach ($isoRequirements as $isoRequirement) {
+                // Find all frameworks that map to this ISO requirement
+                $mappedToThisISO = [];
+
+                foreach ($frameworks as $framework) {
+                    if ($framework->getCode() === 'ISO27001') {
                         continue;
                     }
-                    $isoControls = $dataSourceMapping['iso_controls'];
-                    if (!is_array($isoControls)) {
-                        $isoControls = [$isoControls];
-                    }
-                    foreach ($isoControls as $isoControl) {
-                        $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
-                        // Only bucket controls that actually exist as ISO requirements.
-                        if (isset($isoByReqId[$normalizedId])) {
-                            $mappedByIso[$normalizedId][] = $requirement;
+
+                    $requirements = $this->complianceRequirementRepository->findBy(['framework' => $framework]);
+
+                    foreach ($requirements as $requirement) {
+                        $dataSourceMapping = $requirement->getDataSourceMapping();
+                        if (empty($dataSourceMapping)) {
+                            continue;
+                        }
+                        if (empty($dataSourceMapping['iso_controls'])) {
+                            continue;
+                        }
+
+                        $isoControls = $dataSourceMapping['iso_controls'];
+                        if (!is_array($isoControls)) {
+                            $isoControls = [$isoControls];
+                        }
+
+                        foreach ($isoControls as $isoControl) {
+                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
+
+                            if ($normalizedId === $isoRequirement->getRequirementId()) {
+                                $mappedToThisISO[] = $requirement;
+                            }
                         }
                     }
                 }
-            }
-
-            foreach ($mappedByIso as $normalizedId => $mappedToThisISO) {
+                // Collect cross-mappings between all requirements that map to same ISO control
                 $counter = count($mappedToThisISO);
+
+                // Collect cross-mappings between all requirements that map to same ISO control
                 for ($i = 0; $i < $counter; $i++) {
-                    for ($j = $i + 1; $j < $counter; $j++) {
+                    for ($j = $i + 1; $j < count($mappedToThisISO); $j++) {
                         $req1 = $mappedToThisISO[$i];
                         $req2 = $mappedToThisISO[$j];
 
@@ -506,14 +513,15 @@ class ComplianceMappingAdminController extends AbstractController
                                 'source' => $req1,
                                 'target' => $req2,
                                 'pairKey' => $pairKey,
-                                'isoControl' => $normalizedId,
+                                'isoControl' => $isoRequirement->getRequirementId()
                             ];
+
                             $potentialMappings[] = [
                                 'type' => 'transitive_reverse',
                                 'source' => $req2,
                                 'target' => $req1,
                                 'pairKey' => $reversePairKey,
-                                'isoControl' => $normalizedId,
+                                'isoControl' => $isoRequirement->getRequirementId()
                             ];
                         }
                     }
@@ -659,7 +667,7 @@ class ComplianceMappingAdminController extends AbstractController
                 ...($this->getParameter('kernel.debug') ? ['debug' => $debugInfo] : []),
             ]);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return new JsonResponse([
                 'success' => false,
                 'message' => $this->getTranslator()->trans('compliance.auto_mapping.error', ['%reason%' => $e->getMessage()], 'compliance'),
