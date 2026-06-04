@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Lädt MRIS-v1.5-Klassifikation aus fixtures/seeds/mris_annex_a_classification.csv
@@ -39,6 +40,7 @@ class MrisSeedClassificationCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ControlRepository $controlRepository,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
         parent::__construct();

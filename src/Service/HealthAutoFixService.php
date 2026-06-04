@@ -8,6 +8,7 @@ use Exception;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
@@ -25,8 +26,11 @@ final class HealthAutoFixService
     private readonly Filesystem $filesystem;
 
     public function __construct(
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
+        #[Autowire('%kernel.cache_dir%')]
         private readonly string $cacheDir,
+        #[Autowire('%kernel.logs_dir%')]
         private readonly string $logsDir,
         private readonly LoggerInterface $logger,
         private readonly ?AuditLogger $auditLogger = null,

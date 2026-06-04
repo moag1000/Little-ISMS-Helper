@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Twig\Extension\GlobalsInterface;
 use Twig\Extension\AbstractExtension;
 
@@ -20,6 +21,7 @@ final class AppVersionExtension extends AbstractExtension implements GlobalsInte
     private ?string $version = null;
 
     public function __construct(
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir
     ) {
     }

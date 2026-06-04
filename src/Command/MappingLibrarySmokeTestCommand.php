@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Smoke-Test für Mapping-Library:
@@ -43,6 +44,7 @@ class MappingLibrarySmokeTestCommand extends Command
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly MappingLibraryLoader $loader,
         private readonly MappingQualityScoreService $mqsService,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
         parent::__construct();

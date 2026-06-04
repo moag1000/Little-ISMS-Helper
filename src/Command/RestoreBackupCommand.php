@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsCommand(
     name: 'app:backup:restore',
@@ -27,6 +28,7 @@ class RestoreBackupCommand extends Command
         private readonly RestoreService   $restoreService,
         private readonly TenantRepository $tenantRepository,
         private readonly LoggerInterface  $logger,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string           $projectDir,
     ) {
         parent::__construct();

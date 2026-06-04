@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use Exception;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Service to write environment configuration to .env.local file.
@@ -22,7 +22,8 @@ final class EnvironmentWriter
     private const string BACKUP_SUFFIX = '.backup';
 
     public function __construct(
-        private readonly ParameterBagInterface $parameterBag
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir
     ) {
     }
 
@@ -166,7 +167,6 @@ final class EnvironmentWriter
      */
     public function ensureAppSecret(): void
     {
-        $this->getEnvLocalPath();
         $existingVars = $this->readEnvLocal();
 
         // Check if APP_SECRET already exists and is not empty
@@ -411,7 +411,7 @@ final class EnvironmentWriter
      */
     public function getEnvLocalPath(): string
     {
-        return $this->parameterBag->get('kernel.project_dir') . self::ENV_LOCAL_FILE;
+        return $this->projectDir . self::ENV_LOCAL_FILE;
     }
 
     /**
@@ -430,7 +430,7 @@ final class EnvironmentWriter
     public function checkWritePermissions(): array
     {
         $envFilePath = $this->getEnvLocalPath();
-        $projectDir = $this->parameterBag->get('kernel.project_dir');
+        $projectDir = $this->projectDir;
 
         // Check if .env.local exists
         if (file_exists($envFilePath)) {

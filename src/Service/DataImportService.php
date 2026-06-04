@@ -46,6 +46,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -97,6 +98,7 @@ final class DataImportService
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly TenantRepository $tenantRepository,
         private readonly SampleDataImportRepository $sampleImportRepository,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
         private readonly ?ManagerRegistry $managerRegistry = null
     ) {

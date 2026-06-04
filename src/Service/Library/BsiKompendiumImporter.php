@@ -10,6 +10,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Imports BSI IT-Grundschutz Kompendium YAML fixtures into the DB.
@@ -27,6 +28,7 @@ final class BsiKompendiumImporter
         private readonly EntityManagerInterface $entityManager,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
     }

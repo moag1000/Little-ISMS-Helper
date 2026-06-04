@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Seed the FINE-grained sub-requirement catalogue rows referenced by the
@@ -90,6 +91,7 @@ final class SeedSubRequirementsCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly SubRequirementResolver $resolver,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
         parent::__construct();

@@ -11,6 +11,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Service\Import\Mapper\TisaxRequirementMapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Imports VDA ISA TISAX YAML fixtures into the DB.
@@ -27,6 +28,7 @@ final class VdaIsaImporter
         private readonly EntityManagerInterface $entityManager,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
         private readonly \App\Service\Tisax\TisaxCatalogueProvider $catalogueProvider,
     ) {

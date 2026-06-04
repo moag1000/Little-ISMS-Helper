@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -22,6 +23,7 @@ use Twig\TwigFilter;
 final class PathExtension extends AbstractExtension
 {
     public function __construct(
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
     }

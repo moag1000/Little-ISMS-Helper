@@ -6,6 +6,7 @@ namespace App\Service;
 
 use Exception;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class SystemRequirementsChecker
 {
@@ -13,6 +14,7 @@ final class SystemRequirementsChecker
     private array $results = [];
 
     public function __construct(
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir
     ) {
         $configPath = $this->projectDir . '/config/modules.yaml';

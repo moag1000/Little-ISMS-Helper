@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Service;
 
 use Symfony\Component\Process\Process;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class LicenseReportService
 {
-    public function __construct(private readonly string $projectDir)
-    {
+    public function __construct(
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir
+    ) {
     }
 
     /**

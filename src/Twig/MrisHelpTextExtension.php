@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Yaml\Yaml;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -25,6 +26,7 @@ final class MrisHelpTextExtension extends AbstractExtension
     private ?array $cache = null;
 
     public function __construct(
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
     }

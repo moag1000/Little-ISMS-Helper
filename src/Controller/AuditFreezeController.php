@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Audit Freeze Controller — manual Stichtag snapshots for certification /
@@ -45,6 +46,7 @@ class AuditFreezeController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly PdfExportService $pdfExportService,
         private readonly EntityManagerInterface $entityManager,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
     }
