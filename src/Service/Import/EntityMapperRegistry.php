@@ -6,6 +6,7 @@ namespace App\Service\Import;
 
 use App\Exception\Import\ImportFailedException;
 use App\Service\Import\Mapper\EntityMapperInterface;
+use App\Service\Import\Schema\ImportSchemaRegistry;
 
 /**
  * Central registry for entity import mappers.
@@ -22,13 +23,17 @@ final class EntityMapperRegistry
     /**
      * @param iterable<EntityMapperInterface> $mappers
      */
-    public function __construct(iterable $mappers)
-    {
+    public function __construct(
+        iterable $mappers,
+        private readonly ?ImportSchemaRegistry $schemaRegistry = null,
+    ) {
         $this->mappers = iterator_to_array($mappers, false);
     }
 
     /**
-     * Return the mapper responsible for $entityType.
+     * Return the mapper responsible for $entityType. Hand-written mappers win;
+     * otherwise a {@see \App\Service\Import\Schema\SchemaDrivenMapper} is built
+     * from the schema registry.
      *
      * @throws ImportFailedException when no mapper supports the requested type
      */
@@ -38,6 +43,11 @@ final class EntityMapperRegistry
             if ($mapper->supportsEntityType($entityType)) {
                 return $mapper;
             }
+        }
+
+        $schemaMapper = $this->schemaRegistry?->getMapperFor($entityType);
+        if ($schemaMapper !== null) {
+            return $schemaMapper;
         }
 
         throw ImportFailedException::forType(
@@ -64,7 +74,11 @@ final class EntityMapperRegistry
             }
         }
 
-        return array_unique($types);
+        foreach ($this->schemaRegistry?->supportedEntityTypes() ?? [] as $schemaType) {
+            $types[] = $schemaType;
+        }
+
+        return array_values(array_unique($types));
     }
 
     /**
@@ -78,6 +92,6 @@ final class EntityMapperRegistry
             }
         }
 
-        return false;
+        return $this->schemaRegistry?->hasSchemaFor($entityType) ?? false;
     }
 }

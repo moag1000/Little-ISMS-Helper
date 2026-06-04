@@ -10,6 +10,19 @@ nav:
         risks_desc: 'Import risk register from Excel/CSV'
         business_processes: 'Business Process bulk import'
         business_processes_desc: 'Import BIA process list from Excel/CSV'
+        processing_activities: 'Processing activities import'
+        processing_activities_desc: 'Import RoPA (Art. 30) from Excel/CSV'
+        data_subject_requests: 'Data subject requests import'
+        data_subject_requests_desc: 'Import DSAR cases from Excel/CSV'
+        consents: 'Consents import'
+        consents_desc: 'Import consent records from Excel/CSV'
+
+privacy_import:
+    hub:
+        badge: 'Privacy import'
+        title: 'Privacy – bulk import'
+        subtitle: 'Import privacy records from Excel/CSV to save migration effort.'
+        help: 'Each tile opens the import wizard: upload a file, map columns, review the preview, commit.'
 
 import:
     page:
@@ -22,6 +35,9 @@ import:
         control: 'Controls'
         risk: 'Risk'
         business_process: 'Business Process'
+        processing_activity: 'Processing activities'
+        data_subject_request: 'Data subject requests'
+        consent: 'Consents'
 
     entity_type:
         asset: 'Asset'
@@ -29,6 +45,9 @@ import:
         control: 'Control'
         risk: 'Risk'
         business_process: 'Business Process'
+        processing_activity: 'Processing activity'
+        data_subject_request: 'Data subject request'
+        consent: 'Consent'
 
     wizard:
         step:

@@ -289,7 +289,7 @@ class BulkImportOrchestrator
             $rowNumber = $createRow['rowNumber'];
 
             try {
-                $entityData = $mapper->toEntityData($createRow['data'], $batch->getColumnMapping());
+                $entityData = $mapper->toEntityData($createRow['data'], $batch->getColumnMapping(), $tenant);
                 $entity     = $this->instantiateEntity($batch->getEntityType(), $entityData, $tenant);
 
                 $this->em->persist($entity);
@@ -328,7 +328,7 @@ class BulkImportOrchestrator
 
             try {
                 $existing   = $mapper->findExisting($updateRow['data'], $tenant);
-                $entityData = $mapper->toEntityData($updateRow['data'], $batch->getColumnMapping());
+                $entityData = $mapper->toEntityData($updateRow['data'], $batch->getColumnMapping(), $tenant);
 
                 if ($existing !== null) {
                     $this->applyEntityData($existing, $entityData);

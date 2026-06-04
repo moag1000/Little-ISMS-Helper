@@ -43,7 +43,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   7. errorCsv— streamed CSV of error rows for download
  */
 // @no-methods-required — class-level path prefix, methods declared per action
-#[Route('/import/{entityType}', requirements: ['entityType' => 'asset|supplier|control|risk|business_process'])]
+#[Route('/import/{entityType}', requirements: ['entityType' => 'asset|supplier|control|risk|business_process|processing_activity|data_subject_request|consent'])]
 #[IsGranted('ROLE_MANAGER')]
 final class BulkImportController extends AbstractController
 {
@@ -59,7 +59,25 @@ final class BulkImportController extends AbstractController
         private readonly TranslatorInterface $translator,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
+        private readonly ?\App\Service\Import\Schema\ImportSchemaRegistry $schemaRegistry = null,
+        private readonly ?\App\Service\ModuleConfigurationService $moduleConfiguration = null,
     ) {}
+
+    /**
+     * Module-gate: when the entity's import schema declares a required module,
+     * block the import (and redirect) for tenants without that module active —
+     * so privacy imports need the privacy module, etc.
+     */
+    private function assertEntityModule(string $entityTypePascal): ?Response
+    {
+        $module = $this->schemaRegistry?->getSchemaFor($entityTypePascal)?->module;
+        if ($module !== null && $this->moduleConfiguration !== null && !$this->moduleConfiguration->isModuleActive($module)) {
+            $this->addFlash('warning', $this->translator->trans('common.module_not_active', [], 'messages'));
+            return $this->redirectToRoute('app_dashboard');
+        }
+
+        return null;
+    }
 
     // -------------------------------------------------------------------------
     // Step 1: Wizard Entry
@@ -72,6 +90,10 @@ final class BulkImportController extends AbstractController
 
         $tenant          = $this->tenantContext->getCurrentTenant();
         $entityTypePascal = $this->toPascalCase($entityType);
+
+        if ($redirect = $this->assertEntityModule($entityTypePascal)) {
+            return $redirect;
+        }
 
         $recentBatches = $tenant !== null
             ? $this->batchRepo->findByEntityTypeForTenant($entityTypePascal, $tenant)
@@ -95,6 +117,10 @@ final class BulkImportController extends AbstractController
         $this->denyAccessUnlessGranted(BulkImportVoter::BULK_IMPORT_TRIGGER, null);
 
         $entityTypePascal = $this->toPascalCase($entityType);
+
+        if ($redirect = $this->assertEntityModule($entityTypePascal)) {
+            return $redirect;
+        }
 
         $form = $this->createForm(UploadStepType::class, null, [
             'entity_types' => $this->mapperRegistry->getSupportedEntityTypes(),
