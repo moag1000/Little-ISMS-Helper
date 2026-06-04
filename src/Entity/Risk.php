@@ -1516,6 +1516,67 @@ class Risk
     #[Groups(['risk:read', 'risk:write'])]
     private bool $lessonsLearnedDocumented = false;
 
+    // ── F46 Quantitative Risk fields (module: risk_quant) ──────────────────
+
+    /**
+     * Single Loss Expectancy — estimated monetary damage per incident occurrence (€).
+     * F46 ALE model: ALE = SLE × ARO.
+     * Nullable — existing risks without quantitative data are unaffected.
+     * Module-gate: risk_quant.
+     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\PositiveOrZero(message: 'risk.validation.sle_positive_or_zero')]
+    private ?int $singleLossExpectancy = null;
+
+    /**
+     * Annual Rate of Occurrence — expected number of times this incident occurs per year.
+     * Stored as DECIMAL(8,4) to allow fractional rates (e.g. 0.25 = once every 4 years).
+     * Module-gate: risk_quant.
+     */
+    #[ORM\Column(type: 'decimal', precision: 8, scale: 4, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\PositiveOrZero(message: 'risk.validation.aro_positive_or_zero')]
+    private ?string $annualRateOfOccurrence = null;
+
+    public function getSingleLossExpectancy(): ?int
+    {
+        return $this->singleLossExpectancy;
+    }
+
+    public function setSingleLossExpectancy(?int $singleLossExpectancy): static
+    {
+        $this->singleLossExpectancy = $singleLossExpectancy;
+        return $this;
+    }
+
+    public function getAnnualRateOfOccurrence(): ?float
+    {
+        return $this->annualRateOfOccurrence !== null ? (float) $this->annualRateOfOccurrence : null;
+    }
+
+    public function setAnnualRateOfOccurrence(?float $annualRateOfOccurrence): static
+    {
+        $this->annualRateOfOccurrence = $annualRateOfOccurrence !== null
+            ? (string) $annualRateOfOccurrence
+            : null;
+        return $this;
+    }
+
+    /**
+     * Annual Loss Expectancy — computed from SLE × ARO (F46 ALE model).
+     * Returns null when either SLE or ARO is not set (module: risk_quant).
+     * ISO 27005 / NIST SP 800-30 standard monetary risk expression.
+     */
+    #[Groups(['risk:read'])]
+    public function getAnnualLossExpectancy(): ?int
+    {
+        if ($this->singleLossExpectancy === null || $this->annualRateOfOccurrence === null) {
+            return null;
+        }
+        return (int) round($this->singleLossExpectancy * (float) $this->annualRateOfOccurrence);
+    }
+
     // ── FAIR Quantitative Risk fields (gated: quantitative_risk module) ───
 
     /** FAIR Loss Event Frequency — minimum (annualised). */

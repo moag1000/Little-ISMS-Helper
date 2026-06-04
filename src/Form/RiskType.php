@@ -25,6 +25,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -326,6 +327,13 @@ final class RiskType extends AbstractType implements SectionMapInterface
         if ($this->isModuleActive('vulnerability_intel')) {
             $this->addVulnerabilityIntelFields($builder);
         }
+
+        // ── F46 Quantitative Risk (SLE/ARO/ALE) — only when 'risk_quant' module active.
+        // NIST SP 800-30 / ISO 27005 monetary quantification. Supplementary only —
+        // qualitative probability×impact stays the default primary scoring.
+        if ($this->isModuleActive('risk_quant')) {
+            $this->addQuantitativeFields($builder);
+        }
     }
 
     /**
@@ -385,6 +393,37 @@ final class RiskType extends AbstractType implements SectionMapInterface
                     'placeholder' => 'risk.placeholder.data_subject_impact',
                 ],
                 'help' => 'risk.help.data_subject_impact',
+            ])
+        ;
+    }
+
+    /**
+     * F46: Monetary quantitative risk fields (SLE/ARO).
+     * ALE = SLE × ARO is computed on the entity (not stored), shown on the show-page.
+     * Only added when 'risk_quant' module is active.
+     */
+    private function addQuantitativeFields(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('singleLossExpectancy', IntegerType::class, [
+                'label' => 'risk.quant.field.sle',
+                'required' => false,
+                'attr' => [
+                    'min' => 0,
+                    'placeholder' => 'risk.quant.placeholder.sle',
+                ],
+                'help' => 'risk.quant.help.sle',
+            ])
+            ->add('annualRateOfOccurrence', NumberType::class, [
+                'label' => 'risk.quant.field.aro',
+                'required' => false,
+                'scale' => 4,
+                'attr' => [
+                    'min' => '0',
+                    'step' => '0.01',
+                    'placeholder' => 'risk.quant.placeholder.aro',
+                ],
+                'help' => 'risk.quant.help.aro',
             ])
         ;
     }
@@ -492,6 +531,11 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'processingScale',
                 'requiresDPIA',
                 'dataSubjectImpact',
+            ],
+            // F46 quantitative risk fields (risk_quant module — conditional)
+            'risk_quant' => [
+                'singleLossExpectancy',
+                'annualRateOfOccurrence',
             ],
             'audit_metadata' => [
                 'riskOwner',

@@ -146,6 +146,9 @@ class BackupService
         'InterestedParty',
         'CorporateGovernance',
 
+        // F44 — Inbound Security-Questionnaire Answer Library
+        'AnswerLibraryEntry',            // FK: Tenant, User (createdBy)
+
         // TISAX / Prototype Protection
         'PrototypeProtectionAssessment', // FK: Tenant, Supplier, Location, User, Person
 
@@ -272,6 +275,7 @@ class BackupService
             'scope_ids'           => $scopeIds,
         ]);
 
+        /** @var array{metadata: array<string, mixed>, data: array<string, mixed>, statistics: array<string, int>} $backup */
         $backup = [
             'metadata' => [
                 'version'            => self::BACKUP_FORMAT_VERSION,

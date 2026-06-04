@@ -1,0 +1,102 @@
+answer_library:
+  # Page titles
+  page:
+    index_title: Antwort-Bibliothek
+    index_subtitle: 'Wiederverwendbare Antworten auf Sicherheits-Fragebögen von Kunden — einmal beantworten, immer wiederverwenden.'
+    new_title: Neue Antwort erstellen
+    edit_title: Antwort bearbeiten
+    show_title: Antwort-Detail
+
+  badge: Fragebögen
+
+  # Junior-UX tooltip (vollständige Erklärung für neue Nutzer)
+  tooltip:
+    title: Was ist die Antwort-Bibliothek?
+    body: >
+      Die Antwort-Bibliothek speichert fertige Antworten auf häufige Fragen aus
+      Sicherheits-Fragebögen (RFP, Kundenaudits, Due-Diligence). Wählen Sie eine
+      gespeicherte Antwort aus, kopieren Sie sie in Ihren Fragebogen und das System
+      zählt die Wiederverwendung automatisch als gesparte FTE-Zeit — sichtbar im
+      ROI-Dashboard (F11). Einmal beantworten, immer wiederverwenden.
+
+  # KPI card labels
+  kpi:
+    total_entries: Gespeicherte Antworten
+    total_reuses: Gesamt-Wiederverwendungen
+
+  # Field labels
+  field:
+    question: Frage
+    answer: Antwort
+    category: Kategorie
+    tags: Schlagworte
+    use_count: Wiederverwendungen
+    last_used_at: Zuletzt verwendet
+    created_at: Erstellt am
+    created_by: Erstellt von
+
+  # Placeholders
+  placeholder:
+    question: 'z.B. Wie stellen Sie die Verschlüsselung ruhender Daten sicher?'
+    answer: 'Geben Sie hier die vorbereitete Antwort ein. Sie können %PLATZHALTER% für variablen Text verwenden.'
+    tags: 'z.B. ISO 27001, Verschlüsselung, A.8.24 (kommagetrennt)'
+
+  # Help texts
+  help:
+    tags: 'Kommagetrennte Schlagworte für die Suche. Optional.'
+    answer: 'Tipp: Verwenden Sie %ORGANIZATION% oder %DATE% als Platzhalter für variable Inhalte.'
+    use_action: 'Kopiert die Antwort und zählt die Wiederverwendung für den ROI-Bericht.'
+
+  # Category labels (match VALID_CATEGORIES constants)
+  category:
+    access_control: Zugriffskontrolle
+    encryption: Verschlüsselung
+    bcm: Business Continuity
+    privacy: Datenschutz
+    incident_management: Incident Management
+    physical_security: Physische Sicherheit
+    supplier_management: Lieferantenmanagement
+    risk_management: Risikomanagement
+    general: Allgemein
+
+  # Sections (SectionMapInterface keys)
+  section:
+    question: Frage
+    answer: Antwort
+
+  # Actions
+  action:
+    new: Neue Antwort
+    save: Antwort speichern
+    use: Antwort verwenden
+
+  # Search/filter
+  search:
+    label: Fragetext suchen
+    placeholder: 'Frage oder Antwort durchsuchen…'
+  filter:
+    all_categories: Alle Kategorien
+
+  # Flash messages
+  flash:
+    created: Antwort erfolgreich gespeichert.
+    updated: Antwort erfolgreich aktualisiert.
+    deleted: Antwort erfolgreich gelöscht.
+    reused: Antwort als verwendet markiert — die Wiederverwendung wurde im ROI-Dashboard erfasst.
+
+  # Confirm dialogs
+  confirm:
+    delete: 'Diese Antwort wirklich löschen? Die Wiederverwendungs-Statistik geht verloren.'
+
+  # Empty state
+  empty:
+    title: Noch keine Antworten
+    body: >
+      Speichern Sie häufig verwendete Antworten auf Sicherheits-Fragebögen und
+      verwenden Sie sie bei jedem Kundenfragebogen wieder. Das spart Zeit und
+      sorgt für konsistente, geprüfte Formulierungen.
+
+  # Validation
+  validation:
+    question_required: Die Frage darf nicht leer sein.
+    answer_required: Die Antwort darf nicht leer sein.

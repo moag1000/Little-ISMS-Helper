@@ -31,6 +31,7 @@ final class AuditWorkbookGenerator
         'control-implementation',
         'compliance-fulfillment',
         'risk-register',
+        'access-review',
     ];
 
     /**

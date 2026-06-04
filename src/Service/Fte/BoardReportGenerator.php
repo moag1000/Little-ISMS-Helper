@@ -6,7 +6,9 @@ namespace App\Service\Fte;
 
 use App\Entity\Tenant;
 use App\Repository\Fte\FteTrackingMetricRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
+use App\Service\RiskQuantSummaryInterface;
 use DateInterval;
 use DateTimeImmutable;
 use Twig\Environment;
@@ -18,6 +20,9 @@ use Twig\Environment;
  *   - PDF   → via DomPDF (PdfExportService)
  *   - HTML  → Twig-rendered board_report.html.twig
  *   - CSV   → hand-built RFC 4180 CSV (no library dependency)
+ *
+ * F46: When module 'risk_quant' is active, the report data includes
+ * aggregate ALE (Annual Loss Expectancy) across all tenant risks.
  */
 final class BoardReportGenerator
 {
@@ -25,6 +30,8 @@ final class BoardReportGenerator
         private readonly FteTrackingMetricRepository $metricRepo,
         private readonly PdfExportService $pdfExportService,
         private readonly Environment $twig,
+        private readonly RiskQuantSummaryInterface $riskQuantSummary,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -38,7 +45,9 @@ final class BoardReportGenerator
      *     generated_at: DateTimeImmutable,
      *     totals: array{savings_minutes: int, savings_hours: float},
      *     by_source: array<string, int>,
-     *     monthly_trend: array<string, int>
+     *     monthly_trend: array<string, int>,
+     *     risk_quant_active: bool,
+     *     risk_quant: array{total_ale_eur: int, quantified_risk_count: int}
      * }
      */
     public function generateMonthly(Tenant $tenant, DateTimeImmutable $month): array
@@ -56,6 +65,12 @@ final class BoardReportGenerator
         $bySource = $this->metricRepo->getSavingsBySource($tenant);
         $trend = $this->metricRepo->getMonthlyTrend($tenant, 12);
 
+        // F46: Aggregate ALE when risk_quant module is active
+        $riskQuantActive = $this->moduleConfiguration->isModuleActive('risk_quant');
+        $riskQuantSummary = $riskQuantActive
+            ? $this->riskQuantSummary->getRiskQuantSummary($tenant)
+            : ['total_ale_eur' => 0, 'quantified_risk_count' => 0];
+
         return [
             'tenant' => $tenant,
             'month' => $month,
@@ -67,6 +82,8 @@ final class BoardReportGenerator
             ],
             'by_source' => $bySource,
             'monthly_trend' => $trend,
+            'risk_quant_active' => $riskQuantActive,
+            'risk_quant' => $riskQuantSummary,
         ];
     }
 
@@ -101,6 +118,15 @@ final class BoardReportGenerator
         $lines[] = $this->csvRow([]);
         $lines[] = $this->csvRow(['Total Savings (minutes)', $data['totals']['savings_minutes']]);
         $lines[] = $this->csvRow(['Total Savings (hours)', $data['totals']['savings_hours']]);
+
+        // F46: Include ALE aggregate when module is active
+        if (!empty($data['risk_quant_active'])) {
+            $lines[] = $this->csvRow([]);
+            $lines[] = $this->csvRow(['Risk Quantification (ALE)', '']);
+            $lines[] = $this->csvRow(['Total Annual Loss Expectancy (EUR)', $data['risk_quant']['total_ale_eur']]);
+            $lines[] = $this->csvRow(['Quantified Risks (count)', $data['risk_quant']['quantified_risk_count']]);
+        }
+
         $lines[] = $this->csvRow([]);
         $lines[] = $this->csvRow(['Source', 'Savings (minutes)']);
 

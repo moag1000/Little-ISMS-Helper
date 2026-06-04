@@ -12,6 +12,7 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Supplier;
 use App\Form\SupplierType;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
 use App\Service\AuditLogger;
 use App\Service\Clone\SupplierCloner;
@@ -47,6 +48,7 @@ class SupplierController extends AbstractController
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?SupplierCloner $supplierCloner = null,
+        private readonly ?ProcessingActivityRepository $processingActivityRepository = null,
     ) {}
     #[Route('/supplier', name: 'app_supplier_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -273,6 +275,11 @@ class SupplierController extends AbstractController
 
         $inverseCoverage = $this->inverseCoverageService?->forSupplier($supplier) ?? ['total' => 0, 'frameworks' => []];
 
+        // F32 DPA-Generator — pass ProcessingActivities that list this supplier
+        // as a processorSupplier (Art. 28 M:N link) so the show template can
+        // render the "Generate AVV" action per PA.
+        $processorPas = $this->processingActivityRepository?->findByProcessorSupplier($supplier) ?? [];
+
         return $this->render('supplier/show.html.twig', [
             'supplier' => $supplier,
             'isInherited' => $isInherited,
@@ -285,6 +292,7 @@ class SupplierController extends AbstractController
             'gdprFramework' => $gdprFramework,
             'iso27001Framework' => $iso27001Framework,
             'inverse_coverage' => $inverseCoverage,
+            'processorPas' => $processorPas,
         ]);
     }
     /**

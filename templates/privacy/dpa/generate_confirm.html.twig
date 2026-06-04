@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'privacy' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block title %}{{ 'dpa.generate.title'|trans({}, 'privacy') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.suppliers'|trans({}, 'nav'), url: path('app_supplier_index') },
+            { label: supplier.name, url: path('app_supplier_show', {id: supplier.id}) },
+            { label: 'dpa.generate.breadcrumb'|trans({}, 'privacy') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge:    { icon: 'nav-file-earmark-text', label: 'GDPR Art. 28' },
+        title:    'dpa.generate.title'|trans({}, 'privacy'),
+        subtitle: 'dpa.generate.subtitle'|trans({}, 'privacy'),
+        actions: [
+            {
+                label:   'common.back'|trans({}, 'messages'),
+                variant: 'ghost',
+                icon:    'util-arrow-left',
+                href:    path('app_supplier_show', {id: supplier.id})
+            }
+        ]
+    }) }}
+
+    {{ _fa_alert.render({
+        variant: 'info',
+        icon: 'nav-info-circle',
+        title: 'dpa.generate.info_title'|trans({}, 'privacy'),
+        body:  'dpa.generate.info_body'|trans({}, 'privacy')
+    }) }}
+
+    {# Summary card #}
+    <section class="fa-section mb-4">
+        <header class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'dpa.generate.summary_heading'|trans({}, 'privacy') }}</h2>
+        </header>
+        <div class="fa-section__body">
+            <dl class="row">
+                <dt class="col-sm-4">{{ 'dpa.generate.field.supplier'|trans({}, 'privacy') }}</dt>
+                <dd class="col-sm-8">
+                    {{ supplier.name }}
+                    {% if supplier.address %}
+                        <br><small class="text-muted">{{ supplier.address }}</small>
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-4">{{ 'dpa.generate.field.pa'|trans({}, 'privacy') }}</dt>
+                <dd class="col-sm-8">
+                    {{ pa.name }}
+                    {% if pa.description %}
+                        <br><small class="text-muted">{{ pa.description|u.truncate(140, '…') }}</small>
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-4">{{ 'dpa.generate.field.purposes'|trans({}, 'privacy') }}</dt>
+                <dd class="col-sm-8">{{ pa.purposes|join(', ') }}</dd>
+
+                <dt class="col-sm-4">{{ 'dpa.generate.field.data_categories'|trans({}, 'privacy') }}</dt>
+                <dd class="col-sm-8">{{ pa.personalDataCategories|join(', ') }}</dd>
+
+                {% if pa.hasThirdCountryTransfer or supplier.thirdCountryTransfer %}
+                <dt class="col-sm-4">{{ 'dpa.generate.field.third_country'|trans({}, 'privacy') }}</dt>
+                <dd class="col-sm-8">
+                    <span class="badge bg-warning text-dark">
+                        {{ 'dpa.generate.third_country_active'|trans({}, 'privacy') }}
+                    </span>
+                </dd>
+                {% endif %}
+            </dl>
+        </div>
+    </section>
+
+    {# GDPR Art. 28 tooltip hint for junior users #}
+    <div class="alert alert-light border d-flex align-items-start gap-3 mb-4" role="note">
+        <i class="fa-icon fa-icon--question-circle text-primary fs-5 mt-1" aria-hidden="true"></i>
+        <div>
+            <strong>{{ 'dpa.generate.help_title'|trans({}, 'privacy') }}</strong>
+            <p class="mb-0 small text-muted">{{ 'dpa.generate.help_body'|trans({}, 'privacy') }}</p>
+        </div>
+    </div>
+
+    {# Generate form #}
+    <form method="post"
+          action="{{ path('app_dpa_generate', {supplierId: supplier.id, paId: pa.id}) }}"
+          data-turbo="false">
+        <input type="hidden"
+               name="_token"
+               value="{{ csrf_token('dpa_generate_' ~ supplier.id ~ '_' ~ pa.id) }}">
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
+                {{ 'dpa.generate.action.generate'|trans({}, 'privacy') }}
+            </button>
+            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost">
+                {{ 'common.cancel'|trans({}, 'messages') }}
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

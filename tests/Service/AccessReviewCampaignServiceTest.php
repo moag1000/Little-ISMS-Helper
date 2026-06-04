@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\AccessReviewCampaignService;
 use App\Service\AuditLogger;
+use App\Service\EmailNotificationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -30,18 +31,21 @@ class AccessReviewCampaignServiceTest extends TestCase
     private MockObject&EntityManagerInterface $em;
     private MockObject&AuditLogger $auditLogger;
     private MockObject&UserRepository $userRepository;
+    private MockObject&EmailNotificationService $emailNotificationService;
     private AccessReviewCampaignService $service;
 
     protected function setUp(): void
     {
-        $this->em             = $this->createMock(EntityManagerInterface::class);
-        $this->auditLogger    = $this->createMock(AuditLogger::class);
-        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->em                       = $this->createMock(EntityManagerInterface::class);
+        $this->auditLogger              = $this->createMock(AuditLogger::class);
+        $this->userRepository           = $this->createMock(UserRepository::class);
+        $this->emailNotificationService = $this->createMock(EmailNotificationService::class);
 
         $this->service = new AccessReviewCampaignService(
-            entityManager:  $this->em,
-            auditLogger:    $this->auditLogger,
-            userRepository: $this->userRepository,
+            entityManager:            $this->em,
+            auditLogger:              $this->auditLogger,
+            userRepository:           $this->userRepository,
+            emailNotificationService: $this->emailNotificationService,
         );
     }
 

@@ -678,6 +678,30 @@ fair:
     plm: 'FAIR: Primary Loss Magnitude — direct financial impact in € (min/max/mode).'
     slm: 'FAIR: Secondary Loss Magnitude — indirect impact in € including reputational damage and regulatory fines (min/max/mode).'
 
+# ── F46 Quantitative Risk (SLE/ARO/ALE) — module risk_quant ─────────────────
+quant:
+  section:
+    title: 'Monetary Risk Quantification (SLE/ARO/ALE)'
+    subtitle: 'Supplementary assessment — qualitative scoring remains primary'
+  field:
+    sle: 'Single Loss Expectancy (SLE) in €'
+    aro: 'Annual Rate of Occurrence (ARO)'
+    ale: 'Annual Loss Expectancy (ALE)'
+  placeholder:
+    sle: 'e.g. 50000 — estimated damage per incident in €'
+    aro: 'e.g. 0.25 — once every 4 years'
+  help:
+    sle: 'Single Loss Expectancy: estimated financial damage for a single incident occurrence in €. ALE = SLE × ARO.'
+    aro: 'Annual Rate of Occurrence: expected frequency per year (0.25 = every 4 years; 1.0 = annually; 2.0 = twice a year).'
+    ale: 'Annual Loss Expectancy = SLE × ARO. Expected annual monetary exposure from this risk.'
+  board_report:
+    aggregate_label: 'Total Exposure (ALE) across all risks'
+    aggregate_hint: 'Sum of all Annual Loss Expectancy values where SLE/ARO fields are filled'
+    no_data: 'No risks with monetary quantification available'
+  display:
+    hint_per_year: 'per year (ALE)'
+    hint_module_info: 'SLE × ARO — monetary quantification per NIST SP 800-30'
+
 risk_management:
   title: Title
   description: Description
