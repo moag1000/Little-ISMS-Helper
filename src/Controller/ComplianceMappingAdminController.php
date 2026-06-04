@@ -105,8 +105,10 @@ class ComplianceMappingAdminController extends AbstractController
             // Check if ISO 27001 exists (needed for transitive mappings)
             $iso27001 = $this->complianceFrameworkRepository->findOneBy(['code' => 'ISO27001']);
 
-            // Load existing mappings to avoid duplicates (incremental approach)
-            $existingMappings = $this->complianceMappingRepository->findAll();
+            // Load existing mappings to avoid duplicates (incremental approach).
+            // findAllGlobal() is correct here: this is an admin seeding operation
+            // creating global system-level mappings across all tenants (E-6).
+            $existingMappings = $this->complianceMappingRepository->findAllGlobal();
             $existingPairs = [];
             foreach ($existingMappings as $mapping) {
                 // Skip orphaned mappings: null source/target → getId()-on-null
@@ -379,8 +381,10 @@ class ComplianceMappingAdminController extends AbstractController
                 ]);
             }
 
-            // Load existing mappings to avoid duplicates (incremental approach)
-            $existingMappings = $this->complianceMappingRepository->findAll();
+            // Load existing mappings to avoid duplicates (incremental approach).
+            // findAllGlobal() is correct here: this is an admin seeding operation
+            // creating global system-level mappings across all tenants (E-6).
+            $existingMappings = $this->complianceMappingRepository->findAllGlobal();
             $existingPairs = [];
             foreach ($existingMappings as $mapping) {
                 // Skip orphaned mappings: null source/target → getId()-on-null
