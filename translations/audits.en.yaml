@@ -254,6 +254,17 @@ audit_finding:
         edit: 'Edit Finding'
     action:
         new: 'New Finding'
+        # F14 — inline quick-capture modal vs. full-page form
+        new_quick: 'Capture Finding'
+        new_full_form: 'Full Form'
+    modal:
+        quick_capture:
+            title: 'Capture Finding'
+            subtitle: 'Audit: %audit%'
+            title_placeholder: 'e.g. "Logging not centralised"'
+            description_placeholder: 'Optional description — can be completed later'
+            description_help: 'Leave blank to complete the description after creation.'
+            submit: 'Create Finding'
     field:
         audit: 'Audit'
         finding_number: 'Finding Number'
@@ -294,6 +305,8 @@ audit_finding:
     help:
         status_readonly: 'Status is driven by the AuditFinding lifecycle workflow (open → in_progress → resolved → verified → closed). Direct edit disabled; use the status actions on the show page (LifecycleService::transition).'
         audit: 'Internal audit during which this finding was raised'
+        # F14 — shown when audit is pre-selected (locked) via audit show-page link
+        audit_locked: 'Audit is pre-selected (from audit context). Switch to the full form to choose a different audit.'
         finding_number: 'Unique identifier (optional — e.g. F-2026-001)'
         description: 'Detailed description of the deviation or observation'
         type: 'Major NC = serious; Minor NC = minor; Observation = note; Opportunity = improvement chance'
@@ -405,6 +418,8 @@ audit_finding:
         created: 'Finding created.'
         updated: 'Finding updated.'
         deleted: 'Finding deleted.'
+        # F14 — quick-capture validation
+        quick_title_required: 'Title is required.'
     # C5-03 — Severity × Type correlation help (ISO 19011 Cl. 6.4.8).
     # Pure UX hint, no server-side enforcement: junior implementers see the
     # conventional type that matches the severity but may deviate based on

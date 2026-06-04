@@ -285,6 +285,17 @@ audit_finding:
         edit: 'Feststellung bearbeiten'
     action:
         new: 'Neue Feststellung'
+        # F14 — inline quick-capture modal vs. full-page form
+        new_quick: 'Feststellung erfassen'
+        new_full_form: 'Vollständige Erfassung'
+    modal:
+        quick_capture:
+            title: 'Feststellung erfassen'
+            subtitle: 'Audit: %audit%'
+            title_placeholder: 'z.B. „Logging nicht zentralisiert"'
+            description_placeholder: 'Optionale Beschreibung — kann später ergänzt werden'
+            description_help: 'Leer lassen, um die Beschreibung nach der Erstellung zu vervollständigen.'
+            submit: 'Feststellung anlegen'
     field:
         audit: 'Audit'
         finding_number: 'Feststellungsnummer'
@@ -325,6 +336,8 @@ audit_finding:
     help:
         status_readonly: 'Status wird vom AuditFinding-Lifecycle-Workflow gesteuert (open → in_progress → resolved → verified → closed). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite (LifecycleService::transition).'
         audit: 'Internes Audit, in dem diese Feststellung entstanden ist'
+        # F14 — shown when audit is pre-selected (locked) via audit show-page link
+        audit_locked: 'Audit ist vorausgewählt (aus dem Audit-Kontext). Wechseln Sie zur vollständigen Erfassung, um ein anderes Audit zu wählen.'
         finding_number: 'Eindeutige Nummer (optional — z.B. F-2026-001)'
         description: 'Ausführliche Beschreibung der Abweichung bzw. Beobachtung'
         type: 'Major-NC = schwerwiegende Abweichung; Minor-NC = geringfügige Abweichung; Observation = Hinweis; Opportunity = Verbesserungschance'
@@ -436,6 +449,8 @@ audit_finding:
         created: 'Feststellung erstellt.'
         updated: 'Feststellung aktualisiert.'
         deleted: 'Feststellung gelöscht.'
+        # F14 — quick-capture validation
+        quick_title_required: 'Titel ist erforderlich.'
     # C5-03 — Severity × Type Korrelationshilfe (ISO 19011 Cl. 6.4.8).
     # Reine UX-Empfehlung, kein Server-Validator: Junior-Implementer sehen,
     # welche Typ-Wahl konventionell zur Schwere passt, dürfen aber bei

@@ -47,6 +47,17 @@ import:
         dispatched: 'The import has been started and is running in the background.'
         committed: 'Import completed successfully.'
 
+    commit:
+        heading: 'Import Running'
+        body: 'The import has been queued and is running in the background. This page refreshes automatically.'
+        status_label: 'Current Status'
+        view_result: 'View Result'
+        still_running: 'Import still running — please wait a moment.'
+        failed_heading: 'Import Failed'
+        failed_body: 'The import was aborted with an error. Please check the details below.'
+        completed_heading: 'Import Completed'
+        completed_body: 'The import completed successfully.'
+
     error:
         upload_failed: 'File upload failed: %message%'
         parse_failed: 'File could not be parsed: %message%'

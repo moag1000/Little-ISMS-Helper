@@ -203,7 +203,7 @@ final class BulkImportController extends AbstractController
                 $fieldName  = 'column_' . $index;
                 $fieldValue = $formData[$fieldName] ?? '';
 
-                if ($fieldValue !== '' && $fieldValue !== null) {
+                if ($fieldValue !== '') {
                     $userColumnMapping[$header] = $fieldValue;
                 }
             }
@@ -267,7 +267,7 @@ final class BulkImportController extends AbstractController
     }
 
     // -------------------------------------------------------------------------
-    // Step 5: Commit (async dispatch)
+    // Step 5a: Commit POST (async dispatch)
     // -------------------------------------------------------------------------
 
     #[Route('/{batchId}/commit', name: 'app_bulk_import_commit', requirements: ['batchId' => '\d+'], methods: ['POST'])]
@@ -282,13 +282,7 @@ final class BulkImportController extends AbstractController
         if ($confirmForm->isSubmitted() && $confirmForm->isValid()) {
             $this->orchestrator->dispatchCommit($batch);
 
-            $this->addFlash('success', $this->translator->trans(
-                'import.success.dispatched',
-                [],
-                'data_import',
-            ));
-
-            return $this->redirectToRoute('app_bulk_import_diff', [
+            return $this->redirectToRoute('app_bulk_import_commit_status', [
                 '_locale'    => $request->getLocale(),
                 'entityType' => $entityType,
                 'batchId'    => $batchId,
@@ -309,6 +303,29 @@ final class BulkImportController extends AbstractController
             'deltaResult'     => $deltaResult,
             'confirmForm'     => $confirmForm,
         ], new Response(status: $status));
+    }
+
+    // -------------------------------------------------------------------------
+    // Step 5b: Commit Status / In-Progress screen (GET)
+    // -------------------------------------------------------------------------
+
+    #[Route('/{batchId}/commit/status', name: 'app_bulk_import_commit_status', requirements: ['batchId' => '\d+'], methods: ['GET'])]
+    public function commitStatus(string $entityType, int $batchId): Response
+    {
+        $batch = $this->findBatchOr404($batchId);
+        $this->denyAccessUnlessGranted(BulkImportVoter::VIEW, $batch);
+
+        $isCompleted = in_array($batch->getStatus(), [
+            BulkImportBatch::STATUS_COMPLETED,
+            BulkImportBatch::STATUS_FAILED,
+        ], true);
+
+        return $this->render('import/wizard/commit.html.twig', [
+            'batch'           => $batch,
+            'entityType'      => $entityType,
+            'entityTypePascal' => $this->toPascalCase($entityType),
+            'isCompleted'     => $isCompleted,
+        ]);
     }
 
     // -------------------------------------------------------------------------

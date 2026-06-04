@@ -192,7 +192,8 @@ modules:
     icon: 'cpu'
     entities:
       - Asset
-    routes: []
+    routes:
+      - app_ai_agents_index
     dependencies:
       - assets
 

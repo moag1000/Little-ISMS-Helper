@@ -137,6 +137,9 @@ security:
         # Public routes (security routes are now WITHOUT locale prefix)
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: '^/(de|en)/health$', roles: PUBLIC_ACCESS }
+        # Infra probe endpoints — unauthenticated, locale-independent (no /{_locale} prefix)
+        - { path: ^/readyz$, roles: PUBLIC_ACCESS }
+        - { path: ^/metrics$, roles: PUBLIC_ACCESS }
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/logout$, roles: PUBLIC_ACCESS }
         - { path: ^/oauth, roles: PUBLIC_ACCESS }
