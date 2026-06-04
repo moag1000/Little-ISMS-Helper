@@ -1208,7 +1208,8 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'checks' => [
                     'kritis_scope' => [
                         'name' => 'wizard.check.kritis_scope',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'isms_context',
                         'priority' => 'critical',
                         'route' => 'app_context_edit',
                     ],
@@ -1651,7 +1652,8 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'checks' => [
                     'eucs_bcm' => [
                         'name' => 'wizard.check.eucs_bcm',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'bc_plan',
                         'priority' => 'high',
                         'module' => 'bcm',
                         'route' => 'app_bc_plan_index',
@@ -1668,7 +1670,8 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'checks' => [
                     'eucs_suppliers' => [
                         'name' => 'wizard.check.eucs_suppliers',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'supplier',
                         'priority' => 'high',
                         'module' => 'suppliers',
                         'route' => 'app_supplier_index',
@@ -1728,7 +1731,8 @@ final class EuRegulatoryFrameworkCategoryProvider
                 'checks' => [
                     'cra_vuln_handling' => [
                         'name' => 'wizard.check.cra_vuln_handling',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'vulnerability',
                         'priority' => 'critical',
                         'module' => 'vulnerability_intel',
                         'route' => 'app_vulnerability_index',
