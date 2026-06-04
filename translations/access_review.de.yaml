@@ -96,6 +96,10 @@ access_review:
     decision_saved: 'Entscheidung "%decision%" gespeichert.'
     campaign_already_closed: Diese Kampagne ist bereits geschlossen.
     invalid_decision: Ungültige Entscheidung.
+    bulk_decide_success: '%count% Entscheidung(en) erfolgreich gespeichert.'
+    bulk_decide_partial: '%done% gespeichert, %skipped% übersprungen.'
+    export_ok: XLSX-Export gestartet.
+    escalation_notified: 'Eskalations-Benachrichtigung für %count% Item(s) versendet.'
 
   stats:
     total: Gesamt
@@ -147,8 +151,3 @@ access_review:
     open_badge: Offen
     closed_badge: Abgeschlossen
 
-  flash:
-    bulk_decide_success: '%count% Entscheidung(en) erfolgreich gespeichert.'
-    bulk_decide_partial: '%done% gespeichert, %skipped% übersprungen.'
-    export_ok: XLSX-Export gestartet.
-    escalation_notified: 'Eskalations-Benachrichtigung für %count% Item(s) versendet.'
