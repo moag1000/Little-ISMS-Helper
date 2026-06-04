@@ -306,6 +306,16 @@ class ProcessingActivity
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $legalBasisSpecialCategories = null;
 
+    /**
+     * GDPR Art. 10 — legal authority for processing criminal-conviction/offence
+     * data. Art. 10 only permits such processing under official authority OR a
+     * Union/Member-State law providing safeguards (e.g. § 26 BDSG for employment).
+     * Mandatory whenever processesCriminalData = true (validated below), mirroring
+     * the Art. 9(2) gate for special categories.
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $criminalDataLegalBasis = null;
+
     // ============================================================================
     // Organizational Structure
     // ============================================================================
@@ -751,6 +761,17 @@ class ProcessingActivity
     public function setProcessesCriminalData(bool $processesCriminalData): static
     {
         $this->processesCriminalData = $processesCriminalData;
+        return $this;
+    }
+
+    public function getCriminalDataLegalBasis(): ?string
+    {
+        return $this->criminalDataLegalBasis;
+    }
+
+    public function setCriminalDataLegalBasis(?string $criminalDataLegalBasis): static
+    {
+        $this->criminalDataLegalBasis = $criminalDataLegalBasis;
         return $this;
     }
 
@@ -1451,6 +1472,36 @@ class ProcessingActivity
         if ($this->involvesProcessors && $this->processorSuppliers->isEmpty()) {
             $context->buildViolation('processing_activity.validation.processor_suppliers_required')
                 ->atPath('processorSuppliers')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * GDPR Art. 10 — when criminal-conviction/offence data is processed, a legal
+     * authority must be documented, mirroring the Art. 9(2) gate for special
+     * categories. Without it the processing has no lawful footing on record.
+     */
+    #[Assert\Callback]
+    public function validateCriminalDataLegalBasis(ExecutionContextInterface $context): void
+    {
+        if ($this->processesCriminalData && ($this->criminalDataLegalBasis === null || trim($this->criminalDataLegalBasis) === '')) {
+            $context->buildViolation('processing_activity.validation.criminal_data_legal_basis_required')
+                ->atPath('criminalDataLegalBasis')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * GDPR Art. 30(1)(d) — categories of recipients are a mandatory record-of-
+     * processing field. An entry without any recipient category (not even an
+     * explicit "internal only") is incomplete for an authority submission.
+     */
+    #[Assert\Callback]
+    public function validateRecipientCategoriesPresent(ExecutionContextInterface $context): void
+    {
+        if ($this->recipientCategories === null || $this->recipientCategories === []) {
+            $context->buildViolation('processing_activity.validation.recipient_categories_required')
+                ->atPath('recipientCategories')
                 ->addViolation();
         }
     }
