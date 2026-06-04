@@ -313,7 +313,7 @@
     <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
     <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-trash"></i></span><div class="fa-modal__heading"><h3 class="fa-modal__title" id="deleteModalLabel">
                     {{ 'management_review.confirm_delete'|trans({}, 'management_review') }}
-                </h3></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                </h3></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
             <div class="fa-modal__body">
                 <p>{{ 'management_review.delete_warning'|trans({'%title%': review.title}, 'management_review') }}</p>
                 <p class="text-muted"><small>{{ 'common.action_irreversible'|trans({}, 'messages') }}</small></p>

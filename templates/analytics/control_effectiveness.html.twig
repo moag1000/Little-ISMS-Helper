@@ -489,6 +489,8 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        // TB-6: { once: true } — anonymous handler is re-registered on each page render by Turbo;
+        // once:true prevents global accumulation. Charts use destroy-before-create for back-nav safety.
         document.addEventListener('turbo:load', function() {
             // Resolve Aurora design-tokens to color strings for Chart.js
             // (Chart.js doesn't resolve CSS custom properties).
@@ -506,6 +508,7 @@
             const statusCtx = document.getElementById('statusDistributionChart');
             if (statusCtx) {
                 const statusData = {{ dashboard.implementation_status|json_encode|raw }};
+                const __existingStatus = Chart.getChart(statusCtx); if (__existingStatus) { __existingStatus.destroy(); }
                 new Chart(statusCtx, {
                     type: 'doughnut',
                     data: {
@@ -541,6 +544,7 @@
             const categoryCtx = document.getElementById('categoryPerformanceChart');
             if (categoryCtx) {
                 const categoryData = {{ category_performance|json_encode|raw }};
+                const __existingCategory = Chart.getChart(categoryCtx); if (__existingCategory) { __existingCategory.destroy(); }
                 new Chart(categoryCtx, {
                     type: 'bar',
                     data: {
@@ -569,6 +573,7 @@
             const agingCtx = document.getElementById('agingDistributionChart');
             if (agingCtx) {
                 const agingData = {{ dashboard.aging_analysis.distribution|json_encode|raw }};
+                const __existingAging = Chart.getChart(agingCtx); if (__existingAging) { __existingAging.destroy(); }
                 new Chart(agingCtx, {
                     type: 'pie',
                     data: {
@@ -599,6 +604,6 @@
                     }
                 });
             }
-        });
+        }, { once: true });
     </script>
 {% endblock %}

@@ -293,10 +293,13 @@
             });
 
             // Initialize all tooltips
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
+            if (window.bootstrap && window.bootstrap.Tooltip) {
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                    bootstrap.Tooltip.getInstance(tooltipTriggerEl)?.dispose();
+                    new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
 
             // Add loading state to review buttons
             const reviewButtons = document.querySelectorAll('a.btn-primary');

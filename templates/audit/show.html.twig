@@ -456,7 +456,7 @@
                         {% if _can_submit and is_granted('ROLE_USER') %}
                             <form method="post" action="{{ path('app_audit_submit_report', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_submit_report') }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary" data-turbo="false">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                     <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i>
                                     {{ 'audit.action.submit_report'|trans({}, 'audit') }}
                                 </button>
@@ -466,7 +466,7 @@
                         {% if _can_resubmit and is_granted('ROLE_USER') %}
                             <form method="post" action="{{ path('app_audit_resubmit_report', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_resubmit_report') }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary" data-turbo="false">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                     <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i>
                                     {{ 'audit.action.resubmit_report'|trans({}, 'audit') }}
                                 </button>
@@ -476,7 +476,7 @@
                         {% if _can_approve and is_granted('ROLE_AUDITOR') %}
                             <form method="post" action="{{ path('app_audit_approve_report', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_approve_report') }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                     {{ 'audit.action.approve_report'|trans({}, 'audit') }}
                                 </button>
@@ -494,7 +494,7 @@
                         {% if _can_close and is_granted('ROLE_MANAGER') %}
                             <form method="post" action="{{ path('app_audit_close', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_close') }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo="false">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
                                     <i class="fa-icon fa-icon--archive" aria-hidden="true"></i>
                                     {{ 'audit.action.close_audit'|trans({}, 'audit') }}
                                 </button>
@@ -569,7 +569,7 @@
                         {% if is_granted('ROLE_USER') %}
                             <form method="post" action="{{ path('app_audit_clone', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('clone_audit_' ~ audit.id) }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                                     <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
                                     {{ 'audit.action.clone'|trans({}, 'audits') }}
                                 </button>
@@ -716,7 +716,7 @@
                 </div>
                 <footer class="fa-modal__footer">
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                         <i class="fa-icon fa-icon--ui-x" aria-hidden="true"></i>
                         {{ 'audit.action.reject_report'|trans({}, 'audit') }}
                     </button>
