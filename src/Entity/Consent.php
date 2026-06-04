@@ -642,6 +642,31 @@ class Consent
         return $this->withdrawnAt !== null;
     }
 
+    /**
+     * Single source of truth for withdrawing consent (GDPR Art. 7(3)).
+     *
+     * Sets BOTH the revocation group (isRevoked/revokedAt/revocationMethod) and
+     * the withdrawal group (withdrawnAt/withdrawalChannel/withdrawalReason)
+     * atomically, so isValid(), isRevoked() and isWithdrawn() can never
+     * disagree. Previously the revoke() action set only the first group and the
+     * edit form set only the second, leaving a consent that could read
+     * "withdrawn" yet still count as valid.
+     */
+    public function recordWithdrawal(?string $channel = null, ?string $reason = null, ?DateTimeImmutable $at = null): static
+    {
+        $at ??= new DateTimeImmutable();
+
+        $this->isRevoked = true;
+        $this->revokedAt = $at;
+        $this->revocationMethod = $channel;
+
+        $this->withdrawnAt = $at;
+        $this->withdrawalChannel = $channel;
+        $this->withdrawalReason = $reason;
+
+        return $this;
+    }
+
     // ═══════════════════════════════════════════════════════════
     // HELPER METHODS
     // ═══════════════════════════════════════════════════════════
@@ -652,6 +677,12 @@ class Consent
     public function isValid(): bool
     {
         if ($this->isRevoked) {
+            return false;
+        }
+
+        // Defense-in-depth: a withdrawal timestamp invalidates the consent even
+        // if the isRevoked flag was somehow not set in lock-step (GDPR Art. 7(3)).
+        if ($this->withdrawnAt !== null) {
             return false;
         }
 

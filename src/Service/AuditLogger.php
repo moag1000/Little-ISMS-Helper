@@ -291,11 +291,11 @@ class AuditLogger
 
         // Set values as JSON
         if ($oldValues !== null) {
-            $auditLog->setOldValues(json_encode($this->sanitizeValues($oldValues), JSON_UNESCAPED_UNICODE));
+            $auditLog->setOldValues(json_encode($this->sanitizeValues($oldValues, $entityType), JSON_UNESCAPED_UNICODE));
         }
 
         if ($newValues !== null) {
-            $auditLog->setNewValues(json_encode($this->sanitizeValues($newValues), JSON_UNESCAPED_UNICODE));
+            $auditLog->setNewValues(json_encode($this->sanitizeValues($newValues, $entityType), JSON_UNESCAPED_UNICODE));
         }
 
         // Persist and flush the audit log immediately
@@ -393,16 +393,56 @@ class AuditLogger
     }
 
     /**
+     * Entities whose change-payload routinely carries personal data (incl.
+     * special-category data). For these, value content of PII-bearing fields is
+     * redacted before it is written into the HMAC-chained, long-retained audit
+     * log — the WHICH-field-changed information (the key) is kept so Art. 5(2)
+     * accountability survives, but the actual personal data does not leak into
+     * immutable storage. Art. 5(1)(c)/(f) GDPR (data minimisation + integrity).
+     */
+    private const array PII_ENTITIES = [
+        'DataBreach',
+        'ProcessingActivity',
+        'DataSubjectRequest',
+        'Consent',
+        'Person',
+        'DataProtectionImpactAssessment',
+    ];
+
+    /**
+     * Field-name fragments (case-insensitive substring) that indicate a value
+     * holds personal data. Only applied within PII_ENTITIES — structural keys
+     * (status, dates, ids, risk levels, booleans, counts) do not match and stay
+     * readable for audit context.
+     */
+    private const array PII_KEY_FRAGMENTS = [
+        'name', 'email', 'mail', 'phone', 'tel', 'mobile', 'fax',
+        'address', 'street', 'city', 'postal', 'zip', 'country',
+        'description', 'detail', 'note', 'comment', 'content', 'subject',
+        'reason', 'feedback', 'advice', 'consequence', 'measure',
+        'datacategor', 'datasubject', 'affected', 'identifier', 'ipaddress',
+        'firstname', 'lastname', 'fullname', 'birth', 'ssn', 'tax',
+    ];
+
+    /**
      * Sanitize values for storage (remove sensitive data, convert objects, etc.)
      */
-    private function sanitizeValues(array $values): array
+    private function sanitizeValues(array $values, ?string $entityType = null): array
     {
         $sanitized = [];
+        $redactPii = $entityType !== null
+            && in_array($this->getShortEntityName($entityType), self::PII_ENTITIES, true);
 
         foreach ($values as $key => $value) {
-            // Skip password fields
+            // Skip password fields (global, all entities)
             if (stripos((string) $key, 'password') !== false || stripos((string) $key, 'token') !== false) {
                 $sanitized[$key] = '***';
+                continue;
+            }
+
+            // Redact personal-data field VALUES for PII entities, keep the key.
+            if ($redactPii && $this->isPiiKey((string) $key)) {
+                $sanitized[$key] = '[pii-redacted]';
                 continue;
             }
 
@@ -428,6 +468,31 @@ class AuditLogger
         }
 
         return $sanitized;
+    }
+
+    /**
+     * Normalise an entity-type string (FQCN or already-short) to its short name.
+     * Callers pass either Foo::class or "Foo" inconsistently.
+     */
+    private function getShortEntityName(string $entityType): string
+    {
+        $pos = strrpos($entityType, '\\');
+        return $pos === false ? $entityType : substr($entityType, $pos + 1);
+    }
+
+    /**
+     * True when a field key indicates a personal-data value (PII entities only).
+     */
+    private function isPiiKey(string $key): bool
+    {
+        $lower = strtolower($key);
+        foreach (self::PII_KEY_FRAGMENTS as $fragment) {
+            if (str_contains($lower, $fragment)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
