@@ -15,6 +15,7 @@ use App\Repository\DataSubjectRequestRepository;
 use App\Service\AuditLogger;
 use App\Service\DataSubjectRequestService;
 use App\Service\ModuleConfigurationService;
+use App\Service\PersonalDataExportService;
 use App\Service\TenantContext;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,6 +56,7 @@ class DataSubjectRequestController extends AbstractController
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?DataSubjectRequestRepository $dataSubjectRequestRepository = null,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?PersonalDataExportService $personalDataExportService = null,
     ) {
     }
 
@@ -208,6 +210,40 @@ class DataSubjectRequestController extends AbstractController
         }
 
         return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
+    }
+
+    /**
+     * Structured, machine-readable personal-data export (GDPR Art. 15 + 20).
+     * Identity-gated like complete() — releasing the subject's data to an
+     * unverified person would itself be a breach (Art. 12(6)).
+     */
+    #[Route('/{id}/export-personal-data', name: 'export_personal_data', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function exportPersonalData(DataSubjectRequest $dsr): Response
+    {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
+        if (!$dsr->isIdentityVerified()) {
+            $this->flashError('dsr.flash.identity_required_for_export');
+            return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
+        }
+
+        $payload = $this->personalDataExportService->buildExport($dsr);
+        $json = $this->personalDataExportService->toJson($payload);
+
+        $this->auditLogger?->logExport(
+            'DataSubjectRequest',
+            $dsr->getId(),
+            'Personal-data export (GDPR Art. 15/20) generated',
+        );
+
+        $response = new Response($json);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set(
+            'Content-Disposition',
+            sprintf('attachment; filename="personal-data-export-%d.json"', $dsr->getId()),
+        );
+
+        return $response;
     }
 
     /**
