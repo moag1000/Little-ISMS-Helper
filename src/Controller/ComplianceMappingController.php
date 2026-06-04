@@ -13,6 +13,7 @@ use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\AuditLogger;
 use App\Service\ComplianceMappingService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,6 +31,7 @@ class ComplianceMappingController extends AbstractController
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly ComplianceMappingService $complianceMappingService,
         private readonly EntityManagerInterface $entityManager,
+        private readonly TenantContext $tenantContext,
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
         private readonly ?TranslatorInterface $translator = null,
         private readonly ?AuditLogger $auditLogger = null,
@@ -52,11 +54,10 @@ class ComplianceMappingController extends AbstractController
             ? count($this->frameworkRepository->findBy(['active' => true]))
             : 0;
 
-        $recent = $this->complianceMappingRepository->findBy(
-            [],
-            ['updatedAt' => 'DESC', 'id' => 'DESC'],
-            5,
-        );
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $recent = $tenant !== null
+            ? $this->complianceMappingRepository->findRecentForTenant($tenant, 5)
+            : [];
 
         return $this->render('compliance/mapping/hub.html.twig', [
             'stats' => $stats,
@@ -71,13 +72,20 @@ class ComplianceMappingController extends AbstractController
     {
         $requirementId = $request->query->get('requirement');
 
+        $tenant = $this->tenantContext->getCurrentTenant();
+
         if ($requirementId) {
             $requirement = $this->complianceRequirementRepository->find($requirementId);
             $mappings = $requirement
                 ? $this->complianceMappingRepository->findBySourceRequirement($requirement)
                 : [];
         } else {
-            $mappings = $this->complianceMappingRepository->findAll();
+            // E-6 bug-fix: was findAll() — leaks cross-tenant rows.
+            // Use tenant-scoped finder: returns global (system) mappings
+            // plus any tenant-uploaded requirement mappings for this tenant.
+            $mappings = $tenant !== null
+                ? $this->complianceMappingRepository->findAllForTenant($tenant)
+                : [];
         }
 
         return $this->render('compliance/mapping/index.html.twig', [

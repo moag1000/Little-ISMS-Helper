@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceFramework;
+use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,11 +18,28 @@ use Doctrine\Persistence\ManagerRegistry;
  * Repository for querying ComplianceMapping entities with cross-framework correlation and transitive compliance analysis.
  * Supports framework gap analysis, coverage calculation, and compliance reuse across different regulatory frameworks.
  *
+ * TENANT-ISOLATION NOTE
+ * ─────────────────────
+ * ComplianceMapping has no direct tenant_id column. Tenant scoping is achieved via
+ * the FK chain:  mapping → sourceRequirement.uploadTenant / targetRequirement.uploadTenant
+ *
+ * • ComplianceRequirement rows with uploadTenant = NULL are *global system rows*
+ *   (shipped with the application). They are shared infrastructure and are visible
+ *   to all tenants.
+ * • ComplianceRequirement rows with uploadTenant set are *tenant-uploaded rows*
+ *   (e.g. customer VDA-ISA workbooks). A mapping that touches such a row MUST only
+ *   be visible to the owning tenant.
+ *
+ * Therefore:
+ *   - Tenant UI listings: use findAllForTenant() / findRecentForTenant()
+ *   - Admin / seed / quality operations: use findAllGlobal() and document why
+ *   - NEVER call the inherited findAll() in production code — it leaks cross-tenant
+ *     rows and is blocked by the override below.
+ *
  * @extends ServiceEntityRepository<ComplianceMapping>
  *
  * @method ComplianceMapping|null find($id, $lockMode = null, $lockVersion = null)
  * @method ComplianceMapping|null findOneBy(array $criteria, array $orderBy = null)
- * @method ComplianceMapping[]    findAll()
  * @method ComplianceMapping[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ComplianceMappingRepository extends ServiceEntityRepository
@@ -29,6 +47,90 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ComplianceMapping::class);
+    }
+
+    /**
+     * BLOCKED — use findAllForTenant() or findAllGlobal() instead.
+     *
+     * This override intentionally throws to catch future misuse early. The
+     * inherited ServiceEntityRepository::findAll() returns every row in the
+     * table across all tenants; calling it from tenant-UI code is a data-leak.
+     *
+     * @throws \LogicException always
+     * @return never
+     */
+    public function findAll(): array
+    {
+        throw new \LogicException(
+            'ComplianceMappingRepository::findAll() is blocked — it leaks rows across tenants. '
+            . 'For tenant UI listings use findAllForTenant($tenant). '
+            . 'For admin/seed/quality operations use findAllGlobal() and document the reason.'
+        );
+    }
+
+    /**
+     * Return all mappings visible to the given tenant:
+     *   (a) mappings where BOTH requirements are global (uploadTenant IS NULL), OR
+     *   (b) mappings where at least one requirement belongs to this tenant.
+     *
+     * This is the correct default for tenant-facing controller actions.
+     *
+     * @return ComplianceMapping[]
+     */
+    public function findAllForTenant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('cm')
+            ->join('cm.sourceRequirement', 'sr')
+            ->join('cm.targetRequirement', 'tr')
+            ->where(
+                '(sr.uploadTenant IS NULL AND tr.uploadTenant IS NULL) '
+                . 'OR sr.uploadTenant = :tenant '
+                . 'OR tr.uploadTenant = :tenant'
+            )
+            ->setParameter('tenant', $tenant)
+            ->orderBy('cm.updatedAt', 'DESC')
+            ->addOrderBy('cm.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Return the N most-recently updated mappings visible to the given tenant.
+     * Used by the Mapping-Hub "Last 5" KPI strip.
+     *
+     * @return ComplianceMapping[]
+     */
+    public function findRecentForTenant(Tenant $tenant, int $limit = 5): array
+    {
+        return $this->createQueryBuilder('cm')
+            ->join('cm.sourceRequirement', 'sr')
+            ->join('cm.targetRequirement', 'tr')
+            ->where(
+                '(sr.uploadTenant IS NULL AND tr.uploadTenant IS NULL) '
+                . 'OR sr.uploadTenant = :tenant '
+                . 'OR tr.uploadTenant = :tenant'
+            )
+            ->setParameter('tenant', $tenant)
+            ->orderBy('cm.updatedAt', 'DESC')
+            ->addOrderBy('cm.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Return ALL mappings without tenant filtering.
+     *
+     * ONLY for admin / seed / quality-pipeline operations that legitimately
+     * operate on the full dataset (e.g. duplicate-pair detection during
+     * automated seeding, MQS backfill, sanity-check commands, review-queue
+     * dashboards). MUST NOT be used in tenant-facing controller actions.
+     *
+     * @return ComplianceMapping[]
+     */
+    public function findAllGlobal(): array
+    {
+        return parent::findAll();
     }
 
     /**
@@ -776,6 +878,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      * Bidirectional mappings indicate strong equivalence between requirements across frameworks,
      * enabling dual compliance with single implementation.
      *
+     * CROSS-TENANT — for admin/quality use only. See class docblock for guidance.
+     *
      * @return ComplianceMapping[] Array of bidirectional mappings
      */
     public function findBidirectionalMappings(): array
@@ -789,6 +893,9 @@ class ComplianceMappingRepository extends ServiceEntityRepository
 
     /**
      * Get comprehensive mapping statistics for system overview.
+     *
+     * CROSS-TENANT aggregate — acceptable for hub KPI strip (counts are global
+     * infrastructure, not tenant-private data). See class docblock.
      *
      * @return array{total_mappings: int, full_mappings: int, exceeds_mappings: int, partial_mappings: int, bidirectional_mappings: int} Mapping statistics
      */
@@ -1209,7 +1316,11 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find mappings that require manual review
+     * Find mappings that require manual review — CROSS-TENANT, quality/admin use only.
+     *
+     * Returns rows across all tenants without filtering. Call only from quality
+     * dashboards (MappingQualityController) or CLI commands. Do NOT call from
+     * tenant-facing controllers.
      *
      * @return ComplianceMapping[]
      */
@@ -1227,7 +1338,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find mappings with low confidence
+     * Find mappings with low confidence — CROSS-TENANT, quality/admin use only.
+     * See class docblock for tenant-isolation guidance.
      *
      * @return ComplianceMapping[]
      */
@@ -1242,7 +1354,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find mappings with low quality score
+     * Find mappings with low quality score — CROSS-TENANT, quality/admin use only.
+     * See class docblock for tenant-isolation guidance.
      *
      * @return ComplianceMapping[]
      */
@@ -1257,7 +1370,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find mappings with manual overrides
+     * Find mappings with manual overrides — CROSS-TENANT, quality/admin use only.
+     * See class docblock for tenant-isolation guidance.
      *
      * @return ComplianceMapping[]
      */
@@ -1271,7 +1385,10 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get quality statistics for all mappings
+     * Get quality statistics for all mappings.
+     *
+     * CROSS-TENANT aggregate — for quality dashboards and admin use only.
+     * See class docblock for tenant-isolation guidance.
      */
     public function getQualityStatistics(): array
     {
