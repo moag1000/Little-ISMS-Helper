@@ -1,0 +1,177 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'tia' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% block title %}{{ tia.displayName }} – TIA{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {# Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'GDPR',  url: path('app_processing_activity_index'), icon: 'shield-check' },
+            { label: 'VVT',   url: path('app_processing_activity_index') },
+            { label: processing_activity.name, url: path('app_processing_activity_show', {id: processing_activity.id}) },
+            { label: 'TIA' }
+        ]
+    } %}
+
+    {# Page Header #}
+    {{ _fa_page_header.render({
+        badge:    { icon: 'compliance-shield', label: 'TIA · Art. 46/49' },
+        title:    tia.displayName,
+        subtitle: 'tia.page.subtitle'|trans({}, 'tia'),
+        actions: [
+            tia.status == 'draft' ? { label: 'tia.action.edit'|trans({}, 'tia'), variant: 'primary', icon: 'ui-edit', href: path('app_tia_edit', {paId: processing_activity.id, id: tia.id}) } : null,
+            { label: 'tia.action.back'|trans({}, 'tia'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_processing_activity_show', {id: processing_activity.id}) }
+        ]|filter(a => a is not null)
+    }) }}
+
+    {# Status chip #}
+    <div class="d-flex align-items-center gap-2 mb-3">
+        {% if tia.status == 'assessed' %}
+            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'tia.status.assessed'|trans({}, 'tia') } %}
+        {% else %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'tia.status.draft'|trans({}, 'tia') } %}
+        {% endif %}
+
+        {% if tia.residualRiskRating == 'high' %}
+            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'tia.risk.high'|trans({}, 'tia') } %}
+        {% elseif tia.residualRiskRating == 'medium' %}
+            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'tia.risk.medium'|trans({}, 'tia') } %}
+        {% elseif tia.residualRiskRating == 'low' %}
+            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'tia.risk.low'|trans({}, 'tia') } %}
+        {% endif %}
+    </div>
+
+    {# High-risk warning banner #}
+    {% if tia.residualRiskRating == 'high' %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger' } } %}
+            {% block alert_body %}
+                {% trans_default_domain 'tia' %}
+                <div class="fa-alert__title">{{ 'tia.warning.high_risk_title'|trans({}, 'tia') }}</div>
+                <p>{{ 'tia.warning.high_risk_body'|trans({}, 'tia') }}</p>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
+    {# TIA detail card #}
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            {% trans_default_domain 'tia' %}
+
+            {# ── UX tooltip: what is a TIA? ────────────────────────────────── #}
+            <div class="alert alert-info d-flex align-items-start gap-2 mb-3" role="note">
+                <i class="fa-icon fa-icon--ui-info-circle flex-shrink-0 mt-1" aria-hidden="true"></i>
+                <div>
+                    <strong>{{ 'tia.help.concept_title'|trans({}, 'tia') }}</strong>
+                    {{ 'tia.help.concept_body'|trans({}, 'tia') }}
+                    <br><small class="text-muted">{{ 'tia.help.norm_ref'|trans({}, 'tia') }}</small>
+                </div>
+            </div>
+
+            <h2 class="h5">{{ 'tia.section.overview'|trans({}, 'tia') }}</h2>
+            <dl class="row">
+                <dt class="col-sm-4">{{ 'tia.field.destination_country'|trans({}, 'tia') }}:</dt>
+                <dd class="col-sm-8">{{ tia.destinationCountry ?? '—' }}</dd>
+
+                <dt class="col-sm-4">{{ 'tia.field.recipient_name'|trans({}, 'tia') }}:</dt>
+                <dd class="col-sm-8">{{ tia.recipientName ?? '—' }}</dd>
+
+                <dt class="col-sm-4">{{ 'tia.field.transfer_mechanism'|trans({}, 'tia') }}:</dt>
+                <dd class="col-sm-8">
+                    {% if tia.transferMechanism %}
+                        {% include '_components/_badge.html.twig' with {
+                            variant: 'info',
+                            content: ('tia.mechanism.' ~ tia.transferMechanism)|trans({}, 'tia')
+                        } %}
+                    {% else %}—{% endif %}
+                </dd>
+
+                <dt class="col-sm-4">{{ 'tia.field.processing_activity'|trans({}, 'tia') }}:</dt>
+                <dd class="col-sm-8">
+                    <a href="{{ path('app_processing_activity_show', {id: processing_activity.id}) }}">
+                        {{ processing_activity.name }}
+                    </a>
+                </dd>
+            </dl>
+
+            <hr>
+
+            <h2 class="h5">{{ 'tia.section.assessment'|trans({}, 'tia') }}</h2>
+            <dl class="row">
+                <dt class="col-sm-4">{{ 'tia.field.law_surveillance_risk'|trans({}, 'tia') }}:</dt>
+                <dd class="col-sm-8">{{ tia.lawSurveillanceRisk ?? '—' }}</dd>
+
+                <dt class="col-sm-4">{{ 'tia.field.supplementary_measures'|trans({}, 'tia') }}:</dt>
+                <dd class="col-sm-8">{{ tia.supplementaryMeasures ?? ('tia.show.none_documented'|trans({}, 'tia')) }}</dd>
+            </dl>
+
+            <hr>
+
+            <h2 class="h5">{{ 'tia.section.conclusion'|trans({}, 'tia') }}</h2>
+            <dl class="row">
+                <dt class="col-sm-4">{{ 'tia.field.residual_risk_rating'|trans({}, 'tia') }}:</dt>
+                <dd class="col-sm-8">
+                    {% if tia.residualRiskRating %}
+                        {% set riskVariant = tia.residualRiskRating == 'high' ? 'danger' : (tia.residualRiskRating == 'medium' ? 'warning' : 'success') %}
+                        {% include '_components/_badge.html.twig' with {
+                            variant: riskVariant,
+                            content: ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia')
+                        } %}
+                    {% else %}—{% endif %}
+                </dd>
+
+                <dt class="col-sm-4">{{ 'tia.field.conclusion'|trans({}, 'tia') }}:</dt>
+                <dd class="col-sm-8">{{ tia.conclusion ?? '—' }}</dd>
+            </dl>
+
+            {% if tia.status == 'assessed' %}
+                <hr>
+                <dl class="row">
+                    <dt class="col-sm-4">{{ 'tia.field.assessed_at'|trans({}, 'tia') }}:</dt>
+                    <dd class="col-sm-8">{{ tia.assessedAt ? tia.assessedAt|date('Y-m-d') : '—' }}</dd>
+
+                    <dt class="col-sm-4">{{ 'tia.field.assessed_by'|trans({}, 'tia') }}:</dt>
+                    <dd class="col-sm-8">{{ tia.assessedBy ? tia.assessedBy.userIdentifier : '—' }}</dd>
+                </dl>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
+    {# Assess action (only for drafts) #}
+    {% if tia.status == 'draft' %}
+        {% embed '_components/_card.html.twig' %}
+            {% block card_body %}
+                {% trans_default_domain 'tia' %}
+                <h2 class="h5">{{ 'tia.action.assess_title'|trans({}, 'tia') }}</h2>
+                <p class="text-muted">{{ 'tia.action.assess_description'|trans({}, 'tia') }}</p>
+                <form method="post" action="{{ path('app_tia_assess', {paId: processing_activity.id, id: tia.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('assess' ~ tia.id) }}">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                        {{ 'tia.action.assess'|trans({}, 'tia') }}
+                    </button>
+                    {% if tia.residualRiskRating == 'high' %}
+                        <small class="text-muted ms-2">{{ 'tia.action.assess_high_risk_note'|trans({}, 'tia') }}</small>
+                    {% endif %}
+                </form>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
+    {# Delete action (ROLE_MANAGER) #}
+    {% if is_granted('ROLE_MANAGER') %}
+        <div class="mt-3">
+            <form method="post" action="{{ path('app_tia_delete', {paId: processing_activity.id, id: tia.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tia.id) }}">
+                <button type="button" class="btn btn-sm btn-outline-danger"
+                        onclick="window.faConfirm && window.faConfirm('{{ 'tia.confirm.delete'|trans({}, 'tia') }}').then(ok => { if(ok) this.closest('form').submit(); })">
+                    <i class="fa-icon fa-icon--util-trash" aria-hidden="true"></i>
+                    {{ 'tia.action.delete'|trans({}, 'tia') }}
+                </button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

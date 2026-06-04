@@ -12,6 +12,7 @@ use App\Controller\Trait\BulkActionTrait;
 use App\Entity\ProcessingActivity;
 use App\Entity\Supplier;
 use App\Entity\User;
+use App\Repository\TransferImpactAssessmentRepository;
 use App\Form\ProcessingActivityType;
 use App\Lifecycle\LifecycleService;
 use App\Repository\ProcessingActivityRepository;
@@ -55,6 +56,7 @@ class ProcessingActivityController extends AbstractController
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?LifecycleService $lifecycleService = null,
         private readonly ?Security $security = null,
+        private readonly ?TransferImpactAssessmentRepository $tiaRepository = null,
     ) {}
 
     /**
@@ -604,9 +606,15 @@ class ProcessingActivityController extends AbstractController
 
         $complianceReport = $this->processingActivityService->generateComplianceReport($processingActivity);
 
+        // TIA panel: load TIAs for this PA (only when third-country transfer is flagged)
+        $tias = $processingActivity->getHasThirdCountryTransfer() && $this->tiaRepository !== null
+            ? $this->tiaRepository->findByProcessingActivity($processingActivity)
+            : [];
+
         return $this->render('processing_activity/show.html.twig', [
             'processing_activity' => $processingActivity,
-            'compliance_report' => $complianceReport,
+            'compliance_report'   => $complianceReport,
+            'tias'                => $tias,
         ]);
     }
 

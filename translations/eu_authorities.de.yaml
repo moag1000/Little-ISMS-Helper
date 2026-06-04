@@ -236,6 +236,87 @@ authority:
     lfdi:
         name: 'LfDI'
         description: 'Landesbeauftragte/r für den Datenschutz und die Informationsfreiheit'
+        # F25 — per-Bundesland name + postal address blocks (one parametrized template, key-driven)
+        bw:
+            name: 'Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg'
+            address_line1: 'Lautenschlagerstraße 20'
+            address_line2: '70173 Stuttgart'
+            address_line3: 'Deutschland'
+        by:
+            name: 'Bayerisches Landesamt für Datenschutzaufsicht (BayLDA)'
+            address_line1: 'Promenade 18'
+            address_line2: '91522 Ansbach'
+            address_line3: 'Deutschland'
+        ber:
+            name: 'Berliner Beauftragte für Datenschutz und Informationsfreiheit (BlnBDI)'
+            address_line1: 'Alt-Moabit 59-61'
+            address_line2: '10555 Berlin'
+            address_line3: 'Deutschland'
+        brb:
+            name: 'Die Landesbeauftragte für den Datenschutz und für das Recht auf Akteneinsicht Brandenburg (LDA Brandenburg)'
+            address_line1: 'Stahnsdorfer Damm 77'
+            address_line2: '14532 Kleinmachnow'
+            address_line3: 'Deutschland'
+        hb:
+            name: 'Die Landesbeauftragte für Datenschutz und Informationsfreiheit der Freien Hansestadt Bremen (LfDI Bremen)'
+            address_line1: 'Arndtstraße 1'
+            address_line2: '27570 Bremerhaven'
+            address_line3: 'Deutschland'
+        hh:
+            name: 'Der Hamburgische Beauftragte für Datenschutz und Informationsfreiheit (HmbBfDI)'
+            address_line1: 'Ludwig-Erhard-Str. 22, 7. OG'
+            address_line2: '20459 Hamburg'
+            address_line3: 'Deutschland'
+        he:
+            name: 'Der Hessische Beauftragte für Datenschutz und Informationsfreiheit (HBDI)'
+            address_line1: 'Postfach 3163'
+            address_line2: '65021 Wiesbaden'
+            address_line3: 'Deutschland'
+        mv:
+            name: 'Der Landesbeauftragte für Datenschutz und Informationsfreiheit Mecklenburg-Vorpommern (LfDI MV)'
+            address_line1: 'Schloss Schwerin, Lennéstraße 1'
+            address_line2: '19053 Schwerin'
+            address_line3: 'Deutschland'
+        ni:
+            name: 'Die Landesbeauftragte für den Datenschutz Niedersachsen (LfDI Nds.)'
+            address_line1: 'Prinzenstraße 5'
+            address_line2: '30159 Hannover'
+            address_line3: 'Deutschland'
+        nrw:
+            name: 'Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen (LfDI NRW)'
+            address_line1: 'Kavalleriestraße 2-4'
+            address_line2: '40213 Düsseldorf'
+            address_line3: 'Deutschland'
+        rlp:
+            name: 'Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Rheinland-Pfalz (LfDI RLP)'
+            address_line1: 'Hintere Bleiche 34'
+            address_line2: '55116 Mainz'
+            address_line3: 'Deutschland'
+        sl:
+            name: 'Unabhängiges Datenschutzzentrum Saarland (ULD SL) / Landesbeauftragte für Datenschutz und Informationsfreiheit'
+            address_line1: 'Fritz-Dobisch-Straße 12'
+            address_line2: '66111 Saarbrücken'
+            address_line3: 'Deutschland'
+        sn:
+            name: 'Der Sächsische Landesbeauftragte für den Datenschutz (SLfDI)'
+            address_line1: 'Devrientstraße 5'
+            address_line2: '01067 Dresden'
+            address_line3: 'Deutschland'
+        st:
+            name: 'Landesbeauftragter für den Datenschutz Sachsen-Anhalt (LfDI LSA)'
+            address_line1: 'Leiterstraße 9'
+            address_line2: '39104 Magdeburg'
+            address_line3: 'Deutschland'
+        sh:
+            name: 'Unabhängiges Landeszentrum für Datenschutz Schleswig-Holstein (ULD SH)'
+            address_line1: 'Holstenstraße 98'
+            address_line2: '24103 Kiel'
+            address_line3: 'Deutschland'
+        th:
+            name: 'Thüringer Landesbeauftragter für den Datenschutz und die Informationsfreiheit (TLfDI)'
+            address_line1: 'Häßlerstraße 8'
+            address_line2: '99096 Erfurt'
+            address_line3: 'Deutschland'
     bundesland:
         bw: 'Baden-Württemberg (LfDI BW)'
         by: 'Bayern (LDA Bayern)'
@@ -253,6 +334,28 @@ authority:
         st: 'Sachsen-Anhalt (LfDI LSA)'
         sh: 'Schleswig-Holstein (ULD SH)'
         th: 'Thüringen (TLfDI)'
+    # F26 — non-DE national + sectoral authority metadata
+    dsb_at:
+        name: 'Österreichische Datenschutzbehörde (DSB)'
+        description: 'Nationale Datenschutzbehörde Österreichs gemäß DSGVO Art. 77 / DSG'
+        address_line1: 'Barichgasse 40-42'
+        address_line2: '1030 Wien'
+        address_line3: 'Österreich'
+        regulation: 'DSGVO Art. 33 i.V.m. österreichischem DSG'
+    edoeb_ch:
+        name: 'Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter (EDÖB)'
+        description: 'Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter gemäß Schweizer nDSG'
+        address_line1: 'Feldeggweg 1'
+        address_line2: '3003 Bern'
+        address_line3: 'Schweiz'
+        regulation: 'Bundesgesetz über den Datenschutz (nDSG) Art. 24'
+    bafin_dora:
+        name: 'Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin) — DORA ICT'
+        description: 'BaFin als zuständige Behörde für DORA-IKT-Vorfallsmeldungen im Finanzsektor (DE)'
+        address_line1: 'Marie-Curie-Straße 24-28'
+        address_line2: '60439 Frankfurt am Main'
+        address_line3: 'Deutschland'
+        regulation: 'DORA Art. 19 — Meldung erheblicher IKT-bezogener Vorfälle'
     action:
         export_pdf: 'PDF exportieren'
         export_json: 'JSON exportieren'

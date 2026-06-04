@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'tia' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% block title %}{{ 'tia.page.new_title'|trans({}, 'tia') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {# Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'shield-check' },
+            { label: 'VVT',  url: path('app_processing_activity_index') },
+            { label: processing_activity.name, url: path('app_processing_activity_show', {id: processing_activity.id}) },
+            { label: 'tia.page.new_title'|trans({}, 'tia') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge:    { icon: 'compliance-shield', label: 'TIA · Art. 46/49' },
+        title:    'tia.page.new_title'|trans({}, 'tia'),
+        subtitle: 'tia.page.new_subtitle'|trans({}, 'tia')
+    }) }}
+
+    {# UX tooltip — junior onboarding #}
+    <div class="alert alert-info d-flex align-items-start gap-2 mb-4" role="note">
+        <i class="fa-icon fa-icon--ui-info-circle flex-shrink-0 mt-1" aria-hidden="true"></i>
+        <div>
+            <strong>{{ 'tia.help.concept_title'|trans({}, 'tia') }}</strong>
+            {{ 'tia.help.concept_body'|trans({}, 'tia') }}
+            <br><small class="text-muted">{{ 'tia.help.norm_ref'|trans({}, 'tia') }}</small>
+        </div>
+    </div>
+
+    {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+
+        {# Section: Overview #}
+        {% embed '_components/_card.html.twig' %}
+            {% block card_body %}
+                {% trans_default_domain 'tia' %}
+                <h2 class="h5 mb-3">{{ 'tia.section.overview'|trans({}, 'tia') }}</h2>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        {{ form_row(form.destinationCountry) }}
+                    </div>
+                    <div class="col-md-5">
+                        {{ form_row(form.recipientName) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.transferMechanism) }}
+                    </div>
+                </div>
+            {% endblock %}
+        {% endembed %}
+
+        {# Section: Assessment #}
+        {% embed '_components/_card.html.twig' %}
+            {% block card_body %}
+                {% trans_default_domain 'tia' %}
+                <h2 class="h5 mb-3">{{ 'tia.section.assessment'|trans({}, 'tia') }}</h2>
+                {{ form_row(form.lawSurveillanceRisk) }}
+                {{ form_row(form.supplementaryMeasures) }}
+            {% endblock %}
+        {% endembed %}
+
+        {# Section: Conclusion #}
+        {% embed '_components/_card.html.twig' %}
+            {% block card_body %}
+                {% trans_default_domain 'tia' %}
+                <h2 class="h5 mb-3">{{ 'tia.section.conclusion'|trans({}, 'tia') }}</h2>
+                {{ form_row(form.residualRiskRating) }}
+                {{ form_row(form.conclusion) }}
+            {% endblock %}
+        {% endembed %}
+
+        <div class="d-flex gap-2 mb-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-icon fa-icon--check" aria-hidden="true"></i>
+                {{ 'tia.action.save'|trans({}, 'tia') }}
+            </button>
+            <a href="{{ path('app_processing_activity_show', {id: processing_activity.id}) }}" class="btn btn-ghost">
+                {{ 'tia.action.cancel'|trans({}, 'tia') }}
+            </a>
+        </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}

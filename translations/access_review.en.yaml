@@ -1,0 +1,103 @@
+access_review:
+  title: Access Review
+  badge: UAR
+  subtitle: Periodic review and recertification of access rights
+  new_campaign: New Campaign
+  create_campaign: Create Campaign
+  close_campaign: Close Campaign
+  items_title: Review Items
+  empty_items: This campaign has no items yet.
+  table_caption: User Access Recertification Campaigns
+
+  # ISO tooltip for junior users
+  tooltip:
+    title: What is User Access Recertification?
+    body: >
+      User Access Recertification (UAR) means periodically checking who is allowed
+      to keep which access. Reviewers approve or revoke access rights for each
+      affected user/role pair.
+    norm: 'Standards: ISO 27001 A.5.18 / A.8.2 · NIS2 Art. 21(2)(e) · BSI ORP.4'
+
+  field:
+    name: Campaign Name
+    name_placeholder: e.g. Q2-2026 Privileged Access Review
+    scope: Scope
+    due_date: Due Date
+    status: Status
+    items: Items (open)
+    pending: pending
+    subject_user: User
+    reviewed_role: Role
+    decision: Decision
+    decided_by: Decided By
+
+  scope:
+    all_users: All Users
+    privileged: Privileged Roles Only
+
+  scope_help: >
+    "All Users" covers every active user in the tenant.
+    "Privileged Roles Only" restricts review to elevated roles
+    (ROLE_ADMIN, ROLE_MANAGER, ROLE_SUPER_ADMIN and persona roles).
+
+  due_date_help: >
+    Campaign deadline. SLA reminders are sent 7 days, 3 days, and
+    1 day before the due date.
+
+  status:
+    open: Open
+    closed: Closed
+
+  decision:
+    pending: Pending
+    approved: Approved
+    revoked: Revoked
+    escalated: Escalated
+
+  action:
+    approve: Approve
+    revoke: Revoke
+    escalate: Escalate
+    close_confirm: Close Campaign
+
+  aria:
+    approve_item: 'Approve role %role% for user %user%'
+    revoke_item: 'Revoke role %role% for user %user%'
+    escalate_item: 'Escalate role %role% for user %user%'
+
+  stage:
+    title: Campaign Status
+    aria_label: Access review campaign stages
+    campaign_open: Campaign Started
+    campaign_open_desc: '%total% items have been created.'
+    review_in_progress: Review in Progress
+    review_in_progress_desc: '%pending% of %total% items still pending.'
+    badge_pending: '%count% pending'
+    campaign_closed: Campaign Completed
+    campaign_closed_desc: '%approved% approved · %revoked% revoked/escalated.'
+
+  modal:
+    close_title: Close Campaign
+    close_body: >
+      Once closed, no further decisions can be recorded.
+      Items still pending: %pending%.
+      Close this campaign now?
+
+  empty:
+    title: No campaigns yet
+    body: >
+      Create an access review campaign to periodically verify who
+      should retain which access rights (ISO 27001 A.5.18).
+
+  flash:
+    campaign_created: Campaign created successfully. Review items have been generated.
+    campaign_closed: Campaign has been closed.
+    decision_saved: 'Decision "%decision%" saved.'
+    campaign_already_closed: This campaign is already closed.
+    invalid_decision: Invalid decision.
+
+  stats:
+    total: Total
+    pending: Pending
+    approved: Approved
+    revoked: Revoked/Escalated

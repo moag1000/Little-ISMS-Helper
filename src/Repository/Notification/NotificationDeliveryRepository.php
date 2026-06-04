@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Notification;
 
+use App\Entity\Notification\NotificationChannel;
 use App\Entity\Notification\NotificationDelivery;
 use App\Entity\Notification\NotificationRule;
 use App\Entity\Tenant;
@@ -57,6 +58,41 @@ class NotificationDeliveryRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant)
             ->setParameter('since', $since)
             ->orderBy('d.attemptedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * F3 digest mode — find all deliveries queued for digest on a specific channel.
+     * Ordered oldest-first so the digest email presents events chronologically.
+     *
+     * @return NotificationDelivery[]
+     */
+    public function findPendingDigestByChannel(NotificationChannel $channel): array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.status = :status')
+            ->andWhere('d.channel = :channel')
+            ->setParameter('status', NotificationDelivery::STATUS_PENDING_DIGEST)
+            ->setParameter('channel', $channel)
+            ->orderBy('d.attemptedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * F3 digest mode — find all active email channels that have at least one
+     * pending_digest delivery. Returns distinct channels across all tenants.
+     *
+     * @return NotificationChannel[]
+     */
+    public function findChannelsWithPendingDigests(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->select('DISTINCT c')
+            ->join('d.channel', 'c')
+            ->where('d.status = :status')
+            ->setParameter('status', NotificationDelivery::STATUS_PENDING_DIGEST)
             ->getQuery()
             ->getResult();
     }

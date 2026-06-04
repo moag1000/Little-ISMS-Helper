@@ -81,6 +81,20 @@ modules:
       - /training
     dependencies: []
 
+  access_review:
+    name: 'Zugriffsrezertifizierung (UAR)'
+    description: 'ISO 27001 A.5.18 / A.8.2 + NIS2 Art. 21(2)(e) + BSI ORP.4 — periodische Prüfung und Rezertifizierung wer welchen Zugriff behalten darf. Kampagnen-basiert: eine Kampagne erzeugt pro Nutzer/Rolle ein Review-Item; Reviewer genehmigt oder widerruft.'
+    required: false
+    icon: 'person-check'
+    entities:
+      - AccessReviewCampaign
+      - AccessReviewItem
+    routes:
+      - /access-review
+    dependencies:
+      - authentication
+      - audit_logging
+
   reviews:
     name: 'Management Review'
     description: 'Management-Bewertungen des ISMS'

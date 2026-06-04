@@ -119,6 +119,42 @@ final class AuthorityNotificationGenerator
         return $pdf;
     }
 
+    // ── Generic (AT/CH/BaFin-DORA) ───────────────────────────────────────────
+
+    /**
+     * Generate a generic authority notification PDF for non-DE / sectoral authorities.
+     *
+     * Reuses the same parametrized template as the LfDI path; the authority
+     * header (name, address, regulation) is resolved from the eu_authorities
+     * translation data inside the template via the authority_key variable.
+     *
+     * Supported keys: dsb_at, edoeb_ch, bafin_dora
+     *
+     * @throws \App\Exception\Regulatory\FrameworkNotActivatedException on unknown key
+     */
+    public function generateGenericBreachPdf(DataBreach $breach, Tenant $tenant, string $authorityKey): string
+    {
+        $this->assertGenericKey($authorityKey);
+
+        $template = $this->templateRepository->findOneByTenantAndKey($tenant, $authorityKey);
+        $data = $this->buildBreachPayload($breach, $template);
+        $data['authority_key'] = $authorityKey;
+
+        $pdf = $this->pdfExportService->generatePdf(
+            'authority/notification/generic_breach.html.twig',
+            $data,
+            ['orientation' => 'portrait'],
+        );
+
+        $this->auditLogger->logExport(
+            sprintf('%s-Breach', strtoupper($authorityKey)),
+            $breach->getId(),
+            sprintf('%s PDF generated for DataBreach #%d', $authorityKey, $breach->getId() ?? 0),
+        );
+
+        return $pdf;
+    }
+
     // ── JSON Export ───────────────────────────────────────────────────────────
 
     /**
@@ -202,6 +238,29 @@ final class AuthorityNotificationGenerator
             throw new FrameworkNotActivatedException(
                 $authorityKey,
                 sprintf('Unknown authority key "%s".', $authorityKey),
+            );
+        }
+    }
+
+    /**
+     * Assert the key is one of the supported non-DE / sectoral generic keys.
+     */
+    private function assertGenericKey(string $authorityKey): void
+    {
+        $genericKeys = [
+            AuthorityTemplate::AUTHORITY_DSB_AT,
+            AuthorityTemplate::AUTHORITY_EDOEB_CH,
+            AuthorityTemplate::AUTHORITY_BAFIN_DORA,
+        ];
+
+        if (!in_array($authorityKey, $genericKeys, true)) {
+            throw new FrameworkNotActivatedException(
+                $authorityKey,
+                sprintf(
+                    'Authority key "%s" is not a valid generic non-DE authority key. Expected one of: %s',
+                    $authorityKey,
+                    implode(', ', $genericKeys),
+                ),
             );
         }
     }

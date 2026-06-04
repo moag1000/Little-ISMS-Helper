@@ -199,6 +199,7 @@ nav:
             crisis_team: 'Emergency response team'
             processing_activities: 'Records of Processing Activities (Art. 30 GDPR)'
             dpia: 'Data Protection Impact Assessments (Art. 35)'
+            tia: 'Transfer Impact Assessments – Third-country transfers (Art. 46/49 + Schrems-II)'
             data_breaches: 'Personal data breach register (Art. 33/34)'
             documents: 'Policies, procedures, and documentation'
             change_requests: 'Change management workflow'

@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'access_review' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'access_review.new_campaign'|trans({}, 'access_review') }} – {{ parent() }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'access_review.title'|trans({}, 'access_review'), url: path('app_access_review_index', {_locale: app.request.locale}) },
+        { label: 'access_review.new_campaign'|trans({}, 'access_review') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge:  { icon: 'nav-shield', label: 'access_review.badge'|trans({}, 'access_review') },
+    title:  'access_review.new_campaign'|trans({}, 'access_review'),
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container-fluid py-4" style="max-width: 700px;">
+
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+
+            <div class="mb-3">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {attr: {class: 'form-control fa-cyber-input__field'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.scope) }}
+                {{ form_widget(form.scope, {attr: {class: 'form-select fa-cyber-input__field'}}) }}
+                {{ form_errors(form.scope) }}
+                <div class="form-text text-muted">
+                    {{ 'access_review.scope_help'|trans({}, 'access_review') }}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(form.dueDate) }}
+                {{ form_widget(form.dueDate, {attr: {class: 'form-control fa-cyber-input__field'}}) }}
+                {{ form_errors(form.dueDate) }}
+                <div class="form-text text-muted">
+                    {{ 'access_review.due_date_help'|trans({}, 'access_review') }}
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--plus" aria-hidden="true"></i>
+                    {{ 'access_review.create_campaign'|trans({}, 'access_review') }}
+                </button>
+                <a href="{{ path('app_access_review_index', {_locale: app.request.locale}) }}"
+                   class="fa-cyber-btn fa-cyber-btn--ghost">
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+</div>
+</main>
+{% endblock %}

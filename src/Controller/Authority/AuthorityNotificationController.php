@@ -97,6 +97,10 @@ final class AuthorityNotificationController extends AbstractController
         $pdf = match (true) {
             $authorityKey === AuthorityTemplate::AUTHORITY_BFDI => $this->generator->generateBfdiBreachPdf($breach, $tenant),
             str_starts_with($authorityKey, 'lfdi_') => $this->generator->generateLfdiBreachPdf($breach, $tenant, $authorityKey),
+            // F26 — non-DE / sectoral authorities: parametrized generic notification
+            $authorityKey === AuthorityTemplate::AUTHORITY_DSB_AT,
+            $authorityKey === AuthorityTemplate::AUTHORITY_EDOEB_CH,
+            $authorityKey === AuthorityTemplate::AUTHORITY_BAFIN_DORA => $this->generator->generateGenericBreachPdf($breach, $tenant, $authorityKey),
             default => throw $this->createNotFoundException(sprintf('Authority key "%s" not supported for DataBreach PDF.', $authorityKey)),
         };
 

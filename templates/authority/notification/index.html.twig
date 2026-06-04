@@ -49,6 +49,22 @@
                                     <i class="fa-icon fa-icon--util-filetype-json me-1" aria-hidden="true"></i>
                                     {{ 'authority.action.export_json'|trans({}, 'eu_authorities') }}
                                 </a>
+                                {# F26 — non-DE / sectoral authority exports #}
+                                <a href="{{ path('app_authority_notification_breach_pdf', {_locale: app.request.locale, breachId: breach.id, authorityKey: 'dsb_at'}) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                    <i class="fa-icon fa-icon--nav-file-pdf me-1"></i>
+                                    {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (DSB AT)
+                                </a>
+                                <a href="{{ path('app_authority_notification_breach_pdf', {_locale: app.request.locale, breachId: breach.id, authorityKey: 'edoeb_ch'}) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                    <i class="fa-icon fa-icon--nav-file-pdf me-1"></i>
+                                    {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (EDÖB CH)
+                                </a>
+                                <a href="{{ path('app_authority_notification_breach_pdf', {_locale: app.request.locale, breachId: breach.id, authorityKey: 'bafin_dora'}) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                    <i class="fa-icon fa-icon--nav-file-pdf me-1"></i>
+                                    {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (BaFin DORA)
+                                </a>
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa-icon fa-icon--util-geo me-1" aria-hidden="true"></i>
