@@ -128,7 +128,8 @@ final class DoraRoiXbrlExporterTest extends TestCase
     public function generateContainsEsaRoiNamespace(): void
     {
         $xml = $this->exporter->generate($this->tenant);
-        self::assertStringContainsString('esa.europa.eu/xbrl/dora/roi', $xml);
+        // EBA/EIOPA/ESMA Joint DORA RoI Taxonomy 4.0 framework namespace.
+        self::assertStringContainsString('eba.europa.eu/eu/fr/xbrl/crr/fws/dora/4.0', $xml);
     }
 
     #[Test]
