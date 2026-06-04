@@ -17,6 +17,7 @@ use App\Repository\RiskTreatmentPlanRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Evidence Collection Service
@@ -33,6 +34,7 @@ final class EvidenceCollectionService
         private readonly RiskTreatmentPlanRepository $rtpRepository,
         private readonly DocumentRepository $documentRepository,
         private readonly FileUploadSecurityService $fileUploadSecurityService,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {}
 

@@ -7,7 +7,7 @@ namespace App\Service;
 use Exception;
 use PDO;
 use PDOException;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Service to test database connections during setup.
@@ -20,7 +20,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 final class DatabaseTestService
 {
     public function __construct(
-        private readonly ParameterBagInterface $parameterBag
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir
     ) {
     }
     /**
@@ -85,7 +86,7 @@ final class DatabaseTestService
     private function testSqliteConnection(array $config): array
     {
         $dbName = $config['name'] ?? 'little_isms_helper';
-        $dbPath = $this->parameterBag->get('kernel.project_dir') . "/var/{$dbName}.db";
+        $dbPath = $this->projectDir . "/var/{$dbName}.db";
 
         try {
             $pdo = new PDO("sqlite:{$dbPath}");
@@ -304,7 +305,7 @@ final class DatabaseTestService
     private function createSqliteDatabase(array $config): array
     {
         $dbName = $config['name'] ?? 'little_isms_helper';
-        $dbPath = $this->parameterBag->get('kernel.project_dir') . "/var/{$dbName}.db";
+        $dbPath = $this->projectDir . "/var/{$dbName}.db";
         $dbDir = dirname($dbPath);
 
         // Ensure var directory exists
@@ -469,7 +470,7 @@ final class DatabaseTestService
     private function checkSqliteTables(array $config): array
     {
         $dbName = $config['name'] ?? 'little_isms_helper';
-        $dbPath = $this->parameterBag->get('kernel.project_dir') . "/var/{$dbName}.db";
+        $dbPath = $this->projectDir . "/var/{$dbName}.db";
 
         if (!file_exists($dbPath)) {
             return ['has_tables' => false, 'count' => 0, 'tables' => []];

@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Migriert ein MRIS-Framework von einer Version auf eine neue (z. B. v1.5 → v1.6).
@@ -56,6 +57,7 @@ final class MrisVersionMigrationCommand extends Command
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly MrisMaturityService $maturityService,
         private readonly AuditLogger $auditLogger,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
         parent::__construct();

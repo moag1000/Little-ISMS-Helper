@@ -46,6 +46,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[IsGranted('ROLE_USER')]
 class DocumentController extends AbstractController
@@ -54,6 +55,7 @@ class DocumentController extends AbstractController
         private readonly DocumentRepository $documentRepository,
         private readonly DocumentService $documentService,
         private readonly EntityManagerInterface $entityManager,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
         private readonly RateLimiterFactory $rateLimiterFactory,
         private readonly FileUploadSecurityService $fileUploadSecurityService,

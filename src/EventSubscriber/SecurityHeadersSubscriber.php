@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -41,6 +42,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 final class SecurityHeadersSubscriber
 {
     public function __construct(
+        #[Autowire('%kernel.environment%')]
         private readonly string $environment
     ) {}
 

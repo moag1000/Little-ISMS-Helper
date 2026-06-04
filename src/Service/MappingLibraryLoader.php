@@ -9,6 +9,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -25,6 +26,7 @@ final class MappingLibraryLoader
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly ComplianceMappingRepository $mappingRepository,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
     }

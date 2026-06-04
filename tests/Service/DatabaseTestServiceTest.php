@@ -5,22 +5,16 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Service\DatabaseTestService;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use PHPUnit\Framework\Attributes\Test;
 
-#[AllowMockObjectsWithoutExpectations]
 class DatabaseTestServiceTest extends TestCase
 {
-    private MockObject $parameterBag;
     private DatabaseTestService $service;
     private string $projectDir;
 
     protected function setUp(): void
     {
-        $this->parameterBag = $this->createMock(ParameterBagInterface::class);
         $this->projectDir = sys_get_temp_dir() . '/db_test_' . uniqid();
 
         // Create test project directory
@@ -28,10 +22,7 @@ class DatabaseTestServiceTest extends TestCase
             mkdir($this->projectDir, 0755, true);
         }
 
-        $this->parameterBag->method('get')
-            ->willReturn($this->projectDir);
-
-        $this->service = new DatabaseTestService($this->parameterBag);
+        $this->service = new DatabaseTestService($this->projectDir);
     }
 
     protected function tearDown(): void

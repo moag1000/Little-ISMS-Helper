@@ -12,6 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Loads the full BSI C5:2020 catalogue (121 criteria) from the bundled
@@ -27,6 +28,7 @@ final class LoadC52020FullCatalogueCommand extends Command
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly EntityManagerInterface $em,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
         parent::__construct();

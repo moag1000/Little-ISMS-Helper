@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsCommand(
     name: 'app:backup:prune',
@@ -28,6 +29,7 @@ class PruneBackupsCommand extends Command
     ];
 
     public function __construct(
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
         private readonly LoggerInterface $logger,
     ) {

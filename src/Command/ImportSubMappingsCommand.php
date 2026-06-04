@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Import the sub-level decomposition crosswalks
@@ -78,6 +79,7 @@ final class ImportSubMappingsCommand extends Command
         private readonly SubRequirementResolver $resolver,
         private readonly AuditLogger $auditLogger,
         private readonly MappingQualityScoreService $mqsService,
+        #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
         parent::__construct();
