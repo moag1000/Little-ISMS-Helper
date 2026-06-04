@@ -1,6 +1,6 @@
 # Symfony 7.4 / PHP 8.5 Best-Practice Audit — June 2026
 
-> **Status: audit + remediation in progress.** This document records divergences
+> **Status: audit complete + backlog cleared.** This document records divergences
 > from current Symfony 7.4 LTS / Doctrine ORM 3.6 / PHP 8.4-8.5 / Twig 3.24 /
 > PHPUnit 13 best practice, plus deliberate project deviations (which are noted
 > as such, not as defects). Sections 1-6 were the original audit; sections 7-8
@@ -255,7 +255,7 @@ Per-service probe — git history (`--diff-filter=A`, `git log -S` across contro
 | `RiskProbabilityAdjustmentService` | 2025-11-10 (Phase 6F-D) | Orphan risk-calc helper; never injected | Delete **or** wire into `RiskService` (data-reuse "probability from incident frequency") |
 | `RiskImpactCalculatorService` | 2025-11-10 (Phase 6F-D) | Orphan risk-calc helper; ROADMAP ticks its test only | Delete **or** wire into `RiskService` |
 
-No deletion performed — these are product calls. The cheap, unambiguous one is `WizardProgressService` (delete). `RiskIntelligenceService` needs a doc-accuracy decision regardless of wire-vs-delete.
+**Resolved 2026-06-04 (#841):** all 5 removed (dead code, never wired) along with their tests; SOLUTION_DESCRIPTION.md + ROADMAP.md corrected so no doc claims a deleted class. DC-1 (always-empty `findRelatedRisks`) and DC-6 (ignored SIEM date params) vanished with their hosts.
 
 ---
 
@@ -263,16 +263,36 @@ No deletion performed — these are product calls. The cheap, unambiguous one is
 
 Fixes landed after the audit (each its own PR, CI-green, only-changed-files):
 
+**First batch (2026-06-03):**
 - **#834 — Bucket 1 (safe wins):** C-4 `CurrentUserTrait` narrowing (~20 sites), P-3 `#[Test]` ×51, T-12 dead validator `{ choices }` keys, P-5 `readonly` message DTOs, C-8 `JsonResponse`, S-10/11/12 services.yaml cleanup. (E-5 already resolved in-tree; C-9 skipped — EM reassigned.)
 - **#835 — Turbo UX:** TB-1 mega_menu listener leak, TB-2/3 missing bulk/tag Stimulus methods, TB-4 BCM stats turbo-frame content-negotiation, TB-5 orphaned stream templates deleted.
 - **#836 — Backend correctness:** S-9 `EvidenceVersioningService` session async-guard; DC-8/9/10/11/12 dead-logic cleanup.
 
-**Paused on 2026-06-03 (deliberate stop — not abandoned).** The following remain for a future session:
+**Second batch (2026-06-04) — full backlog clearance:**
+- **#841 — Dead services:** DC-2/3/4/5/7 removed (RiskIntelligence / RiskProbabilityAdjustment / WizardProgress / SiemExport / RiskImpactCalculator + 5 tests). DC-1/DC-6 bugs eliminated with their hosts. SOLUTION_DESCRIPTION + ROADMAP corrected.
+- **#842 — S-4:** 19 `EventSubscriberInterface` → `#[AsEventListener]` (dispatcher-equivalent verified).
+- **#843 — P-6/7/8:** `match` (3), `#[\Override]` on 111 Command classes, `createStub` (9).
+- **#844 — TB-6/7/8/9 + T-11:** Chart `getChart()?.destroy()` (5 pages), tooltip dispose + bootstrap-guard (5), `{ once: true }` on chart `turbo:load` (5), drop needless `data-turbo="false"` on 6 audit buttons, 8 `aria-label="Close"` translated.
+- **#846 — S-1:** `WorkflowOverlayController` container-get → constructor injection.
+- **#847 — S-3:** drop deprecated `WorkflowAutoProgressionService` from 3 services (field-completion listener covers them; `ProcessTimedWorkflowsCommand` kept — time-based engine).
+- **#848 — S-5/S-6:** 37 `#[Autowire('%kernel.project_dir%')]` (services.yaml −153 lines) + 3 `ParameterBag`→scalar. (+ test adaptation for the ctor change.)
+- **#849 — E-6:** real cross-tenant leak fixed — `ComplianceMapping` listing/hub used `findAll()` across tenants; added `findAllForTenant`/`findRecentForTenant`/`findAllGlobal`, `findAll()` now throws, 5 call-sites corrected.
+- **#852 — C-7:** Vulnerability / BusinessContinuityPlan / CorrectiveAction services extracted; 22 raw EM writes moved out of controllers.
+- **#853 — S-2:** command-as-service anti-pattern eliminated — `FrameworkLoaderInterface` + tagged `FrameworkLoaderRegistry`; the 2 loader services drop 29/22 injected Command objects (30→3, 26→5 ctor params).
 
-- **Dead services** (DC-2/3/4/5/7): investigated (see *Dead-service investigation* in §8) — none ever wired. Decisions pending per service; the unambiguous one is `WizardProgressService` (safe delete) and `RiskIntelligenceService` (correct or remove the SOLUTION_DESCRIPTION claim).
-- **Bucket 2 — structural:** S-1 container-get (`WorkflowOverlayController`), S-3 drop deprecated `WorkflowAutoProgressionService` (4 callers), S-2 commands-as-services → extract `RequirementsLoaderService` (15), E-6 tenant-scope `ComplianceMapping` (unguarded `findAll()`), C-7 fat-controller → service extraction (Vulnerability / BusinessContinuityPlan / CorrectiveAction).
-- **Bucket 3 — sweeps:** S-4 `#[AsEventListener]` (19), S-5 `#[Autowire('%kernel.project_dir%')]` (40), C-3 CSRF attribute (static-token subset), TB-6 `turbo:load` accumulation (39), TB-7 Chart re-init guards (5), TB-8 tooltip dispose (5), TB-9 audit `data-turbo="false"` removal (7), TB-10 redundant download `data-turbo`, TB-13 inline `<script>`→Stimulus (53), T-8 inline `<style>`→tokens (60), P-6 `match`, P-7 `#[\Override]`, P-8 `createStub`, T-11 a11y `aria-label`.
+### Explicitly accepted / decided (no further change — rationale recorded)
+
+These audit items were reviewed and consciously **left as-is** (correct, intentional, or net-negative to change):
+
+- **C-3 CSRF (262 manual `isCsrfTokenValid`):** kept. The bulk are per-entity dynamic token IDs (`'delete'.$id`) or JSON-body tokens that the static `#[IsCsrfTokenValid]` attribute structurally cannot express; the 66 static-token cases already use the attribute. Manual validation is correct — churning security-critical code for the unconvertible majority is net-negative.
+- **T-8 inline `<style>` (60) + TB-13 inline `<script>` (53):** accepted tech-debt. Large, low-value, high-churn template refactors with regression risk; the audit itself flagged them "known tech-debt / low priority." Tracked here, not forced.
+- **TB-10 redundant download `data-turbo="false"` (23):** kept — harmless defence-in-depth alongside the `turbo_controller` attachment interceptor.
+- **TB-6 remaining (~29 of 39 `turbo:load` handlers):** the high-risk ones (chart/tooltip re-init) were fixed in #844; the rest are benign one-shot inits — accepted.
+- **C-1 YAML routes (16), E-2 Pattern-A status strings (39), E-9 global RBAC, C-10 HealthController, C-6 `_locale`, MRIS DE-only, `test`-prefix+`#[Test]`, P-1 command-style mix:** intentional by design (see per-section "Intentional?" columns).
+- **`StatementOfApplicabilityController` WAPS injection:** one remaining deprecated-WAPS caller (outside the #847 service scope) — bridge stays until the v4.0 WAPS removal; no behaviour issue.
+
+**Status: audit backlog cleared.** Every finding is either fixed (above) or has an explicit accept-decision with rationale. Nothing is left dangling.
 
 ---
 
-_Generated by 8 read-only audit passes. Sections 1-6 + 7-8 are audit; the Remediation Log tracks applied fixes._
+_Generated by 8 read-only audit passes. Sections 1-6 + 7-8 are audit; the Remediation Log tracks applied fixes + accept-decisions._
