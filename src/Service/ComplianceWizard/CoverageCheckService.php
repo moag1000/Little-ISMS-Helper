@@ -27,6 +27,7 @@ use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
+use App\Repository\VulnerabilityRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
 
 /**
@@ -68,6 +69,7 @@ final class CoverageCheckService
         private readonly ISMSObjectiveRepository $ismsObjectiveRepository,
         private readonly ManagementReviewRepository $managementReviewRepository,
         private readonly DocumentRepository $documentRepository,
+        private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly ?ComplianceRequirementRepository $requirementRepository = null,
     ) {
     }
@@ -134,6 +136,8 @@ final class CoverageCheckService
             'supplier' => $this->supplierRepository,
             'asset' => $this->assetRepository,
             'document' => $this->documentRepository,
+            'bc_plan' => $this->bcPlanRepository,
+            'vulnerability' => $this->vulnerabilityRepository,
             default => null,
         };
 

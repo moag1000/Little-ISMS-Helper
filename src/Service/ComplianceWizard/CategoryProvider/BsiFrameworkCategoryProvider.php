@@ -54,7 +54,8 @@ final class BsiFrameworkCategoryProvider
                 'checks' => [
                     'bsi_grundschutz_isms' => [
                         'name' => 'wizard.check.bsi_grundschutz_isms',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'isms_context',
                         'priority' => 'high',
                         'description' => 'wizard.check.bsi_grundschutz_isms_desc',
                         'route' => 'app_context_edit',
@@ -626,7 +627,8 @@ final class BsiFrameworkCategoryProvider
                 'checks' => [
                     'bsi_c5_2026_supply_chain_security' => [
                         'name' => 'wizard.check.bsi_c5_2026_supply_chain_security',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'supplier',
                         'priority' => 'high',
                         'description' => 'wizard.check.bsi_c5_2026_supply_chain_security_desc',
                         'route' => 'app_supplier_index',
@@ -767,7 +769,8 @@ final class BsiFrameworkCategoryProvider
                 'checks' => [
                     'bsi_gs_std_initiation' => [
                         'name' => 'wizard.check.bsi_gs_std_initiation',
-                        'type' => 'manual',
+                        'type' => 'entity_presence',
+                        'entity' => 'isms_context',
                         'priority' => 'high',
                         'route' => 'app_context_edit',
                     ],

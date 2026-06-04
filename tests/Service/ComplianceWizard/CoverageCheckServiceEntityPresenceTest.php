@@ -25,6 +25,7 @@ use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
+use App\Repository\VulnerabilityRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
 use App\Service\ComplianceWizard\CoverageCheckService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -40,11 +41,15 @@ final class CoverageCheckServiceEntityPresenceTest extends TestCase
 {
     private ISMSContextRepository $ismsContextRepo;
     private InterestedPartyRepository $interestedPartyRepo;
+    private BusinessContinuityPlanRepository $bcPlanRepo;
+    private VulnerabilityRepository $vulnerabilityRepo;
 
     private function buildService(): CoverageCheckService
     {
         $this->ismsContextRepo = $this->createMock(ISMSContextRepository::class);
         $this->interestedPartyRepo = $this->createMock(InterestedPartyRepository::class);
+        $this->bcPlanRepo = $this->createMock(BusinessContinuityPlanRepository::class);
+        $this->vulnerabilityRepo = $this->createMock(VulnerabilityRepository::class);
 
         return new CoverageCheckService(
             $this->createMock(ControlRepository::class),
@@ -52,7 +57,7 @@ final class CoverageCheckServiceEntityPresenceTest extends TestCase
             $this->createMock(AssetRepository::class),
             $this->createMock(IncidentRepository::class),
             $this->createMock(BusinessProcessRepository::class),
-            $this->createMock(BusinessContinuityPlanRepository::class),
+            $this->bcPlanRepo,
             $this->createMock(InternalAuditRepository::class),
             $this->createMock(TrainingRepository::class),
             $this->createMock(RiskTreatmentPlanRepository::class),
@@ -68,6 +73,7 @@ final class CoverageCheckServiceEntityPresenceTest extends TestCase
             $this->createMock(ISMSObjectiveRepository::class),
             $this->createMock(ManagementReviewRepository::class),
             $this->createMock(DocumentRepository::class),
+            $this->vulnerabilityRepo,
             null,
         );
     }
@@ -124,5 +130,22 @@ final class CoverageCheckServiceEntityPresenceTest extends TestCase
         $result = $service->checkEntityPresence(['entity' => 'does_not_exist'], $this->createMock(Tenant::class));
 
         self::assertSame(0.0, $result['score']);
+    }
+
+    #[Test]
+    public function bcPlanAndVulnerabilityRegistryKeysResolve(): void
+    {
+        $service = $this->buildService();
+        $this->bcPlanRepo->method('count')->willReturn(1);
+        $this->vulnerabilityRepo->method('count')->willReturn(0);
+        $tenant = $this->createMock(Tenant::class);
+
+        $bc = $service->checkEntityPresence(['entity' => 'bc_plan'], $tenant);
+        self::assertSame(100.0, $bc['score']);
+        self::assertNull($bc['gap']);
+
+        $vuln = $service->checkEntityPresence(['entity' => 'vulnerability', 'name' => 'wizard.check.cra_vuln_handling'], $tenant);
+        self::assertSame(0.0, $vuln['score']);
+        self::assertNotNull($vuln['gap']);
     }
 }
