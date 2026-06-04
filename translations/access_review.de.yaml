@@ -1,0 +1,104 @@
+access_review:
+  title: Zugriffsrezertifizierung
+  badge: UAR
+  subtitle: Periodische Prüfung und Rezertifizierung von Zugriffsrechten
+  new_campaign: Neue Kampagne
+  create_campaign: Kampagne erstellen
+  close_campaign: Kampagne schließen
+  items_title: Review-Items
+  empty_items: Diese Kampagne enthält noch keine Items.
+  table_caption: Übersicht Zugriffsrezertifizierungs-Kampagnen
+
+  # ISO-Tooltip für Junior-Nutzer
+  tooltip:
+    title: Was ist Zugriffsrezertifizierung?
+    body: >
+      Zugriffsrezertifizierung (User Access Recertification, UAR) bedeutet, regelmäßig
+      zu prüfen, wer welchen Zugriff behalten darf. Reviewer bestätigen (Approve)
+      oder entziehen (Revoke) Zugriffsrechte für jeden betroffenen Nutzer/Rolle-Eintrag.
+    norm: 'Normgrundlagen: ISO 27001 A.5.18 / A.8.2 · NIS2 Art. 21(2)(e) · BSI ORP.4'
+
+  field:
+    name: Kampagnenname
+    name_placeholder: z.B. Q2-2026 Privileged Access Review
+    scope: Umfang
+    due_date: Fälligkeit
+    status: Status
+    items: Items (offen)
+    pending: offen
+    subject_user: Nutzer
+    reviewed_role: Rolle
+    decision: Entscheidung
+    decided_by: Entschieden von
+
+  scope:
+    all_users: Alle Nutzer
+    privileged: Nur privilegierte Rollen
+
+  scope_help: >
+    "Alle Nutzer" erfasst jeden aktiven Nutzer im Mandanten.
+    "Nur privilegierte Rollen" beschränkt die Prüfung auf erhöhte Rollen
+    (ROLE_ADMIN, ROLE_MANAGER, ROLE_SUPER_ADMIN und Persona-Rollen).
+
+  due_date_help: >
+    Fristdatum für den Abschluss der Kampagne. SLA-Erinnerungen
+    werden 7 Tage, 3 Tage und 1 Tag vor Fälligkeit versendet.
+
+  status:
+    open: Offen
+    closed: Geschlossen
+
+  decision:
+    pending: Ausstehend
+    approved: Genehmigt
+    revoked: Widerrufen
+    escalated: Eskaliert
+
+  action:
+    approve: Genehmigen
+    revoke: Widerrufen
+    escalate: Eskalieren
+    close_confirm: Kampagne schließen
+
+  aria:
+    approve_item: 'Rolle %role% für Nutzer %user% genehmigen'
+    revoke_item: 'Rolle %role% für Nutzer %user% widerrufen'
+    escalate_item: 'Rolle %role% für Nutzer %user% eskalieren'
+
+  stage:
+    title: Kampagnenstatus
+    aria_label: Phasen der Zugriffsrezertifizierung
+    campaign_open: Kampagne gestartet
+    campaign_open_desc: '%total% Items wurden erzeugt.'
+    review_in_progress: Review läuft
+    review_in_progress_desc: '%pending% von %total% Items noch ausstehend.'
+    badge_pending: '%count% offen'
+    campaign_closed: Kampagne abgeschlossen
+    campaign_closed_desc: '%approved% genehmigt · %revoked% widerrufen/eskaliert.'
+
+  modal:
+    close_title: Kampagne schließen
+    close_body: >
+      Sobald die Kampagne geschlossen ist, können keine weiteren
+      Entscheidungen mehr getroffen werden.
+      Noch ausstehende Items: %pending%.
+      Soll die Kampagne jetzt geschlossen werden?
+
+  empty:
+    title: Noch keine Kampagnen
+    body: >
+      Erstellen Sie eine Zugriffsrezertifizierungs-Kampagne, um periodisch
+      zu prüfen, wer welchen Zugriff behalten darf (ISO 27001 A.5.18).
+
+  flash:
+    campaign_created: Kampagne erfolgreich erstellt. Review-Items wurden erzeugt.
+    campaign_closed: Kampagne wurde geschlossen.
+    decision_saved: 'Entscheidung "%decision%" gespeichert.'
+    campaign_already_closed: Diese Kampagne ist bereits geschlossen.
+    invalid_decision: Ungültige Entscheidung.
+
+  stats:
+    total: Gesamt
+    pending: Ausstehend
+    approved: Genehmigt
+    revoked: Widerrufen/Eskaliert

@@ -74,18 +74,20 @@ final class NotificationDeliveryLifecycleTest extends TestCase
     }
 
     #[Test]
-    public function statusEnumExposesAllSixPlaces(): void
+    public function statusEnumExposesAllPlaces(): void
     {
         // The typed surface (NotificationDeliveryStatus) must enumerate the
-        // same set of values as the YAML state-machine.
+        // same set of values as the YAML state-machine plus the F3 digest
+        // pseudo-state (`pending_digest`) which is not a Symfony Workflow place
+        // but lives in the same enum for consistency.
         $enumValues = array_map(
             static fn (NotificationDeliveryStatus $case): string => $case->value,
             NotificationDeliveryStatus::cases(),
         );
         $this->assertEqualsCanonicalizing(
-            ['pending', 'sent', 'delivered', 'failed', 'retrying', 'archived'],
+            ['pending', 'sent', 'delivered', 'failed', 'retrying', 'archived', 'pending_digest'],
             $enumValues,
-            'NotificationDeliveryStatus enum must enumerate exactly the six canonical places.',
+            'NotificationDeliveryStatus enum must enumerate all canonical places including pending_digest.',
         );
     }
 
@@ -110,13 +112,14 @@ final class NotificationDeliveryLifecycleTest extends TestCase
     }
 
     #[Test]
-    public function yamlDefinesExactlySixPlaces(): void
+    public function yamlDefinesExactlySevenPlaces(): void
     {
         $places = $this->workflowConfig()['places'];
         $this->assertEqualsCanonicalizing(
-            ['pending', 'sent', 'delivered', 'failed', 'retrying', 'archived'],
+            // Six canonical delivery states + pending_digest (F3 email-digest mode).
+            ['pending', 'pending_digest', 'sent', 'delivered', 'failed', 'retrying', 'archived'],
             $places,
-            'NotificationDelivery workflow must define exactly the six canonical places (Phase-2).'
+            'NotificationDelivery workflow must define exactly the seven canonical places (incl. pending_digest).'
         );
     }
 

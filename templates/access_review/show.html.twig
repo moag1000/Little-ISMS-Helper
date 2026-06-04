@@ -1,0 +1,214 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'access_review' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
+{% import '_components/_isms_approval_stages.html.twig' as _isms_approval_stages %}
+
+{% block title %}{{ campaign.name|e }} – {{ 'access_review.title'|trans({}, 'access_review') }} – {{ parent() }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'access_review.title'|trans({}, 'access_review'), url: path('app_access_review_index', {_locale: app.request.locale}) },
+        { label: campaign.name }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge:   { icon: 'nav-shield', label: 'access_review.badge'|trans({}, 'access_review') },
+    title:   campaign.name,
+    subtitle: ('access_review.scope.' ~ campaign.scope)|trans({}, 'access_review') ~ ' · ' ~ 'access_review.field.due_date'|trans({}, 'access_review') ~ ': ' ~ (campaign.dueDate ? campaign.dueDate|date('Y-m-d') : '–'),
+    actions: campaign.isOpen ? [
+        { label: 'access_review.close_campaign'|trans({}, 'access_review'), variant: 'danger', icon: 'lock',
+          tag: 'button',
+          attrs: { 'data-action': 'click->fa-modal-dispatcher#open', 'data-fa-modal-id': 'close-modal' } }
+    ] : []
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container-fluid py-4">
+
+<div class="row g-4">
+
+    {# Left: approval stages overview #}
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header fw-bold">
+                {{ 'access_review.stage.title'|trans({}, 'access_review') }}
+            </div>
+            <div class="card-body">
+                {{ _isms_approval_stages.render({
+                    stages: stages,
+                    ariaLabel: 'access_review.stage.aria_label'|trans({}, 'access_review')
+                }) }}
+            </div>
+        </div>
+
+        {# Summary stats #}
+        <div class="card">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-6">{{ 'access_review.stats.total'|trans({}, 'access_review') }}</dt>
+                    <dd class="col-sm-6">{{ items|length }}</dd>
+
+                    <dt class="col-sm-6">{{ 'access_review.stats.pending'|trans({}, 'access_review') }}</dt>
+                    <dd class="col-sm-6">
+                        <span class="badge bg-warning text-dark">{{ pendingCount }}</span>
+                    </dd>
+
+                    <dt class="col-sm-6">{{ 'access_review.stats.approved'|trans({}, 'access_review') }}</dt>
+                    <dd class="col-sm-6">
+                        <span class="badge bg-success">{{ approvedCount }}</span>
+                    </dd>
+
+                    <dt class="col-sm-6">{{ 'access_review.stats.revoked'|trans({}, 'access_review') }}</dt>
+                    <dd class="col-sm-6">
+                        <span class="badge bg-danger">{{ revokedCount }}</span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    {# Right: items table with per-row decide forms #}
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header fw-bold d-flex justify-content-between align-items-center">
+                <span>{{ 'access_review.items_title'|trans({}, 'access_review') }}</span>
+                <span class="badge bg-secondary">{{ items|length }}</span>
+            </div>
+            <div class="card-body p-0">
+                {% if items|length == 0 %}
+                    <p class="text-muted m-3">{{ 'access_review.empty_items'|trans({}, 'access_review') }}</p>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mb-0 fa-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ 'access_review.field.subject_user'|trans({}, 'access_review') }}</th>
+                                    <th scope="col">{{ 'access_review.field.reviewed_role'|trans({}, 'access_review') }}</th>
+                                    <th scope="col">{{ 'access_review.field.decision'|trans({}, 'access_review') }}</th>
+                                    <th scope="col">{{ 'access_review.field.decided_by'|trans({}, 'access_review') }}</th>
+                                    {% if campaign.isOpen %}
+                                    <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr id="item-{{ item.id }}">
+                                    <td>
+                                        {% if item.subjectUser %}
+                                            <span title="{{ item.subjectUser.email }}">
+                                                {{ item.subjectUser.fullName ?? item.subjectUser.email }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">–</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <code class="text-body-secondary">{{ item.reviewedRole }}</code>
+                                    </td>
+                                    <td>
+                                        {% if item.decision == 'pending' %}
+                                            <span class="badge bg-warning text-dark">
+                                                {{ 'access_review.decision.pending'|trans({}, 'access_review') }}
+                                            </span>
+                                        {% elseif item.decision == 'approved' %}
+                                            <span class="badge bg-success">
+                                                {{ 'access_review.decision.approved'|trans({}, 'access_review') }}
+                                            </span>
+                                        {% elseif item.decision == 'revoked' %}
+                                            <span class="badge bg-danger">
+                                                {{ 'access_review.decision.revoked'|trans({}, 'access_review') }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">
+                                                {{ ('access_review.decision.' ~ item.decision)|trans({}, 'access_review') }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if item.decidedBy %}
+                                            {{ item.decidedBy.fullName ?? item.decidedBy.email }}
+                                            <br><small class="text-muted">{{ item.decidedAt|date('Y-m-d H:i') }}</small>
+                                        {% else %}
+                                            <span class="text-muted">–</span>
+                                        {% endif %}
+                                    </td>
+                                    {% if campaign.isOpen %}
+                                    <td>
+                                        {# Inline decide form — approve + revoke buttons #}
+                                        <div class="d-flex gap-1">
+                                            <form method="post"
+                                                  action="{{ path('app_access_review_item_decide', {_locale: app.request.locale, campaignId: campaign.id, itemId: item.id}) }}"
+                                                  class="d-inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('access_review_decide') }}">
+                                                <input type="hidden" name="decision" value="approved">
+                                                <button type="submit"
+                                                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
+                                                        title="{{ 'access_review.action.approve'|trans({}, 'access_review') }}"
+                                                        aria-label="{{ 'access_review.aria.approve_item'|trans({'%role%': item.reviewedRole, '%user%': item.subjectUser.email ?? '?'}, 'access_review') }}">
+                                                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                                                    {{ 'access_review.action.approve'|trans({}, 'access_review') }}
+                                                </button>
+                                            </form>
+                                            <form method="post"
+                                                  action="{{ path('app_access_review_item_decide', {_locale: app.request.locale, campaignId: campaign.id, itemId: item.id}) }}"
+                                                  class="d-inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('access_review_decide') }}">
+                                                <input type="hidden" name="decision" value="revoked">
+                                                <button type="submit"
+                                                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
+                                                        title="{{ 'access_review.action.revoke'|trans({}, 'access_review') }}"
+                                                        aria-label="{{ 'access_review.aria.revoke_item'|trans({'%role%': item.reviewedRole, '%user%': item.subjectUser.email ?? '?'}, 'access_review') }}">
+                                                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                                                    {{ 'access_review.action.revoke'|trans({}, 'access_review') }}
+                                                </button>
+                                            </form>
+                                            <form method="post"
+                                                  action="{{ path('app_access_review_item_decide', {_locale: app.request.locale, campaignId: campaign.id, itemId: item.id}) }}"
+                                                  class="d-inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('access_review_decide') }}">
+                                                <input type="hidden" name="decision" value="escalated">
+                                                <button type="submit"
+                                                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                                                        title="{{ 'access_review.action.escalate'|trans({}, 'access_review') }}"
+                                                        aria-label="{{ 'access_review.aria.escalate_item'|trans({'%role%': item.reviewedRole, '%user%': item.subjectUser.email ?? '?'}, 'access_review') }}">
+                                                    <i class="fa-icon fa-icon--ui-arrow-right" aria-hidden="true"></i>
+                                                    {{ 'access_review.action.escalate'|trans({}, 'access_review') }}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>{# /row #}
+</div>
+</main>
+
+{# Close-campaign confirmation modal (fa-modal pattern) #}
+{% if campaign.isOpen %}
+{% import '_components/_fa_modal.html.twig' as _fa_modal %}
+{{ _fa_modal.confirm({
+    id:           'close-modal',
+    tone:         'danger',
+    title:        'access_review.modal.close_title'|trans({}, 'access_review'),
+    message:      'access_review.modal.close_body'|trans({'%pending%': pendingCount}, 'access_review'),
+    formAction:   path('app_access_review_close', {_locale: app.request.locale, id: campaign.id}),
+    formMethod:   'POST',
+    formCsrfToken: csrf_token('access_review_close'),
+    confirmLabel: 'access_review.action.close_confirm'|trans({}, 'access_review'),
+    cancelLabel:  'common.cancel'|trans({}, 'messages'),
+}) }}
+{% endif %}
+{% endblock %}

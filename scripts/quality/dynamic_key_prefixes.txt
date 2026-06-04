@@ -4,6 +4,9 @@
 # A NEW prefix in this list will fail CI until committed here.
 
 Art	1
+access_review.decision	2
+access_review.scope	2
+access_review.status	1
 admin.data_repair.cascade.category	1
 admin.data_retention.entity	1
 admin.queue.job_status	1
@@ -31,7 +34,9 @@ audit_finding.type	2
 audit_freeze.purpose	3
 audit_program.frequency	2
 audit_program.status	2
+authority	1
 authority.bundesland	1
+authority.lfdi	1
 bc_exercises.exercise_type	2
 bc_exercises.status	3
 bc_plans.resource_list.empty	1
@@ -112,7 +117,7 @@ fte_tracking.source	2
 group_report.nis2.class	2
 guided_tour	6
 guided_tour.role	1
-import.entity	5
+import.entity	6
 import_session.status	1
 incident.category	4
 incident.nis2_category	2
@@ -237,6 +242,8 @@ supplier.gdpr.processor_status	1
 supplier.lksg_risk	1
 tags.type	1
 template	2
+tia.mechanism	3
+tia.risk	3
 tisax.import.assess.level	2
 tisax.import.assess.req_level	1
 tisax.import.validate.col_label	1

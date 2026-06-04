@@ -25,6 +25,18 @@ class NotificationChannel
 
     public const VALID_TYPES = [self::TYPE_EMAIL, self::TYPE_WEBHOOK, self::TYPE_IN_APP];
 
+    /**
+     * F3 digest mode — delivery_mode values stored inside the `config` JSON field.
+     * Only meaningful for TYPE_EMAIL channels; other channel types always use IMMEDIATE.
+     */
+    public const DELIVERY_MODE_IMMEDIATE    = 'immediate';
+    public const DELIVERY_MODE_DIGEST_DAILY = 'digest_daily';
+
+    public const VALID_DELIVERY_MODES = [
+        self::DELIVERY_MODE_IMMEDIATE,
+        self::DELIVERY_MODE_DIGEST_DAILY,
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -113,4 +125,31 @@ class NotificationChannel
 
     /** @return Collection<int, NotificationRule> */
     public function getRules(): Collection { return $this->rules; }
+
+    /**
+     * F3 digest mode — reads `delivery_mode` from the JSON config.
+     * Defaults to `immediate` when the key is absent (backward-compatible).
+     * Only valid for TYPE_EMAIL; webhook/in_app always return `immediate`.
+     */
+    public function getDeliveryMode(): string
+    {
+        if ($this->type !== self::TYPE_EMAIL) {
+            return self::DELIVERY_MODE_IMMEDIATE;
+        }
+
+        $mode = (string) ($this->config['delivery_mode'] ?? self::DELIVERY_MODE_IMMEDIATE);
+
+        return in_array($mode, self::VALID_DELIVERY_MODES, true)
+            ? $mode
+            : self::DELIVERY_MODE_IMMEDIATE;
+    }
+
+    /**
+     * F3 digest mode — returns true when this channel queues deliveries for batching
+     * rather than sending immediately.
+     */
+    public function isDigestMode(): bool
+    {
+        return $this->getDeliveryMode() === self::DELIVERY_MODE_DIGEST_DAILY;
+    }
 }

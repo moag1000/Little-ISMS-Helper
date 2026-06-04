@@ -31,6 +31,13 @@ enum NotificationDeliveryStatus: string
     case Failed = 'failed';
     case Retrying = 'retrying';
     case Archived = 'archived';
+    /**
+     * F3 email-digest mode — delivery is queued for batching.
+     * The `app:notification:send-digests` command collects all
+     * `pending_digest` rows per channel, sends ONE batched email,
+     * and transitions them to `Sent`.
+     */
+    case PendingDigest = 'pending_digest';
 
     /**
      * Translation-key for the human-readable status label.
@@ -52,8 +59,9 @@ enum NotificationDeliveryStatus: string
             self::Sent      => 'info',
             self::Delivered => 'success',
             self::Failed    => 'danger',
-            self::Retrying  => 'warning',
-            self::Archived  => 'neutral',
+            self::Retrying      => 'warning',
+            self::Archived      => 'neutral',
+            self::PendingDigest => 'info',
         };
     }
 }

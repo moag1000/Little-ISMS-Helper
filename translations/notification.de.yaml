@@ -133,6 +133,24 @@ notification:
             status: 'Status'
             attempted_at: 'Zeitpunkt'
             retries: 'Wiederholungen'
+        status:
+            pending: 'Ausstehend'
+            sent: 'Gesendet'
+            delivered: 'Zugestellt'
+            failed: 'Fehlgeschlagen'
+            retrying: 'Wiederholung'
+            archived: 'Archiviert'
+            pending_digest: 'Wartet auf Digest'
+
+    # F3 digest mode — channel delivery_mode field
+    channel_digest:
+        field:
+            delivery_mode: 'Zustellmodus'
+        type:
+            immediate: 'Sofortzustellung'
+            digest_daily: 'Täglicher Digest'
+        help:
+            delivery_mode: 'Sofortzustellung sendet jede Benachrichtigung einzeln. Täglicher Digest bündelt alle Benachrichtigungen und sendet eine E-Mail pro Tag (per Cron).'
 
     # Sprint 6b: Template gallery
     template:

@@ -35,13 +35,16 @@ final class NotificationDeliveryTest extends TestCase
     {
         // Junior-ISB-Audit Phase-2 Lifecycle — extended from 4 → 6 stages
         // (added `delivered` end-to-end-ACK + `archived` post-retention).
-        self::assertSame('pending',   NotificationDelivery::STATUS_PENDING);
-        self::assertSame('sent',      NotificationDelivery::STATUS_SENT);
-        self::assertSame('delivered', NotificationDelivery::STATUS_DELIVERED);
-        self::assertSame('failed',    NotificationDelivery::STATUS_FAILED);
-        self::assertSame('retrying',  NotificationDelivery::STATUS_RETRYING);
-        self::assertSame('archived',  NotificationDelivery::STATUS_ARCHIVED);
-        self::assertCount(6, NotificationDelivery::VALID_STATUSES);
+        // F3 digest mode — extended to 7 stages (added `pending_digest` for
+        // deliveries queued for batching via `app:notification:send-digests`).
+        self::assertSame('pending',        NotificationDelivery::STATUS_PENDING);
+        self::assertSame('sent',           NotificationDelivery::STATUS_SENT);
+        self::assertSame('delivered',      NotificationDelivery::STATUS_DELIVERED);
+        self::assertSame('failed',         NotificationDelivery::STATUS_FAILED);
+        self::assertSame('retrying',       NotificationDelivery::STATUS_RETRYING);
+        self::assertSame('archived',       NotificationDelivery::STATUS_ARCHIVED);
+        self::assertSame('pending_digest', NotificationDelivery::STATUS_PENDING_DIGEST);
+        self::assertCount(7, NotificationDelivery::VALID_STATUSES);
     }
 
     #[Test]

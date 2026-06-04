@@ -29,7 +29,13 @@ class NotificationDelivery
     public const STATUS_RETRYING  = 'retrying';
     // Junior-ISB-Audit Phase-2 Lifecycle — `archived` is the post-retention
     // terminal state (kept for forensic audit, hidden from dashboards).
-    public const STATUS_ARCHIVED  = 'archived';
+    public const STATUS_ARCHIVED       = 'archived';
+    /**
+     * F3 digest mode — delivery is queued for batching; the
+     * `app:notification:send-digests` command collects all rows
+     * with this status per channel and sends ONE batched email.
+     */
+    public const STATUS_PENDING_DIGEST = 'pending_digest';
 
     public const VALID_STATUSES = [
         self::STATUS_PENDING,
@@ -38,6 +44,7 @@ class NotificationDelivery
         self::STATUS_FAILED,
         self::STATUS_RETRYING,
         self::STATUS_ARCHIVED,
+        self::STATUS_PENDING_DIGEST,
     ];
 
     #[ORM\Id]
@@ -75,6 +82,17 @@ class NotificationDelivery
 
     #[ORM\Column(name: 'error_message', type: Types::TEXT, nullable: true)]
     private ?string $errorMessage = null;
+
+    /**
+     * F3 digest mode — snapshot of the entity state at dispatch time.
+     * Stored so that the digest command can reconstruct the notification body
+     * without needing the original Messenger message (which is gone by then).
+     * Only populated when `status = pending_digest`; null for immediate sends.
+     *
+     * @var array<string, mixed>|null
+     */
+    #[ORM\Column(name: 'payload', type: Types::JSON, nullable: true)]
+    private ?array $payload = null;
 
     /**
      * Junior-ISB-Audit Phase-2 Lifecycle — optimistic-lock guard for concurrent
@@ -166,6 +184,25 @@ class NotificationDelivery
         $this->status = self::STATUS_FAILED;
         $this->errorMessage = $errorMessage;
         $this->responsePayload = $responsePayload;
+        return $this;
+    }
+
+    /** @return array<string, mixed>|null */
+    public function getPayload(): ?array { return $this->payload; }
+
+    /** @param array<string, mixed>|null $payload */
+    public function setPayload(?array $payload): static { $this->payload = $payload; return $this; }
+
+    /**
+     * F3 digest mode — mark this delivery as queued for batching.
+     * Stores the entityState snapshot so the digest command can render the body.
+     *
+     * @param array<string, mixed> $entityState
+     */
+    public function markQueuedForDigest(array $entityState): static
+    {
+        $this->status  = self::STATUS_PENDING_DIGEST;
+        $this->payload = $entityState;
         return $this;
     }
 }

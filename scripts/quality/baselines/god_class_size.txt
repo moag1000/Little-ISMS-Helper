@@ -20,7 +20,7 @@ src/Controller/UserManagementController.php:LOC=1025 deps=0
 src/Controller/IncidentController.php:LOC=941 deps=0
 src/Controller/TenantManagementController.php:LOC=935 deps=0
 src/Controller/Admin/ComplianceImportController.php:LOC=927 deps=0
-src/Controller/ProcessingActivityController.php:LOC=840 deps=0
+src/Controller/ProcessingActivityController.php:LOC=848 deps=0
 src/Controller/ComplianceWizardController.php:LOC=814 deps=0
 src/Controller/AssetController.php:LOC=812 deps=0
 src/Controller/AdminBackupController.php:LOC=802 deps=0
@@ -30,13 +30,11 @@ src/Controller/MonitoringController.php:LOC=727 deps=0
 src/Controller/QuickFixController.php:LOC=712 deps=0
 src/Controller/AuditController.php:LOC=682 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
-src/Service/ComplianceFrameworkLoaderService.php:LOC=636 deps=32
 src/Controller/DataBreachController.php:LOC=635 deps=0
 src/Controller/TrainingController.php:LOC=633 deps=0
 src/Service/ScheduledReportService.php:LOC=619 deps=22
 src/Controller/Tisax/TisaxImportWizardController.php:LOC=604 deps=0
 src/Service/DataIntegrity/HealthIssueAggregator.php:LOC=457 deps=17
 src/Service/DataIntegrityService.php:LOC=438 deps=34
-src/Service/ComplianceLoaderFixerService.php:LOC=263 deps=27
 src/Service/DataIntegrity/EntityCountAggregator.php:LOC=158 deps=18
 src/Service/Tisax/Dto/VdaIsaControlRow.php:LOC=125 deps=21

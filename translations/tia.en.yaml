@@ -1,16 +1,117 @@
-# Translation skeleton for tia
-# Sprint 0 Task 0.1 — empty skeleton with standard sections.
-# Keys to be filled during feature implementation.
-
 tia:
   nav:
-    title: ''
+    title: 'Transfer Impact Assessment'
+
   page:
-    title: ''
-    subtitle: ''
-  field: {}
-  error: {}
-  help: {}
-  audit: {}
-  success: {}
-  warning: {}
+    title: 'Transfer Impact Assessments (TIA)'
+    subtitle: 'Third-country transfer reviews under GDPR Art. 46/49 + Schrems-II'
+    new_title: 'New Transfer Impact Assessment'
+    new_subtitle: 'Create a TIA under GDPR Art. 46/49'
+    edit_title: 'Edit TIA'
+
+  help:
+    concept_title: 'What is a TIA?'
+    concept_body: >
+      A Transfer Impact Assessment (TIA) checks whether a third-country recipient –
+      e.g. a US cloud provider such as AWS or Google – can guarantee essentially
+      equivalent data protection despite national surveillance law (e.g. FISA 702,
+      CLOUD Act). Without this assessment, SCCs or BCRs alone cannot serve as a
+      lawful transfer safeguard (CJEU C-311/18, Schrems-II, 16 July 2020).
+    norm_ref: 'Legal basis: GDPR Art. 46 (Appropriate safeguards), Art. 49 (Derogations), CJEU Schrems-II, EDPB Recommendations 01/2020 (Supplementary measures)'
+    destination_country: 'ISO-3166-1 alpha-2 country code, e.g. US, CN, IN'
+    recipient_name: 'Name of the specific recipient (e.g. AWS Inc., Google LLC)'
+    transfer_mechanism: 'Legal basis for the third-country transfer under Art. 46 / 49 GDPR'
+    law_surveillance_risk: >
+      EDPB Step 3: Assessment of the destination country''s legal framework.
+      Evaluate whether national law (e.g. US FISA 702 / EO 12333 / CLOUD Act,
+      CN National Intelligence Law Art. 7) undermines the transfer safeguard.
+      Describe the extent to which the protection guarantee is impaired.
+    supplementary_measures: >
+      EDPB Step 4: Supplementary measures to close the protection gap.
+      Examples: end-to-end encryption with controller-held keys, pseudonymisation
+      before transfer, contractual prohibition of broader government access,
+      transparency obligations on the importer.
+    residual_risk_rating: >
+      EDPB Step 5: Residual risk after applying supplementary measures.
+      High = transfer MUST be suspended (Art. 58(2)(f) GDPR).
+    conclusion: 'Overall conclusion and any conditions for the transfer'
+
+  field:
+    destination_country: 'Destination country'
+    recipient_name: 'Recipient'
+    transfer_mechanism: 'Transfer mechanism (Art. 46/49)'
+    law_surveillance_risk: 'Surveillance law assessment of destination country (EDPB Step 3)'
+    supplementary_measures: 'Supplementary measures (EDPB Step 4)'
+    residual_risk_rating: 'Residual risk rating (EDPB Step 5)'
+    conclusion: 'Conclusion / outcome'
+    status: 'Status'
+    assessed_at: 'Assessed on'
+    assessed_by: 'Assessed by'
+    processing_activity: 'Processing activity'
+
+  section:
+    overview: 'Transfer details'
+    assessment: 'Schrems-II assessment (EDPB Steps 3–4)'
+    conclusion: 'Outcome (EDPB Step 5)'
+
+  mechanism:
+    scc: 'Standard Contractual Clauses (Art. 46(2)(c)/(d))'
+    bcr: 'Binding Corporate Rules / BCR (Art. 47)'
+    adequacy: 'Adequacy decision (Art. 45)'
+    certification: 'Approved certification (Art. 42/46(2)(f))'
+    codes_of_conduct: 'Approved codes of conduct (Art. 40/46(2)(e))'
+    derogation: 'Derogation under Art. 49 GDPR'
+
+  risk:
+    low: 'Low – transfer may continue'
+    medium: 'Medium – enhanced oversight recommended'
+    high: 'High – transfer MUST be suspended'
+
+  status:
+    draft: 'Draft'
+    assessed: 'Assessed'
+
+  placeholder:
+    transfer_mechanism: '– Please select –'
+    residual_risk_rating: '– Please select –'
+
+  action:
+    new: 'New TIA'
+    edit: 'Edit TIA'
+    save: 'Save'
+    cancel: 'Cancel'
+    assess: 'Mark as assessed'
+    assess_title: 'Finalise assessment'
+    assess_description: 'Finalise the TIA and mark it as assessed. If residual risk is HIGH, a risk entry is created automatically.'
+    assess_high_risk_note: '(A risk entry with status "Identified" will be created)'
+    view: 'View details'
+    back: 'Back to processing activity'
+    delete: 'Delete TIA'
+
+  empty:
+    title: 'No TIA on record'
+    body: 'No Transfer Impact Assessment has been created for this processing activity. Create a TIA now to document the third-country transfer.'
+
+  success:
+    created: 'TIA created successfully.'
+    updated: 'TIA updated successfully.'
+    assessed: 'TIA marked as assessed.'
+    deleted: 'TIA deleted.'
+
+  warning:
+    cannot_edit_assessed: 'Assessed TIAs cannot be edited.'
+    already_assessed: 'This TIA has already been finalised.'
+    high_risk_title: 'Critical transfer risk – action required!'
+    high_risk_body: 'Residual risk has been rated HIGH. This transfer must be suspended immediately under GDPR Art. 58(2)(f) until equivalent protection can be demonstrated. A risk entry has been created automatically.'
+
+  error:
+    invalid_csrf: 'Invalid CSRF token. Please reload the page.'
+
+  confirm:
+    delete: 'Are you sure you want to delete this TIA? This action cannot be undone.'
+
+  audit:
+    created: 'TIA created'
+    updated: 'TIA updated'
+    assessed: 'TIA assessed'
+    deleted: 'TIA deleted'
