@@ -2,13 +2,16 @@
     "name": "little-isms-helper",
     "private": true,
     "devDependencies": {
+        "@hotwired/stimulus": "^3.2.2",
         "@playwright/test": "^1.60.0",
         "@types/node": "^25.9.1",
         "js-yaml": "^4.2.0",
+        "jsdom": "^29.1.1",
         "playwright": "^1.60.0",
         "stylelint": "^17.12.0",
         "stylelint-config-standard": "^40.0.0",
-        "typescript": "^6.0.3"
+        "typescript": "^6.0.3",
+        "vitest": "^4.1.8"
     },
     "scripts": {
         "stylelint": "stylelint 'assets/styles/**/*.css'",
@@ -22,6 +25,8 @@
         "e2e:smoke": "bash scripts/browser-coverage/run.sh",
         "e2e:smoke:report": "node scripts/browser-coverage/generate-report.mjs",
         "e2e:scenarios": "bash scripts/browser-coverage/run-scenarios.sh",
-        "e2e:scenarios:report": "node scripts/browser-coverage/generate-scenario-report.mjs"
+        "e2e:scenarios:report": "node scripts/browser-coverage/generate-scenario-report.mjs",
+        "test:js": "vitest run",
+        "test:js:watch": "vitest"
     }
 }
