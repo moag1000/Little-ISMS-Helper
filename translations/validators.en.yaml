@@ -609,6 +609,12 @@ gstool_import:
 'consent.validation.identifier_type_required': 'Identifier type is required.'
 'consent.validation.identifier_type_invalid': 'Invalid identifier type.'
 'consent.validation.processing_activity_required': 'Processing activity is required.'
+# ProcessingActivity Callback validators — Symfony translates constraint messages in the `validators` domain, not the form translation_domain.
+'processing_activity.validation.tom_or_controls_required': 'At least one form of evidence is required (GDPR Art. 32): either a qualitative TOM description (≥ 50 characters) OR at least one implemented ISO 27001 control.'
+'processing_activity.validation.processor_suppliers_required': 'At least one Auftragsverarbeiter must be linked as a typed entity (GDPR Art. 28(1) + Art. 30(1)(d)). When "involves processors" is checked, the concrete suppliers are mandatory for the recipients-disclosure duty.'
+'processing_activity.validation.recipient_categories_required': 'At least one recipient category is required (GDPR Art. 30(1)(d)) — even "internal only" must be stated explicitly.'
+'processing_activity.validation.criminal_data_legal_basis_required': 'When criminal-conviction data (Art. 10 GDPR) is processed, the legal basis/authority must be documented (official authority or Union/Member-State law, e.g. § 26 BDSG).'
+'processing_activity.validation.processor_client_controller_required': 'For a processor role (Art. 30(2)), the controller(s) processed on behalf of must be named (Art. 30(2)(a)).'
 'consent.validation.granted_at_required': 'Grant date is required.'
 'consent.validation.consent_method_required': 'Consent method is required.'
 'consent.validation.consent_method_invalid': 'Invalid consent method.'

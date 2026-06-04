@@ -522,6 +522,7 @@ processing_activity:
         end_date: 'End Date'
         next_review_date: 'Next Review Date'
     help:
+        status_readonly: 'Status is driven by the lifecycle (draft → in review → approved → published → archived), not edited directly in the form.'
         name: 'Name/title of the processing activity (e.g., "Customer Management", "Payroll")'
         description: 'Detailed description of the processing activity'
         purposes: 'Purpose(s) of processing (Art. 30(1)(a))'
