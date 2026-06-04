@@ -194,6 +194,13 @@ final class DataSubjectRequestType extends AbstractType
                 ],
                 'help' => 'dsr.form.help.extension_reason',
             ])
+            ->add('extensionNotifiedAt', DateTimeType::class, [
+                'widget' => 'single_text',
+                'label' => 'dsr.form.extension_notified_at',
+                'required' => false,
+                'input' => 'datetime_immutable',
+                'help' => 'dsr.form.help.extension_notified_at',
+            ])
             ->add('responseDocument', TextType::class, [
                 'label' => 'dsr.form.response_document',
                 'required' => false,

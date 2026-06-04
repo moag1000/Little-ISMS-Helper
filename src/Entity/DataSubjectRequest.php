@@ -230,6 +230,14 @@ class DataSubjectRequest
     private ?string $extensionReason = null;
 
     /**
+     * GDPR Art. 12(3) — proof that the data subject was informed of the deadline
+     * extension within the first month (N-3). Without this timestamp the
+     * extension is internally documented but not provably communicated.
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $extensionNotifiedAt = null;
+
+    /**
      * File path or UUID of the response artefact (letter, email archive, portal export)
      */
     #[ORM\Column(length: 255, nullable: true)]
@@ -674,6 +682,17 @@ class DataSubjectRequest
     public function setExtensionReason(?string $extensionReason): static
     {
         $this->extensionReason = $extensionReason;
+        return $this;
+    }
+
+    public function getExtensionNotifiedAt(): ?DateTimeImmutable
+    {
+        return $this->extensionNotifiedAt;
+    }
+
+    public function setExtensionNotifiedAt(?DateTimeImmutable $extensionNotifiedAt): static
+    {
+        $this->extensionNotifiedAt = $extensionNotifiedAt;
         return $this;
     }
 
