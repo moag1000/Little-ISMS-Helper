@@ -20,7 +20,9 @@ use Doctrine\ORM\EntityManagerInterface;
  *                                 vulnerability, inherentImpact (1-5),
  *                                 inherentLikelihood (1-5),
  *                                 treatmentStrategy (avoid/reduce/transfer/accept),
- *                                 riskOwner (email → User), requiresDpia (bool)
+ *                                 riskOwner (email → User), requiresDpia (bool),
+ *                                 singleLossExpectancy (€ int, F46 ALE),
+ *                                 annualRateOfOccurrence (float, F46 ALE)
  *
  * Note: Risk entity uses `title` for name and `probability` for inherentLikelihood.
  * The mapper accepts both conventions.
@@ -142,6 +144,17 @@ final class RiskMapper extends AbstractEntityMapper
             }
         }
 
+        // ── F46 quantitative ALE inputs (optional, must be non-negative) ──────
+        foreach (['singleLossExpectancy' => 'sle', 'annualRateOfOccurrence' => 'aro'] as $field => $alias) {
+            $raw = $this->resolveField($row, $field, null) ?? $this->resolveField($row, $alias, null);
+            if ($raw === null || $raw === '') {
+                continue;
+            }
+            if (!is_numeric($raw) || (float) $raw < 0) {
+                $errors[] = sprintf('Field "%s" must be a non-negative number (got: %s).', $field, (string) $raw);
+            }
+        }
+
         // ── Owner email warning (not fatal) ───────────────────────────────────
         $owner = $this->resolveField($row, 'riskOwner', null)
             ?? $this->resolveField($row, 'owner', null);
@@ -184,6 +197,12 @@ final class RiskMapper extends AbstractEntityMapper
         // requiresDpia maps to Risk.requiresDPIA
         $dpiaRaw = $get('requiresDpia') ?? $get('dpia');
 
+        // F46 quantitative ALE inputs — Single Loss Expectancy (€) + Annual Rate of
+        // Occurrence. Only emitted when present so existing imports are unaffected;
+        // the board report (F11) and € display read these straight from the entity.
+        $sleRaw = $get('singleLossExpectancy') ?? $get('sle');
+        $aroRaw = $get('annualRateOfOccurrence') ?? $get('aro');
+
         $data = [
             'title'             => trim((string) $name),
             'category'          => strtolower(trim((string) ($get('category') ?? ''))),
@@ -195,6 +214,13 @@ final class RiskMapper extends AbstractEntityMapper
             'treatmentStrategy' => $treatmentVal,
             'requiresDPIA'      => $dpiaRaw !== null ? $this->castBool($dpiaRaw) : false,
         ];
+
+        if ($sleRaw !== null && $sleRaw !== '') {
+            $data['singleLossExpectancy'] = $this->castInt($sleRaw);
+        }
+        if ($aroRaw !== null && $aroRaw !== '') {
+            $data['annualRateOfOccurrence'] = $this->castFloat($aroRaw);
+        }
 
         return $data;
     }

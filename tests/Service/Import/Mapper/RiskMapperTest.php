@@ -247,6 +247,60 @@ final class RiskMapperTest extends TestCase
         self::assertTrue($data['requiresDPIA']);
     }
 
+    // ─── F46 quantitative ALE inputs (SLE / ARO) ──────────────────────────────
+
+    #[Test]
+    public function toEntityDataMapsQuantitativeFields(): void
+    {
+        $data = $this->mapper->toEntityData([
+            'name'                   => 'Quant Risk',
+            'category'               => 'financial',
+            'singleLossExpectancy'   => '50000',
+            'annualRateOfOccurrence' => '0.25',
+        ]);
+
+        self::assertSame(50000, $data['singleLossExpectancy']);
+        self::assertSame(0.25, $data['annualRateOfOccurrence']);
+    }
+
+    #[Test]
+    public function toEntityDataMapsQuantitativeShortAliases(): void
+    {
+        $data = $this->mapper->toEntityData([
+            'name'     => 'Quant Risk',
+            'category' => 'financial',
+            'sle'      => '12000',
+            'aro'      => '2',
+        ]);
+
+        self::assertSame(12000, $data['singleLossExpectancy']);
+        self::assertSame(2.0, $data['annualRateOfOccurrence']);
+    }
+
+    #[Test]
+    public function toEntityDataOmitsQuantFieldsWhenAbsent(): void
+    {
+        $data = $this->mapper->toEntityData([
+            'name'     => 'Plain Risk',
+            'category' => 'security',
+        ]);
+
+        self::assertArrayNotHasKey('singleLossExpectancy', $data);
+        self::assertArrayNotHasKey('annualRateOfOccurrence', $data);
+    }
+
+    #[Test]
+    public function validateRejectsNegativeSle(): void
+    {
+        $result = $this->mapper->validate([
+            'name'                 => 'Risk A',
+            'category'             => 'financial',
+            'singleLossExpectancy' => '-5',
+        ]);
+
+        self::assertNotEmpty($result['errors']);
+    }
+
     // ─── resolveOwnerUser ─────────────────────────────────────────────────────
 
     #[Test]

@@ -1,5 +1,9 @@
 <?php
 
+// @em-write-allowed: RoI export upserts a per-year DoraRegisterOfInformation
+// audit record (payload-hash + scope) inline with the export response — the
+// write is intrinsic to the download action and shares its request lifecycle.
+
 declare(strict_types=1);
 
 namespace App\Controller\Authority;
@@ -10,6 +14,7 @@ use App\Entity\User;
 use App\Repository\Authority\DoraRegisterOfInformationRepository;
 use App\Security\Voter\Authority\DoraRoiVoter;
 use App\Service\AuditLogger;
+use App\Service\Authority\DoraRoiCsvExporter;
 use App\Service\Authority\DoraRoiXbrlExporter;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -44,6 +49,7 @@ class DoraRoiController extends AbstractController
 
     public function __construct(
         private readonly DoraRoiXbrlExporter $exporter,
+        private readonly DoraRoiCsvExporter $csvExporter,
         private readonly DoraRegisterOfInformationRepository $roiRepository,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
@@ -156,6 +162,76 @@ class DoraRoiController extends AbstractController
 
         return new Response($xbrlXml, Response::HTTP_OK, [
             'Content-Type'        => 'application/xml; charset=UTF-8',
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
+            'Pragma'              => 'no-cache',
+        ]);
+    }
+
+    // ─── Generate xBRL-CSV (OIM) — canonical ESA submission format ───────────
+
+    #[Route('/generate-csv', name: 'generate_csv', methods: ['POST'])]
+    #[IsCsrfTokenValid('dora_roi_generate')]
+    public function generateCsv(Request $request): Response
+    {
+        if ($redirect = $this->checkModuleActive('nis2_dora')) {
+            return $redirect;
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            throw $this->createNotFoundException('No tenant context available.');
+        }
+
+        if (!$tenant->isDoraObligated()) {
+            $this->addFlash('info', $this->translator->trans(
+                'dora.not_applicable_to_tenant',
+                [],
+                'eu_authorities'
+            ));
+            return $this->redirectToRoute('app_dashboard', ['_locale' => $request->getLocale()]);
+        }
+
+        $record = new DoraRegisterOfInformation();
+        $record->setTenant($tenant);
+        $this->denyAccessUnlessGranted(DoraRoiVoter::EXPORT, $record);
+
+        $zipBytes    = $this->csvExporter->generateZip($tenant);
+        $payloadHash = $this->csvExporter->computePayloadHash($tenant);
+        $reportingDate = new DateTimeImmutable();
+
+        // Upsert this year's record so the CSV export shares the audit-trail
+        // lineage with the XML preview export.
+        $roiRecord = $this->roiRepository->findCurrentYearForTenant($tenant);
+        if ($roiRecord === null) {
+            $roiRecord = new DoraRegisterOfInformation();
+            $roiRecord->setTenant($tenant);
+            $roiRecord->setReportingDate(new DateTimeImmutable($reportingDate->format('Y') . '-12-31'));
+            $this->entityManager->persist($roiRecord);
+        }
+        $roiRecord->setPayloadHash($payloadHash);
+        $roiRecord->setReportingScope(DoraRegisterOfInformation::SCOPE_YEARLY_FULL);
+        $this->entityManager->flush();
+
+        $this->auditLogger->logCustom(
+            action: AuditLogger::ACTION_DORA_ROI_EXPORTED,
+            entityType: 'DoraRegisterOfInformation',
+            entityId: $roiRecord->getId(),
+            description: sprintf(
+                'DORA RoI xBRL-CSV exported by %s (hash: %s)',
+                $this->getUser()?->getUserIdentifier() ?? 'unknown',
+                substr($payloadHash, 0, 12) . '…'
+            ),
+        );
+
+        $filename = sprintf(
+            'DORA-RoI-%s-%s-csv.zip',
+            preg_replace('/[^a-z0-9]+/i', '-', $tenant->getName() ?? 'export'),
+            $reportingDate->format('Ymd')
+        );
+
+        return new Response($zipBytes, Response::HTTP_OK, [
+            'Content-Type'        => 'application/zip',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
             'Cache-Control'       => 'no-cache, no-store, must-revalidate',
             'Pragma'              => 'no-cache',

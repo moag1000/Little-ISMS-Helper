@@ -194,7 +194,9 @@ eu_authorities:
             pending: 'Pending'
         action:
             generate: 'Generate XBRL for %year%'
-            generate_help: 'Exports top-10 mandatory ESA fields (DORA Art. 28, full taxonomy Sprint 9+)'
+            generate_csv: 'Generate xBRL-CSV for %year%'
+            generate_xml: 'XBRL-XML (preview)'
+            generate_help: 'xBRL-CSV is the ESA-mandated submission format (OIM plain-csv); XBRL-XML is for internal validation/preview (DORA Art. 28)'
             mark_submitted: 'Mark as Submitted'
             confirm_submission: 'Confirm Submission'
         modal:
