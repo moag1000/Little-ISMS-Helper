@@ -114,6 +114,15 @@ final class AdminHubCatalog
                         'route' => 'admin_tenant_compliance_settings_current',
                         'requiredAttribute' => 'ADMIN_OWN_TENANT',
                     ],
+                    // F43 Trust-Center — public compliance-posture sharing (opt-in)
+                    [
+                        'key' => 'trust_center',
+                        'icon' => 'fa-icon--shield-check',
+                        'label' => 'admin.hub.module.trust_center.label',
+                        'description' => 'admin.hub.module.trust_center.desc',
+                        'route' => 'admin_trust_center_settings',
+                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
+                    ],
                     // scope: own tenant policy styling
                     [
                         'key' => 'policy_style',

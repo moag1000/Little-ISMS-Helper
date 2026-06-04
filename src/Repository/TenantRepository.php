@@ -71,4 +71,24 @@ class TenantRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * F43 Trust-Center — locate a tenant by its public posture token.
+     *
+     * The controller performs constant-time `hash_equals()` validation and
+     * checks `publicPostureEnabled` before rendering any data.
+     * This method simply queries by token; it does NOT enforce the enabled
+     * gate — that is the controller's responsibility.
+     *
+     * @param string $token The raw URL token from /trust/{token}
+     * @return Tenant|null Tenant entity or null when no token matches
+     */
+    public function findByPostureToken(string $token): ?Tenant
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.publicPostureToken = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
