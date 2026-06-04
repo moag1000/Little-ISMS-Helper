@@ -416,6 +416,7 @@ processing_activity:
         risk_assessment: 'Risikobewertung (Art. 35)'
         automated_decision: 'Automatisierte Entscheidungsfindung (Art. 22)'
         additional: 'Zusätzliche Informationen'
+        tia: 'Transfer Impact Assessments (TIA) – Art. 46/49 + Schrems-II'
     action:
         save: 'Verarbeitungstätigkeit speichern'
         cancel: 'Abbrechen'
@@ -744,6 +745,8 @@ processing_activity:
             overview: Übersicht
             data_details: 'Datenschutzdetails'
             compliance: Compliance
+            tia: 'TIA – Drittlandübermittlung'
+            tia_tooltip: 'Transfer Impact Assessments für diese Verarbeitungstätigkeit (Art. 46/49 DSGVO + Schrems-II)'
     pdf:
         art_30_title: 'Verzeichnis von Verarbeitungstätigkeiten gemäß Art. 30 DSGVO'
         table_of_contents: Inhaltsverzeichnis

@@ -3,7 +3,11 @@
 src/Controller/AuditFreezeController.php:174
 src/Controller/AuditFreezeController.php:180
 src/Controller/ManagementReportController.php:966
+src/Entity/AccessReviewCampaign.php:149
+src/Entity/AccessReviewCampaign.php:178
+src/Entity/AccessReviewItem.php:171
 src/Entity/ComplianceRequirement.php:600
 src/Repository/ComplianceMappingRepository.php:64
+src/Service/AccessReviewCampaignService.php:159
 src/Service/Compliance/FrameworkLoaderRegistry.php:49
 src/Service/ComplianceLoaderFixerService.php:115

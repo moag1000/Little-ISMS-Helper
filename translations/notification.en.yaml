@@ -133,6 +133,24 @@ notification:
             status: 'Status'
             attempted_at: 'Timestamp'
             retries: 'Retries'
+        status:
+            pending: 'Pending'
+            sent: 'Sent'
+            delivered: 'Delivered'
+            failed: 'Failed'
+            retrying: 'Retrying'
+            archived: 'Archived'
+            pending_digest: 'Queued for Digest'
+
+    # F3 digest mode — channel delivery_mode field
+    channel_digest:
+        field:
+            delivery_mode: 'Delivery mode'
+        type:
+            immediate: 'Immediate'
+            digest_daily: 'Daily digest'
+        help:
+            delivery_mode: 'Immediate sends each notification individually. Daily digest batches all notifications into one email per day (via cron).'
 
     # Sprint 6b: Template gallery
     template:

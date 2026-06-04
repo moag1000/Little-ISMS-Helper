@@ -29,6 +29,14 @@ class NotificationDispatcher
     /**
      * Dispatch notification for every channel attached to the rule.
      *
+     * F3 digest mode: if a channel has `delivery_mode = digest_daily` in its
+     * config, the delivery is persisted with status `pending_digest` and the
+     * entityState snapshot is stored in `payload`. No Messenger message is
+     * dispatched — the `app:notification:send-digests` command collects these
+     * rows later and sends ONE batched email per channel.
+     *
+     * All other channels use the existing immediate-dispatch path unchanged.
+     *
      * @param array<string, mixed> $entityState
      * @return NotificationDelivery[]
      */
@@ -37,16 +45,20 @@ class NotificationDispatcher
         $deliveries = [];
 
         foreach ($rule->getChannels() as $channel) {
-            $delivery = $this->createDelivery($rule, $channel);
-            $deliveries[] = $delivery;
+            if ($channel->isDigestMode()) {
+                $delivery = $this->createDigestDelivery($rule, $channel, $entityState);
+            } else {
+                $delivery = $this->createDelivery($rule, $channel);
+                $this->messageBus->dispatch(
+                    new DispatchNotificationMessage(
+                        ruleId:      (int) $rule->getId(),
+                        channelId:   (int) $channel->getId(),
+                        entityState: $entityState,
+                    ),
+                );
+            }
 
-            $this->messageBus->dispatch(
-                new DispatchNotificationMessage(
-                    ruleId:      (int) $rule->getId(),
-                    channelId:   (int) $channel->getId(),
-                    entityState: $entityState,
-                ),
-            );
+            $deliveries[] = $delivery;
         }
 
         return $deliveries;
@@ -60,6 +72,29 @@ class NotificationDispatcher
         $delivery->setChannel($channel);
         $delivery->setStatus(NotificationDelivery::STATUS_PENDING);
         $delivery->setAttemptedAt(new DateTimeImmutable());
+
+        $this->entityManager->persist($delivery);
+        $this->entityManager->flush();
+
+        return $delivery;
+    }
+
+    /**
+     * F3 digest mode — persist a delivery that will be batched later.
+     *
+     * @param array<string, mixed> $entityState
+     */
+    private function createDigestDelivery(
+        NotificationRule    $rule,
+        NotificationChannel $channel,
+        array               $entityState,
+    ): NotificationDelivery {
+        $delivery = new NotificationDelivery();
+        $delivery->setTenant($rule->getTenant());
+        $delivery->setRule($rule);
+        $delivery->setChannel($channel);
+        $delivery->setAttemptedAt(new DateTimeImmutable());
+        $delivery->markQueuedForDigest($entityState);
 
         $this->entityManager->persist($delivery);
         $this->entityManager->flush();

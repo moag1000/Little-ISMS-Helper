@@ -45,6 +45,12 @@ class AuthorityTemplate
     public const AUTHORITY_LFDI_ST = 'lfdi_st';
     public const AUTHORITY_LFDI_SH = 'lfdi_sh';
     public const AUTHORITY_LFDI_TH = 'lfdi_th';
+    /** F26 — Österreichische Datenschutzbehörde (GDPR, AT) */
+    public const AUTHORITY_DSB_AT = 'dsb_at';
+    /** F26 — Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter (nDSG, CH) */
+    public const AUTHORITY_EDOEB_CH = 'edoeb_ch';
+    /** F26 — BaFin DORA ICT-incident authority (DORA Art. 19, DE financial sector) */
+    public const AUTHORITY_BAFIN_DORA = 'bafin_dora';
 
     public const ENTITY_TYPE_DATA_BREACH = 'data_breach';
     public const ENTITY_TYPE_INCIDENT = 'incident';
@@ -68,6 +74,11 @@ class AuthorityTemplate
         self::AUTHORITY_LFDI_ST,
         self::AUTHORITY_LFDI_SH,
         self::AUTHORITY_LFDI_TH,
+        // F26 — non-DE national authorities
+        self::AUTHORITY_DSB_AT,
+        self::AUTHORITY_EDOEB_CH,
+        // F26 — sectoral authority
+        self::AUTHORITY_BAFIN_DORA,
     ];
 
     #[ORM\Id]

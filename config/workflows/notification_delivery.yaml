@@ -36,12 +36,23 @@ framework:
             initial_marking: pending
             places:
                 - pending
+                - pending_digest
                 - sent
                 - delivered
                 - failed
                 - retrying
                 - archived
             transitions:
+                # Digest-mode delivery batched for the daily digest run.
+                # app:notification:send-digests collects pending_digest rows
+                # per recipient, sends one email, transitions them to sent
+                # (single audit entry).
+                digest_dispatch:
+                    from: pending_digest
+                    to: sent
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: notifications
                 # Channel adapter handed payload to transport (SMTP queued,
                 # webhook POST returned 2xx without ACK body, in-app row
                 # written). Equivalent to the existing `markSent()`.

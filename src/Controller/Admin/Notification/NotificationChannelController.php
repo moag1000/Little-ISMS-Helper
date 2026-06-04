@@ -245,18 +245,35 @@ class NotificationChannelController extends AbstractController
     }
 
     /**
-     * Apply the two unmapped form fields (configJson, secretPlain) to the entity.
+     * Apply unmapped form fields (configJson, secretPlain, deliveryMode) to the entity.
+     *
+     * F3 digest mode: the `deliveryMode` choice is stored inside the JSON config
+     * array under the `delivery_mode` key so that no schema change is required on
+     * the `notification_channel` table.
      */
     private function applyUnmappedFields(mixed $form, NotificationChannel $channel): void
     {
         // Parse JSON config textarea
         $configJson = $form->get('configJson')->getData();
+        $config     = $channel->getConfig(); // start from the current config
+
         if ($configJson !== null && $configJson !== '') {
             $decoded = json_decode((string) $configJson, true);
             if (is_array($decoded)) {
-                $channel->setConfig($decoded);
+                $config = $decoded;
             }
         }
+
+        // F3 digest mode — merge delivery_mode from the radio field into config
+        $deliveryMode = $form->get('deliveryMode')->getData();
+        if (
+            $deliveryMode !== null
+            && in_array($deliveryMode, NotificationChannel::VALID_DELIVERY_MODES, true)
+        ) {
+            $config['delivery_mode'] = $deliveryMode;
+        }
+
+        $channel->setConfig($config);
 
         // Encrypt and store secret if provided
         $secretPlain = $form->get('secretPlain')->getData();

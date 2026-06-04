@@ -106,6 +106,7 @@ class BackupService
         // GDPR/Privacy (CRITICAL - was missing!)
         'ProcessingActivity',
         'DataProtectionImpactAssessment',
+        'TransferImpactAssessment', // F13 — FK: Tenant, ProcessingActivity, User
         'DataBreach',
         'Consent',
         'DataSubjectRequest',       // DSGVO Art. 15-22 — FK: Tenant, User, ProcessingActivity
@@ -122,6 +123,8 @@ class BackupService
         'DocumentControlLink',      // FK: Document, Control — link table
         'Training',
         'TrainingParticipation',    // FK: Tenant, Training, User — sign-offs
+        'AccessReviewCampaign',     // F45 — FK: Tenant, User
+        'AccessReviewItem',         // F45 — FK: Tenant, AccessReviewCampaign, User
 
         // Comments (polymorphic, after all target entities)
         'Comment',                  // FK: Tenant, User — polymorphic threads

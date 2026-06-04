@@ -419,6 +419,7 @@ processing_activity:
         risk_assessment: 'Risk Assessment (Art. 35)'
         automated_decision: 'Automated Decision-Making (Art. 22)'
         additional: 'Additional Information'
+        tia: 'Transfer Impact Assessments (TIA) – Art. 46/49 + Schrems-II'
     action:
         save: 'Save Processing Activity'
         cancel: 'Cancel'
@@ -608,6 +609,8 @@ processing_activity:
             overview: Overview
             data_details: 'Data Details'
             compliance: Compliance
+            tia: 'TIA – Third-country transfer'
+            tia_tooltip: 'Transfer Impact Assessments for this processing activity (Art. 46/49 GDPR + Schrems-II)'
     pdf:
         art_30_title: 'Record of Processing Activities according to Art. 30 GDPR'
         table_of_contents: 'Table of Contents'

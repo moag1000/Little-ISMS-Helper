@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -75,7 +77,35 @@ final class NotificationChannelType extends AbstractType
                 'label'    => 'notification.channel.field.is_active',
                 'required' => false,
                 'help'     => 'notification.channel.help.is_active',
+            ])
+            ->add('deliveryMode', ChoiceType::class, [
+                'label'                     => 'notification.channel_digest.field.delivery_mode',
+                'required'                  => true,
+                'mapped'                    => false,
+                'choices'                   => [
+                    'notification.channel_digest.type.immediate'    => NotificationChannel::DELIVERY_MODE_IMMEDIATE,
+                    'notification.channel_digest.type.digest_daily' => NotificationChannel::DELIVERY_MODE_DIGEST_DAILY,
+                ],
+                'expanded'                  => true,
+                'multiple'                  => false,
+                'choice_translation_domain' => 'notification',
+                'help'                      => 'notification.channel_digest.help.delivery_mode',
+                'data'                      => NotificationChannel::DELIVERY_MODE_IMMEDIATE,
+                'attr'                      => ['class' => 'js-delivery-mode-radio'],
             ]);
+
+        // Pre-fill deliveryMode from the existing channel config on edit
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
+            /** @var NotificationChannel|null $channel */
+            $channel = $event->getData();
+            if ($channel === null) {
+                return;
+            }
+            $form = $event->getForm();
+            if ($form->has('deliveryMode')) {
+                $form->get('deliveryMode')->setData($channel->getDeliveryMode());
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

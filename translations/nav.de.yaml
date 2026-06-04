@@ -199,6 +199,7 @@ nav:
             crisis_team: 'Notfallreaktionsteam'
             processing_activities: 'Verzeichnis von Verarbeitungstätigkeiten (Art. 30 DSGVO)'
             dpia: 'Datenschutz-Folgenabschätzungen (Art. 35)'
+            tia: 'Transfer Impact Assessments – Drittlandübermittlung (Art. 46/49 + Schrems-II)'
             data_breaches: 'Datenschutzverletzungsregister (Art. 33/34)'
             documents: 'Richtlinien, Verfahren und Dokumentation'
             change_requests: 'Change Management Workflow'

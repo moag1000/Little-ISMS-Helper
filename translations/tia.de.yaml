@@ -1,16 +1,117 @@
-# Translation skeleton for tia
-# Sprint 0 Task 0.1 — empty skeleton with standard sections.
-# Keys to be filled during feature implementation.
-
 tia:
   nav:
-    title: ''
+    title: 'Transfer Impact Assessment'
+
   page:
-    title: ''
-    subtitle: ''
-  field: {}
-  error: {}
-  help: {}
-  audit: {}
-  success: {}
-  warning: {}
+    title: 'Transfer Impact Assessments (TIA)'
+    subtitle: 'Drittland-Überprüfungen gem. DSGVO Art. 46/49 + Schrems-II'
+    new_title: 'Neues Transfer Impact Assessment'
+    new_subtitle: 'TIA gem. DSGVO Art. 46/49 anlegen'
+    edit_title: 'TIA bearbeiten'
+
+  help:
+    concept_title: 'Was ist ein TIA?'
+    concept_body: >
+      Ein Transfer Impact Assessment (TIA) prüft, ob ein Drittland-Empfänger –
+      z. B. ein US-Cloud-Anbieter wie AWS oder Google – trotz nationalem Überwachungsrecht
+      (z. B. FISA 702, CLOUD Act) ein im Wesentlichen gleichwertiges Schutzniveau
+      bieten kann. Ohne diesen Nachweis dürfen SCCs oder BCRs nicht allein als
+      Übermittlungsgarantie eingesetzt werden (EuGH C-311/18, Schrems-II, 16.07.2020).
+    norm_ref: 'Rechtsgrundlagen: DSGVO Art. 46 (Geeignete Garantien), Art. 49 (Ausnahmen), EuGH Schrems-II, EDPB Empfehlung 01/2020 (Zusatzmaßnahmen)'
+    destination_country: 'ISO-3166-1 Alpha-2-Ländercode, z. B. US, CN, IN'
+    recipient_name: 'Name des konkreten Empfängers (z. B. AWS Inc., Google LLC)'
+    transfer_mechanism: 'Rechtsgrundlage für die Drittlandübermittlung gem. Art. 46 / 49 DSGVO'
+    law_surveillance_risk: >
+      Schritt 3 der EDPB-Methodik: Beurteilung der Rechtsordnung des Ziellandes.
+      Prüfen Sie, ob nationales Recht (z. B. US FISA 702 / EO 12333 / CLOUD Act,
+      CN Nationaler Geheimdienstgesetz Art. 7) den Übermittlungsmechanismus
+      unterläuft. Beschreiben Sie, in welchem Umfang die Schutzgarantie beeinträchtigt wird.
+    supplementary_measures: >
+      Schritt 4 der EDPB-Methodik: Ergänzende Maßnahmen zum Ausgleich der Schutzlücke.
+      Beispiele: Ende-zu-Ende-Verschlüsselung mit Schlüsseln nur beim Verantwortlichen,
+      Pseudonymisierung vor Übermittlung, vertragliches Verbot weitergehender
+      Behördenzugriffe, Transparenzpflichten des Importeurs.
+    residual_risk_rating: >
+      Schritt 5 der EDPB-Methodik: Restrisiko nach Anwendung der Zusatzmaßnahmen.
+      Hoch = Übermittlung muss ausgesetzt werden (Art. 58(2)(f) DSGVO).
+    conclusion: 'Zusammenfassendes Ergebnis und ggf. Bedingungen für die Übermittlung'
+
+  field:
+    destination_country: 'Zielland'
+    recipient_name: 'Empfänger'
+    transfer_mechanism: 'Übermittlungsmechanismus (Art. 46/49)'
+    law_surveillance_risk: 'Bewertung Überwachungsrecht des Ziellandes (EDPB Step 3)'
+    supplementary_measures: 'Ergänzende Maßnahmen (EDPB Step 4)'
+    residual_risk_rating: 'Restrisiko-Einstufung (EDPB Step 5)'
+    conclusion: 'Ergebnis / Schlussfolgerung'
+    status: 'Status'
+    assessed_at: 'Bewertet am'
+    assessed_by: 'Bewertet von'
+    processing_activity: 'Verarbeitungstätigkeit'
+
+  section:
+    overview: 'Übertragungsdetails'
+    assessment: 'Schrems-II-Bewertung (EDPB Steps 3–4)'
+    conclusion: 'Ergebnis (EDPB Step 5)'
+
+  mechanism:
+    scc: 'Standardvertragsklauseln (Art. 46 Abs. 2(c)/(d))'
+    bcr: 'Verbindliche Unternehmensregeln / BCR (Art. 47)'
+    adequacy: 'Angemessenheitsbeschluss (Art. 45)'
+    certification: 'Genehmigte Zertifizierung (Art. 42/46 Abs. 2(f))'
+    codes_of_conduct: 'Genehmigte Verhaltensregeln (Art. 40/46 Abs. 2(e))'
+    derogation: 'Ausnahme gem. Art. 49 DSGVO'
+
+  risk:
+    low: 'Gering – Übermittlung kann fortgeführt werden'
+    medium: 'Mittel – Erhöhte Aufsicht empfohlen'
+    high: 'Hoch – Übermittlung MUSS ausgesetzt werden'
+
+  status:
+    draft: 'Entwurf'
+    assessed: 'Bewertet'
+
+  placeholder:
+    transfer_mechanism: '– Bitte wählen –'
+    residual_risk_rating: '– Bitte wählen –'
+
+  action:
+    new: 'Neue TIA anlegen'
+    edit: 'TIA bearbeiten'
+    save: 'Speichern'
+    cancel: 'Abbrechen'
+    assess: 'Als bewertet markieren'
+    assess_title: 'Bewertung abschließen'
+    assess_description: 'Schließen Sie die TIA ab und markieren Sie sie als bewertet. Bei Restrisiko HOCH wird automatisch ein Risikoeintrag erzeugt.'
+    assess_high_risk_note: '(Ein Risikoeintrag mit Status "Identified" wird erzeugt)'
+    view: 'Details anzeigen'
+    back: 'Zurück zur Verarbeitungstätigkeit'
+    delete: 'TIA löschen'
+
+  empty:
+    title: 'Keine TIA vorhanden'
+    body: 'Für diese Verarbeitungstätigkeit wurde noch kein Transfer Impact Assessment angelegt. Legen Sie jetzt eine TIA an, um die Drittlandübermittlung zu dokumentieren.'
+
+  success:
+    created: 'TIA erfolgreich angelegt.'
+    updated: 'TIA erfolgreich aktualisiert.'
+    assessed: 'TIA als bewertet markiert.'
+    deleted: 'TIA gelöscht.'
+
+  warning:
+    cannot_edit_assessed: 'Bewertete TIAs können nicht mehr bearbeitet werden.'
+    already_assessed: 'Diese TIA wurde bereits abgeschlossen.'
+    high_risk_title: 'Kritisches Übertragungsrisiko – Handlungsbedarf!'
+    high_risk_body: 'Das Restrisiko wurde als HOCH eingestuft. Diese Übermittlung muss gem. DSGVO Art. 58 Abs. 2(f) unverzüglich ausgesetzt werden, bis ein angemessenes Schutzniveau nachgewiesen werden kann. Ein Risikoeintrag wurde automatisch erzeugt.'
+
+  error:
+    invalid_csrf: 'Ungültiges CSRF-Token. Bitte laden Sie die Seite neu.'
+
+  confirm:
+    delete: 'Soll diese TIA wirklich gelöscht werden? Dieser Vorgang kann nicht rückgängig gemacht werden.'
+
+  audit:
+    created: 'TIA angelegt'
+    updated: 'TIA aktualisiert'
+    assessed: 'TIA bewertet'
+    deleted: 'TIA gelöscht'

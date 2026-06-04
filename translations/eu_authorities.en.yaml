@@ -236,6 +236,87 @@ authority:
     lfdi:
         name: 'State DPA'
         description: 'State Commissioner for Data Protection'
+        # F25 — per-Bundesland name + postal address blocks (one parametrized template, key-driven)
+        bw:
+            name: 'State Commissioner for Data Protection and Freedom of Information Baden-Württemberg (LfDI BW)'
+            address_line1: 'Lautenschlagerstraße 20'
+            address_line2: '70173 Stuttgart'
+            address_line3: 'Germany'
+        by:
+            name: 'Bavarian State Office for Data Protection Supervision (BayLDA)'
+            address_line1: 'Promenade 18'
+            address_line2: '91522 Ansbach'
+            address_line3: 'Germany'
+        ber:
+            name: 'Berlin Commissioner for Data Protection and Freedom of Information (BlnBDI)'
+            address_line1: 'Alt-Moabit 59-61'
+            address_line2: '10555 Berlin'
+            address_line3: 'Germany'
+        brb:
+            name: 'State Commissioner for Data Protection and the Right to Inspect Files Brandenburg (LDA Brandenburg)'
+            address_line1: 'Stahnsdorfer Damm 77'
+            address_line2: '14532 Kleinmachnow'
+            address_line3: 'Germany'
+        hb:
+            name: 'State Commissioner for Data Protection and Freedom of Information of the Free Hanseatic City of Bremen (LfDI Bremen)'
+            address_line1: 'Arndtstraße 1'
+            address_line2: '27570 Bremerhaven'
+            address_line3: 'Germany'
+        hh:
+            name: 'Hamburg Commissioner for Data Protection and Freedom of Information (HmbBfDI)'
+            address_line1: 'Ludwig-Erhard-Str. 22, 7th Floor'
+            address_line2: '20459 Hamburg'
+            address_line3: 'Germany'
+        he:
+            name: 'Hessian Commissioner for Data Protection and Freedom of Information (HBDI)'
+            address_line1: 'Postfach 3163'
+            address_line2: '65021 Wiesbaden'
+            address_line3: 'Germany'
+        mv:
+            name: 'State Commissioner for Data Protection and Freedom of Information Mecklenburg-Vorpommern (LfDI MV)'
+            address_line1: 'Schloss Schwerin, Lennéstraße 1'
+            address_line2: '19053 Schwerin'
+            address_line3: 'Germany'
+        ni:
+            name: 'State Commissioner for Data Protection Lower Saxony (LfDI Nds.)'
+            address_line1: 'Prinzenstraße 5'
+            address_line2: '30159 Hannover'
+            address_line3: 'Germany'
+        nrw:
+            name: 'State Commissioner for Data Protection and Freedom of Information North Rhine-Westphalia (LfDI NRW)'
+            address_line1: 'Kavalleriestraße 2-4'
+            address_line2: '40213 Düsseldorf'
+            address_line3: 'Germany'
+        rlp:
+            name: 'State Commissioner for Data Protection and Freedom of Information Rhineland-Palatinate (LfDI RLP)'
+            address_line1: 'Hintere Bleiche 34'
+            address_line2: '55116 Mainz'
+            address_line3: 'Germany'
+        sl:
+            name: 'Independent Data Protection Centre Saarland (ULD SL) / State Commissioner for Data Protection and Freedom of Information'
+            address_line1: 'Fritz-Dobisch-Straße 12'
+            address_line2: '66111 Saarbrücken'
+            address_line3: 'Germany'
+        sn:
+            name: 'Saxon State Commissioner for Data Protection (SLfDI)'
+            address_line1: 'Devrientstraße 5'
+            address_line2: '01067 Dresden'
+            address_line3: 'Germany'
+        st:
+            name: 'State Commissioner for Data Protection Saxony-Anhalt (LfDI LSA)'
+            address_line1: 'Leiterstraße 9'
+            address_line2: '39104 Magdeburg'
+            address_line3: 'Germany'
+        sh:
+            name: 'Independent State Centre for Data Protection Schleswig-Holstein (ULD SH)'
+            address_line1: 'Holstenstraße 98'
+            address_line2: '24103 Kiel'
+            address_line3: 'Germany'
+        th:
+            name: 'Thuringian State Commissioner for Data Protection and Freedom of Information (TLfDI)'
+            address_line1: 'Häßlerstraße 8'
+            address_line2: '99096 Erfurt'
+            address_line3: 'Germany'
     bundesland:
         bw: 'Baden-Württemberg (LfDI BW)'
         by: 'Bavaria (LDA Bayern)'
@@ -253,6 +334,28 @@ authority:
         st: 'Saxony-Anhalt (LfDI LSA)'
         sh: 'Schleswig-Holstein (ULD SH)'
         th: 'Thuringia (TLfDI)'
+    # F26 — non-DE national + sectoral authority metadata
+    dsb_at:
+        name: 'Austrian Data Protection Authority (DSB)'
+        description: 'National supervisory authority for Austria under GDPR Art. 77 / DSG'
+        address_line1: 'Barichgasse 40-42'
+        address_line2: '1030 Wien'
+        address_line3: 'Austria'
+        regulation: 'GDPR Art. 33 in conjunction with Austrian DSG'
+    edoeb_ch:
+        name: 'Federal Data Protection and Information Commissioner (FDPIC / EDÖB)'
+        description: 'Swiss federal supervisory authority under the new Federal Act on Data Protection (nFADP)'
+        address_line1: 'Feldeggweg 1'
+        address_line2: '3003 Bern'
+        address_line3: 'Switzerland'
+        regulation: 'Federal Act on Data Protection (nFADP) Art. 24'
+    bafin_dora:
+        name: 'Federal Financial Supervisory Authority (BaFin) — DORA ICT'
+        description: 'BaFin as competent authority for DORA ICT incident reports in the German financial sector'
+        address_line1: 'Marie-Curie-Straße 24-28'
+        address_line2: '60439 Frankfurt am Main'
+        address_line3: 'Germany'
+        regulation: 'DORA Art. 19 — Reporting of major ICT-related incidents'
     action:
         export_pdf: 'Export PDF'
         export_json: 'Export JSON'

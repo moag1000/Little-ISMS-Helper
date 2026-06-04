@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% trans_default_domain 'privacy'%}
+{% trans_default_domain 'privacy' %}
 {% block title %}{{ processing_activity.name }} - Processing Activity{% endblock %}
 
 {% block body %}
@@ -131,6 +131,19 @@
                 <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> Compliance
             </button>
         </li>
+        {% if processing_activity.hasThirdCountryTransfer %}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tia-tab" data-bs-toggle="tab" data-bs-target="#tia" type="button" role="tab"
+                    aria-label="{{ 'processing_activity.tab.tia'|trans({}, 'privacy') }}"
+                    title="{{ 'processing_activity.tab.tia_tooltip'|trans({}, 'privacy') }}">
+                <i class="fa-icon fa-icon--globe" aria-hidden="true"></i>
+                TIA
+                {% if tias is defined and tias|length > 0 %}
+                    <span class="badge bg-secondary ms-1">{{ tias|length }}</span>
+                {% endif %}
+            </button>
+        </li>
+        {% endif %}
     </ul>
 
     <div class="tab-content" id="processingActivityTabsContent">
@@ -310,6 +323,86 @@
                 {% endblock %}
             {% endembed %}
         </div>
+        {# TIA Tab — only shown when hasThirdCountryTransfer = true #}
+        {% if processing_activity.hasThirdCountryTransfer %}
+        <div class="tab-pane fade" id="tia" role="tabpanel" aria-labelledby="tia-tab">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    {# ── UX tooltip: what is a TIA? ────────────────────────────────────── #}
+                    <div class="alert alert-info d-flex align-items-start gap-2 mb-3" role="note">
+                        <i class="fa-icon fa-icon--ui-info-circle flex-shrink-0 mt-1" aria-hidden="true"></i>
+                        <div>
+                            <strong>{{ 'tia.help.concept_title'|trans({}, 'tia') }}</strong>
+                            {{ 'tia.help.concept_body'|trans({}, 'tia') }}
+                            <br><small class="text-muted">{{ 'tia.help.norm_ref'|trans({}, 'tia') }}</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h5 mb-0">{{ 'processing_activity.section.tia'|trans({}, 'privacy') }}</h2>
+                        <a href="{{ path('app_tia_new', {paId: processing_activity.id}) }}" class="btn btn-sm btn-primary">
+                            <i class="fa-icon fa-icon--plus" aria-hidden="true"></i>
+                            {{ 'tia.action.new'|trans({}, 'tia') }}
+                        </a>
+                    </div>
+
+                    {% if tias is defined and tias|length > 0 %}
+                        {% embed '_components/_table.html.twig' with { noMargin: true } %}
+                            {% block table_head %}
+                                <tr>
+                                    <th scope="col">{{ 'tia.field.recipient_name'|trans({}, 'tia') }}</th>
+                                    <th scope="col">{{ 'tia.field.destination_country'|trans({}, 'tia') }}</th>
+                                    <th scope="col">{{ 'tia.field.transfer_mechanism'|trans({}, 'tia') }}</th>
+                                    <th scope="col">{{ 'tia.field.residual_risk_rating'|trans({}, 'tia') }}</th>
+                                    <th scope="col">{{ 'tia.field.status'|trans({}, 'tia') }}</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {% for tia in tias %}
+                                    <tr>
+                                        <td>{{ tia.recipientName ?? '—' }}</td>
+                                        <td>{{ tia.destinationCountry ?? '—' }}</td>
+                                        <td>
+                                            {% if tia.transferMechanism %}
+                                                {% include '_components/_badge.html.twig' with {
+                                                    variant: 'info',
+                                                    content: ('tia.mechanism.' ~ tia.transferMechanism)|trans({}, 'tia')
+                                                } %}
+                                            {% else %}—{% endif %}
+                                        </td>
+                                        <td>
+                                            {% if tia.residualRiskRating %}
+                                                {% set riskVariant = tia.residualRiskRating == 'high' ? 'danger' : (tia.residualRiskRating == 'medium' ? 'warning' : 'success') %}
+                                                {% include '_components/_badge.html.twig' with {
+                                                    variant: riskVariant,
+                                                    content: ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia')
+                                                } %}
+                                            {% else %}—{% endif %}
+                                        </td>
+                                        <td>
+                                            {% if tia.status == 'assessed' %}
+                                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'tia.status.assessed'|trans({}, 'tia') } %}
+                                            {% else %}
+                                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'tia.status.draft'|trans({}, 'tia') } %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('app_tia_show', {paId: processing_activity.id, id: tia.id}) }}" class="btn btn-sm btn-ghost" title="{{ 'tia.action.view'|trans({}, 'tia') }}">
+                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endblock %}
+                        {% endembed %}
+                    {% else %}
+                        <p class="text-muted">{{ 'tia.empty.body'|trans({}, 'tia') }}</p>
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+        {% endif %}
     </div>
 
     {# Action Forms (hidden) #}
