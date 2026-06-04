@@ -1079,25 +1079,18 @@
 
 <script>
 // Initialize Bootstrap tooltips
-document.addEventListener('DOMContentLoaded', function() {
+function initFrameworkDashboardTooltips() {
+    if (!window.bootstrap || !window.bootstrap.Tooltip) { return; }
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl, {
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        bootstrap.Tooltip.getInstance(tooltipTriggerEl)?.dispose();
+        new bootstrap.Tooltip(tooltipTriggerEl, {
             trigger: 'hover',
             html: false
         });
     });
-});
-
-// Also initialize on Turbo/AJAX navigation (if used)
-document.addEventListener('turbo:load', function() {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl, {
-            trigger: 'hover',
-            html: false
-        });
-    });
-});
+}
+document.addEventListener('DOMContentLoaded', initFrameworkDashboardTooltips);
+document.addEventListener('turbo:load', initFrameworkDashboardTooltips);
 </script>
 {% endblock %}

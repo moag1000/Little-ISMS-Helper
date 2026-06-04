@@ -124,8 +124,10 @@
     (function () {
     // Initialize Bootstrap tooltips for role checkboxes
     function initUserEditTooltips() {
+        if (!window.bootstrap || !window.bootstrap.Tooltip) { return; }
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltipTriggerList.forEach(function(el) {
+            bootstrap.Tooltip.getInstance(el)?.dispose();
             new bootstrap.Tooltip(el);
         });
     }

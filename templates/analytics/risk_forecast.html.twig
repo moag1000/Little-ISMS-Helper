@@ -450,6 +450,8 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        // TB-6: { once: true } — anonymous handler is re-registered on each page render by Turbo;
+        // once:true prevents global accumulation. Charts use destroy-before-create for back-nav safety.
         document.addEventListener('turbo:load', function() {
             // Resolve Aurora design-tokens to color strings for Chart.js
             // (Chart.js doesn't resolve CSS custom properties).
@@ -472,6 +474,7 @@
                 const historical = forecastData.historical || [];
                 const predicted = forecastData.forecast || [];
 
+                const __existingForecast = Chart.getChart(forecastCtx); if (__existingForecast) { __existingForecast.destroy(); }
                 new Chart(forecastCtx, {
                     type: 'line',
                     data: {
@@ -516,6 +519,7 @@
                 }
                 changes.unshift(0); // First month has no change
 
+                const __existingVelocity = Chart.getChart(velocityCtx); if (__existingVelocity) { __existingVelocity.destroy(); }
                 new Chart(velocityCtx, {
                     type: 'bar',
                     data: {
@@ -541,6 +545,7 @@
             if (appetiteCtx) {
                 const appetiteData = {{ appetite|json_encode|raw }};
                 const score = appetiteData.compliance_score || 0;
+                const __existingAppetite = Chart.getChart(appetiteCtx); if (__existingAppetite) { __existingAppetite.destroy(); }
                 new Chart(appetiteCtx, {
                     type: 'doughnut',
                     data: {
@@ -564,6 +569,6 @@
                     }
                 });
             }
-        });
+        }, { once: true });
     </script>
 {% endblock %}

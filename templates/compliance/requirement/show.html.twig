@@ -518,9 +518,11 @@
 
                     // Initialize Bootstrap tooltips
                     function initRequirementTooltips() {
+                        if (!window.bootstrap || !window.bootstrap.Tooltip) { return; }
                         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                        tooltipTriggerList.map(function (tooltipTriggerEl) {
-                            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                            bootstrap.Tooltip.getInstance(tooltipTriggerEl)?.dispose();
+                            new bootstrap.Tooltip(tooltipTriggerEl, {
                                 trigger: 'hover',
                                 html: false
                             });
