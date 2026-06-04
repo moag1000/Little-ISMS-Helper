@@ -169,6 +169,8 @@ consent:
         phone: 'Phone'
         letter: 'Letter'
         in_person: 'In Person'
+    withdrawal:
+        via_revoke_note: 'Withdrawal is recorded via the dedicated "Revoke consent" action on the detail page, keeping the withdrawal and revocation fields consistent (GDPR Art. 7(3)).'
     validation:
         withdrawal_reason_required_when_withdrawn: 'Withdrawal requires a reason to be recorded.'
         withdrawal_channel_required_when_withdrawn: 'Withdrawal requires the channel to be recorded.'
