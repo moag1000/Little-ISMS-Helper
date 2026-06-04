@@ -545,7 +545,10 @@ class ProcessingActivity
      * @see LifecycleRegistry::STANDARD_5_STAGE
      */
     #[ORM\Column(length: 20, options: ['default' => 'draft'])]
-    #[Assert\Choice(choices: LifecycleRegistry::STANDARD_5_STAGE)]
+    // Validate against the status STRINGS (map keys), not STANDARD_5_STAGE
+    // itself — the const's values are per-stage arrays, so choices: <map> made
+    // Assert\Choice reject every status incl. 'draft' and broke all edits.
+    #[Assert\Choice(callback: [LifecycleRegistry::class, 'standardStageKeys'])]
     private string $status = 'draft';
 
     /**
