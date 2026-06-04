@@ -459,6 +459,26 @@ class ProcessingActivity
     private ?array $jointControllerDetails = null;
 
     // ============================================================================
+    // GDPR Art. 30(2): Processor record (N-7)
+    // ============================================================================
+
+    /**
+     * Whether the tenant acts as a PROCESSOR for this activity (Art. 30(2)) —
+     * processing personal data on behalf of another controller, rather than as
+     * the controller itself.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isProcessor = false;
+
+    /**
+     * Art. 30(2)(a): identity (and, where relevant, the DPO) of the
+     * controller(s) on whose behalf the processing is carried out. Mandatory
+     * when isProcessor = true (validated below).
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $processorClientController = null;
+
+    // ============================================================================
     // Risk Assessment & DPIA (Art. 35 GDPR)
     // ============================================================================
 
@@ -1208,6 +1228,28 @@ class ProcessingActivity
         return $this;
     }
 
+    public function isProcessor(): bool
+    {
+        return $this->isProcessor;
+    }
+
+    public function setIsProcessor(bool $isProcessor): static
+    {
+        $this->isProcessor = $isProcessor;
+        return $this;
+    }
+
+    public function getProcessorClientController(): ?string
+    {
+        return $this->processorClientController;
+    }
+
+    public function setProcessorClientController(?string $processorClientController): static
+    {
+        $this->processorClientController = $processorClientController;
+        return $this;
+    }
+
     public function getIsHighRisk(): bool
     {
         return $this->isHighRisk;
@@ -1531,6 +1573,20 @@ class ProcessingActivity
         if ($this->recipientCategories === null || $this->recipientCategories === []) {
             $context->buildViolation('processing_activity.validation.recipient_categories_required')
                 ->atPath('recipientCategories')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * GDPR Art. 30(2)(a) — when the tenant acts as a processor, the controller(s)
+     * on whose behalf the processing is carried out must be identified (N-7).
+     */
+    #[Assert\Callback]
+    public function validateProcessorClientController(ExecutionContextInterface $context): void
+    {
+        if ($this->isProcessor && ($this->processorClientController === null || trim($this->processorClientController) === '')) {
+            $context->buildViolation('processing_activity.validation.processor_client_controller_required')
+                ->atPath('processorClientController')
                 ->addViolation();
         }
     }

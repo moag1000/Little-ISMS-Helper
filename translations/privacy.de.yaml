@@ -494,6 +494,8 @@ processing_activity:
         data_protection_officer_deputies: 'DSB-Vertretungen'
         involves_processors: 'Auftragsverarbeiter eingebunden (Art. 28 DSGVO)'
         is_joint_controller: 'Gemeinsame Verantwortlichkeit (Art. 26 DSGVO)'
+        is_processor: 'Auftragsverarbeiter-Rolle (Art. 30(2) DSGVO)'
+        processor_client_controller: 'Verantwortliche(r) im Auftrag (Art. 30(2)(a))'
         joint_controller_details: 'Gemeinsam Verantwortliche (Art. 26 DSGVO)'
         is_high_risk: 'Hohes Risiko für Rechte und Freiheiten'
         dpia_completed: 'Datenschutz-Folgenabschätzung (DSFA) durchgeführt'
@@ -552,6 +554,8 @@ processing_activity:
         involves_processors: 'Auftragsverarbeiter eingebunden (Art. 28 DSGVO)'
         processor_suppliers: Auftragsverarbeiter
         is_joint_controller: 'Gemeinsame Verantwortlichkeit (Art. 26 DSGVO)'
+        is_processor: 'Auftragsverarbeiter-Rolle (Art. 30(2) DSGVO)'
+        processor_client_controller: 'Verantwortliche(r) im Auftrag (Art. 30(2)(a))'
         joint_controller_details: 'Gemeinsam Verantwortliche (Art. 26 DSGVO)'
         is_high_risk: 'Hohes Risiko für Rechte und Freiheiten'
         dpia_completed: 'Datenschutz-Folgenabschätzung (DSFA) durchgeführt'
@@ -603,6 +607,8 @@ processing_activity:
         involves_processors: 'Sind Auftragsverarbeiter eingebunden (Art. 28)?'
         processor_suppliers: 'Externe Auftragsverarbeiter, die in dieser Verarbeitungstätigkeit für Sie tätig sind (Art. 28 DSGVO).'
         is_joint_controller: 'Liegt eine gemeinsame Verantwortlichkeit vor (Art. 26)?'
+        is_processor: 'Verarbeitet die Organisation hier im Auftrag eines anderen Verantwortlichen (Art. 30(2))?'
+        processor_client_controller: 'Identität (und ggf. DSB) des/der Verantwortlichen, in dessen Auftrag verarbeitet wird (Art. 30(2)(a)).'
         joint_controller_details_json: 'Liste der gemeinsam Verantwortlichen als JSON-Array mit Feldern: name, contact, responsibilities (Aufgabenverteilung gem. Art. 26(1)), arrangement_reference (Verweis auf die Vereinbarung). Die wesentlichen Inhalte sind den Betroffenen zugänglich zu machen (Art. 26(2)).'
         is_high_risk: 'Gilt dies als Hochrisiko-Verarbeitung?'
         dpia_completed: 'Wurde eine Datenschutz-Folgenabschätzung (DSFA) durchgeführt?'
@@ -721,6 +727,7 @@ processing_activity:
         processor_suppliers_required: 'Mindestens ein Auftragsverarbeiter muss strukturiert verlinkt sein (DSGVO Art. 28(1) + Art. 30(1)(d)). Wenn "Auftragsverarbeiter involviert" markiert ist, sind die konkreten Lieferanten als Empfänger-Disclosure pflichtig.'
         criminal_data_legal_basis_required: 'Bei Verarbeitung strafrechtlicher Daten (Art. 10 DSGVO) muss die Rechtsgrundlage/Befugnis dokumentiert werden (behördliche Aufsicht oder unions-/mitgliedstaatliche Befugnis, z.B. § 26 BDSG).'
         recipient_categories_required: 'Mindestens eine Empfängerkategorie ist erforderlich (DSGVO Art. 30(1)(d)) — auch "nur intern" muss explizit angegeben werden.'
+        processor_client_controller_required: 'Bei Auftragsverarbeiter-Rolle (Art. 30(2)) muss der/die Verantwortliche im Auftrag benannt werden (Art. 30(2)(a)).'
     # S3 P-4: canonical 5-stage lifecycle (draft → in_review → approved → published → archived).
     # Legacy `active` key kept as fallback label for any historical row not yet migrated.
     status:
