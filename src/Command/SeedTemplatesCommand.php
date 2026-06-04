@@ -46,6 +46,7 @@ final class SeedTemplatesCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -63,6 +64,7 @@ final class SeedTemplatesCommand extends Command
                 'Preview only — do not persist any entities.');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

@@ -12,17 +12,15 @@ use App\Service\MappingLifecycleService;
 use App\Service\MappingQualityScoreService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 
-#[AllowMockObjectsWithoutExpectations]
 class MappingLifecycleServiceTest extends TestCase
 {
     private function makeService(): MappingLifecycleService
     {
-        $em = $this->createMock(EntityManagerInterface::class);
-        $log = $this->createMock(AuditLogger::class);
-        $mqs = $this->createMock(MappingQualityScoreService::class);
+        $em = $this->createStub(EntityManagerInterface::class);
+        $log = $this->createStub(AuditLogger::class);
+        $mqs = $this->createStub(MappingQualityScoreService::class);
         return new MappingLifecycleService($em, $log, $mqs);
     }
 

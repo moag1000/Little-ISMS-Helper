@@ -43,11 +43,13 @@ class CaptureReuseSnapshotCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption('tenant', 't', InputOption::VALUE_REQUIRED, 'Nur für diesen Tenant (ID).');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

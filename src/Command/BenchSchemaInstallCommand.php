@@ -30,6 +30,7 @@ final class BenchSchemaInstallCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $reflection = new ReflectionClass($this->controller);

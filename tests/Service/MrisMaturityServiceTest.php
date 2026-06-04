@@ -9,17 +9,15 @@ use App\Service\AuditLogger;
 use App\Service\MrisMaturityService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Exception\BusinessRule\BusinessRuleException;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-#[AllowMockObjectsWithoutExpectations]
 final class MrisMaturityServiceTest extends TestCase
 {
     private function makeService(?AuditLogger $log = null): MrisMaturityService
     {
-        $em = $this->createMock(EntityManagerInterface::class);
-        $log ??= $this->createMock(AuditLogger::class);
+        $em = $this->createStub(EntityManagerInterface::class);
+        $log ??= $this->createStub(AuditLogger::class);
         return new MrisMaturityService($em, $log);
     }
 

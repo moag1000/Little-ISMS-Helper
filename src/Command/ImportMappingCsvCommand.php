@@ -57,6 +57,7 @@ final class ImportMappingCsvCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -64,6 +65,7 @@ final class ImportMappingCsvCommand extends Command
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Parse and validate only, no DB writes');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

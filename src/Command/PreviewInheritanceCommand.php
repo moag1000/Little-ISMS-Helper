@@ -30,6 +30,7 @@ final class PreviewInheritanceCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -38,6 +39,7 @@ final class PreviewInheritanceCommand extends Command
             ->addOption('output', null, InputOption::VALUE_REQUIRED, 'Output format: table|json', 'table');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

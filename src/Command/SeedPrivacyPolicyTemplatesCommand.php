@@ -193,6 +193,7 @@ final class SeedPrivacyPolicyTemplatesCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addOption(
@@ -209,6 +210,7 @@ final class SeedPrivacyPolicyTemplatesCommand extends Command
         );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

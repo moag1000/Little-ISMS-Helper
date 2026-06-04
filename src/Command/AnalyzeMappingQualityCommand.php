@@ -130,13 +130,11 @@ class AnalyzeMappingQualityCommand
                 }
 
                 $confidence = $analysisResults['analysis_confidence'];
-                if ($confidence >= 80) {
-                    $statistics['high_confidence']++;
-                } elseif ($confidence >= 60) {
-                    $statistics['medium_confidence']++;
-                } else {
-                    $statistics['low_confidence']++;
-                }
+                match (true) {
+                    $confidence >= 80 => $statistics['high_confidence']++,
+                    $confidence >= 60 => $statistics['medium_confidence']++,
+                    default           => $statistics['low_confidence']++,
+                };
 
                 if ($analysisResults['requires_review']) {
                     $statistics['requires_review']++;

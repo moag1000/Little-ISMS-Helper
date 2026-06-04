@@ -41,6 +41,7 @@ final class SendPolicyAcknowledgementRequestsCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -59,6 +60,7 @@ who already acknowledged the current document version are skipped.
 HELP);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

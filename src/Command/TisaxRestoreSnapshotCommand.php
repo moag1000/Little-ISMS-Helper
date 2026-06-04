@@ -39,12 +39,14 @@ final class TisaxRestoreSnapshotCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addArgument('snapshot', InputArgument::REQUIRED, 'Path to a tisax_consolidate_snapshot_*.json');
         $this->addOption('force', null, InputOption::VALUE_NONE, 'Apply (default is dry-run).');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
