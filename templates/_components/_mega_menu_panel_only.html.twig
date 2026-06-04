@@ -228,6 +228,13 @@
                     <span class="fly-item__sub">{{ 'nav.bulk_import.assets_desc'|trans({}, 'data_import') }}</span>
                 </span>
             </a>
+            <a href="{{ path('app_bulk_import_index', {entityType: 'supplier'}) }}" class="fly-item {% if current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') == 'supplier' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+                <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i></span>
+                <span class="fly-item__body">
+                    <span class="fly-item__title">{{ 'nav.bulk_import.suppliers'|trans({}, 'data_import') }}</span>
+                    <span class="fly-item__sub">{{ 'nav.bulk_import.suppliers_desc'|trans({}, 'data_import') }}</span>
+                </span>
+            </a>
             {% endif %}
         </div>
         {% endif %}
