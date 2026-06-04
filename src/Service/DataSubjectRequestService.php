@@ -117,6 +117,18 @@ final class DataSubjectRequestService
             ), 'invalid_transition');
         }
 
+        // Defense-in-depth: apply the same Art. 12(6) identity gate as complete()
+        // so this generic transition path can never become a silent bypass for a
+        // data-releasing completion. complete() stays the primary, richer path.
+        if ($newStatus === DataSubjectRequestStatus::Completed->value
+            && in_array($request->getRequestType(), DataSubjectRequest::IDENTITY_REQUIRED_TYPES, true)
+            && !$request->isIdentityVerified()) {
+            throw new \App\Exception\BusinessRule\BusinessRuleException(
+                'Identity must be verified before completing this request type (Art. 12(6) GDPR)',
+                'identity_not_verified',
+            );
+        }
+
         $oldStatus = $currentStatus;
         // X.6: LifecycleService::transition() handles setStatus + flush + audit-log hook.
         $this->lifecycleService->transition(

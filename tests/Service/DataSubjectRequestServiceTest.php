@@ -123,6 +123,43 @@ class DataSubjectRequestServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCompleteThrowsForUnverifiedErasureRequest(): void
+    {
+        // erasure (Art. 17) is the most dangerous type — irreversible deletion
+        // for the wrong person. It must be gated just like access.
+        $request = $this->createMock(DataSubjectRequest::class);
+        $request->method('getStatus')->willReturn('in_progress');
+        $request->method('getRequestType')->willReturn('erasure');
+        $request->method('isIdentityVerified')->willReturn(false);
+
+        $this->entityManager->expects($this->never())->method('flush');
+
+        $this->expectException(BusinessRuleException::class);
+        $this->expectExceptionMessage('Identity must be verified before completing this request type (Art. 12(6) GDPR)');
+
+        $this->service->complete($request, 'Erased');
+    }
+
+    #[Test]
+    public function testUpdateStatusToCompletedAlsoEnforcesIdentityGate(): void
+    {
+        // The generic transition path must not be a silent bypass of complete()'s
+        // identity gate (the method is currently uncalled, but stays defended).
+        $request = $this->createMock(DataSubjectRequest::class);
+        $request->method('getId')->willReturn(3);
+        $request->method('getStatus')->willReturn('in_progress');
+        $request->method('getRequestType')->willReturn('access');
+        $request->method('isIdentityVerified')->willReturn(false);
+
+        $this->lifecycleService->expects($this->never())->method('transition');
+
+        $this->expectException(BusinessRuleException::class);
+        $this->expectExceptionMessage('Identity must be verified before completing this request type (Art. 12(6) GDPR)');
+
+        $this->service->updateStatus($request, 'completed');
+    }
+
+    #[Test]
     public function testCompleteThrowsForRequestAlreadyInTerminalState(): void
     {
         $request = $this->createMock(DataSubjectRequest::class);

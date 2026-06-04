@@ -400,6 +400,27 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     }
 
     #[Test]
+    public function testApproveThrowsWhenCriticalResidualRiskWithoutSupervisoryConsultation(): void
+    {
+        // critical is the most severe residual level — Art. 36 supervisory
+        // consultation must be enforced for it too, not just 'high'.
+        $dpia = $this->createMock(DataProtectionImpactAssessment::class);
+        $dpia->method('getId')->willReturn(1);
+        $dpia->method('getStatus')->willReturn('in_review');
+        $dpia->method('getReferenceNumber')->willReturn('DPIA-2025-001');
+        $dpia->method('getDpoConsultationDate')->willReturn(new DateTime());
+        $dpia->method('getResidualRiskLevel')->willReturn('critical');
+        $dpia->method('getSupervisoryConsultationDate')->willReturn(null);
+
+        $this->entityManager->expects($this->never())->method('flush');
+
+        $this->expectException(BusinessRuleException::class);
+        $this->expectExceptionMessage('Prior consultation with the supervisory authority is required before approving a DPIA with high residual risk (Art. 36 GDPR)');
+
+        $this->service->approve($dpia, $this->user);
+    }
+
+    #[Test]
     public function testApproveSucceedsWithHighResidualRiskWhenSupervisoryConsulted(): void
     {
         // Both gates satisfied: DPO consulted + supervisory consulted for high risk.
