@@ -6,6 +6,8 @@
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
 {% trans_default_domain 'audit' %}
+{# F14 — inline quick-capture modal #}
+{% import '_components/_fa_modal.html.twig' as _fa_modal %}
 
 {% block title %}{{ audit.title }} - {{ parent() }}{% endblock %}
 
@@ -336,10 +338,20 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <div class="mt-3">
-                            <a href="{{ path('app_audit_finding_new', {audit: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                        <div class="mt-3 d-flex gap-2 flex-wrap">
+                            {# F14 — inline quick-capture: opens modal without leaving the page #}
+                            <button type="button"
+                                    class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                                    data-controller="fa-modal-dispatcher"
+                                    data-action="click->fa-modal-dispatcher#open"
+                                    data-fa-modal-id="quickFindingModal">
                                 <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
-                                {{ 'audit_finding.action.new'|trans({}, 'audits') }}
+                                {{ 'audit_finding.action.new_quick'|trans({}, 'audits') }}
+                            </button>
+                            <a href="{{ path('app_audit_finding_new', {audit: audit.id}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                <i class="fa-icon fa-icon--nav-edit" aria-hidden="true"></i>
+                                {{ 'audit_finding.action.new_full_form'|trans({}, 'audits') }}
                             </a>
                         </div>
                     {% endblock %}
@@ -405,10 +417,20 @@
                     </div>
                     {% endif %}
 
-                    <div class="mt-2">
-                        <a href="{{ path('app_audit_finding_new', {audit: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                    <div class="mt-2 d-flex gap-2 flex-wrap">
+                        {# F14 — inline quick-capture from legacy free-text section #}
+                        <button type="button"
+                                class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                                data-controller="fa-modal-dispatcher"
+                                data-action="click->fa-modal-dispatcher#open"
+                                data-fa-modal-id="quickFindingModal">
                             <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
-                            {{ 'audit.section.legacy_new_finding_cta'|trans({}, 'audit') }}
+                            {{ 'audit_finding.action.new_quick'|trans({}, 'audits') }}
+                        </button>
+                        <a href="{{ path('app_audit_finding_new', {audit: audit.id}) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--nav-edit" aria-hidden="true"></i>
+                            {{ 'audit_finding.action.new_full_form'|trans({}, 'audits') }}
                         </a>
                     </div>
                 {% endblock %}
@@ -549,6 +571,15 @@
                            data-turbo-action="advance">
                             <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
+                        {# F14 — quick-capture finding inline #}
+                        <button type="button"
+                                class="fa-cyber-btn fa-cyber-btn--ghost"
+                                data-controller="fa-modal-dispatcher"
+                                data-action="click->fa-modal-dispatcher#open"
+                                data-fa-modal-id="quickFindingModal">
+                            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                            {{ 'audit_finding.action.new_quick'|trans({}, 'audits') }}
+                        </button>
                         {% if audit.isComplianceAudit() %}
                         <a href="{{ path('app_audit_checklist', {id: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="fa-icon fa-icon--ui-checklist" aria-hidden="true"></i>
@@ -749,6 +780,121 @@
 </div>
 </div>
 {% endif %}
+{# F14 — Quick-Capture Finding Modal (inline, stays on audit show-page) #}
+{% if is_granted('ROLE_USER') %}
+<div class="fa-modal fa-modal--settings" id="quickFindingModal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="quickFindingModalTitle"
+     inert
+     data-controller="fa-modal"
+     data-fa-modal-mode-value="settings">
+    <div class="fa-modal__backdrop"
+         data-fa-modal-target="backdrop"
+         data-action="click->fa-modal#backdropClick"
+         aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+        <form method="post"
+              action="{{ path('app_audit_finding_new_quick') }}"
+              data-fa-modal-target="form">
+            <input type="hidden" name="_token" value="{{ csrf_token('quick_finding') }}">
+            <input type="hidden" name="audit_id" value="{{ audit.id }}">
+
+            <header class="fa-modal__header">
+                <span class="fa-modal__icon" aria-hidden="true">
+                    <i class="fa-icon fa-icon--nav-clipboard-check"></i>
+                </span>
+                <div class="fa-modal__heading">
+                    <h2 class="fa-modal__title" id="quickFindingModalTitle">
+                        {{ 'audit_finding.modal.quick_capture.title'|trans({}, 'audits') }}
+                    </h2>
+                    <p class="fa-modal__sub">
+                        {{ 'audit_finding.modal.quick_capture.subtitle'|trans({'%audit%': audit.auditNumber|default(audit.title)}, 'audits') }}
+                    </p>
+                </div>
+                <button type="button"
+                        class="fa-modal__close"
+                        aria-label="{{ 'common.cancel'|trans({}, 'messages') }}"
+                        data-action="fa-modal#cancel">
+                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <div class="fa-modal__body">
+                {# Title — required #}
+                <div class="mb-3">
+                    <label for="qf_title" class="form-label fw-semibold">
+                        {{ 'audit_finding.field.title'|trans({}, 'audits') }}
+                        <span class="text-danger" aria-hidden="true">*</span>
+                    </label>
+                    <input type="text"
+                           id="qf_title"
+                           name="title"
+                           class="form-control"
+                           maxlength="255"
+                           required
+                           autofocus
+                           placeholder="{{ 'audit_finding.modal.quick_capture.title_placeholder'|trans({}, 'audits') }}">
+                </div>
+
+                {# Type + Severity side-by-side #}
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label for="qf_type" class="form-label fw-semibold">
+                            {{ 'audit_finding.field.type'|trans({}, 'audits') }}
+                        </label>
+                        <select id="qf_type" name="type" class="form-select">
+                            <option value="minor_nc">{{ 'audit_finding.type.minor_nc'|trans({}, 'audits') }}</option>
+                            <option value="major_nc">{{ 'audit_finding.type.major_nc'|trans({}, 'audits') }}</option>
+                            <option value="observation">{{ 'audit_finding.type.observation'|trans({}, 'audits') }}</option>
+                            <option value="opportunity">{{ 'audit_finding.type.opportunity'|trans({}, 'audits') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="qf_severity" class="form-label fw-semibold">
+                            {{ 'audit_finding.field.severity'|trans({}, 'audits') }}
+                        </label>
+                        <select id="qf_severity" name="severity" class="form-select">
+                            <option value="medium" selected>{{ 'audit_finding.severity.medium'|trans({}, 'audits') }}</option>
+                            <option value="low">{{ 'audit_finding.severity.low'|trans({}, 'audits') }}</option>
+                            <option value="high">{{ 'audit_finding.severity.high'|trans({}, 'audits') }}</option>
+                            <option value="critical">{{ 'audit_finding.severity.critical'|trans({}, 'audits') }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                {# Description — optional; defaults to title when blank #}
+                <div class="mb-3">
+                    <label for="qf_description" class="form-label fw-semibold">
+                        {{ 'audit_finding.field.description'|trans({}, 'audits') }}
+                    </label>
+                    <textarea id="qf_description"
+                              name="description"
+                              class="form-control"
+                              rows="3"
+                              placeholder="{{ 'audit_finding.modal.quick_capture.description_placeholder'|trans({}, 'audits') }}"></textarea>
+                    <div class="form-text text-muted">
+                        {{ 'audit_finding.modal.quick_capture.description_help'|trans({}, 'audits') }}
+                    </div>
+                </div>
+            </div>
+
+            <footer class="fa-modal__footer">
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--ghost"
+                        data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <button type="submit"
+                        class="fa-cyber-btn fa-cyber-btn--primary"
+                        data-fa-modal-target="confirmButton">
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                    {{ 'audit_finding.modal.quick_capture.submit'|trans({}, 'audits') }}
+                </button>
+            </footer>
+        </form>
+    </div>
+</div>
+{% endif %} {# /is_granted ROLE_USER — quick-capture modal #}
+
 {% endif %} {# /M-4 audits module gate #}
 
 {# Lifecycle X.3b — transition history tab #}

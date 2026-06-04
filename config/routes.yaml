@@ -127,6 +127,8 @@ app_routes:
         - '../src/Controller/SsoController.php'
         - '../src/Controller/LifecycleController.php'
         - '../src/Controller/GlossaryApiController.php'
+        - '../src/Controller/ReadinessController.php'
+        - '../src/Controller/MetricsController.php'
 
 # Glossary API WITHOUT locale prefix — the fa-glossary-tooltip component fetches
 # /api/glossary/{acronym} directly; UI locale is passed as ?locale.
@@ -149,4 +151,15 @@ lifecycle_routes:
 # RouteCollection for single-file resources).
 sso_routes:
     resource: ../src/Controller/SsoController.php
+    type: attribute
+
+# Infra probe routes WITHOUT locale prefix — orchestrators (k8s, Compose --wait,
+# load-balancers, Prometheus scrapers) call fixed paths. Locale prefix is
+# intentionally omitted: these are machine-to-machine endpoints, not user-facing.
+infra_probe_routes:
+    resource: ../src/Controller/ReadinessController.php
+    type: attribute
+
+infra_metrics_routes:
+    resource: ../src/Controller/MetricsController.php
     type: attribute

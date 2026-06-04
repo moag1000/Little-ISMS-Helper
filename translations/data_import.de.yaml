@@ -47,6 +47,17 @@ import:
         dispatched: 'Der Import wurde gestartet und läuft im Hintergrund.'
         committed: 'Import erfolgreich abgeschlossen.'
 
+    commit:
+        heading: 'Import wird ausgeführt'
+        body: 'Der Import wurde in die Warteschlange gestellt und wird im Hintergrund ausgeführt. Die Seite aktualisiert sich automatisch.'
+        status_label: 'Aktueller Status'
+        view_result: 'Ergebnis anzeigen'
+        still_running: 'Import läuft noch — bitte einen Moment warten.'
+        failed_heading: 'Import fehlgeschlagen'
+        failed_body: 'Der Import wurde mit einem Fehler abgebrochen. Bitte die Details unten prüfen.'
+        completed_heading: 'Import abgeschlossen'
+        completed_body: 'Der Import wurde erfolgreich abgeschlossen.'
+
     error:
         upload_failed: 'Datei-Upload fehlgeschlagen: %message%'
         parse_failed: 'Datei konnte nicht geparst werden: %message%'

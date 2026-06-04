@@ -5,7 +5,7 @@
  # Wizard step-header partial — included in all import-wizard step templates.
  #
  # Variables expected from the including template:
- #   currentStep  — 0-based index of the active step (0=upload, 1=map, 2=preview, 3=diff)
+ #   currentStep  — 0-based index of the active step (0=upload, 1=map, 2=preview, 3=commit, 4=diff)
  #   entityType   — URL slug (asset|supplier|control)
  #   batchId      — int|null (null for step 1)
  #}
@@ -28,6 +28,10 @@
         href: (batchId is defined and batchId and currentStep > 2)
             ? path('app_bulk_import_preview', { _locale: app.request.locale, entityType: entityType, batchId: batchId })
             : null
+    },
+    {
+        label: 'import.wizard.step.commit.title'|trans({}, 'data_import'),
+        href: null
     },
     {
         label: 'import.wizard.step.diff.title'|trans({}, 'data_import'),
