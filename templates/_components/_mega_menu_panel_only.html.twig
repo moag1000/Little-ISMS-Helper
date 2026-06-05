@@ -213,6 +213,15 @@
                     <span class="fly-item__sub">{{ 'nav.mega.desc.suppliers'|trans({}, 'nav') }}</span>
                 </span>
             </a>
+            {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('supplier_questionnaire_index') }}" class="fly-item {% if current_route starts with 'supplier_questionnaire_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="expert">
+                <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i></span>
+                <span class="fly-item__body">
+                    <span class="fly-item__title">{{ 'nav.supplier_questionnaire'|trans({}, 'nav') }}</span>
+                    <span class="fly-item__sub">{{ 'nav.mega.desc.supplier_questionnaire'|trans({}, 'nav') }}</span>
+                </span>
+            </a>
+            {% endif %}
             <a href="{{ path('app_location_index') }}" class="fly-item {% if current_route starts with 'app_location_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
                 <span class="fly-item__icon"><i class="fa-icon fa-icon--nav-location" aria-hidden="true"></i></span>
                 <span class="fly-item__body">
