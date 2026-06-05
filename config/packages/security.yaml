@@ -40,7 +40,11 @@ security:
                 invalidate_session: true
 
             # Custom authenticators for Azure OAuth, SAML, and generic SSO (OIDC)
+            # plus F6 read-only API Bearer-token auth (activates only when an
+            # `Authorization: Bearer` header is present — session/form login
+            # and the browsable API are unaffected).
             custom_authenticators:
+                - App\Security\ApiTokenAuthenticator
                 - App\Security\AzureOAuthAuthenticator
                 - App\Security\AzureSamlAuthenticator
                 - App\Security\GenericOidcAuthenticator
