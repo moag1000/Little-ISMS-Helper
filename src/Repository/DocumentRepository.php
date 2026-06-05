@@ -81,6 +81,45 @@ class DocumentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Transient lifecycle statuses where action is still expected. Terminal
+     * statuses (approved/published/archived/rejected/cancelled) are excluded.
+     *
+     * @var string[]
+     */
+    public const array NON_TERMINAL_LIFECYCLE_STATUSES = [
+        'draft',
+        'in_review',
+        'in_investigation',
+        'in_progress',
+        'in_triage',
+        'under_assessment',
+    ];
+
+    /**
+     * Documents stuck in a non-terminal lifecycle status for longer than
+     * $days. Shared by LifecycleStuckInStatusRule (the Alva hint) and the
+     * document index `focus=lifecycle_stuck` filter, so the hint deep-links to
+     * EXACTLY the documents it counts.
+     *
+     * @return Document[]
+     */
+    public function findStuckInLifecycle(Tenant $tenant, int $days): array
+    {
+        $threshold = new \DateTimeImmutable(sprintf('-%d days', $days));
+
+        return $this->createQueryBuilder('d')
+            ->where('d.tenant = :tenant')
+            ->andWhere('d.status IN (:nonTerminal)')
+            ->andWhere('d.updatedAt < :threshold')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('nonTerminal', self::NON_TERMINAL_LIFECYCLE_STATUSES)
+            ->setParameter('threshold', $threshold)
+            ->orderBy('d.updatedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Phase 9.P2.1 — inheritable documents visible to a subsidiary
      * from its ancestor chain. Returns only documents that the ancestor
      * has explicitly marked inheritable=true (and that are still active).

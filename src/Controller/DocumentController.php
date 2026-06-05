@@ -93,6 +93,10 @@ class DocumentController extends AbstractController
         // Status filter — 'archived' lifts the isOperational() exclusion
         $currentStatus = $request->query->get('status');
 
+        // Alva-hint deep-link focus (e.g. ?focus=lifecycle_stuck) — narrows the
+        // list to exactly the documents a hint is about.
+        $focus = $request->query->get('focus');
+
         // Policy-Wizard W7-C — history toggle. Default OFF: only the
         // current version of each policy is listed (a Document is
         // "current" when no other Document points back to it via
@@ -136,6 +140,20 @@ class DocumentController extends AbstractController
             );
         } else {
             $documents = array_filter($allDocuments, fn(Document $document): bool => $document->isOperational());
+        }
+
+        // Alva-hint deep-link: focus=lifecycle_stuck narrows to exactly the
+        // documents the "stuck in status" hint counts — same query, so the hint
+        // and the filtered view can never disagree. (14d mirrors the rule.)
+        if ($focus === 'lifecycle_stuck' && $tenant) {
+            $stuckIds = array_flip(array_filter(array_map(
+                static fn (Document $d): ?int => $d->getId(),
+                $this->documentRepository->findStuckInLifecycle($tenant, 14),
+            )));
+            $documents = array_filter(
+                $documents,
+                static fn (Document $document): bool => isset($stuckIds[$document->getId() ?? -1]),
+            );
         }
 
         // Policy-Wizard W7-C — collapse to current versions only (default).
