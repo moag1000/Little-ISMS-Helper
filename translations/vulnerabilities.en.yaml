@@ -47,6 +47,9 @@ vulnerability:
         false_positive: 'False positive'
         resolved: Resolved
         closed: Closed
+    euvd:
+        badge: 'EUVD'
+        tooltip: 'Registered in the ENISA EU Vulnerability Database'
     edit: Edit
     tooltip:
         cvss_score: '<strong>📊 CVSS Score (0-10)</strong><br><em>Common Vulnerability Scoring System</em><br><br><strong>0.0</strong> = No impact<br><strong>0.1-3.9</strong> = Low<br><strong>4.0-6.9</strong> = Medium<br><strong>7.0-8.9</strong> = High<br><strong>9.0-10.0</strong> = Critical<br><br><em>Tip: Find the CVSS score in the CVE database (nvd.nist.gov)</em>'
