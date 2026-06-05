@@ -220,6 +220,11 @@ class BackupService
         // Derived / re-computable snapshots
         'PortfolioSnapshot'     => 'derived trend-cache, re-computable from primary entities',
         'ReuseTrendSnapshot'    => 'derived trend-cache, re-computable from primary entities',
+
+        // Security credentials — F6 read-only API tokens hold SHA-256 hashes;
+        // regeneratable via app:api-token:create, deliberately kept out of
+        // backup files (same hygiene as the password/salt EXCLUDED_FIELDS).
+        'ApiToken'              => 'security credential (token hashes), regeneratable via app:api-token:create',
     ];
 
     // Fields to exclude from backup (sensitive or regeneratable)
