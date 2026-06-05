@@ -6,47 +6,28 @@ namespace App\AlvaHint\Rule\Global;
 
 use App\AlvaHint\AbstractGlobalAlvaHintRule;
 use App\AlvaHint\AlvaHint;
-use App\Entity\Document;
 use App\Entity\Tenant;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\DocumentRepository;
 
 /**
- * Tier-3 global AlvaHint rule: surfaces a hint when at least one Document
- * entity has been in a non-terminal lifecycle status for more than 14 days.
+ * Tier-3 global AlvaHint rule: surfaces a hint when at least one Document has
+ * been in a non-terminal lifecycle status for more than 14 days.
  *
- * "Non-terminal" covers transient statuses where human or automated action is
- * expected: draft, in_review, in_investigation, in_progress, in_triage,
- * under_assessment. Terminal statuses (approved, published, archived,
- * rejected, cancelled) are excluded — no action needed once an entity has
- * reached a settled state.
+ * The action deep-links to EXACTLY the documents it counts: a single stuck
+ * document opens that document; several open the document index pre-filtered to
+ * `focus=lifecycle_stuck` (same criteria, via DocumentRepository). The hint and
+ * the filter share DocumentRepository::findStuckInLifecycle() so they can never
+ * disagree.
  *
- * The rule uses a COUNT query against Document (the widest-deployed entity
- * with a status + updatedAt column) as an efficient proxy. Additional entity
- * types can be wired in future iterations without changing the AlvaHint
- * framework.
- *
- * Trigger  : any page (appliesToPages returns [])
- * Module   : no module gate (lifecycle status is always relevant)
- * Tier     : 3 (efficiency / workflow hygiene)
- * Roles    : ROLE_MANAGER (managers are responsible for clearing stuck items)
+ * Tier 3 (workflow hygiene), ROLE_MANAGER, no module gate.
  */
 final class LifecycleStuckInStatusRule extends AbstractGlobalAlvaHintRule
 {
     private const int STUCK_THRESHOLD_DAYS = 14;
 
-    /** @var string[] */
-    private const array NON_TERMINAL_STATUSES = [
-        'draft',
-        'in_review',
-        'in_investigation',
-        'in_progress',
-        'in_triage',
-        'under_assessment',
-    ];
-
     public function __construct(
-        private readonly EntityManagerInterface $em,
+        private readonly DocumentRepository $documentRepository,
     ) {}
 
     public function key(): string
@@ -61,10 +42,21 @@ final class LifecycleStuckInStatusRule extends AbstractGlobalAlvaHintRule
 
     public function evaluate(Tenant $tenant, ?User $user): ?AlvaHint
     {
-        $count = $this->countStuckDocuments($tenant);
+        $stuck = $this->documentRepository->findStuckInLifecycle($tenant, self::STUCK_THRESHOLD_DAYS);
+        $count = count($stuck);
 
         if ($count === 0) {
             return null;
+        }
+
+        // Deep-link to exactly what the hint is about: one → that document,
+        // several → the document index pre-filtered to the same set.
+        if ($count === 1) {
+            $route = 'app_document_show';
+            $params = ['id' => $stuck[0]->getId() ?? 0];
+        } else {
+            $route = 'app_document_index';
+            $params = ['focus' => 'lifecycle_stuck'];
         }
 
         return new AlvaHint(
@@ -82,29 +74,12 @@ final class LifecycleStuckInStatusRule extends AbstractGlobalAlvaHintRule
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'alva_hint.lifecycle.stuck_in_status.action',
-            actionRoute: 'app_document_index',
-            actionRouteParams: [],
+            actionRoute: $route,
+            actionRouteParams: $params,
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'thinking',
             version: 1,
         );
-    }
-
-    private function countStuckDocuments(Tenant $tenant): int
-    {
-        $threshold = new \DateTimeImmutable(sprintf('-%d days', self::STUCK_THRESHOLD_DAYS));
-
-        return (int) $this->em->createQueryBuilder()
-            ->select('COUNT(d.id)')
-            ->from(Document::class, 'd')
-            ->where('d.tenant = :tenant')
-            ->andWhere('d.status IN (:non_terminal)')
-            ->andWhere('d.updatedAt < :threshold')
-            ->setParameter('tenant', $tenant)
-            ->setParameter('non_terminal', self::NON_TERMINAL_STATUSES)
-            ->setParameter('threshold', $threshold)
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 }

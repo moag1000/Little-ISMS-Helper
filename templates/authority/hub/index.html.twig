@@ -22,6 +22,7 @@
         subtitle: 'eu_authorities.hub.page.subtitle'|trans,
         actions:  []
     }) }}
+    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), clear_url: path('authority_hub_index'), count: obligations|default([])|length } %}
 
     <main class="fa-aurora-surface">
 

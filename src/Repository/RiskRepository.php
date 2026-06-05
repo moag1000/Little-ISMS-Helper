@@ -82,6 +82,25 @@ class RiskRepository extends ServiceEntityRepository
     }
 
     /**
+     * Risks for a tenant that have no accountable owner assigned (ISO 27001
+     * A.5.4 / Cl. 6.1.2). Shared single source of truth for RiskOhneOwnerRule
+     * (the Alva hint) and the risk index `focus=no_owner` filter, so the hint
+     * deep-links to EXACTLY the risks it counts.
+     *
+     * @return Risk[]
+     */
+    public function findWithoutOwner(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.tenant = :tenant')
+            ->andWhere('r.riskOwner IS NULL')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find risks by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited risks from parent companies, grandparents, etc.
      *

@@ -104,4 +104,29 @@ class RiskIncidentLinkRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Links to OPEN incidents that were linked more than $days ago (stale
+     * ongoing risk pressure). Shared single source of truth for
+     * RisksLinkedToOpenIncidentsRule (the Alva hint) and the risk index
+     * `focus=incident_linked` filter, so the hint deep-links to EXACTLY the
+     * risks it counts.
+     *
+     * @return RiskIncidentLink[]
+     */
+    public function findStaleLinksToOpenIncidents(Tenant $tenant, int $days): array
+    {
+        $threshold = new \DateTimeImmutable(sprintf('-%d days', $days));
+
+        return $this->createQueryBuilder('l')
+            ->join('l.incident', 'i')
+            ->where('l.tenant = :tenant')
+            ->andWhere('i.status != :closed')
+            ->andWhere('l.linkedAt < :threshold')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('closed', 'closed')
+            ->setParameter('threshold', $threshold)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -55,20 +55,17 @@ final class NonconformityAutoTaskTipRule extends AbstractGlobalAlvaHintRule
 
     public function evaluate(Tenant $tenant, ?User $user): ?AlvaHint
     {
-        $openFindings = $this->auditFindingRepository->findOpenByTenant($tenant);
-
-        $unreferencedCount = 0;
-
-        foreach ($openFindings as $finding) {
-            if ($finding->getLinkedRequirements()->isEmpty()) {
-                $unreferencedCount++;
-            }
-        }
+        // Single source of truth shared with the index `focus=nc_unreferenced`
+        // filter, so the hint deep-links to EXACTLY the findings it counts.
+        $unreferenced = $this->auditFindingRepository->findOpenWithoutRequirements($tenant);
+        $unreferencedCount = count($unreferenced);
 
         if ($unreferencedCount <= self::THRESHOLD) {
             return null;
         }
 
+        // Count is always > THRESHOLD (>5) here, so the hint always points at
+        // the finding index pre-filtered to exactly the unreferenced findings.
         return new AlvaHint(
             key: $this->key(),
             titleTranslationKey: 'global.nonconformity_auto_task_tip.title',
@@ -82,7 +79,7 @@ final class NonconformityAutoTaskTipRule extends AbstractGlobalAlvaHintRule
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.nonconformity_auto_task_tip.action',
             actionRoute: 'app_audit_finding_index',
-            actionRouteParams: [],
+            actionRouteParams: ['focus' => 'nc_unreferenced'],
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'thinking',

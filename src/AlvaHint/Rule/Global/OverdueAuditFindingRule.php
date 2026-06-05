@@ -59,6 +59,16 @@ final class OverdueAuditFindingRule extends AbstractGlobalAlvaHintRule
 
         $count = count($overdue);
 
+        // Deep-link to exactly what the hint counts: one → that finding,
+        // several → the finding index pre-filtered to the same set.
+        if ($count === 1) {
+            $route = 'app_audit_finding_show';
+            $params = ['id' => $overdue[0]->getId() ?? 0];
+        } else {
+            $route = 'app_audit_finding_index';
+            $params = ['focus' => 'overdue'];
+        }
+
         return new AlvaHint(
             key: $this->key(),
             titleTranslationKey: 'global.overdue_audit_finding.title',
@@ -71,8 +81,8 @@ final class OverdueAuditFindingRule extends AbstractGlobalAlvaHintRule
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.overdue_audit_finding.action',
-            actionRoute: 'app_audit_finding_index',
-            actionRouteParams: [],
+            actionRoute: $route,
+            actionRouteParams: $params,
             actionMethod: 'GET',
             requiredRoles: ['ROLE_AUDITOR'],
             mood: 'warning',

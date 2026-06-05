@@ -76,7 +76,7 @@ final class OverdueAuthorityReportRule extends AbstractGlobalAlvaHintRule
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.overdue_authority_report.action',
             actionRoute: 'authority_hub_index',
-            actionRouteParams: [],
+            actionRouteParams: ['focus' => 'overdue'],
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'warning',
