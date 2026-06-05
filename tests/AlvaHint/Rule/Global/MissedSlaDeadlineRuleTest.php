@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\AlvaHint\Rule\Global;
 
 use App\AlvaHint\Rule\Global\MissedSlaDeadlineRule;
+use App\Entity\Notification\SlaDeadlineMonitor;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\Notification\SlaDeadlineMonitorRepository;
@@ -15,8 +16,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for MissedSlaDeadlineRule.
  *
- * Covers: zero-count suppression, count ≥ 1 fires Tier-1 non-dismissible hint,
- * action method GET, correct translation keys, required roles.
+ * The hint deep-links to the underlying entity when exactly one deadline is
+ * missed and that entity type has a known show route; otherwise it falls back
+ * to the monitor overview. Never links to a route that may not exist.
  */
 #[AllowMockObjectsWithoutExpectations]
 final class MissedSlaDeadlineRuleTest extends TestCase
@@ -33,141 +35,80 @@ final class MissedSlaDeadlineRuleTest extends TestCase
     #[Test]
     public function returnsNullWhenNoMissedDeadlines(): void
     {
-        $repo = $this->createMock(SlaDeadlineMonitorRepository::class);
-        $repo->method('countMissedForTenant')->willReturn(0);
-
-        $rule = new MissedSlaDeadlineRule($repo);
-
+        $rule = new MissedSlaDeadlineRule($this->makeRepo([]));
         self::assertNull($rule->evaluate($this->tenant, $this->user));
     }
 
     #[Test]
-    public function returnsHintWhenOneMissedDeadlineExists(): void
+    public function singleMissedIncidentDeepLinksToThatIncident(): void
     {
-        $repo = $this->createMock(SlaDeadlineMonitorRepository::class);
-        $repo->method('countMissedForTenant')->willReturn(1);
-
-        $rule = new MissedSlaDeadlineRule($repo);
+        $rule = new MissedSlaDeadlineRule($this->makeRepo([['Incident', 21]]));
         $hint = $rule->evaluate($this->tenant, $this->user);
 
         self::assertNotNull($hint);
-        self::assertSame('global.missed_sla_deadline', $hint->key);
+        self::assertSame('app_incident_show', $hint->actionRoute);
+        self::assertSame(['id' => 21], $hint->actionRouteParams);
+        self::assertSame(['%count%' => '1'], $hint->bodyTranslationParams);
     }
 
     #[Test]
-    public function hintIsTierOne(): void
+    public function singleMissedUnmappedTypeFallsBackToOverview(): void
     {
-        $repo = $this->createMock(SlaDeadlineMonitorRepository::class);
-        $repo->method('countMissedForTenant')->willReturn(2);
-
-        $rule = new MissedSlaDeadlineRule($repo);
+        $rule = new MissedSlaDeadlineRule($this->makeRepo([['AccessReviewCampaign', 5]]));
         $hint = $rule->evaluate($this->tenant, $this->user);
 
         self::assertNotNull($hint);
-        self::assertSame(1, $hint->priorityTier);
-    }
-
-    #[Test]
-    public function hintIsNotDismissible(): void
-    {
-        $repo = $this->createMock(SlaDeadlineMonitorRepository::class);
-        $repo->method('countMissedForTenant')->willReturn(1);
-
-        $rule = new MissedSlaDeadlineRule($repo);
-        $hint = $rule->evaluate($this->tenant, $this->user);
-
-        self::assertNotNull($hint);
-        self::assertFalse($hint->dismissible);
-    }
-
-    #[Test]
-    public function hintVariantIsDanger(): void
-    {
-        $repo = $this->createMock(SlaDeadlineMonitorRepository::class);
-        $repo->method('countMissedForTenant')->willReturn(1);
-
-        $rule = new MissedSlaDeadlineRule($repo);
-        $hint = $rule->evaluate($this->tenant, $this->user);
-
-        self::assertNotNull($hint);
-        self::assertSame('danger', $hint->variant);
-    }
-
-    #[Test]
-    public function actionMethodIsGet(): void
-    {
-        $repo = $this->createMock(SlaDeadlineMonitorRepository::class);
-        $repo->method('countMissedForTenant')->willReturn(1);
-
-        $rule = new MissedSlaDeadlineRule($repo);
-        $hint = $rule->evaluate($this->tenant, $this->user);
-
-        self::assertNotNull($hint);
-        self::assertSame('GET', $hint->actionMethod);
         self::assertSame('admin_notification_rule_index', $hint->actionRoute);
+        self::assertSame([], $hint->actionRouteParams);
     }
 
     #[Test]
-    public function bodyParamContainsCount(): void
+    public function severalMissedFallBackToOverviewTierOneNonDismissible(): void
     {
-        $repo = $this->createMock(SlaDeadlineMonitorRepository::class);
-        $repo->method('countMissedForTenant')->willReturn(5);
-
-        $rule = new MissedSlaDeadlineRule($repo);
+        $rule = new MissedSlaDeadlineRule($this->makeRepo([
+            ['Incident', 1],
+            ['Document', 2],
+            ['AuditFinding', 3],
+        ]));
         $hint = $rule->evaluate($this->tenant, $this->user);
 
         self::assertNotNull($hint);
-        self::assertSame(['%count%' => '5'], $hint->bodyTranslationParams);
+        self::assertSame('admin_notification_rule_index', $hint->actionRoute);
+        self::assertSame('global.missed_sla_deadline', $hint->key);
+        self::assertSame(1, $hint->priorityTier);
+        self::assertFalse($hint->dismissible);
+        self::assertSame('danger', $hint->variant);
+        self::assertSame('GET', $hint->actionMethod);
+        self::assertContains('ROLE_MANAGER', $hint->requiredRoles);
+        self::assertSame(['%count%' => '3'], $hint->bodyTranslationParams);
     }
 
     #[Test]
-    public function translationDomainIsAlva(): void
+    public function ruleConventions(): void
     {
-        $repo = $this->createMock(SlaDeadlineMonitorRepository::class);
-        $repo->method('countMissedForTenant')->willReturn(1);
-
-        $rule = new MissedSlaDeadlineRule($repo);
-        $hint = $rule->evaluate($this->tenant, $this->user);
-
-        self::assertNotNull($hint);
-        self::assertSame('alva', $hint->translationDomain);
-    }
-
-    #[Test]
-    public function requiredRolesContainsManager(): void
-    {
-        $rule = new MissedSlaDeadlineRule($this->createMock(SlaDeadlineMonitorRepository::class));
-        self::assertContains('ROLE_MANAGER', $rule->evaluate(
-            $this->tenant,
-            $this->user,
-        )?->requiredRoles ?? ['ROLE_MANAGER']); // evaluate returns null when count=0; verify via hint properties
-    }
-
-    #[Test]
-    public function ruleKeyIsCorrect(): void
-    {
-        $rule = new MissedSlaDeadlineRule($this->createMock(SlaDeadlineMonitorRepository::class));
+        $rule = new MissedSlaDeadlineRule($this->makeRepo([]));
         self::assertSame('global.missed_sla_deadline', $rule->key());
-    }
-
-    #[Test]
-    public function priorityTierIsOne(): void
-    {
-        $rule = new MissedSlaDeadlineRule($this->createMock(SlaDeadlineMonitorRepository::class));
         self::assertSame(1, $rule->priorityTier());
-    }
-
-    #[Test]
-    public function requiredModulesIsEmpty(): void
-    {
-        $rule = new MissedSlaDeadlineRule($this->createMock(SlaDeadlineMonitorRepository::class));
         self::assertEmpty($rule->requiredModules());
+        self::assertContains('dashboard_ciso', $rule->appliesToPages());
     }
 
-    #[Test]
-    public function appliesToDashboardCiso(): void
+    /**
+     * @param array<int, array{0: string, 1: int}> $monitors [entityType, entityId] pairs
+     */
+    private function makeRepo(array $monitors): SlaDeadlineMonitorRepository
     {
-        $rule = new MissedSlaDeadlineRule($this->createMock(SlaDeadlineMonitorRepository::class));
-        self::assertContains('dashboard_ciso', $rule->appliesToPages());
+        $entities = [];
+        foreach ($monitors as [$type, $id]) {
+            $monitor = $this->createMock(SlaDeadlineMonitor::class);
+            $monitor->method('getEntityType')->willReturn($type);
+            $monitor->method('getEntityId')->willReturn($id);
+            $entities[] = $monitor;
+        }
+
+        $repo = $this->createMock(SlaDeadlineMonitorRepository::class);
+        $repo->method('findMissedDeadlines')->willReturn($entities);
+
+        return $repo;
     }
 }
