@@ -178,24 +178,6 @@ final class RiskImportSchemaProvider implements ImportSchemaProviderInterface
                     type: ImportFieldSpec::TYPE_TEXT,
                 ),
 
-                // ── F46 quantitative ALE inputs (ISO 27005 / NIST SP 800-30) ────
-                // Gated by the risk_quant module; ALE = SLE × ARO is computed on
-                // the entity. Aliases sle/aro accept the common shorthand columns.
-                new ImportFieldSpec(
-                    name: 'singleLossExpectancy',
-                    setter: 'setSingleLossExpectancy',
-                    type: ImportFieldSpec::TYPE_INT,
-                    module: 'risk_quant',
-                    aliases: ['sle'],
-                ),
-                new ImportFieldSpec(
-                    name: 'annualRateOfOccurrence',
-                    setter: 'setAnnualRateOfOccurrence',
-                    type: ImportFieldSpec::TYPE_FLOAT,
-                    module: 'risk_quant',
-                    aliases: ['aro'],
-                ),
-
                 // ── Acceptance justification & expiry (ISO 27001 Cl. 8.3) ───────
                 new ImportFieldSpec(
                     name: 'acceptanceJustification',
@@ -301,18 +283,22 @@ final class RiskImportSchemaProvider implements ImportSchemaProviderInterface
                     relationLookup: 'cveId',
                 ),
 
-                // ── Quantitative risk SLE/ARO (risk_quant module) ───────────────
+                // ── Quantitative risk SLE/ARO (risk_quant module, F46) ──────────
+                // ALE = SLE × ARO is computed on the entity. Aliases accept the
+                // common shorthand spreadsheet columns.
                 new ImportFieldSpec(
                     name: 'singleLossExpectancy',
                     setter: 'setSingleLossExpectancy',
                     type: ImportFieldSpec::TYPE_INT,
                     module: 'risk_quant',
+                    aliases: ['sle'],
                 ),
                 new ImportFieldSpec(
                     name: 'annualRateOfOccurrence',
                     setter: 'setAnnualRateOfOccurrence',
                     type: ImportFieldSpec::TYPE_FLOAT,
                     module: 'risk_quant',
+                    aliases: ['aro'],
                 ),
             ],
         );
