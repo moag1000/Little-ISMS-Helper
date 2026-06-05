@@ -43,6 +43,8 @@ use DOMElement;
  */
 final class DoraRoiXbrlExporter
 {
+    use DoraRoiFieldMappingTrait;
+
     private const string NS_XBRLI       = 'http://www.xbrl.org/2003/instance';
     private const string NS_XBRLDI      = 'http://xbrl.org/2006/xbrldi';
     private const string NS_LINK        = 'http://www.xbrl.org/2003/linkbase';
@@ -817,20 +819,6 @@ final class DoraRoiXbrlExporter
     }
 
     /**
-     * Maps internal criticality strings to ESA RoI classification values.
-     *
-     * ESA RoI taxonomy uses: critical | important | other
-     */
-    private function mapCriticalityToEsa(?string $criticality): string
-    {
-        return match (strtolower((string) $criticality)) {
-            'critical', 'hoch', 'high' => 'critical',
-            'medium', 'mittel', 'important' => 'important',
-            default => 'other',
-        };
-    }
-
-    /**
      * Groups DORA data-flows by their supplier id for O(1) per-provider
      * lookup in the main generate() loop. Flows with a null supplier are
      * silently skipped — the entity enforces NOT NULL at DB level, this
@@ -998,29 +986,4 @@ final class DoraRoiXbrlExporter
         return $wrapper;
     }
 
-    /**
-     * Checks whether an ISO-3166 alpha-2 country code denotes an EEA member.
-     * Used by B_02.02.0100 (data-location EEA / non-EEA gate).
-     *
-     * EEA = EU-27 + Iceland (IS) + Liechtenstein (LI) + Norway (NO).
-     * Switzerland (CH) is intentionally NOT included — it is EFTA but not EEA.
-     */
-    private function isEeaCountryCode(?string $code): bool
-    {
-        if ($code === null || $code === '') {
-            // Conservative default — treat unknown jurisdiction as non-EEA so
-            // the regulator gets the stricter signal.
-            return false;
-        }
-        $eea = [
-            // EU-27
-            'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR',
-            'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL',
-            'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
-            // EEA non-EU
-            'IS', 'LI', 'NO',
-        ];
-
-        return in_array(strtoupper($code), $eea, true);
-    }
 }

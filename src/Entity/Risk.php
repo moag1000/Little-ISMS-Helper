@@ -11,6 +11,7 @@ use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -253,6 +254,7 @@ class Risk
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'risk_owner_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: PII — mirror FieldVisibilityResolver Risk.owner
     #[MaxDepth(1)]
     // Either-or slot: validateOwnerEitherOr() (Entity callback) enforces
     // "at least one of riskOwner / riskOwnerPerson". A blanket NotNull would
@@ -1228,6 +1230,7 @@ class Risk
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'risk_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: PII — mirror FieldVisibilityResolver Risk.ownerPerson
     private ?Person $riskOwnerPerson = null;
 
     public function getRiskOwnerPerson(): ?Person
@@ -1247,6 +1250,7 @@ class Risk
      * @var Collection<int, Person>
      */
     #[Groups(['risk:read', 'risk:write'])]
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: PII — mirror FieldVisibilityResolver Risk.ownerDeputies
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'risk_owner_deputy')]
     #[ORM\JoinColumn(name: 'risk_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -1526,6 +1530,7 @@ class Risk
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: monetary — mirror FieldVisibilityResolver Risk.sle
     #[Assert\PositiveOrZero(message: 'risk.validation.sle_positive_or_zero')]
     private ?int $singleLossExpectancy = null;
 
@@ -1536,6 +1541,7 @@ class Risk
      */
     #[ORM\Column(type: 'decimal', precision: 8, scale: 4, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: monetary — mirror FieldVisibilityResolver Risk.aro
     #[Assert\PositiveOrZero(message: 'risk.validation.aro_positive_or_zero')]
     private ?string $annualRateOfOccurrence = null;
 
@@ -1569,6 +1575,7 @@ class Risk
      * ISO 27005 / NIST SP 800-30 standard monetary risk expression.
      */
     #[Groups(['risk:read'])]
+    #[ApiProperty(security: "is_granted('ROLE_MANAGER')")] // F7: monetary — mirror FieldVisibilityResolver Risk.ale
     public function getAnnualLossExpectancy(): ?int
     {
         if ($this->singleLossExpectancy === null || $this->annualRateOfOccurrence === null) {
