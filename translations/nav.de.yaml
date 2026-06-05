@@ -13,6 +13,7 @@ nav:
     effectiveness_monitor: 'Wirksamkeits-Monitor'
     assets: Assets
     suppliers: Lieferanten
+    supplier_questionnaire: Lieferanten-Fragebögen
     risks: Risiken
     change_requests: Änderungsanträge
     bcm: BCM
@@ -187,6 +188,7 @@ nav:
             objectives: 'ISMS-Ziele und Vorgaben'
             assets: 'IT- und Informationsassets-Inventar'
             suppliers: 'Drittanbieter und Lieferanten'
+            supplier_questionnaire: 'Sicherheits-Fragebögen an Lieferanten senden'
             locations: 'Physische Standorte und Einrichtungen'
             people: 'Personal und Kontaktinformationen'
             risks: 'Risikoregister und -bewertungen'
