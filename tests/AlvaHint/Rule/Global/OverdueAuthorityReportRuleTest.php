@@ -90,6 +90,7 @@ final class OverdueAuthorityReportRuleTest extends TestCase
 
         self::assertNotNull($hint);
         self::assertSame('authority_hub_index', $hint->actionRoute);
+        self::assertSame(['focus' => 'overdue'], $hint->actionRouteParams);
         self::assertSame('GET', $hint->actionMethod);
     }
 
