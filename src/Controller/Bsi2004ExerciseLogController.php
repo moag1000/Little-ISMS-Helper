@@ -48,24 +48,31 @@ class Bsi2004ExerciseLogController extends AbstractController
 
     #[Route('', name: 'index', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) {
             return $redirect;
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
-        $logs = $tenant !== null
-            ? $this->logRepository->findByTenant($tenant)
+        $overdueLogs = $tenant !== null
+            ? $this->logRepository->findImprovementActionsOverdue($tenant)
             : [];
 
-        $overdueCount = $tenant !== null
-            ? count($this->logRepository->findImprovementActionsOverdue($tenant))
-            : 0;
+        // Alva-hint deep-link: focus=improvement_overdue narrows to EXACTLY the
+        // logs Bsi2004ImprovementActionOverdueRule counts (shared finder).
+        if ($request->query->get('focus') === 'improvement_overdue' && $tenant !== null) {
+            $logs = $overdueLogs;
+        } else {
+            $logs = $tenant !== null
+                ? $this->logRepository->findByTenant($tenant)
+                : [];
+        }
 
         return $this->render('bcm/exercise_log/index.html.twig', [
             'logs'         => $logs,
-            'overdueCount' => $overdueCount,
+            'overdueCount' => count($overdueLogs),
+            'focus'        => $request->query->get('focus'),
         ]);
     }
 

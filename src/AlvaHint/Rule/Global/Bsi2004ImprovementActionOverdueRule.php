@@ -61,6 +61,16 @@ class Bsi2004ImprovementActionOverdueRule extends AbstractGlobalAlvaHintRule
             $overdueCount += count($log->getOverdueImprovementActions());
         }
 
+        // Deep-link to exactly the logs the hint counts: one log → that log,
+        // several → the exercise-log index pre-filtered to the same set.
+        if (count($overdueLogs) === 1) {
+            $route = 'bcm_exercise_log_show';
+            $params = ['id' => $overdueLogs[0]->getId() ?? 0];
+        } else {
+            $route = 'bcm_exercise_log_index';
+            $params = ['focus' => 'improvement_overdue'];
+        }
+
         return new AlvaHint(
             key: $this->key(),
             titleTranslationKey: 'alva.improvement_action_overdue.title',
@@ -76,8 +86,8 @@ class Bsi2004ImprovementActionOverdueRule extends AbstractGlobalAlvaHintRule
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'alva.improvement_action_overdue.action',
-            actionRoute: 'bcm_exercise_log_index',
-            actionRouteParams: [],
+            actionRoute: $route,
+            actionRouteParams: $params,
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'worried',
