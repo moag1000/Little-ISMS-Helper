@@ -784,49 +784,6 @@ class DocumentController extends AbstractController
     }
 
     /**
-     * F20 — export a Document as an editable Word .docx (Markdown body → DOCX).
-     */
-    #[Route('/document/{id}/export.docx', name: 'app_document_export_docx', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function exportDocx(
-        Document $document,
-        \App\Service\Export\DocxExportService $docxExporter,
-    ): Response {
-        $this->denyAccessUnlessGranted('download', $document);
-
-        $bytes = $docxExporter->exportDocument($document);
-
-        return new Response($bytes, Response::HTTP_OK, [
-            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'Content-Disposition' => sprintf('attachment; filename="%s.docx"', $this->exportSlug($document)),
-            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
-        ]);
-    }
-
-    /**
-     * F20 — export a Document's Markdown body as a .md file.
-     */
-    #[Route('/document/{id}/export.md', name: 'app_document_export_markdown', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function exportMarkdown(
-        Document $document,
-        \App\Service\Export\DocxExportService $docxExporter,
-    ): Response {
-        $this->denyAccessUnlessGranted('download', $document);
-
-        return new Response($docxExporter->exportMarkdown($document), Response::HTTP_OK, [
-            'Content-Type'        => 'text/markdown; charset=UTF-8',
-            'Content-Disposition' => sprintf('attachment; filename="%s.md"', $this->exportSlug($document)),
-            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
-        ]);
-    }
-
-    private function exportSlug(Document $document): string
-    {
-        $slug = preg_replace('/[^a-z0-9]+/i', '-', (string) ($document->getFilename() ?? 'document'));
-
-        return trim((string) $slug, '-') ?: 'document';
-    }
-
-    /**
      * Clone a Document (C4-C1 — Klon-Funktionen). Open to ROLE_USER. The
      * clone keeps the policy body, review cadence, classification and
      * metadata; file binary, version history and provenance refs are
