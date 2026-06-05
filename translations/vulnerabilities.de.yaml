@@ -82,6 +82,10 @@ vulnerability:
         internal: 'Interne Entdeckung'
         pentest: Penetrationstest
         bugbounty: Bug-Bounty-Programm
+        euvd: 'ENISA EUVD'
+    euvd:
+        badge: 'EUVD'
+        tooltip: 'In der ENISA EU Vulnerability Database registriert'
     exploit:
         none: 'Kein Exploit bekannt'
         poc: 'Proof of Concept verfügbar'

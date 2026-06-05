@@ -38,6 +38,11 @@ parameters:
     app.compliance.review.min_comment_length: 20
     app.compliance.review.min_override_reason_length: 20
 
+    # F39 — ENISA EU Vulnerability Database (EUVD) feed endpoint. Overridable via
+    # env if ENISA relocates the public API.
+    app.euvd.base_url: '%env(default:default_euvd_base_url:EUVD_BASE_URL)%'
+    default_euvd_base_url: 'https://euvdservices.enisa.europa.eu/api'
+
     # Significant-change threshold (%) for source-update propagation (ENT-2).
     app.compliance.source_update.significant_change_threshold: 5
 
