@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'api_token' %}
+
+{% block title %}{{ 'api_token.title'|trans({}, 'api_token') }}{% endblock %}
+
+{% block body %}
+<div class="container py-4" style="max-width: 880px;">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [{ label: 'api_token.title'|trans({}, 'api_token') }]
+    } %}
+
+    <h1 class="h3 mb-1">{{ 'api_token.title'|trans({}, 'api_token') }}</h1>
+    <p class="text-body-secondary mb-4">{{ 'api_token.intro'|trans({}, 'api_token') }}</p>
+
+    {% if new_token %}
+        <div class="alert alert-success">
+            <strong>{{ 'api_token.created_once'|trans({}, 'api_token') }}</strong>
+            <pre class="mb-0 mt-2 user-select-all">{{ new_token }}</pre>
+        </div>
+    {% endif %}
+
+    {# Create #}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" action="{{ path('app_api_tokens_create') }}" class="row g-2 align-items-end">
+                <input type="hidden" name="_token" value="{{ csrf_token('api_token_create') }}">
+                <div class="col-md-6">
+                    <label class="form-label" for="label">{{ 'api_token.field.label'|trans({}, 'api_token') }}</label>
+                    <input type="text" class="form-control" id="label" name="label" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="expires_days">{{ 'api_token.field.expires_days'|trans({}, 'api_token') }}</label>
+                    <input type="number" min="1" class="form-control" id="expires_days" name="expires_days" placeholder="—">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'api_token.action.create'|trans({}, 'api_token') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# List #}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'api_token.field.label'|trans({}, 'api_token') }}</th>
+                <th scope="col">{{ 'api_token.field.created'|trans({}, 'api_token') }}</th>
+                <th scope="col">{{ 'api_token.field.expires'|trans({}, 'api_token') }}</th>
+                <th scope="col">{{ 'api_token.field.status'|trans({}, 'api_token') }}</th>
+                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for token in tokens %}
+                <tr>
+                    <td>{{ token.label }}</td>
+                    <td>{{ token.createdAt|date('Y-m-d') }}</td>
+                    <td>{{ token.expiresAt ? token.expiresAt|date('Y-m-d') : '—' }}</td>
+                    <td>
+                        {% if token.revoked %}
+                            <span class="badge bg-secondary">{{ 'api_token.status.revoked'|trans({}, 'api_token') }}</span>
+                        {% else %}
+                            <span class="badge bg-success">{{ 'api_token.status.active'|trans({}, 'api_token') }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        {% if not token.revoked %}
+                        <form method="post" action="{{ path('app_api_tokens_revoke', {id: token.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('api_token_revoke') }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">{{ 'api_token.action.revoke'|trans({}, 'api_token') }}</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="text-body-secondary">{{ 'api_token.empty'|trans({}, 'api_token') }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

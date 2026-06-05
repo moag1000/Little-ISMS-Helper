@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\ApiToken;
 use App\Repository\UserRepository;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,7 +25,7 @@ final class CreateApiTokenCommand extends Command
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly EntityManagerInterface $em,
+        private readonly \App\Service\ApiTokenManager $tokenManager,
     ) {
         parent::__construct();
     }
@@ -54,21 +51,10 @@ final class CreateApiTokenCommand extends Command
             return Command::FAILURE;
         }
 
-        $plain = bin2hex(random_bytes(32));
+        $expiresRaw = $input->getOption('expires-days');
+        $expiresDays = ($expiresRaw !== null && (string) $expiresRaw !== '') ? (int) $expiresRaw : null;
 
-        $token = new ApiToken();
-        $token->setUser($user);
-        $token->setTenant($user->getTenant());
-        $token->setTokenHash(hash('sha256', $plain));
-        $token->setLabel((string) $input->getOption('label'));
-
-        $expiresDays = $input->getOption('expires-days');
-        if ($expiresDays !== null && (string) $expiresDays !== '') {
-            $token->setExpiresAt((new DateTimeImmutable())->modify(sprintf('+%d days', (int) $expiresDays)));
-        }
-
-        $this->em->persist($token);
-        $this->em->flush();
+        $plain = $this->tokenManager->mint($user, (string) $input->getOption('label'), $expiresDays);
 
         $io->success('Read-only API token created. Store it now — it will not be shown again:');
         $io->writeln('  ' . $plain);

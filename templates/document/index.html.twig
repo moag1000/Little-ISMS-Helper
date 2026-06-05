@@ -26,6 +26,7 @@
             { label: 'document.action.policy_wizard'|trans({}, 'document'), variant: 'success', icon: 'nav-magic', href: path('app_policy_wizard_index') },
             { label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'ui-upload', href: path('app_document_new') }
         ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'document', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
+        |merge(is_granted('ROLE_ADMIN') ? [{ label: 'document.action.policy_pack_export'|trans({}, 'document'), href: path('admin_policy_pack_export'), variant: 'ghost', icon: 'ui-download', attrs: {'data-turbo': 'false'} }] : [])
     }) }}
 {% set _global_hints = alva_hints('document_index') %}
 {% if _global_hints|length > 0 %}
