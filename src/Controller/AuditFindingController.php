@@ -88,6 +88,8 @@ class AuditFindingController extends AbstractController
         $tenant = $this->tenantContext->getCurrentTenant();
         $status = $request->query->get('status');
         $severity = $request->query->get('severity');
+        // Alva-hint deep-link target: pre-filter to exactly the set a hint counts.
+        $focus = $request->query->get('focus');
 
         $criteria = [];
         if ($tenant instanceof Tenant) {
@@ -100,14 +102,22 @@ class AuditFindingController extends AbstractController
             $criteria['severity'] = $severity;
         }
 
-        $findings = $this->repository->findBy($criteria, ['createdAt' => 'DESC']);
         $overdue = $tenant instanceof Tenant ? $this->repository->findOverdue($tenant) : [];
+
+        if ($tenant instanceof Tenant && $focus === 'overdue') {
+            $findings = $overdue;
+        } elseif ($tenant instanceof Tenant && $focus === 'nc_unreferenced') {
+            $findings = $this->repository->findOpenWithoutRequirements($tenant);
+        } else {
+            $findings = $this->repository->findBy($criteria, ['createdAt' => 'DESC']);
+        }
 
         return $this->render('audit_finding/index.html.twig', [
             'findings' => $findings,
             'overdue_count' => count($overdue),
             'selected_status' => $status,
             'selected_severity' => $severity,
+            'focus' => $focus,
         ]);
     }
 
