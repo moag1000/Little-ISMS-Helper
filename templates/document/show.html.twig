@@ -27,7 +27,9 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {% set _show_actions = [
-        { label: 'common.download'|trans({}, 'messages'), variant: 'primary', icon: 'download', href: path('app_document_download', {id: document.id}), attrs: {'data-turbo': 'false'} }
+        { label: 'common.download'|trans({}, 'messages'), variant: 'primary', icon: 'download', href: path('app_document_download', {id: document.id}), attrs: {'data-turbo': 'false'} },
+        { label: 'document.export.docx'|trans({}, 'document'), variant: 'ghost', icon: 'nav-file-earmark-text', href: path('app_document_export_docx', {id: document.id}), attrs: {'data-turbo': 'false'} },
+        { label: 'document.export.markdown'|trans({}, 'document'), variant: 'ghost', icon: 'ui-copy', href: path('app_document_export_markdown', {id: document.id}), attrs: {'data-turbo': 'false'} }
     ] %}
     {% if canEdit is defined and canEdit %}
         {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'ui-edit', href: path('app_document_edit', {id: document.id}) }]) %}
