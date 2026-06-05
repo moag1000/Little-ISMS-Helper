@@ -1,0 +1,14 @@
+{% extends 'base_public.html.twig' %}
+
+{% block title %}{{ questionnaire.title }}{% endblock %}
+
+{% block body %}
+<main class="container py-5 text-center" style="max-width: 640px;">
+    {% if accepted %}
+        <h1 class="h3 mb-3">{{ 'supplier.questionnaire.public.thanks_title'|trans({}, 'suppliers') }}</h1>
+        <p class="text-body-secondary">{{ 'supplier.questionnaire.public.thanks_body'|trans({}, 'suppliers') }}</p>
+    {% else %}
+        <div class="alert alert-info">{{ 'supplier.questionnaire.public.closed'|trans({}, 'suppliers') }}</div>
+    {% endif %}
+</main>
+{% endblock %}

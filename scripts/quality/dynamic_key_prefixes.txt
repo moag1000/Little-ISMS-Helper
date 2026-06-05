@@ -242,6 +242,7 @@ supplier.dora.ict_criticality	1
 supplier.dora.substitutability	1
 supplier.gdpr.processor_status	1
 supplier.lksg_risk	1
+supplier.questionnaire.status	1
 tags.type	1
 template	2
 tia.mechanism	3

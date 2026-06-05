@@ -1,5 +1,27 @@
 supplier:
     title: Lieferanten
+    questionnaire:
+        title: 'Lieferanten-Fragebögen'
+        default_title: 'Sicherheits-Fragebogen'
+        empty: 'Noch keine Fragebögen versendet.'
+        action:
+            send: 'Fragebogen senden'
+        field:
+            supplier: Lieferant
+            title: Titel
+            status: Status
+            sent_at: Versendet
+        status:
+            draft: Entwurf
+            sent: Versendet
+            completed: Beantwortet
+            reviewed: Geprüft
+        public:
+            intro: 'Bitte beantworten Sie die folgenden Fragen zur Informationssicherheit. Ein Login ist nicht erforderlich.'
+            closed: 'Dieser Fragebogen ist nicht mehr für Antworten geöffnet.'
+            submit: 'Antworten absenden'
+            thanks_title: 'Vielen Dank'
+            thanks_body: 'Ihre Antworten wurden übermittelt.'
     page:
         title: Lieferantenmanagement
         new_title: 'Neuen Lieferanten anlegen'
