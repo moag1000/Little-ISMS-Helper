@@ -1,0 +1,37 @@
+{#
+ # Focus-filter notice — shown when an Alva-hint deep-link pre-filtered this list.
+ #
+ # Closes the loop on hint deep-links: when a user clicks a count-hint and lands
+ # on a list narrowed to focus=<key>, this renders an active filter chip telling
+ # them WHAT is filtered (+ result count) and a "show all" chip to clear it.
+ # Aurora-native (fa-filter-chip) — no bespoke CSS.
+ #
+ # Params:
+ #   focus      - the active focus key (string|null); renders nothing when empty
+ #   clear_url  - href to the unfiltered list (required when focus is set)
+ #   count      - optional result count to show on the active chip (int|null)
+ #
+ # Static (not concatenated) trans keys keep check_translation_dynamic_keys happy.
+ #}
+{% if focus is defined and focus %}
+    {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+    {% set focus_labels = {
+        lifecycle_stuck:     'focus_filter.focus.lifecycle_stuck'|trans({}, 'focus_filter'),
+        overdue:             'focus_filter.focus.overdue'|trans({}, 'focus_filter'),
+        nc_unreferenced:     'focus_filter.focus.nc_unreferenced'|trans({}, 'focus_filter'),
+        privacy_sla:         'focus_filter.focus.privacy_sla'|trans({}, 'focus_filter'),
+        no_owner:            'focus_filter.focus.no_owner'|trans({}, 'focus_filter'),
+        incident_linked:     'focus_filter.focus.incident_linked'|trans({}, 'focus_filter'),
+        unpatched:           'focus_filter.focus.unpatched'|trans({}, 'focus_filter'),
+        no_ack:              'focus_filter.focus.no_ack'|trans({}, 'focus_filter'),
+        improvement_overdue: 'focus_filter.focus.improvement_overdue'|trans({}, 'focus_filter')
+    } %}
+    {% set focus_label = focus_labels[focus]|default(focus) %}
+    <div class="fa-filter-chip-group mb-3" role="status" aria-label="{{ 'focus_filter.notice.aria'|trans({}, 'focus_filter') }}">
+        {{ _fa_filter_chip.render(
+            focus_label ~ (count is defined and count is not null ? ' · ' ~ count : ''),
+            { active: true }
+        ) }}
+        {{ _fa_filter_chip.render('focus_filter.notice.clear'|trans({}, 'focus_filter'), { href: clear_url }) }}
+    </div>
+{% endif %}

@@ -230,6 +230,7 @@ class RiskController extends AbstractController
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
             'detailedStats' => $detailedStats,
+            'focus' => $focus,
         ]);
     }
     #[Route('/risk/export', name: 'app_risk_export', methods: ['GET'])]

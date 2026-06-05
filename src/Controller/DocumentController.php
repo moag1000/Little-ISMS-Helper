@@ -261,6 +261,7 @@ class DocumentController extends AbstractController
             'supersededIds' => $supersededIds,
             'kpiDrafts' => $kpiDrafts,
             'kpiInReview' => $kpiInReview,
+            'focus' => $focus,
         ]);
     }
 

@@ -222,6 +222,7 @@ class IncidentController extends AbstractController
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
             'detailedStats' => $detailedStats,
+            'focus' => $focus,
         ]);
     }
     #[Route('/incident/new', name: 'app_incident_new', methods: ['GET', 'POST'])]
