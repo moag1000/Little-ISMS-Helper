@@ -7,7 +7,10 @@ namespace App\Tests\Service;
 use App\Command\LoadIctProviderLibraryCommand;
 use App\Entity\IctProviderLibrary;
 use App\Entity\Tenant;
+use App\Service\AuditLogger;
 use App\Service\IctProviderLibraryService;
+use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -16,8 +19,17 @@ use ReflectionClass;
  * F-NEU — ICT-provider library: apply-service mapping + curated catalogue shape.
  * DB-free.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class IctProviderLibraryServiceTest extends TestCase
 {
+    private function svc(): IctProviderLibraryService
+    {
+        return new IctProviderLibraryService(
+            $this->createMock(EntityManagerInterface::class),
+            $this->createMock(AuditLogger::class),
+        );
+    }
+
     #[Test]
     public function buildSupplierPrefillsFromLibraryEntryAndFlagsDoraRelevant(): void
     {
@@ -30,7 +42,7 @@ final class IctProviderLibraryServiceTest extends TestCase
             ->setDefaultCriticality('critical')
             ->setEeaHosted(true);
 
-        $supplier = (new IctProviderLibraryService())->buildSupplier($entry, new Tenant());
+        $supplier = $this->svc()->buildSupplier($entry, new Tenant());
 
         self::assertSame('Amazon Web Services', $supplier->getName());
         self::assertSame('US', $supplier->getCountryOfHeadOffice());
@@ -42,7 +54,7 @@ final class IctProviderLibraryServiceTest extends TestCase
     #[Test]
     public function criticalityHintMapsToSupplierScale(): void
     {
-        $svc = new IctProviderLibraryService();
+        $svc = $this->svc();
         $base = (new IctProviderLibrary())->setCode('x')->setName('X');
 
         self::assertSame('critical', $svc->buildSupplier((clone $base)->setDefaultCriticality('critical'), new Tenant())->getCriticality());
