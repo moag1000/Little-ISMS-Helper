@@ -20,7 +20,7 @@ src/Entity/Tenant.php:666  setCreatedAt(DateTimeImmutable $createdAt (property n
 src/Entity/User.php:487  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/UserSession.php:166  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/UserSession.php:177  setLastActivityAt(DateTimeImmutable $lastActivityAt (property nullable, setter not))
-src/Entity/Vulnerability.php:560  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
+src/Entity/Vulnerability.php:601  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/WizardSession.php:317  setStartedAt(DateTimeImmutable $startedAt (property nullable, setter not))
 src/Entity/Workflow.php:158  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/WorkflowInstance.php:238  setStartedAt(DateTimeImmutable $startedAt (property nullable, setter not))

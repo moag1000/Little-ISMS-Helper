@@ -9,6 +9,7 @@ use App\Message\Schedule\CleanupExpiredSessionsMessage;
 use App\Message\Schedule\EnforceRetentionMessage;
 use App\Message\Schedule\ExecuteScheduledTaskMessage;
 use App\Message\Schedule\GenerateComplianceReportMessage;
+use App\Message\Schedule\SyncEuvdFeedMessage;
 use App\Repository\ScheduledTaskRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -76,8 +77,14 @@ class Schedule implements ScheduleProviderInterface
             RecurringMessage::cron('0 4 * * 0', new EnforceRetentionMessage())
         );
 
+        // F39 — sync the ENISA EUVD feed daily at 5:00 AM (NIS2 Art. 12
+        // coordinated vulnerability disclosure / EU single entry point).
+        $schedule->add(
+            RecurringMessage::cron('0 5 * * *', new SyncEuvdFeedMessage())
+        );
+
         $this->logger->info('Built-in scheduled tasks loaded', [
-            'count' => 4,
+            'count' => 5,
         ]);
     }
 
