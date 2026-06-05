@@ -36,7 +36,9 @@ final class UploadStepType extends AbstractType
 
         $entityChoices = array_combine(
             array_map(
-                static fn(string $t): string => 'import.entity_type.' . strtolower($t),
+                // PascalCase entity type → snake_case i18n slug, acronym-aware
+                // ('ProcessingActivity' → processing_activity, 'ISMSContext' → isms_context).
+                static fn(string $t): string => 'import.entity_type.' . self::toSnakeSlug($t),
                 $entityTypes,
             ),
             $entityTypes,
@@ -91,5 +93,21 @@ final class UploadStepType extends AbstractType
 
         $resolver->setRequired('entity_types');
         $resolver->setAllowedTypes('entity_types', 'array');
+    }
+
+    /**
+     * Convert a PascalCase entity type to its snake_case i18n slug, preserving
+     * acronyms: 'ProcessingActivity' → 'processing_activity',
+     * 'DataSubjectRequest' → 'data_subject_request', 'ISMSContext' → 'isms_context'.
+     */
+    private static function toSnakeSlug(string $type): string
+    {
+        $snake = preg_replace(
+            ['/([a-z\d])([A-Z])/', '/([A-Z]+)([A-Z][a-z])/'],
+            '$1_$2',
+            $type,
+        ) ?? $type;
+
+        return strtolower($snake);
     }
 }

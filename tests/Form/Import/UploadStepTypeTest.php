@@ -149,4 +149,25 @@ final class UploadStepTypeTest extends TypeTestCase
         $modeField = $form->get('mode');
         self::assertSame('initial', $modeField->getData());
     }
+
+    #[Test]
+    public function entityTypeChoiceLabelsUseSnakeCaseI18nKeys(): void
+    {
+        // Multi-word + acronym types must yield snake_case label keys
+        // (regression: strtolower('ProcessingActivity') = 'processingactivity'
+        // had no translation → raw key in the dropdown).
+        $form = $this->factory->create(UploadStepType::class, null, [
+            'entity_types'    => ['ProcessingActivity', 'BusinessProcess', 'ISMSContext', 'DataSubjectRequest', 'Asset'],
+            'csrf_protection' => false,
+        ]);
+
+        $choices = $form->get('entityType')->createView()->vars['choices'];
+        $labels = array_map(static fn($c) => $c->label, $choices);
+
+        self::assertContains('import.entity_type.processing_activity', $labels);
+        self::assertContains('import.entity_type.business_process', $labels);
+        self::assertContains('import.entity_type.isms_context', $labels);
+        self::assertContains('import.entity_type.data_subject_request', $labels);
+        self::assertContains('import.entity_type.asset', $labels);
+    }
 }
