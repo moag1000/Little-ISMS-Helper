@@ -504,4 +504,44 @@ class BulkImportControllerTest extends WebTestCase
         // we use a static dummy that still exercises form field validation paths.
         return 'test-token-' . $tokenId;
     }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function importHubRendersForManager(): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $this->client->request('GET', '/en/data-import');
+        self::assertResponseIsSuccessful();
+        // Area headers + at least one entity tile are translated, not raw keys.
+        self::assertSelectorTextContains('body', 'Governance');
+        self::assertStringNotContainsString('import.entity.', (string) $this->client->getResponse()->getContent());
+        self::assertStringNotContainsString('import.hub.', (string) $this->client->getResponse()->getContent());
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function importableSlugs(): iterable
+    {
+        foreach ([
+            'asset', 'supplier', 'control', 'risk', 'business_process',
+            'processing_activity', 'data_subject_request', 'consent',
+            'incident', 'interested_party', 'vulnerability', 'person', 'location',
+            'audit_finding', 'corrective_action', 'training', 'isms_objective',
+            'threat_intelligence', 'data_breach', 'change_request', 'patch',
+            'business_continuity_plan', 'internal_audit',
+            'data_protection_impact_assessment', 'management_review', 'isms_context',
+        ] as $slug) {
+            yield $slug => [$slug];
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('importableSlugs')]
+    public function everyImportWizardEntryRenders(string $slug): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $this->client->request('GET', '/en/import/' . $slug . '/');
+        // Must not 5xx, and must render the wizard (or redirect when module-gated).
+        self::assertLessThan(500, $this->client->getResponse()->getStatusCode(), "Import wizard for '{$slug}' 5xx'd");
+        $body = (string) $this->client->getResponse()->getContent();
+        self::assertStringNotContainsString('import.entity.' . $slug, $body, "Raw i18n key for '{$slug}'");
+    }
 }

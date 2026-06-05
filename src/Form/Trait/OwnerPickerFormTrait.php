@@ -69,6 +69,7 @@ trait OwnerPickerFormTrait
      *     deputies_field?: string|null,
      *     legacy_field?: string|null,
      *     translation_prefix?: string,
+     *     translation_domain?: string|null,
      *     required?: bool,
      *     default_to_current_user?: bool,
      *     user_label?: string,
@@ -91,11 +92,19 @@ trait OwnerPickerFormTrait
         $deputiesField = $config['deputies_field'] ?? null;
         $legacyField   = $config['legacy_field']   ?? null;
         $prefix        = $config['translation_prefix'] ?? 'common';
+        // The default `common.*` owner keys live in the `messages` domain, but a
+        // privacy/training/bcm form's translation_domain is its own — so without
+        // pinning, those forms show raw `common.field.owner_user` strings. Pin
+        // `messages` only for the default prefix; a custom prefix keeps the
+        // host-form domain (translation_domain => null = inherit), which is the
+        // existing, working behaviour for asset/risk/incident/... forms.
+        $domain        = $config['translation_domain'] ?? ($prefix === 'common' ? 'messages' : null);
         $required      = $config['required'] ?? false;
         $defaultToCurrentUser = $config['default_to_current_user'] ?? false;
 
         $builder->add($userField, EntityType::class, [
             'label'        => $config['user_label']       ?? $prefix . '.field.owner_user',
+                'translation_domain' => $domain,
             'class'        => User::class,
             'choice_label' => static fn (User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
             'required'     => $required,
@@ -110,6 +119,7 @@ trait OwnerPickerFormTrait
 
         $builder->add($personField, EntityType::class, [
             'label'        => $config['person_label']       ?? $prefix . '.field.owner_person',
+                'translation_domain' => $domain,
             'class'        => Person::class,
             'choice_label' => static fn (Person $p): string => $p->getFullName() ?? '',
             'required'     => false,
@@ -125,6 +135,7 @@ trait OwnerPickerFormTrait
         if ($deputiesField !== null) {
             $builder->add($deputiesField, EntityType::class, [
                 'label'        => $config['deputies_label'] ?? $prefix . '.field.owner_deputies',
+                'translation_domain' => $domain,
                 'class'        => Person::class,
                 'choice_label' => static fn (Person $p): string => $p->getFullName() ?? '',
                 'required'     => false,
@@ -145,6 +156,7 @@ trait OwnerPickerFormTrait
             // round-trip cleanly during the migration window.
             $builder->add($legacyField, TextType::class, [
                 'label'    => $config['legacy_label'] ?? $prefix . '.field.owner_legacy',
+                'translation_domain' => $domain,
                 'required' => false,
                 'attr'     => [
                     'maxlength'                => 100,

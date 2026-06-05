@@ -60,25 +60,15 @@ final class EntityMapperRegistry
     }
 
     /**
-     * @return list<string>  entity-type strings supported by registered mappers
+     * @return list<string>  entity-type strings supported by import (schema-driven).
+     *
+     * All generic bulk-import types are schema-driven; the only hand-written
+     * mapper left (TisaxRequirement) has its own dedicated wizard, not the
+     * generic dropdown.
      */
     public function getSupportedEntityTypes(): array
     {
-        $types = [];
-        foreach ($this->mappers as $mapper) {
-            // Derive display name from each mapper's support check
-            foreach (['Asset', 'Supplier', 'Control', 'Risk', 'BusinessProcess'] as $candidate) {
-                if ($mapper->supportsEntityType($candidate)) {
-                    $types[] = $candidate;
-                }
-            }
-        }
-
-        foreach ($this->schemaRegistry?->supportedEntityTypes() ?? [] as $schemaType) {
-            $types[] = $schemaType;
-        }
-
-        return array_values(array_unique($types));
+        return array_values(array_unique($this->schemaRegistry?->supportedEntityTypes() ?? []));
     }
 
     /**

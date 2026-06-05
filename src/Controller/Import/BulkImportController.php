@@ -43,7 +43,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   7. errorCsv— streamed CSV of error rows for download
  */
 // @no-methods-required — class-level path prefix, methods declared per action
-#[Route('/import/{entityType}', requirements: ['entityType' => 'asset|supplier|control|risk|business_process|processing_activity|data_subject_request|consent'])]
+#[Route('/import/{entityType}', requirements: ['entityType' => 'asset|supplier|control|risk|business_process|processing_activity|data_subject_request|consent|incident|interested_party|vulnerability|person|location|audit_finding|corrective_action|training|isms_objective|threat_intelligence|data_breach|change_request|patch|business_continuity_plan|internal_audit|data_protection_impact_assessment|management_review|isms_context'])]
 #[IsGranted('ROLE_MANAGER')]
 final class BulkImportController extends AbstractController
 {
@@ -461,8 +461,11 @@ final class BulkImportController extends AbstractController
     {
         // Handle snake_case slugs: 'business_process' → 'BusinessProcess'
         $parts = explode('_', $entityType);
+        $pascal = implode('', array_map('ucfirst', $parts));
 
-        return implode('', array_map('ucfirst', $parts));
+        // Preserve acronym casing where the entity class uses it (ISMSContext,
+        // ISMSObjective) — naive ucfirst would yield 'IsmsContext'.
+        return preg_replace('/^Isms/', 'ISMS', $pascal) ?? $pascal;
     }
 
     /**
