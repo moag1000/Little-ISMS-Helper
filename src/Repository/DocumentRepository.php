@@ -120,6 +120,31 @@ class DocumentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Approved documents with NO policy-acknowledgement record — awareness
+     * audit gap (ISO 27001 A.6.3 / Cl. 7.3). Shared single source of truth for
+     * ApprovedDocOhneAcknowledgementRule (the Alva hint) and the document index
+     * `focus=no_ack` filter, so the hint deep-links to EXACTLY the documents it
+     * counts.
+     *
+     * @return Document[]
+     */
+    public function findApprovedWithoutAcknowledgement(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.tenant = :tenant')
+            ->andWhere('d.status = :approved')
+            ->andWhere('d.id NOT IN (
+                SELECT IDENTITY(pa.document) FROM App\Entity\PolicyAcknowledgement pa
+                WHERE pa.document IS NOT NULL
+            )')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('approved', 'approved')
+            ->orderBy('d.uploadedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Phase 9.P2.1 — inheritable documents visible to a subsidiary
      * from its ancestor chain. Returns only documents that the ancestor
      * has explicitly marked inheritable=true (and that are still active).

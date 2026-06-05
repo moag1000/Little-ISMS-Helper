@@ -154,6 +154,17 @@ class DocumentController extends AbstractController
                 $documents,
                 static fn (Document $document): bool => isset($stuckIds[$document->getId() ?? -1]),
             );
+        } elseif ($focus === 'no_ack' && $tenant) {
+            // Approved documents without any policy-acknowledgement record —
+            // exactly what ApprovedDocOhneAcknowledgementRule counts.
+            $noAckIds = array_flip(array_filter(array_map(
+                static fn (Document $d): ?int => $d->getId(),
+                $this->documentRepository->findApprovedWithoutAcknowledgement($tenant),
+            )));
+            $documents = array_filter(
+                $documents,
+                static fn (Document $document): bool => isset($noAckIds[$document->getId() ?? -1]),
+            );
         }
 
         // Policy-Wizard W7-C — collapse to current versions only (default).
