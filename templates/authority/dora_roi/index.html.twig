@@ -62,19 +62,30 @@
             </div>
         </div>
 
-        {# ── Generate button ────────────────────────────────────────────────────── #}
+        {# ── Generate buttons ───────────────────────────────────────────────────── #}
         <div class="row mb-4">
-            <div class="col-12">
-                <form method="POST" action="{{ path('dora_roi_generate') }}">
+            <div class="col-12 d-flex flex-wrap align-items-center gap-2">
+                {# xBRL-CSV (OIM) — canonical ESA submission format #}
+                <form method="POST" action="{{ path('dora_roi_generate_csv') }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('dora_roi_generate') }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
-                        {{ 'eu_authorities.dora_roi.action.generate'|trans({
+                        {{ 'eu_authorities.dora_roi.action.generate_csv'|trans({
                             '%year%': reportingYear
                         }) }}
                     </button>
-                    <small class="text-body-secondary ms-2">{{ 'eu_authorities.dora_roi.action.generate_help'|trans }}</small>
                 </form>
+                {# XBRL-XML — internal validation / preview #}
+                <form method="POST" action="{{ path('dora_roi_generate') }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('dora_roi_generate') }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
+                        <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
+                        {{ 'eu_authorities.dora_roi.action.generate_xml'|trans({
+                            '%year%': reportingYear
+                        }) }}
+                    </button>
+                </form>
+                <small class="text-body-secondary">{{ 'eu_authorities.dora_roi.action.generate_help'|trans }}</small>
             </div>
         </div>
 

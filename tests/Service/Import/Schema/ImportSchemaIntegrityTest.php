@@ -78,4 +78,31 @@ final class ImportSchemaIntegrityTest extends KernelTestCase
             }
         }
     }
+
+    /**
+     * F46 — the Risk import schema must carry the quantitative ALE inputs
+     * (SLE/ARO), module-gated by risk_quant. This is the Phase-1 acceptance
+     * criterion "Import muss €-Feld mappen" and replaces the regression cover
+     * lost when the legacy RiskMapper was retired in the 360° schema migration.
+     */
+    #[Test]
+    public function riskSchemaExposesQuantitativeAleInputs(): void
+    {
+        self::bootKernel();
+        $registry = static::getContainer()->get(ImportSchemaRegistry::class);
+
+        $schema = $registry->getSchemaFor('Risk');
+        self::assertNotNull($schema);
+
+        $byName = [];
+        foreach ($schema->fields as $field) {
+            $byName[$field->name] = $field;
+        }
+
+        foreach (['singleLossExpectancy' => 'sle', 'annualRateOfOccurrence' => 'aro'] as $name => $alias) {
+            self::assertArrayHasKey($name, $byName, "Risk import schema is missing F46 field {$name}");
+            self::assertSame('risk_quant', $byName[$name]->module, "{$name} must be gated by the risk_quant module");
+            self::assertContains($alias, $byName[$name]->aliases, "{$name} should accept the '{$alias}' column alias");
+        }
+    }
 }

@@ -209,10 +209,10 @@ translations/dpa_template.en.yaml:75:subprocessors
 translations/dpa_template.en.yaml:80:third_country
 translations/dpa_template.en.yaml:86:signatures
 translations/dpa_template.en.yaml:94:footer
-translations/eu_authorities.de.yaml:229:authority
-translations/eu_authorities.de.yaml:406:dora
-translations/eu_authorities.en.yaml:229:authority
-translations/eu_authorities.en.yaml:406:dora
+translations/eu_authorities.de.yaml:231:authority
+translations/eu_authorities.de.yaml:408:dora
+translations/eu_authorities.en.yaml:231:authority
+translations/eu_authorities.en.yaml:408:dora
 translations/incident.de.yaml:1:incident_management
 translations/incident.de.yaml:8:deadline_counter
 translations/incident.de.yaml:441:iso_9001_bridge
