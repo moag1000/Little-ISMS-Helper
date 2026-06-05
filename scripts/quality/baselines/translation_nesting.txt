@@ -183,10 +183,10 @@ translations/data_management.de.yaml:1:data
 translations/data_management.en.yaml:1:data
 translations/data_subject_request.de.yaml:5:dsr
 translations/data_subject_request.en.yaml:5:dsr
-translations/document.de.yaml:288:evidence_reverification
-translations/document.de.yaml:322:iso_9001_bridge
-translations/document.en.yaml:285:evidence_reverification
-translations/document.en.yaml:319:iso_9001_bridge
+translations/document.de.yaml:291:evidence_reverification
+translations/document.de.yaml:325:iso_9001_bridge
+translations/document.en.yaml:288:evidence_reverification
+translations/document.en.yaml:322:iso_9001_bridge
 translations/dora.de.yaml:175:dora_subcontractor
 translations/dora.en.yaml:175:dora_subcontractor
 translations/dpa_template.de.yaml:1:title
