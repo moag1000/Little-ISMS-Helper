@@ -198,7 +198,21 @@ class RiskController extends AbstractController
             });
         }
 
-        // Re-index array after filtering
+        // Alva-hint deep-link: pre-filter to EXACTLY the set the matching hint
+        // counts (shared repository finders).
+        $focus = $request->query->get('focus');
+        if ($focus === 'no_owner') {
+            $risks = array_filter($risks, static fn(Risk $risk): bool => $risk->getRiskOwner() === null);
+        } elseif ($focus === 'incident_linked' && $tenant && $this->riskIncidentLinkRepository !== null) {
+            $linkedRiskIds = [];
+            foreach ($this->riskIncidentLinkRepository->findStaleLinksToOpenIncidents($tenant, 30) as $link) {
+                $rid = $link->getRisk()?->getId();
+                if ($rid !== null) {
+                    $linkedRiskIds[$rid] = $rid;
+                }
+            }
+            $risks = array_filter($risks, static fn(Risk $risk): bool => isset($linkedRiskIds[$risk->getId()]));
+        }
         $risks = array_values($risks);
 
         // WS-5: framework-tag filter via ?tag=NIS2
