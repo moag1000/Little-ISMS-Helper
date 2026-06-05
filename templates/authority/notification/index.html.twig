@@ -20,6 +20,7 @@
         subtitle: 'eu_authorities.page.subtitle'|trans,
         actions: []
     }) }}
+    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), clear_url: path('app_authority_notification_index'), count: breaches|default([])|length } %}
 
     <main class="fa-aurora-surface">
 

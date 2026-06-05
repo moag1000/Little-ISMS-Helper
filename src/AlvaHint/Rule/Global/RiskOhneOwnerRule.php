@@ -8,7 +8,7 @@ use App\AlvaHint\AbstractGlobalAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\Tenant;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\RiskRepository;
 
 /**
  * Tier-2 hint: Risks without an assigned owner.
@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 final class RiskOhneOwnerRule extends AbstractGlobalAlvaHintRule
 {
     public function __construct(
-        private readonly EntityManagerInterface $em,
+        private readonly RiskRepository $riskRepository,
     ) {
     }
 
@@ -49,17 +49,23 @@ final class RiskOhneOwnerRule extends AbstractGlobalAlvaHintRule
 
     public function evaluate(Tenant $tenant, ?User $user): ?AlvaHint
     {
-        $count = (int) $this->em->createQuery(
-            'SELECT COUNT(r.id) FROM App\Entity\Risk r
-             WHERE r.tenant = :tenant
-             AND r.riskOwner IS NULL
-            ',
-        )
-            ->setParameter('tenant', $tenant)
-            ->getSingleScalarResult();
+        // Single source of truth shared with the index `focus=no_owner`
+        // filter, so the hint deep-links to EXACTLY the risks it counts.
+        $unowned = $this->riskRepository->findWithoutOwner($tenant);
+        $count = count($unowned);
 
         if ($count <= 0) {
             return null;
+        }
+
+        // Deep-link to exactly what the hint counts: one → that risk,
+        // several → the risk index pre-filtered to the same set.
+        if ($count === 1) {
+            $route = 'app_risk_show';
+            $params = ['id' => $unowned[0]->getId() ?? 0];
+        } else {
+            $route = 'app_risk_index';
+            $params = ['focus' => 'no_owner'];
         }
 
         return new AlvaHint(
@@ -74,8 +80,8 @@ final class RiskOhneOwnerRule extends AbstractGlobalAlvaHintRule
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.risk_ohne_owner.action',
-            actionRoute: 'app_risk_index',
-            actionRouteParams: [],
+            actionRoute: $route,
+            actionRouteParams: $params,
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'thinking',

@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Tests\AlvaHint\Rule\Global;
 
 use App\AlvaHint\Rule\Global\LifecycleStuckInStatusRule;
+use App\Entity\Document;
 use App\Entity\Tenant;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query;
-use Doctrine\ORM\QueryBuilder;
+use App\Repository\DocumentRepository;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -17,14 +16,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for LifecycleStuckInStatusRule.
  *
- * Covers:
- * - Returns null when no stuck documents exist (count = 0)
- * - Returns AlvaHint with correct key/tier/variant when stuck docs found
- * - Hint is dismissible, tier-3, warning variant
- * - Body translation params contain %count% and %days%
- * - Required roles contains ROLE_MANAGER
- * - Action method is GET
- * - key() convention, requiredModules(), appliesToPages()
+ * The hint must deep-link to EXACTLY the documents it counts: one stuck
+ * document → that document's show page; several → the document index
+ * pre-filtered to focus=lifecycle_stuck.
  */
 #[AllowMockObjectsWithoutExpectations]
 final class LifecycleStuckInStatusRuleTest extends TestCase
@@ -41,114 +35,70 @@ final class LifecycleStuckInStatusRuleTest extends TestCase
     #[Test]
     public function returnsNullWhenNoStuckDocuments(): void
     {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(0));
+        $rule = new LifecycleStuckInStatusRule($this->makeRepo(0));
         self::assertNull($rule->evaluate($this->tenant, $this->user));
     }
 
     #[Test]
-    public function returnsHintWhenStuckDocumentsExist(): void
+    public function singleStuckDocumentDeepLinksToThatDocument(): void
     {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(3));
+        $rule = new LifecycleStuckInStatusRule($this->makeRepo(1, firstId: 77));
         $hint = $rule->evaluate($this->tenant, $this->user);
+
+        self::assertNotNull($hint);
+        self::assertSame('app_document_show', $hint->actionRoute);
+        self::assertSame(['id' => 77], $hint->actionRouteParams);
+        self::assertSame('1', $hint->bodyTranslationParams['%count%']);
+    }
+
+    #[Test]
+    public function severalStuckDocumentsLinkToFilteredIndex(): void
+    {
+        $rule = new LifecycleStuckInStatusRule($this->makeRepo(3));
+        $hint = $rule->evaluate($this->tenant, $this->user);
+
+        self::assertNotNull($hint);
+        self::assertSame('app_document_index', $hint->actionRoute);
+        self::assertSame(['focus' => 'lifecycle_stuck'], $hint->actionRouteParams);
+        self::assertSame('3', $hint->bodyTranslationParams['%count%']);
+    }
+
+    #[Test]
+    public function hintMetadataIsTier3WarningDismissibleManagerGet(): void
+    {
+        $hint = (new LifecycleStuckInStatusRule($this->makeRepo(2)))->evaluate($this->tenant, $this->user);
 
         self::assertNotNull($hint);
         self::assertSame('alva_hint.lifecycle.stuck_in_status', $hint->key);
-    }
-
-    #[Test]
-    public function hintIsTier3Warning(): void
-    {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(1));
-        $hint = $rule->evaluate($this->tenant, $this->user);
-
-        self::assertNotNull($hint);
         self::assertSame(3, $hint->priorityTier);
         self::assertSame('warning', $hint->variant);
-    }
-
-    #[Test]
-    public function hintIsDismissible(): void
-    {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(2));
-        $hint = $rule->evaluate($this->tenant, $this->user);
-
-        self::assertNotNull($hint);
         self::assertTrue($hint->dismissible);
-    }
-
-    #[Test]
-    public function hintBodyParamsContainCountAndDays(): void
-    {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(5));
-        $hint = $rule->evaluate($this->tenant, $this->user);
-
-        self::assertNotNull($hint);
-        self::assertArrayHasKey('%count%', $hint->bodyTranslationParams);
-        self::assertArrayHasKey('%days%', $hint->bodyTranslationParams);
-        self::assertSame('5', $hint->bodyTranslationParams['%count%']);
+        self::assertContains('ROLE_MANAGER', $hint->requiredRoles);
+        self::assertSame('GET', $hint->actionMethod);
         self::assertSame('14', $hint->bodyTranslationParams['%days%']);
     }
 
     #[Test]
-    public function hintRequiresManagerRole(): void
+    public function ruleConventions(): void
     {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(1));
-        $hint = $rule->evaluate($this->tenant, $this->user);
-
-        self::assertNotNull($hint);
-        self::assertContains('ROLE_MANAGER', $hint->requiredRoles);
-    }
-
-    #[Test]
-    public function hintActionMethodIsGet(): void
-    {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(1));
-        $hint = $rule->evaluate($this->tenant, $this->user);
-
-        self::assertNotNull($hint);
-        self::assertSame('GET', $hint->actionMethod);
-    }
-
-    #[Test]
-    public function keyMatchesConvention(): void
-    {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(0));
+        $rule = new LifecycleStuckInStatusRule($this->makeRepo(0));
         self::assertSame('alva_hint.lifecycle.stuck_in_status', $rule->key());
-    }
-
-    #[Test]
-    public function ruleHasNoRequiredModules(): void
-    {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(0));
         self::assertSame([], $rule->requiredModules());
-    }
-
-    #[Test]
-    public function ruleAppliesToAllPages(): void
-    {
-        $rule = new LifecycleStuckInStatusRule($this->makeEm(0));
         self::assertSame([], $rule->appliesToPages());
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
-
-    private function makeEm(int $countResult): EntityManagerInterface
+    private function makeRepo(int $count, int $firstId = 1): DocumentRepository
     {
-        // Query is not final, so it can be mocked. QueryBuilder::getQuery() returns Query.
-        $query = $this->createMock(Query::class);
-        $query->method('getSingleScalarResult')->willReturn($countResult);
+        $docs = [];
+        for ($i = 0; $i < $count; ++$i) {
+            $doc = $this->createMock(Document::class);
+            $doc->method('getId')->willReturn($i === 0 ? $firstId : $firstId + $i);
+            $docs[] = $doc;
+        }
 
-        $qb = $this->createMock(QueryBuilder::class);
-        $qb->method('select')->willReturnSelf();
-        $qb->method('from')->willReturnSelf();
-        $qb->method('where')->willReturnSelf();
-        $qb->method('andWhere')->willReturnSelf();
-        $qb->method('setParameter')->willReturnSelf();
-        $qb->method('getQuery')->willReturn($query);
+        $repo = $this->createMock(DocumentRepository::class);
+        $repo->method('findStuckInLifecycle')->willReturn($docs);
 
-        $em = $this->createMock(EntityManagerInterface::class);
-        $em->method('createQueryBuilder')->willReturn($qb);
-
-        return $em;
+        return $repo;
     }
 }

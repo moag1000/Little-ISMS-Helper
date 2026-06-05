@@ -8,8 +8,7 @@ use App\AlvaHint\AbstractGlobalAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\Tenant;
 use App\Entity\User;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\IncidentRepository;
 
 /**
  * Tier-1 hint: Open GDPR-related incidents older than 24h without
@@ -21,8 +20,10 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 final class OpenIncidentOhneSlaRule extends AbstractGlobalAlvaHintRule
 {
+    private const int SLA_THRESHOLD_HOURS = 24;
+
     public function __construct(
-        private readonly EntityManagerInterface $em,
+        private readonly IncidentRepository $incidentRepository,
     ) {
     }
 
@@ -54,26 +55,23 @@ final class OpenIncidentOhneSlaRule extends AbstractGlobalAlvaHintRule
 
     public function evaluate(Tenant $tenant, ?User $user): ?AlvaHint
     {
-        $threshold = new DateTimeImmutable('-24 hours');
-
-        // Count open high-severity privacy incidents older than 24h
-        $count = (int) $this->em->createQuery(
-            'SELECT COUNT(i.id) FROM App\Entity\Incident i
-             WHERE i.tenant = :tenant
-             AND i.status IN (:status)
-             AND i.severity IN (:severities)
-             AND i.category = :category
-             AND i.createdAt <= :threshold',
-        )
-            ->setParameter('tenant', $tenant)
-            ->setParameter('status', ['reported', 'in_investigation', 'in_resolution'])
-            ->setParameter('severities', ['high', 'critical'])
-            ->setParameter('category', 'privacy')
-            ->setParameter('threshold', $threshold)
-            ->getSingleScalarResult();
+        // Single source of truth shared with the index `focus=privacy_sla`
+        // filter, so the hint deep-links to EXACTLY the incidents it counts.
+        $open = $this->incidentRepository->findOpenPrivacyWithoutSla($tenant, self::SLA_THRESHOLD_HOURS);
+        $count = count($open);
 
         if ($count <= 0) {
             return null;
+        }
+
+        // Deep-link to exactly what the hint counts: one → that incident,
+        // several → the incident index pre-filtered to the same set.
+        if ($count === 1) {
+            $route = 'app_incident_show';
+            $params = ['id' => $open[0]->getId() ?? 0];
+        } else {
+            $route = 'app_incident_index';
+            $params = ['focus' => 'privacy_sla'];
         }
 
         return new AlvaHint(
@@ -88,8 +86,8 @@ final class OpenIncidentOhneSlaRule extends AbstractGlobalAlvaHintRule
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.open_incident_ohne_sla.action',
-            actionRoute: 'app_incident_index',
-            actionRouteParams: [],
+            actionRoute: $route,
+            actionRouteParams: $params,
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'alert',

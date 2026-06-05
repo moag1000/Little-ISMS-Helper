@@ -86,6 +86,7 @@ class IncidentController extends AbstractController
         $status = $request->query->get('status');
         $dataBreachOnly = $request->query->get('data_breach_only');
         $nis2Only = $request->query->get('nis2_only');
+        $focus = $request->query->get('focus'); // Alva-hint deep-link target
         $view = $request->query->get('view', 'inherited'); // Default: inherited
 
         // Cross-tenant + orphan views are admin-only — silently coerce to
@@ -182,6 +183,19 @@ class IncidentController extends AbstractController
             });
         }
 
+        // Alva-hint deep-link: pre-filter to EXACTLY the privacy-SLA early-warning
+        // set OpenIncidentOhneSlaRule counts (shared repository finder).
+        if ($focus === 'privacy_sla' && $tenant) {
+            $slaIds = array_map(
+                static fn(Incident $i): ?int => $i->getId(),
+                $this->incidentRepository->findOpenPrivacyWithoutSla($tenant),
+            );
+            $allIncidents = array_filter(
+                $allIncidents,
+                static fn(Incident $i): bool => in_array($i->getId(), $slaIds, true),
+            );
+        }
+
         // Re-index arrays after filtering to avoid gaps in keys
         $allIncidents = array_values($allIncidents);
         $openIncidents = array_values($openIncidents);
@@ -208,6 +222,7 @@ class IncidentController extends AbstractController
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
             'detailedStats' => $detailedStats,
+            'focus' => $focus,
         ]);
     }
     #[Route('/incident/new', name: 'app_incident_new', methods: ['GET', 'POST'])]

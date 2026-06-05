@@ -9,7 +9,6 @@ use App\AlvaHint\AlvaHint;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\RiskIncidentLinkRepository;
-use DateTimeImmutable;
 
 /**
  * Tier-2 hint: one or more risks have been cross-linked to OPEN incidents
@@ -54,18 +53,32 @@ final class RisksLinkedToOpenIncidentsRule extends AbstractGlobalAlvaHintRule
 
     public function evaluate(Tenant $tenant, ?User $user): ?AlvaHint
     {
-        $threshold = new DateTimeImmutable(sprintf('-%d days', self::DAYS_THRESHOLD));
-        $links     = $this->linkRepository->findLinksToOpenIncidents($tenant);
+        // Single source of truth shared with the index `focus=incident_linked`
+        // filter, so the hint deep-links to EXACTLY the risks it counts.
+        $links = $this->linkRepository->findStaleLinksToOpenIncidents($tenant, self::DAYS_THRESHOLD);
 
-        $staleCount = 0;
+        // Count DISTINCT risks — several stale links may point to one risk.
+        $riskIds = [];
         foreach ($links as $link) {
-            if ($link->getLinkedAt() < $threshold) {
-                ++$staleCount;
+            $rid = $link->getRisk()?->getId();
+            if ($rid !== null) {
+                $riskIds[$rid] = $rid;
             }
         }
 
+        $staleCount = count($riskIds);
         if ($staleCount === 0) {
             return null;
+        }
+
+        // Deep-link to exactly what the hint counts: one → that risk,
+        // several → the risk index pre-filtered to the same set.
+        if ($staleCount === 1) {
+            $route = 'app_risk_show';
+            $params = ['id' => array_key_first($riskIds)];
+        } else {
+            $route = 'app_risk_index';
+            $params = ['focus' => 'incident_linked'];
         }
 
         return new AlvaHint(
@@ -80,7 +93,8 @@ final class RisksLinkedToOpenIncidentsRule extends AbstractGlobalAlvaHintRule
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.risks_linked_to_open_incidents.action',
-            actionRoute: 'app_risk_index',
+            actionRoute: $route,
+            actionRouteParams: $params,
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'concerned',

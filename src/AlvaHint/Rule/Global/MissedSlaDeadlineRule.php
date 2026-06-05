@@ -60,10 +60,32 @@ final class MissedSlaDeadlineRule extends AbstractGlobalAlvaHintRule
 
     public function evaluate(Tenant $tenant, ?User $user): ?AlvaHint
     {
-        $count = $this->monitorRepository->countMissedForTenant($tenant);
+        $missed = $this->monitorRepository->findMissedDeadlines($tenant);
+        $count = count($missed);
 
         if ($count <= 0) {
             return null;
+        }
+
+        // Deep-link to exactly the missed deadline when there is just one: open
+        // the underlying entity directly. SLA monitors span heterogeneous entity
+        // types, so only types with a known-safe show route are resolved; any
+        // other type (or several missed deadlines) falls back to the monitor
+        // overview. Never deep-links to a route that may not exist.
+        $route = 'admin_notification_rule_index';
+        $params = [];
+        if ($count === 1) {
+            $monitor = $missed[0];
+            $showRoute = match ($monitor->getEntityType()) {
+                'Incident' => 'app_incident_show',
+                'AuditFinding' => 'app_audit_finding_show',
+                'Document' => 'app_document_show',
+                default => null,
+            };
+            if ($showRoute !== null && $monitor->getEntityId() > 0) {
+                $route = $showRoute;
+                $params = ['id' => $monitor->getEntityId()];
+            }
         }
 
         return new AlvaHint(
@@ -78,8 +100,8 @@ final class MissedSlaDeadlineRule extends AbstractGlobalAlvaHintRule
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.missed_sla_deadline.action',
-            actionRoute: 'admin_notification_rule_index',
-            actionRouteParams: [],
+            actionRoute: $route,
+            actionRouteParams: $params,
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'alert',

@@ -28,6 +28,7 @@
         ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'document', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
         |merge(is_granted('ROLE_ADMIN') ? [{ label: 'document.action.policy_pack_export'|trans({}, 'document'), href: path('admin_policy_pack_export'), variant: 'ghost', icon: 'ui-download', attrs: {'data-turbo': 'false'} }] : [])
     }) }}
+    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), clear_url: path('app_document_index'), count: documents|default([])|length } %}
 {% set _global_hints = alva_hints('document_index') %}
 {% if _global_hints|length > 0 %}
     {% for _h in _global_hints %}

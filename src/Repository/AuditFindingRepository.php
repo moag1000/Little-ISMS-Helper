@@ -34,6 +34,30 @@ class AuditFindingRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Open findings (not closed/verified) that carry NO linked
+     * ComplianceRequirements. Shared single source of truth for
+     * NonconformityAutoTaskTipRule (the Alva hint) and the finding index
+     * `focus=nc_unreferenced` filter, so the hint deep-links to EXACTLY the
+     * findings it counts.
+     *
+     * @return AuditFinding[]
+     */
+    public function findOpenWithoutRequirements(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('f')
+            ->leftJoin('f.linkedRequirements', 'lr')
+            ->andWhere('f.tenant = :tenant')
+            ->andWhere('f.status NOT IN (:closed)')
+            ->andWhere('lr.id IS NULL')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('closed', [AuditFindingStatus::Closed->value, AuditFindingStatus::Verified->value])
+            ->orderBy('f.severity', 'ASC')
+            ->addOrderBy('f.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     /** @return AuditFinding[] */
     public function findOverdue(Tenant $tenant): array
     {

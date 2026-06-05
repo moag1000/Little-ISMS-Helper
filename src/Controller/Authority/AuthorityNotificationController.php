@@ -9,10 +9,12 @@ use App\Entity\AuthorityTemplate;
 use App\Repository\DataBreachRepository;
 use App\Repository\IncidentRepository;
 use App\Service\Authority\AuthorityNotificationGenerator;
+use App\Service\Authority\OverdueAuthorityNotificationResolver;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -41,6 +43,7 @@ final class AuthorityNotificationController extends AbstractController
         private readonly IncidentRepository $incidentRepository,
         private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
+        private readonly OverdueAuthorityNotificationResolver $overdueResolver,
     ) {
     }
 
@@ -48,7 +51,7 @@ final class AuthorityNotificationController extends AbstractController
      * Index — overview of available authority export actions.
      */
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('eu_authority_reporting')) {
             return $redirect;
@@ -59,7 +62,12 @@ final class AuthorityNotificationController extends AbstractController
             throw $this->createNotFoundException('No tenant context.');
         }
 
-        $breaches = $this->dataBreachRepository->findByTenant($tenant);
+        // Alva-hint deep-link: focus=overdue narrows to EXACTLY the breaches
+        // AuthorityTemplateOverdueRule counts (shared resolver).
+        $focus = $request->query->get('focus');
+        $breaches = $focus === 'overdue'
+            ? $this->overdueResolver->findOverdueBreaches($tenant)
+            : $this->dataBreachRepository->findByTenant($tenant);
         $incidents = $this->incidentRepository->findBy(['tenant' => $tenant], ['detectedAt' => 'DESC'], 50);
         $authorityKeys = AuthorityTemplate::VALID_AUTHORITY_KEYS;
 
@@ -67,6 +75,7 @@ final class AuthorityNotificationController extends AbstractController
             'breaches' => $breaches,
             'incidents' => $incidents,
             'authority_keys' => $authorityKeys,
+            'focus' => $focus,
         ]);
     }
 

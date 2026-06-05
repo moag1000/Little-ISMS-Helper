@@ -128,6 +128,35 @@ class IncidentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Open high/critical privacy incidents older than $hours with no authority
+     * notification yet — DSGVO Art. 33 early-warning set. Shared single source
+     * of truth for OpenIncidentOhneSlaRule (the Alva hint) and the incident
+     * index `focus=privacy_sla` filter, so the hint deep-links to EXACTLY the
+     * incidents it counts.
+     *
+     * @return Incident[]
+     */
+    public function findOpenPrivacyWithoutSla(Tenant $tenant, int $hours = 24): array
+    {
+        $threshold = new \DateTimeImmutable(sprintf('-%d hours', $hours));
+
+        return $this->createQueryBuilder('i')
+            ->where('i.tenant = :tenant')
+            ->andWhere('i.status IN (:status)')
+            ->andWhere('i.severity IN (:severities)')
+            ->andWhere('i.category = :category')
+            ->andWhere('i.createdAt <= :threshold')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('status', ['reported', 'in_investigation', 'in_resolution'])
+            ->setParameter('severities', ['high', 'critical'])
+            ->setParameter('category', 'privacy')
+            ->setParameter('threshold', $threshold)
+            ->orderBy('i.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find incidents by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited incidents from parent companies, grandparents, etc.
      *

@@ -24,6 +24,7 @@
             { label: 'bsi_200_4_exercise.nav.exercise_log_calendar'|trans({}, 'bsi_200_4_exercise'), href: path('bcm_exercise_log_calendar'), variant: 'secondary', icon: 'ui-calendar' }
         ]
     }) }}
+    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), clear_url: path('bcm_exercise_log_index'), count: logs|default([])|length } %}
 
     {# Alva hints #}
     {% set _hints = alva_hints('bcm_exercise_log_index') %}

@@ -39,7 +39,7 @@ final class Bsi2004ImprovementActionOverdueRuleTest extends TestCase
     }
 
     #[Test]
-    public function returnsHintWhenOverdueLogsExist(): void
+    public function singleOverdueLogDeepLinksToThatLog(): void
     {
         $yesterday = (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d');
 
@@ -47,6 +47,7 @@ final class Bsi2004ImprovementActionOverdueRuleTest extends TestCase
         $log->setImprovementActions([
             ['description' => 'Fix fire exit', 'due_date' => $yesterday, 'completed' => false],
         ]);
+        $this->setId($log, 17);
 
         $repo = $this->createMock(Bsi2004ExerciseLogRepository::class);
         $repo->method('findImprovementActionsOverdue')->willReturn([$log]);
@@ -55,16 +56,16 @@ final class Bsi2004ImprovementActionOverdueRuleTest extends TestCase
         $hint = $rule->evaluate($this->tenant, $this->user);
 
         self::assertNotNull($hint);
-        self::assertSame('global.bsi_2004_improvement_action_overdue', $hint->key);
         self::assertSame('warning', $hint->variant);
         self::assertSame(2, $hint->priorityTier);
         self::assertTrue($hint->dismissible);
         self::assertSame(['ROLE_MANAGER'], $hint->requiredRoles);
-        self::assertSame('bcm_exercise_log_index', $hint->actionRoute);
+        self::assertSame('bcm_exercise_log_show', $hint->actionRoute);
+        self::assertSame(['id' => 17], $hint->actionRouteParams);
     }
 
     #[Test]
-    public function hintBodyParamsContainCounts(): void
+    public function severalOverdueLogsLinkToFilteredIndexWithCounts(): void
     {
         $yesterday = (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d');
 
@@ -86,8 +87,16 @@ final class Bsi2004ImprovementActionOverdueRuleTest extends TestCase
         $hint = $rule->evaluate($this->tenant, $this->user);
 
         self::assertNotNull($hint);
+        self::assertSame('bcm_exercise_log_index', $hint->actionRoute);
+        self::assertSame(['focus' => 'improvement_overdue'], $hint->actionRouteParams);
         self::assertSame('3', $hint->bodyTranslationParams['%count%']);
         self::assertSame('2', $hint->bodyTranslationParams['%log_count%']);
+    }
+
+    private function setId(Bsi2004ExerciseLog $log, int $id): void
+    {
+        $ref = new \ReflectionProperty(Bsi2004ExerciseLog::class, 'id');
+        $ref->setValue($log, $id);
     }
 
     #[Test]

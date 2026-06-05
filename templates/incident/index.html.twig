@@ -21,6 +21,7 @@
         { label: 'incident.header.action.report'|trans({}, 'incident'), variant: 'danger', icon: 'status-critical', href: path('app_incident_new') }
     ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'incident', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
 }) }}
+    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), clear_url: path('app_incident_index'), count: allIncidents|default([])|length } %}
 {% set _global_hints = alva_hints('incident_index') %}
 {% if _global_hints|length > 0 %}
     {% for _h in _global_hints %}

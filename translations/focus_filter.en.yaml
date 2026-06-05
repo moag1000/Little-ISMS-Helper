@@ -1,0 +1,14 @@
+focus_filter:
+    focus:
+        lifecycle_stuck: 'Stuck documents'
+        overdue: 'Overdue'
+        nc_unreferenced: 'Without norm reference'
+        privacy_sla: 'GDPR deadline (Art. 33)'
+        no_owner: 'Without owner'
+        incident_linked: 'Linked to open incidents'
+        unpatched: 'Unpatched'
+        no_ack: 'Without acknowledgement'
+        improvement_overdue: 'Overdue actions'
+    notice:
+        clear: 'Show all'
+        aria: 'Active filter'

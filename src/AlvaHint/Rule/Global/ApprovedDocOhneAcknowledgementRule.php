@@ -8,7 +8,7 @@ use App\AlvaHint\AbstractGlobalAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\Tenant;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\DocumentRepository;
 
 /**
  * Tier-2 hint: Approved documents without any policy acknowledgement record.
@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 final class ApprovedDocOhneAcknowledgementRule extends AbstractGlobalAlvaHintRule
 {
     public function __construct(
-        private readonly EntityManagerInterface $em,
+        private readonly DocumentRepository $documentRepository,
     ) {
     }
 
@@ -50,22 +50,23 @@ final class ApprovedDocOhneAcknowledgementRule extends AbstractGlobalAlvaHintRul
 
     public function evaluate(Tenant $tenant, ?User $user): ?AlvaHint
     {
-        // Count approved documents without any acknowledgement for this tenant
-        $count = (int) $this->em->createQuery(
-            'SELECT COUNT(d.id) FROM App\Entity\Document d
-             WHERE d.tenant = :tenant
-             AND d.status = :status
-             AND d.id NOT IN (
-                 SELECT IDENTITY(pa.document) FROM App\Entity\PolicyAcknowledgement pa
-                 WHERE pa.document IS NOT NULL
-             )',
-        )
-            ->setParameter('tenant', $tenant)
-            ->setParameter('status', 'approved')
-            ->getSingleScalarResult();
+        // Single source of truth shared with the index `focus=no_ack` filter,
+        // so the hint deep-links to EXACTLY the documents it counts.
+        $unacked = $this->documentRepository->findApprovedWithoutAcknowledgement($tenant);
+        $count = count($unacked);
 
         if ($count <= 0) {
             return null;
+        }
+
+        // Deep-link to exactly what the hint counts: one → that document,
+        // several → the document index pre-filtered to the same set.
+        if ($count === 1) {
+            $route = 'app_document_show';
+            $params = ['id' => $unacked[0]->getId() ?? 0];
+        } else {
+            $route = 'app_document_index';
+            $params = ['focus' => 'no_ack'];
         }
 
         return new AlvaHint(
@@ -80,8 +81,8 @@ final class ApprovedDocOhneAcknowledgementRule extends AbstractGlobalAlvaHintRul
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.approved_doc_ohne_ack.action',
-            actionRoute: 'app_document_index',
-            actionRouteParams: [],
+            actionRoute: $route,
+            actionRouteParams: $params,
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'thinking',

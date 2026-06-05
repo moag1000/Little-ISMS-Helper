@@ -6,12 +6,9 @@ namespace App\AlvaHint\Rule\Global;
 
 use App\AlvaHint\AbstractGlobalAlvaHintRule;
 use App\AlvaHint\AlvaHint;
-use App\Entity\AuditLog;
 use App\Entity\Tenant;
 use App\Entity\User;
-use App\Repository\DataBreachRepository;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Authority\OverdueAuthorityNotificationResolver;
 
 /**
  * Tier-2 warning: DataBreach without authority-export > 24h after detectedAt (DSGVO 72h deadline).
@@ -30,11 +27,8 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 final class AuthorityTemplateOverdueRule extends AbstractGlobalAlvaHintRule
 {
-    private const int HOURS_THRESHOLD = 24;
-
     public function __construct(
-        private readonly DataBreachRepository $dataBreachRepository,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly OverdueAuthorityNotificationResolver $resolver,
     ) {
     }
 
@@ -64,33 +58,11 @@ final class AuthorityTemplateOverdueRule extends AbstractGlobalAlvaHintRule
 
     public function evaluate(Tenant $tenant, ?User $user): ?AlvaHint
     {
-        $breaches = $this->dataBreachRepository->findByTenant($tenant);
-
-        if (empty($breaches)) {
-            return null;
-        }
-
-        $cutoff = new DateTimeImmutable(sprintf('-%d hours', self::HOURS_THRESHOLD));
-        $overdueCount = 0;
-
-        foreach ($breaches as $breach) {
-            if (!in_array($breach->getSeverity(), ['high', 'critical'], true)) {
-                continue;
-            }
-            if ($breach->getSupervisoryAuthorityNotifiedAt() !== null) {
-                continue;
-            }
-            $detectedAt = $breach->getEffectiveDetectedAt() ?? $breach->getDetectedAt();
-            if ($detectedAt === null) {
-                continue;
-            }
-            if ($detectedAt <= $cutoff) {
-                // Check if an authority export has already been logged
-                if (!$this->hasExportEvent($tenant, $breach->getId())) {
-                    $overdueCount++;
-                }
-            }
-        }
+        // Single source of truth shared with the notification index
+        // `focus=overdue` filter, so the hint deep-links to EXACTLY the breaches
+        // it counts. The index is the action surface (per-breach export buttons),
+        // so the filtered index is the correct target for one or many.
+        $overdueCount = count($this->resolver->findOverdueBreaches($tenant));
 
         if ($overdueCount === 0) {
             return null;
@@ -109,37 +81,11 @@ final class AuthorityTemplateOverdueRule extends AbstractGlobalAlvaHintRule
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.authority_template_overdue.action',
             actionRoute: 'app_authority_notification_index',
-            actionRouteParams: [],
+            actionRouteParams: ['focus' => 'overdue'],
             actionMethod: 'GET',
             requiredRoles: ['ROLE_DPO', 'ROLE_MANAGER'],
             mood: 'warning',
             version: 1,
         );
-    }
-
-    /**
-     * Check if an authority notification export has been logged for this tenant
-     * within the last 72 hours (any authority key).
-     */
-    private function hasExportEvent(Tenant $tenant, ?int $breachId): bool
-    {
-        $cutoff = new DateTimeImmutable('-72 hours');
-
-        $result = $this->entityManager->createQueryBuilder()
-            ->select('COUNT(a.id)')
-            ->from(AuditLog::class, 'a')
-            ->innerJoin(User::class, 'u', 'ON', 'u.email = a.userName')
-            ->andWhere('u.tenant = :tenant')
-            ->andWhere('a.action = :action')
-            ->andWhere('a.entityId = :breachId OR a.entityId IS NULL')
-            ->andWhere('a.createdAt >= :cutoff')
-            ->setParameter('tenant', $tenant)
-            ->setParameter('action', 'export')
-            ->setParameter('breachId', $breachId)
-            ->setParameter('cutoff', $cutoff)
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        return (int) $result > 0;
     }
 }
