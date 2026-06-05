@@ -64,16 +64,8 @@ final class NonconformityAutoTaskTipRule extends AbstractGlobalAlvaHintRule
             return null;
         }
 
-        // Always > THRESHOLD here, so the filtered index is the right target;
-        // the one-entity branch is kept for pattern parity.
-        if ($unreferencedCount === 1) {
-            $route = 'app_audit_finding_show';
-            $params = ['id' => $unreferenced[0]->getId() ?? 0];
-        } else {
-            $route = 'app_audit_finding_index';
-            $params = ['focus' => 'nc_unreferenced'];
-        }
-
+        // Count is always > THRESHOLD (>5) here, so the hint always points at
+        // the finding index pre-filtered to exactly the unreferenced findings.
         return new AlvaHint(
             key: $this->key(),
             titleTranslationKey: 'global.nonconformity_auto_task_tip.title',
@@ -86,8 +78,8 @@ final class NonconformityAutoTaskTipRule extends AbstractGlobalAlvaHintRule
             entityType: 'Tenant',
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.nonconformity_auto_task_tip.action',
-            actionRoute: $route,
-            actionRouteParams: $params,
+            actionRoute: 'app_audit_finding_index',
+            actionRouteParams: ['focus' => 'nc_unreferenced'],
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'thinking',
