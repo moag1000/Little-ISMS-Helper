@@ -1,0 +1,29 @@
+{% extends 'base_public.html.twig' %}
+
+{% block title %}{{ questionnaire.title }}{% endblock %}
+
+{% block body %}
+<main class="container py-5" style="max-width: 760px;">
+    <h1 class="h3 mb-1">{{ questionnaire.title }}</h1>
+    <p class="text-body-secondary mb-4">{{ 'supplier.questionnaire.public.intro'|trans({}, 'suppliers') }}</p>
+
+    {% if closed %}
+        <div class="alert alert-info">{{ 'supplier.questionnaire.public.closed'|trans({}, 'suppliers') }}</div>
+    {% else %}
+        <form method="post" action="{{ path('public_supplier_questionnaire_submit', {token: questionnaire.publicToken}) }}" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token('supplier_questionnaire_' ~ questionnaire.publicToken) }}">
+
+            {% for question in questionnaire.questions %}
+                <div class="mb-4">
+                    <label class="form-label fw-semibold" for="q-{{ question.id }}">{{ question.text }}</label>
+                    <textarea class="form-control" id="q-{{ question.id }}" name="answers[{{ question.id }}]" rows="3"></textarea>
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                {{ 'supplier.questionnaire.public.submit'|trans({}, 'suppliers') }}
+            </button>
+        </form>
+    {% endif %}
+</main>
+{% endblock %}

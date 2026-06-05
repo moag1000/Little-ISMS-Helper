@@ -151,6 +151,7 @@ class BackupService
 
         // TISAX / Prototype Protection
         'PrototypeProtectionAssessment', // FK: Tenant, Supplier, Location, User, Person
+        'SupplierQuestionnaire',         // F23 — FK: Tenant, Supplier — outbound questionnaire + answers
 
         // Operations
         'ChangeRequest',

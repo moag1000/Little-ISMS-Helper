@@ -322,11 +322,11 @@ translations/security.en.yaml:23:reauth
 translations/setup_wizard.de.yaml:1:existing_frameworks
 translations/setup_wizard.en.yaml:1:existing_frameworks
 translations/suppliers.de.yaml:1:supplier
-translations/suppliers.de.yaml:332:corporate
-translations/suppliers.de.yaml:409:iso_9001_bridge
+translations/suppliers.de.yaml:354:corporate
+translations/suppliers.de.yaml:431:iso_9001_bridge
 translations/suppliers.en.yaml:1:supplier
-translations/suppliers.en.yaml:331:corporate
-translations/suppliers.en.yaml:408:iso_9001_bridge
+translations/suppliers.en.yaml:353:corporate
+translations/suppliers.en.yaml:430:iso_9001_bridge
 translations/tenant.de.yaml:215:corporate
 translations/tenant.en.yaml:215:corporate
 translations/threat.de.yaml:125:field

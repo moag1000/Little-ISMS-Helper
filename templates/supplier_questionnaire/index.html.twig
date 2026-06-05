@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'suppliers' %}
+
+{% block title %}{{ 'supplier.questionnaire.title'|trans({}, 'suppliers') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [{ label: 'supplier.questionnaire.title'|trans({}, 'suppliers') }]
+    } %}
+
+    <h1 class="h3 mb-4">{{ 'supplier.questionnaire.title'|trans({}, 'suppliers') }}</h1>
+
+    {# Send a new questionnaire #}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" action="{{ path('supplier_questionnaire_create', {_locale: app.request.locale}) }}" class="row g-2 align-items-end">
+                <input type="hidden" name="_token" value="{{ csrf_token('supplier_questionnaire_create') }}">
+                <div class="col-md-5">
+                    <label class="form-label" for="supplier_id">{{ 'supplier.questionnaire.field.supplier'|trans({}, 'suppliers') }}</label>
+                    <select class="form-select" id="supplier_id" name="supplier_id" required>
+                        {% for s in suppliers %}
+                            <option value="{{ s.id }}">{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="title">{{ 'supplier.questionnaire.field.title'|trans({}, 'suppliers') }}</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{ 'supplier.questionnaire.default_title'|trans({}, 'suppliers') }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'supplier.questionnaire.action.send'|trans({}, 'suppliers') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# Sent questionnaires #}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'supplier.questionnaire.field.supplier'|trans({}, 'suppliers') }}</th>
+                <th scope="col">{{ 'supplier.questionnaire.field.title'|trans({}, 'suppliers') }}</th>
+                <th scope="col">{{ 'supplier.questionnaire.field.status'|trans({}, 'suppliers') }}</th>
+                <th scope="col">{{ 'supplier.questionnaire.field.sent_at'|trans({}, 'suppliers') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for q in questionnaires %}
+                <tr>
+                    <td>{{ q.supplier ? q.supplier.name : '—' }}</td>
+                    <td>{{ q.title }}</td>
+                    <td><span class="badge bg-secondary">{{ ('supplier.questionnaire.status.' ~ q.status)|trans({}, 'suppliers') }}</span></td>
+                    <td>{{ q.sentAt ? q.sentAt|date('Y-m-d') : '—' }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="text-body-secondary">{{ 'supplier.questionnaire.empty'|trans({}, 'suppliers') }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

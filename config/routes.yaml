@@ -130,6 +130,7 @@ app_routes:
         - '../src/Controller/ReadinessController.php'
         - '../src/Controller/MetricsController.php'
         - '../src/Controller/PublicPostureController.php'
+        - '../src/Controller/PublicSupplierQuestionnaireController.php'
 
 # Glossary API WITHOUT locale prefix — the fa-glossary-tooltip component fetches
 # /api/glossary/{acronym} directly; UI locale is passed as ?locale.
@@ -174,4 +175,12 @@ infra_metrics_routes:
 # is also excluded from app_routes above).
 public_posture_routes:
     resource: ../src/Controller/PublicPostureController.php
+    type: attribute
+
+# F23 public supplier-questionnaire portal WITHOUT locale prefix.
+# /supplier-questionnaire/{token} is a stable bearer-URL emailed to a supplier;
+# a locale prefix would change the URL on every locale-switch and invalidate
+# previously shared links. Token = access control — no auth required.
+public_supplier_questionnaire_routes:
+    resource: ../src/Controller/PublicSupplierQuestionnaireController.php
     type: attribute

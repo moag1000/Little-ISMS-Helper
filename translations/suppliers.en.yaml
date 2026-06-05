@@ -1,5 +1,27 @@
 supplier:
     title: Suppliers
+    questionnaire:
+        title: 'Supplier questionnaires'
+        default_title: 'Security questionnaire'
+        empty: 'No questionnaires sent yet.'
+        action:
+            send: 'Send questionnaire'
+        field:
+            supplier: Supplier
+            title: Title
+            status: Status
+            sent_at: Sent
+        status:
+            draft: Draft
+            sent: Sent
+            completed: Completed
+            reviewed: Reviewed
+        public:
+            intro: 'Please answer the following information-security questions. No login is required.'
+            closed: 'This questionnaire is no longer open for responses.'
+            submit: 'Submit answers'
+            thanks_title: 'Thank you'
+            thanks_body: 'Your answers have been submitted.'
     page:
         title: 'Supplier Management'
         new_title: 'Add New Supplier'
