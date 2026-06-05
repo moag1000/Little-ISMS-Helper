@@ -19,7 +19,8 @@
 } %}
 
 {% set supplierActions = [
-    { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new') }
+    { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new') },
+    { label: 'supplier.ict_library.title'|trans({}, 'suppliers'), variant: 'ghost', icon: 'nav-building', href: path('ict_provider_library_index') }
 ] %}
 {% if doraActive ?? false %}
     {# Async DORA ROI export — opens dispatch modal (Phase 3 async-jobs rollout) #}

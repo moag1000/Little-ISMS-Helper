@@ -1,0 +1,19 @@
+api_token:
+    title: 'API-Tokens'
+    intro: 'Read-only-API-Zugriff per Bearer-Token. Der Klartext wird nur einmal bei Erstellung angezeigt.'
+    created_once: 'Token erstellt — jetzt kopieren, es wird nicht erneut angezeigt:'
+    empty: 'Noch keine API-Tokens.'
+    field:
+        label: Bezeichnung
+        expires_days: 'Gültig (Tage)'
+        created: Erstellt
+        expires: Ablauf
+        status: Status
+    status:
+        active: Aktiv
+        revoked: Widerrufen
+    action:
+        create: Erstellen
+        revoke: Widerrufen
+    flash:
+        revoked: 'API-Token widerrufen.'

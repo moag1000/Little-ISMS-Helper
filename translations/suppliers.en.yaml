@@ -1,5 +1,24 @@
 supplier:
     title: Suppliers
+    ict_library:
+        title: 'ICT-Provider Library'
+        intro: 'Curated catalogue of common ICT third-party providers (DORA Art. 28). Apply creates a pre-filled, DORA-relevant supplier for review.'
+        empty: 'Library not loaded yet. Admin: run app:load-ict-provider-library.'
+        action:
+            apply: Apply
+        field:
+            name: Provider
+            category: Category
+            country: Country
+        category:
+            cloud_iaas: 'Cloud IaaS/PaaS'
+            cloud_saas: 'Cloud SaaS'
+            network: 'Network/CDN'
+            identity: 'Identity/IAM'
+            data: 'Data/Database'
+            security: Security
+            payment: Payment
+            communications: Communications
     questionnaire:
         title: 'Supplier questionnaires'
         default_title: 'Security questionnaire'

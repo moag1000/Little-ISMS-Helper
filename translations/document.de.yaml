@@ -25,6 +25,7 @@ document:
         update: Aktualisieren
         create: Erstellen
         policy_wizard: 'Policy-Wizard öffnen'
+        policy_pack_export: 'Policy-Pack exportieren'
     alva_tipp:
         policy_wizard:
             title: 'Alva-Tipp: Pflicht-Richtlinien automatisch generieren'
