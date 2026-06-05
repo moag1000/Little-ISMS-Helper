@@ -1,0 +1,19 @@
+api_token:
+    title: 'API tokens'
+    intro: 'Read-only API access via Bearer token. The plaintext is shown only once at creation.'
+    created_once: 'Token created — copy it now, it will not be shown again:'
+    empty: 'No API tokens yet.'
+    field:
+        label: Label
+        expires_days: 'Valid (days)'
+        created: Created
+        expires: Expires
+        status: Status
+    status:
+        active: Active
+        revoked: Revoked
+    action:
+        create: Create
+        revoke: Revoke
+    flash:
+        revoked: 'API token revoked.'

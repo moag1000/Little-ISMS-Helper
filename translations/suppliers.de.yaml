@@ -1,5 +1,24 @@
 supplier:
     title: Lieferanten
+    ict_library:
+        title: 'ICT-Provider-Bibliothek'
+        intro: 'Kuratierte Liste gängiger ICT-Drittanbieter (DORA Art. 28). Übernehmen erstellt einen vorausgefüllten, DORA-relevanten Lieferanten zur Prüfung.'
+        empty: 'Bibliothek noch nicht geladen. Admin: app:load-ict-provider-library ausführen.'
+        action:
+            apply: Übernehmen
+        field:
+            name: Anbieter
+            category: Kategorie
+            country: Land
+        category:
+            cloud_iaas: 'Cloud IaaS/PaaS'
+            cloud_saas: 'Cloud SaaS'
+            network: 'Netzwerk/CDN'
+            identity: 'Identity/IAM'
+            data: 'Daten/Datenbank'
+            security: Sicherheit
+            payment: Zahlungsverkehr
+            communications: Kommunikation
     questionnaire:
         title: 'Lieferanten-Fragebögen'
         default_title: 'Sicherheits-Fragebogen'
