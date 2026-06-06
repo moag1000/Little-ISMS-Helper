@@ -20,6 +20,7 @@ use App\Repository\RiskRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\ControlEffectivenessService;
+use App\Service\Dashboard\DashboardMetricsProvider;
 use App\Service\DashboardStatisticsService;
 use App\Service\RiskForecastService;
 use App\Service\RoleDashboardService;
@@ -65,18 +66,7 @@ class RoleDashboardServiceTest extends TestCase
 
     private function createService(): RoleDashboardService
     {
-        return new RoleDashboardService(
-            $this->dashboardStatisticsService,
-            $this->complianceAnalyticsService,
-            $this->controlEffectivenessService,
-            $this->riskForecastService,
-            $this->riskRepository,
-            $this->incidentRepository,
-            $this->controlRepository,
-            $this->workflowInstanceRepository,
-            $this->security,
-            $this->tenantContext,
-        );
+        return $this->createServiceWithRepos();
     }
 
     private function createServiceWithRepos(
@@ -84,6 +74,13 @@ class RoleDashboardServiceTest extends TestCase
         ?CorrectiveActionRepository $correctiveActionRepository = null,
         ?KpiSnapshotRepository $kpiSnapshotRepository = null,
     ): RoleDashboardService {
+        $metrics = new DashboardMetricsProvider(
+            $this->controlRepository,
+            $auditFindingRepository,
+            $correctiveActionRepository,
+            $kpiSnapshotRepository,
+        );
+
         return new RoleDashboardService(
             $this->dashboardStatisticsService,
             $this->complianceAnalyticsService,
@@ -91,17 +88,10 @@ class RoleDashboardServiceTest extends TestCase
             $this->riskForecastService,
             $this->riskRepository,
             $this->incidentRepository,
-            $this->controlRepository,
             $this->workflowInstanceRepository,
             $this->security,
             $this->tenantContext,
-            null, // treatmentPlanRepository
-            null, // auditRepository
-            null, // tisaxAssessment
-            null, // frameworkRepository
-            $auditFindingRepository,
-            $correctiveActionRepository,
-            $kpiSnapshotRepository,
+            $metrics,
         );
     }
 
