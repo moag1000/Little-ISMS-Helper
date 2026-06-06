@@ -207,6 +207,12 @@ class BackupService
         // TISAX BYO-Import disclaimer-trail (legal evidence)
         'TisaxLicenseConfirmation', // FK: Tenant, User — ISO 27001 Cl. 7.5.3 audit trail
         'TisaxCrosswalkEntry', // FK: Tenant — per-tenant confirmed legacy-id → VDA-ISA crosswalk
+
+        // Resource-Planning (ISO 27001 Cl. 6.2/7.1/9.3) — restore in FK order:
+        // Team (FK: Tenant, User, Person) → RoadmapGroup (FK: Team) → RoadmapTask (FK: RoadmapGroup, Team)
+        'Team',                     // FK: Tenant, User, Person — JOINED-inheritance base
+        'RoadmapGroup',             // FK: Tenant, Team
+        'RoadmapTask',              // FK: Tenant, RoadmapGroup, Team
     ];
 
     // Entities deliberately NOT backed up — enforced by Gate 43

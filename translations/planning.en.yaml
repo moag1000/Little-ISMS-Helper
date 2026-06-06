@@ -1,0 +1,125 @@
+planning:
+    admin:
+        title: 'Resource Planning – Master Data'
+        subtitle: 'Manage teams, roadmap tasks, person capacity and visibility'
+    tab:
+        teams: Teams
+        tasks: 'Roadmap Tasks'
+        persons: People
+        visibility: Visibility
+    common:
+        manage: Manage
+        edit: Edit
+        delete: Delete
+        active: Active
+        confirm_delete: 'Really delete?'
+    success:
+        created: 'Entry created.'
+        updated: 'Changes saved.'
+        deleted: 'Entry deleted.'
+    visibility:
+        all: All
+        team: 'By team'
+    team:
+        title:
+            list: Teams
+            create: 'New team'
+            edit: 'Edit team'
+        action:
+            create: 'New team'
+        col:
+            name: Name
+            type: Type
+            member_count: Members
+            lead: Lead
+        message:
+            no_teams: 'No teams yet.'
+        field:
+            name: Name
+            type: 'Team type'
+            description: Description
+            is_active: Active
+            team_lead: 'Team lead (user)'
+            team_lead_placeholder: 'Select user …'
+            team_lead_person: 'Team lead (person)'
+            team_lead_person_placeholder: 'Select person …'
+            members: Members
+            valid_from: 'Valid from'
+            valid_until: 'Valid until'
+        type:
+            placeholder: 'Select type …'
+            operational: Operational
+            strategic: Strategic
+            technical: Technical
+            communication: Communication
+            other: Other
+    group:
+        title:
+            list: 'Roadmap groups'
+            create: 'New group'
+            edit: 'Edit group'
+        action:
+            create: 'New group'
+        col:
+            name: Name
+            sort_order: Order
+            default_visibility: 'Default visibility'
+        message:
+            no_groups: 'No groups yet.'
+        field:
+            name: Name
+            sort_order: Order
+            color_token: 'Colour token'
+            icon: Icon
+            isms_domain: 'ISMS domain'
+            default_team: 'Default team'
+            default_team_placeholder: 'Select team …'
+            default_visibility: 'Default visibility'
+            is_active: Active
+    task:
+        title:
+            list: 'Roadmap tasks'
+            create: 'New task'
+            edit: 'Edit task'
+        action:
+            create: 'New task'
+        col:
+            name: Name
+            group: Group
+            default_pt_per_week: 'PD/week'
+            recurring: Recurring
+            visibility: Visibility
+        message:
+            no_tasks: 'No roadmap tasks yet.'
+        badge:
+            reactive: 'Daily business'
+        field:
+            name: Name
+            group: Group
+            group_placeholder: 'Select group …'
+            isms_domain: 'ISMS domain'
+            default_pt_per_week: 'Default PD per week'
+            recurring: Recurring
+            is_reactive_reservation: 'Daily-business reservation'
+            visibility: Visibility
+            visible_teams: 'Visible to teams'
+            default_team: 'Default team'
+            default_team_placeholder: 'Select team …'
+            is_active: Active
+    person:
+        title:
+            edit: 'Edit person capacity'
+        col:
+            name: Person
+            availability: 'ISMS availability'
+        field:
+            availability: 'ISMS availability (0–1)'
+            teams: Teams
+        help:
+            availability: 'Net share of the person for ISMS work (e.g. 80% role × 50% ISMS = 0.4).'
+        message:
+            no_persons: 'No people available.'
+    matrix:
+        hint: 'Which roadmap tasks are visible to which teams. "All" = visible to every team.'
+        empty: 'Create tasks and teams to see the matrix.'
+        visible: Visible

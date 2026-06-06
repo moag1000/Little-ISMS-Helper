@@ -122,6 +122,19 @@ class Person
     #[Groups(['person:read'])]
     private ?DateTimeInterface $updatedAt = null;
 
+    /**
+     * Net ISMS availability (0.0…1.0) for resource planning.
+     *
+     * The user pre-computes employment-grade × ISMS-share themselves
+     * (e.g. 80 % FTE × 50 % ISMS-time = 0.4) and enters the net value.
+     * Drives the capacity baseline in PT/week — see CapacityService.
+     * Default 1.0 keeps existing rows valid (full person for ISMS).
+     */
+    #[ORM\Column(type: Types::FLOAT, options: ['default' => 1.0])]
+    #[Groups(['person:read', 'person:write'])]
+    #[Assert\Range(min: 0, max: 1)]
+    private float $ismsAvailabilityPct = 1.0;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
@@ -131,6 +144,27 @@ class Person
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIsmsAvailabilityPct(): float
+    {
+        return $this->ismsAvailabilityPct;
+    }
+
+    public function setIsmsAvailabilityPct(float $ismsAvailabilityPct): static
+    {
+        $this->ismsAvailabilityPct = $ismsAvailabilityPct;
+        return $this;
+    }
+
+    /**
+     * Capacity baseline in person-days per week for resource planning.
+     *
+     * @param float $fullTimePtPerWeek tenant constant (fullTimeHoursPerWeek / hoursPerDay), typically 5.0
+     */
+    public function getBaselinePtPerWeek(float $fullTimePtPerWeek): float
+    {
+        return $this->ismsAvailabilityPct * $fullTimePtPerWeek;
     }
 
     public function getFullName(): ?string

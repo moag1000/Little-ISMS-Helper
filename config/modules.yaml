@@ -580,6 +580,23 @@ modules:
       - core
       - controls
 
+  resource_planning:
+    name: 'Ressourcenplanung'
+    description: 'Maßnahmenplanung (Sammel-Hub), Kapazitäts-Roadmap (PT/KW) und Planungs-Stammdaten — ISO 27001 Cl. 6.2/7.1/9.3.'
+    required: false
+    icon: 'calendar-check'
+    entities:
+      - Team
+      - RoadmapGroup
+      - RoadmapTask
+      - ActionItem
+      - ActionItemReference
+      - UnavailabilityCalendar
+    routes:
+      - /planning
+    dependencies:
+      - core
+
 # Basis-Daten die immer importiert werden
 base_data:
   - name: 'ISO 27001 Annex A Controls'

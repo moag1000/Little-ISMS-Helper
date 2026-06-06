@@ -1,6 +1,7 @@
 nav:
     home: Startseite
     dashboard: Dashboard
+    planning: Ressourcenplanung
     my_profile: 'Mein Profil'
     my_day: 'Mein Tag'
     activity: 'Aktivität'
