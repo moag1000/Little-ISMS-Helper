@@ -203,3 +203,25 @@ planning:
             title: 'Unsaved changes'
         success:
             saved: 'Plan saved.'
+    settings:
+        title: 'Planning settings'
+        subtitle: 'Defaults for roadmap, recurrence and scopes'
+        field:
+            default_recurrence_months: 'Default recurrence (months)'
+            roadmap_horizon_weeks: 'Roadmap horizon (weeks)'
+            overbooking_threshold_pct: 'Over-booking threshold (%)'
+            scopes: Scopes
+        help:
+            scopes: 'One scope per line (e.g. org units, sites).'
+        success:
+            saved: 'Settings saved.'
+    report:
+        title: 'Resource demand (Cl. 9.3)'
+        subtitle: 'Planned PD per ISMS domain over %weeks% weeks — management-review input'
+        total_planned: 'Total planned'
+        total_capacity: 'Total capacity'
+        utilisation: Utilisation
+        col:
+            domain: 'ISMS domain'
+            planned_pt: 'Planned (PD)'
+        empty: 'No plan recorded yet.'

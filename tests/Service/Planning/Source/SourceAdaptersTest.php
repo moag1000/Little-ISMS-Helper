@@ -5,19 +5,34 @@ declare(strict_types=1);
 namespace App\Tests\Service\Planning\Source;
 
 use App\Entity\AuditFinding;
+use App\Entity\ChangeRequest;
 use App\Entity\CorrectiveAction;
+use App\Entity\Document;
+use App\Entity\Incident;
 use App\Entity\InternalAudit;
 use App\Entity\ManagementReview;
+use App\Entity\Vulnerability;
+use App\Enum\ChangeRequestStatus;
+use App\Enum\IncidentStatus;
 use App\Enum\InternalAuditStatus;
 use App\Enum\ManagementReviewStatus;
+use App\Enum\VulnerabilityStatus;
 use App\Repository\AuditFindingRepository;
+use App\Repository\ChangeRequestRepository;
 use App\Repository\CorrectiveActionRepository;
+use App\Repository\DocumentRepository;
+use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\ManagementReviewRepository;
+use App\Repository\VulnerabilityRepository;
 use App\Service\Planning\Source\Adapter\AuditFindingAdapter;
+use App\Service\Planning\Source\Adapter\ChangeRequestAdapter;
 use App\Service\Planning\Source\Adapter\CorrectiveActionAdapter;
+use App\Service\Planning\Source\Adapter\DocumentReviewAdapter;
+use App\Service\Planning\Source\Adapter\IncidentAdapter;
 use App\Service\Planning\Source\Adapter\InternalAuditAdapter;
 use App\Service\Planning\Source\Adapter\ManagementReviewAdapter;
+use App\Service\Planning\Source\Adapter\VulnerabilityAdapter;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
@@ -315,5 +330,303 @@ final class SourceAdaptersTest extends TestCase
                 "Expected isCompleted=true for status={$terminalStatus}",
             );
         }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // IncidentAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testIncidentAdapterMeta(): void
+    {
+        $adapter = new IncidentAdapter(
+            $this->createStub(IncidentRepository::class),
+        );
+
+        self::assertSame('incident', $adapter->slug());
+        self::assertSame('Sicherheitsvorfall', $adapter->label());
+        self::assertNull($adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testIncidentAdapterDueDateAndTitle(): void
+    {
+        $adapter = new IncidentAdapter(
+            $this->createStub(IncidentRepository::class),
+        );
+
+        $date = new DateTimeImmutable('2026-08-15');
+        $item = (new Incident())
+            ->setTitle('Ransomware on file server')
+            ->setDetectedAt($date)
+            ->setStatus(IncidentStatus::InInvestigation);
+
+        self::assertSame($date, $adapter->dueDateOf($item));
+        self::assertSame('Ransomware on file server', $adapter->titleOf($item));
+    }
+
+    public function testIncidentAdapterTitleFallback(): void
+    {
+        $adapter = new IncidentAdapter(
+            $this->createStub(IncidentRepository::class),
+        );
+
+        $item = new Incident(); // title null, id null
+        self::assertStringStartsWith('#', $adapter->titleOf($item));
+    }
+
+    public function testIncidentAdapterIsCompletedFalseForOpenStatuses(): void
+    {
+        $adapter = new IncidentAdapter(
+            $this->createStub(IncidentRepository::class),
+        );
+
+        foreach ([
+            IncidentStatus::Reported,
+            IncidentStatus::InInvestigation,
+            IncidentStatus::InResolution,
+        ] as $openStatus) {
+            $item = (new Incident())->setStatus($openStatus);
+            self::assertFalse(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=false for status={$openStatus->value}",
+            );
+        }
+    }
+
+    public function testIncidentAdapterIsCompletedTrueForTerminalStatuses(): void
+    {
+        $adapter = new IncidentAdapter(
+            $this->createStub(IncidentRepository::class),
+        );
+
+        foreach ([
+            IncidentStatus::Resolved,
+            IncidentStatus::Closed,
+        ] as $terminalStatus) {
+            $item = (new Incident())->setStatus($terminalStatus);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminalStatus->value}",
+            );
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // VulnerabilityAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testVulnerabilityAdapterMeta(): void
+    {
+        $adapter = new VulnerabilityAdapter(
+            $this->createStub(VulnerabilityRepository::class),
+        );
+
+        self::assertSame('vulnerability', $adapter->slug());
+        self::assertSame('Schwachstelle', $adapter->label());
+        self::assertNull($adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testVulnerabilityAdapterDueDateAndTitle(): void
+    {
+        $adapter = new VulnerabilityAdapter(
+            $this->createStub(VulnerabilityRepository::class),
+        );
+
+        $deadline = new DateTimeImmutable('2026-07-01');
+        $item = (new Vulnerability())
+            ->setTitle('CVE-2026-99999 — critical RCE')
+            ->setRemediationDeadline($deadline)
+            ->setStatus(VulnerabilityStatus::Open);
+
+        self::assertSame($deadline, $adapter->dueDateOf($item));
+        self::assertSame('CVE-2026-99999 — critical RCE', $adapter->titleOf($item));
+    }
+
+    public function testVulnerabilityAdapterTitleFallback(): void
+    {
+        $adapter = new VulnerabilityAdapter(
+            $this->createStub(VulnerabilityRepository::class),
+        );
+
+        $item = new Vulnerability(); // title null, id null
+        self::assertStringStartsWith('#', $adapter->titleOf($item));
+    }
+
+    public function testVulnerabilityAdapterIsCompletedFalseForOpenStatuses(): void
+    {
+        $adapter = new VulnerabilityAdapter(
+            $this->createStub(VulnerabilityRepository::class),
+        );
+
+        foreach ([
+            VulnerabilityStatus::Open,
+            VulnerabilityStatus::InTriage,
+            VulnerabilityStatus::InRemediation,
+        ] as $openStatus) {
+            $item = (new Vulnerability())->setStatus($openStatus);
+            self::assertFalse(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=false for status={$openStatus->value}",
+            );
+        }
+    }
+
+    public function testVulnerabilityAdapterIsCompletedTrueForTerminalStatuses(): void
+    {
+        $adapter = new VulnerabilityAdapter(
+            $this->createStub(VulnerabilityRepository::class),
+        );
+
+        foreach ([
+            VulnerabilityStatus::Patched,
+            VulnerabilityStatus::Mitigated,
+            VulnerabilityStatus::Accepted,
+            VulnerabilityStatus::FalsePositive,
+            VulnerabilityStatus::Closed,
+        ] as $terminalStatus) {
+            $item = (new Vulnerability())->setStatus($terminalStatus);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminalStatus->value}",
+            );
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // ChangeRequestAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testChangeRequestAdapterMeta(): void
+    {
+        $adapter = new ChangeRequestAdapter(
+            $this->createStub(ChangeRequestRepository::class),
+        );
+
+        self::assertSame('change_request', $adapter->slug());
+        self::assertSame('Change Request', $adapter->label());
+        self::assertSame('change_requests', $adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testChangeRequestAdapterDueDateAndTitle(): void
+    {
+        $adapter = new ChangeRequestAdapter(
+            $this->createStub(ChangeRequestRepository::class),
+        );
+
+        $date = new DateTimeImmutable('2026-09-30');
+        $item = (new ChangeRequest())
+            ->setTitle('Upgrade TLS 1.0 to TLS 1.3')
+            ->setPlannedImplementationDate($date)
+            ->setStatus(ChangeRequestStatus::Approved);
+
+        self::assertSame($date, $adapter->dueDateOf($item));
+        self::assertSame('Upgrade TLS 1.0 to TLS 1.3', $adapter->titleOf($item));
+    }
+
+    public function testChangeRequestAdapterIsCompletedFalseForOpenStatuses(): void
+    {
+        $adapter = new ChangeRequestAdapter(
+            $this->createStub(ChangeRequestRepository::class),
+        );
+
+        foreach ([
+            ChangeRequestStatus::Draft,
+            ChangeRequestStatus::Submitted,
+            ChangeRequestStatus::UnderReview,
+            ChangeRequestStatus::Approved,
+            ChangeRequestStatus::Scheduled,
+            ChangeRequestStatus::Implemented,
+            ChangeRequestStatus::Verified,
+        ] as $openStatus) {
+            $item = (new ChangeRequest())->setStatus($openStatus);
+            self::assertFalse(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=false for status={$openStatus->value}",
+            );
+        }
+    }
+
+    public function testChangeRequestAdapterIsCompletedTrueForTerminalStatuses(): void
+    {
+        $adapter = new ChangeRequestAdapter(
+            $this->createStub(ChangeRequestRepository::class),
+        );
+
+        foreach ([
+            ChangeRequestStatus::Closed,
+            ChangeRequestStatus::Cancelled,
+            ChangeRequestStatus::Rejected,
+        ] as $terminalStatus) {
+            $item = (new ChangeRequest())->setStatus($terminalStatus);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminalStatus->value}",
+            );
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // DocumentReviewAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testDocumentReviewAdapterMeta(): void
+    {
+        $adapter = new DocumentReviewAdapter(
+            $this->createStub(DocumentRepository::class),
+        );
+
+        self::assertSame('document_review', $adapter->slug());
+        self::assertSame('Dokumenten-Review', $adapter->label());
+        self::assertSame('documents', $adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testDocumentReviewAdapterDueDateAndTitle(): void
+    {
+        $adapter = new DocumentReviewAdapter(
+            $this->createStub(DocumentRepository::class),
+        );
+
+        $date = new DateTimeImmutable('2027-01-15');
+        $item = (new Document())
+            ->setNextReviewDate($date)
+            ->setOriginalFilename('ISMS-Leitlinie-v3.pdf');
+
+        self::assertSame($date, $adapter->dueDateOf($item));
+        self::assertSame('ISMS-Leitlinie-v3.pdf', $adapter->titleOf($item));
+    }
+
+    public function testDocumentReviewAdapterDueDateNullWhenNotSet(): void
+    {
+        $adapter = new DocumentReviewAdapter(
+            $this->createStub(DocumentRepository::class),
+        );
+
+        $item = new Document(); // nextReviewDate not set
+        self::assertNull($adapter->dueDateOf($item));
+    }
+
+    public function testDocumentReviewAdapterTitleFallback(): void
+    {
+        $adapter = new DocumentReviewAdapter(
+            $this->createStub(DocumentRepository::class),
+        );
+
+        $item = new Document(); // originalFilename null, id null
+        self::assertStringStartsWith('#', $adapter->titleOf($item));
+    }
+
+    public function testDocumentReviewAdapterIsCompletedAlwaysFalse(): void
+    {
+        $adapter = new DocumentReviewAdapter(
+            $this->createStub(DocumentRepository::class),
+        );
+
+        // Document review is perpetually recurring — isCompleted always false
+        // regardless of document lifecycle status (draft, published, archived…)
+        $item = new Document();
+        self::assertFalse($adapter->isCompleted($item));
     }
 }

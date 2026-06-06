@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'planning' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'planning.report.title'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.planning'|trans({}, 'nav'), url: path('app_planning_admin') },
+            { label: 'planning.report.title'|trans({}, 'planning') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'bar-chart-line', label: 'Cl. 9.3' },
+        title: 'planning.report.title'|trans({}, 'planning'),
+        subtitle: 'planning.report.subtitle'|trans({ '%weeks%': weeks }, 'planning')
+    }) }}
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-4">
+            <div class="card"><div class="card-body">
+                <div class="text-muted small">{{ 'planning.report.total_planned'|trans({}, 'planning') }}</div>
+                <div class="h4 mb-0">{{ totalPlanned }} PT</div>
+            </div></div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card"><div class="card-body">
+                <div class="text-muted small">{{ 'planning.report.total_capacity'|trans({}, 'planning') }}</div>
+                <div class="h4 mb-0">{{ totalCapacity }} PT</div>
+            </div></div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card"><div class="card-body">
+                <div class="text-muted small">{{ 'planning.report.utilisation'|trans({}, 'planning') }}</div>
+                <div class="h4 mb-0 {{ totalCapacity > 0 and totalPlanned > totalCapacity ? 'text-danger' : '' }}">
+                    {{ totalCapacity > 0 ? (totalPlanned / totalCapacity * 100)|round : 0 }}%
+                </div>
+            </div></div>
+        </div>
+    </div>
+
+    <table class="table fa-table align-middle">
+        <thead><tr>
+            <th scope="col">{{ 'planning.report.col.domain'|trans({}, 'planning') }}</th>
+            <th scope="col" class="text-end">{{ 'planning.report.col.planned_pt'|trans({}, 'planning') }}</th>
+        </tr></thead>
+        <tbody>
+        {% for domain, pt in byDomain %}
+            <tr>
+                <th scope="row" class="fw-normal">{{ domain }}</th>
+                <td class="text-end">{{ pt|round(1) }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="2" class="text-muted">{{ 'planning.report.empty'|trans({}, 'planning') }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

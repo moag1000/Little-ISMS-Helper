@@ -6,17 +6,18 @@ namespace App\Controller;
 
 use App\Entity\Person;
 use App\Entity\Team;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Repository\PersonRepository;
 use App\Repository\RoadmapGroupRepository;
 use App\Repository\RoadmapTaskRepository;
 use App\Repository\TeamRepository;
+use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -35,6 +36,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class PlanningAdminController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly TeamRepository $teamRepository,
         private readonly RoadmapGroupRepository $groupRepository,
@@ -43,13 +46,16 @@ final class PlanningAdminController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
     ) {
     }
 
     #[Route('/planning', name: 'app_planning_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(): RedirectResponse
+    public function index(): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         return $this->redirectToRoute('app_planning_admin');
     }
 
@@ -57,6 +63,8 @@ final class PlanningAdminController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function admin(): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $tenant = $this->security->getUser()?->getTenant();
 
         $teams = $tenant ? $this->teamRepository->findByTenant($tenant) : [];
@@ -98,6 +106,8 @@ final class PlanningAdminController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function personEdit(Request $request, Person $person): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $tenant = $this->security->getUser()?->getTenant();
         if ($tenant === null || $person->getTenant() !== $tenant) {
             throw $this->createAccessDeniedException();

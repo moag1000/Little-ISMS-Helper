@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\RoadmapAllocation;
 use App\Entity\Tenant;
 use App\Repository\PersonRepository;
+use App\Repository\PlanningSettingsRepository;
 use App\Repository\RoadmapAllocationRepository;
 use App\Repository\RoadmapTaskRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\Planning\CapacityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,6 +29,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class RoadmapController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     private const int DEFAULT_WEEKS = 12;
     private const int MAX_WEEKS = 52;
 
@@ -37,6 +42,8 @@ final class RoadmapController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
+        private readonly PlanningSettingsRepository $settingsRepository,
     ) {
     }
 
@@ -44,9 +51,15 @@ final class RoadmapController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $tenant = $this->security->getUser()?->getTenant();
+        $settings = $tenant instanceof Tenant ? $this->settingsRepository->findForTenant($tenant) : null;
+        $defaultWeeks = $settings?->getRoadmapHorizonWeeks() ?? self::DEFAULT_WEEKS;
+        $overbookingPct = $settings?->getOverbookingThresholdPct() ?? 100;
+
         $mode = (string) $request->query->get('mode', 'plan');
-        $weekCount = max(1, min(self::MAX_WEEKS, $request->query->getInt('weeks', self::DEFAULT_WEEKS)));
+        $weekCount = max(1, min(self::MAX_WEEKS, $request->query->getInt('weeks', $defaultWeeks)));
 
         $window = $this->buildWindow($weekCount);
         $tasks = $tenant instanceof Tenant ? $this->taskRepository->findActiveByTenant($tenant) : [];
@@ -95,6 +108,71 @@ final class RoadmapController extends AbstractController
             'allocations' => $allocations,
             'capacityPerWeek' => $capacityPerWeek,
             'plannedPerWeek' => $plannedPerWeek,
+            'overbookingPct' => $overbookingPct,
+        ]);
+    }
+
+    /**
+     * ISO 27001 Cl. 9.3 management-review input: Σ planned PT per ISMS domain
+     * over the horizon vs total available capacity.
+     */
+    #[Route('/planning/roadmap/report', name: 'app_planning_roadmap_report', methods: ['GET'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function report(Request $request): Response
+    {
+        if ($redirect = $this->checkModuleActive('resource_planning')) {
+            return $redirect;
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $settings = $tenant instanceof Tenant ? $this->settingsRepository->findForTenant($tenant) : null;
+        $weekCount = max(1, min(self::MAX_WEEKS, $settings?->getRoadmapHorizonWeeks() ?? self::DEFAULT_WEEKS));
+        $window = $this->buildWindow($weekCount);
+
+        $tasks = $tenant instanceof Tenant ? $this->taskRepository->findActiveByTenant($tenant) : [];
+        $persons = $tenant instanceof Tenant
+            ? $this->personRepository->findBy(['tenant' => $tenant, 'active' => true])
+            : [];
+
+        // Σ planned PT per ISMS domain across the whole window.
+        $allocations = [];
+        if ($tenant instanceof Tenant) {
+            $byYear = [];
+            foreach ($window as $w) {
+                $byYear[$w['year']][] = $w['week'];
+            }
+            foreach ($byYear as $year => $weeks) {
+                foreach ($this->allocationRepository->findForWindowKeyed($tenant, (int) $year, $weeks) as $alloc) {
+                    $allocations[$alloc->getRoadmapTask()?->getId() . '-' . $year . '-' . $alloc->getIsoWeek()]
+                        = $alloc->getPlannedPt();
+                }
+            }
+        }
+
+        $byDomain = [];
+        foreach ($tasks as $task) {
+            $domain = $task->getIsmsDomain() ?: '—';
+            $sum = 0.0;
+            foreach ($window as $w) {
+                $sum += (float) ($allocations[$task->getId() . '-' . $w['year'] . '-' . $w['week']] ?? 0);
+            }
+            $byDomain[$domain] = ($byDomain[$domain] ?? 0.0) + $sum;
+        }
+        ksort($byDomain);
+
+        $totalCapacity = 0.0;
+        foreach ($window as $w) {
+            foreach ($persons as $person) {
+                $totalCapacity += $this->capacityService->personAvailablePt($person, $tenant, $w['year'], $w['week']);
+            }
+        }
+        $totalPlanned = array_sum($byDomain);
+
+        return $this->render('planning/roadmap/report.html.twig', [
+            'weeks' => $weekCount,
+            'byDomain' => $byDomain,
+            'totalPlanned' => round($totalPlanned, 1),
+            'totalCapacity' => round($totalCapacity, 1),
         ]);
     }
 
@@ -102,6 +180,8 @@ final class RoadmapController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function save(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         if (!$this->isCsrfTokenValid('roadmap_save', (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }

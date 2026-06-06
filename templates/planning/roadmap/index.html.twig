@@ -62,7 +62,8 @@
                             {% set key = w.year ~ '-' ~ w.week %}
                             {% set planned = plannedPerWeek[key] ?? 0 %}
                             {% set cap = capacityPerWeek[key] ?? 0 %}
-                            <td class="{{ planned > cap ? 'text-danger fw-bold' : (planned > 0 ? 'text-success' : 'text-muted') }}">{{ planned }}</td>
+                            {% set threshold = cap * (overbookingPct / 100) %}
+                            <td class="{{ planned > threshold ? 'text-danger fw-bold' : (planned > 0 ? 'text-success' : 'text-muted') }}">{{ planned }}</td>
                         {% endfor %}
                     </tr>
                     {# One row per task #}

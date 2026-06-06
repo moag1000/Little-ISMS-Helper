@@ -18,8 +18,9 @@
     title: 'planning.admin.title'|trans({}, 'planning'),
     subtitle: 'planning.admin.subtitle'|trans({}, 'planning'),
     actions: [
-        { label: 'planning.team.action.create'|trans({}, 'planning'), variant: 'ghost', icon: 'plus', href: path('app_planning_team_new') },
-        { label: 'planning.group.action.create'|trans({}, 'planning'), variant: 'ghost', icon: 'plus', href: path('app_planning_group_new') },
+        { label: 'planning.sources.title'|trans({}, 'planning'), variant: 'ghost', icon: 'arrow-left-right', href: path('app_planning_sources_index') },
+        { label: 'planning.report.title'|trans({}, 'planning'), variant: 'ghost', icon: 'bar-chart-line', href: path('app_planning_roadmap_report') },
+        { label: 'planning.settings.title'|trans({}, 'planning'), variant: 'ghost', icon: 'wrench', href: path('app_planning_settings') },
         { label: 'planning.task.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_task_new') }
     ]
 }) }}

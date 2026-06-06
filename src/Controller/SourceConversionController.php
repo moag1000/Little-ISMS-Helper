@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\SourceConversionConfig;
 use App\Entity\Tenant;
 use App\Repository\SourceConversionConfigRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\Planning\Source\SourceAdapterRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,12 +26,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class SourceConversionController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly SourceAdapterRegistry $registry,
         private readonly SourceConversionConfigRepository $configRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
     ) {
     }
 
@@ -37,6 +42,8 @@ final class SourceConversionController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function index(): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $tenant = $this->security->getUser()?->getTenant();
         $configs = $tenant instanceof Tenant
             ? $this->configRepository->findForTenantKeyedBySlug($tenant)
@@ -63,6 +70,8 @@ final class SourceConversionController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function save(Request $request, string $slug): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         if (!$this->registry->has($slug)) {
             throw $this->createNotFoundException();
         }

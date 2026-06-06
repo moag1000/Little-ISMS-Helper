@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Team;
 use App\Form\TeamType;
 use App\Repository\TeamRepository;
+use App\Service\ModuleConfigurationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,17 +21,22 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TeamController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly TeamRepository $teamRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
     ) {}
 
     #[Route('/planning/teams', name: 'app_planning_team_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $tenant = $this->security->getUser()?->getTenant();
         $teams = $tenant ? $this->teamRepository->findByTenant($tenant) : [];
 
@@ -42,6 +49,8 @@ class TeamController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $team = new Team();
         $tenant = $this->security->getUser()?->getTenant();
         if ($tenant !== null) {
@@ -73,6 +82,8 @@ class TeamController extends AbstractController
     #[IsGranted('edit', 'team')]
     public function edit(Request $request, Team $team): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
 
@@ -98,6 +109,8 @@ class TeamController extends AbstractController
     #[IsGranted('delete', 'team')]
     public function delete(Request $request, Team $team): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete'.$team->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($team);
             $this->entityManager->flush();

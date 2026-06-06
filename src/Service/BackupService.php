@@ -219,6 +219,7 @@ class BackupService
         'UnavailabilityCalendar',   // FK: Tenant — one capacity calendar per tenant
         'UnavailabilityPeriod',     // FK: UnavailabilityCalendar — holidays + shutdowns
         'RoadmapAllocation',        // FK: Tenant, RoadmapTask — planned PT per task/week
+        'PlanningSettings',         // FK: Tenant — per-tenant planning configuration
     ];
 
     // Entities deliberately NOT backed up — enforced by Gate 43

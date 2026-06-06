@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\RoadmapTask;
 use App\Form\RoadmapTaskType;
 use App\Repository\RoadmapTaskRepository;
+use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -18,17 +20,22 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RoadmapTaskController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly RoadmapTaskRepository $roadmapTaskRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
     ) {}
 
     #[Route('/planning/tasks', name: 'app_planning_task_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $tenant = $this->security->getUser()?->getTenant();
         $tasks = $tenant ? $this->roadmapTaskRepository->findActiveByTenant($tenant) : [];
 
@@ -41,6 +48,8 @@ class RoadmapTaskController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $task = new RoadmapTask();
         $tenant = $this->security->getUser()?->getTenant();
         if ($tenant !== null) {
@@ -72,6 +81,8 @@ class RoadmapTaskController extends AbstractController
     #[IsGranted('edit', 'roadmapTask')]
     public function edit(Request $request, RoadmapTask $roadmapTask): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $form = $this->createForm(RoadmapTaskType::class, $roadmapTask);
         $form->handleRequest($request);
 
@@ -96,6 +107,8 @@ class RoadmapTaskController extends AbstractController
     #[IsGranted('delete', 'roadmapTask')]
     public function delete(Request $request, RoadmapTask $roadmapTask): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete'.$roadmapTask->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($roadmapTask);
             $this->entityManager->flush();

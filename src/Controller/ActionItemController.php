@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\ActionItem;
 use App\Form\ActionItemType;
 use App\Repository\ActionItemRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\Planning\ActionItemStatusService;
 use App\Service\Planning\InvalidActionItemTransitionException;
 use DateTimeImmutable;
@@ -21,12 +23,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ActionItemController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly ActionItemRepository $actionItemRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
         private readonly ActionItemStatusService $statusService,
+        private readonly ModuleConfigurationService $moduleService,
     ) {
     }
 
@@ -34,6 +39,8 @@ class ActionItemController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $user   = $this->security->getUser();
         $tenant = $user?->getTenant();
 
@@ -83,6 +90,8 @@ class ActionItemController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $item   = new ActionItem();
         $tenant = $this->security->getUser()?->getTenant();
         if ($tenant !== null) {
@@ -119,6 +128,8 @@ class ActionItemController extends AbstractController
     #[IsGranted('edit', 'actionItem')]
     public function edit(Request $request, ActionItem $actionItem): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         $form = $this->createForm(ActionItemType::class, $actionItem);
         $form->handleRequest($request);
 
@@ -148,6 +159,8 @@ class ActionItemController extends AbstractController
     #[IsGranted('delete', 'actionItem')]
     public function delete(Request $request, ActionItem $actionItem): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete'.$actionItem->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($actionItem);
             $this->entityManager->flush();
@@ -165,6 +178,8 @@ class ActionItemController extends AbstractController
     #[IsGranted('edit', 'actionItem')]
     public function transition(Request $request, ActionItem $actionItem): Response
     {
+        if ($redirect = $this->checkModuleActive('resource_planning')) return $redirect;
+
         if (!$this->isCsrfTokenValid('transition'.$actionItem->getId(), $request->request->get('_token'))) {
             $this->addFlash(
                 'error',

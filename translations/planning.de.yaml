@@ -203,3 +203,25 @@ planning:
             title: 'Ungespeicherte Änderungen'
         success:
             saved: 'Planung gespeichert.'
+    settings:
+        title: 'Planungs-Einstellungen'
+        subtitle: 'Standardwerte für Roadmap, Wiederholung und Geltungsbereiche'
+        field:
+            default_recurrence_months: 'Standard-Wiederholung (Monate)'
+            roadmap_horizon_weeks: 'Roadmap-Horizont (Wochen)'
+            overbooking_threshold_pct: 'Überbuchungs-Schwelle (%)'
+            scopes: Geltungsbereiche
+        help:
+            scopes: 'Ein Geltungsbereich pro Zeile (z. B. Organisationseinheiten, Standorte).'
+        success:
+            saved: 'Einstellungen gespeichert.'
+    report:
+        title: 'Ressourcenbedarf (Cl. 9.3)'
+        subtitle: 'Geplante PT je ISMS-Domäne über %weeks% Wochen — Input fürs Management-Review'
+        total_planned: 'Geplant gesamt'
+        total_capacity: 'Kapazität gesamt'
+        utilisation: Auslastung
+        col:
+            domain: 'ISMS-Domäne'
+            planned_pt: 'Geplant (PT)'
+        empty: 'Noch keine Planung erfasst.'
