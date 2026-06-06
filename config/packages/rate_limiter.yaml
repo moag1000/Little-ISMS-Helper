@@ -23,3 +23,10 @@ framework:
             policy: 'sliding_window'
             limit: 20
             interval: '1 hour'
+
+        # Security: MFA verification rate limiting — throttle brute-forcing of
+        # TOTP / backup codes (replaces a naive 2-second per-token guard).
+        mfa_verify:
+            policy: 'sliding_window'
+            limit: 5
+            interval: '15 minutes'

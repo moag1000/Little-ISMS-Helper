@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\SystemSettings;
+use App\Service\MfaEncryptionService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,8 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SystemSettingsRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly MfaEncryptionService $cipher,
+    ) {
         parent::__construct($registry, SystemSettings::class);
     }
 
@@ -29,10 +32,9 @@ class SystemSettingsRepository extends ServiceEntityRepository
             return $default;
         }
 
-        // Return decrypted value if encrypted, otherwise return value
+        // Decrypt stored ciphertext (sodium secretbox via MfaEncryptionService).
         if ($setting->isEncrypted() && $setting->getEncryptedValue()) {
-            // Decryption would happen here using Symfony's encryption service
-            return $setting->getEncryptedValue(); // Placeholder
+            return $this->cipher->decrypt($setting->getEncryptedValue());
         }
 
         return $setting->getValue();
@@ -53,8 +55,10 @@ class SystemSettingsRepository extends ServiceEntityRepository
         }
 
         if ($isEncrypted) {
-            // Encryption would happen here using Symfony's encryption service
-            $setting->setEncryptedValue((string) $value); // Placeholder
+            // Encrypt at rest (sodium secretbox) — previously the plaintext was
+            // stored verbatim in encrypted_value, so "encrypted" settings were
+            // not actually encrypted.
+            $setting->setEncryptedValue($this->cipher->encrypt((string) $value));
             $setting->setIsEncrypted(true);
             $setting->setValue(null); // Clear plain value
         } else {
