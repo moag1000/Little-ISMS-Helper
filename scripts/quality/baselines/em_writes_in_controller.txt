@@ -289,11 +289,11 @@ src/Controller/InterestedPartyController.php:67
 src/Controller/InterestedPartyController.php:99
 src/Controller/InterestedPartyController.php:119
 src/Controller/InterestedPartyController.php:120
-src/Controller/LocationController.php:57
-src/Controller/LocationController.php:58
-src/Controller/LocationController.php:96
-src/Controller/LocationController.php:116
-src/Controller/LocationController.php:117
+src/Controller/LocationController.php:60
+src/Controller/LocationController.php:61
+src/Controller/LocationController.php:119
+src/Controller/LocationController.php:159
+src/Controller/LocationController.php:160
 src/Controller/ManagementReviewController.php:69
 src/Controller/ManagementReviewController.php:70
 src/Controller/ManagementReviewController.php:101

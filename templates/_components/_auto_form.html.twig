@@ -117,6 +117,7 @@
 
 {# ─── Shared parameter initialisation ────────────────────────────────────── #}
 {% set layout          = layout|default('flat') %}
+{% set modal           = modal|default(false) %}
 {% set exclude_fields  = exclude|default([]) %}
 {% set help_texts      = help_texts|default({}) %}
 {% set tooltips        = tooltips|default({}) %}
@@ -292,6 +293,7 @@
         },
         'sections':  fa_form_sections,
         'actions':   _actions,
+        'modal':     modal,
         'extrasBeforeActions': extras_before_actions|default(null)
     }) }}
 

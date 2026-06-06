@@ -20,7 +20,7 @@
         subtitle: 'dpia.index.page_subtitle'|trans({}, 'privacy'),
         actions: [
             { label: 'dpia.index.button_dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-dashboard', href: path('app_dpia_dashboard') },
-            { label: 'dpia.index.button_new_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_dpia_new') }
+            { label: 'dpia.index.button_new_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_dpia_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]
     }) }}
 {% set _global_hints = alva_hints('dpia_index') %}
@@ -155,93 +155,10 @@
                             <th scope="col">{{ 'dpia.index.actions'|trans({}, 'privacy') }}</th>
                         </tr>
                     {% endblock %}
+                    {% block table_body_attrs %}id="dpia-rows"{% endblock %}
                     {% block table_body %}
-                        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                         {% for dpia in dpias %}
-                            <tr>
-                                <td class="bulk-select-column">
-                                    <input type="checkbox"
-                                           class="form-check-input"
-                                           data-bulk-actions-target="item"
-                                           data-action="bulk-actions#selectItem"
-                                           value="{{ dpia.id }}"
-                                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ dpia.referenceNumber }}">
-                                </td>
-                                <td>
-                                    <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
-                                        {{ dpia.referenceNumber }}
-                                    </a>
-                                </td>
-                                <td>{{ dpia.title }}</td>
-                                <td>
-                                    {% set status_class = {
-                                        'draft': 'secondary',
-                                        'in_review': 'info',
-                                        'approved': 'success',
-                                        'rejected': 'danger',
-                                        'requires_revision': 'warning'
-                                    }[dpia.status] %}
-                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}
-                                </td>
-                                <td>
-                                    {% if dpia.riskLevel %}
-                                        {% set risk_class = {
-                                            'low': 'success',
-                                            'medium': 'info',
-                                            'high': 'warning',
-                                            'critical': 'danger'
-                                        }[dpia.riskLevel] %}
-                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: dpia.riskLevel|upper } %}
-                                    {% else %}
-                                        <span class="text-muted">-</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if dpia.residualRiskLevel %}
-                                        {% set risk_class = {
-                                            'low': 'success',
-                                            'medium': 'info',
-                                            'high': 'warning',
-                                            'critical': 'danger'
-                                        }[dpia.residualRiskLevel] %}
-                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: dpia.residualRiskLevel|upper } %}
-                                    {% else %}
-                                        <span class="text-muted">-</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set percentage = dpia.completenessPercentage %}
-                                    {{ _fa_progress.render({ value: percentage, tone: percentage == 100 ? 'success' : 'warning', showText: true }) }}
-                                </td>
-                                <td>
-                                    {% if dpia.dpoConsultationDate %}
-                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'dpia.index.dpo_consulted'|trans({}, 'privacy') }} {{ dpia.dpoConsultationDate|date('Y-m-d') }}"></i>
-                                    {% else %}
-                                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true" title="{{ 'dpia.index.dpo_not_yet_consulted'|trans({}, 'privacy') }}"></i>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                        <a href="{{ path('app_dpia_show', {id: dpia.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                        </a>
-                                        {% if dpia.status in ['draft', 'requires_revision'] %}
-                                            <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost"
-                                               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                            </a>
-                                        {% endif %}
-                                        <a href="{{ path('app_dpia_export_pdf', {id: dpia.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--success"
-                                           title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% include 'dpia/_row.html.twig' with { dpia: dpia } %}
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
@@ -255,7 +172,7 @@
                     mood: 'sleeping',
                     title: 'dpia.index.no_dpias_found'|trans({}, 'privacy'),
                     actions: [
-                        { label: 'dpia.index.create_first_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_dpia_new') }
+                        { label: 'dpia.index.create_first_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_dpia_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
                     ]
                 }) }}
             {% endif %}

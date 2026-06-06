@@ -140,8 +140,10 @@ final class MfaEnrollmentEnforcerSubscriber
      */
     private function requiredRoles(): array
     {
-        $raw = (string) $this->systemSettings->getSetting('security', 'mfa_required_roles', '[]');
-        $decoded = json_decode($raw, true);
+        // getSetting() may return an already-decoded value (the value column is
+        // JSON, so a stored array comes back as an array) or a JSON string.
+        $raw = $this->systemSettings->getSetting('security', 'mfa_required_roles', []);
+        $decoded = is_array($raw) ? $raw : json_decode((string) $raw, true);
         if (!is_array($decoded)) {
             return [];
         }

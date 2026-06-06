@@ -7,6 +7,7 @@ namespace App\Controller;
 use RuntimeException;
 use DateTime;
 use App\Controller\Trait\CurrentUserTrait;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
@@ -41,6 +42,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DPIAController extends AbstractController
 {
     use CurrentUserTrait;
+    use InPageFormTrait;
     use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
@@ -180,12 +182,23 @@ class DPIAController extends AbstractController
             }
 
             $this->addFlash('success', $this->translator->trans('dpia.created', [], 'privacy'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->dpiaStreamSave($dataProtectionImpactAssessment, isNew: true);
+            }
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()], Response::HTTP_SEE_OTHER);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dpia/_form_modal.html.twig', [
+                'form' => $form,
+                'dpia' => $dataProtectionImpactAssessment,
+            ], new Response(status: $status));
+        }
 
         return $this->render('dpia/new.html.twig', [
             'form' => $form,
@@ -216,6 +229,10 @@ class DPIAController extends AbstractController
             $this->dataProtectionImpactAssessmentService->update($dataProtectionImpactAssessment);
 
             $this->addFlash('success', $this->translator->trans('dpia.updated', [], 'privacy'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->dpiaStreamSave($dataProtectionImpactAssessment, isNew: false);
+            }
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -223,10 +240,26 @@ class DPIAController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dpia/_form_modal.html.twig', [
+                'form' => $form,
+                'dpia' => $dataProtectionImpactAssessment,
+            ], new Response(status: $status));
+        }
+
         return $this->render('dpia/edit.html.twig', [
             'form' => $form,
             'dpia' => $dataProtectionImpactAssessment,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal DPIA save (row replace/append). */
+    private function dpiaStreamSave(DataProtectionImpactAssessment $dpia, bool $isNew): Response
+    {
+        return $this->render('dpia/_stream_save.html.twig', [
+            'dpia' => $dpia,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     /**
@@ -584,9 +617,16 @@ class DPIAController extends AbstractController
      * Show DPIA details
      */
     #[Route('/dpia/{id}', name: 'app_dpia_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
+    public function show(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dpia/_detail_modal.html.twig', [
+                'dpia' => $dataProtectionImpactAssessment,
+            ]);
+        }
 
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 

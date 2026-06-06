@@ -21,7 +21,7 @@
     title: 'location.title.list'|trans({}, 'locations'),
     subtitle: 'location.description.overview'|trans({}, 'locations'),
     actions: [
-        { label: 'location.action.create'|trans({}, 'locations'), variant: 'primary', icon: 'plus', href: path('app_location_new') }
+        { label: 'location.action.create'|trans({}, 'locations'), variant: 'primary', icon: 'plus', href: path('app_location_new'), attrs: { 'data-turbo-frame': 'fa-drawer' } }
     ]
 }) }}
 {% set _global_hints = alva_hints('location_index') %}
@@ -65,59 +65,10 @@
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
+    {% block table_body_attrs %}id="location-rows"{% endblock %}
     {% block table_body %}
         {% for location in locations %}
-        <tr>
-            <td>
-                <strong>{{ location.name }}</strong>
-                {% if location.parentLocation %}
-                    <br><small class="text-muted-color">↳ {{ location.parentLocation.name }}</small>
-                {% endif %}
-            </td>
-            <td>
-                {% include '_components/_badge.html.twig' with { variant: 'info', content: ('location.type.' ~ location.locationType)|trans({}, 'locations') } %}
-            </td>
-            <td>
-                {% if location.code %}
-                    <code>{{ location.code }}</code>
-                {% else %}
-                    <span class="text-muted-color">-</span>
-                {% endif %}
-            </td>
-            <td>
-                {{ location.city ?? '-' }}
-                {% if location.country %}
-                    <br><small class="text-muted-color">{{ location.country }}</small>
-                {% endif %}
-            </td>
-            <td>
-                {% set securityColors = {
-                    'public': 'secondary',
-                    'restricted': 'info',
-                    'controlled': 'warning',
-                    'secure': 'warning',
-                    'high_security': 'danger'
-                } %}
-                {% include '_components/_badge.html.twig' with { variant: securityColors[location.securityLevel] ?? 'secondary', content: ('location.security.' ~ location.securityLevel)|trans({}, 'locations') } %}
-            </td>
-            <td class="text-center">
-                {% if location.requiresBadgeAccess %}
-                    {% include '_components/_badge.html.twig' with { variant: 'success', content: '✓' } %}
-                {% else %}
-                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '✗' } %}
-                {% endif %}
-            </td>
-            <td class="text-center">
-                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'location.actions.label'|trans({}, 'locations') }}">
-                    <a href="{{ path('app_location_show', {id: location.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ location.name }}">
-                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                    </a>
-                    <a href="{{ path('app_location_edit', {id: location.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }} {{ location.name }}">
-                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                    </a>
-                </div>
-            </td>
-        </tr>
+            {% include 'location/_row.html.twig' with { location: location } %}
         {% else %}
         <tr>
             <td colspan="7" class="text-center-p-xl-muted">

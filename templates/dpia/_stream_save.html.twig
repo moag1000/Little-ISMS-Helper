@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal DPIA save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="dpia-rows">
+        <template>{% include 'dpia/_row.html.twig' with { dpia: dpia } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="dpia-row-{{ dpia.id }}">
+        <template>{% include 'dpia/_row.html.twig' with { dpia: dpia } %}</template>
+    </turbo-stream>
+{% endif %}

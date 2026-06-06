@@ -43,6 +43,7 @@
     {%- set actions          = config.actions ?? {} -%}
     {%- set extrasBeforeActions = config.extrasBeforeActions ?? null -%}
     {%- set controller       = config.stimulusController ?? 'form-layout' -%}
+    {%- set modal            = config.modal ?? false -%}
 
     {%- set progressPercent  = (progress and progress.total > 0) ? ((progress.done / progress.total) * 100)|round : 0 -%}
     {%- set totalSections    = sections|length -%}
@@ -54,7 +55,7 @@
         }) -%}
     {%- endfor -%}
 
-    <div class="fa-form-layout"
+    <div class="fa-form-layout{% if modal %} fa-form-layout--modal{% endif %}"
          data-controller="{{ controller }} form-validation"
          data-{{ controller }}-sections-state-value="{{ sectionsState|json_encode }}"
          {% if draftSavedAt %}data-{{ controller }}-draft-saved-at-value="{{ draftSavedAt|date('c') }}"{% endif %}>
@@ -204,10 +205,18 @@
             </div>
             <div class="fa-form-layout__footer-actions">
                 {% if actions.close is defined %}
+                    {% if actions.close.href is defined %}
+                    <a href="{{ actions.close.href }}"
+                       class="fa-cyber-btn fa-cyber-btn--{{ actions.close.variant ?? 'ghost' }} fa-cyber-btn--sm">
+                        <span class="fa-cyber-btn__label">{{ actions.close.label }}</span>
+                    </a>
+                    {% else %}
                     <button type="button"
-                            class="fa-cyber-btn fa-cyber-btn--{{ actions.close.variant ?? 'ghost' }} fa-cyber-btn--sm">
+                            class="fa-cyber-btn fa-cyber-btn--{{ actions.close.variant ?? 'ghost' }} fa-cyber-btn--sm"
+                            {% if actions.close.action is defined %}data-action="{{ actions.close.action }}"{% endif %}>
                         <span class="fa-cyber-btn__label">{{ actions.close.label }}</span>
                     </button>
+                    {% endif %}
                 {% endif %}
                 {% if actions.next is defined %}
                     <button type="button"
