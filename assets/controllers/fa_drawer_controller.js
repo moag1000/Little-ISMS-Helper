@@ -22,11 +22,12 @@ export default class extends Controller {
         this._onKeydown = this.#onKeydown.bind(this);
         this._onPopState = this.#onPopState.bind(this);
 
-        // Turbo lifecycle on our frame.
-        this._onBeforeFetch = this.#onBeforeFetch.bind(this);
+        // Open on a real click of a drawer trigger — NOT on turbo:before-fetch-request,
+        // which also fires on Turbo's hover-prefetch and would blank the panel.
+        this._onClick = this.#onClick.bind(this);
         this._onFrameLoad = this.#onFrameLoad.bind(this);
         this._onSubmitEnd = this.#onSubmitEnd.bind(this);
-        document.addEventListener('turbo:before-fetch-request', this._onBeforeFetch);
+        document.addEventListener('click', this._onClick);
         this.frameTarget.addEventListener('turbo:frame-load', this._onFrameLoad);
         document.addEventListener('turbo:submit-end', this._onSubmitEnd);
 
@@ -36,7 +37,7 @@ export default class extends Controller {
     }
 
     disconnect() {
-        document.removeEventListener('turbo:before-fetch-request', this._onBeforeFetch);
+        document.removeEventListener('click', this._onClick);
         document.removeEventListener('turbo:submit-end', this._onSubmitEnd);
         window.removeEventListener('popstate', this._onPopState);
         document.removeEventListener('keydown', this._onKeydown);
@@ -99,13 +100,15 @@ export default class extends Controller {
 
     // ── Turbo lifecycle ──────────────────────────────────────────────────────
 
-    #onBeforeFetch(event) {
-        // A navigation targeting our frame → open immediately with a skeleton.
-        const frame = event.detail?.fetchOptions?.headers?.['Turbo-Frame'];
-        if (frame === 'fa-drawer') {
-            this.#showSkeleton();
-            this.open();
-        }
+    #onClick(event) {
+        // Only a plain left-click on a drawer trigger opens the panel.
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const link = event.target.closest('a[data-turbo-frame="fa-drawer"]');
+        if (!link || link.target === '_blank') return;
+        // Let Turbo perform the navigation into the frame; we just present the
+        // shell + skeleton immediately so the panel animates in without delay.
+        this.#showSkeleton();
+        this.open();
     }
 
     #onFrameLoad() {
