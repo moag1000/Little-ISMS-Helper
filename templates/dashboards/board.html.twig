@@ -310,10 +310,12 @@
                                 {% for metric in dashboard.quarterly.metrics %}
                                 <tr>
                                     <td>{{ metric.name }}</td>
-                                    <td class="td--center">{{ metric.previous }}{{ metric.unit }}</td>
+                                    <td class="td--center">{{ metric.previous }}{% if metric.change is not null %}{{ metric.unit }}{% endif %}</td>
                                     <td class="td--center">{{ metric.current }}{{ metric.unit }}</td>
                                     <td class="td--center">
-                                        {% if metric.change > 0 %}
+                                        {% if metric.change is null %}
+                                            <span class="fa-trend fa-trend--flat text-muted" title="{{ 'board.table.no_history'|trans({}, 'dashboards') }}">—</span>
+                                        {% elseif metric.change > 0 %}
                                             <span class="fa-trend fa-trend--{% if metric.positive_is_good %}up{% else %}up-bad{% endif %}">
                                                 <i class="fa-icon fa-icon--util-arrow-up" aria-hidden="true"></i> +{{ metric.change }}{{ metric.unit }}
                                             </span>

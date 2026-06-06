@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Entity\AuditFinding;
 use App\Entity\Control;
+use App\Entity\CorrectiveAction;
+use App\Entity\KpiSnapshot;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Repository\AuditFindingRepository;
 use App\Repository\ControlRepository;
+use App\Repository\CorrectiveActionRepository;
 use App\Repository\IncidentRepository;
+use App\Repository\KpiSnapshotRepository;
 use App\Repository\RiskRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\ComplianceAnalyticsService;
@@ -71,6 +77,48 @@ class RoleDashboardServiceTest extends TestCase
             $this->security,
             $this->tenantContext,
         );
+    }
+
+    private function createServiceWithRepos(
+        ?AuditFindingRepository $auditFindingRepository = null,
+        ?CorrectiveActionRepository $correctiveActionRepository = null,
+        ?KpiSnapshotRepository $kpiSnapshotRepository = null,
+    ): RoleDashboardService {
+        return new RoleDashboardService(
+            $this->dashboardStatisticsService,
+            $this->complianceAnalyticsService,
+            $this->controlEffectivenessService,
+            $this->riskForecastService,
+            $this->riskRepository,
+            $this->incidentRepository,
+            $this->controlRepository,
+            $this->workflowInstanceRepository,
+            $this->security,
+            $this->tenantContext,
+            null, // treatmentPlanRepository
+            null, // auditRepository
+            null, // tisaxAssessment
+            null, // frameworkRepository
+            $auditFindingRepository,
+            $correctiveActionRepository,
+            $kpiSnapshotRepository,
+        );
+    }
+
+    private function createFindingMock(string $type): AuditFinding
+    {
+        $finding = $this->createMock(AuditFinding::class);
+        $finding->method('getType')->willReturn($type);
+
+        return $finding;
+    }
+
+    private function createCapaMock(string $status): CorrectiveAction
+    {
+        $capa = $this->createMock(CorrectiveAction::class);
+        $capa->method('getStatus')->willReturn($status);
+
+        return $capa;
     }
 
     // ==================== getCisoDashboard() Tests ====================
@@ -285,6 +333,132 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertArrayHasKey('critical_risks', $result['metrics']);
         $this->assertArrayHasKey('incidents_ytd', $result['metrics']);
         $this->assertArrayHasKey('controls_implemented', $result['metrics']);
+    }
+
+    // ============ Honest-numbers regression tests (no fabricated data) ============
+
+    #[Test]
+    public function testAuditorNonConformitiesCountRealFindingsByType(): void
+    {
+        $findings = [
+            $this->createFindingMock(AuditFinding::TYPE_MAJOR_NC),
+            $this->createFindingMock(AuditFinding::TYPE_MAJOR_NC),
+            $this->createFindingMock(AuditFinding::TYPE_MINOR_NC),
+            $this->createFindingMock(AuditFinding::TYPE_OBSERVATION),
+            $this->createFindingMock(AuditFinding::TYPE_OPPORTUNITY), // not a non-conformity
+        ];
+        $findingRepo = $this->createMock(AuditFindingRepository::class);
+        $findingRepo->method('findOpenByTenant')->willReturn($findings);
+
+        $this->setupAllMocks();
+        $service = $this->createServiceWithRepos(auditFindingRepository: $findingRepo);
+
+        $result = $service->getAuditorDashboard();
+
+        // Counts reflect REAL findings, not the old hardcoded 0/0/0.
+        self::assertSame(5, $result['summary']['open_findings']);
+        self::assertSame(2, $result['non_conformities']['major']);
+        self::assertSame(1, $result['non_conformities']['minor']);
+        self::assertSame(1, $result['non_conformities']['observations']);
+    }
+
+    #[Test]
+    public function testAuditorCorrectiveActionsCountRealData(): void
+    {
+        $overdue = [$this->createMock(CorrectiveAction::class), $this->createMock(CorrectiveAction::class)];
+        $all = [
+            $this->createCapaMock(CorrectiveAction::STATUS_PLANNED),
+            $this->createCapaMock(CorrectiveAction::STATUS_IN_PROGRESS),
+            $this->createCapaMock(CorrectiveAction::STATUS_COMPLETED), // closed
+            $this->createCapaMock(CorrectiveAction::STATUS_VERIFIED),  // closed
+        ];
+        $capaRepo = $this->createMock(CorrectiveActionRepository::class);
+        $capaRepo->method('findOverdue')->willReturn($overdue);
+        $capaRepo->method('findBy')->willReturn($all);
+
+        $this->setupAllMocks();
+        $service = $this->createServiceWithRepos(correctiveActionRepository: $capaRepo);
+
+        $result = $service->getAuditorDashboard();
+
+        self::assertSame(4, $result['corrective_actions']['total']);
+        self::assertSame(2, $result['corrective_actions']['open']);          // planned + in_progress
+        self::assertSame(2, $result['corrective_actions']['overdue_count']);
+        self::assertSame(2, $result['summary']['overdue_actions']);
+    }
+
+    #[Test]
+    public function testAuditorDashboardReturnsZeroNotFakeWhenNoRepositories(): void
+    {
+        // Without the optional repositories the dashboard degrades to honest
+        // zeros — never fabricated counts.
+        $this->setupAllMocks();
+        $service = $this->createService();
+
+        $result = $service->getAuditorDashboard();
+
+        self::assertSame(0, $result['summary']['open_findings']);
+        self::assertSame(['major' => 0, 'minor' => 0, 'observations' => 0], $result['non_conformities']);
+        self::assertSame(0, $result['corrective_actions']['total']);
+    }
+
+    #[Test]
+    public function testBoardTrendsAreNullWithoutSnapshotHistory(): void
+    {
+        // No KpiSnapshot repository → no comparable history → honest null
+        // (KPI card shows no arrow), NOT a fabricated "0 / no change".
+        $this->setupAllMocks();
+        $service = $this->createService();
+
+        $result = $service->getBoardDashboard();
+
+        self::assertNull($result['trends']['compliance']);
+        self::assertNull($result['trends']['critical']);
+        self::assertNull($result['trends']['incidents']);
+        self::assertNull($result['trends']['controls']);
+        self::assertSame(0, $result['trends']['risks']); // real velocity figure
+    }
+
+    #[Test]
+    public function testBoardQuarterlyShowsNaWithoutHistoryInsteadOfSimulatedDelta(): void
+    {
+        $this->setupAllMocks();
+        $service = $this->createService();
+
+        $metrics = $service->getBoardDashboard()['quarterly']['metrics'];
+
+        foreach ($metrics as $metric) {
+            self::assertSame('n/a', $metric['previous']);
+            self::assertNull($metric['change']); // the old code fabricated +2 / -1 here
+        }
+    }
+
+    #[Test]
+    public function testBoardTrendsUseRealSnapshotDelta(): void
+    {
+        $snapshot = $this->createMock(KpiSnapshot::class);
+        $snapshot->method('getKpiData')->willReturn([
+            'average_compliance' => 50,
+            'critical_risks' => 5,
+            'control_compliance' => 40,
+        ]);
+        $snapshotRepo = $this->createMock(KpiSnapshotRepository::class);
+        $snapshotRepo->method('findClosestBefore')->willReturn($snapshot);
+
+        $this->setupAllMocks(); // all current values are 0
+        $service = $this->createServiceWithRepos(kpiSnapshotRepository: $snapshotRepo);
+
+        $result = $service->getBoardDashboard();
+
+        // current(0) - previous → real signed deltas
+        self::assertSame(-50.0, $result['trends']['compliance']);
+        self::assertSame(-5.0, $result['trends']['critical']);
+        self::assertSame(-40.0, $result['trends']['controls']);
+        self::assertNull($result['trends']['incidents']); // no comparable snapshot key
+
+        $compliance = $result['quarterly']['metrics'][0];
+        self::assertSame(50.0, $compliance['previous']);
+        self::assertSame(-50.0, $compliance['change']);
     }
 
     // ==================== getRecommendedDashboard() Tests ====================

@@ -10,6 +10,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
+use App\Repository\KpiSnapshotRepository;
 
 /**
  * Compliance Analytics Service
@@ -26,6 +27,7 @@ class ComplianceAnalyticsService
         private readonly ControlRepository $controlRepository,
         private readonly TenantContext $tenantContext,
         private readonly ComplianceAssessmentService $assessmentService,
+        private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
     ) {
     }
 
@@ -552,21 +554,45 @@ class ComplianceAnalyticsService
                 'multi_framework_controls' => $transitiveCompliance['summary']['multi_framework_controls'],
                 'transitive_satisfaction' => $transitiveCompliance['summary']['total_requirements_satisfied'],
             ],
-            'trend' => $this->calculateComplianceTrend(),
+            'trend' => $this->calculateComplianceTrend($comparison['summary']['average_compliance']),
         ];
     }
 
     /**
-     * Calculate compliance trend (mock - would need historical data in production)
+     * Compliance trend vs the ~30-day-old KpiSnapshot (key `average_compliance`).
+     *
+     * Returns a REAL signed delta when a comparable snapshot exists. When no
+     * history is available yet, `change` is null and `available` is false —
+     * an honest "no comparison data" instead of a fabricated movement. The
+     * snapshot key is written by app:kpi:snapshot once per day.
+     *
+     * @return array{direction: string, change: float|null, period: string, available: bool}
      */
-    private function calculateComplianceTrend(): array
+    private function calculateComplianceTrend(float $currentCompliance): array
     {
-        // In production, this would query historical compliance snapshots
-        // For now, return a placeholder trend
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        if ($tenant !== null && $this->kpiSnapshotRepository !== null) {
+            $snapshot = $this->kpiSnapshotRepository->findClosestBefore($tenant, new \DateTimeImmutable('-30 days'));
+            $previous = $snapshot?->getKpiData()['average_compliance'] ?? null;
+
+            if (is_numeric($previous)) {
+                $delta = round($currentCompliance - (float) $previous, 1);
+
+                return [
+                    'direction' => abs($delta) < 0.05 ? 'stable' : ($delta > 0 ? 'up' : 'down'),
+                    'change' => $delta,
+                    'period' => 'last_month',
+                    'available' => true,
+                ];
+            }
+        }
+
         return [
-            'direction' => 'up',
-            'change' => 2.5,
+            'direction' => 'stable',
+            'change' => null,
             'period' => 'last_month',
+            'available' => false,
         ];
     }
 

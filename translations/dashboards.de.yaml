@@ -274,6 +274,7 @@ board:
         metric: 'Metrik'
         change: 'Änderung'
         target: 'Ziel'
+        no_history: 'Noch keine Vergleichsdaten (Snapshot fehlt)'
 
 # DPO (Datenschutzbeauftragter) Dashboard — Art. 39 DSGVO
 dpo:

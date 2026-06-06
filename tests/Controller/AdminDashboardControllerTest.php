@@ -102,6 +102,10 @@ class AdminDashboardControllerTest extends TestCase
             [['isActive' => true], 85],
             [['isActive' => false], 15],
             [['isVerified' => false], 5],
+            [['tenant' => $tenant], 100],
+            [['tenant' => $tenant, 'isActive' => true], 85],
+            [['tenant' => $tenant, 'isActive' => false], 15],
+            [['tenant' => $tenant, 'isVerified' => false], 5],
         ]);
 
         // Mock database connection for table stats
@@ -232,6 +236,10 @@ class AdminDashboardControllerTest extends TestCase
             [['isActive' => true], 80],
             [['isActive' => false], 20],
             [['isVerified' => false], 0],
+            [['tenant' => $tenant], 100],
+            [['tenant' => $tenant, 'isActive' => true], 80],
+            [['tenant' => $tenant, 'isActive' => false], 20],
+            [['tenant' => $tenant, 'isVerified' => false], 0],
         ]);
 
         $this->mockDatabaseOperations();
@@ -272,6 +280,10 @@ class AdminDashboardControllerTest extends TestCase
             [['isActive' => true], 100],
             [['isActive' => false], 0],
             [['isVerified' => false], 10],
+            [['tenant' => $tenant], 100],
+            [['tenant' => $tenant, 'isActive' => true], 100],
+            [['tenant' => $tenant, 'isActive' => false], 0],
+            [['tenant' => $tenant, 'isVerified' => false], 10],
         ]);
 
         $this->mockDatabaseOperations();
@@ -312,6 +324,10 @@ class AdminDashboardControllerTest extends TestCase
             [['isActive' => true], 50],
             [['isActive' => false], 0],
             [['isVerified' => false], 0],
+            [['tenant' => $tenant], 50],
+            [['tenant' => $tenant, 'isActive' => true], 50],
+            [['tenant' => $tenant, 'isActive' => false], 0],
+            [['tenant' => $tenant, 'isVerified' => false], 0],
         ]);
 
         // Mock MySQL connection
@@ -373,6 +389,10 @@ class AdminDashboardControllerTest extends TestCase
             [['isActive' => true], 50],
             [['isActive' => false], 0],
             [['isVerified' => false], 0],
+            [['tenant' => $tenant], 50],
+            [['tenant' => $tenant, 'isActive' => true], 50],
+            [['tenant' => $tenant, 'isActive' => false], 0],
+            [['tenant' => $tenant, 'isVerified' => false], 0],
         ]);
 
         // Mock PostgreSQL connection
