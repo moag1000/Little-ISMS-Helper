@@ -8,6 +8,8 @@ use App\Entity\PushSubscription;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\PushSubscriptionRepository;
+use Minishlink\WebPush\Subscription;
+use Minishlink\WebPush\WebPush;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -181,102 +183,53 @@ final class WebPushService
     }
 
     /**
-     * Send a push notification using Web Push protocol
+     * Send a push notification via the Web Push protocol (RFC 8030/8291).
+     *
+     * Uses minishlink/web-push for proper VAPID JWT signing AND aes128gcm
+     * payload encryption (ECDH + HKDF + AES-128-GCM). The previous hand-rolled
+     * version sent the payload as PLAINTEXT under a `Content-Encoding: aes128gcm`
+     * header — push services reject that, and any that didn't would leak the
+     * notification body.
      */
     private function sendPush(PushSubscription $subscription, string $payload, array $keys): bool
     {
-        $endpoint = $subscription->getEndpoint();
-        $userPublicKey = $subscription->getPublicKey();
-        $userAuthToken = $subscription->getAuthToken();
-
-        // For now, use a simple HTTP request
-        // In production, you would use a library like minishlink/web-push
-        // or implement full Web Push encryption
-
         try {
-            // Create JWT for VAPID
-            $jwt = $this->createVapidJwt($endpoint, $keys['privateKey']);
-
-            // Encrypt payload (simplified - in production use proper Web Push encryption)
-            $encryptedPayload = $this->encryptPayload($payload, $userPublicKey);
-
-            // Send to push service
-            $ch = curl_init($endpoint);
-            curl_setopt_array($ch, [
-                CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => $encryptedPayload['ciphertext'],
-                CURLOPT_HTTPHEADER => [
-                    'Content-Type: application/octet-stream',
-                    'Content-Encoding: aes128gcm',
-                    'Authorization: vapid t=' . $jwt . ', k=' . $keys['publicKey'],
-                    'TTL: 86400',
-                    'Urgency: normal',
+            $webPush = new WebPush([
+                'VAPID' => [
+                    'subject' => self::VAPID_SUBJECT,
+                    'publicKey' => $keys['publicKey'],
+                    'privateKey' => $keys['privateKey'],
                 ],
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT => 30,
             ]);
 
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
+            $sub = Subscription::create([
+                'endpoint' => $subscription->getEndpoint(),
+                'keys' => [
+                    'p256dh' => $subscription->getPublicKey(),
+                    'auth' => $subscription->getAuthToken(),
+                ],
+            ]);
 
-            // 201 Created = success, 410 Gone = subscription expired
-            if ($httpCode === 410) {
+            $report = $webPush->sendOneNotification($sub, $payload);
+
+            if ($report->isSubscriptionExpired()) {
                 $subscription->setIsActive(false);
                 return false;
             }
 
-            return $httpCode >= 200 && $httpCode < 300;
-        } catch (\Exception $e) {
+            if (!$report->isSuccess()) {
+                $this->logger->warning('Web push send failed', [
+                    'endpoint' => $subscription->getEndpoint(),
+                    'reason' => $report->getReason(),
+                ]);
+                return false;
+            }
+
+            return true;
+        } catch (\Throwable $e) {
             $this->logger->error('Push send failed', ['error' => $e->getMessage()]);
             return false;
         }
-    }
-
-    /**
-     * Create VAPID JWT token
-     */
-    private function createVapidJwt(string $endpoint, string $privateKey): string
-    {
-        $parsedUrl = parse_url($endpoint);
-        $audience = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
-
-        $header = json_encode(['typ' => 'JWT', 'alg' => 'ES256']);
-        $payload = json_encode([
-            'aud' => $audience,
-            'exp' => time() + 86400,
-            'sub' => self::VAPID_SUBJECT,
-        ]);
-
-        $headerB64 = $this->base64UrlEncode($header);
-        $payloadB64 = $this->base64UrlEncode($payload);
-        $dataToSign = $headerB64 . '.' . $payloadB64;
-
-        // Sign with private key (ES256)
-        $signature = '';
-        $privateKeyResource = openssl_pkey_get_private($privateKey);
-        if ($privateKeyResource) {
-            openssl_sign($dataToSign, $signature, $privateKeyResource, OPENSSL_ALGO_SHA256);
-        }
-
-        return $dataToSign . '.' . $this->base64UrlEncode($signature);
-    }
-
-    /**
-     * Encrypt payload using Web Push encryption
-     * Simplified implementation - in production use minishlink/web-push
-     */
-    private function encryptPayload(string $payload, string $userPublicKey): array
-    {
-        // This is a simplified placeholder
-        // Real implementation requires ECDH key exchange and proper AES-128-GCM encryption
-        // For production, use the minishlink/web-push library
-
-        return [
-            'ciphertext' => $payload,
-            'salt' => random_bytes(16),
-            'publicKey' => $userPublicKey,
-        ];
     }
 
     /**

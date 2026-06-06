@@ -9,6 +9,8 @@ use App\Entity\User;
 use App\Repository\MfaTokenRepository;
 use App\Service\AuditLogger;
 use App\Service\MfaEncryptionService;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\RateLimiter\Storage\InMemoryStorage;
 use App\Service\MfaService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -37,12 +39,20 @@ class MfaServiceTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->mfaEncryptionService = new MfaEncryptionService('test-secret-key-for-unit-tests');
 
+        // Real sliding-window limiter over in-memory storage (5/15 min) — the
+        // tests stay well under 5 verify attempts per token, so all are accepted.
+        $mfaVerifyLimiter = new RateLimiterFactory(
+            ['id' => 'mfa_verify', 'policy' => 'sliding_window', 'limit' => 5, 'interval' => '15 minutes'],
+            new InMemoryStorage(),
+        );
+
         $this->service = new MfaService(
             $this->entityManager,
             $this->mfaTokenRepository,
             $this->auditLogger,
             $this->logger,
             $this->mfaEncryptionService,
+            $mfaVerifyLimiter,
             'Test ISMS',
             // Argon2 minimum-cost options — reduces backup-code hashing from
             // ~125 ms/hash to ~0.5 ms/hash. Algorithm (Argon2id) is unchanged,
@@ -176,23 +186,22 @@ class MfaServiceTest extends TestCase
     {
         $user = $this->createUser(1, 'user@example.com');
 
-        // Create token with lastUsedAt = now to deterministically trigger
-        // rate limiting (service requires diff < 2s). Using a relative offset
-        // like '-1 second' was flaky on slow CI runners where the gap between
-        // mock setup and service execution exceeded 2s, missing the rate-limit
-        // window.
-        $lastUsed = new \DateTimeImmutable();
         $token = $this->createMock(MfaToken::class);
         $token->method('getId')->willReturn(1);
         $token->method('getUser')->willReturn($user);
         $token->method('getTokenType')->willReturn('totp');
         $token->method('getSecret')->willReturn('JBSWY3DPEHPK3PXP');
         $token->method('isActive')->willReturn(false);
-        $token->method('getLastUsedAt')->willReturn($lastUsed);
+        $token->method('getLastUsedAt')->willReturn(null);
 
+        // Sliding window: 5 verification attempts are allowed within 15 min...
+        for ($i = 0; $i < 5; $i++) {
+            $this->assertFalse($this->service->verifyTotp($token, '000000'));
+        }
+
+        // ...the 6th is rate-limited (real brute-force protection).
         $this->expectException(TooManyRequestsHttpException::class);
-
-        $this->service->verifyTotp($token, '123456');
+        $this->service->verifyTotp($token, '000000');
     }
 
     #[Test]

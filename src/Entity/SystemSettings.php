@@ -37,7 +37,10 @@ class SystemSettings
     /**
      * Setting value (stored as JSON for flexibility)
      */
-    #[ORM\Column(type: Types::JSON)]
+    // Nullable: an encrypted setting stores its ciphertext in encrypted_value
+    // and leaves value NULL (previously this column was NOT NULL, so the
+    // encrypted-setting path could never actually persist).
+    #[ORM\Column(type: Types::JSON, nullable: true)]
     private mixed $value = null;
 
     /**
