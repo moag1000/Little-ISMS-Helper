@@ -105,9 +105,14 @@ export default class extends Controller {
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         const link = event.target.closest('a[data-turbo-frame="fa-drawer"]');
         if (!link || link.target === '_blank') return;
-        // Let Turbo perform the navigation into the frame; we just present the
-        // shell + skeleton immediately so the panel animates in without delay.
-        this.#showSkeleton();
+
+        // Show a skeleton ONLY for triggers outside the frame (list rows) — for
+        // an in-frame link (e.g. the detail "Edit" button) wiping the frame here
+        // would destroy the link before Turbo handles it and fall back to a full
+        // page navigation. Let Turbo perform the frame navigation either way.
+        if (!this.frameTarget.contains(link)) {
+            this.#showSkeleton();
+        }
         this.open();
     }
 
