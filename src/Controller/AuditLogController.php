@@ -81,16 +81,17 @@ class AuditLogController extends AbstractController
             'userName' => $request->query->get('userName'),
             'dateFrom' => $request->query->get('dateFrom') ? new DateTime($request->query->get('dateFrom')) : null,
             'dateTo' => $request->query->get('dateTo') ? new DateTime($request->query->get('dateTo')) : null,
-            'limit' => $limit
         ];
 
         // Remove empty filters
         $filters = array_filter($filters, fn(int|DateTime|string|null $value): bool => $value !== null && $value !== '');
 
-        // Get logs based on filters
-        if (count($filters) > 1) { // More than just 'limit'
-            $auditLogs = $this->auditLogRepository->search($filters);
-            $totalLogs = count($auditLogs); // Simplified for filtered results
+        // Get logs based on filters. countSearch() gives the REAL total so
+        // pagination is correct; search() pages via limit+offset (previously the
+        // total was just count() of the capped page → always 1 page when filtered).
+        if (count($filters) > 0) {
+            $totalLogs = $this->auditLogRepository->countSearch($filters);
+            $auditLogs = $this->auditLogRepository->search($filters + ['limit' => $limit, 'offset' => $offset]);
         } else {
             $auditLogs = $this->auditLogRepository->findAllOrdered($limit, $offset);
             $totalLogs = $this->auditLogRepository->countAll();

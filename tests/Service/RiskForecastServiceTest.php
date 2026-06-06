@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Asset;
+use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Repository\AssetRepository;
+use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Service\RiskForecastService;
@@ -30,6 +32,7 @@ class RiskForecastServiceTest extends TestCase
     private MockObject $incidentRepository;
     private MockObject $assetRepository;
     private MockObject $tenantContext;
+    private MockObject $controlRepository;
     private RiskForecastService $service;
 
     protected function setUp(): void
@@ -38,13 +41,43 @@ class RiskForecastServiceTest extends TestCase
         $this->incidentRepository = $this->createMock(IncidentRepository::class);
         $this->assetRepository = $this->createMock(AssetRepository::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
+        $this->controlRepository = $this->createMock(ControlRepository::class);
 
         $this->service = new RiskForecastService(
             $this->riskRepository,
             $this->incidentRepository,
             $this->assetRepository,
             $this->tenantContext,
+            $this->controlRepository,
         );
+    }
+
+    #[Test]
+    public function testAnomalyDetectionFlagsOverdueControlsAsDrift(): void
+    {
+        $this->riskRepository->method('findAll')->willReturn([]);
+        $this->incidentRepository->method('findAll')->willReturn([]);
+
+        $overdue = new Control();
+        $overdue->setControlId('A.8.16');
+        $overdue->setName('Monitoring');
+        $overdue->setNextReviewDate(new \DateTime('-40 days'));
+
+        $current = new Control();
+        $current->setControlId('A.5.1');
+        $current->setNextReviewDate(new \DateTime('+30 days'));
+
+        $this->controlRepository->method('findAll')->willReturn([$overdue, $current]);
+
+        $result = $this->service->getAnomalyDetection();
+
+        // Real control-drift detection (previously detectControlDrift() always
+        // returned [] so this counter was permanently 0).
+        self::assertSame(1, $result['by_type']['control_drift']);
+        $drift = array_values(array_filter($result['anomalies'], fn($a) => $a['type'] === 'control_drift'));
+        self::assertCount(1, $drift);
+        self::assertSame(1, $drift[0]['count']);
+        self::assertStringContainsString('A.8.16', $drift[0]['message']);
     }
 
     // ==================== getRiskForecast() Tests ====================
