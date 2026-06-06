@@ -20,3 +20,23 @@
 tbody tr:has(.fa-row-link):hover {
     background: var(--surface-2, rgba(120, 160, 255, 0.06));
 }
+
+/* The drawer content is wrapped in a <turbo-frame> between the flex-column
+   .fa-drawer and its header/body/footer. Without this the frame is a plain
+   block, the body's flex:1/overflow never applies, and the sticky footer
+   (Save) scrolls out of view. Make the frame the flex column itself. */
+.fa-drawer > turbo-frame {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+}
+.fa-drawer__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+.fa-drawer__footer {
+    flex: 0 0 auto;
+}
