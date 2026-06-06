@@ -20,6 +20,58 @@ planning:
     visibility:
         all: Alle
         team: 'Nach Team'
+    action_item:
+        title:
+            list: Maßnahmen
+            create: 'Maßnahme anlegen'
+            edit: 'Maßnahme bearbeiten'
+        action:
+            create: 'Maßnahme anlegen'
+            transition: 'Status ändern'
+        filter:
+            label: Filter
+            all: Alle
+            open: Offen
+            due: Fällig
+            recurring: Wiederkehrend
+        col:
+            title: Ereignis
+            origin: Herkunft
+            roadmap_task: Kategorie
+            due_date: Zieldatum
+            planned_effort_pt: 'Aufwand (PT)'
+            status: Status
+        status:
+            open: Offen
+            planned: Geplant
+            in_progress: 'In Bearbeitung'
+            done: Erledigt
+            dismissed: Verworfen
+        origin:
+            internal: 'Intern (KVP)'
+        field:
+            title: Ereignis
+            roadmap_task: Kategorie
+            roadmap_task_placeholder: 'Kategorie wählen …'
+            responsible_user: 'Verantwortlich (Benutzer)'
+            responsible_user_placeholder: 'Benutzer wählen …'
+            responsible_person: 'Verantwortlich (Person)'
+            responsible_person_placeholder: 'Person wählen …'
+            teams: Teams
+            due_date: Zieldatum
+            planned_effort_pt: 'Geplanter Aufwand (PT)'
+            evidence_document: Nachweis
+            evidence_document_placeholder: 'Dokument wählen …'
+            recurrence_months: 'Wiederholung (Monate)'
+        success:
+            created: 'Maßnahme angelegt.'
+            updated: 'Maßnahme gespeichert.'
+            deleted: 'Maßnahme gelöscht.'
+            transitioned: 'Status geändert.'
+        error:
+            invalid_transition: 'Statuswechsel nicht erlaubt.'
+        message:
+            no_items: 'Noch keine Maßnahmen angelegt.'
     team:
         title:
             list: Teams

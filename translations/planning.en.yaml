@@ -20,6 +20,58 @@ planning:
     visibility:
         all: All
         team: 'By team'
+    action_item:
+        title:
+            list: Measures
+            create: 'New measure'
+            edit: 'Edit measure'
+        action:
+            create: 'New measure'
+            transition: 'Change status'
+        filter:
+            label: Filter
+            all: All
+            open: Open
+            due: Due
+            recurring: Recurring
+        col:
+            title: Item
+            origin: Origin
+            roadmap_task: Category
+            due_date: 'Due date'
+            planned_effort_pt: 'Effort (PD)'
+            status: Status
+        status:
+            open: Open
+            planned: Planned
+            in_progress: 'In progress'
+            done: Done
+            dismissed: Dismissed
+        origin:
+            internal: 'Internal (CIP)'
+        field:
+            title: Item
+            roadmap_task: Category
+            roadmap_task_placeholder: 'Select category …'
+            responsible_user: 'Responsible (user)'
+            responsible_user_placeholder: 'Select user …'
+            responsible_person: 'Responsible (person)'
+            responsible_person_placeholder: 'Select person …'
+            teams: Teams
+            due_date: 'Due date'
+            planned_effort_pt: 'Planned effort (PD)'
+            evidence_document: Evidence
+            evidence_document_placeholder: 'Select document …'
+            recurrence_months: 'Recurrence (months)'
+        success:
+            created: 'Measure created.'
+            updated: 'Measure saved.'
+            deleted: 'Measure deleted.'
+            transitioned: 'Status changed.'
+        error:
+            invalid_transition: 'Status change not allowed.'
+        message:
+            no_items: 'No measures yet.'
     team:
         title:
             list: Teams

@@ -213,6 +213,8 @@ class BackupService
         'Team',                     // FK: Tenant, User, Person — JOINED-inheritance base
         'RoadmapGroup',             // FK: Tenant, Team
         'RoadmapTask',              // FK: Tenant, RoadmapGroup, Team
+        'ActionItem',               // FK: Tenant, User, Person, RoadmapTask, Document, self
+        'ActionItemReference',      // FK: ActionItem, Tenant — polymorphic provenance link
     ];
 
     // Entities deliberately NOT backed up — enforced by Gate 43

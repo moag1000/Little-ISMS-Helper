@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'planning' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'planning.action_item.title.edit'|trans({}, 'planning') }} - {{ item.title }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.planning'|trans({}, 'nav'), url: path('app_planning_action_item_index') },
+            { label: item.title, url: path('app_planning_action_item_index') },
+            { label: 'common.edit'|trans({}, 'messages') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: 'planning.action_item.title.edit'|trans({}, 'planning') ~ ': ' ~ item.title,
+        badge: { icon: 'ui-edit', label: '' },
+        actions: [
+            { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_planning_action_item_index'), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
+
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</div>
+{% endblock %}

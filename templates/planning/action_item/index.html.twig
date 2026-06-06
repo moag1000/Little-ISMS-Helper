@@ -1,0 +1,162 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'planning' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+
+{% block title %}{{ 'planning.action_item.title.list'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.planning'|trans({}, 'nav') }
+        ]
+    } %}
+</div>
+
+{{ _fa_page_header.render({
+    badge: { icon: 'calendar-check', label: 'nav.planning'|trans({}, 'nav') },
+    title: 'planning.action_item.title.list'|trans({}, 'planning'),
+    actions: [
+        { label: 'planning.action_item.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_action_item_new') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
+
+<div class="container mb-3">
+    <div class="fa-filter-chip-group" role="group" aria-label="{{ 'planning.action_item.filter.label'|trans({}, 'planning') }}">
+        {{ _fa_filter_chip.render(
+            'planning.action_item.filter.all'|trans({}, 'planning'),
+            { href: path('app_planning_action_item_index', {filter: 'all'}), active: filter == 'all' }
+        ) }}
+        {{ _fa_filter_chip.render(
+            'planning.action_item.filter.open'|trans({}, 'planning'),
+            { href: path('app_planning_action_item_index', {filter: 'open'}), active: filter == 'open' }
+        ) }}
+        {{ _fa_filter_chip.render(
+            'planning.action_item.filter.due'|trans({}, 'planning'),
+            { href: path('app_planning_action_item_index', {filter: 'due'}), active: filter == 'due', icon: 'clock' }
+        ) }}
+        {{ _fa_filter_chip.render(
+            'planning.action_item.filter.recurring'|trans({}, 'planning'),
+            { href: path('app_planning_action_item_index', {filter: 'recurring'}), active: filter == 'recurring', icon: 'arrow-repeat' }
+        ) }}
+    </div>
+</div>
+
+{% embed '_components/_fa_table.html.twig' with { id: 'action-item-list', striped: false } %}
+    {% block table_head %}
+        <tr>
+            <th scope="col" class="fa-table__th">{{ 'planning.action_item.col.title'|trans({}, 'planning') }}</th>
+            <th scope="col" class="fa-table__th">{{ 'planning.action_item.col.origin'|trans({}, 'planning') }}</th>
+            <th scope="col" class="fa-table__th">{{ 'planning.action_item.col.roadmap_task'|trans({}, 'planning') }}</th>
+            <th scope="col" class="fa-table__th">{{ 'planning.action_item.col.due_date'|trans({}, 'planning') }}</th>
+            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'planning.action_item.col.planned_effort_pt'|trans({}, 'planning') }}</th>
+            <th scope="col" class="fa-table__th">{{ 'planning.action_item.col.status'|trans({}, 'planning') }}</th>
+            <th scope="col" class="fa-table__th fa-table__th--actions"><span class="visually-hidden">{{ 'common.actions'|trans({}, 'messages') }}</span></th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+        {% set statusVariants = {
+            'open':        'secondary',
+            'planned':     'info',
+            'in_progress': 'primary',
+            'done':        'success',
+            'dismissed':   'secondary'
+        } %}
+        {% for item in items %}
+        <tr class="fa-table__row">
+            <td class="fa-table__cell">
+                <strong>{{ item.title }}</strong>
+            </td>
+            <td class="fa-table__cell">
+                {% include '_components/_badge.html.twig' with {
+                    variant: 'info',
+                    content: ('planning.action_item.origin.' ~ item.origin)|trans({}, 'planning')
+                } %}
+            </td>
+            <td class="fa-table__cell">
+                {% if item.roadmapTask %}
+                    {{ item.roadmapTask.name }}
+                {% else %}
+                    <span class="text-muted-color">-</span>
+                {% endif %}
+            </td>
+            <td class="fa-table__cell">
+                {% if item.dueDate %}
+                    <time datetime="{{ item.dueDate|date('Y-m-d') }}">{{ item.dueDate|date('d.m.Y') }}</time>
+                {% else %}
+                    <span class="text-muted-color">-</span>
+                {% endif %}
+            </td>
+            <td class="fa-table__cell fa-table__cell--num">
+                {% if item.plannedEffortPt is not null %}
+                    {{ item.plannedEffortPt|number_format(1) }}
+                {% else %}
+                    <span class="text-muted-color">-</span>
+                {% endif %}
+            </td>
+            <td class="fa-table__cell">
+                {% include '_components/_badge.html.twig' with {
+                    variant: statusVariants[item.status]|default('secondary'),
+                    content: ('planning.action_item.status.' ~ item.status)|trans({}, 'planning')
+                } %}
+            </td>
+            <td class="fa-table__cell fa-table__cell--actions">
+                <div class="btn-group btn-group-sm" role="group">
+                    <a href="{{ path('app_planning_action_item_edit', {id: item.id}) }}"
+                       class="fa-cyber-btn fa-cyber-btn--ghost"
+                       aria-label="{{ 'planning.common.edit'|trans({}, 'planning') }} {{ item.title|e }}">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                    </a>
+                    <form method="post" action="{{ path('app_planning_action_item_delete', {id: item.id}) }}" style="display:inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete'~item.id) }}">
+                        <button type="submit"
+                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--danger"
+                                aria-label="{{ 'planning.common.delete'|trans({}, 'planning') }} {{ item.title|e }}"
+                                onclick="return confirm('{{ 'planning.common.confirm_delete'|trans({}, 'planning')|e('js') }}')">
+                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                    {% set itemTransitions = transitions[item.id]|default([]) %}
+                    {% if itemTransitions|length > 0 %}
+                    <div class="dropdown">
+                        <button class="fa-cyber-btn fa-cyber-btn--ghost dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                aria-label="{{ 'planning.action_item.action.transition'|trans({}, 'planning') }}">
+                            <i class="fa-icon fa-icon--workflow" aria-hidden="true"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% for target in itemTransitions %}
+                            <li>
+                                <form method="post" action="{{ path('app_planning_action_item_transition', {id: item.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('transition'~item.id) }}">
+                                    <input type="hidden" name="to" value="{{ target }}">
+                                    <button type="submit" class="dropdown-item">
+                                        {{ ('planning.action_item.status.' ~ target)|trans({}, 'planning') }}
+                                    </button>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" class="fa-table__empty text-center">
+                {{ 'planning.action_item.message.no_items'|trans({}, 'planning') }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
+
+</main>
+{% endblock %}
