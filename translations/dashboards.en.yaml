@@ -274,6 +274,7 @@ board:
         metric: 'Metric'
         change: 'Change'
         target: 'Target'
+        no_history: 'No comparison data yet (snapshot missing)'
 
 # DPO (Data Protection Officer) Dashboard — Art. 39 GDPR
 dpo:

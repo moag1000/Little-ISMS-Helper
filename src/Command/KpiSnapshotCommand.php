@@ -10,8 +10,10 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\KpiSnapshotRepository;
 use App\Repository\SystemSettingsRepository;
 use App\Repository\TenantRepository;
+use App\Service\ComplianceAnalyticsService;
 use App\Service\DashboardStatisticsService;
 use App\Service\MrisKpiService;
+use App\Service\TenantContext;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,6 +68,8 @@ class KpiSnapshotCommand
         private readonly ?SystemSettingsRepository $systemSettingsRepository = null,
         private readonly ?TisaxMaturityAssessmentService $tisaxAssessment = null,
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
+        private readonly ?ComplianceAnalyticsService $complianceAnalyticsService = null,
+        private readonly ?TenantContext $tenantContext = null,
     ) {
     }
 
@@ -215,6 +219,17 @@ class KpiSnapshotCommand
         // Core KPIs
         if (isset($kpis['core']['control_compliance']['value'])) {
             $data['control_compliance'] = $kpis['core']['control_compliance']['value'];
+        }
+
+        // Framework-average compliance — powers the Board + executive-summary
+        // compliance trend. getFrameworkComparison() reads the tenant from the
+        // context, so set it explicitly for this batch (CLI has no request).
+        if ($this->complianceAnalyticsService !== null && $this->tenantContext !== null) {
+            $this->tenantContext->setCurrentTenant($tenant);
+            $avg = $this->complianceAnalyticsService->getFrameworkComparison()['summary']['average_compliance'] ?? null;
+            if (is_numeric($avg)) {
+                $data['average_compliance'] = $avg;
+            }
         }
 
         // Risk management KPIs
