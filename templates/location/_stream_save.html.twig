@@ -1,0 +1,12 @@
+{# Turbo Stream returned after a successful in-drawer save: append the new row
+   or replace the edited one. fa_drawer_controller closes the panel on the
+   successful turbo:submit-end. #}
+{% if is_new %}
+    <turbo-stream action="append" target="location-rows">
+        <template>{% include 'location/_row.html.twig' with { location: location } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="location-row-{{ location.id }}">
+        <template>{% include 'location/_row.html.twig' with { location: location } %}</template>
+    </turbo-stream>
+{% endif %}

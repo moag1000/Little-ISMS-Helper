@@ -229,6 +229,7 @@ common:
     date_to: 'Datum bis'
     details: Details
     download: Herunterladen
+    open_full_view: 'Vollansicht öffnen'
     error: Fehler
     error.invalid_csrf: 'Ungültiges Sicherheitstoken. Bitte laden Sie die Seite neu und versuchen Sie es erneut.'
     error.access_denied: 'Zugriff verweigert.'

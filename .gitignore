@@ -95,3 +95,6 @@ __pycache__/
 /vendor
 /assets/vendor
 /public/assets
+
+# Brainstorming visual-companion artifacts
+.superpowers/

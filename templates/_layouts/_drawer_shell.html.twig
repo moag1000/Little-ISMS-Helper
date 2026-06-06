@@ -1,0 +1,31 @@
+{# Slim drawer shell — wraps in-frame Detail/Edit/New content in the
+   <turbo-frame id="fa-drawer"> + fa-drawer header/body/footer chrome.
+
+   Embed it and fill the blocks:
+     {% embed '_layouts/_drawer_shell.html.twig' with { eyebrow: '…', title: '…' } %}
+       {% block body %}…{% endblock %}
+       {% block footer %}…{% endblock %}
+     {% endembed %}
+
+   The header/body/footer classes come from the existing fa-drawer CSS; the
+   panel open/close + focus/ESC/dirty-guard are handled by fa_drawer_controller
+   on the host in base.html.twig. #}
+<turbo-frame id="fa-drawer">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            {% if eyebrow is defined and eyebrow %}<div class="fa-drawer__eyebrow">{{ eyebrow }}</div>{% endif %}
+            <div class="fa-drawer__title">{% block title %}{{ title|default('') }}{% endblock %}</div>
+        </div>
+        <button type="button" class="fa-drawer__close"
+                data-action="fa-drawer#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        {% block body %}{% endblock %}
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        {% block footer %}{% endblock %}
+    </div>
+</turbo-frame>

@@ -1,0 +1,56 @@
+{# Single DPIA table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. #}
+{% trans_default_domain 'privacy' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
+{% set status_class = {'draft':'secondary','in_review':'info','approved':'success','rejected':'danger','requires_revision':'warning'}[dpia.status] %}
+{% set risk_map = {'low':'success','medium':'info','high':'warning','critical':'danger'} %}
+<tr id="dpia-row-{{ dpia.id }}">
+    <td class="bulk-select-column">
+        <input type="checkbox" class="form-check-input" data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem" value="{{ dpia.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ dpia.referenceNumber }}">
+    </td>
+    <td><a href="{{ path('app_dpia_show', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link">{{ dpia.referenceNumber }}</a></td>
+    <td>{{ dpia.title }}</td>
+    <td>{% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}</td>
+    <td>
+        {% if dpia.riskLevel %}{% include '_components/_badge.html.twig' with { variant: risk_map[dpia.riskLevel], content: dpia.riskLevel|upper } %}
+        {% else %}<span class="text-muted">-</span>{% endif %}
+    </td>
+    <td>
+        {% if dpia.residualRiskLevel %}{% include '_components/_badge.html.twig' with { variant: risk_map[dpia.residualRiskLevel], content: dpia.residualRiskLevel|upper } %}
+        {% else %}<span class="text-muted">-</span>{% endif %}
+    </td>
+    <td>
+        {% set percentage = dpia.completenessPercentage %}
+        {{ _fa_progress.render({ value: percentage, tone: percentage == 100 ? 'success' : 'warning', showText: true }) }}
+    </td>
+    <td>
+        {% if dpia.dpoConsultationDate %}
+            <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'dpia.index.dpo_consulted'|trans({}, 'privacy') }} {{ dpia.dpoConsultationDate|date('Y-m-d') }}"></i>
+        {% else %}
+            <i class="fa-icon fa-icon--status-critical" aria-hidden="true" title="{{ 'dpia.index.dpo_not_yet_consulted'|trans({}, 'privacy') }}"></i>
+        {% endif %}
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_dpia_show', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--ghost"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if dpia.status in ['draft', 'requires_revision'] %}
+                <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal"
+                   class="fa-cyber-btn fa-cyber-btn--ghost"
+                   title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                </a>
+            {% endif %}
+            <a href="{{ path('app_dpia_export_pdf', {id: dpia.id}) }}" class="fa-cyber-btn fa-cyber-btn--success"
+               data-turbo-prefetch="false" data-turbo="false"
+               title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
+            </a>
+        </div>
+    </td>
+</tr>
