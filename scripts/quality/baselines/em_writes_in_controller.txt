@@ -1,5 +1,10 @@
 # check_em_writes_in_controller.py baseline
 # Format: <relative-path>:<line>
+src/Controller/ActionItemController.php:106
+src/Controller/ActionItemController.php:107
+src/Controller/ActionItemController.php:138
+src/Controller/ActionItemController.php:165
+src/Controller/ActionItemController.php:166
 src/Controller/Admin/AdminPolicyStyleController.php:68
 src/Controller/Admin/AdminPolicyStyleController.php:69
 src/Controller/Admin/AdminPolicyStyleController.php:172
@@ -327,6 +332,9 @@ src/Controller/PersonController.php:75
 src/Controller/PersonController.php:134
 src/Controller/PersonController.php:154
 src/Controller/PersonController.php:155
+src/Controller/PlanningAdminController.php:169
+src/Controller/PlanningSettingsController.php:98
+src/Controller/PlanningSettingsController.php:100
 src/Controller/ProcessingActivityController.php:693
 src/Controller/ProfileController.php:106
 src/Controller/ProfileController.php:174
@@ -376,6 +384,19 @@ src/Controller/RiskTreatmentPlanController.php:104
 src/Controller/RiskTreatmentPlanController.php:142
 src/Controller/RiskTreatmentPlanController.php:162
 src/Controller/RiskTreatmentPlanController.php:163
+src/Controller/RoadmapController.php:214
+src/Controller/RoadmapController.php:221
+src/Controller/RoadmapController.php:227
+src/Controller/RoadmapGroupController.php:63
+src/Controller/RoadmapGroupController.php:64
+src/Controller/RoadmapGroupController.php:90
+src/Controller/RoadmapGroupController.php:113
+src/Controller/RoadmapGroupController.php:114
+src/Controller/RoadmapTaskController.php:63
+src/Controller/RoadmapTaskController.php:64
+src/Controller/RoadmapTaskController.php:90
+src/Controller/RoadmapTaskController.php:113
+src/Controller/RoadmapTaskController.php:114
 src/Controller/RoleManagementController.php:51
 src/Controller/RoleManagementController.php:52
 src/Controller/RoleManagementController.php:160
@@ -390,6 +411,8 @@ src/Controller/ScheduledReportController.php:137
 src/Controller/ScheduledReportController.php:192
 src/Controller/ScheduledReportController.php:193
 src/Controller/SeedReviewQueueController.php:95
+src/Controller/SourceConversionController.php:91
+src/Controller/SourceConversionController.php:99
 src/Controller/StatementOfApplicabilityController.php:377
 src/Controller/StatementOfApplicabilityController.php:417
 src/Controller/StatementOfApplicabilityController.php:467
@@ -402,6 +425,11 @@ src/Controller/SupplierController.php:352
 src/Controller/SupplierController.php:382
 src/Controller/SupplierController.php:383
 src/Controller/SystemTemplateApplyController.php:65
+src/Controller/TeamController.php:64
+src/Controller/TeamController.php:65
+src/Controller/TeamController.php:92
+src/Controller/TeamController.php:115
+src/Controller/TeamController.php:116
 src/Controller/TenantManagementController.php:122
 src/Controller/TenantManagementController.php:123
 src/Controller/TenantManagementController.php:287

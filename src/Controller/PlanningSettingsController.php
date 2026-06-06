@@ -56,7 +56,7 @@ final class PlanningSettingsController extends AbstractController
                 'roadmapHorizonWeeks' => $settings->getRoadmapHorizonWeeks(),
                 'overbookingThresholdPct' => $settings->getOverbookingThresholdPct(),
                 'scopes' => implode("\n", $settings->getScopes()),
-            ])
+            ], ['translation_domain' => 'planning'])
             ->add('defaultRecurrenceMonths', IntegerType::class, [
                 'label' => 'planning.settings.field.default_recurrence_months',
                 'attr' => ['min' => 1],
@@ -77,7 +77,6 @@ final class PlanningSettingsController extends AbstractController
                 'help' => 'planning.settings.help.scopes',
             ])
             ->add('save', SubmitType::class, ['label' => 'common.save'])
-            ->setTranslationDomain('planning')
             ->getForm();
 
         $form->handleRequest($request);

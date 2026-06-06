@@ -8,6 +8,7 @@ use App\Repository\UnavailabilityCalendarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * One non-availability calendar per tenant: public holidays (single days) +
@@ -26,6 +27,7 @@ class UnavailabilityCalendar
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     /** @var Collection<int, UnavailabilityPeriod> */

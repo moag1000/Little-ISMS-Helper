@@ -10,8 +10,11 @@ use App\Entity\Person;
 use App\Entity\RoadmapTask;
 use App\Entity\Team;
 use App\Entity\User;
+use App\Repository\PlanningSettingsRepository;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -23,15 +26,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * ActionItem form (Maßnahmenplanung).
  *
  * Status is intentionally excluded — status transitions are managed exclusively
- * via ActionItemStatusService::transition(). Origin and scopes are system-managed.
+ * via ActionItemStatusService::transition(). Origin is system-managed. The scope
+ * (Geltungsbereich) choices are drawn from the tenant's PlanningSettings list.
  * Implements SectionMapInterface per S4 Foundation P-2.
  */
 final class ActionItemType extends AbstractType implements SectionMapInterface
 {
+    public function __construct(
+        private readonly TenantContext $tenantContext,
+        private readonly PlanningSettingsRepository $settingsRepository,
+    ) {
+    }
+
     public static function getSectionMap(): array
     {
         return [
-            'overview'       => ['title', 'roadmapTask'],
+            'overview'       => ['title', 'roadmapTask', 'scopes'],
             'responsibility' => ['responsibleUser', 'responsiblePerson', 'teams'],
             'schedule'       => ['dueDate', 'plannedEffortPt', 'recurrenceMonths'],
             'evidence'       => ['evidenceDocument'],
@@ -40,6 +50,15 @@ final class ActionItemType extends AbstractType implements SectionMapInterface
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $scopeChoices = [];
+        if ($tenant !== null) {
+            $settings = $this->settingsRepository->findForTenant($tenant);
+            foreach ($settings?->getScopes() ?? [] as $scope) {
+                $scopeChoices[$scope] = $scope;
+            }
+        }
+
         $builder
             ->add('title', TextType::class, [
                 'label'    => 'planning.action_item.field.title',
@@ -98,6 +117,15 @@ final class ActionItemType extends AbstractType implements SectionMapInterface
                 'label'    => 'planning.action_item.field.recurrence_months',
                 'required' => false,
                 'attr'     => ['min' => 1],
+            ])
+            ->add('scopes', ChoiceType::class, [
+                'label'        => 'planning.action_item.field.scopes',
+                'choices'      => $scopeChoices,
+                'multiple'     => true,
+                'required'     => false,
+                'placeholder'  => false,
+                'attr'         => ['data-controller' => 'tom-select'],
+                'help'         => 'planning.action_item.field.scopes_help',
             ])
         ;
     }

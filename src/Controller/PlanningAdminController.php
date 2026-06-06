@@ -125,7 +125,7 @@ final class PlanningAdminController extends AbstractController
         $form = $this->createFormBuilder([
                 'ismsAvailabilityPct' => $person->getIsmsAvailabilityPct(),
                 'teams' => $currentTeams,
-            ])
+            ], ['translation_domain' => 'planning'])
             ->add('ismsAvailabilityPct', NumberType::class, [
                 'label' => 'planning.person.field.availability',
                 'scale' => 2,
@@ -144,7 +144,6 @@ final class PlanningAdminController extends AbstractController
                 'attr' => ['data-controller' => 'tom-select'],
             ])
             ->add('save', SubmitType::class, ['label' => 'common.save'])
-            ->setTranslationDomain('planning')
             ->getForm();
 
         $form->handleRequest($request);

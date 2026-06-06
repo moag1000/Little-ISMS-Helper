@@ -25,6 +25,7 @@
     {{ form_start(form) }}
     {% include '_components/_auto_form.html.twig' with {
         'form': form,
+        'exclude': [],
         'actions': {
             'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
             'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }

@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\ActionItemReferenceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Polymorphic provenance link (0..N) from an {@see ActionItem} to a source entity
@@ -33,6 +34,7 @@ class ActionItemReference
 
     /** Source-adapter slug, or 'compliance_requirement' / 'clause'. */
     #[ORM\Column(length: 40)]
+    #[Assert\NotBlank]
     private ?string $refType = null;
 
     #[ORM\Column]

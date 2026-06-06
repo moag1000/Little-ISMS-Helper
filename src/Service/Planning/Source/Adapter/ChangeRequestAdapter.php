@@ -37,7 +37,7 @@ final class ChangeRequestAdapter implements SourceAdapter
         return 'Change Request';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'change_requests';
     }

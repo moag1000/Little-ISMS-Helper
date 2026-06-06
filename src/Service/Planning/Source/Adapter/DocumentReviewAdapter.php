@@ -42,7 +42,7 @@ final class DocumentReviewAdapter implements SourceAdapter
         return 'Dokumenten-Review';
     }
 
-    public function requiredModule(): ?string
+    public function requiredModule(): string
     {
         return 'documents';
     }

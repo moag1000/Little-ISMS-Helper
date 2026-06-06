@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\SourceConversionConfigRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Per-tenant, per-source auto-conversion configuration for the resource-planning
@@ -26,6 +27,7 @@ class SourceConversionConfig
     private ?int $id = null;
 
     #[ORM\Column(length: 40)]
+    #[Assert\NotBlank]
     private ?string $sourceSlug = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]

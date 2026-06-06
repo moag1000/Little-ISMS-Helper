@@ -63,6 +63,8 @@ planning:
             evidence_document: Nachweis
             evidence_document_placeholder: 'Dokument wählen …'
             recurrence_months: 'Wiederholung (Monate)'
+            scopes: Geltungsbereich
+            scopes_help: 'Geltungsbereiche werden in den Planungs-Einstellungen gepflegt.'
         success:
             created: 'Maßnahme angelegt.'
             updated: 'Maßnahme gespeichert.'

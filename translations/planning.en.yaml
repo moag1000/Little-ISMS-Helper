@@ -63,6 +63,8 @@ planning:
             evidence_document: Evidence
             evidence_document_placeholder: 'Select document …'
             recurrence_months: 'Recurrence (months)'
+            scopes: Scope
+            scopes_help: 'Scopes are maintained in the planning settings.'
         success:
             created: 'Measure created.'
             updated: 'Measure saved.'

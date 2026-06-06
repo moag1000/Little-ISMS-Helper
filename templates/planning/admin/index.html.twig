@@ -143,7 +143,7 @@
                     {% for team in teams %}
                         <td class="text-center">
                             {% if matrix[task.id].all or matrix[task.id].teams[team.id] is defined %}
-                                <i class="bi bi-check-circle-fill text-success" title="{{ 'planning.matrix.visible'|trans({}, 'planning') }}"></i>
+                                <i class="fa-icon fa-icon--check-circle-fill text-success" title="{{ 'planning.matrix.visible'|trans({}, 'planning') }}"></i>
                             {% else %}
                                 <span class="text-muted">·</span>
                             {% endif %}
