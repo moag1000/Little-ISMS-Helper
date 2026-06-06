@@ -12,12 +12,14 @@ use App\Entity\Incident;
 use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
+use App\Repository\KpiSnapshotRepository;
 use App\Repository\RiskRepository;
 use App\Risk\RiskMatrixThresholds;
 use App\Service\AssetCriticalityService;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\ControlEffectivenessService;
 use App\Service\RiskForecastService;
+use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -50,6 +52,8 @@ class AnalyticsController extends AbstractController
         private readonly ControlEffectivenessService $controlEffectivenessService,
         private readonly RiskForecastService $riskForecastService,
         private readonly AssetCriticalityService $assetCriticalityService,
+        private readonly KpiSnapshotRepository $kpiSnapshotRepository,
+        private readonly TenantContext $tenantContext,
     ) {}
     #[Route('', name: 'app_analytics_dashboard', methods: ['GET'])]
     public function dashboard(): Response
@@ -405,35 +409,31 @@ class AnalyticsController extends AbstractController
 
         return round($total / count($radarData), 1);
     }
+    /**
+     * Real historical risk trend from the monthly KpiSnapshot — replaces the
+     * old fabricated history that recounted today's risks at TODAY's severity
+     * for every past month. Months without a snapshot are absent (honest gap).
+     */
     private function getRiskTrend(int $months): array
     {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            return [];
+        }
         $trend = [];
-        $now = new DateTime();
-
-        for ($i = $months - 1; $i >= 0; $i--) {
-            $date = (clone $now)->modify("-{$i} months");
-            $monthStart = (clone $date)->modify('first day of this month')->setTime(0, 0);
-            $monthEnd = (clone $date)->modify('last day of this month')->setTime(23, 59, 59);
-
-            $risks = $this->riskRepository->findAll();
-            $monthRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getCreatedAt() <= $monthEnd);
-
-            // Count by level (using thresholds: 15/8/4)
-            $low = count(array_filter($monthRisks, fn(Risk $risk): bool => $risk->getInherentRiskLevel() < 4));
-            $medium = count(array_filter($monthRisks, fn(Risk $risk): bool => $risk->getInherentRiskLevel() >= 4 && $risk->getInherentRiskLevel() < 8));
-            $high = count(array_filter($monthRisks, fn(Risk $risk): bool => $risk->getInherentRiskLevel() >= 8 && $risk->getInherentRiskLevel() < 15));
-            $critical = count(array_filter($monthRisks, fn(Risk $risk): bool => $risk->getInherentRiskLevel() >= 15));
-
+        foreach ($this->kpiSnapshotRepository->findMonthlySnapshots($tenant, $months) as $snapshot) {
+            $data = $snapshot->getKpiData();
+            $total = (int) ($data['total_risks'] ?? 0);
+            $critical = (int) ($data['critical_risks'] ?? 0);
+            $high = (int) ($data['high_risks'] ?? 0);
             $trend[] = [
-                'month' => $date->format('M Y'),
-                'low' => $low,
-                'medium' => $medium,
-                'high' => $high,
+                'month' => $snapshot->getSnapshotDate()->format('M Y'),
                 'critical' => $critical,
-                'total' => count($monthRisks)
+                'high' => $high,
+                'medium_low' => max(0, $total - $high - $critical), // snapshot has no finer split
+                'total' => $total,
             ];
         }
-
         return $trend;
     }
     private function getAssetTrend(int $months): array

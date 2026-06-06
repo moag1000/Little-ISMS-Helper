@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Risk\RiskMatrixThresholds;
 use App\Entity\Tenant;
 use App\Entity\WorkflowInstance;
 use App\Enum\RiskTreatmentPlanStatus;
@@ -503,7 +504,7 @@ class RoleDashboardService
 
         $criticalRisks = array_filter(
             $risks,
-            fn($r) => $r->getInherentRiskLevel() >= 16
+            fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::CRITICAL_MIN
         );
 
         usort($criticalRisks, fn($a, $b) => $b->getInherentRiskLevel() <=> $a->getInherentRiskLevel());
@@ -656,9 +657,9 @@ class RoleDashboardService
                 $byCategory[$category] = ['total' => 0, 'high' => 0, 'critical' => 0];
             }
             $byCategory[$category]['total']++;
-            if ($risk->getInherentRiskLevel() >= 16) {
+            if ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::CRITICAL_MIN) {
                 $byCategory[$category]['critical']++;
-            } elseif ($risk->getInherentRiskLevel() >= 12) {
+            } elseif ($risk->getInherentRiskLevel() >= RiskMatrixThresholds::HIGH_MIN) {
                 $byCategory[$category]['high']++;
             }
         }
@@ -669,7 +670,7 @@ class RoleDashboardService
     private function countHighCriticalRisks(): int
     {
         $risks = $this->riskRepository->findAll();
-        return count(array_filter($risks, fn($r) => $r->getInherentRiskLevel() >= 12));
+        return count(array_filter($risks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::HIGH_MIN));
     }
 
     private function getOverdueTreatmentPlans(): array

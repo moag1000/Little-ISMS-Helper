@@ -304,14 +304,9 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="small text-muted">{{ 'training.completion_rate'|trans({}, 'training') }}</span>
-                            <span class="small fw-bold">100%</span>
-                        </div>
-                        {{ _fa_progress.render({ value: 100, tone: 'success' }) }}
-                    </div>
+                    {# No completion-RATE bar: attendeeCount is derived from the
+                       participants collection, so a ratio would be a constant
+                       100%. Show the real attendee count instead of a fake %. #}
                     <div class="d-flex justify-content-between small">
                         <span class="text-muted">{{ 'training.attendee_count'|trans({}, 'training') }}:</span>
                         <span class="fw-bold">{{ training.attendeeCount ?? 0 }}</span>

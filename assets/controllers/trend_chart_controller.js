@@ -143,10 +143,12 @@ export default class extends Controller {
             this.charts.risk.destroy();
         }
 
+        // Series sourced from KpiSnapshot history: critical / high / (medium+low
+        // combined, since the snapshot stores no finer split below "high").
         const monthLabels = data.map(d => d.month);
-        const low = data.map(d => d.low);
-        const medium = data.map(d => d.medium);
+        const critical = data.map(d => d.critical);
         const high = data.map(d => d.high);
+        const mediumLow = data.map(d => d.medium_low);
         const colors = this.colors;
         const labels = this.labels;
 
@@ -158,22 +160,22 @@ export default class extends Controller {
                 labels: monthLabels,
                 datasets: [
                     {
-                        label: labels.high,
-                        data: high,
+                        label: labels.critical,
+                        data: critical,
                         borderColor: colors.danger,
                         backgroundColor: colors.dangerBg,
                         tension: 0.4
                     },
                     {
-                        label: labels.medium,
-                        data: medium,
+                        label: labels.high,
+                        data: high,
                         borderColor: colors.warning,
                         backgroundColor: colors.warningBg,
                         tension: 0.4
                     },
                     {
-                        label: labels.low,
-                        data: low,
+                        label: labels.medium,
+                        data: mediumLow,
                         borderColor: colors.success,
                         backgroundColor: colors.successBg,
                         tension: 0.4

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\KpiSnapshot;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -206,13 +207,31 @@ class AnalyticsControllerTest extends WebTestCase
     #[Test]
     public function testTrendsAcceptsPeriodParameter(): void
     {
+        // The risk trend is now sourced from real KpiSnapshot history (one
+        // point per month that has a snapshot), not from a fabricated recount
+        // of today's risks. Seed 6 monthly snapshots → expect 6 data points.
+        for ($i = 0; $i < 6; $i++) {
+            $snapshot = new KpiSnapshot();
+            $snapshot->setTenant($this->testTenant);
+            $snapshot->setSnapshotDate(new \DateTimeImmutable("first day of -{$i} months"));
+            $snapshot->setKpiData([
+                'total_risks' => 10 + $i,
+                'high_risks' => 3,
+                'critical_risks' => 1,
+            ]);
+            $this->entityManager->persist($snapshot);
+        }
+        $this->entityManager->flush();
+
         $this->loginAsUser($this->testUser);
         $this->client->request('GET', '/en/analytics/api/trends?period=6');
         $this->assertResponseIsSuccessful();
 
         $response = json_decode($this->client->getResponse()->getContent(), true);
-        // With 6 months period, we should get 6 data points
+        // One data point per month with a snapshot.
         $this->assertCount(6, $response['risks']);
+        $this->assertSame(1, $response['risks'][0]['critical']);
+        $this->assertSame(3, $response['risks'][0]['high']);
     }
 
     // ========== EXPORT TESTS ==========
