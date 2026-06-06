@@ -709,6 +709,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->mfaTokens;
     }
 
+    /**
+     * Whether the user has at least one active MFA token, i.e. a second factor
+     * is enrolled. Mirrors MfaService::userHasMfaEnabled() but on the entity so
+     * request-time enforcement does not need the (final) service.
+     */
+    public function hasActiveMfaToken(): bool
+    {
+        foreach ($this->mfaTokens as $token) {
+            if ($token->isActive()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function addMfaToken(MfaToken $mfaToken): static
     {
         if (!$this->mfaTokens->contains($mfaToken)) {

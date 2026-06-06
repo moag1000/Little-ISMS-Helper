@@ -229,8 +229,8 @@ translations/locations.de.yaml:1:location
 translations/locations.en.yaml:1:location
 translations/management_reports.de.yaml:523:cert_readiness
 translations/management_reports.en.yaml:523:cert_readiness
-translations/mfa.de.yaml:154:mfa_token
-translations/mfa.en.yaml:153:mfa_token
+translations/mfa.de.yaml:155:mfa_token
+translations/mfa.en.yaml:154:mfa_token
 translations/patches.de.yaml:1:patch
 translations/patches.en.yaml:1:patch
 translations/people.de.yaml:1:person
