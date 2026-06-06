@@ -50,9 +50,9 @@
             <td class="text-center">{{ team.memberCount }}</td>
             <td>
                 {% if team.teamLead %}
-                    {{ team.teamLead.displayName ?? team.teamLead.email }}
+                    {{ team.teamLead.fullName ?? team.teamLead.email }}
                 {% elseif team.teamLeadPerson %}
-                    {{ team.teamLeadPerson.name }}
+                    {{ team.teamLeadPerson.fullName }}
                 {% else %}
                     <span class="text-muted-color">-</span>
                 {% endif %}
