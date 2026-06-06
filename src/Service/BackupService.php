@@ -215,6 +215,7 @@ class BackupService
         'RoadmapTask',              // FK: Tenant, RoadmapGroup, Team
         'ActionItem',               // FK: Tenant, User, Person, RoadmapTask, Document, self
         'ActionItemReference',      // FK: ActionItem, Tenant — polymorphic provenance link
+        'SourceConversionConfig',   // FK: Tenant — per-source auto-conversion settings
     ];
 
     // Entities deliberately NOT backed up — enforced by Gate 43

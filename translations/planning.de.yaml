@@ -175,3 +175,14 @@ planning:
         hint: 'Welche Roadmap-Tasks für welche Teams sichtbar sind. „Alle“ = für jedes Team sichtbar.'
         empty: 'Tasks und Teams anlegen, um die Matrix zu sehen.'
         visible: Sichtbar
+    sources:
+        title: 'Automatische Maßnahmen-Übernahme'
+        subtitle: 'Welche Quellmodule automatisch Maßnahmen erzeugen'
+        hint: 'Standardmäßig aus. Pro Quelle aktivieren, optional mit Zieldatum-Versatz (Tage) und Standard-Aufwand (PT).'
+        col:
+            source: Quelle
+            enabled: Aktiv
+            offset: 'Versatz (Tage)'
+            effort: 'Aufwand (PT)'
+        success:
+            saved: 'Einstellung gespeichert.'

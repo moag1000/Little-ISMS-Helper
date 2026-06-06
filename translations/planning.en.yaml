@@ -175,3 +175,14 @@ planning:
         hint: 'Which roadmap tasks are visible to which teams. "All" = visible to every team.'
         empty: 'Create tasks and teams to see the matrix.'
         visible: Visible
+    sources:
+        title: 'Automatic measure intake'
+        subtitle: 'Which source modules auto-create measures'
+        hint: 'Off by default. Enable per source, optionally with a due-date offset (days) and default effort (PD).'
+        col:
+            source: Source
+            enabled: Active
+            offset: 'Offset (days)'
+            effort: 'Effort (PD)'
+        success:
+            saved: 'Setting saved.'

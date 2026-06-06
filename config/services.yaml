@@ -190,11 +190,20 @@ services:
         # them without explicit public: true entries.
         App\Service\Compliance\FrameworkLoaderInterface:
             tags: ['app.framework_loader']
+        # Resource-Planning: source adapters auto-register so SourceAdapterRegistry
+        # collects them for the auto-conversion pipeline (Maßnahmen intake).
+        App\Service\Planning\Source\SourceAdapter:
+            tags: ['app.source_adapter']
 
     # S-2 Compliance-Framework-Loader registry: receives all tagged loaders.
     App\Service\Compliance\FrameworkLoaderRegistry:
         arguments:
             $loaders: !tagged_iterator app.framework_loader
+
+    # Resource-Planning source-adapter registry: receives all tagged adapters.
+    App\Service\Planning\Source\SourceAdapterRegistry:
+        arguments:
+            $adapters: !tagged_iterator app.source_adapter
 
     # Async-job dispatch facade. Selects between InRequestJobRunner (shared
     # hosting default) and MessengerJobRunner (opt-in for worker daemons)
