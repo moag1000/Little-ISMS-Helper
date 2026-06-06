@@ -4,7 +4,7 @@ focus_filter:
         overdue: 'Überfällig'
         nc_unreferenced: 'Ohne Norm-Bezug'
         privacy_sla: 'DSGVO-Frist (Art. 33)'
-        no_owner: 'Ohne Owner'
+        no_owner: 'Ohne Verantwortlichen'
         incident_linked: 'Mit offenen Vorfällen verknüpft'
         unpatched: 'Ungepatcht'
         no_ack: 'Ohne Lesebestätigung'

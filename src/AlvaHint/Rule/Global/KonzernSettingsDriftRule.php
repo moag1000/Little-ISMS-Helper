@@ -104,7 +104,10 @@ final class KonzernSettingsDriftRule extends AbstractGlobalAlvaHintRule
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.konzern_settings_drift.action',
             actionRoute: 'app_document_index',
-            actionRouteParams: [],
+            // The drift is "subsidiary has fewer approved docs than its parent",
+            // so open the inherited view — it shows the parent's documents the
+            // subsidiary can adopt, i.e. exactly what the hint is about.
+            actionRouteParams: ['view' => 'inherited'],
             actionMethod: 'GET',
             requiredRoles: ['ROLE_CISO'],
             mood: 'thinking',
