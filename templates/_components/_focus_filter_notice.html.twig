@@ -8,13 +8,17 @@
  #
  # Params:
  #   focus      - the active focus key (string|null); renders nothing when empty
- #   clear_url  - href to the unfiltered list (required when focus is set)
  #   count      - optional result count to show on the active chip (int|null)
+ #
+ # The "show all" link clears ONLY focus and keeps every other active filter:
+ # it rebuilds the current route's URL from the request query with focus=null
+ # (Symfony's URL generator drops null-valued params).
  #
  # Static (not concatenated) trans keys keep check_translation_dynamic_keys happy.
  #}
 {% if focus is defined and focus %}
     {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+    {% set clear_url = path(app.request.attributes.get('_route'), app.request.query.all|merge({ focus: null })) %}
     {% set focus_labels = {
         lifecycle_stuck:     'focus_filter.focus.lifecycle_stuck'|trans({}, 'focus_filter'),
         overdue:             'focus_filter.focus.overdue'|trans({}, 'focus_filter'),

@@ -22,7 +22,7 @@
         { label: 'audit_finding.action.new'|trans({}, 'audits'), href: path('app_audit_finding_new'), variant: 'primary', icon: 'plus' }
     ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'audit_finding', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
 }) }}
-    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), clear_url: path('app_audit_finding_index'), count: findings|default([])|length } %}
+    {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: findings|default([])|length } %}
 {% set _global_hints = alva_hints('audit_finding_index') %}
 {% if _global_hints|length > 0 %}
     {% for _h in _global_hints %}
