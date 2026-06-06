@@ -205,10 +205,18 @@
             </div>
             <div class="fa-form-layout__footer-actions">
                 {% if actions.close is defined %}
+                    {% if actions.close.href is defined %}
+                    <a href="{{ actions.close.href }}"
+                       class="fa-cyber-btn fa-cyber-btn--{{ actions.close.variant ?? 'ghost' }} fa-cyber-btn--sm">
+                        <span class="fa-cyber-btn__label">{{ actions.close.label }}</span>
+                    </a>
+                    {% else %}
                     <button type="button"
-                            class="fa-cyber-btn fa-cyber-btn--{{ actions.close.variant ?? 'ghost' }} fa-cyber-btn--sm">
+                            class="fa-cyber-btn fa-cyber-btn--{{ actions.close.variant ?? 'ghost' }} fa-cyber-btn--sm"
+                            {% if actions.close.action is defined %}data-action="{{ actions.close.action }}"{% endif %}>
                         <span class="fa-cyber-btn__label">{{ actions.close.label }}</span>
                     </button>
+                    {% endif %}
                 {% endif %}
                 {% if actions.next is defined %}
                     <button type="button"

@@ -257,6 +257,70 @@ class DPIAControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    // ========== IN-PAGE FORM-MODAL (Turbo Frame) TESTS ==========
+
+    #[Test]
+    public function testEditInFrameRendersFormModalPartial(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request(
+            'GET',
+            '/en/dpia/' . $this->testDPIA->getId() . '/edit',
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-form-modal"', $html);
+        self::assertStringContainsString('fa-form-layout--modal', $html);
+        self::assertStringContainsString('action="/en/dpia/' . $this->testDPIA->getId() . '/edit"', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
+    #[Test]
+    public function testEditWithoutFrameRendersFullPage(): void
+    {
+        $this->loginAsUser($this->testUser);
+        $this->client->request('GET', '/en/dpia/' . $this->testDPIA->getId() . '/edit');
+
+        $this->assertResponseIsSuccessful();
+        self::assertStringContainsString('<html', (string) $this->client->getResponse()->getContent());
+    }
+
+    #[Test]
+    public function testEditInFrameInvalidReturns422ModalPartial(): void
+    {
+        // The POST path is frame-aware: an invalid in-frame submit re-renders the
+        // slim form-modal partial with 422 (errors inline), not the full page.
+        // (The valid → Turbo-Stream path is identical to LocationController and
+        // covered there; the DPIA fixture is intentionally an incomplete draft.)
+        $this->loginAsUser($this->testUser);
+
+        $crawler = $this->client->request(
+            'GET',
+            '/en/dpia/' . $this->testDPIA->getId() . '/edit',
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+        $form = $crawler->filter('form')->first()->form();
+        $values = $form->getPhpValues();
+        // Force invalid: clear the required title.
+        $values['data_protection_impact_assessment']['title'] = '';
+
+        $this->client->request(
+            'POST',
+            $form->getUri(),
+            $values,
+            [],
+            ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-form-modal"', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
     // ========== DELETE TESTS ==========
 
     #[Test]
