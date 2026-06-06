@@ -25,6 +25,34 @@ class RiskTest extends TestCase
     }
 
     #[Test]
+    public function testInherentSeverityBandUsesCanonicalThresholds(): void
+    {
+        // Canonical bands (App\Risk\RiskMatrixThresholds): critical≥20, high≥12,
+        // medium≥6, low otherwise. Previously dashboards used divergent cutoffs.
+        $cases = [
+            [5, 5, 'critical'], // 25
+            [4, 5, 'critical'], // 20
+            [3, 5, 'high'],     // 15
+            [3, 4, 'high'],     // 12
+            [2, 5, 'medium'],   // 10
+            [2, 3, 'medium'],   // 6
+            [1, 5, 'low'],      // 5
+            [1, 1, 'low'],      // 1
+        ];
+
+        foreach ($cases as [$p, $i, $expected]) {
+            $risk = new Risk();
+            $risk->setProbability($p);
+            $risk->setImpact($i);
+            $this->assertSame(
+                $expected,
+                $risk->getInherentSeverityBand(),
+                sprintf('score %d (%dx%d)', $p * $i, $p, $i),
+            );
+        }
+    }
+
+    #[Test]
     public function testGetResidualRiskLevel(): void
     {
         $risk = new Risk();
