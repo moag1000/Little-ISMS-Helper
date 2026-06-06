@@ -354,7 +354,7 @@ class UserManagementController extends AbstractController
                     $user->getFirstName(),
                     $user->getLastName(),
                     $user->isActive() ? 'Yes' : 'No',
-                    'N/A', // MFA status - would need MfaTokenRepository to check
+                    $user->hasMfaEnabled() ? 'Yes' : 'No',
                     $user->getTenant() ? $user->getTenant()->getName() : '',
                     implode(', ', $roles),
                     $user->getAuthProvider(),

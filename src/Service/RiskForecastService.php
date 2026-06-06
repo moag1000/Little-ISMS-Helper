@@ -11,6 +11,7 @@ use App\Enum\RiskStatus;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\AssetRepository;
+use App\Repository\ControlRepository;
 use DateTimeInterface;
 
 /**
@@ -26,6 +27,7 @@ class RiskForecastService
         private readonly IncidentRepository $incidentRepository,
         private readonly AssetRepository $assetRepository,
         private readonly TenantContext $tenantContext,
+        private readonly ControlRepository $controlRepository,
     ) {
     }
 
@@ -580,9 +582,47 @@ class RiskForecastService
      */
     private function detectControlDrift(): array
     {
-        // This would be implemented with ControlRepository
-        // For now, return empty as we don't have direct access
-        return [];
+        $now = new \DateTime();
+        $controls = $this->controlRepository->findAll();
+
+        // Controls whose scheduled review date has passed have "drifted" — their
+        // assessed effectiveness is stale (ISO 27001 9.1 / A.5.36 monitoring).
+        $overdue = array_filter(
+            $controls,
+            static fn($control): bool => $control->getNextReviewDate() !== null
+                && $control->getNextReviewDate() < $now,
+        );
+
+        $overdueCount = count($overdue);
+        if ($overdueCount === 0) {
+            return [];
+        }
+
+        $total = count($controls);
+        $share = $total > 0 ? ($overdueCount / $total) : 0.0;
+
+        // Worst (longest-overdue) control drives the example message.
+        usort(
+            $overdue,
+            static fn($a, $b) => $a->getNextReviewDate() <=> $b->getNextReviewDate(),
+        );
+        $worst = $overdue[0];
+        $daysOverdue = (int) $now->diff($worst->getNextReviewDate())->days;
+
+        return [[
+            'type' => 'control_drift',
+            'count' => $overdueCount,
+            'total' => $total,
+            'severity' => $share >= 0.25 ? 'critical' : 'warning',
+            'severity_score' => min(100, round($share * 100) + 25),
+            'message' => sprintf(
+                '%d of %d controls are overdue for review (e.g. "%s", %d days overdue).',
+                $overdueCount,
+                $total,
+                $worst->getControlId() ?? $worst->getName() ?? '?',
+                $daysOverdue,
+            ),
+        ]];
     }
 
     /**

@@ -248,30 +248,6 @@ class ComplianceMappingService
     }
 
     /**
-     * Get cross-framework mapping insights
-     * Shows which ISMS controls/data satisfy multiple frameworks
-     */
-    public function getCrossFrameworkInsights(): array
-    {
-        $controls = $this->controlRepository->findAll();
-        $insights = [];
-
-        foreach ($controls as $control) {
-            $controlInsight = [
-                'control_id' => $control->getControlId(),
-                'control_name' => $control->getName(),
-                'frameworks_satisfied' => [],
-            ];
-
-            // This would be populated based on actual requirement mappings
-            // For now, we'll return the structure
-            $insights[] = $controlInsight;
-        }
-
-        return $insights;
-    }
-
-    /**
      * Calculate potential time savings from data reuse
      */
     public function calculateDataReuseValue(ComplianceRequirement $complianceRequirement): array
