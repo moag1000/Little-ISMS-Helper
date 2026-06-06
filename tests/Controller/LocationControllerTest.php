@@ -408,6 +408,27 @@ class LocationControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function testEditInFrameFormHasExplicitAction(): void
+    {
+        // The drawer form is loaded into a Turbo Frame while the document URL
+        // stays on the list — so the form MUST carry an explicit action, else
+        // the browser POSTs to the list route (405).
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request(
+            'GET',
+            '/en/location/' . $this->testLocation->getId() . '/edit',
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-drawer'],
+        );
+
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString(
+            'action="/en/location/' . $this->testLocation->getId() . '/edit"',
+            $html,
+        );
+    }
+
+    #[Test]
     public function testEditInFrameValidReturnsTurboStream(): void
     {
         $this->loginAsUser($this->testUser);
