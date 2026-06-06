@@ -456,6 +456,19 @@
         </aside>
     </div>
 
+    {# In-page form-modal host — centered overlay for large / regulatory forms
+       (15+ fields, multi-section). Same generic frame-overlay controller as the
+       drawer; backdrop = the host element, panel = the dialog. #}
+    <div class="fa-form-modal" data-controller="fa-form-modal"
+         role="dialog" aria-modal="true"
+         aria-label="{{ 'common.details'|trans({}, 'messages') }}"
+         data-fa-form-modal-target="backdrop"
+         data-action="click->fa-form-modal#backdropClose">
+        <div class="fa-form-modal__dialog" data-fa-form-modal-target="panel">
+            <turbo-frame id="fa-form-modal" data-fa-form-modal-target="frame"></turbo-frame>
+        </div>
+    </div>
+
     {# Keyboard Shortcuts Help #}
     {% include '_components/_keyboard_shortcuts.html.twig' %}
 

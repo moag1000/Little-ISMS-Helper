@@ -42,6 +42,7 @@ app.debug = false;
 // on every deploy without manifest churn.
 app.register('async-job', AsyncJobController);
 app.register('fa-drawer', FaDrawerController);
+app.register('fa-form-modal', FaDrawerController); // same generic frame-overlay controller
 app.register('wizard-busy', WizardBusyController);
 app.register('alva-dock', AlvaDockController);
 app.register('alva-hint', AlvaHintController);

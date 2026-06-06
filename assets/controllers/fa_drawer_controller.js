@@ -96,14 +96,19 @@ export default class extends Controller {
         }
     }
 
-    backdropClose() { this.close(); }
+    backdropClose(event) {
+        // Only when the backdrop itself is clicked — not a bubbled click from
+        // inside the dialog/panel (the form-modal backdrop wraps its dialog).
+        if (event && event.target !== event.currentTarget) return;
+        this.close();
+    }
 
     // ── Turbo lifecycle ──────────────────────────────────────────────────────
 
     #onClick(event) {
-        // Only a plain left-click on a drawer trigger opens the panel.
+        // Only a plain left-click on a trigger for THIS host's frame opens it.
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-        const link = event.target.closest('a[data-turbo-frame="fa-drawer"]');
+        const link = event.target.closest(`a[data-turbo-frame="${this.frameTarget.id}"]`);
         if (!link || link.target === '_blank') return;
 
         // Show a skeleton ONLY for triggers outside the frame (list rows) — for
@@ -138,12 +143,13 @@ export default class extends Controller {
     // ── helpers ──────────────────────────────────────────────────────────────
 
     #showSkeleton() {
+        // Neutral skeleton — works for both the drawer and the form-modal host.
         this.frameTarget.innerHTML =
-            '<div class="fa-drawer__header"><div class="fa-drawer__header-text">' +
-            '<div class="fa-drawer__title" data-skeleton>&nbsp;</div></div></div>' +
-            '<div class="fa-drawer__body"><div class="fa-skeleton" style="height:1.4em;width:70%;margin:.6em 0"></div>' +
-            '<div class="fa-skeleton" style="height:1.4em;width:90%;margin:.6em 0"></div>' +
-            '<div class="fa-skeleton" style="height:1.4em;width:55%;margin:.6em 0"></div></div>';
+            '<div class="fa-overlay-skeleton" style="padding:20px">' +
+            '<div class="fa-skeleton" style="height:1.4em;width:50%;margin:.2em 0 1em"></div>' +
+            '<div class="fa-skeleton" style="height:1.2em;width:80%;margin:.6em 0"></div>' +
+            '<div class="fa-skeleton" style="height:1.2em;width:95%;margin:.6em 0"></div>' +
+            '<div class="fa-skeleton" style="height:1.2em;width:65%;margin:.6em 0"></div></div>';
         this.frameTarget.setAttribute('aria-busy', 'true');
     }
 

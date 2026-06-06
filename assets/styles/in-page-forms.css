@@ -40,3 +40,80 @@ tbody tr:has(.fa-row-link):hover {
 .fa-drawer__footer {
     flex: 0 0 auto;
 }
+
+/* ============================================================================
+   fa-form-modal — centered overlay for large / regulatory forms (15+ fields,
+   multi-section). Ported from the design-system reference; hidden by default,
+   shown via .is-open (the reference demo is always-visible). Wraps
+   fa-form-layout--modal (outline-rail) inside a Turbo Frame.
+   ========================================================================== */
+.fa-form-modal {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal, 1001);
+    display: none;
+    place-items: center;
+    padding: var(--spacing-lg, 24px);
+    background: var(--overlay-bg, rgba(15, 23, 42, 0.55));
+}
+.fa-form-modal.is-open {
+    display: grid;
+}
+.fa-form-modal__dialog {
+    width: min(100%, 920px);
+    max-height: calc(100vh - 2 * var(--spacing-lg, 24px));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--r-2xl, 18px);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+    background: var(--surface, #141c2e);
+}
+@media (prefers-reduced-motion: no-preference) {
+    .fa-form-modal.is-open .fa-form-modal__dialog {
+        animation: fa-form-modal-in var(--t-base, 220ms) var(--ease-out, ease);
+    }
+}
+@keyframes fa-form-modal-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.99); }
+    to   { opacity: 1; transform: none; }
+}
+/* The dialog wraps a <turbo-frame> around the form-layout — make it a flex
+   column so the body scrolls and the sticky footer stays put (same fix as the
+   drawer). */
+.fa-form-modal__dialog > turbo-frame {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.fa-form-layout--modal {
+    border-radius: var(--r-2xl, 18px);
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.fa-form-layout--modal .fa-form-layout__header { flex: 0 0 auto; }
+.fa-form-layout--modal .fa-form-layout__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+.fa-form-layout--modal .fa-form-layout__footer {
+    flex: 0 0 auto;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+}
+
+/* Narrow viewports: both surfaces become a full-screen sheet (spec M4). */
+@media (max-width: 600px) {
+    .fa-form-modal { padding: 0; }
+    .fa-form-modal__dialog {
+        width: 100%;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 0;
+    }
+}

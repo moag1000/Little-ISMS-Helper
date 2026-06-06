@@ -43,6 +43,7 @@
     {%- set actions          = config.actions ?? {} -%}
     {%- set extrasBeforeActions = config.extrasBeforeActions ?? null -%}
     {%- set controller       = config.stimulusController ?? 'form-layout' -%}
+    {%- set modal            = config.modal ?? false -%}
 
     {%- set progressPercent  = (progress and progress.total > 0) ? ((progress.done / progress.total) * 100)|round : 0 -%}
     {%- set totalSections    = sections|length -%}
@@ -54,7 +55,7 @@
         }) -%}
     {%- endfor -%}
 
-    <div class="fa-form-layout"
+    <div class="fa-form-layout{% if modal %} fa-form-layout--modal{% endif %}"
          data-controller="{{ controller }} form-validation"
          data-{{ controller }}-sections-state-value="{{ sectionsState|json_encode }}"
          {% if draftSavedAt %}data-{{ controller }}-draft-saved-at-value="{{ draftSavedAt|date('c') }}"{% endif %}>
