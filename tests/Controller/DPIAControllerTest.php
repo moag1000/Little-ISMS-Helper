@@ -260,6 +260,23 @@ class DPIAControllerTest extends WebTestCase
     // ========== IN-PAGE FORM-MODAL (Turbo Frame) TESTS ==========
 
     #[Test]
+    public function testShowInFrameRendersDetailModalPartial(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request(
+            'GET',
+            '/en/dpia/' . $this->testDPIA->getId(),
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-form-modal"', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
+    #[Test]
     public function testEditInFrameRendersFormModalPartial(): void
     {
         $this->loginAsUser($this->testUser);

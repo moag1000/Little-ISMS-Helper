@@ -617,9 +617,16 @@ class DPIAController extends AbstractController
      * Show DPIA details
      */
     #[Route('/dpia/{id}', name: 'app_dpia_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
+    public function show(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dpia/_detail_modal.html.twig', [
+                'dpia' => $dataProtectionImpactAssessment,
+            ]);
+        }
 
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 

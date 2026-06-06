@@ -10,7 +10,7 @@
                data-action="bulk-actions#selectItem" value="{{ dpia.id }}"
                aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ dpia.referenceNumber }}">
     </td>
-    <td><a href="{{ path('app_dpia_show', {id: dpia.id}) }}">{{ dpia.referenceNumber }}</a></td>
+    <td><a href="{{ path('app_dpia_show', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link">{{ dpia.referenceNumber }}</a></td>
     <td>{{ dpia.title }}</td>
     <td>{% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}</td>
     <td>
@@ -34,7 +34,8 @@
     </td>
     <td>
         <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-            <a href="{{ path('app_dpia_show', {id: dpia.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost"
+            <a href="{{ path('app_dpia_show', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--ghost"
                title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
             </a>
@@ -46,6 +47,7 @@
                 </a>
             {% endif %}
             <a href="{{ path('app_dpia_export_pdf', {id: dpia.id}) }}" class="fa-cyber-btn fa-cyber-btn--success"
+               data-turbo-prefetch="false" data-turbo="false"
                title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
                 <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
             </a>
