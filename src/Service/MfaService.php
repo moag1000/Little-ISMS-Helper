@@ -17,6 +17,7 @@ use Endroid\QrCode\Writer\PngWriter;
 use OTPHP\TOTP;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 /**
  * MFA Service for NIS2 Compliance (Art. 21.2.b)
@@ -40,6 +41,7 @@ final class MfaService
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
         private readonly MfaEncryptionService $mfaEncryptionService,
+        private readonly RateLimiterFactory $mfaVerifyLimiter,
         private readonly string $appName = 'Little ISMS Helper',
         private readonly array $passwordHashOptions = [],
     ) {
@@ -364,19 +366,18 @@ final class MfaService
      */
     private function checkRateLimit(MfaToken $mfaToken): void
     {
-        // This is a simplified rate limiter
-        // In production, use Symfony Rate Limiter component or Redis
+        // Sliding-window limiter (config/packages/rate_limiter.yaml: mfa_verify,
+        // 5 attempts / 15 min) — real brute-force protection against guessing
+        // TOTP / backup codes, keyed per token.
+        $key = 'mfa_verify_' . ($mfaToken->getId() ?? 'unknown');
+        $limit = $this->mfaVerifyLimiter->create($key)->consume(1);
 
-        $lastUsed = $mfaToken->getLastUsedAt();
-
-        if ($lastUsed instanceof DateTimeImmutable) {
-            $now = new DateTimeImmutable();
-            $diff = $now->getTimestamp() - $lastUsed->getTimestamp();
-
-            // If last attempt was < 2 seconds ago, rate limit
-            if ($diff < 2) {
-                throw new TooManyRequestsHttpException(2, 'Too many verification attempts. Please wait.');
-            }
+        if (!$limit->isAccepted()) {
+            $retryAfter = max(1, $limit->getRetryAfter()->getTimestamp() - time());
+            throw new TooManyRequestsHttpException(
+                $retryAfter,
+                'Too many verification attempts. Please wait.',
+            );
         }
     }
 }
