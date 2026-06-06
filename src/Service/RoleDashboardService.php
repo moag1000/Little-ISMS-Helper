@@ -10,12 +10,12 @@ use App\Enum\RiskTreatmentPlanStatus;
 use App\Enum\TreatmentStrategy;
 use App\Enum\WorkflowInstanceStatus;
 use App\Repository\ComplianceFrameworkRepository;
-use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\Dashboard\DashboardMetricsProvider;
 use App\Service\Tisax\TisaxMaturityAssessmentService;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -40,10 +40,10 @@ class RoleDashboardService
         private readonly RiskForecastService $riskForecastService,
         private readonly RiskRepository $riskRepository,
         private readonly IncidentRepository $incidentRepository,
-        private readonly ControlRepository $controlRepository,
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
+        private readonly DashboardMetricsProvider $metrics,
         private readonly ?RiskTreatmentPlanRepository $treatmentPlanRepository = null,
         private readonly ?InternalAuditRepository $auditRepository = null,
         private readonly ?TisaxMaturityAssessmentService $tisaxAssessment = null,
@@ -225,16 +225,16 @@ class RoleDashboardService
         $auditStatus = $this->getAuditStatus();
 
         // Control evidence status
-        $evidenceStatus = $this->getEvidenceStatus();
+        $evidenceStatus = $this->metrics->evidenceStatus($tenant);
 
-        // Open findings
-        $openFindings = $this->getOpenFindings();
+        // Open findings (real, tenant-scoped)
+        $openFindings = $this->metrics->openFindings($tenant);
 
-        // Non-conformities
-        $nonConformities = $this->getNonConformities();
+        // Non-conformities — derived from the open findings by ISO 19011 type
+        $nonConformities = $this->metrics->nonConformities($openFindings);
 
-        // Corrective actions
-        $correctiveActions = $this->getCorrectiveActions();
+        // Corrective actions (real CAPA counts, tenant-scoped)
+        $correctiveActions = $this->metrics->correctiveActions($tenant);
 
         // Compliance gaps
         $complianceGaps = $this->complianceAnalyticsService->getGapAnalysis();
@@ -290,8 +290,14 @@ class RoleDashboardService
         // Build RAG status based on various metrics
         $ragStatus = $this->buildRAGStatus($overallCompliance, $riskAppetite, $stats);
 
-        // Build trend data
-        $trends = $this->buildBoardTrends($riskVelocity);
+        // Build trend data (deltas vs ~30-day-old snapshot; null when no history)
+        $trends = $this->metrics->boardTrends(
+            $riskVelocity,
+            $tenant,
+            (float) $overallCompliance,
+            $highCriticalRisks,
+            (float) $stats['compliancePercentage'],
+        );
 
         // Build attention items from critical risks and overdue items
         $attentionItems = $this->buildAttentionItems($tenant);
@@ -331,10 +337,11 @@ class RoleDashboardService
             // Items requiring attention
             'attention_items' => $attentionItems,
 
-            // Resources (placeholder data)
+            // Resources — the system has no HR/budget data source, so these are
+            // shown as "–" (not collected) rather than a misleading "0".
             'resources' => [
-                'fte_security' => '-',
-                'open_positions' => 0,
+                'fte_security' => '–',
+                'open_positions' => '–',
                 'initiatives' => [],
             ],
 
@@ -342,7 +349,7 @@ class RoleDashboardService
             'quarterly' => [
                 'previous_quarter' => $previousQuarter,
                 'current_quarter' => $currentQuarter,
-                'metrics' => $this->buildQuarterlyMetrics($overallCompliance, $highCriticalRisks),
+                'metrics' => $this->metrics->quarterlyMetrics($tenant, (float) $overallCompliance, $highCriticalRisks),
             ],
 
             // Legacy structure for backwards compatibility
@@ -379,22 +386,6 @@ class RoleDashboardService
                 'risk' => $riskAppetite['compliance_score'] . '% Appetit',
                 'operations' => ($stats['incidents_open'] ?? 0) . ' offene Vorfälle',
             ],
-        ];
-    }
-
-    /**
-     * Build trend data for board dashboard
-     */
-    private function buildBoardTrends(array $riskVelocity): array
-    {
-        $riskChange = $riskVelocity['last_30_days']['net_change'] ?? 0;
-
-        return [
-            'compliance' => 0, // Would need historical data
-            'risks' => $riskChange,
-            'critical' => 0,
-            'incidents' => 0,
-            'controls' => 0,
         ];
     }
 
@@ -459,35 +450,6 @@ class RoleDashboardService
             'security_posture' => "Die aktuelle Sicherheitslage ist {$postureLevel} mit einer Gesamtkonformität von {$compliance}%.",
             'achievements' => $achievements,
             'concerns' => $concerns,
-        ];
-    }
-
-    /**
-     * Build quarterly metrics for board dashboard
-     */
-    private function buildQuarterlyMetrics(float $compliance, int $criticalRisks): array
-    {
-        return [
-            [
-                'name' => 'Compliance',
-                'previous' => $compliance - 2, // Simulated previous quarter
-                'current' => $compliance,
-                'change' => 2,
-                'unit' => '%',
-                'positive_is_good' => true,
-                'target' => 80,
-                'on_target' => $compliance >= 80,
-            ],
-            [
-                'name' => 'Kritische Risiken',
-                'previous' => $criticalRisks + 1,
-                'current' => $criticalRisks,
-                'change' => -1,
-                'unit' => '',
-                'positive_is_good' => false,
-                'target' => 0,
-                'on_target' => $criticalRisks === 0,
-            ],
         ];
     }
 
@@ -779,52 +741,6 @@ class RoleDashboardService
                 'planned_date' => $a->getPlannedDate(),
                 'type' => $a->getScopeType(),
             ], array_slice($upcoming, 0, 5)),
-        ];
-    }
-
-    private function getEvidenceStatus(): array
-    {
-        $tenant = $this->tenantContext->getCurrentTenant();
-        $controls = $tenant
-            ? $this->controlRepository->findApplicableControls($tenant)
-            : [];
-        $total = count($controls);
-
-        // Controls with evidence (having linked documents or reviews)
-        $withEvidence = count(array_filter($controls, fn($c) => $c->getLastReviewDate() !== null
-        ));
-
-        return [
-            'total_controls' => $total,
-            'with_evidence' => $withEvidence,
-            'coverage_percentage' => $total > 0 ? round(($withEvidence / $total) * 100) : 0,
-        ];
-    }
-
-    private function getOpenFindings(): array
-    {
-        // Simplified - in real implementation, this would query audit findings
-        return [];
-    }
-
-    private function getNonConformities(): array
-    {
-        // Simplified - in real implementation, this would query non-conformities
-        return [
-            'major' => 0,
-            'minor' => 0,
-            'observations' => 0,
-        ];
-    }
-
-    private function getCorrectiveActions(): array
-    {
-        // Simplified - in real implementation, this would query corrective actions
-        return [
-            'total' => 0,
-            'open' => 0,
-            'overdue_count' => 0,
-            'items' => [],
         ];
     }
 

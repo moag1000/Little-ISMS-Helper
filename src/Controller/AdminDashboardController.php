@@ -91,9 +91,18 @@ class AdminDashboardController extends AbstractController
 
     private function getSystemHealthStats(?Tenant $currentTenant): array
     {
-        // User Statistics
-        $totalUsers = $this->userRepository->count([]);
-        $activeUsers = $this->userRepository->count(['isActive' => true]);
+        // User Statistics — User is exempt from the global tenant filter, so a
+        // tenant-scoped admin must constrain the count explicitly; otherwise the
+        // card leaks the user population of ALL tenants. Only a super-admin with
+        // no current tenant sees the global figure (matches the module-stats
+        // fallback below).
+        if ($currentTenant instanceof Tenant) {
+            $totalUsers = $this->userRepository->count(['tenant' => $currentTenant]);
+            $activeUsers = $this->userRepository->count(['tenant' => $currentTenant, 'isActive' => true]);
+        } else {
+            $totalUsers = $this->userRepository->count([]);
+            $activeUsers = $this->userRepository->count(['isActive' => true]);
+        }
         $inactiveUsers = $totalUsers - $activeUsers;
 
         // Module Statistics with Corporate Hierarchy
@@ -402,8 +411,10 @@ class AdminDashboardController extends AbstractController
             ];
         }
 
-        // Check for inactive users
-        $inactiveCount = $this->userRepository->count(['isActive' => false]);
+        // Check for inactive users — tenant-scoped where a tenant is in context
+        // (User is exempt from the global filter), consistent with the user KPI.
+        $inactiveCriteria = $currentTenant instanceof Tenant ? ['tenant' => $currentTenant] : [];
+        $inactiveCount = $this->userRepository->count($inactiveCriteria + ['isActive' => false]);
         if ($inactiveCount > 0) {
             $alerts[] = [
                 'type' => 'warning',
@@ -414,8 +425,9 @@ class AdminDashboardController extends AbstractController
             ];
         }
 
-        // Check for unverified users
-        $unverifiedCount = $this->userRepository->count(['isVerified' => false]);
+        // Check for unverified users — tenant-scoped where a tenant is in context.
+        $unverifiedCriteria = $currentTenant instanceof Tenant ? ['tenant' => $currentTenant] : [];
+        $unverifiedCount = $this->userRepository->count($unverifiedCriteria + ['isVerified' => false]);
         if ($unverifiedCount > 0) {
             $alerts[] = [
                 'type' => 'info',

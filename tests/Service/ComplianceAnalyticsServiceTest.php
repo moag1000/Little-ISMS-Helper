@@ -7,6 +7,8 @@ namespace App\Tests\Service;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
+use App\Entity\KpiSnapshot;
+use App\Repository\KpiSnapshotRepository;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
@@ -323,6 +325,63 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $this->assertArrayHasKey('gaps', $result);
         $this->assertArrayHasKey('efficiency', $result);
         $this->assertArrayHasKey('trend', $result);
+    }
+
+    #[Test]
+    public function testComplianceTrendIsHonestUnknownWithoutSnapshotHistory(): void
+    {
+        $tenant = $this->createTenant(1, 'Test');
+        $framework = $this->createFramework(1, 'ISO', 'ISO', false);
+
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->frameworkRepository->method('findActiveFrameworks')->willReturn([$framework]);
+        $this->requirementRepository->method('getFrameworkStatisticsForTenant')
+            ->willReturn(['total' => 10, 'applicable' => 10, 'fulfilled' => 8, 'in_progress' => 1]);
+        $this->requirementRepository->method('findGapsByFramework')->willReturn([]);
+        $this->controlRepository->method('findBy')->willReturn([]);
+
+        // No KpiSnapshotRepository wired → no comparable history.
+        $trend = $this->service->getExecutiveSummary()['trend'];
+
+        self::assertFalse($trend['available']);
+        self::assertNull($trend['change']); // the old code fabricated +2.5 here
+        self::assertSame('stable', $trend['direction']);
+    }
+
+    #[Test]
+    public function testComplianceTrendUsesRealSnapshotDelta(): void
+    {
+        $tenant = $this->createTenant(1, 'Test');
+        $framework = $this->createFramework(1, 'ISO', 'ISO', false);
+
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->frameworkRepository->method('findActiveFrameworks')->willReturn([$framework]);
+        $this->requirementRepository->method('getFrameworkStatisticsForTenant')
+            ->willReturn(['total' => 10, 'applicable' => 10, 'fulfilled' => 8, 'in_progress' => 1]);
+        $this->requirementRepository->method('findGapsByFramework')->willReturn([]);
+        $this->controlRepository->method('findBy')->willReturn([]);
+
+        $snapshot = $this->createMock(KpiSnapshot::class);
+        $snapshot->method('getKpiData')->willReturn(['average_compliance' => 70]);
+        $snapshotRepo = $this->createMock(KpiSnapshotRepository::class);
+        $snapshotRepo->method('findClosestBefore')->willReturn($snapshot);
+
+        $service = new ComplianceAnalyticsService(
+            $this->frameworkRepository,
+            $this->requirementRepository,
+            $this->mappingRepository,
+            $this->controlRepository,
+            $this->tenantContext,
+            $this->assessmentService,
+            $snapshotRepo,
+        );
+
+        $trend = $service->getExecutiveSummary()['trend'];
+
+        // current 80% (8/10) - previous 70% = +10
+        self::assertTrue($trend['available']);
+        self::assertSame(10.0, $trend['change']);
+        self::assertSame('up', $trend['direction']);
     }
 
     // ==================== Helper Methods ====================
