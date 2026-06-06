@@ -83,7 +83,7 @@ final class RiskOhneOwnerRule extends AbstractGlobalAlvaHintRule
             actionRoute: $route,
             actionRouteParams: $params,
             actionMethod: 'GET',
-            requiredRoles: ['ROLE_MANAGER'],
+            requiredRoles: ['ROLE_USER'],
             mood: 'thinking',
         );
     }

@@ -59,7 +59,7 @@ final class ApprovedDocOhneAcknowledgementRuleTest extends TestCase
         self::assertSame('app_document_index', $hint->actionRoute);
         self::assertSame(['focus' => 'no_ack'], $hint->actionRouteParams);
         self::assertSame('6', $hint->bodyTranslationParams['%count%']);
-        self::assertContains('ROLE_MANAGER', $hint->requiredRoles);
+        self::assertContains('ROLE_USER', $hint->requiredRoles);
     }
 
     private function makeRepo(int $count, int $firstId = 1): DocumentRepository

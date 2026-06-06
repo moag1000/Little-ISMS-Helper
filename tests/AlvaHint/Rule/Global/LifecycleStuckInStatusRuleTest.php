@@ -73,7 +73,7 @@ final class LifecycleStuckInStatusRuleTest extends TestCase
         self::assertSame(3, $hint->priorityTier);
         self::assertSame('warning', $hint->variant);
         self::assertTrue($hint->dismissible);
-        self::assertContains('ROLE_MANAGER', $hint->requiredRoles);
+        self::assertContains('ROLE_USER', $hint->requiredRoles);
         self::assertSame('GET', $hint->actionMethod);
         self::assertSame('14', $hint->bodyTranslationParams['%days%']);
     }

@@ -84,7 +84,7 @@ final class ApprovedDocOhneAcknowledgementRule extends AbstractGlobalAlvaHintRul
             actionRoute: $route,
             actionRouteParams: $params,
             actionMethod: 'GET',
-            requiredRoles: ['ROLE_MANAGER'],
+            requiredRoles: ['ROLE_USER'],
             mood: 'thinking',
         );
     }

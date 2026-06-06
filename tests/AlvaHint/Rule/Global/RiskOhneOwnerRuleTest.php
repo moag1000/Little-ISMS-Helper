@@ -60,7 +60,7 @@ final class RiskOhneOwnerRuleTest extends TestCase
         self::assertSame('5', $hint->bodyTranslationParams['%count%']);
         self::assertSame(2, $hint->priorityTier);
         self::assertSame('warning', $hint->variant);
-        self::assertContains('ROLE_MANAGER', $hint->requiredRoles);
+        self::assertContains('ROLE_USER', $hint->requiredRoles);
     }
 
     private function makeRepo(int $count, int $firstId = 1): RiskRepository
