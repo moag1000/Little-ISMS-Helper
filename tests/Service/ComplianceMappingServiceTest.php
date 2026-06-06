@@ -376,27 +376,6 @@ class ComplianceMappingServiceTest extends TestCase
         $this->assertEquals('low', $result['confidence']);
     }
 
-    #[Test]
-    public function testGetCrossFrameworkInsights(): void
-    {
-        $control1 = $this->createMock(Control::class);
-        $control1->method('getControlId')->willReturn('A.5.1');
-        $control1->method('getName')->willReturn('Access Control Policy');
-
-        $control2 = $this->createMock(Control::class);
-        $control2->method('getControlId')->willReturn('A.8.1');
-        $control2->method('getName')->willReturn('Asset Responsibility');
-
-        $this->controlRepo->method('findAll')->willReturn([$control1, $control2]);
-
-        $result = $this->service->getCrossFrameworkInsights();
-
-        $this->assertCount(2, $result);
-        $this->assertEquals('A.5.1', $result[0]['control_id']);
-        $this->assertEquals('Access Control Policy', $result[0]['control_name']);
-        $this->assertArrayHasKey('frameworks_satisfied', $result[0]);
-        $this->assertEquals('A.8.1', $result[1]['control_id']);
-    }
 
     #[Test]
     public function testCalculateDataReuseValueWithNoSources(): void

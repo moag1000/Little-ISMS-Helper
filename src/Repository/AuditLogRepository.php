@@ -197,7 +197,38 @@ class AuditLogRepository extends ServiceEntityRepository
     public function search(array $criteria): array
     {
         $queryBuilder = $this->createQueryBuilder('a');
+        $this->applySearchCriteria($queryBuilder, $criteria);
 
+        $queryBuilder->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($criteria['limit'] ?? 100);
+
+        // Offset enables real pagination of filtered results (previously the
+        // controller paged in PHP off a capped result set, so page >1 was empty
+        // and the total was wrong).
+        if (isset($criteria['offset'])) {
+            $queryBuilder->setFirstResult((int) $criteria['offset']);
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * Total number of audit logs matching the same filters as search() — used
+     * for honest pagination totals (not the capped page-size count).
+     */
+    public function countSearch(array $criteria): int
+    {
+        $queryBuilder = $this->createQueryBuilder('a')->select('COUNT(a.id)');
+        $this->applySearchCriteria($queryBuilder, $criteria);
+
+        return (int) $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Apply the shared WHERE filters used by both search() and countSearch().
+     */
+    private function applySearchCriteria(\Doctrine\ORM\QueryBuilder $queryBuilder, array $criteria): void
+    {
         if (!empty($criteria['entityType'])) {
             $queryBuilder->andWhere('a.entityType = :entityType')
                ->setParameter('entityType', $criteria['entityType']);
@@ -222,11 +253,6 @@ class AuditLogRepository extends ServiceEntityRepository
             $queryBuilder->andWhere('a.createdAt <= :dateTo')
                ->setParameter('dateTo', $criteria['dateTo']);
         }
-
-        return $queryBuilder->orderBy('a.createdAt', 'DESC')
-                  ->setMaxResults($criteria['limit'] ?? 100)
-                  ->getQuery()
-                  ->getResult();
     }
 
     /**

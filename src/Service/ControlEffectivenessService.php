@@ -432,40 +432,4 @@ class ControlEffectivenessService
 
         return $result;
     }
-
-    /**
-     * Get control implementation progress over time (mock historical data)
-     *
-     * @param int $months Number of months to analyze
-     * @return array Trend data for line chart
-     */
-    public function getImplementationTrend(int $months = 12): array
-    {
-        // In production, this would query historical snapshots
-        // For now, we generate trend based on current data
-        $controls = $this->controlRepository->findAll();
-        $implemented = count(array_filter($controls, fn($c) => $c->getImplementationStatus() === 'implemented'));
-        $total = count($controls);
-
-        $trend = [];
-        $now = new \DateTime();
-
-        // Generate simulated historical data
-        for ($i = $months - 1; $i >= 0; $i--) {
-            $date = (clone $now)->modify("-{$i} months");
-
-            // Simulate growth (rough approximation)
-            $factor = 1 - ($i * 0.03);
-            $monthlyImplemented = (int) round($implemented * $factor);
-
-            $trend[] = [
-                'month' => $date->format('M Y'),
-                'implemented' => max(0, $monthlyImplemented),
-                'total' => $total,
-                'rate' => $total > 0 ? round(($monthlyImplemented / $total) * 100, 1) : 0,
-            ];
-        }
-
-        return $trend;
-    }
 }
