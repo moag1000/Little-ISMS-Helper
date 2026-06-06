@@ -216,6 +216,9 @@ class BackupService
         'ActionItem',               // FK: Tenant, User, Person, RoadmapTask, Document, self
         'ActionItemReference',      // FK: ActionItem, Tenant — polymorphic provenance link
         'SourceConversionConfig',   // FK: Tenant — per-source auto-conversion settings
+        'UnavailabilityCalendar',   // FK: Tenant — one capacity calendar per tenant
+        'UnavailabilityPeriod',     // FK: UnavailabilityCalendar — holidays + shutdowns
+        'RoadmapAllocation',        // FK: Tenant, RoadmapTask — planned PT per task/week
     ];
 
     // Entities deliberately NOT backed up — enforced by Gate 43

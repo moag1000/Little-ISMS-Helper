@@ -186,3 +186,20 @@ planning:
             effort: 'Aufwand (PT)'
         success:
             saved: 'Einstellung gespeichert.'
+    roadmap:
+        title: Kapazitäts-Roadmap
+        subtitle: 'Aufwände (PT) je Kalenderwoche planen und gegen die verfügbare Kapazität abgleichen'
+        empty: 'Erst Roadmap-Tasks anlegen, dann hier einplanen.'
+        mode:
+            plan: 'Meine Planung'
+            capacity: Kapazität
+            reconcile: Ist-Abgleich
+        col:
+            task: Task
+        row:
+            capacity: 'Verfügbar (PT)'
+            planned: 'Geplant (PT)'
+        savebar:
+            title: 'Ungespeicherte Änderungen'
+        success:
+            saved: 'Planung gespeichert.'

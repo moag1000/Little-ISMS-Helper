@@ -911,3 +911,41 @@
         min-width: 40px;
     }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   fa-savebar — floating staged-save bar (resource-planning roadmap grid).
+   Tokens only (Stylelint bans raw hex in color props). BEM.
+   ───────────────────────────────────────────────────────────────────────── */
+.fa-savebar {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    transform: translateX(-50%);
+    z-index: var(--z-sticky);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: min(40rem, calc(100vw - 2rem));
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg, 0.75rem);
+    background: var(--surface-2, var(--surface));
+    box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
+}
+.fa-savebar[hidden] { display: none; }
+.fa-savebar--warning { border-color: var(--warning); }
+.fa-savebar__icon { color: var(--primary); font-size: 1.1rem; }
+.fa-savebar__text { display: flex; flex-direction: column; line-height: 1.2; }
+.fa-savebar__title { font-weight: 600; }
+.fa-savebar__detail { font-size: 0.85rem; color: var(--fg-2, var(--fg)); }
+.fa-savebar__actions { display: flex; gap: 0.5rem; margin-left: auto; }
+.fa-savebar__btn {
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md, 0.5rem);
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+}
+.fa-savebar__btn--save { background: var(--primary); border-color: var(--primary); color: var(--on-primary, var(--surface)); }
+.fa-savebar__btn--discard:hover { background: var(--surface); }

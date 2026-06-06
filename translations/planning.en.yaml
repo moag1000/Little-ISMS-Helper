@@ -186,3 +186,20 @@ planning:
             effort: 'Effort (PD)'
         success:
             saved: 'Setting saved.'
+    roadmap:
+        title: 'Capacity roadmap'
+        subtitle: 'Plan effort (PD) per calendar week and reconcile against available capacity'
+        empty: 'Create roadmap tasks first, then plan them here.'
+        mode:
+            plan: 'My plan'
+            capacity: Capacity
+            reconcile: Reconcile
+        col:
+            task: Task
+        row:
+            capacity: 'Available (PD)'
+            planned: 'Planned (PD)'
+        savebar:
+            title: 'Unsaved changes'
+        success:
+            saved: 'Plan saved.'
