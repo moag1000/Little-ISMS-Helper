@@ -713,10 +713,10 @@ Step 3: Zusammenfassung
 
 ---
 
-## 🚀 Phase 8: Enterprise Features (In Entwicklung)
+## 🚀 Phase 8: Enterprise Features (größtenteils über v3.x ausgeliefert)
 
-**Zeitraum:** Dez 2025 - ...
-**Status:** 🚧 In Entwicklung
+**Zeitraum:** Dez 2025 – Mai 2026
+**Status:** ✅ Kern ausgeliefert (Detail-Subphasen unten; Rest-Items im „Strategischen Backlog")
 **Priorität:** HOCH
 
 ### ✅ Phase 8A: Mobile PWA (Progressive Web App)
@@ -1446,13 +1446,21 @@ Beliebig viele `AppliedBaseline` pro Tenant sind heute schon möglich (z. B. Pro
 
 ---
 
-## 📅 Phase 10: Workflow-Erweiterung (14 neue Workflows)
+## ✅ Phase 10: Workflow-Erweiterung (Abgeschlossen)
 
-**Status:** 📅 Geplant
-**Aufwand:** ~15-20 Tage (3 Phasen)
+**Status:** ✅ Abgeschlossen — 15 regulatorische Workflows als kanonische YAML-Definitionen.
 **Grundlage:** Persona-Audit (Junior + CM + Consultant, Apr 2026)
 
-Alle Workflows nutzen das bestehende `GenerateRegulatoryWorkflowsCommand` + `WorkflowAutoProgressionService` Pattern.
+Source of Truth ist `config/workflows/regulatory/*.yaml` (15 Dateien). Auto-Progression läuft
+event-getrieben über `FieldCompletionAutoTransition` (Doctrine `postUpdate`-Listener);
+`App\Entity\Workflow`/`WorkflowStep` sind `@deprecated`. ADR: `docs/decisions/2026-05-17-workflow-yaml-unification.md`.
+Umgesetzt u.a.: GDPR Data Breach, Incident High/Low, Risk Treatment, DPIA, DSR, CAPA,
+Change Request, Management Review, Control Verification, Supplier Assessment,
+Training Verification, BC Plan Activation, Document Review, Incident Post-Mortem.
+
+<details><summary>Ursprüngliche Planung (Apr 2026)</summary>
+
+Alle Workflows nutzen das bestehende `GenerateRegulatoryWorkflowsCommand`-Pattern.
 
 ### Phase 10.1 — CRITICAL (Compliance-Risiko)
 
@@ -1481,31 +1489,77 @@ Alle Workflows nutzen das bestehende `GenerateRegulatoryWorkflowsCommand` + `Wor
 | 11 | **Document Review Cycle** | Veroeffentlicht → Review faellig (Auto-Eskalation) → Revision → Genehmigung → Neuveroeffentlichung | 1 Tag |
 | 12 | **Incident Post-Mortem** | Vorfall geschlossen → Review geplant → Durchgefuehrt → Lessons Learned → Massnahmen → Umsetzung | 0.5 Tage |
 
+</details>
+
 ---
 
-## 📅 Zukuenftige Phasen (Backlog)
+## ✅ v3.x Release-Linie (Mai–Jun 2026) — Design-System, Lifecycle, Sicherheits-Härtung & Regulatorik-Tiefe
 
-### Phase 11: Global Expansion (Vision)
+Die Roadmap oben endet erzählerisch bei Phase 8G (Apr 2026). Seither sind die Releases
+**v3.0 → v3.11** erschienen (Detail: [CHANGELOG.md](CHANGELOG.md)). Die großen Stränge:
+
+- ✅ **FairyAurora v4 Design-System** — durchgängige UI-Migration (Token-System, `_fa_*`-Makro-Bibliothek, Stylelint-Gate gegen Raw-Hex, parallele CSS-Loads gegen FOUC).
+- ✅ **Lifecycle-Foundation** — Symfony-Workflow als kanonische State-Machine (`LifecycleService`-Fassade, YAML-Baseline + Tenant-Overrides, 5+ Entity-Lifecycles).
+- ✅ **Workflow-YAML-Unification** — 15 regulatorische Workflows kanonisch (Phase 10), Legacy-Entities deprecated.
+- ✅ **Schema-getriebener Bulk-Import** — metadaten-getrieben über 26 Entities, Delta-Mode, SHA-256-Source-Retention, Batch-Audit.
+- ✅ **Alva-Hint-System** — 86 kontextuelle Hinweis-Regeln; Count-Hints **deep-linken zu genau den gezählten Entities** (#895/#897) inkl. Aurora-Focus-Notice; absence-/setup-Hints sauber abgegrenzt.
+- ✅ **Sicherheits-Härtung — Dead-Config geschlossen** (#900/#901): **MFA-Enrollment erzwungen** (`mfa_required_roles`, NIS2 21.2.b/DORA 9), **SSO-Domain-Zwang** (`domainBindingMode=enforce`), **SSO Claim→Rolle-Sync** + Audit-Events, **Notification-Event-Bus** (10 zuvor tote Trigger feuern jetzt; Engine endlich verdrahtet).
+- ✅ **DACH-Regulatorik-Tiefe** — BSI C5:2026-Originalkatalog, KRITIS §8a/§8b, NIS2-UmsuCG-Registrierung + Melde-Eskalation, DORA Register-of-Information + TLPT + lex-specialis-Doppelmeldung, copyright-saubere TISAX-BYO-Import/ENX-Export, BDSG §38-Register + 16-LfDI-Verzeichnis.
+- ✅ **Datenschutz-Audit (DSGVO/BDSG/ISO 27701)** vollständig abgearbeitet — Durchsetzungs-Gates (Identitätsprüfung, DPIA-Konsultationspflicht, Aufbewahrungs-Enforcement).
+- ✅ **Weiteres:** EBIOS-RM-Risikomethodik, Klon-Funktionen (8 Entities), Async-Admin-Jobs (in-request + Messenger), Role-Scope-Rollout (~30 Admin-Controller), Backup-Enum-Roundtrip-Härtung.
+
+---
+
+## 📅 Strategischer Backlog (aus Markt- & DACH-Audit, Jun 2026)
+
+> Quelldokumente (intern): [`docs/superpowers/plans/2026-06-06-market-positioning-review.md`](docs/superpowers/plans/2026-06-06-market-positioning-review.md) · [`docs/superpowers/plans/2026-06-06-dach-regulatory-deepening.md`](docs/superpowers/plans/2026-06-06-dach-regulatory-deepening.md)
+
+### Code-Härtung (Markt-Review P2/P3)
+- 📅 Per-Tenant-Modul-Gating (`isModuleActive` ist aktuell global) → Voraussetzung für Holding-Framework-Mandat
+- 📅 API-M2M-Auth (aktuell nur Session) → Enterprise-Integrationsfähigkeit
+- 📅 Evidence-Kaskade: CRF-Leg verdrahten (aktuell `return []`-Stub) → echtes Cross-Framework-Re-Verify
+- 📅 Maturity-Aggregation/Heatmap rendern · ROI-Counter verdrahten · Custom-Rollen tenant-scopen · Hardcoded-DE-Leaks bereinigen
+
+### Notification-Follow-ups (P1-4)
+- 📅 Durabler Retry + E-Mail-Digest — brauchen `entityState`-Persistenz auf `NotificationDelivery` (Schema-Add)
+
+### DACH-Vertiefung (Moat) — priorisiert
+- 📅 DORA Major-Incident-Auto-Klassifizierer (CDR 2024/1772) + 4h-Initial-Report-Deadline-Tracking
+- 📅 Bundesland→LfDI-Auto-Routing + Seed der Submission-Verzeichnisse
+- 📅 BSI C5: gebündelte Kriterientexte/Korrespondenztabelle ins DB/UI heben + Loader konsolidieren
+- 📅 BSI IT-Grundschutz: offizieller Kompendium-XML-Import (Standard/Hoch) + 200-3-Risikoanalyse-Wiring
+- 📅 TISAX-Scope/Label/AL-Engagement-Modell · KRITIS-Schwellenwerte + Nachweis-Zyklus-Tracker
+
+### Strategische Moves (Positionierung)
+- 📅 1 Continuous-Evidence-Connector (z.B. Entra/M365) + bezahltes Support/Hosting-Tier
+- 📅 Unabhängiges Security-Audit + DACH-Referenz-Deployments
+- 📅 GSTOOL-Migrationspfad als Pitch (Alt-Tool-Sunset 2027)
+
+### Tool-Feature in Vorbereitung
+- 🚧 **Ressourcenplanung auf Zeitstrahl** (ISO 27001 Cl. 6.2 Ziele-Planung + Cl. 7.1 Ressourcen) — personen-/team-zentrischer Zeitstrahl, der Maßnahmen-Tracking (16 Quellen via `MyDayAggregator`) mit ISMS-Zielen + `requiredResources` verheiratet. **Design-Vorbereitung läuft.**
+
+---
+
+## 📅 Zukuenftige Phasen (Vision)
+
+### Global Expansion
 - 🔄 Real-time Collaboration (WebSocket)
 - 🔄 Multi-Cloud Deployment (AWS, Azure, GCP)
+- 🔄 Weitere Sprachen (FR, IT, NL, PL) — Infrastruktur steht (Domain-Split)
 
 ---
 
 ## 📈 Projekt-Metriken
 
-### Aktueller Stand (Apr 2026 - Phase 9 P1+P2 abgeschlossen)
-- **Codezeilen:** ~174,800+ LOC (src/ PHP)
-- **Entities:** 78 Doctrine Entities
-- **Controllers:** 112 Controllers
-- **Templates:** 531+ Twig Templates
-- **Services:** 130+ Business Logic Services
-- **Commands:** 82+ Console Commands
-- **Tests:** 4,067+ Tests, 100% passing
-- **API Endpoints:** 50+ REST Endpoints (+17 Report Builder API, +7 Wizard API)
-- **Report Types:** 25+ Widgets (Custom Report Builder)
-- **Translation Files:** 174 YAML files (87 domains × 2 languages)
-- **Glossary:** 171 Begriffe
-- **Compliance Frameworks:** 23 (ISO 27001, ISO 22301, ISO 27005, ISO 27701, NIS2, NIS2UmsuCG, DORA, TISAX, BSI IT-Grundschutz, BSI C5:2020, BSI C5:2026, GDPR/DSGVO, BDSG, EU AI Act, SOC 2, NIST CSF, CIS Controls, TKG, KRITIS, PCI DSS, HIPAA, CCPA, LGPD)
+### Aktueller Stand (Jun 2026 — Release-Linie v3.x, main @ #901)
+- **Entities:** 113 Doctrine-Entities (alle mit `tenant_id`)
+- **Compliance-Frameworks:** 25 vollständig · ~3.543 Cross-Framework-Mappings · 106 BSI-Bausteine · 93 ISO-27001-Controls
+- **Compliance-Wizards:** 22
+- **Controllers / Services / Commands:** ~220 / ~480 / ~160 Klassen-Dateien (inkl. Traits/Helper)
+- **Templates:** ~880 Twig-Templates · **Übersetzungen:** ~296 YAML (≈148 Domains × 2 Sprachen)
+- **Tests:** ~1.000+ Test-Dateien, CI-grün (full phpunit + Twig/Container-Lint + ~45 Quality-Gates)
+- **API Endpoints:** 18 von ~80 Entities via API Platform exponiert (Ausbau im Backlog)
+- **Frameworks (Auswahl):** ISO 27001/22301/27005/27701, NIS2 + NIS2UmsuCG, DORA, TISAX/VDA-ISA, BSI IT-Grundschutz, BSI C5:2020/2026, KRITIS, GDPR/DSGVO, BDSG, EU AI Act, SOC 2, NIST CSF, CIS Controls, TKG, PCI DSS, HIPAA, CCPA, LGPD
 
 ---
 
@@ -1538,6 +1592,7 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
   - H-01 Structured AuditFinding + CorrectiveAction (Clause 10.1)
   - H-04 Clauses 4–10 als ComplianceRequirements (Context, Leadership, Planning, Support, Operation, Performance Evaluation, Improvement)
   - AUD-02 HMAC-Chain für Audit-Logs (Tamper-Evidence)
+- **Sicherheits-Härtung (v3.x, #900/#901):** A.8.5 erzwungene MFA für Pflicht-Rollen, A.5.15/A.5.16 SSO-Domain-Zwang + Claim→Rollen-Sync, A.8.16 Notification-Event-Bus (Monitoring/Alerting jetzt regel-getrieben aktiv)
 
 ### ISO 22301:2019 (BCM)
 - **Aktuell:** 100% ✅
@@ -1583,36 +1638,8 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 
 ---
 
-**Stand:** 2026-04-21
-**Version:** 2.7 (unreleased — letzter getaggter Release: `v2.6.0`)
-**Letzte Aenderung:** Alle [Unreleased]-Sprints seit 2026-04-17:
-(1) Phase 8J Standards Compliance (CHANGELOG [2.7.0]-Sektion, nicht getagged),
-(2) Persona-Audit Sprint (H-01/H-04/AUD-02 + Pattern A/B/C/D + KPI 1–5),
-(3) Junior+UX+CM Audit Sprint,
-(4) Compliance-Manager-Residual-Sprint v2.2 (H-02 + NIS2-Widgets + BSI-Check
-+ DORA-Complete + TISAX-Complete),
-(5) CM-Data-Reuse-Plan Sprint 1+2+3 (22 FTE-d → ~37 FTE-d/Jahr Ersparnis,
-12 Commits, Cross-Framework-Mapping-Automation),
-(6) Audit-v2.2 Residual-Closure + BSI-Kompendium 2023 vollständig
-(1 868 Anforderungen, 121 Bausteine via DocBook-XML-Import),
-(7) CM-Junior-Consultant-Walkthrough Sprint 4+5+6 (15 FTE-d, 12 Items,
-Reuse + Framework-Mapping junior-tauglich: Wizard / Hub / Seed-Review-Queue
-/ Reuse-Heatmap / Version-Migrations-UI / CSV-Import mit Dry-Run-Preview),
-(8) Phase 8CM4 Seed-Kataloge + Admin-Katalog + 3-Bucket-Applicability +
-Wizard-Integration (8 FTE-d: 4 neue Seeds NIS2/DORA/TISAX/GDPR ↔ ISO 27001,
-1 Seed GDPR ↔ ISO 27701, Admin-Katalog 15 → 23 Frameworks, FrameworkApplicabilityService
-+ Setup-Wizard-Step-8 mit Pflicht/Empfohlen/Optional-Buckets),
-(9) Phase 8CM5 Admin-Panel-UX-Review (~4,25 FTE-d nach Drei-Personas-Walkthrough:
-Menü-Restrukturierung Platform-/Compliance-Admin, Hidden Routes sichtbar,
-Data-Repair-Safety-Banner, Dashboard-KPIs neu kuratiert, Breadcrumb-Konsistenz,
-Admin-scoped Command-Palette),
-(10) Phase 8G Interactive Help & Onboarding (~9,5 FTE-d Sprint 13 nach
-Experten-Konsens UX + 7 Personas + 5 Domain-Specialists: eigener Stimulus-
-Controller im Cyberpunk-Fee-Theme, 6 rollenbasierte Touren
-junior/cm/ciso/isb/risk_owner/auditor, Modul-bedingte Zusatz-Stopps
-BSI/GDPR/BCM, Admin-Completion-Report für ISO 27001 A.6.3-Nachweis,
-Tenant-Override-Modul für Tour-Content, Static-Help-Handouts mit
-Print-CSS statt PDF-Pipeline — siehe `.claude/GUIDED_TOUR_PLAN.md`).
-Audit-Doc 78 → 98 → Residual-Budget 19 → 0 FTE-d. Alle 7 Ziel-Frameworks Tool-🟢,
-BSI IT-Grundschutz auf 99%+.
-**Naechste Aktualisierung:** Nach Cutting `v2.7.0`.
+**Stand:** 2026-06-06
+**Version:** Release-Linie `v3.x` (letzter getaggter Release `v3.10.0`, 2026-05-31; `v3.11` im Zulauf). `main` @ #901.
+**Letzte großen Stränge:** FairyAurora-v4-Design-System · Lifecycle-Foundation + Workflow-YAML-Unification (15 reg. Workflows) · schema-getriebener Bulk-Import (26 Entities) · Alva-Hint-System + Deep-Links (#895/#897) · Sicherheits-Härtung / Dead-Config geschlossen (MFA-/SSO-Enforcement, SSO-Role-Sync, Notification-Event-Bus — #900/#901) · DACH-Regulatorik-Tiefe (C5:2026, KRITIS, NIS2-UmsuCG, DORA RoI+TLPT, TISAX, BDSG) · Datenschutz-Audit abgeschlossen. Details: [CHANGELOG.md](CHANGELOG.md).
+**Backlog:** siehe „Strategischer Backlog (Jun 2026)" oben — gespeist aus Markt-Positionierungs- und DACH-Tiefen-Audit (interne Plan-Docs).
+**Nächste Aktualisierung:** Nach Cutting `v3.11.0` bzw. Abschluss eines Backlog-Strangs.
