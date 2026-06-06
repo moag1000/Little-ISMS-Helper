@@ -178,6 +178,28 @@ class ControlRepository extends ServiceEntityRepository
     }
 
     /**
+     * Controls whose review date fell into the past within the window [$from, $to)
+     * — i.e. they BECAME overdue during that window. Used by the
+     * control.overdue notification cron so a control fires once when it crosses
+     * its review date, not on every run. Cross-tenant (CLI: tenant filter is
+     * inert), the caller groups by tenant.
+     *
+     * @return Control[]
+     */
+    public function findBecameOverdueBetween(\DateTimeInterface $from, \DateTimeInterface $to): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.nextReviewDate IS NOT NULL')
+            ->andWhere('c.nextReviewDate >= :from')
+            ->andWhere('c.nextReviewDate < :to')
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->orderBy('c.nextReviewDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find controls by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited controls from parent companies, grandparents, etc.
      *
