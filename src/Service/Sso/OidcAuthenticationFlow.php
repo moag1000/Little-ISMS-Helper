@@ -41,7 +41,38 @@ final class OidcAuthenticationFlow
         private readonly EntityManagerInterface $em,
         private readonly UserRepository $userRepo,
         private readonly LoggerInterface $logger,
+        private readonly ClaimToRoleResolver $roleResolver,
+        private readonly SsoEventLogger $eventLogger,
     ) {
+    }
+
+    /**
+     * Apply the provider's claim→role mapping to the user. Only an explicitly
+     * MATCHED mapping rule overrides the current role — when no rule fires the
+     * role is left untouched (so unmapped users keep their default/existing
+     * role and are never silently demoted). On a role change for an existing
+     * user the sso.role.changed HMAC audit event is emitted, closing the
+     * "role drift via re-login" audit gap.
+     *
+     * @param array<string,mixed> $claims
+     */
+    private function applyRoleMapping(User $user, IdentityProvider $provider, array $claims, bool $isNew): void
+    {
+        $result = $this->roleResolver->resolve($provider, $claims);
+        if (!$result->matched) {
+            return;
+        }
+
+        $oldRole = $user->getStoredRoles()[0] ?? 'ROLE_USER';
+        if ($result->role === $oldRole) {
+            return;
+        }
+
+        $user->setRoles([$result->role]);
+
+        if (!$isNew) {
+            $this->eventLogger->logRoleChanged($provider, $user, $oldRole, $result->role);
+        }
     }
 
     /**
@@ -107,7 +138,9 @@ final class OidcAuthenticationFlow
         $existing = $this->userRepo->findOneBy(['ssoProvider' => $provider, 'ssoExternalId' => $externalId]);
         if ($existing instanceof User) {
             $this->updateProfile($existing, $provider, $claims);
+            $this->applyRoleMapping($existing, $provider, $claims, false);
             $this->em->flush();
+            $this->eventLogger->logLoginSuccess($provider, $email);
             return $existing;
         }
 
@@ -118,7 +151,9 @@ final class OidcAuthenticationFlow
             $byEmail->setSsoExternalId($externalId);
             $byEmail->setAuthProvider('sso:' . $provider->getSlug());
             $this->updateProfile($byEmail, $provider, $claims);
+            $this->applyRoleMapping($byEmail, $provider, $claims, false);
             $this->em->flush();
+            $this->eventLogger->logLoginSuccess($provider, $email);
             return $byEmail;
         }
 
@@ -132,6 +167,7 @@ final class OidcAuthenticationFlow
             $user = $this->createUser($provider, $email, $externalId, $claims);
             $this->em->persist($user);
             $this->em->flush();
+            $this->eventLogger->logLoginSuccess($provider, $email);
             return $user;
         }
 
@@ -343,6 +379,8 @@ throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no pro
             $user->setTenant($provider->getTenant());
         }
         $this->updateProfile($user, $provider, $claims);
+        // Claim→role mapping overrides the default role when a mapping rule fires.
+        $this->applyRoleMapping($user, $provider, $claims, true);
 
         return $user;
     }

@@ -1,5 +1,6 @@
 mfa:
     title: Zwei-Faktor-Authentifizierung
+    enrollment_required_flash: 'Ihre Rolle erfordert Zwei-Faktor-Authentifizierung. Bitte richten Sie jetzt einen zweiten Faktor ein, um fortzufahren.'
     section:
         title: 'Multi-Faktor-Authentifizierung'
     tokens: MFA-Token

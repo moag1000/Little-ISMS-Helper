@@ -31,6 +31,56 @@
 
 ---
 
+## Was Little ISMS Helper besonders macht
+
+Kein generischer Checklisten-Klon. Die Stärke liegt in der **regulatorischen Tiefe für den
+DACH-Raum** und darin, **einmal erfasste Nachweise über viele Frameworks wiederzuverwenden**.
+
+### 🇩🇪 DACH-Regulatorik bis in die Methodik
+
+Nicht nur Anforderungslisten — die eigentliche Vorgehensweise ist abgebildet:
+
+- **BSI IT-Grundschutz** — 117 Bausteine über alle 10 Schichten, ein echter **IT-Grundschutz-Check**
+  (Soll/Ist, MUSS/SOLLTE/KANN-Gewichtung) und **Schutzbedarfsvererbung nach dem Maximumprinzip** über den
+  Abhängigkeitsgraph. Dazu **5 Branchen-Baselines** mit je über 100 regulatorisch begründeten Reifegrad-Zielen
+  (Finanzen, Gesundheit, KRITIS, Fertigung, SaaS).
+- **BSI C5 (2020 + 2026)** — der **offizielle BSI-C5-Katalog**; die C5:2026-Neuerungen
+  (Krypto-Agilität/PQC, SBOM, Confidential Computing, Container-Management) sind erfasst.
+- **KRITIS** — §8a/§8b BSIG rechtlich verankert, sektorspezifische Policy-Vorlagen (Energie, Wasser, IT-TK,
+  Gesundheit, Transport, Ernährung), klare Abgrenzung KRITIS-Dachgesetz vs. NIS2.
+- **NIS2 & NIS2-Umsetzungsgesetz** — Einrichtungs-Kategorien, 19-Sektoren-Taxonomie, Art. 21(2) a–j,
+  **BSI-Registrierungsprofil** und eine **automatische Melde-Deadline-Eskalation** (24 h / 72 h / 1-Monats-Bericht).
+- **DORA** — alle 5 Säulen inkl. **Threat-Led-Penetration-Testing**, **Register of Information** (ITS-Spaltensatz)
+  und der **lex-specialis-Doppelmeldelogik** (DORA an BaFin/Bundesbank *und* BSI-CERT).
+- **TISAX / VDA-ISA** — copyright-sauber: Sie laden Ihr eigenes ISA-Workbook, das Tool bewertet **Reifegrad 0–5**,
+  Prototypenschutz und Datenschutz-Ampel und exportiert ein **ENX-kompatibles Schedule** zurück.
+- **Deutscher Datenschutz** — BDSG-Spezifika, **DSB-Bestellregister (§38)**, Anschriften **aller 16 LfDI + BfDI**
+  mit behördenspezifischen Melde-PDFs, ISO 27701:2025.
+
+### ♻️ Cross-Framework-Wiederverwendung statt Doppelarbeit
+
+- **25 vollständige Frameworks** mit **~3.500 kuratierten Cross-Mappings** und **transitiver Coverage** — ein
+  erfüllter Control wirkt automatisch auf gemappte Anforderungen anderer Frameworks.
+- **FTE-/ROI-Rechner** — beziffert aus echten Ereignissen (Reuse, Import, Onboarding) die eingesparten
+  Personentage, pro Mandant kalibrierbar und audit-protokolliert.
+
+### 🔒 Audit-fest und konzernfähig
+
+- **Tamper-evidenter HMAC-Audit-Trail** + **Audit-Freeze** + **Zertifizierungspaket als ZIP** (SHA-256 über das Archiv).
+- **Multi-Tenant-Isolation** auf DB-Ebene + **Holding-/Konzern-Hierarchie** mit subtree-bezogenen Gruppen-Reports.
+- **Erzwungene MFA** für privilegierte Rollen, RBAC + Personen-Rollen, AES-256-GCM-Backups, OIDC-SSO.
+
+### 🚀 Einstieg auch ohne Security-Budget
+
+- **7-Phasen-Onboarding**, **22 Compliance-Wizards**, **Essential-Controls-Filter (31 statt 93)**,
+  Branchen-Baselines mit Vorausfüllung und eine **ISO-9001-Brücke** im Glossar für Quereinsteiger.
+
+### 🏠 Selbst gehostet & quelloffen
+
+- **AGPL v3**, ein **Docker-Image**, keine Cloud-Pflicht — Ihre Compliance-Daten bleiben im Haus.
+
+---
+
 ## Fuer wen ist dieses Tool?
 
 ### Der Sweet Spot
@@ -144,7 +194,7 @@ Vollstaendige Liste: [CHANGELOG.md](CHANGELOG.md).
 - **Branchen-Baselines** -- 9 vorkonfigurierte Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) fuer sofortigen Einstieg
 - **Framework-Reife-Baselines** -- 35 Reife-Soll-Pakete (7 Frameworks x 5 Branchen: ISO 27001, BSI IT-Grundschutz, BSI C5, NIS2, DORA, TISAX, GDPR x KRITIS/Finance/SaaS/Manufacturing/Healthcare)
 - **MRIS v1.5** -- 19 zusaetzliche Branchen-Reife-Baselines mit DE/EN-i18n
-- **GSTOOL-XML-Import** -- 5-phasiger Migrationspfad fuer Verinice-Profile (Zielobjekte -> Bausteine -> Massnahmen -> Risikoanalyse), Admin-UI mit Tabbed-Preview
+- **GSTOOL-XML-Import** -- 5-phasiger Migrationspfad fuer Grundschutz-Altbestaende (Zielobjekte -> Bausteine -> Massnahmen -> Risikoanalyse), Admin-UI mit Tabbed-Preview
 - **SoA-Export** -- Statement of Applicability als PDF, inklusive Management-Review nach Clause 9.3
 
 ### Risikomanagement
@@ -592,25 +642,6 @@ Faires Acknowledgement, ohne diese Projekte direkt zu uebernehmen.
   -- GDPR/CCPA Mapping-Daten von Microsoft.
 - **[coolstartnow/isms-builder](https://github.com/coolstartnow/isms-builder)**
   -- ISMS-Strukturgenerator mit Markdown-Output.
-
-### Funktional verwandte Open-Source-Projekte (mit kommerzieller Variante)
-
-- **[CISO Assistant](https://github.com/intuitem/ciso-assistant-community)** --
-  Open-Source-GRC mit 40+ Frameworks. Direkt funktional vergleichbar im
-  Multi-Framework-Ansatz. Kommerzielle Enterprise-Variante verfuegbar
-  ([intuitem.com](https://intuitem.com/)). Faires Pendant fuer Anwender,
-  die ein groesseres Ecosystem oder Hersteller-Support brauchen.
-
-### Was Little ISMS Helper anders macht
-
-- **DACH-Fokus aus erster Hand** -- BSI-Grundschutz (Basis/Standard/Kern),
-  BSI C5, KRITIS, TISAX als First-Class-Citizens, nicht als nachtraeglich
-  gemappte ISO-Crosswalks
-- **Deutschsprachig zuerst, EN als Zweitsprache**
-- **18+ Compliance-Wizards** mit nativen DACH-Frameworks
-- **Single-Tenant-Selbsthostung** auf Pi/Cloud ohne Vendor-Lock-In
-- **AGPL-3.0** -- Quellcode-Offenlegung verpflichtend bei SaaS-Betrieb,
-  schuetzt Community vor Closed-Source-Forks
 
 ---
 

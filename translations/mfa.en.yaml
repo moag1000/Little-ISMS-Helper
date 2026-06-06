@@ -1,5 +1,6 @@
 mfa:
     title: 'Two-Factor Authentication'
+    enrollment_required_flash: 'Your role requires two-factor authentication. Please set up a second factor now to continue.'
     section:
         title: 'Multi-factor authentication'
     tokens: 'MFA Tokens'

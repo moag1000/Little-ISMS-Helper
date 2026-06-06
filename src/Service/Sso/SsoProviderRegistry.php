@@ -17,7 +17,7 @@ use Symfony\Component\Yaml\Yaml;
  * to everyone; tenant-scoped IdPs are only visible inside their tenant.
  * Domain-binding rules filter further when an email is known.
  */
-final class SsoProviderRegistry
+class SsoProviderRegistry
 {
     public function __construct(
         private readonly IdentityProviderRepository $repo,
