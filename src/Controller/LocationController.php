@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\Location;
 use App\Form\LocationType;
 use App\Repository\LocationRepository;
@@ -19,6 +20,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LocationController extends AbstractController
 {
+    use InPageFormTrait;
+
     public function __construct(
         private readonly LocationRepository $locationRepository,
         private readonly EntityManagerInterface $entityManager,
@@ -58,12 +61,25 @@ class LocationController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('location.success.created', [], 'messages'));
+
+            // In-drawer create → Turbo Stream that appends the new row (the
+            // drawer controller closes the panel on the successful submit).
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->turboStreamSave($location, isNew: true);
+            }
             return $this->redirectToRoute('app_location_show', ['id' => $location->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('location/_drawer_form.html.twig', [
+                'location' => $location,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('location/new.html.twig', [
             'location' => $location,
@@ -72,8 +88,15 @@ class LocationController extends AbstractController
     }
     #[Route('/location/{id}', name: 'app_location_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(Location $location): Response
+    public function show(Request $request, Location $location): Response
     {
+        // In-drawer → slim read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('location/_drawer_detail.html.twig', [
+                'location' => $location,
+            ]);
+        }
+
         $childLocations = $location->getChildLocations();
         $accessLogs = $location->getAccessLogs();
         $assets = $location->getAssets();
@@ -96,6 +119,10 @@ class LocationController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('location.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->turboStreamSave($location, isNew: false);
+            }
             return $this->redirectToRoute('app_location_show', ['id' => $location->getId()]);
         }
 
@@ -103,10 +130,26 @@ class LocationController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('location/_drawer_form.html.twig', [
+                'location' => $location,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('location/edit.html.twig', [
             'location' => $location,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Render the row-update Turbo Stream after a successful in-drawer save. */
+    private function turboStreamSave(Location $location, bool $isNew): Response
+    {
+        return $this->render('location/_stream_save.html.twig', [
+            'location' => $location,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
     #[Route('/location/{id}/delete', name: 'app_location_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

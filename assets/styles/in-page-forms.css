@@ -1,0 +1,22 @@
+/* ============================================================================
+   In-page forms — drawer / form-modal glue (FairyAurora v4).
+   Spec: docs/superpowers/specs/2026-06-06-form-drawer-modal-overhaul-design.md
+   ========================================================================== */
+
+/* List-row title link: looks like the surrounding text, not a blue hyperlink,
+   but is a real <a> so keyboard + screen-reader users can open the drawer. */
+.fa-row-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+.fa-row-link:hover,
+.fa-row-link:focus-visible {
+    text-decoration: underline;
+    color: var(--primary-strong, var(--primary, #3a5bd0));
+}
+
+/* Whole-row affordance: subtle hover so users discover rows are interactive. */
+tbody tr:has(.fa-row-link):hover {
+    background: var(--surface-2, rgba(120, 160, 255, 0.06));
+}

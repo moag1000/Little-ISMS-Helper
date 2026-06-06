@@ -229,6 +229,7 @@ common:
     date_to: 'Date To'
     details: Details
     download: Download
+    open_full_view: 'Open full view'
     error: Error
     error.invalid_csrf: 'Invalid security token. Please reload the page and try again.'
     error.access_denied: 'Access denied.'

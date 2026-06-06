@@ -54,3 +54,6 @@
 
 /* FairyAurora v4.0 — fa-modal canonical shell (confirm + settings modes) */
 @import "./styles/fa-modal.css";
+
+/* In-page forms — drawer / form-modal glue (list-row link, hover affordance) */
+@import "./styles/in-page-forms.css";

@@ -442,6 +442,20 @@
     {% import '_components/_fa_toast.html.twig' as _fa_toast %}
     {{ _fa_toast.stack([]) }}
 
+    {# In-page form drawer host (FairyAurora v4 — fa-drawer + Turbo Frame).
+       Any link with data-turbo-frame="fa-drawer" loads its target (detail / edit /
+       new partial) into the frame; fa_drawer_controller opens/manages the panel.
+       Spec: docs/superpowers/specs/2026-06-06-form-drawer-modal-overhaul-design.md #}
+    <div data-controller="fa-drawer">
+        <div class="fa-drawer-backdrop" data-fa-drawer-target="backdrop"
+             data-action="click->fa-drawer#backdropClose"></div>
+        <aside class="fa-drawer fa-drawer--right" role="dialog" aria-modal="true"
+               aria-label="{{ 'common.details'|trans({}, 'messages') }}"
+               data-fa-drawer-target="panel">
+            <turbo-frame id="fa-drawer" data-fa-drawer-target="frame"></turbo-frame>
+        </aside>
+    </div>
+
     {# Keyboard Shortcuts Help #}
     {% include '_components/_keyboard_shortcuts.html.twig' %}
 

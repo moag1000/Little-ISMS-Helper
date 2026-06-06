@@ -374,6 +374,91 @@ class LocationControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    // ========== IN-PAGE DRAWER (Turbo Frame) TESTS ==========
+
+    #[Test]
+    public function testShowInFrameRendersSlimDrawerPartial(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request(
+            'GET',
+            '/en/location/' . $this->testLocation->getId(),
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-drawer'],
+        );
+
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        // Slim partial: the turbo-frame + drawer chrome, NOT a full page.
+        self::assertStringContainsString('<turbo-frame id="fa-drawer"', $html);
+        self::assertStringContainsString('fa-drawer__header', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
+    #[Test]
+    public function testShowWithoutFrameRendersFullPage(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request('GET', '/en/location/' . $this->testLocation->getId());
+
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<html', $html);
+    }
+
+    #[Test]
+    public function testEditInFrameValidReturnsTurboStream(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        // Load the edit form (full page) to grab CSRF token + field values.
+        $crawler = $this->client->request('GET', '/en/location/' . $this->testLocation->getId() . '/edit');
+        $form = $crawler->filter('form[name="location"]')->form([
+            'location[name]' => 'Drawer-Updated Location',
+        ]);
+
+        // Re-submit as an in-frame request.
+        $this->client->request(
+            'POST',
+            $form->getUri(),
+            $form->getPhpValues(),
+            [],
+            ['HTTP_TURBO_FRAME' => 'fa-drawer'],
+        );
+
+        $this->assertResponseIsSuccessful();
+        self::assertStringContainsString(
+            'text/vnd.turbo-stream.html',
+            (string) $this->client->getResponse()->headers->get('Content-Type'),
+        );
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-stream', $html);
+        self::assertStringContainsString('location-row-' . $this->testLocation->getId(), $html);
+    }
+
+    #[Test]
+    public function testEditInFrameInvalidReturns422DrawerForm(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        $crawler = $this->client->request('GET', '/en/location/' . $this->testLocation->getId() . '/edit');
+        $form = $crawler->filter('form[name="location"]')->form(['location[name]' => '']);
+
+        $this->client->request(
+            'POST',
+            $form->getUri(),
+            $form->getPhpValues(),
+            [],
+            ['HTTP_TURBO_FRAME' => 'fa-drawer'],
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-drawer"', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
     // ========== DELETE ACTION TESTS ==========
 
     #[Test]

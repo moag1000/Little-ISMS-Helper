@@ -1,0 +1,25 @@
+{# Location create/edit form — rendered inside the fa-drawer Turbo Frame.
+   On valid submit the controller returns a Turbo Stream (row replace/append);
+   fa_drawer_controller closes the panel on turbo:submit-end success. #}
+{% trans_default_domain 'locations' %}
+{% set is_edit = location.id is not null %}
+{% embed '_layouts/_drawer_shell.html.twig' with {
+    eyebrow: 'nav.locations'|trans({}, 'nav'),
+    title: is_edit ? 'location.title.edit'|trans({}, 'locations') : 'location.title.create'|trans({}, 'locations')
+} %}
+    {% block body %}
+        {{ form_start(form, { attr: { id: 'location-drawer-form', 'data-turbo-frame': 'fa-drawer' } }) }}
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    {% endblock %}
+
+    {% block footer %}
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-drawer#close">
+            <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+        </button>
+        <button type="submit" form="location-drawer-form" class="fa-cyber-btn fa-cyber-btn--md">
+            <span class="fa-cyber-btn__label">{{ 'common.save'|trans({}, 'messages') }}</span>
+        </button>
+    {% endblock %}
+{% endembed %}

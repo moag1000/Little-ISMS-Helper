@@ -8,6 +8,7 @@ import AdminHubSearchController from './controllers/admin_hub_search_controller.
 import ApiKeyRevealController from './controllers/api_key_reveal_controller.js';
 import FaConfirmController from './controllers/fa_confirm_controller.js';
 import FaModalController from './controllers/fa_modal_controller.js';
+import FaDrawerController from './controllers/fa_drawer_controller.js';
 import FaModalDispatcherController from './controllers/fa_modal_dispatcher_controller.js';
 import MegaMenuController from './controllers/mega_menu_controller.js';
 import AuroraDropdownController from './controllers/aurora_dropdown_controller.js';
@@ -40,6 +41,7 @@ app.debug = false;
 // the manifest in prod. Explicit registration guarantees activation
 // on every deploy without manifest churn.
 app.register('async-job', AsyncJobController);
+app.register('fa-drawer', FaDrawerController);
 app.register('wizard-busy', WizardBusyController);
 app.register('alva-dock', AlvaDockController);
 app.register('alva-hint', AlvaHintController);

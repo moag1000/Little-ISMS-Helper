@@ -1,0 +1,50 @@
+{# Location detail — read-only, rendered inside the fa-drawer Turbo Frame. #}
+{% trans_default_domain 'locations' %}
+{% embed '_layouts/_drawer_shell.html.twig' with {
+    eyebrow: 'nav.locations'|trans({}, 'nav'),
+    title: location.name
+} %}
+    {% block body %}
+        {% set securityColors = {
+            'public': 'secondary', 'restricted': 'info', 'controlled': 'warning',
+            'secure': 'warning', 'high_security': 'danger'
+        } %}
+        <div class="fa-drawer__section">
+            <span class="fa-drawer__pill">
+                {% include '_components/_badge.html.twig' with { variant: securityColors[location.securityLevel] ?? 'secondary', content: ('location.security.' ~ location.securityLevel)|trans({}, 'locations') } %}
+            </span>
+        </div>
+
+        <div class="fa-drawer__kv"><span class="label">{{ 'location.field.type'|trans({}, 'locations') }}</span>
+            <span>{{ ('location.type.' ~ location.locationType)|trans({}, 'locations') }}</span></div>
+        {% if location.code %}<div class="fa-drawer__kv"><span class="label">{{ 'location.field.code'|trans({}, 'locations') }}</span><span><code>{{ location.code }}</code></span></div>{% endif %}
+        {% if location.parentLocation %}<div class="fa-drawer__kv"><span class="label">{{ 'location.field.parent'|trans({}, 'locations') }}</span><span>{{ location.parentLocation.name }}</span></div>{% endif %}
+        <div class="fa-drawer__kv"><span class="label">{{ 'location.field.city'|trans({}, 'locations') }}</span>
+            <span>{{ location.city ?? '–' }}{% if location.country %} · {{ location.country }}{% endif %}</span></div>
+        <div class="fa-drawer__kv"><span class="label">{{ 'location.field.badge_access'|trans({}, 'locations') }}</span>
+            <span>{{ location.requiresBadgeAccess ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</span></div>
+        {% if location.description %}
+            <div class="fa-drawer__section"><span class="label">{{ 'location.field.description'|trans({}, 'locations') }}</span>
+                <p class="fa-drawer__desc">{{ location.description }}</p></div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_location_show', {id: location.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    {% endblock %}
+
+    {% block footer %}
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-drawer#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_location_edit', {id: location.id}) }}" data-turbo-frame="fa-drawer"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
