@@ -1,52 +1,52 @@
 {# DPIA read-only detail — rendered inside the fa-form-modal Turbo Frame.
-   Condensed; "Vollansicht" links to the full page. Edit (when editable) loads
-   the edit form into the same frame. #}
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page. #}
 {% trans_default_domain 'privacy' %}
 {% set editable = dpia.status in ['draft', 'requires_revision'] %}
 {% set status_class = {'draft':'secondary','in_review':'info','approved':'success','rejected':'danger','requires_revision':'warning'}[dpia.status] %}
 {% set risk_map = {'low':'success','medium':'info','high':'warning','critical':'danger'} %}
 <turbo-frame id="fa-form-modal">
-    <div class="fa-form-layout fa-form-layout--modal">
-        <header class="fa-form-layout__header">
-            <div>
-                <div class="fa-form-layout__eyebrow">DSGVO Art. 35 · DPIA</div>
-                <h2 class="fa-form-layout__title">{{ dpia.referenceNumber }} — {{ dpia.title }}</h2>
-            </div>
-            <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
-                    aria-label="{{ 'common.close'|trans({}, 'messages') }}">
-                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
-            </button>
-        </header>
-        <div class="fa-form-layout__body" style="padding:20px">
-            <div class="fa-drawer__section">
-                {% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}
-                {% if dpia.riskLevel %} {% include '_components/_badge.html.twig' with { variant: risk_map[dpia.riskLevel], content: dpia.riskLevel|upper } %}{% endif %}
-            </div>
-            {% if dpia.processingActivity %}<div class="fa-drawer__kv"><span class="label">{{ 'dpia.new.field_processing_activity'|trans({}, 'privacy')|default('Processing activity') }}</span><span>{{ dpia.processingActivity.name }}</span></div>{% endif %}
-            <div class="fa-drawer__kv"><span class="label">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</span><span>{{ dpia.completenessPercentage }}%</span></div>
-            {% if dpia.residualRiskLevel %}<div class="fa-drawer__kv"><span class="label">{{ 'dpia.new.section_risk_assessment'|trans({}, 'privacy') }}</span><span>{{ dpia.residualRiskLevel|upper }}</span></div>{% endif %}
-            <div class="fa-drawer__kv"><span class="label">DPO</span><span>{{ dpia.dpoConsultationDate ? dpia.dpoConsultationDate|date('Y-m-d') : '–' }}</span></div>
-            {% if dpia.necessityAssessment %}<div class="fa-drawer__section"><span class="label">{{ 'dpia.new.section_necessity_proportionality'|trans({}, 'privacy') }}</span><p class="fa-drawer__desc">{{ dpia.necessityAssessment|u.truncate(280, '…') }}</p></div>{% endif %}
-            <div class="fa-drawer__section">
-                <a href="{{ path('app_dpia_show', {id: dpia.id}) }}" data-turbo="false" class="fa-row-link">
-                    {{ 'common.open_full_view'|trans({}, 'messages') }} →
-                </a>
-            </div>
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">DSGVO Art. 35 · DPIA</div>
+            <div class="fa-drawer__title">{{ dpia.referenceNumber }} — {{ dpia.title }}</div>
         </div>
-        <footer class="fa-form-layout__footer">
-            <div class="fa-form-layout__footer-meta"></div>
-            <div class="fa-form-layout__footer-actions">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="fa-form-modal#close">
-                    <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
-                </button>
-                {% if editable %}
-                    <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal"
-                       class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
-                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                        <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
-                    </a>
-                {% endif %}
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}
+            {% if dpia.riskLevel %} {% include '_components/_badge.html.twig' with { variant: risk_map[dpia.riskLevel], content: dpia.riskLevel|upper } %}{% endif %}
+        </div>
+        {% if dpia.processingActivity %}<div class="fa-drawer__kv"><span class="label">{{ 'dpia.new.section_processing_operations'|trans({}, 'privacy') }}</span><span>{{ dpia.processingActivity.name }}</span></div>{% endif %}
+        <div class="fa-drawer__kv"><span class="label">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</span><span>{{ dpia.completenessPercentage }}%</span></div>
+        {% if dpia.residualRiskLevel %}<div class="fa-drawer__kv"><span class="label">{{ 'dpia.new.section_risk_assessment'|trans({}, 'privacy') }}</span><span>{{ dpia.residualRiskLevel|upper }}</span></div>{% endif %}
+        <div class="fa-drawer__kv"><span class="label">DPO</span><span>{{ dpia.dpoConsultationDate ? dpia.dpoConsultationDate|date('Y-m-d') : '–' }}</span></div>
+        {% if dpia.necessityAssessment %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'dpia.new.section_necessity_proportionality'|trans({}, 'privacy') }}</span>
+                <p class="fa-drawer__desc">{{ dpia.necessityAssessment|u.truncate(280, '…') }}</p>
             </div>
-        </footer>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_dpia_show', {id: dpia.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if editable %}
+            <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
     </div>
 </turbo-frame>
