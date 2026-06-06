@@ -10,6 +10,7 @@ use App\Enum\IncidentStatus;
 use App\Enum\TreatmentStrategy;
 use DateTime;
 use App\Entity\Incident;
+use App\Risk\RiskMatrixThresholds;
 use App\Repository\AssetRepository;
 use App\Repository\BCExerciseRepository;
 use App\Repository\BusinessContinuityPlanRepository;
@@ -163,8 +164,8 @@ class DoraComplianceController extends AbstractController
         });
 
         $totalIctRisks = count($ictRisks);
-        $highIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= 12));
-        $criticalIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= 16));
+        $highIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::HIGH_MIN));
+        $criticalIctRisks = count(array_filter($ictRisks, fn($r) => $r->getInherentRiskLevel() >= RiskMatrixThresholds::CRITICAL_MIN));
         $treatedIctRisks = count(array_filter($ictRisks, fn($r) => $r->getTreatmentStrategy() !== null));
         $treatmentRate = $totalIctRisks > 0 ? round(($treatedIctRisks / $totalIctRisks) * 100) : 100;
 
@@ -239,7 +240,12 @@ class DoraComplianceController extends AbstractController
                     return true;
                 }
             }
-            return true; // Default: include all security incidents
+
+            // No ICT keyword matched → not counted as ICT-related. (Previously
+            // this returned true, so EVERY incident was classified ICT and the
+            // keyword filter above was dead code — DORA Art. 17 ICT-incident
+            // counts were really just total-incident counts.)
+            return false;
         });
 
         $totalIctIncidents = count($ictIncidents);

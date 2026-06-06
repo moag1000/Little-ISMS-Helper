@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Risk\RiskMatrixThresholds;
 use DateTimeInterface;
 use DateTimeImmutable;
 use Deprecated;
@@ -773,6 +774,16 @@ class Risk
     public function getInherentRiskLevel(): int
     {
         return ($this->probability ?? 0) * ($this->impact ?? 0);
+    }
+
+    /**
+     * Canonical severity band ('low'|'medium'|'high'|'critical') for the
+     * inherent score, via the single source of truth (ISO 27001 Cl. 6.1.2 b).
+     */
+    #[Groups(['risk:read'])]
+    public function getInherentSeverityBand(): string
+    {
+        return RiskMatrixThresholds::classify($this->getInherentRiskLevel());
     }
 
     /**

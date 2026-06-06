@@ -6,12 +6,14 @@ namespace App\Tests\Service;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Control;
 use App\Entity\KpiSnapshot;
 use App\Repository\KpiSnapshotRepository;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Service\ComplianceAnalyticsService;
@@ -204,6 +206,51 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $result = $this->service->getFrameworkOverlap();
 
         $this->assertCount(0, $result['overlaps']); // No overlap possible with single framework
+    }
+
+    #[Test]
+    public function testGapAnalysisShowsTenantFulfillmentNotControlDerived(): void
+    {
+        $tenant = $this->createTenant(1, 'T');
+        $framework = $this->createFramework(1, 'ISO', 'ISO', false);
+
+        $gap = $this->createMock(ComplianceRequirement::class);
+        $gap->method('getId')->willReturn(42);
+        $gap->method('getRequirementId')->willReturn('A.5.1');
+        $gap->method('getTitle')->willReturn('Gap');
+        $gap->method('getCategory')->willReturn('Test');
+        $gap->method('getPriority')->willReturn('high');
+        // Control-mapping-derived value that MUST be ignored by the gap list.
+        $gap->method('getFulfillmentPercentage')->willReturn(80.0);
+        $gap->method('getMappedControls')->willReturn(new ArrayCollection());
+
+        $crf = $this->createMock(ComplianceRequirementFulfillment::class);
+        $crf->method('getRequirement')->willReturn($gap);
+        $crf->method('getFulfillmentPercentage')->willReturn(20); // tenant fulfillment
+
+        $fulfillmentRepo = $this->createMock(ComplianceRequirementFulfillmentRepository::class);
+        $fulfillmentRepo->method('findByFrameworkAndTenant')->willReturn([$crf]);
+
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->frameworkRepository->method('findActiveFrameworks')->willReturn([$framework]);
+        $this->requirementRepository->method('findGapsByFramework')->willReturn([$gap]);
+
+        $service = new ComplianceAnalyticsService(
+            $this->frameworkRepository,
+            $this->requirementRepository,
+            $this->mappingRepository,
+            $this->controlRepository,
+            $this->tenantContext,
+            $this->assessmentService,
+            null,
+            $fulfillmentRepo,
+        );
+
+        $highGaps = $service->getGapAnalysis()['by_priority']['high'];
+
+        self::assertCount(1, $highGaps);
+        self::assertSame(20, $highGaps[0]['fulfillment']); // tenant value, not 80
+        self::assertSame(80, $highGaps[0]['gap_size']);     // 100 - 20
     }
 
     // ==================== getGapAnalysis() Tests ====================

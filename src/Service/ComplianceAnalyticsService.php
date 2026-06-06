@@ -9,6 +9,7 @@ use App\Entity\Control;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ControlRepository;
 use App\Repository\KpiSnapshotRepository;
 
@@ -28,6 +29,7 @@ class ComplianceAnalyticsService
         private readonly TenantContext $tenantContext,
         private readonly ComplianceAssessmentService $assessmentService,
         private readonly ?KpiSnapshotRepository $kpiSnapshotRepository = null,
+        private readonly ?ComplianceRequirementFulfillmentRepository $fulfillmentRepository = null,
     ) {
     }
 
@@ -233,13 +235,31 @@ class ComplianceAnalyticsService
         $frameworks = $this->frameworkRepository->findActiveFrameworks();
         $allGaps = [];
 
+        $tenant = $this->tenantContext->getCurrentTenant();
+
         foreach ($frameworks as $framework) {
-            $tenant = $this->tenantContext->getCurrentTenant();
             $gaps = $this->requirementRepository->findGapsByFramework($framework, 75, $tenant);
 
+            // Tenant fulfillment map (requirementId => %). This is the SAME
+            // source the gap selection above uses (ComplianceRequirementFulfillment
+            // ≤ 75 %) and that getFrameworkComparison() reports — so the displayed
+            // fulfillment is consistent with both, not the control-mapping-derived
+            // figure from ComplianceRequirement::getFulfillmentPercentage(), which
+            // could show e.g. 80 % next to a requirement listed as a 0 % gap.
+            $fulfillmentMap = [];
+            if ($tenant !== null && $this->fulfillmentRepository !== null) {
+                foreach ($this->fulfillmentRepository->findByFrameworkAndTenant($framework, $tenant) as $crf) {
+                    $reqId = $crf->getRequirement()?->getId();
+                    if ($reqId !== null) {
+                        $fulfillmentMap[$reqId] = $crf->getFulfillmentPercentage();
+                    }
+                }
+            }
+
             foreach ($gaps as $gap) {
-                // Use the direct fulfillment percentage from the requirement
-                $percentage = $gap->getFulfillmentPercentage();
+                // Tenant fulfillment for this requirement; no record = 0 % (real gap).
+                $gapId = $gap->getId();
+                $percentage = $gapId !== null ? ($fulfillmentMap[$gapId] ?? 0) : 0;
 
                 $allGaps[] = [
                     'framework' => $framework->getCode(),
