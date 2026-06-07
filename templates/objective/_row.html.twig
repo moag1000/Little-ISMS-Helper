@@ -1,0 +1,61 @@
+{# Single ISMSObjective table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same.
+   Edit action is gated on ROLE_ADMIN, matching the full-page index behaviour. #}
+{% trans_default_domain 'objective' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
+<tr id="objective-row-{{ objective.id }}"
+    data-objective-id="{{ objective.id }}">
+    {% if is_granted('ROLE_ADMIN') %}
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ objective.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ objective.title }}">
+    </td>
+    {% endif %}
+    <td>
+        <a href="{{ path('app_objective_show', {id: objective.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ objective.title }}</strong></a>
+    </td>
+    <td>
+        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}
+    </td>
+    <td>{{ objective.targetDate|date('d.m.Y') }}</td>
+    <td>
+        {{ _fa_progress.render({
+            value: objective.progressPercentage,
+            tone: objective.progressPercentage >= 75 ? 'success' : (objective.progressPercentage >= 50 ? 'warning' : 'danger'),
+            showText: true
+        }) }}
+    </td>
+    <td>
+        {% include '_components/_badge.html.twig' with {
+            variant: objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning'),
+            content: ('objective.status.' ~ objective.status)|trans({}, 'objective')
+        } %}
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_objective_show', {id: objective.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}"
+               aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_objective_edit', {id: objective.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}"
+               aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

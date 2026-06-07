@@ -1,0 +1,72 @@
+{# Single PrototypeProtectionAssessment table row — shared by the index and the
+   Turbo Stream that replaces/appends a row after an in-modal save.
+   The title cell opens the read-only detail in the fa-form-modal frame;
+   the eye/edit actions do the same. #}
+{% trans_default_domain 'prototype_protection' %}
+{% set status_variant = {
+    'draft':     'secondary',
+    'in_review': 'info',
+    'approved':  'success',
+    'rejected':  'danger',
+    'expired':   'warning',
+} %}
+{% set result_variant = {
+    'not_applicable': 'secondary',
+    'not_met':        'danger',
+    'partial':        'warning',
+    'met':            'success',
+    'exceeded':       'success',
+} %}
+<tr id="prototype-protection-row-{{ a.id }}" class="fa-table__row">
+    <td class="fa-table__cell">
+        <a href="{{ path('app_prototype_protection_show', {id: a.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ a.title }}</strong></a>
+        {% if a.supplier %}
+            <div class="small text-muted">{{ a.supplier.name }}</div>
+        {% endif %}
+    </td>
+    <td class="fa-table__cell">
+        {% include '_components/_badge.html.twig' with {
+            variant: status_variant[a.status] ?? 'secondary',
+            content: ('prototype_protection.status.' ~ a.status)|trans({}, 'prototype_protection')
+        } %}
+    </td>
+    <td class="fa-table__cell">{{ a.tisaxLevel ?? '—' }}</td>
+    <td class="fa-table__cell">{{ a.assessmentDate ? a.assessmentDate|date('d.m.Y') : '—' }}</td>
+    <td class="fa-table__cell">
+        {% if a.overallResult %}
+            {% include '_components/_badge.html.twig' with {
+                variant: result_variant[a.overallResult] ?? 'secondary',
+                content: ('prototype_protection.result.' ~ a.overallResult)|trans({}, 'prototype_protection')
+            } %}
+        {% else %}
+            <span class="text-muted">—</span>
+        {% endif %}
+    </td>
+    <td class="fa-table__cell">
+        {% if a.nextAssessmentDue %}
+            {{ a.nextAssessmentDue|date('d.m.Y') }}
+        {% else %}
+            <span class="text-muted">—</span>
+        {% endif %}
+    </td>
+    <td class="fa-table__cell fa-table__cell--actions">
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_prototype_protection_show', {id: a.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_prototype_protection_edit', {id: a.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

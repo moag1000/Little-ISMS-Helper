@@ -1,0 +1,22 @@
+{# ChangeRequest create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit
+   the controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'change_requests' %}
+{% set is_edit = change is defined and change and change.id is not null %}
+{% set form_action = is_edit ? path('app_change_request_edit', { id: change.id }) : path('app_change_request_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'change-request-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'change_request/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? change.title : 'change_request.page.new'|trans({}, 'change_requests'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>
