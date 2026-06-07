@@ -1,0 +1,91 @@
+{# CorrectiveAction read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses drawer chrome (header/body/footer/kv). Shows description, owner, status,
+   due-date, effectiveness, linked finding. Full-page link via data-turbo="false". #}
+{% trans_default_domain 'audits' %}
+{% set _statusVariant = action.status == 'verified_effective' ? 'success'
+    : (action.status == 'verified_ineffective' ? 'danger'
+    : (action.status in ['completed', 'closed'] ? 'success'
+    : (action.status == 'in_progress' ? 'warning'
+    : (action.status == 'planned' ? 'info' : 'neutral')))) %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 Cl. 10.1 · CAPA</div>
+            <div class="fa-drawer__title">{{ action.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            <span class="fa-status-pill fa-status-pill--{{ _statusVariant }}">
+                {{ ('corrective_action.status.' ~ action.status)|trans({}, 'audits') }}
+            </span>
+        </div>
+
+        {% if action.description %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'corrective_action.field.description'|trans({}, 'audits') }}</span>
+                <p class="fa-drawer__desc">{{ action.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+
+        {% if action.effectiveResponsiblePerson %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'corrective_action.field.responsible_person_user'|trans({}, 'audits') }}</span>
+                <span>{{ action.effectiveResponsiblePerson }}</span>
+            </div>
+        {% endif %}
+
+        {% if action.plannedCompletionDate %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'corrective_action.field.planned_completion_date'|trans({}, 'audits') }}</span>
+                <span>{{ action.plannedCompletionDate|date('Y-m-d') }}</span>
+            </div>
+        {% endif %}
+
+        {% if action.effectivenessReviewDate %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'corrective_action.field.effectiveness_review_date'|trans({}, 'audits') }}</span>
+                <span>{{ action.effectivenessReviewDate|date('Y-m-d') }}</span>
+            </div>
+        {% endif %}
+
+        {% if action.effectivenessNotes %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'corrective_action.field.effectiveness_notes'|trans({}, 'audits') }}</span>
+                <p class="fa-drawer__desc">{{ action.effectivenessNotes|u.truncate(200, '…') }}</p>
+            </div>
+        {% endif %}
+
+        {% if action.finding %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'corrective_action.field.finding'|trans({}, 'audits') }}</span>
+                <span>{{ action.finding.findingNumber ?? ('#' ~ action.finding.id) }} — {{ action.finding.title }}</span>
+            </div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_corrective_action_show', {id: action.id}) }}"
+               data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md"
+                data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_corrective_action_edit', {id: action.id}) }}"
+               data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

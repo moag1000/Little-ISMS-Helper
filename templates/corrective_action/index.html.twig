@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 
 {% block title %}{{ 'corrective_action.page.title'|trans({}, 'audits') }}{% endblock %}
@@ -19,7 +18,7 @@
     badge: { icon: 'nav-tools', label: 'corrective_action.page.title'|trans({}, 'audits') },
     title: 'corrective_action.page.title'|trans({}, 'audits'),
     actions: [
-        { label: 'corrective_action.action.new'|trans({}, 'audits'), href: path('app_corrective_action_new'), variant: 'primary', icon: 'plus' }
+        { label: 'corrective_action.action.new'|trans({}, 'audits'), href: path('app_corrective_action_new'), variant: 'primary', icon: 'plus', attrs: {'data-turbo-frame': 'fa-form-modal'} }
     ]
 }) }}
 {% set _global_hints = alva_hints('corrective_action_index') %}
@@ -67,33 +66,9 @@
             title: 'corrective_action.message.none'|trans({}, 'audits')
         }) }}
     {% else %}
-        <div class="d-flex flex-column gap-2">
+        <div class="d-flex flex-column gap-2" id="corrective-action-rows">
             {% for a in actions %}
-                {% set _statusVariant = a.status == 'verified_effective' ? 'success'
-                    : (a.status == 'verified_ineffective' ? 'danger'
-                    : (a.status in ['completed', 'closed'] ? 'success'
-                    : (a.status == 'in_progress' ? 'warning'
-                    : (a.status == 'planned' ? 'info' : 'neutral')))) %}
-                {% set _meta = [] %}
-                {% if a.finding %}
-                    {% set _meta = _meta|merge([a.finding.findingNumber ?? ('#' ~ a.finding.id)]) %}
-                {% endif %}
-                {% if a.effectiveResponsiblePerson %}
-                    {% set _meta = _meta|merge([a.effectiveResponsiblePerson]) %}
-                {% endif %}
-                {% if a.plannedCompletionDate %}
-                    {% set _meta = _meta|merge([
-                        (a.isOverdue ? '⚠ ' : '') ~ a.plannedCompletionDate|date('Y-m-d')
-                    ]) %}
-                {% endif %}
-                {{ _fa_entity_card.render({
-                    type:   'nonconformity',
-                    icon:   'nonconformity',
-                    title:  a.title,
-                    meta:   _meta,
-                    href:   path('app_corrective_action_show', {id: a.id}),
-                    status: { variant: _statusVariant, label: ('corrective_action.status.' ~ a.status)|trans({}, 'audits') }
-                }) }}
+                {% include 'corrective_action/_row.html.twig' with { action: a } %}
             {% endfor %}
         </div>
     {% endif %}

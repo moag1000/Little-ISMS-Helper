@@ -21,6 +21,7 @@ use App\Service\InternalAuditCloner;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Controller\Trait\InPageFormTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +33,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuditController extends AbstractController
 {
+    use InPageFormTrait;
     public function __construct(
         private readonly InternalAuditRepository $internalAuditRepository,
         private readonly AuditLogRepository $auditLogRepository,
@@ -104,12 +106,23 @@ class AuditController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('audit.success.created', [], 'audit'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->auditStreamSave($internalAudit, isNew: true);
+            }
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('audit/_form_modal.html.twig', [
+                'audit' => $internalAudit,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('audit/new.html.twig', [
             'audit' => $internalAudit,
@@ -208,8 +221,15 @@ class AuditController extends AbstractController
         ]);
     }
     #[Route('/audit/{id}', name: 'app_audit_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(InternalAudit $internalAudit): Response
+    public function show(Request $request, InternalAudit $internalAudit): Response
     {
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('audit/_detail_modal.html.twig', [
+                'audit' => $internalAudit,
+            ]);
+        }
+
         // Get audit log history for this audit (last 10 entries)
         $auditLogs = $this->auditLogRepository->findByEntity('InternalAudit', $internalAudit->getId());
         $totalAuditLogs = count($auditLogs);
@@ -236,12 +256,23 @@ class AuditController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('audit.success.updated', [], 'audit'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->auditStreamSave($internalAudit, isNew: false);
+            }
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('audit/_form_modal.html.twig', [
+                'audit' => $internalAudit,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('audit/edit.html.twig', [
             'audit' => $internalAudit,
@@ -623,6 +654,15 @@ class AuditController extends AbstractController
         $this->addFlash('success', $this->translator->trans('audit.flash.audit_closed', [], 'audit'));
 
         return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
+    }
+
+    /** Turbo Stream after a successful in-modal Audit save (row replace/append). */
+    private function auditStreamSave(InternalAudit $internalAudit, bool $isNew): Response
+    {
+        return $this->render('audit/_stream_save.html.twig', [
+            'audit' => $internalAudit,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     private function getCurrentUserOrThrow(): User
