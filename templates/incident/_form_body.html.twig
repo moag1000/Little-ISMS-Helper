@@ -1,0 +1,167 @@
+{# Shared Incident form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps in form_start/end
+   and passes title / actions. The escalation-preview Stimulus wiring and the
+   GDPR wizard trigger button are preserved here so they work in both paths.
+
+   NOTE: The escalation-preview data-controller is on the OUTER div (not the
+   form element) in the original templates. In the modal path the form element
+   carries alva-hint-in-form; the escalation-preview controller is attached via
+   a wrapper div rendered in extras_before_actions so its target attributes on
+   severity/dataBreachOccurred fields can still resolve. #}
+{% trans_default_domain 'incident' %}
+{% set modal = modal|default(false) %}
+{% set is_edit = incident is defined and incident and incident.id is not null %}
+{% set title = title|default(is_edit ? incident.title : 'incident.new'|trans({}, 'incident')) %}
+
+{# Build sections map — NIS2/DORA section only when nis2_dora module is active #}
+{% set form_sections = {
+    'basic_info': {
+        'label': 'incident.section.basic_info'|trans({}, 'incident'),
+        'fields': ['title', 'category', 'description']
+    },
+    'severity_status': {
+        'label': 'incident.section.severity_status'|trans({}, 'incident'),
+        'fields': ['severity', 'dataBreachOccurred', 'status']
+    },
+    'detection_reporting': {
+        'label': 'incident.section.detection_reporting'|trans({}, 'incident'),
+        'fields': ['detectedAt', 'occurredAt', 'reportedByUser', 'reportedByPerson', 'reportedByDeputyPersons', 'reportedBy', 'responsiblePerson']
+    },
+    'affected_systems': {
+        'label': 'incident.section.affected_systems'|trans({}, 'incident'),
+        'fields': ['affectedSystems', 'affectedAssets']
+    },
+    'analysis': {
+        'label': 'incident.section.analysis'|trans({}, 'incident'),
+        'fields': ['rootCause', 'correctiveActions', 'lessonsLearned', 'closedAt']
+    },
+    'classification_containment': {
+        'label': 'incident.section.classification_containment'|trans({}, 'incident'),
+        'fields': ['visibleToHolding', 'incidentClassification', 'evidencePreserved', 'containmentActions']
+    }
+} %}
+{% if is_module_active('nis2_dora') %}
+    {% set form_sections = form_sections|merge({
+        'nis2_reporting': {
+            'label': 'incident.section.nis2_reporting'|trans({}, 'incident'),
+            'fields': [
+                'nis2Category', 'crossBorderImpact',
+                'earlyWarningReportedAt', 'detailedNotificationReportedAt', 'finalReportSubmittedAt',
+                'affectedUsersCount', 'estimatedFinancialImpact',
+                'nationalAuthorityNotified', 'authorityReferenceNumber',
+                'ictIncidentClassification', 'reputationalImpact',
+                'dataLossOccurred', 'dataLeakageOccurred', 'recurringIncident',
+                'economicImpact', 'criticalServicesAffected',
+                'clientsAffected', 'clientsAffectedFinancialVolume',
+                'replicationOfImpact',
+                'initialReportSubmittedAt', 'intermediateReportSubmittedAt',
+                'dataRecoveryStrategy'
+            ]
+        }
+    }) %}
+{% endif %}
+
+{# Escalation preview panel + GDPR wizard button injected before actions #}
+{% set _incident_extras %}
+<div data-controller="incident-escalation-preview"
+     data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}"
+     data-incident-escalation-preview-translations-value="{{ {
+         title: 'incident.escalation_preview.title'|trans({}, 'incident'),
+         workflow_name: 'incident.escalation_preview.workflow_name'|trans({}, 'incident'),
+         automatic: 'incident.escalation_preview.automatic'|trans({}, 'incident'),
+         notified_users: 'incident.escalation_preview.notified_users'|trans({}, 'incident'),
+         emails: 'incident.escalation_preview.emails'|trans({}, 'incident'),
+         sla_requirement: 'incident.escalation_preview.sla_requirement'|trans({}, 'incident'),
+         gdpr_warning: 'incident.escalation_preview.gdpr_warning'|trans({}, 'incident'),
+         gdpr_deadline: 'incident.escalation_preview.gdpr_deadline'|trans({}, 'incident'),
+         gdpr_reference: 'incident.escalation_preview.gdpr_reference'|trans({}, 'incident'),
+         approval_required: 'incident.escalation_preview.approval_required'|trans({}, 'incident'),
+         estimated_time: 'incident.escalation_preview.estimated_time'|trans({}, 'incident'),
+         summary_title: 'incident.escalation_preview.summary_title'|trans({}, 'incident'),
+         action_workflow_started: 'incident.escalation_preview.actions.workflow_started'|trans({}, 'incident'),
+         action_notifications_sent: 'incident.escalation_preview.actions.notifications_sent'|trans({}, 'incident'),
+         action_approval_required: 'incident.escalation_preview.actions.approval_required'|trans({}, 'incident'),
+         action_sla_tracked: 'incident.escalation_preview.actions.sla_tracked'|trans({}, 'incident'),
+         loading: 'common.loading'|trans({}, 'messages'),
+         loading_preview: 'incident.escalation_preview.select_severity'|trans({}, 'incident'),
+         error: 'common.error.unknown'|trans({}, 'messages'),
+         level_data_breach: 'incident.workflow.escalation.data_breach'|trans({}, 'incident'),
+         level_critical: 'incident.severity.critical'|trans({}, 'incident'),
+         level_high: 'incident.severity.high'|trans({}, 'incident'),
+         level_medium: 'incident.severity.medium'|trans({}, 'incident'),
+         level_low: 'incident.severity.low'|trans({}, 'incident')
+     }|json_encode }}">
+    <div data-incident-escalation-preview-target="previewPanel" class="d-none mb-3">
+        {% include 'incident/_escalation_preview_panel.html.twig' %}
+    </div>
+</div>
+<div class="mt-2 mb-3">
+    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" id="gdpr-wizard-trigger-btn">
+        <i class="fa-icon fa-icon--breach" aria-hidden="true"></i>
+        {{ 'data_breach.wizard.trigger_button'|trans({}, 'privacy') }}
+    </button>
+    <small class="d-block mt-1 text-muted">{{ 'data_breach.wizard.trigger_hint'|trans({}, 'privacy') }}</small>
+</div>
+{% endset %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 A.5.24–A.5.28 · Incident Management',
+    'title': title,
+    'sections': form_sections,
+    'extras_before_actions': _incident_extras,
+    'col_widths': {
+        'title': 8,
+        'category': 4,
+        'description': 12,
+        'severity': 4,
+        'dataBreachOccurred': 4,
+        'status': 4,
+        'detectedAt': 6,
+        'occurredAt': 6,
+        'reportedByUser': 6,
+        'reportedByPerson': 6,
+        'reportedByDeputyPersons': 12,
+        'reportedBy': 6,
+        'responsiblePerson': 6,
+        'affectedSystems': 12,
+        'affectedAssets': 12,
+        'rootCause': 12,
+        'correctiveActions': 12,
+        'lessonsLearned': 12,
+        'closedAt': 6,
+        'visibleToHolding': 12,
+        'incidentClassification': 6,
+        'evidencePreserved': 6,
+        'containmentActions': 12,
+        'nis2Category': 6,
+        'crossBorderImpact': 6,
+        'earlyWarningReportedAt': 4,
+        'detailedNotificationReportedAt': 4,
+        'finalReportSubmittedAt': 4,
+        'affectedUsersCount': 4,
+        'estimatedFinancialImpact': 4,
+        'nationalAuthorityNotified': 8,
+        'authorityReferenceNumber': 4,
+        'ictIncidentClassification': 6,
+        'reputationalImpact': 6,
+        'dataLossOccurred': 4,
+        'dataLeakageOccurred': 4,
+        'recurringIncident': 4,
+        'economicImpact': 6,
+        'criticalServicesAffected': 6,
+        'clientsAffected': 6,
+        'clientsAffectedFinancialVolume': 6,
+        'replicationOfImpact': 12,
+        'initialReportSubmittedAt': 6,
+        'intermediateReportSubmittedAt': 6,
+        'dataRecoveryStrategy': 12
+    },
+    'translation_domain': 'incident',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+    })
+} %}

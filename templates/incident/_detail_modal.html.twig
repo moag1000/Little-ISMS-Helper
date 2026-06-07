@@ -1,0 +1,126 @@
+{# Incident read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page.
+   Edit button is gated on ROLE_USER and only shown for non-closed incidents. #}
+{% trans_default_domain 'incident' %}
+{% set severityColors = {
+    'critical': 'danger',
+    'high': 'warning',
+    'medium': 'info',
+    'low': 'success'
+} %}
+{% set _sev_variant = severityColors[incident.severity ? incident.severity.value : ''] ?? 'secondary' %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 A.5.24–A.5.28 · Incident Management</div>
+            <div class="fa-drawer__title">{{ incident.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% if incident.severity %}
+                {% include '_components/_badge.html.twig' with {
+                    variant: _sev_variant,
+                    content: ('incident.severity.' ~ incident.severity.value)|trans({}, 'incident')
+                } %}
+            {% endif %}
+            {% if incident.status %}
+                {% include '_components/_badge.html.twig' with {
+                    variant: 'info',
+                    content: ('incident.status.' ~ incident.status.value)|trans({}, 'incident')
+                } %}
+            {% endif %}
+        </div>
+
+        {% if incident.category %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'incident.field.category'|trans({}, 'incident') }}</span>
+            <span>{{ ('incident.category.' ~ incident.category)|trans({}, 'incident') }}</span>
+        </div>
+        {% endif %}
+
+        {% if incident.detectedAt %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'incident.field.detected_at'|trans({}, 'incident') }}</span>
+            <span>{{ incident.detectedAt|locale_datetime }}</span>
+        </div>
+        {% endif %}
+
+        {% if incident.occurredAt %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'incident.field.occurred_at'|trans({}, 'incident') }}</span>
+            <span>{{ incident.occurredAt|locale_datetime }}</span>
+        </div>
+        {% endif %}
+
+        {% if incident.reportedByUser %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'incident.field.reported_by'|trans({}, 'incident') }}</span>
+            <span>{{ incident.reportedByUser.fullName }}</span>
+        </div>
+        {% elseif incident.reportedByPerson %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'incident.field.reported_by'|trans({}, 'incident') }}</span>
+            <span>{{ incident.reportedByPerson.fullName }}</span>
+        </div>
+        {% endif %}
+
+        {% if incident.affectedAssets|length > 0 %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'incident.field.affected_assets'|trans({}, 'incident') }}</span>
+            <span>
+                {% for asset in incident.affectedAssets|slice(0, 3) %}
+                    {{ asset.name }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+                {% if incident.affectedAssets|length > 3 %}
+                    <small class="text-muted">+ {{ incident.affectedAssets|length - 3 }} {{ 'common.more'|trans({}, 'messages') }}</small>
+                {% endif %}
+            </span>
+        </div>
+        {% endif %}
+
+        {% if incident.realizedRisks|length > 0 %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'incident.field.linked_risks'|trans({}, 'incident') }}</span>
+            <span>{{ incident.realizedRisks|length }}</span>
+        </div>
+        {% endif %}
+
+        {% if incident.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'incident.field.description'|trans({}, 'incident') }}</span>
+                <p class="fa-drawer__desc">{{ incident.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_incident_show', {id: incident.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') and incident.status.value != 'closed' %}
+            <a href="{{ path('app_incident_edit', {id: incident.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  title="{{ 'incident.status.closed'|trans({}, 'incident') }}"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>

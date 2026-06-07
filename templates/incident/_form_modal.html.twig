@@ -1,0 +1,41 @@
+{# Incident create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append).
+   The GDPR-breach-wizard helper modal is included here so the creation flow
+   retains the GDPR wizard button wiring inside the frame.
+   The incident-nis2 Stimulus controller (NIS2 section toggle) is wired via
+   the form attr data-controller below alongside alva-hint-in-form. #}
+{% trans_default_domain 'incident' %}
+{% set is_edit = incident is defined and incident and incident.id is not null %}
+{% set form_action = is_edit ? path('app_incident_edit', { id: incident.id }) : path('app_incident_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'incident-modal-form',
+        novalidate: 'novalidate',
+        'data-turbo-frame': 'fa-form-modal',
+        'data-controller': 'alva-hint-in-form incident-nis2',
+        'data-incident-nis2-affected-users-threshold-value': '100',
+        'data-alva-hint-in-form-entity-type-value': 'incident',
+        'data-alva-hint-in-form-form-name-value': 'incident',
+        'data-alva-hint-in-form-endpoint-value': path('api_alva_hint_form_evaluate', {'entityType': 'incident'}),
+        'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
+        'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate'
+    } }) }}
+    {% include 'incident/_form_body.html.twig' with {
+        form: form,
+        incident: incident,
+        modal: true,
+        title: is_edit ? incident.title : 'incident.new'|trans({}, 'incident'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+
+    {# GDPR Breach Wizard helper modal — placed inside the frame so it remains
+       accessible when the form is rendered in the fa-form-modal drawer. #}
+    {% include 'incident/_gdpr_breach_wizard_modal.html.twig' with {
+        assessmentUrl: path('app_incident_gdpr_wizard_result')
+    } %}
+</turbo-frame>

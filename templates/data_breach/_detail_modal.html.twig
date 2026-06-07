@@ -1,0 +1,118 @@
+{# DataBreach read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) for a condensed view;
+   includes a "Vollansicht" link to the full page and an edit button.
+   Edit is only shown for breaches in draft or under_assessment status. #}
+{% trans_default_domain 'privacy' %}
+{% set can_edit = breach.status in ['draft', 'under_assessment'] and is_granted('ROLE_AUDITOR') %}
+{% set status_class = {
+    'draft': 'secondary',
+    'under_assessment': 'info',
+    'authority_notified': 'success',
+    'subjects_notified': 'success',
+    'closed': 'dark'
+}[breach.status]|default('secondary') %}
+{% set risk_class = {
+    'low': 'success',
+    'medium': 'info',
+    'high': 'warning',
+    'critical': 'danger'
+}[breach.riskLevel]|default('secondary') %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">GDPR · Art. 33/34 · {{ 'privacy.data_breach.management'|trans({}, 'privacy') }}</div>
+            <div class="fa-drawer__title">{{ breach.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: status_class, content: ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') } %}
+            {% if breach.riskLevel %}
+                {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
+            {% endif %}
+            {% if breach.severity %}
+                {% include '_components/_badge.html.twig' with { variant: breach.severity in ['high','critical'] ? 'danger' : (breach.severity == 'medium' ? 'warning' : 'success'), content: ('privacy.data_breach.severity.' ~ breach.severity)|trans({}, 'privacy') } %}
+            {% endif %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}</span>
+            <span>{{ breach.detectedAt ? breach.detectedAt|date('d.m.Y H:i') : '—' }}</span>
+        </div>
+
+        {% if breach.supervisoryAuthorityNotifiedAt %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'privacy.data_breach.field.authority'|trans({}, 'privacy') }}</span>
+                <span>
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                    {{ breach.supervisoryAuthorityNotifiedAt|date('d.m.Y H:i') }}
+                </span>
+            </div>
+        {% elseif breach.requiresAuthorityNotification %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}</span>
+                <span>
+                    {% if breach.isAuthorityNotificationOverdue %}
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        {{ 'data_breach.index.overdue'|trans({}, 'messages') }}
+                    {% else %}
+                        <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
+                        {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+
+        {% if breach.affectedDataSubjects %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'privacy.data_breach.field.affected_subjects'|trans({}, 'privacy') }}</span>
+                <span>{{ breach.affectedDataSubjects|number_format }}</span>
+            </div>
+        {% endif %}
+
+        {% if breach.dataSubjectsNotifiedAt %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'privacy.data_breach.field.subjects_notified'|trans({}, 'privacy') }}</span>
+                <span>
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                    {{ breach.dataSubjectsNotifiedAt|date('d.m.Y H:i') }}
+                </span>
+            </div>
+        {% endif %}
+
+        {% if breach.incident %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'privacy.data_breach.field.incident'|trans({}, 'privacy') }}</span>
+                <span>{{ breach.incident.title }}</span>
+            </div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_data_breach_show', {id: breach.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if can_edit %}
+            <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>
