@@ -1,0 +1,48 @@
+{# Shared ScheduledReport form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / submit_label / actions. #}
+{% trans_default_domain 'scheduled_reports' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(report is defined and report and report.name ? report.name : ('scheduled_report.new.title'|trans({}, 'scheduled_reports'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'form.section.overview'|trans({}, 'messages'),
+        'fields': ['name', 'reportType', 'description']
+    },
+    'schedule': {
+        'label': 'form.section.schedule'|trans({}, 'messages'),
+        'fields': ['schedule', 'preferredTime', 'dayOfWeek', 'dayOfMonth']
+    },
+    'details': {
+        'label': 'form.section.details'|trans({}, 'messages'),
+        'fields': ['format', 'locale', 'recipientsText']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'scheduled_report.title'|trans({}, 'scheduled_reports'),
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'name': 12,
+        'reportType': 6,
+        'description': 12,
+        'schedule': 6,
+        'preferredTime': 6,
+        'dayOfWeek': 6,
+        'dayOfMonth': 6,
+        'format': 6,
+        'locale': 6,
+        'recipientsText': 12
+    },
+    'translation_domain': 'scheduled_reports',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

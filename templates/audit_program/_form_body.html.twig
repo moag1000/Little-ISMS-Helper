@@ -1,0 +1,51 @@
+{# Shared AuditProgram form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps in form_start/form_end
+   and passes title / actions. Sections mirror AuditProgramType::getSectionMap(). #}
+{% trans_default_domain 'audit_program' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(program is defined and program and program.name ? program.name : ('audit_program.action.new'|trans({}, 'audit_program'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'basic_info': {
+        'label': 'audit_program.section.basic_info'|trans({}, 'audit_program'),
+        'fields': ['name', 'description', 'objectives', 'scope', 'frequency']
+    },
+    'dates': {
+        'label': 'audit_program.section.dates'|trans({}, 'audit_program'),
+        'fields': ['startDate', 'endDate']
+    },
+    'responsibility': {
+        'label': 'audit_program.section.responsibility'|trans({}, 'audit_program'),
+        'fields': ['programmeOwner']
+    },
+    'status': {
+        'label': 'audit_program.section.status'|trans({}, 'audit_program'),
+        'fields': ['status']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 Cl. 9.2 · ISO 19011 §5.4 · Audit Programme',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'name': 12,
+        'description': 12,
+        'objectives': 12,
+        'scope': 12,
+        'frequency': 6,
+        'startDate': 6,
+        'endDate': 6,
+        'programmeOwner': 12,
+        'status': 6
+    },
+    'translation_domain': 'audit_program',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ScheduledReport;
 use App\Form\ScheduledReportType;
 use App\Repository\ScheduledReportRepository;
@@ -26,6 +27,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_MANAGER')]
 class ScheduledReportController extends AbstractController
 {
+    use InPageFormTrait;
+
     public function __construct(
         private readonly ScheduledReportRepository $repository,
         private readonly EntityManagerInterface $entityManager,
@@ -69,12 +72,22 @@ class ScheduledReportController extends AbstractController
 
             $this->addFlash('success', 'scheduled_report.flash.created');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->scheduledReportStreamSave($report, isNew: true);
+            }
             return $this->redirectToRoute('app_scheduled_report_show', ['id' => $report->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('scheduled_report/_form_modal.html.twig', [
+                'report' => $report,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('scheduled_report/new.html.twig', [
             'report' => $report,
@@ -83,9 +96,15 @@ class ScheduledReportController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_scheduled_report_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(ScheduledReport $report): Response
+    public function show(Request $request, ScheduledReport $report): Response
     {
         $this->checkAccess($report);
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('scheduled_report/_detail_modal.html.twig', [
+                'report' => $report,
+            ]);
+        }
 
         return $this->render('scheduled_report/show.html.twig', [
             'report' => $report,
@@ -108,12 +127,22 @@ class ScheduledReportController extends AbstractController
 
             $this->addFlash('success', 'scheduled_report.flash.updated');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->scheduledReportStreamSave($report, isNew: false);
+            }
             return $this->redirectToRoute('app_scheduled_report_show', ['id' => $report->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('scheduled_report/_form_modal.html.twig', [
+                'report' => $report,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('scheduled_report/edit.html.twig', [
             'report' => $report,
@@ -196,6 +225,15 @@ class ScheduledReportController extends AbstractController
         }
 
         return $this->redirectToRoute('app_scheduled_report_index');
+    }
+
+    /** Turbo Stream after a successful in-modal ScheduledReport save (row replace/append). */
+    private function scheduledReportStreamSave(ScheduledReport $report, bool $isNew): Response
+    {
+        return $this->render('scheduled_report/_stream_save.html.twig', [
+            'report' => $report,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     /**

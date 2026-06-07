@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal DoraDataFlow save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="dora-data-flow-rows">
+        <template>{% include 'dora_data_flow/_row.html.twig' with { flow: flow } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="dora-data-flow-row-{{ flow.id }}">
+        <template>{% include 'dora_data_flow/_row.html.twig' with { flow: flow } %}</template>
+    </turbo-stream>
+{% endif %}

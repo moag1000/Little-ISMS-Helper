@@ -19,7 +19,7 @@
         title: 'dora_exit_plan.title'|trans({}, 'dora_exit_plan'),
         subtitle: 'dora_exit_plan.subtitle'|trans({}, 'dora_exit_plan'),
         actions: [
-            { label: 'dora_exit_plan.action.new'|trans({}, 'dora_exit_plan'), href: path('app_dora_exit_plan_new'), variant: 'primary', icon: 'plus' }
+            { label: 'dora_exit_plan.action.new'|trans({}, 'dora_exit_plan'), href: path('app_dora_exit_plan_new'), variant: 'primary', icon: 'plus', attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]
     }) }}
 
@@ -69,40 +69,10 @@
                                 <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
+                        {% block table_body_attrs %}id="dora-exit-plan-rows"{% endblock %}
                         {% block table_body %}
                             {% for plan in plans %}
-                                <tr>
-                                    <td><strong>{{ plan.supplier ? plan.supplier.name : '—' }}</strong></td>
-                                    <td>
-                                        {% include '_components/_badge.html.twig' with {
-                                            variant: 'primary',
-                                            content: ('dora_exit_plan.trigger.' ~ plan.exitTrigger)|trans({}, 'dora_exit_plan')
-                                        } %}
-                                    </td>
-                                    <td>
-                                        {% if plan.testedAt %}
-                                            {{ plan.testedAt|date('Y-m-d') }}
-                                            {% if plan.isRehearsalOverdue() %}
-                                                {% include '_components/_badge.html.twig' with {
-                                                    variant: 'warning',
-                                                    content: 'dora_exit_plan.badge.overdue'|trans({}, 'dora_exit_plan')
-                                                } %}
-                                            {% endif %}
-                                        {% else %}
-                                            {% include '_components/_badge.html.twig' with {
-                                                variant: 'warning',
-                                                content: 'dora_exit_plan.badge.never_tested'|trans({}, 'dora_exit_plan')
-                                            } %}
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ plan.estimatedDurationDays ?? '—' }}</td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                            <a href="{{ path('app_dora_exit_plan_show', {id: plan.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>
-                                            <a href="{{ path('app_dora_exit_plan_edit', {id: plan.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i></a>
-                                        </div>
-                                    </td>
-                                </tr>
+                                {% include 'dora_exit_plan/_row.html.twig' with { plan: plan } %}
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}
