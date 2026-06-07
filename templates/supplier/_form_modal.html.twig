@@ -1,0 +1,22 @@
+{# Supplier create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit
+   the controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'suppliers' %}
+{% set is_edit = supplier is defined and supplier and supplier.id is not null %}
+{% set form_action = is_edit ? path('app_supplier_edit', { id: supplier.id }) : path('app_supplier_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'supplier-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'supplier/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? supplier.name : 'supplier.page.new_title'|trans({}, 'suppliers'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

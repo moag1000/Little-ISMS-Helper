@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal InterestedParty save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="interested-party-rows">
+        <template>{% include 'interested_party/_row.html.twig' with { party: interested_party } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="interested-party-row-{{ interested_party.id }}">
+        <template>{% include 'interested_party/_row.html.twig' with { party: interested_party } %}</template>
+    </turbo-stream>
+{% endif %}

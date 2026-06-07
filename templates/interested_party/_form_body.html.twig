@@ -1,0 +1,66 @@
+{# Shared InterestedParty form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps it in
+   form_start/form_end and passes title / actions. #}
+{% trans_default_domain 'interested_parties' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(interested_party is defined and interested_party and interested_party.name ? interested_party.name : ('interested_party.page.new_title'|trans({}, 'interested_parties'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'interested_party.section.basic_info'|trans({}, 'interested_parties'),
+        'fields': ['name', 'partyType', 'importance', 'description']
+    },
+    'contact': {
+        'label': 'interested_party.section.contact_info'|trans({}, 'interested_parties'),
+        'fields': ['contactPerson', 'email', 'phone']
+    },
+    'requirements': {
+        'label': 'interested_party.section.requirements'|trans({}, 'interested_parties'),
+        'fields': ['requirements', 'howAddressed']
+    },
+    'communication': {
+        'label': 'interested_party.section.communication'|trans({}, 'interested_parties'),
+        'fields': ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication']
+    },
+    'monitoring': {
+        'label': 'interested_party.section.feedback'|trans({}, 'interested_parties'),
+        'fields': ['feedback', 'satisfactionLevel', 'issues']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 Kl. 4.2 · Interessierte Parteien',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'name': 12,
+        'partyType': 6,
+        'importance': 6,
+        'description': 12,
+        'contactPerson': 12,
+        'email': 6,
+        'phone': 6,
+        'requirements': 12,
+        'howAddressed': 12,
+        'communicationFrequency': 6,
+        'communicationMethod': 6,
+        'lastCommunication': 6,
+        'nextCommunication': 6,
+        'feedback': 12,
+        'satisfactionLevel': 6,
+        'issues': 12
+    },
+    'tooltips': {
+        'satisfactionLevel': 'interested_party.tooltip.satisfaction_level',
+        'importance': 'interested_party.tooltip.importance'
+    },
+    'translation_domain': 'interested_parties',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

@@ -19,7 +19,7 @@
     badge: { icon: 'nav-mortarboard', label: 'nav.training'|trans({}, 'nav') },
     title: 'training.title'|trans({}, 'training'),
     actions: is_granted('ROLE_USER') ? [
-        { label: 'training.new'|trans({}, 'training'), variant: 'primary', icon: 'plus', href: path('app_training_new') }
+        { label: 'training.new'|trans({}, 'training'), variant: 'primary', icon: 'plus', href: path('app_training_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
     ] : []
 }) }}
 {% set _global_hints = alva_hints('training_index') %}
@@ -235,6 +235,7 @@
                 'class': 'table-bulk-selectable'
             } %}
                 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+                {% block table_body_attrs %}id="training-rows"{% endblock %}
                 {% block table_head %}
                     <tr>
                         <th scope="col" class="bulk-select-column">
@@ -255,62 +256,7 @@
                 {% endblock %}
                 {% block table_body %}
                     {% for training in trainings %}
-                    <tr data-training-id="{{ training.id }}">
-                        <td class="bulk-select-column">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   data-bulk-actions-target="item"
-                                   data-action="bulk-actions#selectItem"
-                                   value="{{ training.id }}"
-                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ training.title }}">
-                        </td>
-                        <td>
-                            <strong>{{ training.title }}</strong>
-                            {{ inheritance.small_badge(training, currentTenant) }}
-                            {% if training.mandatory %}
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-critical', class: 'ms-1', content: '' } %}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('training.type.' ~ training.trainingType)|trans({}, 'training') } %}
-                        </td>
-                        <td>{{ training.scheduledDate|date('d.m.Y') }}</td>
-                        <td>{{ training.durationMinutes ?? '-' }} {{ 'training.minutes'|trans({}, 'training') }}</td>
-                        <td>
-                            <span class="{{ badge_status(training.status) }}">
-                                {{ ('training.status.' ~ training.status)|trans({}, 'training') }}
-                            </span>
-                        </td>
-                        <td>
-                            <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
-                            {{ training.attendeeCount ?? 0 }}
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a href="{{ path('app_training_show', {id: training.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                   data-turbo-action="advance"
-                                   title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                </a>
-                                {% if is_granted('ROLE_USER') %}
-                                <a href="{{ path('app_training_edit', {id: training.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                   data-turbo-action="advance"
-                                   title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                </a>
-                                {% endif %}
-                                {% if is_granted('ROLE_ADMIN') %}
-                                <button type="button"
-                                        class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="deleteModal{{ training.id }}"
-                                        title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
-                                </button>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
+                    {% include 'training/_row.html.twig' with { training: training, currentTenant: currentTenant } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}

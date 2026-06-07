@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal Supplier save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="supplier-rows">
+        <template>{% include 'supplier/_row.html.twig' with { supplier: supplier } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="supplier-row-{{ supplier.id }}">
+        <template>{% include 'supplier/_row.html.twig' with { supplier: supplier } %}</template>
+    </turbo-stream>
+{% endif %}

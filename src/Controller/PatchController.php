@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Controller\Trait\BulkActionTrait;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\Patch;
 use App\Form\PatchType;
 use App\Repository\PatchRepository;
@@ -26,6 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class PatchController extends AbstractController
 {
     use BulkActionTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly PatchRepository $patchRepository,
@@ -106,12 +108,23 @@ class PatchController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('patch.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->patchStreamSave($patch, isNew: true);
+            }
             return $this->redirectToRoute('app_patch_show', ['id' => $patch->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('patch/_form_modal.html.twig', [
+                'patch' => $patch,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('patch/new.html.twig', [
             'patch' => $patch,
@@ -120,8 +133,15 @@ class PatchController extends AbstractController
     }
 
     #[Route('/patch/{id}', name: 'app_patch_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(Patch $patch): Response
+    public function show(Request $request, Patch $patch): Response
     {
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('patch/_detail_modal.html.twig', [
+                'patch' => $patch,
+            ]);
+        }
+
         return $this->render('patch/show.html.twig', [
             'patch' => $patch,
         ]);
@@ -137,6 +157,10 @@ class PatchController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('patch.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->patchStreamSave($patch, isNew: false);
+            }
             return $this->redirectToRoute('app_patch_show', ['id' => $patch->getId()]);
         }
 
@@ -144,10 +168,26 @@ class PatchController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('patch/_form_modal.html.twig', [
+                'patch' => $patch,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('patch/edit.html.twig', [
             'patch' => $patch,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal Patch save (row replace/append). */
+    private function patchStreamSave(Patch $patch, bool $isNew): Response
+    {
+        return $this->render('patch/_stream_save.html.twig', [
+            'patch' => $patch,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     #[Route('/patch/{id}/delete', name: 'app_patch_delete', methods: ['POST'])]

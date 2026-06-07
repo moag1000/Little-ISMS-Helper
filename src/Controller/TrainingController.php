@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use Exception;
 use App\Controller\Trait\BulkActionTrait;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
 use App\Enum\TrainingStatus;
@@ -35,6 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TrainingController extends AbstractController
 {
     use BulkActionTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly TrainingRepository $trainingRepository,
@@ -118,12 +120,23 @@ class TrainingController extends AbstractController
             $this->syncParticipantUsersToParticipationRows($training);
 
             $this->addFlash('success', $this->translator->trans('training.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->trainingStreamSave($training, isNew: true);
+            }
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('training/_form_modal.html.twig', [
+                'training' => $training,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('training/new.html.twig', [
             'training' => $training,
@@ -201,8 +214,14 @@ class TrainingController extends AbstractController
         ]);
     }
     #[Route('/training/{id}', name: 'app_training_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(Training $training): Response
+    public function show(Request $request, Training $training): Response
     {
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('training/_detail_modal.html.twig', [
+                'training' => $training,
+            ]);
+        }
+
         return $this->render('training/show.html.twig', [
             'training' => $training,
         ]);
@@ -258,6 +277,10 @@ class TrainingController extends AbstractController
             $this->syncParticipantUsersToParticipationRows($training);
 
             $this->addFlash('success', $this->translator->trans('training.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->trainingStreamSave($training, isNew: false);
+            }
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
 
@@ -265,10 +288,26 @@ class TrainingController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('training/_form_modal.html.twig', [
+                'training' => $training,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('training/edit.html.twig', [
             'training' => $training,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal Training save (row replace/append). */
+    private function trainingStreamSave(Training $training, bool $isNew): Response
+    {
+        return $this->render('training/_stream_save.html.twig', [
+            'training' => $training,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     /**

@@ -1,0 +1,96 @@
+{# Training read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) for a condensed view, with a
+   "Vollansicht" link to the full page (data-turbo="false"). #}
+{% trans_default_domain 'training' %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 A.6.3 · Security Awareness Training</div>
+            <div class="fa-drawer__title">{{ training.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% if training.status %}
+                <span class="{{ badge_status(training.status) }}">
+                    {{ ('training.status.' ~ training.status)|trans({}, 'training') }}
+                </span>
+            {% endif %}
+            {% if training.trainingType %}
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('training.type.' ~ training.trainingType)|trans({}, 'training') } %}
+            {% endif %}
+            {% if training.mandatory %}
+                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-critical', content: 'training.mandatory_label'|trans({}, 'training'), class: 'ms-1' } %}
+            {% endif %}
+        </div>
+
+        {% if training.scheduledDate %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'training.scheduled_date'|trans({}, 'training') }}</span>
+            <span><i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i> {{ training.scheduledDate|date('d.m.Y') }}</span>
+        </div>
+        {% endif %}
+
+        {% if training.completionDate %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'training.field.completion_date'|trans({}, 'training') }}</span>
+            <span>{{ training.completionDate|date('d.m.Y') }}</span>
+        </div>
+        {% endif %}
+
+        {% if training.durationMinutes %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'training.duration'|trans({}, 'training') }}</span>
+            <span>{{ training.durationMinutes }} {{ 'training.minutes'|trans({}, 'training') }}</span>
+        </div>
+        {% endif %}
+
+        {% if training.targetAudience %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'training.target_audience'|trans({}, 'training') }}</span>
+            <span>{{ training.targetAudience }}</span>
+        </div>
+        {% endif %}
+
+        {% if training.effectiveTrainer %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'training.trainer'|trans({}, 'training') }}</span>
+            <span>{{ training.effectiveTrainer }}</span>
+        </div>
+        {% endif %}
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'training.participants_count'|trans({}, 'training') }}</span>
+            <span><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ training.attendeeCount ?? 0 }}</span>
+        </div>
+
+        {% if training.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'training.description'|trans({}, 'training') }}</span>
+                <p class="fa-drawer__desc">{{ training.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_training_show', {id: training.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_training_edit', {id: training.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>
