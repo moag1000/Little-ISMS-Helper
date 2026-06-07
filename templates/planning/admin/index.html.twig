@@ -1,0 +1,162 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'planning' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'planning.admin.title'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.planning'|trans({}, 'nav') }
+        ]
+    } %}
+</div>
+
+{{ _fa_page_header.render({
+    badge: { icon: 'calendar-check', label: 'nav.planning'|trans({}, 'nav') },
+    title: 'planning.admin.title'|trans({}, 'planning'),
+    subtitle: 'planning.admin.subtitle'|trans({}, 'planning'),
+    actions: [
+        { label: 'planning.sources.title'|trans({}, 'planning'), variant: 'ghost', icon: 'arrow-left-right', href: path('app_planning_sources_index') },
+        { label: 'planning.report.title'|trans({}, 'planning'), variant: 'ghost', icon: 'bar-chart-line', href: path('app_planning_roadmap_report') },
+        { label: 'planning.settings.title'|trans({}, 'planning'), variant: 'ghost', icon: 'wrench', href: path('app_planning_settings') },
+        { label: 'planning.task.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_task_new') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container">
+
+    {# ── Teams ──────────────────────────────────────────────── #}
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h5 mb-0">{{ 'planning.tab.teams'|trans({}, 'planning') }}</h2>
+            <a class="btn btn-sm btn-outline-primary" href="{{ path('app_planning_team_index') }}">{{ 'planning.common.manage'|trans({}, 'planning') }}</a>
+        </div>
+        {% if teams is empty %}
+            <p class="text-muted">{{ 'planning.team.message.no_teams'|trans({}, 'planning') }}</p>
+        {% else %}
+        <table class="table fa-table align-middle">
+            <thead><tr>
+                <th scope="col">{{ 'planning.team.col.name'|trans({}, 'planning') }}</th>
+                <th scope="col">{{ 'planning.team.col.type'|trans({}, 'planning') }}</th>
+                <th scope="col">{{ 'planning.team.col.member_count'|trans({}, 'planning') }}</th>
+                <th scope="col">{{ 'planning.team.col.lead'|trans({}, 'planning') }}</th>
+                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+            </tr></thead>
+            <tbody>
+            {% for team in teams %}
+                <tr>
+                    <td>{{ team.name }}</td>
+                    <td>{% if team.type %}{{ ('planning.team.type.' ~ team.type)|trans({}, 'planning') }}{% else %}—{% endif %}</td>
+                    <td>{{ team.memberCount }}</td>
+                    <td>{{ team.teamLead ? team.teamLead.fullName : (team.teamLeadPerson ? team.teamLeadPerson.fullName : '—') }}</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-link" href="{{ path('app_planning_team_edit', { id: team.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </section>
+
+    {# ── Roadmap-Tasks (Kategorien) ──────────────────────────── #}
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h5 mb-0">{{ 'planning.tab.tasks'|trans({}, 'planning') }}</h2>
+            <a class="btn btn-sm btn-outline-primary" href="{{ path('app_planning_task_index') }}">{{ 'planning.common.manage'|trans({}, 'planning') }}</a>
+        </div>
+        {% if tasks is empty %}
+            <p class="text-muted">{{ 'planning.task.message.no_tasks'|trans({}, 'planning') }}</p>
+        {% else %}
+        <table class="table fa-table align-middle">
+            <thead><tr>
+                <th scope="col">{{ 'planning.task.col.name'|trans({}, 'planning') }}</th>
+                <th scope="col">{{ 'planning.task.col.group'|trans({}, 'planning') }}</th>
+                <th scope="col">{{ 'planning.task.col.default_pt_per_week'|trans({}, 'planning') }}</th>
+                <th scope="col">{{ 'planning.task.col.visibility'|trans({}, 'planning') }}</th>
+                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+            </tr></thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.name }}{% if task.isReactiveReservation %} <span class="badge bg-info-subtle text-info-emphasis">{{ 'planning.task.badge.reactive'|trans({}, 'planning') }}</span>{% endif %}</td>
+                    <td>{{ task.group ? task.group.name : '—' }}</td>
+                    <td>{{ task.defaultPtPerWeek ?? '—' }}</td>
+                    <td>{{ ('planning.visibility.' ~ task.visibility)|trans({}, 'planning') }}</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-link" href="{{ path('app_planning_task_edit', { id: task.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </section>
+
+    {# ── Personen (Kapazität + Team-Zuordnung) ───────────────── #}
+    <section class="mb-5">
+        <h2 class="h5 mb-2">{{ 'planning.tab.persons'|trans({}, 'planning') }}</h2>
+        {% if persons is empty %}
+            <p class="text-muted">{{ 'planning.person.message.no_persons'|trans({}, 'planning') }}</p>
+        {% else %}
+        <table class="table fa-table align-middle">
+            <thead><tr>
+                <th scope="col">{{ 'planning.person.col.name'|trans({}, 'planning') }}</th>
+                <th scope="col">{{ 'planning.person.col.availability'|trans({}, 'planning') }}</th>
+                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+            </tr></thead>
+            <tbody>
+            {% for person in persons %}
+                <tr>
+                    <td>{{ person.fullName }}</td>
+                    <td>{{ (person.ismsAvailabilityPct * 100)|round }}%</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-link" href="{{ path('app_planning_person_edit', { id: person.id }) }}">{{ 'planning.common.edit'|trans({}, 'planning') }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </section>
+
+    {# ── Sichtbarkeits-Matrix (readonly) ─────────────────────── #}
+    <section class="mb-5">
+        <h2 class="h5 mb-2">{{ 'planning.tab.visibility'|trans({}, 'planning') }}</h2>
+        <p class="text-muted small">{{ 'planning.matrix.hint'|trans({}, 'planning') }}</p>
+        {% if tasks is empty or teams is empty %}
+            <p class="text-muted">{{ 'planning.matrix.empty'|trans({}, 'planning') }}</p>
+        {% else %}
+        <div class="table-responsive">
+        <table class="table fa-table align-middle">
+            <thead><tr>
+                <th scope="col">{{ 'planning.task.col.name'|trans({}, 'planning') }}</th>
+                {% for team in teams %}<th scope="col" class="text-center">{{ team.name }}</th>{% endfor %}
+            </tr></thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <th scope="row" class="fw-normal">{{ task.name }}</th>
+                    {% for team in teams %}
+                        <td class="text-center">
+                            {% if matrix[task.id].all or matrix[task.id].teams[team.id] is defined %}
+                                <i class="fa-icon fa-icon--check-circle-fill text-success" title="{{ 'planning.matrix.visible'|trans({}, 'planning') }}"></i>
+                            {% else %}
+                                <span class="text-muted">·</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% endif %}
+    </section>
+
+</div>
+</main>
+{% endblock %}

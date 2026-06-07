@@ -1,0 +1,229 @@
+planning:
+    admin:
+        title: 'Ressourcenplanung – Stammdaten'
+        subtitle: 'Teams, Roadmap-Tasks, Personen-Kapazität und Sichtbarkeit verwalten'
+    tab:
+        teams: Teams
+        tasks: 'Roadmap-Tasks'
+        persons: Personen
+        visibility: Sichtbarkeit
+    common:
+        manage: Verwalten
+        edit: Bearbeiten
+        delete: Löschen
+        active: Aktiv
+        confirm_delete: 'Wirklich löschen?'
+    success:
+        created: 'Eintrag angelegt.'
+        updated: 'Änderungen gespeichert.'
+        deleted: 'Eintrag gelöscht.'
+    visibility:
+        all: Alle
+        team: 'Nach Team'
+    action_item:
+        title:
+            list: Maßnahmen
+            create: 'Maßnahme anlegen'
+            edit: 'Maßnahme bearbeiten'
+        action:
+            create: 'Maßnahme anlegen'
+            transition: 'Status ändern'
+        filter:
+            label: Filter
+            all: Alle
+            open: Offen
+            due: Fällig
+            recurring: Wiederkehrend
+        col:
+            title: Ereignis
+            origin: Herkunft
+            roadmap_task: Kategorie
+            due_date: Zieldatum
+            planned_effort_pt: 'Aufwand (PT)'
+            status: Status
+        status:
+            open: Offen
+            planned: Geplant
+            in_progress: 'In Bearbeitung'
+            done: Erledigt
+            dismissed: Verworfen
+        origin:
+            internal: 'Intern (KVP)'
+        field:
+            title: Ereignis
+            roadmap_task: Kategorie
+            roadmap_task_placeholder: 'Kategorie wählen …'
+            responsible_user: 'Verantwortlich (Benutzer)'
+            responsible_user_placeholder: 'Benutzer wählen …'
+            responsible_person: 'Verantwortlich (Person)'
+            responsible_person_placeholder: 'Person wählen …'
+            teams: Teams
+            due_date: Zieldatum
+            planned_effort_pt: 'Geplanter Aufwand (PT)'
+            evidence_document: Nachweis
+            evidence_document_placeholder: 'Dokument wählen …'
+            recurrence_months: 'Wiederholung (Monate)'
+            scopes: Geltungsbereich
+            scopes_help: 'Geltungsbereiche werden in den Planungs-Einstellungen gepflegt.'
+        success:
+            created: 'Maßnahme angelegt.'
+            updated: 'Maßnahme gespeichert.'
+            deleted: 'Maßnahme gelöscht.'
+            transitioned: 'Status geändert.'
+        error:
+            invalid_transition: 'Statuswechsel nicht erlaubt.'
+        message:
+            no_items: 'Noch keine Maßnahmen angelegt.'
+    team:
+        title:
+            list: Teams
+            create: 'Team anlegen'
+            edit: 'Team bearbeiten'
+        action:
+            create: 'Team anlegen'
+        col:
+            name: Name
+            type: Typ
+            member_count: Mitglieder
+            lead: Leitung
+        message:
+            no_teams: 'Noch keine Teams angelegt.'
+        field:
+            name: Name
+            type: Teamtyp
+            description: Beschreibung
+            is_active: Aktiv
+            team_lead: 'Teamleitung (Benutzer)'
+            team_lead_placeholder: 'Benutzer wählen …'
+            team_lead_person: 'Teamleitung (Person)'
+            team_lead_person_placeholder: 'Person wählen …'
+            members: Mitglieder
+            valid_from: 'Gültig ab'
+            valid_until: 'Gültig bis'
+        type:
+            placeholder: 'Typ wählen …'
+            operational: Operativ
+            strategic: Strategisch
+            technical: Technisch
+            communication: Kommunikation
+            other: Sonstige
+    group:
+        title:
+            list: 'Roadmap-Gruppen'
+            create: 'Gruppe anlegen'
+            edit: 'Gruppe bearbeiten'
+        action:
+            create: 'Gruppe anlegen'
+        col:
+            name: Name
+            sort_order: Reihenfolge
+            default_visibility: 'Standard-Sichtbarkeit'
+        message:
+            no_groups: 'Noch keine Gruppen angelegt.'
+        field:
+            name: Name
+            sort_order: Reihenfolge
+            color_token: 'Farb-Token'
+            icon: Icon
+            isms_domain: 'ISMS-Domäne'
+            default_team: 'Standard-Team'
+            default_team_placeholder: 'Team wählen …'
+            default_visibility: 'Standard-Sichtbarkeit'
+            is_active: Aktiv
+    task:
+        title:
+            list: 'Roadmap-Tasks'
+            create: 'Task anlegen'
+            edit: 'Task bearbeiten'
+        action:
+            create: 'Task anlegen'
+        col:
+            name: Name
+            group: Gruppe
+            default_pt_per_week: 'PT/Woche'
+            recurring: Wiederkehrend
+            visibility: Sichtbarkeit
+        message:
+            no_tasks: 'Noch keine Roadmap-Tasks angelegt.'
+        badge:
+            reactive: Tagesgeschäft
+        field:
+            name: Name
+            group: Gruppe
+            group_placeholder: 'Gruppe wählen …'
+            isms_domain: 'ISMS-Domäne'
+            default_pt_per_week: 'Standard-PT pro Woche'
+            recurring: Wiederkehrend
+            is_reactive_reservation: 'Tagesgeschäft-Reservierung'
+            visibility: Sichtbarkeit
+            visible_teams: 'Sichtbar für Teams'
+            default_team: 'Standard-Team'
+            default_team_placeholder: 'Team wählen …'
+            is_active: Aktiv
+    person:
+        title:
+            edit: 'Personen-Kapazität bearbeiten'
+        col:
+            name: Person
+            availability: 'ISMS-Verfügbarkeit'
+        field:
+            availability: 'ISMS-Verfügbarkeit (0–1)'
+            teams: Teams
+        help:
+            availability: 'Netto-Anteil der Person für ISMS-Arbeit (z. B. 80 % Stelle × 50 % ISMS = 0,4).'
+        message:
+            no_persons: 'Keine Personen vorhanden.'
+    matrix:
+        hint: 'Welche Roadmap-Tasks für welche Teams sichtbar sind. „Alle“ = für jedes Team sichtbar.'
+        empty: 'Tasks und Teams anlegen, um die Matrix zu sehen.'
+        visible: Sichtbar
+    sources:
+        title: 'Automatische Maßnahmen-Übernahme'
+        subtitle: 'Welche Quellmodule automatisch Maßnahmen erzeugen'
+        hint: 'Standardmäßig aus. Pro Quelle aktivieren, optional mit Zieldatum-Versatz (Tage) und Standard-Aufwand (PT).'
+        col:
+            source: Quelle
+            enabled: Aktiv
+            offset: 'Versatz (Tage)'
+            effort: 'Aufwand (PT)'
+        success:
+            saved: 'Einstellung gespeichert.'
+    roadmap:
+        title: Kapazitäts-Roadmap
+        subtitle: 'Aufwände (PT) je Kalenderwoche planen und gegen die verfügbare Kapazität abgleichen'
+        empty: 'Erst Roadmap-Tasks anlegen, dann hier einplanen.'
+        mode:
+            plan: 'Meine Planung'
+            capacity: Kapazität
+            reconcile: Ist-Abgleich
+        col:
+            task: Task
+        row:
+            capacity: 'Verfügbar (PT)'
+            planned: 'Geplant (PT)'
+        savebar:
+            title: 'Ungespeicherte Änderungen'
+        success:
+            saved: 'Planung gespeichert.'
+    settings:
+        title: 'Planungs-Einstellungen'
+        subtitle: 'Standardwerte für Roadmap, Wiederholung und Geltungsbereiche'
+        field:
+            default_recurrence_months: 'Standard-Wiederholung (Monate)'
+            roadmap_horizon_weeks: 'Roadmap-Horizont (Wochen)'
+            overbooking_threshold_pct: 'Überbuchungs-Schwelle (%)'
+            scopes: Geltungsbereiche
+        help:
+            scopes: 'Ein Geltungsbereich pro Zeile (z. B. Organisationseinheiten, Standorte).'
+        success:
+            saved: 'Einstellungen gespeichert.'
+    report:
+        title: 'Ressourcenbedarf (Cl. 9.3)'
+        subtitle: 'Geplante PT je ISMS-Domäne über %weeks% Wochen — Input fürs Management-Review'
+        total_planned: 'Geplant gesamt'
+        total_capacity: 'Kapazität gesamt'
+        utilisation: Auslastung
+        col:
+            domain: 'ISMS-Domäne'
+            planned_pt: 'Geplant (PT)'
+        empty: 'Noch keine Planung erfasst.'

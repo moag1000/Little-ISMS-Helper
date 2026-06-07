@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'planning' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'planning.sources.title'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.planning'|trans({}, 'nav'), url: path('app_planning_admin') },
+            { label: 'planning.sources.title'|trans({}, 'planning') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'arrow-left-right', label: 'nav.planning'|trans({}, 'nav') },
+        title: 'planning.sources.title'|trans({}, 'planning'),
+        subtitle: 'planning.sources.subtitle'|trans({}, 'planning')
+    }) }}
+
+    <p class="text-muted small">{{ 'planning.sources.hint'|trans({}, 'planning') }}</p>
+
+    <div class="d-flex flex-column gap-2">
+    {% for row in rows %}
+        <form method="post" action="{{ path('app_planning_sources_save', { slug: row.slug }) }}"
+              class="card flex-row align-items-center flex-wrap gap-3 p-3">
+            <input type="hidden" name="_token" value="{{ csrf_token('sources' ~ row.slug) }}">
+            <div class="flex-grow-1" style="min-width:14rem">
+                <strong>{{ row.label }}</strong>
+                <div class="text-muted small"><code>{{ row.slug }}</code>{% if row.module %} · <span class="badge bg-secondary-subtle text-secondary-emphasis">{{ row.module }}</span>{% endif %}</div>
+            </div>
+            <div class="form-check form-switch m-0">
+                <input class="form-check-input" type="checkbox" id="enabled-{{ row.slug }}" name="enabled" value="1"{{ row.enabled ? ' checked' : '' }}>
+                <label class="form-check-label small" for="enabled-{{ row.slug }}">{{ 'planning.sources.col.enabled'|trans({}, 'planning') }}</label>
+            </div>
+            <div>
+                <label class="form-label small mb-0" for="offset-{{ row.slug }}">{{ 'planning.sources.col.offset'|trans({}, 'planning') }}</label>
+                <input class="form-control form-control-sm" style="max-width:7rem" type="number" id="offset-{{ row.slug }}" name="due_offset_days" value="{{ row.offset }}">
+            </div>
+            <div>
+                <label class="form-label small mb-0" for="effort-{{ row.slug }}">{{ 'planning.sources.col.effort'|trans({}, 'planning') }}</label>
+                <input class="form-control form-control-sm" style="max-width:7rem" type="number" step="0.5" min="0" id="effort-{{ row.slug }}" name="default_effort_pt" value="{{ row.effort }}" placeholder="—">
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">{{ 'common.save'|trans({}, 'messages') }}</button>
+        </form>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}
