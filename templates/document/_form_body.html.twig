@@ -1,0 +1,68 @@
+{# Shared Document form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). The caller wraps it in
+   form_start/form_end (with enctype multipart/form-data) and passes title /
+   actions. The section map mirrors DocumentType::getSectionMap(). The
+   wizard-only policyBody field is excluded here — it is rendered separately
+   full-page on edit (see edit.html.twig). #}
+{% trans_default_domain 'document' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(document is defined and document and document.originalFilename ? document.originalFilename : ('document.new'|trans({}, 'document'))) %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 A.5.9 · Document Management',
+    'title': title,
+    'sections': {
+        'overview': {
+            'label': 'document.section.basic_info'|trans({}, 'document'),
+            'fields': ['originalFilename', 'description', 'category', 'status']
+        },
+        'classification': {
+            'label': 'document.section.classification'|trans({}, 'document'),
+            'fields': ['tisaxInformationClassification']
+        },
+        'lifecycle': {
+            'label': 'document.section.lifecycle'|trans({}, 'document'),
+            'fields': ['version', 'reviewIntervalMonths', 'requiresAcknowledgement', 'acknowledgementAudience']
+        },
+        'ownership': {
+            'label': 'document.section.ownership'|trans({}, 'document'),
+            'fields': ['inheritable', 'overrideAllowed']
+        },
+        'linkage': {
+            'label': 'document.section.linkage'|trans({}, 'document'),
+            'fields': ['linkedControls']
+        },
+        'content': {
+            'label': 'document.section.file_upload'|trans({}, 'document'),
+            'fields': ['file']
+        }
+    },
+    'col_widths': {
+        'originalFilename': 8,
+        'status': 4,
+        'description': 12,
+        'category': 6,
+        'tisaxInformationClassification': 6,
+        'version': 4,
+        'reviewIntervalMonths': 4,
+        'requiresAcknowledgement': 4,
+        'acknowledgementAudience': 12,
+        'inheritable': 6,
+        'overrideAllowed': 6,
+        'linkedControls': 12,
+        'file': 12
+    },
+    'tooltips': {
+        'category': 'document.tooltip.category',
+        'tisaxInformationClassification': 'document.tooltip.classification'
+    },
+    'exclude': exclude|default([]),
+    'translation_domain': 'document',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+    })
+} %}

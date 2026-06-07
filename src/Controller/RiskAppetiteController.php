@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use DateTimeImmutable;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\RiskAppetite;
 use App\Form\RiskAppetiteType;
 use App\Repository\AuditLogRepository;
@@ -20,6 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RiskAppetiteController extends AbstractController
 {
+    use InPageFormTrait;
+
     public function __construct(
         private readonly RiskAppetiteRepository $riskAppetiteRepository,
         private readonly RiskRepository $riskRepository,
@@ -90,12 +93,23 @@ class RiskAppetiteController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_appetite.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->riskAppetiteStreamSave($riskAppetite, isNew: true);
+            }
             return $this->redirectToRoute('app_risk_appetite_show', ['id' => $riskAppetite->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('risk_appetite/_form_modal.html.twig', [
+                'appetite' => $riskAppetite,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('risk_appetite/new.html.twig', [
             'appetite' => $riskAppetite,
@@ -104,8 +118,15 @@ class RiskAppetiteController extends AbstractController
     }
     #[Route('/risk-appetite/{id}', name: 'app_risk_appetite_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(RiskAppetite $riskAppetite): Response
+    public function show(Request $request, RiskAppetite $riskAppetite): Response
     {
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('risk_appetite/_detail_modal.html.twig', [
+                'appetite' => $riskAppetite,
+            ]);
+        }
+
         // Get all risks to show which ones exceed this appetite
         $allRisks = $this->riskRepository->findAll();
         $risksExceedingAppetite = [];
@@ -143,6 +164,10 @@ class RiskAppetiteController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_appetite.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->riskAppetiteStreamSave($riskAppetite, isNew: false);
+            }
             return $this->redirectToRoute('app_risk_appetite_show', ['id' => $riskAppetite->getId()]);
         }
 
@@ -150,10 +175,26 @@ class RiskAppetiteController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('risk_appetite/_form_modal.html.twig', [
+                'appetite' => $riskAppetite,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('risk_appetite/edit.html.twig', [
             'appetite' => $riskAppetite,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal RiskAppetite save (row replace/append). */
+    private function riskAppetiteStreamSave(RiskAppetite $riskAppetite, bool $isNew): Response
+    {
+        return $this->render('risk_appetite/_stream_save.html.twig', [
+            'appetite' => $riskAppetite,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
     #[Route('/risk-appetite/{id}/delete', name: 'app_risk_appetite_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

@@ -1,0 +1,56 @@
+{# RiskAppetite read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page. #}
+{% trans_default_domain 'risk_appetite' %}
+{% set risk_variant = appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger') %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO/IEC 27005 · Risk Appetite</div>
+            <div class="fa-drawer__title">{{ appetite.displayName }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% if appetite.isActive() %}
+                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'risk_appetite.status.active'|trans({}, 'risk_appetite') } %}
+            {% else %}
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'risk_appetite.status.inactive'|trans({}, 'risk_appetite') } %}
+            {% endif %}
+            {% if appetite.isApproved() %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'risk_appetite.approved'|trans({}, 'risk_appetite') } %}
+            {% endif %}
+        </div>
+        <div class="fa-drawer__kv"><span class="label">{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}</span><span>{{ appetite.isGlobal() ? 'risk_appetite.category.global'|trans({}, 'risk_appetite') : appetite.category }}</span></div>
+        <div class="fa-drawer__kv"><span class="label">{{ 'risk_appetite.field.max_acceptable_risk'|trans({}, 'risk_appetite') }}</span><span>{% include '_components/_badge.html.twig' with { variant: risk_variant, content: appetite.maxAcceptableRisk } %} <small class="text-muted">/ 25</small></span></div>
+        {% if appetite.approvedBy %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_appetite.field.approved_by'|trans({}, 'risk_appetite') }}</span><span>{{ appetite.approvedBy.fullName }}</span></div>{% endif %}
+        {% if appetite.approvedAt %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_appetite.field.approved_at'|trans({}, 'risk_appetite') }}</span><span>{{ appetite.approvedAt|date('Y-m-d') }}</span></div>{% endif %}
+        {% if appetite.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'risk_appetite.field.description'|trans({}, 'risk_appetite') }}</span>
+                <p class="fa-drawer__desc">{{ appetite.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}" data-turbo-frame="fa-form-modal"
+           class="fa-cyber-btn fa-cyber-btn--md">
+            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+        </a>
+        {% endif %}
+    </div>
+</turbo-frame>

@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal ComplianceRequirement save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="compliance-requirement-rows">
+        <template>{% include 'compliance/requirement/_row.html.twig' with { requirement: requirement } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="compliance-requirement-row-{{ requirement.id }}">
+        <template>{% include 'compliance/requirement/_row.html.twig' with { requirement: requirement } %}</template>
+    </turbo-stream>
+{% endif %}

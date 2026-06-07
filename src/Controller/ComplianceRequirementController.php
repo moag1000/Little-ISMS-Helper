@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Person;
 use App\Entity\Tenant;
@@ -33,6 +34,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ComplianceRequirementController extends AbstractController
 {
     use LocalizedFlashTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
@@ -148,6 +150,10 @@ class ComplianceRequirementController extends AbstractController
 
             $this->flashSuccess('compliance.requirement.success.created');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->requirementStreamSave($complianceRequirement, isNew: true);
+            }
+
             return $this->redirectToRoute('app_compliance_requirement_show', [
                 'id' => $complianceRequirement->getId()
             ]);
@@ -157,6 +163,13 @@ class ComplianceRequirementController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('compliance/requirement/_form_modal.html.twig', [
+                'requirement' => $complianceRequirement,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('compliance/requirement/new.html.twig', [
             'requirement' => $complianceRequirement,
             'form' => $form,
@@ -164,7 +177,7 @@ class ComplianceRequirementController extends AbstractController
     }
 
     #[Route('/compliance/requirement/{id}', name: 'app_compliance_requirement_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(ComplianceRequirement $complianceRequirement): Response
+    public function show(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
@@ -173,6 +186,18 @@ class ComplianceRequirementController extends AbstractController
 
         // Get or create tenant-specific fulfillment (null for SUPER_ADMIN without tenant)
         $fulfillment = $tenant instanceof Tenant ? $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $complianceRequirement) : null;
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        // canEdit mirrors the full page: inherited fulfillments are read-only.
+        if ($this->isTurboFrameRequest($request)) {
+            $canEdit = $this->complianceRequirementFulfillmentService->canEditFulfillment($fulfillment, $tenant);
+
+            return $this->render('compliance/requirement/_detail_modal.html.twig', [
+                'requirement' => $complianceRequirement,
+                'fulfillment' => $fulfillment,
+                'canEdit' => $canEdit,
+            ]);
+        }
 
         // Calculate fulfillment from controls (legacy method for comparison)
         $calculatedFulfillment = $complianceRequirement->calculateFulfillmentFromControls();
@@ -267,6 +292,10 @@ class ComplianceRequirementController extends AbstractController
 
             $this->flashSuccess('compliance.requirement.success.updated');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->requirementStreamSave($complianceRequirement, isNew: false);
+            }
+
             return $this->redirectToRoute('app_compliance_requirement_show', [
                 'id' => $complianceRequirement->getId()
             ]);
@@ -276,10 +305,26 @@ class ComplianceRequirementController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('compliance/requirement/_form_modal.html.twig', [
+                'requirement' => $complianceRequirement,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('compliance/requirement/edit.html.twig', [
             'requirement' => $complianceRequirement,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal ComplianceRequirement save (row replace/append). */
+    private function requirementStreamSave(ComplianceRequirement $complianceRequirement, bool $isNew): Response
+    {
+        return $this->render('compliance/requirement/_stream_save.html.twig', [
+            'requirement' => $complianceRequirement,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     #[Route('/compliance/requirement/{id}', name: 'app_compliance_requirement_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

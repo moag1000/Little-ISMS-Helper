@@ -22,7 +22,7 @@
     title: 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan'),
     subtitle: 'risk_treatment_plan.description'|trans({}, 'risk_treatment_plan'),
     actions: [
-        { label: 'risk_treatment_plan.new'|trans({}, 'risk_treatment_plan'), variant: 'primary', icon: 'plus', href: path('app_risk_treatment_plan_new') }
+        { label: 'risk_treatment_plan.new'|trans({}, 'risk_treatment_plan'), variant: 'primary', icon: 'plus', href: path('app_risk_treatment_plan_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
     ]
 }) }}
 {% set _global_hints = alva_hints('risk_treatment_plan_index') %}
@@ -139,64 +139,10 @@
                 <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
+        {% block table_body_attrs %}id="risk-treatment-plan-rows"{% endblock %}
         {% block table_body %}
-            {% import '_components/_fa_progress.html.twig' as _fa_progress %}
             {% for plan in plans %}
-            <tr class="{{ plan.isOverdue() ? 'table-warning' : '' }}">
-                <td>
-                    <strong>{{ plan.title }}</strong>
-                    {% if plan.isOverdue() %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-2', icon: 'status-warning', content: 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') } %}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if plan.risk %}
-                        <a href="{{ path('app_risk_show', {id: plan.risk.id}) }}">{{ plan.risk.title }}</a>
-                    {% else %}
-                        <span class="text-muted">-</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {% include '_components/_badge.html.twig' with { variant: plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))), content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan')|upper } %}
-                </td>
-                <td class="text-center">
-                    {% include '_components/_badge.html.twig' with { variant: plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')), content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper } %}
-                </td>
-                <td>
-                    {{ plan.effectiveResponsiblePerson ?? '<span class="text-muted">-</span>'|raw }}
-                </td>
-                <td class="text-center">
-                    {{ _fa_progress.render({ value: plan.completionPercentage, tone: plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')), showText: true }) }}
-                </td>
-                <td>
-                    {{ plan.targetCompletionDate|date('Y-m-d') }}
-                    <br>
-                    <small class="text-muted">
-                        {% set daysUntil = plan.daysUntilTarget %}
-                        {% if daysUntil < 0 %}
-                            <span class="text-danger">{{ daysUntil|abs }} {{ 'risk_treatment_plan.days_overdue'|trans({}, 'risk_treatment_plan') }}</span>
-                        {% elseif daysUntil == 0 %}
-                            <span class="text-warning">{{ 'risk_treatment_plan.due_today'|trans({}, 'risk_treatment_plan') }}</span>
-                        {% else %}
-                            {{ daysUntil }} {{ 'risk_treatment_plan.days_remaining'|trans({}, 'risk_treatment_plan') }}
-                        {% endif %}
-                    </small>
-                </td>
-                <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                        <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}"
-                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                        </a>
-                        <a href="{{ path('app_risk_treatment_plan_edit', {id: plan.id}) }}"
-                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
+                {% include 'risk_treatment_plan/_row.html.twig' with { plan: plan } %}
             {% else %}
             <tr>
                 <td colspan="8" class="text-center text-muted">

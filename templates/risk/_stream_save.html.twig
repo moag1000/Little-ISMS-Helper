@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal Risk save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="risk-rows">
+        <template>{% include 'risk/_row.html.twig' with { risk: risk } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="risk-row-{{ risk.id }}">
+        <template>{% include 'risk/_row.html.twig' with { risk: risk } %}</template>
+    </turbo-stream>
+{% endif %}

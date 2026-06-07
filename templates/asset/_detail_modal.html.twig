@@ -1,0 +1,99 @@
+{# Asset read-only detail — rendered inside the fa-form-modal Turbo Frame
+   (detail-in-modal, consistent with Risk per spec H3). Uses the drawer
+   chrome (header/body/kv/section/footer) inside that frame, which renders cleanly
+   as a flex column; condensed, with a "Vollansicht" link to the full page.
+   Edit button is gated on BOTH the canEdit flag (inherited assets are not
+   editable) AND is_granted — when locked it renders as a disabled control. #}
+{% trans_default_domain 'asset' %}
+{% import '_components/_status_pill.html.twig' as pill %}
+{% set canEdit = canEdit|default(false) %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 A.5.9 · Asset Inventory</div>
+            <div class="fa-drawer__title">{{ asset.name }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.assetType } %}
+            {% include '_components/_badge.html.twig' with { variant: asset.status == 'active' ? 'success' : 'secondary', content: ('asset.status.' ~ asset.status)|trans({}, 'asset') } %}
+            {% if asset.isDoraRelevant %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA' } %}
+            {% endif %}
+        </div>
+
+        {% if asset.subType %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'asset.field.type'|trans({}, 'asset') }}</span>
+                <span>{{ asset.subType.name }}</span>
+            </div>
+        {% endif %}
+        {% if asset.effectiveOwner %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'asset.field.owner'|trans({}, 'asset') }}</span>
+                <span>{{ asset.effectiveOwner }}</span>
+            </div>
+        {% endif %}
+        {% if asset.dataClassification %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'asset.field.data_classification'|trans({}, 'asset') }}</span>
+                <span>{{ pill.render(('asset.classification.' ~ asset.dataClassification)|trans({}, 'asset')|upper, pill_tone_classification(asset.dataClassification)) }}</span>
+            </div>
+        {% endif %}
+        {% if asset.physicalLocation %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'asset.field.location'|trans({}, 'asset') }}</span>
+                <span>{{ asset.physicalLocation.name }}</span>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__kv">
+            <span class="label">CIA</span>
+            <span>
+                {{ pill.render('C:' ~ asset.confidentialityValue, pill_tone_score(asset.confidentialityValue), { size: 'sm', title: 'asset.label.confidentiality'|trans({}, 'asset') }) }}
+                {{ pill.render('I:' ~ asset.integrityValue, pill_tone_score(asset.integrityValue), { size: 'sm', title: 'asset.label.integrity'|trans({}, 'asset') }) }}
+                {{ pill.render('A:' ~ asset.availabilityValue, pill_tone_score(asset.availabilityValue), { size: 'sm', title: 'asset.label.availability'|trans({}, 'asset') }) }}
+            </span>
+        </div>
+        {% if asset.returnDate %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'asset.field.return_date'|trans({}, 'asset') }}</span>
+                <span>{{ asset.returnDate|date('Y-m-d') }}</span>
+            </div>
+        {% endif %}
+        {% if asset.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'asset.field.description'|trans({}, 'asset') }}</span>
+                <p class="fa-drawer__desc">{{ asset.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_asset_show', {id: asset.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if canEdit and is_granted('ROLE_USER') %}
+            <a href="{{ path('app_asset_edit', {id: asset.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>

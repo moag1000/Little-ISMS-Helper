@@ -1,0 +1,34 @@
+{# Document create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). enctype is
+   multipart/form-data because DocumentType has a `file` FileType field. On a
+   valid submit the controller returns a Turbo Stream (row replace/append); the
+   modal closes on the successful turbo:submit-end. #}
+{% trans_default_domain 'document' %}
+{% set is_edit = document is defined and document and document.id is not null %}
+{% set form_action = is_edit
+    ? path('app_document_edit', { id: document.id, _locale: app.request.locale })
+    : path('app_document_new', { _locale: app.request.locale }) %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'document-modal-form',
+        'enctype': 'multipart/form-data',
+        'data-turbo-frame': 'fa-form-modal',
+        'data-controller': 'conditional-fields alva-hint-in-form',
+        'data-alva-hint-in-form-entity-type-value': 'document',
+        'data-alva-hint-in-form-form-name-value': 'document',
+        'data-alva-hint-in-form-endpoint-value': path('api_alva_hint_form_evaluate', {'entityType': 'document'}),
+        'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
+        'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate'
+    } }) }}
+    {% include 'document/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        exclude: ['policyBody'],
+        title: is_edit ? document.originalFilename : 'document.new'|trans({}, 'document'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

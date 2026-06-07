@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\BulkActionTrait;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ThreatIntelligence;
 use App\Enum\ThreatIntelligenceStatus;
 use App\Form\ThreatIntelligenceType;
@@ -27,6 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ThreatIntelligenceController extends AbstractController
 {
     use BulkActionTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly ThreatIntelligenceRepository $repository,
@@ -111,12 +113,23 @@ class ThreatIntelligenceController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('threat.action.created_flash', [], 'threat'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->threatStreamSave($threat, isNew: true);
+            }
             return $this->redirectToRoute('app_threat_intelligence_show', ['id' => $threat->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('threat_intelligence/_form_modal.html.twig', [
+                'threat' => $threat,
+                'form'   => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('threat_intelligence/new.html.twig', [
             'threat' => $threat,
@@ -126,8 +139,15 @@ class ThreatIntelligenceController extends AbstractController
 
     #[Route('/threat-intelligence/{id}', name: 'app_threat_intelligence_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(ThreatIntelligence $threat): Response
+    public function show(Request $request, ThreatIntelligence $threat): Response
     {
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('threat_intelligence/_detail_modal.html.twig', [
+                'threat' => $threat,
+            ]);
+        }
+
         return $this->render('threat_intelligence/show.html.twig', [
             'threat' => $threat,
         ]);
@@ -145,6 +165,10 @@ class ThreatIntelligenceController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('threat.action.updated_flash', [], 'threat'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->threatStreamSave($threat, isNew: false);
+            }
             return $this->redirectToRoute('app_threat_intelligence_show', ['id' => $threat->getId()]);
         }
 
@@ -152,10 +176,26 @@ class ThreatIntelligenceController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('threat_intelligence/_form_modal.html.twig', [
+                'threat' => $threat,
+                'form'   => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('threat_intelligence/edit.html.twig', [
             'threat' => $threat,
             'form'   => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal ThreatIntelligence save (row replace/append). */
+    private function threatStreamSave(ThreatIntelligence $threat, bool $isNew): Response
+    {
+        return $this->render('threat_intelligence/_stream_save.html.twig', [
+            'threat' => $threat,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     #[Route('/threat-intelligence/{id}/delete', name: 'app_threat_intelligence_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

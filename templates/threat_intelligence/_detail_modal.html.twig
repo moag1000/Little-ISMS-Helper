@@ -1,0 +1,56 @@
+{# ThreatIntelligence read-only detail — rendered inside the fa-form-modal Turbo
+   Frame. Uses the drawer chrome (header/body/footer/kv) which renders cleanly as
+   a flex column; condensed, with a "Vollansicht" link to the full page. #}
+{% trans_default_domain 'threat' %}
+{% set severity_map = {'critical':'danger','high':'warning','medium':'info','low':'secondary','informational':'light'} %}
+{% set severity_variant = severity_map[threat.severity]|default('secondary') %}
+{% set status_map = {'new':'primary','analyzing':'warning','mitigated':'success','monitoring':'info','closed':'secondary'} %}
+{% set status_variant = status_map[threat.status]|default('secondary') %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 A.5.7 · Threat Intelligence</div>
+            <div class="fa-drawer__title">{{ threat.cveId ? threat.cveId ~ ' — ' : '' }}{{ threat.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% if threat.severity %}{% include '_components/_badge.html.twig' with { variant: severity_variant, content: ('severity.' ~ threat.severity)|trans({}, 'threat') } %}{% endif %}
+            {% if threat.status %}{% include '_components/_badge.html.twig' with { variant: status_variant, content: ('status_type.' ~ threat.status)|trans({}, 'threat') } %}{% endif %}
+        </div>
+        {% if threat.threatType %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.field.threat_type'|trans({}, 'threat') }}</span><span>{{ ('type.' ~ threat.threatType)|trans({}, 'threat') }}</span></div>{% endif %}
+        {% if threat.source %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.field.source'|trans({}, 'threat') }}</span><span>{{ threat.source }}</span></div>{% endif %}
+        {% if threat.cveId %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.field.cve_id'|trans({}, 'threat') }}</span><span><code>{{ threat.cveId }}</code></span></div>{% endif %}
+        <div class="fa-drawer__kv"><span class="label">{{ 'threat.field.affected_assets'|trans({}, 'threat') }}</span><span>{{ threat.affectedAssets|length }}</span></div>
+        {% if threat.effectiveAssignedTo %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.label.assignee'|trans({}, 'threat') }}</span><span>{{ threat.effectiveAssignedTo }}</span></div>{% endif %}
+        {% if is_module_active('vulnerability_intel') and threat.tlpClassification %}<div class="fa-drawer__kv"><span class="label">{{ 'threat_intelligence.field.tlp_classification'|trans({}, 'threat') }}</span><span>{{ ('threat_intelligence.tlp.' ~ threat.tlpClassification)|trans({}, 'threat') }}</span></div>{% endif %}
+        {% if threat.detectionDate %}<div class="fa-drawer__kv"><span class="label">{{ 'threat.field.detection_date'|trans({}, 'threat') }}</span><span>{{ threat.detectionDate|date('Y-m-d') }}</span></div>{% endif %}
+        {% if threat.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'threat.field.description'|trans({}, 'threat') }}</span>
+                <p class="fa-drawer__desc">{{ threat.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_threat_intelligence_show', {id: threat.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_MANAGER') %}
+        <a href="{{ path('app_threat_intelligence_edit', {id: threat.id}) }}" data-turbo-frame="fa-form-modal"
+           class="fa-cyber-btn fa-cyber-btn--md">
+            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+        </a>
+        {% endif %}
+    </div>
+</turbo-frame>

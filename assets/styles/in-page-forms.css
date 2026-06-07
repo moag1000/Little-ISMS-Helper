@@ -87,6 +87,15 @@ tbody tr:has(.fa-row-link):hover {
     flex: 1 1 auto;
     min-height: 0;
 }
+/* form_start renders a <form> between the frame and the form-layout; it must
+   also be a flex column or the chain breaks and the form-layout body never
+   scrolls (sticky Save footer falls off — surfaced by the Risk live heatmap). */
+.fa-form-modal__dialog > turbo-frame > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
 .fa-form-layout--modal {
     border-radius: var(--r-2xl, 18px);
     display: flex;
@@ -117,3 +126,7 @@ tbody tr:has(.fa-row-link):hover {
         border-radius: 0;
     }
 }
+
+/* Risk live mini-heatmap compaction lives with the component itself in
+   fairy-aurora-components.css (.fa-risk-mini-heatmap) — it is only used by the
+   risk form, so no in-form scoping is needed here. */

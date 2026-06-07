@@ -1,0 +1,103 @@
+{# ComplianceRequirement read-only detail — rendered inside the fa-form-modal
+   Turbo Frame. Uses the drawer chrome (header/body/kv/section/footer) which
+   renders cleanly as a flex column; condensed, with a "Vollansicht" link to the
+   full page. Edit button is gated on canEdit (inherited fulfillments are
+   read-only) AND is_granted — when locked it renders as a disabled control. #}
+{% trans_default_domain 'compliance' %}
+{% set canEdit = canEdit|default(false) %}
+{% set fulfillment = fulfillment|default(null) %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">{{ 'compliance.requirement.title'|trans({}, 'compliance') }}{% if requirement.framework %} · {{ requirement.framework.code }}{% endif %}</div>
+            <div class="fa-drawer__title">{{ requirement.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: requirement.requirementId } %}
+            {% if requirement.priority %}
+                <span class="{{ badge_priority(requirement.priority) }}">{{ requirement.priority }}</span>
+            {% endif %}
+            {% if fulfillment %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: fulfillment.status } %}
+            {% endif %}
+        </div>
+
+        {% if requirement.framework %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'compliance.requirement.col.framework'|trans({}, 'compliance') }}</span>
+                <span>{{ requirement.framework.name }} ({{ requirement.framework.code }})</span>
+            </div>
+        {% endif %}
+        {% if requirement.category %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'compliance.requirement.col.category'|trans({}, 'compliance') }}</span>
+                <span>{{ requirement.category }}</span>
+            </div>
+        {% endif %}
+        {% if requirement.priority %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'compliance.requirement.col.priority'|trans({}, 'compliance') }}</span>
+                <span>{{ requirement.priority }}</span>
+            </div>
+        {% endif %}
+        {% if fulfillment %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'compliance.requirement.col.fulfillment'|trans({}, 'compliance') }}</span>
+                <span>{{ fulfillment.fulfillmentPercentage }}% · {{ fulfillment.status }}</span>
+            </div>
+        {% endif %}
+        {% if requirement.maturityCurrent is not null or requirement.maturityTarget is not null %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'compliance.requirement.mris.current'|trans({}, 'compliance') }} / {{ 'compliance.requirement.mris.target'|trans({}, 'compliance') }}</span>
+                <span>{{ requirement.maturityCurrent|default('–') }} / {{ requirement.maturityTarget|default('–') }}</span>
+            </div>
+        {% endif %}
+        {% if fulfillment and fulfillment.responsiblePersonUser %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'fulfillment.field.responsible_person_user'|trans({}, 'compliance') }}</span>
+                <span>{{ fulfillment.responsiblePersonUser.fullName }}</span>
+            </div>
+        {% elseif fulfillment and fulfillment.responsiblePerson %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'fulfillment.field.responsible_person'|trans({}, 'compliance') }}</span>
+                <span>{{ fulfillment.responsiblePerson.fullName }}</span>
+            </div>
+        {% endif %}
+        {% if requirement.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'compliance_requirement.field.description'|trans({}, 'compliance') }}</span>
+                <p class="fa-drawer__desc">{{ requirement.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_compliance_requirement_show', {id: requirement.id, _locale: app.request.locale}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if canEdit and is_granted('ROLE_USER') %}
+            <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id, _locale: app.request.locale}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  title="{{ 'compliance.requirement.error.inherited_fulfillment_readonly'|trans({}, 'compliance') }}"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>

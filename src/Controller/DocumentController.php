@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\Control;
 use App\Entity\Document;
 use App\Entity\DocumentControlLink;
@@ -51,6 +52,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[IsGranted('ROLE_USER')]
 class DocumentController extends AbstractController
 {
+    use InPageFormTrait;
+
     public function __construct(
         private readonly DocumentRepository $documentRepository,
         private readonly DocumentService $documentService,
@@ -289,14 +292,19 @@ class DocumentController extends AbstractController
 
                 $this->addFlash('error', $this->translator->trans('document.error.too_many_uploads', [], 'messages'));
 
-                $status = ($form->isSubmitted() && !$form->isValid())
-                    ? Response::HTTP_UNPROCESSABLE_ENTITY
-                    : Response::HTTP_OK;
+                // In-page form modal re-renders with a 422 so Turbo keeps the
+                // frame open and surfaces the flash; full page otherwise.
+                if ($this->isTurboFrameRequest($request)) {
+                    return $this->render('document/_form_modal.html.twig', [
+                        'document' => $document,
+                        'form' => $form,
+                    ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
+                }
 
                 return $this->render('document/new.html.twig', [
                     'document' => $document,
                     'form' => $form,
-                ], new Response(status: $status));
+                ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
             }
 
             // Security: Validate uploaded file (MIME type, magic bytes, size, extension)
@@ -342,6 +350,10 @@ class DocumentController extends AbstractController
                 $this->securityEventLogger->logDataChange('Document', $document->getId(), 'CREATE');
 
                 $this->addFlash('success', $this->translator->trans('document.success.uploaded', [], 'messages'));
+
+                if ($this->isTurboFrameRequest($request)) {
+                    return $this->documentStreamSave($document, isNew: true);
+                }
                 return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
 
             } catch (FileException $e) {
@@ -356,20 +368,30 @@ class DocumentController extends AbstractController
 
                 $this->addFlash('error', $this->translator->trans('document.error.upload_failed', [], 'messages') . ': ' . $e->getMessage());
 
-                $status = ($form->isSubmitted() && !$form->isValid())
-                    ? Response::HTTP_UNPROCESSABLE_ENTITY
-                    : Response::HTTP_OK;
+                if ($this->isTurboFrameRequest($request)) {
+                    return $this->render('document/_form_modal.html.twig', [
+                        'document' => $document,
+                        'form' => $form,
+                    ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
+                }
 
                 return $this->render('document/new.html.twig', [
                     'document' => $document,
                     'form' => $form,
-                ], new Response(status: $status));
+                ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
             }
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('document/_form_modal.html.twig', [
+                'document' => $document,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('document/new.html.twig', [
             'document' => $document,
@@ -653,6 +675,7 @@ class DocumentController extends AbstractController
 
     #[Route('/document/{id}', name: 'app_document_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(
+        Request $request,
         Document $document,
         ?\App\Service\PolicyWizard\Export\PolicyPdfExporter $pdfExporter = null,
     ): Response {
@@ -669,6 +692,16 @@ class DocumentController extends AbstractController
         } else {
             $isInherited = false;
             $canEdit = true;
+        }
+
+        // In-modal → condensed read-only detail rendered into the fa-form-modal
+        // frame; direct URL → full page (fallback / bookmark / no-JS).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('document/_detail_modal.html.twig', [
+                'document' => $document,
+                'canEdit' => $canEdit,
+                'isInherited' => $isInherited,
+            ]);
         }
 
         $inverseCoverage = $this->inverseCoverageService?->forDocument($document) ?? ['total' => 0, 'frameworks' => []];
@@ -937,6 +970,10 @@ class DocumentController extends AbstractController
             }
 
             $this->addFlash('success', $this->translator->trans('document.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->documentStreamSave($document, isNew: false);
+            }
             return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
 
@@ -944,10 +981,26 @@ class DocumentController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('document/_form_modal.html.twig', [
+                'document' => $document,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('document/edit.html.twig', [
             'document' => $document,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal Document save (row replace/append). */
+    private function documentStreamSave(Document $document, bool $isNew): Response
+    {
+        return $this->render('document/_stream_save.html.twig', [
+            'document' => $document,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     /**

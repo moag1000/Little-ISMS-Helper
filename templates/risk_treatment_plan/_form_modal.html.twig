@@ -1,0 +1,21 @@
+{# RiskTreatmentPlan create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append); the controller closes
+   the modal on the successful turbo:submit-end. #}
+{% trans_default_domain 'risk_treatment_plan' %}
+{% set is_edit = plan is defined and plan and plan.id is not null %}
+{% set form_action = is_edit ? path('app_risk_treatment_plan_edit', { id: plan.id }) : path('app_risk_treatment_plan_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: { id: 'risk-treatment-plan-modal-form', 'data-turbo-frame': 'fa-form-modal' } }) }}
+    {% include 'risk_treatment_plan/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? plan.title : 'risk_treatment_plan.new'|trans({}, 'risk_treatment_plan'),
+        subtitle: is_edit and plan.risk ? plan.risk.title : null,
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

@@ -469,6 +469,85 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    // ========== IN-PAGE FORM-MODAL (Turbo Frame) TESTS ==========
+
+    #[Test]
+    public function testShowInFrameRendersDetailModalPartial(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request(
+            'GET',
+            '/en/risk/' . $this->testRisk->getId(),
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-form-modal"', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
+    #[Test]
+    public function testEditInFrameRendersFormModalPartial(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        $this->client->request(
+            'GET',
+            '/en/risk/' . $this->testRisk->getId() . '/edit',
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-form-modal"', $html);
+        // Explicit form action keeps the POST on the edit route (not the list).
+        self::assertStringContainsString('action="/en/risk/' . $this->testRisk->getId() . '/edit"', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
+    #[Test]
+    public function testEditWithoutFrameRendersFullPage(): void
+    {
+        $this->loginAsUser($this->testUser);
+        $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/edit');
+
+        $this->assertResponseIsSuccessful();
+        self::assertStringContainsString('<html', (string) $this->client->getResponse()->getContent());
+    }
+
+    #[Test]
+    public function testEditInFrameInvalidReturns422ModalPartial(): void
+    {
+        // The POST path is frame-aware: an invalid in-frame submit re-renders the
+        // slim form-modal partial with 422 (errors inline), not the full page.
+        $this->loginAsUser($this->testUser);
+
+        $crawler = $this->client->request(
+            'GET',
+            '/en/risk/' . $this->testRisk->getId() . '/edit',
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+        $form = $crawler->filter('form[name="risk"]')->first()->form();
+        $values = $form->getPhpValues();
+        // Force invalid: clear the required title.
+        $values['risk']['title'] = '';
+
+        $this->client->request(
+            'POST',
+            $form->getUri(),
+            $values,
+            [],
+            ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-form-modal"', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
     // ========== DELETE ACTION TESTS ==========
 
     #[Test]

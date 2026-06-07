@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Traversable;
 use Exception;
 use DomainException;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Incident;
 use App\Entity\Risk;
@@ -55,6 +56,7 @@ class RiskController extends AbstractController
 {
     use LocalizedFlashTrait;
     use BulkActionTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly RiskRepository $riskRepository,
@@ -929,12 +931,23 @@ class RiskController extends AbstractController
             // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('risk.success.created');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->riskStreamSave($risk, isNew: true);
+            }
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('risk/_form_modal.html.twig', [
+                'risk' => $risk,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('risk/new.html.twig', [
             'risk' => $risk,
@@ -1100,11 +1113,22 @@ class RiskController extends AbstractController
     }
     #[Route('/risk/{id}', name: 'app_risk_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(Risk $risk): Response
+    public function show(Request $request, Risk $risk): Response
     {
         // Get current user's tenant
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        // canEdit gating mirrors the full page: inherited risks are not editable.
+        if ($this->isTurboFrameRequest($request)) {
+            $canEdit = $tenant ? $this->riskService->canEditRisk($risk, $tenant) : true;
+
+            return $this->render('risk/_detail_modal.html.twig', [
+                'risk' => $risk,
+                'canEdit' => $canEdit,
+            ]);
+        }
 
         // Get audit log history for this risk (last 10 entries)
         $auditLogs = $this->auditLogRepository->findByEntity('Risk', $risk->getId());
@@ -1289,6 +1313,10 @@ class RiskController extends AbstractController
             // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('risk.success.updated');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->riskStreamSave($risk, isNew: false);
+            }
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -1296,11 +1324,28 @@ class RiskController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('risk/_form_modal.html.twig', [
+                'risk' => $risk,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('risk/edit.html.twig', [
             'risk' => $risk,
             'form' => $form,
         ], new Response(status: $status));
     }
+
+    /** Turbo Stream after a successful in-modal Risk save (row replace/append). */
+    private function riskStreamSave(Risk $risk, bool $isNew): Response
+    {
+        return $this->render('risk/_stream_save.html.twig', [
+            'risk' => $risk,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
+    }
+
     #[Route('/risk/{id}/delete', name: 'app_risk_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Risk $risk): Response
