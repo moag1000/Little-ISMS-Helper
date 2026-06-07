@@ -1,0 +1,104 @@
+{# ProcessingActivity read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page. #}
+{% trans_default_domain 'privacy' %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">DSGVO Art. 30 · Verarbeitungsverzeichnis</div>
+            <div class="fa-drawer__title">{{ pa.name }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% set completeness = pa.completenessPercentage %}
+            {% include '_components/_badge.html.twig' with {
+                variant: completeness == 100 ? 'success' : (completeness >= 70 ? 'warning' : 'danger'),
+                content: completeness ~ '%'
+            } %}
+            {% if pa.processesSpecialCategories %}
+                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'processing_activity.badge.special_categories'|trans({}, 'privacy') } %}
+            {% endif %}
+            {% if pa.hasThirdCountryTransfer %}
+                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'processing_activity.badge.third_country'|trans({}, 'privacy') } %}
+            {% endif %}
+            {% if pa.requiresDPIA and not pa.dpiaCompleted %}
+                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'processing_activity.badge.dpia_required'|trans({}, 'privacy') } %}
+            {% endif %}
+        </div>
+
+        {% if pa.purposes %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'processing_activity.field.purposes'|trans({}, 'privacy') }}</span>
+                <span>{{ pa.purposes|join(', ') }}</span>
+            </div>
+        {% endif %}
+
+        {% if pa.legalBasis %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'processing_activity.field.legal_basis'|trans({}, 'privacy') }}</span>
+                <span>{{ ('processing_activity.legal_basis.' ~ pa.legalBasis)|trans({}, 'privacy') }}</span>
+            </div>
+        {% endif %}
+
+        {% if pa.dataSubjectCategories %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'processing_activity.field.data_subject_categories'|trans({}, 'privacy') }}</span>
+                <span>{{ pa.dataSubjectCategories|length }} {{ 'processing_activity.table.categories'|trans({}, 'privacy') }}</span>
+            </div>
+        {% endif %}
+
+        {% if pa.effectiveContactPerson %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'processing_activity.field.contact_person'|trans({}, 'privacy') }}</span>
+                <span>{{ pa.effectiveContactPerson }}</span>
+            </div>
+        {% endif %}
+
+        {% if pa.involvesProcessors and pa.processorSuppliers|length > 0 %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'processing_activity.field.processors'|trans({}, 'privacy') }}</span>
+                <span>{{ pa.processorSuppliers|map(s => s.name)|join(', ') }}</span>
+            </div>
+        {% endif %}
+
+        {% if pa.retentionPeriod %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'processing_activity.field.retention_period'|trans({}, 'privacy') }}</span>
+                <span>{{ pa.retentionPeriod }}</span>
+            </div>
+        {% endif %}
+
+        {% if pa.technicalOrganizationalMeasures %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'processing_activity.field.technical_organizational_measures'|trans({}, 'privacy') }}</span>
+                <p class="fa-drawer__desc">{{ pa.technicalOrganizationalMeasures|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_processing_activity_show', {id: pa.id}) }}"
+               data-turbo="false"
+               class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_processing_activity_edit', {id: pa.id}) }}"
+               data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

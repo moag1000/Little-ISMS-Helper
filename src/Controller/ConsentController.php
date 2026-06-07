@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Consent;
@@ -32,6 +34,8 @@ class ConsentController extends AbstractController
 {
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
+    use LocalizedFlashTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly ConsentRepository $consentRepository,
@@ -43,6 +47,16 @@ class ConsentController extends AbstractController
         private readonly LifecycleService $lifecycleService,
         private readonly ?AuditLogger $auditLogger = null,
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'consent';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
 
     #[Route('/', name: 'app_consent_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -136,7 +150,11 @@ class ConsentController extends AbstractController
                     $this->entityManager->flush();
                 }
 
-                $this->addFlash('success', $this->translator->trans('consent.success.created', [], 'consent'));
+                $this->flashSuccess('consent.success.created');
+
+                if ($this->isTurboFrameRequest($request)) {
+                    return $this->consentStreamSave($consent, isNew: true);
+                }
                 return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
             }
         }
@@ -144,6 +162,13 @@ class ConsentController extends AbstractController
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('consent/_form_modal.html.twig', [
+                'consent' => $consent,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('consent/form.html.twig', [
             'consent' => $consent,
@@ -154,9 +179,23 @@ class ConsentController extends AbstractController
 
     #[Route('/{id}', name: 'app_consent_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(Consent $consent): Response
+    public function show(Request $request, Consent $consent): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            $canEdit = in_array(
+                $consent->getStatus(),
+                [ConsentStatus::PendingVerification->value, ConsentStatus::Active->value],
+                true,
+            );
+
+            return $this->render('consent/_detail_modal.html.twig', [
+                'consent' => $consent,
+                'canEdit' => $canEdit,
+            ]);
+        }
 
         return $this->render('consent/show.html.twig', [
             'consent' => $consent,
@@ -182,7 +221,11 @@ class ConsentController extends AbstractController
             $consent->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('consent.success.updated', [], 'consent'));
+            $this->flashSuccess('consent.success.updated');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->consentStreamSave($consent, isNew: false);
+            }
             return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
         }
 
@@ -190,11 +233,27 @@ class ConsentController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('consent/_form_modal.html.twig', [
+                'consent' => $consent,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('consent/form.html.twig', [
             'consent' => $consent,
             'form' => $form,
             'is_edit' => true,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal Consent save (row replace/append). */
+    private function consentStreamSave(Consent $consent, bool $isNew): Response
+    {
+        return $this->render('consent/_stream_save.html.twig', [
+            'consent' => $consent,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     #[Route('/{id}/verify', name: 'app_consent_verify', requirements: ['id' => '\d+'], methods: ['POST'])]

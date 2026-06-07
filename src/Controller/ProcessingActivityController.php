@@ -7,6 +7,7 @@ namespace App\Controller;
 use RuntimeException;
 use DateTime;
 use Exception;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\ProcessingActivity;
@@ -43,6 +44,7 @@ class ProcessingActivityController extends AbstractController
 {
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly ProcessingActivityService $processingActivityService,
@@ -110,12 +112,23 @@ class ProcessingActivityController extends AbstractController
             $this->processingActivityService->create($processingActivity);
 
             $this->addFlash('success', $this->translator->trans('processing_activity.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->processingActivityStreamSave($processingActivity, isNew: true);
+            }
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('processing_activity/_form_modal.html.twig', [
+                'pa' => $processingActivity,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('processing_activity/new.html.twig', [
             'form' => $form,
@@ -138,12 +151,23 @@ class ProcessingActivityController extends AbstractController
             $this->processingActivityService->update($processingActivity);
 
             $this->addFlash('success', $this->translator->trans('processing_activity.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->processingActivityStreamSave($processingActivity, isNew: false);
+            }
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('processing_activity/_form_modal.html.twig', [
+                'pa' => $processingActivity,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('processing_activity/edit.html.twig', [
             'form' => $form,
@@ -600,9 +624,16 @@ class ProcessingActivityController extends AbstractController
      * Show processing activity details
      */
     #[Route('/processing-activity/{id}', name: 'app_processing_activity_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(ProcessingActivity $processingActivity): Response
+    public function show(Request $request, ProcessingActivity $processingActivity): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('processing_activity/_detail_modal.html.twig', [
+                'pa' => $processingActivity,
+            ]);
+        }
 
         $complianceReport = $this->processingActivityService->generateComplianceReport($processingActivity);
 
@@ -766,6 +797,15 @@ class ProcessingActivityController extends AbstractController
             'ProcessingActivity',
             $this->auditLogger,
         );
+    }
+
+    /** Turbo Stream after a successful in-modal ProcessingActivity save (row replace/append). */
+    private function processingActivityStreamSave(ProcessingActivity $pa, bool $isNew): Response
+    {
+        return $this->render('processing_activity/_stream_save.html.twig', [
+            'pa' => $pa,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     /**

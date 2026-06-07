@@ -28,7 +28,7 @@
             { label: 'processing_activity.button.dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-dashboard', href: path('app_processing_activity_dashboard') },
             { label: 'processing_activity.button.export_pdf'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-file-pdf', href: path('app_processing_activity_export_pdf'), attrs: { 'data-turbo': 'false' } },
             { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), variant: 'ghost', icon: 'filetype-csv', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#vvtExportModal', 'data-turbo': 'false' } },
-            { label: 'processing_activity.button.new'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_processing_activity_new') }
+            { label: 'processing_activity.button.new'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_processing_activity_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]
     }) }}
 
@@ -197,82 +197,10 @@
                             <th scope="col">{{ 'processing_activity.table.actions'|trans({}, 'privacy') }}</th>
                         </tr>
                     {% endblock %}
+                    {% block table_body_attrs %}id="processing-activity-rows"{% endblock %}
                     {% block table_body %}
-    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
-    {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
                         {% for pa in processing_activities %}
-                            <tr>
-                                <td class="bulk-select-column">
-                                    <input type="checkbox"
-                                           class="form-check-input"
-                                           data-bulk-actions-target="item"
-                                           data-action="bulk-actions#selectItem"
-                                           value="{{ pa.id }}"
-                                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ pa.name }}">
-                                </td>
-                                <td>
-                                    <strong>{{ pa.name }}</strong><br>
-                                    <small class="text-muted">
-                                        {% if pa.processesSpecialCategories %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'processing_activity.badge.special_categories'|trans({}, 'privacy') } %}
-                                        {% endif %}
-                                        {% if pa.hasThirdCountryTransfer %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'processing_activity.badge.third_country'|trans({}, 'privacy') } %}
-                                        {% endif %}
-                                        {% if pa.requiresDPIA and not pa.dpiaCompleted %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'processing_activity.badge.dpia_required'|trans({}, 'privacy') } %}
-                                        {% endif %}
-                                    </small>
-                                </td>
-                                <td>
-                                    {{ ('processing_activity.legal_basis.' ~ pa.legalBasis)|trans({}, 'privacy') }}
-                                </td>
-                                <td>
-                                    {{ pa.dataSubjectCategories|length }} {{ 'processing_activity.table.categories'|trans({}, 'privacy') }}<br>
-                                    {% if pa.estimatedDataSubjectsCount %}
-                                        <small class="text-muted">~{{ pa.estimatedDataSubjectsCount }} {{ 'processing_activity.table.subjects'|trans({}, 'privacy') }}</small>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if pa.riskLevel %}
-                                        {% set risk_class = {
-                                            'low': 'success',
-                                            'medium': 'info',
-                                            'high': 'warning',
-                                            'critical': 'danger'
-                                        }[pa.riskLevel] %}
-                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('processing_activity.risk_level.' ~ pa.riskLevel)|trans({}, 'privacy') } %}
-                                    {% else %}
-                                        <span class="text-muted">—</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {# S3 P-4: canonical 5-stage lifecycle via LifecycleRegistry. #}
-                                    {{ _fa_status_chip.render({
-                                        entity_class: 'App\\Entity\\ProcessingActivity',
-                                        status_key: pa.status,
-                                        label: ('processing_activity.status.' ~ pa.status)|trans({}, 'privacy')
-                                    }) }}
-                                </td>
-                                <td>
-                                    {% set completeness = pa.completenessPercentage %}
-                                    {{ _fa_progress.render({ value: completeness, tone: completeness == 100 ? 'success' : (completeness >= 70 ? 'warning' : 'danger'), showText: true }) }}
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a href="{{ path('app_processing_activity_show', {id: pa.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                                           title="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                        </a>
-                                        <a href="{{ path('app_processing_activity_edit', {id: pa.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                                           title="{{ 'common.edit'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% include 'processing_activity/_row.html.twig' with { pa: pa } %}
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}

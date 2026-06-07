@@ -1,0 +1,56 @@
+{# Shared ProcessingActivity form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / submit_label / actions. #}
+{% trans_default_domain 'privacy' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(pa is defined and pa and pa.name ? pa.name : ('processing_activity.new'|trans({}, 'privacy'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'form.section.overview'|trans({}, 'messages'),
+        'fields': ['name', 'status', 'description', 'responsibleDepartmentEntity', 'responsibleDepartment']
+    },
+    'purposes': {
+        'label': 'form.section.purposes'|trans({}, 'messages'),
+        'fields': ['purposes', 'dataSources', 'startDate', 'endDate', 'nextReviewDate']
+    },
+    'legal_basis': {
+        'label': 'form.section.legal_basis'|trans({}, 'messages'),
+        'fields': ['legalBasis', 'legalBasisDetails', 'legalBasisSpecialCategories']
+    },
+    'data_categories': {
+        'label': 'form.section.data_categories'|trans({}, 'messages'),
+        'fields': ['dataSubjectCategories', 'estimatedDataSubjectsCount', 'personalDataCategories', 'processesSpecialCategories', 'specialCategoriesDetails', 'processesCriminalData', 'criminalDataLegalBasis']
+    },
+    'recipients': {
+        'label': 'form.section.recipients'|trans({}, 'messages'),
+        'fields': ['recipientCategories', 'recipientDetails', 'hasThirdCountryTransfer', 'thirdCountries', 'transferSafeguards', 'involvesProcessors', 'processorSuppliers', 'isJointController', 'jointControllerDetails', 'isProcessor', 'processorClientController']
+    },
+    'retention': {
+        'label': 'form.section.retention'|trans({}, 'messages'),
+        'fields': ['retentionPeriod', 'retentionPeriodDays', 'retentionLegalBasis', 'retentionPerCategory']
+    },
+    'measures': {
+        'label': 'form.section.measures'|trans({}, 'messages'),
+        'fields': ['technicalOrganizationalMeasures', 'implementedControls', 'assets']
+    },
+    'audit_metadata': {
+        'label': 'form.section.audit_metadata'|trans({}, 'messages'),
+        'fields': ['isHighRisk', 'dpiaCompleted', 'dpiaDate', 'riskLevel', 'hasAutomatedDecisionMaking', 'automatedDecisionMakingDetails', 'contactPersonUser', 'contactPerson', 'contactDeputyPersons', 'dataProtectionOfficer', 'dataProtectionOfficerPerson', 'dataProtectionOfficerDeputyPersons']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'DSGVO Art. 30 · Verarbeitungsverzeichnis',
+    'title': title,
+    'sections': form_sections,
+    'translation_domain': 'privacy',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

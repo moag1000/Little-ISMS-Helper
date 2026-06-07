@@ -1,0 +1,113 @@
+{# Consent read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page.
+   GDPR Art. 7 — subject/purpose/status/dates/legal-basis/proof shown.
+   Edit button is gated on ROLE_USER + editable statuses. #}
+{% trans_default_domain 'consent' %}
+{% set canEdit = canEdit|default(false) %}
+{% set statusColors = {
+    'pending_verification': 'warning',
+    'active': 'success',
+    'revoked': 'danger'
+} %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">GDPR Art. 7 · Consent Record</div>
+            <div class="fa-drawer__title">{{ consent.dataSubjectIdentifier }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: statusColors[consent.status] ?? 'secondary', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
+            {% if consent.verifiedBy %}
+                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'consent.verified'|trans({}, 'consent') } %}
+            {% endif %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'consent.field.data_subject'|trans({}, 'consent') }}</span>
+            <span>{{ consent.dataSubjectIdentifier }} <small class="text-muted">({{ ('consent.identifier_type.' ~ consent.identifierType)|trans({}, 'consent') }})</small></span>
+        </div>
+
+        {% if consent.processingActivity %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'consent.field.processing_activity'|trans({}, 'consent') }}</span>
+            <span>{{ consent.processingActivity.name|default(consent.processingActivity) }}</span>
+        </div>
+        {% endif %}
+
+        {% if consent.purposes %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'consent.field.purposes'|trans({}, 'consent') }}</span>
+            <span>{{ consent.purposes is iterable ? consent.purposes|join(', ') : consent.purposes }}</span>
+        </div>
+        {% endif %}
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'consent.field.granted_at'|trans({}, 'consent') }}</span>
+            <span>{{ consent.grantedAt|date('d.m.Y H:i') }}</span>
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'consent.field.consent_method'|trans({}, 'consent') }}</span>
+            <span>{{ ('consent.method.' ~ consent.consentMethod)|trans({}, 'consent') }}</span>
+        </div>
+
+        {% if consent.expiresAt %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'consent.field.expires_at'|trans({}, 'consent') }}</span>
+            <span>{{ consent.expiresAt|date('d.m.Y') }}</span>
+        </div>
+        {% endif %}
+
+        {% if consent.revokedAt %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'consent.section.revocation'|trans({}, 'consent') }}</span>
+            <span>{{ consent.revokedAt|date('d.m.Y H:i') }}</span>
+        </div>
+        {% endif %}
+
+        {% if consent.verifiedBy %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'consent.field.verified'|trans({}, 'consent') }}</span>
+            <span>{{ consent.verifiedBy }}</span>
+        </div>
+        {% endif %}
+
+        {% if consent.proofDocument %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'consent.field.proof_document'|trans({}, 'consent') }}</span>
+            <span><i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ consent.proofDocument }}</span>
+        </div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_consent_show', {id: consent.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if canEdit and is_granted('ROLE_USER') %}
+            <a href="{{ path('app_consent_edit', {id: consent.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>
