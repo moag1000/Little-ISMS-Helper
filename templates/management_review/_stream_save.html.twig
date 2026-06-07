@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal ManagementReview save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="management-review-rows">
+        <template>{% include 'management_review/_row.html.twig' with { review: review } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="management-review-row-{{ review.id }}">
+        <template>{% include 'management_review/_row.html.twig' with { review: review } %}</template>
+    </turbo-stream>
+{% endif %}

@@ -1,0 +1,87 @@
+{# Shared ManagementReview form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / actions. Sections follow ISO 27001 Cl. 9.3 inputs/outputs structure. #}
+{% trans_default_domain 'management_review' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(review is defined and review and review.title ? review.title : ('management_review.new'|trans({}, 'management_review'))) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'management_review.section.basic_info'|trans({}, 'management_review'),
+        'fields': ['title', 'reviewDate', 'status', 'reviewedBy', 'reviewedByPerson', 'reviewedByDeputyPersons', 'participants', 'personParticipants']
+    },
+    'inputs': {
+        'label': 'management_review.section.inputs'|trans({}, 'management_review'),
+        'fields': ['changesRelevantToISMS', 'feedbackFromInterestedParties', 'auditResults', 'performanceEvaluation', 'nonconformitiesReview', 'incidentsReview', 'risksReview', 'objectivesReview', 'contextChanges', 'previousReviewActions']
+    },
+    'followup': {
+        'label': 'management_review.section.followup'|trans({}, 'management_review'),
+        'fields': ['nonConformitiesStatus', 'correctiveActionsStatus', 'improvementOpportunities']
+    },
+    'outputs': {
+        'label': 'management_review.section.outputs'|trans({}, 'management_review'),
+        'fields': ['opportunitiesForImprovement', 'decisions', 'actionItems', 'resourceNeeds', 'summary', 'actionItemsWithDeadlines']
+    },
+    'audit_metadata': {
+        'label': 'management_review.section.audit_metadata'|trans({}, 'management_review'),
+        'fields': ['topManagementAttended', 'nextReviewDate', 'meetingMinutesDocument', 'riskTreatmentEffectiveness', 'policyReviewOutcome']
+    }
+} %}
+
+{% if is_module_active('compliance') %}
+    {% set form_sections = form_sections|merge({
+        'compliance': {
+            'label': 'management_review.section.compliance'|trans({}, 'management_review'),
+            'fields': ['frameworkComplianceStatus']
+        }
+    }) %}
+{% endif %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 Cl. 9.3 · Management Review',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'title': 12,
+        'reviewDate': 6,
+        'status': 6,
+        'reviewedBy': 6,
+        'reviewedByPerson': 6,
+        'reviewedByDeputyPersons': 12,
+        'participants': 6,
+        'personParticipants': 6,
+        'changesRelevantToISMS': 12,
+        'feedbackFromInterestedParties': 12,
+        'auditResults': 12,
+        'performanceEvaluation': 12,
+        'nonconformitiesReview': 12,
+        'incidentsReview': 12,
+        'risksReview': 12,
+        'objectivesReview': 12,
+        'contextChanges': 12,
+        'previousReviewActions': 12,
+        'nonConformitiesStatus': 12,
+        'correctiveActionsStatus': 12,
+        'improvementOpportunities': 12,
+        'opportunitiesForImprovement': 12,
+        'decisions': 12,
+        'actionItems': 12,
+        'resourceNeeds': 12,
+        'summary': 12,
+        'actionItemsWithDeadlines': 12,
+        'topManagementAttended': 6,
+        'nextReviewDate': 6,
+        'meetingMinutesDocument': 12,
+        'riskTreatmentEffectiveness': 12,
+        'policyReviewOutcome': 12,
+        'frameworkComplianceStatus': 12
+    },
+    'translation_domain': 'management_review',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+    })
+} %}

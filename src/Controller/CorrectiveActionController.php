@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
 use App\Entity\Tenant;
@@ -30,6 +31,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/corrective-action', name: 'app_corrective_action_')]
 class CorrectiveActionController extends AbstractController
 {
+    use InPageFormTrait;
+
     public function __construct(
         private readonly CorrectiveActionRepository $repository,
         private readonly CorrectiveActionService $correctiveActionService,
@@ -141,12 +144,24 @@ class CorrectiveActionController extends AbstractController
             $this->correctiveActionService->create($action);
 
             $this->addFlash('success', 'corrective_action.flash.created');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->correctiveActionStreamSave($action, isNew: true);
+            }
             return $this->redirectToRoute('app_corrective_action_show', ['id' => $action->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('corrective_action/_form_modal.html.twig', [
+                'action' => $action,
+                'form' => $form,
+                'findingId' => $findingId,
+            ], new Response(status: $status));
+        }
 
         return $this->render('corrective_action/new.html.twig', [
             'form' => $form,
@@ -156,9 +171,16 @@ class CorrectiveActionController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(CorrectiveAction $action): Response
+    public function show(Request $request, CorrectiveAction $action): Response
     {
         $this->denyIfWrongTenant($action);
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('corrective_action/_detail_modal.html.twig', [
+                'action' => $action,
+            ]);
+        }
 
         // V4 LB-4: Comment-Thread adoption — load thread for this CorrectiveAction.
         $comments = [];
@@ -185,12 +207,24 @@ class CorrectiveActionController extends AbstractController
             $this->correctiveActionService->update($action);
 
             $this->addFlash('success', 'corrective_action.flash.updated');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->correctiveActionStreamSave($action, isNew: false);
+            }
             return $this->redirectToRoute('app_corrective_action_show', ['id' => $action->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('corrective_action/_form_modal.html.twig', [
+                'action' => $action,
+                'form' => $form,
+                'findingId' => null,
+            ], new Response(status: $status));
+        }
 
         return $this->render('corrective_action/edit.html.twig', [
             'action' => $action,
@@ -214,6 +248,15 @@ class CorrectiveActionController extends AbstractController
         return $findingId
             ? $this->redirectToRoute('app_audit_finding_show', ['id' => $findingId])
             : $this->redirectToRoute('app_corrective_action_index');
+    }
+
+    /** Turbo Stream after a successful in-modal CorrectiveAction save (row replace/append). */
+    private function correctiveActionStreamSave(CorrectiveAction $action, bool $isNew): Response
+    {
+        return $this->render('corrective_action/_stream_save.html.twig', [
+            'action' => $action,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     private function denyIfWrongTenant(CorrectiveAction $action): void

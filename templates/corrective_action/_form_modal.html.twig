@@ -1,0 +1,31 @@
+{# CorrectiveAction create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'audits' %}
+{% set is_edit = action is defined and action and action.id is not null %}
+{% set _new_path_args = findingId is defined and findingId ? {findingId: findingId} : {} %}
+{% set form_action = is_edit
+    ? path('app_corrective_action_edit', { id: action.id })
+    : path('app_corrective_action_new', _new_path_args) %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'corrective-action-modal-form',
+        'data-turbo-frame': 'fa-form-modal',
+        'data-controller': 'alva-hint-in-form',
+        'data-alva-hint-in-form-entity-type-value': 'corrective_action',
+        'data-alva-hint-in-form-form-name-value': 'corrective_action',
+        'data-alva-hint-in-form-endpoint-value': path('api_alva_hint_form_evaluate', {'entityType': 'corrective_action'}),
+        'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
+        'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate'
+    } }) }}
+    {% include 'corrective_action/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? action.title : 'corrective_action.page.new'|trans({}, 'audits'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

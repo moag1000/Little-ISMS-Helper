@@ -1,0 +1,90 @@
+{# AuditFinding read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page. #}
+{% trans_default_domain 'audits' %}
+{% set _statusVariant = finding.status == 'open' ? 'warning'
+    : (finding.status in ['verified', 'closed', 'resolved'] ? 'success'
+    : (finding.status == 'in_progress' ? 'info' : 'secondary')) %}
+{% set _sevVariant = finding.severity == 'critical' ? 'danger'
+    : (finding.severity == 'high' ? 'warning'
+    : (finding.severity == 'medium' ? 'warning' : 'secondary')) %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 Cl. 10.1 · Audit Finding</div>
+            <div class="fa-drawer__title">{{ finding.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: _sevVariant, content: ('audit_finding.severity.' ~ finding.severity)|trans({}, 'audits') } %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('audit_finding.type.' ~ finding.type)|trans({}, 'audits') } %}
+            {% include '_components/_badge.html.twig' with { variant: _statusVariant, content: ('audit_finding.status.' ~ finding.status)|trans({}, 'audits') } %}
+        </div>
+
+        {% if finding.findingNumber %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'audit_finding.field.finding_number'|trans({}, 'audits') }}</span>
+                <span>{{ finding.findingNumber }}</span>
+            </div>
+        {% endif %}
+        {% if finding.audit %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'audit_finding.field.audit'|trans({}, 'audits') }}</span>
+                <span>{{ finding.audit.title }}</span>
+            </div>
+        {% endif %}
+        {% if finding.dueDate %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'audit_finding.field.due_date'|trans({}, 'audits') }}</span>
+                <span class="{{ finding.isOverdue ? 'text-danger' : '' }}">{{ finding.dueDate|date('Y-m-d') }}</span>
+            </div>
+        {% endif %}
+        {% if finding.assignedTo %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'audit_finding.field.assigned_to'|trans({}, 'audits') }}</span>
+                <span>{{ finding.assignedTo.fullName }}</span>
+            </div>
+        {% elseif finding.assignedPerson %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'audit_finding.field.assigned_person'|trans({}, 'audits') }}</span>
+                <span>{{ finding.assignedPerson.fullName }}</span>
+            </div>
+        {% endif %}
+        {% if finding.clauseReference %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'audit_finding.field.clause_reference'|trans({}, 'audits') }}</span>
+                <span>{{ finding.clauseReference }}</span>
+            </div>
+        {% endif %}
+        {% if finding.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'audit_finding.field.description'|trans({}, 'audits') }}</span>
+                <p class="fa-drawer__desc">{{ finding.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}"
+               data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_audit_finding_edit', {id: finding.id}) }}"
+               data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

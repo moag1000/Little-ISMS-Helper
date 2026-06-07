@@ -1,0 +1,22 @@
+{# ManagementReview create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'management_review' %}
+{% set is_edit = review is defined and review and review.id is not null %}
+{% set form_action = is_edit ? path('app_management_review_edit', { id: review.id, _locale: app.request.locale }) : path('app_management_review_new', { _locale: app.request.locale }) %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'management-review-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'management_review/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? review.title : 'management_review.new'|trans({}, 'management_review'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

@@ -1,0 +1,22 @@
+{# InternalAudit create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'audit' %}
+{% set is_edit = audit is defined and audit and audit.id is not null %}
+{% set form_action = is_edit ? path('app_audit_edit', { id: audit.id }) : path('app_audit_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'audit-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'audit/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? audit.title : 'audit.new'|trans({}, 'audit'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

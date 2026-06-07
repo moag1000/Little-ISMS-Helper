@@ -1,0 +1,25 @@
+{# AuditFinding create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append); the controller closes
+   the modal on the successful turbo:submit-end. #}
+{% trans_default_domain 'audits' %}
+{% set is_edit = finding is defined and finding and finding.id is not null %}
+{% set form_action = is_edit
+    ? path('app_audit_finding_edit', { id: finding.id })
+    : path('app_audit_finding_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'audit-finding-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'audit_finding/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? finding.title : 'audit_finding.page.new'|trans({}, 'audits'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>
