@@ -1,0 +1,62 @@
+{# Single RiskAppetite table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. #}
+{% trans_default_domain 'risk_appetite' %}
+<tr id="risk-appetite-row-{{ appetite.id }}">
+    <td>
+        <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link">
+            <strong>
+                {% if appetite.isGlobal() %}
+                    <i class="fa-icon fa-icon--ui-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans({}, 'risk_appetite') }}
+                {% else %}
+                    <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ appetite.category }}
+                {% endif %}
+            </strong>
+        </a>
+    </td>
+    <td class="text-center">
+        {% include '_components/_badge.html.twig' with { variant: appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger'), content: appetite.maxAcceptableRisk, class: 'fa-status-pill--lg' } %}
+        <br>
+        <small class="text-muted">({{ 'risk_appetite.scale'|trans({}, 'risk_appetite') }}: 1-25)</small>
+    </td>
+    <td>
+        {{ appetite.description|length > 100 ? appetite.description|slice(0, 100) ~ '...' : appetite.description }}
+    </td>
+    <td class="text-center">
+        {% if appetite.isActive() %}
+            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'risk_appetite.status.active'|trans({}, 'risk_appetite') } %}
+        {% else %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'risk_appetite.status.inactive'|trans({}, 'risk_appetite') } %}
+        {% endif %}
+        {% if appetite.isApproved() %}
+            <br>{% include '_components/_badge.html.twig' with { variant: 'info', content: 'risk_appetite.approved'|trans({}, 'risk_appetite'), class: 'mt-1' } %}
+        {% endif %}
+    </td>
+    <td>
+        {% if appetite.approvedBy %}
+            {{ appetite.approvedBy.fullName }}
+        {% else %}
+            <span class="text-muted">{{ 'common.not_approved'|trans({}, 'messages') }}</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if appetite.approvedAt %}
+            {{ appetite.approvedAt|date('Y-m-d') }}
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </td>
+    <td class="text-center">
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" data-turbo-frame="fa-form-modal" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}" data-turbo-frame="fa-form-modal" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

@@ -1,0 +1,21 @@
+{# RiskAppetite create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append); the controller closes
+   the modal on the successful turbo:submit-end. #}
+{% trans_default_domain 'risk_appetite' %}
+{% set is_edit = appetite is defined and appetite and appetite.id is not null %}
+{% set form_action = is_edit ? path('app_risk_appetite_edit', { id: appetite.id }) : path('app_risk_appetite_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: { id: 'risk-appetite-modal-form', 'data-turbo-frame': 'fa-form-modal' } }) }}
+    {% include 'risk_appetite/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? appetite.displayName : 'risk_appetite.new'|trans({}, 'risk_appetite'),
+        subtitle: is_edit ? ('risk_appetite.edit'|trans({}, 'risk_appetite')) : null,
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

@@ -1,0 +1,29 @@
+{# Risk create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append); the controller closes
+   the modal on the successful turbo:submit-end. #}
+{% trans_default_domain 'risk' %}
+{% set is_edit = risk is defined and risk and risk.id is not null %}
+{% set form_action = is_edit ? path('app_risk_edit', { id: risk.id }) : path('app_risk_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'risk-modal-form',
+        'data-turbo-frame': 'fa-form-modal',
+        'data-controller': 'alva-hint-in-form',
+        'data-alva-hint-in-form-entity-type-value': 'risk',
+        'data-alva-hint-in-form-form-name-value': 'risk',
+        'data-alva-hint-in-form-endpoint-value': path('api_alva_hint_form_evaluate', {'entityType': 'risk'}),
+        'data-alva-hint-in-form-csrf-token-value': csrf_token('alva_hint_form'),
+        'data-action': 'input->alva-hint-in-form#scheduleEvaluate change->alva-hint-in-form#scheduleEvaluate'
+    } }) }}
+    {% include 'risk/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? risk.title : 'risk.new'|trans({}, 'risk'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

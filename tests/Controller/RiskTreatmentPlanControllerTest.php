@@ -27,6 +27,7 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $this->client->disableReboot();
         $container = static::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
         $this->createTestData();
@@ -204,6 +205,88 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
         $this->client->request('GET', '/en/risk-treatment-plan/' . $this->testPlan->getId() . '/edit');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
+    }
+
+    // ========== IN-PAGE FORM-MODAL (Turbo Frame) TESTS ==========
+
+    #[Test]
+    public function testShowInFrameRendersDetailModalPartial(): void
+    {
+        $this->client->loginUser($this->testUser);
+
+        $this->client->request(
+            'GET',
+            '/en/risk-treatment-plan/' . $this->testPlan->getId(),
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-form-modal"', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
+    #[Test]
+    public function testEditInFrameRendersFormModalPartial(): void
+    {
+        $this->client->loginUser($this->testUser);
+
+        $this->client->request(
+            'GET',
+            '/en/risk-treatment-plan/' . $this->testPlan->getId() . '/edit',
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+
+        $this->assertResponseIsSuccessful();
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-form-modal"', $html);
+        self::assertStringContainsString('fa-form-layout--modal', $html);
+        self::assertStringContainsString('action="/en/risk-treatment-plan/' . $this->testPlan->getId() . '/edit"', $html);
+        self::assertStringNotContainsString('<html', $html);
+    }
+
+    #[Test]
+    public function testEditWithoutFrameRendersFullPage(): void
+    {
+        $this->client->loginUser($this->testUser);
+        $this->client->request('GET', '/en/risk-treatment-plan/' . $this->testPlan->getId() . '/edit');
+
+        $this->assertResponseIsSuccessful();
+        self::assertStringContainsString('<html', (string) $this->client->getResponse()->getContent());
+    }
+
+    #[Test]
+    public function testEditInFrameInvalidReturns422ModalPartial(): void
+    {
+        // The POST path is frame-aware: an invalid in-frame submit re-renders the
+        // slim form-modal partial with 422 (errors inline), not the full page.
+        $this->client->loginUser($this->testUser);
+
+        $crawler = $this->client->request(
+            'GET',
+            '/en/risk-treatment-plan/' . $this->testPlan->getId() . '/edit',
+            [], [], ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+        $form = $crawler->filter('form')->first()->form();
+        $values = $form->getPhpValues();
+        // Force invalid at the form layer (not the DB): an out-of-list value for
+        // the required `priority` ChoiceType fails choice validation, so the form
+        // is invalid and the managed entity keeps its valid value — the in-frame
+        // branch re-renders the 422 partial and tearDown can still remove the row.
+        $values['risk_treatment_plan']['priority'] = '__invalid__';
+
+        $this->client->request(
+            'POST',
+            $form->getUri(),
+            $values,
+            [],
+            ['HTTP_TURBO_FRAME' => 'fa-form-modal'],
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('<turbo-frame id="fa-form-modal"', $html);
+        self::assertStringNotContainsString('<html', $html);
     }
 
     #[Test]
