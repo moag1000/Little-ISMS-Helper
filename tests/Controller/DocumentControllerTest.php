@@ -519,7 +519,7 @@ class DocumentControllerTest extends TestCase
             )
             ->willReturn('rendered');
 
-        $response = $this->controller->show($document);
+        $response = $this->controller->show(new \Symfony\Component\HttpFoundation\Request(), $document);
 
         $this->assertInstanceOf(Response::class, $response);
     }

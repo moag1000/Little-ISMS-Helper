@@ -24,7 +24,7 @@
         subtitle: 'document.subtitle'|trans({}, 'document'),
         actions: [
             { label: 'document.action.policy_wizard'|trans({}, 'document'), variant: 'success', icon: 'nav-magic', href: path('app_policy_wizard_index') },
-            { label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'ui-upload', href: path('app_document_new') }
+            { label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'ui-upload', href: path('app_document_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'document', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
         |merge(is_granted('ROLE_ADMIN') ? [{ label: 'document.action.policy_pack_export'|trans({}, 'document'), href: path('admin_policy_pack_export'), variant: 'ghost', icon: 'ui-download', attrs: {'data-turbo': 'false'} }] : [])
     }) }}
@@ -315,142 +315,14 @@
                 {% endblock %}
                 {% block table_body_attrs %}id="documentTableBody" data-document-filter-target="tableBody"{% endblock %}
                 {% block table_body %}
-                    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-                    {% import '_components/_status_pill.html.twig' as pill %}
                     {% for document in documents %}
-                    <tr class="fa-table__row document-row"
-                        data-document-filter-target="row"
-                        data-category="{{ document.category|lower }}"
-                        data-name="{{ document.originalFilename|lower }}">
-                        <td class="fa-table__cell fa-table__cell--checkbox bulk-select-column">
-                            <input type="checkbox"
-                                   data-bulk-actions-target="item"
-                                   data-action="bulk-actions#selectItem"
-                                   value="{{ document.id }}"
-                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ document.originalFilename }}">
-                        </td>
-                        <td class="fa-table__cell">
-                            {# File Type Icon #}
-                            {% if document.mimeType == 'application/pdf' %}
-                                <i class="fa-icon fa-icon--nav-file-pdf text-danger fs-15" aria-hidden="true"></i>
-                            {% elseif document.mimeType starts with 'image/' %}
-                                <i class="fa-icon text-primary fs-15 fa-icon--nav-document" aria-hidden="true"></i>
-                            {% elseif document.mimeType matches '/spreadsheet/' %}
-                                <i class="fa-icon text-success fs-15 fa-icon--nav-file-check" aria-hidden="true"></i>
-                            {% elseif document.mimeType matches '/word/' or document.mimeType matches '/document/' %}
-                                <i class="fa-icon text-info fs-15 fa-icon--nav-document" aria-hidden="true"></i>
-                            {% else %}
-                                <i class="fa-icon text-secondary fs-15 fa-icon--nav-document" aria-hidden="true"></i>
-                            {% endif %}
-                        </td>
-                        <td class="fa-table__cell">
-                            <a href="{{ path('app_document_show', {id: document.id}) }}" class="text-decoration-none">
-                                <strong>{{ document.originalFilename }}</strong>
-                            </a>
-                            {{ inheritance.small_badge(document, currentTenant) }}
-                            {# Policy-Wizard W7-C — settings-drift badge. #}
-                            {% if driftMap[document.id] is defined and driftMap[document.id] %}
-                                {{ pill.render('policy_wizard.drift_badge.settings_drift.label'|trans({}, 'policy_wizard'), 'warning', {size: 'sm', icon: 'status-warning', class: 'ms-1', title: 'policy_wizard.drift_badge.settings_drift.tooltip'|trans({}, 'policy_wizard')}) }}
-                            {% endif %}
-                            {% if document.supersedes %}
-                                <a href="{{ path('app_policy_wizard_diff', {currentDocId: document.id}) }}"
-                                   class="text-decoration-none ms-1"
-                                   title="{{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}">
-                                    {{ pill.render('policy_wizard.diff.title'|trans({}, 'policy_wizard'), 'primary', {size: 'sm', icon: 'util-arrow-left'}) }}
-                                </a>
-                            {% endif %}
-                            {# Editable-policy-body — "Lokal angepasst"
-                               chip for wizard-generated docs that carry
-                               post-generation tenant edits. Auditor
-                               signal: this body deviates from the
-                               wizard baseline. #}
-                            {% if document.generatedFromTemplate is not null and document.hasPostGenerationEdits %}
-                                {{ pill.render('document.policy_body.drift_badge.label'|trans({}, 'document'), 'neutral', {size: 'sm', icon: 'ui-edit', class: 'ms-1', title: 'document.policy_body.drift_badge.tooltip'|trans({}, 'document')}) }}
-                            {% endif %}
-                            {# Junior-ISB Wish #5 — Auditor-Score badge.
-                               Only rendered for Wizard-generated docs
-                               (provenance via generatedFromTemplate). #}
-                            {% if document.generatedFromTemplate is not null and auditorScores[document.id] is defined %}
-                                {% set _score = auditorScores[document.id] %}
-                                {% set _tone = _score.tier == 'green' ? 'success' : (_score.tier == 'yellow' ? 'warning' : 'danger') %}
-                                {% set _icon = _score.tier == 'green' ? 'shield-check' : (_score.tier == 'yellow' ? 'nav-shield-alert' : 'nav-shield-alert') %}
-                                {% set _reason_lines = [] %}
-                                {% for r in _score.reasons %}
-                                    {% set _key = 'policy_wizard.auditor_score.reason.' ~ (r|split(':')|first) %}
-                                    {% set _reason_lines = _reason_lines|merge([_key|trans({}, 'policy_wizard')]) %}
-                                {% endfor %}
-                                {{ pill.render('policy_wizard.auditor_score.label'|trans({}, 'policy_wizard') ~ ': ' ~ _score.score, _tone, {size: 'sm', icon: _icon, class: 'ms-1', title: ('policy_wizard.auditor_score.tier_' ~ _score.tier)|trans({}, 'policy_wizard') ~ ' — ' ~ _reason_lines|join('; ')|default('OK')}) }}
-                            {% endif %}
-                            {# Effectiveness-Review overdue marker —
-                               red "faellig" badge when no review has
-                               ever been recorded OR the last review
-                               is older than 12 months (standard
-                               cadence; per-policy overrides may relax
-                               but never lengthen). Auditor signal:
-                               policy lacks Wirksamkeitspruefung. #}
-                            {% if document.isEffectivenessOverdue(12) %}
-                                {{ pill.render('document.effectiveness.badge.overdue.label'|trans({}, 'document'), 'danger', {size: 'sm', icon: 'nav-shield-alert', class: 'ms-1', title: 'document.effectiveness.badge.overdue.tooltip'|trans({}, 'document')}) }}
-                            {% endif %}
-                            {% if document.description %}
-                            <br>
-                            <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>
-                            {% endif %}
-                        </td>
-                        <td class="fa-table__cell">
-                            {# Status pill — direct Aurora tone mapping for document statuses.
-                               S3 P-4: legacy 'active' tone removed (rows migrated to 'published'). #}
-                            {# Lifecycle-aware tone resolved via LifecycleRegistry. #}
-                            {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
-                            {{ _fa_status_chip.render({
-                                entity_class: 'App\\Entity\\Document',
-                                status_key: document.status,
-                                label: ('document.status.' ~ document.status)|trans({}, 'document'),
-                                size: 'sm'
-                            }) }}
-                            {# Superseded marker — only visible when history toggle is on #}
-                            {% if document.id in supersededIds|keys %}
-                                {{ pill.render('document.status.superseded'|trans({}, 'document'), 'warning', {size: 'sm', class: 'ms-1'}) }}
-                            {% endif %}
-                        </td>
-                        <td class="fa-table__cell">
-                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: document.category|capitalize } %}
-                        </td>
-                        <td class="fa-table__cell">
-                            {{ document.fileSizeFormatted }}
-                        </td>
-                        <td class="fa-table__cell">
-                            <div class="d-flex align-items-center">
-                                <i class="fa-icon fa-icon--ui-person me-1" aria-hidden="true"></i>
-                                {{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}
-                            </div>
-                        </td>
-                        <td class="fa-table__cell">
-                            <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-                            {{ document.uploadedAt|date('d.m.Y') }}
-                            <br>
-                            <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
-                        </td>
-                        <td class="fa-table__cell fa-table__cell--actions text-right">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                <a href="{{ path('app_document_download', {id: document.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm"
-                                   data-turbo="false"
-                                   title="{{ 'common.download'|trans({}, 'messages') }}" aria-label="{{ 'common.download'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
-                                </a>
-                                <a href="{{ path('app_document_show', {id: document.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                   title="{{ 'common.details'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                </a>
-                                <a href="{{ path('app_document_edit', {id: document.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                   title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+                        {% include 'document/_row.html.twig' with {
+                            document: document,
+                            currentTenant: currentTenant,
+                            driftMap: driftMap|default({}),
+                            supersededIds: supersededIds|default({}),
+                            auditorScores: auditorScores|default({})
+                        } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}

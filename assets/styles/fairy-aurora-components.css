@@ -5288,13 +5288,21 @@ html[data-theme="dark"] .framework-card {
    Partial:             templates/_components/_fa_risk_mini_heatmap.html.twig
    ─────────────────────────────────────────────────────────────────── */
 .fa-risk-mini-heatmap {
+    /* Compact horizontal in-form indicator: small fixed grid on the left with
+       its axis legend beneath it, the title/score/band header beside it on the
+       right (saves vertical pixels in the form-modal). Only used by the risk
+       form (templates/risk/_form_body.html.twig), so styled directly here. */
     display: grid;
+    grid-template-columns: 14px 150px minmax(0, 1fr);
+    grid-template-rows: 150px auto;
     grid-template-areas:
-        "header header"
-        "grid   grid"
-        "axes   axes";
-    gap: var(--space-2);
-    padding: var(--space-3);
+        "yaxis grid  header"
+        "yaxis xaxis header";
+    align-items: start;
+    column-gap: var(--space-2);
+    row-gap: var(--space-1);
+    padding: var(--space-2);
+    max-width: 430px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
@@ -5308,11 +5316,11 @@ html[data-theme="dark"] .framework-card {
 
 .fa-risk-mini-heatmap__header {
     grid-area: header;
+    align-self: center;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
 }
 .fa-risk-mini-heatmap__title {
     font-weight: 600;
@@ -5343,6 +5351,7 @@ html[data-theme="dark"] .framework-card {
     font-weight: 600;
     font-size: 11px;
     letter-spacing: 0.02em;
+    white-space: nowrap;
     background: var(--surface-2);
     color: var(--fg-2);
     border: 1px solid var(--border);
@@ -5370,10 +5379,11 @@ html[data-theme="dark"] .framework-card {
 
 .fa-risk-mini-heatmap__grid {
     grid-area: grid;
+    width: 150px;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     grid-template-rows: repeat(5, minmax(0, 1fr));
-    gap: 3px;
+    gap: 2px;
 }
 .fa-risk-mini-heatmap__cell {
     aspect-ratio: 1;
@@ -5382,7 +5392,7 @@ html[data-theme="dark"] .framework-card {
     justify-content: center;
     border-radius: var(--r-sm);
     font-weight: 600;
-    font-size: 11px;
+    font-size: 10px;
     line-height: 1;
     font-variant-numeric: tabular-nums;
     border: 1px solid transparent;
@@ -5414,19 +5424,39 @@ html[data-theme="dark"] .framework-card {
     z-index: 1;
 }
 
-.fa-risk-mini-heatmap__axes {
-    grid-area: axes;
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-3);
-    font-size: 10px;
+.fa-risk-mini-heatmap__axis-x,
+.fa-risk-mini-heatmap__axis-y-arrow,
+.fa-risk-mini-heatmap__axis-y-label {
+    font-size: 9px;
+    font-weight: 600;
     color: var(--fg-3);
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
 }
-.fa-risk-mini-heatmap__axis-x,
+.fa-risk-mini-heatmap__axis-x {
+    grid-area: xaxis;
+    align-self: start;
+    width: 150px;
+    text-align: center;
+}
+/* y-axis: upright arrow on top, word rotated vertically beneath it. */
 .fa-risk-mini-heatmap__axis-y {
-    font-weight: 600;
+    grid-area: yaxis;
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+.fa-risk-mini-heatmap__axis-y-arrow {
+    line-height: 1; /* horizontal-tb by default → glyph stays pointing up */
+}
+.fa-risk-mini-heatmap__axis-y-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg); /* reads bottom→top */
+    line-height: 1;
 }
 
 /* ── Audit-Trail Timeline ─────────────────────────────────────────── */

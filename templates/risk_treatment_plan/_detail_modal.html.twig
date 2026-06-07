@@ -1,0 +1,54 @@
+{# RiskTreatmentPlan read-only detail — rendered inside the fa-form-modal Turbo
+   Frame. Uses the drawer chrome (header/body/footer/kv) which renders cleanly as
+   a flex column; condensed, with a "Vollansicht" link to the full page. #}
+{% trans_default_domain 'risk_treatment_plan' %}
+{% set status_variant = plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) %}
+{% set priority_variant = plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 Cl. 6.1.3 · Risk Treatment Plan</div>
+            <div class="fa-drawer__title">{{ plan.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: status_variant, content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') } %}
+            {% include '_components/_badge.html.twig' with { variant: priority_variant, content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper } %}
+        </div>
+        {% if plan.risk %}
+            <div class="fa-drawer__kv"><span class="label">{{ 'risk_treatment_plan.field.risk'|trans({}, 'risk_treatment_plan') }}</span><span>{{ plan.risk.title }}</span></div>
+            <div class="fa-drawer__kv"><span class="label">{{ 'risk.field.residual_risk'|trans({}, 'risk') }}</span><span>{{ plan.risk.residualRiskLevel }}</span></div>
+        {% endif %}
+        {% if plan.effectiveResponsiblePerson %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_treatment_plan.field.responsible_person'|trans({}, 'risk_treatment_plan') }}</span><span>{{ plan.effectiveResponsiblePerson }}</span></div>{% endif %}
+        {% if plan.targetCompletionDate %}<div class="fa-drawer__kv"><span class="label">{{ 'risk_treatment_plan.field.target_completion_date'|trans({}, 'risk_treatment_plan') }}</span><span>{{ plan.targetCompletionDate|date('Y-m-d') }}</span></div>{% endif %}
+        <div class="fa-drawer__kv"><span class="label">{{ 'risk_treatment_plan.field.completion'|trans({}, 'risk_treatment_plan') }}</span><span>{{ plan.completionPercentage }}%</span></div>
+        {% if plan.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'risk_treatment_plan.field.description'|trans({}, 'risk_treatment_plan') }}</span>
+                <p class="fa-drawer__desc">{{ plan.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_risk_treatment_plan_edit', {id: plan.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

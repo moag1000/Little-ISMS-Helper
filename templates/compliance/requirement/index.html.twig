@@ -17,7 +17,7 @@
         badge: { icon: 'nav-list-check', label: 'nav.compliance'|trans({}, 'nav') },
         title: 'compliance.requirement.index_title'|trans({}, 'compliance'),
         actions: [
-            { label: 'compliance.requirement.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'ui-plus', href: path('app_compliance_requirement_new', {framework: selected_framework}) }
+            { label: 'compliance.requirement.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'ui-plus', href: path('app_compliance_requirement_new', {framework: selected_framework}), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]
     }) }}
 
@@ -104,58 +104,10 @@
                             <th scope="col">Actions</th>
                         </tr>
                     {% endblock %}
+                    {% block table_body_attrs %}id="compliance-requirement-rows"{% endblock %}
                     {% block table_body %}
                         {% for requirement in requirements %}
-                            <tr>
-                                <td><code>{{ requirement.requirementId }}</code></td>
-                                <td>
-                                    <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="text-decoration-none">
-                                        {{ requirement.title }}
-                                    </a>
-                                </td>
-                                <td>
-                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: requirement.framework.code } %}
-                                </td>
-                                <td>{{ requirement.category|default('-') }}</td>
-                                <td>
-                                    <span class="{{ badge_priority(requirement.priority) }}">{{ requirement.priority }}</span>
-                                </td>
-                                <td>
-                                    {% set fulfillment = fulfillments[requirement.id] %}
-                                    <div class="d-flex align-items-center">
-                                        <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 100px;">
-                                            <div class="progress-bar {{ badge_completion(fulfillment.fulfillmentPercentage)|replace({'badge ': ''}) }}"
-                                                 role="progressbar"
-                                                 style="width: {{ fulfillment.fulfillmentPercentage }}%"
-                                                 aria-valuenow="{{ fulfillment.fulfillmentPercentage }}"
-                                                 aria-valuemin="0"
-                                                 aria-valuemax="100">
-                                                {{ fulfillment.fulfillmentPercentage }}%
-                                            </div>
-                                        </div>
-                                        <small class="text-muted">{{ fulfillment.status }}</small>
-                                    </div>
-                                </td>
-                                <td>
-                                    {% if fulfillment.applicable %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Yes' } %}
-                                    {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'No' } %}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                        </a>
-                                        <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% include 'compliance/requirement/_row.html.twig' with { requirement: requirement, fulfillment: fulfillments[requirement.id]|default(null) } %}
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}

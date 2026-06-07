@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal RiskAppetite save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="risk-appetite-rows">
+        <template>{% include 'risk_appetite/_row.html.twig' with { appetite: appetite } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="risk-appetite-row-{{ appetite.id }}">
+        <template>{% include 'risk_appetite/_row.html.twig' with { appetite: appetite } %}</template>
+    </turbo-stream>
+{% endif %}

@@ -1,0 +1,42 @@
+{# Shared RiskAppetite form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps it in
+   form_start/form_end and passes title/subtitle/actions. #}
+{% trans_default_domain 'risk_appetite' %}
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal|default(false),
+    'eyebrow': 'ISO/IEC 27005 · Risk Appetite',
+    'title': title,
+    'subtitle': subtitle|default(null),
+    'sections': {
+        'definition': {
+            'label': 'risk_appetite.section.definition'|trans({}, 'risk_appetite'),
+            'fields': ['category', 'maxAcceptableRisk', 'reviewBufferMultiplier', 'description']
+        },
+        'approval': {
+            'label': 'risk_appetite.section.approval'|trans({}, 'risk_appetite'),
+            'fields': ['isActive', 'approvedBy', 'approvedAt']
+        }
+    },
+    'col_widths': {
+        'category': 6,
+        'maxAcceptableRisk': 3,
+        'reviewBufferMultiplier': 3,
+        'description': 12,
+        'isActive': 4,
+        'approvedBy': 4,
+        'approvedAt': 4
+    },
+    'help_texts': {
+        'category': 'risk_appetite.help.category'|trans({}, 'risk_appetite'),
+        'maxAcceptableRisk': 'risk_appetite.help.max_acceptable_risk'|trans({}, 'risk_appetite'),
+        'reviewBufferMultiplier': 'risk_appetite.help.review_buffer_multiplier'|trans({}, 'risk_appetite'),
+        'description': 'risk_appetite.help.description'|trans({}, 'risk_appetite'),
+        'isActive': 'risk_appetite.help.is_active'|trans({}, 'risk_appetite'),
+        'approvedBy': 'risk_appetite.help.approved_by'|trans({}, 'risk_appetite'),
+        'approvedAt': 'risk_appetite.help.approved_at'|trans({}, 'risk_appetite')
+    },
+    'translation_domain': 'risk_appetite',
+    'actions': actions
+} %}

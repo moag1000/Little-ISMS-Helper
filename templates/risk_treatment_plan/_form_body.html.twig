@@ -1,0 +1,57 @@
+{# Shared RiskTreatmentPlan form body (outline-rail). Used full-page by new/edit
+   and inside the fa-form-modal frame (modal: true). Caller wraps it in
+   form_start/form_end and passes title/subtitle/actions. #}
+{% trans_default_domain 'risk_treatment_plan' %}
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal|default(false),
+    'eyebrow': 'ISO 27001 Cl. 6.1.3 · Risk Treatment Plan',
+    'title': title,
+    'subtitle': subtitle|default(null),
+    'sections': {
+        'overview': {
+            'label': 'form.section.overview'|trans({}, 'messages'),
+            'fields': ['risk', 'title', 'description']
+        },
+        'treatment_option': {
+            'label': 'form.section.treatment_option'|trans({}, 'messages'),
+            'fields': ['status', 'priority', 'completionPercentage']
+        },
+        'details': {
+            'label': 'form.section.details'|trans({}, 'messages'),
+            'fields': ['startDate', 'targetCompletionDate', 'actualCompletionDate', 'budget']
+        },
+        'responsibility': {
+            'label': 'form.section.responsibility'|trans({}, 'messages'),
+            'fields': ['responsiblePersonUser', 'responsiblePerson', 'responsibleDeputyPersons']
+        },
+        'controls': {
+            'label': 'form.section.controls'|trans({}, 'messages'),
+            'fields': ['controls']
+        },
+        'residual_risk': {
+            'label': 'form.section.residual_risk'|trans({}, 'messages'),
+            'fields': ['implementationNotes']
+        }
+    },
+    'col_widths': {
+        'risk': 6,
+        'title': 6,
+        'description': 12,
+        'status': 4,
+        'priority': 4,
+        'completionPercentage': 4,
+        'startDate': 4,
+        'targetCompletionDate': 4,
+        'actualCompletionDate': 4,
+        'budget': 6,
+        'responsiblePersonUser': 6,
+        'responsiblePerson': 6,
+        'responsibleDeputyPersons': 12,
+        'controls': 12,
+        'implementationNotes': 12
+    },
+    'translation_domain': 'risk_treatment_plan',
+    'actions': actions
+} %}

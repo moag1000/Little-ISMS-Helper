@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use DateTimeImmutable;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\RiskTreatmentPlan;
 use App\Form\RiskTreatmentPlanType;
 use App\Repository\AuditLogRepository;
@@ -20,6 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RiskTreatmentPlanController extends AbstractController
 {
+    use InPageFormTrait;
+
     public function __construct(
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
         private readonly AuditLogRepository $auditLogRepository,
@@ -104,12 +107,23 @@ class RiskTreatmentPlanController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->riskTreatmentPlanStreamSave($riskTreatmentPlan, isNew: true);
+            }
             return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $riskTreatmentPlan->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('risk_treatment_plan/_form_modal.html.twig', [
+                'plan' => $riskTreatmentPlan,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('risk_treatment_plan/new.html.twig', [
             'plan' => $riskTreatmentPlan,
@@ -118,8 +132,15 @@ class RiskTreatmentPlanController extends AbstractController
     }
     #[Route('/risk-treatment-plan/{id}', name: 'app_risk_treatment_plan_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(RiskTreatmentPlan $riskTreatmentPlan): Response
+    public function show(Request $request, RiskTreatmentPlan $riskTreatmentPlan): Response
     {
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('risk_treatment_plan/_detail_modal.html.twig', [
+                'plan' => $riskTreatmentPlan,
+            ]);
+        }
+
         // Get audit log history for this plan (last 10 entries)
         $auditLogs = $this->auditLogRepository->findByEntity('RiskTreatmentPlan', $riskTreatmentPlan->getId());
         $recentAuditLogs = array_slice($auditLogs, 0, 10);
@@ -142,6 +163,10 @@ class RiskTreatmentPlanController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->riskTreatmentPlanStreamSave($riskTreatmentPlan, isNew: false);
+            }
             return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $riskTreatmentPlan->getId()]);
         }
 
@@ -149,10 +174,26 @@ class RiskTreatmentPlanController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('risk_treatment_plan/_form_modal.html.twig', [
+                'plan' => $riskTreatmentPlan,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('risk_treatment_plan/edit.html.twig', [
             'plan' => $riskTreatmentPlan,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal RiskTreatmentPlan save (row replace/append). */
+    private function riskTreatmentPlanStreamSave(RiskTreatmentPlan $plan, bool $isNew): Response
+    {
+        return $this->render('risk_treatment_plan/_stream_save.html.twig', [
+            'plan' => $plan,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
     #[Route('/risk-treatment-plan/{id}/delete', name: 'app_risk_treatment_plan_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

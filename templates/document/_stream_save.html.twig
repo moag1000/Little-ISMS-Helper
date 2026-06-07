@@ -1,0 +1,12 @@
+{# Turbo Stream after a successful in-modal Document save. Replaces the existing
+   row (edit) or appends a fresh row to the table body (new), then closes the
+   fa-form-modal frame surface. #}
+{% if is_new %}
+    <turbo-stream action="append" target="documentTableBody">
+        <template>{% include 'document/_row.html.twig' with { document: document } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="document-row-{{ document.id }}">
+        <template>{% include 'document/_row.html.twig' with { document: document } %}</template>
+    </turbo-stream>
+{% endif %}

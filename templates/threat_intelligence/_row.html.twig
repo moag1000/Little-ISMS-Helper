@@ -1,0 +1,54 @@
+{# Single ThreatIntelligence table row — shared by the index and the Turbo Stream
+   that replaces/appends a row after an in-modal save. #}
+{% trans_default_domain 'threat' %}
+{% set severityVariant = {
+    'critical': 'danger',
+    'high': 'warning',
+    'medium': 'info',
+    'low': 'secondary',
+    'informational': 'light'
+}[threat.severity] ?? 'secondary' %}
+{% set statusVariant = {
+    'new': 'primary',
+    'analyzing': 'warning',
+    'mitigated': 'success',
+    'monitoring': 'info',
+    'closed': 'secondary'
+}[threat.status] ?? 'secondary' %}
+<tr id="threat-intelligence-row-{{ threat.id }}">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ threat.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ threat.title }}">
+    </td>
+    <td>
+        <a href="{{ path('app_threat_intelligence_show', {id: threat.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link"><strong>{{ threat.title }}</strong></a>
+        {% if threat.cveId %}
+            <br><small class="text-muted font-monospace">{{ threat.cveId }}</small>
+        {% endif %}
+    </td>
+    <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('type.' ~ threat.threatType)|trans({}, 'threat') } %}</td>
+    <td class="text-center">{% include '_components/_badge.html.twig' with { variant: severityVariant, content: ('severity.' ~ threat.severity)|trans({}, 'threat') } %}</td>
+    <td class="text-center">{% include '_components/_badge.html.twig' with { variant: statusVariant, content: ('status_type.' ~ threat.status)|trans({}, 'threat') } %}</td>
+    <td>{{ threat.effectiveAssignedTo ?? '-' }}</td>
+    <td>{{ threat.detectionDate ? threat.detectionDate|date('Y-m-d') : '-' }}</td>
+    <td class="text-center">
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_threat_intelligence_show', {id: threat.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_threat_intelligence_edit', {id: threat.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

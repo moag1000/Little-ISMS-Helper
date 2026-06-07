@@ -1,0 +1,46 @@
+{# Shared ComplianceRequirement form body (outline-rail). Used full-page by
+   new/edit and inside the fa-form-modal frame (modal: true). The caller wraps
+   it in form_start/form_end and passes title / actions. Section map mirrors the
+   proven new/edit layout (identification / basic / structure) — every field of
+   ComplianceRequirementType is covered, so nothing leaks into "Sonstiges". #}
+{% trans_default_domain 'compliance' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(requirement is defined and requirement and requirement.title ? requirement.title : ('compliance.requirement.new.title'|trans({}, 'compliance'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'compliance.requirement.title'|trans({}, 'compliance'),
+    'title': title,
+    'sections': {
+        'identification': {
+            'label': 'compliance.requirement.section.identification'|trans({}, 'compliance'),
+            'fields': ['framework', 'requirementId']
+        },
+        'basic': {
+            'label': 'compliance.requirement.section.basic'|trans({}, 'compliance'),
+            'fields': ['title', 'description', 'category', 'priority']
+        },
+        'structure': {
+            'label': 'compliance.requirement.section.structure'|trans({}, 'compliance'),
+            'fields': ['requirementType', 'parentRequirement']
+        }
+    },
+    'col_widths': {
+        'framework': 6,
+        'requirementId': 6,
+        'title': 12,
+        'description': 12,
+        'category': 6,
+        'priority': 6,
+        'requirementType': 6,
+        'parentRequirement': 6
+    },
+    'translation_domain': 'compliance',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

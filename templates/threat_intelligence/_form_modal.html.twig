@@ -1,0 +1,21 @@
+{# ThreatIntelligence create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append); the controller closes
+   the modal on the successful turbo:submit-end. #}
+{% trans_default_domain 'threat' %}
+{% set is_edit = threat is defined and threat and threat.id is not null %}
+{% set form_action = is_edit ? path('app_threat_intelligence_edit', { id: threat.id }) : path('app_threat_intelligence_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: { id: 'threat-intelligence-modal-form', 'data-turbo-frame': 'fa-form-modal' } }) }}
+    {% include 'threat_intelligence/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? threat.title : 'threat.title.new'|trans({}, 'threat'),
+        subtitle: is_edit ? threat.cveId : null,
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

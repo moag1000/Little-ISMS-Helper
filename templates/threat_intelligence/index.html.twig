@@ -18,7 +18,7 @@
     title: 'threat.title.index'|trans({}, 'threat'),
     subtitle: 'threat.subtitle.index'|trans({}, 'threat'),
     actions: [
-        { label: 'threat.action.create'|trans({}, 'threat'), href: path('app_threat_intelligence_new'), variant: 'primary', icon: 'plus' }
+        { label: 'threat.action.create'|trans({}, 'threat'), href: path('app_threat_intelligence_new'), variant: 'primary', icon: 'plus', attrs: { 'data-turbo-frame': 'fa-form-modal' } }
     ]
 }) }}
 
@@ -144,65 +144,10 @@
                 <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
+        {% block table_body_attrs %}id="threat-intelligence-rows"{% endblock %}
         {% block table_body %}
             {% for threat in threats %}
-            <tr>
-                <td class="bulk-select-column">
-                    <input type="checkbox"
-                           class="form-check-input"
-                           data-bulk-actions-target="item"
-                           data-action="bulk-actions#selectItem"
-                           value="{{ threat.id }}"
-                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ threat.title }}">
-                </td>
-                <td>
-                    <strong>{{ threat.title }}</strong>
-                    {% if threat.cveId %}
-                        <br><small class="text-muted font-monospace">{{ threat.cveId }}</small>
-                    {% endif %}
-                </td>
-                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('type.' ~ threat.threatType)|trans({}, 'threat') } %}</td>
-                <td class="text-center">
-                    {% set severityVariant = {
-                        'critical': 'danger',
-                        'high': 'warning',
-                        'medium': 'info',
-                        'low': 'secondary',
-                        'informational': 'light'
-                    }[threat.severity] ?? 'secondary' %}
-                    {% include '_components/_badge.html.twig' with { variant: severityVariant, content: ('severity.' ~ threat.severity)|trans({}, 'threat') } %}
-                </td>
-                <td class="text-center">
-                    {% set statusVariant = {
-                        'new': 'primary',
-                        'analyzing': 'warning',
-                        'mitigated': 'success',
-                        'monitoring': 'info',
-                        'closed': 'secondary'
-                    }[threat.status] ?? 'secondary' %}
-                    {% include '_components/_badge.html.twig' with { variant: statusVariant, content: ('status_type.' ~ threat.status)|trans({}, 'threat') } %}
-                </td>
-                <td>{{ threat.effectiveAssignedTo ?? '-' }}</td>
-                <td>{{ threat.detectionDate ? threat.detectionDate|date('Y-m-d') : '-' }}</td>
-                <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group">
-                        <a href="{{ path('app_threat_intelligence_show', {id: threat.id}) }}"
-                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                           data-turbo-action="advance"
-                           aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                        </a>
-                        {% if is_granted('ROLE_MANAGER') %}
-                        <a href="{{ path('app_threat_intelligence_edit', {id: threat.id}) }}"
-                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                           data-turbo-action="advance"
-                           aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                        </a>
-                        {% endif %}
-                    </div>
-                </td>
-            </tr>
+                {% include 'threat_intelligence/_row.html.twig' with { threat: threat } %}
             {% endfor %}
         {% endblock %}
     {% endembed %}
