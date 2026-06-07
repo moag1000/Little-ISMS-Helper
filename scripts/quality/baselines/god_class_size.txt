@@ -20,8 +20,8 @@ src/Controller/UserManagementController.php:LOC=1025 deps=0
 src/Controller/IncidentController.php:LOC=956 deps=0
 src/Controller/TenantManagementController.php:LOC=935 deps=0
 src/Controller/Admin/ComplianceImportController.php:LOC=927 deps=0
+src/Controller/ProcessingActivityController.php:LOC=888 deps=0
 src/Controller/AssetController.php:LOC=856 deps=0
-src/Controller/ProcessingActivityController.php:LOC=848 deps=0
 src/Controller/DPIAController.php:LOC=838 deps=0
 src/Controller/ComplianceWizardController.php:LOC=814 deps=0
 src/Controller/AdminBackupController.php:LOC=802 deps=0

@@ -1,0 +1,22 @@
+{# ProcessingActivity create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'privacy' %}
+{% set is_edit = pa is defined and pa and pa.id is not null %}
+{% set form_action = is_edit ? path('app_processing_activity_edit', { id: pa.id }) : path('app_processing_activity_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'processing-activity-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'processing_activity/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? pa.name : 'processing_activity.new'|trans({}, 'privacy'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

@@ -1,0 +1,23 @@
+{# DSR create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append); on invalid submit
+   re-renders with 422. Full-page fallback via direct URL. #}
+{% trans_default_domain 'data_subject_request' %}
+{% set is_edit = dsr is defined and dsr and dsr.id is not null %}
+{% set form_action = is_edit ? path('app_data_subject_request_edit', { id: dsr.id }) : path('app_data_subject_request_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'data-subject-request-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'data_subject_request/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? (dsr.dataSubjectName ~ ' — #' ~ dsr.id) : 'dsr.page.new_title'|trans({}, 'data_subject_request'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

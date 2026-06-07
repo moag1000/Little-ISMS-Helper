@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal ProcessingActivity save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="processing-activity-rows">
+        <template>{% include 'processing_activity/_row.html.twig' with { pa: pa } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="processing-activity-row-{{ pa.id }}">
+        <template>{% include 'processing_activity/_row.html.twig' with { pa: pa } %}</template>
+    </turbo-stream>
+{% endif %}

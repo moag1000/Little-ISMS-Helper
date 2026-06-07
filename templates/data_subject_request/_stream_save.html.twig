@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal DataSubjectRequest save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="data-subject-request-rows">
+        <template>{% include 'data_subject_request/_row.html.twig' with { dsr: dsr } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="data-subject-request-row-{{ dsr.id }}">
+        <template>{% include 'data_subject_request/_row.html.twig' with { dsr: dsr } %}</template>
+    </turbo-stream>
+{% endif %}

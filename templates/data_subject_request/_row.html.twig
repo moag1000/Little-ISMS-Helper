@@ -1,0 +1,93 @@
+{# Single DSR table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the
+   same. The export-personal-data link is excluded from prefetch (identity-gated). #}
+{% trans_default_domain 'data_subject_request' %}
+<tr id="data-subject-request-row-{{ dsr.id }}"
+    class="fa-table__row"
+    data-filter-target="filterableRow">
+    <td class="bulk-select-column fa-table__cell">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ dsr.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} #{{ dsr.id }}">
+    </td>
+    <td class="fa-table__cell" data-sort-value="{{ dsr.id }}">
+        <a href="{{ path('app_data_subject_request_show', {id: dsr.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link">
+            <strong>#{{ dsr.id }}</strong>
+        </a>
+    </td>
+    <td class="fa-table__cell">
+        <span class="fa-status-pill fa-status-pill--primary">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
+        <br><small class="text-muted">{{ dsr.gdprArticle }}</small>
+    </td>
+    <td class="fa-table__cell">
+        {{ dsr.dataSubjectName }}
+        {% if dsr.dataSubjectEmail %}
+            <br><small class="text-muted">{{ dsr.dataSubjectEmail }}</small>
+        {% endif %}
+    </td>
+    <td class="fa-table__cell">
+        {% set status_class = {
+            'received': 'secondary',
+            'identity_verification': 'info',
+            'in_progress': 'primary',
+            'completed': 'success',
+            'rejected': 'danger',
+            'extended': 'warning'
+        }[dsr.status]|default('secondary') %}
+        {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request') } only %}
+        {% if dsr.overdue %}
+            <br>{% include '_components/_badge.html.twig' with { variant: 'danger', content: 'dsr.badge.overdue'|trans({}, 'data_subject_request') } only %}
+        {% endif %}
+    </td>
+    <td class="fa-table__cell" data-sort-value="{{ dsr.receivedAt ? dsr.receivedAt|date('Y-m-d') : '' }}">{{ dsr.receivedAt|locale_date }}</td>
+    <td class="fa-table__cell" data-sort-value="{{ dsr.effectiveDeadline ? dsr.effectiveDeadline|date('Y-m-d') : '' }}">
+        {% set deadline = dsr.effectiveDeadline %}
+        {% if deadline %}
+            <span class="{% if dsr.overdue %}text-danger fw-bold{% elseif dsr.daysUntilDeadline <= 7 %}text-warning{% endif %}">
+                {{ deadline|locale_date }}
+            </span>
+            {% if dsr.status not in ['completed', 'rejected'] %}
+                <br><small class="{% if dsr.overdue %}text-danger{% else %}text-muted{% endif %}">
+                    {% if dsr.overdue %}
+                        {{ 'dsr.deadline.overdue_days'|trans({'%days%': dsr.daysUntilDeadline|abs}, 'data_subject_request') }}
+                    {% else %}
+                        {{ 'dsr.deadline.remaining_days'|trans({'%days%': dsr.daysUntilDeadline}, 'data_subject_request') }}
+                    {% endif %}
+                </small>
+            {% endif %}
+        {% endif %}
+    </td>
+    <td class="fa-table__cell">
+        {% if dsr.assignedTo %}
+            {{ dsr.assignedTo.firstName }} {{ dsr.assignedTo.lastName }}
+        {% else %}
+            <span class="text-muted">{{ 'dsr.table.unassigned'|trans({}, 'data_subject_request') }}</span>
+        {% endif %}
+    </td>
+    <td class="fa-table__cell fa-table__cell--actions">
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_data_subject_request_show', {id: dsr.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'dsr.action.view'|trans({}, 'data_subject_request') }}"
+               aria-label="{{ 'dsr.action.view'|trans({}, 'data_subject_request') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if dsr.status not in ['completed', 'rejected'] %}
+                <a href="{{ path('app_data_subject_request_edit', {id: dsr.id}) }}"
+                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                   data-turbo-frame="fa-form-modal"
+                   title="{{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}"
+                   aria-label="{{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}">
+                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

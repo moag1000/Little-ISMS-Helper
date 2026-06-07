@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use RuntimeException;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\DataSubjectRequest;
@@ -36,6 +37,7 @@ class DataSubjectRequestController extends AbstractController
     use \App\Controller\Trait\LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
+    use InPageFormTrait;
 
     protected function getFlashDomain(): string
     {
@@ -115,12 +117,22 @@ class DataSubjectRequestController extends AbstractController
 
             $this->flashSuccess('dsr.flash.created');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->dsrStreamSave($dsr, isNew: true);
+            }
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('data_subject_request/_form_modal.html.twig', [
+                'dsr' => $dsr,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('data_subject_request/new.html.twig', [
             'form' => $form,
@@ -131,9 +143,16 @@ class DataSubjectRequestController extends AbstractController
      * Show data subject request details
      */
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(DataSubjectRequest $dsr): Response
+    public function show(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('data_subject_request/_detail_modal.html.twig', [
+                'dsr' => $dsr,
+            ]);
+        }
 
         // V4 LB-4: Comment-Thread adoption — load thread for this DataSubjectRequest.
         $comments = [];
@@ -169,6 +188,9 @@ class DataSubjectRequestController extends AbstractController
 
             $this->flashSuccess('dsr.flash.updated');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->dsrStreamSave($dsr, isNew: false);
+            }
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
 
@@ -176,10 +198,26 @@ class DataSubjectRequestController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('data_subject_request/_form_modal.html.twig', [
+                'dsr' => $dsr,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('data_subject_request/edit.html.twig', [
             'dsr' => $dsr,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal DataSubjectRequest save (row replace/append). */
+    private function dsrStreamSave(DataSubjectRequest $dsr, bool $isNew): Response
+    {
+        return $this->render('data_subject_request/_stream_save.html.twig', [
+            'dsr' => $dsr,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     /**

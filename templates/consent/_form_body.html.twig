@@ -1,0 +1,62 @@
+{# Shared Consent form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / actions. GDPR Art. 7 accountability — purposes and
+   consentText are locked after DPO verification (ConsentType handles this). #}
+{% trans_default_domain 'consent' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(consent is defined and consent and consent.dataSubjectIdentifier ? consent.dataSubjectIdentifier : ('consent.new'|trans({}, 'consent'))) %}
+{% set submit_label = submit_label|default('consent.action.save'|trans({}, 'consent')) %}
+
+{% set form_sections = {
+    'data_subject': {
+        'label': 'consent.section.data_subject'|trans({}, 'consent'),
+        'fields': ['dataSubjectIdentifier', 'identifierType']
+    },
+    'processing_activity': {
+        'label': 'consent.section.processing_activity'|trans({}, 'consent'),
+        'fields': ['processingActivity', 'purposes']
+    },
+    'consent_grant': {
+        'label': 'consent.section.consent_grant'|trans({}, 'consent'),
+        'fields': ['grantedAt', 'consentMethod', 'consentChannel', 'consentText']
+    },
+    'proof_documentation': {
+        'label': 'consent.section.proof_documentation'|trans({}, 'consent'),
+        'fields': ['proofDocument']
+    },
+    'expiry': {
+        'label': 'consent.section.expiry'|trans({}, 'consent'),
+        'fields': ['expiresAt']
+    },
+    'notes': {
+        'label': 'consent.section.notes'|trans({}, 'consent'),
+        'fields': ['notes']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'GDPR Art. 7 · Consent Record',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'dataSubjectIdentifier': 8,
+        'identifierType': 4,
+        'processingActivity': 6,
+        'purposes': 6,
+        'grantedAt': 4,
+        'consentMethod': 4,
+        'consentChannel': 4,
+        'consentText': 12,
+        'proofDocument': 12,
+        'expiresAt': 6,
+        'notes': 12
+    },
+    'translation_domain': 'consent',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}
