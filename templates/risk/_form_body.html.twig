@@ -45,7 +45,7 @@
 
 {# T6.8 — Live mini-heatmap; rendered here so it can be passed via extras_before_actions #}
 {% set _risk_live_matrix %}
-<div class="row mt-3">
+<div class="row mt-3 risk-form-heatmap">
     <div class="col-md-6">
         {% include '_components/_fa_risk_mini_heatmap.html.twig' with {
             probability_selector: '#risk_probability',

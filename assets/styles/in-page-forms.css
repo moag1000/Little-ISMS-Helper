@@ -126,3 +126,12 @@ tbody tr:has(.fa-row-link):hover {
         border-radius: 0;
     }
 }
+
+/* Risk live mini-heatmap (.fa-risk-mini-heatmap) has aspect-ratio:1 cells in a
+   1fr grid → it scales with container width, so in the wide modal each one grows
+   to ~440px tall and eats the form. Cap its width so it stays a compact optical
+   indicator (cells follow via aspect-ratio). Scoped to the in-form preview. */
+.risk-form-heatmap .fa-risk-mini-heatmap {
+    max-width: 200px;
+    padding: var(--space-2, 8px);
+}
