@@ -87,6 +87,15 @@ tbody tr:has(.fa-row-link):hover {
     flex: 1 1 auto;
     min-height: 0;
 }
+/* form_start renders a <form> between the frame and the form-layout; it must
+   also be a flex column or the chain breaks and the form-layout body never
+   scrolls (sticky Save footer falls off — surfaced by the Risk live heatmap). */
+.fa-form-modal__dialog > turbo-frame > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
 .fa-form-layout--modal {
     border-radius: var(--r-2xl, 18px);
     display: flex;
