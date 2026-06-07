@@ -1,0 +1,229 @@
+planning:
+    admin:
+        title: 'Resource Planning – Master Data'
+        subtitle: 'Manage teams, roadmap tasks, person capacity and visibility'
+    tab:
+        teams: Teams
+        tasks: 'Roadmap Tasks'
+        persons: People
+        visibility: Visibility
+    common:
+        manage: Manage
+        edit: Edit
+        delete: Delete
+        active: Active
+        confirm_delete: 'Really delete?'
+    success:
+        created: 'Entry created.'
+        updated: 'Changes saved.'
+        deleted: 'Entry deleted.'
+    visibility:
+        all: All
+        team: 'By team'
+    action_item:
+        title:
+            list: Measures
+            create: 'New measure'
+            edit: 'Edit measure'
+        action:
+            create: 'New measure'
+            transition: 'Change status'
+        filter:
+            label: Filter
+            all: All
+            open: Open
+            due: Due
+            recurring: Recurring
+        col:
+            title: Item
+            origin: Origin
+            roadmap_task: Category
+            due_date: 'Due date'
+            planned_effort_pt: 'Effort (PD)'
+            status: Status
+        status:
+            open: Open
+            planned: Planned
+            in_progress: 'In progress'
+            done: Done
+            dismissed: Dismissed
+        origin:
+            internal: 'Internal (CIP)'
+        field:
+            title: Item
+            roadmap_task: Category
+            roadmap_task_placeholder: 'Select category …'
+            responsible_user: 'Responsible (user)'
+            responsible_user_placeholder: 'Select user …'
+            responsible_person: 'Responsible (person)'
+            responsible_person_placeholder: 'Select person …'
+            teams: Teams
+            due_date: 'Due date'
+            planned_effort_pt: 'Planned effort (PD)'
+            evidence_document: Evidence
+            evidence_document_placeholder: 'Select document …'
+            recurrence_months: 'Recurrence (months)'
+            scopes: Scope
+            scopes_help: 'Scopes are maintained in the planning settings.'
+        success:
+            created: 'Measure created.'
+            updated: 'Measure saved.'
+            deleted: 'Measure deleted.'
+            transitioned: 'Status changed.'
+        error:
+            invalid_transition: 'Status change not allowed.'
+        message:
+            no_items: 'No measures yet.'
+    team:
+        title:
+            list: Teams
+            create: 'New team'
+            edit: 'Edit team'
+        action:
+            create: 'New team'
+        col:
+            name: Name
+            type: Type
+            member_count: Members
+            lead: Lead
+        message:
+            no_teams: 'No teams yet.'
+        field:
+            name: Name
+            type: 'Team type'
+            description: Description
+            is_active: Active
+            team_lead: 'Team lead (user)'
+            team_lead_placeholder: 'Select user …'
+            team_lead_person: 'Team lead (person)'
+            team_lead_person_placeholder: 'Select person …'
+            members: Members
+            valid_from: 'Valid from'
+            valid_until: 'Valid until'
+        type:
+            placeholder: 'Select type …'
+            operational: Operational
+            strategic: Strategic
+            technical: Technical
+            communication: Communication
+            other: Other
+    group:
+        title:
+            list: 'Roadmap groups'
+            create: 'New group'
+            edit: 'Edit group'
+        action:
+            create: 'New group'
+        col:
+            name: Name
+            sort_order: Order
+            default_visibility: 'Default visibility'
+        message:
+            no_groups: 'No groups yet.'
+        field:
+            name: Name
+            sort_order: Order
+            color_token: 'Colour token'
+            icon: Icon
+            isms_domain: 'ISMS domain'
+            default_team: 'Default team'
+            default_team_placeholder: 'Select team …'
+            default_visibility: 'Default visibility'
+            is_active: Active
+    task:
+        title:
+            list: 'Roadmap tasks'
+            create: 'New task'
+            edit: 'Edit task'
+        action:
+            create: 'New task'
+        col:
+            name: Name
+            group: Group
+            default_pt_per_week: 'PD/week'
+            recurring: Recurring
+            visibility: Visibility
+        message:
+            no_tasks: 'No roadmap tasks yet.'
+        badge:
+            reactive: 'Daily business'
+        field:
+            name: Name
+            group: Group
+            group_placeholder: 'Select group …'
+            isms_domain: 'ISMS domain'
+            default_pt_per_week: 'Default PD per week'
+            recurring: Recurring
+            is_reactive_reservation: 'Daily-business reservation'
+            visibility: Visibility
+            visible_teams: 'Visible to teams'
+            default_team: 'Default team'
+            default_team_placeholder: 'Select team …'
+            is_active: Active
+    person:
+        title:
+            edit: 'Edit person capacity'
+        col:
+            name: Person
+            availability: 'ISMS availability'
+        field:
+            availability: 'ISMS availability (0–1)'
+            teams: Teams
+        help:
+            availability: 'Net share of the person for ISMS work (e.g. 80% role × 50% ISMS = 0.4).'
+        message:
+            no_persons: 'No people available.'
+    matrix:
+        hint: 'Which roadmap tasks are visible to which teams. "All" = visible to every team.'
+        empty: 'Create tasks and teams to see the matrix.'
+        visible: Visible
+    sources:
+        title: 'Automatic measure intake'
+        subtitle: 'Which source modules auto-create measures'
+        hint: 'Off by default. Enable per source, optionally with a due-date offset (days) and default effort (PD).'
+        col:
+            source: Source
+            enabled: Active
+            offset: 'Offset (days)'
+            effort: 'Effort (PD)'
+        success:
+            saved: 'Setting saved.'
+    roadmap:
+        title: 'Capacity roadmap'
+        subtitle: 'Plan effort (PD) per calendar week and reconcile against available capacity'
+        empty: 'Create roadmap tasks first, then plan them here.'
+        mode:
+            plan: 'My plan'
+            capacity: Capacity
+            reconcile: Reconcile
+        col:
+            task: Task
+        row:
+            capacity: 'Available (PD)'
+            planned: 'Planned (PD)'
+        savebar:
+            title: 'Unsaved changes'
+        success:
+            saved: 'Plan saved.'
+    settings:
+        title: 'Planning settings'
+        subtitle: 'Defaults for roadmap, recurrence and scopes'
+        field:
+            default_recurrence_months: 'Default recurrence (months)'
+            roadmap_horizon_weeks: 'Roadmap horizon (weeks)'
+            overbooking_threshold_pct: 'Over-booking threshold (%)'
+            scopes: Scopes
+        help:
+            scopes: 'One scope per line (e.g. org units, sites).'
+        success:
+            saved: 'Settings saved.'
+    report:
+        title: 'Resource demand (Cl. 9.3)'
+        subtitle: 'Planned PD per ISMS domain over %weeks% weeks — management-review input'
+        total_planned: 'Total planned'
+        total_capacity: 'Total capacity'
+        utilisation: Utilisation
+        col:
+            domain: 'ISMS domain'
+            planned_pt: 'Planned (PD)'
+        empty: 'No plan recorded yet.'

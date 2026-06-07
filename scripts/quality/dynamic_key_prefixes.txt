@@ -272,3 +272,8 @@ workflow.status	6
 workflow.step_description	1
 workflow.step_label	1
 workflow_instance.status	1
+planning.action_item.origin	1
+planning.action_item.status	1
+planning.roadmap.mode	1
+planning.team.type	1
+planning.visibility	3
