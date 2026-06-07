@@ -21,7 +21,7 @@
         badge: { icon: 'nav-workflow', label: 'business_process.index.title'|trans({}, 'business_process') },
         title: 'business_process.index.page_title'|trans({}, 'business_process'),
         actions: [
-            { label: 'business_process.index.new_process'|trans({}, 'business_process'), href: path('app_business_process_new'), variant: 'primary', icon: 'plus' }
+            { label: 'business_process.index.new_process'|trans({}, 'business_process'), href: path('app_business_process_new'), variant: 'primary', icon: 'plus', attrs: {'data-turbo-frame': 'fa-form-modal'} }
         ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'business_process', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
     }) }}
 {% set _global_hints = alva_hints('business_process_index') %}
@@ -132,51 +132,8 @@
                         {% endblock %}
                         {% block table_body_attrs %}id="business-processes-table-body"{% endblock %}
                         {% block table_body %}
-                            {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                             {% for process in business_processes %}
-                                <tr id="business-process-{{ process.id }}">
-                                    <td>
-                                        <a href="{{ path('app_business_process_show', {'id': process.id}) }}" data-turbo-frame="_top">
-                                            {{ process.name }}
-                                        </a>
-                                        {{ inheritance.small_badge(process, currentTenant) }}
-                                    </td>
-                                    <td>{{ process.effectiveProcessOwner }}</td>
-                                    <td>
-                                        {% set criticality_class = {
-                                            'critical': 'danger',
-                                            'high': 'warning',
-                                            'medium': 'info',
-                                            'low': 'secondary'
-                                        } %}
-                                        {% include '_components/_badge.html.twig' with { variant: criticality_class[process.criticality] ?? 'secondary', content: process.criticality|capitalize } %}
-                                    </td>
-                                    <td>{{ process.rto }}h</td>
-                                    <td>{{ process.rpo }}h</td>
-                                    <td>{{ process.mtpd }}h</td>
-                                    <td>
-                                        {% set score = process.businessImpactScore %}
-                                        <span class="{{ badge_score(score) }}">
-                                            {{ score }}/5
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <a href="{{ path('app_business_process_show', {'id': process.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" data-turbo-frame="_top" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('app_business_process_edit', {'id': process.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('app_business_process_bia', {'id': process.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'bcm.action.view_bia'|trans({}, 'bcm') }}" data-turbo-frame="_top" aria-label="{{ 'bcm.action.view_bia'|trans({}, 'bcm') }}">
-                                                <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
+                                {% include 'business_process/_row.html.twig' with { business_process: process, currentTenant: currentTenant } %}
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

@@ -1,0 +1,78 @@
+{# Shared CrisisTeam form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps it in
+   form_start/form_end and passes title / actions.
+   Section map mirrors CrisisTeamType::getSectionMap() — ISO 22301 Cl. 8.4. #}
+{% trans_default_domain 'crisis_team' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(crisis_team is defined and crisis_team and crisis_team.teamName ? crisis_team.teamName : ('crisis_team.new'|trans({}, 'crisis_team'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'crisis_team.section.overview'|trans({}, 'crisis_team'),
+        'fields': ['teamName', 'description', 'teamType', 'isActive']
+    },
+    'members': {
+        'label': 'crisis_team.section.members'|trans({}, 'crisis_team'),
+        'fields': ['teamLeader', 'teamLeaderPerson', 'teamLeaderDeputyPersons', 'deputyLeader', 'deputyLeaderPerson', 'deputyLeaderDeputyPersons', 'personMembers']
+    },
+    'communication': {
+        'label': 'crisis_team.section.communication'|trans({}, 'crisis_team'),
+        'fields': ['primaryPhone', 'primaryEmail', 'meetingLocation', 'backupMeetingLocation', 'virtualMeetingUrl', 'communicationProtocols']
+    },
+    'escalation': {
+        'label': 'crisis_team.section.escalation'|trans({}, 'crisis_team'),
+        'fields': ['alertProcedures', 'decisionAuthority', 'escalationMatrix']
+    },
+    'activation': {
+        'label': 'crisis_team.section.activation'|trans({}, 'crisis_team'),
+        'fields': ['businessContinuityPlans', 'activationCount', 'lastActivatedAt', 'notes']
+    },
+    'testing': {
+        'label': 'crisis_team.section.testing'|trans({}, 'crisis_team'),
+        'fields': ['trainingSchedule', 'lastTrainingAt', 'nextTrainingAt']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 22301 Cl. 8.4 · BSI 200-4 · Crisis Team',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'teamName': 6,
+        'description': 12,
+        'teamType': 6,
+        'isActive': 6,
+        'teamLeader': 6,
+        'teamLeaderPerson': 6,
+        'teamLeaderDeputyPersons': 12,
+        'deputyLeader': 6,
+        'deputyLeaderPerson': 6,
+        'deputyLeaderDeputyPersons': 12,
+        'personMembers': 12,
+        'primaryPhone': 6,
+        'primaryEmail': 6,
+        'meetingLocation': 6,
+        'backupMeetingLocation': 6,
+        'virtualMeetingUrl': 12,
+        'communicationProtocols': 12,
+        'alertProcedures': 12,
+        'decisionAuthority': 6,
+        'escalationMatrix': 12,
+        'businessContinuityPlans': 12,
+        'activationCount': 4,
+        'lastActivatedAt': 4,
+        'notes': 12,
+        'trainingSchedule': 12,
+        'lastTrainingAt': 6,
+        'nextTrainingAt': 6
+    },
+    'translation_domain': 'crisis_team',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

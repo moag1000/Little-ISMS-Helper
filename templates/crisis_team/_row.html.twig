@@ -1,0 +1,35 @@
+{# Single CrisisTeam table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
+{% trans_default_domain 'crisis_team' %}
+<tr id="crisis-team-row-{{ team.id }}"
+    data-filter-target="filterableRow"
+    class="{{ team.isActive ? '' : 'table-secondary' }}">
+    <td>
+        <a href="{{ path('app_crisis_team_show', {id: team.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ team.teamName }}</strong></a>
+    </td>
+    <td>{% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ team.teamType)|trans({}, 'crisis_team') } %}</td>
+    <td>{{ team.teamLeader ? team.teamLeader.fullName|default(team.teamLeader.email) : 'not_assigned'|trans({}, 'messages') }}</td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_crisis_team_show', {id: team.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}"
+               aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}"
+               aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

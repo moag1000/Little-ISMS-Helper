@@ -21,7 +21,7 @@
         badge: { icon: 'nav-clipboard-data', label: 'bc_exercises.page.title'|trans({}, 'bc_exercises') },
         title: 'bc_exercises.page.header'|trans({}, 'bc_exercises'),
         actions: [
-            { label: 'bc_exercises.action.add_new'|trans({}, 'bc_exercises'), href: path('app_bc_exercise_new'), variant: 'primary', icon: 'plus' }
+            { label: 'bc_exercises.action.add_new'|trans({}, 'bc_exercises'), href: path('app_bc_exercise_new'), variant: 'primary', icon: 'plus', attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]
     }) }}
 {% set _global_hints = alva_hints('bc_exercise_index') %}
@@ -115,33 +115,10 @@
                         <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
+                {% block table_body_attrs %}id="bc-exercise-rows"{% endblock %}
                 {% block table_body %}
                     {% for exercise in bc_exercises %}
-                    <tr data-filter-target="filterableRow">
-                        <td class="bulk-select-column">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   data-bulk-actions-target="item"
-                                   data-action="bulk-actions#selectItem"
-                                   value="{{ exercise.id }}"
-                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ exercise.name }}">
-                        </td>
-                        <td><a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a></td>
-                        <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') } %}</td>
-                        <td>{{ exercise.exerciseDate|locale_date }}</td>
-                        <td><span class="{{ badge_status(exercise.status) }}">{{ ('bc_exercises.status.' ~ exercise.status)|trans({}, 'bc_exercises') }}</span></td>
-                        <td>
-                            {% if exercise.status == 'completed' %}
-                                {{ exercise.getEffectivenessScore() }}%
-                            {% else %}
-                                {{ 'bc_exercises.message.na'|trans({}, 'bc_exercises') }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'common.view'|trans({}, 'messages') }}</a>
-                            <a href="{{ path('app_bc_exercise_edit', {id: exercise.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">{{ 'common.edit'|trans({}, 'messages') }}</a>
-                        </td>
-                    </tr>
+                        {% include 'bc_exercise/_row.html.twig' with { exercise: exercise } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}

@@ -1,0 +1,71 @@
+{# Shared BusinessProcess form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / actions.
+   Section map mirrors BusinessProcessType::getSectionMap(). #}
+{% trans_default_domain 'business_process' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(business_process is defined and business_process and business_process.name ? business_process.name : ('business_process.new'|trans({}, 'business_process'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'BCM · ISO 22301 Cl. 8.3 · Business Process Analysis',
+    'title': title,
+    'sections': {
+        'overview': {
+            'label': 'form.section.overview'|trans({}, 'messages'),
+            'fields': ['name', 'description', 'criticality']
+        },
+        'owner': {
+            'label': 'form.section.owner'|trans({}, 'messages'),
+            'fields': ['processOwnerUser', 'processOwnerPerson', 'processOwnerDeputyPersons', 'processOwner']
+        },
+        'criticality': {
+            'label': 'form.section.criticality'|trans({}, 'messages'),
+            'fields': ['reputationalImpact', 'regulatoryImpact', 'operationalImpact', 'financialImpactPerHour', 'financialImpactPerDay']
+        },
+        'recovery_targets': {
+            'label': 'form.section.recovery_targets'|trans({}, 'messages'),
+            'fields': ['rto', 'rpo', 'mtpd']
+        },
+        'dependencies': {
+            'label': 'form.section.dependencies'|trans({}, 'messages'),
+            'fields': ['upstreamProcesses', 'downstreamProcesses', 'dependenciesUpstream', 'dependenciesDownstream', 'recoveryStrategy']
+        },
+        'resources': {
+            'label': 'form.section.resources'|trans({}, 'messages'),
+            'fields': ['supportingAssets', 'identifiedRisks']
+        }
+    },
+    'col_widths': {
+        'name': 6,
+        'description': 6,
+        'criticality': 6,
+        'processOwnerUser': 6,
+        'processOwnerPerson': 6,
+        'processOwnerDeputyPersons': 12,
+        'processOwner': 6,
+        'reputationalImpact': 4,
+        'regulatoryImpact': 4,
+        'operationalImpact': 4,
+        'financialImpactPerHour': 6,
+        'financialImpactPerDay': 6,
+        'rto': 4,
+        'rpo': 4,
+        'mtpd': 4,
+        'upstreamProcesses': 6,
+        'downstreamProcesses': 6,
+        'dependenciesUpstream': 6,
+        'dependenciesDownstream': 6,
+        'recoveryStrategy': 12,
+        'supportingAssets': 6,
+        'identifiedRisks': 6
+    },
+    'translation_domain': 'business_process',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}
