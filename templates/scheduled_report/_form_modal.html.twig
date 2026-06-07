@@ -1,0 +1,23 @@
+{# ScheduledReport create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append); on invalid submit the
+   controller re-renders this template with 422. #}
+{% trans_default_domain 'scheduled_reports' %}
+{% set is_edit = report is defined and report and report.id is not null %}
+{% set form_action = is_edit ? path('app_scheduled_report_edit', { id: report.id }) : path('app_scheduled_report_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'scheduled-report-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'scheduled_report/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? report.name : 'scheduled_report.new.title'|trans({}, 'scheduled_reports'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

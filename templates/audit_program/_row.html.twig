@@ -1,0 +1,46 @@
+{# Single AuditProgram card — shared by the index and the Turbo Stream that
+   replaces/appends a card after an in-modal save. The name link and eye/edit
+   actions open in the fa-form-modal frame. #}
+{% trans_default_domain 'audit_program' %}
+<div id="audit-program-row-{{ program.id }}" class="col-md-6 col-xl-4">
+    <div class="card h-100 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+                <h5 class="card-title mb-0">
+                    <a href="{{ path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) }}"
+                       data-turbo-frame="fa-form-modal"
+                       class="fa-row-link text-decoration-none">{{ program.name }}</a>
+                </h5>
+                <span class="badge bg-{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'secondary') }} ms-2">
+                    {{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}
+                </span>
+            </div>
+            {% if program.description %}
+                <p class="card-text text-muted small mb-3">{{ program.description|u.truncate(120, '…') }}</p>
+            {% endif %}
+            <div class="d-flex gap-3 small text-muted">
+                <span><i class="fa-icon fa-icon--nav-calendar" aria-hidden="true"></i> {{ program.startDate|date('d.m.Y') }} – {{ program.endDate|date('d.m.Y') }}</span>
+                <span><i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i> {{ program.auditCount }} {{ 'audit_program.kpi.audits'|trans({}, 'audit_program') }}</span>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+            <small class="text-muted">{{ program.frequency ? ('audit_program.frequency.' ~ program.frequency)|trans({}, 'audit_program') : '' }}</small>
+            <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+                <a href="{{ path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) }}"
+                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                   data-turbo-frame="fa-form-modal"
+                   title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                </a>
+                {% if is_granted('ROLE_MANAGER') %}
+                <a href="{{ path('app_audit_program_edit', {_locale: app.request.locale, id: program.id}) }}"
+                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                   data-turbo-frame="fa-form-modal"
+                   title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

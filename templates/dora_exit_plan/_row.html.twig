@@ -1,0 +1,57 @@
+{# Single DoraExitPlan table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same.
+   The edit action is gated on ROLE_MANAGER, matching the full-page index behaviour. #}
+{% trans_default_domain 'dora_exit_plan' %}
+<tr id="dora-exit-plan-row-{{ plan.id }}">
+    <td>
+        <a href="{{ path('app_dora_exit_plan_show', {id: plan.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link">
+            <strong>{{ plan.supplier ? plan.supplier.name : '—' }}</strong>
+        </a>
+    </td>
+    <td>
+        {% include '_components/_badge.html.twig' with {
+            variant: 'primary',
+            content: ('dora_exit_plan.trigger.' ~ plan.exitTrigger)|trans({}, 'dora_exit_plan')
+        } %}
+    </td>
+    <td>
+        {% if plan.testedAt %}
+            {{ plan.testedAt|date('Y-m-d') }}
+            {% if plan.isRehearsalOverdue() %}
+                {% include '_components/_badge.html.twig' with {
+                    variant: 'warning',
+                    content: 'dora_exit_plan.badge.overdue'|trans({}, 'dora_exit_plan')
+                } %}
+            {% endif %}
+        {% else %}
+            {% include '_components/_badge.html.twig' with {
+                variant: 'warning',
+                content: 'dora_exit_plan.badge.never_tested'|trans({}, 'dora_exit_plan')
+            } %}
+        {% endif %}
+    </td>
+    <td>{{ plan.estimatedDurationDays ?? '—' }}</td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_dora_exit_plan_show', {id: plan.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}"
+               aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_dora_exit_plan_edit', {id: plan.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}"
+               aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

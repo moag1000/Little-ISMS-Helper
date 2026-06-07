@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal ScheduledReport save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="scheduled-report-rows">
+        <template>{% include 'scheduled_report/_row.html.twig' with { report: report } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="scheduled-report-row-{{ report.id }}">
+        <template>{% include 'scheduled_report/_row.html.twig' with { report: report } %}</template>
+    </turbo-stream>
+{% endif %}

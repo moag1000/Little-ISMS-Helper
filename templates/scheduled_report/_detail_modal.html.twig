@@ -1,0 +1,77 @@
+{# ScheduledReport read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses drawer chrome (header/body/footer/kv) which renders cleanly as a flex column;
+   condensed overview with a "Vollansicht" link to the full page. #}
+{% trans_default_domain 'scheduled_reports' %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">{{ 'scheduled_report.title'|trans({}, 'scheduled_reports') }}</div>
+            <div class="fa-drawer__title">{{ report.name }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: 'info', content: ('scheduled_report.type.' ~ report.reportType)|trans({}, 'scheduled_reports') } %}
+            {% if report.active %}
+                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'scheduled_report.status.active'|trans({}, 'scheduled_reports') } %}
+            {% else %}
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'scheduled_report.status.inactive'|trans({}, 'scheduled_reports') } %}
+            {% endif %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'scheduled_report.form.schedule'|trans({}, 'scheduled_reports') }}</span>
+            <span>{{ ('scheduled_report.schedule.' ~ report.schedule)|trans({}, 'scheduled_reports') }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'scheduled_report.form.format'|trans({}, 'scheduled_reports') }}</span>
+            <span>
+                {% if report.format == 'pdf' %}
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'nav-file-pdf', content: 'PDF' } %}
+                {% else %}
+                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'nav-file-earmark-spreadsheet', content: 'Excel' } %}
+                {% endif %}
+            </span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'scheduled_report.table.recipients'|trans({}, 'scheduled_reports') }}</span>
+            <span>{{ report.recipients|length }}</span>
+        </div>
+        {% if report.nextRunAt %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'scheduled_report.next_run'|trans({}, 'scheduled_reports') }}</span>
+                <span>{{ report.nextRunAt|date('Y-m-d H:i') }}
+                    {% if report.isDue() %}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+        {% if report.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'scheduled_report.form.description'|trans({}, 'scheduled_reports') }}</span>
+                <p class="fa-drawer__desc">{{ report.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_scheduled_report_show', {id: report.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        <a href="{{ path('app_scheduled_report_edit', {id: report.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-cyber-btn fa-cyber-btn--md">
+            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+        </a>
+    </div>
+</turbo-frame>
