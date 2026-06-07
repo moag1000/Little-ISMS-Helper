@@ -1,0 +1,72 @@
+{# Shared Training form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / submit_label / actions. #}
+{% trans_default_domain 'training' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(training is defined and training and training.title ? training.title : ('training.new'|trans({}, 'training'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'form.section.overview'|trans({}, 'messages'),
+        'fields': ['title', 'description', 'trainingType', 'deliveryMethod']
+    },
+    'schedule': {
+        'label': 'form.section.schedule'|trans({}, 'messages'),
+        'fields': ['scheduledDate', 'durationMinutes', 'completionDate', 'recurrenceMonths']
+    },
+    'audience': {
+        'label': 'form.section.audience'|trans({}, 'messages'),
+        'fields': ['targetAudience', 'participantUsers', 'participants']
+    },
+    'team': {
+        'label': 'form.section.team'|trans({}, 'messages'),
+        'fields': ['trainerUser', 'trainerPerson', 'trainerDeputyPersons', 'trainer']
+    },
+    'verification': {
+        'label': 'form.section.verification'|trans({}, 'messages'),
+        'fields': ['status', 'mandatory', 'coveredControls', 'complianceRequirements']
+    },
+    'resources': {
+        'label': 'form.section.resources'|trans({}, 'messages'),
+        'fields': ['materialFiles', 'materials', 'feedback']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 A.6.3 · Security Awareness Training',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'title': 12,
+        'description': 12,
+        'trainingType': 6,
+        'deliveryMethod': 6,
+        'scheduledDate': 6,
+        'durationMinutes': 6,
+        'completionDate': 6,
+        'recurrenceMonths': 6,
+        'targetAudience': 12,
+        'participantUsers': 12,
+        'participants': 12,
+        'trainerUser': 6,
+        'trainerPerson': 6,
+        'trainerDeputyPersons': 12,
+        'trainer': 12,
+        'status': 6,
+        'mandatory': 6,
+        'coveredControls': 12,
+        'complianceRequirements': 12,
+        'materialFiles': 12,
+        'materials': 12,
+        'feedback': 12
+    },
+    'translation_domain': 'training',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

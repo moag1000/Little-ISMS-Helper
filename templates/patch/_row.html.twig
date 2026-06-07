@@ -1,0 +1,45 @@
+{# Single Patch table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the
+   same. #}
+{% trans_default_domain 'patches' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% set currentTenant = currentTenant|default(null) %}
+<tr id="patch-row-{{ patch.id }}"
+    data-patch-id="{{ patch.id }}">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ patch.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ patch.title }}">
+    </td>
+    <td><code>{{ patch.patchId }}</code></td>
+    <td>
+        <a href="{{ path('app_patch_show', {id: patch.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ patch.title }}</strong></a>
+        {{ inheritance.small_badge(patch, currentTenant) }}
+    </td>
+    <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('patch.type.' ~ patch.patchType)|trans({}, 'patches') } %}</td>
+    <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('patch.status.' ~ patch.status)|trans({}, 'patches') } %}</td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_patch_show', {id: patch.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_patch_edit', {id: patch.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

@@ -1,0 +1,143 @@
+{# Shared Supplier form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps it in
+   form_start/form_end and passes title / actions. Module-gated sections
+   (privacy, nis2_dora, lksg, marisk) are listed here so _auto_form silently
+   skips fields that buildForm() did not add. #}
+{% trans_default_domain 'suppliers' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(supplier is defined and supplier and supplier.name ? supplier.name : ('supplier.page.new_title'|trans({}, 'suppliers'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{# Section map mirrors SupplierType::getSectionMap() exactly. #}
+{% set form_sections = {
+    'overview': {
+        'label': 'supplier.section.overview'|trans({}, 'suppliers'),
+        'fields': ['name', 'description', 'criticality', 'status', 'serviceProvided']
+    },
+    'contact': {
+        'label': 'supplier.section.contact'|trans({}, 'suppliers'),
+        'fields': ['contactPerson', 'email', 'phone', 'address']
+    },
+    'risk_assessment': {
+        'label': 'supplier.section.risk_assessment'|trans({}, 'suppliers'),
+        'fields': ['securityScore', 'lastSecurityAssessment', 'nextAssessmentDate', 'assessmentFindings', 'nonConformities']
+    },
+    'contract': {
+        'label': 'supplier.section.contract'|trans({}, 'suppliers'),
+        'fields': ['contractStartDate', 'contractEndDate', 'securityRequirements', 'hasISO27001', 'hasISO22301', 'certifications']
+    },
+    'linkage': {
+        'label': 'supplier.section.linkage'|trans({}, 'suppliers'),
+        'fields': ['supportedAssets']
+    }
+} %}
+{% if is_module_active('privacy') %}
+    {% set form_sections = form_sections|merge({
+        'privacy': {
+            'label': 'supplier.section.privacy'|trans({}, 'suppliers'),
+            'fields': ['hasDPA', 'dpaSignedDate', 'gdprProcessorStatus', 'gdprTransferMechanism', 'gdprAvContractSigned', 'gdprAvContractDate']
+        }
+    }) %}
+{% endif %}
+{% if is_module_active('nis2_dora') %}
+    {% set form_sections = form_sections|merge({
+        'tier_classification': {
+            'label': 'supplier.section.tier_classification'|trans({}, 'suppliers'),
+            'fields': ['isDoraRelevant', 'leiCode', 'naceCode', 'countryOfHeadOffice', 'thirdCountryTransfer', 'transferSafeguards', 'ictCriticality', 'ictFunctionType', 'substitutability', 'hasSubcontractors', 'subcontractorChain', 'processingLocations', 'lastDoraAuditDate', 'hasExitStrategy']
+        }
+    }) %}
+{% endif %}
+{% if is_module_active('lksg') %}
+    {% set form_sections = form_sections|merge({
+        'lksg': {
+            'label': 'supplier.section.lksg'|trans({}, 'suppliers'),
+            'fields': ['lksgReportingObligation', 'lksgRiskCategory', 'lksgHumanRightsRiskScore', 'lksgEnvironmentalRiskScore', 'lksgRiskAnalysisDate', 'lksgComplaintMechanism', 'lksgPreventionMeasures']
+        }
+    }) %}
+{% endif %}
+{% if is_module_active('marisk') %}
+    {% set form_sections = form_sections|merge({
+        'marisk': {
+            'label': 'supplier.section.marisk'|trans({}, 'suppliers'),
+            'fields': ['outsourcingClassification', 'outsourcingDueDiligenceCompleted', 'outsourcingDueDiligenceDate', 'outsourcingExitStrategy', 'bafinNotificationRequired', 'bafinNotificationDate', 'riskBearingCapacityImpact', 'boardLevelRiskAcceptance', 'complianceFunctionInvolvement', 'internalAuditFunctionInvolvement']
+        }
+    }) %}
+{% endif %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 A.5.19 · Lieferantenmanagement',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'name': 6,
+        'description': 12,
+        'criticality': 6,
+        'status': 6,
+        'serviceProvided': 12,
+        'contactPerson': 6,
+        'email': 6,
+        'phone': 6,
+        'address': 12,
+        'securityScore': 6,
+        'lastSecurityAssessment': 6,
+        'nextAssessmentDate': 6,
+        'assessmentFindings': 12,
+        'nonConformities': 12,
+        'contractStartDate': 6,
+        'contractEndDate': 6,
+        'securityRequirements': 12,
+        'hasISO27001': 6,
+        'hasISO22301': 6,
+        'certifications': 12,
+        'supportedAssets': 12,
+        'hasDPA': 6,
+        'dpaSignedDate': 6,
+        'gdprProcessorStatus': 6,
+        'gdprTransferMechanism': 6,
+        'gdprAvContractSigned': 6,
+        'gdprAvContractDate': 6,
+        'isDoraRelevant': 6,
+        'leiCode': 6,
+        'naceCode': 6,
+        'countryOfHeadOffice': 6,
+        'thirdCountryTransfer': 6,
+        'transferSafeguards': 6,
+        'ictCriticality': 6,
+        'ictFunctionType': 6,
+        'substitutability': 6,
+        'hasSubcontractors': 6,
+        'subcontractorChain': 12,
+        'processingLocations': 12,
+        'lastDoraAuditDate': 6,
+        'hasExitStrategy': 6,
+        'lksgReportingObligation': 6,
+        'lksgRiskCategory': 6,
+        'lksgHumanRightsRiskScore': 6,
+        'lksgEnvironmentalRiskScore': 6,
+        'lksgRiskAnalysisDate': 6,
+        'lksgComplaintMechanism': 12,
+        'lksgPreventionMeasures': 12,
+        'outsourcingClassification': 6,
+        'outsourcingDueDiligenceCompleted': 6,
+        'outsourcingDueDiligenceDate': 6,
+        'outsourcingExitStrategy': 12,
+        'bafinNotificationRequired': 6,
+        'bafinNotificationDate': 6,
+        'riskBearingCapacityImpact': 12,
+        'boardLevelRiskAcceptance': 6,
+        'complianceFunctionInvolvement': 6,
+        'internalAuditFunctionInvolvement': 6
+    },
+    'tooltips': {
+        'securityScore': 'supplier.tooltip.security_score',
+        'criticality': 'supplier.tooltip.criticality'
+    },
+    'translation_domain': 'suppliers',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use App\Entity\InterestedParty;
 use App\Form\InterestedPartyType;
 use App\Repository\InterestedPartyRepository;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class InterestedPartyController extends AbstractController
 {
     use LocalizedFlashTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly InterestedPartyRepository $interestedPartyRepository,
@@ -67,12 +69,23 @@ class InterestedPartyController extends AbstractController
             $this->entityManager->flush();
 
             $this->flashSuccess('interested_party.success.created');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->interestedPartyStreamSave($interestedParty, isNew: true);
+            }
             return $this->redirectToRoute('app_interested_party_show', ['id' => $interestedParty->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('interested_party/_form_modal.html.twig', [
+                'interested_party' => $interestedParty,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('interested_party/new.html.twig', [
             'interested_party' => $interestedParty,
@@ -81,8 +94,14 @@ class InterestedPartyController extends AbstractController
     }
     #[Route('/interested-party/{id}', name: 'app_interested_party_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(InterestedParty $interestedParty): Response
+    public function show(Request $request, InterestedParty $interestedParty): Response
     {
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('interested_party/_detail_modal.html.twig', [
+                'interested_party' => $interestedParty,
+            ]);
+        }
+
         return $this->render('interested_party/show.html.twig', [
             'interested_party' => $interestedParty,
         ]);
@@ -99,12 +118,23 @@ class InterestedPartyController extends AbstractController
             $this->entityManager->flush();
 
             $this->flashSuccess('interested_party.success.updated');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->interestedPartyStreamSave($interestedParty, isNew: false);
+            }
             return $this->redirectToRoute('app_interested_party_show', ['id' => $interestedParty->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('interested_party/_form_modal.html.twig', [
+                'interested_party' => $interestedParty,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('interested_party/edit.html.twig', [
             'interested_party' => $interestedParty,
@@ -123,5 +153,14 @@ class InterestedPartyController extends AbstractController
         }
 
         return $this->redirectToRoute('app_interested_party_index');
+    }
+
+    /** Turbo Stream after a successful in-modal InterestedParty save (row replace/append). */
+    private function interestedPartyStreamSave(InterestedParty $interestedParty, bool $isNew): Response
+    {
+        return $this->render('interested_party/_stream_save.html.twig', [
+            'interested_party' => $interestedParty,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 }

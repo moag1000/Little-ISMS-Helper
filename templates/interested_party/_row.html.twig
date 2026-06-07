@@ -1,0 +1,43 @@
+{# Single InterestedParty table row — shared by the index and the Turbo Stream
+   that replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same.
+   Edit action is gated on ROLE_USER matching the full-page index behaviour. #}
+{% trans_default_domain 'interested_parties' %}
+{% set importance_variant = {
+    critical: 'danger',
+    high: 'warning',
+    medium: 'primary',
+    low: 'success'
+}[party.importance]|default('neutral') %}
+<tr id="interested-party-row-{{ party.id }}">
+    <td>
+        <a href="{{ path('app_interested_party_show', {id: party.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ party.name }}</strong></a>
+        {% if party.description %}
+        <br><small class="text-muted">{{ party.description|length > 60 ? party.description|slice(0, 60) ~ '...' : party.description }}</small>
+        {% endif %}
+    </td>
+    <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('interested_party.party_type.' ~ party.partyType)|trans({}, 'interested_parties') } %}</td>
+    <td>{% include '_components/_badge.html.twig' with { variant: importance_variant, content: ('interested_party.importance.' ~ party.importance)|trans({}, 'interested_parties') } %}</td>
+    <td>{{ party.getEngagementScore() }}</td>
+    <td>{{ party.lastCommunication ? party.lastCommunication|date('Y-m-d') : ('interested_party.never'|trans({}, 'interested_parties')) }}</td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'interested_party.table.actions'|trans({}, 'interested_parties') }}">
+            <a href="{{ path('app_interested_party_show', {id: party.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_interested_party_edit', {id: party.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

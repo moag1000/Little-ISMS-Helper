@@ -1,0 +1,23 @@
+{# Training create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append); on invalid it re-renders
+   this template with status 422. #}
+{% trans_default_domain 'training' %}
+{% set is_edit = training is defined and training and training.id is not null %}
+{% set form_action = is_edit ? path('app_training_edit', { id: training.id }) : path('app_training_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'training-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'training/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? training.title : 'training.new'|trans({}, 'training'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

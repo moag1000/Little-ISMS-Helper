@@ -1,0 +1,95 @@
+{# Patch read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses drawer chrome (header/body/footer/kv) condensed with a "Vollansicht"
+   link to the full page. ISO 27001 A.8.8 / NIS2 Art. 21.2(e). #}
+{% trans_default_domain 'patches' %}
+{% set _priority_variant = {'critical':'danger','high':'warning','medium':'info','low':'secondary'}[patch.priority]|default('secondary') %}
+{% set _status_variant = patch.status == 'deployed' ? 'success' : (patch.status in ['failed','rolled_back'] ? 'danger' : 'info') %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 A.8.8 · NIS2 Art. 21.2(e) · Patch Management</div>
+            <div class="fa-drawer__title">{{ patch.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: _priority_variant, content: ('patch.priority.' ~ patch.priority)|trans({}, 'patches') } %}
+            {% include '_components/_badge.html.twig' with { variant: _status_variant, content: ('patch.status.' ~ patch.status)|trans({}, 'patches') } %}
+            {% if patch.overdue %}
+                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'patch.status.overdue'|trans({}, 'patches') } %}
+            {% endif %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</span>
+            <span><code>{{ patch.patchId }}</code></span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'patch.field.patch_type'|trans({}, 'patches') }}</span>
+            <span>{{ ('patch.type.' ~ patch.patchType)|trans({}, 'patches') }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'patch.field.vendor'|trans({}, 'patches') }}</span>
+            <span>{{ patch.vendor }} / {{ patch.product }}{% if patch.version %} <code>{{ patch.version }}</code>{% endif %}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'patch.field.release_date'|trans({}, 'patches') }}</span>
+            <span>{{ patch.releaseDate|date('Y-m-d') }}</span>
+        </div>
+        {% if patch.deployedDate %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'patch.field.deployed_date'|trans({}, 'patches') }}</span>
+                <span>{{ patch.deployedDate|date('Y-m-d') }}</span>
+            </div>
+        {% endif %}
+        {% if patch.affectedAssets|length > 0 %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'patch.field.affected_assets'|trans({}, 'patches') }}</span>
+                <span>
+                    {% for asset in patch.affectedAssets %}
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.name } %}
+                    {% endfor %}
+                </span>
+            </div>
+        {% endif %}
+        {% if patch.vulnerability %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'patch.field.vulnerability'|trans({}, 'patches') }}</span>
+                <span>{{ patch.vulnerability.title }}</span>
+            </div>
+        {% endif %}
+        {% if patch.responsiblePerson %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'patch.field.responsible_person'|trans({}, 'patches') }}</span>
+                <span>{{ patch.responsiblePerson }}</span>
+            </div>
+        {% endif %}
+        {% if patch.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'patch.field.description'|trans({}, 'patches') }}</span>
+                <p class="fa-drawer__desc">{{ patch.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_patch_show', {id: patch.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_patch_edit', {id: patch.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

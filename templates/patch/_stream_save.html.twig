@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal Patch save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="patch-rows">
+        <template>{% include 'patch/_row.html.twig' with { patch: patch } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="patch-row-{{ patch.id }}">
+        <template>{% include 'patch/_row.html.twig' with { patch: patch } %}</template>
+    </turbo-stream>
+{% endif %}

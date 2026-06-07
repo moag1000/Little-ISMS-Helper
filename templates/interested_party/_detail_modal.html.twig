@@ -1,0 +1,84 @@
+{# InterestedParty read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a flex
+   column; condensed, with a "Vollansicht" link to the full page. #}
+{% trans_default_domain 'interested_parties' %}
+{% set importance_variant = {
+    critical: 'danger',
+    high: 'warning',
+    medium: 'primary',
+    low: 'success'
+}[interested_party.importance]|default('neutral') %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 Kl. 4.2 · Interessierte Parteien</div>
+            <div class="fa-drawer__title">{{ interested_party.name }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: 'info', content: ('interested_party.party_type.' ~ interested_party.partyType)|trans({}, 'interested_parties') } %}
+            {% include '_components/_badge.html.twig' with { variant: importance_variant, content: ('interested_party.importance.' ~ interested_party.importance)|trans({}, 'interested_parties') } %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'interested_party.field.name'|trans({}, 'interested_parties') }}</span>
+            <span>{{ interested_party.name }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'interested_party.field.party_type'|trans({}, 'interested_parties') }}</span>
+            <span>{{ ('interested_party.party_type.' ~ interested_party.partyType)|trans({}, 'interested_parties') }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'interested_party.field.importance'|trans({}, 'interested_parties') }}</span>
+            <span>{{ ('interested_party.importance.' ~ interested_party.importance)|trans({}, 'interested_parties') }}</span>
+        </div>
+        {% if interested_party.requirements %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'interested_party.field.requirements'|trans({}, 'interested_parties') }}</span>
+            <span>{{ interested_party.requirements|length > 120 ? interested_party.requirements|slice(0, 120) ~ '…' : interested_party.requirements }}</span>
+        </div>
+        {% endif %}
+        {% if interested_party.howAddressed %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'interested_party.field.how_addressed'|trans({}, 'interested_parties') }}</span>
+            <span>{{ interested_party.howAddressed|length > 120 ? interested_party.howAddressed|slice(0, 120) ~ '…' : interested_party.howAddressed }}</span>
+        </div>
+        {% endif %}
+        {% if interested_party.nextCommunication %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'interested_party.field.next_communication'|trans({}, 'interested_parties') }}</span>
+            <span class="{{ interested_party.isCommunicationOverdue() ? 'text-danger' : '' }}">
+                {{ interested_party.nextCommunication|date('Y-m-d') }}
+            </span>
+        </div>
+        {% endif %}
+        {% if interested_party.description %}
+        <div class="fa-drawer__section">
+            <span class="label">{{ 'interested_party.field.description'|trans({}, 'interested_parties') }}</span>
+            <p class="fa-drawer__desc">{{ interested_party.description|u.truncate(280, '…') }}</p>
+        </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_interested_party_show', {id: interested_party.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_interested_party_edit', {id: interested_party.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>
