@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'planning' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'planning.team.title.list'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.planning'|trans({}, 'nav') }
+        ]
+    } %}
+</div>
+
+{{ _fa_page_header.render({
+    badge: { icon: 'people', label: 'nav.planning'|trans({}, 'nav') },
+    title: 'planning.team.title.list'|trans({}, 'planning'),
+    actions: [
+        { label: 'planning.team.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_team_new') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
+
+{% embed '_components/_table.html.twig' with {
+    'wrapperClass': 'table-container'
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ 'planning.team.col.name'|trans({}, 'planning') }}</th>
+            <th scope="col">{{ 'planning.team.col.type'|trans({}, 'planning') }}</th>
+            <th scope="col" class="text-center">{{ 'planning.team.col.member_count'|trans({}, 'planning') }}</th>
+            <th scope="col">{{ 'planning.team.col.lead'|trans({}, 'planning') }}</th>
+            <th scope="col" class="text-center">{{ 'planning.common.active'|trans({}, 'planning') }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for team in teams %}
+        <tr>
+            <td><strong>{{ team.name }}</strong></td>
+            <td>
+                {% if team.type %}
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: team.type } %}
+                {% else %}
+                    <span class="text-muted-color">-</span>
+                {% endif %}
+            </td>
+            <td class="text-center">{{ team.memberCount }}</td>
+            <td>
+                {% if team.teamLead %}
+                    {{ team.teamLead.fullName ?? team.teamLead.email }}
+                {% elseif team.teamLeadPerson %}
+                    {{ team.teamLeadPerson.fullName }}
+                {% else %}
+                    <span class="text-muted-color">-</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                {% if team.active %}
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: '✓' } %}
+                {% else %}
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '✗' } %}
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <div class="btn-group btn-group-sm" role="group">
+                    <a href="{{ path('app_planning_team_edit', {id: team.id}) }}"
+                       class="fa-cyber-btn fa-cyber-btn--ghost"
+                       aria-label="{{ 'planning.common.edit'|trans({}, 'planning') }} {{ team.name }}">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                    </a>
+                    <form method="post" action="{{ path('app_planning_team_delete', {id: team.id}) }}" style="display:inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete'~team.id) }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--danger"
+                                aria-label="{{ 'planning.common.delete'|trans({}, 'planning') }} {{ team.name }}"
+                                onclick="return confirm('{{ 'planning.common.confirm_delete'|trans({}, 'planning')|e('js') }}')">
+                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6" class="text-center-p-xl-muted">
+                {{ 'planning.team.message.no_teams'|trans({}, 'planning') }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
+
+</main>
+{% endblock %}

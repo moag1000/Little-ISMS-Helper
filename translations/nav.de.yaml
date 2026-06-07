@@ -1,6 +1,10 @@
 nav:
     home: Startseite
     dashboard: Dashboard
+    planning: Ressourcenplanung
+    planning_measures: Maßnahmen
+    planning_roadmap: Kapazitäts-Roadmap
+    planning_admin: 'Planungs-Stammdaten'
     my_profile: 'Mein Profil'
     my_day: 'Mein Tag'
     activity: 'Aktivität'
@@ -174,6 +178,9 @@ nav:
             dpo: 'DSB-Dashboard'
 
         desc:
+            planning_measures: 'KVP/PDCA-Maßnahmen mit Zieldatum & Nachweis'
+            planning_roadmap: 'Aufwände je Kalenderwoche planen'
+            planning_admin: 'Teams, Roadmap-Tasks & Personen-Kapazität'
             # Wave 5 — Prominent-Hero short-descriptions
             my_day_short: 'Heutige Aufgaben & Fälligkeiten'
             activity_short: 'Letzte Aktivitäten im System'
