@@ -1,0 +1,26 @@
+{# TIA create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit
+   the controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'tia' %}
+{% set _pa_id = processing_activity.id %}
+{% set is_edit = tia is defined and tia and tia.id is not null %}
+{% set form_action = is_edit
+    ? path('app_tia_edit', { paId: _pa_id, id: tia.id })
+    : path('app_tia_new',  { paId: _pa_id }) %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'tia-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'tia/_form_body.html.twig' with {
+        form: form,
+        tia: tia,
+        modal: true,
+        title: is_edit ? 'tia.page.edit_title'|trans({}, 'tia') : 'tia.page.new_title'|trans({}, 'tia'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'tia.action.save'|trans({}, 'tia'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

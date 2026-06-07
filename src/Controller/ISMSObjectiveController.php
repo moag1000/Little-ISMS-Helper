@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use DateTime;
 use DateTimeImmutable;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ISMSObjective;
 use App\Enum\ISMSObjectiveStatus;
 use App\Form\ISMSObjectiveType;
@@ -24,6 +25,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ISMSObjectiveController extends AbstractController
 {
+    use InPageFormTrait;
     public function __construct(
         private readonly ISMSObjectiveRepository $ismsObjectiveRepository,
         private readonly EntityManagerInterface $entityManager,
@@ -69,6 +71,10 @@ class ISMSObjectiveController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('objective.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->objectiveStreamSave($ismsObjective, isNew: true);
+            }
             return $this->redirectToRoute('app_objective_show', ['id' => $ismsObjective->getId()]);
         }
 
@@ -76,14 +82,27 @@ class ISMSObjectiveController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('objective/_form_modal.html.twig', [
+                'objective' => $ismsObjective,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('objective/new.html.twig', [
             'objective' => $ismsObjective,
             'form' => $form,
         ], new Response(status: $status));
     }
     #[Route('/objective/{id}', name: 'app_objective_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(ISMSObjective $ismsObjective): Response
+    public function show(Request $request, ISMSObjective $ismsObjective): Response
     {
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('objective/_detail_modal.html.twig', [
+                'objective' => $ismsObjective,
+            ]);
+        }
+
         return $this->render('objective/show.html.twig', [
             'objective' => $ismsObjective,
         ]);
@@ -107,12 +126,23 @@ class ISMSObjectiveController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('objective.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->objectiveStreamSave($ismsObjective, isNew: false);
+            }
             return $this->redirectToRoute('app_objective_show', ['id' => $ismsObjective->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('objective/_form_modal.html.twig', [
+                'objective' => $ismsObjective,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('objective/edit.html.twig', [
             'objective' => $ismsObjective,
@@ -131,6 +161,15 @@ class ISMSObjectiveController extends AbstractController
         }
 
         return $this->redirectToRoute('app_objective_index');
+    }
+
+    /** Turbo Stream after a successful in-modal ISMSObjective save (row replace/append). */
+    private function objectiveStreamSave(ISMSObjective $objective, bool $isNew): Response
+    {
+        return $this->render('objective/_stream_save.html.twig', [
+            'objective' => $objective,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     /**

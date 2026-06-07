@@ -1,0 +1,44 @@
+{# Shared TIA form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / actions. Sections mirror TransferImpactAssessmentType::getSectionMap(). #}
+{% trans_default_domain 'tia' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(tia is defined and tia and tia.id is not null ? 'tia.page.edit_title'|trans({}, 'tia') : 'tia.page.new_title'|trans({}, 'tia')) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'tia.section.overview'|trans({}, 'tia'),
+        'fields': ['destinationCountry', 'recipientName', 'transferMechanism']
+    },
+    'assessment': {
+        'label': 'tia.section.assessment'|trans({}, 'tia'),
+        'fields': ['lawSurveillanceRisk', 'supplementaryMeasures']
+    },
+    'conclusion': {
+        'label': 'tia.section.conclusion'|trans({}, 'tia'),
+        'fields': ['residualRiskRating', 'conclusion']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'GDPR Art. 46/49 · Transfer Impact Assessment',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'destinationCountry': 6,
+        'recipientName': 6,
+        'transferMechanism': 12,
+        'lawSurveillanceRisk': 12,
+        'supplementaryMeasures': 12,
+        'residualRiskRating': 6,
+        'conclusion': 12
+    },
+    'translation_domain': 'tia',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': 'tia.action.save'|trans({}, 'tia'), 'variant': 'primary' }
+    })
+} %}

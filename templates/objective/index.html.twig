@@ -19,7 +19,7 @@
         badge: { icon: 'nav-target', label: 'nav.objectives'|trans({}, 'nav') },
         title: 'objective.page.title'|trans({}, 'objective'),
         actions: is_granted('ROLE_ADMIN') ? [
-            { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new') }
+            { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
         ] : []
     }) }}
 {% set _global_hints = alva_hints('objective_index') %}
@@ -87,34 +87,10 @@
                         <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
+                {% block table_body_attrs %}id="objective-rows"{% endblock %}
                 {% block table_body %}
-    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% for objective in objectives %}
-                    <tr>
-                        {% if is_granted('ROLE_ADMIN') %}
-                        <td class="bulk-select-column">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   data-bulk-actions-target="item"
-                                   data-action="bulk-actions#selectItem"
-                                   value="{{ objective.id }}"
-                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ objective.title }}">
-                        </td>
-                        {% endif %}
-                        <td><strong>{{ objective.title }}</strong></td>
-                        <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}</td>
-                        <td>{{ objective.targetDate|date('d.m.Y') }}</td>
-                        <td>
-                            {{ _fa_progress.render({ value: objective.progressPercentage, tone: objective.progressPercentage >= 75 ? 'success' : (objective.progressPercentage >= 50 ? 'warning' : 'danger'), showText: true }) }}
-                        </td>
-                        <td>{% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning'), content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}</td>
-                        <td>
-                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}" title="{{ 'common.view'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>
-                            {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }}" title="{{ 'common.edit'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i></a>
-                            {% endif %}
-                        </td>
-                    </tr>
+                        {% include 'objective/_row.html.twig' with { objective: objective } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}

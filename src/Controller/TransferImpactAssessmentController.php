@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\CurrentUserTrait;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\ProcessingActivity;
@@ -48,6 +49,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TransferImpactAssessmentController extends AbstractController
 {
     use CurrentUserTrait;
+    use InPageFormTrait;
     use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
 
@@ -192,6 +194,10 @@ class TransferImpactAssessmentController extends AbstractController
             );
 
             $this->flashSuccess('tia.success.created');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->tiaStreamSave($tia, isNew: true);
+            }
             return $this->redirectToRoute(
                 'app_tia_show',
                 ['paId' => $paId, 'id' => $tia->getId()],
@@ -202,6 +208,14 @@ class TransferImpactAssessmentController extends AbstractController
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('tia/_form_modal.html.twig', [
+                'tia'                 => $tia,
+                'form'                => $form,
+                'processing_activity' => $pa,
+            ], new Response(status: $status));
+        }
 
         return $this->render('tia/new.html.twig', [
             'form' => $form,
@@ -214,7 +228,7 @@ class TransferImpactAssessmentController extends AbstractController
      * Show a single TIA (read-only detail view).
      */
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(int $paId, int $id): Response
+    public function show(Request $request, int $paId, int $id): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) {
             return $redirect;
@@ -222,6 +236,13 @@ class TransferImpactAssessmentController extends AbstractController
 
         $pa  = $this->getProcessingActivity($paId);
         $tia = $this->getTia($id, $pa);
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('tia/_detail_modal.html.twig', [
+                'tia'                 => $tia,
+                'processing_activity' => $pa,
+            ]);
+        }
 
         return $this->render('tia/show.html.twig', [
             'tia'                => $tia,
@@ -263,6 +284,10 @@ class TransferImpactAssessmentController extends AbstractController
             );
 
             $this->flashSuccess('tia.success.updated');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->tiaStreamSave($tia, isNew: false);
+            }
             return $this->redirectToRoute(
                 'app_tia_show',
                 ['paId' => $paId, 'id' => $id],
@@ -274,11 +299,28 @@ class TransferImpactAssessmentController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('tia/_form_modal.html.twig', [
+                'tia'                 => $tia,
+                'form'                => $form,
+                'processing_activity' => $pa,
+            ], new Response(status: $status));
+        }
+
         return $this->render('tia/edit.html.twig', [
             'form' => $form,
             'tia'  => $tia,
             'processing_activity' => $pa,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal TIA save (row replace/append). */
+    private function tiaStreamSave(TransferImpactAssessment $tia, bool $isNew): Response
+    {
+        return $this->render('tia/_stream_save.html.twig', [
+            'tia'    => $tia,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     /**

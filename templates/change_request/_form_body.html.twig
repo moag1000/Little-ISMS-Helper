@@ -1,0 +1,91 @@
+{# Shared ChangeRequest form body (outline-rail). Used full-page by new/edit
+   and inside the fa-form-modal frame (modal: true). Caller wraps it in
+   form_start/form_end and passes title / actions. Sections mirror
+   ChangeRequestType::getSectionMap() exactly. #}
+{% trans_default_domain 'change_requests' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default('change_request.page.new'|trans({}, 'change_requests')) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'form.section.overview'|trans({}, 'messages'),
+        'fields': ['changeNumber', 'title', 'changeType', 'description', 'justification']
+    },
+    'details': {
+        'label': 'form.section.details'|trans({}, 'messages'),
+        'fields': ['requestedBy', 'requestedDate', 'priority', 'status', 'clauseReference']
+    },
+    'lineage': {
+        'label': 'form.section.lineage'|trans({}, 'messages'),
+        'fields': ['relatedFinding', 'relatedCorrectiveAction']
+    },
+    'impact_assessment': {
+        'label': 'form.section.impact_assessment'|trans({}, 'messages'),
+        'fields': ['ismsImpact', 'riskAssessment']
+    },
+    'approval': {
+        'label': 'form.section.approval'|trans({}, 'messages'),
+        'fields': ['approvedBy', 'approvedDate', 'approvalComments']
+    },
+    'implementation': {
+        'label': 'form.section.implementation'|trans({}, 'messages'),
+        'fields': ['implementationPlan', 'rollbackPlan', 'testingRequirements', 'plannedImplementationDate', 'actualImplementationDate', 'implementedBy', 'implementationNotes']
+    },
+    'verification': {
+        'label': 'form.section.verification'|trans({}, 'messages'),
+        'fields': ['verifiedBy', 'verifiedDate', 'verificationResults', 'closedDate', 'closureNotes']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 A.8.32 · Change Management',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'changeNumber': 6,
+        'title': 6,
+        'changeType': 6,
+        'description': 12,
+        'justification': 12,
+        'requestedBy': 6,
+        'requestedDate': 6,
+        'priority': 6,
+        'status': 6,
+        'clauseReference': 12,
+        'relatedFinding': 6,
+        'relatedCorrectiveAction': 6,
+        'ismsImpact': 12,
+        'riskAssessment': 12,
+        'approvedBy': 6,
+        'approvedDate': 6,
+        'approvalComments': 12,
+        'implementationPlan': 12,
+        'rollbackPlan': 12,
+        'testingRequirements': 12,
+        'plannedImplementationDate': 6,
+        'actualImplementationDate': 6,
+        'implementedBy': 6,
+        'implementationNotes': 12,
+        'verifiedBy': 6,
+        'verifiedDate': 6,
+        'verificationResults': 12,
+        'closedDate': 6,
+        'closureNotes': 12
+    },
+    'tooltips': {
+        'priority': 'change_request.tooltip.priority',
+        'changeType': 'change_request.tooltip.change_type',
+        'riskAssessment': 'change_request.tooltip.risk_assessment',
+        'ismsImpact': 'change_request.tooltip.isms_impact',
+        'rollbackPlan': 'change_request.tooltip.rollback_plan'
+    },
+    'translation_domain': 'change_requests',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

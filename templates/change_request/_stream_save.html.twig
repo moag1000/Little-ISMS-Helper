@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal ChangeRequest save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="change-request-rows">
+        <template>{% include 'change_request/_row.html.twig' with { change: change } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="change-request-row-{{ change.id }}">
+        <template>{% include 'change_request/_row.html.twig' with { change: change } %}</template>
+    </turbo-stream>
+{% endif %}

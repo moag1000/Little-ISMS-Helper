@@ -1,0 +1,88 @@
+{# TIA read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page.
+   Edit button is only shown for draft TIAs with ROLE_USER. #}
+{% trans_default_domain 'tia' %}
+{% set _pa_id = processing_activity.id %}
+{% set _riskVariant = tia.residualRiskRating == 'high' ? 'danger' : (tia.residualRiskRating == 'medium' ? 'warning' : 'success') %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">GDPR Art. 46/49 · Transfer Impact Assessment</div>
+            <div class="fa-drawer__title">{{ tia.recipientName ?? '—' }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% if tia.status == 'assessed' %}
+                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'tia.status.assessed'|trans({}, 'tia') } %}
+            {% else %}
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'tia.status.draft'|trans({}, 'tia') } %}
+            {% endif %}
+            {% if tia.residualRiskRating %}
+                {% include '_components/_badge.html.twig' with { variant: _riskVariant, content: ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia') } %}
+            {% endif %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'tia.field.destination_country'|trans({}, 'tia') }}</span>
+            <span>{{ tia.destinationCountry ?? '—' }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'tia.field.transfer_mechanism'|trans({}, 'tia') }}</span>
+            <span>
+                {% if tia.transferMechanism %}
+                    {% include '_components/_badge.html.twig' with {
+                        variant: 'info',
+                        content: ('tia.mechanism.' ~ tia.transferMechanism)|trans({}, 'tia')
+                    } %}
+                {% else %}—{% endif %}
+            </span>
+        </div>
+        {% if tia.residualRiskRating %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'tia.field.residual_risk_rating'|trans({}, 'tia') }}</span>
+                <span>{% include '_components/_badge.html.twig' with { variant: _riskVariant, content: ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia') } %}</span>
+            </div>
+        {% endif %}
+        {% if tia.assessedAt %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'tia.field.assessed_at'|trans({}, 'tia') }}</span>
+                <span>{{ tia.assessedAt|date('Y-m-d') }}</span>
+            </div>
+        {% endif %}
+        {% if tia.assessedBy %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'tia.field.assessed_by'|trans({}, 'tia') }}</span>
+                <span>{{ tia.assessedBy.fullName ?? tia.assessedBy }}</span>
+            </div>
+        {% endif %}
+        {% if tia.conclusion %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'tia.field.conclusion'|trans({}, 'tia') }}</span>
+                <p class="fa-drawer__desc">{{ tia.conclusion|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_tia_show', {paId: _pa_id, id: tia.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') and tia.status == 'draft' %}
+            <a href="{{ path('app_tia_edit', {paId: _pa_id, id: tia.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

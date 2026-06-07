@@ -1,0 +1,81 @@
+{# ISMSObjective read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses drawer chrome (header/body/footer/kv) for consistent in-panel layout.
+   Status badge preserved from the isms_objective_lifecycle workflow.
+   "Vollansicht" link opens the full show page (data-turbo="false"). #}
+{% trans_default_domain 'objective' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 Kl. 6.2 · ISMS-Ziele</div>
+            <div class="fa-drawer__title">{{ objective.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with {
+                variant: objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning'),
+                content: ('objective.status.' ~ objective.status)|trans({}, 'objective')
+            } %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'objective.field.responsible_person'|trans({}, 'objective') }}</span>
+            <span>{{ objective.responsiblePerson }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'objective.field.target_date'|trans({}, 'objective') }}</span>
+            <span>{{ objective.targetDate|date('d.m.Y') }}</span>
+        </div>
+        {% if objective.targetValue or objective.currentValue %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'objective.table.progress'|trans({}, 'objective') }}</span>
+            <span>
+                {{ _fa_progress.render({
+                    value: objective.progressPercentage,
+                    tone: objective.progressPercentage >= 75 ? 'success' : (objective.progressPercentage >= 50 ? 'warning' : 'danger'),
+                    showText: true
+                }) }}
+            </span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'objective.label.current'|trans({}, 'objective') }} / {{ 'objective.label.target'|trans({}, 'objective') }}</span>
+            <span>{{ objective.currentValue }} {{ objective.unit }} / {{ objective.targetValue }} {{ objective.unit }}</span>
+        </div>
+        {% endif %}
+        {% if objective.measurableIndicators %}
+        <div class="fa-drawer__section">
+            <span class="label">{{ 'objective.field.measurable_indicators'|trans({}, 'objective') }}</span>
+            <p class="fa-drawer__desc">{{ objective.measurableIndicators|u.truncate(280, '…') }}</p>
+        </div>
+        {% endif %}
+        {% if objective.progressNotes %}
+        <div class="fa-drawer__section">
+            <span class="label">{{ 'objective.field.progress_notes'|trans({}, 'objective') }}</span>
+            <p class="fa-drawer__desc">{{ objective.progressNotes|u.truncate(280, '…') }}</p>
+        </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_objective_show', {id: objective.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

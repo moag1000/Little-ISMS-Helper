@@ -1,0 +1,57 @@
+{# Single TIA table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the
+   same. Edit action is gated on ROLE_USER and only allowed for draft TIAs
+   (server-side re-check in edit()). #}
+{% trans_default_domain 'tia' %}
+{% set _pa_id = processing_activity is defined ? processing_activity.id : tia.processingActivity.id %}
+<tr id="tia-row-{{ tia.id }}">
+    <td>
+        <a href="{{ path('app_tia_show', {paId: _pa_id, id: tia.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ tia.recipientName ?? '—' }}</strong></a>
+    </td>
+    <td>{{ tia.destinationCountry ?? '—' }}</td>
+    <td>
+        {% if tia.transferMechanism %}
+            {% include '_components/_badge.html.twig' with {
+                variant: 'info',
+                content: ('tia.mechanism.' ~ tia.transferMechanism)|trans({}, 'tia')
+            } %}
+        {% else %}—{% endif %}
+    </td>
+    <td>
+        {% if tia.residualRiskRating %}
+            {% set _riskVariant = tia.residualRiskRating == 'high' ? 'danger' : (tia.residualRiskRating == 'medium' ? 'warning' : 'success') %}
+            {% include '_components/_badge.html.twig' with {
+                variant: _riskVariant,
+                content: ('tia.risk.' ~ tia.residualRiskRating)|trans({}, 'tia')
+            } %}
+        {% else %}—{% endif %}
+    </td>
+    <td>
+        {% if tia.status == 'assessed' %}
+            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'tia.status.assessed'|trans({}, 'tia') } %}
+        {% else %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'tia.status.draft'|trans({}, 'tia') } %}
+        {% endif %}
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_tia_show', {paId: _pa_id, id: tia.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') and tia.status == 'draft' %}
+            <a href="{{ path('app_tia_edit', {paId: _pa_id, id: tia.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>
