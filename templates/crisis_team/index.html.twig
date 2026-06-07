@@ -19,7 +19,7 @@
         badge: { icon: 'nav-shield-alert', label: 'crisis_team.title'|trans({}, 'crisis_team') },
         title: 'crisis_team.title'|trans({}, 'crisis_team'),
         actions: [
-            { label: 'crisis_team.new'|trans({}, 'crisis_team'), href: path('app_crisis_team_new'), variant: 'primary', icon: 'plus' }
+            { label: 'crisis_team.new'|trans({}, 'crisis_team'), href: path('app_crisis_team_new'), variant: 'primary', icon: 'plus', attrs: {'data-turbo-frame': 'fa-form-modal'} }
         ]
     }) }}
 {% set _global_hints = alva_hints('crisis_team_index') %}
@@ -75,19 +75,11 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        <tbody id="crisis-team-rows">
                         {% for team in crisis_teams %}
-                            <tr data-filter-target="filterableRow" class="{{ team.isActive ? '' : 'table-secondary' }}">
-                                <td><strong>{{ team.teamName }}</strong></td>
-                                <td>{% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ team.teamType)|trans({}, 'crisis_team') } %}</td>
-                                <td>{{ team.teamLeader ? team.teamLeader.fullName|default(team.teamLeader.email) : 'not_assigned'|trans({}, 'messages') }}</td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                        <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a>
-                                        <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% include 'crisis_team/_row.html.twig' with { team: team } %}
                         {% endfor %}
+                        </tbody>
                     {% endblock %}
                 {% endembed %}
             {% endblock %}

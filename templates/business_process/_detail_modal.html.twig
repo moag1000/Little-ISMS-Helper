@@ -1,0 +1,82 @@
+{# BusinessProcess read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page. #}
+{% trans_default_domain 'business_process' %}
+{% set criticality_class = {
+    'critical': 'danger',
+    'high': 'warning',
+    'medium': 'info',
+    'low': 'secondary'
+} %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 22301 Cl. 8.3 · Business Process Analysis</div>
+            <div class="fa-drawer__title">{{ business_process.name }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with {
+                variant: criticality_class[business_process.criticality] ?? 'secondary',
+                content: business_process.criticality|capitalize
+            } %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'business_process.field.process_owner'|trans({}, 'business_process') }}</span>
+            <span>{{ business_process.effectiveProcessOwner }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'business_process.field.rto'|trans({}, 'business_process') }}</span>
+            <span>{{ business_process.rto }}h</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'business_process.field.rpo'|trans({}, 'business_process') }}</span>
+            <span>{{ business_process.rpo }}h</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'business_process.field.mtpd'|trans({}, 'business_process') }}</span>
+            <span>{{ business_process.mtpd }}h</span>
+        </div>
+        {% if business_process.businessImpactScore %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'business_process.show.business_impact_score'|trans({}, 'business_process') }}</span>
+                <span>{{ business_process.businessImpactScore }}/5</span>
+            </div>
+        {% endif %}
+        {% if business_process.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'business_process.field.description'|trans({}, 'business_process') }}</span>
+                <p class="fa-drawer__desc">{{ business_process.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_business_process_show', {id: business_process.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_business_process_edit', {id: business_process.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>

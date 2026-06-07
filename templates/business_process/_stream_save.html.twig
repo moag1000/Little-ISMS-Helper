@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal BusinessProcess save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="business-processes-table-body">
+        <template>{% include 'business_process/_row.html.twig' with { business_process: business_process } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="business-process-row-{{ business_process.id }}">
+        <template>{% include 'business_process/_row.html.twig' with { business_process: business_process } %}</template>
+    </turbo-stream>
+{% endif %}

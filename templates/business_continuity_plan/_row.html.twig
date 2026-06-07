@@ -1,0 +1,50 @@
+{# Single BC-Plan table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same.
+   PDF/export links must bypass Turbo (data-turbo="false"). #}
+{% trans_default_domain 'bc_plans' %}
+<tr id="business-continuity-plan-row-{{ bc_plan.id }}"
+    data-filter-target="filterableRow">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ bc_plan.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ bc_plan.name }}">
+    </td>
+    <td>
+        <a href="{{ path('app_bc_plan_show', {id: bc_plan.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ bc_plan.name }}</strong></a>
+        {% if bc_plan.description %}
+        <br><small class="text-muted">{{ bc_plan.description|length > 60 ? bc_plan.description|slice(0, 60) ~ '...' : bc_plan.description }}</small>
+        {% endif %}
+    </td>
+    <td>{{ bc_plan.businessProcess ? bc_plan.businessProcess.name : '-' }}</td>
+    <td>{{ bc_plan.effectivePlanOwner }}</td>
+    <td><span class="{{ badge_status(bc_plan.status) }}">{{ ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans')|upper }}</span></td>
+    <td>
+        {% set readiness = bc_plan.getReadinessScore() %}
+        {% include '_components/_badge.html.twig' with { variant: readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger'), content: readiness ~ '%' } %}
+    </td>
+    <td>{{ bc_plan.lastTested ? bc_plan.lastTested|locale_date : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_bc_plan_show', {id: bc_plan.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_bc_plan_edit', {id: bc_plan.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

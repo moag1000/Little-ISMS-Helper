@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal CrisisTeam save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="crisis-team-rows">
+        <template>{% include 'crisis_team/_row.html.twig' with { team: crisis_team } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="crisis-team-row-{{ crisis_team.id }}">
+        <template>{% include 'crisis_team/_row.html.twig' with { team: crisis_team } %}</template>
+    </turbo-stream>
+{% endif %}

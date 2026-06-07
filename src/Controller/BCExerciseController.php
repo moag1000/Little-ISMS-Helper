@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use DateTimeImmutable;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\BCExercise;
@@ -30,6 +31,7 @@ class BCExerciseController extends AbstractController
 {
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly BCExerciseRepository $bcExerciseRepository,
@@ -79,12 +81,23 @@ class BCExerciseController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('bc_exercise.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->bcExerciseStreamSave($bcExercise, isNew: true);
+            }
             return $this->redirectToRoute('app_bc_exercise_show', ['id' => $bcExercise->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('bc_exercise/_form_modal.html.twig', [
+                'bc_exercise' => $bcExercise,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('bc_exercise/new.html.twig', [
             'bc_exercise' => $bcExercise,
@@ -93,9 +106,15 @@ class BCExerciseController extends AbstractController
     }
     #[Route('/bc-exercise/{id}', name: 'app_bc_exercise_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(BCExercise $bcExercise): Response
+    public function show(Request $request, BCExercise $bcExercise): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('bc_exercise/_detail_modal.html.twig', [
+                'bc_exercise' => $bcExercise,
+            ]);
+        }
 
         return $this->render('bc_exercise/show.html.twig', [
             'bc_exercise' => $bcExercise,
@@ -150,6 +169,10 @@ class BCExerciseController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('bc_exercise.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->bcExerciseStreamSave($bcExercise, isNew: false);
+            }
             return $this->redirectToRoute('app_bc_exercise_show', ['id' => $bcExercise->getId()]);
         }
 
@@ -157,11 +180,27 @@ class BCExerciseController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('bc_exercise/_form_modal.html.twig', [
+                'bc_exercise' => $bcExercise,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('bc_exercise/edit.html.twig', [
             'bc_exercise' => $bcExercise,
             'form' => $form,
         ], new Response(status: $status));
     }
+    /** Turbo Stream after a successful in-modal BC-Exercise save (row replace/append). */
+    private function bcExerciseStreamSave(BCExercise $bcExercise, bool $isNew): Response
+    {
+        return $this->render('bc_exercise/_stream_save.html.twig', [
+            'bc_exercise' => $bcExercise,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
+    }
+
     #[Route('/bc-exercise/{id}/delete', name: 'app_bc_exercise_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, BCExercise $bcExercise): Response

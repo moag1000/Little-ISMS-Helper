@@ -1,0 +1,59 @@
+{# Single BusinessProcess table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The name cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
+{% trans_default_domain 'business_process' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% set currentTenant = currentTenant|default(null) %}
+{% set criticality_class = {
+    'critical': 'danger',
+    'high': 'warning',
+    'medium': 'info',
+    'low': 'secondary'
+} %}
+{% set score = business_process.businessImpactScore %}
+<tr id="business-process-row-{{ business_process.id }}">
+    <td>
+        <a href="{{ path('app_business_process_show', {id: business_process.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ business_process.name }}</strong></a>
+        {{ inheritance.small_badge(business_process, currentTenant) }}
+        {% if business_process.description %}
+        <br><small class="text-muted">{{ business_process.description|length > 60 ? business_process.description|slice(0, 60) ~ '...' : business_process.description }}</small>
+        {% endif %}
+    </td>
+    <td>{{ business_process.effectiveProcessOwner }}</td>
+    <td>
+        {% include '_components/_badge.html.twig' with { variant: criticality_class[business_process.criticality] ?? 'secondary', content: business_process.criticality|capitalize } %}
+    </td>
+    <td>{{ business_process.rto }}h</td>
+    <td>{{ business_process.rpo }}h</td>
+    <td>{{ business_process.mtpd }}h</td>
+    <td>
+        <span class="{{ badge_score(score) }}">
+            {{ score }}/5
+        </span>
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_business_process_show', {id: business_process.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_business_process_edit', {id: business_process.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+            <a href="{{ path('app_business_process_bia', {id: business_process.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               title="{{ 'bcm.action.view_bia'|trans({}, 'bcm') }}" aria-label="{{ 'bcm.action.view_bia'|trans({}, 'bcm') }}">
+                <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
+            </a>
+        </div>
+    </td>
+</tr>

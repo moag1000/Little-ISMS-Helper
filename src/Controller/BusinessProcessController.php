@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\BusinessProcess;
 use App\Form\BusinessProcessType;
@@ -25,6 +26,7 @@ class BusinessProcessController extends AbstractController
 {
     use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly BusinessProcessRepository $businessProcessRepository,
@@ -161,12 +163,23 @@ class BusinessProcessController extends AbstractController
             $this->entityManager->flush();
 
             $this->flashSuccess('business_process.success.created');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->businessProcessStreamSave($businessProcess, isNew: true);
+            }
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('business_process/_form_modal.html.twig', [
+                'business_process' => $businessProcess,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('business_process/new.html.twig', [
             'business_process' => $businessProcess,
@@ -232,9 +245,16 @@ class BusinessProcessController extends AbstractController
         return $this->json($stats);
     }
     #[Route('/bcm/business-process/{id}', name: 'app_business_process_show', methods: ['GET'])]
-    public function show(BusinessProcess $businessProcess): Response
+    public function show(Request $request, BusinessProcess $businessProcess): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('business_process/_detail_modal.html.twig', [
+                'business_process' => $businessProcess,
+            ]);
+        }
 
         // Calculate additional metrics for display
         $metrics = [
@@ -265,12 +285,23 @@ class BusinessProcessController extends AbstractController
             $entityManager->flush();
 
             $this->flashSuccess('business_process.success.updated');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->businessProcessStreamSave($businessProcess, isNew: false);
+            }
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('business_process/_form_modal.html.twig', [
+                'business_process' => $businessProcess,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('business_process/edit.html.twig', [
             'business_process' => $businessProcess,
@@ -316,6 +347,15 @@ class BusinessProcessController extends AbstractController
             'bia_data' => $biaData,
         ]);
     }
+    /** Turbo Stream after a successful in-modal BusinessProcess save (row replace/append). */
+    private function businessProcessStreamSave(BusinessProcess $businessProcess, bool $isNew): Response
+    {
+        return $this->render('business_process/_stream_save.html.twig', [
+            'business_process' => $businessProcess,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
+    }
+
     /**
      * Calculate detailed statistics showing breakdown by origin
      */

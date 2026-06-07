@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\BusinessContinuityPlan;
@@ -29,6 +30,7 @@ class BusinessContinuityPlanController extends AbstractController
 {
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly BusinessContinuityPlanRepository $businessContinuityPlanRepository,
@@ -76,12 +78,23 @@ class BusinessContinuityPlanController extends AbstractController
             $this->businessContinuityPlanService->create($businessContinuityPlan);
 
             $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->bcPlanStreamSave($businessContinuityPlan, isNew: true);
+            }
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $businessContinuityPlan->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('business_continuity_plan/_form_modal.html.twig', [
+                'bc_plan' => $businessContinuityPlan,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('business_continuity_plan/new.html.twig', [
             'bc_plan' => $businessContinuityPlan,
@@ -90,9 +103,16 @@ class BusinessContinuityPlanController extends AbstractController
     }
     #[Route('/business-continuity-plan/{id}', name: 'app_bc_plan_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(BusinessContinuityPlan $businessContinuityPlan): Response
+    public function show(Request $request, BusinessContinuityPlan $businessContinuityPlan): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('business_continuity_plan/_detail_modal.html.twig', [
+                'bc_plan' => $businessContinuityPlan,
+            ]);
+        }
 
         return $this->render('business_continuity_plan/show.html.twig', [
             'bc_plan' => $businessContinuityPlan,
@@ -139,6 +159,10 @@ class BusinessContinuityPlanController extends AbstractController
             $this->businessContinuityPlanService->update($businessContinuityPlan);
 
             $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->bcPlanStreamSave($businessContinuityPlan, isNew: false);
+            }
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $businessContinuityPlan->getId()]);
         }
 
@@ -146,10 +170,32 @@ class BusinessContinuityPlanController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('business_continuity_plan/_form_modal.html.twig', [
+                'bc_plan' => $businessContinuityPlan,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('business_continuity_plan/edit.html.twig', [
             'bc_plan' => $businessContinuityPlan,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /**
+     * Turbo Stream response after a successful in-modal BC-Plan save.
+     * Replaces the existing row (edit) or appends a new one (new).
+     */
+    private function bcPlanStreamSave(BusinessContinuityPlan $businessContinuityPlan, bool $isNew): Response
+    {
+        $response = $this->render('business_continuity_plan/_stream_save.html.twig', [
+            'bc_plan' => $businessContinuityPlan,
+            'is_new' => $isNew,
+        ]);
+        $response->headers->set('Content-Type', 'text/vnd.turbo-stream.html; charset=UTF-8');
+
+        return $response;
     }
     #[Route('/business-continuity-plan/{id}/delete', name: 'app_bc_plan_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
