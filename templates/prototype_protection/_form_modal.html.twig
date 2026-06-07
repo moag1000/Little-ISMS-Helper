@@ -1,0 +1,26 @@
+{# PrototypeProtectionAssessment create/edit rendered inside the fa-form-modal
+   Turbo Frame. Explicit form action prevents 405 (document URL stays on the list).
+   On valid submit the controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'prototype_protection' %}
+{% set is_edit = assessment is defined and assessment and assessment.id is not null %}
+{% set form_action = is_edit
+    ? path('app_prototype_protection_edit', { id: assessment.id })
+    : path('app_prototype_protection_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'prototype-protection-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'prototype_protection/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit
+            ? 'prototype_protection.page.edit_title'|trans({'%title%': assessment.title}, 'prototype_protection')
+            : 'prototype_protection.page.new_title'|trans({}, 'prototype_protection'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

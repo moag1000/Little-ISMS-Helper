@@ -1,0 +1,56 @@
+{# Single ChangeRequest table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell and eye/edit
+   actions open inside the fa-form-modal frame. Status badge preserved. #}
+{% trans_default_domain 'change_requests' %}
+<tr id="change-request-row-{{ change.id }}"
+    data-change-request-id="{{ change.id }}">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ change.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ change.changeNumber }}">
+    </td>
+    <td>
+        <a href="{{ path('app_change_request_show', {id: change.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ change.changeNumber }}</strong></a>
+    </td>
+    <td>
+        <a href="{{ path('app_change_request_show', {id: change.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link">{{ change.title|length > 40 ? change.title|slice(0, 40) ~ '…' : change.title }}</a>
+    </td>
+    <td>
+        <span class="badge badge-{{ change.changeType }}">{{ ('change_request.change_type.' ~ change.changeType)|trans({}, 'change_requests') }}</span>
+    </td>
+    <td>
+        <span class="badge badge-{{ change.priority }}">{{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }}</span>
+    </td>
+    <td>
+        <span class="{{ badge_status(change.status) }}">{{ ('change_request.status.' ~ change.status)|trans({}, 'change_requests') }}</span>
+    </td>
+    <td>{{ change.getComplexityScore() }}</td>
+    <td>{{ change.requestedDate|date('Y-m-d') }}</td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_change_request_show', {id: change.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}"
+               aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_change_request_edit', {id: change.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}"
+               aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal ISMSObjective save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="objective-rows">
+        <template>{% include 'objective/_row.html.twig' with { objective: objective } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="objective-row-{{ objective.id }}">
+        <template>{% include 'objective/_row.html.twig' with { objective: objective } %}</template>
+    </turbo-stream>
+{% endif %}

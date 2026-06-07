@@ -1,0 +1,73 @@
+{# ChangeRequest read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses drawer chrome (header/body/footer/kv) for a condensed read-only view.
+   "Vollansicht" link navigates to the full show page. #}
+{% trans_default_domain 'change_requests' %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 A.8.32 · Change Management</div>
+            <div class="fa-drawer__title">{{ change.changeNumber }} — {{ change.title }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            <span class="badge badge-{{ change.changeType }}">{{ ('change_request.change_type.' ~ change.changeType)|trans({}, 'change_requests') }}</span>
+            <span class="{{ badge_status(change.status) }}">{{ ('change_request.status.' ~ change.status)|trans({}, 'change_requests') }}</span>
+            <span class="badge badge-{{ change.priority }}">{{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }}</span>
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'change_request.field.requested_by'|trans({}, 'change_requests') }}</span>
+            <span>{{ change.requestedBy }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'change_request.field.requested_date'|trans({}, 'change_requests') }}</span>
+            <span>{{ change.requestedDate|date('Y-m-d') }}</span>
+        </div>
+        {% if change.plannedImplementationDate %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'change_request.field.planned_implementation'|trans({}, 'change_requests') }}</span>
+                <span>{{ change.plannedImplementationDate|date('Y-m-d') }}</span>
+            </div>
+        {% endif %}
+        {% if change.riskAssessment %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'change_request.field.risk_assessment'|trans({}, 'change_requests') }}</span>
+                <span>{{ change.riskAssessment|u.truncate(120, '…') }}</span>
+            </div>
+        {% endif %}
+        {% if change.approvedBy %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'change_request.field.approved_by'|trans({}, 'change_requests') }}</span>
+                <span>{{ change.approvedBy }}</span>
+            </div>
+        {% endif %}
+        {% if change.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'change_request.section.description'|trans({}, 'change_requests') }}</span>
+                <p class="fa-drawer__desc">{{ change.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_change_request_show', {id: change.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

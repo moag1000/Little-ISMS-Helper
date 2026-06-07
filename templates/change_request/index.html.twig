@@ -20,7 +20,7 @@
         badge: { icon: 'util-refresh', label: 'change_request.title'|trans({}, 'change_requests') },
         title: 'change_request.page.title'|trans({}, 'change_requests'),
         actions: [
-            { label: 'change_request.action.create'|trans({}, 'change_requests'), href: path('app_change_request_new'), variant: 'primary', icon: 'plus' }
+            { label: 'change_request.action.create'|trans({}, 'change_requests'), href: path('app_change_request_new'), variant: 'primary', icon: 'plus', attrs: {'data-turbo-frame': 'fa-form-modal'} }
         ]
     }) }}
 {% set _global_hints = alva_hints('change_request_index') %}
@@ -114,29 +114,10 @@
                         <th scope="col">{{ 'change_request.table.actions'|trans({}, 'change_requests') }}</th>
                     </tr>
                 {% endblock %}
+                {% block table_body_attrs %}id="change-request-rows"{% endblock %}
                 {% block table_body %}
                     {% for change in change_requests %}
-                    <tr>
-                        <td class="bulk-select-column">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   data-bulk-actions-target="item"
-                                   data-action="bulk-actions#selectItem"
-                                   value="{{ change.id }}"
-                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ change.changeNumber }}">
-                        </td>
-                        <td><a href="{{ path('app_change_request_show', {id: change.id}) }}">{{ change.changeNumber }}</a></td>
-                        <td>{{ change.title|slice(0, 40) }}...</td>
-                        <td><span class="badge badge-{{ change.changeType }}">{{ ('change_request.change_type.' ~ change.changeType)|trans({}, 'change_requests') }}</span></td>
-                        <td><span class="badge badge-{{ change.priority }}">{{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }}</span></td>
-                        <td><span class="{{ badge_status(change.status) }}">{{ ('change_request.status.' ~ change.status)|trans({}, 'change_requests') }}</span></td>
-                        <td>{{ change.getComplexityScore() }}</td>
-                        <td>{{ change.requestedDate|date('Y-m-d') }}</td>
-                        <td>
-                            <a href="{{ path('app_change_request_show', {id: change.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'change_request.action.view'|trans({}, 'change_requests') }}</a>
-                            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">{{ 'change_request.action.edit'|trans({}, 'change_requests') }}</a>
-                        </td>
-                    </tr>
+                        {% include 'change_request/_row.html.twig' with { change: change } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}

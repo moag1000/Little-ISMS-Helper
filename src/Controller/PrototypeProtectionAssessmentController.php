@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\PrototypeProtectionAssessment;
 use App\Form\PrototypeProtectionAssessmentType;
@@ -32,6 +33,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class PrototypeProtectionAssessmentController extends AbstractController
 {
     use ModuleGatedControllerTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly PrototypeProtectionAssessmentRepository $repository,
@@ -79,12 +81,23 @@ class PrototypeProtectionAssessmentController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('prototype_protection.flash.created', [], 'prototype_protection'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->prototypeProtectionStreamSave($assessment, isNew: true);
+            }
             return $this->redirectToRoute('app_prototype_protection_show', ['id' => $assessment->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('prototype_protection/_form_modal.html.twig', [
+                'assessment' => $assessment,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('prototype_protection/new.html.twig', [
             'assessment' => $assessment,
@@ -93,11 +106,19 @@ class PrototypeProtectionAssessmentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(PrototypeProtectionAssessment $assessment): Response
+    public function show(Request $request, PrototypeProtectionAssessment $assessment): Response
     {
         if ($redirect = $this->checkModuleActive('tisax')) return $redirect;
 
         $this->assertAccess($assessment);
+
+        // In-frame request → condensed detail modal; direct URL → full page.
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('prototype_protection/_detail_modal.html.twig', [
+                'assessment' => $assessment,
+            ]);
+        }
+
         return $this->render('prototype_protection/show.html.twig', [
             'assessment' => $assessment,
         ]);
@@ -118,12 +139,23 @@ class PrototypeProtectionAssessmentController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('prototype_protection.flash.updated', [], 'prototype_protection'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->prototypeProtectionStreamSave($assessment, isNew: false);
+            }
             return $this->redirectToRoute('app_prototype_protection_show', ['id' => $assessment->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('prototype_protection/_form_modal.html.twig', [
+                'assessment' => $assessment,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('prototype_protection/edit.html.twig', [
             'assessment' => $assessment,
@@ -178,6 +210,15 @@ class PrototypeProtectionAssessmentController extends AbstractController
         }
 
         return $this->redirectToRoute('app_prototype_protection_index');
+    }
+
+    /** Turbo Stream after a successful in-modal PrototypeProtectionAssessment save (row replace/append). */
+    private function prototypeProtectionStreamSave(PrototypeProtectionAssessment $assessment, bool $isNew): Response
+    {
+        return $this->render('prototype_protection/_stream_save.html.twig', [
+            'assessment' => $assessment,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     private function assertAccess(PrototypeProtectionAssessment $assessment): void

@@ -7,4 +7,4 @@ src/Controller/AuditProgramController.php:33
 src/Controller/DpaController.php:37
 src/Controller/EffectivenessMonitorController.php:31
 src/Controller/Tisax/TisaxImportWizardController.php:50
-src/Controller/TransferImpactAssessmentController.php:47
+src/Controller/TransferImpactAssessmentController.php:48

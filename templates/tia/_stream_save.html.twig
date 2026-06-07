@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal TIA save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="tia-rows">
+        <template>{% include 'tia/_row.html.twig' with { tia: tia, processing_activity: tia.processingActivity } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="tia-row-{{ tia.id }}">
+        <template>{% include 'tia/_row.html.twig' with { tia: tia, processing_activity: tia.processingActivity } %}</template>
+    </turbo-stream>
+{% endif %}

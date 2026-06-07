@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use DateTimeImmutable;
 use App\Controller\Trait\BulkActionTrait;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ChangeRequest;
 use App\Form\ChangeRequestType;
 use App\Repository\ChangeRequestRepository;
@@ -26,6 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ChangeRequestController extends AbstractController
 {
     use BulkActionTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly ChangeRequestRepository $changeRequestRepository,
@@ -67,12 +69,23 @@ class ChangeRequestController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('change_request.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->changeRequestStreamSave($changeRequest, isNew: true);
+            }
             return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('change_request/_form_modal.html.twig', [
+                'change' => $changeRequest,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('change_request/new.html.twig', [
             'change_request' => $changeRequest,
@@ -81,8 +94,14 @@ class ChangeRequestController extends AbstractController
     }
     #[Route('/change-request/{id}', name: 'app_change_request_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(ChangeRequest $changeRequest): Response
+    public function show(Request $request, ChangeRequest $changeRequest): Response
     {
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('change_request/_detail_modal.html.twig', [
+                'change' => $changeRequest,
+            ]);
+        }
+
         return $this->render('change_request/show.html.twig', [
             'change_request' => $changeRequest,
         ]);
@@ -99,6 +118,10 @@ class ChangeRequestController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('change_request.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->changeRequestStreamSave($changeRequest, isNew: false);
+            }
             return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
         }
 
@@ -106,11 +129,27 @@ class ChangeRequestController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('change_request/_form_modal.html.twig', [
+                'change' => $changeRequest,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('change_request/edit.html.twig', [
             'change_request' => $changeRequest,
             'form' => $form,
         ], new Response(status: $status));
     }
+    /** Turbo Stream after a successful in-modal ChangeRequest save (row replace/append). */
+    private function changeRequestStreamSave(ChangeRequest $changeRequest, bool $isNew): Response
+    {
+        return $this->render('change_request/_stream_save.html.twig', [
+            'change' => $changeRequest,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
+    }
+
     #[Route('/change-request/{id}/delete', name: 'app_change_request_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ChangeRequest $changeRequest): Response
