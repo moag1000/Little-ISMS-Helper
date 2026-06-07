@@ -127,11 +127,26 @@ tbody tr:has(.fa-row-link):hover {
     }
 }
 
-/* Risk live mini-heatmap (.fa-risk-mini-heatmap) has aspect-ratio:1 cells in a
-   1fr grid → it scales with container width, so in the wide modal each one grows
-   to ~440px tall and eats the form. Cap its width so it stays a compact optical
-   indicator (cells follow via aspect-ratio). Scoped to the in-form preview. */
+/* Risk live mini-heatmap (.fa-risk-mini-heatmap) as a compact in-form indicator.
+   It has aspect-ratio:1 cells in a 1fr grid, so it scales with container width
+   (was ~440px tall in the wide modal). Here: fixed small grid on the LEFT, the
+   score/title/band header beside it on the RIGHT (saves vertical pixels), axis
+   labels under the grid. Scoped to the in-form preview only. */
 .risk-form-heatmap .fa-risk-mini-heatmap {
-    max-width: 200px;
+    grid-template-columns: 150px 1fr;
+    grid-template-areas:
+        "grid header"
+        "grid footer";
+    align-items: start;
+    gap: var(--space-3, 12px);
+    max-width: 360px;
     padding: var(--space-2, 8px);
 }
+.risk-form-heatmap .fa-risk-mini-heatmap__grid { width: 150px; }
+.risk-form-heatmap .fa-risk-mini-heatmap__cell { font-size: 9px; }
+.risk-form-heatmap .fa-risk-mini-heatmap__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1, 4px);
+}
+.risk-form-heatmap .fa-risk-mini-heatmap__footer { align-self: end; }
