@@ -1,0 +1,72 @@
+{# Shared DSR form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / submit_label / actions. Sections mirror DataSubjectRequestType
+   SECTION comments 1–6. #}
+{% trans_default_domain 'data_subject_request' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(dsr is defined and dsr and dsr.dataSubjectName ? dsr.dataSubjectName : ('dsr.page.new_title'|trans({}, 'data_subject_request'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'request_details': {
+        'label': 'dsr.section.request_details'|trans({}, 'data_subject_request'),
+        'fields': ['requestType', 'receivedAt', 'description']
+    },
+    'data_subject_info': {
+        'label': 'dsr.section.data_subject_info'|trans({}, 'data_subject_request'),
+        'fields': ['dataSubjectName', 'dataSubjectEmail', 'dataSubjectIdentifier']
+    },
+    'identity_verification': {
+        'label': 'dsr.section.identity_verification'|trans({}, 'data_subject_request'),
+        'fields': ['identityVerified', 'identityVerificationMethod']
+    },
+    'assignment': {
+        'label': 'dsr.section.assignment'|trans({}, 'data_subject_request'),
+        'fields': ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'dpoPerson', 'processingActivity']
+    },
+    'response': {
+        'label': 'dsr.section.response_tracking'|trans({}, 'data_subject_request'),
+        'fields': ['responseAt', 'extendedDeadlineAt', 'extensionReason', 'extensionNotifiedAt', 'responseDocument', 'responseMethod', 'rejectionReason']
+    },
+    'internal_notes': {
+        'label': 'dsr.section.internal_notes'|trans({}, 'data_subject_request'),
+        'fields': ['notes']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'DSGVO Art. 15–22 · Betroffenenrecht',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'requestType': 6,
+        'receivedAt': 6,
+        'description': 12,
+        'dataSubjectName': 6,
+        'dataSubjectEmail': 6,
+        'dataSubjectIdentifier': 6,
+        'identityVerified': 6,
+        'identityVerificationMethod': 6,
+        'assignedTo': 6,
+        'assignedPerson': 6,
+        'assignedDeputyPersons': 12,
+        'dpoPerson': 6,
+        'processingActivity': 6,
+        'responseAt': 6,
+        'extendedDeadlineAt': 6,
+        'extensionReason': 12,
+        'extensionNotifiedAt': 6,
+        'responseDocument': 6,
+        'responseMethod': 6,
+        'rejectionReason': 12,
+        'notes': 12
+    },
+    'translation_domain': 'data_subject_request',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

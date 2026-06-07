@@ -19,7 +19,7 @@
     title: 'consent.header.title'|trans({}, 'consent'),
     subtitle: 'consent.header.subtitle'|trans({}, 'consent'),
     actions: [
-        { label: 'consent.header.action.new'|trans({}, 'consent'), href: path('app_consent_new'), variant: 'primary', icon: 'plus' }
+        { label: 'consent.header.action.new'|trans({}, 'consent'), href: path('app_consent_new'), variant: 'primary', icon: 'plus', attrs: { 'data-turbo-frame': 'fa-form-modal' } }
     ]
 }) }}
 {% set _global_hints = alva_hints('consent_index') %}
@@ -176,89 +176,10 @@
                 <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
+        {% block table_body_attrs %}id="consent-rows"{% endblock %}
         {% block table_body %}
             {% for consent in consents %}
-            <tr data-consent-id="{{ consent.id }}">
-                <td class="bulk-select-column">
-                    <input type="checkbox"
-                           class="form-check-input"
-                           data-bulk-actions-target="item"
-                           data-action="bulk-actions#selectItem"
-                           value="{{ consent.id }}"
-                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ consent.dataSubjectIdentifier }}">
-                </td>
-                <td>
-                    <code>{{ consent.id }}</code>
-                </td>
-                <td>
-                    <strong>{{ consent.dataSubjectIdentifier }}</strong>
-                    <br><small class="text-muted">{{ ('consent.identifier_type.' ~ consent.identifierType)|trans({}, 'consent') }}</small>
-                </td>
-                <td>
-                    {% if consent.processingActivity %}
-                        {{ consent.processingActivity.name|default(consent.processingActivity) }}
-                    {% else %}
-                        <span class="text-muted">-</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% set statusColors = {
-                        'pending_verification': 'warning',
-                        'active': 'success',
-                        'revoked': 'danger'
-                    } %}
-                    {% include '_components/_badge.html.twig' with { variant: statusColors[consent.status] ?? 'secondary', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
-                </td>
-                <td>
-                    {{ consent.grantedAt|date('d.m.Y H:i') }}
-                    {% if consent.grantedAt %}
-                        {% set daysSince = (date().diff(consent.grantedAt).days) %}
-                        {% if daysSince == 0 %}
-                            <br><small class="text-muted">{{ 'common.today'|trans({}, 'messages') }}</small>
-                        {% elseif daysSince == 1 %}
-                            <br><small class="text-muted">{{ 'common.yesterday'|trans({}, 'messages') }}</small>
-                        {% else %}
-                            <br><small class="text-muted">{{ 'common.days_ago'|trans({'%days%': daysSince}, 'messages') }}</small>
-                        {% endif %}
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {% if consent.verifiedBy %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', title: 'consent.verified_by'|trans({}, 'consent'), content: 'common.yes'|trans({}, 'messages') } %}
-                    {% else %}
-                        <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                        <a href="{{ path('app_consent_show', {id: consent.id}) }}"
-                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                           data-turbo-action="advance"
-                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                        </a>
-                        {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
-                        <a href="{{ path('app_consent_edit', {id: consent.id}) }}"
-                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                           data-turbo-action="advance"
-                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                        </a>
-                        {% endif %}
-                        {% if is_granted('ROLE_DPO') %}
-                        <form method="post" action="{{ path('app_consent_delete', {id: consent.id}) }}" class="d-inline"
-                              data-controller="ui-actions"
-                              data-action="submit->ui-actions#confirm"
-                              data-ui-actions-message-param="{{ 'consent.delete.confirm'|trans({}, 'consent') }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
-                                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
-                            </button>
-                        </form>
-                        {% endif %}
-                    </div>
-                </td>
-            </tr>
+                {% include 'consent/_row.html.twig' with { consent: consent } %}
             {% endfor %}
         {% endblock %}
     {% endembed %}

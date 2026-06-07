@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal Consent save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="consent-rows">
+        <template>{% include 'consent/_row.html.twig' with { consent: consent } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="consent-row-{{ consent.id }}">
+        <template>{% include 'consent/_row.html.twig' with { consent: consent } %}</template>
+    </turbo-stream>
+{% endif %}

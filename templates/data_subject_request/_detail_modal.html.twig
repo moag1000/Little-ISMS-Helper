@@ -1,0 +1,103 @@
+{# DSR read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page.
+   Edit button is gated on terminal status (completed/rejected) — when locked
+   it renders as a disabled control.
+   GDPR SLA/due-date status is preserved: overdue styling + deadline display. #}
+{% trans_default_domain 'data_subject_request' %}
+{% set status_class = {
+    'received': 'secondary',
+    'identity_verification': 'info',
+    'in_progress': 'primary',
+    'completed': 'success',
+    'rejected': 'danger',
+    'extended': 'warning'
+}[dsr.status]|default('secondary') %}
+{% set is_terminal = dsr.status in ['completed', 'rejected'] %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">DSGVO Art. 15–22 · Betroffenenrecht</div>
+            <div class="fa-drawer__title">{{ dsr.dataSubjectName }} — #{{ dsr.id }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request') } only %}
+            {% if dsr.overdue %}
+                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'dsr.badge.overdue'|trans({}, 'data_subject_request') } only %}
+            {% endif %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'dsr.field.request_type'|trans({}, 'data_subject_request') }}</span>
+            <span>{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'dsr.field.email'|trans({}, 'data_subject_request') }}</span>
+            <span>{{ dsr.dataSubjectEmail ?: '—' }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'dsr.field.received_at'|trans({}, 'data_subject_request') }}</span>
+            <span>{{ dsr.receivedAt ? dsr.receivedAt|locale_date : '—' }}</span>
+        </div>
+        {% set deadline = dsr.effectiveDeadline %}
+        {% if deadline %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'dsr.field.deadline'|trans({}, 'data_subject_request') }}</span>
+                <span class="{% if dsr.overdue %}text-danger fw-bold{% elseif dsr.daysUntilDeadline <= 7 %}text-warning{% endif %}">
+                    {{ deadline|locale_date }}
+                    {% if dsr.status not in ['completed', 'rejected'] %}
+                        <small class="d-block {% if dsr.overdue %}text-danger{% else %}text-muted{% endif %}">
+                            {% if dsr.overdue %}
+                                {{ 'dsr.deadline.overdue_days'|trans({'%days%': dsr.daysUntilDeadline|abs}, 'data_subject_request') }}
+                            {% else %}
+                                {{ 'dsr.deadline.remaining_days'|trans({'%days%': dsr.daysUntilDeadline}, 'data_subject_request') }}
+                            {% endif %}
+                        </small>
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+        {% if dsr.assignedTo %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'dsr.field.assigned_to'|trans({}, 'data_subject_request') }}</span>
+                <span>{{ dsr.assignedTo.firstName }} {{ dsr.assignedTo.lastName }}</span>
+            </div>
+        {% endif %}
+        {% if dsr.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'dsr.field.description'|trans({}, 'data_subject_request') }}</span>
+                <p class="fa-drawer__desc">{{ dsr.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_data_subject_request_show', {id: dsr.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if not is_terminal and is_granted('ROLE_USER') %}
+            <a href="{{ path('app_data_subject_request_edit', {id: dsr.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  title="{{ 'dsr.flash.cannot_edit_terminal'|trans({}, 'data_subject_request') }}"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>
