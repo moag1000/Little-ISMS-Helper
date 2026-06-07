@@ -22,7 +22,7 @@
         subtitle: 'privacy.data_breach.subtitle'|trans({}, 'privacy'),
         actions: [
             { label: 'privacy.data_breach.actions.dashboard'|trans({}, 'privacy'), href: path('app_data_breach_dashboard'), variant: 'ghost', icon: 'nav-dashboard' },
-            { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus' }
+            { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus', attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]
     }) }}
 {% set _global_hints = alva_hints('data_breach_index') %}
@@ -187,109 +187,10 @@
                             <th scope="col">{{ 'data_breach.index.col_actions'|trans({}, 'messages') }}</th>
                         </tr>
                     {% endblock %}
+                    {% block table_body_attrs %}id="data-breach-rows"{% endblock %}
                     {% block table_body %}
                         {% for breach in breaches %}
-                            <tr class="{% if breach.isAuthorityNotificationOverdue %}table-danger{% endif %}">
-                                <td class="bulk-select-column">
-                                    <input type="checkbox"
-                                           class="form-check-input"
-                                           data-bulk-actions-target="item"
-                                           data-action="bulk-actions#selectItem"
-                                           value="{{ breach.id }}"
-                                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ breach.referenceNumber }}">
-                                </td>
-                                <td>
-                                    <a href="{{ path('app_data_breach_show', {id: breach.id}) }}">
-                                        {{ breach.referenceNumber }}
-                                    </a>
-                                </td>
-                                <td>{{ breach.title }}</td>
-                                <td>
-                                    {% set status_class = {
-                                        'draft': 'secondary',
-                                        'under_assessment': 'info',
-                                        'authority_notified': 'success',
-                                        'subjects_notified': 'success',
-                                        'closed': 'dark'
-                                    }[breach.status] %}
-                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') } %}
-                                </td>
-                                <td>
-                                    {% if breach.riskLevel %}
-                                        {% set risk_class = {
-                                            'low': 'success',
-                                            'medium': 'info',
-                                            'high': 'warning',
-                                            'critical': 'danger'
-                                        }[breach.riskLevel] %}
-                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
-                                    {% else %}
-                                        <span class="text-muted">-</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if breach.affectedDataSubjects %}
-                                        {{ breach.affectedDataSubjects|number_format }}
-                                    {% else %}
-                                        <span class="text-muted">{{ 'data_breach.index.unknown'|trans({}, 'messages') }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
-                                        {% set hours = breach.hoursUntilAuthorityDeadline %}
-                                        {% if hours < 0 %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'data_breach.index.overdue'|trans({}, 'messages') ~ ' ' ~ (hours * -1)|number_format ~ 'h' } %}
-                                        {% elseif hours < 24 %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'data_breach.index.hours_left'|trans({'%hours%': hours|number_format}, 'messages') } %}
-                                        {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: 'data_breach.index.hours_left'|trans({'%hours%': hours|number_format}, 'messages') } %}
-                                        {% endif %}
-                                    {% elseif breach.supervisoryAuthorityNotifiedAt %}
-                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'data_breach.notified_at'|trans({'%date%': breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i')}, 'privacy') }}"></i>
-                                    {% else %}
-                                        <span class="text-muted">{{ 'data_breach.not_required'|trans({}, 'privacy') }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if breach.supervisoryAuthorityNotifiedAt %}
-                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                                    {% elseif breach.requiresAuthorityNotification %}
-                                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                                    {% else %}
-                                        <span class="text-muted">-</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if breach.dataSubjectsNotifiedAt %}
-                                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                                    {% elseif breach.requiresSubjectNotification %}
-                                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                                    {% else %}
-                                        <span class="text-muted">-</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                        <a href="{{ path('app_data_breach_show', {id: breach.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                        </a>
-                                        {% if breach.status in ['draft', 'under_assessment'] %}
-                                            <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost"
-                                               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                            </a>
-                                        {% endif %}
-                                        <a href="{{ path('app_data_breach_export_pdf', {id: breach.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--success"
-                                           title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                            {% include 'data_breach/_row.html.twig' with { breach: breach } %}
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}

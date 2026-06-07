@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal DataBreach save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="data-breach-rows">
+        <template>{% include 'data_breach/_row.html.twig' with { breach: breach } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="data-breach-row-{{ breach.id }}">
+        <template>{% include 'data_breach/_row.html.twig' with { breach: breach } %}</template>
+    </turbo-stream>
+{% endif %}

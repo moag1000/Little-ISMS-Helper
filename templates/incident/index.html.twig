@@ -18,7 +18,7 @@
     title: 'incident.header.title'|trans({}, 'incident'),
     subtitle: 'incident.header.subtitle'|trans({}, 'incident'),
     actions: [
-        { label: 'incident.header.action.report'|trans({}, 'incident'), variant: 'danger', icon: 'status-critical', href: path('app_incident_new') }
+        { label: 'incident.header.action.report'|trans({}, 'incident'), variant: 'danger', icon: 'status-critical', href: path('app_incident_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
     ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'incident', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
 }) }}
     {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: allIncidents|default([])|length } %}
@@ -295,103 +295,11 @@
             </tr>
         {% endblock %}
         {% block table_body %}
+            <tbody id="incident-rows">
             {% for incident in allIncidents %}
-            <tr data-incident-id="{{ incident.id }}"
-                data-incident-status="{{ incident.status.value }}"
-                data-incident-severity="{{ incident.severity ? incident.severity.value : '' }}">
-                <td class="bulk-select-column">
-                    <input type="checkbox"
-                           class="form-check-input"
-                           data-bulk-actions-target="item"
-                           data-action="bulk-actions#selectItem"
-                           value="{{ incident.id }}"
-                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ incident.title }}">
-                </td>
-                <td>
-                    <strong>{{ incident.title }}</strong>
-                    {% if incident.description %}
-                    <br><small class="text-muted">{{ incident.description|length > 60 ? incident.description|slice(0, 60) ~ '...' : incident.description }}</small>
-                    {% endif %}
-                    {% if incident.status.value == 'reported' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-2', content: 'common.new'|trans({}, 'messages') } %}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if incident.category %}
-                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('incident.category.' ~ incident.category)|trans({}, 'incident') } %}
-                    {% else %}
-                        <span class="text-muted">-</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {% set severityColors = {
-                        'critical': 'danger',
-                        'high': 'warning',
-                        'medium': 'info',
-                        'low': 'success'
-                    } %}
-                    {% include '_components/_badge.html.twig' with { variant: severityColors[incident.severity ? incident.severity.value : ''] ?? 'secondary', content: ('incident.severity.' ~ (incident.severity ? incident.severity.value : ''))|trans({}, 'incident') } %}
-                </td>
-                <td>
-                    {% set statusIcons = {
-                        'reported': 'status-critical text-danger',
-                        'in_investigation': 'ui-search text-warning',
-                        'in_resolution': 'util-refresh text-info',
-                        'resolved': 'status-ok text-success',
-                        'closed': 'status-ok text-secondary'
-                    } %}
-                    <i class="fa-icon fa-icon--{{ statusIcons[incident.status.value] ?? 'status-info' }}" aria-hidden="true"></i>
-                    {{ ('incident.status.' ~ incident.status.value)|trans({}, 'incident') }}
-                </td>
-                <td>
-                    {{ incident.detectedAt|locale_datetime }}
-                    {% if incident.detectedAt %}
-                        {% set daysSince = (date().diff(incident.detectedAt).days) %}
-                        {% if daysSince == 0 %}
-                            <br><small class="text-muted">{{ 'common.today'|trans({}, 'messages') }}</small>
-                        {% elseif daysSince == 1 %}
-                            <br><small class="text-muted">{{ 'common.yesterday'|trans({}, 'messages') }}</small>
-                        {% else %}
-                            <br><small class="text-muted">{{ 'common.days_ago'|trans({'%days%': daysSince}, 'messages') }}</small>
-                        {% endif %}
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {% if incident.affectedAssets|length > 0 %}
-                        <a href="{{ path('app_incident_show', {id: incident.id}) }}#affected-assets" class="fa-status-pill fa-status-pill--warning" title="{{ 'incident.field.affected_assets'|trans({}, 'incident') }}">
-                            {{ incident.affectedAssets|length }}
-                        </a>
-                    {% else %}
-                        <span class="text-muted">0</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {% if incident.dataBreachOccurred %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'nav-shield-alert', title: 'incident.field.data_breach_occurred'|trans({}, 'incident'), content: 'common.yes'|trans({}, 'messages') } %}
-                    {% else %}
-                        <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                        <a href="{{ path('app_incident_show', {id: incident.id}) }}"
-                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                           data-turbo-action="advance"
-                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                        </a>
-                        {% if is_granted('ROLE_USER') and incident.status.value != 'closed' %}
-                        <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
-                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                           data-turbo-action="advance"
-                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                        </a>
-                        {% endif %}
-                    </div>
-                </td>
-            </tr>
+                {% include 'incident/_row.html.twig' with { incident: incident } %}
             {% endfor %}
+            </tbody>
         {% endblock %}
     {% endembed %}
 

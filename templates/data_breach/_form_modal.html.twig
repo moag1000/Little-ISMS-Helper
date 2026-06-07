@@ -1,0 +1,57 @@
+{# DataBreach create/edit rendered inside the fa-form-modal Turbo Frame.
+   Reuses the existing 4-step client-side wizard (single Symfony form, single POST).
+   Explicit form action keeps the document URL on the list while the wizard is open.
+   On valid submit the controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'privacy' %}
+{% import '_components/_fa_modal_wizard.html.twig' as _fa_modal_wizard %}
+{% set is_edit = breach is defined and breach and breach.id is not null %}
+{% set form_action = is_edit ? path('app_data_breach_edit', { id: breach.id }) : path('app_data_breach_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'data-breach-modal-form',
+        'data-turbo-frame': 'fa-form-modal',
+        class: 'fa-aurora-surface'
+    } }) }}
+
+        {{ _fa_modal_wizard.render({
+            id: 'gdpr-breach-wizard',
+            title: 'data_breach.wizard.new_title'|trans({}, 'privacy'),
+            subtitle: 'data_breach.wizard.new_subtitle'|trans({}, 'privacy'),
+            steps: [
+                {
+                    id: 'detection',
+                    label: 'data_breach.wizard.step.detection'|trans({}, 'privacy'),
+                    title: 'data_breach.wizard.step.detection_title'|trans({}, 'privacy'),
+                    required: true,
+                    body: include('data_breach/wizard/_step_detection.html.twig', { form: form })
+                },
+                {
+                    id: 'notification',
+                    label: 'data_breach.wizard.step.notification'|trans({}, 'privacy'),
+                    title: 'data_breach.wizard.step.notification_title'|trans({}, 'privacy'),
+                    required: true,
+                    body: include('data_breach/wizard/_step_notification.html.twig', { form: form })
+                },
+                {
+                    id: 'record',
+                    label: 'data_breach.wizard.step.record'|trans({}, 'privacy'),
+                    title: 'data_breach.wizard.step.record_title'|trans({}, 'privacy'),
+                    required: true,
+                    body: include('data_breach/wizard/_step_record.html.twig', { form: form })
+                },
+                {
+                    id: 'review',
+                    label: 'data_breach.wizard.step.review'|trans({}, 'privacy'),
+                    title: 'data_breach.wizard.step.review_title'|trans({}, 'privacy'),
+                    required: false,
+                    body: include('data_breach/wizard/_step_review.html.twig', { form: form, data_breach: is_edit ? breach : null })
+                }
+            ],
+            actions: {
+                cancel: { label: 'common.cancel'|trans({}, 'messages'), route: path('app_data_breach_index') },
+                submit: { label: 'data_breach.wizard.action.submit'|trans({}, 'privacy'), variant: 'danger' }
+            }
+        }) }}
+
+    {{ form_end(form) }}
+</turbo-frame>
