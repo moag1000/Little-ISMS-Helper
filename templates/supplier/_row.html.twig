@@ -1,0 +1,68 @@
+{# Single Supplier table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the
+   same. The edit action is gated on ROLE_USER, matching the full-page index
+   behaviour (the server enforces the inherited-supplier guard in edit()). #}
+{% trans_default_domain 'suppliers' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% set currentTenant = currentTenant|default(null) %}
+{% set riskScore = supplier.calculateRiskScore() %}
+<tr id="supplier-row-{{ supplier.id }}"
+    data-supplier-id="{{ supplier.id }}">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ supplier.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ supplier.name }}">
+    </td>
+    <td>
+        <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link"><strong>{{ supplier.name }}</strong></a>
+        {{ inheritance.small_badge(supplier, currentTenant) }}
+        {% if supplier.isDoraRelevant %}
+            {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA', title: 'supplier.field.is_dora_relevant'|trans({}, 'suppliers') } %}
+        {% endif %}
+    </td>
+    <td>{{ supplier.serviceProvided ? supplier.serviceProvided|slice(0, 50) ~ '...' : '' }}</td>
+    <td>
+        {% include '_components/_badge.html.twig' with {
+            variant: supplier.criticality == 'critical' ? 'danger' : (supplier.criticality == 'high' ? 'warning' : (supplier.criticality == 'medium' ? 'info' : 'secondary')),
+            content: supplier.criticality|upper
+        } %}
+    </td>
+    <td>
+        <span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span>
+    </td>
+    <td>
+        {% include '_components/_badge.html.twig' with {
+            variant: riskScore > 70 ? 'danger' : (riskScore > 50 ? 'warning' : (riskScore > 30 ? 'info' : 'secondary')),
+            content: riskScore
+        } %}
+    </td>
+    <td class="text-center">
+        {% if supplier.hasISO27001 %}
+            <i class="fa-icon text-success fa-icon--status-ok" aria-hidden="true"></i>
+        {% else %}
+            <i class="fa-icon fa-icon--status-critical text-secondary" aria-hidden="true"></i>
+        {% endif %}
+    </td>
+    <td class="text-center">
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

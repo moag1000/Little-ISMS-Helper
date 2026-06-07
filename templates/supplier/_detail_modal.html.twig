@@ -1,0 +1,104 @@
+{# Supplier read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page.
+   Edit button is gated on BOTH the canEdit domain flag (inherited suppliers are
+   not editable) AND is_granted — when locked it renders as a disabled control. #}
+{% trans_default_domain 'suppliers' %}
+{% set riskScore = supplier.calculateRiskScore() %}
+{% set _risk_variant = riskScore > 70 ? 'danger' : (riskScore > 50 ? 'warning' : (riskScore > 30 ? 'info' : 'secondary')) %}
+{% set canEdit = canEdit|default(false) %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 A.5.19 · Lieferantenmanagement</div>
+            <div class="fa-drawer__title">{{ supplier.name }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with {
+                variant: supplier.criticality == 'critical' ? 'danger' : (supplier.criticality == 'high' ? 'warning' : (supplier.criticality == 'medium' ? 'info' : 'secondary')),
+                content: ('supplier.criticality.' ~ supplier.criticality)|trans({}, 'suppliers')
+            } %}
+            <span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span>
+            {% if supplier.isDoraRelevant %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA' } %}
+            {% endif %}
+        </div>
+
+        {% if supplier.serviceProvided %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'supplier.field.service_provided'|trans({}, 'suppliers') }}</span>
+            <span>{{ supplier.serviceProvided|u.truncate(120, '…') }}</span>
+        </div>
+        {% endif %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'supplier.table.risk_score'|trans({}, 'suppliers') }}</span>
+            <span>{% include '_components/_badge.html.twig' with { variant: _risk_variant, content: riskScore } %}</span>
+        </div>
+        {% if supplier.nextAssessmentDate %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'supplier.field.next_assessment_date'|trans({}, 'suppliers') }}</span>
+            <span>{{ supplier.nextAssessmentDate|date('Y-m-d') }}</span>
+        </div>
+        {% endif %}
+        {% if supplier.lastSecurityAssessment %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'supplier.field.last_security_assessment'|trans({}, 'suppliers') }}</span>
+            <span>{{ supplier.lastSecurityAssessment|date('Y-m-d') }}</span>
+        </div>
+        {% endif %}
+        {% if supplier.contactPerson %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'supplier.field.contact_person'|trans({}, 'suppliers') }}</span>
+            <span>{{ supplier.contactPerson }}</span>
+        </div>
+        {% endif %}
+        {% if supplier.email %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'supplier.field.email'|trans({}, 'suppliers') }}</span>
+            <span>{{ supplier.email }}</span>
+        </div>
+        {% endif %}
+        {% if supplier.hasISO27001 %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'supplier.field.has_iso27001'|trans({}, 'suppliers') }}</span>
+            <span><i class="fa-icon fa-icon--status-ok text-success" aria-hidden="true"></i></span>
+        </div>
+        {% endif %}
+        {% if is_module_active('nis2_dora') and supplier.isDoraRelevant %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'supplier.field.ict_criticality'|trans({}, 'suppliers') }}</span>
+            <span>{{ supplier.ictCriticality ? ('supplier.ict_criticality.' ~ supplier.ictCriticality)|trans({}, 'suppliers') : '–' }}</span>
+        </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if canEdit and is_granted('ROLE_USER') %}
+            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>

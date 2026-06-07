@@ -19,7 +19,7 @@
 } %}
 
 {% set supplierActions = [
-    { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new') },
+    { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } },
     { label: 'supplier.ict_library.title'|trans({}, 'suppliers'), variant: 'ghost', icon: 'nav-building', href: path('ict_provider_library_index') }
 ] %}
 {% if doraActive ?? false %}
@@ -265,44 +265,10 @@
                         <th scope="col">{{ 'supplier.table.actions'|trans({}, 'suppliers') }}</th>
                     </tr>
                 {% endblock %}
+                {% block table_body_attrs %}id="supplier-rows"{% endblock %}
                 {% block table_body %}
-                    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                     {% for supplier in suppliers %}
-                    <tr data-supplier-id="{{ supplier.id }}">
-                        <td class="bulk-select-column">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   data-bulk-actions-target="item"
-                                   data-action="bulk-actions#selectItem"
-                                   value="{{ supplier.id }}"
-                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ supplier.name }}">
-                        </td>
-                        <td>
-                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
-                            {{ inheritance.small_badge(supplier, currentTenant) }}
-                            {% if supplier.isDoraRelevant %}
-                                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA', title: 'supplier.field.is_dora_relevant'|trans({}, 'suppliers') } %}
-                            {% endif %}
-                        </td>
-                        <td>{{ supplier.serviceProvided|slice(0, 50) }}...</td>
-                        <td>{% include '_components/_badge.html.twig' with { variant: supplier.criticality == 'critical' ? 'danger' : (supplier.criticality == 'high' ? 'warning' : (supplier.criticality == 'medium' ? 'info' : 'secondary')), content: supplier.criticality|upper } %}</td>
-                        <td><span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span></td>
-                        <td>
-                            {% set riskScore = supplier.calculateRiskScore() %}
-                            {% include '_components/_badge.html.twig' with { variant: riskScore > 70 ? 'danger' : (riskScore > 50 ? 'warning' : (riskScore > 30 ? 'info' : 'secondary')), content: riskScore } %}
-                        </td>
-                        <td>
-                            {% if supplier.hasISO27001 %}
-                                <i class="fa-icon text-success fa-icon--status-ok" aria-hidden="true"></i>
-                            {% else %}
-                                <i class="fa-icon fa-icon--status-critical text-secondary" aria-hidden="true"></i>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'supplier.action.view'|trans({}, 'suppliers') }}</a>
-                            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'supplier.action.edit'|trans({}, 'suppliers') }}</a>
-                        </td>
-                    </tr>
+                        {% include 'supplier/_row.html.twig' with { supplier: supplier, currentTenant: currentTenant } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}

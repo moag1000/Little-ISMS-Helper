@@ -20,7 +20,7 @@
         title: 'interested_party.page.title'|trans({}, 'interested_parties'),
         subtitle: 'interested_party.iso_reference'|trans({}, 'interested_parties'),
         actions: [
-            { label: 'interested_party.action.add_new'|trans({}, 'interested_parties'), variant: 'primary', icon: 'plus', href: path('app_interested_party_new') }
+            { label: 'interested_party.action.add_new'|trans({}, 'interested_parties'), variant: 'primary', icon: 'plus', href: path('app_interested_party_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]
     }) }}
 {% set _global_hints = alva_hints('interested_party_index') %}
@@ -90,25 +90,10 @@
                         <th scope="col">{{ 'interested_party.table.actions'|trans({}, 'interested_parties') }}</th>
                     </tr>
                 {% endblock %}
+                {% block table_body_attrs %}id="interested-party-rows"{% endblock %}
                 {% block table_body %}
                     {% for party in interested_parties %}
-                    <tr>
-                        <td><a href="{{ path('app_interested_party_show', {id: party.id}) }}">{{ party.name }}</a></td>
-                        {% set importance_variant = {
-                            critical: 'danger',
-                            high: 'warning',
-                            medium: 'primary',
-                            low: 'success'
-                        }[party.importance]|default('neutral') %}
-                        <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('interested_party.party_type.' ~ party.partyType)|trans({}, 'interested_parties') } %}</td>
-                        <td>{% include '_components/_badge.html.twig' with { variant: importance_variant, content: ('interested_party.importance.' ~ party.importance)|trans({}, 'interested_parties') } %}</td>
-                        <td>{{ party.getEngagementScore() }}</td>
-                        <td>{{ party.lastCommunication ? party.lastCommunication|date('Y-m-d') : ('interested_party.never'|trans({}, 'interested_parties')) }}</td>
-                        <td>
-                            <a href="{{ path('app_interested_party_show', {id: party.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">{{ 'interested_party.action.view'|trans({}, 'interested_parties') }}</a>
-                            <a href="{{ path('app_interested_party_edit', {id: party.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">{{ 'interested_party.action.edit'|trans({}, 'interested_parties') }}</a>
-                        </td>
-                    </tr>
+                        {% include 'interested_party/_row.html.twig' with { party: party } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}

@@ -1,0 +1,66 @@
+{# Single Training table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
+{% trans_default_domain 'training' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% set currentTenant = currentTenant|default(null) %}
+<tr id="training-row-{{ training.id }}"
+    data-training-id="{{ training.id }}">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ training.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ training.title }}">
+    </td>
+    <td>
+        <a href="{{ path('app_training_show', {id: training.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link"><strong>{{ training.title }}</strong></a>
+        {{ inheritance.small_badge(training, currentTenant) }}
+        {% if training.mandatory %}
+        {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-critical', class: 'ms-1', content: '' } %}
+        {% endif %}
+    </td>
+    <td>
+        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('training.type.' ~ training.trainingType)|trans({}, 'training') } %}
+    </td>
+    <td>{{ training.scheduledDate ? training.scheduledDate|date('d.m.Y') : '-' }}</td>
+    <td>{{ training.durationMinutes ?? '-' }} {{ 'training.minutes'|trans({}, 'training') }}</td>
+    <td>
+        <span class="{{ badge_status(training.status) }}">
+            {{ ('training.status.' ~ training.status)|trans({}, 'training') }}
+        </span>
+    </td>
+    <td>
+        <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
+        {{ training.attendeeCount ?? 0 }}
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_training_show', {id: training.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_training_edit', {id: training.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
+                    data-controller="fa-modal-dispatcher"
+                    data-action="click->fa-modal-dispatcher#open"
+                    data-fa-modal-id="deleteModal{{ training.id }}"
+                    title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+            </button>
+            {% endif %}
+        </div>
+    </td>
+</tr>

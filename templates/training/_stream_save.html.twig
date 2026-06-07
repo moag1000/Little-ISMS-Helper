@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal Training save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="training-rows">
+        <template>{% include 'training/_row.html.twig' with { training: training } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="training-row-{{ training.id }}">
+        <template>{% include 'training/_row.html.twig' with { training: training } %}</template>
+    </turbo-stream>
+{% endif %}

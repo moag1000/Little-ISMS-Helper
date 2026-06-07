@@ -1,0 +1,74 @@
+{# Shared Patch form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / actions. Section map mirrors PatchType::getSectionMap(). #}
+{% trans_default_domain 'patches' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(patch is defined and patch and patch.title ? patch.title : ('patch.new'|trans({}, 'patches'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'patch.section.overview'|trans({}, 'patches'),
+        'fields': ['patchId', 'title', 'description', 'patchType', 'priority', 'status']
+    },
+    'vulnerability_link': {
+        'label': 'patch.section.vulnerability_link'|trans({}, 'patches'),
+        'fields': ['vulnerability', 'vendor', 'product', 'version', 'downloadUrl', 'documentationUrl']
+    },
+    'affected_systems': {
+        'label': 'patch.section.affected_systems'|trans({}, 'patches'),
+        'fields': ['affectedAssets']
+    },
+    'testing': {
+        'label': 'patch.section.testing'|trans({}, 'patches'),
+        'fields': ['testingNotes', 'requiresDowntime', 'estimatedDowntimeMinutes', 'requiresReboot', 'knownIssues']
+    },
+    'rollout': {
+        'label': 'patch.section.rollout'|trans({}, 'patches'),
+        'fields': ['releaseDate', 'deploymentDeadline', 'deployedDate', 'responsiblePerson', 'deploymentNotes']
+    },
+    'verification': {
+        'label': 'patch.section.verification'|trans({}, 'patches'),
+        'fields': ['rollbackPlan']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 A.8.8 · NIS2 Art. 21.2(e) · Patch Management',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'patchId': 6,
+        'title': 6,
+        'description': 12,
+        'patchType': 6,
+        'priority': 6,
+        'status': 6,
+        'vulnerability': 6,
+        'vendor': 6,
+        'product': 6,
+        'version': 6,
+        'downloadUrl': 6,
+        'documentationUrl': 6,
+        'affectedAssets': 12,
+        'testingNotes': 12,
+        'requiresDowntime': 6,
+        'estimatedDowntimeMinutes': 6,
+        'requiresReboot': 6,
+        'knownIssues': 12,
+        'releaseDate': 6,
+        'deploymentDeadline': 6,
+        'deployedDate': 6,
+        'responsiblePerson': 6,
+        'deploymentNotes': 12,
+        'rollbackPlan': 12
+    },
+    'translation_domain': 'patches',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

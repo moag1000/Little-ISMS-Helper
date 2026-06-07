@@ -1,0 +1,22 @@
+{# InterestedParty create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'interested_parties' %}
+{% set is_edit = interested_party is defined and interested_party and interested_party.id is not null %}
+{% set form_action = is_edit ? path('app_interested_party_edit', { id: interested_party.id }) : path('app_interested_party_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'interested-party-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'interested_party/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? interested_party.name : 'interested_party.page.new_title'|trans({}, 'interested_parties'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
 use DateTimeImmutable;
 use App\Controller\Trait\BulkActionTrait;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Supplier;
 use App\Form\SupplierType;
@@ -34,6 +35,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SupplierController extends AbstractController
 {
     use BulkActionTrait;
+    use InPageFormTrait;
     use ModuleGatedControllerTrait;
 
     public function __construct(
@@ -162,12 +164,23 @@ class SupplierController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('supplier.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->supplierStreamSave($supplier, isNew: true);
+            }
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('supplier/_form_modal.html.twig', [
+                'supplier' => $supplier,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('supplier/new.html.twig', [
             'supplier' => $supplier,
@@ -252,7 +265,7 @@ class SupplierController extends AbstractController
     }
     #[Route('/supplier/{id}', name: 'app_supplier_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(Supplier $supplier): Response
+    public function show(Request $request, Supplier $supplier): Response
     {
         if ($redirect = $this->checkModuleActive('suppliers')) return $redirect;
         $user = $this->security->getUser();
@@ -265,6 +278,14 @@ class SupplierController extends AbstractController
         } else {
             $isInherited = false;
             $canEdit = true;
+        }
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('supplier/_detail_modal.html.twig', [
+                'supplier' => $supplier,
+                'canEdit' => $canEdit,
+            ]);
         }
 
         // Detect which compliance frameworks are active for this tenant
@@ -352,12 +373,23 @@ class SupplierController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('supplier.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->supplierStreamSave($supplier, isNew: false);
+            }
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('supplier/_form_modal.html.twig', [
+                'supplier' => $supplier,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('supplier/edit.html.twig', [
             'supplier' => $supplier,
@@ -387,6 +419,15 @@ class SupplierController extends AbstractController
 
         return $this->redirectToRoute('app_supplier_index');
     }
+    /** Turbo Stream after a successful in-modal Supplier save (row replace/append). */
+    private function supplierStreamSave(Supplier $supplier, bool $isNew): Response
+    {
+        return $this->render('supplier/_stream_save.html.twig', [
+            'supplier' => $supplier,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
+    }
+
     /**
      * Calculate detailed statistics showing breakdown by origin
      */
