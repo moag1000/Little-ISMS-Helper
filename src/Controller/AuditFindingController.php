@@ -13,6 +13,7 @@ use App\Repository\CommentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Controller\Trait\InPageFormTrait;
 use App\Service\Clone\AuditFindingCloner;
 use App\Service\Nonconformity\AutoTaskCreator;
 use App\Service\TenantContext;
@@ -34,6 +35,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/audit-finding', name: 'app_audit_finding_')]
 class AuditFindingController extends AbstractController
 {
+    use InPageFormTrait;
     public function __construct(
         private readonly AuditFindingRepository $repository,
         private readonly EntityManagerInterface $entityManager,
@@ -160,6 +162,10 @@ class AuditFindingController extends AbstractController
 
             $this->addFlash('success', 'audit_finding.flash.created');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->auditFindingStreamSave($finding, isNew: true);
+            }
+
             // F14 — when pre-linked to an audit, redirect back to the audit show-page.
             if ($prelinkedAudit instanceof InternalAudit) {
                 return $this->redirectToRoute('app_audit_show', ['id' => $prelinkedAudit->getId()]);
@@ -171,6 +177,13 @@ class AuditFindingController extends AbstractController
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('audit_finding/_form_modal.html.twig', [
+                'finding' => $finding,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('audit_finding/new.html.twig', [
             'form' => $form,
@@ -289,9 +302,16 @@ class AuditFindingController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(AuditFinding $finding): Response
+    public function show(Request $request, AuditFinding $finding): Response
     {
         $this->denyIfWrongTenant($finding);
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('audit_finding/_detail_modal.html.twig', [
+                'finding' => $finding,
+            ]);
+        }
 
         // V3 W2-H3: Comment-Thread (C7) — load thread for this AuditFinding.
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -365,6 +385,11 @@ class AuditFindingController extends AbstractController
             );
 
             $this->addFlash('success', 'audit_finding.flash.updated');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->auditFindingStreamSave($finding, isNew: false);
+            }
+
             return $this->redirectToRoute('app_audit_finding_show', ['id' => $finding->getId()]);
         }
 
@@ -372,11 +397,27 @@ class AuditFindingController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('audit_finding/_form_modal.html.twig', [
+                'finding' => $finding,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('audit_finding/edit.html.twig', [
             'finding' => $finding,
             'form' => $form,
             'nc_user_choices' => $this->getNcUserChoices(),
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal AuditFinding save (row replace/append). */
+    private function auditFindingStreamSave(AuditFinding $finding, bool $isNew): Response
+    {
+        return $this->render('audit_finding/_stream_save.html.twig', [
+            'finding' => $finding,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]

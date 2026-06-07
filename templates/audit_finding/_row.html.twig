@@ -1,0 +1,60 @@
+{# Single AuditFinding table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
+{% trans_default_domain 'audits' %}
+{% set _statusVariant = finding.status == 'open' ? 'warning'
+    : (finding.status in ['verified', 'closed', 'resolved'] ? 'success'
+    : (finding.status == 'in_progress' ? 'info' : 'secondary')) %}
+{% set _findingNumber = finding.findingNumber ?? ('#' ~ finding.id) %}
+<tr id="audit-finding-row-{{ finding.id }}"
+    data-finding-id="{{ finding.id }}"
+    data-finding-severity="{{ finding.severity }}">
+    <td>
+        <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ finding.title }}</strong></a>
+        <br><small class="text-muted">{{ _findingNumber }}</small>
+    </td>
+    <td>
+        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('audit_finding.type.' ~ finding.type)|trans({}, 'audits') } %}
+    </td>
+    <td class="text-center">
+        {% set _sevVariant = finding.severity == 'critical' ? 'danger'
+            : (finding.severity == 'high' ? 'warning'
+            : (finding.severity == 'medium' ? 'warning' : 'secondary')) %}
+        {% include '_components/_badge.html.twig' with { variant: _sevVariant, content: ('audit_finding.severity.' ~ finding.severity)|trans({}, 'audits') } %}
+    </td>
+    <td class="text-center">
+        {% include '_components/_badge.html.twig' with { variant: _statusVariant, content: ('audit_finding.status.' ~ finding.status)|trans({}, 'audits') } %}
+    </td>
+    <td>
+        {% if finding.audit %}
+            <span class="text-muted small">{{ finding.audit.title }}</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if finding.dueDate %}
+            <span class="{{ finding.isOverdue ? 'text-danger' : 'text-muted' }} small">
+                {{ finding.dueDate|date('Y-m-d') }}
+            </span>
+        {% endif %}
+    </td>
+    <td class="text-center">
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_audit_finding_edit', {id: finding.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

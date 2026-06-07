@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'audits' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
 
 {% block title %}{{ 'audit_finding.page.title'|trans({}, 'audits') }}{% endblock %}
 
@@ -19,8 +19,8 @@
     title: 'audit_finding.page.title'|trans({}, 'audits'),
     subtitle: 'audit_finding.page.subtitle'|trans({}, 'audits'),
     actions: [
-        { label: 'audit_finding.action.new'|trans({}, 'audits'), href: path('app_audit_finding_new'), variant: 'primary', icon: 'plus' }
-    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'audit_finding', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
+        { label: 'audit_finding.action.new'|trans({}, 'audits'), href: path('app_audit_finding_new'), variant: 'primary', icon: 'plus', attrs: {'data-turbo-frame': 'fa-form-modal'} }
+    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'audit_finding', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet', attrs: {'data-turbo-prefetch': 'false', 'data-turbo': 'false'} }] : [])
 }) }}
     {% include '_components/_focus_filter_notice.html.twig' with { focus: focus|default(null), count: findings|default([])|length } %}
 {% set _global_hints = alva_hints('audit_finding_index') %}
@@ -81,34 +81,30 @@
             text: 'audit_finding.empty.body'|trans({}, 'audits'),
             norm_ref: 'ISO 27001 Klausel 9.2 · ISO 19011',
             actions: [
-                { label: 'audit_finding.action.new'|trans({}, 'audits'), variant: 'primary', icon: 'plus', href: path('app_audit_finding_new') }
+                { label: 'audit_finding.action.new'|trans({}, 'audits'), variant: 'primary', icon: 'plus', href: path('app_audit_finding_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
             ],
             help_link: 'audit_finding.help.empty_link'|trans({}, 'audits')
         }) }}
     {% else %}
-        <div class="d-flex flex-column gap-2">
-            {% for f in findings %}
-                {% set _statusVariant = f.status == 'open' ? 'warning'
-                    : (f.status in ['verified', 'closed', 'resolved'] ? 'success'
-                    : (f.status == 'in_progress' ? 'info' : 'neutral')) %}
-                {% set _findingNumber = f.findingNumber ?? ('#' ~ f.id) %}
-                {% set _severityLabel = ('audit_finding.severity.' ~ f.severity)|trans({}, 'audits') %}
-                {% set _typeLabel = ('audit_finding.type.' ~ f.type)|trans({}, 'audits') %}
-                {% set _meta = [_findingNumber, _typeLabel, _severityLabel] %}
-                {% if f.dueDate %}
-                    {% set _meta = _meta|merge([
-                        (f.isOverdue ? '⚠ ' : '') ~ f.dueDate|date('Y-m-d')
-                    ]) %}
-                {% endif %}
-                {{ _fa_entity_card.render({
-                    type:   'finding',
-                    icon:   'finding',
-                    title:  f.title,
-                    meta:   _meta,
-                    href:   path('app_audit_finding_show', {id: f.id}),
-                    status: { variant: _statusVariant, label: ('audit_finding.status.' ~ f.status)|trans({}, 'audits') }
-                }) }}
-            {% endfor %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>{{ 'audit_finding.field.title'|trans({}, 'audits') }}</th>
+                        <th>{{ 'audit_finding.field.type'|trans({}, 'audits') }}</th>
+                        <th class="text-center">{{ 'audit_finding.field.severity'|trans({}, 'audits') }}</th>
+                        <th class="text-center">{{ 'audit_finding.field.status'|trans({}, 'audits') }}</th>
+                        <th>{{ 'audit_finding.field.audit'|trans({}, 'audits') }}</th>
+                        <th>{{ 'audit_finding.field.due_date'|trans({}, 'audits') }}</th>
+                        <th class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                </thead>
+                <tbody id="audit-finding-rows">
+                    {% for f in findings %}
+                        {% include 'audit_finding/_row.html.twig' with { finding: f } %}
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     {% endif %}
 </div>

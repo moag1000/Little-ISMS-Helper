@@ -1,0 +1,61 @@
+{# Shared CorrectiveAction form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / actions. Section map mirrors CorrectiveActionType::getSectionMap(). #}
+{% trans_default_domain 'audits' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(
+    form.vars.data is defined and form.vars.data.id is not null
+        ? 'corrective_action.page.edit'|trans({}, 'audits')
+        : 'corrective_action.page.new'|trans({}, 'audits')
+) %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 Cl. 10.1 · CAPA',
+    'title': title,
+    'sections': {
+        'overview': {
+            'label': 'form.section.overview'|trans({}, 'messages'),
+            'fields': ['finding', 'title', 'description', 'actionType', 'status']
+        },
+        'root_cause': {
+            'label': 'form.section.root_cause'|trans({}, 'messages'),
+            'intro': 'corrective_action.section.root_cause_intro'|trans({}, 'audits'),
+            'fields': ['rootCauseAnalysis', 'relatedControls']
+        },
+        'action_plan': {
+            'label': 'form.section.action_plan'|trans({}, 'messages'),
+            'intro': 'corrective_action.section.action_plan_intro'|trans({}, 'audits'),
+            'fields': ['responsiblePersonUser', 'responsiblePerson', 'responsibleDeputyPersons', 'plannedCompletionDate', 'actualCompletionDate']
+        },
+        'verification': {
+            'label': 'form.section.verification'|trans({}, 'messages'),
+            'intro': 'corrective_action.section.verification_intro'|trans({}, 'audits'),
+            'fields': ['effectivenessReviewDate', 'effectivenessNotes', 'effectivenessEvidence']
+        }
+    },
+    'col_widths': {
+        'finding': 12,
+        'title': 12,
+        'description': 12,
+        'actionType': 6,
+        'status': 6,
+        'rootCauseAnalysis': 12,
+        'relatedControls': 12,
+        'responsiblePersonUser': 6,
+        'responsiblePerson': 6,
+        'responsibleDeputyPersons': 12,
+        'plannedCompletionDate': 6,
+        'actualCompletionDate': 6,
+        'effectivenessReviewDate': 6,
+        'effectivenessNotes': 12,
+        'effectivenessEvidence': 12
+    },
+    'translation_domain': 'audits',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'href': path('app_corrective_action_index'), 'variant': 'ghost' },
+        'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+    })
+} %}

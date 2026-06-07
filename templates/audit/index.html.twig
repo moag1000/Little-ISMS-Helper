@@ -21,7 +21,7 @@
         title: 'audit_management.title'|trans({}, 'audit'),
         subtitle: 'audit_management.subtitle'|trans({}, 'audit'),
         actions: [
-            { label: 'audit.new'|trans({}, 'audit'), href: path('app_audit_new'), variant: 'primary', icon: 'plus' },
+            { label: 'audit.new'|trans({}, 'audit'), href: path('app_audit_new'), variant: 'primary', icon: 'plus', attrs: {'data-turbo-frame': 'fa-form-modal'} },
             { label: 'common.export_excel'|trans({}, 'messages'), href: path('app_audit_export_excel'), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }
         ]
     }) }}
@@ -208,83 +208,10 @@
                         <th scope="col" class="w-180px w-text-right">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
-                {% block table_body_attrs %}id="auditTableBody"{% endblock %}
+                {% block table_body_attrs %}id="audit-rows"{% endblock %}
                 {% block table_body %}
                     {% for audit in audits|sort((a, b) => b.plannedDate <=> a.plannedDate) %}
-                    <tr class="audit-row"
-                        data-status="{{ audit.status }}"
-                        data-title="{{ audit.title|lower }}"
-                        data-number="{{ audit.auditNumber|lower }}">
-                        <td>
-                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: audit.auditNumber } %}
-                        </td>
-                        <td>
-                            <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="text-decoration-none">
-                                <strong>{{ audit.title }}</strong>
-                            </a>
-                            {% if audit.scope %}
-                            <br>
-                            <small class="text-muted">{{ audit.scope|length > 60 ? audit.scope|slice(0, 60) ~ '...' : audit.scope }}</small>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% set typeIcons = {
-                                'full_isms': 'nav-building',
-                                'compliance_framework': 'shield-check',
-                                'asset': 'asset-server',
-                                'asset_type': 'nav-collection',
-                                'asset_group': 'nav-collection',
-                                'location': 'nav-building',
-                                'department': 'nav-people',
-                                'corporate_wide': 'nav-building',
-                                'corporate_subsidiaries': 'nav-collection'
-                            } %}
-                            <i class="fa-icon fa-icon--{{ typeIcons[audit.scopeType] ?? 'status-info' }}"></i>
-                            {{ ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') }}
-                        </td>
-                        <td>
-                            {% if audit.plannedDate %}
-                            <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-                            {{ audit.plannedDate|date('d.m.Y') }}
-                            {% else %}
-                            <span class="text-muted">-</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <span class="{{ badge_status(audit.status) }}">
-                                {% if audit.status == 'planned' %}
-                                    <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
-                                {% elseif audit.status == 'in_progress' %}
-                                    <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
-                                {% elseif audit.status == 'completed' %}
-                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                                {% elseif audit.status == 'reported' %}
-                                    <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
-                                {% endif %}
-                                {{ ('audit.status.' ~ audit.status)|trans({}, 'audit') }}
-                            </span>
-                        </td>
-                        <td class="w-text-right">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                <a href="{{ path('app_audit_show', {id: audit.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
-                                   title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                </a>
-                                <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
-                                   title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                </a>
-                                <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
-                                   data-turbo="false"
-                                   title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+                        {% include 'audit/_row.html.twig' with { audit: audit } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
@@ -346,7 +273,7 @@ function initializeAuditFilters() {
     const searchInput = document.getElementById('auditSearch');
     const auditRows = document.querySelectorAll('.audit-row');
     const noResults = document.getElementById('noResults');
-    const tableBody = document.getElementById('auditTableBody');
+    const tableBody = document.getElementById('audit-rows');
 
     if (!statusFilter && !searchInput) return; // Elements not present on page
 

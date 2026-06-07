@@ -18,7 +18,7 @@
         badge: { icon: 'nav-clipboard-check', label: 'nav.management_reviews'|trans({}, 'nav') },
         title: 'management_review.title'|trans({}, 'management_review'),
         actions: is_granted('ROLE_ADMIN') ? [
-            { label: 'management_review.new'|trans({}, 'management_review'), variant: 'primary', icon: 'plus', href: path('app_management_review_new'), attrs: {'data-turbo-action': 'advance'} }
+            { label: 'management_review.new'|trans({}, 'management_review'), variant: 'primary', icon: 'plus', href: path('app_management_review_new'), attrs: {'data-turbo-frame': 'fa-form-modal'} }
         ] : []
     }) }}
 
@@ -162,62 +162,10 @@
                         <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
+                {% block table_body_attrs %}id="management-review-rows"{% endblock %}
                 {% block table_body %}
                     {% for review in reviews %}
-                    <tr>
-                        <td class="bulk-select-column">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   data-bulk-actions-target="item"
-                                   data-action="bulk-actions#selectItem"
-                                   value="{{ review.id }}"
-                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ review.title }}">
-                        </td>
-                        <td>
-                            <strong>{{ review.title }}</strong>
-                        </td>
-                        <td>{{ review.reviewDate|date('d.m.Y') }}</td>
-                        <td>
-                            {% set statusClass = {
-                                'planned': 'warning',
-                                'in_progress': 'info',
-                                'completed': 'success',
-                                'cancelled': 'danger'
-                            } %}
-                            {% include '_components/_badge.html.twig' with { variant: statusClass[review.status] ?? 'secondary', content: ('management_review.status.' ~ review.status)|trans({}, 'management_review') } %}
-                        </td>
-                        <td>
-                            {% if review.participants|length > 0 %}
-                            <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
-                            {% include '_components/_badge.html.twig' with { variant: 'primary', content: review.participants|length } %}
-                            {% else %}
-                            <span class="text-muted">-</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a href="{{ path('app_management_review_show', {id: review.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--ghost"
-                                   data-turbo-action="advance"
-                                   title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                </a>
-                                {% if is_granted('ROLE_ADMIN') %}
-                                <a href="{{ path('app_management_review_edit', {id: review.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--ghost"
-                                   data-turbo-action="advance"
-                                   title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                </a>
-                                <button type="button"
-                                        class="fa-cyber-btn fa-cyber-btn--danger" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="deleteModal{{ review.id }}"
-                                        title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
-                                </button>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
+                        {% include 'management_review/_row.html.twig' with { review: review } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
