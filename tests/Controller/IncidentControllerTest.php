@@ -463,7 +463,7 @@ class IncidentControllerTest extends TestCase
             )
             ->willReturn('rendered');
 
-        $response = $this->controller->show($incident);
+        $response = $this->controller->show(new Request(), $incident);
 
         $this->assertInstanceOf(Response::class, $response);
     }
