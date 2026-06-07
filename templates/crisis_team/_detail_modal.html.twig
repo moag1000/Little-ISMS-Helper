@@ -1,0 +1,83 @@
+{# CrisisTeam read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses drawer chrome (header/body/footer/kv). A "Vollansicht" link navigates to
+   the full show page. ISO 22301 Cl. 8.4 · BSI 200-4 Krisenstab-Management. #}
+{% trans_default_domain 'crisis_team' %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 22301 Cl. 8.4 · BSI 200-4 · Crisis Team</div>
+            <div class="fa-drawer__title">{{ crisis_team.teamName }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% include '_components/_badge.html.twig' with { variant: 'primary', content: ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') } %}
+            {% include '_components/_badge.html.twig' with { variant: crisis_team.isActive ? 'success' : 'danger', content: crisis_team.isActive ? 'yes'|trans({}, 'messages') : 'no'|trans({}, 'messages') } %}
+        </div>
+
+        {% set _leader = crisis_team.effectiveTeamLeader %}
+        {% if _leader %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'crisis_team.field.team_leader'|trans({}, 'crisis_team') }}</span>
+                <span>{{ _leader }}</span>
+            </div>
+        {% endif %}
+
+        {% if crisis_team.personMembers|length > 0 %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'crisis_team.field.person_members'|trans({}, 'crisis_team') }}</span>
+                <span>{{ crisis_team.personMemberNames|join(', ') }}</span>
+            </div>
+        {% endif %}
+
+        {% if crisis_team.primaryPhone %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'crisis_team.field.primary_phone'|trans({}, 'crisis_team') }}</span>
+                <span>{{ crisis_team.primaryPhone }}</span>
+            </div>
+        {% endif %}
+
+        {% if crisis_team.primaryEmail %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'crisis_team.field.primary_email'|trans({}, 'crisis_team') }}</span>
+                <span>{{ crisis_team.primaryEmail }}</span>
+            </div>
+        {% endif %}
+
+        {% if crisis_team.lastActivatedAt %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'crisis_team.field.last_activated_at'|trans({}, 'crisis_team') }}</span>
+                <span>{{ crisis_team.lastActivatedAt|date('d.m.Y H:i') }}</span>
+            </div>
+        {% endif %}
+
+        {% if crisis_team.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'crisis_team.field.description'|trans({}, 'crisis_team') }}</span>
+                <p class="fa-drawer__desc">{{ crisis_team.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_crisis_team_show', {id: crisis_team.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_crisis_team_edit', {id: crisis_team.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

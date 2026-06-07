@@ -1,0 +1,84 @@
+{# BC-Plan read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page.
+   ISO 22301 Cl. 8.4 — auditor-relevant fields: status, owner, RTO, RPO,
+   last tested, scope/activation criteria. #}
+{% trans_default_domain 'bc_plans' %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 22301 Cl. 8.4 · Business Continuity Plan</div>
+            <div class="fa-drawer__title">{{ bc_plan.name }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {% set _status_variant = {'active': 'success', 'draft': 'secondary', 'under_review': 'warning', 'archived': 'info'}[bc_plan.status]|default('secondary') %}
+            {% include '_components/_badge.html.twig' with { variant: _status_variant, content: ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans') } %}
+        </div>
+
+        {% if bc_plan.effectivePlanOwner %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'bc_plans.table.owner'|trans({}, 'bc_plans') }}</span>
+            <span>{{ bc_plan.effectivePlanOwner }}</span>
+        </div>
+        {% endif %}
+
+        {% if bc_plan.businessProcess %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'bc_plans.table.business_process'|trans({}, 'bc_plans') }}</span>
+            <span>{{ bc_plan.businessProcess.name }}</span>
+        </div>
+        {% endif %}
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'bc_plans.field.rto'|trans({}, 'bc_plans') }}</span>
+            <span>{{ bc_plan.rto is not null ? bc_plan.rto ~ ' h' : '-' }}</span>
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'bc_plans.field.rpo'|trans({}, 'bc_plans') }}</span>
+            <span>{{ bc_plan.rpo is not null ? bc_plan.rpo ~ ' h' : '-' }}</span>
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'bc_plans.field.last_tested'|trans({}, 'bc_plans') }}</span>
+            <span>{{ bc_plan.lastTested ? bc_plan.lastTested|locale_date : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</span>
+        </div>
+
+        {% set readiness = bc_plan.getReadinessScore() %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'bc_plans.table.readiness'|trans({}, 'bc_plans') }}</span>
+            <span>{% include '_components/_badge.html.twig' with { variant: readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger'), content: readiness ~ '%' } %}</span>
+        </div>
+
+        {% if bc_plan.activationCriteria %}
+        <div class="fa-drawer__section">
+            <span class="label">{{ 'bc_plans.field.activation_criteria'|trans({}, 'bc_plans') }}</span>
+            <p class="fa-drawer__desc">{{ bc_plan.activationCriteria|u.truncate(280, '…') }}</p>
+        </div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_bc_plan_show', {id: bc_plan.id}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_bc_plan_edit', {id: bc_plan.id}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% endif %}
+    </div>
+</turbo-frame>

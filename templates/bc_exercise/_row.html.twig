@@ -1,0 +1,48 @@
+{# Single BC-Exercise table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same. #}
+{% trans_default_domain 'bc_exercises' %}
+<tr id="bc-exercise-row-{{ exercise.id }}"
+    data-filter-target="filterableRow">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ exercise.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ exercise.name }}">
+    </td>
+    <td>
+        <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ exercise.name }}</strong></a>
+    </td>
+    <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') } %}</td>
+    <td>{{ exercise.exerciseDate|locale_date }}</td>
+    <td><span class="{{ badge_status(exercise.status) }}">{{ ('bc_exercises.status.' ~ exercise.status)|trans({}, 'bc_exercises') }}</span></td>
+    <td>
+        {% if exercise.status == 'completed' %}
+            {{ exercise.getEffectivenessScore() }}%
+        {% else %}
+            {{ 'bc_exercises.message.na'|trans({}, 'bc_exercises') }}
+        {% endif %}
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_bc_exercise_edit', {id: exercise.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

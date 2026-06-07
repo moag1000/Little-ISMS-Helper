@@ -1,0 +1,96 @@
+{# Shared BC-Plan form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). Caller wraps it in form_start/form_end
+   and passes title / actions. Section map mirrors the full-page edit template.
+   ISO 22301 Cl. 8.4 — RTO/RPO + activation + recovery fields preserved. #}
+{% trans_default_domain 'bc_plans' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(bc_plan is defined and bc_plan and bc_plan.name ? bc_plan.name : ('bc_plans.action.add_new'|trans({}, 'bc_plans'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'BCM · ISO 22301 Cl. 8.4 · BC-Plan',
+    'title': title,
+    'sections': {
+        'basic_info': {
+            'label': 'bc_plans.section.basic_info'|trans({}, 'bc_plans'),
+            'fields': ['name', 'businessProcess', 'description', 'planOwner', 'planOwnerUser', 'planOwnerPerson', 'planOwnerDeputyPersons', 'status']
+        },
+        'response_team': {
+            'label': 'bc_plan.section.response_team'|trans({}, 'bc_plans'),
+            'fields': ['responseTeamMembers', 'crisisTeams', 'criticalAssets', 'bcTeam']
+        },
+        'activation': {
+            'label': 'bc_plans.section.activation'|trans({}, 'bc_plans'),
+            'fields': ['activationCriteria', 'escalationLevels', 'rolesAndResponsibilities', 'recoveryProcedures', 'rto', 'rpo']
+        },
+        'resources': {
+            'label': 'bc_plans.section.resources'|trans({}, 'bc_plans'),
+            'fields': ['requiredResources']
+        },
+        'communication': {
+            'label': 'bc_plans.section.communication'|trans({}, 'bc_plans'),
+            'fields': ['communicationPlan', 'internalCommunication', 'externalCommunication']
+        },
+        'alternative_site': {
+            'label': 'bc_plans.section.alternative_site'|trans({}, 'bc_plans'),
+            'fields': ['alternativeSite', 'alternativeSiteAddress', 'alternativeSiteCapacity']
+        },
+        'backup_recovery': {
+            'label': 'bc_plans.section.backup_recovery'|trans({}, 'bc_plans'),
+            'fields': ['backupProcedures', 'restoreProcedures']
+        },
+        'version_review': {
+            'label': 'bc_plans.section.version_review'|trans({}, 'bc_plans'),
+            'fields': ['version', 'lastTested', 'nextTestDate', 'lastReviewDate', 'nextReviewDate', 'reviewNotes']
+        }
+    },
+    'col_widths': {
+        'name': 12,
+        'businessProcess': 12,
+        'description': 12,
+        'planOwner': 6,
+        'planOwnerUser': 6,
+        'planOwnerPerson': 6,
+        'planOwnerDeputyPersons': 12,
+        'status': 6,
+        'responseTeamMembers': 12,
+        'crisisTeams': 12,
+        'bcTeam': 12,
+        'activationCriteria': 12,
+        'escalationLevels': 12,
+        'rolesAndResponsibilities': 12,
+        'recoveryProcedures': 12,
+        'rto': 6,
+        'rpo': 6,
+        'requiredResources': 12,
+        'communicationPlan': 12,
+        'internalCommunication': 6,
+        'externalCommunication': 6,
+        'alternativeSite': 12,
+        'alternativeSiteAddress': 6,
+        'alternativeSiteCapacity': 6,
+        'backupProcedures': 6,
+        'restoreProcedures': 6,
+        'version': 4,
+        'lastTested': 4,
+        'nextTestDate': 4,
+        'lastReviewDate': 6,
+        'nextReviewDate': 6,
+        'reviewNotes': 12
+    },
+    'tooltips': {
+        'activationCriteria': 'bc_plans.tooltip.activation_criteria',
+        'recoveryProcedures': 'bc_plans.tooltip.recovery_procedures',
+        'communicationPlan': 'bc_plans.tooltip.communication_plan',
+        'alternativeSite': 'bc_plans.tooltip.alternative_site',
+        'requiredResources': 'bc_plans.tooltip.required_resources'
+    },
+    'translation_domain': 'bc_plans',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

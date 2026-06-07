@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use DateTimeImmutable;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\CrisisTeam;
@@ -26,6 +27,7 @@ class CrisisTeamController extends AbstractController
 {
     use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly CrisisTeamRepository $crisisTeamRepository,
@@ -90,12 +92,23 @@ class CrisisTeamController extends AbstractController
             $this->entityManager->flush();
 
             $this->flashSuccess('crisis_team.success.created');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->crisisTeamStreamSave($crisisTeam, isNew: true);
+            }
             return $this->redirectToRoute('app_crisis_team_show', ['id' => $crisisTeam->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('crisis_team/_form_modal.html.twig', [
+                'crisis_team' => $crisisTeam,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('crisis_team/new.html.twig', [
             'crisis_team' => $crisisTeam,
@@ -104,9 +117,15 @@ class CrisisTeamController extends AbstractController
     }
 
     #[Route('/crisis-team/{id}', name: 'app_crisis_team_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(CrisisTeam $crisisTeam): Response
+    public function show(Request $request, CrisisTeam $crisisTeam): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('crisis_team/_detail_modal.html.twig', [
+                'crisis_team' => $crisisTeam,
+            ]);
+        }
 
         return $this->render('crisis_team/show.html.twig', [
             'crisis_team' => $crisisTeam,
@@ -125,12 +144,23 @@ class CrisisTeamController extends AbstractController
             $this->entityManager->flush();
 
             $this->flashSuccess('crisis_team.success.updated');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->crisisTeamStreamSave($crisisTeam, isNew: false);
+            }
             return $this->redirectToRoute('app_crisis_team_show', ['id' => $crisisTeam->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('crisis_team/_form_modal.html.twig', [
+                'crisis_team' => $crisisTeam,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('crisis_team/edit.html.twig', [
             'crisis_team' => $crisisTeam,
@@ -166,5 +196,14 @@ class CrisisTeamController extends AbstractController
         }
 
         return $this->redirectToRoute('app_crisis_team_show', ['id' => $crisisTeam->getId()]);
+    }
+
+    /** Turbo Stream after a successful in-modal CrisisTeam save (row replace/append). */
+    private function crisisTeamStreamSave(CrisisTeam $crisisTeam, bool $isNew): Response
+    {
+        return $this->render('crisis_team/_stream_save.html.twig', [
+            'crisis_team' => $crisisTeam,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 }

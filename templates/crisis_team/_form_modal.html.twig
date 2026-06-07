@@ -1,0 +1,24 @@
+{# CrisisTeam create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append).
+   TomSelect Stimulus controllers on multi-Person fields are preserved via the
+   FormType attr wiring — no extra data-controller wiring required here. #}
+{% trans_default_domain 'crisis_team' %}
+{% set is_edit = crisis_team is defined and crisis_team and crisis_team.id is not null %}
+{% set form_action = is_edit ? path('app_crisis_team_edit', { id: crisis_team.id }) : path('app_crisis_team_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'crisis-team-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'crisis_team/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? crisis_team.teamName : 'crisis_team.new'|trans({}, 'crisis_team'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>
