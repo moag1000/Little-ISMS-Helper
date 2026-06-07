@@ -18,11 +18,11 @@ alva.mood	1
 annex.authority	1
 annex.value_label	1
 answer_library.category	2
-asset.classification	6
+asset.classification	7
 asset.dependency.criticality_impact	1
 asset.dependency.type	1
 asset.field	1
-asset.status	3
+asset.status	4
 asset.type	2
 asset_sub_type.preset	1
 asset_sub_type.source	1
@@ -92,7 +92,8 @@ diff.change_type	1
 diff.section	1
 document.evidence.source	1
 document.evidence.type	1
-document.status	3
+document.status	4
+document.type	1
 dora.status	1
 dora_data_flow.direction	2
 dora_exit_plan.trigger	2

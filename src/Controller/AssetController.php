@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Exception;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Asset;
 use App\Enum\AssetStatus;
@@ -43,6 +44,7 @@ class AssetController extends AbstractController
 {
     use LocalizedFlashTrait;
     use BulkActionTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly AssetRepository $assetRepository,
@@ -241,12 +243,23 @@ class AssetController extends AbstractController
             // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('asset.success.created');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->assetStreamSave($asset, isNew: true);
+            }
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('asset/_form_modal.html.twig', [
+                'asset' => $asset,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('asset/new.html.twig', [
             'asset' => $asset,
@@ -387,10 +400,21 @@ class AssetController extends AbstractController
     }
     #[Route('/asset/{id}', name: 'app_asset_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(Asset $asset): Response
+    public function show(Request $request, Asset $asset): Response
     {
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
+
+        // In-drawer → condensed read-only detail; direct URL → full page (fallback).
+        // canEdit gating mirrors the full page: inherited assets are not editable.
+        if ($this->isTurboFrameRequest($request)) {
+            $canEdit = $tenant ? $this->assetService->canEditAsset($asset, $tenant) : true;
+
+            return $this->render('asset/_detail_modal.html.twig', [
+                'asset' => $asset,
+                'canEdit' => $canEdit,
+            ]);
+        }
 
         $analysis = $this->protectionRequirementService->getCompleteProtectionRequirementAnalysis($asset);
         $processes = $this->businessProcessRepository->findByAsset($asset->getId());
@@ -511,6 +535,10 @@ class AssetController extends AbstractController
             // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('asset.success.updated');
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->assetStreamSave($asset, isNew: false);
+            }
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
@@ -518,10 +546,26 @@ class AssetController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('asset/_form_modal.html.twig', [
+                'asset' => $asset,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('asset/edit.html.twig', [
             'asset' => $asset,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal Asset save (row replace/append). */
+    private function assetStreamSave(Asset $asset, bool $isNew): Response
+    {
+        return $this->render('asset/_stream_save.html.twig', [
+            'asset' => $asset,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
     #[Route('/asset/{id}/delete', name: 'app_asset_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

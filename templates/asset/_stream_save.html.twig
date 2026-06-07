@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal Asset save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="asset-rows">
+        <template>{% include 'asset/_row.html.twig' with { asset: asset } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="asset-row-{{ asset.id }}">
+        <template>{% include 'asset/_row.html.twig' with { asset: asset } %}</template>
+    </turbo-stream>
+{% endif %}

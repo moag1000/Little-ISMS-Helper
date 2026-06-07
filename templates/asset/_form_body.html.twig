@@ -1,0 +1,97 @@
+{# Shared Asset form body (outline-rail). Used full-page by new/edit and inside
+   the fa-form-modal frame (modal: true). The caller wraps it in
+   form_start/form_end and passes title / actions. The section map mirrors the
+   established asset/new.html.twig grouping so the field coverage and the
+   module-gated fields (DORA / TISAX / AI-Agent) stay parity with the full
+   page. #}
+{% trans_default_domain 'asset' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(asset is defined and asset and asset.name ? asset.name : ('asset.title.new'|trans({}, 'asset'))) %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 A.5.9 · Asset Inventory',
+    'title': title,
+    'sections': {
+        'basic_info': {
+            'label': 'asset.section.basic_info'|trans({}, 'asset'),
+            'fields': ['name', 'assetType', 'subType', 'description']
+        },
+        'assignment': {
+            'label': 'asset.section.assignment'|trans({}, 'asset'),
+            'fields': ['ownerUser', 'ownerPerson', 'ownerDeputyPersons', 'owner', 'physicalLocation', 'dependsOn']
+        },
+        'classification': {
+            'label': 'asset.section.classification'|trans({}, 'asset'),
+            'fields': ['dataClassification', 'tisaxInformationClassification', 'status', 'returnDate', 'isDoraRelevant']
+        },
+        'cia_values': {
+            'label': 'asset.section.cia_values'|trans({}, 'asset'),
+            'fields': ['confidentialityValue', 'integrityValue', 'availabilityValue']
+        },
+        'financial': {
+            'label': 'asset.section.financial'|trans({}, 'asset'),
+            'fields': ['acquisitionValue', 'currentValue']
+        },
+        'policies': {
+            'label': 'asset.section.policies'|trans({}, 'asset'),
+            'fields': ['acceptableUsePolicy', 'handlingInstructions']
+        },
+        'processing_activities': {
+            'label': 'asset.section.processing_activities'|trans({}, 'asset'),
+            'fields': ['processingActivities']
+        },
+        'ai_agent': {
+            'label': 'asset.section.ai_agent'|trans({}, 'asset'),
+            'fields': ['aiAgentClassification', 'aiAgentPurpose', 'aiAgentDataSources', 'aiAgentOversightMechanism', 'aiAgentProvider', 'aiAgentModelVersion', 'aiAgentCapabilityScope', 'aiAgentThreatModelDocId', 'aiAgentExtensionAllowlist']
+        }
+    },
+    'col_widths': {
+        'name': 6,
+        'assetType': 6,
+        'subType': 6,
+        'description': 12,
+        'ownerUser': 6,
+        'ownerPerson': 6,
+        'ownerDeputyPersons': 12,
+        'owner': 6,
+        'physicalLocation': 6,
+        'dependsOn': 12,
+        'acquisitionValue': 6,
+        'currentValue': 6,
+        'dataClassification': 4,
+        'tisaxInformationClassification': 4,
+        'status': 4,
+        'returnDate': 4,
+        'isDoraRelevant': 4,
+        'processingActivities': 12,
+        'confidentialityValue': 4,
+        'integrityValue': 4,
+        'availabilityValue': 4,
+        'acceptableUsePolicy': 12,
+        'handlingInstructions': 12,
+        'aiAgentClassification': 6,
+        'aiAgentProvider': 6,
+        'aiAgentModelVersion': 6,
+        'aiAgentOversightMechanism': 6,
+        'aiAgentPurpose': 12,
+        'aiAgentDataSources': 12,
+        'aiAgentCapabilityScope': 12,
+        'aiAgentExtensionAllowlist': 12,
+        'aiAgentThreatModelDocId': 6
+    },
+    'tooltips': {
+        'acquisitionValue': 'asset.tooltip.acquisition_value',
+        'currentValue': 'asset.tooltip.current_value',
+        'confidentialityValue': 'asset.tooltip.confidentiality',
+        'integrityValue': 'asset.tooltip.integrity',
+        'availabilityValue': 'asset.tooltip.availability'
+    },
+    'translation_domain': 'asset',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': 'asset.action.create'|trans({}, 'asset'), 'variant': 'primary' }
+    })
+} %}

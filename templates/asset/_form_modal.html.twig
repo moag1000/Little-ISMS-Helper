@@ -1,0 +1,24 @@
+{# Asset create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action is MANDATORY (an empty action would POST to the list
+   route → 405). On valid submit the controller returns a Turbo Stream (row
+   replace/append); the controller closes the modal on the successful
+   turbo:submit-end. #}
+{% trans_default_domain 'asset' %}
+{% set is_edit = asset is defined and asset and asset.id is not null %}
+{% set form_action = is_edit ? path('app_asset_edit', { id: asset.id }) : path('app_asset_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'asset-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'asset/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? asset.name : 'asset.action.create'|trans({}, 'asset'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

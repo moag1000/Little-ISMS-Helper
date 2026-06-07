@@ -1,0 +1,85 @@
+{# Single Asset table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the edit pencil opens the large
+   form in the same fa-form-modal frame. The edit action is gated on ROLE_USER,
+   matching the full-page index (the server enforces the inherited-asset
+   guard in edit()). #}
+{% trans_default_domain 'asset' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% import '_components/_status_pill.html.twig' as pill %}
+{% set currentTenant = currentTenant|default(null) %}
+{% set recommendations = recommendations|default({}) %}
+<tr id="asset-row-{{ asset.id }}" data-asset-id="{{ asset.id }}">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ asset.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ asset.name }}">
+    </td>
+    <td>
+        <a href="{{ path('app_asset_show', {id: asset.id}) }}"
+           data-turbo-frame="fa-form-modal" class="fa-row-link"><strong>{{ asset.name }}</strong></a>
+        {{ inheritance.small_badge(asset, currentTenant) }}
+        {% if asset.isDoraRelevant %}
+            {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA', title: 'asset.field.is_dora_relevant'|trans({}, 'asset') } %}
+        {% endif %}
+        {% if asset.description %}
+            <br><small class="text-muted">{{ asset.description|length > 60 ? asset.description|slice(0, 60) ~ '...' : asset.description }}</small>
+        {% endif %}
+    </td>
+    <td>
+        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.assetType } %}
+        {% if asset.subType %}
+            <br><small class="text-muted">{{ asset.subType.name }}</small>
+        {% endif %}
+    </td>
+    <td>{{ asset.effectiveOwner }}</td>
+    <td class="text-center">
+        {% if asset.dataClassification %}
+            {{ pill.render(('asset.classification.' ~ asset.dataClassification)|trans({}, 'asset')|upper, pill_tone_classification(asset.dataClassification)) }}
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </td>
+    <td class="text-center">
+        <small>
+            {{ pill.render('C:' ~ asset.confidentialityValue, pill_tone_score(asset.confidentialityValue), { size: 'sm', title: 'asset.label.confidentiality'|trans({}, 'asset') ~ ': ' ~ asset.confidentialityValue ~ '/5' }) }}
+            {{ pill.render('I:' ~ asset.integrityValue, pill_tone_score(asset.integrityValue), { size: 'sm', title: 'asset.label.integrity'|trans({}, 'asset') ~ ': ' ~ asset.integrityValue ~ '/5' }) }}
+            {{ pill.render('A:' ~ asset.availabilityValue, pill_tone_score(asset.availabilityValue), { size: 'sm', title: 'asset.label.availability'|trans({}, 'asset') ~ ': ' ~ asset.availabilityValue ~ '/5' }) }}
+        </small>
+    </td>
+    <td class="text-center">
+        {% if recommendations[asset.id] is defined and recommendations[asset.id].risk_count > 0 %}
+            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="{{ badge_score(recommendations[asset.id].risk_count, 5, 3) }}" title="{{ recommendations[asset.id].risk_count }} {{ 'asset.label.risks'|trans({}, 'asset') }}" aria-label="{{ 'asset.aria.risks_for_asset'|trans({'%count%': recommendations[asset.id].risk_count, '%name%': asset.name}, 'asset') }}">
+                {{ recommendations[asset.id].risk_count }}
+            </a>
+        {% elseif recommendations[asset.id] is defined %}
+            <span class="text-muted">0</span>
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </td>
+    <td class="text-center">
+        {% include '_components/_badge.html.twig' with { variant: asset.status == 'active' ? 'success' : 'secondary', content: ('asset.status.' ~ asset.status)|trans({}, 'asset') } %}
+    </td>
+    <td class="text-center">
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'asset.aria.actions_for_asset'|trans({'%name%': asset.name}, 'asset') }}">
+            <a href="{{ path('app_asset_show', {id: asset.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               aria-label="{{ 'asset.aria.view_asset'|trans({'%name%': asset.name}, 'asset') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               aria-label="{{ 'asset.aria.edit_asset'|trans({'%name%': asset.name}, 'asset') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

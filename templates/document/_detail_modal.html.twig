@@ -1,0 +1,99 @@
+{# Document read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses the drawer chrome (header/body/footer/kv) which renders cleanly as a
+   flex column; condensed, with a "Vollansicht" link to the full page.
+   Edit button is gated on BOTH the canEdit domain flag (inherited documents are
+   not editable) AND is_granted — when locked it renders as a disabled control. #}
+{% trans_default_domain 'document' %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% set canEdit = canEdit|default(false) %}
+{% set isInherited = isInherited|default(false) %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 Cl. 7.5 · Documented Information</div>
+            <div class="fa-drawer__title">{{ document.originalFilename }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            {{ _fa_status_chip.render({
+                entity_class: 'App\\Entity\\Document',
+                status_key: document.status,
+                label: ('document.status.' ~ document.status)|trans({}, 'document'),
+                size: 'sm'
+            }) }}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: document.category|capitalize } %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'document.field.version'|trans({}, 'document') }}</span>
+            <span>{{ document.version }}</span>
+        </div>
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'document.field.document_type'|trans({}, 'document') }}</span>
+            <span>{{ ('document.type.' ~ document.category)|trans({}, 'document') }}</span>
+        </div>
+        {% if document.uploadedBy %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'document.table.uploaded_by'|trans({}, 'document') }}</span>
+                <span>{{ document.uploadedBy.fullName }}</span>
+            </div>
+        {% endif %}
+        {% if document.uploadedAt %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'document.label.uploaded_at'|trans({}, 'document') }}</span>
+                <span>{{ document.uploadedAt|date('d.m.Y H:i') }}</span>
+            </div>
+        {% endif %}
+        {% if document.nextReviewDate %}
+            <div class="fa-drawer__kv">
+                <span class="label">{{ 'document.field.next_review_date'|trans({}, 'document') }}</span>
+                <span>{{ document.nextReviewDate|date('d.m.Y') }}{% if document.isEffectivenessOverdue(12) %} <i class="fa-icon fa-icon--nav-shield-alert text-danger" aria-hidden="true"></i>{% endif %}</span>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'common.size'|trans({}, 'messages') }}</span>
+            <span>{{ document.fileSizeFormatted }}</span>
+        </div>
+        {% if document.description %}
+            <div class="fa-drawer__section">
+                <span class="label">{{ 'document.field.description'|trans({}, 'document') }}</span>
+                <p class="fa-drawer__desc">{{ document.description|u.truncate(280, '…') }}</p>
+            </div>
+        {% endif %}
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_document_show', {id: document.id, _locale: app.request.locale}) }}" data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <a href="{{ path('app_document_download', {id: document.id, _locale: app.request.locale}) }}"
+           data-turbo="false" data-turbo-prefetch="false"
+           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md">
+            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+            <span class="fa-cyber-btn__label">{{ 'common.download'|trans({}, 'messages') }}</span>
+        </a>
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if canEdit and is_granted('ROLE_USER') %}
+            <a href="{{ path('app_document_edit', {id: document.id, _locale: app.request.locale}) }}" data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>

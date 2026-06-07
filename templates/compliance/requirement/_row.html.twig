@@ -1,0 +1,69 @@
+{# Single ComplianceRequirement table row — shared by the index and the Turbo
+   Stream that replaces/appends a row after an in-modal save. The title cell and
+   the eye action open the read-only detail in the fa-form-modal frame; the edit
+   pencil opens the form in the same frame. Fulfillment is optional: it is
+   present on the index (per-tenant batch) but absent in the stream-save context
+   (a freshly created/edited row), where the cell degrades gracefully. #}
+{% trans_default_domain 'compliance' %}
+{% set fulfillment = fulfillment is defined ? fulfillment : (fulfillments is defined and fulfillments[requirement.id] is defined ? fulfillments[requirement.id] : null) %}
+<tr id="compliance-requirement-row-{{ requirement.id }}"
+    data-compliance-requirement-id="{{ requirement.id }}">
+    <td><code>{{ requirement.requirementId }}</code></td>
+    <td>
+        <a href="{{ path('app_compliance_requirement_show', {id: requirement.id, _locale: app.request.locale}) }}"
+           data-turbo-frame="fa-form-modal" class="fa-row-link"><strong>{{ requirement.title }}</strong></a>
+    </td>
+    <td>
+        {% if requirement.framework %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: requirement.framework.code } %}
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </td>
+    <td>{{ requirement.category|default('-') }}</td>
+    <td>
+        <span class="{{ badge_priority(requirement.priority) }}">{{ requirement.priority }}</span>
+    </td>
+    <td>
+        {% if fulfillment %}
+            <div class="d-flex align-items-center">
+                <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 100px;">
+                    <div class="progress-bar {{ badge_completion(fulfillment.fulfillmentPercentage)|replace({'badge ': ''}) }}"
+                         role="progressbar"
+                         style="width: {{ fulfillment.fulfillmentPercentage }}%"
+                         aria-valuenow="{{ fulfillment.fulfillmentPercentage }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        {{ fulfillment.fulfillmentPercentage }}%
+                    </div>
+                </div>
+                <small class="text-muted">{{ fulfillment.status }}</small>
+            </div>
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if fulfillment and fulfillment.applicable %}
+            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Yes' } %}
+        {% else %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'No' } %}
+        {% endif %}
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_compliance_requirement_show', {id: requirement.id, _locale: app.request.locale}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id, _locale: app.request.locale}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+        </div>
+    </td>
+</tr>
