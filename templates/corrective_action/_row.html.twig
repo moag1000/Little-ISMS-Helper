@@ -1,0 +1,59 @@
+{# Single CorrectiveAction card row — shared by the index and the Turbo Stream
+   that replaces/appends a row after an in-modal save. The title link and eye/edit
+   actions all target the fa-form-modal Turbo Frame. Loop variable: `action`. #}
+{% trans_default_domain 'audits' %}
+{% set _statusVariant = action.status == 'verified_effective' ? 'success'
+    : (action.status == 'verified_ineffective' ? 'danger'
+    : (action.status in ['completed', 'closed'] ? 'success'
+    : (action.status == 'in_progress' ? 'warning'
+    : (action.status == 'planned' ? 'info' : 'neutral')))) %}
+{% set _meta = [] %}
+{% if action.finding %}
+    {% set _meta = _meta|merge([action.finding.findingNumber ?? ('#' ~ action.finding.id)]) %}
+{% endif %}
+{% if action.effectiveResponsiblePerson %}
+    {% set _meta = _meta|merge([action.effectiveResponsiblePerson]) %}
+{% endif %}
+{% if action.plannedCompletionDate %}
+    {% set _meta = _meta|merge([
+        (action.isOverdue ? '⚠ ' : '') ~ action.plannedCompletionDate|date('Y-m-d')
+    ]) %}
+{% endif %}
+<div id="corrective-action-row-{{ action.id }}" class="fa-entity-card fa-entity-card--nonconformity d-flex align-items-center gap-2">
+    <div class="fa-entity-card__icon">
+        <i class="fa-icon fa-icon--nonconformity" aria-hidden="true"></i>
+    </div>
+    <div class="fa-entity-card__body flex-grow-1">
+        <a href="{{ path('app_corrective_action_show', {id: action.id}) }}"
+           class="fa-row-link fa-entity-card__title"
+           data-turbo-frame="fa-form-modal">{{ action.title }}</a>
+        {% if _meta|length > 0 %}
+            <div class="fa-entity-card__meta">
+                {% for item in _meta %}<span>{{ item }}</span>{% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="fa-entity-card__status">
+        <span class="fa-status-pill fa-status-pill--{{ _statusVariant }}">
+            {{ ('corrective_action.status.' ~ action.status)|trans({}, 'audits') }}
+        </span>
+    </div>
+    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+        <a href="{{ path('app_corrective_action_show', {id: action.id}) }}"
+           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+           data-turbo-frame="fa-form-modal"
+           title="{{ 'common.view'|trans({}, 'messages') }}"
+           aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+        </a>
+        {% if is_granted('ROLE_USER') %}
+        <a href="{{ path('app_corrective_action_edit', {id: action.id}) }}"
+           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+           data-turbo-frame="fa-form-modal"
+           title="{{ 'common.edit'|trans({}, 'messages') }}"
+           aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+        </a>
+        {% endif %}
+    </div>
+</div>

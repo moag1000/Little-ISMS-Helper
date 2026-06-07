@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Controller\Trait\InPageFormTrait;
 use App\Entity\ManagementReview;
 use App\Enum\ManagementReviewStatus;
 use App\Form\ManagementReviewType;
@@ -26,6 +27,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ManagementReviewController extends AbstractController
 {
+    use InPageFormTrait;
+
     public function __construct(
         private readonly ManagementReviewRepository $managementReviewRepository,
         private readonly EntityManagerInterface $entityManager,
@@ -70,6 +73,10 @@ class ManagementReviewController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('management_review.success.created', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->managementReviewStreamSave($managementReview, isNew: true);
+            }
             return $this->redirectToRoute('app_management_review_show', ['id' => $managementReview->getId()]);
         }
 
@@ -77,14 +84,27 @@ class ManagementReviewController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('management_review/_form_modal.html.twig', [
+                'review' => $managementReview,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('management_review/new.html.twig', [
             'review' => $managementReview,
             'form' => $form,
         ], new Response(status: $status));
     }
     #[Route('/management-review/{id}', name: 'app_management_review_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(ManagementReview $managementReview): Response
+    public function show(Request $request, ManagementReview $managementReview): Response
     {
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('management_review/_detail_modal.html.twig', [
+                'review' => $managementReview,
+            ]);
+        }
+
         return $this->render('management_review/show.html.twig', [
             'review' => $managementReview,
         ]);
@@ -101,6 +121,10 @@ class ManagementReviewController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('management_review.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->managementReviewStreamSave($managementReview, isNew: false);
+            }
             return $this->redirectToRoute('app_management_review_show', ['id' => $managementReview->getId()]);
         }
 
@@ -108,10 +132,26 @@ class ManagementReviewController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('management_review/_form_modal.html.twig', [
+                'review' => $managementReview,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('management_review/edit.html.twig', [
             'review' => $managementReview,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal ManagementReview save (row replace/append). */
+    private function managementReviewStreamSave(ManagementReview $review, bool $isNew): Response
+    {
+        return $this->render('management_review/_stream_save.html.twig', [
+            'review' => $review,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
     #[Route('/management-review/{id}/pdf', name: 'app_management_review_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]

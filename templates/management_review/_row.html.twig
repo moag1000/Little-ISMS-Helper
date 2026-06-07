@@ -1,0 +1,70 @@
+{# Single ManagementReview table row — shared by the index and the Turbo Stream
+   that replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit actions do the same.
+   Edit is gated on ROLE_ADMIN, matching the full-page index behaviour. #}
+{% trans_default_domain 'management_review' %}
+{% set statusClass = {
+    'planned': 'warning',
+    'in_progress': 'info',
+    'completed': 'success',
+    'cancelled': 'danger',
+    'follow_up_required': 'warning'
+} %}
+<tr id="management-review-row-{{ review.id }}">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ review.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ review.title }}">
+    </td>
+    <td>
+        <a href="{{ path('app_management_review_show', {id: review.id, _locale: app.request.locale}) }}"
+           data-turbo-frame="fa-form-modal"
+           class="fa-row-link"><strong>{{ review.title }}</strong></a>
+    </td>
+    <td>{{ review.reviewDate|date('d.m.Y') }}</td>
+    <td>
+        {% include '_components/_badge.html.twig' with {
+            variant: statusClass[review.status] ?? 'secondary',
+            content: ('management_review.status.' ~ review.status)|trans({}, 'management_review')
+        } %}
+    </td>
+    <td>
+        {% if review.participants|length > 0 %}
+            <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
+            {% include '_components/_badge.html.twig' with { variant: 'primary', content: review.participants|length } %}
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_management_review_show', {id: review.id, _locale: app.request.locale}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_management_review_edit', {id: review.id, _locale: app.request.locale}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+            {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_management_review_pdf', {id: review.id, _locale: app.request.locale}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-prefetch="false"
+               data-turbo="false"
+               title="{{ 'management_review.action.pdf'|trans({}, 'management_review') }}"
+               aria-label="{{ 'management_review.action.pdf'|trans({}, 'management_review') }}">
+                <i class="fa-icon fa-icon--ui-download" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+        </div>
+    </td>
+</tr>

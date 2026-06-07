@@ -1,0 +1,65 @@
+{# Shared InternalAudit form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps it in form_start/
+   form_end and passes title / actions. #}
+{% trans_default_domain 'audit' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(audit is defined and audit and audit.title ? audit.title : ('audit.new'|trans({}, 'audit'))) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'basic_info': {
+        'label': 'audit.section.basic_info'|trans({}, 'audit'),
+        'fields': ['title', 'scopeType', 'scope', 'scopedAssets', 'objectives']
+    },
+    'schedule': {
+        'label': 'audit.section.schedule'|trans({}, 'audit'),
+        'fields': ['plannedDate', 'actualDate', 'status']
+    },
+    'team': {
+        'label': 'audit.section.team'|trans({}, 'audit'),
+        'fields': ['leadAuditorUser', 'leadAuditorPerson', 'leadAuditor', 'auditTeamMembers', 'auditTeam']
+    },
+    'frameworks': {
+        'label': 'audit.section.frameworks'|trans({}, 'audit'),
+        'fields': ['scopedFramework', 'additionalScopedFrameworks', 'auditedSubsidiaries']
+    },
+    'findings': {
+        'label': 'audit.section.findings'|trans({}, 'audit'),
+        'fields': ['findings', 'recommendations', 'conclusion']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'ISO 27001 Cl. 9.2 · Internal Audit',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'title': 12,
+        'scopeType': 6,
+        'scope': 12,
+        'scopedAssets': 12,
+        'objectives': 12,
+        'plannedDate': 6,
+        'actualDate': 6,
+        'status': 6,
+        'leadAuditorUser': 6,
+        'leadAuditorPerson': 6,
+        'leadAuditor': 6,
+        'auditTeamMembers': 12,
+        'auditTeam': 12,
+        'scopedFramework': 6,
+        'additionalScopedFrameworks': 6,
+        'auditedSubsidiaries': 12,
+        'findings': 12,
+        'recommendations': 12,
+        'conclusion': 12
+    },
+    'translation_domain': 'audit',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

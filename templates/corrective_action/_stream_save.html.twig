@@ -1,0 +1,12 @@
+{# Turbo Stream after a successful in-modal CorrectiveAction save. Replaces the
+   existing card row (edit) or appends a fresh card to the list (new), then closes
+   the fa-form-modal frame surface. #}
+{% if is_new %}
+    <turbo-stream action="append" target="corrective-action-rows">
+        <template>{% include 'corrective_action/_row.html.twig' with { action: action } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="corrective-action-row-{{ action.id }}">
+        <template>{% include 'corrective_action/_row.html.twig' with { action: action } %}</template>
+    </turbo-stream>
+{% endif %}
