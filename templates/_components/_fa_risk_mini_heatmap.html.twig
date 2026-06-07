@@ -51,6 +51,14 @@
         </span>
     </div>
 
+    {# y-axis: the arrow is a separate upright glyph (it must keep pointing UP),
+       the word is rotated vertically beneath it. writing-mode rotates glyphs, so
+       the ↑ cannot live inside the rotated text. #}
+    <span class="fa-risk-mini-heatmap__axis-y">
+        <span class="fa-risk-mini-heatmap__axis-y-arrow" aria-hidden="true">↑</span>
+        <span class="fa-risk-mini-heatmap__axis-y-label">{{ 'risk.heatmap.axis.probability'|trans({}, 'risk') }}</span>
+    </span>
+
     <div class="fa-risk-mini-heatmap__grid" role="presentation" aria-hidden="true">
         {%- for p in 5..1 -%}
             {%- for i in 1..5 -%}
@@ -69,8 +77,5 @@
         {%- endfor -%}
     </div>
 
-    <div class="fa-risk-mini-heatmap__axes">
-        <span class="fa-risk-mini-heatmap__axis-x">{{ 'risk.heatmap.axis.impact'|trans({}, 'risk') }} →</span>
-        <span class="fa-risk-mini-heatmap__axis-y">↑ {{ 'risk.heatmap.axis.probability'|trans({}, 'risk') }}</span>
-    </div>
+    <span class="fa-risk-mini-heatmap__axis-x">{{ 'risk.heatmap.axis.impact'|trans({}, 'risk') }} →</span>
 </div>
