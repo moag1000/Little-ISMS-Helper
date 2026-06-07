@@ -7,6 +7,7 @@ namespace App\Controller;
 use RuntimeException;
 use DateTime;
 use App\Controller\Trait\CurrentUserTrait;
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
@@ -39,6 +40,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DataBreachController extends AbstractController
 {
     use CurrentUserTrait;
+    use InPageFormTrait;
     use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
@@ -184,12 +186,22 @@ class DataBreachController extends AbstractController
                 $breach->getReferenceNumber()
             ));
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->dataBreachStreamSave($breach, isNew: true);
+            }
             return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('data_breach/_form_modal.html.twig', [
+                'breach' => $breach,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('data_breach/new.html.twig', [
             'form' => $form,
@@ -200,9 +212,16 @@ class DataBreachController extends AbstractController
      * Show data breach details
      */
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(DataBreach $dataBreach): Response
+    public function show(Request $request, DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('data_breach/_detail_modal.html.twig', [
+                'breach' => $dataBreach,
+            ]);
+        }
 
         // V3 W3-Aurora: Comment-Thread (C7) — load thread for this DataBreach.
         $comments = [];
@@ -248,6 +267,9 @@ class DataBreachController extends AbstractController
 
             $this->flashSuccess('data_breach.success.updated');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->dataBreachStreamSave($dataBreach, isNew: false);
+            }
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
@@ -255,10 +277,26 @@ class DataBreachController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('data_breach/_form_modal.html.twig', [
+                'breach' => $dataBreach,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('data_breach/edit.html.twig', [
             'breach' => $dataBreach,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal DataBreach save (row replace/append). */
+    private function dataBreachStreamSave(DataBreach $breach, bool $isNew): Response
+    {
+        return $this->render('data_breach/_stream_save.html.twig', [
+            'breach' => $breach,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     /**

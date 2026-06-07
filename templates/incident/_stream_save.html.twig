@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal Incident save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="incident-rows">
+        <template>{% include 'incident/_row.html.twig' with { incident: incident } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="incident-row-{{ incident.id }}">
+        <template>{% include 'incident/_row.html.twig' with { incident: incident } %}</template>
+    </turbo-stream>
+{% endif %}

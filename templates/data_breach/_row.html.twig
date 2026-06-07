@@ -1,0 +1,116 @@
+{# Single DataBreach table row — shared by the index and the Turbo Stream that
+   replaces/appends a row after an in-modal save. The title cell opens the
+   read-only detail in the fa-form-modal frame; the eye/edit/pdf actions do the
+   same (eye/edit) or bypass Turbo (pdf). Edit is gated on status + ROLE_AUDITOR,
+   matching the full-page edit() status-guard. #}
+{% trans_default_domain 'privacy' %}
+{% set status_class = {
+    'draft': 'secondary',
+    'under_assessment': 'info',
+    'authority_notified': 'success',
+    'subjects_notified': 'success',
+    'closed': 'dark'
+}[breach.status]|default('secondary') %}
+{% set risk_class = {
+    'low': 'success',
+    'medium': 'info',
+    'high': 'warning',
+    'critical': 'danger'
+}[breach.riskLevel]|default('secondary') %}
+<tr id="data-breach-row-{{ breach.id }}"
+    class="{{ breach.isAuthorityNotificationOverdue ? 'table-danger' : '' }}">
+    <td class="bulk-select-column">
+        <input type="checkbox"
+               class="form-check-input"
+               data-bulk-actions-target="item"
+               data-action="bulk-actions#selectItem"
+               value="{{ breach.id }}"
+               aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ breach.referenceNumber }}">
+    </td>
+    <td>
+        <a href="{{ path('app_data_breach_show', {id: breach.id}) }}" data-turbo-frame="fa-form-modal">
+            {{ breach.referenceNumber }}
+        </a>
+    </td>
+    <td>
+        <a href="{{ path('app_data_breach_show', {id: breach.id}) }}" data-turbo-frame="fa-form-modal" class="fa-row-link">
+            <strong>{{ breach.title }}</strong>
+        </a>
+    </td>
+    <td>
+        {% include '_components/_badge.html.twig' with { variant: status_class, content: ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') } %}
+    </td>
+    <td>
+        {% if breach.riskLevel %}
+            {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if breach.affectedDataSubjects %}
+            {{ breach.affectedDataSubjects|number_format }}
+        {% else %}
+            <span class="text-muted">{{ 'data_breach.index.unknown'|trans({}, 'messages') }}</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
+            {% set hours = breach.hoursUntilAuthorityDeadline %}
+            {% if hours < 0 %}
+                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'data_breach.index.overdue'|trans({}, 'messages') ~ ' ' ~ (hours * -1)|number_format ~ 'h' } %}
+            {% elseif hours < 24 %}
+                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'data_breach.index.hours_left'|trans({'%hours%': hours|number_format}, 'messages') } %}
+            {% else %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'data_breach.index.hours_left'|trans({'%hours%': hours|number_format}, 'messages') } %}
+            {% endif %}
+        {% elseif breach.supervisoryAuthorityNotifiedAt %}
+            <i class="fa-icon fa-icon--status-ok" aria-hidden="true" title="{{ 'data_breach.notified_at'|trans({'%date%': breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i')}, 'privacy') }}"></i>
+        {% else %}
+            <span class="text-muted">{{ 'data_breach.not_required'|trans({}, 'privacy') }}</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if breach.supervisoryAuthorityNotifiedAt %}
+            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+        {% elseif breach.requiresAuthorityNotification %}
+            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if breach.dataSubjectsNotifiedAt %}
+            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+        {% elseif breach.requiresSubjectNotification %}
+            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+            <a href="{{ path('app_data_breach_show', {id: breach.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost"
+               data-turbo-frame="fa-form-modal"
+               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+            </a>
+            {% if breach.status in ['draft', 'under_assessment'] and is_granted('ROLE_AUDITOR') %}
+                <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}"
+                   class="fa-cyber-btn fa-cyber-btn--ghost"
+                   data-turbo-frame="fa-form-modal"
+                   title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                </a>
+            {% endif %}
+            <a href="{{ path('app_data_breach_export_pdf', {id: breach.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--success"
+               data-turbo-prefetch="false"
+               data-turbo="false"
+               title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
+            </a>
+        </div>
+    </td>
+</tr>

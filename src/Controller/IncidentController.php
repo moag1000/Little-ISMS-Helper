@@ -33,6 +33,7 @@ use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\CurrentUserTrait;
+use App\Controller\Trait\InPageFormTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -48,6 +49,7 @@ class IncidentController extends AbstractController
 {
     use BulkActionTrait;
     use CurrentUserTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly IncidentRepository $incidentRepository,
@@ -290,12 +292,23 @@ class IncidentController extends AbstractController
             // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->addFlash('success', $this->translator->trans('incident.success.reported', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->incidentStreamSave($incident, isNew: true);
+            }
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('incident/_form_modal.html.twig', [
+                'incident' => $incident,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('incident/new.html.twig', [
             'incident' => $incident,
@@ -415,8 +428,15 @@ class IncidentController extends AbstractController
     }
     #[Route('/incident/{id}', name: 'app_incident_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(Incident $incident): Response
+    public function show(Request $request, Incident $incident): Response
     {
+        // In-modal → condensed read-only detail; direct URL → full page (fallback).
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('incident/_detail_modal.html.twig', [
+                'incident' => $incident,
+            ]);
+        }
+
         // Get audit log history for this incident (last 10 entries)
         $auditLogs = $this->auditLogRepository->findByEntity('Incident', $incident->getId());
         $recentAuditLogs = array_slice($auditLogs, 0, 10);
@@ -515,6 +535,10 @@ class IncidentController extends AbstractController
             }
 
             $this->addFlash('success', $this->translator->trans('incident.success.updated', [], 'messages'));
+
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->incidentStreamSave($incident, isNew: false);
+            }
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
@@ -522,10 +546,26 @@ class IncidentController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('incident/_form_modal.html.twig', [
+                'incident' => $incident,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('incident/edit.html.twig', [
             'incident' => $incident,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal Incident save (row replace/append). */
+    private function incidentStreamSave(Incident $incident, bool $isNew): Response
+    {
+        return $this->render('incident/_stream_save.html.twig', [
+            'incident' => $incident,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
     /**
      * F16: Link a Risk to this Incident.
