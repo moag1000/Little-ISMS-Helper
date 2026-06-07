@@ -1,0 +1,22 @@
+{# DoraExitPlan create/edit rendered inside the fa-form-modal Turbo Frame.
+   Explicit form action (the document URL stays on the list). On valid submit the
+   controller returns a Turbo Stream (row replace/append). #}
+{% trans_default_domain 'dora_exit_plan' %}
+{% set is_edit = plan is defined and plan and plan.id is not null %}
+{% set form_action = is_edit ? path('app_dora_exit_plan_edit', { id: plan.id }) : path('app_dora_exit_plan_new') %}
+<turbo-frame id="fa-form-modal">
+    {{ form_start(form, { action: form_action, method: 'POST', attr: {
+        id: 'dora-exit-plan-modal-form',
+        'data-turbo-frame': 'fa-form-modal'
+    } }) }}
+    {% include 'dora_exit_plan/_form_body.html.twig' with {
+        form: form,
+        modal: true,
+        title: is_edit ? (plan.supplier ? plan.supplier.name : 'dora_exit_plan.action.edit'|trans({}, 'dora_exit_plan')) : 'dora_exit_plan.action.new'|trans({}, 'dora_exit_plan'),
+        actions: {
+            close: { label: 'common.cancel'|trans({}, 'messages'), variant: 'ghost', action: 'fa-form-modal#close' },
+            submit: { label: 'common.save'|trans({}, 'messages'), variant: 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
+</turbo-frame>

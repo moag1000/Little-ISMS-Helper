@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal DoraExitPlan save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="dora-exit-plan-rows">
+        <template>{% include 'dora_exit_plan/_row.html.twig' with { plan: plan } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="dora-exit-plan-row-{{ plan.id }}">
+        <template>{% include 'dora_exit_plan/_row.html.twig' with { plan: plan } %}</template>
+    </turbo-stream>
+{% endif %}

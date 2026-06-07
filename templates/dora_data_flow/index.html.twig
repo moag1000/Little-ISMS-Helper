@@ -18,7 +18,7 @@
         title: 'dora_data_flow.title.list'|trans({}, 'dora_data_flow'),
         subtitle: 'dora_data_flow.description.overview'|trans({}, 'dora_data_flow'),
         actions: [
-            { label: 'dora_data_flow.action.create'|trans({}, 'dora_data_flow'), variant: 'primary', icon: 'plus', href: path('app_dora_data_flow_new') }
+            { label: 'dora_data_flow.action.create'|trans({}, 'dora_data_flow'), variant: 'primary', icon: 'plus', href: path('app_dora_data_flow_new'), attrs: { 'data-turbo-frame': 'fa-form-modal' } }
         ]
     }) }}
 </div>
@@ -37,50 +37,10 @@
                 <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
+        {% block table_body_attrs %}id="dora-data-flow-rows"{% endblock %}
         {% block table_body %}
             {% for flow in flows %}
-            <tr>
-                <td>
-                    {% if flow.supplier %}
-                        <strong>{{ flow.supplier.name }}</strong>
-                    {% else %}
-                        <span class="text-muted-color">-</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% include '_components/_badge.html.twig' with {
-                        variant: 'info',
-                        content: ('dora_data_flow.direction.' ~ flow.direction)|trans({}, 'dora_data_flow')
-                    } %}
-                </td>
-                <td>
-                    {% for cat in flow.dataCategories %}
-                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: cat } %}
-                    {% else %}
-                        <span class="text-muted-color">-</span>
-                    {% endfor %}
-                </td>
-                <td>
-                    {% if flow.crossBorder %}
-                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'common.yes'|trans({}, 'messages') } %}
-                    {% else %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.no'|trans({}, 'messages') } %}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if flow.receivingCountry %}<code>{{ flow.receivingCountry }}</code>{% else %}<span class="text-muted-color">-</span>{% endif %}
-                </td>
-                <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group">
-                        <a href="{{ path('app_dora_data_flow_show', {id: flow.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                        </a>
-                        <a href="{{ path('app_dora_data_flow_edit', {id: flow.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
+                {% include 'dora_data_flow/_row.html.twig' with { flow: flow } %}
             {% else %}
             <tr>
                 <td colspan="6" class="text-center-p-xl-muted">

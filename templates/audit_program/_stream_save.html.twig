@@ -1,0 +1,10 @@
+{# Turbo Stream after a successful in-modal AuditProgram save. #}
+{% if is_new %}
+    <turbo-stream action="append" target="audit-program-rows">
+        <template>{% include 'audit_program/_row.html.twig' with { program: program } %}</template>
+    </turbo-stream>
+{% else %}
+    <turbo-stream action="replace" target="audit-program-row-{{ program.id }}">
+        <template>{% include 'audit_program/_row.html.twig' with { program: program } %}</template>
+    </turbo-stream>
+{% endif %}

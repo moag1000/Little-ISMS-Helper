@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\AuditProgram;
@@ -35,6 +36,7 @@ class AuditProgramController extends AbstractController
 {
     use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly AuditProgramRepository $auditProgramRepository,
@@ -77,10 +79,16 @@ class AuditProgramController extends AbstractController
     // ── Show ───────────────────────────────────────────────────────────────────
 
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(AuditProgram $auditProgram): Response
+    public function show(Request $request, AuditProgram $auditProgram): Response
     {
         if ($redirect = $this->checkModuleActive('audits')) {
             return $redirect;
+        }
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('audit_program/_detail_modal.html.twig', [
+                'program' => $auditProgram,
+            ]);
         }
 
         return $this->render('audit_program/show.html.twig', [
@@ -117,6 +125,10 @@ class AuditProgramController extends AbstractController
 
             $this->flashSuccess('audit_program.success.created');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->auditProgramStreamSave($program, true);
+            }
+
             return $this->redirectToRoute('app_audit_program_show', [
                 '_locale' => $request->getLocale(),
                 'id'      => $program->getId(),
@@ -126,6 +138,13 @@ class AuditProgramController extends AbstractController
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('audit_program/_form_modal.html.twig', [
+                'form'    => $form,
+                'program' => $program,
+            ], new Response(status: $status));
+        }
 
         return $this->render('audit_program/new.html.twig', [
             'form'    => $form,
@@ -159,6 +178,10 @@ class AuditProgramController extends AbstractController
 
             $this->flashSuccess('audit_program.success.updated');
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->auditProgramStreamSave($auditProgram, false);
+            }
+
             return $this->redirectToRoute('app_audit_program_show', [
                 '_locale' => $request->getLocale(),
                 'id'      => $auditProgram->getId(),
@@ -169,10 +192,26 @@ class AuditProgramController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('audit_program/_form_modal.html.twig', [
+                'form'    => $form,
+                'program' => $auditProgram,
+            ], new Response(status: $status));
+        }
+
         return $this->render('audit_program/edit.html.twig', [
             'form'    => $form,
             'program' => $auditProgram,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal AuditProgram save (row replace/append). */
+    private function auditProgramStreamSave(AuditProgram $program, bool $isNew): Response
+    {
+        return $this->render('audit_program/_stream_save.html.twig', [
+            'program' => $program,
+            'is_new'  => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     // ── Archive ────────────────────────────────────────────────────────────────

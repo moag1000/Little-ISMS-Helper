@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DoraExitPlan;
 use App\Form\DoraExitPlanType;
@@ -31,6 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DoraExitPlanController extends AbstractController
 {
     use ModuleGatedControllerTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly DoraExitPlanRepository $exitPlanRepository,
@@ -92,14 +94,17 @@ class DoraExitPlanController extends AbstractController
                     'dora_exit_plan',
                 ));
 
-                $status = ($form->isSubmitted() && !$form->isValid())
-                    ? Response::HTTP_UNPROCESSABLE_ENTITY
-                    : Response::HTTP_OK;
+                if ($this->isTurboFrameRequest($request)) {
+                    return $this->render('dora_exit_plan/_form_modal.html.twig', [
+                        'plan' => $plan,
+                        'form' => $form,
+                    ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
+                }
 
                 return $this->render('dora_exit_plan/new.html.twig', [
                     'plan' => $plan,
                     'form' => $form,
-                ], new Response(status: $status));
+                ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
             }
 
             $this->entityManager->persist($plan);
@@ -111,12 +116,23 @@ class DoraExitPlanController extends AbstractController
                 'dora_exit_plan',
             ));
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->doraExitPlanStreamSave($plan, isNew: true);
+            }
+
             return $this->redirectToRoute('app_dora_exit_plan_show', ['id' => $plan->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dora_exit_plan/_form_modal.html.twig', [
+                'plan' => $plan,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('dora_exit_plan/new.html.twig', [
             'plan' => $plan,
@@ -125,10 +141,16 @@ class DoraExitPlanController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(DoraExitPlan $plan): Response
+    public function show(Request $request, DoraExitPlan $plan): Response
     {
         if ($redirect = $this->checkModuleActive('nis2_dora')) {
             return $redirect;
+        }
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dora_exit_plan/_detail_modal.html.twig', [
+                'plan' => $plan,
+            ]);
         }
 
         return $this->render('dora_exit_plan/show.html.twig', [
@@ -156,12 +178,23 @@ class DoraExitPlanController extends AbstractController
                 'dora_exit_plan',
             ));
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->doraExitPlanStreamSave($plan, isNew: false);
+            }
+
             return $this->redirectToRoute('app_dora_exit_plan_show', ['id' => $plan->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dora_exit_plan/_form_modal.html.twig', [
+                'plan' => $plan,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('dora_exit_plan/edit.html.twig', [
             'plan' => $plan,
@@ -189,5 +222,14 @@ class DoraExitPlanController extends AbstractController
         }
 
         return $this->redirectToRoute('app_dora_exit_plan_index');
+    }
+
+    /** Turbo Stream after a successful in-modal DoraExitPlan save (row replace/append). */
+    private function doraExitPlanStreamSave(DoraExitPlan $plan, bool $isNew): Response
+    {
+        return $this->render('dora_exit_plan/_stream_save.html.twig', [
+            'plan' => $plan,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 }

@@ -1,0 +1,88 @@
+{# AuditProgram read-only detail — rendered inside the fa-form-modal Turbo Frame.
+   Uses drawer chrome (header/body/footer/kv) as a flex column. Condensed, with
+   a "Vollansicht" link to the full page. Edit button gated on ROLE_MANAGER. #}
+{% trans_default_domain 'audit_program' %}
+<turbo-frame id="fa-form-modal">
+    <div class="fa-drawer__header">
+        <div class="fa-drawer__header-text">
+            <div class="fa-drawer__eyebrow">ISO 27001 Cl. 9.2 · ISO 19011 §5.4 · Audit Programme</div>
+            <div class="fa-drawer__title">{{ program.name }}</div>
+        </div>
+        <button type="button" class="fa-drawer__close" data-action="fa-form-modal#close"
+                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="fa-drawer__body">
+        <div class="fa-drawer__section">
+            <span class="badge bg-{{ program.statusTone == 'primary' ? 'primary' : (program.statusTone == 'success' ? 'success' : 'secondary') }}">
+                {{ ('audit_program.status.' ~ program.status)|trans({}, 'audit_program') }}
+            </span>
+            {% if program.frequency %}
+                <span class="badge bg-secondary ms-1">{{ ('audit_program.frequency.' ~ program.frequency)|trans({}, 'audit_program') }}</span>
+            {% endif %}
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'audit_program.field.start_date'|trans({}, 'audit_program') }}</span>
+            <span>{{ program.startDate|date('d.m.Y') }} – {{ program.endDate|date('d.m.Y') }}</span>
+        </div>
+
+        {% if program.objectives %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'audit_program.field.objectives'|trans({}, 'audit_program') }}</span>
+            <span>{{ program.objectives|u.truncate(200, '…') }}</span>
+        </div>
+        {% endif %}
+
+        {% if program.scope %}
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'audit_program.field.scope'|trans({}, 'audit_program') }}</span>
+            <span>{{ program.scope|u.truncate(200, '…') }}</span>
+        </div>
+        {% endif %}
+
+        <div class="fa-drawer__kv">
+            <span class="label">{{ 'audit_program.show.programme_owner'|trans({}, 'audit_program') }}</span>
+            <span>{{ program.effectiveOwnerName ?? ('audit_program.show.not_assigned'|trans({}, 'audit_program')) }}</span>
+        </div>
+
+        <div class="fa-drawer__kv">
+            <span class="label"><i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i> {{ 'audit_program.kpi.audits'|trans({}, 'audit_program') }}</span>
+            <span>{{ program.auditCount }}</span>
+        </div>
+
+        {% if program.description %}
+        <div class="fa-drawer__section">
+            <span class="label">{{ 'audit_program.field.description'|trans({}, 'audit_program') }}</span>
+            <p class="fa-drawer__desc">{{ program.description|u.truncate(280, '…') }}</p>
+        </div>
+        {% endif %}
+
+        <div class="fa-drawer__section">
+            <a href="{{ path('app_audit_program_show', {_locale: app.request.locale, id: program.id}) }}"
+               data-turbo="false" class="fa-row-link">
+                {{ 'common.open_full_view'|trans({}, 'messages') }} →
+            </a>
+        </div>
+    </div>
+    <div class="fa-drawer__footer" style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--md" data-action="fa-form-modal#close">
+            <span class="fa-cyber-btn__label">{{ 'common.close'|trans({}, 'messages') }}</span>
+        </button>
+        {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_audit_program_edit', {_locale: app.request.locale, id: program.id}) }}"
+               data-turbo-frame="fa-form-modal"
+               class="fa-cyber-btn fa-cyber-btn--md">
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </a>
+        {% else %}
+            <span class="fa-cyber-btn fa-cyber-btn--md" aria-disabled="true"
+                  style="opacity:.5;pointer-events:none">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'common.edit'|trans({}, 'messages') }}</span>
+            </span>
+        {% endif %}
+    </div>
+</turbo-frame>

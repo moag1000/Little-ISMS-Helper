@@ -1,0 +1,52 @@
+{# Shared DoraExitPlan form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps it in
+   form_start/form_end and passes title / actions. Section map from
+   DoraExitPlanType::getSectionMap() — 4 sections, labels from messages domain. #}
+{% trans_default_domain 'dora_exit_plan' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default('dora_exit_plan.action.new'|trans({}, 'dora_exit_plan')) %}
+{% set submit_label = submit_label|default('common.save'|trans({}, 'messages')) %}
+
+{% set form_sections = {
+    'overview': {
+        'label': 'form.section.overview'|trans({}, 'messages'),
+        'fields': ['supplier', 'exitTrigger']
+    },
+    'recovery': {
+        'label': 'form.section.recovery'|trans({}, 'messages'),
+        'fields': ['dataReturnFormat', 'dataDeletionConfirmation', 'deletionCertificateDoc', 'migrationPath']
+    },
+    'testing': {
+        'label': 'form.section.testing'|trans({}, 'messages'),
+        'fields': ['testedAt']
+    },
+    'resources': {
+        'label': 'form.section.resources'|trans({}, 'messages'),
+        'fields': ['estimatedDurationDays', 'estimatedCost']
+    }
+} %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'DORA Art. 28(8) · ICT Third-Party Exit Plan',
+    'title': title,
+    'sections': form_sections,
+    'col_widths': {
+        'supplier': 12,
+        'exitTrigger': 12,
+        'dataReturnFormat': 12,
+        'dataDeletionConfirmation': 12,
+        'deletionCertificateDoc': 12,
+        'migrationPath': 12,
+        'testedAt': 6,
+        'estimatedDurationDays': 6,
+        'estimatedCost': 6
+    },
+    'translation_domain': 'dora_exit_plan',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': submit_label, 'variant': 'primary' }
+    })
+} %}

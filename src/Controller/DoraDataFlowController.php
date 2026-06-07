@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\InPageFormTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DoraDataFlow;
 use App\Form\DoraDataFlowType;
@@ -35,6 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DoraDataFlowController extends AbstractController
 {
     use ModuleGatedControllerTrait;
+    use InPageFormTrait;
 
     public function __construct(
         private readonly DoraDataFlowRepository $dataFlowRepository,
@@ -87,12 +89,23 @@ class DoraDataFlowController extends AbstractController
                 $this->translator->trans('dora_data_flow.success.created', [], 'dora_data_flow')
             );
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->doraDataFlowStreamSave($flow, isNew: true);
+            }
+
             return $this->redirectToRoute('app_dora_data_flow_show', ['id' => $flow->getId()]);
         }
 
         $status = ($form->isSubmitted() && !$form->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dora_data_flow/_form_modal.html.twig', [
+                'flow' => $flow,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
 
         return $this->render('dora_data_flow/new.html.twig', [
             'flow' => $flow,
@@ -102,10 +115,16 @@ class DoraDataFlowController extends AbstractController
 
     #[Route('/dora/data-flow/{id}', name: 'app_dora_data_flow_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function show(DoraDataFlow $flow): Response
+    public function show(Request $request, DoraDataFlow $flow): Response
     {
         if ($redirect = $this->checkModuleActive('nis2_dora')) {
             return $redirect;
+        }
+
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dora_data_flow/_detail_modal.html.twig', [
+                'flow' => $flow,
+            ]);
         }
 
         return $this->render('dora_data_flow/show.html.twig', [
@@ -132,6 +151,10 @@ class DoraDataFlowController extends AbstractController
                 $this->translator->trans('dora_data_flow.success.updated', [], 'dora_data_flow')
             );
 
+            if ($this->isTurboFrameRequest($request)) {
+                return $this->doraDataFlowStreamSave($flow, isNew: false);
+            }
+
             return $this->redirectToRoute('app_dora_data_flow_show', ['id' => $flow->getId()]);
         }
 
@@ -139,10 +162,26 @@ class DoraDataFlowController extends AbstractController
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
+        if ($this->isTurboFrameRequest($request)) {
+            return $this->render('dora_data_flow/_form_modal.html.twig', [
+                'flow' => $flow,
+                'form' => $form,
+            ], new Response(status: $status));
+        }
+
         return $this->render('dora_data_flow/edit.html.twig', [
             'flow' => $flow,
             'form' => $form,
         ], new Response(status: $status));
+    }
+
+    /** Turbo Stream after a successful in-modal DoraDataFlow save (row replace/append). */
+    private function doraDataFlowStreamSave(DoraDataFlow $flow, bool $isNew): Response
+    {
+        return $this->render('dora_data_flow/_stream_save.html.twig', [
+            'flow' => $flow,
+            'is_new' => $isNew,
+        ], new Response(headers: ['Content-Type' => 'text/vnd.turbo-stream.html']));
     }
 
     #[Route('/dora/data-flow/{id}/delete', name: 'app_dora_data_flow_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

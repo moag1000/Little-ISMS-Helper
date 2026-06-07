@@ -1,0 +1,39 @@
+{# Shared DoraDataFlow form body (outline-rail). Used full-page by new/edit and
+   inside the fa-form-modal frame (modal: true). Caller wraps it in
+   form_start/form_end and passes title / actions. #}
+{% trans_default_domain 'dora_data_flow' %}
+{% set modal = modal|default(false) %}
+{% set title = title|default(flow is defined and flow and flow.id is not null
+    ? flow.displayLabel
+    : ('dora_data_flow.title.create'|trans({}, 'dora_data_flow'))) %}
+
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'modal': modal,
+    'eyebrow': 'DORA Art. 28 · Register of Information · RT_03',
+    'title': title,
+    'sections': {
+        'overview': {
+            'label': 'dora_data_flow.section.overview'|trans({}, 'dora_data_flow'),
+            'fields': ['supplier', 'direction', 'processingPurpose']
+        },
+        'data_categories': {
+            'label': 'dora_data_flow.section.data_categories'|trans({}, 'dora_data_flow'),
+            'fields': ['dataCategories', 'dataVolume']
+        },
+        'security': {
+            'label': 'dora_data_flow.section.security'|trans({}, 'dora_data_flow'),
+            'fields': ['securityMeasures']
+        },
+        'transfer': {
+            'label': 'dora_data_flow.section.transfer'|trans({}, 'dora_data_flow'),
+            'fields': ['crossBorder', 'receivingCountry']
+        }
+    },
+    'translation_domain': 'dora_data_flow',
+    'actions': actions|default({
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+    })
+} %}
