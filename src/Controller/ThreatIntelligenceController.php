@@ -6,11 +6,13 @@ namespace App\Controller;
 
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\ThreatIntelligence;
 use App\Enum\ThreatIntelligenceStatus;
 use App\Form\ThreatIntelligenceType;
 use App\Repository\ThreatIntelligenceRepository;
 use App\Service\AuditLogger;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,6 +31,7 @@ class ThreatIntelligenceController extends AbstractController
 {
     use BulkActionTrait;
     use InPageFormTrait;
+    use ModuleGatedControllerTrait;
 
     public function __construct(
         private readonly ThreatIntelligenceRepository $repository,
@@ -36,6 +39,7 @@ class ThreatIntelligenceController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
+        private readonly ModuleConfigurationService $moduleService,
         private readonly ?AuditLogger $auditLogger = null,
     ) {}
 
@@ -43,6 +47,11 @@ class ThreatIntelligenceController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
+        // Vulnerability & Threat Intelligence — vulnerability_intel module (ISO 27001 A.8.8 / NIS2 Art. 21.2(e))
+        if ($redirect = $this->checkModuleActive('vulnerability_intel')) {
+            return $redirect;
+        }
+
         $q          = trim((string) $request->query->get('q', ''));
         $severity   = $request->query->get('severity');
         $threatType = $request->query->get('threatType');
@@ -99,6 +108,10 @@ class ThreatIntelligenceController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('vulnerability_intel')) {
+            return $redirect;
+        }
+
         $threat = new ThreatIntelligence();
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant !== null) {
@@ -141,6 +154,10 @@ class ThreatIntelligenceController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Request $request, ThreatIntelligence $threat): Response
     {
+        if ($redirect = $this->checkModuleActive('vulnerability_intel')) {
+            return $redirect;
+        }
+
         // In-modal → condensed read-only detail; direct URL → full page (fallback).
         if ($this->isTurboFrameRequest($request)) {
             return $this->render('threat_intelligence/_detail_modal.html.twig', [
@@ -157,6 +174,10 @@ class ThreatIntelligenceController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, ThreatIntelligence $threat): Response
     {
+        if ($redirect = $this->checkModuleActive('vulnerability_intel')) {
+            return $redirect;
+        }
+
         $form = $this->createForm(ThreatIntelligenceType::class, $threat);
         $form->handleRequest($request);
 
@@ -202,6 +223,10 @@ class ThreatIntelligenceController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ThreatIntelligence $threat): Response
     {
+        if ($redirect = $this->checkModuleActive('vulnerability_intel')) {
+            return $redirect;
+        }
+
         if ($this->isCsrfTokenValid('delete' . $threat->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($threat);
             $this->entityManager->flush();
@@ -220,6 +245,10 @@ class ThreatIntelligenceController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
     {
+        if (!$this->moduleService->isModuleActive('vulnerability_intel')) {
+            return new JsonResponse(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true) ?? [];
         $ids = (array) ($data['ids'] ?? []);
         return new JsonResponse(['dependencies' => [], 'checked_count' => count($ids)]);
@@ -229,6 +258,10 @@ class ThreatIntelligenceController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): JsonResponse
     {
+        if (!$this->moduleService->isModuleActive('vulnerability_intel')) {
+            return new JsonResponse(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
         $ids = $data['ids'] ?? [];
 
@@ -278,6 +311,10 @@ class ThreatIntelligenceController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
+        if (!$this->moduleService->isModuleActive('vulnerability_intel')) {
+            return $this->json(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
             return $this->json(['error' => 'Invalid CSRF token'], 403);
