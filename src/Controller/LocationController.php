@@ -6,9 +6,11 @@ namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Location;
 use App\Form\LocationType;
 use App\Repository\LocationRepository;
+use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,17 +23,24 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class LocationController extends AbstractController
 {
     use InPageFormTrait;
+    use ModuleGatedControllerTrait;
 
     public function __construct(
         private readonly LocationRepository $locationRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
     ) {}
     #[Route('/location', name: 'app_location_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
+        // Locations & Infrastructure — locations module (ISO 27001 A.7 Physical Controls)
+        if ($redirect = $this->checkModuleActive('locations')) {
+            return $redirect;
+        }
+
         $tenant = $this->security->getUser()?->getTenant();
         $locations = $tenant ? $this->locationRepository->findBy(['tenant' => $tenant]) : [];
         $topLevel = $this->locationRepository->findTopLevel();
@@ -45,6 +54,10 @@ class LocationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('locations')) {
+            return $redirect;
+        }
+
         $location = new Location();
 
         // Set tenant from current user
@@ -90,6 +103,10 @@ class LocationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Request $request, Location $location): Response
     {
+        if ($redirect = $this->checkModuleActive('locations')) {
+            return $redirect;
+        }
+
         // In-drawer → slim read-only detail; direct URL → full page (fallback).
         if ($this->isTurboFrameRequest($request)) {
             return $this->render('location/_drawer_detail.html.twig', [
@@ -112,6 +129,10 @@ class LocationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Location $location): Response
     {
+        if ($redirect = $this->checkModuleActive('locations')) {
+            return $redirect;
+        }
+
         $form = $this->createForm(LocationType::class, $location);
         $form->handleRequest($request);
 
@@ -155,6 +176,10 @@ class LocationController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Location $location): Response
     {
+        if ($redirect = $this->checkModuleActive('locations')) {
+            return $redirect;
+        }
+
         if ($this->isCsrfTokenValid('delete'.$location->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($location);
             $this->entityManager->flush();
