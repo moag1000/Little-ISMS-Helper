@@ -155,6 +155,63 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Return the tenant-scoped fulfillment percentage (0–100) for a single
+     * ComplianceRequirement. Returns 0 when no fulfillment record exists for
+     * this tenant/requirement pair.
+     *
+     * Used by IsoToBsiGapService::classify() to determine whether an ISO
+     * control has actually been worked on before claiming BSI coverage.
+     */
+    public function percentageFor(Tenant $tenant, ComplianceRequirement $requirement): int
+    {
+        /** @var ComplianceRequirementFulfillment|null $fulfillment */
+        $fulfillment = $this->findOneBy([
+            'tenant'      => $tenant,
+            'requirement' => $requirement,
+        ]);
+
+        if ($fulfillment === null) {
+            return 0;
+        }
+
+        return $fulfillment->getFulfillmentPercentage();
+    }
+
+    /**
+     * Return the titles of evidence documents linked to the ComplianceRequirement
+     * for the given tenant context.
+     *
+     * Evidence docs are attached at the requirement level (ComplianceRequirement::
+     * evidenceDocuments M2M) and are global (not per-tenant). The tenant context
+     * is used to confirm a fulfillment record exists so we only surface evidence
+     * for requirements the tenant has actively engaged with.
+     *
+     * @return list<string> Document original-filenames (human-readable titles); [] if none
+     */
+    public function evidenceTitlesFor(Tenant $tenant, ComplianceRequirement $requirement): array
+    {
+        /** @var ComplianceRequirementFulfillment|null $fulfillment */
+        $fulfillment = $this->findOneBy([
+            'tenant'      => $tenant,
+            'requirement' => $requirement,
+        ]);
+
+        if ($fulfillment === null) {
+            return [];
+        }
+
+        $titles = [];
+        foreach ($requirement->getEvidenceDocuments() as $doc) {
+            $name = $doc->getOriginalFilename();
+            if ($name !== null && $name !== '') {
+                $titles[] = $name;
+            }
+        }
+
+        return $titles;
+    }
+
+    /**
      * Get compliance statistics for a tenant
      *
      * @return array{total: int, applicable: int, not_applicable: int, fully_implemented: int, in_progress: int, not_started: int, avg_fulfillment: float}

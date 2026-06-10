@@ -100,6 +100,35 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find top-level BSI IT-Grundschutz requirements for a framework filtered by
+     * Absicherungsstufe tiers. Used by IsoToBsiGapService to scope the gap to the
+     * tenant's configured assurance level (basis / standard / kern).
+     *
+     * Only top-level requirements (parentRequirement IS NULL) are returned so that
+     * sub-requirements (e.g. decomposed control atoms) are not double-counted in
+     * the gap denominator.
+     *
+     * @param list<string> $tiers Canonical tier values: 'basis', 'standard', 'hoch'
+     * @return ComplianceRequirement[] Sorted by requirementId ASC
+     */
+    public function findByFrameworkAndTiers(ComplianceFramework $framework, array $tiers): array
+    {
+        if ($tiers === []) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('cr')
+            ->where('cr.framework = :framework')
+            ->andWhere('cr.absicherungsStufe IN (:tiers)')
+            ->andWhere('cr.parentRequirement IS NULL')
+            ->setParameter('framework', $framework)
+            ->setParameter('tiers', $tiers)
+            ->orderBy('cr.requirementId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find only the TOP-LEVEL requirements for a framework — i.e. the requirements
      * that constitute the framework's coverage/compliance denominator.
      *
