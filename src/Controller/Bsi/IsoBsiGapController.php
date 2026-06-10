@@ -55,7 +55,7 @@ class IsoBsiGapController extends AbstractController
      * Groups requirements into 4 action buckets (erledigt / quick_win /
      * bsi_arbeit / pruefen) and drives the "Dein nächster Schritt" block.
      */
-    #[Route('/{_locale}/compliance/cross-gap', name: 'app_compliance_cross_gap', methods: ['GET'])]
+    #[Route('/compliance/cross-gap', name: 'app_compliance_cross_gap', methods: ['GET'])]
     public function crossGap(): Response
     {
         if ($redirect = $this->checkModuleActive('bsi_grundschutz')) {
@@ -95,7 +95,7 @@ class IsoBsiGapController extends AbstractController
      *
      * PRG-redirect back to the gap view after success or flash-error.
      */
-    #[Route('/{_locale}/compliance/cross-gap/level', name: 'app_compliance_bsi_level', methods: ['POST'])]
+    #[Route('/compliance/cross-gap/level', name: 'app_compliance_bsi_level', methods: ['POST'])]
     #[IsCsrfTokenValid('bsi_level')]
     public function setLevel(Request $request): Response
     {
