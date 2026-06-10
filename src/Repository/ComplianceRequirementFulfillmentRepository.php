@@ -179,16 +179,59 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
 
     /**
      * Return the titles of evidence documents linked to the ComplianceRequirement
-     * for the given tenant context.
+     * that belong to the given tenant.
      *
-     * Evidence docs are attached at the requirement level (ComplianceRequirement::
-     * evidenceDocuments M2M) and are global (not per-tenant). The tenant context
-     * is used to confirm a fulfillment record exists so we only surface evidence
-     * for requirements the tenant has actively engaged with.
+     * The `compliance_requirement_evidence` M2M join table has NO tenant column and
+     * `ComplianceRequirement` is framework-level shared data, so iterating
+     * `$requirement->getEvidenceDocuments()` would return documents owned by ANY
+     * tenant — a cross-tenant evidence leak.
+     *
+     * Fix: use a DQL query that joins through the M2M relation to `Document` and
+     * filters `WHERE doc.tenant = :tenant`. Only documents whose `tenant` column
+     * matches the requesting tenant are returned.
      *
      * @return list<string> Document original-filenames (human-readable titles); [] if none
      */
     public function evidenceTitlesFor(Tenant $tenant, ComplianceRequirement $requirement): array
+    {
+        /** @var list<array{originalFilename: string|null}> $rows */
+        $rows = $this->getEntityManager()
+            ->createQuery(
+                'SELECT doc.originalFilename
+                 FROM App\Entity\ComplianceRequirement r
+                 JOIN r.evidenceDocuments doc
+                 WHERE r = :requirement
+                   AND doc.tenant = :tenant'
+            )
+            ->setParameter('requirement', $requirement)
+            ->setParameter('tenant', $tenant)
+            ->getScalarResult();
+
+        $titles = [];
+        foreach ($rows as $row) {
+            $name = $row['originalFilename'] ?? null;
+            if ($name !== null && $name !== '') {
+                $titles[] = $name;
+            }
+        }
+
+        return $titles;
+    }
+
+    /**
+     * Return both the fulfillment percentage and the (tenant-scoped) evidence
+     * titles for a single requirement in ONE database round-trip.
+     *
+     * Avoids the N+1 pattern that arises when classify() calls percentageFor()
+     * and evidenceTitlesFor() separately for every fulfilled ISO requirement.
+     *
+     * When no fulfillment record exists for this tenant/requirement pair the
+     * method returns `['pct' => 0, 'evidence' => []]` so callers can treat
+     * an absent record identically to an unfulfilled one.
+     *
+     * @return array{pct: int, evidence: list<string>}
+     */
+    public function fulfillmentDataFor(Tenant $tenant, ComplianceRequirement $requirement): array
     {
         /** @var ComplianceRequirementFulfillment|null $fulfillment */
         $fulfillment = $this->findOneBy([
@@ -197,18 +240,13 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
         ]);
 
         if ($fulfillment === null) {
-            return [];
+            return ['pct' => 0, 'evidence' => []];
         }
 
-        $titles = [];
-        foreach ($requirement->getEvidenceDocuments() as $doc) {
-            $name = $doc->getOriginalFilename();
-            if ($name !== null && $name !== '') {
-                $titles[] = $name;
-            }
-        }
-
-        return $titles;
+        return [
+            'pct'      => $fulfillment->getFulfillmentPercentage(),
+            'evidence' => $this->evidenceTitlesFor($tenant, $requirement),
+        ];
     }
 
     /**

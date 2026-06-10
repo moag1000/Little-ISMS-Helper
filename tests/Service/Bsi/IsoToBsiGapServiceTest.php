@@ -133,10 +133,8 @@ class IsoToBsiGapServiceTest extends TestCase
             ->willReturn([$bsiReq]);
         $this->mappingRepo->method('findCrossFrameworkMappings')
             ->willReturn([$mapping]);
-        $this->fulfillmentRepo->method('percentageFor')
-            ->willReturn(80);
-        $this->fulfillmentRepo->method('evidenceTitlesFor')
-            ->willReturn(['ISMS-Policy.pdf']);
+        $this->fulfillmentRepo->method('fulfillmentDataFor')
+            ->willReturn(['pct' => 80, 'evidence' => ['ISMS-Policy.pdf']]);
 
         $result = $this->service->buildGap($tenant, $iso, $bsi);
 
@@ -167,8 +165,8 @@ class IsoToBsiGapServiceTest extends TestCase
 
         $this->reqRepo->method('findByFrameworkAndTiers')->willReturn([$bsiReq]);
         $this->mappingRepo->method('findCrossFrameworkMappings')->willReturn([$mapping]);
-        $this->fulfillmentRepo->method('percentageFor')->willReturn(75);
-        $this->fulfillmentRepo->method('evidenceTitlesFor')->willReturn([]);
+        $this->fulfillmentRepo->method('fulfillmentDataFor')
+            ->willReturn(['pct' => 75, 'evidence' => []]);
 
         $result = $this->service->buildGap($tenant, $iso, $bsi);
 
@@ -194,7 +192,8 @@ class IsoToBsiGapServiceTest extends TestCase
 
         $this->reqRepo->method('findByFrameworkAndTiers')->willReturn([$bsiReq]);
         $this->mappingRepo->method('findCrossFrameworkMappings')->willReturn([$mapping]);
-        $this->fulfillmentRepo->method('percentageFor')->willReturn(0);
+        $this->fulfillmentRepo->method('fulfillmentDataFor')
+            ->willReturn(['pct' => 0, 'evidence' => []]);
 
         $result = $this->service->buildGap($tenant, $iso, $bsi);
 
@@ -249,8 +248,8 @@ class IsoToBsiGapServiceTest extends TestCase
 
         $this->reqRepo->method('findByFrameworkAndTiers')->willReturn([$bsiReq]);
         $this->mappingRepo->method('findCrossFrameworkMappings')->willReturn([$mapping]);
-        $this->fulfillmentRepo->method('percentageFor')->willReturn(100);
-        $this->fulfillmentRepo->method('evidenceTitlesFor')->willReturn(['Scope-Doc.pdf']);
+        $this->fulfillmentRepo->method('fulfillmentDataFor')
+            ->willReturn(['pct' => 100, 'evidence' => ['Scope-Doc.pdf']]);
 
         $result = $this->service->buildGap($tenant, $iso, $bsi);
 
@@ -344,15 +343,13 @@ class IsoToBsiGapServiceTest extends TestCase
         $this->mappingRepo->method('findCrossFrameworkMappings')
             ->willReturn([$m1, $m2, $m3]);
 
-        // fulfillmentRepo: bsiReq1's iso source is fulfilled; bsiReq2 not; bsiReq3 fulfilled
-        $this->fulfillmentRepo->method('percentageFor')
+        // fulfillmentDataFor: bsiReq1's iso source is fulfilled; bsiReq2 not; bsiReq3 fulfilled
+        $this->fulfillmentRepo->method('fulfillmentDataFor')
             ->willReturnMap([
-                [$tenant, $isoReq1, 80],  // bsiReq1 — fulfilled
-                [$tenant, $isoReq2, 0],   // bsiReq2 — not started
-                [$tenant, $isoReq3, 50],  // bsiReq3 — partial
+                [$tenant, $isoReq1, ['pct' => 80, 'evidence' => []]],  // bsiReq1 — fulfilled
+                [$tenant, $isoReq2, ['pct' => 0,  'evidence' => []]],  // bsiReq2 — not started
+                [$tenant, $isoReq3, ['pct' => 50, 'evidence' => []]],  // bsiReq3 — partial
             ]);
-        $this->fulfillmentRepo->method('evidenceTitlesFor')
-            ->willReturn([]);
 
         $result = $this->service->buildGap($tenant, $iso, $bsi);
 
@@ -380,21 +377,118 @@ class IsoToBsiGapServiceTest extends TestCase
         $this->reqRepo->method('findByFrameworkAndTiers')->willReturn([$bsiReq]);
         $this->mappingRepo->method('findCrossFrameworkMappings')->willReturn([$mapping]);
 
-        // The service MUST call percentageFor on the fulfillmentRepo (tenant-scoped)
+        // The service MUST call fulfillmentDataFor once — combining pct + evidence
+        // in a single tenant-scoped repository call (Q-2: no double round-trip).
         $this->fulfillmentRepo->expects($this->once())
-            ->method('percentageFor')
+            ->method('fulfillmentDataFor')
             ->with($this->identicalTo($tenant), $this->identicalTo($isoReq))
-            ->willReturn(100);
-
-        $this->fulfillmentRepo->expects($this->once())
-            ->method('evidenceTitlesFor')
-            ->with($this->identicalTo($tenant), $this->identicalTo($isoReq))
-            ->willReturn(['Evidence-Doc.pdf']);
+            ->willReturn(['pct' => 100, 'evidence' => ['Evidence-Doc.pdf']]);
 
         $result = $this->service->buildGap($tenant, $iso, $bsi);
 
         $item = $result->items[0];
         $this->assertSame('gedeckt', $item['state']);
         $this->assertSame(['Evidence-Doc.pdf'], $item['evidence']);
+    }
+
+    // ── Q-6: two mappings from different ISO sources → highest % wins ─────────
+
+    #[Test]
+    public function whenTwoMappingsFromDifferentIsoSourcesHighestPercentageWinsAndTrustDerived(): void
+    {
+        // BSI requirement ORP.2.A5 is mapped from two different ISO controls:
+        //   • ISO A.8.1 at 40 % (manual → bestaetigt trust)
+        //   • ISO A.6.3 at 90 % (official_bsi_crosswalk → amtlich trust)  ← winning
+        // Expected: state uses A.6.3 at 90 % (partiell, delta 10), trust = amtlich.
+
+        $tenant = $this->makeTenant('standard');
+        $iso    = $this->makeFramework();
+        $bsi    = $this->makeFramework();
+
+        $isoReqLow  = $this->makeIsoReq('A.8.1');  // 40 % mapping
+        $isoReqHigh = $this->makeIsoReq('A.6.3');  // 90 % mapping (winner)
+        $bsiReq     = $this->makeBsiReq(30, 'standard', 'ORP.2.A5');
+
+        $mappingLow  = $this->makeMapping($isoReqLow,  $bsiReq, 40, 'manual');
+        $mappingHigh = $this->makeMapping($isoReqHigh, $bsiReq, 90, 'official_bsi_crosswalk');
+
+        $this->reqRepo->method('findByFrameworkAndTiers')->willReturn([$bsiReq]);
+        // Intentionally provide low-% mapping first to verify sorting works
+        $this->mappingRepo->method('findCrossFrameworkMappings')
+            ->willReturn([$mappingLow, $mappingHigh]);
+
+        // Only fulfillmentDataFor for the WINNING source (A.6.3 / isoReqHigh) must be called
+        $this->fulfillmentRepo->expects($this->once())
+            ->method('fulfillmentDataFor')
+            ->with($this->identicalTo($tenant), $this->identicalTo($isoReqHigh))
+            ->willReturn(['pct' => 75, 'evidence' => ['AuditReport.pdf']]);
+
+        $result = $this->service->buildGap($tenant, $iso, $bsi);
+
+        $item = $result->items[0];
+        // Highest-% mapping (90) drives the classification
+        $this->assertSame('partiell', $item['state'],    'partiell: 90 % < 100 %');
+        $this->assertSame('amtlich',  $item['trust'],    'trust from the winning mapping (official_bsi_crosswalk)');
+        $this->assertSame(10,         $item['delta'],    'delta = 100 - 90');
+        $this->assertSame('A.6.3',    $item['isoControl'], 'winning ISO control');
+        $this->assertSame(['AuditReport.pdf'], $item['evidence']);
+        // partiell → bsi_arbeit bucket
+        $this->assertSame(1, $result->bucketCounts['bsi_arbeit']);
+    }
+
+    // ── Q-1 cross-tenant evidence isolation ──────────────────────────────────
+
+    #[Test]
+    public function tenantBDoesNotSeeTenantAEvidenceTitlesForSameSharedRequirement(): void
+    {
+        // Both tenants share the same ComplianceRequirement (framework-level data)
+        // and the same mapping. Tenant A has evidence; Tenant B has none.
+        // The service must pass the correct tenant object to fulfillmentDataFor so
+        // the repository's DQL filters doc.tenant = :tenant — preventing the leak.
+
+        $tenantA = $this->makeTenant('standard');
+        $tenantB = $this->makeTenant('standard');
+        $iso     = $this->makeFramework();
+        $bsi     = $this->makeFramework();
+
+        $isoReq = $this->makeIsoReq('A.5.1');
+        $bsiReq = $this->makeBsiReq(40, 'standard', 'APP.2.1.A3');
+
+        $mapping = $this->makeMapping($isoReq, $bsiReq, 100, 'official_bsi_crosswalk');
+
+        // Both tenants see the same BSI requirement and the same mapping
+        $this->reqRepo->method('findByFrameworkAndTiers')->willReturn([$bsiReq]);
+        $this->mappingRepo->method('findCrossFrameworkMappings')->willReturn([$mapping]);
+
+        // Tenant A: has a fulfillment record with evidence documents
+        $this->fulfillmentRepo
+            ->method('fulfillmentDataFor')
+            ->willReturnCallback(
+                static function (Tenant $t, ComplianceRequirement $r) use ($tenantA, $tenantB): array {
+                    if ($t === $tenantA) {
+                        // Tenant A has evidence (e.g. uploaded ISMS-Policy.pdf)
+                        return ['pct' => 100, 'evidence' => ['ISMS-Policy.pdf', 'RiskRegister.pdf']];
+                    }
+                    if ($t === $tenantB) {
+                        // Tenant B has a fulfillment record but NO evidence linked to their tenant
+                        return ['pct' => 80, 'evidence' => []];
+                    }
+                    return ['pct' => 0, 'evidence' => []];
+                }
+            );
+
+        // Build gap for tenant A — should show evidence
+        $resultA = $this->service->buildGap($tenantA, $iso, $bsi);
+        $itemA   = $resultA->items[0];
+        $this->assertSame('gedeckt', $itemA['state']);
+        $this->assertSame(['ISMS-Policy.pdf', 'RiskRegister.pdf'], $itemA['evidence'],
+            'Tenant A sees their own evidence documents');
+
+        // Build gap for tenant B — must NOT see tenant A's evidence
+        $resultB = $this->service->buildGap($tenantB, $iso, $bsi);
+        $itemB   = $resultB->items[0];
+        $this->assertSame('gedeckt', $itemB['state']);
+        $this->assertSame([], $itemB['evidence'],
+            'Tenant B must NOT see tenant A\'s evidence titles for the same shared requirement');
     }
 }

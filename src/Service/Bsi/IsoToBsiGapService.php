@@ -62,7 +62,9 @@ class IsoToBsiGapService
         // 1. Fetch all top-level BSI requirements in scope (filtered by tier)
         $targets = $this->reqRepo->findByFrameworkAndTiers($bsi, $tiers);
 
-        // 2. Fetch all operational cross-framework mappings (ISO → BSI)
+        // 2. Fetch all operational cross-framework mappings (ISO → BSI).
+        //    This loads all framework-pair mappings into memory in one query;
+        //    acceptable at current volumes (~400 requirements, ~1200 mappings).
         $byTarget = $this->indexMappingsByTarget(
             $this->mappingRepo->findCrossFrameworkMappings($iso, $bsi)
         );
@@ -122,15 +124,16 @@ class IsoToBsiGapService
         $src   = $m->getSourceRequirement();
         $pct   = $m->getMappingPercentage();
 
-        // Fetch tenant-scoped fulfillment for the ISO source requirement
-        $srcFulfilled = $this->fulfillmentRepo->percentageFor($tenant, $src);
+        // Single round-trip: fetch both fulfillment % and tenant-scoped evidence titles.
+        $fulfillmentData = $this->fulfillmentRepo->fulfillmentDataFor($tenant, $src);
+        $srcFulfilled    = $fulfillmentData['pct'];
 
         if ($srcFulfilled <= 0) {
             // ISO control exists in a mapping but tenant has not started it
             return ['iso_offen', $trust, 0, $src->getRequirementId(), []];
         }
 
-        $evidence = $this->fulfillmentRepo->evidenceTitlesFor($tenant, $src);
+        $evidence = $fulfillmentData['evidence'];
 
         if ($pct >= 100) {
             // Full coverage: mapping percentage ≥ 100 % AND tenant has fulfilled source
@@ -145,14 +148,24 @@ class IsoToBsiGapService
 
     /**
      * Derive the trust level of a mapping from its provenance / lifecycle metadata.
+     *
+     * The `null` provenanceSource case is listed explicitly (as a separate arm
+     * before `default`) so PHPStan and readers see that a missing provenance
+     * intentionally falls through to the reviewStatus check — same behaviour as
+     * the generic `default` arm for all other algorithm-generated sources.
      */
     private function trustOf(ComplianceMapping $m): string
     {
+        $reviewBasedTrust = $m->getReviewStatus() === 'confirmed' ? 'bestaetigt' : 'heuristisch';
+
         return match ($m->getProvenanceSource()) {
             'official_bsi_crosswalk' => 'amtlich',
             'panel' => $m->getLifecycleState() === 'approved' ? 'ki_validiert' : 'heuristisch',
             'manual' => 'bestaetigt',
-            default => $m->getReviewStatus() === 'confirmed' ? 'bestaetigt' : 'heuristisch',
+            // null: no provenance recorded — trust via reviewStatus, same as default arm below
+            null => $reviewBasedTrust,
+            // All other algorithm-generated sources: trust via reviewStatus
+            default => $reviewBasedTrust,
         };
     }
 
