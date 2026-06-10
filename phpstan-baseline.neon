@@ -4589,3 +4589,9 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Workflow/Loader/RegulatoryWorkflowLoader.php
+
+		-
+			message: '#^Call to an undefined method App\\Entity\\Tenant\:\:getBsiAssuranceLevel\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Service/Bsi/IsoToBsiGapService.php
