@@ -43,16 +43,31 @@ class DomainEventNotifier
      */
     public function fire(string $eventType, Tenant $tenant, array $state): void
     {
-        foreach ($this->ruleRepository->findActiveByEventType($eventType, $tenant) as $rule) {
+        try {
+            $rules = $this->ruleRepository->findActiveByEventType($eventType, $tenant);
+        } catch (\Throwable $e) {
+            $this->logger->warning('DomainEventNotifier: rule lookup failed — no rules evaluated', [
+                'event'     => $eventType,
+                'tenant_id' => $tenant->getId(),
+                'error'     => $e->getMessage(),
+            ]);
+            return;
+        }
+
+        foreach ($rules as $rule) {
             try {
                 if ($this->evaluator->evaluate($rule, $state)) {
                     $this->dispatcher->dispatch($rule, $state);
+                    $this->logger->info('DomainEventNotifier: rule dispatched', [
+                        'event'   => $eventType,
+                        'rule_id' => $rule->getId(),
+                    ]);
                 }
             } catch (\Throwable $e) {
-                $this->logger->error('DomainEventNotifier: dispatch failed', [
-                    'event' => $eventType,
+                $this->logger->warning('DomainEventNotifier: dispatch failed for rule — others continue', [
+                    'event'   => $eventType,
                     'rule_id' => $rule->getId(),
-                    'error' => $e->getMessage(),
+                    'error'   => $e->getMessage(),
                 ]);
             }
         }
