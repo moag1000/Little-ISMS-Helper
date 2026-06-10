@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'iso27001-2022_to_bsi-grundschutz-2024_v2.0'
   source_framework: 'ISO27001'
-  target_framework: 'BSI-GRUNDSCHUTZ-2024'
+  target_framework: 'BSI_GRUNDSCHUTZ'
   version: 2
   effective_from: '2024-02-01'
   effective_until: null

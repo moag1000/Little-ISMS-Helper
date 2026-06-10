@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Library;
 
+use App\Command\LoadBsiItGrundschutzCatalogueCommand;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
@@ -204,6 +206,125 @@ final class IsoToBsiGrundschutzOfficialCrtTest extends TestCase
             'BSI',
             $publisher,
             'Publisher must reference BSI (Bundesamt fuer Sicherheit in der Informationstechnik)',
+        );
+    }
+
+    // ─── Framework-code alignment regression guards ───────────────────────────
+    // These tests ensure the YAML framework codes match the DB codes set by
+    // LoadBsiItGrundschutzCatalogueCommand::FRAMEWORK_CODE ('BSI_GRUNDSCHUTZ').
+    // A mismatch causes MappingLibraryLoader to silently skip ALL mapping pairs
+    // (exact-code match at line 64 / line 114 of MappingLibraryLoader.php).
+
+    /**
+     * The expected DB framework code for BSI IT-Grundschutz, as set by
+     * LoadBsiItGrundschutzCatalogueCommand (private const FRAMEWORK_CODE).
+     * Verified via reflection to stay in sync with the command.
+     */
+    private static function expectedBsiFrameworkCode(): string
+    {
+        $ref = new \ReflectionClass(LoadBsiItGrundschutzCatalogueCommand::class);
+
+        return $ref->getConstant('FRAMEWORK_CODE'); // @phpstan-ignore-line (private const via reflection)
+    }
+
+    #[Test]
+    public function official_crt_target_framework_matches_db_framework_code(): void
+    {
+        $expected = self::expectedBsiFrameworkCode();
+        $actual = self::$data['library']['target_framework'] ?? null;
+        self::assertSame(
+            $expected,
+            $actual,
+            sprintf(
+                'official-crt target_framework "%s" must match DB code "%s" from LoadBsiItGrundschutzCatalogueCommand::FRAMEWORK_CODE — '
+                . 'a mismatch causes MappingLibraryLoader to silently skip all mapping pairs.',
+                (string) $actual,
+                $expected,
+            ),
+        );
+    }
+
+    #[Test]
+    public function official_crt_source_framework_is_iso27001(): void
+    {
+        $actual = self::$data['library']['source_framework'] ?? null;
+        self::assertSame(
+            'ISO27001',
+            $actual,
+            sprintf(
+                'official-crt source_framework "%s" must be "ISO27001" to match the ISO framework DB code.',
+                (string) $actual,
+            ),
+        );
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function allIsoBsiMappingFiles(): array
+    {
+        $base = __DIR__ . '/../../../fixtures/library/mappings/';
+
+        return [
+            'official-crt' => [$base . 'iso27001-2022_to_bsi-grundschutz_official-crt_v1.yaml'],
+            'v1.0' => [$base . 'iso27001-2022_to_bsi-it-grundschutz_v1.0.yaml'],
+            'v2.0-2024' => [$base . 'iso27001-2022_to_bsi-grundschutz-2024_v2.0.yaml'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('allIsoBsiMappingFiles')]
+    public function iso_bsi_mapping_target_framework_matches_db_code(string $file): void
+    {
+        $data = Yaml::parseFile($file);
+        $expected = self::expectedBsiFrameworkCode();
+        $actual = $data['library']['target_framework'] ?? null;
+        self::assertSame(
+            $expected,
+            $actual,
+            sprintf(
+                'File %s: target_framework "%s" must equal DB code "%s" (LoadBsiItGrundschutzCatalogueCommand::FRAMEWORK_CODE). '
+                . 'Hyphen vs underscore mismatch silently breaks ALL ISO→BSI mappings.',
+                basename($file),
+                (string) $actual,
+                $expected,
+            ),
+        );
+    }
+
+    #[Test]
+    #[DataProvider('allIsoBsiMappingFiles')]
+    public function iso_bsi_mapping_source_framework_is_iso27001(string $file): void
+    {
+        $data = Yaml::parseFile($file);
+        $actual = $data['library']['source_framework'] ?? null;
+        self::assertSame(
+            'ISO27001',
+            $actual,
+            sprintf(
+                'File %s: source_framework "%s" must be "ISO27001" to match the ISO framework DB code.',
+                basename($file),
+                (string) $actual,
+            ),
+        );
+    }
+
+    #[Test]
+    public function reverse_bsi_to_iso_source_framework_matches_db_code(): void
+    {
+        $file = __DIR__ . '/../../../fixtures/library/mappings/bsi-it-grundschutz_to_iso27001-2022_v1.0.yaml';
+        $data = Yaml::parseFile($file);
+        $expected = self::expectedBsiFrameworkCode();
+        $actual = $data['library']['source_framework'] ?? null;
+        self::assertSame(
+            $expected,
+            $actual,
+            sprintf(
+                'Reverse mapping source_framework "%s" must equal DB code "%s". '
+                . 'Mismatch prevents reverse-direction lookups.',
+                (string) $actual,
+                $expected,
+            ),
         );
     }
 }
