@@ -16,7 +16,7 @@ src/Entity/Patch.php:542  setCreatedAt(DateTimeImmutable $createdAt (property nu
 src/Entity/Permission.php:153  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/Role.php:129  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/ScheduledReport.php:360  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
-src/Entity/Tenant.php:666  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
+src/Entity/Tenant.php:692  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/User.php:487  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/UserSession.php:166  setCreatedAt(DateTimeImmutable $createdAt (property nullable, setter not))
 src/Entity/UserSession.php:177  setLastActivityAt(DateTimeImmutable $lastActivityAt (property nullable, setter not))
