@@ -500,6 +500,12 @@ final class TisaxImportWizardE2ETest extends WebTestCase
     /**
      * Generate a valid CSRF token for the given token ID using the
      * current session (mimics the SessionTokenStorage approach).
+     *
+     * IMPORTANT: $session->save() is called explicitly after set() to guarantee
+     * the token is flushed to session storage before the next HTTP request reads
+     * it. Without save() the in-memory write is not persisted and the subsequent
+     * POST receives an invalid-token response intermittently (race condition
+     * observed under PHP 8.5 / Symfony 7.4 test session handler).
      */
     private function generateCsrfTokenFromSession(string $tokenId): string
     {
@@ -508,8 +514,10 @@ final class TisaxImportWizardE2ETest extends WebTestCase
         $tokenGenerator = new UriSafeTokenGenerator();
         $tokenValue     = $tokenGenerator->generateToken();
 
-        // Store in session the same way SessionTokenStorage does
+        // Store in session the same way SessionTokenStorage does, then save to
+        // guarantee cross-request persistence in the test session backend.
         $session->set('_csrf/' . $tokenId, $tokenValue);
+        $session->save();
 
         return $tokenValue;
     }

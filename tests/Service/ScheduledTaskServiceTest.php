@@ -133,11 +133,18 @@ class ScheduledTaskServiceTest extends TestCase
 
         $this->entityManager->expects($this->once())->method('flush');
 
-        $result = $this->service->updateTask($task, cronExpression: '0 3 * * *'); // 3am — avoids midnight and noon CI-time collisions
+        // Use minute 7 — never produced by the original */15 expression (:00/:15/:30/:45),
+        // so nextRunAt is guaranteed to differ regardless of what time the test runs.
+        $result = $this->service->updateTask($task, cronExpression: '7 3 * * *');
 
-        $this->assertSame('0 3 * * *', $result->getCronExpression());
-        // Next run should be recalculated
-        $this->assertNotEquals($originalNextRun, $result->getNextRunAt());
+        $this->assertSame('7 3 * * *', $result->getCronExpression());
+        // Next run should be recalculated — compare formatted strings to avoid
+        // DateTime-object micro-timing issues (PHP 8.5 strict object equality).
+        $this->assertNotSame(
+            $originalNextRun?->format('Y-m-d H:i'),
+            $result->getNextRunAt()?->format('Y-m-d H:i'),
+            'nextRunAt must be recalculated when cronExpression changes',
+        );
     }
 
     #[Test]
