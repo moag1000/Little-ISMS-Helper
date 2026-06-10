@@ -1359,3 +1359,64 @@ export:
         partially_implemented_short: 'Teilweise'
         implemented: 'Umgesetzt'
         not_assessed: 'Nicht bewertet'
+    bsi:
+        cross_gap:
+            title: 'ISO→BSI Gap-Analyse'
+            badge: 'BSI IT-Grundschutz'
+            subtitle: 'Was deckt dein ISO 27001 für BSI IT-Grundschutz ab — und was fehlt noch?'
+            headline: 'Von %total% BSI-Anforderungen: %erledigt% erledigt · %quick_win% Quick Wins · %bsi_arbeit% BSI-Eigenarbeit · %pruefen% zu prüfen'
+            empty:
+                title: 'Frameworks noch nicht importiert'
+                message: 'Bitte ISO 27001 und BSI IT-Grundschutz Frameworks importieren, um die Gap-Analyse nutzen zu können.'
+            bucket:
+                erledigt: 'Erledigt'
+                erledigt_hint: 'ISO-Kontrolle vorhanden und erfüllt (verifiziertes Mapping)'
+                quick_win: 'Quick Wins'
+                quick_win_hint: 'ISO-Kontrolle existiert — einfach umsetzen'
+                bsi_arbeit: 'BSI-Eigenarbeit'
+                bsi_arbeit_hint: 'Partielles Mapping oder BSI-spezifische Anforderung'
+                pruefen: 'Zu prüfen'
+                pruefen_hint: 'Heuristisches Mapping oder keine Zuordnung — manuelle Prüfung nötig'
+            next_step:
+                title: 'Dein nächster Schritt'
+            pending_review: '%count% heuristische/offene Mappings prüfen'
+            pending_review_link: 'Zur Prüfqueue'
+            level:
+                title: 'Absicherungsstufe'
+                label: 'Gewünschte Absicherungsstufe'
+                hint: 'Bestimmt welche BSI-Anforderungen in Scope sind.'
+                save: 'Speichern'
+                basis: 'Basis-Absicherung'
+                standard: 'Standard-Absicherung'
+                kern: 'Kern-Absicherung'
+            drill:
+                title: 'Details nach Baustein'
+            col:
+                requirement: 'Anforderung'
+                baustein: 'Baustein'
+                iso_control: 'ISO-Kontrolle'
+                tier: 'Stufe'
+                state: 'Status'
+                trust: 'Vertrauen'
+                action: 'Aktion'
+                evidence: 'Nachweise'
+            state:
+                gedeckt: 'Gedeckt'
+                partiell: 'Partiell'
+                iso_offen: 'ISO offen'
+                ungemappt_unbewertet: 'Nicht bewertet'
+                ungemappt_eigenstaendig: 'BSI-spezifisch'
+            trust:
+                amtlich: 'Amtlich'
+                ki_validiert: 'KI-validiert'
+                bestaetigt: 'Bestätigt'
+                heuristisch: 'Heuristisch'
+                '-': 'Keine Quelle'
+            tier:
+                basis: 'Basis'
+                standard: 'Standard'
+                hoch: 'Hoch'
+                kern: 'Kern'
+                '-': '—'
+        level:
+            invalid: 'Ungültige Absicherungsstufe. Erlaubt: basis, standard, kern.'
