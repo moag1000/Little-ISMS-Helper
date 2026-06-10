@@ -110,9 +110,12 @@ final class BsiGrundschutzCheckService
         $requirements = $this->requirementRepository->findByFramework($framework);
 
         if ($absicherungsStufe !== null) {
+            // Cumulative level filter: 'standard' includes basis+standard; 'kern' includes all three.
+            // AbsicherungsStufe::tiersForLevel() encodes the correct BSI ⊂ semantics.
+            $allowedTiers = \App\Enum\AbsicherungsStufe::tiersForLevel($absicherungsStufe);
             $requirements = array_values(array_filter(
                 $requirements,
-                static fn (ComplianceRequirement $r): bool => $r->getAbsicherungsStufe() === $absicherungsStufe
+                static fn (ComplianceRequirement $r): bool => in_array($r->getAbsicherungsStufe(), $allowedTiers, true)
             ));
         }
 
@@ -385,7 +388,12 @@ final class BsiGrundschutzCheckService
      *
      * Priority (WS-1 consolidation):
      *   1. Tenant-scoped ComplianceRequirementFulfillment record (canonical)
-     *   2. calculateFulfillmentFromControls() via mappedControls M:N (legacy fallback)
+     *   2. calculateFulfillmentFromControls() via mappedControls M:N — DELIBERATE FALLBACK:
+     *      this path is intentionally kept for:
+     *        - DashboardStatisticsService::getBsiAbsicherungsstufenKPIs() when called
+     *          without an active tenant (e.g. SUPER_ADMIN no-tenant context)
+     *        - Console commands without a tenant scope
+     *      Do NOT remove this fallback — it is the correct behaviour for those paths.
      *
      * @param array<int, ComplianceRequirementFulfillment> $fulfillmentMap
      */
@@ -396,7 +404,8 @@ final class BsiGrundschutzCheckService
             return $fulfillmentMap[$reqEntityId]->getFulfillmentPercentage();
         }
 
-        // Fallback: mappedControls-based calculation (non-tenant-scoped contexts)
+        // Deliberate no-tenant/console fallback: mappedControls-based calculation.
+        // Authenticated web requests always have a tenant and reach the branch above.
         return $req->calculateFulfillmentFromControls();
     }
 }

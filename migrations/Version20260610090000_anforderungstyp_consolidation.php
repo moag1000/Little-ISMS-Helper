@@ -8,23 +8,32 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * WS-1 — Anforderungstyp → AbsicherungsStufe backfill.
+ * WS-1 — Anforderungstyp → AbsicherungsStufe backfill + 'kern' normalization.
  *
  * Background:
  *   `compliance_requirement` has TWO overlapping fields:
  *   - `absicherungs_stufe` (canonical, set by LoadBsiItGrundschutzCatalogueCommand)
  *   - `anforderungs_typ`   (legacy, partially populated, values: basis/standard/hoch/erhoeht/erhöht)
  *
- *   This migration backfills `absicherungs_stufe` from `anforderungs_typ` for rows
- *   where `absicherungs_stufe` is NULL or empty, mapping legacy spelling variants:
+ *   Additionally, BsiKompendiumXmlImporter historically wrote 'kern' into
+ *   absicherungs_stufe for H-type requirements. 'kern' is a Vorgehensweise
+ *   (level / approach), NOT a tier — the canonical tier vocabulary is
+ *   basis / standard / hoch. This migration normalizes those rows.
+ *
+ *   Step 1 — normalize 'kern' → 'hoch' in the tier column (vocabulary fix):
+ *     rows with absicherungs_stufe='kern' are updated to 'hoch'.
+ *
+ *   Step 2 — backfill absicherungs_stufe from anforderungs_typ for rows where
+ *   absicherungs_stufe is NULL or empty, mapping legacy spelling variants:
  *     'erhoeht' → 'hoch'
  *     'erhöht'  → 'hoch'
  *
- *   Rows that already have an `absicherungs_stufe` value are NOT touched
+ *   Rows that already have a valid absicherungs_stufe value are NOT touched
  *   (canonical wins — conflict scenario Req B is intentionally preserved).
  *
- * This is a data-only migration (no DDL) but we override isTransactional()=false
- * as per CLAUDE.md convention for migrations that may run alongside DDL migrations.
+ * This is a data-only migration (UPDATE-only, no DDL). isTransactional()=false
+ * is kept as a defensive override — avoids SAVEPOINT conflict if this migration
+ * is batched with DDL migrations in a single migrate run (CLAUDE.md Pitfall #6).
  *
  * down() is a no-op: backfilling cannot be reversed without data loss risk,
  * and the `anforderungs_typ` column remains intact as a rollback source.
@@ -43,7 +52,18 @@ final class Version20260610090000_anforderungstyp_consolidation extends Abstract
 
     public function up(Schema $schema): void
     {
-        // Backfill absicherungs_stufe from anforderungs_typ for rows where
+        // Step 1: Normalize 'kern' → 'hoch' in the tier column.
+        // 'kern' is a BSI Vorgehensweise (level/approach), NOT a tier value.
+        // The canonical tier vocabulary is basis / standard / hoch only.
+        // BsiKompendiumXmlImporter historically wrote 'kern' for H-type requirements —
+        // this UPDATE corrects that vocabulary mismatch.
+        $this->addSql(
+            "UPDATE compliance_requirement
+             SET absicherungs_stufe = 'hoch'
+             WHERE absicherungs_stufe = 'kern'"
+        );
+
+        // Step 2: Backfill absicherungs_stufe from anforderungs_typ for rows where
         // absicherungs_stufe is NULL or empty string.
         // CASE maps legacy spelling variants to canonical values.
         // WHERE clause ensures canonical values are NEVER overwritten (Req B stays 'basis').

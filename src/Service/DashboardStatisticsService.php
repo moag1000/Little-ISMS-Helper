@@ -587,7 +587,8 @@ class DashboardStatisticsService
         }
 
         // A1b: BSI IT-Grundschutz per Absicherungsstufe (basis / standard / kern)
-        $bsiStufen = $this->getBsiAbsicherungsstufenKPIs();
+        // Pass $tenant so authenticated web flows use tenant-scoped fulfillment (WS-1).
+        $bsiStufen = $this->getBsiAbsicherungsstufenKPIs($tenant);
         if ($bsiStufen !== []) {
             $kpis['bsi_stufen'] = $bsiStufen;
         }
@@ -1009,7 +1010,7 @@ class DashboardStatisticsService
      *
      * @return array<string, array{label: string, value: int|float, unit: string, status: string, details: array}>
      */
-    private function getBsiAbsicherungsstufenKPIs(): array
+    private function getBsiAbsicherungsstufenKPIs(?Tenant $tenant = null): array
     {
         if ($this->bsiGrundschutzCheckService === null) {
             return [];
@@ -1018,7 +1019,11 @@ class DashboardStatisticsService
         $result = [];
         foreach (['basis', 'standard', 'kern'] as $stufe) {
             try {
-                $report = $this->bsiGrundschutzCheckService->getCheckReport($stufe);
+                // Pass current tenant so fulfillment uses the canonical tenant-scoped
+                // ComplianceRequirementFulfillment records (WS-1). When $tenant is null
+                // (SUPER_ADMIN no-tenant / console), getCheckReport() falls back to
+                // calculateFulfillmentFromControls() — the deliberate fallback path.
+                $report = $this->bsiGrundschutzCheckService->getCheckReport($stufe, $tenant);
             } catch (\Throwable) {
                 continue;
             }

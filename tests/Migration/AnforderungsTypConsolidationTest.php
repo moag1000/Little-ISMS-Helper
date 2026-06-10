@@ -16,6 +16,8 @@ use PHPUnit\Framework\TestCase;
  *   - Req B: absicherungsStufe='basis', anforderungsTyp='hoch' (conflict)
  *     → after UP: absicherungsStufe stays 'basis' (canonical wins, conflict NOT overwritten)
  *   - 'erhoeht' maps to 'hoch' during backfill
+ *   - Req C: absicherungsStufe='kern' (written by old BsiKompendiumXmlImporter)
+ *     → after UP: absicherungsStufe becomes 'hoch' (vocabulary normalization, Step 1)
  *
  * Full DB-roundtrip not required: source-level inspection is the canonical
  * approach for migration tests in this repo (see Vvt5StageLifecycleMigrationTest).
@@ -99,6 +101,21 @@ final class AnforderungsTypConsolidationTest extends TestCase
             "'hoch'",
             $source,
             "Migration must map to canonical 'hoch' value."
+        );
+    }
+
+    #[Test]
+    public function migrationNormalizesKernToHoch(): void
+    {
+        $source = self::readMigrationSource();
+
+        // Step 1: migration must UPDATE rows with absicherungs_stufe='kern' to 'hoch'.
+        // 'kern' is a BSI Vorgehensweise (level), NOT a tier — the importer bug wrote
+        // 'kern' into the tier column for H-type requirements (should be 'hoch').
+        self::assertMatchesRegularExpression(
+            "/SET\s+absicherungs_stufe\s*=\s*'hoch'\s+WHERE\s+absicherungs_stufe\s*=\s*'kern'/i",
+            $source,
+            "Migration Step 1 must normalize absicherungs_stufe='kern' → 'hoch' (vocabulary fix)."
         );
     }
 
