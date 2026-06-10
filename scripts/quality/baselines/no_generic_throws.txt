@@ -6,7 +6,7 @@ src/Controller/ManagementReportController.php:966
 src/Entity/AccessReviewCampaign.php:149
 src/Entity/AccessReviewCampaign.php:178
 src/Entity/AccessReviewItem.php:171
-src/Entity/ComplianceRequirement.php:600
+src/Entity/ComplianceRequirement.php:604
 src/Repository/ComplianceMappingRepository.php:64
 src/Service/AccessReviewCampaignService.php:167
 src/Service/Audit/Generator/AccessReviewWorkbookGenerator.php:61
