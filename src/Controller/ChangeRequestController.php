@@ -7,10 +7,12 @@ namespace App\Controller;
 use DateTimeImmutable;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\ChangeRequest;
 use App\Form\ChangeRequestType;
 use App\Repository\ChangeRequestRepository;
 use App\Service\AuditLogger;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -28,6 +30,7 @@ class ChangeRequestController extends AbstractController
 {
     use BulkActionTrait;
     use InPageFormTrait;
+    use ModuleGatedControllerTrait;
 
     public function __construct(
         private readonly ChangeRequestRepository $changeRequestRepository,
@@ -35,12 +38,18 @@ class ChangeRequestController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
         private readonly ?AuditLogger $auditLogger = null,
     ) {}
     #[Route('/change-request', name: 'app_change_request_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
+        // Change Management — change_requests module (ISO 27001 A.8.32)
+        if ($redirect = $this->checkModuleActive('change_requests')) {
+            return $redirect;
+        }
+
         $tenant = $this->tenantContext->getCurrentTenant();
         $changeRequests = $tenant ? $this->changeRequestRepository->findBy(['tenant' => $tenant]) : [];
         $statistics = $this->changeRequestRepository->getStatistics();
@@ -58,6 +67,10 @@ class ChangeRequestController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('change_requests')) {
+            return $redirect;
+        }
+
         $changeRequest = new ChangeRequest();
         $changeRequest->setTenant($this->tenantContext->getCurrentTenant());
 
@@ -96,6 +109,10 @@ class ChangeRequestController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Request $request, ChangeRequest $changeRequest): Response
     {
+        if ($redirect = $this->checkModuleActive('change_requests')) {
+            return $redirect;
+        }
+
         if ($this->isTurboFrameRequest($request)) {
             return $this->render('change_request/_detail_modal.html.twig', [
                 'change' => $changeRequest,
@@ -110,6 +127,10 @@ class ChangeRequestController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, ChangeRequest $changeRequest): Response
     {
+        if ($redirect = $this->checkModuleActive('change_requests')) {
+            return $redirect;
+        }
+
         $form = $this->createForm(ChangeRequestType::class, $changeRequest);
         $form->handleRequest($request);
 
@@ -154,6 +175,10 @@ class ChangeRequestController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ChangeRequest $changeRequest): Response
     {
+        if ($redirect = $this->checkModuleActive('change_requests')) {
+            return $redirect;
+        }
+
         if ($this->isCsrfTokenValid('delete'.$changeRequest->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($changeRequest);
             $this->entityManager->flush();
@@ -172,6 +197,10 @@ class ChangeRequestController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
     {
+        if (!$this->moduleService->isModuleActive('change_requests')) {
+            return new JsonResponse(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true) ?? [];
         $ids = (array) ($data['ids'] ?? []);
         return new JsonResponse(['dependencies' => [], 'checked_count' => count($ids)]);
@@ -181,6 +210,10 @@ class ChangeRequestController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): JsonResponse
     {
+        if (!$this->moduleService->isModuleActive('change_requests')) {
+            return new JsonResponse(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
         $ids = $data['ids'] ?? [];
 
@@ -230,6 +263,10 @@ class ChangeRequestController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
+        if (!$this->moduleService->isModuleActive('change_requests')) {
+            return $this->json(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
             return $this->json(['error' => 'Invalid CSRF token'], 403);

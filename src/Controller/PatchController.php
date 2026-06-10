@@ -7,10 +7,12 @@ namespace App\Controller;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Controller\Trait\BulkActionTrait;
 use App\Controller\Trait\InPageFormTrait;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Patch;
 use App\Form\PatchType;
 use App\Repository\PatchRepository;
 use App\Service\AuditLogger;
+use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,18 +30,25 @@ class PatchController extends AbstractController
 {
     use BulkActionTrait;
     use InPageFormTrait;
+    use ModuleGatedControllerTrait;
 
     public function __construct(
         private readonly PatchRepository $patchRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
         private readonly ?AuditLogger $auditLogger = null,
     ) {}
 
     #[Route('/patch', name: 'app_patch_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
+        // Patch Management — patches module (NIS2 Art. 21.2(e) + ISO 27001 A.8.8)
+        if ($redirect = $this->checkModuleActive('patches')) {
+            return $redirect;
+        }
+
         // Get current user's tenant
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
@@ -92,6 +101,10 @@ class PatchController extends AbstractController
     #[Route('/patch/new', name: 'app_patch_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('patches')) {
+            return $redirect;
+        }
+
         $patch = new Patch();
 
         // Set tenant from current user
@@ -135,6 +148,10 @@ class PatchController extends AbstractController
     #[Route('/patch/{id}', name: 'app_patch_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Request $request, Patch $patch): Response
     {
+        if ($redirect = $this->checkModuleActive('patches')) {
+            return $redirect;
+        }
+
         // In-modal → condensed read-only detail; direct URL → full page (fallback).
         if ($this->isTurboFrameRequest($request)) {
             return $this->render('patch/_detail_modal.html.twig', [
@@ -150,6 +167,10 @@ class PatchController extends AbstractController
     #[Route('/patch/{id}/edit', name: 'app_patch_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Patch $patch): Response
     {
+        if ($redirect = $this->checkModuleActive('patches')) {
+            return $redirect;
+        }
+
         $form = $this->createForm(PatchType::class, $patch);
         $form->handleRequest($request);
 
@@ -193,6 +214,10 @@ class PatchController extends AbstractController
     #[Route('/patch/{id}/delete', name: 'app_patch_delete', methods: ['POST'])]
     public function delete(Request $request, Patch $patch): Response
     {
+        if ($redirect = $this->checkModuleActive('patches')) {
+            return $redirect;
+        }
+
         if ($this->isCsrfTokenValid('delete'.$patch->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($patch);
             $this->entityManager->flush();
@@ -253,6 +278,10 @@ class PatchController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDeleteCheck(Request $request): JsonResponse
     {
+        if (!$this->moduleService->isModuleActive('patches')) {
+            return new JsonResponse(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true) ?? [];
         $ids = (array) ($data['ids'] ?? []);
         return new JsonResponse(['dependencies' => [], 'checked_count' => count($ids)]);
@@ -262,6 +291,10 @@ class PatchController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): JsonResponse
     {
+        if (!$this->moduleService->isModuleActive('patches')) {
+            return new JsonResponse(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
         $ids = $data['ids'] ?? [];
 
@@ -311,6 +344,10 @@ class PatchController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function bulkExport(Request $request): StreamedResponse|Response
     {
+        if (!$this->moduleService->isModuleActive('patches')) {
+            return $this->json(['error' => 'Module not active'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
         if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
             return $this->json(['error' => 'Invalid CSRF token'], 403);
