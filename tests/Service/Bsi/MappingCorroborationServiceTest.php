@@ -8,6 +8,8 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceMappingRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Repository\ComplianceRequirementRepository;
 use App\Service\Bsi\IsoToBsiGapService;
 use App\Service\Bsi\MappingCorroborationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,7 +49,13 @@ final class MappingCorroborationServiceTest extends TestCase
             $this->mappingRepository,
             $this->entityManager,
         );
-        $this->trustService = new IsoToBsiGapService();
+        // IsoToBsiGapService requires 3 repo args; pass minimal mocks since only
+        // trustOf()/requiresReview()/bausteinCodeFrom() are exercised here.
+        $this->trustService = new IsoToBsiGapService(
+            $this->createMock(ComplianceRequirementRepository::class),
+            $this->createMock(ComplianceMappingRepository::class),
+            $this->createMock(ComplianceRequirementFulfillmentRepository::class),
+        );
 
         // Create framework stubs with deterministic IDs
         $this->iso = $this->makeFramework(1, 'ISO27001');

@@ -148,6 +148,18 @@ class Tenant
     private ?string $bsiPhase = null;
 
     /**
+     * BSI IT-Grundschutz Vorgehensweise (assurance level):
+     * - basis:    Basis-Absicherung — rapid, reduced scope
+     * - standard: Standard-Absicherung — full IT-Grundschutz methodology (default)
+     * - kern:     Kern-Absicherung — crown-jewel-focused, high-value asset subset
+     *
+     * This is the Vorgehensweise the tenant has chosen, distinct from the
+     * requirement-tier values (basis/standard/hoch) used in AbsicherungsStufe.
+     */
+    #[ORM\Column(length: 20, options: ['default' => 'standard'])]
+    private string $bsiAssuranceLevel = 'standard';
+
+    /**
      * Phase 9.P1.7 — NIS2 classification per German BSIG §28:
      * - essential:     "besonders wichtige Einrichtung" (Annex I, 250+ MA / 50M€)
      * - important:     "wichtige Einrichtung"           (Annex II, 50+ MA / 10M€)
@@ -354,6 +366,20 @@ class Tenant
     public function setBsiPhase(?string $bsiPhase): static
     {
         $this->bsiPhase = $bsiPhase;
+        return $this;
+    }
+
+    public function getBsiAssuranceLevel(): string
+    {
+        return $this->bsiAssuranceLevel;
+    }
+
+    public function setBsiAssuranceLevel(string $level): static
+    {
+        if (!in_array($level, ['basis', 'standard', 'kern'], true)) {
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('Invalid BSI assurance level: ' . $level);
+        }
+        $this->bsiAssuranceLevel = $level;
         return $this;
     }
 
