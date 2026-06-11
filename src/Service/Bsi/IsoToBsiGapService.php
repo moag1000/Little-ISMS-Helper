@@ -22,11 +22,13 @@ use App\Repository\ComplianceRequirementRepository;
  *   iso_offen            — Mapping exists but tenant fulfillment is 0
  *   ungemappt_unbewertet — No mapping at all (v1; eigenständig deferred to WS-5b)
  *
- * Trust axis:
- *   amtlich      — official BSI crosswalk
- *   ki_validiert — AI-assisted panel mapping with lifecycle == approved
- *   heuristisch  — panel mapping not yet approved, or unknown source
- *   bestaetigt   — manual / confirmed mapping
+ * Trust axis (ordered highest → lowest):
+ *   amtlich            — official BSI crosswalk (provenanceSource = 'official_bsi_crosswalk')
+ *   amtlich_gestuetzt  — heuristic mapping corroborated by official CRT at Baustein level
+ *                        (provenanceSource = 'crt_corroborated', WS-5b stage-1 elevation)
+ *   ki_validiert       — AI-assisted panel mapping with reviewStatus = 'approved'
+ *   bestaetigt         — manual / confirmed mapping
+ *   heuristisch        — unreviewed heuristic (must be checked / prüfen bucket)
  *
  * Action buckets:
  *   erledigt    — gedeckt + non-heuristic trust
@@ -35,9 +37,35 @@ use App\Repository\ComplianceRequirementRepository;
  *   pruefen     — heuristic trust on any covered/partial state, or unbewertet
  *
  * @see BsiGapResult
+ * @see MappingCorroborationService — the build-time step that sets crt_corroborated
  */
 class IsoToBsiGapService
 {
+    /** provenanceSource sentinel written by import step (official BSI Cross-Reference-Table) */
+    public const PROVENANCE_OFFICIAL_CRT = 'official_bsi_crosswalk';
+
+    /** provenanceSource sentinel written by MappingCorroborationService (WS-5b stage-1) */
+    public const PROVENANCE_CRT_CORROBORATED = 'crt_corroborated';
+
+    /** Trust tier constants */
+    public const TIER_AMTLICH            = 'amtlich';
+    public const TIER_AMTLICH_GESTUETZT  = 'amtlich_gestuetzt';
+    public const TIER_KI_VALIDIERT       = 'ki_validiert';
+    public const TIER_BESTAETIGT         = 'bestaetigt';
+    public const TIER_HEURISTISCH        = 'heuristisch';
+
+    /**
+     * Tiers that are considered TRUSTED — they do NOT land in the "prüfen" bucket.
+     *
+     * @var list<string>
+     */
+    public const TRUSTED_TIERS = [
+        self::TIER_AMTLICH,
+        self::TIER_AMTLICH_GESTUETZT,
+        self::TIER_KI_VALIDIERT,
+        self::TIER_BESTAETIGT,
+    ];
+
     public function __construct(
         private readonly ComplianceRequirementRepository $reqRepo,
         private readonly ComplianceMappingRepository $mappingRepo,
@@ -149,19 +177,31 @@ class IsoToBsiGapService
     /**
      * Derive the trust level of a mapping from its provenance / lifecycle metadata.
      *
+     * Decision table (first match wins):
+     *   1. provenanceSource = 'official_bsi_crosswalk'          → amtlich
+     *   2. provenanceSource = 'crt_corroborated'                 → amtlich_gestuetzt
+     *   3. provenanceSource = 'panel' AND reviewStatus = 'approved' → ki_validiert
+     *   4. provenanceSource = 'manual'                           → bestaetigt
+     *   5. reviewStatus     = 'confirmed'                        → bestaetigt
+     *   6. (default)                                             → heuristisch
+     *
      * The `null` provenanceSource case is listed explicitly (as a separate arm
      * before `default`) so PHPStan and readers see that a missing provenance
      * intentionally falls through to the reviewStatus check — same behaviour as
      * the generic `default` arm for all other algorithm-generated sources.
+     *
+     * Public so that MappingCorroborationServiceTest and other services can use
+     * the same tier resolver without duplicating the decision table.
      */
-    private function trustOf(ComplianceMapping $m): string
+    public function trustOf(ComplianceMapping $m): string
     {
-        $reviewBasedTrust = $m->getReviewStatus() === 'confirmed' ? 'bestaetigt' : 'heuristisch';
+        $reviewBasedTrust = $m->getReviewStatus() === 'confirmed' ? self::TIER_BESTAETIGT : self::TIER_HEURISTISCH;
 
         return match ($m->getProvenanceSource()) {
-            'official_bsi_crosswalk' => 'amtlich',
-            'panel' => $m->getLifecycleState() === 'approved' ? 'ki_validiert' : 'heuristisch',
-            'manual' => 'bestaetigt',
+            self::PROVENANCE_OFFICIAL_CRT     => self::TIER_AMTLICH,
+            self::PROVENANCE_CRT_CORROBORATED => self::TIER_AMTLICH_GESTUETZT,
+            'panel' => $m->getReviewStatus() === 'approved' ? self::TIER_KI_VALIDIERT : self::TIER_HEURISTISCH,
+            'manual' => self::TIER_BESTAETIGT,
             // null: no provenance recorded — trust via reviewStatus, same as default arm below
             null => $reviewBasedTrust,
             // All other algorithm-generated sources: trust via reviewStatus
@@ -170,15 +210,27 @@ class IsoToBsiGapService
     }
 
     /**
+     * Return true when the mapping needs human review (lands in the "prüfen" bucket).
+     * Only the heuristisch tier requires review; all other tiers are trusted.
+     */
+    public function requiresReview(ComplianceMapping $m): bool
+    {
+        return $this->trustOf($m) === self::TIER_HEURISTISCH;
+    }
+
+    /**
      * Map a (state, trust) pair to an action bucket.
      *
-     * Heuristic trust on any non-trivial state forces a 'pruefen' bucket
-     * because the coverage claim has not been validated.
+     * Only `heuristisch` trust forces a 'pruefen' bucket — all other tiers
+     * (including `amtlich_gestuetzt`) are considered trusted and follow the
+     * state-based routing in the match expression below.
      */
     private function bucket(string $state, string $trust): string
     {
-        // Heuristic trust on any positively-classified state → human review required
-        if ($trust === 'heuristisch' && in_array($state, ['gedeckt', 'partiell', 'iso_offen'], true)) {
+        // Only heuristic trust on any positively-classified state → human review required.
+        // amtlich_gestuetzt, ki_validiert, bestaetigt, and amtlich are trusted — they do NOT
+        // land in pruefen via this guard (they follow the state-based match below).
+        if ($trust === self::TIER_HEURISTISCH && in_array($state, ['gedeckt', 'partiell', 'iso_offen'], true)) {
             return 'pruefen';
         }
 
@@ -232,5 +284,45 @@ class IsoToBsiGapService
         }
 
         return $id;
+    }
+
+    /**
+     * Derive the BSI Baustein code from a ComplianceRequirement's category or
+     * requirementId (public static helper used by MappingCorroborationService).
+     *
+     * Convention (matches BsiGrundschutzCheckService::bausteinCode()):
+     *   1. If $category is non-empty, extract the first whitespace-delimited token
+     *      (e.g. "SYS.1.2 Windows Server" → "SYS.1.2").
+     *   2. Fallback: parse $requirementId by stripping the trailing ".A<n>" segment
+     *      (e.g. "SYS.1.2.A3" → "SYS.1.2").
+     *
+     * @param string|null $category      ComplianceRequirement::getCategory()
+     * @param string|null $requirementId ComplianceRequirement::getRequirementId()
+     * @return string  Baustein code, or empty string if undeterminable
+     */
+    public static function bausteinCodeFrom(?string $category, ?string $requirementId): string
+    {
+        // 1. Category-prefix (canonical for imported BSI requirements)
+        if ($category !== null && $category !== '') {
+            $first = explode(' ', trim($category), 2)[0];
+            if ($first !== '') {
+                return $first;
+            }
+        }
+
+        // 2. requirementId prefix fallback (same logic as BsiGrundschutzCheckService)
+        if ($requirementId !== null && $requirementId !== '') {
+            $parts     = explode('.', $requirementId);
+            $collected = [];
+            foreach ($parts as $part) {
+                if (preg_match('/^A\d+$/', $part) === 1) {
+                    break;
+                }
+                $collected[] = $part;
+            }
+            return implode('.', $collected);
+        }
+
+        return '';
     }
 }

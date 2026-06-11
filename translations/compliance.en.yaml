@@ -1359,6 +1359,23 @@ export:
         partially_implemented_short: 'Partial'
         implemented: 'Implemented'
         not_assessed: 'Not Assessed'
+    # ─── WS-5b: Trust-tier labels for the corroboration layer ──────────────────
+    trust:
+        tier:
+            amtlich: 'Official'
+            amtlich_gestuetzt: 'Officially supported'
+            ki_validiert: 'AI-validated'
+            bestaetigt: 'Confirmed'
+            heuristisch: 'Heuristic'
+        tier_desc:
+            amtlich: 'Directly imported from the official BSI Cross-Reference Table (CRT) — authoritative source.'
+            amtlich_gestuetzt: 'Heuristic Anforderung-level mapping corroborated by the official CRT at Baustein level (WS-5b).'
+            ki_validiert: 'AI-assisted mapping manually reviewed and approved by an expert panel.'
+            bestaetigt: 'Manually confirmed by a domain expert.'
+            heuristisch: 'Unreviewed heuristic mapping — must be checked.'
+        badge:
+            trusted: 'Trusted'
+            needs_review: 'Review required'
 
 # ─── BSI IT-Grundschutz ISO→BSI gap view labels ─────────────────────────────
 bsi:
