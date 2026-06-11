@@ -6,7 +6,6 @@ namespace App\Service\Bsi;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
-use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceMappingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -281,10 +280,6 @@ final class PanelVerdictApplier
 
             $isoReq = $mapping->getSourceRequirement();
             $bsiReq = $mapping->getTargetRequirement();
-
-            if (!$isoReq instanceof ComplianceRequirement || !$bsiReq instanceof ComplianceRequirement) {
-                continue;
-            }
 
             $isoControlId = $isoReq->getRequirementId();
             $baustein     = IsoToBsiGapService::bausteinCodeFrom(
