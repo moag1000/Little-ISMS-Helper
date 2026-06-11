@@ -491,4 +491,105 @@ class IsoToBsiGapServiceTest extends TestCase
         $this->assertSame([], $itemB['evidence'],
             'Tenant B must NOT see tenant A\'s evidence titles for the same shared requirement');
     }
+
+    // ── WS-5b: amtlich_gestuetzt trust tier ──────────────────────────────────
+
+    /**
+     * A mapping with provenanceSource = 'crt_corroborated' MUST resolve to
+     * the 'amtlich_gestuetzt' trust tier.
+     */
+    #[Test]
+    public function crtCorroboratedMappingYieldsAmtlichGestueztTrust(): void
+    {
+        $tenant = $this->makeTenant('standard');
+        $iso    = $this->makeFramework();
+        $bsi    = $this->makeFramework();
+
+        $isoReq = $this->makeIsoReq('A.5.1');
+        $bsiReq = $this->makeBsiReq(50, 'standard', 'SYS.1.2.A3');
+
+        // crt_corroborated provenance → amtlich_gestuetzt tier
+        $mapping = $this->makeMapping($isoReq, $bsiReq, 100, 'crt_corroborated');
+
+        $this->reqRepo->method('findByFrameworkAndTiers')->willReturn([$bsiReq]);
+        $this->mappingRepo->method('findCrossFrameworkMappings')->willReturn([$mapping]);
+        $this->fulfillmentRepo->method('fulfillmentDataFor')
+            ->willReturn(['pct' => 80, 'evidence' => ['SomeDoc.pdf']]);
+
+        $result = $this->service->buildGap($tenant, $iso, $bsi);
+
+        $item = $result->items[0];
+        $this->assertSame('gedeckt', $item['state']);
+        $this->assertSame('amtlich_gestuetzt', $item['trust'],
+            'crt_corroborated provenance must yield amtlich_gestuetzt trust tier');
+    }
+
+    /**
+     * A mapping with provenanceSource = 'crt_corroborated' MUST land in the
+     * 'erledigt' bucket (not in 'pruefen') because amtlich_gestuetzt is a
+     * trusted tier.
+     */
+    #[Test]
+    public function crtCorroboratedFulfilledMappingLandsInErledigtNotPruefen(): void
+    {
+        $tenant = $this->makeTenant('standard');
+        $iso    = $this->makeFramework();
+        $bsi    = $this->makeFramework();
+
+        $isoReq = $this->makeIsoReq('A.8.9');
+        $bsiReq = $this->makeBsiReq(51, 'standard', 'SYS.1.2.A5');
+
+        $mapping = $this->makeMapping($isoReq, $bsiReq, 100, 'crt_corroborated');
+
+        $this->reqRepo->method('findByFrameworkAndTiers')->willReturn([$bsiReq]);
+        $this->mappingRepo->method('findCrossFrameworkMappings')->willReturn([$mapping]);
+        $this->fulfillmentRepo->method('fulfillmentDataFor')
+            ->willReturn(['pct' => 100, 'evidence' => []]);
+
+        $result = $this->service->buildGap($tenant, $iso, $bsi);
+
+        $item = $result->items[0];
+        $this->assertSame('gedeckt', $item['state']);
+        $this->assertSame('amtlich_gestuetzt', $item['trust']);
+        $this->assertSame(1, $result->bucketCounts['erledigt'],
+            'amtlich_gestuetzt trust must land in erledigt bucket, not pruefen');
+        $this->assertSame(0, $result->bucketCounts['pruefen'],
+            'pruefen bucket must be 0 — amtlich_gestuetzt is trusted');
+    }
+
+    /**
+     * Verify that only heuristisch trust forces pruefen — amtlich_gestuetzt does NOT.
+     * This is the core invariant of the WS-5b tier extension.
+     */
+    #[Test]
+    public function onlyHeuristischForcesPreufen(): void
+    {
+        $tenant = $this->makeTenant('standard');
+        $iso    = $this->makeFramework();
+        $bsi    = $this->makeFramework();
+
+        // bsiReq1: crt_corroborated + fulfilled → erledigt (NOT pruefen)
+        $bsiReq1 = $this->makeBsiReq(60, 'standard', 'NET.1.1.A1');
+        $isoReq1 = $this->makeIsoReq('A.8.20');
+        $m1      = $this->makeMapping($isoReq1, $bsiReq1, 100, 'crt_corroborated');
+
+        // bsiReq2: heuristic + fulfilled → pruefen (heuristic overrides state)
+        $bsiReq2 = $this->makeBsiReq(61, 'standard', 'NET.1.1.A2');
+        $isoReq2 = $this->makeIsoReq('A.8.21');
+        $m2      = $this->makeMapping($isoReq2, $bsiReq2, 100, 'heuristic', 'draft', 'unreviewed');
+
+        $this->reqRepo->method('findByFrameworkAndTiers')
+            ->willReturn([$bsiReq1, $bsiReq2]);
+        $this->mappingRepo->method('findCrossFrameworkMappings')
+            ->willReturn([$m1, $m2]);
+        $this->fulfillmentRepo->method('fulfillmentDataFor')
+            ->willReturn(['pct' => 100, 'evidence' => []]);
+
+        $result = $this->service->buildGap($tenant, $iso, $bsi);
+
+        $this->assertSame(1, $result->bucketCounts['erledigt'],
+            'crt_corroborated (amtlich_gestuetzt) must be erledigt');
+        $this->assertSame(1, $result->bucketCounts['pruefen'],
+            'heuristisch trust must still be pruefen');
+    }
 }
