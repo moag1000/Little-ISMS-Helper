@@ -1,0 +1,1894 @@
+{
+  "provenance": {
+    "description": "Build-time 4-persona expert panel adjudication of 144 residual heuristic ISO 27001:2022 to BSI IT-Grundschutz mappings not corroborated by the official BSI Cross-Reference-Table (CRT).",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "consultant-senior",
+      "isb-practitioner"
+    ],
+    "consensus_rule": "bsi-specialist AND isms-specialist both vote related/partial/subset/equivalent AND at least 1 of (consultant-senior, isb-practitioner) agrees => ki_validiert; real_votes <= 1 => reject; otherwise => needs_review",
+    "run_date": "2026-06-11",
+    "source": "build-time Workflow (WS-5b stage 2)",
+    "verdict_counts": {
+      "total": 144,
+      "ki_validiert": 133,
+      "reject": 2,
+      "needs_review": 9
+    }
+  },
+  "verdicts": [
+    {
+      "iso": "A.5.2",
+      "baustein": "ORP.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "subset",
+        "partial",
+        "subset",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.19",
+      "baustein": "OPS.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.34",
+      "baustein": "CON.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "subset",
+        "partial",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.5.33",
+      "baustein": "ORP.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "subset",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.36",
+      "baustein": "ORP.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.9",
+      "baustein": "CON.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.6.7",
+      "baustein": "CON.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "related",
+        "partial",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.30",
+      "baustein": "CON.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "subset",
+        "partial",
+        "subset",
+        "subset"
+      ]
+    },
+    {
+      "iso": "A.8.26",
+      "baustein": "CON.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.28",
+      "baustein": "CON.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.12",
+      "baustein": "CON.11",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.13",
+      "baustein": "CON.11",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.37",
+      "baustein": "OPS.1.1.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "subset",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.5",
+      "baustein": "OPS.1.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "realVotes": 4,
+      "relations": [
+        "related",
+        "related",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.33",
+      "baustein": "OPS.1.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.10",
+      "baustein": "OPS.1.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "realVotes": 3,
+      "relations": [
+        "related",
+        "related",
+        "related",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "OPS.1.2.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "related",
+        "related",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.2",
+      "baustein": "OPS.1.2.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.17",
+      "baustein": "OPS.1.2.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 3,
+      "relations": [
+        "partial",
+        "equivalent",
+        "none",
+        "equivalent"
+      ]
+    },
+    {
+      "iso": "A.5.35",
+      "baustein": "DER.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.35",
+      "baustein": "DER.3.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.19",
+      "baustein": "APP.1.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.19",
+      "baustein": "APP.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.23",
+      "baustein": "APP.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "APP.1.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "related",
+        "related",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.19",
+      "baustein": "APP.1.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.16",
+      "baustein": "APP.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.17",
+      "baustein": "APP.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.16",
+      "baustein": "APP.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.17",
+      "baustein": "APP.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.5",
+      "baustein": "APP.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.16",
+      "baustein": "APP.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.17",
+      "baustein": "APP.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.26",
+      "baustein": "APP.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.28",
+      "baustein": "APP.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "APP.3.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.23",
+      "baustein": "APP.3.2",
+      "state": "reject",
+      "mappingPercentage": 25,
+      "realVotes": 1,
+      "relations": [
+        "related",
+        "partial",
+        "none",
+        "none"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "APP.3.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "APP.3.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.4",
+      "baustein": "APP.4.2",
+      "state": "needs_review",
+      "mappingPercentage": 15,
+      "realVotes": 2,
+      "relations": [
+        "related",
+        "none",
+        "related",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.26",
+      "baustein": "APP.4.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.3",
+      "baustein": "APP.4.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "APP.4.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "APP.4.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "APP.4.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.28",
+      "baustein": "APP.4.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "subset",
+        "subset"
+      ]
+    },
+    {
+      "iso": "A.8.4",
+      "baustein": "APP.4.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "APP.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "APP.5.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.14",
+      "baustein": "APP.5.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.14",
+      "baustein": "APP.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "APP.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.19",
+      "baustein": "APP.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.37",
+      "baustein": "APP.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.25",
+      "baustein": "APP.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.27",
+      "baustein": "APP.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.28",
+      "baustein": "APP.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.30",
+      "baustein": "APP.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.1.1",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "realVotes": 2,
+      "relations": [
+        "none",
+        "partial",
+        "partial",
+        "none"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "SYS.1.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "SYS.1.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.19",
+      "baustein": "SYS.1.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "SYS.1.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "SYS.1.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "SYS.1.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.32",
+      "baustein": "SYS.1.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "SYS.1.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "SYS.1.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "SYS.1.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.6",
+      "baustein": "SYS.1.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.13",
+      "baustein": "SYS.1.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.1.9",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 2,
+      "relations": [
+        "none",
+        "related",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.2.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "SYS.2.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "SYS.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.2.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "SYS.2.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.2.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "SYS.2.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "realVotes": 3,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.2.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "SYS.2.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "subset",
+        "subset"
+      ]
+    },
+    {
+      "iso": "A.7.9",
+      "baustein": "SYS.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.3.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "subset",
+        "subset"
+      ]
+    },
+    {
+      "iso": "A.7.9",
+      "baustein": "SYS.3.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.3.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.3.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.3.2.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.4.1",
+      "state": "reject",
+      "mappingPercentage": 28,
+      "realVotes": 1,
+      "relations": [
+        "related",
+        "partial",
+        "none",
+        "none"
+      ]
+    },
+    {
+      "iso": "A.7.10",
+      "baustein": "SYS.4.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.4.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 3,
+      "relations": [
+        "partial",
+        "partial",
+        "none",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "SYS.4.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "SYS.4.4",
+      "state": "needs_review",
+      "mappingPercentage": 30,
+      "realVotes": 3,
+      "relations": [
+        "partial",
+        "none",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "IND.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "IND.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "IND.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "IND.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "IND.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.9",
+      "baustein": "IND.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "related",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.4",
+      "baustein": "IND.2.4",
+      "state": "needs_review",
+      "mappingPercentage": 30,
+      "realVotes": 2,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "none"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "IND.2.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "IND.2.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "IND.3.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.2",
+      "baustein": "IND.3.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "related",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "NET.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "NET.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "NET.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "NET.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.1",
+      "baustein": "NET.2.2",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 3,
+      "relations": [
+        "related",
+        "partial",
+        "partial",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "NET.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "NET.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.21",
+      "baustein": "NET.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "NET.3.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "subset",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "NET.3.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "subset",
+        "partial",
+        "subset",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "NET.3.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "subset",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.14",
+      "baustein": "NET.3.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "subset",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.15",
+      "baustein": "NET.3.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "NET.3.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.14",
+      "baustein": "NET.4.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "NET.4.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.5.14",
+      "baustein": "NET.4.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.8.20",
+      "baustein": "NET.4.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.5.14",
+      "baustein": "NET.4.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 3,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.5",
+      "baustein": "INF.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.8",
+      "baustein": "INF.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.11",
+      "baustein": "INF.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "subset",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.12",
+      "baustein": "INF.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "subset",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.8",
+      "baustein": "INF.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.12",
+      "baustein": "INF.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.10",
+      "baustein": "INF.6",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3,
+      "relations": [
+        "partial",
+        "none",
+        "superset",
+        "subset"
+      ]
+    },
+    {
+      "iso": "A.5.33",
+      "baustein": "INF.6",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 2,
+      "relations": [
+        "none",
+        "none",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.7",
+      "baustein": "INF.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.8",
+      "baustein": "INF.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.6.7",
+      "baustein": "INF.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "equivalent",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.9",
+      "baustein": "INF.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.6.7",
+      "baustein": "INF.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "equivalent",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.9",
+      "baustein": "INF.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.4",
+      "baustein": "INF.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.6",
+      "baustein": "INF.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.11",
+      "baustein": "INF.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "relations": [
+        "partial",
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    {
+      "iso": "A.7.4",
+      "baustein": "INF.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 3,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "none"
+      ]
+    },
+    {
+      "iso": "A.7.11",
+      "baustein": "INF.14",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 3,
+      "relations": [
+        "partial",
+        "partial",
+        "related",
+        "related"
+      ]
+    },
+    {
+      "iso": "A.8.22",
+      "baustein": "INF.14",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 3,
+      "relations": [
+        "partial",
+        "related",
+        "partial",
+        "partial"
+      ]
+    }
+  ]
+}
