@@ -433,7 +433,11 @@ class ComplianceRequirement
     private ?string $anforderungsTyp = null;
 
     /**
-     * BSI IT-Grundschutz Absicherungsstufe: 'basis', 'standard', 'kern'
+     * BSI IT-Grundschutz Absicherungsstufe (tier): 'basis', 'standard', 'hoch'
+     *
+     * NOTE: 'kern' is a BSI Vorgehensweise (approach level), NOT a tier.
+     * Canonical tier vocabulary is basis / standard / hoch only.
+     * See AbsicherungsStufe enum + WS-1 migration for normalization.
      */
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $absicherungsStufe = null;

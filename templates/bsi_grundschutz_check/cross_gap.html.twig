@@ -1,0 +1,308 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance' %}
+
+{% block title %}{{ 'bsi.cross_gap.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'compliance-shield', label: 'bsi.cross_gap.badge'|trans },
+    title: 'bsi.cross_gap.title'|trans,
+    subtitle: 'bsi.cross_gap.subtitle'|trans,
+}) }}
+
+<main class="fa-aurora-surface">
+<div class="container-fluid">
+
+    {# ── No-framework empty state ─────────────────────────────────────────── #}
+    {% if result is null %}
+        <div class="row mb-4">
+            <div class="col-12">
+                {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                {{ _fa_empty_state.render({
+                    icon: 'compliance-shield',
+                    title: 'bsi.cross_gap.empty.title'|trans,
+                    message: 'bsi.cross_gap.empty.message'|trans,
+                }) }}
+            </div>
+        </div>
+    {% else %}
+
+    {# ── Honest headline ──────────────────────────────────────────────────── #}
+    <div class="row mb-3">
+        <div class="col-12">
+            <p class="lead mb-0">
+                {{ 'bsi.cross_gap.headline'|trans({
+                    '%erledigt%':   result.bucketCounts.erledigt,
+                    '%quick_win%':  result.bucketCounts.quick_win,
+                    '%bsi_arbeit%': result.bucketCounts.bsi_arbeit,
+                    '%pruefen%':    result.bucketCounts.pruefen,
+                    '%total%':      result.total,
+                }) }}
+            </p>
+        </div>
+    </div>
+
+    {# ── 4 Action-Bucket KPI tiles ─────────────────────────────────────────── #}
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div data-testid="bucket-erledigt" data-tour-step="bsi-gap-bucket-erledigt">
+                {{ _fa_feature_card.render({
+                    icon: 'check-circle',
+                    title: 'bsi.cross_gap.bucket.erledigt'|trans,
+                    value: result.bucketCounts.erledigt,
+                    subtitle: 'bsi.cross_gap.bucket.erledigt_hint'|trans,
+                    borderColor: 'success',
+                }) }}
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div data-testid="bucket-quick_win" data-tour-step="bsi-gap-bucket-quick_win">
+                {{ _fa_feature_card.render({
+                    icon: 'lightning',
+                    title: 'bsi.cross_gap.bucket.quick_win'|trans,
+                    value: result.bucketCounts.quick_win,
+                    subtitle: 'bsi.cross_gap.bucket.quick_win_hint'|trans,
+                    borderColor: 'primary',
+                }) }}
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div data-testid="bucket-bsi_arbeit" data-tour-step="bsi-gap-bucket-bsi_arbeit">
+                {{ _fa_feature_card.render({
+                    icon: 'wrench',
+                    title: 'bsi.cross_gap.bucket.bsi_arbeit'|trans,
+                    value: result.bucketCounts.bsi_arbeit,
+                    subtitle: 'bsi.cross_gap.bucket.bsi_arbeit_hint'|trans,
+                    borderColor: 'warning',
+                }) }}
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div data-testid="bucket-pruefen" data-tour-step="bsi-gap-bucket-pruefen">
+                {{ _fa_feature_card.render({
+                    icon: 'magnifying-glass',
+                    title: 'bsi.cross_gap.bucket.pruefen'|trans,
+                    value: result.bucketCounts.pruefen,
+                    subtitle: 'bsi.cross_gap.bucket.pruefen_hint'|trans,
+                    borderColor: 'danger',
+                }) }}
+            </div>
+        </div>
+    </div>
+
+    {# ── Dein nächster Schritt ──────────────────────────────────────────────── #}
+    {% set nextItems = result.items|filter(i => i.state in ['iso_offen', 'partiell', 'ungemappt_eigenstaendig'])|slice(0, 5) %}
+    {% if nextItems|length > 0 %}
+    <div class="row mb-4">
+        <div class="col-12">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">{{ 'bsi.cross_gap.next_step.title'|trans({}, 'compliance') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.requirement'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.baustein'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.iso_control'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.tier'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.action'|trans({}, 'compliance') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% trans_default_domain 'compliance' %}
+                            {% for item in nextItems %}
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell">
+                                        <span class="font-monospace small">{{ item.requirementId }}</span>
+                                    </td>
+                                    <td class="fa-table__cell">{{ item.baustein }}</td>
+                                    <td class="fa-table__cell">
+                                        {% if item.isoControl %}
+                                            <span class="badge bg-info text-dark">{{ item.isoControl }}</span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        <span class="badge bg-secondary">
+                                            {{ ('bsi.cross_gap.tier.' ~ item.tier)|trans({}, 'compliance') }}
+                                        </span>
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        <span class="badge {% if item.state == 'iso_offen' %}bg-primary{% else %}bg-warning text-dark{% endif %}">
+                                            {{ ('bsi.cross_gap.state.' ~ item.state)|trans({}, 'compliance') }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# ── Pending heuristic review link ─────────────────────────────────────── #}
+    {% if pendingReview > 0 %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
+                <i class="fa-icon fa-icon--warning" aria-hidden="true"></i>
+                <div>
+                    {{ 'bsi.cross_gap.pending_review'|trans({'%count%': pendingReview}, 'compliance') }}
+                    <a href="{{ path('app_compliance_inheritance_queue', {frameworkCode: bsiCode ?? 'BSI_GRUNDSCHUTZ'}) }}" class="alert-link ms-1">
+                        {{ 'bsi.cross_gap.pending_review_link'|trans({}, 'compliance') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# ── Assurance level selector ──────────────────────────────────────────── #}
+    <div class="row mb-4">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card" data-tour-step="bsi-gap-level">
+                <div class="card-body">
+                    <h3 class="h6 mb-3">{{ 'bsi.cross_gap.level.title'|trans }}</h3>
+                    <form method="post" action="{{ path('app_compliance_bsi_level', {_locale: app.request.locale}) }}" novalidate>
+                        <input type="hidden" name="_token" value="{{ csrf_token('bsi_level') }}">
+                        <div class="mb-3">
+                            <label for="bsi-level-select" class="form-label small mb-1">
+                                {{ 'bsi.cross_gap.level.label'|trans }}
+                            </label>
+                            <select id="bsi-level-select" name="level" class="form-select form-select-sm fa-cyber-input__field">
+                                {% for opt in ['basis', 'standard', 'kern'] %}
+                                    <option value="{{ opt }}" {% if level == opt %}selected{% endif %}>
+                                        {{ ('bsi.cross_gap.level.' ~ opt)|trans }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text text-muted mt-1">
+                                {{ 'bsi.cross_gap.level.hint'|trans }}
+                            </div>
+                        </div>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                            {{ 'bsi.cross_gap.level.save'|trans }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ── Full drill-down: Schicht → Baustein → Items ───────────────────────── #}
+    {% if result.items|length > 0 %}
+    {% set byBaustein = {} %}
+    {% for item in result.items %}
+        {% set baustein = item.baustein %}
+        {% if byBaustein[baustein] is not defined %}
+            {% set byBaustein = byBaustein|merge({(baustein): []}) %}
+        {% endif %}
+        {% set byBaustein = byBaustein|merge({(baustein): byBaustein[baustein]|merge([item])}) %}
+    {% endfor %}
+
+    <div class="row mb-2">
+        <div class="col-12">
+            <h2 class="h5 mb-3">{{ 'bsi.cross_gap.drill.title'|trans }}</h2>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            {% for baustein, items in byBaustein %}
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold font-monospace">{{ baustein }}</span>
+                    <span class="badge bg-secondary">{{ items|length }}</span>
+                </div>
+                <div class="card-body p-0">
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.requirement'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.tier'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.state'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.trust'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.iso_control'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'bsi.cross_gap.col.evidence'|trans({}, 'compliance') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% trans_default_domain 'compliance' %}
+                            {% for item in items %}
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell">
+                                        <span class="font-monospace small">{{ item.requirementId }}</span>
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        {%- set tierLabel = ('bsi.cross_gap.tier.' ~ item.tier)|trans({}, 'compliance') -%}
+                                        {%- set tierClass = item.tier == 'basis' ? 'bg-info text-dark' : (item.tier == 'standard' ? 'bg-primary' : 'bg-danger') -%}
+                                        <span class="badge {{ tierClass }}">{{ tierLabel }}</span>
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        {%- set stateLabel = ('bsi.cross_gap.state.' ~ item.state)|trans({}, 'compliance') -%}
+                                        {%- set stateClass = {
+                                            'gedeckt': 'bg-success',
+                                            'partiell': 'bg-warning text-dark',
+                                            'iso_offen': 'bg-primary',
+                                            'ungemappt_unbewertet': 'bg-secondary',
+                                            'ungemappt_eigenstaendig': 'bg-secondary',
+                                        }[item.state] ?? 'bg-secondary' -%}
+                                        <span class="badge {{ stateClass }}">{{ stateLabel }}</span>
+                                        {% if item.delta > 0 %}
+                                            <small class="text-muted ms-1">−{{ item.delta }}%</small>
+                                        {% endif %}
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        {%- set trustLabel = ('bsi.cross_gap.trust.' ~ item.trust)|trans({}, 'compliance') -%}
+                                        {%- set trustClass = {
+                                            'amtlich': 'bg-success',
+                                            'ki_validiert': 'bg-info text-dark',
+                                            'bestaetigt': 'bg-primary',
+                                            'heuristisch': 'bg-warning text-dark',
+                                            '-': 'bg-secondary',
+                                        }[item.trust] ?? 'bg-secondary' -%}
+                                        <span class="badge {{ trustClass }}">{{ trustLabel }}</span>
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        {% if item.isoControl %}
+                                            <span class="badge bg-light text-dark border">{{ item.isoControl }}</span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        {% if item.evidence|length > 0 %}
+                                            <ul class="list-unstyled mb-0 small">
+                                                {% for ev in item.evidence %}
+                                                    <li><i class="fa-icon fa-icon--evidence" aria-hidden="true"></i> {{ ev }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% endif %}{# end result != null #}
+
+</div>
+</main>
+{% endblock %}

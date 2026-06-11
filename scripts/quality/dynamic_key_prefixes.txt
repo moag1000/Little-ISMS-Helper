@@ -46,6 +46,10 @@ bc_plans.resource_list.tab	1
 bc_plans.status	4
 bcm.criticality	4
 bcm.level	2
+bsi.cross_gap.level	1
+bsi.cross_gap.state	1
+bsi.cross_gap.tier	1
+bsi.cross_gap.trust	1
 bsi_check.stufe	1
 bsi_check.type	1
 bulk_import_batch.status	1

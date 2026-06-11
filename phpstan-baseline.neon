@@ -3241,18 +3241,6 @@ parameters:
 			path: src/Service/GroupAuditProgramService.php
 
 		-
-			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
-			identifier: greater.alwaysTrue
-			count: 1
-			path: src/Service/GrundschutzCheckService.php
-
-		-
-			message: '#^Offset 0 on non\-empty\-list\<string\> on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: src/Service/GrundschutzCheckService.php
-
-		-
 			message: '#^Offset ''module'' on array\{id\: string, icon\?\: string\|null, target\: string\|null, title_key\: string, body_key\: string, url\: string\|null, placement\: string\} in isset\(\) does not exist\.$#'
 			identifier: isset.offset
 			count: 1
@@ -4601,3 +4589,9 @@ parameters:
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Workflow/Loader/RegulatoryWorkflowLoader.php
+
+		-
+			message: '#^Call to an undefined method App\\Entity\\Tenant\:\:getBsiAssuranceLevel\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Service/Bsi/IsoToBsiGapService.php

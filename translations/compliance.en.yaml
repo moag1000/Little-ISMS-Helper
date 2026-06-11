@@ -1359,3 +1359,66 @@ export:
         partially_implemented_short: 'Partial'
         implemented: 'Implemented'
         not_assessed: 'Not Assessed'
+
+# ─── BSI IT-Grundschutz ISO→BSI gap view labels ─────────────────────────────
+bsi:
+    cross_gap:
+        title: 'ISO→BSI Gap Analysis'
+        badge: 'BSI IT-Grundschutz'
+        subtitle: 'What does your ISO 27001 already cover for BSI IT-Grundschutz — and what is still missing?'
+        headline: 'Of %total% BSI requirements: %erledigt% done · %quick_win% quick wins · %bsi_arbeit% BSI work · %pruefen% to review'
+        empty:
+            title: 'Frameworks not yet imported'
+            message: 'Please import the ISO 27001 and BSI IT-Grundschutz frameworks to use the gap analysis.'
+        bucket:
+            erledigt: 'Done'
+            erledigt_hint: 'ISO control present and fulfilled (verified mapping)'
+            quick_win: 'Quick Wins'
+            quick_win_hint: 'ISO control exists — just implement it'
+            bsi_arbeit: 'BSI Work'
+            bsi_arbeit_hint: 'Partial mapping or BSI-specific requirement'
+            pruefen: 'Review Required'
+            pruefen_hint: 'Heuristic mapping or no assignment — manual review needed'
+        next_step:
+            title: 'Your Next Step'
+        pending_review: '%count% heuristic/open mappings to review'
+        pending_review_link: 'Go to review queue'
+        level:
+            title: 'Assurance Level'
+            label: 'Desired assurance level'
+            hint: 'Determines which BSI requirements are in scope.'
+            save: 'Save'
+            basis: 'Basic Protection'
+            standard: 'Standard Protection'
+            kern: 'Core Protection'
+        drill:
+            title: 'Details by Baustein'
+        col:
+            requirement: 'Requirement'
+            baustein: 'Baustein'
+            iso_control: 'ISO Control'
+            tier: 'Tier'
+            state: 'Status'
+            trust: 'Trust'
+            action: 'Action'
+            evidence: 'Evidence'
+        state:
+            gedeckt: 'Covered'
+            partiell: 'Partial'
+            iso_offen: 'ISO Open'
+            ungemappt_unbewertet: 'Not Assessed'
+            ungemappt_eigenstaendig: 'BSI-Specific'
+        trust:
+            amtlich: 'Official'
+            ki_validiert: 'AI-Validated'
+            bestaetigt: 'Confirmed'
+            heuristisch: 'Heuristic'
+            '-': 'No Source'
+        tier:
+            basis: 'Basic'
+            standard: 'Standard'
+            hoch: 'High'
+            kern: 'Core'
+            '-': '—'
+    level:
+        invalid: 'Invalid assurance level. Allowed: basis, standard, kern.'

@@ -155,6 +155,101 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Return the tenant-scoped fulfillment percentage (0–100) for a single
+     * ComplianceRequirement. Returns 0 when no fulfillment record exists for
+     * this tenant/requirement pair.
+     *
+     * Used by IsoToBsiGapService::classify() to determine whether an ISO
+     * control has actually been worked on before claiming BSI coverage.
+     */
+    public function percentageFor(Tenant $tenant, ComplianceRequirement $requirement): int
+    {
+        /** @var ComplianceRequirementFulfillment|null $fulfillment */
+        $fulfillment = $this->findOneBy([
+            'tenant'      => $tenant,
+            'requirement' => $requirement,
+        ]);
+
+        if ($fulfillment === null) {
+            return 0;
+        }
+
+        return $fulfillment->getFulfillmentPercentage();
+    }
+
+    /**
+     * Return the titles of evidence documents linked to the ComplianceRequirement
+     * that belong to the given tenant.
+     *
+     * The `compliance_requirement_evidence` M2M join table has NO tenant column and
+     * `ComplianceRequirement` is framework-level shared data, so iterating
+     * `$requirement->getEvidenceDocuments()` would return documents owned by ANY
+     * tenant — a cross-tenant evidence leak.
+     *
+     * Fix: use a DQL query that joins through the M2M relation to `Document` and
+     * filters `WHERE doc.tenant = :tenant`. Only documents whose `tenant` column
+     * matches the requesting tenant are returned.
+     *
+     * @return list<string> Document original-filenames (human-readable titles); [] if none
+     */
+    public function evidenceTitlesFor(Tenant $tenant, ComplianceRequirement $requirement): array
+    {
+        /** @var list<array{originalFilename: string|null}> $rows */
+        $rows = $this->getEntityManager()
+            ->createQuery(
+                'SELECT doc.originalFilename
+                 FROM App\Entity\ComplianceRequirement r
+                 JOIN r.evidenceDocuments doc
+                 WHERE r = :requirement
+                   AND doc.tenant = :tenant'
+            )
+            ->setParameter('requirement', $requirement)
+            ->setParameter('tenant', $tenant)
+            ->getScalarResult();
+
+        $titles = [];
+        foreach ($rows as $row) {
+            $name = $row['originalFilename'] ?? null;
+            if ($name !== null && $name !== '') {
+                $titles[] = $name;
+            }
+        }
+
+        return $titles;
+    }
+
+    /**
+     * Return both the fulfillment percentage and the (tenant-scoped) evidence
+     * titles for a single requirement in ONE database round-trip.
+     *
+     * Avoids the N+1 pattern that arises when classify() calls percentageFor()
+     * and evidenceTitlesFor() separately for every fulfilled ISO requirement.
+     *
+     * When no fulfillment record exists for this tenant/requirement pair the
+     * method returns `['pct' => 0, 'evidence' => []]` so callers can treat
+     * an absent record identically to an unfulfilled one.
+     *
+     * @return array{pct: int, evidence: list<string>}
+     */
+    public function fulfillmentDataFor(Tenant $tenant, ComplianceRequirement $requirement): array
+    {
+        /** @var ComplianceRequirementFulfillment|null $fulfillment */
+        $fulfillment = $this->findOneBy([
+            'tenant'      => $tenant,
+            'requirement' => $requirement,
+        ]);
+
+        if ($fulfillment === null) {
+            return ['pct' => 0, 'evidence' => []];
+        }
+
+        return [
+            'pct'      => $fulfillment->getFulfillmentPercentage(),
+            'evidence' => $this->evidenceTitlesFor($tenant, $requirement),
+        ];
+    }
+
+    /**
      * Get compliance statistics for a tenant
      *
      * @return array{total: int, applicable: int, not_applicable: int, fully_implemented: int, in_progress: int, not_started: int, avg_fulfillment: float}

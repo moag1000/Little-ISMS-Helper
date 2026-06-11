@@ -1,0 +1,922 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'iso27001-2022_to_bsi-grundschutz_official-crt_v1'
+  source_framework: 'ISO27001'
+  target_framework: 'BSI_GRUNDSCHUTZ'
+  version: 1
+  effective_from: '2023-06-01'
+  effective_until: null
+
+  provenance:
+    primary_source: 'official_bsi_crosswalk'
+    primary_source_url: 'https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/IT-GS-Kompendium/Zuordnung_ISO_und_IT_Grundschutz_Edit_6.pdf?__blob=publicationFile&v=2'
+    edition: 'IT-Grundschutz-Kompendium 6. Edition 2023'
+    source_document_title: 'Zuordnung ISO/IEC 27001 zum IT-Grundschutz — Bundesamt fuer Sicherheit in der Informationstechnik (BSI)'
+    source_document_date: '2023-09-19'
+    source_standards:
+      - 'BSI-Standard 200-1, Version 1.0, Oktober 2017'
+      - 'BSI-Standard 200-2, Version 1.0, Oktober 2017'
+      - 'BSI-Standard 200-3, Version 1.0, Oktober 2017'
+      - 'BSI-Standard 200-4'
+      - 'IT-Grundschutz-Kompendium, 6. Edition 2023'
+      - 'ISO/IEC 27001:2022 und ISO/IEC 27002:2022'
+    publisher: 'Bundesamt fuer Sicherheit in der Informationstechnik (BSI)'
+    extraction_method: 'pdftotext verbatim extraction from official BSI publication'
+    extraction_note: |
+      Pairs extracted verbatim from the BSI official publication
+      "Zuordnung ISO/IEC 27001 zum IT-Grundschutz" (Stand 6. Edition 2023),
+      downloaded from bsi.bund.de on 2026-06-10.
+      For each ISO 27001:2022 clause/control, the document lists the primary
+      IT-Grundschutz Baustein or BSI-Standard chapter. Where the BSI document
+      lists multiple Bausteine for a single ISO clause, the boldly-marked
+      (primary) reference is used as the canonical pair target; additional
+      references are listed in the notes field. Fett markiert = primary per BSI.
+
+  methodology:
+    type: 'official_published_crosswalk'
+    description: |
+      Amtliche BSI-Kreuzreferenztabelle (6. Edition 2023).
+      The BSI publishes this document as the authoritative cross-reference
+      between ISO/IEC 27001:2022 and IT-Grundschutz. Each entry reflects
+      the BSI's own mapping. No AI inference or heuristic derivation was
+      used; all pairs are taken verbatim from the PDF.
+
+      Methodology note from the source document:
+      "Diese Gegenueberstellung dient der Zuordnung der Inhalte der
+      ISO/IEC 27001:2022 zu den Inhalten des IT-Grundschutzes."
+      When a topic is covered by multiple IT-Grundschutz areas, the
+      primary relevant area is marked bold in the original PDF.
+      BSI-Standard chapter references (e.g. "BSI-Standard 200-2, Kapitel X")
+      are mapped to the Baustein ISMS.1 where no specific Baustein is named.
+
+      Relationship encoding:
+        equivalent     = BSI Baustein/Anforderung deckt die ISO-Kontrolle direkt ab (1:1)
+        subset         = ISO-Kontrolle umfasst mehr als der einzelne Baustein
+        partial_overlap = Teilueberdeckung
+        related        = inhaltliche Verwandtschaft
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'published', date: '2023-09-19', actor: 'BSI' }
+      - { state: 'library-imported', date: '2026-06-10', actor: 'Little-ISMS-Helper' }
+
+# ============================================================================
+# ISO/IEC 27001:2022 Clause 4-10 (Normative Body — Management System)
+# Source: BSI Zuordnungstabelle, Seiten 2-6, "ISO 27001 und IT-Grundschutz"
+# ============================================================================
+mappings:
+
+  # --- Clause 4: Context ---
+  - source: '4.1'
+    target: 'ISMS.1.A2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 3.2.1; ORP.5.A1 ebenfalls relevant (lt. BSI-Dokument)'
+    rationale: 'BSI maps Understanding the organization (4.1) to ISMS.1.A2 Festlegung Sicherheitsziele/-strategie + BSI-200-2 Kap. 3.2.1.'
+
+  - source: '4.2'
+    target: 'ORP.5.A1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 3.2; ISMS.1.A2 auch relevant'
+    rationale: 'BSI maps Understanding needs/expectations of interested parties (4.2) to ORP.5.A1 Identifikation der Rahmenbedingungen.'
+
+  - source: '4.3'
+    target: 'ISMS.1.A3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 3.3.4 + Kap. 8'
+    rationale: 'BSI maps Scope determination (4.3) to ISMS.1.A3 Erstellung Leitlinie zur Informationssicherheit.'
+
+  - source: '4.4'
+    target: 'ISMS.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-1; BSI-Standard 200-2'
+    rationale: 'BSI maps ISMS requirement (4.4) to the ISMS.1 Sicherheitsmanagement Baustein.'
+
+  # --- Clause 5: Leadership ---
+  - source: '5.1'
+    target: 'ISMS.1.A1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 3.1; auch ISMS.1.A2, ISMS.1.A3, ISMS.1.A9'
+    rationale: 'BSI maps Leadership and commitment (5.1) to ISMS.1.A1 Uebernahme der Gesamtverantwortung.'
+
+  - source: '5.2'
+    target: 'ISMS.1.A3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 3.4'
+    rationale: 'BSI maps Policy (5.2) to ISMS.1.A3 Erstellung Leitlinie.'
+
+  - source: '5.3'
+    target: 'ISMS.1.A4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ISMS.1.A1, ISMS.1.A6'
+    rationale: 'BSI maps Organizational roles/responsibilities (5.3) to ISMS.1.A4 Benennung ISB.'
+
+  # --- Clause 6: Planning ---
+  - source: '6.1.1'
+    target: 'ISMS.1'
+    relationship: 'subset'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 3, 4, 8, 9'
+    rationale: 'BSI maps Actions to address risks/opportunities - General (6.1.1) to BSI-200-2 methodology.'
+
+  - source: '6.1.2'
+    target: 'ISMS.1'
+    relationship: 'subset'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 3, 4, 8; BSI-Standard 200-3'
+    rationale: 'BSI maps Information security risk assessment (6.1.2) to BSI-200-3 Risikoanalyse.'
+
+  - source: '6.1.3'
+    target: 'ISMS.1'
+    relationship: 'subset'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 8 + 9; BSI-Standard 200-3; IT-Grundschutz-Kompendium'
+    rationale: 'BSI maps Information security risk treatment (6.1.3) to BSI-200-2 Kap. 8 Sicherheitskonzeption.'
+
+  - source: '6.2'
+    target: 'ISMS.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 3 Initiierung des Sicherheitsprozesses'
+    rationale: 'BSI maps Information security objectives (6.2) to BSI-200-2 Kap. 3.'
+
+  # --- Clause 7: Support ---
+  - source: '7.1'
+    target: 'ISMS.1.A1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-1 Kap. 5; auch ISMS.1.A4, ISMS.1.A6, ISMS.1.A15, OPS.1.1.1.A4'
+    rationale: 'BSI maps Resources (7.1) to ISMS.1.A1 + ISMS.1.A15 Wirtschaftlicher Einsatz von Ressourcen.'
+
+  - source: '7.2'
+    target: 'ORP.2.A15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 4; ORP.2.A7 ebenfalls'
+    rationale: 'BSI maps Competence (7.2) to ORP.2.A15 Qualifikation des Personals.'
+
+  - source: '7.3'
+    target: 'ORP.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-1 Kap. 6'
+    rationale: 'BSI maps Awareness (7.3) to ORP.3 Sensibilisierung und Schulung.'
+
+  - source: '7.4'
+    target: 'ISMS.1.A13'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 5.2.4'
+    rationale: 'BSI maps Communication (7.4) to BSI-200-2 Kap. 5.2.4 Informationsfluss und Meldewege.'
+
+  - source: '7.5.1'
+    target: 'ISMS.1.A13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 5'
+    rationale: 'BSI maps Documented information - General (7.5.1) to ISMS.1.A13 Dokumentation Sicherheitsprozess.'
+
+  - source: '7.5.2'
+    target: 'ISMS.1.A13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 5.2'
+    rationale: 'BSI maps Creating and updating (7.5.2) to ISMS.1.A13.'
+
+  - source: '7.5.3'
+    target: 'ISMS.1.A13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-1 Kap. 4.2; BSI-Standard 200-2 Kap. 5.2'
+    rationale: 'BSI maps Control of documented information (7.5.3) to ISMS.1.A13.'
+
+  # --- Clause 8: Operation ---
+  - source: '8.1'
+    target: 'ISMS.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 9 Umsetzung der Sicherheitskonzeption'
+    rationale: 'BSI maps Operational planning and control (8.1) to BSI-200-2 Kap. 9.'
+
+  - source: '8.2'
+    target: 'ISMS.1'
+    relationship: 'subset'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 3, 4, 8; BSI-Standard 200-3'
+    rationale: 'BSI maps Information security risk assessment - Operation (8.2) to BSI-200-3 Risikoanalyse.'
+
+  - source: '8.3'
+    target: 'ISMS.1'
+    relationship: 'subset'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 8 + 9; IT-Grundschutz-Kompendium'
+    rationale: 'BSI maps Information security risk treatment - Operation (8.3) to BSI-200-2 Kap. 8+9.'
+
+  # --- Clause 9: Performance evaluation ---
+  - source: '9.1'
+    target: 'ISMS.1.A11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 10'
+    rationale: 'BSI maps Monitoring, measurement, analysis and evaluation (9.1) to ISMS.1.A11 Aufrechterhaltung.'
+
+  - source: '9.2'
+    target: 'DER.3.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 10.1; DER.3.2 ebenfalls'
+    rationale: 'BSI maps Internal audit (9.2) to DER.3.1 Audits und Revisionen.'
+
+  - source: '9.3'
+    target: 'ISMS.1.A11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 5.2.1, 10.1, 10.2; ISMS.1.A12'
+    rationale: 'BSI maps Management review (9.3) to ISMS.1.A11 + ISMS.1.A12 Management-Berichte.'
+
+  # --- Clause 10: Improvement ---
+  - source: '10.1'
+    target: 'ISMS.1.A11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 10.1, 10.3; DER.3.1.A1; DER.3.2.A9'
+    rationale: 'BSI maps Nonconformity and corrective action (10.1) to ISMS.1.A11.'
+
+  - source: '10.2'
+    target: 'ISMS.1.A11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 10; DER.3.1.A1; DER.3.2.A9'
+    rationale: 'BSI maps Continual improvement (10.2) to ISMS.1.A11 Aufrechterhaltung der Informationssicherheit.'
+
+# ============================================================================
+# ISO/IEC 27001:2022 Annex A — Organisational Controls (A.5)
+# Source: BSI Zuordnungstabelle, Seiten 7-13
+# ============================================================================
+
+  - source: 'A.5.1'
+    target: 'ISMS.1.A3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.1.A1, ISMS.1.A16, ORP.3.A3 (lt. BSI-Dokument)'
+    rationale: 'BSI maps Policies for information security (A.5.1) to ISMS.1.A3 Erstellung Leitlinie.'
+
+  - source: 'A.5.2'
+    target: 'ISMS.1.A4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ISMS.1.A6, ORP.1.A1'
+    rationale: 'BSI maps Information security roles and responsibilities (A.5.2) to ISMS.1.A4 Benennung ISB.'
+
+  - source: 'A.5.3'
+    target: 'ORP.1.A4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.4.A4, ORP.1.A2'
+    rationale: 'BSI maps Segregation of duties (A.5.3) to ORP.1.A4 Funktionstrennung.'
+
+  - source: 'A.5.4'
+    target: 'ISMS.1.A1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ISMS.1.A8, ORP.3.A1'
+    rationale: 'BSI maps Management responsibilities (A.5.4) to ISMS.1.A1 Uebernahme der Gesamtverantwortung.'
+
+  - source: 'A.5.5'
+    target: 'DER.2.1.A4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.2.A14, DER.2.1.A9, DER.2.1.A14'
+    rationale: 'BSI maps Contact with authorities (A.5.5) to DER.2.1.A4 Benachrichtigung betroffener Stellen.'
+
+  - source: 'A.5.6'
+    target: 'DER.1.A12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch IND.1.A12'
+    rationale: 'BSI maps Contact with special interest groups (A.5.6) to DER.1.A12 Auswertung externer Quellen.'
+
+  - source: 'A.5.7'
+    target: 'DER.1.A12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.1.1.1.A10, OPS.1.1.1.A20-A23, IND.1.A12, ISMS.1.A9'
+    rationale: 'BSI maps Threat intelligence (A.5.7) to DER.1.A12 Auswertung von Informationen aus externen Quellen.'
+
+  - source: 'A.5.8'
+    target: 'ISMS.1.A9'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    notes: 'Kein spezifischer Baustein im BSI-Dokument fuer Projektmanagement; ISMS.1.A9 ist naechste Entsprechung'
+    rationale: 'BSI maps Information security in project management (A.5.8) to ISMS.1.A9 Integration IS in Ablaeufe.'
+
+  - source: 'A.5.9'
+    target: 'ORP.1.A2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 8.1; auch ORP.1.A8, OPS.1.1.1.A6, APP.6.A9, IND.1.A4, NET.1.1.A2, INF.11.A5'
+    rationale: 'BSI maps Inventory of information and other associated assets (A.5.9) to ORP.1.A2 Zuweisung Zustaendigkeiten.'
+
+  - source: 'A.5.10'
+    target: 'ISMS.1.A2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.3.A3, CON.9, CON.7.A2'
+    rationale: 'BSI maps Acceptable use of information and other associated assets (A.5.10) to ISMS.1.A2 + ORP.3.A3.'
+
+  - source: 'A.5.11'
+    target: 'ORP.2.A2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.4.A2, ORP.2.A4'
+    rationale: 'BSI maps Return of assets (A.5.11) to ORP.2.A2 Geregelte Verfahrensweise beim Weggang.'
+
+  - source: 'A.5.12'
+    target: 'ISMS.1.A10'
+    relationship: 'subset'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 5.1, 8.2; ISMS.1.A10'
+    rationale: 'BSI maps Classification of information (A.5.12) to BSI-200-2 Kap. 5.1 Klassifikation von Informationen.'
+
+  - source: 'A.5.13'
+    target: 'ISMS.1.A10'
+    relationship: 'subset'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 5.1'
+    rationale: 'BSI maps Labelling of information (A.5.13) to BSI-200-2 Kap. 5.1.'
+
+  - source: 'A.5.14'
+    target: 'CON.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.1, APP.1.2, APP.5.3, SYS.3.2.1, SYS.4.5, CON.7.A9, APP.5.3.A6, SYS.4.1.A5, SYS.4.1.A15'
+    rationale: 'BSI maps Information transfer (A.5.14) to CON.9 Informationsaustausch.'
+
+  - source: 'A.5.15'
+    target: 'ORP.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.2.1, APP.2.2, APP.2.3, NET.1.1, NET.1.2, NET.2.1, NET.2.2, NET.3.2-4, INF.1.A7'
+    rationale: 'BSI maps Access control (A.5.15) to ORP.4 Identitaets- und Berechtigungsmanagement.'
+
+  - source: 'A.5.16'
+    target: 'ORP.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: 'BSI maps Identity management (A.5.16) to ORP.4 Identitaets- und Berechtigungsmanagement.'
+
+  - source: 'A.5.17'
+    target: 'ORP.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.1.1.2.A4'
+    rationale: 'BSI maps Authentication information (A.5.17) to ORP.4 Identitaets- und Berechtigungsmanagement.'
+
+  - source: 'A.5.18'
+    target: 'ORP.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.1.1.1.A2, OPS.1.1.2.A21'
+    rationale: 'BSI maps Access rights (A.5.18) to ORP.4 Identitaets- und Berechtigungsmanagement.'
+
+  - source: 'A.5.19'
+    target: 'OPS.2.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.9.A9'
+    rationale: 'BSI maps Information security in supplier relationships (A.5.19) to OPS.2.3 Nutzung von Outsourcing.'
+
+  - source: 'A.5.20'
+    target: 'OPS.2.3.A4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ISMS.1.A5, OPS.2.3.A6, OPS.2.3.A13, OPS.2.3.A14, OPS.2.3.A21, OPS.2.3.A24, DER.2.2.A13'
+    rationale: 'BSI maps Addressing information security within supplier agreements (A.5.20) to OPS.2.3.A4.'
+
+  - source: 'A.5.21'
+    target: 'OPS.2.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.3.2.A2, OPS.3.2.A3, OPS.3.2.A16'
+    rationale: 'BSI maps Managing information security in the ICT supply chain (A.5.21) to OPS.2.3.'
+
+  - source: 'A.5.22'
+    target: 'OPS.2.3.A18'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.3.2.A9'
+    rationale: 'BSI maps Monitoring, review and change management of supplier services (A.5.22) to OPS.2.3.A18.'
+
+  - source: 'A.5.23'
+    target: 'OPS.2.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: 'BSI maps Information security for use of cloud services (A.5.23) to OPS.2.2 Cloud-Nutzung.'
+
+  - source: 'A.5.24'
+    target: 'DER.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.1'
+    rationale: 'BSI maps Information security incident management planning and preparation (A.5.24) to DER.2.1.'
+
+  - source: 'A.5.25'
+    target: 'DER.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.1'
+    rationale: 'BSI maps Assessment and decision on information security events (A.5.25) to DER.2.1.'
+
+  - source: 'A.5.26'
+    target: 'DER.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: 'BSI maps Response to information security incidents (A.5.26) to DER.2.1.'
+
+  - source: 'A.5.27'
+    target: 'DER.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.2.1.A17, DER.2.1.A18'
+    rationale: 'BSI maps Learning from information security incidents (A.5.27) to DER.2.1 + DER.2.1.A17.'
+
+  - source: 'A.5.28'
+    target: 'DER.2.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.2.1.A22'
+    rationale: 'BSI maps Collection of evidence (A.5.28) to DER.2.2 Vorsorge fuer die IT-Forensik.'
+
+  - source: 'A.5.29'
+    target: 'DER.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-4; DER.2.1, DER.2.2, DER.2.3'
+    rationale: 'BSI maps Information security during disruption (A.5.29) to DER.4 Notfallmanagement.'
+
+  - source: 'A.5.30'
+    target: 'DER.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-4'
+    rationale: 'BSI maps ICT readiness for business continuity (A.5.30) to DER.4 Notfallmanagement.'
+
+  - source: 'A.5.31'
+    target: 'ORP.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: 'BSI maps Legal, statutory, regulatory and contractual requirements (A.5.31) to ORP.5 Compliance Management.'
+
+  - source: 'A.5.32'
+    target: 'ORP.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.3.2.A7, APP.6.A9'
+    rationale: 'BSI maps Intellectual property rights (A.5.32) to ORP.5 Compliance Management.'
+
+  - source: 'A.5.33'
+    target: 'ISMS.1.A13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 5'
+    rationale: 'BSI maps Protection of records (A.5.33) to ISMS.1.A13 Dokumentation Sicherheitsprozess.'
+
+  - source: 'A.5.34'
+    target: 'ORP.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.2, CON.1.A9, OPS.1.1.5.A5, OPS.1.1.6.A11, DER.1.A2'
+    rationale: 'BSI maps Privacy and protection of PII (A.5.34) to ORP.5 + CON.2 Datenschutz.'
+
+  - source: 'A.5.35'
+    target: 'ISMS.1.A11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.3.1, DER.3.2, DER.1.A10, DER.2.2.A1, etc.'
+    rationale: 'BSI maps Independent review of information security (A.5.35) to ISMS.1.A11 + DER.3.1 Audits.'
+
+  - source: 'A.5.36'
+    target: 'DER.3.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'BSI-Standard 200-2 Kap. 10; DER.3.2, ISMS.1.A11'
+    rationale: 'BSI maps Compliance with policies (A.5.36) to DER.3.1 Audits und Revisionen.'
+
+  - source: 'A.5.37'
+    target: 'ISMS.1.A13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'OPS.1.1.1.A3, OPS.1.1.2.A11, OPS.1.1.3.A11, BSI-Standard 200-2 Kap. 5.2.2'
+    rationale: 'BSI maps Documented operating procedures (A.5.37) to ISMS.1.A13 Dokumentation.'
+
+# ============================================================================
+# ISO/IEC 27001:2022 Annex A — People Controls (A.6)
+# Source: BSI Zuordnungstabelle, Seiten 14-15
+# ============================================================================
+
+  - source: 'A.6.1'
+    target: 'ORP.2.A7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.2.A13, OPS.1.1.6.A16, OPS.2.2.A19'
+    rationale: 'BSI maps Screening (A.6.1) to ORP.2.A7 Ueberpruefung der Vertrauenswuerdigkeit.'
+
+  - source: 'A.6.2'
+    target: 'ORP.2.A14'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.2.A4, ORP.2.A1, ORP.2.A5, ORP.3'
+    rationale: 'BSI maps Terms and conditions of employment (A.6.2) to ORP.2.A14 Aufgaben und Zustaendigkeiten.'
+
+  - source: 'A.6.3'
+    target: 'ORP.3.A1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.3.A4, ORP.3.A6, ORP.3.A7, ORP.3.A8'
+    rationale: 'BSI maps Information security awareness, education and training (A.6.3) to ORP.3.A1 Sensibilisierung.'
+
+  - source: 'A.6.4'
+    target: 'ISMS.1.A8'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    notes: 'Auch IND.1.A7; kein direkter Disziplinarprozess-Baustein vorhanden'
+    rationale: 'BSI maps Disciplinary process (A.6.4) to ISMS.1.A8 Integration der Mitarbeitenden.'
+
+  - source: 'A.6.5'
+    target: 'ORP.2.A2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.4.A2, ISMS.1.A5, ORP.2.A14, OPS.1.1.2.A4'
+    rationale: 'BSI maps Responsibilities after termination or change of employment (A.6.5) to ORP.2.A2.'
+
+  - source: 'A.6.6'
+    target: 'CON.9.A9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.2.A5, OPS.3.2.A18, SYS.4.1.A2'
+    rationale: 'BSI maps Confidentiality or nondisclosure agreements (A.6.6) to CON.9.A9 Vertraulichkeitsvereinbarungen.'
+
+  - source: 'A.6.7'
+    target: 'OPS.1.2.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.8, INF.9, NET.3.3, CON.7.A7'
+    rationale: 'BSI maps Remote working (A.6.7) to OPS.1.2.4 Telearbeit.'
+
+  - source: 'A.6.8'
+    target: 'DER.1.A3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.1.A4, DER.2.1.A9, DER.2.1.A20'
+    rationale: 'BSI maps Information security event reporting (A.6.8) to DER.1.A3 Festlegung Meldewege.'
+
+# ============================================================================
+# ISO/IEC 27001:2022 Annex A — Physical Controls (A.7)
+# Source: BSI Zuordnungstabelle, Seiten 15-20
+# ============================================================================
+
+  - source: 'A.7.1'
+    target: 'INF.1.A6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.1.A22, INF.1.A23, INF.1.A26, INF.1.A27, INF.1.A34, INF.1.A35, INF.2.A1, INF.2.A7, INF.2.A12, INF.2.A24, INF.2.A28'
+    rationale: 'BSI maps Physical security perimeters (A.7.1) to INF.1 Allgemeines Gebaeude.'
+
+  - source: 'A.7.2'
+    target: 'INF.1.A7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.1.A12, INF.1.A13, INF.2.A6, INF.2.A7, ORP.4.A5, ORP.1.A3, INF.1.A26'
+    rationale: 'BSI maps Physical entry (A.7.2) to INF.1.A7 Zutrittsregelung und -kontrolle.'
+
+  - source: 'A.7.3'
+    target: 'INF.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.1.A9, INF.5.A1, INF.5.A2, INF.7.A1, INF.1.A16, INF.2.A1, INF.5.A4'
+    rationale: 'BSI maps Securing offices, rooms and facilities (A.7.3) to INF.7 Bueroarbeitsplatz.'
+
+  - source: 'A.7.4'
+    target: 'INF.1.A26'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.1.A27, INF.1.A34, INF.2.A13, INF.2.A24, INF.2.A28, INF.1.A35'
+    rationale: 'BSI maps Physical security monitoring (A.7.4) to INF.1.A26 Pforten-/Sicherheitsdienst.'
+
+  - source: 'A.7.5'
+    target: 'INF.1.A1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.1.A3-5, INF.1.A8-10, INF.1.A14-17, INF.1.A20, INF.1.A24-25, INF.1.A32, INF.2 series'
+    rationale: 'BSI maps Protecting against physical and environmental threats (A.7.5) to INF.1 Bausteine.'
+
+  - source: 'A.7.6'
+    target: 'INF.1.A9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.1.A23, INF.2.A1, SYS.3.3.A15'
+    rationale: 'BSI maps Working in secure areas (A.7.6) to INF.1.A9 Sicherheitskonzept Gebaeudenutuzng.'
+
+  - source: 'A.7.7'
+    target: 'SYS.2.1.A1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch SYS.3.2.1.A4, INF.7.A6, SYS.4.5, ORP.4.A9, INF.7.A7, INF.7.A8, INF.8.A1'
+    rationale: 'BSI maps Clear desk and clear screen (A.7.7) to SYS.2.1.A1 Sichere Authentisierung.'
+
+  - source: 'A.7.8'
+    target: 'SYS.1.1.A1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.1.2.2.A3, INF.2.A5, INF.7.A7; Bausteine der Schicht Infrastruktur'
+    rationale: 'BSI maps Equipment siting and protection (A.7.8) to SYS.1.1.A1 Zugriffsschutz.'
+
+  - source: 'A.7.9'
+    target: 'OPS.1.2.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.8, INF.9, CON.7'
+    rationale: 'BSI maps Security of assets off-premises (A.7.9) to OPS.1.2.4 Telearbeit.'
+
+  - source: 'A.7.10'
+    target: 'SYS.4.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch SYS.3.1, CON.6, CON.3.A12, CON.6.A13, CON.6.A14, CON.7.A10, CON.7.A13, OPS.1.2.2.A3, SYS.4.5.A13, INF.7.A7, INF.9.A9'
+    rationale: 'BSI maps Storage media (A.7.10) to SYS.4.5 Wechseldatentraeger.'
+
+  - source: 'A.7.11'
+    target: 'INF.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.2, INF.5, INF.12; INF.2.A3, INF.2.A4, INF.2.A5, INF.2.A10, INF.2.A14, INF.2.A16'
+    rationale: 'BSI maps Supporting utilities (A.7.11) to INF.1 Allgemeines Gebaeude + INF.2 Rechenzentrum.'
+
+  - source: 'A.7.12'
+    target: 'INF.12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.1.A13, INF.2.A23, INF.12.A2, INF.12.A5, INF.12.A10-11, INF.12.A15, INF.12.A17'
+    rationale: 'BSI maps Cabling security (A.7.12) to INF.12 Verkabelung.'
+
+  - source: 'A.7.13'
+    target: 'OPS.1.1.1.A19'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch INF.2.A3, INF.2.A10, INF.2.A14, INF.2.A26, INF.5.A17, INF.5.A23, INF.5.A24, INF.11.A2'
+    rationale: 'BSI maps Equipment maintenance (A.7.13) to OPS.1.1.1.A19 Regelungen fuer Wartungsarbeiten.'
+
+  - source: 'A.7.14'
+    target: 'CON.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.6.A2, CON.6.A13, SYS.1.1.A25, SYS.1.8.A16, SYS.2.1.A27, SYS.3.2.2.A22, SYS.4.4.A20'
+    rationale: 'BSI maps Secure disposal or re-use of equipment (A.7.14) to CON.6 Loeschen und Vernichten.'
+
+# ============================================================================
+# ISO/IEC 27001:2022 Annex A — Technological Controls (A.8)
+# Source: BSI Zuordnungstabelle, Seiten 20-31
+# ============================================================================
+
+  - source: 'A.8.1'
+    target: 'SYS.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.3.A3; Client-Bausteine: SYS.3.1, SYS.3.2.1-4, SYS.3.3'
+    rationale: 'BSI maps User endpoint devices (A.8.1) to SYS.2.1 Allgemeiner Client.'
+
+  - source: 'A.8.2'
+    target: 'OPS.1.1.2.A4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch ORP.4, ORP.4.A10, ORP.4.A16, ORP.4.A2, OPS.1.1.1.A2, OPS.1.1.2.A5-6, OPS.1.1.2.A16-18, OPS.1.1.2.A21'
+    rationale: 'BSI maps Privileged access rights (A.8.2) to OPS.1.1.2.A4 + ORP.4.'
+
+  - source: 'A.8.3'
+    target: 'ORP.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.2.1-3, ORP.4.A1-16 series'
+    rationale: 'BSI maps Information access restriction (A.8.3) to ORP.4 Identitaets- und Berechtigungsmanagement.'
+
+  - source: 'A.8.4'
+    target: 'ORP.4'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    notes: 'Auch CON.8.A10'
+    rationale: 'BSI maps Access to source code (A.8.4) to ORP.4 + CON.8.A10 Versionsverwaltung.'
+
+  - source: 'A.8.5'
+    target: 'ORP.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.2.1-3, NET.3.3, ORP.4.A11-14, OPS.1.1.2.A16, SYS.2.1.A1, SYS.2.1.A37'
+    rationale: 'BSI maps Secure authentication (A.8.5) to ORP.4 + ORP.4.A13 Authentisierungskonzept.'
+
+  - source: 'A.8.6'
+    target: 'OPS.1.1.1.A9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.1.2.2.A12, DER.1.A6, SYS.1.1.A12, SYS.1.1.A23, SYS.2.1.A29, NET.1.1.A13'
+    rationale: 'BSI maps Capacity management (A.8.6) to OPS.1.1.1.A9 Durchfuehrung IT-Monitoring.'
+
+  - source: 'A.8.7'
+    target: 'OPS.1.1.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.2.1, DER.1.A5, DER.1.A12, APP.1.1.A3, APP.1.2.A11, SYS.4.5.A12, IND.1.A3'
+    rationale: 'BSI maps Protection against malware (A.8.7) to OPS.1.1.4 Schutz vor Schadprogrammen.'
+
+  - source: 'A.8.8'
+    target: 'OPS.1.1.3.A15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.1.A12, OPS.1.1.1.A10, OPS.1.1.1.A20-23, IND.1.A12'
+    rationale: 'BSI maps Management of technical vulnerabilities (A.8.8) to OPS.1.1.3.A15 Aktualisierung.'
+
+  - source: 'A.8.9'
+    target: 'OPS.1.1.1.A5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.1.1.1.A7-8, OPS.1.1.3.A11, CON.8.A12, OPS.1.1.1.A3, OPS.1.1.2.A11, APP.6.A4'
+    rationale: 'BSI maps Configuration management (A.8.9) to OPS.1.1.1.A5 Standardkonfigurationen.'
+
+  - source: 'A.8.10'
+    target: 'CON.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.1.A5, SYS.1.1.A25, SYS.2.1.A27, SYS.3.2.2.A22, SYS.4.4.A20'
+    rationale: 'BSI maps Information deletion (A.8.10) to CON.6 Loeschen und Vernichten.'
+
+  - source: 'A.8.11'
+    target: 'OPS.1.1.6.A11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.2, SYS.2.1.A24, SYS.4.1.A20, NET.1.1.A35'
+    rationale: 'BSI maps Data masking (A.8.11) to OPS.1.1.6.A11 Anonymisierte/Pseudonymisierte Testdaten.'
+
+  - source: 'A.8.12'
+    target: 'CON.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.1.A2, INF.2'
+    rationale: 'BSI maps Data leakage prevention (A.8.12) to CON.3 Datensicherungskonzept.'
+
+  - source: 'A.8.13'
+    target: 'CON.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.1.A2, INF.2'
+    rationale: 'BSI maps Information backup (A.8.13) to CON.3 Datensicherungskonzept.'
+
+  - source: 'A.8.14'
+    target: 'INF.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.4, OPS.1.1.2.A19, OPS.1.1.5.A13, APP.3.2.A15, SYS.1.1.A28, NET.1.1.A28-29, INF.2.A21'
+    rationale: 'BSI maps Redundancy of information processing facilities (A.8.14) to INF.2 Rechenzentrum.'
+
+  - source: 'A.8.15'
+    target: 'OPS.1.1.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.1.A6, DER.1.A11, OPS.1.1.2.A18, DER.1.A2, DER.1.A14, APP.3.2.A4, SYS.1.1.A10'
+    rationale: 'BSI maps Logging (A.8.15) to OPS.1.1.5 Protokollierung.'
+
+  - source: 'A.8.16'
+    target: 'OPS.1.1.1.A9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.1.A9, DER.1.A15-16, SYS.1.1.A27, NET.2.1.A18, IND.3.2.A14, INF.13.A29'
+    rationale: 'BSI maps Monitoring activities (A.8.16) to OPS.1.1.1.A9 IT-Monitoring.'
+
+  - source: 'A.8.17'
+    target: 'OPS.1.1.5.A4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.1.2.6, OPS.1.1.7.A3, NET.1.2.A37, NET.3.2.A22'
+    rationale: 'BSI maps Clock synchronization (A.8.17) to OPS.1.1.5.A4 Zeitsynchronisation.'
+
+  - source: 'A.8.18'
+    target: 'ORP.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.1.1.2, ORP.4.A1-2, OPS.1.1.2.A22, SYS.2.3.A7, SYS.4.4.A15'
+    rationale: 'BSI maps Use of privileged utility programs (A.8.18) to ORP.4 + OPS.1.1.2 IT-Administration.'
+
+  - source: 'A.8.19'
+    target: 'OPS.1.1.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.6, OPS.1.1.3.A9, APP.6.A1, APP.6.A4-5, APP.6.A8, APP.7'
+    rationale: 'BSI maps Installation of software on operational systems (A.8.19) to OPS.1.1.6 Software-Tests.'
+
+  - source: 'A.8.20'
+    target: 'NET.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch NET.1.2, NET.2.1-2, NET.3.1-4, CON.1; Bausteine der Schicht NET'
+    rationale: 'BSI maps Networks security (A.8.20) to NET.1.1 Netzarchitektur und -design.'
+
+  - source: 'A.8.21'
+    target: 'NET.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch NET.1.2, CON.1, NET.3.1-4, ORP.4.A13, DER.1.A6, NET.1.1.A4, NET.1.1.A7'
+    rationale: 'BSI maps Security of network services (A.8.21) to NET.1.1 Netzarchitektur.'
+
+  - source: 'A.8.22'
+    target: 'NET.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch NET.1.2; NET.1.1.A4-6, NET.1.1.A10, NET.1.1.A18-19, NET.1.1.A21-24, NET.1.1.A32-33'
+    rationale: 'BSI maps Segregation of networks (A.8.22) to NET.1.1 Netzarchitektur (Segmentierung).'
+
+  - source: 'A.8.23'
+    target: 'NET.3.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: 'BSI maps Web filtering (A.8.23) to NET.3.2 Firewall.'
+
+  - source: 'A.8.24'
+    target: 'CON.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: 'BSI maps Use of cryptography (A.8.24) to CON.1 Kryptokonzept.'
+
+  - source: 'A.8.25'
+    target: 'CON.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.7, CON.10'
+    rationale: 'BSI maps Secure development lifecycle (A.8.25) to CON.8 Software-Entwicklung.'
+
+  - source: 'A.8.26'
+    target: 'CON.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.6, APP.7, OPS.1.1.6, CON.10'
+    rationale: 'BSI maps Application security requirements (A.8.26) to CON.8 Software-Entwicklung.'
+
+  - source: 'A.8.27'
+    target: 'CON.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.6, APP.7, OPS.1.1.6, CON.8.A5, CON.8.A12, CON.8.A22, CON.10.A11'
+    rationale: 'BSI maps Secure system architecture and engineering principles (A.8.27) to CON.8.'
+
+  - source: 'A.8.28'
+    target: 'CON.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.7'
+    rationale: 'BSI maps Secure coding (A.8.28) to CON.8 Software-Entwicklung.'
+
+  - source: 'A.8.29'
+    target: 'OPS.1.1.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.10, OPS.1.1.6.A5, OPS.1.1.6.A12, OPS.1.1.6.A14'
+    rationale: 'BSI maps Security testing in development and acceptance (A.8.29) to OPS.1.1.6 Software-Tests.'
+
+  - source: 'A.8.30'
+    target: 'OPS.2.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch APP.7, OPS.3.2'
+    rationale: 'BSI maps Outsourced development (A.8.30) to OPS.2.3 Nutzung von Outsourcing.'
+
+  - source: 'A.8.31'
+    target: 'OPS.1.1.6.A13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch CON.8, OPS.1.1.6, CON.8.A3, CON.8.A7, CON.8.A11, SYS.1.1.A30, NET.1.1.A22'
+    rationale: 'BSI maps Separation of development, test and production environments (A.8.31) to OPS.1.1.6.A13.'
+
+  - source: 'A.8.32'
+    target: 'OPS.1.1.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: 'BSI maps Change management (A.8.32) to OPS.1.1.3 Patch- und Aenderungsmanagement.'
+
+  - source: 'A.8.33'
+    target: 'CON.8.A7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch OPS.1.1.6.A11'
+    rationale: 'BSI maps Test information (A.8.33) to CON.8.A7 Software-Tests + OPS.1.1.6.A11 Testdaten.'
+
+  - source: 'A.8.34'
+    target: 'ISMS.1.A11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    notes: 'Auch DER.3.1, DER.3.2'
+    rationale: 'BSI maps Protection of information systems during audit testing (A.8.34) to ISMS.1.A11 + DER.3.1.'

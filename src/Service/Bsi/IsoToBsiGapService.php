@@ -1,0 +1,236 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Service\Bsi;
+
+use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceMapping;
+use App\Entity\ComplianceRequirement;
+use App\Entity\Tenant;
+use App\Enum\AbsicherungsStufe;
+use App\Repository\ComplianceMappingRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Repository\ComplianceRequirementRepository;
+
+/**
+ * ISO 27001 → BSI IT-Grundschutz gap classification service.
+ *
+ * Assembles existing coverage infrastructure into a 6-state gap view:
+ *   gedeckt              — ISO control maps 100 % AND tenant has fulfilled it
+ *   partiell             — ISO control maps < 100 % but tenant has progress
+ *   iso_offen            — Mapping exists but tenant fulfillment is 0
+ *   ungemappt_unbewertet — No mapping at all (v1; eigenständig deferred to WS-5b)
+ *
+ * Trust axis:
+ *   amtlich      — official BSI crosswalk
+ *   ki_validiert — AI-assisted panel mapping with lifecycle == approved
+ *   heuristisch  — panel mapping not yet approved, or unknown source
+ *   bestaetigt   — manual / confirmed mapping
+ *
+ * Action buckets:
+ *   erledigt    — gedeckt + non-heuristic trust
+ *   quick_win   — iso_offen  (ISO control exists, just needs implementation)
+ *   bsi_arbeit  — partiell or ungemappt_eigenstaendig
+ *   pruefen     — heuristic trust on any covered/partial state, or unbewertet
+ *
+ * @see BsiGapResult
+ */
+class IsoToBsiGapService
+{
+    public function __construct(
+        private readonly ComplianceRequirementRepository $reqRepo,
+        private readonly ComplianceMappingRepository $mappingRepo,
+        private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepo,
+    ) {
+    }
+
+    /**
+     * Build the full ISO→BSI gap for a tenant at their configured assurance level.
+     *
+     * @param ComplianceFramework $iso The source ISO 27001 framework
+     * @param ComplianceFramework $bsi The target BSI IT-Grundschutz framework
+     */
+    public function buildGap(
+        Tenant $tenant,
+        ComplianceFramework $iso,
+        ComplianceFramework $bsi,
+    ): BsiGapResult {
+        // Derive the set of tiers in scope for this tenant's assurance level
+        $tiers = AbsicherungsStufe::tiersForLevel($tenant->getBsiAssuranceLevel());
+
+        // 1. Fetch all top-level BSI requirements in scope (filtered by tier)
+        $targets = $this->reqRepo->findByFrameworkAndTiers($bsi, $tiers);
+
+        // 2. Fetch all operational cross-framework mappings (ISO → BSI).
+        //    This loads all framework-pair mappings into memory in one query;
+        //    acceptable at current volumes (~400 requirements, ~1200 mappings).
+        $byTarget = $this->indexMappingsByTarget(
+            $this->mappingRepo->findCrossFrameworkMappings($iso, $bsi)
+        );
+
+        // 3. Classify each in-scope BSI requirement
+        /** @var list<array{requirementId:string,baustein:string,tier:string,state:string,trust:string,delta:int,isoControl:string|null,evidence:list<string>}> $items */
+        $items = [];
+        /** @var array{erledigt:int,quick_win:int,bsi_arbeit:int,pruefen:int} $buckets */
+        $buckets = ['erledigt' => 0, 'quick_win' => 0, 'bsi_arbeit' => 0, 'pruefen' => 0];
+
+        foreach ($targets as $req) {
+            [$state, $trust, $delta, $isoCtrl, $evidence] = $this->classify(
+                $tenant,
+                $byTarget[$req->getId()] ?? [],
+            );
+
+            $bucket = $this->bucket($state, $trust);
+            $buckets[$bucket]++;
+
+            $items[] = [
+                'requirementId' => (string) $req->getRequirementId(),
+                'baustein'      => $this->deriveBaustein($req),
+                'tier'          => (string) $req->getAbsicherungsStufe(),
+                'state'         => $state,
+                'trust'         => $trust,
+                'delta'         => $delta,
+                'isoControl'    => $isoCtrl,
+                'evidence'      => $evidence,
+            ];
+        }
+
+        return new BsiGapResult($items, $buckets, count($targets));
+    }
+
+    /**
+     * Classify a single BSI requirement given the set of mappings pointing to it.
+     *
+     * Returns a 5-tuple: [state, trust, delta, isoControlId|null, evidenceTitles[]]
+     *
+     * @param ComplianceMapping[] $maps All operational mappings whose targetRequirement === $req
+     * @return array{string, string, int, string|null, list<string>}
+     */
+    private function classify(Tenant $tenant, array $maps): array
+    {
+        if ($maps === []) {
+            // No mapping at all — eigenständig classification deferred to WS-5b
+            return ['ungemappt_unbewertet', '-', 0, null, []];
+        }
+
+        // Use the mapping with the highest coverage percentage
+        usort($maps, static fn(ComplianceMapping $a, ComplianceMapping $b): int =>
+            $b->getMappingPercentage() <=> $a->getMappingPercentage()
+        );
+
+        $m    = $maps[0];
+        $trust = $this->trustOf($m);
+        $src   = $m->getSourceRequirement();
+        $pct   = $m->getMappingPercentage();
+
+        // Single round-trip: fetch both fulfillment % and tenant-scoped evidence titles.
+        $fulfillmentData = $this->fulfillmentRepo->fulfillmentDataFor($tenant, $src);
+        $srcFulfilled    = $fulfillmentData['pct'];
+
+        if ($srcFulfilled <= 0) {
+            // ISO control exists in a mapping but tenant has not started it
+            return ['iso_offen', $trust, 0, $src->getRequirementId(), []];
+        }
+
+        $evidence = $fulfillmentData['evidence'];
+
+        if ($pct >= 100) {
+            // Full coverage: mapping percentage ≥ 100 % AND tenant has fulfilled source
+            return ['gedeckt', $trust, 0, $src->getRequirementId(), $evidence];
+        }
+
+        // Partial coverage: mapping percentage < 100 %
+        $delta = max(0, 100 - $pct);
+
+        return ['partiell', $trust, $delta, $src->getRequirementId(), $evidence];
+    }
+
+    /**
+     * Derive the trust level of a mapping from its provenance / lifecycle metadata.
+     *
+     * The `null` provenanceSource case is listed explicitly (as a separate arm
+     * before `default`) so PHPStan and readers see that a missing provenance
+     * intentionally falls through to the reviewStatus check — same behaviour as
+     * the generic `default` arm for all other algorithm-generated sources.
+     */
+    private function trustOf(ComplianceMapping $m): string
+    {
+        $reviewBasedTrust = $m->getReviewStatus() === 'confirmed' ? 'bestaetigt' : 'heuristisch';
+
+        return match ($m->getProvenanceSource()) {
+            'official_bsi_crosswalk' => 'amtlich',
+            'panel' => $m->getLifecycleState() === 'approved' ? 'ki_validiert' : 'heuristisch',
+            'manual' => 'bestaetigt',
+            // null: no provenance recorded — trust via reviewStatus, same as default arm below
+            null => $reviewBasedTrust,
+            // All other algorithm-generated sources: trust via reviewStatus
+            default => $reviewBasedTrust,
+        };
+    }
+
+    /**
+     * Map a (state, trust) pair to an action bucket.
+     *
+     * Heuristic trust on any non-trivial state forces a 'pruefen' bucket
+     * because the coverage claim has not been validated.
+     */
+    private function bucket(string $state, string $trust): string
+    {
+        // Heuristic trust on any positively-classified state → human review required
+        if ($trust === 'heuristisch' && in_array($state, ['gedeckt', 'partiell', 'iso_offen'], true)) {
+            return 'pruefen';
+        }
+
+        return match ($state) {
+            'gedeckt'                    => 'erledigt',
+            'iso_offen'                  => 'quick_win',
+            'partiell', 'ungemappt_eigenstaendig' => 'bsi_arbeit',
+            default                      => 'pruefen',
+        };
+    }
+
+    /**
+     * Index mappings by their target requirement ID for O(1) lookup.
+     *
+     * @param ComplianceMapping[] $maps
+     * @return array<int, ComplianceMapping[]>
+     */
+    private function indexMappingsByTarget(array $maps): array
+    {
+        $index = [];
+        foreach ($maps as $m) {
+            $targetId = $m->getTargetRequirement()->getId();
+            $index[$targetId][] = $m;
+        }
+        return $index;
+    }
+
+    /**
+     * Derive the Baustein (BSI component) identifier from a requirement.
+     *
+     * BSI IT-Grundschutz Bausteine have IDs like "APP.1.1.A1" where the prefix
+     * "APP.1.1" is the Baustein and "A1" is the individual requirement number.
+     *
+     * Primary source: requirement.category holds the Baustein identifier
+     * (populated by the BSI loader as the Baustein shorthand, e.g. "APP.1.1").
+     * Fallback: derive the prefix from the requirementId by stripping the
+     * trailing ".A<n>" segment.
+     */
+    private function deriveBaustein(ComplianceRequirement $req): string
+    {
+        // category is the canonical Baustein field for BSI requirements
+        if ($req->getCategory() !== null && $req->getCategory() !== '') {
+            return $req->getCategory();
+        }
+
+        // Fallback: strip the ".A<N>" suffix from the requirementId
+        // e.g. "APP.1.1.A3" → "APP.1.1"
+        $id = (string) $req->getRequirementId();
+        if (preg_match('/^(.+)\.A\d+$/', $id, $matches) === 1) {
+            return $matches[1];
+        }
+
+        return $id;
+    }
+}

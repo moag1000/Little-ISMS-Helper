@@ -35,10 +35,13 @@ use Doctrine\ORM\EntityManagerInterface;
  *   </book>
  *
  * Klassifikation wird aus dem Titel-Suffix gelesen:
- *   `(B)` → absicherungsStufe=basis, anforderungsTyp=muss
+ *   `(B)` → absicherungsStufe=basis,    anforderungsTyp=muss
  *   `(S)` → absicherungsStufe=standard, anforderungsTyp=sollte
- *   `(H)` → absicherungsStufe=kern,     anforderungsTyp=kann (erhöhter Schutzbedarf)
+ *   `(H)` → absicherungsStufe=hoch,     anforderungsTyp=kann (erhöhter Schutzbedarf)
  *   `ENTFALLEN` → wird übersprungen (deprecated)
+ *
+ * NOTE: 'kern' is a BSI Vorgehensweise (level/approach), NOT a tier value.
+ * The canonical tier vocabulary for absicherungsStufe is: basis / standard / hoch.
  *
  * Der Titel wird um Klassifikation und Rollen-Zuordnungen `[…]`
  * bereinigt; der Beschreibungstext wird aus allen `<para>`-Elementen
@@ -59,7 +62,7 @@ final class BsiKompendiumXmlImporter
     private const CLASSIFICATION = [
         'B' => ['stufe' => 'basis',    'typ' => 'muss',   'priority' => 'critical'],
         'S' => ['stufe' => 'standard', 'typ' => 'sollte', 'priority' => 'high'],
-        'H' => ['stufe' => 'kern',     'typ' => 'kann',   'priority' => 'high'],
+        'H' => ['stufe' => 'hoch',     'typ' => 'kann',   'priority' => 'high'],
     ];
 
     public function __construct(

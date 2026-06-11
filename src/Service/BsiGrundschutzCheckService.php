@@ -6,7 +6,10 @@ namespace App\Service;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Entity\ComplianceRequirementFulfillment;
+use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
 
 /**
@@ -27,8 +30,13 @@ use App\Repository\ComplianceRequirementRepository;
  *   MUSS = 3, SOLLTE = 2, KANN = 1.
  *
  * "Fulfilled" = fulfillment percentage ≥ 80 (configurable via constant).
- * Fulfillment itself comes from `ComplianceRequirement::calculateFulfillmentFromControls()`,
- * which walks the mappedControls and averages their implementation %.
+ *
+ * Fulfillment source (WS-1 consolidation):
+ *   When a Tenant is provided, fulfillment is read from ComplianceRequirementFulfillment
+ *   records (canonical multi-tenant source, same as GrundschutzCheckService used).
+ *   When no Tenant is provided, falls back to
+ *   ComplianceRequirement::calculateFulfillmentFromControls() (mappedControls M:N)
+ *   for backwards-compatible non-tenant-scoped usage (e.g. DashboardStatisticsService).
  */
 final class BsiGrundschutzCheckService
 {
@@ -54,13 +62,21 @@ final class BsiGrundschutzCheckService
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
+        private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
     /**
      * Full IT-Grundschutz-Check report.
      *
+     * Fulfillment is resolved from ComplianceRequirementFulfillment records for the
+     * current or explicitly passed tenant (canonical multi-tenant source, WS-1).
+     * If no tenant context is available (e.g. non-tenant-scoped usage), falls back
+     * to calculateFulfillmentFromControls().
+     *
      * @param string|null $absicherungsStufe 'basis' | 'standard' | 'kern' or null for all
+     * @param Tenant|null $tenant Override the tenant (default: current tenant from TenantContext)
      * @return array{
      *     framework: array{code: string, name: string, version: string|null},
      *     filter: array{absicherungsStufe: string|null},
@@ -69,7 +85,7 @@ final class BsiGrundschutzCheckService
      *     bausteine: array<string, array>,
      * }
      */
-    public function getCheckReport(?string $absicherungsStufe = null): array
+    public function getCheckReport(?string $absicherungsStufe = null, ?Tenant $tenant = null): array
     {
         $framework = $this->frameworkRepository->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
 
@@ -83,12 +99,23 @@ final class BsiGrundschutzCheckService
             ];
         }
 
+        // Resolve tenant: explicit > TenantContext > null (falls back to mappedControls)
+        $resolvedTenant = $tenant ?? $this->tenantContext->getCurrentTenant();
+
+        // Build fulfillment map keyed by requirement entity ID (tenant-scoped, canonical)
+        $fulfillmentMap = $resolvedTenant instanceof Tenant
+            ? $this->buildFulfillmentMap($framework, $resolvedTenant)
+            : [];
+
         $requirements = $this->requirementRepository->findByFramework($framework);
 
         if ($absicherungsStufe !== null) {
+            // Cumulative level filter: 'standard' includes basis+standard; 'kern' includes all three.
+            // AbsicherungsStufe::tiersForLevel() encodes the correct BSI ⊂ semantics.
+            $allowedTiers = \App\Enum\AbsicherungsStufe::tiersForLevel($absicherungsStufe);
             $requirements = array_values(array_filter(
                 $requirements,
-                static fn (ComplianceRequirement $r): bool => $r->getAbsicherungsStufe() === $absicherungsStufe
+                static fn (ComplianceRequirement $r): bool => in_array($r->getAbsicherungsStufe(), $allowedTiers, true)
             ));
         }
 
@@ -104,7 +131,10 @@ final class BsiGrundschutzCheckService
             $bausteinCode = $this->bausteinCode($reqId);
             $layer = $this->layerOf($bausteinCode);
             $type = $this->classifyType($req);
-            $fulfillmentPct = $req->calculateFulfillmentFromControls();
+
+            // Fulfillment resolution: tenant-scoped ComplianceRequirementFulfillment
+            // is canonical (WS-1); fallback to mappedControls for non-tenant contexts.
+            $fulfillmentPct = $this->resolveFulfillmentPct($req, $fulfillmentMap);
             $fulfilled = $fulfillmentPct >= self::FULFILLED_THRESHOLD;
 
             if (!isset($bausteine[$bausteinCode])) {
@@ -332,5 +362,50 @@ final class BsiGrundschutzCheckService
             return 'warning';
         }
         return 'danger';
+    }
+
+    /**
+     * Build a map of requirement entity ID → ComplianceRequirementFulfillment
+     * for the given framework and tenant (WS-1: canonical multi-tenant source).
+     *
+     * @return array<int, ComplianceRequirementFulfillment>
+     */
+    private function buildFulfillmentMap(ComplianceFramework $framework, Tenant $tenant): array
+    {
+        $fulfillments = $this->fulfillmentRepository->findByFrameworkAndTenant($framework, $tenant);
+        $map = [];
+        foreach ($fulfillments as $fulfillment) {
+            $requirement = $fulfillment->getRequirement();
+            if ($requirement instanceof ComplianceRequirement) {
+                $map[$requirement->getId()] = $fulfillment;
+            }
+        }
+        return $map;
+    }
+
+    /**
+     * Resolve the fulfillment percentage for a requirement.
+     *
+     * Priority (WS-1 consolidation):
+     *   1. Tenant-scoped ComplianceRequirementFulfillment record (canonical)
+     *   2. calculateFulfillmentFromControls() via mappedControls M:N — DELIBERATE FALLBACK:
+     *      this path is intentionally kept for:
+     *        - DashboardStatisticsService::getBsiAbsicherungsstufenKPIs() when called
+     *          without an active tenant (e.g. SUPER_ADMIN no-tenant context)
+     *        - Console commands without a tenant scope
+     *      Do NOT remove this fallback — it is the correct behaviour for those paths.
+     *
+     * @param array<int, ComplianceRequirementFulfillment> $fulfillmentMap
+     */
+    private function resolveFulfillmentPct(ComplianceRequirement $req, array $fulfillmentMap): int
+    {
+        $reqEntityId = $req->getId();
+        if ($reqEntityId !== null && isset($fulfillmentMap[$reqEntityId])) {
+            return $fulfillmentMap[$reqEntityId]->getFulfillmentPercentage();
+        }
+
+        // Deliberate no-tenant/console fallback: mappedControls-based calculation.
+        // Authenticated web requests always have a tenant and reach the branch above.
+        return $req->calculateFulfillmentFromControls();
     }
 }
