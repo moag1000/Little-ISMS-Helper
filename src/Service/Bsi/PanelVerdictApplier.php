@@ -6,6 +6,7 @@ namespace App\Service\Bsi;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
+use App\Exception\Io\IoException;
 use App\Repository\ComplianceMappingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -67,28 +68,25 @@ final class PanelVerdictApplier
      *
      * @return list<array{iso: string, baustein: string, state: string, mappingPercentage: int, realVotes: int, relations: list<string>}>
      *
-     * @throws \RuntimeException If the fixture file is not found or contains invalid JSON
+     * @throws IoException If the fixture file is not found, unreadable, or has an unexpected structure
      */
     public function loadVerdicts(): array
     {
         $path = $this->projectDir . DIRECTORY_SEPARATOR . self::FIXTURE_PATH;
 
         if (!is_file($path)) {
-            throw new \RuntimeException(sprintf(
-                'Panel verdict fixture not found at: %s',
-                $path
-            ));
+            throw new IoException('Panel verdict fixture not found', $path);
         }
 
         $raw = file_get_contents($path);
         if ($raw === false) {
-            throw new \RuntimeException(sprintf('Could not read panel verdict fixture: %s', $path));
+            throw new IoException('Could not read panel verdict fixture', $path);
         }
 
         $decoded = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
 
         if (!is_array($decoded) || !isset($decoded['verdicts']) || !is_array($decoded['verdicts'])) {
-            throw new \RuntimeException('Panel verdict fixture has unexpected structure (missing "verdicts" key).');
+            throw new IoException('Panel verdict fixture has unexpected structure (missing "verdicts" key).', $path);
         }
 
         return $decoded['verdicts'];
