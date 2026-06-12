@@ -28,7 +28,7 @@ src/Controller/AdminBackupController.php:LOC=802 deps=0
 src/Controller/AnalyticsController.php:LOC=743 deps=0
 src/Controller/MonitoringController.php:LOC=727 deps=0
 src/Controller/AuditController.php:LOC=722 deps=0
-src/Controller/QuickFixController.php:LOC=712 deps=0
+src/Controller/QuickFixController.php:LOC=722 deps=0
 src/Controller/ComplianceMappingAdminController.php:LOC=681 deps=0
 src/Controller/DataBreachController.php:LOC=673 deps=0
 src/Controller/TrainingController.php:LOC=672 deps=0

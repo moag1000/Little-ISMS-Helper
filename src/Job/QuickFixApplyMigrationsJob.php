@@ -36,6 +36,7 @@ final class QuickFixApplyMigrationsJob implements AsyncJobInterface
         $migrationResult = $this->schemaMaintenanceService->executePendingMigrations('quick-fix');
 
         if (($migrationResult['blocked'] ?? null) === 'locked') {
+            // @intentional-assertion: surface advisory-lock contention to the operator
             throw new \RuntimeException('Another schema operation is already running. Try again shortly.');
         }
 
