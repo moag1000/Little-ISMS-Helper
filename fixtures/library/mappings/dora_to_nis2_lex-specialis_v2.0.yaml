@@ -9,8 +9,22 @@ library:
   effective_until: null
 
   provenance:
+    provenanceSource: 'official_eu_lex_specialis'
     primary_source: 'EU Commission Guidelines on the application of Article 4(1) and 4(2) NIS2 Directive (Communication 2023/C 328/02, CELEX:52023XC0918(01))'
     primary_source_url: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023XC0918(01)'
+    lex_specialis_basis:
+      dora_art1_2_url: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R2554#art_1'
+      nis2_art4_1_url: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022L2555#art_4'
+      commission_communication_url: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023XC0918(01)'
+      note: |
+        DORA Art. 1(2) explicitly declares DORA as lex specialis for financial entities,
+        cross-referencing NIS2. NIS2 Art. 4(1) provides the carve-out mechanism:
+        "sector-specific Union legal acts that require entities to take cybersecurity
+        risk-management measures or notify significant incidents, where those requirements
+        are at least equivalent in effect to the obligations laid down in this Directive."
+        The EU Commission Communication 2023/C 328/02 (CELEX:52023XC0918(01)) confirms
+        this relationship and provides guidelines for application. DORA entered into force
+        on 17 January 2025 as directly applicable EU law (Regulation, not Directive).
     secondary_sources:
       - 'ENISA Technical Implementation Guidance on Cybersecurity Risk-Management Measures v1.0 (June 2025)'
       - 'EBA Single Rule Book Q&A 2024_7060: Lex Specialis NIS2 Directive'
@@ -139,7 +153,7 @@ mappings:
     cross_refs: ['Art.6']
     audit_evidence_hint: 'Board-Genehmigungs-Protokoll der ICT-Strategie, jaehrliche Review-Berichte des ICT-Risk-Frameworks, Mgmt-Verantwortlichkeits-Matrix.'
 
-  - source: 'Art.5.4'
+  - source: 'DORA-5.4'
     target: 'Art.20.2'
     relationship: 'equivalent'
     confidence: 'high'
@@ -183,7 +197,7 @@ mappings:
     cross_refs: ['Art.5', 'Art.16']
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval, jaehrlicher Review-Bericht, RTS-JC-2023-86-Compliance-Nachweis.'
 
-  - source: 'Art.6.5'
+  - source: 'DORA-6.5'
     target: 'Art.21.2.f'
     relationship: 'superset'
     confidence: 'medium'
@@ -202,7 +216,7 @@ mappings:
     audit_evidence_hint: 'Jaehrliche Review-Berichte, Wirksamkeits-KPIs (MTTD/MTTR, Patch-Compliance, Schulungsquote), Lessons-Learned-Tracking.'
 
   # ----- Art. 7 — ICT systems, protocols and tools -----
-  - source: 'Art.7'
+  - source: 'DORA-7'
     target: 'Art.21.2.e'
     relationship: 'superset'
     confidence: 'high'
@@ -625,7 +639,7 @@ mappings:
     audit_evidence_hint: 'BC-Policy, Krisenkommunikationsplan mit BSI/CSIRT-Kontakt, Test-Protokolle der Krisenkommunikation.'
 
   # ----- Art. 12 — Backup, restoration and recovery -----
-  - source: 'Art.12'
+  - source: 'DORA-12'
     target: 'Art.21.2.c'
     relationship: 'superset'
     confidence: 'high'
@@ -908,7 +922,7 @@ mappings:
     audit_evidence_hint: 'Incident-Response-Plan, Rollen-Matrix (CSIRT/IR-Team), Eskalations-Verfahren, IR-Uebungen.'
 
   # ----- Art. 18 — Classification of ICT incidents -----
-  - source: 'Art.18'
+  - source: 'DORA-18'
     target: 'Art.23.1'
     relationship: 'superset'
     confidence: 'high'
@@ -995,7 +1009,7 @@ mappings:
     audit_evidence_hint: 'Reporting-Templates nach RTS/ITS, XBRL-Compliance-Nachweise.'
 
   # ----- Art. 23 — Operational/Security Payment-Related Incidents -----
-  - source: 'Art.23'
+  - source: 'DORA-23'
     target: 'Art.21.2.b'
     relationship: 'superset'
     confidence: 'medium'
@@ -1042,7 +1056,7 @@ mappings:
     audit_evidence_hint: 'DORT-Test-Plan, jaehrliche Test-Berichte, Vulnerability-Assessment-Reports, Pen-Test-Reports.'
 
   # ----- Art. 25 — Testing of ICT tools and systems -----
-  - source: 'Art.25'
+  - source: 'DORA-25'
     target: 'Art.21.2.f'
     relationship: 'superset'
     confidence: 'high'
@@ -1179,7 +1193,7 @@ mappings:
   # CHAPTER VI — Information Sharing Arrangements (Art. 45)
   # ============================================================================
 
-  - source: 'Art.45'
+  - source: 'DORA-45'
     target: 'Art.21.2.f'
     relationship: 'related'
     confidence: 'medium'
@@ -1191,7 +1205,7 @@ mappings:
       Bewertung selbst).
     audit_evidence_hint: 'ISAC-Mitgliedschaften, Threat-Intel-Sharing-Protokolle, sichere Kommunikationskanaele.'
 
-  - source: 'Art.45'
+  - source: 'DORA-45'
     target: 'Art.21.2.b'
     relationship: 'related'
     confidence: 'medium'
@@ -1207,7 +1221,7 @@ mappings:
   # ============================================================================
 
   # ----- Art. 7 system-reliability -> NIS2 21.2.c (BC-Anteil) -----
-  - source: 'Art.7'
+  - source: 'DORA-7'
     target: 'Art.21.2.c'
     relationship: 'related'
     confidence: 'medium'
@@ -1232,7 +1246,7 @@ mappings:
     audit_evidence_hint: 'BC-Test-Berichte, Severe-Scenario-Test-Ergebnisse, Test-Frequenz-Nachweis.'
 
   # ----- Art. 12 Backup -> NIS2 21.2.b (Recovery-Anteil) -----
-  - source: 'Art.12'
+  - source: 'DORA-12'
     target: 'Art.21.2.b'
     relationship: 'related'
     confidence: 'medium'
