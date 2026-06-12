@@ -88,7 +88,7 @@ mappings:
     cross_refs: ['A.5.2', 'A.5.3']
     gap_warning: 'DORA Art. 6 erwartet ein Framework mit klaren Risk-Tolerance-Niveaus — nicht durch A.5.1 allein abgedeckt.'
 
-  - source: 'Art.7'
+  - source: 'DORA-7'
     target: 'A.5.9'
     relationship: 'superset'
     confidence: 'high'
@@ -213,7 +213,7 @@ mappings:
     gap_warning: 'A.5.30 allein erfüllt DORA Art. 11 NICHT — Backup-Strategie (A.8.13) und Crisis-Comms zusätzlich nötig.'
     audit_evidence_hint: 'ICT-BCP, Recovery-Pläne mit RTO/RPO, Test-Reports, Behörden-Meldepfade.'
 
-  - source: 'Art.12'
+  - source: 'DORA-12'
     target: 'A.8.13'
     relationship: 'superset'
     confidence: 'high'
