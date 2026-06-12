@@ -14,14 +14,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * WS-5b Stage 2 — Apply 4-persona expert panel verdicts to residual heuristic ISO↔BSI mappings.
+ * WS-5b Stage 2 — Apply 4-persona expert panel verdicts to residual heuristic ComplianceMappings.
  *
- * ## What it does
- * Loads the panel verdict fixture (144 entries: 133 ki_validiert, 2 reject, 9 needs_review)
- * and applies each verdict to the matching ISO 27001 → BSI IT-Grundschutz ComplianceMapping:
+ * ## Defaults (ISO 27001 → BSI IT-Grundschutz)
+ * Loads the ISO panel verdict fixture (144 entries: 133 ki_validiert, 2 reject, 9 needs_review)
+ * and applies each verdict to the matching ISO 27001 → BSI IT-Grundschutz ComplianceMapping.
  *
- *   ki_validiert  → provenanceSource='panel', lifecycleState='approved',
- *                   analysisConfidence (4 votes→90, 3→70, ≤2→50),
+ * ## NIS2 → BSI IT-Grundschutz (Task 4 / WS NIS2)
+ * Use --fixture and --source-framework / --target-framework to apply the NIS2 panel verdicts:
+ *   php bin/console app:bsi:apply-panel-verdicts \
+ *     --fixture=fixtures/library/mappings/panel_verdicts/nis2-art21_to_bsi-grundschutz_panel_v1.json \
+ *     --source-framework=NIS2 \
+ *     --target-framework=BSI_GRUNDSCHUTZ
+ *
+ * ## Verdict semantics
+ *   ki_validiert  → provenanceSource='panel', lifecycleState='approved', reviewStatus='approved',
+ *                   analysisConfidence (4 votes→90, 3→70, ≤2→60),
  *                   mappingPercentage = verdict value.
  *                   IsoToBsiGapService::trustOf() returns ki_validiert.
  *
@@ -31,17 +39,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   needs_review  → reviewStatus='needs_review', requiresReview=true.
  *                   Stays visible but in the inheritance review queue.
  *
+ *   panel_discovered → creates a new ComplianceMapping if no existing row matches.
+ *                      Skipped (with log) if source or target requirement row not found in DB.
+ *
  * ## Idempotency
  * Re-running is safe. Rows already in the target state are counted as `already_applied`
  * and not re-written.
  *
  * ## Usage
- *   php bin/console app:bsi:apply-panel-verdicts             # apply all verdicts
- *   php bin/console app:bsi:apply-panel-verdicts --dry-run   # preview, no writes
+ *   php bin/console app:bsi:apply-panel-verdicts                                 # ISO defaults
+ *   php bin/console app:bsi:apply-panel-verdicts --dry-run                       # preview, no writes
+ *   php bin/console app:bsi:apply-panel-verdicts --fixture=... --source-framework=NIS2 --target-framework=BSI_GRUNDSCHUTZ
  */
 #[AsCommand(
     name: 'app:bsi:apply-panel-verdicts',
-    description: 'WS-5b stage 2 — Apply 4-persona panel verdicts to residual heuristic ISO↔BSI mappings (133 validated, 2 deprecated, 9 to review)'
+    description: 'WS-5b stage 2 — Apply 4-persona panel verdicts to heuristic ComplianceMappings (ISO default; parametrized via --fixture/--source-framework/--target-framework)'
 )]
 final class ApplyPanelVerdictsCommand extends Command
 {
@@ -64,6 +76,27 @@ final class ApplyPanelVerdictsCommand extends Command
                 null,
                 InputOption::VALUE_NONE,
                 'Compute and print counts without writing any DB changes.'
+            )
+            ->addOption(
+                'fixture',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Relative path from project root to the panel verdict fixture JSON.',
+                PanelVerdictApplier::FIXTURE_PATH,
+            )
+            ->addOption(
+                'source-framework',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Framework code for the source framework (default: ISO27001).',
+                self::ISO_FRAMEWORK_CODE,
+            )
+            ->addOption(
+                'target-framework',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Framework code for the target framework (default: BSI_GRUNDSCHUTZ).',
+                self::BSI_FRAMEWORK_CODE,
             );
     }
 
@@ -73,25 +106,39 @@ final class ApplyPanelVerdictsCommand extends Command
         $io     = new SymfonyStyle($input, $output);
         $dryRun = (bool) $input->getOption('dry-run');
 
+        /** @var string $fixturePath */
+        $fixturePath = $input->getOption('fixture') ?? PanelVerdictApplier::FIXTURE_PATH;
+        /** @var string $sourceCode */
+        $sourceCode = $input->getOption('source-framework') ?? self::ISO_FRAMEWORK_CODE;
+        /** @var string $targetCode */
+        $targetCode = $input->getOption('target-framework') ?? self::BSI_FRAMEWORK_CODE;
+
         if ($dryRun) {
             $io->note('Dry-run mode — no database writes will be performed.');
         }
 
-        $iso = $this->frameworkRepository->findOneBy(['code' => self::ISO_FRAMEWORK_CODE]);
-        $bsi = $this->frameworkRepository->findOneBy(['code' => self::BSI_FRAMEWORK_CODE]);
+        $io->info(sprintf(
+            'Fixture: %s | Source: %s | Target: %s',
+            $fixturePath,
+            $sourceCode,
+            $targetCode,
+        ));
 
-        if ($iso === null) {
+        $source = $this->frameworkRepository->findOneBy(['code' => $sourceCode]);
+        $target = $this->frameworkRepository->findOneBy(['code' => $targetCode]);
+
+        if ($source === null) {
             $io->error(sprintf(
-                'ISO 27001 framework (%s) not found. Run the ISO loader first.',
-                self::ISO_FRAMEWORK_CODE
+                'Source framework (%s) not found. Run the relevant loader first.',
+                $sourceCode,
             ));
             return Command::FAILURE;
         }
 
-        if ($bsi === null) {
+        if ($target === null) {
             $io->error(sprintf(
-                'BSI IT-Grundschutz framework (%s) not found. Run app:load-bsi-grundschutz-requirements first.',
-                self::BSI_FRAMEWORK_CODE
+                'Target framework (%s) not found. Run the relevant loader first.',
+                $targetCode,
             ));
             return Command::FAILURE;
         }
@@ -99,8 +146,8 @@ final class ApplyPanelVerdictsCommand extends Command
         $io->info('Loading panel verdict fixture…');
 
         try {
-            $counts = $this->verdictApplier->apply($iso, $bsi, $dryRun);
-        } catch (\RuntimeException $e) {
+            $counts = $this->verdictApplier->apply($fixturePath, $source, $target, $dryRun);
+        } catch (\Exception $e) {
             $io->error($e->getMessage());
             return Command::FAILURE;
         }
@@ -109,12 +156,14 @@ final class ApplyPanelVerdictsCommand extends Command
         $io->table(
             ['Verdict', 'Count'],
             [
-                ['ki_validiert  (elevated to panel/approved)',  $counts['ki_validiert']],
-                ['reject        (deprecated, audit-safe)',       $counts['rejected']],
-                ['needs_review  (flagged for human review)',     $counts['needs_review']],
-                ['already_applied (idempotent — no-op)',         $counts['already_applied']],
-                ['not_matched   (no DB row found)',              $counts['not_matched']],
-                ['Total verdicts in fixture',                    $counts['total']],
+                ['ki_validiert         (elevated to panel/approved)',   $counts['ki_validiert']],
+                ['reject               (deprecated, audit-safe)',        $counts['rejected']],
+                ['needs_review         (flagged for human review)',      $counts['needs_review']],
+                ['panel_discovered     (new mapping created)',           $counts['panel_discovered']],
+                ['panel_discovered_skipped (req row not found — skip)', $counts['panel_discovered_skipped']],
+                ['already_applied      (idempotent — no-op)',            $counts['already_applied']],
+                ['not_matched          (no DB row found)',               $counts['not_matched']],
+                ['Total verdicts in fixture',                            $counts['total']],
             ]
         );
 
@@ -127,10 +176,12 @@ final class ApplyPanelVerdictsCommand extends Command
             'Panel verdict application complete. '
             . '%d mapping(s) elevated to ki_validiert; '
             . '%d deprecated; '
-            . '%d flagged for review.',
+            . '%d flagged for review; '
+            . '%d new panel_discovered mapping(s) created.',
             $counts['ki_validiert'],
             $counts['rejected'],
             $counts['needs_review'],
+            $counts['panel_discovered'],
         ));
 
         return Command::SUCCESS;

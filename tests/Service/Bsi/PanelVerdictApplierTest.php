@@ -98,7 +98,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$heuristic]);
         $this->entityManager->expects(self::once())->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         self::assertSame(1, $counts['ki_validiert']);
         self::assertSame(0, $counts['rejected']);
@@ -122,7 +122,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$heuristic]);
         $this->entityManager->method('flush');
 
-        $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         self::assertSame(70, $heuristic->getAnalysisConfidence());
     }
@@ -163,7 +163,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$heuristic]);
         $this->entityManager->expects(self::once())->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         self::assertSame(0, $counts['ki_validiert']);
         self::assertSame(1, $counts['rejected']);
@@ -188,7 +188,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$heuristic]);
         $this->entityManager->expects(self::once())->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         self::assertSame(0, $counts['ki_validiert']);
         self::assertSame(0, $counts['rejected']);
@@ -215,7 +215,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$mapping]);
         $this->entityManager->expects(self::once())->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         self::assertSame(0, $counts['ki_validiert']);
         self::assertSame(1, $counts['already_applied']);
@@ -235,7 +235,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$mapping]);
         $this->entityManager->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         self::assertSame(0, $counts['rejected']);
         self::assertSame(1, $counts['already_applied']);
@@ -256,7 +256,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$mapping]);
         $this->entityManager->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         self::assertSame(0, $counts['needs_review']);
         self::assertSame(1, $counts['already_applied']);
@@ -277,7 +277,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$heuristic]);
         $this->entityManager->expects(self::never())->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: true);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: true);
 
         self::assertSame(1, $counts['ki_validiert']);
         // Mapping must NOT have been mutated
@@ -301,7 +301,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$crtMapping]);
         $this->entityManager->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         // The verdict has no candidate (CRT row was skipped) → not_matched
         self::assertSame(1, $counts['not_matched']);
@@ -324,7 +324,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([$corroborated]);
         $this->entityManager->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         self::assertSame(1, $counts['not_matched']);
         self::assertSame(IsoToBsiGapService::PROVENANCE_CRT_CORROBORATED, $corroborated->getProvenanceSource());
@@ -341,7 +341,7 @@ final class PanelVerdictApplierTest extends TestCase
         $this->mappingRepository->method('findAllGlobal')->willReturn([]);
         $this->entityManager->method('flush');
 
-        $counts = $this->applier->apply($this->iso, $this->bsi, dryRun: false);
+        $counts = $this->applier->apply(PanelVerdictApplier::FIXTURE_PATH, $this->iso, $this->bsi, dryRun: false);
 
         self::assertSame(1, $counts['not_matched']);
         self::assertSame(0, $counts['ki_validiert']);
