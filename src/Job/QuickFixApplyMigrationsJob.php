@@ -40,7 +40,7 @@ final class QuickFixApplyMigrationsJob implements AsyncJobInterface
             throw new \RuntimeException('Another schema operation is already running. Try again shortly.');
         }
 
-        if (!$migrationResult['success']) {
+        if (!($migrationResult['success'] ?? false)) {
             $diagnosis = $migrationResult['diagnosis'] ?? null;
             $message = is_array($diagnosis) && ($diagnosis['category'] ?? 'unknown') !== 'unknown'
                 ? sprintf(

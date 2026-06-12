@@ -51,7 +51,7 @@ final class QuickFixReconcileSchemaJob implements AsyncJobInterface
         if (!$result['success'] && ($result['blocked'] ?? null) === 'pending_migrations') {
             $ctx->message('Reconcile blocked by pending migrations — applying them first…');
             $applyResult = $this->schemaMaintenanceService->executePendingMigrations('quick-fix');
-            if ($applyResult['success']) {
+            if ($applyResult['success'] ?? false) {
                 $ctx->message('Migrations applied — retrying reconcile (bypass gate)…');
                 $result = $this->schemaMaintenanceService->reconcileSchema('quick-fix', true);
             } else {

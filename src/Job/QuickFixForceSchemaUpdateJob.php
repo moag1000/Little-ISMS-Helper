@@ -45,7 +45,7 @@ final class QuickFixForceSchemaUpdateJob implements AsyncJobInterface
             throw new \RuntimeException('Another schema operation is already running. Try again shortly.');
         }
 
-        if (!$result['success']) {
+        if (!($result['success'] ?? false)) {
             // @intentional-assertion: surface force-schema-update failure to operator
             throw new \RuntimeException(sprintf(
                 'Force schema update failed: %s',
@@ -53,7 +53,7 @@ final class QuickFixForceSchemaUpdateJob implements AsyncJobInterface
             ));
         }
 
-        $executed = (int) $result['statements_executed'];
+        $executed = (int) ($result['statements_executed'] ?? 0);
         $ctx->progress(
             $executed,
             $executed,

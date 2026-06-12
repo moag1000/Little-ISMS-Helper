@@ -149,7 +149,7 @@ class SchemaMaintenanceService
      * Returns a `blocked: 'locked'` result instead when another schema
      * operation already holds the advisory lock.
      *
-     * @return array{success: bool, executed?: int, error: ?string, blocked?: 'locked', diagnosis?: array<string, mixed>}
+     * @return array{success?: bool, executed?: int, error?: ?string, blocked?: 'locked', diagnosis?: array<string, mixed>}
      */
     public function executePendingMigrations(string $actor = 'system'): array
     {
@@ -328,7 +328,7 @@ class SchemaMaintenanceService
      * which CAN destroy data. A pre-mutation snapshot is taken by the calling
      * job in either case.
      *
-     * @return array{success: bool, statements_executed: int, error: ?string, statements_skipped_destructive?: list<string>, blocked?: 'locked'}
+     * @return array{success?: bool, statements_executed?: int, error?: ?string, statements_skipped_destructive?: list<string>, blocked?: 'locked'}
      */
     public function forceSchemaUpdate(string $actor = 'system', bool $allowDestructive = false): array
     {
