@@ -64,9 +64,6 @@ final class PanelVerdictApplier
     /** Default source-key for the ISO fixture (JSON field name carrying the source requirement id) */
     private const SOURCE_KEY_ISO = 'iso';
 
-    /** Source-key for the NIS2 fixture */
-    private const SOURCE_KEY_NIS2 = 'nis2';
-
     /** analysisConfidence by realVotes count */
     private const CONFIDENCE_BY_VOTES = [
         4 => 90,
