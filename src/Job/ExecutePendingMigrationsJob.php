@@ -52,7 +52,7 @@ final class ExecutePendingMigrationsJob implements AsyncJobInterface
                 $diagnosis['category'],
                 $diagnosis['message'] ?? '',
                 $diagnosis['suggested_action'] ?? '',
-                isset($diagnosis['offending_version']) && $diagnosis['offending_version'] !== null
+                isset($diagnosis['offending_version'])
                     ? sprintf(' (offending: %s)', $diagnosis['offending_version'])
                     : '',
             ));

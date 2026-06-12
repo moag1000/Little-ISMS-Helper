@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Job;
 
 use App\Service\SchemaMaintenanceService;
+use App\Service\SchemaSnapshotService;
 
 /**
  * Async QuickFix: nuclear fallback — doctrine:schema:update --force in
@@ -18,16 +19,33 @@ final class QuickFixForceSchemaUpdateJob implements AsyncJobInterface
 {
     public function __construct(
         private readonly SchemaMaintenanceService $schemaMaintenanceService,
+        private readonly SchemaSnapshotService $snapshotService,
     ) {
     }
 
     public function run(JobContext $ctx): void
     {
-        $ctx->message('Forcing schema update (additive only — never drops)…');
+        $snap = $this->snapshotService->snapshot('force-schema-update');
+        if ($snap['warning'] !== null) {
+            $ctx->message('WARN: ' . $snap['warning']);
+        } else {
+            $ctx->message(sprintf('Snapshot saved (%s).', $snap['method']));
+        }
 
-        $result = $this->schemaMaintenanceService->forceSchemaUpdate('quick-fix');
+        $allowDestructive = (bool) $ctx->arg('allowDestructive', false);
 
-        if (!$result['success']) {
+        $ctx->message($allowDestructive
+            ? 'Forcing schema update (DESTRUCTIVE opt-in — DROP permitted)…'
+            : 'Forcing schema update (additive only — never drops)…');
+
+        $result = $this->schemaMaintenanceService->forceSchemaUpdate('quick-fix', $allowDestructive);
+
+        if (($result['blocked'] ?? null) === 'locked') {
+            // @intentional-assertion: surface advisory-lock contention to the operator
+            throw new \RuntimeException('Another schema operation is already running. Try again shortly.');
+        }
+
+        if (!($result['success'] ?? false)) {
             // @intentional-assertion: surface force-schema-update failure to operator
             throw new \RuntimeException(sprintf(
                 'Force schema update failed: %s',

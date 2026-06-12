@@ -29,11 +29,7 @@ use Doctrine\ORM\Tools\SchemaTool;
  */
 class SchemaMaintenanceService
 {
-    /** Patterns the SchemaTool emits when it would drop tables/columns. */
-    private const DESTRUCTIVE_PATTERNS = [
-        '/^DROP TABLE/i',
-        '/^ALTER TABLE .+ DROP /i',
-    ];
+    private const SCHEMA_LOCK_NAME = 'quickfix_schema';
 
     public function __construct(
         private readonly SchemaHealthService $schemaHealthService,
@@ -41,6 +37,34 @@ class SchemaMaintenanceService
         private readonly AuditLogger $auditLogger,
         private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
     ) {
+    }
+
+    /**
+     * Serialises mutating schema operations via a MySQL advisory lock so two
+     * operators cannot race DDL. Returns a blocked-result without running the
+     * callback when the lock is already held. Non-MySQL drivers run unguarded.
+     *
+     * @template T of array
+     * @param callable():T $operation
+     * @return T|array{success: false, blocked: 'locked', error: string}
+     */
+    private function withSchemaLock(callable $operation): array
+    {
+        $conn = $this->migrationsDependencyFactory->getConnection();
+        try {
+            $got = $conn->fetchOne('SELECT GET_LOCK(:n, 0)', ['n' => self::SCHEMA_LOCK_NAME]);
+        } catch (\Throwable) {
+            // Non-MySQL or locking unsupported — run unguarded.
+            return $operation();
+        }
+        if ((int) $got !== 1) {
+            return ['success' => false, 'blocked' => 'locked', 'error' => 'Another schema operation is in progress.'];
+        }
+        try {
+            return $operation();
+        } finally {
+            try { $conn->executeStatement('SELECT RELEASE_LOCK(' . $conn->quote(self::SCHEMA_LOCK_NAME) . ')'); } catch (\Throwable) {}
+        }
     }
 
     /**
@@ -73,17 +97,7 @@ class SchemaMaintenanceService
         // SchemaValidator throws; treat those as empty drift but surface
         // the marker so the operator sees something is wrong.
         $statements = $validation['pending_sql'];
-        $destructive = array_values(array_filter(
-            $statements,
-            static function (string $sql): bool {
-                foreach (self::DESTRUCTIVE_PATTERNS as $pattern) {
-                    if (preg_match($pattern, $sql) === 1) {
-                        return true;
-                    }
-                }
-                return false;
-            },
-        ));
+        $destructive = SchemaHealthService::classifyStatements($statements)['destructive'];
 
         // Entity-vs-DB drift: additive-only statements (ALTER TABLE ADD /
         // CREATE TABLE IF NOT EXISTS) that would bring the live DB in sync
@@ -116,11 +130,36 @@ class SchemaMaintenanceService
     }
 
     /**
+     * Number of versions currently recorded in doctrine_migration_versions.
+     * Best-effort: returns 0 if the metadata storage cannot be read.
+     */
+    private function countExecutedMigrations(): int
+    {
+        try {
+            return count(
+                $this->migrationsDependencyFactory->getMetadataStorage()->getExecutedMigrations()->getItems(),
+            );
+        } catch (\Throwable) {
+            return 0;
+        }
+    }
+
+    /**
      * Executes every pending migration in order. No-op when the plan is empty.
+     * Returns a `blocked: 'locked'` result instead when another schema
+     * operation already holds the advisory lock.
      *
-     * @return array{success: bool, executed: int, error: ?string}
+     * @return array{success?: bool, executed?: int, error?: ?string, blocked?: 'locked', diagnosis?: array<string, mixed>}
      */
     public function executePendingMigrations(string $actor = 'system'): array
+    {
+        return $this->withSchemaLock(fn (): array => $this->executePendingMigrationsLocked($actor));
+    }
+
+    /**
+     * @return array{success: bool, executed: int, error: ?string}
+     */
+    private function executePendingMigrationsLocked(string $actor = 'system'): array
     {
         $df = $this->migrationsDependencyFactory;
 
@@ -154,6 +193,8 @@ class SchemaMaintenanceService
             return ['success' => true, 'executed' => 0, 'error' => null];
         }
 
+        $executedBefore = $this->countExecutedMigrations();
+
         try {
             $config = (new MigratorConfiguration())
                 ->setDryRun(false)
@@ -161,6 +202,7 @@ class SchemaMaintenanceService
                 ->setNoMigrationException(true);
             $df->getMigrator()->migrate($plan, $config);
         } catch (\Throwable $e) {
+            $executedDelta = max(0, $this->countExecutedMigrations() - $executedBefore);
             $diagnosis = $this->diagnoseMigrationFailure($e->getMessage(), $plan);
             $this->auditLogger->logCustom(
                 'admin.schema.migrate.failed',
@@ -170,19 +212,20 @@ class SchemaMaintenanceService
                 [
                     'error' => $e->getMessage(),
                     'planned' => count($plan->getItems()),
+                    'executed' => $executedDelta,
                     'diagnosis' => $diagnosis['category'],
                 ],
                 sprintf('Schema migrate failed for %s: %s', $actor, $e->getMessage()),
             );
             return [
                 'success' => false,
-                'executed' => 0,
+                'executed' => $executedDelta,
                 'error' => $e->getMessage(),
                 'diagnosis' => $diagnosis,
             ];
         }
 
-        $executed = count($plan->getItems());
+        $executed = max(0, $this->countExecutedMigrations() - $executedBefore);
         $this->auditLogger->logCustom(
             'admin.schema.migrate.applied',
             'Doctrine',
@@ -210,6 +253,14 @@ class SchemaMaintenanceService
      * @return array{success: bool, executed: int, auto_marked: list<string>, error: ?string, blocked: ?string}
      */
     public function reconcileSchema(string $actor = 'system', bool $bypassMigrationGate = false): array
+    {
+        return $this->withSchemaLock(fn (): array => $this->reconcileSchemaLocked($actor, $bypassMigrationGate));
+    }
+
+    /**
+     * @return array{success: bool, executed: int, auto_marked: list<string>, error: ?string, blocked: ?string}
+     */
+    private function reconcileSchemaLocked(string $actor = 'system', bool $bypassMigrationGate = false): array
     {
         $result = $this->schemaHealthService->applyUpdate($actor, $bypassMigrationGate);
 
@@ -265,25 +316,45 @@ class SchemaMaintenanceService
     }
 
     /**
-     * Nuclear fallback: runs `doctrine:schema:update --force` (saveMode=true)
-     * programmatically. Use when reconcile still fails after the FK-check
-     * envelope is applied — e.g. complex cross-table constraint ordering that
-     * SchemaTool cannot resolve automatically.
+     * Nuclear fallback: runs `doctrine:schema:update --force` programmatically.
+     * Use when reconcile still fails after the FK-check envelope is applied —
+     * e.g. complex cross-table constraint ordering that SchemaTool cannot
+     * resolve automatically.
      *
-     * saveMode=true → SchemaTool only emits ADD/CREATE statements; it never
-     * emits DROP TABLE so existing data is never destroyed by this call.
+     * Destructive statements (DROP TABLE / DROP COLUMN) are WITHHELD by default
+     * — applyUpdate is called with allowDestructive=false, so they are reported
+     * in `statements_skipped_destructive` rather than executed. Only when the
+     * operator explicitly opts in ($allowDestructive=true) are DROPs executed,
+     * which CAN destroy data. A pre-mutation snapshot is taken by the calling
+     * job in either case.
      *
-     * @return array{success: bool, statements_executed: int, error: ?string}
+     * @return array{success?: bool, statements_executed?: int, error?: ?string, statements_skipped_destructive?: list<string>, blocked?: 'locked'}
      */
-    public function forceSchemaUpdate(string $actor = 'system'): array
+    public function forceSchemaUpdate(string $actor = 'system', bool $allowDestructive = false): array
+    {
+        return $this->withSchemaLock(fn (): array => $this->forceSchemaUpdateLocked($actor, $allowDestructive));
+    }
+
+    /**
+     * @return array{success: bool, statements_executed: int, error: ?string, statements_skipped_destructive: list<string>}
+     */
+    private function forceSchemaUpdateLocked(string $actor = 'system', bool $allowDestructive = false): array
     {
         // Delegate to applyUpdate's FK-aware envelope which handles
         // errno 1091/1176/1832/1833/1822/150 + multi-pass convergence +
         // phantom-drift detection. Force = bypass migration gate so the
-        // operator can recover even with pending migrations.
-        $result = $this->schemaHealthService->applyUpdate($actor, bypassMigrationGate: true);
+        // operator can recover even with pending migrations. Destructive DDL
+        // (DROP/TRUNCATE) is withheld unless the operator explicitly opted in
+        // via $allowDestructive — withheld statements come back in
+        // skipped_destructive so we can surface them to the UI.
+        $result = $this->schemaHealthService->applyUpdate(
+            $actor,
+            bypassMigrationGate: true,
+            allowDestructive: $allowDestructive,
+        );
 
         $statementsCount = count($result['executed_sql']);
+        $skippedDestructive = $result['skipped_destructive'];
 
         if ($statementsCount === 0 && $result['success']) {
             $this->auditLogger->logCustom(
@@ -291,10 +362,15 @@ class SchemaMaintenanceService
                 'Doctrine',
                 null,
                 null,
-                ['actor' => $actor],
+                ['actor' => $actor, 'allow_destructive' => $allowDestructive],
                 sprintf('Schema force-update by %s — no statements needed (schema already in sync)', $actor),
             );
-            return ['success' => true, 'statements_executed' => 0, 'error' => null];
+            return [
+                'success' => true,
+                'statements_executed' => 0,
+                'error' => null,
+                'statements_skipped_destructive' => $skippedDestructive,
+            ];
         }
 
         if (!$result['success']) {
@@ -303,10 +379,15 @@ class SchemaMaintenanceService
                 'Doctrine',
                 null,
                 null,
-                ['error' => $result['error'], 'sql_count' => $statementsCount, 'actor' => $actor],
+                ['error' => $result['error'], 'sql_count' => $statementsCount, 'actor' => $actor, 'allow_destructive' => $allowDestructive],
                 sprintf('Schema force-update FAILED by %s: %s', $actor, (string) $result['error']),
             );
-            return ['success' => false, 'statements_executed' => 0, 'error' => $result['error']];
+            return [
+                'success' => false,
+                'statements_executed' => 0,
+                'error' => $result['error'],
+                'statements_skipped_destructive' => $skippedDestructive,
+            ];
         }
 
         $this->auditLogger->logCustom(
@@ -314,11 +395,35 @@ class SchemaMaintenanceService
             'Doctrine',
             null,
             null,
-            ['statements' => $statementsCount, 'actor' => $actor],
-            sprintf('Schema force-update applied by %s (%d statement(s), saveMode=true)', $actor, $statementsCount),
+            ['statements' => $statementsCount, 'actor' => $actor, 'allow_destructive' => $allowDestructive, 'skipped_destructive' => count($skippedDestructive)],
+            sprintf('Schema force-update applied by %s (%d statement(s), allowDestructive=%s)', $actor, $statementsCount, $allowDestructive ? 'true' : 'false'),
         );
 
-        return ['success' => true, 'statements_executed' => $statementsCount, 'error' => null];
+        return [
+            'success' => true,
+            'statements_executed' => $statementsCount,
+            'error' => null,
+            'statements_skipped_destructive' => $skippedDestructive,
+        ];
+    }
+
+    /**
+     * Final clean-verdict: true only when no migrations are pending AND the
+     * entity-vs-DB additive drift is empty. Powers the index-page green/red band.
+     *
+     * @return array{migrations_up_to_date: bool, drift_empty: bool, ok: bool}
+     */
+    public function verifyClean(): array
+    {
+        $pending = $this->schemaHealthService->listPendingMigrationVersions();
+        $driftEmpty = $this->getEntityVsDbDrift() === [];
+        $migrationsUpToDate = $pending === [];
+
+        return [
+            'migrations_up_to_date' => $migrationsUpToDate,
+            'drift_empty' => $driftEmpty,
+            'ok' => $migrationsUpToDate && $driftEmpty,
+        ];
     }
 
     /**
@@ -341,23 +446,9 @@ class SchemaMaintenanceService
     public function getEntityVsDbDrift(): array
     {
         $validation = $this->schemaHealthService->validate();
-        $statements = $validation['pending_sql'];
 
         // Exclude error-marker lines and destructive statements.
-        return array_values(array_filter(
-            $statements,
-            static function (string $sql): bool {
-                if (str_starts_with($sql, '-- ERROR:')) {
-                    return false;
-                }
-                foreach (self::DESTRUCTIVE_PATTERNS as $pattern) {
-                    if (preg_match($pattern, $sql) === 1) {
-                        return false;
-                    }
-                }
-                return true;
-            },
-        ));
+        return SchemaHealthService::classifyStatements($validation['pending_sql'])['additive'];
     }
 
     /**
@@ -386,7 +477,7 @@ class SchemaMaintenanceService
      *
      * @return array{success: bool, version: string, error: ?string}
      */
-    public function markMigrationAsExecuted(string $version): array
+    public function markMigrationAsExecuted(string $version, bool $verify = true): array
     {
         $df = $this->migrationsDependencyFactory;
 
@@ -434,16 +525,35 @@ class SchemaMaintenanceService
                 return ['success' => true, 'version' => $version, 'error' => null];
             }
 
-            // 3. Insert directly into doctrine_migration_versions.
-            // TableMetadataStorage::complete() requires a running MigrationResult
-            // object, only constructible during an actual migration run. Direct
-            // INSERT via the platform connection is equivalent to what the CLI
-            // `doctrine:migrations:execute --up` does internally.
+            // 3. Insert directly into doctrine_migration_versions, then verify
+            // the schema genuinely matches the migration's end-state. If
+            // additive entity-vs-DB drift remains, this version was NOT phantom
+            // — undo the metadata row and refuse so the caller runs migrate/reconcile.
             $df->getConnection()->insert('doctrine_migration_versions', [
                 'version' => $version,
                 'executed_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
                 'execution_time' => 0,
             ]);
+
+            if ($verify) {
+                $remainingDrift = $this->getEntityVsDbDrift();
+                if ($remainingDrift !== []) {
+                    $df->getConnection()->delete('doctrine_migration_versions', ['version' => $version]);
+                    $this->auditLogger->logCustom(
+                        'admin.schema.force_mark_executed.refused_drift',
+                        'Doctrine',
+                        null,
+                        null,
+                        ['version' => $version, 'remaining_drift' => array_slice($remainingDrift, 0, 5)],
+                        sprintf('QuickFix: refused to mark %s — %d additive drift statement(s) remain; not phantom. Run migrate/reconcile.', $version, count($remainingDrift)),
+                    );
+                    return [
+                        'success' => false,
+                        'version' => $version,
+                        'error' => sprintf('Refused: %d additive schema drift statement(s) remain after marking — migration "%s" is not phantom. Run migrate or reconcile instead.', count($remainingDrift), $version),
+                    ];
+                }
+            }
 
             $this->auditLogger->logCustom(
                 'admin.schema.force_mark_executed',
@@ -469,31 +579,38 @@ class SchemaMaintenanceService
     }
 
     /**
-     * Runs each pending migration in an INDEPENDENT single-version plan
-     * (Approach C). A failure in version N does NOT abort the loop — all
-     * remaining versions are attempted.
-     *
-     * Per-version outcome:
-     *  - Migration executes cleanly → it is now recorded as executed naturally;
-     *    pending count drops without any force-marking.
-     *  - Migration throws a phantom-diff error (table/column already exists) →
-     *    force-marked as executed via markMigrationAsExecuted().
-     *  - Migration throws any other error → added to $skipped[version => reason];
-     *    loop continues with next version.
-     *
-     * This replaces Approach A (schema-introspection), which was too conservative:
-     * migrations using conditional logic or non-CREATE-TABLE patterns were missed,
-     * so the pending count did not drop even for genuine phantom-diff versions.
+     * Records every file-system-pending migration as executed WITHOUT running
+     * its DDL (metadata-only INSERT, equivalent to
+     * `doctrine:migrations:version --add --all`). Per-version verify is skipped
+     * here (verify:false) — instead, after the loop a single residual-drift
+     * probe runs an additive-only reconcile to close any gap the operator's
+     * "all already applied" assertion missed. Never executes destructive DDL.
      *
      * @return array{
      *     success: bool,
      *     marked: list<string>,
      *     skipped: array<string, string>,
      *     remaining_pending: int,
+     *     post_drift_reconciled: bool,
      *     stopped_at_error: null,
      * }
      */
     public function markAllPhantomDiffMigrationsAsExecuted(string $actor = 'system'): array
+    {
+        return $this->withSchemaLock(fn (): array => $this->markAllPhantomDiffMigrationsAsExecutedLocked($actor));
+    }
+
+    /**
+     * @return array{
+     *     success: bool,
+     *     marked: list<string>,
+     *     skipped: array<string, string>,
+     *     remaining_pending: int,
+     *     post_drift_reconciled: bool,
+     *     stopped_at_error: null,
+     * }
+     */
+    private function markAllPhantomDiffMigrationsAsExecutedLocked(string $actor = 'system'): array
     {
         /** @var list<string> $marked */
         $marked = [];
@@ -511,6 +628,7 @@ class SchemaMaintenanceService
                     'marked' => [],
                     'skipped' => [],
                     'remaining_pending' => 0,
+                    'post_drift_reconciled' => false,
                     'stopped_at_error' => null,
                 ];
             }
@@ -537,7 +655,7 @@ class SchemaMaintenanceService
                     break;
                 }
 
-                $markResult = $this->markMigrationAsExecuted($version);
+                $markResult = $this->markMigrationAsExecuted($version, verify: false);
                 if ($markResult['success']) {
                     $marked[] = $version;
                     $this->auditLogger->logCustom(
@@ -561,6 +679,28 @@ class SchemaMaintenanceService
             $skipped['__setup__'] = sprintf('[setup-failure] %s', $e->getMessage());
         }
 
+        // Post-loop integrity guard: if additive entity-vs-DB drift remains, the
+        // operator's "they're all already applied" assertion was wrong for at
+        // least one version. Reconcile additively (never destructive) + warn.
+        $postDriftReconciled = false;
+        $residualDrift = $this->getEntityVsDbDrift();
+        if ($residualDrift !== []) {
+            $reconcile = $this->schemaHealthService->applyUpdate('quick-fix', true, false);
+            $postDriftReconciled = (bool) $reconcile['success'];
+            $this->auditLogger->logCustom(
+                'admin.schema.mark_all.post_drift_reconcile',
+                'Doctrine',
+                null,
+                null,
+                [
+                    'residual_drift_count' => count($residualDrift),
+                    'residual_drift' => array_slice($residualDrift, 0, 5),
+                    'reconcile_success' => $postDriftReconciled,
+                ],
+                sprintf('QuickFix/mark-all: %d additive drift statement(s) remained after marking — additive reconcile %s.', count($residualDrift), $postDriftReconciled ? 'applied' : 'FAILED'),
+            );
+        }
+
         $remainingPending = count($this->listPendingMigrationVersionsFromFileSystem());
 
         return [
@@ -568,6 +708,7 @@ class SchemaMaintenanceService
             'marked' => $marked,
             'skipped' => $skipped,
             'remaining_pending' => $remainingPending,
+            'post_drift_reconciled' => $postDriftReconciled,
             'stopped_at_error' => null, // kept for backward-compat; always null in Approach C
         ];
     }
@@ -618,10 +759,29 @@ class SchemaMaintenanceService
      */
     private function diagnoseMigrationFailure(string $errorMessage, MigrationPlanList $plan): array
     {
+        // Identify the offending version from the executed-delta: the FIRST
+        // planned version that did NOT land in doctrine_migration_versions is
+        // the one that failed. Under partial failure this is more accurate
+        // than blindly blaming the last planned version (QF-10).
+        $executedAfter = [];
+        try {
+            foreach ($this->migrationsDependencyFactory->getMetadataStorage()->getExecutedMigrations()->getItems() as $m) {
+                $executedAfter[(string) $m->getVersion()] = true;
+            }
+        } catch (\Throwable) {
+            // best-effort
+        }
         $offending = null;
-        $items = $plan->getItems();
-        if ($items !== []) {
-            $offending = (string) end($items)->getVersion();
+        foreach ($plan->getItems() as $item) {
+            $v = (string) $item->getVersion();
+            if (!isset($executedAfter[$v])) {
+                $offending = $v; // first not-yet-executed planned version = the one that failed
+                break;
+            }
+        }
+        if ($offending === null) {
+            $items = $plan->getItems();
+            $offending = $items !== [] ? (string) end($items)->getVersion() : null;
         }
 
         // Pattern 1: phantom diff-migration retries DDL that's already

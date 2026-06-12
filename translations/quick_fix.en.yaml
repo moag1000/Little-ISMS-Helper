@@ -103,9 +103,15 @@ quick_fix:
         mark_all_button: 'Mark all phantom-diff migrations as executed (no DDL)'
     force_update:
         show: 'Show force schema update (last resort for persistent reconcile failure)...'
-        body: 'Runs doctrine:schema:update --force (saveMode=true) — emits only ADD/CREATE statements, never drops tables. Use when reconcile fails despite FK checks. Bypasses Doctrine migrations tracking.'
+        body: 'Runs a forced schema update. Additive by default (ADD/CREATE) — destructive changes (DROP) are withheld unless explicitly permitted. Use when reconcile fails despite FK checks. Bypasses Doctrine migrations tracking.'
         confirm_label: 'I understand this bypasses Doctrine migrations tracking and should only be used as a last resort.'
         button: 'Force schema update (nuclear)'
+    verdict:
+        clean: 'Schema clean — no pending migrations, no drift.'
+        dirty: 'Schema not clean. Migrations up to date: %migrations% · Drift empty: %drift%.'
+    force:
+        confirm: 'I confirm the forced additive schema update.'
+        confirm_destructive: 'Also allow destructive changes (DROP) — possible data loss. A snapshot is taken first.'
     settings:
         title: 'Quick Fix'
         description: 'Controls the public fallback page shown on schema mismatch instead of a 500 error.'

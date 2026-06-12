@@ -101,6 +101,24 @@ class SchemaMaintenanceServiceForceMarkTest extends TestCase
         return new ExecutedMigrationsList($items);
     }
 
+    /**
+     * Arrange the "known + not-yet-executed" state so markMigrationAsExecuted()
+     * reaches the INSERT: the migration repo lists $version, and the metadata
+     * storage reports an empty executed list.
+     */
+    private function primeKnownPendingVersion(string $version): void
+    {
+        $this->migrationRepository
+            ->method('getMigrations')
+            ->willReturn($this->makeAvailableSet($version));
+
+        $this->metadataStorage
+            ->method('getExecutedMigrations')
+            ->willReturn($this->makeExecutedList());
+
+        $this->metadataStorage->method('ensureInitialized');
+    }
+
     // -------------------------------------------------------------------------
     // Tests
     // -------------------------------------------------------------------------
@@ -156,15 +174,19 @@ class SchemaMaintenanceServiceForceMarkTest extends TestCase
     public function markMigrationAsExecuted_withValidPendingVersion_insertsAndReturnsSuccess(): void
     {
         // Arrange: version on fs, NOT yet executed
-        $this->migrationRepository
-            ->method('getMigrations')
-            ->willReturn($this->makeAvailableSet(self::VERSION_STRING));
+        $this->primeKnownPendingVersion(self::VERSION_STRING);
 
-        $this->metadataStorage
-            ->method('getExecutedMigrations')
-            ->willReturn($this->makeExecutedList());
-
-        $this->metadataStorage->method('ensureInitialized');
+        // After the INSERT, verify-before-mark calls getEntityVsDbDrift() →
+        // schemaHealthService->validate(). Stub a clean payload (no drift) so
+        // the happy path falls through to success.
+        $this->schemaHealthService->method('validate')->willReturn([
+            'mapping_in_sync' => true,
+            'database_in_sync' => true,
+            'mapping_errors' => [],
+            'pending_sql' => [],
+            'pending_migrations' => [],
+            'overall_status' => 'healthy',
+        ]);
 
         // INSERT must be called with correct data
         $this->connection
@@ -205,15 +227,7 @@ class SchemaMaintenanceServiceForceMarkTest extends TestCase
     public function markMigrationAsExecuted_whenConnectionThrows_returnsFailure(): void
     {
         // Arrange: version on fs, not executed — but DB write fails
-        $this->migrationRepository
-            ->method('getMigrations')
-            ->willReturn($this->makeAvailableSet(self::VERSION_STRING));
-
-        $this->metadataStorage
-            ->method('getExecutedMigrations')
-            ->willReturn($this->makeExecutedList());
-
-        $this->metadataStorage->method('ensureInitialized');
+        $this->primeKnownPendingVersion(self::VERSION_STRING);
 
         $this->connection
             ->method('insert')
@@ -226,5 +240,66 @@ class SchemaMaintenanceServiceForceMarkTest extends TestCase
         self::assertFalse($result['success']);
         self::assertStringContainsString('Simulated DB error', (string) $result['error']);
         self::assertSame(self::VERSION_STRING, $result['version']);
+    }
+
+    #[Test]
+    public function refusesMarkWhenAdditiveDriftRemains(): void
+    {
+        $this->primeKnownPendingVersion(self::VERSION_STRING);
+        $this->schemaHealthService->method('validate')->willReturn([
+            'mapping_in_sync' => true,
+            'database_in_sync' => false,
+            'mapping_errors' => [],
+            'pending_sql' => ['ALTER TABLE widget ADD COLUMN gadget INT'],
+            'pending_migrations' => [],
+            'overall_status' => 'warning',
+        ]);
+        $ops = [];
+        $this->connection->method('insert')->willReturnCallback(function (...$a) use (&$ops) { $ops[] = 'insert'; return 1; });
+        $this->connection->method('delete')->willReturnCallback(function (...$a) use (&$ops) { $ops[] = 'delete'; return 1; });
+
+        $result = $this->service->markMigrationAsExecuted(self::VERSION_STRING);
+
+        self::assertFalse($result['success']);
+        self::assertStringContainsString('drift', strtolower((string) $result['error']));
+        self::assertSame(['insert', 'delete'], $ops, 'INSERT must be rolled back when drift remains');
+    }
+
+    #[Test]
+    public function marksWhenNoAdditiveDriftRemains(): void
+    {
+        $this->primeKnownPendingVersion(self::VERSION_STRING);
+        $this->schemaHealthService->method('validate')->willReturn([
+            'mapping_in_sync' => true,
+            'database_in_sync' => true,
+            'mapping_errors' => [],
+            'pending_sql' => [],
+            'pending_migrations' => [],
+            'overall_status' => 'healthy',
+        ]);
+        $inserted = false;
+        $this->connection->method('insert')->willReturnCallback(function (...$a) use (&$inserted) { $inserted = true; return 1; });
+        $this->connection->expects(self::never())->method('delete');
+
+        $result = $this->service->markMigrationAsExecuted(self::VERSION_STRING);
+
+        self::assertTrue($result['success']);
+        self::assertTrue($inserted);
+    }
+
+    #[Test]
+    public function verifyFalseSkipsDriftCheckAndMarks(): void
+    {
+        $this->primeKnownPendingVersion(self::VERSION_STRING);
+        // validate() would report drift, but verify:false must NOT consult it.
+        $this->schemaHealthService->expects(self::never())->method('validate');
+        $inserted = false;
+        $this->connection->method('insert')->willReturnCallback(function (...$a) use (&$inserted) { $inserted = true; return 1; });
+        $this->connection->expects(self::never())->method('delete');
+
+        $result = $this->service->markMigrationAsExecuted(self::VERSION_STRING, verify: false);
+
+        self::assertTrue($result['success']);
+        self::assertTrue($inserted);
     }
 }

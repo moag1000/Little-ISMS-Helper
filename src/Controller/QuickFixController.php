@@ -66,6 +66,7 @@ class QuickFixController extends AbstractController
         $driftDestructive = [];
         $entityDriftCount = 0;
         $entityDriftStatements = [];
+        $cleanVerdict = ['migrations_up_to_date' => false, 'drift_empty' => false, 'ok' => false];
         $errorMessage = null;
         try {
             $status = $maintenance->getMaintenanceStatus();
@@ -82,6 +83,10 @@ class QuickFixController extends AbstractController
             // Surface the count when it diverges from Doctrine's plan.
             $pendingFsNames = $maintenance->listPendingMigrationVersionsFromFileSystem();
             $pendingFsCount = count($pendingFsNames);
+
+            // Final clean-verdict band (QF-9): green only when no pending
+            // migrations AND no entity-vs-DB drift remain.
+            $cleanVerdict = $maintenance->verifyClean();
         } catch (\Throwable $e) {
             $errorMessage = $e->getMessage();
         }
@@ -208,6 +213,7 @@ class QuickFixController extends AbstractController
             'drift_destructive' => $driftDestructive,
             'entity_drift_count' => $entityDriftCount,
             'entity_drift_statements' => $entityDriftStatements,
+            'clean_verdict' => $cleanVerdict,
             'error_message' => $errorMessage,
             'error_diagnosis' => $errorDiagnosis,
             'apply_failure' => $applyFailure,
@@ -414,7 +420,7 @@ class QuickFixController extends AbstractController
 
         $markedCount = count($result['marked']);
 
-        $skippedCount = count($result['skipped'] ?? []);
+        $skippedCount = count($result['skipped']);
 
         $auditLogger->logCustom(
             'quick_fix.force_mark_migration_executed',
@@ -447,7 +453,7 @@ class QuickFixController extends AbstractController
                 '%d Migration(en) konnten nicht automatisch behandelt werden (real errors). Manuelle Prüfung erforderlich.',
                 $skippedCount,
             ));
-            foreach (($result['skipped'] ?? []) as $version => $reason) {
+            foreach ($result['skipped'] as $version => $reason) {
                 $this->addFlash('warning', sprintf(
                     '%s: %s',
                     $version,
@@ -640,6 +646,10 @@ class QuickFixController extends AbstractController
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
+        // Destructive opt-in: additive force is the default. Ticking this
+        // separate checkbox permits DROP/TRUNCATE and accepts data loss.
+        $allowDestructive = (bool) $request->request->get('confirm_destructive_force', false);
+
         return $this->dispatchJobProgress(
             $request,
             $jobStatusService,
@@ -649,7 +659,7 @@ class QuickFixController extends AbstractController
             'quick_fix.force_schema_update',
             'quick_fix.job.force_schema_label',
             'quick_fix.job.force_schema_subtitle',
-            [],
+            ['allowDestructive' => $allowDestructive],
         );
     }
 

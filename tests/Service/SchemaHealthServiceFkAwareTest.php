@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Service\AuditLogger;
+use App\Service\SchemaHealthService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDO\Exception as PdoException;
 use Doctrine\DBAL\Exception\DriverException;
@@ -154,5 +156,57 @@ class SchemaHealthServiceFkAwareTest extends TestCase
             'FOREIGN KEY (`tenant_id`, `user_id`) REFERENCES `tenant` (`id`, `user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT',
             $result,
         );
+    }
+
+    // -------------------------------------------------------------------------
+    // Test 4 — QF-4: FK re-add failure surfaces loudly + audit-logs CRITICAL
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function reAddFailureSurfacesLoudlyAndDoesNotSwallow(): void
+    {
+        $conn = $this->createStub(\Doctrine\DBAL\Connection::class);
+        $calls = [];
+        $conn->method('executeStatement')->willReturnCallback(function (string $sql) use (&$calls): int {
+            $calls[] = $sql;
+            if (str_contains($sql, 'MODIFY')) {
+                // first MODIFY attempt throws 1833; the retry (2nd MODIFY) succeeds
+                if (count(array_filter($calls, fn ($s) => str_contains($s, 'MODIFY'))) === 1) {
+                    throw new class('SQLSTATE[HY000]: General error: 1833 Cannot change column \'pid\': used in a foreign key constraint \'fk_child_parent\'') extends \Exception implements \Doctrine\DBAL\Exception {};
+                }
+                return 0;
+            }
+            if (str_contains($sql, 'ADD CONSTRAINT')) {
+                throw new class('re-add failed: referenced table gone') extends \Exception implements \Doctrine\DBAL\Exception {};
+            }
+            return 0; // DROP FOREIGN KEY
+        });
+        $conn->method('fetchOne')->willReturn('child');
+        $conn->method('fetchAllAssociative')->willReturn([
+            ['COLUMN_NAME' => 'pid', 'REFERENCED_TABLE_NAME' => 'parent', 'REFERENCED_COLUMN_NAME' => 'id'],
+        ]);
+        $conn->method('fetchAssociative')->willReturn(['DELETE_RULE' => 'CASCADE', 'UPDATE_RULE' => 'RESTRICT']);
+
+        $audit = $this->createMock(\App\Service\AuditLogger::class);
+        $audit->expects($this->once())->method('logCustom')
+            ->with('admin.schema.fk_aware_readd_failed', $this->anything(), $this->anything(), $this->anything(), $this->anything(), $this->anything());
+        $service = $this->makeServiceWithConnectionAndAudit($conn, $audit);
+        $dropped = [];
+
+        $this->expectException(\App\Exception\Io\IoException::class);
+        $this->invokeExecuteStatementFkAware($service, $conn, 'ALTER TABLE `child` MODIFY pid INT', $dropped);
+    }
+
+    private function makeServiceWithConnectionAndAudit(\Doctrine\DBAL\Connection $conn, \App\Service\AuditLogger $audit): SchemaHealthService
+    {
+        $em = $this->createStub(\Doctrine\ORM\EntityManagerInterface::class);
+        $em->method('getConnection')->willReturn($conn);
+        return new SchemaHealthService($em, $audit, $this->createStub(\Doctrine\Migrations\DependencyFactory::class));
+    }
+
+    private function invokeExecuteStatementFkAware(SchemaHealthService $s, \Doctrine\DBAL\Connection $conn, string $sql, array &$dropped): void
+    {
+        $ref = new \ReflectionMethod($s, 'executeStatementFkAware');
+        $ref->invokeArgs($s, [$conn, $sql, &$dropped, 0]);
     }
 }

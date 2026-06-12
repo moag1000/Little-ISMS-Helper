@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Job;
 
 use App\Service\SchemaMaintenanceService;
+use App\Service\SchemaSnapshotService;
 
 /**
  * Async QuickFix: schema reconcile with auto-recovery for pending migrations.
@@ -24,20 +25,33 @@ final class QuickFixReconcileSchemaJob implements AsyncJobInterface
 {
     public function __construct(
         private readonly SchemaMaintenanceService $schemaMaintenanceService,
+        private readonly SchemaSnapshotService $snapshotService,
     ) {
     }
 
     public function run(JobContext $ctx): void
     {
+        $snap = $this->snapshotService->snapshot('reconcile-schema');
+        if ($snap['warning'] !== null) {
+            $ctx->message('WARN: ' . $snap['warning']);
+        } else {
+            $ctx->message(sprintf('Snapshot saved (%s).', $snap['method']));
+        }
+
         $ctx->message('Reconciling schema against entity metadata…');
 
         $result = $this->schemaMaintenanceService->reconcileSchema('quick-fix');
+
+        if (($result['blocked'] ?? null) === 'locked') {
+            // @intentional-assertion: surface advisory-lock contention to the operator
+            throw new \RuntimeException('Another schema operation is already running. Try again shortly.');
+        }
 
         // Auto-recovery: if blocked by pending_migrations, try to apply them first.
         if (!$result['success'] && ($result['blocked'] ?? null) === 'pending_migrations') {
             $ctx->message('Reconcile blocked by pending migrations — applying them first…');
             $applyResult = $this->schemaMaintenanceService->executePendingMigrations('quick-fix');
-            if ($applyResult['success']) {
+            if ($applyResult['success'] ?? false) {
                 $ctx->message('Migrations applied — retrying reconcile (bypass gate)…');
                 $result = $this->schemaMaintenanceService->reconcileSchema('quick-fix', true);
             } else {

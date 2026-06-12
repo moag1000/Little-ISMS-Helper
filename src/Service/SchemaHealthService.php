@@ -22,11 +22,52 @@ use Doctrine\ORM\Tools\SchemaValidator;
  */
 class SchemaHealthService
 {
+    /** Patterns the SchemaTool emits when it would drop tables/columns/constraints. */
+    public const DESTRUCTIVE_PATTERNS = [
+        '/^DROP TABLE/i',
+        '/^ALTER TABLE .+ DROP /i',
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
         private readonly \Doctrine\Migrations\DependencyFactory $migrationsDependencyFactory,
     ) {
+    }
+
+    /**
+     * Partitions a SchemaTool/SchemaValidator SQL list into additive,
+     * destructive and error-marker buckets. Single source of truth so the
+     * display, the apply-gate and the clean-verdict all agree.
+     *
+     * @param list<string> $sql
+     * @return array{additive: list<string>, destructive: list<string>, errors: list<string>}
+     */
+    public static function classifyStatements(array $sql): array
+    {
+        $additive = [];
+        $destructive = [];
+        $errors = [];
+        foreach ($sql as $statement) {
+            if (str_starts_with($statement, '-- ERROR:')) {
+                $errors[] = $statement;
+                continue;
+            }
+            $isDestructive = false;
+            foreach (self::DESTRUCTIVE_PATTERNS as $pattern) {
+                if (preg_match($pattern, $statement) === 1) {
+                    $isDestructive = true;
+                    break;
+                }
+            }
+            if ($isDestructive) {
+                $destructive[] = $statement;
+            } else {
+                $additive[] = $statement;
+            }
+        }
+
+        return ['additive' => $additive, 'destructive' => $destructive, 'errors' => $errors];
     }
 
     /**
@@ -78,13 +119,15 @@ class SchemaHealthService
     }
 
     /**
-     * Equivalent to `doctrine:schema:update --force`. Destructive — runs all
-     * pending SQL against the live DB. Every execution is audit-logged with
-     * a SHA-256 of the executed SQL bundle so audit can reconcile the row.
+     * Equivalent to `doctrine:schema:update --force`. Executes the entity-vs-DB
+     * diff. Destructive statements (DROP) are withheld unless $allowDestructive
+     * is true — they are returned in `skipped_destructive` instead. Every
+     * execution is audit-logged with a SHA-256 of the executed SQL bundle so
+     * audit can reconcile the row.
      *
-     * @return array{success:bool, executed_sql:list<string>, sql_hash:?string, error:?string, blocked:?string, dropped_fks:list<array{table:string,fk:string,sql_that_triggered:string}>}
+     * @return array{success:bool, executed_sql:list<string>, sql_hash:?string, error:?string, blocked:?string, dropped_fks:list<array{table:string,fk:string,sql_that_triggered:string}>, skipped_destructive:list<string>}
      */
-    public function applyUpdate(string $actor = 'system', bool $bypassMigrationGate = false): array
+    public function applyUpdate(string $actor = 'system', bool $bypassMigrationGate = false, bool $allowDestructive = false): array
     {
         // Guard: don't race Doctrine migrations. ISB MAJOR-3 + Consultant A4.
         $pendingMigrations = $this->pendingMigrationVersions();
@@ -110,12 +153,12 @@ class SchemaHealthService
                 'sql_hash' => null,
                 'error' => null,
                 'blocked' => 'pending_migrations',
+                'dropped_fks' => [],
+                'skipped_destructive' => [],
             ];
         }
 
-        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
-        $tool = new SchemaTool($this->entityManager);
-        $sql = $tool->getUpdateSchemaSql($metadata);
+        $sql = $this->computeUpdateSql();
 
         if ($sql === []) {
             return [
@@ -124,7 +167,35 @@ class SchemaHealthService
                 'sql_hash' => null,
                 'error' => null,
                 'blocked' => null,
+                'dropped_fks' => [],
+                'skipped_destructive' => [],
             ];
+        }
+
+        $classified = self::classifyStatements($sql);
+        $skippedDestructive = [];
+        if (!$allowDestructive && $classified['destructive'] !== []) {
+            $skippedDestructive = $classified['destructive'];
+            $sql = $classified['additive'];
+            $this->auditLogger->logCustom(
+                'admin.schema.update.destructive_skipped',
+                'Doctrine',
+                null,
+                null,
+                ['skipped_count' => count($skippedDestructive), 'skipped' => array_slice($skippedDestructive, 0, 10)],
+                sprintf('Schema update for %s: %d destructive statement(s) withheld (allowDestructive=false)', $actor, count($skippedDestructive)),
+            );
+            if ($sql === []) {
+                return [
+                    'success' => true,
+                    'executed_sql' => [],
+                    'sql_hash' => null,
+                    'error' => null,
+                    'blocked' => null,
+                    'dropped_fks' => [],
+                    'skipped_destructive' => $skippedDestructive,
+                ];
+            }
         }
 
         $sqlHash = hash('sha256', implode(";\n", $sql));
@@ -163,21 +234,29 @@ class SchemaHealthService
             // emits identical statements to pass N-1, the schema IS in sync;
             // stop iterating and treat as success.
             $previousPassHash = hash('sha256', implode(";\n", $sql));
+            $passTool = new SchemaTool($this->entityManager);
             for ($pass = 2; $pass <= 3; $pass++) {
-                $passSql = $tool->getUpdateSchemaSql(
+                $passSql = $passTool->getUpdateSchemaSql(
                     $this->entityManager->getMetadataFactory()->getAllMetadata(),
                 );
                 if ($passSql === []) {
                     break;
                 }
-                $currentHash = hash('sha256', implode(";\n", $passSql));
-                if ($currentHash === $previousPassHash) {
-                    // Phantom drift — same statements re-emitted. Schema is
-                    // already in sync; stop iterating.
+                $passClassified = self::classifyStatements($passSql);
+                $passToRun = $allowDestructive ? $passSql : $passClassified['additive'];
+                if (!$allowDestructive && $passClassified['destructive'] !== []) {
+                    foreach ($passClassified['destructive'] as $d) {
+                        if (!in_array($d, $skippedDestructive, true)) {
+                            $skippedDestructive[] = $d;
+                        }
+                    }
+                }
+                $currentHash = hash('sha256', implode(";\n", $passToRun));
+                if ($passToRun === [] || $currentHash === $previousPassHash) {
                     break;
                 }
                 $previousPassHash = $currentHash;
-                foreach ($passSql as $statement) {
+                foreach ($passToRun as $statement) {
                     $this->executeStatementFkAware($conn, $statement, $droppedFks);
                 }
             }
@@ -206,6 +285,7 @@ class SchemaHealthService
                 'error' => $e->getMessage(),
                 'blocked' => null,
                 'dropped_fks' => $droppedFks,
+                'skipped_destructive' => $skippedDestructive,
             ];
         }
 
@@ -242,7 +322,22 @@ class SchemaHealthService
             'error' => null,
             'blocked' => null,
             'dropped_fks' => $droppedFks,
+            'skipped_destructive' => $skippedDestructive,
         ];
+    }
+
+    /**
+     * Seam over SchemaTool so tests can stub the emitted SQL. Production path
+     * computes the live entity-vs-DB diff.
+     *
+     * @return list<string>
+     */
+    protected function computeUpdateSql(): array
+    {
+        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
+        $tool = new SchemaTool($this->entityManager);
+
+        return $tool->getUpdateSchemaSql($metadata);
     }
 
     /**
@@ -306,13 +401,44 @@ class SchemaHealthService
                 // Step 2: retry the original statement (depth-guarded)
                 $this->executeStatementFkAware($conn, $sql, $droppedFks, $depth + 1);
 
-                // Step 3: re-add the FK on its owner table
-                $conn->executeStatement(sprintf(
-                    'ALTER TABLE `%s` ADD CONSTRAINT `%s` %s',
-                    $fkOwnerTable,
-                    $fkName,
-                    $fkDef,
-                ));
+                // Step 3: re-add the FK on its owner table — MUST succeed, else
+                // we have silently dropped a referential-integrity constraint.
+                try {
+                    $conn->executeStatement(sprintf(
+                        'ALTER TABLE `%s` ADD CONSTRAINT `%s` %s',
+                        $fkOwnerTable,
+                        $fkName,
+                        $fkDef,
+                    ));
+                } catch (\Throwable $reAddError) {
+                    $this->auditLogger->logCustom(
+                        'admin.schema.fk_aware_readd_failed',
+                        'Doctrine',
+                        null,
+                        null,
+                        [
+                            'table' => $fkOwnerTable,
+                            'fk' => $fkName,
+                            'readd_sql' => sprintf('ALTER TABLE `%s` ADD CONSTRAINT `%s` %s', $fkOwnerTable, $fkName, $fkDef),
+                            'error' => $reAddError->getMessage(),
+                        ],
+                        sprintf(
+                            'CRITICAL: FK %s on %s was dropped to apply an ALTER but could NOT be recreated: %s. Manual re-add required.',
+                            $fkName,
+                            $fkOwnerTable,
+                            $reAddError->getMessage(),
+                        ),
+                    );
+                    throw new \App\Exception\Io\IoException(sprintf(
+                        'FK-aware reconcile dropped %s.%s but failed to recreate it: %s — re-add SQL: ALTER TABLE `%s` ADD CONSTRAINT `%s` %s',
+                        $fkOwnerTable,
+                        $fkName,
+                        $reAddError->getMessage(),
+                        $fkOwnerTable,
+                        $fkName,
+                        $fkDef,
+                    ), null, $reAddError);
+                }
 
                 $droppedFks[] = [
                     'table' => $fkOwnerTable,
@@ -481,7 +607,7 @@ class SchemaHealthService
         return $this->pendingMigrationVersions();
     }
 
-    private function pendingMigrationVersions(): array
+    protected function pendingMigrationVersions(): array
     {
         /** @var Connection $conn */
         $conn = $this->entityManager->getConnection();
