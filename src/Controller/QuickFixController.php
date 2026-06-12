@@ -420,7 +420,7 @@ class QuickFixController extends AbstractController
 
         $markedCount = count($result['marked']);
 
-        $skippedCount = count($result['skipped'] ?? []);
+        $skippedCount = count($result['skipped']);
 
         $auditLogger->logCustom(
             'quick_fix.force_mark_migration_executed',
@@ -453,7 +453,7 @@ class QuickFixController extends AbstractController
                 '%d Migration(en) konnten nicht automatisch behandelt werden (real errors). Manuelle Prüfung erforderlich.',
                 $skippedCount,
             ));
-            foreach (($result['skipped'] ?? []) as $version => $reason) {
+            foreach ($result['skipped'] as $version => $reason) {
                 $this->addFlash('warning', sprintf(
                     '%s: %s',
                     $version,

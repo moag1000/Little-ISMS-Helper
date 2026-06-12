@@ -162,7 +162,7 @@ final class SchemaExceptionSubscriber
                 // migrations table may be marked-executed while the actual DDL
                 // never ran (Pitfall #6 in CLAUDE.md).
                 $migResult = $this->maintenance->executePendingMigrations('auto-fix-on-error');
-                if ($migResult['success'] ?? false) {
+                if ($migResult['success']) {
                     $totalApplied += (int) ($migResult['executed'] ?? 0);
                 }
 
@@ -208,11 +208,11 @@ final class SchemaExceptionSubscriber
             try {
                 $forceResult = $this->maintenance->forceSchemaUpdate('auto-fix-on-error');
                 $this->logger->warning('SchemaExceptionSubscriber: forceSchemaUpdate attempted', [
-                    'success' => $forceResult['success'] ?? false,
-                    'statements_executed' => $forceResult['statements_executed'] ?? 0,
+                    'success' => $forceResult['success'],
+                    'statements_executed' => $forceResult['statements_executed'],
                     'error' => $forceResult['error'] ?? null,
                 ]);
-                if (($forceResult['success'] ?? false) && ($forceResult['statements_executed'] ?? 0) > 0) {
+                if ($forceResult['success'] && $forceResult['statements_executed'] > 0) {
                     $retry = $request->getRequestUri();
                     $sep = str_contains($retry, '?') ? '&' : '?';
                     $event->setResponse(new RedirectResponse($retry . $sep . '_schema_force_updated=1'));

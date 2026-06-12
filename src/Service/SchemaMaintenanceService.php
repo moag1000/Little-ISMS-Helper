@@ -146,8 +146,10 @@ class SchemaMaintenanceService
 
     /**
      * Executes every pending migration in order. No-op when the plan is empty.
+     * Returns a `blocked: 'locked'` result instead when another schema
+     * operation already holds the advisory lock.
      *
-     * @return array{success: bool, executed: int, error: ?string}
+     * @return array{success: bool, executed?: int, error: ?string, blocked?: 'locked', diagnosis?: array<string, mixed>}
      */
     public function executePendingMigrations(string $actor = 'system'): array
     {
@@ -326,7 +328,7 @@ class SchemaMaintenanceService
      * which CAN destroy data. A pre-mutation snapshot is taken by the calling
      * job in either case.
      *
-     * @return array{success: bool, statements_executed: int, error: ?string, statements_skipped_destructive?: list<string>}
+     * @return array{success: bool, statements_executed: int, error: ?string, statements_skipped_destructive?: list<string>, blocked?: 'locked'}
      */
     public function forceSchemaUpdate(string $actor = 'system', bool $allowDestructive = false): array
     {
@@ -352,7 +354,7 @@ class SchemaMaintenanceService
         );
 
         $statementsCount = count($result['executed_sql']);
-        $skippedDestructive = $result['skipped_destructive'] ?? [];
+        $skippedDestructive = $result['skipped_destructive'];
 
         if ($statementsCount === 0 && $result['success']) {
             $this->auditLogger->logCustom(

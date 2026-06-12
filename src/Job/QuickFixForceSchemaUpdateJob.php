@@ -52,7 +52,7 @@ final class QuickFixForceSchemaUpdateJob implements AsyncJobInterface
             ));
         }
 
-        $executed = (int) ($result['statements_executed'] ?? 0);
+        $executed = (int) $result['statements_executed'];
         $ctx->progress(
             $executed,
             $executed,
