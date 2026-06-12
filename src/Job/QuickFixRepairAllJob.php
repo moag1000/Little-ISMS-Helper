@@ -7,6 +7,7 @@ namespace App\Job;
 use App\Entity\Tenant;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityService;
+use App\Service\SchemaSnapshotService;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -27,11 +28,19 @@ final class QuickFixRepairAllJob implements AsyncJobInterface
         private readonly DataIntegrityService $dataIntegrityService,
         private readonly AuditLogger $auditLogger,
         private readonly EntityManagerInterface $entityManager,
+        private readonly SchemaSnapshotService $snapshotService,
     ) {
     }
 
     public function run(JobContext $ctx): void
     {
+        $snap = $this->snapshotService->snapshot('repair-all');
+        if ($snap['warning'] !== null) {
+            $ctx->message('WARN: ' . $snap['warning']);
+        } else {
+            $ctx->message(sprintf('Snapshot saved (%s).', $snap['method']));
+        }
+
         $filters = $this->entityManager->getFilters();
         $wasEnabled = $filters->isEnabled('tenant_filter');
         if ($wasEnabled) {

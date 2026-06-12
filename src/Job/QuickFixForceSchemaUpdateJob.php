@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Job;
 
 use App\Service\SchemaMaintenanceService;
+use App\Service\SchemaSnapshotService;
 
 /**
  * Async QuickFix: nuclear fallback — doctrine:schema:update --force in
@@ -18,11 +19,19 @@ final class QuickFixForceSchemaUpdateJob implements AsyncJobInterface
 {
     public function __construct(
         private readonly SchemaMaintenanceService $schemaMaintenanceService,
+        private readonly SchemaSnapshotService $snapshotService,
     ) {
     }
 
     public function run(JobContext $ctx): void
     {
+        $snap = $this->snapshotService->snapshot('force-schema-update');
+        if ($snap['warning'] !== null) {
+            $ctx->message('WARN: ' . $snap['warning']);
+        } else {
+            $ctx->message(sprintf('Snapshot saved (%s).', $snap['method']));
+        }
+
         $ctx->message('Forcing schema update (additive only — never drops)…');
 
         $result = $this->schemaMaintenanceService->forceSchemaUpdate('quick-fix');

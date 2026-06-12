@@ -98,3 +98,5 @@ __pycache__/
 
 # Brainstorming visual-companion artifacts
 .superpowers/
+
+/var/quickfix-snapshots/

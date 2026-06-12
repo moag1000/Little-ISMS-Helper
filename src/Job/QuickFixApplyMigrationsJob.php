@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Job;
 
 use App\Service\SchemaMaintenanceService;
+use App\Service\SchemaSnapshotService;
 
 /**
  * Async QuickFix: apply pending migrations + auto-chain non-destructive
@@ -18,11 +19,19 @@ final class QuickFixApplyMigrationsJob implements AsyncJobInterface
 {
     public function __construct(
         private readonly SchemaMaintenanceService $schemaMaintenanceService,
+        private readonly SchemaSnapshotService $snapshotService,
     ) {
     }
 
     public function run(JobContext $ctx): void
     {
+        $snap = $this->snapshotService->snapshot('apply-migrations');
+        if ($snap['warning'] !== null) {
+            $ctx->message('WARN: ' . $snap['warning']);
+        } else {
+            $ctx->message(sprintf('Snapshot saved (%s).', $snap['method']));
+        }
+
         $ctx->message('Applying pending Doctrine migrations…');
         $migrationResult = $this->schemaMaintenanceService->executePendingMigrations('quick-fix');
 

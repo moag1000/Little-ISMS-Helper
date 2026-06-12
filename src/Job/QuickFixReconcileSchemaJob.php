@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Job;
 
 use App\Service\SchemaMaintenanceService;
+use App\Service\SchemaSnapshotService;
 
 /**
  * Async QuickFix: schema reconcile with auto-recovery for pending migrations.
@@ -24,11 +25,19 @@ final class QuickFixReconcileSchemaJob implements AsyncJobInterface
 {
     public function __construct(
         private readonly SchemaMaintenanceService $schemaMaintenanceService,
+        private readonly SchemaSnapshotService $snapshotService,
     ) {
     }
 
     public function run(JobContext $ctx): void
     {
+        $snap = $this->snapshotService->snapshot('reconcile-schema');
+        if ($snap['warning'] !== null) {
+            $ctx->message('WARN: ' . $snap['warning']);
+        } else {
+            $ctx->message(sprintf('Snapshot saved (%s).', $snap['method']));
+        }
+
         $ctx->message('Reconciling schema against entity metadata…');
 
         $result = $this->schemaMaintenanceService->reconcileSchema('quick-fix');
