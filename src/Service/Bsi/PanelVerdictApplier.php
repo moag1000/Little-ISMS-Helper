@@ -483,10 +483,10 @@ final class PanelVerdictApplier
             $srcReq = $mapping->getSourceRequirement();
             $tgtReq = $mapping->getTargetRequirement();
 
-            $srcReqId = (string) ($srcReq?->getRequirementId() ?? '');
+            $srcReqId = (string) ($srcReq->getRequirementId() ?? '');
             $baustein = IsoToBsiGapService::bausteinCodeFrom(
-                $tgtReq?->getCategory(),
-                $tgtReq?->getRequirementId(),
+                $tgtReq->getCategory(),
+                $tgtReq->getRequirementId(),
             );
 
             if ($srcReqId === '' || $baustein === '') {
