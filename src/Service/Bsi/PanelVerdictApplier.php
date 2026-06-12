@@ -239,16 +239,37 @@ final class PanelVerdictApplier
     }
 
     /**
-     * Detect which JSON field name carries the source requirement ID based on the fixture path.
-     * ISO fixture uses 'iso'; NIS2 fixture uses 'nis2'.
+     * Detect which JSON field name carries the source requirement ID from the fixture path.
+     *
+     * The fixture filename encodes the source framework as its first segment before `_to_`:
+     *   iso27001-2022_to_bsi-grundschutz_panel_v1.json → 'iso'
+     *   nis2-art21_to_bsi-grundschutz_panel_v1.json    → 'nis2'
+     *   dora-art21_to_bsi-grundschutz_panel_v1.json    → 'dora'
+     *
+     * The derived key is the first alphanumeric token of the basename up to the first `-`.
+     * Known aliases:
+     *   iso27001* → 'iso'  (legacy field name kept for BC)
+     *   nis2*     → 'nis2'
+     *   anything else → lowercased first token (e.g. 'dora', 'gdpr', 'eucs')
      */
     private function detectSourceKey(string $fixturePath): string
     {
-        if (str_contains($fixturePath, 'nis2')) {
-            return self::SOURCE_KEY_NIS2;
+        $basename = strtolower(basename($fixturePath, '.json'));
+
+        // Extract the prefix before the first `-` or `_` in the filename
+        // e.g. "iso27001-2022_to_bsi-grundschutz_panel_v1" → "iso27001"
+        //      "nis2-art21_to_..."                          → "nis2"
+        //      "dora-art21_to_..."                          → "dora"
+        $prefix = preg_replace('/[-_].*/', '', $basename) ?? $basename;
+
+        // ISO 27001 variants all use the legacy 'iso' field name for BC
+        if (str_starts_with($prefix, 'iso')) {
+            return self::SOURCE_KEY_ISO;
         }
 
-        return self::SOURCE_KEY_ISO;
+        // All other frameworks: the lowercased prefix IS the field name
+        // (nis2 → 'nis2', dora → 'dora', eucs → 'eucs', etc.)
+        return $prefix;
     }
 
     /**
