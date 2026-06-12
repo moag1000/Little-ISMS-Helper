@@ -404,16 +404,33 @@ class SchemaMaintenanceService
                 return ['success' => true, 'version' => $version, 'error' => null];
             }
 
-            // 3. Insert directly into doctrine_migration_versions.
-            // TableMetadataStorage::complete() requires a running MigrationResult
-            // object, only constructible during an actual migration run. Direct
-            // INSERT via the platform connection is equivalent to what the CLI
-            // `doctrine:migrations:execute --up` does internally.
+            // 3. Insert directly into doctrine_migration_versions, then verify
+            // the schema genuinely matches the migration's end-state. If
+            // additive entity-vs-DB drift remains, this version was NOT phantom
+            // — undo the metadata row and refuse so the caller runs migrate/reconcile.
             $df->getConnection()->insert('doctrine_migration_versions', [
                 'version' => $version,
                 'executed_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
                 'execution_time' => 0,
             ]);
+
+            $remainingDrift = $this->getEntityVsDbDrift();
+            if ($remainingDrift !== []) {
+                $df->getConnection()->delete('doctrine_migration_versions', ['version' => $version]);
+                $this->auditLogger->logCustom(
+                    'admin.schema.force_mark_executed.refused_drift',
+                    'Doctrine',
+                    null,
+                    null,
+                    ['version' => $version, 'remaining_drift' => array_slice($remainingDrift, 0, 5)],
+                    sprintf('QuickFix: refused to mark %s — %d additive drift statement(s) remain; not phantom. Run migrate/reconcile.', $version, count($remainingDrift)),
+                );
+                return [
+                    'success' => false,
+                    'version' => $version,
+                    'error' => sprintf('Refused: %d additive schema drift statement(s) remain after marking — migration "%s" is not phantom. Run migrate or reconcile instead.', count($remainingDrift), $version),
+                ];
+            }
 
             $this->auditLogger->logCustom(
                 'admin.schema.force_mark_executed',

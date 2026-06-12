@@ -152,6 +152,17 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
         $this->migrationRepository->method('getMigrations')->willReturn($availableSet);
         $this->metadataStorage->method('getExecutedMigrations')->willReturn($this->makeEmptyExecutedList());
         $this->connection->method('insert');
+        // QF-3: markMigrationAsExecuted now verifies-before-mark via
+        // getEntityVsDbDrift() → schemaHealthService->validate(). A clean payload
+        // (no additive drift) lets the per-version mark succeed in these tests.
+        $this->schemaHealthService->method('validate')->willReturn([
+            'mapping_in_sync' => true,
+            'database_in_sync' => true,
+            'mapping_errors' => [],
+            'pending_sql' => [],
+            'pending_migrations' => [],
+            'overall_status' => 'healthy',
+        ]);
     }
 
     // -------------------------------------------------------------------------
