@@ -61,6 +61,9 @@ final class PanelVerdictApplier
     /** NIS2 Art.21 → BSI IT-Grundschutz fixture path */
     public const FIXTURE_PATH_NIS2 = 'fixtures/library/mappings/panel_verdicts/nis2-art21_to_bsi-grundschutz_panel_v1.json';
 
+    /** NIST CSF 2.0 → ISO 27001:2022 panel verdict fixture path (P3 Tier-A) */
+    public const FIXTURE_PATH_NIST_ISO = 'fixtures/library/mappings/panel_verdicts/nist-csf-2-0_to_iso27001-2022_panel_v1.json';
+
     /** Default source-key for the ISO fixture (JSON field name carrying the source requirement id) */
     private const SOURCE_KEY_ISO = 'iso';
 

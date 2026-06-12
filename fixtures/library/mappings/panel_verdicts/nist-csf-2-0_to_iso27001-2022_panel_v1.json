@@ -1,0 +1,855 @@
+{
+  "library": {
+    "source_framework": "NIST-CSF-2.0",
+    "target_framework": "ISO27001",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none — NIST OLIR not machine-fetchable (Cloudflare WAF blocks programmatic access)",
+    "run_date": "2026-06-12",
+    "verdict_counts": {
+      "total": 106,
+      "ki_validiert": 90,
+      "needs_review": 7,
+      "reject": 9
+    }
+  },
+  "verdicts": [
+    {
+      "nist": "GV.OC-01",
+      "baustein": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.OC-02",
+      "baustein": "A.5.1",
+      "state": "reject",
+      "mappingPercentage": 35,
+      "realVotes": 1
+    },
+    {
+      "nist": "GV.OC-03",
+      "baustein": "A.5.31",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.OC-04",
+      "baustein": "A.5.30",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "nist": "GV.OC-05",
+      "baustein": "A.5.21",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 2
+    },
+    {
+      "nist": "GV.RM-01",
+      "baustein": "A.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.RM-02",
+      "baustein": "A.5.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nist": "GV.RM-03",
+      "baustein": "A.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.RM-04",
+      "baustein": "A.5.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nist": "GV.RM-05",
+      "baustein": "A.5.5",
+      "state": "reject",
+      "mappingPercentage": 25,
+      "realVotes": 1
+    },
+    {
+      "nist": "GV.RM-06",
+      "baustein": "A.5.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nist": "GV.RM-07",
+      "baustein": "A.5.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nist": "GV.RR-01",
+      "baustein": "A.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.RR-02",
+      "baustein": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.RR-03",
+      "baustein": "A.5.4",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "nist": "GV.RR-04",
+      "baustein": "A.6.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.PO-01",
+      "baustein": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.PO-02",
+      "baustein": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.OV-01",
+      "baustein": "A.5.36",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "nist": "GV.OV-02",
+      "baustein": "A.5.35",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.OV-03",
+      "baustein": "A.5.35",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-01",
+      "baustein": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-02",
+      "baustein": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-03",
+      "baustein": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-04",
+      "baustein": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-05",
+      "baustein": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-06",
+      "baustein": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-07",
+      "baustein": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-08",
+      "baustein": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 42,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-09",
+      "baustein": "A.5.22",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "GV.SC-10",
+      "baustein": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.AM-01",
+      "baustein": "A.5.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.AM-02",
+      "baustein": "A.5.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.AM-03",
+      "baustein": "A.8.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.AM-04",
+      "baustein": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.AM-05",
+      "baustein": "A.5.12",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.AM-07",
+      "baustein": "A.5.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.AM-08",
+      "baustein": "A.7.14",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.RA-01",
+      "baustein": "A.8.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.RA-02",
+      "baustein": "A.5.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.RA-03",
+      "baustein": "A.5.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.RA-04",
+      "baustein": "A.5.7",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "realVotes": 2
+    },
+    {
+      "nist": "ID.RA-05",
+      "baustein": "A.5.7",
+      "state": "reject",
+      "mappingPercentage": 35,
+      "realVotes": 1
+    },
+    {
+      "nist": "ID.RA-06",
+      "baustein": "A.5.4",
+      "state": "needs_review",
+      "mappingPercentage": 80,
+      "realVotes": 2
+    },
+    {
+      "nist": "ID.RA-07",
+      "baustein": "A.8.32",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.RA-08",
+      "baustein": "A.8.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.RA-09",
+      "baustein": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.RA-10",
+      "baustein": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.IM-01",
+      "baustein": "A.5.27",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 3,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.IM-02",
+      "baustein": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "ID.IM-03",
+      "baustein": "A.5.36",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "nist": "ID.IM-04",
+      "baustein": "A.5.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.AA-01",
+      "baustein": "A.5.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.AA-02",
+      "baustein": "A.5.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.AA-03",
+      "baustein": "A.8.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.AA-04",
+      "baustein": "A.5.17",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.AA-05",
+      "baustein": "A.5.15",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.AA-06",
+      "baustein": "A.7.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.AT-01",
+      "baustein": "A.6.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 92,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.AT-02",
+      "baustein": "A.6.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.DS-01",
+      "baustein": "A.8.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.DS-02",
+      "baustein": "A.8.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.DS-10",
+      "baustein": "A.8.11",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.DS-11",
+      "baustein": "A.8.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 93,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.PS-01",
+      "baustein": "A.8.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 92,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.PS-02",
+      "baustein": "A.8.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.PS-03",
+      "baustein": "A.7.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.PS-04",
+      "baustein": "A.8.15",
+      "state": "ki_validiert",
+      "mappingPercentage": 92,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.PS-05",
+      "baustein": "A.8.18",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "nist": "PR.PS-06",
+      "baustein": "A.8.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.IR-01",
+      "baustein": "A.8.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.IR-02",
+      "baustein": "A.7.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 88,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.IR-03",
+      "baustein": "A.8.14",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "PR.IR-04",
+      "baustein": "A.8.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.CM-01",
+      "baustein": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.CM-02",
+      "baustein": "A.7.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.CM-03",
+      "baustein": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.CM-06",
+      "baustein": "A.5.22",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.CM-09",
+      "baustein": "A.8.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 3,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.AE-02",
+      "baustein": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.AE-03",
+      "baustein": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.AE-04",
+      "baustein": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.AE-06",
+      "baustein": "A.6.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.AE-07",
+      "baustein": "A.5.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "DE.AE-08",
+      "baustein": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.MA-01",
+      "baustein": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 88,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.MA-02",
+      "baustein": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.MA-03",
+      "baustein": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.MA-04",
+      "baustein": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.MA-05",
+      "baustein": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.AN-03",
+      "baustein": "A.5.27",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.AN-06",
+      "baustein": "A.5.28",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.AN-07",
+      "baustein": "A.5.28",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.AN-08",
+      "baustein": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.CO-02",
+      "baustein": "A.6.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.CO-03",
+      "baustein": "A.5.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.MI-01",
+      "baustein": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RS.MI-02",
+      "baustein": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RC.RP-01",
+      "baustein": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RC.RP-02",
+      "baustein": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RC.RP-03",
+      "baustein": "A.8.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 78,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RC.RP-04",
+      "baustein": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RC.RP-05",
+      "baustein": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RC.RP-06",
+      "baustein": "A.5.27",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RC.CO-03",
+      "baustein": "A.5.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 42,
+      "realVotes": 3,
+      "refutationSurvived": true
+    },
+    {
+      "nist": "RC.CO-04",
+      "baustein": "A.5.5",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    }
+  ]
+}
