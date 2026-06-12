@@ -32,9 +32,13 @@ final class QuickFixForceSchemaUpdateJob implements AsyncJobInterface
             $ctx->message(sprintf('Snapshot saved (%s).', $snap['method']));
         }
 
-        $ctx->message('Forcing schema update (additive only — never drops)…');
+        $allowDestructive = (bool) $ctx->arg('allowDestructive', false);
 
-        $result = $this->schemaMaintenanceService->forceSchemaUpdate('quick-fix');
+        $ctx->message($allowDestructive
+            ? 'Forcing schema update (DESTRUCTIVE opt-in — DROP permitted)…'
+            : 'Forcing schema update (additive only — never drops)…');
+
+        $result = $this->schemaMaintenanceService->forceSchemaUpdate('quick-fix', $allowDestructive);
 
         if (($result['blocked'] ?? null) === 'locked') {
             throw new \RuntimeException('Another schema operation is already running. Try again shortly.');

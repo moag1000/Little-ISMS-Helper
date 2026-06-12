@@ -94,13 +94,14 @@ class SchemaMaintenanceServiceForceSchemaUpdateTest extends TestCase
         $this->schemaHealthService
             ->expects(self::once())
             ->method('applyUpdate')
-            ->with('test-actor', true)
+            ->with('test-actor', true, false)
             ->willReturn([
                 'success' => true,
                 'executed_sql' => [],
                 'sql_hash' => null,
                 'error' => null,
                 'blocked' => null,
+                'skipped_destructive' => [],
             ]);
 
         // Audit log fires with noop event
@@ -161,7 +162,7 @@ class SchemaMaintenanceServiceForceSchemaUpdateTest extends TestCase
             $this->managerRegistry,
         ) extends SchemaMaintenanceService {
             /** @return array{success: bool, statements_executed: int, error: ?string} */
-            public function forceSchemaUpdate(string $actor = 'system'): array
+            public function forceSchemaUpdate(string $actor = 'system', bool $allowDestructive = false): array
             {
                 // Simulate the inner try/catch by calling parent with a rigged EM.
                 // Instead of exercising the full SchemaTool (needs real DB), we
@@ -196,6 +197,7 @@ class SchemaMaintenanceServiceForceSchemaUpdateTest extends TestCase
                 'sql_hash' => null,
                 'error' => null,
                 'blocked' => null,
+                'skipped_destructive' => [],
             ]);
 
         $capturedEvent = null;

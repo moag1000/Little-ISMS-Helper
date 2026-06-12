@@ -314,33 +314,45 @@ class SchemaMaintenanceService
     }
 
     /**
-     * Nuclear fallback: runs `doctrine:schema:update --force` (saveMode=true)
-     * programmatically. Use when reconcile still fails after the FK-check
-     * envelope is applied — e.g. complex cross-table constraint ordering that
-     * SchemaTool cannot resolve automatically.
+     * Nuclear fallback: runs `doctrine:schema:update --force` programmatically.
+     * Use when reconcile still fails after the FK-check envelope is applied —
+     * e.g. complex cross-table constraint ordering that SchemaTool cannot
+     * resolve automatically.
      *
-     * saveMode=true → SchemaTool only emits ADD/CREATE statements; it never
-     * emits DROP TABLE so existing data is never destroyed by this call.
+     * Destructive statements (DROP TABLE / DROP COLUMN) are WITHHELD by default
+     * — applyUpdate is called with allowDestructive=false, so they are reported
+     * in `statements_skipped_destructive` rather than executed. Only when the
+     * operator explicitly opts in ($allowDestructive=true) are DROPs executed,
+     * which CAN destroy data. A pre-mutation snapshot is taken by the calling
+     * job in either case.
      *
-     * @return array{success: bool, statements_executed: int, error: ?string}
+     * @return array{success: bool, statements_executed: int, error: ?string, statements_skipped_destructive?: list<string>}
      */
-    public function forceSchemaUpdate(string $actor = 'system'): array
+    public function forceSchemaUpdate(string $actor = 'system', bool $allowDestructive = false): array
     {
-        return $this->withSchemaLock(fn (): array => $this->forceSchemaUpdateLocked($actor));
+        return $this->withSchemaLock(fn (): array => $this->forceSchemaUpdateLocked($actor, $allowDestructive));
     }
 
     /**
-     * @return array{success: bool, statements_executed: int, error: ?string}
+     * @return array{success: bool, statements_executed: int, error: ?string, statements_skipped_destructive: list<string>}
      */
-    private function forceSchemaUpdateLocked(string $actor = 'system'): array
+    private function forceSchemaUpdateLocked(string $actor = 'system', bool $allowDestructive = false): array
     {
         // Delegate to applyUpdate's FK-aware envelope which handles
         // errno 1091/1176/1832/1833/1822/150 + multi-pass convergence +
         // phantom-drift detection. Force = bypass migration gate so the
-        // operator can recover even with pending migrations.
-        $result = $this->schemaHealthService->applyUpdate($actor, bypassMigrationGate: true);
+        // operator can recover even with pending migrations. Destructive DDL
+        // (DROP/TRUNCATE) is withheld unless the operator explicitly opted in
+        // via $allowDestructive — withheld statements come back in
+        // skipped_destructive so we can surface them to the UI.
+        $result = $this->schemaHealthService->applyUpdate(
+            $actor,
+            bypassMigrationGate: true,
+            allowDestructive: $allowDestructive,
+        );
 
         $statementsCount = count($result['executed_sql']);
+        $skippedDestructive = $result['skipped_destructive'] ?? [];
 
         if ($statementsCount === 0 && $result['success']) {
             $this->auditLogger->logCustom(
@@ -348,10 +360,15 @@ class SchemaMaintenanceService
                 'Doctrine',
                 null,
                 null,
-                ['actor' => $actor],
+                ['actor' => $actor, 'allow_destructive' => $allowDestructive],
                 sprintf('Schema force-update by %s — no statements needed (schema already in sync)', $actor),
             );
-            return ['success' => true, 'statements_executed' => 0, 'error' => null];
+            return [
+                'success' => true,
+                'statements_executed' => 0,
+                'error' => null,
+                'statements_skipped_destructive' => $skippedDestructive,
+            ];
         }
 
         if (!$result['success']) {
@@ -360,10 +377,15 @@ class SchemaMaintenanceService
                 'Doctrine',
                 null,
                 null,
-                ['error' => $result['error'], 'sql_count' => $statementsCount, 'actor' => $actor],
+                ['error' => $result['error'], 'sql_count' => $statementsCount, 'actor' => $actor, 'allow_destructive' => $allowDestructive],
                 sprintf('Schema force-update FAILED by %s: %s', $actor, (string) $result['error']),
             );
-            return ['success' => false, 'statements_executed' => 0, 'error' => $result['error']];
+            return [
+                'success' => false,
+                'statements_executed' => 0,
+                'error' => $result['error'],
+                'statements_skipped_destructive' => $skippedDestructive,
+            ];
         }
 
         $this->auditLogger->logCustom(
@@ -371,11 +393,35 @@ class SchemaMaintenanceService
             'Doctrine',
             null,
             null,
-            ['statements' => $statementsCount, 'actor' => $actor],
-            sprintf('Schema force-update applied by %s (%d statement(s), saveMode=true)', $actor, $statementsCount),
+            ['statements' => $statementsCount, 'actor' => $actor, 'allow_destructive' => $allowDestructive, 'skipped_destructive' => count($skippedDestructive)],
+            sprintf('Schema force-update applied by %s (%d statement(s), allowDestructive=%s)', $actor, $statementsCount, $allowDestructive ? 'true' : 'false'),
         );
 
-        return ['success' => true, 'statements_executed' => $statementsCount, 'error' => null];
+        return [
+            'success' => true,
+            'statements_executed' => $statementsCount,
+            'error' => null,
+            'statements_skipped_destructive' => $skippedDestructive,
+        ];
+    }
+
+    /**
+     * Final clean-verdict: true only when no migrations are pending AND the
+     * entity-vs-DB additive drift is empty. Powers the index-page green/red band.
+     *
+     * @return array{migrations_up_to_date: bool, drift_empty: bool, ok: bool}
+     */
+    public function verifyClean(): array
+    {
+        $pending = $this->schemaHealthService->listPendingMigrationVersions();
+        $driftEmpty = $this->getEntityVsDbDrift() === [];
+        $migrationsUpToDate = $pending === [];
+
+        return [
+            'migrations_up_to_date' => $migrationsUpToDate,
+            'drift_empty' => $driftEmpty,
+            'ok' => $migrationsUpToDate && $driftEmpty,
+        ];
     }
 
     /**

@@ -115,6 +115,20 @@
             {% endfor %}
         {% endfor %}
 
+        {# ── Clean-verdict band (QF-9) ─────────────────────────────────── #}
+        {% if clean_verdict.ok %}
+            <div class="flash success" role="status">
+                ✓ {{ 'quick_fix.verdict.clean'|trans({}, 'quick_fix') }}
+            </div>
+        {% else %}
+            <div class="flash error" role="status">
+                ⚠ {{ 'quick_fix.verdict.dirty'|trans({
+                    '%migrations%': clean_verdict.migrations_up_to_date ? '✓' : '✗',
+                    '%drift%': clean_verdict.drift_empty ? '✓' : '✗',
+                }, 'quick_fix') }}
+            </div>
+        {% endif %}
+
         {# ── Universal apply-failure recovery card ─────────────────────── #}
         {# Surfaces for ANY migration failure (data constraint, FK violation,
            phantom-diff, etc.) — not just phantom_diff_migration category.
@@ -166,7 +180,7 @@
                 </div>
             </details>
 
-            {# Option 3: nuclear schema-update (ADD/CREATE only, saveMode=true) #}
+            {# Option 3: nuclear schema-update — additive by default; destructive DROPs withheld unless confirm_destructive_force is ticked #}
             <details style="margin-top: 16px;">
                 <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
                     {{ 'quick_fix.force_update.show'|trans({}, 'quick_fix') }}
@@ -177,7 +191,11 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_force_schema_update') }}">
                         <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--muted);">
                             <input type="checkbox" name="confirm_force_schema" value="1" required style="margin-top: 3px;">
-                            <span>{{ 'quick_fix.force_update.confirm_label'|trans({}, 'quick_fix') }}</span>
+                            <span>{{ 'quick_fix.force.confirm'|trans({}, 'quick_fix') }}</span>
+                        </label>
+                        <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--danger);">
+                            <input type="checkbox" name="confirm_destructive_force" value="1" style="margin-top: 3px;">
+                            <span>{{ 'quick_fix.force.confirm_destructive'|trans({}, 'quick_fix') }}</span>
                         </label>
                         <button type="submit" style="background: var(--danger); color: var(--bg); margin-top: 8px;" onclick="this.disabled=true;this.form.submit();">
                             {{ 'quick_fix.force_update.button'|trans({}, 'quick_fix') }}
@@ -232,8 +250,8 @@
                This fires when pending=0 and drift=0 but the entity metadata expects columns
                the live DB does not have (phantom-diff-state or new deployment). Surface the
                force-schema-update button prominently — not collapsed — so the operator can
-               resolve with a single click. saveMode=true means only ADD/CREATE is emitted,
-               never DROP TABLE. #}
+               resolve with a single click. Additive (ADD/CREATE) statements run by default;
+               destructive DROPs are withheld unless the operator ticks confirm_destructive_force. #}
             <div class="icon">⚠️</div>
             <h1>{{ 'quick_fix.entity_drift.title'|trans({}, 'quick_fix') }}</h1>
             <p>{{ 'quick_fix.entity_drift.body'|trans({}, 'quick_fix') }}</p>
@@ -250,7 +268,11 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_force_schema_update') }}">
                 <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--muted);">
                     <input type="checkbox" name="confirm_force_schema" value="1" required style="margin-top: 3px;">
-                    <span>{{ 'quick_fix.force_update.confirm_label'|trans({}, 'quick_fix') }}</span>
+                    <span>{{ 'quick_fix.force.confirm'|trans({}, 'quick_fix') }}</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--danger);">
+                    <input type="checkbox" name="confirm_destructive_force" value="1" style="margin-top: 3px;">
+                    <span>{{ 'quick_fix.force.confirm_destructive'|trans({}, 'quick_fix') }}</span>
                 </label>
                 <button type="submit" style="background: var(--accent); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
                     {{ 'quick_fix.force_update.button'|trans({}, 'quick_fix') }}
@@ -371,7 +393,11 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_force_schema_update') }}">
                         <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--muted);">
                             <input type="checkbox" name="confirm_force_schema" value="1" required style="margin-top: 3px;">
-                            <span>{{ 'quick_fix.force_update.confirm_label'|trans({}, 'quick_fix') }}</span>
+                            <span>{{ 'quick_fix.force.confirm'|trans({}, 'quick_fix') }}</span>
+                        </label>
+                        <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--danger);">
+                            <input type="checkbox" name="confirm_destructive_force" value="1" style="margin-top: 3px;">
+                            <span>{{ 'quick_fix.force.confirm_destructive'|trans({}, 'quick_fix') }}</span>
                         </label>
                         <button type="submit" style="background: var(--danger); color: var(--bg); margin-top: 8px;" onclick="this.disabled=true;this.form.submit();">
                             {{ 'quick_fix.force_update.button'|trans({}, 'quick_fix') }}
