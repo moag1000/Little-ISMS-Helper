@@ -27,6 +27,8 @@ final class SchemaSnapshotService
         private readonly string $snapshotDir,
         #[Autowire('mysqldump')]
         private readonly string $mysqldumpBinary = 'mysqldump',
+        #[Autowire('%kernel.environment%')]
+        private readonly string $environment = 'prod',
     ) {
     }
 
@@ -35,6 +37,14 @@ final class SchemaSnapshotService
      */
     public function snapshot(string $reason): array
     {
+        // No snapshot under automated tests: the in-request job runner executes
+        // jobs synchronously under the CLI SAPI, so a real mysqldump/logical
+        // export would run (and block) inside the test process. Functional tests
+        // roll back their own transactions, so there is nothing to anchor.
+        if ($this->environment === 'test') {
+            return ['method' => 'skipped', 'path' => null, 'warning' => 'snapshot skipped in test environment'];
+        }
+
         if (!is_dir($this->snapshotDir)) {
             @mkdir($this->snapshotDir, 0775, true);
         }

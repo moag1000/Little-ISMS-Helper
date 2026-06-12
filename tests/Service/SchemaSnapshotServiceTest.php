@@ -59,4 +59,30 @@ class SchemaSnapshotServiceTest extends TestCase
         self::assertSame('logical', $result['method']);
         self::assertSame('/tmp/logical-snap.json', $result['path']);
     }
+
+    #[Test]
+    public function skipsEntirelyInTestEnvironment(): void
+    {
+        // Under the test SAPI the in-request runner executes jobs synchronously,
+        // so a real mysqldump/logical export would run inside the test process.
+        // The service must short-circuit before touching the connection or backup.
+        $conn = $this->createMock(Connection::class);
+        $conn->expects(self::never())->method('getParams');
+        $backup = $this->createMock(BackupService::class);
+        $backup->expects(self::never())->method('createBackup');
+
+        $service = new SchemaSnapshotService(
+            $conn,
+            $backup,
+            $this->createMock(AuditLogger::class),
+            sys_get_temp_dir() . '/quickfix-test-' . getmypid(),
+            mysqldumpBinary: '/nonexistent/mysqldump',
+            environment: 'test',
+        );
+
+        $result = $service->snapshot('test-reason');
+
+        self::assertSame('skipped', $result['method']);
+        self::assertNull($result['path']);
+    }
 }
