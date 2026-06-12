@@ -401,13 +401,44 @@ class SchemaHealthService
                 // Step 2: retry the original statement (depth-guarded)
                 $this->executeStatementFkAware($conn, $sql, $droppedFks, $depth + 1);
 
-                // Step 3: re-add the FK on its owner table
-                $conn->executeStatement(sprintf(
-                    'ALTER TABLE `%s` ADD CONSTRAINT `%s` %s',
-                    $fkOwnerTable,
-                    $fkName,
-                    $fkDef,
-                ));
+                // Step 3: re-add the FK on its owner table — MUST succeed, else
+                // we have silently dropped a referential-integrity constraint.
+                try {
+                    $conn->executeStatement(sprintf(
+                        'ALTER TABLE `%s` ADD CONSTRAINT `%s` %s',
+                        $fkOwnerTable,
+                        $fkName,
+                        $fkDef,
+                    ));
+                } catch (\Throwable $reAddError) {
+                    $this->auditLogger->logCustom(
+                        'admin.schema.fk_aware_readd_failed',
+                        'Doctrine',
+                        null,
+                        null,
+                        [
+                            'table' => $fkOwnerTable,
+                            'fk' => $fkName,
+                            'readd_sql' => sprintf('ALTER TABLE `%s` ADD CONSTRAINT `%s` %s', $fkOwnerTable, $fkName, $fkDef),
+                            'error' => $reAddError->getMessage(),
+                        ],
+                        sprintf(
+                            'CRITICAL: FK %s on %s was dropped to apply an ALTER but could NOT be recreated: %s. Manual re-add required.',
+                            $fkName,
+                            $fkOwnerTable,
+                            $reAddError->getMessage(),
+                        ),
+                    );
+                    throw new \App\Exception\Io\IoException(sprintf(
+                        'FK-aware reconcile dropped %s.%s but failed to recreate it: %s — re-add SQL: ALTER TABLE `%s` ADD CONSTRAINT `%s` %s',
+                        $fkOwnerTable,
+                        $fkName,
+                        $reAddError->getMessage(),
+                        $fkOwnerTable,
+                        $fkName,
+                        $fkDef,
+                    ), null, $reAddError);
+                }
 
                 $droppedFks[] = [
                     'table' => $fkOwnerTable,
