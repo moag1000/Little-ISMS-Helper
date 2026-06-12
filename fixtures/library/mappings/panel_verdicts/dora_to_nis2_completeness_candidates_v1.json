@@ -1,0 +1,315 @@
+{
+  "provenance": {
+    "source_framework": "DORA",
+    "target_framework": "NIS2",
+    "description": "Completeness candidates discovered by panel review — UNREFUTED proposals only. NOT applied to operational mappings. Logged for future human review.",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "lex_specialis_basis": "DORA Art.1(2), NIS2 Art.4(1) — EUR-Lex CELEX:32022R2554, CELEX:32022L2555",
+    "run_date": "2026-06-12",
+    "note": "UNREFUTED completeness proposals — NOT applied to operational mappings without further human review",
+    "candidate_count": 59
+  },
+  "candidates": [
+    {
+      "target": "Art.20.2",
+      "mappingPercentage": 70,
+      "rationale": "DORA-5.1 (Management Body Responsibility — the management body bears ultimate responsibility for managing ICT risk): NIS2 Art.20 splits management duties into two paragraphs. Art.20.1 (approve + oversee measures, already mapped) is necessary but incomplete; Art.20.2 requires that members of the management body follow training and offer it to staff so they have sufficient knowledge to identify and assess ICT risk. 'Bearing ultimate responsibility' under DORA Art.5(1) is, in DORA's own scheme, the same accountability that DORA Art.5(4) operationalises through mandatory up-to-date knowledge/training of the body. The competence/training limb (Art.20.2) is therefore a genuine, defensible additional correspondence to the responsibility item, not merely the approval limb already captured."
+    },
+    {
+      "target": "Art.21.2.f",
+      "mappingPercentage": 80,
+      "rationale": "DORA-5.2 (ICT Risk Oversight — the management body shall maintain overall oversight of the ICT risk management framework): oversight is not exhausted by Art.20.1 approval/supervision; it inherently includes ensuring the framework's effectiveness is assessed. NIS2 Art.21.2(f) (policies and procedures to assess the effectiveness of cybersecurity risk-management measures) is the substantive measure the body oversees. DORA Art.5(2) makes the body responsible for putting in place and reviewing the framework, which corresponds directly to the effectiveness-assessment governance loop in Art.21.2(f). This is a defensible additional target capturing the 'oversight-of-effectiveness' dimension absent from the pure-accountability Art.20.1 mapping."
+    },
+    {
+      "target": "Art.20.1",
+      "mappingPercentage": 60,
+      "rationale": "DORA-5.4 (management-body training/knowledge duty, currently mapped only to Art.20.2): NIS2 Art.20 is a single integrated governance regime where 20.1 (the body must approve the measures and supervise their implementation) and 20.2 (the body must follow training to gain knowledge) are two halves of the same accountability. DORA Art.5(4)'s training duty exists precisely so the body can discharge the approval/supervision duty in Art.20.1. Mapping the training item solely to 20.2 omits that the knowledge requirement is instrumental to — and explicitly cross-referenced with — the approve-and-oversee obligation in 20.1. A partial reciprocal mapping to Art.20.1 is therefore defensible."
+    },
+    {
+      "target": "Art.21.2.f",
+      "mappingPercentage": 75,
+      "rationale": "DORA-6.1 (ICT Risk Management Framework — an internal governance and control framework ensuring effective and prudent management of ICT risk): the term 'effective ... management' and 'control framework' covers not only the existence of policies (Art.21.2.a, already mapped) but also the procedures to assess that the measures actually work. NIS2 Art.21.2(f) (policies and procedures to assess the effectiveness of cybersecurity risk-management measures) is the closure-of-the-loop element of any risk-management framework and DORA Art.6(5) requires the framework to be documented, reviewed at least yearly and audited. This makes Art.21.2(f) a genuinely missing additional correspondence beyond the policy-existence mapping to Art.21.2(a)."
+    },
+    {
+      "target": "Art.21.2.c",
+      "mappingPercentage": 95,
+      "rationale": "DORA-6.2 (Business Continuity Policy — the ICT risk management framework shall include strategies, policies, procedures and ICT protocols to maintain business continuity, including for all legacy systems): this is squarely business continuity. NIS2 Art.21.2(c) is the dedicated 'business continuity, such as backup management and disaster recovery, and crisis management' measure — a near-exact substantive match. The current mapping to Art.21.2(a) (general risk-analysis/infosec policy) is too generic and misses the specific BC limb. Art.21.2(c) is the obviously correct, high-confidence missing target; this is a clear mapping error of omission."
+    },
+    {
+      "target": "Art.21.2.a",
+      "mappingPercentage": 70,
+      "rationale": "DORA-6.5 (framework must be documented, reviewed at least yearly, and subject to internal audit — currently mapped to Art.21.2.f effectiveness assessment): the yearly review/audit of the framework also implies the documented infosec policies and risk-analysis policies that Art.21.2(a) mandates, since the object being reviewed is precisely the policy-on-risk-analysis-and-information-system-security baseline. DORA Art.6(5)'s 'documented and reviewed' duty corresponds to maintaining current Art.21.2(a) policies, making (a) a defensible additional correspondence alongside the effectiveness/(f) mapping already present."
+    },
+    {
+      "target": "Art.21.2.i",
+      "mappingPercentage": 90,
+      "rationale": "DORA-7 (Identification — identify all ICT-supported business functions, ICT assets, configurations and dependencies; ISO-mapped to A.5.9/A.5.10 asset management): NIS2 Art.21.2(i) expressly includes 'asset management' as part of the human-resources-security/access-control/asset-management measure, and DORA Art.7's identification duty IS asset inventory and mapping of dependencies. The current mapping to Art.21.2(e) (acquisition/development/maintenance) and (c) (BC) does not capture the asset-management core. Art.21.2(i) is a strong, defensible missing target — arguably the single best NIS2 home for DORA's identification/inventory requirement."
+    },
+    {
+      "target": "Art.21.2.f",
+      "mappingPercentage": 60,
+      "rationale": "DORA-8.1 (Identification of ICT Risk — financial entities shall identify all information and ICT assets, map those considered critical, and on a continuous basis identify sources of ICT risk): beyond the asset-inventory limb (already mapped to Art.21.2.i) and the risk-analysis-policy limb (Art.21.2.a, already mapped), DORA Art.8 requires reviewing/identifying risk on a continuous basis and at least yearly, which corresponds to the ongoing assessment loop in NIS2 Art.21.2(f) (policies and procedures to assess effectiveness of measures). This continuous-review dimension is genuinely additional to the static inventory/policy mappings and is defensibly captured by Art.21.2(f)."
+    },
+    {
+      "target": "21.2.i",
+      "mappingPercentage": 90,
+      "rationale": "DORA-8.2 (source) 'ICT Assets Inventory' — maintain ICT asset inventories including third-party-provided assets. NIS2 Art.21(2)(i) explicitly bundles 'asset management' together with HR-security and access-control. Asset inventory IS the asset-management leg of (i); ENISA's Implementation Guidance lists an asset register/inventory as a core (i) measure. The current mapping sends 8.2 only to (e) acquisition/dev/maintenance and (a) risk-policy, but the inventory's most direct NIS2 home is the asset-management clause (i). Strongly defensible additional correspondence."
+    },
+    {
+      "target": "21.2.b",
+      "mappingPercentage": 60,
+      "rationale": "DORA-8.3 (source) 'Continuous Monitoring of ICT Risk' — continuously monitor and assess ICT risk, mapped in the file to ISO 8.8/8.15 (monitoring/logging, anomalous-activity detection). NIS2 Art.21(2)(b) 'incident handling' presupposes detection of incidents; continuous monitoring/anomaly detection is the detection front-end of incident handling (ENISA maps event logging + monitoring under both detection and incident handling). Current mapping only routes 8.3 to (e)/(a). Defensible but partial since (b) centres on handling/response rather than pure monitoring."
+    },
+    {
+      "target": "21.2.f",
+      "mappingPercentage": 70,
+      "rationale": "DORA-8.3 (source) 'Continuous Monitoring of ICT Risk' — continuously monitor and ADAPT the risk-management framework as needed. NIS2 Art.21(2)(f) 'policies and procedures to assess the effectiveness of cybersecurity risk-management measures'. The DORA duty to continuously assess and adapt the framework is exactly the effectiveness-evaluation/monitoring loop (f) demands. The file maps DORA-13 to (f) but omits 8.3, whose 'continuously monitor and assess ... adapting the framework' wording is a close textual match. Strongly defensible."
+    },
+    {
+      "target": "21.2.c",
+      "mappingPercentage": 95,
+      "rationale": "DORA-9.1 (source) 'ICT Business Continuity Plans' — develop and document ICT business continuity and disaster-recovery plans. NIS2 Art.21(2)(c) is literally 'business continuity, such as backup management and disaster recovery, and crisis management'. This is a near-identical subject match and is the single most defensible missing link in the whole set. The current mapping inexplicably routes 9.1 to (h) crypto, (j) MFA, (i) HR/access and (e) acquisition — none of which fit BC/DR — while omitting (c) entirely. Glaring gap."
+    },
+    {
+      "target": "21.2.c",
+      "mappingPercentage": 95,
+      "rationale": "DORA-9.2 (source) 'Testing of Business Continuity' — test ICT business continuity and disaster-recovery plans at least annually. NIS2 Art.21(2)(c) covers business continuity, backup and disaster recovery; periodic testing of BC/DR plans is an integral, explicitly expected part of the (c) measure (ENISA guidance requires BC/DR plans to be tested). Current mapping omits (c) while assigning crypto/MFA/HR. Highly defensible."
+    },
+    {
+      "target": "21.2.c",
+      "mappingPercentage": 90,
+      "rationale": "DORA-9.3 (source) 'Recovery Time Objectives' — set RTO and RPO for each critical function. NIS2 Art.21(2)(c) business continuity / disaster recovery / backup management; RTO/RPO are the defining recovery parameters of any BC/DR programme and are squarely within (c). The mapping currently sends 9.3 to (h)/(j)/(i)/(e) but not (c). Strongly defensible. (Note 9.3 is also separately and correctly used for crypto via the lumped Art.9 rationale, but by its own title it belongs to (c).)"
+    },
+    {
+      "target": "21.2.c",
+      "mappingPercentage": 85,
+      "rationale": "DORA-9.4 (source) 'Communication Plans' — crisis communication plans enabling responsible disclosure of ICT-related incidents. NIS2 Art.21(2)(c) explicitly names 'crisis management' as part of the business-continuity measure; a crisis-communication plan is a core crisis-management artefact. Current mapping omits (c). Strongly defensible."
+    },
+    {
+      "target": "21.2.b",
+      "mappingPercentage": 65,
+      "rationale": "DORA-9.4 (source) 'Communication Plans' — crisis communication plans for responsible disclosure of ICT incidents. NIS2 Art.21(2)(b) 'incident handling' includes incident communication/disclosure to stakeholders and authorities. Incident-disclosure communication overlaps the handling clause. Defensible as a secondary correspondence alongside (c)/crisis-management; partial because (b)'s core is detection/response not communication."
+    },
+    {
+      "target": "21.2.j",
+      "mappingPercentage": 55,
+      "rationale": "DORA-9.4 (source) 'Communication Plans' — plans enabling communication/disclosure during ICT incidents. NIS2 Art.21(2)(j) includes 'secured emergency communication systems within the entity, where appropriate'. A crisis/emergency communication plan touches (j)'s emergency-communication leg. Defensible but weaker than (c)/(b): (j) emphasises the secured technical communication channel, whereas 9.4 is about the disclosure plan/process — partial overlap only."
+    },
+    {
+      "target": "21.2.c",
+      "mappingPercentage": 85,
+      "rationale": "DORA-10.1 (source) 'Response and Recovery Procedures' — establish, maintain and test ICT response and recovery plans (file tags it bcm_required + incident_management, ISO 5.30). NIS2 Art.21(2)(c) business continuity / disaster recovery covers recovery plans and their testing. The 'recovery plan' half of 10.1 maps directly to (c); current mapping only assigns (b) and (f). Strongly defensible additional link."
+    },
+    {
+      "target": "21.2.a",
+      "mappingPercentage": 80,
+      "rationale": "DORA-11.1 (source) 'Simplified ICT Risk Management Framework' — a (reduced) ICT risk-management framework for small/non-interconnected entities; file maps it to ISO 5.1/5.2 (governance/policies). NIS2 Art.21(2)(a) 'policies on risk analysis and information system security' is the baseline risk-management-framework clause. A simplified RM framework is still fundamentally an (a) risk-policy/framework measure — and indeed the file maps the full framework articles (DORA-5/6) to (a). Current mapping routes 11.1 to (b)/(c)/(f) but omits the most on-point letter (a). Strongly defensible."
+    },
+    {
+      "target": "Art.21.2.a",
+      "mappingPercentage": 40,
+      "rationale": "DORA-13.1: DORA Art. 13 'Learning and Evolving' obliges entities to feed post-incident reviews and threat-intelligence findings back INTO the ICT risk-management framework, continuously updating it. NIS2 Art. 21(2)(a) is the risk-analysis and information-system security policy that this learning loop revises. The current mapping only captures the effectiveness-evaluation angle (21.2.f); the framework-update/risk-analysis angle (21.2.a) is a genuinely additional, defensible 'related/partial' correspondence (ENISA NIS2 guidance treats continuous improvement of the risk framework as part of (a)). Not a superset, hence ~40%."
+    },
+    {
+      "target": "Art.21.2.a",
+      "mappingPercentage": 40,
+      "rationale": "DORA-13.2: Same as 13.1 — Art. 13's lessons-learned loop updates the ICT risk-management framework, which corresponds to the risk-analysis/security-policy obligation of NIS2 Art. 21(2)(a), not only to the effectiveness-assessment of (f) already mapped. Defensible partial correspondence."
+    },
+    {
+      "target": "Art.21.2.a",
+      "mappingPercentage": 40,
+      "rationale": "DORA-13.3: Same Art. 13 learning-and-evolving rationale — the obligation to evolve and re-baseline the risk-management framework based on lessons learned maps to NIS2 Art. 21(2)(a) risk-analysis policies in addition to the (f) effectiveness angle already present. Partial, ~40%."
+    },
+    {
+      "target": "Art.21.2.a",
+      "mappingPercentage": 40,
+      "rationale": "DORA-13.4: Same Art. 13 rationale — continuous evolution of the ICT risk framework driven by post-incident learning anchors additionally to NIS2 Art. 21(2)(a) (risk analysis / security-of-information-systems policy), beyond the (f) effectiveness mapping. Defensible partial."
+    },
+    {
+      "target": "Art.21.2.a",
+      "mappingPercentage": 40,
+      "rationale": "DORA-13.5: Same Art. 13 rationale — the learning loop that revises the risk-analysis methodology and security policies corresponds to NIS2 Art. 21(2)(a) in addition to the already-mapped effectiveness obligation (f). Partial, ~40%."
+    },
+    {
+      "target": "Art.21.2.b",
+      "mappingPercentage": 50,
+      "rationale": "DORA-14.1: DORA Art. 14 (communication) governs crisis/stakeholder communication and responsible disclosure of ICT-related incidents to clients, counterparts, the public and competent authorities. Incident communication and disclosure are a constituent part of NIS2 Art. 21(2)(b) 'incident handling' (which includes notification/communication of incidents). The current mapping has 21.2.j (secure communications) and 21.2.c (continuity), but the incident-handling linkage (21.2.b) is a defensible additional correspondence, since Art. 14 communication is triggered by and embedded in the incident-response process. Partial overlap, ~50%."
+    },
+    {
+      "target": "Art.20.1",
+      "mappingPercentage": 80,
+      "rationale": "DORA-16.1: 'Supervisory expectations for ICT risk management maturity and capabilities' is rooted in DORA Art.5 governance, where the management body owns and approves the ICT-risk-management framework. That governance/accountability dimension corresponds directly to NIS2 Art.20.1 (management bodies approve and oversee implementation of risk-management measures). Current mapping (Art.21.2.a only) captures the policy/risk-analysis facet but omits the management-body-accountability facet that is the core of supervisory maturity expectations."
+    },
+    {
+      "target": "Art.21.2.f",
+      "mappingPercentage": 75,
+      "rationale": "DORA-16.1: Meeting supervisory expectations for ICT-risk-management 'maturity and capabilities' is demonstrated through regular effectiveness assessment of the measures (ISO 9.1/9.3). NIS2 Art.21.2.f (policies and procedures to assess the effectiveness of cybersecurity risk-management measures) is the maturity-assessment counterpart and is missing from the current Art.21.2.a-only mapping."
+    },
+    {
+      "target": "Art.23.1",
+      "mappingPercentage": 70,
+      "rationale": "DORA-17.1: The incident-management process is defined to 'detect, manage AND notify' incidents. The notify limb is the operational precursor to the reporting obligation, so it corresponds to NIS2 Art.23.1 (notify any incident having significant impact). Current mapping (Art.21.2.b incident handling, Art.21.2.f effectiveness) covers handling but not the notification trigger the process exists to feed; defensible as partial."
+    },
+    {
+      "target": "Art.23.1",
+      "mappingPercentage": 85,
+      "rationale": "DORA-17.2: 'Classify ICT-related incidents and determine their impact' performs exactly the function NIS2 assigns to Art.23.1 — applying significance/impact criteria to decide whether an incident is reportable. Impact-based classification and NIS2 significance determination are the same conceptual act, so Art.23.1 should be mapped alongside the existing Art.21.2.b / Art.21.2.f."
+    },
+    {
+      "target": "Art.21.2.b",
+      "mappingPercentage": 80,
+      "rationale": "DORA-18: Classification of ICT-related incidents (major incidents vs significant cyber threats, by impact/duration/spread criteria) is an integral part of the incident-handling/detection lifecycle. NIS2 Art.21.2.b (incident handling — detection, response, classification) is a defensible additional correspondence beyond the currently mapped Art.23.1 reporting hook."
+    },
+    {
+      "target": "Art.23.2",
+      "mappingPercentage": 75,
+      "rationale": "DORA-18: The classification thresholds for major incidents and significant cyber threats are precisely what drives the earliest reporting stage. NIS2 Art.23.2 (early warning within 24h, incl. suspected unlawful/malicious act trigger) depends on this threat/major-incident classification, so it should be mapped in addition to Art.23.1."
+    },
+    {
+      "target": "Art.23.5",
+      "mappingPercentage": 75,
+      "rationale": "DORA-19.1: 'Report major ICT-related incidents to competent authorities' is the full notification lifecycle, which under DORA includes intermediate/ongoing updates. The current mapping covers Art.23.1/.2/.3/.4 but omits NIS2 Art.23.5 (progress report every month while the incident is still ongoing), which is part of the same major-incident notification duty."
+    },
+    {
+      "target": "Art.23.6",
+      "mappingPercentage": 70,
+      "rationale": "DORA-19.1: Notification of major incidents to competent authorities is operationalised through the entity-to-authority communication channel. NIS2 Art.23.6 (communications between entity and CSIRT/competent authority) is the channel for that notification and is missing from the current Art.23.1-.4 mapping."
+    },
+    {
+      "target": "Art.23.4",
+      "mappingPercentage": 80,
+      "rationale": "DORA-20.1: 'Standardized templates and procedures for supervisory reporting' apply across the whole reporting lifecycle, not only the 72h notification. The current mapping covers only Art.23.3; NIS2 Art.23.4 (final report content within 1 month — root cause, mitigation, cross-border impact) uses the same standardized templates and is a defensible additional correspondence."
+    },
+    {
+      "target": "Art.23.6",
+      "mappingPercentage": 70,
+      "rationale": "DORA-20.1: Harmonized supervisory reporting also governs the format/procedures of the entity-authority exchange. NIS2 Art.23.6 (communications between entity and CSIRT/competent authority) is the procedural channel the standardized templates and procedures are applied to, beyond the currently mapped Art.23.3."
+    },
+    {
+      "target": "Art.23.3",
+      "mappingPercentage": 90,
+      "rationale": "DORA-23: 'Details of reports' / standardized report content and templates (DORA Art.23) corresponds most directly to NIS2 Art.23.3 (incident notification content within 72h — assessment, indicators of compromise, type of threat). Mapping report-details solely to Art.21.2.b (incident handling) while omitting the actual NIS2 reporting-content article is the clearest gap in the set."
+    },
+    {
+      "target": "Art.23.4",
+      "mappingPercentage": 85,
+      "rationale": "DORA-23: The content/templates for reports also govern the final report. NIS2 Art.23.4 (final report within 1 month — root cause, applied mitigation, cross-border impact) is the report-content counterpart for the closing stage and should be mapped alongside Art.23.3, neither of which is in the current Art.21.2.b-only mapping."
+    },
+    {
+      "target": "Art.21.2.e",
+      "mappingPercentage": 60,
+      "rationale": "DORA-24.1: DORA Art. 24 requires a digital operational resilience testing programme including vulnerability assessments and scans. NIS2 Art. 21.2.e (security in network and information systems acquisition, development and maintenance) maps to ISO 27001 A.8.8 (technical vulnerability management) and the secure-SDLC controls A.8.25-A.8.34 - vulnerability assessment of in-scope systems is an integral maintenance-security activity, not only an effectiveness check (.f). Defensible partial correspondence: the testing programme operationalises the vulnerability-handling obligation embedded in .e. Currently only .f is mapped."
+    },
+    {
+      "target": "Art.21.2.e",
+      "mappingPercentage": 65,
+      "rationale": "DORA-24.2: DORA Art. 24's recurring testing/assessment of ICT tools and systems (and remediation of weaknesses found) corresponds to NIS2 Art. 21.2.e maintenance-security obligation (A.8.8 vulnerability handling, A.8.29 security testing in development/acceptance). Remediating identified vulnerabilities is a maintenance activity captured by .e, beyond the pure effectiveness-evaluation captured by the existing .f mapping."
+    },
+    {
+      "target": "Art.21.2.e",
+      "mappingPercentage": 70,
+      "rationale": "DORA-25: DORA Art. 25 governs the testing of ICT tools and systems (appropriate tests prior to and throughout the lifecycle). This is squarely a secure acquisition/development/maintenance control - NIS2 Art. 21.2.e maps to A.8.29 (security testing in development and acceptance) and A.8.25-A.8.34 (secure SDLC). Pre-deployment and lifecycle testing of systems belongs to .e at least as strongly as to the effectiveness-assessment .f currently mapped."
+    },
+    {
+      "target": "Art.21.2.a",
+      "mappingPercentage": 60,
+      "rationale": "DORA-29.1: Art. 29 concentration-risk assessment for ICT third-party providers is at its core a risk-analysis activity over the supplier portfolio (substitutability, single-point-of-failure, criticality of TPP-served functions). NIS2 Art. 21(2)(a) requires 'concepts for risk analysis'. The mapping file already establishes the precedent that the TPP risk-analysis dimension belongs to 21.2.a (see DORA-28.1/28.2/28.3 -> Art.21.2.a as 'subset'). Concentration risk is a specific, recurring TPP risk-analysis output and should likewise correspond to 21.2.a as a subset/related link, not only to the supply-chain target 21.2.d. Defensible; relationship 'subset', confidence medium."
+    },
+    {
+      "target": "Art.21.2.b",
+      "mappingPercentage": 55,
+      "rationale": "DORA-30.1: DORA Art. 30 (with RTS 2024/1773) mandates contractual clauses that include the TPP's incident-notification obligations, breach reporting, and cooperation duties toward the financial entity. These clauses are a direct enabler of NIS2 Art. 21(2)(b) 'incident handling' for the externally-sourced portion of the ICT estate (a supplier cannot be handled in an incident without contractual reporting/cooperation rights). The current mapping captures 30.1 -> 21.2.d (supply chain) and 30.1 -> 21.2.e (maintenance SLAs) but omits the incident-handling enablement. Defensible as 'related', confidence medium."
+    },
+    {
+      "target": "Art.21.2.a",
+      "mappingPercentage": 50,
+      "rationale": "DORA-45: Art. 45 information-/threat-intelligence-sharing arrangements feed not only effectiveness assessment (21.2.f, already mapped) and incident detection/response (21.2.b, already mapped) but also the risk-analysis process itself. Shared sector threat intelligence (FS-ISAC, sector ISACs) is a primary input to the 'risk analysis concepts' required by NIS2 Art. 21(2)(a) — current threat landscape drives risk identification and re-assessment. Defensible as 'related', confidence medium. Note: the link is supportive (intel is an input to risk analysis, not the analysis itself), consistent with the 'related' relationship already used for the existing Art.45 rows."
+    },
+    {
+      "target": "NIS2 Art.21.2.a",
+      "mappingPercentage": 70,
+      "rationale": "DORA RTS-ICT-RMF-Art.13 — Covers network security: segmentation, segregation, perimeter defence, micro-segmentation and allow-listing. NIS2 Art.21.2(a) ('policies on risk analysis and security of network and information systems') is the foundational measure under which network-segmentation architecture sits; it is a far better substantive home than the currently-mapped 21.2(e) (acquisition/development/vuln-handling). Network security is a core security-of-network-and-information-systems control, hence a strongly defensible additional correspondence."
+    },
+    {
+      "target": "NIS2 Art.21.2.j",
+      "mappingPercentage": 55,
+      "rationale": "DORA RTS-ICT-RMF-Art.13 — Network security/segmentation and allow-listing also correspond to NIS2 Art.21.2(j) ('security of network and information systems ... use of secured communications'), which is the NIS2 measure addressing network-level and communication-channel protection. Partial (not exact) because (j) is centred on MFA/secured + emergency communications, but network segmentation underpins secured communications, making this a genuine secondary mapping."
+    },
+    {
+      "target": "NIS2 Art.21.2.i",
+      "mappingPercentage": 90,
+      "rationale": "DORA RTS-ICT-RMF-Art.20 — Covers access control: least privilege, segregation of duties, privileged access management (PAM). NIS2 Art.21.2(i) explicitly enumerates 'access control policies and asset management' as a required measure. This is a near-exact substantive correspondence and a clear miss; the currently-mapped 21.2(j) (MFA/secured comms) captures only the authentication slice, whereas (i) is the dedicated access-control measure."
+    },
+    {
+      "target": "NIS2 Art.21.2.a",
+      "mappingPercentage": 45,
+      "rationale": "DORA RTS-ICT-RMF-Art.22 — Covers ICT-related incident detection mechanisms (SIEM, EDR, UEBA, anomaly detection, alert thresholds). Beyond the existing 21.2(b) incident-handling mapping, continuous monitoring/detection is also an element of NIS2 Art.21.2(a) ('security of network and information systems'), which encompasses the monitoring capability that surfaces incidents. Moderate percentage because detection sits primarily under (b); (a) is a defensible but secondary correspondence."
+    },
+    {
+      "target": "NIS2 Art.21.2.f",
+      "mappingPercentage": 65,
+      "rationale": "DORA RTS-ICT-RMF-Art.25 — Covers testing of ICT business continuity plans (annual minimum, severe-scenario coverage). Beyond the existing 21.2(c) BC/DR mapping, the act of testing BC plans is precisely an exercise to verify they work, corresponding to NIS2 Art.21.2(f) ('policies and procedures to assess the effectiveness of cybersecurity risk-management measures'). BC-plan testing is an effectiveness-assessment activity, making (f) a genuinely defensible additional mapping."
+    },
+    {
+      "target": "NIS2 Art.23.3",
+      "mappingPercentage": 85,
+      "rationale": "DORA RTS-INC-CLASS-Art.2 — Defines quantitative thresholds for clients/financial counterparts and transactions affected, i.e. the materiality criteria that determine whether an incident is 'major'. This corresponds far more precisely to NIS2 Art.23.3 (criteria for when an incident is 'significant' — incl. number of users/recipients affected) than to the currently-mapped Art.23.1 (the bare obligation to notify). The threshold-on-affected-parties logic is the direct NIS2 analogue, a clear miss."
+    },
+    {
+      "target": "NIS2 Art.23.3",
+      "mappingPercentage": 85,
+      "rationale": "DORA RTS-INC-CLASS-Art.4 — Defines duration and service-downtime time-based thresholds (commonly >=2h critical-service downtime) for major-incident classification. This maps to NIS2 Art.23.3, whose significance criteria expressly include the duration and the extent of operational disruption/service-downtime an incident causes. The substantive correspondence is the significance-criteria article (23.3), not just the notification obligation (23.1) currently mapped — a clear miss."
+    },
+    {
+      "target": "Art.21.2.b",
+      "mappingPercentage": 65,
+      "rationale": "RTS-INC-CLASS-Art.6 — Classifying incidents by data-loss impact (CIA categories, volume, sensitivity incl. personal/financial data) is a core incident-handling function, not merely a notification-significance trigger. NIS2 Art.21.2.b 'Incident handling' requires the entity to categorise and triage incidents by impact; the data-loss classification criteria operationalise exactly that. The existing Art.23.1 mapping covers only the reporting-significance angle; the substantive handling/severity-classification correspondence to 21.2.b is missing and defensible."
+    },
+    {
+      "target": "Art.23.5",
+      "mappingPercentage": 55,
+      "rationale": "RTS-INC-REPORT-Art.2 — The DORA intermediate report (72h, status update + root-cause hypothesis) is functionally the recurring interim-status mechanism between initial and final reporting. NIS2 Art.23.5 (progress report every month while an incident is still ongoing) is the corresponding interim-status-update obligation. The existing Art.23.3 mapping (72h notification) captures the deadline-parity, but the 'status/progress while ongoing' character of the intermediate report additionally and defensibly corresponds to Art.23.5."
+    },
+    {
+      "target": "Art.21.2.f",
+      "mappingPercentage": 50,
+      "rationale": "RTS-INC-REPORT-Art.3 — The final report's 'remediation and lessons-learned' content is the post-incident feedback that drives improvement of risk-management measures. NIS2 Art.21.2.f (policies/procedures to assess the effectiveness of cybersecurity risk-management measures) is the defensible additional target: lessons-learned from major incidents feed directly into the effectiveness-assessment cycle. The existing Art.23.4 mapping covers only the 1-month final-report deadline parity, not the effectiveness-feedback dimension."
+    },
+    {
+      "target": "Art.21.2.c",
+      "mappingPercentage": 55,
+      "rationale": "ITS-Register-RT.05.02 — Linking ICT services to critical or important functions is the dependency-mapping prerequisite for business-continuity and disaster-recovery planning, not solely a supply-chain register concern. NIS2 Art.21.2.c (business continuity, including backup management and disaster recovery) defensibly corresponds: you cannot scope BC/DR for critical functions without knowing which third-party ICT services support them. The existing Art.21.2.d mapping captures only the supply-chain angle and misses the BC/critical-function-dependency correspondence."
+    },
+    {
+      "target": "Art.21.2.a",
+      "mappingPercentage": 45,
+      "rationale": "RTS-Subcontracting-Art.2 — The 'risk assessment and due diligence' conditions for subcontracting are an application of the entity's risk-analysis policy to the third-party/subcontractor context. NIS2 Art.21.2.a (policies on risk analysis and information system security) is a defensible additional target: subcontractor risk assessment is risk analysis applied to the supply chain. The existing Art.21.2.d mapping covers the supply-chain-security control objective, but the underlying risk-analysis-policy basis (21.2.a) is a distinct and missing correspondence."
+    },
+    {
+      "target": "NIS2-21.2.a",
+      "mappingPercentage": 55,
+      "rationale": "RTS-Subcontracting-Art.5: Sub-outsourcing chain limits and oversight require assessing chain depth, geography and concentration — this is intrinsically a risk-analysis activity directed at the supply chain. Beyond the existing supply-chain mapping (21.2.d), the article mandates establishing risk-analysis criteria over the outsourcing chain, which maps to NIS2 'policies on risk analysis' (21.2.a). Defensible but partial: 21.2.a covers the analytical methodology, not the supply-chain control object itself."
+    },
+    {
+      "target": "NIS2-21.2.e",
+      "mappingPercentage": 50,
+      "rationale": "RTS-TLPT-Art.4: TLPT methodology / TIBER-EU phases execute adversarial red-teaming against in-scope production ICT systems. Beyond assessing overall measure effectiveness (21.2.f, already mapped), the practical output of a TLPT is the discovery and validation of exploitable weaknesses in deployed systems, which directly exercises NIS2 'security in acquisition, development and maintenance, including vulnerability handling' (21.2.e). Partial because TLPT is scenario-driven rather than a systematic SDLC/vulnerability-handling program."
+    },
+    {
+      "target": "NIS2-21.2.d",
+      "mappingPercentage": 75,
+      "rationale": "RTS-TPP-Policy-Art.7: Exit strategies and termination rights with ICT third-party providers are a core supply-chain relationship-management obligation. The current mapping only links it to business continuity (21.2.c). NIS2 21.2.d ('supply chain security, including security-related aspects of relationships with direct suppliers or service providers') squarely covers orderly exit, termination rights and data portability from a provider — this is a defining element of the supplier relationship lifecycle, so the supply-chain correspondence is strong and arguably stronger than the BC one."
+    },
+    {
+      "target": "NIS2-21.2.a",
+      "mappingPercentage": 45,
+      "rationale": "RTS-TPP-Policy-Art.8: Concentration-risk monitoring with quantitative metrics is, by construction, an ongoing risk-analysis activity. Beyond the supply-chain object (21.2.d, already mapped), the requirement to define quantitative concentration metrics and analyse them maps to NIS2 'policies on risk analysis' (21.2.a). Partial: 21.2.a captures the analytical/quantification dimension, while 21.2.d remains the primary control surface."
+    }
+  ]
+}

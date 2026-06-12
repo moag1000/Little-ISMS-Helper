@@ -47,6 +47,13 @@ class IsoToBsiGapService
     /** provenanceSource sentinel written by MappingCorroborationService (WS-5b stage-1) */
     public const PROVENANCE_CRT_CORROBORATED = 'crt_corroborated';
 
+    /**
+     * provenanceSource sentinel for EU lex-specialis mappings grounded in EUR-Lex
+     * (e.g. DORA↔NIS2, loaded from dora_to_nis2_lex-specialis_v2.0.yaml).
+     * These are amtlich — authoritative EU law, no human review needed.
+     */
+    public const PROVENANCE_OFFICIAL_EU_LEX_SPECIALIS = 'official_eu_lex_specialis';
+
     /** Trust tier constants */
     public const TIER_AMTLICH            = 'amtlich';
     public const TIER_AMTLICH_GESTUETZT  = 'amtlich_gestuetzt';
@@ -198,8 +205,9 @@ class IsoToBsiGapService
         $reviewBasedTrust = $m->getReviewStatus() === 'confirmed' ? self::TIER_BESTAETIGT : self::TIER_HEURISTISCH;
 
         return match ($m->getProvenanceSource()) {
-            self::PROVENANCE_OFFICIAL_CRT     => self::TIER_AMTLICH,
-            self::PROVENANCE_CRT_CORROBORATED => self::TIER_AMTLICH_GESTUETZT,
+            self::PROVENANCE_OFFICIAL_CRT              => self::TIER_AMTLICH,
+            self::PROVENANCE_CRT_CORROBORATED          => self::TIER_AMTLICH_GESTUETZT,
+            self::PROVENANCE_OFFICIAL_EU_LEX_SPECIALIS => self::TIER_AMTLICH,
             'panel' => $m->getReviewStatus() === 'approved' ? self::TIER_KI_VALIDIERT : self::TIER_HEURISTISCH,
             'manual' => self::TIER_BESTAETIGT,
             // null: no provenance recorded — trust via reviewStatus, same as default arm below

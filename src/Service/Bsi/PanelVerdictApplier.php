@@ -61,8 +61,18 @@ final class PanelVerdictApplier
     /** NIS2 Art.21 → BSI IT-Grundschutz fixture path */
     public const FIXTURE_PATH_NIS2 = 'fixtures/library/mappings/panel_verdicts/nis2-art21_to_bsi-grundschutz_panel_v1.json';
 
+    /** DORA → NIS2 panel verdict fixture path (P3 Tier-A) */
+    public const FIXTURE_PATH_DORA_NIS2 = 'fixtures/library/mappings/panel_verdicts/dora_to_nis2_panel_v1.json';
+
     /** Default source-key for the ISO fixture (JSON field name carrying the source requirement id) */
     private const SOURCE_KEY_ISO = 'iso';
+
+    /**
+     * Target-key sentinel for non-BSI fixtures (e.g. DORA→NIS2).
+     * When the target key is 'target', the index uses the target requirement's
+     * requirementId directly rather than BSI-specific bausteinCodeFrom().
+     */
+    private const TARGET_KEY_GENERIC = 'target';
 
     /** analysisConfidence by realVotes count */
     private const CONFIDENCE_BY_VOTES = [
@@ -161,10 +171,17 @@ final class PanelVerdictApplier
 
         $verdicts  = $this->loadVerdicts($fixturePath);
         $sourceKey = $this->detectSourceKey($fixturePath);
+        $targetKey = $this->detectTargetKey($fixturePath);
 
-        // Index all global mappings by (sourceReqId, baustein) for fast lookup.
+        // Auto-fallback: if the detected source key is not present in the first verdict but
+        // a generic 'source' key is, use 'source' (e.g. dora_to_nis2 uses generic field names).
+        if (!empty($verdicts) && !array_key_exists($sourceKey, $verdicts[0]) && array_key_exists('source', $verdicts[0])) {
+            $sourceKey = 'source';
+        }
+
+        // Index all global mappings by (sourceReqId, targetReqId) for fast lookup.
         $allMappings = $this->mappingRepository->findAllGlobal();
-        $index       = $this->buildIndex($allMappings, $source, $target, $sourceKey);
+        $index       = $this->buildIndex($allMappings, $source, $target, $sourceKey, $targetKey);
 
         $counts = [
             'ki_validiert'            => 0,
@@ -178,10 +195,10 @@ final class PanelVerdictApplier
         ];
 
         foreach ($verdicts as $verdict) {
-            $sourceId = (string) ($verdict[$sourceKey] ?? '');
-            $baustein = (string) ($verdict['baustein'] ?? '');
-            $key      = $this->indexKey($baustein, $sourceId);
-            $mapping  = $index[$key] ?? null;
+            $sourceId   = (string) ($verdict[$sourceKey] ?? '');
+            $targetReqId = (string) ($verdict[$targetKey] ?? ($verdict['baustein'] ?? ''));
+            $key        = $this->indexKey($targetReqId, $sourceId);
+            $mapping    = $index[$key] ?? null;
 
             match ($verdict['state']) {
                 'ki_validiert'    => $this->applyKiValidiert($mapping, $verdict, $counts, $dryRun),
@@ -191,7 +208,7 @@ final class PanelVerdictApplier
                     $mapping,
                     $verdict,
                     $sourceId,
-                    $baustein,
+                    $targetReqId,
                     $source,
                     $target,
                     $counts,
@@ -267,6 +284,25 @@ final class PanelVerdictApplier
         // All other frameworks: the lowercased prefix IS the field name
         // (nis2 → 'nis2', dora → 'dora', eucs → 'eucs', etc.)
         return $prefix;
+    }
+
+    /**
+     * Detect which JSON field name carries the target requirement ID from the fixture path.
+     *
+     * BSI-targeting fixtures (any file with `_to_bsi-*`) use 'baustein'.
+     * All other fixtures (e.g. dora_to_nis2) use 'target'.
+     */
+    private function detectTargetKey(string $fixturePath): string
+    {
+        $basename = strtolower(basename($fixturePath, '.json'));
+
+        // Fixtures targeting BSI Grundschutz use 'baustein' as the target field name
+        if (str_contains($basename, '_to_bsi')) {
+            return 'baustein';
+        }
+
+        // All other target frameworks use the generic 'target' field name
+        return self::TARGET_KEY_GENERIC;
     }
 
     /**
@@ -375,7 +411,7 @@ final class PanelVerdictApplier
     /**
      * Apply panel_discovered verdict: create a new mapping if none exists.
      *
-     * EDGE: if the source measure id or BSI Baustein has no ComplianceRequirement row
+     * EDGE: if the source measure id or target requirement has no ComplianceRequirement row
      * in the DB → SKIP + log (no crash, no partial mapping).
      *
      * @param array<string, mixed> $verdict
@@ -385,7 +421,7 @@ final class PanelVerdictApplier
         ?ComplianceMapping $existingMapping,
         array $verdict,
         string $sourceReqId,
-        string $baustein,
+        string $targetReqId,
         ?ComplianceFramework $sourceFramework,
         ?ComplianceFramework $targetFramework,
         array &$counts,
@@ -402,7 +438,7 @@ final class PanelVerdictApplier
             $counts['panel_discovered_skipped']++;
             $this->logger?->warning(
                 'PanelVerdictApplier: panel_discovered verdict skipped — no ComplianceRequirementRepository injected.',
-                ['sourceReqId' => $sourceReqId, 'baustein' => $baustein],
+                ['sourceReqId' => $sourceReqId, 'targetReqId' => $targetReqId],
             );
             return;
         }
@@ -418,13 +454,19 @@ final class PanelVerdictApplier
             return;
         }
 
-        // Resolve target ComplianceRequirement (BSI Baustein — match by category or requirementId prefix)
-        $targetReq = $this->findBsiRequirement($baustein, $targetFramework);
+        // Resolve target ComplianceRequirement.
+        // For BSI targets: try by category (Baustein code) + requirementId prefix fallback.
+        // For non-BSI targets (e.g. NIS2): use requirementId directly.
+        $isBsiTarget = $targetFramework?->getCode() === 'BSI_GRUNDSCHUTZ';
+        $targetReq = $isBsiTarget
+            ? $this->findBsiRequirement($targetReqId, $targetFramework)
+            : $this->findRequirement($targetReqId, $targetFramework);
+
         if ($targetReq === null) {
             $counts['panel_discovered_skipped']++;
             $this->logger?->warning(
-                'PanelVerdictApplier: panel_discovered skipped — BSI Baustein not found in DB.',
-                ['baustein' => $baustein, 'framework' => $targetFramework?->getCode()],
+                'PanelVerdictApplier: panel_discovered skipped — target requirement not found in DB.',
+                ['targetReqId' => $targetReqId, 'framework' => $targetFramework?->getCode()],
             );
             return;
         }
@@ -454,12 +496,14 @@ final class PanelVerdictApplier
     }
 
     /**
-     * Build an index from (normalised-baustein||normalised-sourceControlId) → ComplianceMapping
+     * Build an index from (normalised-targetReqId||normalised-sourceReqId) → ComplianceMapping
      * for O(1) verdict lookup.
      *
      * For ISO fixture: only heuristic / non-official mappings are indexed (official CRT and
      * CRT-corroborated rows are excluded as they are not panel candidates).
-     * For NIS2 fixture: all non-deprecated NIS2→BSI mappings are indexed.
+     * For NIS2/BSI fixture: all non-deprecated NIS2→BSI mappings are indexed.
+     * For non-BSI targets (targetKey='target'): index uses the target requirement's
+     *   requirementId directly (no BSI-specific bausteinCodeFrom() transformation).
      *
      * @param ComplianceMapping[] $allMappings
      * @return array<string, ComplianceMapping>
@@ -469,8 +513,10 @@ final class PanelVerdictApplier
         ?ComplianceFramework $source,
         ?ComplianceFramework $target,
         string $sourceKey,
+        string $targetKey = 'baustein',
     ): array {
         $index = [];
+        $useBsiTargetKey = ($targetKey === 'baustein');
 
         foreach ($allMappings as $mapping) {
             $srcFw = $mapping->getSourceRequirement()?->getFramework();
@@ -502,16 +548,23 @@ final class PanelVerdictApplier
             $tgtReq = $mapping->getTargetRequirement();
 
             $srcReqId = (string) ($srcReq->getRequirementId() ?? '');
-            $baustein = IsoToBsiGapService::bausteinCodeFrom(
-                $tgtReq->getCategory(),
-                $tgtReq->getRequirementId(),
-            );
 
-            if ($srcReqId === '' || $baustein === '') {
+            if ($useBsiTargetKey) {
+                // BSI target: derive Baustein code from category/requirementId
+                $targetIdentifier = IsoToBsiGapService::bausteinCodeFrom(
+                    $tgtReq->getCategory(),
+                    $tgtReq->getRequirementId(),
+                );
+            } else {
+                // Non-BSI target (e.g. NIS2, ISO27001): use requirementId directly
+                $targetIdentifier = (string) ($tgtReq->getRequirementId() ?? '');
+            }
+
+            if ($srcReqId === '' || $targetIdentifier === '') {
                 continue;
             }
 
-            $key = $this->indexKey($baustein, $srcReqId);
+            $key = $this->indexKey($targetIdentifier, $srcReqId);
 
             // Last writer wins for duplicate keys
             $index[$key] = $mapping;

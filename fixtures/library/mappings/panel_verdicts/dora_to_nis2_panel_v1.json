@@ -1,0 +1,802 @@
+{
+  "provenance": {
+    "source_framework": "DORA",
+    "target_framework": "NIS2",
+    "description": "Build-time 4-expert panel adjudication of granular DORA↔NIS2 pairings. The lex-specialis RELATIONSHIP (DORA Art.1(2) + NIS2 Art.4(1)) is authoritative EU law. These per-pairing verdicts are the panel source of truth.",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "4-expert + refutation + completeness",
+    "lex_specialis_basis": "DORA Art.1(2), NIS2 Art.4(1) — EUR-Lex CELEX:32022R2554, CELEX:32022L2555, CELEX:52023XC0918(01)",
+    "run_date": "2026-06-12",
+    "note": "relationship amtlich, pairings panel-validated",
+    "verdict_counts": {
+      "total": 111,
+      "ki_validiert": 49,
+      "reject": 28,
+      "needs_review": 34
+    }
+  },
+  "verdicts": [
+    {
+      "source": "DORA-5.1",
+      "target": "Art.20.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-5.2",
+      "target": "Art.20.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-5.4",
+      "target": "Art.20.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-6.1",
+      "target": "Art.21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-6.2",
+      "target": "Art.21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-6.5",
+      "target": "Art.21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 68,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-7",
+      "target": "Art.21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-8.1",
+      "target": "Art.21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-8.2",
+      "target": "Art.21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-8.3",
+      "target": "Art.21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 42,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-8.1",
+      "target": "Art.21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 48,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-8.2",
+      "target": "Art.21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-8.3",
+      "target": "Art.21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-9.1",
+      "target": "Art.21.2.h",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "source": "DORA-9.2",
+      "target": "Art.21.2.h",
+      "state": "reject",
+      "mappingPercentage": 32,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-9.3",
+      "target": "Art.21.2.h",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-9.4",
+      "target": "Art.21.2.h",
+      "state": "reject",
+      "mappingPercentage": 68,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-9.1",
+      "target": "Art.21.2.j",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "source": "DORA-9.2",
+      "target": "Art.21.2.j",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-9.3",
+      "target": "Art.21.2.j",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-9.4",
+      "target": "Art.21.2.j",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-9.1",
+      "target": "Art.21.2.i",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-9.2",
+      "target": "Art.21.2.i",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-9.3",
+      "target": "Art.21.2.i",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-9.4",
+      "target": "Art.21.2.i",
+      "state": "needs_review",
+      "mappingPercentage": 65,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-9.1",
+      "target": "Art.21.2.e",
+      "state": "reject",
+      "mappingPercentage": 70,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-9.2",
+      "target": "Art.21.2.e",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-9.3",
+      "target": "Art.21.2.e",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-9.4",
+      "target": "Art.21.2.e",
+      "state": "needs_review",
+      "mappingPercentage": 75,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-10.1",
+      "target": "Art.21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-10.1",
+      "target": "Art.21.2.f",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "source": "DORA-11.1",
+      "target": "Art.21.2.b",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-11.1",
+      "target": "Art.21.2.c",
+      "state": "needs_review",
+      "mappingPercentage": 75,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-12",
+      "target": "Art.21.2.c",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-13.1",
+      "target": "Art.21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-13.2",
+      "target": "Art.21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-13.3",
+      "target": "Art.21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-13.4",
+      "target": "Art.21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 48,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-13.5",
+      "target": "Art.21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-13.6",
+      "target": "Art.21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-13.6",
+      "target": "Art.21.2.g",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-13.1",
+      "target": "Art.21.2.b",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-13.2",
+      "target": "Art.21.2.b",
+      "state": "needs_review",
+      "mappingPercentage": 58,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-13.3",
+      "target": "Art.21.2.b",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-13.4",
+      "target": "Art.21.2.b",
+      "state": "reject",
+      "mappingPercentage": 28,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-13.5",
+      "target": "Art.21.2.b",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-13.6",
+      "target": "Art.21.2.b",
+      "state": "reject",
+      "mappingPercentage": 28,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-14.1",
+      "target": "Art.21.2.j",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-16.1",
+      "target": "Art.21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-17.1",
+      "target": "Art.21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-17.2",
+      "target": "Art.21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-17.3",
+      "target": "Art.21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-18",
+      "target": "Art.23.1",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-19.1",
+      "target": "Art.23.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-19.1",
+      "target": "Art.23.3",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-19.1",
+      "target": "Art.23.4",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-19.1",
+      "target": "Art.23.1",
+      "state": "needs_review",
+      "mappingPercentage": 65,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-20.1",
+      "target": "Art.23.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-23",
+      "target": "Art.21.2.b",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 2
+    },
+    {
+      "source": "DORA-24.1",
+      "target": "Art.21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-24.2",
+      "target": "Art.21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-25",
+      "target": "Art.21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-26.1",
+      "target": "Art.21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-27.1",
+      "target": "Art.21.2.f",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "source": "DORA-28.1",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-28.2",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 68,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-28.3",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-29.1",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-30.1",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-32.1",
+      "target": "Art.21.2.d",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-45",
+      "target": "Art.21.2.f",
+      "state": "reject",
+      "mappingPercentage": 55,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-45",
+      "target": "Art.21.2.b",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "source": "DORA-7",
+      "target": "Art.21.2.c",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-11.1",
+      "target": "Art.21.2.f",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-12",
+      "target": "Art.21.2.b",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-13.6",
+      "target": "Art.20.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "source": "DORA-14.1",
+      "target": "Art.21.2.c",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "source": "DORA-17.1",
+      "target": "Art.21.2.f",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-17.2",
+      "target": "Art.21.2.f",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-17.3",
+      "target": "Art.21.2.f",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-28.1",
+      "target": "Art.21.2.a",
+      "state": "reject",
+      "mappingPercentage": 55,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-28.2",
+      "target": "Art.21.2.a",
+      "state": "reject",
+      "mappingPercentage": 55,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-28.3",
+      "target": "Art.21.2.a",
+      "state": "reject",
+      "mappingPercentage": 55,
+      "realVotes": 1
+    },
+    {
+      "source": "DORA-30.1",
+      "target": "Art.21.2.e",
+      "state": "reject",
+      "mappingPercentage": 48,
+      "realVotes": 1
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.6",
+      "target": "Art.21.2.h",
+      "state": "needs_review",
+      "mappingPercentage": 85,
+      "realVotes": 2
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.7",
+      "target": "Art.21.2.h",
+      "state": "needs_review",
+      "mappingPercentage": 85,
+      "realVotes": 2
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.10",
+      "target": "Art.21.2.e",
+      "state": "needs_review",
+      "mappingPercentage": 78,
+      "realVotes": 2
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.12",
+      "target": "Art.21.2.b",
+      "state": "reject",
+      "mappingPercentage": 72,
+      "realVotes": 1
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.13",
+      "target": "Art.21.2.e",
+      "state": "reject",
+      "mappingPercentage": 75,
+      "realVotes": 1
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.20",
+      "target": "Art.21.2.j",
+      "state": "reject",
+      "mappingPercentage": 78,
+      "realVotes": 1
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.22",
+      "target": "Art.21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.23",
+      "target": "Art.21.2.c",
+      "state": "needs_review",
+      "mappingPercentage": 82,
+      "realVotes": 2
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.25",
+      "target": "Art.21.2.c",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 3
+    },
+    {
+      "source": "RTS-ICT-RMF-Art.27",
+      "target": "Art.21.2.c",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "source": "RTS-INC-CLASS-Art.2",
+      "target": "Art.23.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "source": "RTS-INC-CLASS-Art.4",
+      "target": "Art.23.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 52,
+      "realVotes": 3
+    },
+    {
+      "source": "RTS-INC-CLASS-Art.6",
+      "target": "Art.23.1",
+      "state": "needs_review",
+      "mappingPercentage": 52,
+      "realVotes": 3
+    },
+    {
+      "source": "RTS-INC-REPORT-Art.1",
+      "target": "Art.23.2",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "source": "RTS-INC-REPORT-Art.2",
+      "target": "Art.23.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 3
+    },
+    {
+      "source": "RTS-INC-REPORT-Art.3",
+      "target": "Art.23.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "source": "ITS-Register-RT.02.01",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "source": "ITS-Register-RT.05.02",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "source": "ITS-Register-RT.06.02",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "source": "RTS-Subcontracting-Art.2",
+      "target": "Art.21.2.d",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "source": "RTS-Subcontracting-Art.5",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "source": "RTS-TLPT-Art.4",
+      "target": "Art.21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "source": "RTS-TLPT-Art.11",
+      "target": "Art.21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "source": "RTS-Oversight-Art.3",
+      "target": "Art.21.2.d",
+      "state": "reject",
+      "mappingPercentage": 38,
+      "realVotes": 1
+    },
+    {
+      "source": "RTS-TPP-Policy-Art.4",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "source": "RTS-TPP-Policy-Art.7",
+      "target": "Art.21.2.c",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "source": "RTS-TPP-Policy-Art.8",
+      "target": "Art.21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    }
+  ]
+}
