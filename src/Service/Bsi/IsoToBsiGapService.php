@@ -44,6 +44,25 @@ class IsoToBsiGapService
     /** provenanceSource sentinel written by import step (official BSI Cross-Reference-Table) */
     public const PROVENANCE_OFFICIAL_CRT = 'official_bsi_crosswalk';
 
+    /** provenanceSource sentinel for BSI C5:2020 → ISO 27001:2022 official BSI crosswalk (P3 Tier-A) */
+    public const PROVENANCE_OFFICIAL_BSI_C5_ISO = 'official_bsi_c5_iso_crosswalk';
+
+    /** provenanceSource sentinel for ISO 27701:2025 Annex D → GDPR official normative mapping (P3 Tier-A) */
+    public const PROVENANCE_OFFICIAL_ISO27701_GDPR = 'official_iso27701_gdpr_annex';
+
+    /**
+     * All provenanceSources that represent amtlich (official) crosswalk rows.
+     * Note: lex_specialis_candidate is intentionally NOT listed here — DORA↔NIS2 pairings
+     * get their tier from panel verdicts (ki_validiert / deprecated), not from amtlich status.
+     *
+     * @var list<string>
+     */
+    public const PROVENANCE_OFFICIAL_SOURCES = [
+        self::PROVENANCE_OFFICIAL_CRT,
+        self::PROVENANCE_OFFICIAL_BSI_C5_ISO,
+        self::PROVENANCE_OFFICIAL_ISO27701_GDPR,
+    ];
+
     /** provenanceSource sentinel written by MappingCorroborationService (WS-5b stage-1) */
     public const PROVENANCE_CRT_CORROBORATED = 'crt_corroborated';
 
@@ -198,10 +217,15 @@ class IsoToBsiGapService
         $reviewBasedTrust = $m->getReviewStatus() === 'confirmed' ? self::TIER_BESTAETIGT : self::TIER_HEURISTISCH;
 
         return match ($m->getProvenanceSource()) {
-            self::PROVENANCE_OFFICIAL_CRT     => self::TIER_AMTLICH,
-            self::PROVENANCE_CRT_CORROBORATED => self::TIER_AMTLICH_GESTUETZT,
+            self::PROVENANCE_OFFICIAL_CRT,
+            self::PROVENANCE_OFFICIAL_BSI_C5_ISO,
+            self::PROVENANCE_OFFICIAL_ISO27701_GDPR  => self::TIER_AMTLICH,
+            self::PROVENANCE_CRT_CORROBORATED        => self::TIER_AMTLICH_GESTUETZT,
             'panel' => $m->getReviewStatus() === 'approved' ? self::TIER_KI_VALIDIERT : self::TIER_HEURISTISCH,
             'manual' => self::TIER_BESTAETIGT,
+            // lex_specialis_candidate: DORA↔NIS2 structural matches — NOT amtlich (no verbatim table).
+            // Their tier comes from panel verdicts (ki_validiert via provenanceSource='panel').
+            'lex_specialis_candidate' => $reviewBasedTrust,
             // null: no provenance recorded — trust via reviewStatus, same as default arm below
             null => $reviewBasedTrust,
             // All other algorithm-generated sources: trust via reviewStatus

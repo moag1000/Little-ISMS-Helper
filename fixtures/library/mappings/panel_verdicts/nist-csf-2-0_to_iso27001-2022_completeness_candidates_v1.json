@@ -1,0 +1,1095 @@
+{
+  "library": {
+    "source_framework": "NIST-CSF-2.0",
+    "target_framework": "ISO27001",
+    "status": "UNREFUTED_PROPOSALS_ONLY — NOT applied as trusted mappings",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-loop: 4-expert panel proposed additional target coverage per NIST subcategory; UNREFUTED = survived first-pass review but NOT subjected to full adversarial refutation",
+    "amtlich_source": "none — NIST OLIR not machine-fetchable",
+    "run_date": "2026-06-12",
+    "note": "215 completeness candidates logged for human review. Do NOT apply these as mappings without a full adversarial panel review cycle.",
+    "candidate_count": 215
+  },
+  "candidates": [
+    {
+      "target": "ISO 27001 Clause 4.1",
+      "mappingPercentage": 85,
+      "rationale": "GV.OC-01 — \"The organizational mission is understood and informs cybersecurity risk management\" is squarely the ISO 27001 management-system requirement Clause 4.1 (Understanding the organization and its context). The existing A.5.1 mapping is only the policy-formalization fragment; the mapping's own gap_warning explicitly states GV.OC-01 is primarily Clause 4.1. Mission/context understanding has no Annex A home, so Clause 4.1 is the defensible primary correspondence."
+    },
+    {
+      "target": "ISO 27001 Clause 4.2",
+      "mappingPercentage": 90,
+      "rationale": "GV.OC-02 — \"Internal and external stakeholders are understood, and their needs and expectations ... are understood and considered\" maps directly and almost verbatim to Clause 4.2 (Understanding the needs and expectations of interested parties). The current A.5.1 link is a low-confidence proxy; Clause 4.2 is the canonical ISO equivalent for stakeholder identification and their requirements, and is currently missing."
+    },
+    {
+      "target": "A.5.34",
+      "mappingPercentage": 70,
+      "rationale": "GV.OC-03 — The NIST text explicitly names \"privacy and civil liberties obligations.\" A.5.34 (Privacy and protection of PII) is the dedicated Annex A control for privacy/civil-liberties obligations and is genuinely additional to the mapped A.5.31 (general legal/regulatory/contractual). It is already listed as a cross_ref but not as a mapping target; it should be a defensible additional correspondence."
+    },
+    {
+      "target": "A.5.31",
+      "mappingPercentage": 0,
+      "rationale": "GV.OC-03 — already mapped to A.5.31; no change. (Listed only for completeness; not a missing item.) The additional defensible target beyond the mapped A.5.31 is A.5.32 (Intellectual property rights), since the subcategory covers contractual requirements which routinely include IP/licensing obligations — A.5.32 directly governs identification and compliance with such legal and contractual IP requirements."
+    },
+    {
+      "target": "A.5.32",
+      "mappingPercentage": 55,
+      "rationale": "GV.OC-03 — \"contractual requirements regarding cybersecurity\" defensibly includes intellectual-property and licensing obligations. A.5.32 (Intellectual property rights) is a concrete Annex A control covering identification of and compliance with legal/contractual IP requirements, complementing the mapped A.5.31 and the privacy-specific A.5.34. Confidence is moderate (subset/related, not equivalent)."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 60,
+      "rationale": "GV.OC-04 — \"Critical objectives, capabilities, and services that external stakeholders depend on or expect\" is BIA/continuity-driven. The mapped A.5.30 (ICT readiness for business continuity) covers the ICT-recovery side; A.5.29 (Information security during disruption) is the companion Annex A continuity control that addresses maintaining critical services under disruption and is a defensible additional correspondence for the critical-service dependency aspect."
+    },
+    {
+      "target": "ISO 27001 Clause 4.2",
+      "mappingPercentage": 50,
+      "rationale": "GV.OC-04 — the phrase \"external stakeholders depend on or expect from the organization\" is fundamentally about external interested parties' needs and expectations, which is Clause 4.2. The mapped A.5.30 covers only the BC/ICT-readiness fragment; Clause 4.2 (and Clause 4.1 for critical-objective context) is the management-system home for identifying what external parties expect, and is missing. The mapping's own gap_warning points to context clauses / ISO 22301."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 65,
+      "rationale": "GV.OC-05 — \"Outcomes, capabilities, and services that the organization depends on\" is dependency/supplier-relationship mapping. A.5.19 (Information security in supplier relationships) is the foundational Annex A control for managing dependencies on suppliers and is a defensible additional target beyond the mapped A.5.21 (ICT supply-chain). It is already a cross_ref but should be a mapping target."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 55,
+      "rationale": "GV.OC-05 — services the organization depends on are typically secured through supplier agreements. A.5.20 (Addressing information security within supplier agreements) defensibly corresponds to formalizing the dependencies the organization relies on, complementing A.5.21 and A.5.19. Moderate confidence (related/subset)."
+    },
+    {
+      "target": "ISO 27001 Clause 6.1.2",
+      "mappingPercentage": 85,
+      "rationale": "GV.RM-01 — \"Risk management objectives are established and agreed to by organizational stakeholders\" is essentially the ISO 27001 risk-assessment-process establishment: Clause 6.1.2 (defining risk assessment process, risk acceptance criteria, risk owners' agreement). The mapped A.5.4 (Management responsibilities) is only the leadership-endorsement fragment; the mapping's own gap_warning flags Clause 6.1.1/6.1.2 as essential and currently missing."
+    },
+    {
+      "target": "ISO 27001 Clause 6.2",
+      "mappingPercentage": 55,
+      "rationale": "GV.RM-01 — \"objectives are established and agreed\" aligns with Clause 6.2 (Information security objectives and planning to achieve them), which requires measurable IS objectives consistent with policy and agreed/communicated. This is a defensible additional management-system correspondence beyond A.5.4 for the objective-setting aspect of risk management."
+    },
+    {
+      "target": "ISO 27001 Clause 6.1.2",
+      "mappingPercentage": 90,
+      "rationale": "GV.RM-02 — \"Risk appetite and risk tolerance statements are established, communicated, and maintained\" maps directly to ISO 27001 Clause 6.1.2, which mandates establishing and maintaining risk acceptance criteria (the ISO term for risk appetite/tolerance). The mapped A.5.1 is only the policy-vehicle; Clause 6.1.2 is the canonical home for risk acceptance criteria and is the strongest missing correspondence — the mapping's own gap_warning names it."
+    },
+    {
+      "target": "ISO 27001 Clause 6.1.1",
+      "mappingPercentage": 80,
+      "rationale": "GV.RM-03 — \"Cybersecurity risk management activities and outcomes are included in enterprise risk management processes\" corresponds to Clause 6.1.1 (Actions to address risks and opportunities — general), which requires the ISMS to determine risks/opportunities in the context of the organization and integrate them into planning. The mapped A.5.4 does not capture this integration requirement; Clause 6.1.1 is the missing management-system anchor."
+    },
+    {
+      "target": "ISO 27001 Clause 5.1",
+      "mappingPercentage": 70,
+      "rationale": "GV.RM-03 — the integration-into-enterprise-risk-management theme is directly addressed by Clause 5.1 (Leadership and commitment), which explicitly requires ensuring the integration of the ISMS requirements into the organization's business processes. This is the defensible management-system correspondence for embedding cybersecurity risk into enterprise processes, missing from the current A.5.4-only mapping."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 70,
+      "rationale": "GV.RM-05: This subcategory requires lines of communication for cybersecurity risks across the organization and externally. A.5.5 (contact with authorities) is mapped, but A.5.6 (contact with special interest groups) is the symmetric Annex A control establishing the other principal external risk-communication channel (CERTs, ISACs, vendor/peer forums) and is genuinely required to fully realize the established communication lines."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 75,
+      "rationale": "GV.RM-05: The subcategory text explicitly extends communication lines to 'risks from suppliers and other third parties.' A.5.19 (information security in supplier relationships) is the Annex A control that establishes the supplier/third-party risk-communication and information-flow channel, which the current A.5.5-only mapping omits entirely."
+    },
+    {
+      "target": "A.6.3",
+      "mappingPercentage": 65,
+      "rationale": "GV.RR-01: Leadership accountability here explicitly includes 'fostering a culture that is risk-aware, ethical, and continually improving.' A.5.4 (management responsibilities) is mapped, but the culture/risk-awareness dimension is operationalized through A.6.3 (information security awareness, education and training), which is the defensible Annex A correspondence for building the risk-aware culture."
+    },
+    {
+      "target": "A.5.1",
+      "mappingPercentage": 60,
+      "rationale": "GV.RR-01: Organizational leadership being responsible and accountable for cybersecurity risk is directly evidenced by management establishing and endorsing the information security policy. A.5.1 (policies for information security) is a defensible additional correspondence beyond the mapped A.5.4, since top-management ownership of risk is canonically demonstrated through approved, communicated policy."
+    },
+    {
+      "target": "A.5.3",
+      "mappingPercentage": 70,
+      "rationale": "GV.RR-02: Roles, responsibilities and authorities for cyber risk being 'established, communicated, understood, and enforced' is partly realized through A.5.3 (segregation of duties), which constrains and structures authorities to prevent conflicting/uncontrolled responsibilities. A.5.2 alone covers role assignment but not the duty-separation aspect of authority definition."
+    },
+    {
+      "target": "A.5.4",
+      "mappingPercentage": 60,
+      "rationale": "GV.RR-02: The 'enforced' element of this subcategory — management requiring all personnel to apply information security per established roles — maps to A.5.4 (management responsibilities). This is a defensible addition to the mapped A.5.2 (which establishes the roles but not their managerial enforcement)."
+    },
+    {
+      "target": "A.6.2",
+      "mappingPercentage": 85,
+      "rationale": "GV.RR-04: 'Cybersecurity is included in human resources practices' spans the full employment lifecycle. A.6.1 (screening, pre-employment) is mapped, but A.6.2 (terms and conditions of employment) is a core HR-practice control embedding security obligations into the employment contract and is clearly within scope."
+    },
+    {
+      "target": "A.6.3",
+      "mappingPercentage": 80,
+      "rationale": "GV.RR-04: Integrating cybersecurity into HR practices includes A.6.3 (awareness, education and training), a primary HR-process control ensuring personnel competence in security — a defensible and standard correspondence missing from the A.6.1-only mapping."
+    },
+    {
+      "target": "A.6.4",
+      "mappingPercentage": 80,
+      "rationale": "GV.RR-04: A.6.4 (disciplinary process) is an explicit HR practice addressing security violations and is a direct, defensible component of embedding cybersecurity into human resources practices, omitted by the current mapping."
+    },
+    {
+      "target": "A.6.5",
+      "mappingPercentage": 75,
+      "rationale": "GV.RR-04: A.6.5 (responsibilities after termination or change of employment) is the HR-process control covering offboarding/role-change security obligations, completing the HR lifecycle coverage that GV.RR-04 demands beyond the mapped pre-employment A.6.1."
+    },
+    {
+      "target": "A.6.6",
+      "mappingPercentage": 65,
+      "rationale": "GV.RR-04: A.6.6 (confidentiality or non-disclosure agreements) is an HR-onboarding practice binding personnel to information-protection obligations, a defensible additional correspondence for embedding cybersecurity into human resources practices."
+    },
+    {
+      "target": "ISO 27001:2022 Clause 5.2",
+      "mappingPercentage": 85,
+      "rationale": "GV.PO-01: The organizational cybersecurity policy being 'established and communicated' is the direct counterpart of ISO 27001 management-system Clause 5.2 (Policy), which requires the policy to be established, documented, communicated and made available. Mapping only to Annex-A A.5.1 (topic-specific policies) omits the top-level management-system policy requirement that GV.PO-01 primarily expresses."
+    },
+    {
+      "target": "ISO 27001:2022 A.5.4",
+      "mappingPercentage": 60,
+      "rationale": "GV.PO-01: Communication and management endorsement of the cybersecurity policy is reinforced by A.5.4 (Management responsibilities), which requires management to ensure personnel apply IS per the established policies. Defensible secondary correspondence for the 'communicated/endorsed' aspect."
+    },
+    {
+      "target": "ISO 27001:2022 A.5.36",
+      "mappingPercentage": 80,
+      "rationale": "GV.PO-02: Policy is 'reviewed, updated, communicated and enforced'. The enforcement/conformance dimension is directly covered by A.5.36 (Compliance with policies, rules and standards for IS), which is missing from the A.5.1-only mapping. A.5.1's periodic review covers the review/update part but not enforcement."
+    },
+    {
+      "target": "ISO 27001:2022 A.5.4",
+      "mappingPercentage": 60,
+      "rationale": "GV.PO-02: 'Enforced' aligns with A.5.4 (Management responsibilities) requiring management to enforce application of IS policies. Defensible additional correspondence for the enforcement clause."
+    },
+    {
+      "target": "ISO 27001:2022 Clause 9.3",
+      "mappingPercentage": 85,
+      "rationale": "GV.OV-01: Reviewing cybersecurity risk-management strategy outcomes to inform/adjust strategy is precisely the purpose of Clause 9.3 (Management review), whose inputs include risk-assessment results and performance, and whose outputs drive strategy/decisions. The A.5.36-only mapping (compliance with policies) misses the management-review governance loop that GV.OV-01 centers on."
+    },
+    {
+      "target": "ISO 27001:2022 Clause 9.1",
+      "mappingPercentage": 65,
+      "rationale": "GV.OV-01: 'Reviewing outcomes' presupposes monitoring, measurement, analysis and evaluation per Clause 9.1, which supplies the performance results that are reviewed to inform strategy. Defensible supporting correspondence."
+    },
+    {
+      "target": "ISO 27001:2022 Clause 9.3",
+      "mappingPercentage": 85,
+      "rationale": "GV.OV-02: Reviewing and adjusting the risk-management strategy to ensure coverage of requirements and risks is a core management-review activity (Clause 9.3 inputs: changes in external/internal issues, risk assessment results; outputs: changes/needs). The A.5.35-only (independent review) mapping omits the primary internal governance-review mechanism."
+    },
+    {
+      "target": "ISO 27001:2022 Clause 10.1",
+      "mappingPercentage": 60,
+      "rationale": "GV.OV-02: 'Adjusted to ensure coverage' is the continual-improvement loop of Clause 10.1, where suitability/adequacy/effectiveness of the ISMS (including risk strategy) is improved. Defensible additional correspondence."
+    },
+    {
+      "target": "ISO 27001:2022 Clause 6.1",
+      "mappingPercentage": 55,
+      "rationale": "GV.OV-02: Ensuring the risk-management strategy covers requirements and identifies changes ties to Clause 6.1 (Actions to address risks and opportunities), which defines the strategy being reviewed/adjusted. Defensible upstream correspondence."
+    },
+    {
+      "target": "ISO 27001:2022 Clause 9.1",
+      "mappingPercentage": 85,
+      "rationale": "GV.OV-03: 'Cybersecurity risk-management performance is evaluated and reviewed' is the literal scope of Clause 9.1 (Monitoring, measurement, analysis and evaluation). The A.5.35-only (independent review) mapping omits the primary performance-evaluation clause that GV.OV-03 expresses."
+    },
+    {
+      "target": "ISO 27001:2022 Clause 9.3",
+      "mappingPercentage": 75,
+      "rationale": "GV.OV-03: Evaluated performance is reviewed for needed adjustments via Clause 9.3 (Management review), which consumes performance/measurement results and produces adjustment decisions. Defensible governance-loop correspondence beyond independent review (A.5.35)."
+    },
+    {
+      "target": "ISO 27001:2022 A.5.20",
+      "mappingPercentage": 80,
+      "rationale": "GV.SC-01: A supply-chain risk-management program 'agreed by organizational stakeholders' is operationalized through A.5.20 (Addressing information security within supplier agreements), the mechanism by which supply-chain security requirements are formally agreed. Missing from the A.5.19-only mapping."
+    },
+    {
+      "target": "ISO 27001:2022 A.5.21",
+      "mappingPercentage": 75,
+      "rationale": "GV.SC-01: Establishing the cyber supply-chain risk program directly corresponds to A.5.21 (Managing information security in the ICT supply chain), which is the dedicated ICT-supply-chain control. A.5.19 alone covers general supplier-relationship policy but not the ICT-supply-chain specificity."
+    },
+    {
+      "target": "ISO 27001:2022 A.5.3",
+      "mappingPercentage": 55,
+      "rationale": "GV.SC-02: Establishing and coordinating cybersecurity roles/responsibilities for suppliers and the organization touches A.5.3 (Segregation of duties) where conflicting supplier/internal responsibilities must be separated. Defensible secondary correspondence beyond A.5.2 (roles and responsibilities)."
+    },
+    {
+      "target": "ISO 27001:2022 A.5.19",
+      "mappingPercentage": 65,
+      "rationale": "GV.SC-02: Roles/responsibilities specifically for suppliers and third-parties are anchored in A.5.19 (Information security in supplier relationships), which establishes the supplier-relationship governance within which those roles are assigned. Missing from the A.5.2-only mapping."
+    },
+    {
+      "target": "ISO 27001:2022 A.5.20",
+      "mappingPercentage": 75,
+      "rationale": "GV.SC-03: Integrating supply-chain risk management into cybersecurity and ERM requires the contractual integration provided by A.5.20 (Addressing IS within supplier agreements). Missing from the A.5.19-only mapping."
+    },
+    {
+      "target": "ISO 27001:2022 A.5.22",
+      "mappingPercentage": 70,
+      "rationale": "GV.SC-03: Integration 'into the cybersecurity and enterprise risk management processes' implies ongoing oversight via A.5.22 (Monitoring, review and change management of supplier services), the control that keeps supply-chain risk integrated over time. Missing from the A.5.19-only mapping."
+    },
+    {
+      "target": "ISO 27001:2022 Clause 6.1.1",
+      "mappingPercentage": 65,
+      "rationale": "GV.SC-03: Integrating supply-chain risk into the enterprise/cybersecurity risk-management process maps to Clause 6.1.1 (General — actions to address risks and opportunities), the ISMS-wide risk process into which supplier risk is integrated. The Annex-A-only (A.5.19) mapping omits this management-system integration clause."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 85,
+      "rationale": "GV.SC-04: A.5.19 (Information security in supplier relationships) is the foundational control for identifying suppliers, defining a supplier-relationship process and applying a criticality-/risk-based approach to which suppliers get which controls. 'Suppliers are known and prioritized by criticality' is precisely the establish-and-prioritize intent of A.5.19, which the single A.5.21 (ICT supply chain) mapping under-represents."
+    },
+    {
+      "target": "A.5.9",
+      "mappingPercentage": 60,
+      "rationale": "GV.SC-04: Maintaining a list of known suppliers prioritized by criticality is, in substance, an inventory of supplier relationships/associated information assets. A.5.9 (Inventory of information and other associated assets) supports the 'are known' (recorded, owned, classified by importance) half of GV.SC-04."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 75,
+      "rationale": "GV.SC-05: A.5.19 establishes the requirement to define and agree information security requirements for supplier relationships; GV.SC-05's 'requirements... are established and prioritized' originates in A.5.19 before they are placed into agreements (A.5.20). Defensible additional source."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 70,
+      "rationale": "GV.SC-05: A.5.21 (Managing information security in the ICT supply chain) requires propagating security requirements down the ICT product/service supply chain and into agreements. GV.SC-05's explicit 'supply chains' scope maps directly to A.5.21, not only A.5.20."
+    },
+    {
+      "target": "A.5.23",
+      "mappingPercentage": 55,
+      "rationale": "GV.SC-05: Where suppliers are cloud providers, A.5.23 (Information security for use of cloud services) defines the cloud-specific security requirements integrated into cloud service agreements, a defensible additional correspondence to GV.SC-05's contract-integration intent."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 90,
+      "rationale": "GV.SC-06: A.5.19 explicitly requires due diligence/assessment of suppliers before entering relationships and a process for selecting suppliers based on security criteria. 'Planning and due diligence are performed to reduce risks before entering into formal supplier relationships' is almost verbatim A.5.19 intent; the current A.5.20 (agreement content) mapping misses the pre-contract due-diligence control."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 55,
+      "rationale": "GV.SC-06: A.5.21 requires due diligence on ICT supply-chain providers (components, sub-suppliers) before reliance. Pre-relationship ICT supply-chain vetting in GV.SC-06 is partially carried by A.5.21."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 70,
+      "rationale": "GV.SC-07: A.5.19 requires managing supplier security throughout the relationship (assess, respond, maintain). GV.SC-07's 'understood, recorded, prioritized, assessed, responded to, and monitored over the course of the relationship' spans the full A.5.19 lifecycle, broader than the single A.5.21 mapping."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 85,
+      "rationale": "GV.SC-07: A.5.22 (Monitoring, review and change management of supplier services) is the canonical control for the 'monitored over the course of the relationship' clause of GV.SC-07; ongoing supplier risk monitoring/review is its direct subject and is currently missing from the mapping."
+    },
+    {
+      "target": "A.5.23",
+      "mappingPercentage": 45,
+      "rationale": "GV.SC-07: For cloud suppliers, A.5.23 includes ongoing monitoring/review of cloud service security over the relationship, a defensible secondary correspondence to GV.SC-07's monitoring clause."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 70,
+      "rationale": "GV.SC-08: A.5.24 (Information security incident management planning and preparation) covers including relevant parties in incident planning/response/recovery. GV.SC-08's core requirement to include suppliers in incident planning, response and recovery maps directly to A.5.24, which is missing from the current A.5.21-only mapping."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 55,
+      "rationale": "GV.SC-08: A.5.20 (Addressing information security within supplier agreements) requires agreements to define incident notification/handling and coordination obligations, the contractual basis for involving suppliers in incident response per GV.SC-08."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 50,
+      "rationale": "GV.SC-08: A.5.29 (Information security during disruption) covers continuity/recovery activities in which relevant suppliers must participate; GV.SC-08's recovery dimension is partially carried by A.5.29."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 60,
+      "rationale": "GV.SC-09: A.5.19 defines the supplier-relationship program/process that integrates supply-chain security into the wider ISMS. GV.SC-09's 'supply chain security practices are integrated into cybersecurity... programs' aligns with A.5.19 establishing that integrated program, beyond the A.5.22 monitoring mapping."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 60,
+      "rationale": "GV.SC-09: A.5.21 addresses managing ICT supply-chain security across the technology product/service life cycle, directly matching GV.SC-09's 'performance is monitored throughout the technology product and service life cycle' clause."
+    },
+    {
+      "target": "A.5.11",
+      "mappingPercentage": 75,
+      "rationale": "GV.SC-10: A.5.11 (Return of assets) governs post-relationship activities — recovery of organizational assets/information at termination of a supplier engagement. GV.SC-10's 'provisions for activities that occur after the conclusion of a partnership' is squarely supported by A.5.11, missing from the A.5.20-only mapping."
+    },
+    {
+      "target": "A.8.10",
+      "mappingPercentage": 70,
+      "rationale": "GV.SC-10: A.8.10 (Information deletion) covers deletion/return of organizational data held by a supplier after contract end. GV.SC-10's post-conclusion provisions (data destruction, access revocation) map directly to A.8.10."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 55,
+      "rationale": "GV.SC-10: A.5.22 (Monitoring, review and change management of supplier services) includes managing termination/transition of supplier services, the change-management aspect of GV.SC-10's end-of-relationship provisions."
+    },
+    {
+      "target": "A.8.1",
+      "mappingPercentage": 55,
+      "rationale": "ID.AM-01: A.8.1 (User endpoint devices) requires registering/inventorying endpoint hardware (laptops, mobile devices). ID.AM-01 specifically scopes to 'inventories of hardware,' so the endpoint-hardware inventory aspect of A.8.1 is a defensible additional correspondence beyond the general A.5.9 asset inventory."
+    },
+    {
+      "target": "A.7.9",
+      "mappingPercentage": 40,
+      "rationale": "ID.AM-01: A.7.9 (Security of assets off-premises) entails tracking/registering hardware assets used off-site; this contributes to maintaining a complete hardware inventory under ID.AM-01, though it is a weaker, partial correspondence relative to A.5.9/A.8.1."
+    },
+    {
+      "target": "A.8.9",
+      "mappingPercentage": 70,
+      "rationale": "ID.AM-02: A.8.9 Configuration management presupposes and maintains an inventory/baseline of systems, software and services and tracks them against an authorized config. NIST CSF 2.0 ID.AM-02 (inventories of software, services, and systems maintained) is the inventory-side of the same artifact A.8.9 governs. Currently only A.5.9 (which is information-asset-centric) is mapped; the explicit software/system/service inventory has its strongest technological-control home in A.8.9. Defensible but partial (config mgmt is broader than a pure inventory)."
+    },
+    {
+      "target": "A.8.1",
+      "mappingPercentage": 55,
+      "rationale": "ID.AM-02: A.8.1 User endpoint devices — endpoint/system enrollment and management implies an authoritative device/software inventory for those endpoints. Supports the 'systems' portion of ID.AM-02 not captured by the information-centric A.5.9. Partial because A.8.1 is endpoint-scoped, not the full software/service/system estate."
+    },
+    {
+      "target": "A.5.14",
+      "mappingPercentage": 75,
+      "rationale": "ID.AM-03: A.5.14 Information transfer directly concerns the internal/external movement (flows) of information over communication channels, which is the substance of ID.AM-03 (representations of authorized network communication and internal/external data flows). A.8.20 (mapped) covers network security controls; A.5.14 covers the data-flow/transfer dimension and is a strong defensible addition."
+    },
+    {
+      "target": "A.8.22",
+      "mappingPercentage": 65,
+      "rationale": "ID.AM-03: A.8.22 Segregation of networks defines and documents network zones and the authorized communication paths between them — i.e. the representation of authorized network communication that ID.AM-03 requires. Complements A.8.20. Partial because segregation is one structural aspect of the broader flow-representation requirement."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 80,
+      "rationale": "ID.AM-04: A.5.19 Information security in supplier relationships establishes the supplier register and governance baseline on which a supplier-service inventory rests. ID.AM-04 (inventories of services provided by suppliers maintained) is foundationally the inventory produced under A.5.19; the currently-mapped A.5.21 is ICT-supply-chain-specific, so A.5.19 is the broader, strongly defensible missing correspondence."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 60,
+      "rationale": "ID.AM-04: A.5.22 Monitoring, review and change management of supplier services depends on and maintains an up-to-date inventory of the services each supplier provides. Defensible addition for keeping the supplier-service inventory current, though A.5.22's primary thrust is monitoring rather than the inventory itself."
+    },
+    {
+      "target": "A.5.9",
+      "mappingPercentage": 75,
+      "rationale": "ID.AM-05: A.5.9 Inventory of information and other associated assets is the object on which prioritization is performed — ID.AM-05 prioritizes assets by classification, criticality and impact, which presupposes the A.5.9 inventory carrying criticality/owner attributes. Strong defensible addition beyond the currently-mapped A.5.12 (classification only)."
+    },
+    {
+      "target": "A.5.13",
+      "mappingPercentage": 45,
+      "rationale": "ID.AM-05: A.5.13 Labelling of information operationalizes the classification/criticality that drives ID.AM-05 prioritization by making the priority/classification visible on the asset. Weaker/partial — labelling is downstream of prioritization, but a defensible secondary correspondence."
+    },
+    {
+      "target": "A.5.12",
+      "mappingPercentage": 80,
+      "rationale": "ID.AM-07: A.5.12 Classification of information is integral to ID.AM-07 (inventories of data and corresponding metadata for designated data types) — 'designated data types' are precisely the classification categories, and classification is core metadata for each data inventory entry. Strong defensible addition; currently only A.5.9 (the inventory container) is mapped."
+    },
+    {
+      "target": "A.5.13",
+      "mappingPercentage": 55,
+      "rationale": "ID.AM-07: A.5.13 Labelling of information records and carries the classification metadata for data items, directly supporting the 'corresponding metadata' clause of ID.AM-07. Defensible secondary correspondence to the data-inventory metadata requirement."
+    },
+    {
+      "target": "A.5.9",
+      "mappingPercentage": 70,
+      "rationale": "ID.AM-08: A.5.9 Inventory of information and other associated assets is maintained across the asset life cycle; ID.AM-08 (systems, hardware, software, services, and data managed throughout their life cycles) requires the inventory to track items from acquisition to disposal. Defensible whole-lifecycle inventory addition beyond the currently-mapped end-of-life A.7.14."
+    },
+    {
+      "target": "A.7.10",
+      "mappingPercentage": 60,
+      "rationale": "ID.AM-08: A.7.10 Storage media governs media through its life cycle including reuse and disposal of the data it holds, covering the hardware/data end-of-life dimension of ID.AM-08 that A.7.14 (equipment disposal) only partially addresses. Defensible lifecycle addition."
+    },
+    {
+      "target": "A.8.10",
+      "mappingPercentage": 55,
+      "rationale": "ID.AM-08: A.8.10 Information deletion addresses the end-of-life management of data, one of the explicit asset classes in ID.AM-08 ('...and data are managed throughout their life cycles'). A.7.14 is hardware-disposal-only; A.8.10 covers the data-deletion lifecycle endpoint. Defensible partial addition."
+    },
+    {
+      "target": "A.8.19",
+      "mappingPercentage": 50,
+      "rationale": "ID.AM-08: A.8.19 Installation of software on operational systems governs the deployment/commissioning phase of the software life cycle that ID.AM-08 requires to be managed. Partial — covers install/operate stages but not the full life cycle; defensible as a lifecycle-stage control."
+    },
+    {
+      "target": "A.8.32",
+      "mappingPercentage": 50,
+      "rationale": "ID.AM-08: A.8.32 Change management controls modifications to systems/software across their operational life, supporting ID.AM-08's lifecycle-management intent for systems and software. Defensible partial correspondence (change-control phase of the life cycle)."
+    },
+    {
+      "target": "A.8.29",
+      "mappingPercentage": 65,
+      "rationale": "ID.RA-01: A.8.29 Security testing in development and acceptance identifies and records vulnerabilities prior to release, directly contributing to ID.RA-01 (vulnerabilities in assets are identified, validated, and recorded). Currently only A.8.8 (technical vulnerability management of operational assets) is mapped; A.8.29 covers the pre-production identification/validation path and is a defensible addition."
+    },
+    {
+      "target": "A.8.25",
+      "mappingPercentage": 40,
+      "rationale": "ID.RA-01: A.8.25 Secure development life cycle embeds vulnerability identification activities into development. Weaker/partial correspondence to ID.RA-01 — it frames the process under which vulnerabilities are found rather than the identify/validate/record act itself, but defensible as a contributing control."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 85,
+      "rationale": "ID.RA-02: A.5.6 Contact with special interest groups maps almost verbatim to ID.RA-02 (cyber threat intelligence received from information sharing forums and sources) — CERTs, ISACs and security SIGs are precisely those forums. The currently-mapped A.5.7 (Threat intelligence) covers producing/using TI; A.5.6 covers the receipt-from-sharing-forums channel that ID.RA-02 names explicitly. Strong defensible addition."
+    },
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 50,
+      "rationale": "ID.RA-02: A.5.5 Contact with authorities provides a recognized source channel (national CSIRTs, regulators, law-enforcement advisories) through which cyber threat intelligence is received, supporting ID.RA-02's 'from sources.' Defensible partial — authorities are one of the named source types alongside sharing forums."
+    },
+    {
+      "target": "A.5.4",
+      "mappingPercentage": 55,
+      "rationale": "ID.RA-03 — \"Internal and external threats to the organization are identified and recorded.\" The single A.5.7 (Threat intelligence) mapping captures the *external* threat-feed dimension, but A.5.4 (Management responsibilities) is a defensible add for the organizational/internal-threat governance that requires personnel to act per IS policy; however the stronger genuine gap is the *internal* threat angle which A.5.7 alone does not cover. Mapping is partial because A.5.4 is governance-adjacent rather than a direct threat-identification control."
+    },
+    {
+      "target": "Clause 6.1.2",
+      "mappingPercentage": 85,
+      "rationale": "ID.RA-03 — Identification and recording of internal AND external threats is the explicit core of ISO 27001 Clause 6.1.2 (risk identification: \"Risiken identifizieren ... Vertraulichkeit, Integritaet, Verfuegbarkeit\"). A.5.7 only covers externally-sourced threat intelligence; the systematic identification/documentation of the full threat landscape (internal + external) is a 6.1.2 risk-assessment-process activity. This is the most defensible missing correspondence for ID.RA-03."
+    },
+    {
+      "target": "Clause 6.1.2",
+      "mappingPercentage": 90,
+      "rationale": "ID.RA-04 — \"Potential impacts and likelihoods of threats exploiting vulnerabilities are identified and recorded.\" This is verbatim the ISO 27001 Clause 6.1.2 risk-analysis step (\"Moegliche Folgen bewerten / Realistische Eintrittswahrscheinlichkeit / Risikoniveau bestimmen\"). The current A.5.7 (threat intelligence) mapping is a poor fit for impact/likelihood analysis; 6.1.2 is the canonical home and is missing."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 45,
+      "rationale": "ID.RA-04 — Business-impact determination overlaps with A.5.29/A.5.30 (Continuity / ICT readiness, BIA-driven impact rating). The NIST reference equivalent maps impact-of-events to BIA (A.5.29). Partial because A.5.29 covers business-disruption impact, not the full likelihood dimension; relevant as a supplementary impact source beyond the current A.5.7 mapping."
+    },
+    {
+      "target": "Clause 6.1.2",
+      "mappingPercentage": 95,
+      "rationale": "ID.RA-05 — \"Threats, vulnerabilities, likelihoods, and impacts are used to understand inherent risk and inform risk response prioritization.\" This is precisely ISO 27001 Clause 6.1.2 risk evaluation (\"Ergebnisse mit Kriterien vergleichen / Priorisierung fuer Risikobehandlung\") plus the risk-level determination. The lone A.5.7 mapping does not address inherent-risk synthesis or prioritization at all; 6.1.2 is the obvious missing primary correspondence."
+    },
+    {
+      "target": "Clause 8.2",
+      "mappingPercentage": 60,
+      "rationale": "ID.RA-05 — Understanding and prioritizing risk is an operational, recurring activity covered by ISO 27001 Clause 8.2 (perform IS risk assessment at planned intervals / on significant change, retain documented information). Supports the synthesis-and-prioritization outcome of ID.RA-05 that A.5.7 does not. Partial because 8.2 is the operationalization of the 6.1.2 criteria."
+    },
+    {
+      "target": "Clause 6.1.3",
+      "mappingPercentage": 95,
+      "rationale": "ID.RA-06 — \"Risk responses are chosen, prioritized, planned, tracked, and communicated.\" This is the textbook ISO 27001 Clause 6.1.3 risk treatment (select treatment options, formulate risk treatment plan, obtain risk-owner approval). The current mapping is only A.5.4 (Management responsibilities), which is governance-adjacent; the substantive treatment-selection-and-planning home (6.1.3) is missing."
+    },
+    {
+      "target": "Clause 8.3",
+      "mappingPercentage": 70,
+      "rationale": "ID.RA-06 — The \"planned, tracked\" dimension of choosing/executing risk responses maps to ISO 27001 Clause 8.3 (implement the risk treatment plan, retain documented information). Complements 6.1.3's selection with the tracking/execution that ID.RA-06 requires and that A.5.4 alone does not cover."
+    },
+    {
+      "target": "A.5.7",
+      "mappingPercentage": 40,
+      "rationale": "ID.RA-08 — \"Processes for receiving, analyzing, and responding to vulnerability disclosures are established.\" Receiving and analyzing disclosure information is reinforced by A.5.7 (threat intelligence) and A.5.6 (contact with special interest groups / CERTs as a disclosure channel), beyond the current A.8.8 (technical vulnerability management) mapping. Partial because A.8.8 is the primary control; A.5.6/A.5.7 cover the inbound-disclosure-channel facet."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 50,
+      "rationale": "ID.RA-08 — Establishing the channel to RECEIVE vulnerability disclosures (CERTs, security-researcher contact, special-interest groups) is exactly A.5.6 (Contact with special interest groups). The current A.8.8 mapping covers analysis/remediation but not the disclosure-intake process; A.5.6 is a defensible missing correspondence for the \"receiving\" verb in ID.RA-08."
+    },
+    {
+      "target": "A.8.30",
+      "mappingPercentage": 45,
+      "rationale": "ID.RA-09 — \"The authenticity and integrity of hardware and software are assessed prior to acquisition and use.\" For outsourced/acquired software, A.8.30 (Outsourced development) governs integrity/security assurance of acquired code, complementing the current A.5.21 (Managing IS in the ICT supply chain) mapping. Partial because A.8.30 is dev-specific; relevant where software is acquired/built externally."
+    },
+    {
+      "target": "A.8.19",
+      "mappingPercentage": 40,
+      "rationale": "ID.RA-09 — Assessing software authenticity/integrity before use overlaps with A.8.19 (Installation of software on operational systems — signature verification, whitelisting). The current A.5.21 (ICT supply-chain) mapping covers procurement-side assurance; A.8.19 covers the pre-use integrity-verification (signature check) verb in ID.RA-09. Partial/supplementary."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 50,
+      "rationale": "ID.RA-09 — Verifying authenticity/integrity of supplier-delivered hardware/software ties to A.5.22 (Monitoring, review and change management of supplier services) as the ongoing-assurance complement to the current A.5.21 mapping. Partial because A.5.22 is monitoring-focused rather than pre-acquisition; defensible for the \"and use\" (ongoing) clause."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 75,
+      "rationale": "ID.RA-10 — \"Critical suppliers are assessed prior to acquisition.\" Supplier assessment is governed primarily by A.5.19 (Information security in supplier relationships) and A.5.20 (Addressing IS within supplier agreements / due diligence). The current mapping is only A.5.21 (ICT supply chain); A.5.19 is the broader supplier-relationship control and the most defensible missing correspondence for pre-acquisition supplier assessment."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 65,
+      "rationale": "ID.RA-10 — Pre-acquisition assessment of critical suppliers includes establishing security requirements in agreements (due diligence), i.e. A.5.20 (Addressing IS within supplier agreements). The current A.5.21 mapping is supply-chain-specific; A.5.20 covers the contractual due-diligence facet of assessing a supplier before onboarding."
+    },
+    {
+      "target": "A.5.35",
+      "mappingPercentage": 70,
+      "rationale": "ID.IM-01: ID.IM-01 covers identifying improvements from evaluations across all CSF functions. A.5.27 (learning from incidents) only captures the incident-derived slice. A.5.35 (independent review of information security) is the canonical Annex A control under which review/assessment findings are generated and fed back as improvements, which is exactly the evaluation-driven improvement intent of ID.IM-01. Strongly defensible additional correspondence."
+    },
+    {
+      "target": "A.5.36",
+      "mappingPercentage": 60,
+      "rationale": "ID.IM-01: Improvements are also identified from compliance reviews against policies, rules and standards (A.5.36 - Conformance with policies, rules and standards for information security). These review outcomes are a primary evaluation source feeding the improvement process, complementing the incident-only A.5.27 mapping."
+    },
+    {
+      "target": "A.8.8",
+      "mappingPercentage": 75,
+      "rationale": "ID.IM-02: ID.IM-02 covers improvements identified from security tests and exercises. A.8.29 (security testing in development/acceptance) is mapped, but technical vulnerability management (A.8.8) is the operational control where scanning/test findings are evaluated and drive remediation and improvement. This is a core, defensible additional correspondence for the test-derived improvement intent."
+    },
+    {
+      "target": "A.5.35",
+      "mappingPercentage": 55,
+      "rationale": "ID.IM-02: Security tests and exercises that surface improvements include independent technical reviews/assessments. A.5.35 (independent review of information security) is the governance control under which such test/exercise programs and their improvement findings are organized, complementing the development-centric A.8.29."
+    },
+    {
+      "target": "A.5.37",
+      "mappingPercentage": 60,
+      "rationale": "ID.IM-03: ID.IM-03 covers improvements identified from execution of operational processes, procedures and activities. A.5.36 (conformance) captures the review angle, but A.5.37 (documented operating procedures) is the control governing the operational procedures themselves whose execution surfaces and embeds the improvements. Defensible additional correspondence."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 70,
+      "rationale": "ID.IM-04: ID.IM-04 covers establishing, communicating, maintaining and improving incident response and recovery plans. A.5.24 (incident management planning and preparation) is mapped, but A.5.26 (response to information security incidents) is the directly corresponding control for the response-plan execution and maintenance dimension. Strongly defensible."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 65,
+      "rationale": "ID.IM-04: ID.IM-04 explicitly includes recovery/continuity plans alongside incident response plans. A.5.29 (information security during disruption) is the Annex A control for maintaining information security and continuity plans during disruptive events, a defensible additional correspondence beyond the incident-planning-only A.5.24."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 60,
+      "rationale": "ID.IM-04: The recovery dimension of ID.IM-04 corresponds to A.5.30 (ICT readiness for business continuity), which establishes, maintains and tests ICT recovery/continuity plans. This complements the incident-response focus of the existing A.5.24 mapping and is well supported by the CSF-to-ISO crosswalks."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 85,
+      "rationale": "PR.AA-01: PR.AA-01 is 'Identities and credentials for authorized users, services, and hardware are managed by the organization.' A.5.16 (identity management) covers the identity half, but the credential-management half maps directly to A.5.17 (authentication information), the control governing allocation and management of secrets/credentials. This is a core missing correspondence."
+    },
+    {
+      "target": "A.5.18",
+      "mappingPercentage": 55,
+      "rationale": "PR.AA-01: Managing identities/credentials for authorized users over their lifecycle is operationally inseparable from A.5.18 (access rights provisioning, review and revocation). The lifecycle management intent of PR.AA-01 is defensibly served by A.5.18 in addition to A.5.16/A.5.17."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 65,
+      "rationale": "PR.AA-02: PR.AA-02 covers identity proofing and binding to credentials based on context. A.5.16 (identity management) is mapped, but the binding-to-credentials element maps to A.5.17 (authentication information), which governs how authentication information is issued and bound to verified identities."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 70,
+      "rationale": "PR.AA-03: PR.AA-03 is 'Users, services, and hardware are authenticated.' A.8.5 (secure authentication) is mapped, but authentication relies on the authentication information governed by A.5.17, which is the prerequisite control for any authentication mechanism. Defensible additional correspondence."
+    },
+    {
+      "target": "A.8.2",
+      "mappingPercentage": 50,
+      "rationale": "PR.AA-03: Authentication of privileged users/services/admin accounts is specifically reinforced by A.8.2 (privileged access rights), which requires stronger authentication for elevated identities. This is a defensible additional correspondence for the privileged-authentication slice of PR.AA-03 beyond the general A.8.5."
+    },
+    {
+      "target": "A.5.16",
+      "mappingPercentage": 70,
+      "rationale": "PR.AA-04: PR.AA-04 covers identity assertions being protected, conveyed and verified. A.5.17 (authentication information) is mapped, but identity assertions presuppose managed identities, so A.5.16 (identity management) is a defensible additional correspondence for the identity-binding/verification dimension."
+    },
+    {
+      "target": "A.8.5",
+      "mappingPercentage": 65,
+      "rationale": "PR.AA-04: Verifying conveyed identity assertions is an authentication act; A.8.5 (secure authentication) is the control implementing assertion verification and secure log-on (e.g., token/assertion validation in federated/SSO flows). Defensible additional correspondence beyond the A.5.17 credential-management mapping."
+    },
+    {
+      "target": "A.5.3",
+      "mappingPercentage": 70,
+      "rationale": "PR.AA-05: This subcategory explicitly requires that access permissions incorporate the principles of least privilege AND separation of duties. A.5.15 (Access control) covers least-privilege/need-to-know but does NOT cover SoD. A.5.3 Segregation of duties is the dedicated Annex A control for conflicting-duties separation and is a NIST-official informative reference for PR.AA-05."
+    },
+    {
+      "target": "A.5.18",
+      "mappingPercentage": 85,
+      "rationale": "PR.AA-05: Managing access permissions, entitlements and authorizations is precisely the subject of A.5.18 Access rights (provisioning, review, modification, removal of access rights). A.5.15 only sets the access-control policy; A.5.18 operationalizes the entitlement lifecycle that PR.AA-05 demands. Strong NIST-crosswalk correspondence."
+    },
+    {
+      "target": "A.8.2",
+      "mappingPercentage": 75,
+      "rationale": "PR.AA-05: Entitlements/authorizations explicitly include elevated/privileged authorizations; A.8.2 Privileged access rights is the dedicated control for managing privileged entitlements and is a NIST-official informative reference for PR.AA-05. A.5.15 does not specifically address privileged-rights restriction."
+    },
+    {
+      "target": "A.8.3",
+      "mappingPercentage": 65,
+      "rationale": "PR.AA-05: A.8.3 Information access restriction enforces access permissions/entitlements at the information-system level (restricting access to information and application functions per the access-control policy). This is the technical enforcement of the entitlements PR.AA-05 manages and is a NIST informative reference."
+    },
+    {
+      "target": "A.7.2",
+      "mappingPercentage": 85,
+      "rationale": "PR.AA-06: Physical access being managed and monitored is the direct subject of A.7.2 Physical entry (entry controls for secure areas). A.7.1 only covers the perimeter; A.7.2 governs the actual entry-control mechanisms central to PR.AA-06."
+    },
+    {
+      "target": "A.7.3",
+      "mappingPercentage": 70,
+      "rationale": "PR.AA-06: A.7.3 Securing offices, rooms and facilities supports managing physical access to assets within protected areas, a NIST-official informative reference for PR.AA-06 beyond the perimeter control A.7.1."
+    },
+    {
+      "target": "A.7.4",
+      "mappingPercentage": 75,
+      "rationale": "PR.AA-06: The 'monitored' aspect of PR.AA-06 maps directly to A.7.4 Physical security monitoring (surveillance/intruder detection of premises). A.7.1 does not cover monitoring; this is a strong correspondence."
+    },
+    {
+      "target": "A.7.6",
+      "mappingPercentage": 60,
+      "rationale": "PR.AA-06: A.7.6 Working in secure areas governs managed physical access behavior within secure areas and is part of the NIST physical-access reference set for PR.AA-06 complementing the mapped A.7.1."
+    },
+    {
+      "target": "A.6.1",
+      "mappingPercentage": 55,
+      "rationale": "PR.AT-01: Personnel awareness/training effectiveness presupposes A.6.1 Screening to establish trustworthy personnel; NIST informative references include A.6.1 within the personnel-assurance set for PR.AT. Moderate but defensible."
+    },
+    {
+      "target": "A.6.2",
+      "mappingPercentage": 60,
+      "rationale": "PR.AT-01: A.6.2 Terms and conditions of employment establishes the contractual information-security responsibilities that awareness/training (PR.AT-01) reinforces; NIST cross-references it for PR.AT-01 as the formal basis of user obligations."
+    },
+    {
+      "target": "A.5.4",
+      "mappingPercentage": 55,
+      "rationale": "PR.AT-01: A.5.4 Management responsibilities requires management to ensure all personnel apply information security per policy (i.e., are aware and trained), directly supporting PR.AT-01 and listed as a NIST informative reference."
+    },
+    {
+      "target": "A.6.4",
+      "mappingPercentage": 50,
+      "rationale": "PR.AT-02: A.6.4 Disciplinary process underpins enforcement of role-specific/privileged-user security duties addressed by specialized training in PR.AT-02; included in NIST personnel-security references. Moderate correspondence."
+    },
+    {
+      "target": "A.8.10",
+      "mappingPercentage": 60,
+      "rationale": "PR.DS-01: Protecting data-at-rest includes its eventual secure disposal; A.8.10 Information deletion ensures at-rest data is removed when no longer needed and is a NIST informative reference for PR.DS-01 beyond cryptography (A.8.24)."
+    },
+    {
+      "target": "A.8.11",
+      "mappingPercentage": 65,
+      "rationale": "PR.DS-01: A.8.11 Data masking protects data-at-rest confidentiality through masking/pseudonymization, a NIST-official informative reference for PR.DS-01 that complements the mapped A.8.24 cryptography control."
+    },
+    {
+      "target": "A.8.12",
+      "mappingPercentage": 70,
+      "rationale": "PR.DS-01: A.8.12 Data leakage prevention protects stored data from unauthorized exfiltration, a core data-at-rest protection and NIST informative reference for PR.DS-01 not covered by A.8.24."
+    },
+    {
+      "target": "A.7.10",
+      "mappingPercentage": 65,
+      "rationale": "PR.DS-01: Data-at-rest resides on storage media; A.7.10 Storage media (handling, protection, secure disposal of media) is a NIST informative reference for PR.DS-01 protecting at-rest data on physical media, distinct from cryptographic protection."
+    },
+    {
+      "target": "A.7.14",
+      "mappingPercentage": 55,
+      "rationale": "PR.DS-01: A.7.14 Secure disposal or re-use of equipment ensures data-at-rest on decommissioned equipment is unrecoverable, a NIST reference for PR.DS-01 protecting residual stored data."
+    },
+    {
+      "target": "A.5.14",
+      "mappingPercentage": 80,
+      "rationale": "PR.DS-02: Data-in-transit protection is the explicit subject of A.5.14 Information transfer (rules, agreements and controls for transferring information securely). A NIST-official informative reference for PR.DS-02 not represented by the mapped A.8.24."
+    },
+    {
+      "target": "A.8.20",
+      "mappingPercentage": 70,
+      "rationale": "PR.DS-02: A.8.20 Networks security protects data while transmitted across networks, a NIST informative reference for PR.DS-02 (in-transit) complementing cryptography A.8.24."
+    },
+    {
+      "target": "A.8.21",
+      "mappingPercentage": 65,
+      "rationale": "PR.DS-02: A.8.21 Security of network services secures the transit channels carrying data-in-transit, a NIST informative reference for PR.DS-02."
+    },
+    {
+      "target": "A.8.22",
+      "mappingPercentage": 55,
+      "rationale": "PR.DS-02: A.8.22 Segregation of networks limits exposure of data-in-transit through network separation, a defensible NIST-aligned reference for PR.DS-02."
+    },
+    {
+      "target": "A.8.23",
+      "mappingPercentage": 55,
+      "rationale": "PR.DS-02: A.8.23 Web filtering protects data and connections in transit to/from external web resources, included in NIST in-transit reference set for PR.DS-02. Moderate correspondence."
+    },
+    {
+      "target": "A.8.10",
+      "mappingPercentage": 55,
+      "rationale": "PR.DS-10: Protecting data-in-use includes ensuring transient data is deleted after processing; A.8.10 Information deletion is a NIST-aligned reference for PR.DS-10 complementing the mapped A.8.11 data masking."
+    },
+    {
+      "target": "A.8.12",
+      "mappingPercentage": 65,
+      "rationale": "PR.DS-10: A.8.12 Data leakage prevention protects data while in use/being processed against exfiltration, a NIST informative reference for PR.DS-10 alongside the mapped masking control A.8.11."
+    },
+    {
+      "target": "A.8.3",
+      "mappingPercentage": 55,
+      "rationale": "PR.DS-10: A.8.3 Information access restriction limits which subjects can access/process data in use, supporting in-use protection per PR.DS-10. Defensible but secondary to A.8.11/A.8.12."
+    },
+    {
+      "target": "A.8.14",
+      "mappingPercentage": 65,
+      "rationale": "PR.DS-11: PR.DS-11 covers backups created, maintained AND tested for availability. A.8.14 Redundancy of information processing facilities is a NIST-official informative reference for PR.DS-11 supporting availability/recovery beyond the mapped backup control A.8.13."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 50,
+      "rationale": "PR.DS-11: A.5.29 Information security during disruption ties backup creation/maintenance/testing to continuity, a NIST-aligned reference for PR.DS-11. Moderate correspondence — backups underpin the resilience A.5.29 requires."
+    },
+    {
+      "target": "A.5.33",
+      "mappingPercentage": 55,
+      "rationale": "PR.DS-11: A.5.33 Protection of records ensures retained/backed-up records remain protected and recoverable, a defensible NIST-aligned reference for the maintain/protect aspect of PR.DS-11 beyond A.8.13."
+    },
+    {
+      "target": "ISO27001 A.8.32",
+      "mappingPercentage": 80,
+      "rationale": "NIST-CSF-2.0 PR.PS-01: Configuration management practices are established and applied. A.8.32 Change management is the official ISO27001:2022 companion mapping for PR.PS-01 (per NIST's own informative-reference crosswalk): configuration baselines are maintained through controlled change. A.8.9 alone (baseline/hardening) does not cover the change-control loop that keeps configurations current, so this is a genuine missing correspondence."
+    },
+    {
+      "target": "ISO27001 A.8.8",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 PR.PS-02: Software is maintained, replaced, and removed commensurate with risk ('commensurate with risk' = patch/remediate based on technical-vulnerability exposure). A.8.8 Management of technical vulnerabilities is the canonical ISO control driving risk-based software maintenance/patching and is the official NIST crosswalk partner; A.8.19 (installation control) does not capture the vulnerability-driven maintenance/removal lifecycle."
+    },
+    {
+      "target": "ISO27001 A.5.9",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 PR.PS-03: Hardware is maintained, replaced, and removed commensurate with risk. Risk-based hardware lifecycle (maintain/replace/remove) presupposes a hardware inventory; A.5.9 Inventory of information and other associated assets underpins knowing which hardware exists and its risk, which the single A.7.13 (maintenance) mapping omits. Defensible but secondary."
+    },
+    {
+      "target": "ISO27001 A.7.14",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 PR.PS-03: Hardware is maintained, replaced, and removed commensurate with risk. The 'removed' (disposal/end-of-life) dimension is directly covered by A.7.14 Secure disposal or re-use of equipment, which A.7.13 (maintenance only) does not address. This is a strong, missing correspondence for the replace/remove half of the subcategory."
+    },
+    {
+      "target": "ISO27001 A.8.16",
+      "mappingPercentage": 65,
+      "rationale": "NIST-CSF-2.0 PR.PS-04: Log records are generated and made available for continuous monitoring. The 'made available for continuous monitoring' clause maps to A.8.16 Monitoring activities (using logs for ongoing anomaly detection), which complements A.8.15 Logging (generation). NIST's crosswalk lists both; A.8.16 is genuinely missing."
+    },
+    {
+      "target": "ISO27001 A.8.17",
+      "mappingPercentage": 45,
+      "rationale": "NIST-CSF-2.0 PR.PS-04: Log records are generated and made available for continuous monitoring. Log usefulness depends on synchronized timestamps; A.8.17 Clock synchronization ensures correlatable log records across systems. Defensible supporting control, lower-strength than A.8.15/A.8.16."
+    },
+    {
+      "target": "ISO27001 A.8.19",
+      "mappingPercentage": 85,
+      "rationale": "NIST-CSF-2.0 PR.PS-05: Installation and execution of unauthorized software are prevented. A.8.19 Installation of software on operational systems is the most direct ISO control for preventing unauthorized installation (whitelisting, restricting installation rights) and is the primary NIST crosswalk partner; the current single A.8.18 mapping is itself questionable, so A.8.19 is the key missing correspondence."
+    },
+    {
+      "target": "ISO27001 A.8.7",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 PR.PS-05: Installation and execution of unauthorized software are prevented. A.8.7 Protection against malware explicitly includes application allowlisting/blocklisting and preventing execution of unauthorized/unapproved software, which is the 'execution prevented' half not covered by privileged-utility restriction (A.8.18). Defensible missing correspondence."
+    },
+    {
+      "target": "ISO27001 A.8.4",
+      "mappingPercentage": 45,
+      "rationale": "NIST-CSF-2.0 PR.PS-05: Installation and execution of unauthorized software are prevented. A.8.4 Access to source code / restriction of software-install rights supports preventing unauthorized installation by limiting who can deploy or alter software. Secondary but defensible."
+    },
+    {
+      "target": "ISO27001 A.8.28",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 PR.PS-06: Secure software development practices are integrated and their performance is monitored. A.8.28 Secure coding is a core secure-development practice (the 'practices integrated' clause) and a standard NIST crosswalk partner that A.8.25 (secure development life cycle, the umbrella) does not by itself enumerate."
+    },
+    {
+      "target": "ISO27001 A.8.29",
+      "mappingPercentage": 65,
+      "rationale": "NIST-CSF-2.0 PR.PS-06: Secure software development practices are integrated and their performance is monitored. The 'performance is monitored' clause maps to A.8.29 Security testing in development and acceptance (SAST/DAST/pentest verifying secure-dev effectiveness), a distinct missing control beyond A.8.25."
+    },
+    {
+      "target": "ISO27001 A.8.31",
+      "mappingPercentage": 50,
+      "rationale": "NIST-CSF-2.0 PR.PS-06: Secure software development practices are integrated and their performance is monitored. A.8.31 Separation of development, test and production environments is a foundational secure-development-lifecycle practice in the official crosswalk; defensible supporting correspondence not captured by A.8.25 alone."
+    },
+    {
+      "target": "ISO27001 A.8.22",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 PR.IR-01: Networks and environments are protected from unauthorized logical access and usage. A.8.22 Segregation of networks is a core ISO control for restricting logical access/usage within network environments and is a standard NIST crosswalk partner that A.8.20 (general network security) does not fully subsume."
+    },
+    {
+      "target": "ISO27001 A.8.23",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 PR.IR-01: Networks and environments are protected from unauthorized logical access and usage. A.8.23 Web filtering restricts unauthorized network usage/connections (egress to malicious/unapproved destinations), directly supporting the 'unauthorized usage' clause; missing from the A.8.20-only mapping."
+    },
+    {
+      "target": "ISO27001 A.8.21",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 PR.IR-01: Networks and environments are protected from unauthorized logical access and usage. A.8.21 Security of network services governs secure connection/usage of network services per agreed security mechanisms, a defensible companion to A.8.20 for the logical-access-and-usage scope."
+    },
+    {
+      "target": "ISO27001 A.7.8",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 PR.IR-02: The organization's technology assets are protected from environmental threats. A.7.8 Equipment siting and protection covers placing/protecting equipment against environmental hazards (heat, water, dust), a direct contributor to environmental-threat protection that A.7.5 (general physical-and-environmental-threat protection) usefully pairs with but does not replace."
+    },
+    {
+      "target": "ISO27001 A.7.11",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 PR.IR-02: The organization's technology assets are protected from environmental threats. A.7.11 Supporting utilities (power, HVAC, cooling, UPS) protects assets from environmental/utility failures (overheating, power loss) and is a standard NIST crosswalk partner for PR.IR-02 that the single A.7.5 mapping omits."
+    },
+    {
+      "target": "ISO27001 A.7.12",
+      "mappingPercentage": 45,
+      "rationale": "NIST-CSF-2.0 PR.IR-02: The organization's technology assets are protected from environmental threats. A.7.12 Cabling security protects power/telecom cabling from environmental interference and damage, a defensible supporting environmental-protection control beyond A.7.5."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 80,
+      "rationale": "NIST-CSF-2.0 PR.IR-03: PR.IR-03 requires mechanisms to achieve resilience requirements in normal AND adverse situations. A.8.14 (Redundancy) alone only covers the technical-duplication facet. A.5.29 (Information security during disruption) is the core Annex A control for maintaining security/operations during adverse situations, which is the explicit scope of PR.IR-03. Official NIST-to-ISO27001:2022 informative references include A.5.29 for PR.IR-03."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 75,
+      "rationale": "NIST-CSF-2.0 PR.IR-03: A.5.30 (ICT readiness for business continuity) directly establishes the resilience/recovery capability PR.IR-03 demands for adverse situations (availability of ICT services, RTO/RPO readiness). It complements A.8.14 redundancy with the continuity-planning dimension and is part of the official informative references."
+    },
+    {
+      "target": "A.8.6",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 PR.IR-03: Achieving resilience requirements depends on adequate resource capacity to absorb load in adverse situations; A.8.6 (Capacity management) provisions the headroom that makes resilience mechanisms effective. Defensible but secondary (it is the primary mapping of the sibling PR.IR-04), hence moderate strength."
+    },
+    {
+      "target": "A.8.14",
+      "mappingPercentage": 80,
+      "rationale": "NIST-CSF-2.0 PR.IR-04: PR.IR-04 maintains adequate capacity to ensure availability. A.8.14 (Redundancy) is the principal complementary availability control — redundant components/sites are a primary means of ensuring availability beyond pure capacity sizing. This is a reciprocal of the PR.IR-03/A.8.14 link and appears in the official informative references for PR.IR-04."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 PR.IR-04: A.5.30 (ICT readiness for business continuity) drives the availability objectives (RTO/RPO) that the capacity in PR.IR-04 must satisfy; ensuring availability during/after disruption ties resource capacity planning to ICT continuity readiness."
+    },
+    {
+      "target": "A.8.15",
+      "mappingPercentage": 75,
+      "rationale": "NIST-CSF-2.0 DE.CM-01: Network/service monitoring is only possible if network events are logged; A.8.15 (Logging) is the foundational detective control feeding the monitoring described by A.8.16. Network monitoring without log generation is not operable, making A.8.15 a genuinely required complement."
+    },
+    {
+      "target": "A.8.20",
+      "mappingPercentage": 65,
+      "rationale": "NIST-CSF-2.0 DE.CM-01: A.8.20 (Networks security) governs the network controls whose state and traffic DE.CM-01 monitors; it is the network-specific control most directly scoped to 'networks and network services are monitored' and is included in the official ISO informative references for DE.CM-01."
+    },
+    {
+      "target": "A.8.21",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 DE.CM-01: A.8.21 (Security of network services) specifically covers the network services portion of DE.CM-01's scope ('networks AND network services'); monitoring the security mechanisms/service levels of network services maps defensibly here."
+    },
+    {
+      "target": "A.8.16",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 DE.CM-02: A.8.16 (Monitoring activities) is the general anomaly/event-monitoring control and applies to the physical environment as one monitored domain; it complements A.7.4 (physical security monitoring) by tying physical alarms/sensors into the broader monitoring/correlation activity. Moderate strength because A.7.4 is the precise, primary control."
+    },
+    {
+      "target": "A.8.15",
+      "mappingPercentage": 75,
+      "rationale": "NIST-CSF-2.0 DE.CM-03: Monitoring personnel activity and technology usage requires the activity records produced by A.8.15 (Logging) — user, administrator, and system-activity logs are the direct evidence DE.CM-03 analyzes. A.8.16 alone is the detection layer; A.8.15 supplies the underlying user-activity data."
+    },
+    {
+      "target": "A.8.18",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 DE.CM-03: A.8.18 (Use of privileged utility programs) requires logging/monitoring of privileged technology usage, a high-risk subset of the personnel-activity and technology-usage monitoring scope of DE.CM-03."
+    },
+    {
+      "target": "A.8.16",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 DE.CM-06: External-provider activity monitoring is a domain of general A.8.16 (Monitoring activities); the anomaly/event monitoring of supplier-delivered services and connections complements the supplier-governance review in A.5.22 with the technical detective layer."
+    },
+    {
+      "target": "A.5.23",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 DE.CM-06: A.5.23 (Information security for use of cloud services) covers monitoring of a major class of external service providers (cloud); where external providers are cloud services, DE.CM-06 monitoring obligations map directly to A.5.23 in addition to the general supplier-review control A.5.22."
+    },
+    {
+      "target": "A.8.8",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 DE.CM-09: DE.CM-09 monitors computing hardware/software and runtime environments to find indicators of compromise. A.8.8 (Management of technical vulnerabilities) provides the vulnerability/exposure detection that identifies compromise indicators on those assets, complementing the malware focus of A.8.7."
+    },
+    {
+      "target": "A.8.16",
+      "mappingPercentage": 65,
+      "rationale": "NIST-CSF-2.0 DE.CM-09: A.8.16 (Monitoring activities) is the general control for detecting anomalous behavior and indicators of compromise across systems and runtime environments — directly the 'monitored to find indicators of compromise' clause of DE.CM-09, broader than the A.8.7 malware-only mapping."
+    },
+    {
+      "target": "A.8.15",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 DE.CM-09: Detecting indicators of compromise on hardware/software/runtime environments relies on A.8.15 (Logging) to produce the records analyzed for IoCs; logging is a defensible underpinning detective control for DE.CM-09."
+    },
+    {
+      "target": "A.5.25",
+      "mappingPercentage": 75,
+      "rationale": "NIST-CSF-2.0 DE.AE-02: DE.AE-02 analyzes potentially adverse events to understand associated activity. A.5.25 (Assessment and decision on information security events) is the precise Annex A control for assessing/triaging events and deciding whether they are incidents — the analytic step DE.AE-02 describes, beyond mere monitoring (A.8.16)."
+    },
+    {
+      "target": "A.5.7",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 DE.AE-02: A.5.7 (Threat intelligence) supplies the context used to analyze and understand adverse events (TTPs, IoCs), enriching the event analysis DE.AE-02 requires; it is an official informative reference for DE.AE-02."
+    },
+    {
+      "target": "A.8.15",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 DE.AE-02: Event analysis in DE.AE-02 operates on the log data generated by A.8.15 (Logging); correlating and analyzing adverse events presupposes the recorded events that A.8.15 produces, making it a defensible supporting control alongside A.8.16."
+    },
+    {
+      "target": "A.8.15",
+      "mappingPercentage": 70,
+      "rationale": "DE.AE-03: Correlating event data from multiple sources presupposes those sources exist. A.8.15 (Logging) produces the event records that DE.AE-03 correlates; without logging there is nothing to correlate. The official NIST CSF 2.0 informative references list A.8.15 alongside A.8.16 for this subcategory. Genuine functional dependency, not just thematic."
+    },
+    {
+      "target": "A.5.7",
+      "mappingPercentage": 55,
+      "rationale": "DE.AE-03: Event correlation is materially strengthened by threat-intelligence context (IoCs, TTPs) used as a correlation axis. A.5.7 (Threat intelligence) supplies the contextual data that turns isolated events into a correlated picture, which is the explicit intent of DE.AE-03. Defensible but secondary."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 75,
+      "rationale": "DE.AE-04: Estimating impact and scope of events is governed by the incident-management planning/preparation control. A.5.24 establishes the process, roles and criteria by which impact/scope assessment (which A.5.25 then executes per-event) is performed. The pair A.5.24+A.5.25 is the canonical ISO answer to event-impact estimation; A.5.24 is currently missing."
+    },
+    {
+      "target": "A.8.16",
+      "mappingPercentage": 60,
+      "rationale": "DE.AE-06: Sharing detection information with authorized staff and tools is operationally realized through monitoring outputs/alerting. A.8.16 (Monitoring activities) explicitly covers producing and disseminating monitoring results to responsible parties, directly matching the dissemination intent of DE.AE-06 beyond the human reporting captured by A.6.8."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 45,
+      "rationale": "DE.AE-06: The subcategory's intent includes sharing detection information with authorized external tools/parties as appropriate. A.5.6 (Contact with special interest groups) governs information-sharing channels (CERTs, ISACs) and is a defensible, though narrower, correspondence for the external-sharing dimension."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 60,
+      "rationale": "DE.AE-07: Integrating cyber threat intelligence and other contextual information into analysis depends on the channels that supply external context. A.5.6 (Contact with special interest groups) is the ISO control for obtaining threat/advisory information from CERTs and peer groups, complementing A.5.7's intelligence-production focus; it is part of the official informative reference set."
+    },
+    {
+      "target": "A.8.16",
+      "mappingPercentage": 50,
+      "rationale": "DE.AE-07: Contextual integration is performed within the monitoring/analysis function. A.8.16 (Monitoring activities) is where threat intel and other context are operationally fused with observed activity to drive detection, supporting the integration intent of DE.AE-07."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 80,
+      "rationale": "DE.AE-08: Declaring an incident when defined criteria are met is exactly what A.5.24 (Information security incident management planning and preparation) establishes — the categorization scheme and declaration thresholds. A.5.25 covers the per-event decision, but the criteria/escalation framework that DE.AE-08 hinges on lives in A.5.24, which is missing."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 70,
+      "rationale": "RS.MA-01: Executing the incident-response plan in coordination with third parties requires that such a plan and its coordination arrangements exist. A.5.24 (incident management planning and preparation) defines the response plan, roles and third-party coordination that A.5.26 then executes. The plan-existence control complements the response-execution control already mapped."
+    },
+    {
+      "target": "A.6.8",
+      "mappingPercentage": 55,
+      "rationale": "RS.MA-02: Triaging and validating incident reports operates on the reports produced by A.6.8 (Information security event reporting). The reporting control is the upstream feeder for triage/validation, and is part of the official ISO informative references for this subcategory; defensible functional dependency."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 65,
+      "rationale": "RS.MA-02: The triage and validation process itself (workflow, responsibilities, decision criteria) is defined by A.5.24 (incident management planning and preparation). A.5.25 covers the assessment decision, but the established procedure that enables consistent triage/validation is in A.5.24, which is missing."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 80,
+      "rationale": "RS.MA-03: Categorizing and prioritizing incidents is directly specified by A.5.24 (incident management planning and preparation), which requires defining incident categories, severity/priority scales and escalation. A.5.25 applies the categorization per-event, but the categorization/prioritization scheme is an A.5.24 deliverable and is currently absent from the mapping."
+    },
+    {
+      "target": "A.5.25",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 RS.MA-04 (incidents are escalated or elevated as needed): escalation decisions are driven by the assessment and triage of incidents. A.5.25 (Assessment and decision on information security events) is the control that determines whether an event is categorized as an incident and at what severity, which is the explicit trigger for escalation/elevation. Current mapping only covers A.5.26 (response execution), missing the triage-based escalation criteria source."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 65,
+      "rationale": "NIST-CSF-2.0 RS.MA-05 (the criteria for initiating incident recovery are applied): the predefined criteria and procedures for moving from response into recovery are established as part of incident management planning and preparation. A.5.24 (Information security incident management planning and preparation) is where response/recovery roles, procedures and decision criteria are defined; A.5.26 alone only covers executing the response, not the planned criteria being applied."
+    },
+    {
+      "target": "A.5.28",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 RS.AN-03 (analysis is performed to establish what has taken place and the root cause): forensically establishing what happened depends on properly collected and preserved evidence. A.5.28 (Collection of evidence) underpins the factual basis of the analysis. Current mapping to A.5.27 (learning) covers the lessons-learned outcome but not the evidentiary input to the analysis."
+    },
+    {
+      "target": "A.8.15",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 RS.AN-03 (analysis to establish what took place and root cause): the raw material for reconstructing an incident is event logs. A.8.15 (Logging) provides the recorded activity timeline that root-cause analysis reconstructs; defensible as the detective data source for the analysis, beyond the already-mapped A.5.27."
+    },
+    {
+      "target": "A.8.15",
+      "mappingPercentage": 65,
+      "rationale": "NIST-CSF-2.0 RS.AN-06 (actions performed during an investigation are recorded and records' integrity and provenance preserved): A.8.15 (Logging) is the control requiring activities to be logged with protected, tamper-evident records. This directly matches 'actions are recorded' with integrity, complementing the already-mapped A.5.28 (evidence) which focuses on chain-of-custody of the evidence itself."
+    },
+    {
+      "target": "A.5.33",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 RS.AN-06 (records' integrity and provenance are preserved): A.5.33 (Protection of records) requires records to be protected from loss, falsification and unauthorized alteration, which directly maps to preserving the integrity and provenance of investigation records. Currently only A.5.28 is mapped."
+    },
+    {
+      "target": "A.8.15",
+      "mappingPercentage": 65,
+      "rationale": "NIST-CSF-2.0 RS.AN-07 (incident data and metadata are collected, and their integrity and provenance preserved): A.8.15 (Logging) is the primary control producing incident data and metadata (timestamps, source, user IDs) with protected integrity. Strongly complements the already-mapped A.5.28."
+    },
+    {
+      "target": "A.5.33",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 RS.AN-07 (incident data/metadata integrity and provenance preserved): A.5.33 (Protection of records) safeguards collected incident data against alteration, directly supporting integrity/provenance preservation beyond the already-mapped A.5.28."
+    },
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 75,
+      "rationale": "NIST-CSF-2.0 RS.CO-02 (internal and external stakeholders are notified of incidents): notification of external stakeholders such as regulators and authorities is governed by A.5.5 (Contact with authorities). The already-mapped A.6.8 covers internal event reporting only; A.5.5 is the defensible control for the external-authority notification dimension."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 RS.CO-02 (notification of internal and external stakeholders): A.5.6 (Contact with special interest groups) covers notifying/coordinating with external bodies such as CERTs and sector groups during incidents, a defensible external-stakeholder notification channel not covered by the already-mapped A.6.8."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 RS.CO-03 (information is shared with designated internal and external stakeholders): A.5.6 (Contact with special interest groups) is the control for bidirectional information sharing with external security communities (CERTs, ISACs, vendors). The already-mapped A.5.5 covers authorities; A.5.6 covers the broader designated-external-stakeholder information sharing."
+    },
+    {
+      "target": "A.6.8",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 RS.CO-03 (information is shared with designated internal stakeholders): A.6.8 (Information security event reporting) is the mechanism for sharing incident information internally to the designated reporting points. Defensible internal-sharing complement to the already-mapped A.5.5 which is authority-focused."
+    },
+    {
+      "target": "A.8.7",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 RS.MI-01: Containment of incidents frequently requires malware-protection mechanisms (isolation, blocking, quarantine). A.8.7 (Protection against malware) provides the detective/corrective capability to halt active malicious activity, which is a core containment action. Genuinely defensible for malware-driven incidents, though narrower than the catch-all A.5.26 already mapped."
+    },
+    {
+      "target": "A.8.7",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 RS.MI-02: Eradication of incidents (removing the root cause/artifacts) maps directly to A.8.7 (Protection against malware), whose corrective dimension covers detection, removal, and recovery from malware. Eradication of malicious code is the canonical use case of A.8.7, so this is a strong additional correspondence beyond the generic A.5.26."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 75,
+      "rationale": "NIST-CSF-2.0 RC.RP-01: Executing the recovery portion of the incident-response plan is the operationalization of A.5.29 (Information security during disruption) — it governs maintaining/restoring information security to the required level during a disruptive event. A.5.30 (ICT readiness for BC) covers preparedness; A.5.29 covers the actual during-disruption execution, which RC.RP-01 explicitly invokes. Defensible and complementary."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 RC.RP-02: Selecting, scoping, and prioritizing recovery actions is precisely the decision-making A.5.29 (Information security during disruption) requires — determining how to maintain/restore information security to the required level. A.5.30 alone covers ICT readiness planning; the act of choosing/prioritizing recovery actions during the event aligns to A.5.29."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 RC.RP-04: Considering critical mission functions and risk management to establish post-incident operational norms maps to A.5.29 (Information security during disruption), which addresses maintaining information security to the required level and restoring acceptable operating conditions for prioritized functions. This is a defensible addition to the A.5.30 readiness mapping."
+    },
+    {
+      "target": "A.8.13",
+      "mappingPercentage": 65,
+      "rationale": "NIST-CSF-2.0 RC.RP-05: Verifying integrity of restored assets and returning systems/services to normal status is delivered operationally through A.8.13 (Backup), whose restoration and restore-verification provisions are the mechanism by which assets are returned to a known-good state. A.5.30 covers readiness; A.8.13 covers the concrete restore-and-verify action RC.RP-05 describes."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 RC.RP-06: Declaring end of recovery and completing recovery documentation is part of A.5.26 (Response to information security incidents), which requires documented incident-handling procedures including recording actions taken and formally closing the response. A.5.27 (learning from incidents) covers the lessons-learned dimension; the closure/declaration and recovery-documentation completion additionally belongs to A.5.26's procedural response handling."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 70,
+      "rationale": "NIST-CSF-2.0 RC.CO-03 — A.5.24 (IS incident management planning and preparation) explicitly requires establishing communication plans and procedures (who communicates what, to whom) as part of incident/recovery preparation. RC.CO-03's requirement to communicate recovery activities and progress to designated internal and external stakeholders is directly enabled by this planning control, which the current A.5.5-only mapping (authorities only) omits."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 65,
+      "rationale": "NIST-CSF-2.0 RC.CO-03 — A.5.26 (Response to information security incidents) includes communicating incident handling and recovery status to relevant interested parties as part of executing the response. Recovery is the tail of response; communicating restoration progress to stakeholders falls squarely within A.5.26's operative scope, not captured by A.5.5."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 RC.CO-03 — A.5.29 (IS during disruption) governs maintaining processes — including stakeholder communication of restoration of operational capabilities — during and after a disruption. RC.CO-03 communicates recovery/operational-restoration progress, which is exactly the disruption-period communication A.5.29 covers; A.5.5 does not address internal stakeholders or operational-capability restoration."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 50,
+      "rationale": "NIST-CSF-2.0 RC.CO-03 — A.5.6 (Contact with special interest groups, e.g. CERTs/industry groups) provides the maintained external communication channel for sharing recovery activities and progress with external stakeholders. The current mapping only includes A.5.5 (authorities); A.5.6 covers the non-authority external-stakeholder channel that RC.CO-03 explicitly calls out."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 60,
+      "rationale": "NIST-CSF-2.0 RC.CO-04 — A.5.24 (IS incident management planning and preparation) requires pre-defined communication strategy and approved messaging/channels as part of preparation. RC.CO-04 ('public updates shared using approved methods and messaging') maps directly to the approved-communication-method planning in A.5.24, which the A.5.5-only mapping misses."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 55,
+      "rationale": "NIST-CSF-2.0 RC.CO-04 — A.5.26 (Response to information security incidents) encompasses executing external/public communication about the incident and its recovery as part of the coordinated response. RC.CO-04's public recovery updates are the operational delivery of that response-phase external communication, beyond authority contact (A.5.5)."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 45,
+      "rationale": "NIST-CSF-2.0 RC.CO-04 — A.5.6 (Contact with special interest groups) supports coordinated external/public information sharing during recovery through established interest-group and CERT channels. It complements A.5.5's authority-only scope for the public/external messaging RC.CO-04 requires."
+    }
+  ]
+}
