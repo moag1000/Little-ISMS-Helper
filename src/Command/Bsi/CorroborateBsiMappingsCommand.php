@@ -111,7 +111,7 @@ final class CorroborateBsiMappingsCommand extends Command
             self::BSI_FRAMEWORK_CODE
         ));
 
-        $result = $this->corroborationService->corroborate($iso, $bsi, $dryRun);
+        $result = $this->corroborationService->corroborate($iso, $bsi, dryRun: $dryRun);
 
         // ── Summary table ──────────────────────────────────────────────────────
         $total = $result['corroborated'] + $result['residual'];
