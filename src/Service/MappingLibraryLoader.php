@@ -114,7 +114,12 @@ final class MappingLibraryLoader
         $targetFw = $this->frameworkRepository->findOneBy(['code' => $library['target_framework']])
             ?? $this->frameworkRepository->findOneBy(['name' => $library['target_framework']]);
 
-        $libraryProvenanceSource = $library['provenance']['primary_source'] ?? null;
+        // Prefer explicit provenanceSource sentinel (e.g. 'official_bsi_c5_iso_crosswalk',
+        // 'official_iso27701_gdpr_annex', 'lex_specialis_candidate') over the human-readable
+        // primary_source string, so trustOf() tier-resolution works correctly.
+        $libraryProvenanceSource = $library['provenance']['provenanceSource']
+            ?? $library['provenance']['primary_source']
+            ?? null;
         $libraryProvenanceUrl = $library['provenance']['primary_source_url'] ?? null;
         $libraryMethodologyType = $library['methodology']['type'] ?? null;
         $libraryMethodologyDesc = $library['methodology']['description'] ?? null;

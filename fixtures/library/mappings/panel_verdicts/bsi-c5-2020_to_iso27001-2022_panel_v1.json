@@ -1,0 +1,93 @@
+{
+  "library": {
+    "source_framework": "BSI-C5",
+    "target_framework": "ISO27001",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "4-expert + refutation + completeness",
+    "amtlich_source": "official BSI C5:2020↔ISO27001 Referenztabelle (205 pairs)",
+    "run_date": "2026-06-12",
+    "notes": "Residual verdicts for 8 heuristic C5↔ISO pairs not covered by the official 205-pair crosswalk. The official amtlich table already covers the strong pairs; these are the boundary / overlap / contested cases.",
+    "verdict_counts": {
+      "total": 8,
+      "ki_validiert": 0,
+      "needs_review": 4,
+      "reject": 4,
+      "panel_discovered": 0
+    }
+  },
+  "verdicts": [
+    {
+      "c5": "OPS-01",
+      "iso": "A.5.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0,
+      "note": "OPS-01 is fully covered by the official crosswalk (OIS-02 → A.5.1). No duplicate heuristic mapping warranted."
+    },
+    {
+      "c5": "OIS-05",
+      "iso": "A.5.7",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1,
+      "refutationSurvived": false,
+      "note": "OIS-05 is mapped to A.5.5 in the official table, not A.5.7. The heuristic pair conflates Threat Intelligence with Contact with Authorities. Refuted."
+    },
+    {
+      "c5": "IDM-01",
+      "iso": "A.8.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0,
+      "note": "IDM-01 (Identity Management) maps to A.5.16 User Identity Management in the official table. A.8.1 (User Endpoint Devices) is not the correct ISO control."
+    },
+    {
+      "c5": "SSO-04",
+      "iso": "A.5.23",
+      "state": "reject",
+      "mappingPercentage": 60,
+      "realVotes": 1,
+      "refutationSurvived": false,
+      "note": "SSO-04 (Security of Network Services) maps to A.8.20/A.8.21 in the official table. A.5.23 (Information security for use of cloud services) is a consumer-side control, not a provider-side mapping."
+    },
+    {
+      "c5": "IDM-09",
+      "iso": "A.8.5",
+      "state": "needs_review",
+      "mappingPercentage": 90,
+      "realVotes": 4,
+      "refutationSurvived": false,
+      "note": "IDM-09 (Privileged Access Management) has strong overlap with A.8.5 (Secure Authentication). The official crosswalk maps IDM-09 to A.5.18 (Access Rights). Needs expert reconciliation: both controls may apply."
+    },
+    {
+      "c5": "OPS-15",
+      "iso": "A.8.7",
+      "state": "needs_review",
+      "mappingPercentage": 92,
+      "realVotes": 2,
+      "note": "OPS-15 (Protection Against Malware) maps to A.8.7 in the official crosswalk with SN=0, confirming the pair. However the heuristic mapping omits the additional A.8.8 (Management of technical vulnerabilities) link present in the official table. Needs completeness review."
+    },
+    {
+      "c5": "OPS-10",
+      "iso": "A.8.16",
+      "state": "needs_review",
+      "mappingPercentage": 80,
+      "realVotes": 3,
+      "note": "OPS-10 (Logging and Monitoring) officially maps to A.8.15 and A.8.16. The heuristic pair covers only A.8.16 (Monitoring Activities). Needs review to add A.8.15 (Logging) as co-mapping."
+    },
+    {
+      "c5": "IDM-02",
+      "iso": "A.5.15",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 4,
+      "refutationSurvived": false,
+      "note": "IDM-02 (User Registration and De-registration) officially maps to A.5.16 (User Identity Management) and A.5.18 (Access Rights). A.5.15 (Access Control) is a broader policy control. Needs review: A.5.15 may be an acceptable supplementary mapping."
+    }
+  ]
+}
