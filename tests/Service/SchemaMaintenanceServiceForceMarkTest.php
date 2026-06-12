@@ -286,4 +286,20 @@ class SchemaMaintenanceServiceForceMarkTest extends TestCase
         self::assertTrue($result['success']);
         self::assertTrue($inserted);
     }
+
+    #[Test]
+    public function verifyFalseSkipsDriftCheckAndMarks(): void
+    {
+        $this->primeKnownPendingVersion(self::VERSION_STRING);
+        // validate() would report drift, but verify:false must NOT consult it.
+        $this->schemaHealthService->expects(self::never())->method('validate');
+        $inserted = false;
+        $this->connection->method('insert')->willReturnCallback(function (...$a) use (&$inserted) { $inserted = true; return 1; });
+        $this->connection->expects(self::never())->method('delete');
+
+        $result = $this->service->markMigrationAsExecuted(self::VERSION_STRING, verify: false);
+
+        self::assertTrue($result['success']);
+        self::assertTrue($inserted);
+    }
 }

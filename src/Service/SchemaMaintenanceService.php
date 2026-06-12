@@ -356,7 +356,7 @@ class SchemaMaintenanceService
      *
      * @return array{success: bool, version: string, error: ?string}
      */
-    public function markMigrationAsExecuted(string $version): array
+    public function markMigrationAsExecuted(string $version, bool $verify = true): array
     {
         $df = $this->migrationsDependencyFactory;
 
@@ -414,22 +414,24 @@ class SchemaMaintenanceService
                 'execution_time' => 0,
             ]);
 
-            $remainingDrift = $this->getEntityVsDbDrift();
-            if ($remainingDrift !== []) {
-                $df->getConnection()->delete('doctrine_migration_versions', ['version' => $version]);
-                $this->auditLogger->logCustom(
-                    'admin.schema.force_mark_executed.refused_drift',
-                    'Doctrine',
-                    null,
-                    null,
-                    ['version' => $version, 'remaining_drift' => array_slice($remainingDrift, 0, 5)],
-                    sprintf('QuickFix: refused to mark %s — %d additive drift statement(s) remain; not phantom. Run migrate/reconcile.', $version, count($remainingDrift)),
-                );
-                return [
-                    'success' => false,
-                    'version' => $version,
-                    'error' => sprintf('Refused: %d additive schema drift statement(s) remain after marking — migration "%s" is not phantom. Run migrate or reconcile instead.', count($remainingDrift), $version),
-                ];
+            if ($verify) {
+                $remainingDrift = $this->getEntityVsDbDrift();
+                if ($remainingDrift !== []) {
+                    $df->getConnection()->delete('doctrine_migration_versions', ['version' => $version]);
+                    $this->auditLogger->logCustom(
+                        'admin.schema.force_mark_executed.refused_drift',
+                        'Doctrine',
+                        null,
+                        null,
+                        ['version' => $version, 'remaining_drift' => array_slice($remainingDrift, 0, 5)],
+                        sprintf('QuickFix: refused to mark %s — %d additive drift statement(s) remain; not phantom. Run migrate/reconcile.', $version, count($remainingDrift)),
+                    );
+                    return [
+                        'success' => false,
+                        'version' => $version,
+                        'error' => sprintf('Refused: %d additive schema drift statement(s) remain after marking — migration "%s" is not phantom. Run migrate or reconcile instead.', count($remainingDrift), $version),
+                    ];
+                }
             }
 
             $this->auditLogger->logCustom(
@@ -456,27 +458,19 @@ class SchemaMaintenanceService
     }
 
     /**
-     * Runs each pending migration in an INDEPENDENT single-version plan
-     * (Approach C). A failure in version N does NOT abort the loop — all
-     * remaining versions are attempted.
-     *
-     * Per-version outcome:
-     *  - Migration executes cleanly → it is now recorded as executed naturally;
-     *    pending count drops without any force-marking.
-     *  - Migration throws a phantom-diff error (table/column already exists) →
-     *    force-marked as executed via markMigrationAsExecuted().
-     *  - Migration throws any other error → added to $skipped[version => reason];
-     *    loop continues with next version.
-     *
-     * This replaces Approach A (schema-introspection), which was too conservative:
-     * migrations using conditional logic or non-CREATE-TABLE patterns were missed,
-     * so the pending count did not drop even for genuine phantom-diff versions.
+     * Records every file-system-pending migration as executed WITHOUT running
+     * its DDL (metadata-only INSERT, equivalent to
+     * `doctrine:migrations:version --add --all`). Per-version verify is skipped
+     * here (verify:false) — instead, after the loop a single residual-drift
+     * probe runs an additive-only reconcile to close any gap the operator's
+     * "all already applied" assertion missed. Never executes destructive DDL.
      *
      * @return array{
      *     success: bool,
      *     marked: list<string>,
      *     skipped: array<string, string>,
      *     remaining_pending: int,
+     *     post_drift_reconciled: bool,
      *     stopped_at_error: null,
      * }
      */
@@ -498,6 +492,7 @@ class SchemaMaintenanceService
                     'marked' => [],
                     'skipped' => [],
                     'remaining_pending' => 0,
+                    'post_drift_reconciled' => false,
                     'stopped_at_error' => null,
                 ];
             }
@@ -524,7 +519,7 @@ class SchemaMaintenanceService
                     break;
                 }
 
-                $markResult = $this->markMigrationAsExecuted($version);
+                $markResult = $this->markMigrationAsExecuted($version, verify: false);
                 if ($markResult['success']) {
                     $marked[] = $version;
                     $this->auditLogger->logCustom(
@@ -548,6 +543,28 @@ class SchemaMaintenanceService
             $skipped['__setup__'] = sprintf('[setup-failure] %s', $e->getMessage());
         }
 
+        // Post-loop integrity guard: if additive entity-vs-DB drift remains, the
+        // operator's "they're all already applied" assertion was wrong for at
+        // least one version. Reconcile additively (never destructive) + warn.
+        $postDriftReconciled = false;
+        $residualDrift = $this->getEntityVsDbDrift();
+        if ($residualDrift !== []) {
+            $reconcile = $this->schemaHealthService->applyUpdate('quick-fix', true, false);
+            $postDriftReconciled = (bool) $reconcile['success'];
+            $this->auditLogger->logCustom(
+                'admin.schema.mark_all.post_drift_reconcile',
+                'Doctrine',
+                null,
+                null,
+                [
+                    'residual_drift_count' => count($residualDrift),
+                    'residual_drift' => array_slice($residualDrift, 0, 5),
+                    'reconcile_success' => $postDriftReconciled,
+                ],
+                sprintf('QuickFix/mark-all: %d additive drift statement(s) remained after marking — additive reconcile %s.', count($residualDrift), $postDriftReconciled ? 'applied' : 'FAILED'),
+            );
+        }
+
         $remainingPending = count($this->listPendingMigrationVersionsFromFileSystem());
 
         return [
@@ -555,6 +572,7 @@ class SchemaMaintenanceService
             'marked' => $marked,
             'skipped' => $skipped,
             'remaining_pending' => $remainingPending,
+            'post_drift_reconciled' => $postDriftReconciled,
             'stopped_at_error' => null, // kept for backward-compat; always null in Approach C
         ];
     }

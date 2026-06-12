@@ -139,6 +139,21 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
      */
     private function stubMarkAsExecutedSuccess(string ...$versions): void
     {
+        $this->stubMarkAsExecutedSuccessWithValidate(null, ...$versions);
+    }
+
+    /**
+     * Like stubMarkAsExecutedSuccess(), but lets the caller override the
+     * validate() payload the post-loop drift probe sees. When $validateReturn
+     * is null, a clean (no-drift) payload is used. Per-version marking now uses
+     * verify:false, so validate() is only consulted by the post-loop
+     * getEntityVsDbDrift() probe.
+     *
+     * @param array<string, mixed>|null $validateReturn
+     * @param string[]                  $versions
+     */
+    private function stubMarkAsExecutedSuccessWithValidate(?array $validateReturn, string ...$versions): void
+    {
         $items = [];
         foreach ($versions as $v) {
             $migStub = new class($this->connection, $this->createMock(\Psr\Log\LoggerInterface::class)) extends AbstractMigration {
@@ -152,10 +167,10 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
         $this->migrationRepository->method('getMigrations')->willReturn($availableSet);
         $this->metadataStorage->method('getExecutedMigrations')->willReturn($this->makeEmptyExecutedList());
         $this->connection->method('insert');
-        // QF-3: markMigrationAsExecuted now verifies-before-mark via
-        // getEntityVsDbDrift() → schemaHealthService->validate(). A clean payload
-        // (no additive drift) lets the per-version mark succeed in these tests.
-        $this->schemaHealthService->method('validate')->willReturn([
+        // Per-version marking uses verify:false (no validate() during the loop).
+        // validate() is consulted only by the post-loop drift probe. Default to
+        // a clean payload; callers needing a drift scenario override it.
+        $this->schemaHealthService->method('validate')->willReturn($validateReturn ?? [
             'mapping_in_sync' => true,
             'database_in_sync' => true,
             'mapping_errors' => [],
@@ -392,6 +407,7 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
         self::assertArrayHasKey('marked', $result);
         self::assertArrayHasKey('skipped', $result);
         self::assertArrayHasKey('remaining_pending', $result);
+        self::assertArrayHasKey('post_drift_reconciled', $result);
         self::assertArrayHasKey('stopped_at_error', $result);
         self::assertIsArray($result['marked']);
         self::assertIsArray($result['skipped']);
@@ -421,11 +437,70 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
             ->method('migrate')
             ->willThrowException(new \RuntimeException('some real unexpected error without known pattern'));
 
+        // Post-loop drift probe consults validate(); give it a clean payload so
+        // no reconcile fires (this test exercises the skip/real-error path).
+        $this->schemaHealthService->method('validate')->willReturn([
+            'mapping_in_sync' => true,
+            'database_in_sync' => true,
+            'mapping_errors' => [],
+            'pending_sql' => [],
+            'pending_migrations' => [],
+            'overall_status' => 'healthy',
+        ]);
+
         $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
 
         // Real error → skipped, but stopped_at_error must remain null (Approach C guarantee)
         self::assertNull($result['stopped_at_error']);
         self::assertArrayHasKey(self::V1, $result['skipped']);
         self::assertFalse($result['success']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Test 10 (QF-2): post-loop drift guard → additive reconcile + warn
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function postDriftTriggersReconcileAndWarns(): void
+    {
+        // listPendingMigrationVersions: initial scan returns 2, remaining after = 0
+        $this->schemaHealthService->method('listPendingMigrationVersions')
+            ->willReturnOnConsecutiveCalls([self::V1, self::V2], []);
+
+        // Per-version marking uses verify:false → no validate() during the loop.
+        // The post-loop getEntityVsDbDrift() probe is the sole validate() caller;
+        // arrange it to report additive drift.
+        $this->stubMarkAsExecutedSuccessWithValidate(
+            [
+                'mapping_in_sync' => false,
+                'database_in_sync' => false,
+                'mapping_errors' => [],
+                'pending_sql' => ['ALTER TABLE z ADD COLUMN q INT'],
+                'pending_migrations' => [],
+                'overall_status' => 'warning',
+            ],
+            self::V1,
+            self::V2,
+        );
+
+        // Post-loop additive reconcile must fire exactly once.
+        $this->schemaHealthService
+            ->expects(self::once())
+            ->method('applyUpdate')
+            ->with('quick-fix', true, false)
+            ->willReturn([
+                'success' => true,
+                'executed_sql' => ['ALTER TABLE z ADD COLUMN q INT'],
+                'sql_hash' => null,
+                'error' => null,
+                'blocked' => null,
+                'dropped_fks' => [],
+                'skipped_destructive' => [],
+            ]);
+
+        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted('quick-fix');
+
+        self::assertTrue($result['post_drift_reconciled']);
+        self::assertSame([self::V1, self::V2], $result['marked']);
     }
 }
