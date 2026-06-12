@@ -4,7 +4,7 @@ library:
   id: 'iso27001-2022_to_nis2-art21_v1.0'
   source_framework: 'ISO27001'
   target_framework: 'NIS2'
-  version: 1
+  version: 2
   effective_from: '2024-09-01'
   effective_until: null
 
@@ -15,6 +15,17 @@ library:
       - 'BSI Mindestanforderungen NIS2-UmsuCG (Konsultationsentwurf 2024-12)'
       - 'Eigene Volltext-Analyse durch Compliance-Team'
     publisher: 'Little ISMS Helper Maintainers'
+    changelog:
+      - version: 2
+        date: '2026-06-13'
+        actor: 'maintainer'
+        note: |
+          DB-code alignment (STEP 2 quality gate): target requirement IDs changed from
+          shorthand notation '21.2.x' to DB canonical 'NIS2-ART21-X' format (uppercase).
+          LoadNis2Art21RequirementsCommand stores requirementId = controlId = 'NIS2-ART21-A'
+          through 'NIS2-ART21-J'. The previous shorthand caused MappingLibraryLoader to
+          silently skip all 12 pairs (findOneBy(['requirementId' => '21.2.f']) returns null).
+          Framework codes (ISO27001, NIS2) were already correct.
 
   methodology:
     type: 'text_comparison_with_expert_review'
@@ -34,10 +45,11 @@ library:
       - { state: 'review',    date: '2024-10-30', actor: 'maintainer' }
       - { state: 'approved',  date: '2024-11-22', actor: 'reviewer-2' }
       - { state: 'published', date: '2024-12-01', actor: 'ciso-signoff' }
+      - { state: 'published', date: '2026-06-13', actor: 'maintainer', note: 'v2: DB requirementId alignment (NIS2-ART21-X format)' }
 
 mappings:
   - source: 'A.5.7'
-    target: '21.2.f'
+    target: 'NIS2-ART21-F'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -49,7 +61,7 @@ mappings:
     audit_evidence_hint: 'Threat-Intel-Quellen-Liste + Sharing-Protokolle (CERT-Bund, BSI-CERT, ISACs) der letzten 12 Monate.'
 
   - source: 'A.5.30'
-    target: '21.2.c'
+    target: 'NIS2-ART21-C'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -63,7 +75,7 @@ mappings:
     audit_evidence_hint: 'BC-Pläne mit Krisenmanagement-Teil, Behörden-Meldepfade, dokumentierte Tabletop-Übungen.'
 
   - source: 'A.5.20'
-    target: '21.2.d'
+    target: 'NIS2-ART21-D'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -74,7 +86,7 @@ mappings:
     audit_evidence_hint: 'Supplier-Register mit Risk-Tier, AVV-Verträge, Audit-Reports der letzten 24 Monate.'
 
   - source: 'A.5.24'
-    target: '21.2.b'
+    target: 'NIS2-ART21-B'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -83,7 +95,7 @@ mappings:
     audit_evidence_hint: 'Incident-Response-Plan, IR-Übungen, IR-Reports.'
 
   - source: 'A.5.29'
-    target: '21.2.c'
+    target: 'NIS2-ART21-C'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -94,7 +106,7 @@ mappings:
     audit_evidence_hint: 'BC-Pläne, Notfallrichtlinien, Disruption-Tests.'
 
   - source: 'A.8.7'
-    target: '21.2.h'
+    target: 'NIS2-ART21-H'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -103,7 +115,7 @@ mappings:
     audit_evidence_hint: 'AV/EDR-Reports, Patch-Compliance-Dashboards.'
 
   - source: 'A.8.24'
-    target: '21.2.h'
+    target: 'NIS2-ART21-H'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -112,7 +124,7 @@ mappings:
     cross_refs: ['A.8.7', 'A.8.8']
 
   - source: 'A.5.9'
-    target: '21.2.e'
+    target: 'NIS2-ART21-E'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -122,7 +134,7 @@ mappings:
     cross_refs: ['A.5.10', 'A.5.11']
 
   - source: 'A.6.3'
-    target: '21.2.g'
+    target: 'NIS2-ART21-G'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -132,7 +144,7 @@ mappings:
     audit_evidence_hint: 'Schulungs-Quote, Phishing-Drill-Ergebnisse, Onboarding-Curriculum.'
 
   - source: 'A.5.1'
-    target: '21.2.a'
+    target: 'NIS2-ART21-A'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -144,7 +156,7 @@ mappings:
     cross_refs: ['A.6.1']
 
   - source: 'A.8.5'
-    target: '21.2.j'
+    target: 'NIS2-ART21-J'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -155,7 +167,7 @@ mappings:
     gap_warning: 'Sprach/Video-Notfallkommunikation ist nicht durch A.8.5 abgedeckt — separate Maßnahme nötig.'
 
   - source: 'A.8.16'
-    target: '21.2.i'
+    target: 'NIS2-ART21-I'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
