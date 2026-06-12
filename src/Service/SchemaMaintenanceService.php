@@ -100,6 +100,21 @@ class SchemaMaintenanceService
     }
 
     /**
+     * Number of versions currently recorded in doctrine_migration_versions.
+     * Best-effort: returns 0 if the metadata storage cannot be read.
+     */
+    private function countExecutedMigrations(): int
+    {
+        try {
+            return count(
+                $this->migrationsDependencyFactory->getMetadataStorage()->getExecutedMigrations()->getItems(),
+            );
+        } catch (\Throwable) {
+            return 0;
+        }
+    }
+
+    /**
      * Executes every pending migration in order. No-op when the plan is empty.
      *
      * @return array{success: bool, executed: int, error: ?string}
@@ -138,6 +153,8 @@ class SchemaMaintenanceService
             return ['success' => true, 'executed' => 0, 'error' => null];
         }
 
+        $executedBefore = $this->countExecutedMigrations();
+
         try {
             $config = (new MigratorConfiguration())
                 ->setDryRun(false)
@@ -145,6 +162,7 @@ class SchemaMaintenanceService
                 ->setNoMigrationException(true);
             $df->getMigrator()->migrate($plan, $config);
         } catch (\Throwable $e) {
+            $executedDelta = max(0, $this->countExecutedMigrations() - $executedBefore);
             $diagnosis = $this->diagnoseMigrationFailure($e->getMessage(), $plan);
             $this->auditLogger->logCustom(
                 'admin.schema.migrate.failed',
@@ -154,19 +172,20 @@ class SchemaMaintenanceService
                 [
                     'error' => $e->getMessage(),
                     'planned' => count($plan->getItems()),
+                    'executed' => $executedDelta,
                     'diagnosis' => $diagnosis['category'],
                 ],
                 sprintf('Schema migrate failed for %s: %s', $actor, $e->getMessage()),
             );
             return [
                 'success' => false,
-                'executed' => 0,
+                'executed' => $executedDelta,
                 'error' => $e->getMessage(),
                 'diagnosis' => $diagnosis,
             ];
         }
 
-        $executed = count($plan->getItems());
+        $executed = max(0, $this->countExecutedMigrations() - $executedBefore);
         $this->auditLogger->logCustom(
             'admin.schema.migrate.applied',
             'Doctrine',
@@ -623,10 +642,29 @@ class SchemaMaintenanceService
      */
     private function diagnoseMigrationFailure(string $errorMessage, MigrationPlanList $plan): array
     {
+        // Identify the offending version from the executed-delta: the FIRST
+        // planned version that did NOT land in doctrine_migration_versions is
+        // the one that failed. Under partial failure this is more accurate
+        // than blindly blaming the last planned version (QF-10).
+        $executedAfter = [];
+        try {
+            foreach ($this->migrationsDependencyFactory->getMetadataStorage()->getExecutedMigrations()->getItems() as $m) {
+                $executedAfter[(string) $m->getVersion()] = true;
+            }
+        } catch (\Throwable) {
+            // best-effort
+        }
         $offending = null;
-        $items = $plan->getItems();
-        if ($items !== []) {
-            $offending = (string) end($items)->getVersion();
+        foreach ($plan->getItems() as $item) {
+            $v = (string) $item->getVersion();
+            if (!isset($executedAfter[$v])) {
+                $offending = $v; // first not-yet-executed planned version = the one that failed
+                break;
+            }
+        }
+        if ($offending === null) {
+            $items = $plan->getItems();
+            $offending = $items !== [] ? (string) end($items)->getVersion() : null;
         }
 
         // Pattern 1: phantom diff-migration retries DDL that's already
