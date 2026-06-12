@@ -1,0 +1,481 @@
+{
+  "library": {
+    "source_framework": "NIS2",
+    "target_framework": "BSI_GRUNDSCHUTZ",
+    "panel": [
+      "isms-specialist",
+      "bsi-specialist",
+      "risk-management-specialist",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (BSI publishes no public NIS2↔Grundschutz crosswalk)",
+    "run_date": "2026-06-12",
+    "refutation_summary": "39 survived / 14 refuted",
+    "completeness": "17 panel_discovered survived of 24 proposed",
+    "verdict_counts": {
+      "total": 56,
+      "ki_validiert": 22,
+      "needs_review": 8,
+      "reject": 9,
+      "panel_discovered": 17
+    }
+  },
+  "verdicts": [
+    {
+      "nis2": "21.2.a",
+      "baustein": "ISMS.1.4",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "DER.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.c",
+      "baustein": "DER.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.d",
+      "baustein": "OPS.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "CON.5",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "ISMS.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.a",
+      "baustein": "ISMS.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.a",
+      "baustein": "ORP.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "DER.2.2",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "refutationSurvived": false,
+      "note": "consensus-real but refuted"
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "DER.2.3",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "realVotes": 2
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "DER.1",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "refutationSurvived": false,
+      "note": "consensus-real but refuted"
+    },
+    {
+      "nis2": "21.2.c",
+      "baustein": "DER.4.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "21.2.c",
+      "baustein": "OPS.1.1.3",
+      "state": "needs_review",
+      "mappingPercentage": 10,
+      "refutationSurvived": false,
+      "note": "consensus-real but refuted"
+    },
+    {
+      "nis2": "21.2.d",
+      "baustein": "OPS.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.d",
+      "baustein": "OPS.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "CON.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "OPS.1.1.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "DER.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "ISMS.1.4",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.g",
+      "baustein": "ORP.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.g",
+      "baustein": "CON.6",
+      "state": "reject",
+      "mappingPercentage": 10,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.h",
+      "baustein": "CON.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.h",
+      "baustein": "CON.11",
+      "state": "reject",
+      "mappingPercentage": 12,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.i",
+      "baustein": "ORP.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.i",
+      "baustein": "ORP.1",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "refutationSurvived": false,
+      "note": "consensus-real but refuted"
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "ORP.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "CON.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "refutationSurvived": true,
+      "realVotes": 3
+    },
+    {
+      "nis2": "21.2.a",
+      "baustein": "CON.2",
+      "state": "reject",
+      "mappingPercentage": 10,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.a",
+      "baustein": "DER.3.1",
+      "state": "reject",
+      "mappingPercentage": 10,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.c",
+      "baustein": "CON.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.c",
+      "baustein": "OPS.1.2.4",
+      "state": "reject",
+      "mappingPercentage": 5,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "CON.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "APP.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "DER.3.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.g",
+      "baustein": "ORP.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "NET.3.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "refutationSurvived": true,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "DER.1",
+      "state": "needs_review",
+      "mappingPercentage": 20,
+      "refutationSurvived": false,
+      "note": "consensus-real but refuted"
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "SYS.1.1",
+      "state": "needs_review",
+      "mappingPercentage": 15,
+      "refutationSurvived": false,
+      "note": "consensus-real but refuted"
+    },
+    {
+      "nis2": "21.2.c",
+      "baustein": "OPS.1.1.5",
+      "state": "needs_review",
+      "mappingPercentage": 5,
+      "refutationSurvived": false,
+      "note": "consensus-real but refuted"
+    },
+    {
+      "nis2": "21.2.a",
+      "baustein": "ORP.5",
+      "state": "panel_discovered",
+      "mappingPercentage": 40,
+      "refutationSurvived": true,
+      "relation": "partial",
+      "rationale": "21.2.a's 'information security policies' pillar requires a governance framework that systematically identifies and enforces legal/regulatory security requirements (ISO A.5.31/A.5.36 -> ORP.5); not covered by ISMS.1, ORP.1, CON.2 or DER.3.1, though it also overlaps 21.2.f."
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "DER.4",
+      "state": "panel_discovered",
+      "mappingPercentage": 50,
+      "refutationSurvived": true,
+      "relation": "partial",
+      "rationale": "Art.21(2)(b) explicitly names 'crisis management' as part of incident handling; DER.4 (Notfallmanagement) is the BSI building block for crisis/emergency response, covering the escalation-to-crisis leg the DER.2.x blocks do not (overlap with 21.2.c keeps it partial)."
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "OPS.1.1.5",
+      "state": "panel_discovered",
+      "mappingPercentage": 40,
+      "refutationSurvived": true,
+      "relation": "supports",
+      "rationale": "Incident detection (DER.1) and the analysis/response steps of DER.2.1 are functionally impossible without logging; OPS.1.1.5 (Protokollierung) is the evidentiary and detection foundation that incident handling consumes."
+    },
+    {
+      "nis2": "21.2.c",
+      "baustein": "SYS.1.8",
+      "state": "panel_discovered",
+      "mappingPercentage": 40,
+      "refutationSurvived": true,
+      "relation": "related",
+      "rationale": "Speicherloesungen sind das Ziel von Datensicherungen und tragen via Redundanz/Replikation/Snapshots unmittelbar zur Backup- und Wiederanlauf-Faehigkeit bei."
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "OPS.1.1.3",
+      "state": "panel_discovered",
+      "mappingPercentage": 90,
+      "refutationSurvived": true,
+      "relation": "strong",
+      "rationale": "Patch- und Aenderungsmanagement is the core anchor for the 'maintenance + vulnerability handling' half of 21.2(e) (ISO A.8.8 technical vulns, A.8.9 config mgmt, A.8.32 change mgmt) and is entirely absent from the list."
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "APP.7",
+      "state": "panel_discovered",
+      "mappingPercentage": 80,
+      "refutationSurvived": true,
+      "relation": "strong",
+      "rationale": "Entwicklung von Individualsoftware covers secure development of custom/in-house software (ISO A.8.25-A.8.28), a development pillar of 21.2(e) only partially covered by CON.8 (generic) and CON.10 (web-only)."
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "APP.3.1",
+      "state": "panel_discovered",
+      "mappingPercentage": 65,
+      "refutationSurvived": true,
+      "relation": "moderate",
+      "rationale": "Webanwendungen und Webservices anchors application security requirements (ISO A.8.26), the 'security in acquisition/use of network and information systems' aspect of 21.2(e) not represented by CON.10 (which only covers web-app development)."
+    },
+    {
+      "nis2": "21.2.g",
+      "baustein": "OPS.1.1.3",
+      "state": "panel_discovered",
+      "mappingPercentage": 70,
+      "refutationSurvived": true,
+      "relation": "partial",
+      "rationale": "Patch-/Update-Management is the canonical 'basic cyber hygiene' practice ENISA/Commission name first; the current list covers only the training limb, not keeping software current."
+    },
+    {
+      "nis2": "21.2.g",
+      "baustein": "OPS.1.1.4",
+      "state": "panel_discovered",
+      "mappingPercentage": 65,
+      "refutationSurvived": true,
+      "relation": "partial",
+      "rationale": "Schutz vor Schadprogrammen (anti-malware) is core basic cyber hygiene explicitly cited in NIS2 guidance, entirely absent from the current mapping."
+    },
+    {
+      "nis2": "21.2.g",
+      "baustein": "SYS.2.1",
+      "state": "panel_discovered",
+      "mappingPercentage": 40,
+      "refutationSurvived": true,
+      "relation": "partial",
+      "rationale": "Basic secure client/endpoint configuration (hardening, screen-lock, removable-media handling) is everyday cyber hygiene that the current org-/personnel-only list does not reach."
+    },
+    {
+      "nis2": "21.2.h",
+      "baustein": "NET.3.3",
+      "state": "panel_discovered",
+      "mappingPercentage": 60,
+      "refutationSurvived": true,
+      "relation": "partial",
+      "rationale": "VPN is the primary encryption-in-transit building block (IPsec/TLS tunnels, certificate/key management) that a cryptography policy under Art. 21(2)(h) must govern."
+    },
+    {
+      "nis2": "21.2.h",
+      "baustein": "SYS.4.5",
+      "state": "panel_discovered",
+      "mappingPercentage": 45,
+      "refutationSurvived": true,
+      "relation": "partial",
+      "rationale": "Removable-media (Wechseldatentraeger) encryption is an explicit encryption-at-rest case the crypto/encryption policy must mandate and key-manage."
+    },
+    {
+      "nis2": "21.2.i",
+      "baustein": "ORP.2",
+      "state": "panel_discovered",
+      "mappingPercentage": 85,
+      "refutationSurvived": true,
+      "relation": "primary",
+      "rationale": "ORP.2 (Personal) is the BSI Baustein for HR security — screening, contractual IS-obligations, disciplinary process, post-termination/offboarding access revocation — i.e. the 'Human Resources Security' leg of measure (i) (ISO A.6.1–A.6.6), which is currently absent (only ORP.4 access-control and ORP.1 asset/org are mapped)."
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "APP.5.4",
+      "state": "panel_discovered",
+      "mappingPercentage": 75,
+      "refutationSurvived": true,
+      "relation": "primary",
+      "rationale": "NIS-2 21.2.(j) explicitly demands secured voice, video and text communications - UCC (Teams/Zoom/Webex-class messaging+conferencing) is the direct subject Baustein and a clear gap."
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "NET.4.2",
+      "state": "panel_discovered",
+      "mappingPercentage": 70,
+      "refutationSurvived": true,
+      "relation": "primary",
+      "rationale": "Secured voice communication maps directly to VoIP hardening (SRTP/SIP-TLS, auth), the canonical Baustein for voice-call security under (j)."
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "NET.4.1",
+      "state": "panel_discovered",
+      "mappingPercentage": 45,
+      "refutationSurvived": true,
+      "relation": "supporting",
+      "rationale": "TK-Anlagen underpin secured voice and emergency communication systems; relevant where (j)'s emergency-comms and telephony are realized on PBX infrastructure."
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "APP.5.3",
+      "state": "panel_discovered",
+      "mappingPercentage": 40,
+      "refutationSurvived": true,
+      "relation": "supporting",
+      "rationale": "Secured text communication includes e-mail; the general mail-client/-server Baustein covers transport encryption and authenticated messaging for the text-communications half of (j)."
+    }
+  ]
+}
