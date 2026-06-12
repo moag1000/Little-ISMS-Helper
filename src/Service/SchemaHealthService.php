@@ -22,11 +22,52 @@ use Doctrine\ORM\Tools\SchemaValidator;
  */
 class SchemaHealthService
 {
+    /** Patterns the SchemaTool emits when it would drop tables/columns/constraints. */
+    public const DESTRUCTIVE_PATTERNS = [
+        '/^DROP TABLE/i',
+        '/^ALTER TABLE .+ DROP /i',
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
         private readonly \Doctrine\Migrations\DependencyFactory $migrationsDependencyFactory,
     ) {
+    }
+
+    /**
+     * Partitions a SchemaTool/SchemaValidator SQL list into additive,
+     * destructive and error-marker buckets. Single source of truth so the
+     * display, the apply-gate and the clean-verdict all agree.
+     *
+     * @param list<string> $sql
+     * @return array{additive: list<string>, destructive: list<string>, errors: list<string>}
+     */
+    public static function classifyStatements(array $sql): array
+    {
+        $additive = [];
+        $destructive = [];
+        $errors = [];
+        foreach ($sql as $statement) {
+            if (str_starts_with($statement, '-- ERROR:')) {
+                $errors[] = $statement;
+                continue;
+            }
+            $isDestructive = false;
+            foreach (self::DESTRUCTIVE_PATTERNS as $pattern) {
+                if (preg_match($pattern, $statement) === 1) {
+                    $isDestructive = true;
+                    break;
+                }
+            }
+            if ($isDestructive) {
+                $destructive[] = $statement;
+            } else {
+                $additive[] = $statement;
+            }
+        }
+
+        return ['additive' => $additive, 'destructive' => $destructive, 'errors' => $errors];
     }
 
     /**

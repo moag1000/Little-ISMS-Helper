@@ -29,12 +29,6 @@ use Doctrine\ORM\Tools\SchemaTool;
  */
 class SchemaMaintenanceService
 {
-    /** Patterns the SchemaTool emits when it would drop tables/columns. */
-    private const DESTRUCTIVE_PATTERNS = [
-        '/^DROP TABLE/i',
-        '/^ALTER TABLE .+ DROP /i',
-    ];
-
     public function __construct(
         private readonly SchemaHealthService $schemaHealthService,
         private readonly DependencyFactory $migrationsDependencyFactory,
@@ -73,17 +67,7 @@ class SchemaMaintenanceService
         // SchemaValidator throws; treat those as empty drift but surface
         // the marker so the operator sees something is wrong.
         $statements = $validation['pending_sql'];
-        $destructive = array_values(array_filter(
-            $statements,
-            static function (string $sql): bool {
-                foreach (self::DESTRUCTIVE_PATTERNS as $pattern) {
-                    if (preg_match($pattern, $sql) === 1) {
-                        return true;
-                    }
-                }
-                return false;
-            },
-        ));
+        $destructive = SchemaHealthService::classifyStatements($statements)['destructive'];
 
         // Entity-vs-DB drift: additive-only statements (ALTER TABLE ADD /
         // CREATE TABLE IF NOT EXISTS) that would bring the live DB in sync
@@ -341,23 +325,9 @@ class SchemaMaintenanceService
     public function getEntityVsDbDrift(): array
     {
         $validation = $this->schemaHealthService->validate();
-        $statements = $validation['pending_sql'];
 
         // Exclude error-marker lines and destructive statements.
-        return array_values(array_filter(
-            $statements,
-            static function (string $sql): bool {
-                if (str_starts_with($sql, '-- ERROR:')) {
-                    return false;
-                }
-                foreach (self::DESTRUCTIVE_PATTERNS as $pattern) {
-                    if (preg_match($pattern, $sql) === 1) {
-                        return false;
-                    }
-                }
-                return true;
-            },
-        ));
+        return SchemaHealthService::classifyStatements($validation['pending_sql'])['additive'];
     }
 
     /**
