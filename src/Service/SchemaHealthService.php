@@ -119,13 +119,15 @@ class SchemaHealthService
     }
 
     /**
-     * Equivalent to `doctrine:schema:update --force`. Destructive — runs all
-     * pending SQL against the live DB. Every execution is audit-logged with
-     * a SHA-256 of the executed SQL bundle so audit can reconcile the row.
+     * Equivalent to `doctrine:schema:update --force`. Executes the entity-vs-DB
+     * diff. Destructive statements (DROP) are withheld unless $allowDestructive
+     * is true — they are returned in `skipped_destructive` instead. Every
+     * execution is audit-logged with a SHA-256 of the executed SQL bundle so
+     * audit can reconcile the row.
      *
-     * @return array{success:bool, executed_sql:list<string>, sql_hash:?string, error:?string, blocked:?string, dropped_fks:list<array{table:string,fk:string,sql_that_triggered:string}>}
+     * @return array{success:bool, executed_sql:list<string>, sql_hash:?string, error:?string, blocked:?string, dropped_fks:list<array{table:string,fk:string,sql_that_triggered:string}>, skipped_destructive:list<string>}
      */
-    public function applyUpdate(string $actor = 'system', bool $bypassMigrationGate = false): array
+    public function applyUpdate(string $actor = 'system', bool $bypassMigrationGate = false, bool $allowDestructive = false): array
     {
         // Guard: don't race Doctrine migrations. ISB MAJOR-3 + Consultant A4.
         $pendingMigrations = $this->pendingMigrationVersions();
@@ -151,12 +153,12 @@ class SchemaHealthService
                 'sql_hash' => null,
                 'error' => null,
                 'blocked' => 'pending_migrations',
+                'dropped_fks' => [],
+                'skipped_destructive' => [],
             ];
         }
 
-        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
-        $tool = new SchemaTool($this->entityManager);
-        $sql = $tool->getUpdateSchemaSql($metadata);
+        $sql = $this->computeUpdateSql();
 
         if ($sql === []) {
             return [
@@ -165,7 +167,35 @@ class SchemaHealthService
                 'sql_hash' => null,
                 'error' => null,
                 'blocked' => null,
+                'dropped_fks' => [],
+                'skipped_destructive' => [],
             ];
+        }
+
+        $classified = self::classifyStatements($sql);
+        $skippedDestructive = [];
+        if (!$allowDestructive && $classified['destructive'] !== []) {
+            $skippedDestructive = $classified['destructive'];
+            $sql = $classified['additive'];
+            $this->auditLogger->logCustom(
+                'admin.schema.update.destructive_skipped',
+                'Doctrine',
+                null,
+                null,
+                ['skipped_count' => count($skippedDestructive), 'skipped' => array_slice($skippedDestructive, 0, 10)],
+                sprintf('Schema update for %s: %d destructive statement(s) withheld (allowDestructive=false)', $actor, count($skippedDestructive)),
+            );
+            if ($sql === []) {
+                return [
+                    'success' => true,
+                    'executed_sql' => [],
+                    'sql_hash' => null,
+                    'error' => null,
+                    'blocked' => null,
+                    'dropped_fks' => [],
+                    'skipped_destructive' => $skippedDestructive,
+                ];
+            }
         }
 
         $sqlHash = hash('sha256', implode(";\n", $sql));
@@ -204,21 +234,29 @@ class SchemaHealthService
             // emits identical statements to pass N-1, the schema IS in sync;
             // stop iterating and treat as success.
             $previousPassHash = hash('sha256', implode(";\n", $sql));
+            $passTool = new SchemaTool($this->entityManager);
             for ($pass = 2; $pass <= 3; $pass++) {
-                $passSql = $tool->getUpdateSchemaSql(
+                $passSql = $passTool->getUpdateSchemaSql(
                     $this->entityManager->getMetadataFactory()->getAllMetadata(),
                 );
                 if ($passSql === []) {
                     break;
                 }
-                $currentHash = hash('sha256', implode(";\n", $passSql));
-                if ($currentHash === $previousPassHash) {
-                    // Phantom drift — same statements re-emitted. Schema is
-                    // already in sync; stop iterating.
+                $passClassified = self::classifyStatements($passSql);
+                $passToRun = $allowDestructive ? $passSql : $passClassified['additive'];
+                if (!$allowDestructive && $passClassified['destructive'] !== []) {
+                    foreach ($passClassified['destructive'] as $d) {
+                        if (!in_array($d, $skippedDestructive, true)) {
+                            $skippedDestructive[] = $d;
+                        }
+                    }
+                }
+                $currentHash = hash('sha256', implode(";\n", $passToRun));
+                if ($passToRun === [] || $currentHash === $previousPassHash) {
                     break;
                 }
                 $previousPassHash = $currentHash;
-                foreach ($passSql as $statement) {
+                foreach ($passToRun as $statement) {
                     $this->executeStatementFkAware($conn, $statement, $droppedFks);
                 }
             }
@@ -247,6 +285,7 @@ class SchemaHealthService
                 'error' => $e->getMessage(),
                 'blocked' => null,
                 'dropped_fks' => $droppedFks,
+                'skipped_destructive' => $skippedDestructive,
             ];
         }
 
@@ -283,7 +322,22 @@ class SchemaHealthService
             'error' => null,
             'blocked' => null,
             'dropped_fks' => $droppedFks,
+            'skipped_destructive' => $skippedDestructive,
         ];
+    }
+
+    /**
+     * Seam over SchemaTool so tests can stub the emitted SQL. Production path
+     * computes the live entity-vs-DB diff.
+     *
+     * @return list<string>
+     */
+    protected function computeUpdateSql(): array
+    {
+        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
+        $tool = new SchemaTool($this->entityManager);
+
+        return $tool->getUpdateSchemaSql($metadata);
     }
 
     /**
@@ -522,7 +576,7 @@ class SchemaHealthService
         return $this->pendingMigrationVersions();
     }
 
-    private function pendingMigrationVersions(): array
+    protected function pendingMigrationVersions(): array
     {
         /** @var Connection $conn */
         $conn = $this->entityManager->getConnection();
