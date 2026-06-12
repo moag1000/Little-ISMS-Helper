@@ -14,42 +14,44 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * WS-5b Stage 1 — Raise trust of heuristic ISO↔BSI mappings via CRT corroboration.
+ * WS-5b Stage 1 — Raise trust of heuristic framework mappings via official-crosswalk corroboration.
  *
- * This command is the build-time step that deterministically elevates heuristic
- * ISO↔BSI Anforderung-level mappings to the `amtlich_gestuetzt` trust tier by
- * corroborating them against the official BSI Cross-Reference-Table (CRT).
+ * Generalised command that supports any source↔target framework pair.
+ * Default pair is ISO27001 → BSI_GRUNDSCHUTZ (original WS-5b use-case).
+ *
+ * Additional pairs:
+ *   - ISO27701_2025 → GDPR (Annex D, P3 Tier-A quality finalisation):
+ *     php bin/console app:bsi:corroborate-mappings \
+ *       --source=ISO27701_2025 --target=GDPR \
+ *       --official-provenance=official_iso27701_gdpr_annex
  *
  * ## What it does
- * For every non-official (heuristic / unreviewed) mapping from ISO 27001 to BSI
- * IT-Grundschutz, it checks whether the official CRT contains a row with the same
- * (Baustein, ISO control) pair. If yes, the mapping's `provenanceSource` is set to
+ * For every non-official (heuristic / unreviewed) mapping for the given pair,
+ * it checks whether the official crosswalk contains a row with the same
+ * (targetKey, sourceControl) pair. If yes, the mapping's `provenanceSource` is set to
  * `crt_corroborated`. `IsoToBsiGapService::trustOf()` then returns `amtlich_gestuetzt`
  * for that mapping, placing it in the TRUSTED bucket rather than the "prüfen" bucket.
  *
  * ## Idempotency
  * The command is safe to re-run at any time. Rows already at `crt_corroborated` are
- * counted but not re-written. Official CRT rows (`official_bsi_crosswalk`) are never
- * modified.
- *
- * ## Prerequisites
- * - BSI IT-Grundschutz framework must be loaded (`app:load-bsi-grundschutz-requirements`)
- * - ISO 27001 framework must be loaded
- * - Official CRT mappings must be seeded (`app:seed-bsi-iso27001-mappings`)
- * - Heuristic mappings must be present in the DB
+ * counted but not re-written. Official crosswalk rows are never modified.
  *
  * ## Usage
- *   php bin/console app:bsi:corroborate-mappings             # apply elevation
+ *   php bin/console app:bsi:corroborate-mappings             # apply elevation (ISO27001→BSI)
  *   php bin/console app:bsi:corroborate-mappings --dry-run   # preview, no writes
+ *   php bin/console app:bsi:corroborate-mappings \
+ *     --source=ISO27701_2025 --target=GDPR \
+ *     --official-provenance=official_iso27701_gdpr_annex     # GDPR Annex D pair
  */
 #[AsCommand(
     name: 'app:bsi:corroborate-mappings',
-    description: 'WS-5b stage 1 — Elevate heuristic ISO↔BSI mappings corroborated by the official BSI CRT to the amtlich_gestuetzt trust tier'
+    description: 'WS-5b stage 1 — Elevate heuristic mappings corroborated by an official crosswalk to the amtlich_gestuetzt trust tier'
 )]
 final class CorroborateBsiMappingsCommand extends Command
 {
-    private const BSI_FRAMEWORK_CODE = 'BSI_GRUNDSCHUTZ';
-    private const ISO_FRAMEWORK_CODE = 'ISO27001';
+    private const BSI_FRAMEWORK_CODE      = 'BSI_GRUNDSCHUTZ';
+    private const ISO_FRAMEWORK_CODE      = 'ISO27001';
+    private const DEFAULT_BSI_PROVENANCE  = 'official_bsi_crosswalk';
 
     public function __construct(
         private readonly MappingCorroborationService $corroborationService,
@@ -62,6 +64,27 @@ final class CorroborateBsiMappingsCommand extends Command
     protected function configure(): void
     {
         $this
+            ->addOption(
+                'source',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Source framework code (default: ' . self::ISO_FRAMEWORK_CODE . ').',
+                self::ISO_FRAMEWORK_CODE,
+            )
+            ->addOption(
+                'target',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Target framework code (default: ' . self::BSI_FRAMEWORK_CODE . ').',
+                self::BSI_FRAMEWORK_CODE,
+            )
+            ->addOption(
+                'official-provenance',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'provenanceSource sentinel that identifies official crosswalk rows (default: ' . self::DEFAULT_BSI_PROVENANCE . ').',
+                self::DEFAULT_BSI_PROVENANCE,
+            )
             ->addOption(
                 'dry-run',
                 null,
@@ -82,36 +105,44 @@ final class CorroborateBsiMappingsCommand extends Command
         $io     = new SymfonyStyle($input, $output);
         $dryRun = (bool) $input->getOption('dry-run');
 
+        /** @var string $sourceCode */
+        $sourceCode = (string) $input->getOption('source');
+        /** @var string $targetCode */
+        $targetCode = (string) $input->getOption('target');
+        /** @var string $officialProvenance */
+        $officialProvenance = (string) $input->getOption('official-provenance');
+
         if ($dryRun) {
             $io->note('Dry-run mode — no database writes will be performed.');
         }
 
-        $iso = $this->frameworkRepository->findOneBy(['code' => self::ISO_FRAMEWORK_CODE]);
-        $bsi = $this->frameworkRepository->findOneBy(['code' => self::BSI_FRAMEWORK_CODE]);
+        $iso = $this->frameworkRepository->findOneBy(['code' => $sourceCode]);
+        $bsi = $this->frameworkRepository->findOneBy(['code' => $targetCode]);
 
         if ($iso === null) {
             $io->error(sprintf(
-                'ISO 27001 framework (%s) not found. Run the ISO loader first.',
-                self::ISO_FRAMEWORK_CODE
+                'Source framework (%s) not found in the database.',
+                $sourceCode,
             ));
             return Command::FAILURE;
         }
 
         if ($bsi === null) {
             $io->error(sprintf(
-                'BSI IT-Grundschutz framework (%s) not found. Run app:load-bsi-grundschutz-requirements first.',
-                self::BSI_FRAMEWORK_CODE
+                'Target framework (%s) not found in the database.',
+                $targetCode,
             ));
             return Command::FAILURE;
         }
 
         $io->info(sprintf(
-            'Corroborating %s → %s heuristic mappings against official CRT…',
-            self::ISO_FRAMEWORK_CODE,
-            self::BSI_FRAMEWORK_CODE
+            'Corroborating %s → %s heuristic mappings against official crosswalk (provenance: %s)…',
+            $sourceCode,
+            $targetCode,
+            $officialProvenance,
         ));
 
-        $result = $this->corroborationService->corroborate($iso, $bsi, dryRun: $dryRun);
+        $result = $this->corroborationService->corroborate($iso, $bsi, $officialProvenance, dryRun: $dryRun);
 
         // ── Summary table ──────────────────────────────────────────────────────
         $total = $result['corroborated'] + $result['residual'];
@@ -161,9 +192,11 @@ final class CorroborateBsiMappingsCommand extends Command
         }
 
         $io->success(sprintf(
-            'CRT corroboration complete. %d mapping(s) elevated to amtlich_gestuetzt; %d residual (need panel review for WS-5b stage 2).',
+            'Corroboration complete (%s → %s). %d mapping(s) elevated to amtlich_gestuetzt; %d residual.',
+            $sourceCode,
+            $targetCode,
             $result['corroborated'],
-            $result['residual']
+            $result['residual'],
         ));
 
         return Command::SUCCESS;

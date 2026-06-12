@@ -166,9 +166,7 @@ final class MappingQualityReportCommand extends Command
             [
                 ['Total mappings (all states)',    $total],
                 ['Operational mappings',           $operationalCount],
-                ['amtlich_source',                 $sourceCode === 'NIS2'
-                    ? 'none (BSI publishes no public NIS2↔Grundschutz crosswalk)'
-                    : 'BSI Cross-Reference-Table (CRT)'],
+                ['amtlich_source',                 $this->amtlichSourceLabel($sourceCode, $targetCode)],
             ]
         );
 
@@ -217,5 +215,23 @@ final class MappingQualityReportCommand extends Command
         }
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Human-readable amtlich_source label for a framework pair.
+     *
+     * amtlich_source is intentionally documented in the CLI report per the P3 quality spec
+     * so that the output can be pasted directly into sprint/PR reports.
+     */
+    private function amtlichSourceLabel(string $sourceCode, string $targetCode): string
+    {
+        return match (true) {
+            $sourceCode === 'ISO27701_2025' && $targetCode === 'GDPR' =>
+                'ISO 27701:2025 Annex D — GDPR Mapping (official normative annex, no panel needed)',
+            $sourceCode === 'NIS2' =>
+                'none (BSI publishes no public NIS2↔Grundschutz crosswalk)',
+            default =>
+                'BSI Cross-Reference-Table (CRT)',
+        };
     }
 }

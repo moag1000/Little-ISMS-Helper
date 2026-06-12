@@ -44,6 +44,19 @@ class IsoToBsiGapService
     /** provenanceSource sentinel written by import step (official BSI Cross-Reference-Table) */
     public const PROVENANCE_OFFICIAL_CRT = 'official_bsi_crosswalk';
 
+    /** provenanceSource sentinel for ISO 27701:2025 Annex D → GDPR official mapping (P3 Tier-A) */
+    public const PROVENANCE_OFFICIAL_ISO27701_GDPR = 'official_iso27701_gdpr_annex';
+
+    /**
+     * All provenanceSources that represent amtlich (official) crosswalk rows.
+     *
+     * @var list<string>
+     */
+    public const PROVENANCE_OFFICIAL_SOURCES = [
+        self::PROVENANCE_OFFICIAL_CRT,
+        self::PROVENANCE_OFFICIAL_ISO27701_GDPR,
+    ];
+
     /** provenanceSource sentinel written by MappingCorroborationService (WS-5b stage-1) */
     public const PROVENANCE_CRT_CORROBORATED = 'crt_corroborated';
 
@@ -198,8 +211,9 @@ class IsoToBsiGapService
         $reviewBasedTrust = $m->getReviewStatus() === 'confirmed' ? self::TIER_BESTAETIGT : self::TIER_HEURISTISCH;
 
         return match ($m->getProvenanceSource()) {
-            self::PROVENANCE_OFFICIAL_CRT     => self::TIER_AMTLICH,
-            self::PROVENANCE_CRT_CORROBORATED => self::TIER_AMTLICH_GESTUETZT,
+            self::PROVENANCE_OFFICIAL_CRT,
+            self::PROVENANCE_OFFICIAL_ISO27701_GDPR => self::TIER_AMTLICH,
+            self::PROVENANCE_CRT_CORROBORATED       => self::TIER_AMTLICH_GESTUETZT,
             'panel' => $m->getReviewStatus() === 'approved' ? self::TIER_KI_VALIDIERT : self::TIER_HEURISTISCH,
             'manual' => self::TIER_BESTAETIGT,
             // null: no provenance recorded — trust via reviewStatus, same as default arm below
