@@ -42,6 +42,10 @@ final class QuickFixReconcileSchemaJob implements AsyncJobInterface
 
         $result = $this->schemaMaintenanceService->reconcileSchema('quick-fix');
 
+        if (($result['blocked'] ?? null) === 'locked') {
+            throw new \RuntimeException('Another schema operation is already running. Try again shortly.');
+        }
+
         // Auto-recovery: if blocked by pending_migrations, try to apply them first.
         if (!$result['success'] && ($result['blocked'] ?? null) === 'pending_migrations') {
             $ctx->message('Reconcile blocked by pending migrations — applying them first…');

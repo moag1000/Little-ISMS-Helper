@@ -29,12 +29,42 @@ use Doctrine\ORM\Tools\SchemaTool;
  */
 class SchemaMaintenanceService
 {
+    private const SCHEMA_LOCK_NAME = 'quickfix_schema';
+
     public function __construct(
         private readonly SchemaHealthService $schemaHealthService,
         private readonly DependencyFactory $migrationsDependencyFactory,
         private readonly AuditLogger $auditLogger,
         private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
     ) {
+    }
+
+    /**
+     * Serialises mutating schema operations via a MySQL advisory lock so two
+     * operators cannot race DDL. Returns a blocked-result without running the
+     * callback when the lock is already held. Non-MySQL drivers run unguarded.
+     *
+     * @template T of array
+     * @param callable():T $operation
+     * @return T|array{success: false, blocked: 'locked', error: string}
+     */
+    private function withSchemaLock(callable $operation): array
+    {
+        $conn = $this->migrationsDependencyFactory->getConnection();
+        try {
+            $got = $conn->fetchOne('SELECT GET_LOCK(:n, 0)', ['n' => self::SCHEMA_LOCK_NAME]);
+        } catch (\Throwable) {
+            // Non-MySQL or locking unsupported — run unguarded.
+            return $operation();
+        }
+        if ((int) $got !== 1) {
+            return ['success' => false, 'blocked' => 'locked', 'error' => 'Another schema operation is in progress.'];
+        }
+        try {
+            return $operation();
+        } finally {
+            try { $conn->executeStatement('SELECT RELEASE_LOCK(' . $conn->quote(self::SCHEMA_LOCK_NAME) . ')'); } catch (\Throwable) {}
+        }
     }
 
     /**
@@ -120,6 +150,14 @@ class SchemaMaintenanceService
      * @return array{success: bool, executed: int, error: ?string}
      */
     public function executePendingMigrations(string $actor = 'system'): array
+    {
+        return $this->withSchemaLock(fn (): array => $this->executePendingMigrationsLocked($actor));
+    }
+
+    /**
+     * @return array{success: bool, executed: int, error: ?string}
+     */
+    private function executePendingMigrationsLocked(string $actor = 'system'): array
     {
         $df = $this->migrationsDependencyFactory;
 
@@ -214,6 +252,14 @@ class SchemaMaintenanceService
      */
     public function reconcileSchema(string $actor = 'system', bool $bypassMigrationGate = false): array
     {
+        return $this->withSchemaLock(fn (): array => $this->reconcileSchemaLocked($actor, $bypassMigrationGate));
+    }
+
+    /**
+     * @return array{success: bool, executed: int, auto_marked: list<string>, error: ?string, blocked: ?string}
+     */
+    private function reconcileSchemaLocked(string $actor = 'system', bool $bypassMigrationGate = false): array
+    {
         $result = $this->schemaHealthService->applyUpdate($actor, $bypassMigrationGate);
 
         // After a successful reconcile, the live schema matches entity metadata.
@@ -279,6 +325,14 @@ class SchemaMaintenanceService
      * @return array{success: bool, statements_executed: int, error: ?string}
      */
     public function forceSchemaUpdate(string $actor = 'system'): array
+    {
+        return $this->withSchemaLock(fn (): array => $this->forceSchemaUpdateLocked($actor));
+    }
+
+    /**
+     * @return array{success: bool, statements_executed: int, error: ?string}
+     */
+    private function forceSchemaUpdateLocked(string $actor = 'system'): array
     {
         // Delegate to applyUpdate's FK-aware envelope which handles
         // errno 1091/1176/1832/1833/1822/150 + multi-pass convergence +
@@ -494,6 +548,21 @@ class SchemaMaintenanceService
      * }
      */
     public function markAllPhantomDiffMigrationsAsExecuted(string $actor = 'system'): array
+    {
+        return $this->withSchemaLock(fn (): array => $this->markAllPhantomDiffMigrationsAsExecutedLocked($actor));
+    }
+
+    /**
+     * @return array{
+     *     success: bool,
+     *     marked: list<string>,
+     *     skipped: array<string, string>,
+     *     remaining_pending: int,
+     *     post_drift_reconciled: bool,
+     *     stopped_at_error: null,
+     * }
+     */
+    private function markAllPhantomDiffMigrationsAsExecutedLocked(string $actor = 'system'): array
     {
         /** @var list<string> $marked */
         $marked = [];

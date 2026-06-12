@@ -89,6 +89,16 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
         $this->metadataStorage->method('ensureInitialized');
         $this->auditLogger->method('logCustom');
 
+        // QF-7 advisory lock: withSchemaLock() acquires GET_LOCK on the
+        // DependencyFactory's connection before running the wrapped method.
+        // GET_LOCK → 1 (acquired); RELEASE_LOCK tolerated. fetchOne is not used
+        // elsewhere in this flow, so the GET_LOCK-aware callback is safe.
+        $this->connection
+            ->method('fetchOne')
+            ->willReturnCallback(static fn (string $sql) => str_contains($sql, 'GET_LOCK') ? 1 : null);
+        $this->connection->method('quote')->willReturn("'quickfix_schema'");
+        $this->connection->method('executeStatement')->willReturn(0);
+
         $this->managerRegistry = $this->createMock(ManagerRegistry::class);
     }
 

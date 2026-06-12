@@ -59,6 +59,18 @@ class SchemaMaintenanceServiceForceSchemaUpdateTest extends TestCase
         $this->entityManager
             ->method('getConnection')
             ->willReturn($this->connection);
+
+        // QF-7 advisory lock: withSchemaLock() reads GET_LOCK via the
+        // DependencyFactory's connection. Wire it so GET_LOCK acquires (1) and
+        // RELEASE_LOCK is tolerated; otherwise every wrapped call reads "busy".
+        $this->dependencyFactory
+            ->method('getConnection')
+            ->willReturn($this->connection);
+        $this->connection
+            ->method('fetchOne')
+            ->willReturnCallback(static fn (string $sql) => str_contains($sql, 'GET_LOCK') ? 1 : null);
+        $this->connection->method('quote')->willReturn("'quickfix_schema'");
+        $this->connection->method('executeStatement')->willReturn(0);
     }
 
     private function makeService(): SchemaMaintenanceService

@@ -36,6 +36,10 @@ final class QuickFixForceSchemaUpdateJob implements AsyncJobInterface
 
         $result = $this->schemaMaintenanceService->forceSchemaUpdate('quick-fix');
 
+        if (($result['blocked'] ?? null) === 'locked') {
+            throw new \RuntimeException('Another schema operation is already running. Try again shortly.');
+        }
+
         if (!$result['success']) {
             // @intentional-assertion: surface force-schema-update failure to operator
             throw new \RuntimeException(sprintf(

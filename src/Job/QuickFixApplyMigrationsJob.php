@@ -35,6 +35,10 @@ final class QuickFixApplyMigrationsJob implements AsyncJobInterface
         $ctx->message('Applying pending Doctrine migrations…');
         $migrationResult = $this->schemaMaintenanceService->executePendingMigrations('quick-fix');
 
+        if (($migrationResult['blocked'] ?? null) === 'locked') {
+            throw new \RuntimeException('Another schema operation is already running. Try again shortly.');
+        }
+
         if (!$migrationResult['success']) {
             $diagnosis = $migrationResult['diagnosis'] ?? null;
             $message = is_array($diagnosis) && ($diagnosis['category'] ?? 'unknown') !== 'unknown'

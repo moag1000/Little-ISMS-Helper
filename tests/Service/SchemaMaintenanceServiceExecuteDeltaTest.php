@@ -72,6 +72,15 @@ class SchemaMaintenanceServiceExecuteDeltaTest extends TestCase
         $migrator->method('migrate')->willThrowException(new \RuntimeException($errorMessage));
         $df->method('getMigrator')->willReturn($migrator);
 
+        // QF-7 advisory lock: withSchemaLock() reads GET_LOCK via the
+        // DependencyFactory connection. Wire it so GET_LOCK acquires (1) and the
+        // wrapped executePendingMigrations actually runs.
+        $conn = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $conn->method('fetchOne')->willReturnCallback(static fn (string $sql) => str_contains($sql, 'GET_LOCK') ? 1 : null);
+        $conn->method('quote')->willReturn("'quickfix_schema'");
+        $conn->method('executeStatement')->willReturn(0);
+        $df->method('getConnection')->willReturn($conn);
+
         return new SchemaMaintenanceService(
             $this->createMock(SchemaHealthService::class),
             $df,
