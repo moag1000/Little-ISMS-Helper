@@ -4,9 +4,12 @@ library:
   id: 'tisax_to_bsi-grundschutz_v1.0'
   source_framework: 'TISAX'
   target_framework: 'bsi-grundschutz'
-  version: 1
+  version: 2
   effective_from: '2024-04-01'
   effective_until: null
+
+  changelog:
+    - { version: 2, date: '2026-06-13', note: 'depth pass round-2: +1 panel-validated Baustein (2.1.3 += ORP.3); 3 dropped — prose/ambiguous targets (1.5.1, 1.6.3, 2.1.2)' }
 
   provenance:
     primary_source: 'VDA ISA Version 6.0 — Verweisung auf Implementierungsanleitung (col Q, Informationssicherheit sheet) — BSI IT-Grundschutz-Kompendium section'
@@ -134,7 +137,9 @@ mappings:
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'
   - source: '2.1.3'
-    targets: ['ORP.2']
+    targets:
+      - 'ORP.2'
+      - 'ORP.3'  # depth pass round-2 (2026-06-13): panel-validated additional Baustein (4-expert consensus + adversarial refutation, 65%)
     relationship: 'related'
     confidence: 'high'
     rationale: 'ENX ISA 6 official implementation guidance cross-reference column'

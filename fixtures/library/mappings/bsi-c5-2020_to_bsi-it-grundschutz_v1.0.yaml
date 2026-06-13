@@ -4,9 +4,12 @@ library:
   id: 'bsi-c5-2020_to_bsi-it-grundschutz_v1.0'
   source_framework: 'BSI-C5'
   target_framework: 'BSI-GRUNDSCHUTZ'
-  version: 1
+  version: 2
   effective_from: '2024-02-01'
   effective_until: null
+
+  changelog:
+    - { version: 2, date: '2026-06-13', note: 'depth pass round-2: +23 panel-validated correspondences (reziprok zum Forward-Mapping v2, invertierte Relationships)' }
 
   provenance:
     primary_source: 'BSI Crosswalk-Tabelle C5:2020 ↔ IT-Grundschutz-Kompendium 2024'
@@ -295,3 +298,146 @@ mappings:
       typisch über INF.2 (RZ) und INF.5/6 (Verkabelung/USV).
     cross_refs: ['INF.2']
     audit_evidence_hint: 'PSC-01: RZ-Zutrittskontroll-Protokolle, Videoüberwachungs-Logs, Besucher-Listen. INF.1.A2 Brandschutz, INF.1.A6 Geschlossene Fenster und Türen, Zutrittskontroll-Konzept.'
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Depth pass round-2 (2026-06-13) — reziprok zu bsi-it-grundschutz_to_bsi-c5
+  # v2; invertierte Relationships, panel-validierte zusätzliche Anker.
+  # ─────────────────────────────────────────────────────────────────────────
+  - source: 'OIS-01'
+    target: 'ISMS.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 85%).
+  - source: 'OIS-03'
+    target: 'ISMS.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'OIS-06'
+    target: 'ISMS.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 55%).
+  - source: 'OPS-05'
+    target: 'OPS.1.1.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 90%).
+  - source: 'IDM-06'
+    target: 'ORP.4'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'IDM-03'
+    target: 'ORP.4'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'IDM-04'
+    target: 'ORP.4'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
+  - source: 'IDM-05'
+    target: 'ORP.4'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
+  - source: 'IDM-08'
+    target: 'ORP.4'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'CRY-02'
+    target: 'CON.1'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'CRY-03'
+    target: 'CON.1'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'CRY-04'
+    target: 'CON.1'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
+  - source: 'BCM-01'
+    target: 'DER.4'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'BCM-03'
+    target: 'DER.4'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'BCM-04'
+    target: 'DER.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
+  - source: 'DEV-03'
+    target: 'CON.8'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 75%).
+  - source: 'DEV-04'
+    target: 'CON.8'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'DEV-05'
+    target: 'CON.8'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'DEV-10'
+    target: 'CON.8'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 50%).
+  - source: 'DEV-03'
+    target: 'APP.4.6'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 55%).
+  - source: 'DEV-04'
+    target: 'APP.4.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 50%).
+  - source: 'PS-01'
+    target: 'INF.1'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'PS-02'
+    target: 'INF.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 68%).

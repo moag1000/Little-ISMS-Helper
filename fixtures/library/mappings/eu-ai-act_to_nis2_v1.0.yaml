@@ -4,9 +4,12 @@ library:
   id: 'eu-ai-act_to_nis2_v1.0'
   source_framework: 'EU-AI-ACT'
   target_framework: 'NIS2'
-  version: 1
+  version: 2
   effective_from: '2026-05-06'
   effective_until: null
+
+  changelog:
+    - { version: 2, date: '2026-06-13', note: 'depth pass round-2: +1 panel-validated correspondence (Art.73 -> 23.3 final report); 4 dropped — ambiguous bare "Art.21" target' }
 
   provenance:
     primary_source: 'EU AI Act (Verordnung 2024/1689) + NIS2-Richtlinie (2022/2555)'
@@ -517,3 +520,24 @@ mappings:
       NIS2-Pendant. Wer NIS2-konform ist, hat KEINE AI-Act-Konformitaet.
       Notified-Body-Pruefung (bestimmte Hochrisiko-Faelle) erfordert
       separates Verfahren.
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Depth pass round-2 (2026-06-13) — panel-validated additional anchor.
+  # 4-expert consensus + adversarial refutation survivor. The four Art.21
+  # bare-target survivors (Art.9/12/15/55 -> "Art.21") were DROPPED: a bare
+  # "Art.21" is ambiguous (Art.21 has 10 sub-measures 21.2.a-j) and does not
+  # resolve to a single canonical NIS2 requirementId.
+  # ─────────────────────────────────────────────────────────────────────────
+  - source: 'Art.73'
+    target: '23.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+      AI Act Art. 73 final/follow-up serious-incident report shares content
+      with NIS2 Art. 23(3) final report (Abschlussbericht, 1 month) — root
+      cause, severity, corrective measures — though actors and deadlines differ.
+    gap_warning: |
+      Adressaten- + Fristen-Mismatch: AI-Act-Endbericht (Provider an Markt-
+      ueberwachungsbehoerde) vs. NIS2-Abschlussbericht 23(3) (Betreiber an
+      BSI/CSIRT, 1 Monat). Beide separat fuehren.
