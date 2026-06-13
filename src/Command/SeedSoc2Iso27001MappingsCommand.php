@@ -23,8 +23,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Seed SOC 2 Trust Services Criteria ↔ ISO/IEC 27001:2022 mappings.
  *
  * Derived from the AICPA Trust Services Criteria Points of Focus that
- * explicitly reference ISO 27001 counterparts, and from the widely-used
- * Vanta / Drata / Secureframe cross-reference tables. The goal isn't
+ * explicitly reference ISO 27001 counterparts, plus the ISO/IEC 27001:2022
+ * Annex A control set. The goal isn't
  * byte-exact fidelity to any single published table — it is to give a
  * new SOC-2-reviewing auditor a defensible cross-framework picture
  * without manual mapping work.
