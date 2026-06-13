@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "source_framework": "ENISA-EUCS",
+    "source_framework": "EUCS",
     "target_framework": "ISO27001",
     "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
     "panel": [

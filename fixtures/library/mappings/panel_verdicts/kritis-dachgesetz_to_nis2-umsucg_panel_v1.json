@@ -1,7 +1,7 @@
 {
   "library": {
-    "source_framework": "KRITIS-DE",
-    "target_framework": "NIS2-UmsuCG",
+    "source_framework": "KRITIS",
+    "target_framework": "NIS2UMSUCG",
     "panel": [
       "isms-specialist",
       "bsi-specialist",

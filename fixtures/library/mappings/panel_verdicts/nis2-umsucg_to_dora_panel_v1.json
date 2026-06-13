@@ -1,6 +1,6 @@
 {
   "library": {
-    "source_framework": "NIS2-UmsuCG",
+    "source_framework": "NIS2UMSUCG",
     "target_framework": "DORA",
     "panel": [
       "isms-specialist",

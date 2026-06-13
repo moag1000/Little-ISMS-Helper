@@ -2,7 +2,7 @@ schema_version: '1.1'
 library:
   type: mapping
   id: 'nis2-umsucg_to_dora_v1.0'
-  source_framework: 'NIS2-UmsuCG'
+  source_framework: 'NIS2UMSUCG'
   target_framework: 'DORA'
   version: 2
   effective_from: '2026-05-06'

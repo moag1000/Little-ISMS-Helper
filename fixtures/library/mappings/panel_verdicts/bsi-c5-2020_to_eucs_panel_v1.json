@@ -1,7 +1,7 @@
 {
   "library": {
     "source_framework": "BSI-C5",
-    "target_framework": "ENISA-EUCS",
+    "target_framework": "EUCS",
     "panel": [
       "bsi-specialist",
       "isms-specialist",

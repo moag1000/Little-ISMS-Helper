@@ -1,7 +1,7 @@
 {
   "library": {
     "source_framework": "TISAX",
-    "target_framework": "bsi-grundschutz",
+    "target_framework": "BSI_GRUNDSCHUTZ",
     "panel": [
       "bsi-specialist",
       "isms-specialist",

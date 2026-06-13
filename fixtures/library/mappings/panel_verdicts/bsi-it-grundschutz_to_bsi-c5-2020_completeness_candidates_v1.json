@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "source_framework": "BSI-GRUNDSCHUTZ",
+    "source_framework": "BSI_GRUNDSCHUTZ",
     "target_framework": "BSI-C5",
     "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
     "panel": [
