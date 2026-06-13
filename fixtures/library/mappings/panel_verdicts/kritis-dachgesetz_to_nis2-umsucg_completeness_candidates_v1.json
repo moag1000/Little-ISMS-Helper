@@ -1,0 +1,44 @@
+{
+  "provenance": {
+    "source_framework": "KRITIS-DE",
+    "target_framework": "NIS2-UmsuCG",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "isms-specialist",
+      "bsi-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 5
+  },
+  "candidates": [
+    {
+      "target": "§ 30 Abs. 2 Nr. 3",
+      "mappingPercentage": 45,
+      "rationale": "KRITIS-DachG § 5 — § 5 Resilienzmaßnahmen verlangt im All-Hazards-Ansatz explizit die Aufrechterhaltung des Betriebs / operative Kontinuität (Versorgungssicherheit) als Kern-Resilienzziel. NIS2-UmsuCG § 30 Abs. 2 Nr. 3 (Aufrechterhaltung des Betriebs, Backup-Management, Wiederherstellung, Krisenmanagement) ist die direkte cyberseitige Entsprechung dieses Kontinuitätsanteils. Aktuell faengt nur § 30 (Rahmen) und § 30 Abs. 2 Nr. 4 (Lieferkette) den § 5 ab; der Kontinuitaets-/BC-Anteil ist nicht abgebildet. Defensibel als partial_overlap (Cyber-BC vs. physische BC), Gap-Warning physische Kontinuitaet noetig. NB: § 9 traegt BC fuer KRITIS bereits — bewusst niedrigerer Prozentsatz, da Teil-Doppelung."
+    },
+    {
+      "target": "§ 30",
+      "mappingPercentage": 55,
+      "rationale": "KRITIS-DachG § 9 — § 9 Mindeststandards definiert sektorspezifische organisatorische UND technische Mindestmaßnahmen (B3S) und ist damit nicht nur ein BC-Thema. Es korrespondiert daher zum Risikomanagement-Rahmen § 30 als Ganzem (Maßnahmen nach Stand der Technik, verhaeltnismaessig zum Risiko), nicht nur zu § 30 Abs. 2 Nr. 3. Aktuell nur Nr. 3 gemappt; der uebergreifende Maßnahmen-Rahmen § 30 fehlt. Defensibel als partial_overlap (Cyber-Maßnahmenkatalog vs. All-Hazards-B3S)."
+    },
+    {
+      "target": "§ 30 Abs. 2 Nr. 2",
+      "mappingPercentage": 50,
+      "rationale": "KRITIS-DachG § 7 — Die Meldepflicht § 7 setzt zwingend ein funktionierendes Vorfalls-Management voraus (Erkennen, Bewerten, Behandeln eines Vorfalls als Vorbedingung der gestuften Meldung). NIS2-UmsuCG § 30 Abs. 2 Nr. 2 (Bewaeltigung von Sicherheitsvorfaellen / incident handling) ist die strukturell vorgelagerte Maßnahme zur reinen Meldemechanik nach § 32. Aktuell nur § 32 gemappt; der inhaltliche Incident-Handling-Anker fehlt. Defensibel als related (gleicher Vorfalls-Lebenszyklus, unterschiedlicher Adressat BBK/BSI)."
+    },
+    {
+      "target": "§ 30 Abs. 2 Nr. 6",
+      "mappingPercentage": 50,
+      "rationale": "KRITIS-DachG § 10 — § 10 Audits/Nachweise verlangt nicht nur den externen Audit-Mechanismus (= § 33), sondern auch die Bewertung der Wirksamkeit der Resilienzmaßnahmen. NIS2-UmsuCG § 30 Abs. 2 Nr. 6 (Konzepte und Verfahren zur Bewertung der Wirksamkeit der Risikomanagementmaßnahmen) ist die inhaltliche Entsprechung dieser Wirksamkeits-/Nachweisdimension, waehrend § 33 nur die formale Nachweispflicht abdeckt. Aktuell nur § 33 gemappt. Defensibel als related (Wirksamkeitsnachweis als gemeinsamer Kern)."
+    },
+    {
+      "target": "§ 29",
+      "mappingPercentage": 45,
+      "rationale": "KRITIS-DachG § 11 — § 11 Anwendbarkeit/Schwellwerte regelt nicht nur die Einstufung (= § 28), sondern loest als Rechtsfolge der Betroffenheit den Selbst-Identifizierungs- und Registrierungs-/Meldemechanismus aus. NIS2-UmsuCG § 29 (BSI-Registrierungspflicht betroffener Einrichtungen) ist die strukturell parallele Folge-Pflicht zur KRITIS-seitigen Betreiber-Registrierung/Selbstauskunft nach Schwellwert-Ueberschreitung. Aktuell nur § 28 (Einstufung) gemappt; die durch Betroffenheit ausgeloeste Registrierungspflicht fehlt. Defensibel als related (Einstufung -> Registrierungs-Folgepflicht)."
+    }
+  ]
+}

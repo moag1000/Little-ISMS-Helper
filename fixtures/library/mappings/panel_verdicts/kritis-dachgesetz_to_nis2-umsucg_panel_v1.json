@@ -1,0 +1,81 @@
+{
+  "library": {
+    "source_framework": "KRITIS-DE",
+    "target_framework": "NIS2-UmsuCG",
+    "panel": [
+      "isms-specialist",
+      "bsi-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (two German implementing laws; mapping is legal-text editorial)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
+    "completeness": "5 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 8,
+      "ki_validiert": 1,
+      "needs_review": 3,
+      "reject": 4
+    }
+  },
+  "verdicts": [
+    {
+      "kritis": "§ 5",
+      "target": "§ 30",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "realVotes": 3
+    },
+    {
+      "kritis": "§ 6",
+      "target": "§ 30 Abs. 2 Nr. 1",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "kritis": "§ 7",
+      "target": "§ 32",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4
+    },
+    {
+      "kritis": "§ 9",
+      "target": "§ 30 Abs. 2 Nr. 3",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "kritis": "§ 10",
+      "target": "§ 33",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "kritis": "§ 11",
+      "target": "§ 28",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "kritis": "§ 8",
+      "target": "§ 31",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 2
+    },
+    {
+      "kritis": "§ 5",
+      "target": "§ 30 Abs. 2 Nr. 4",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    }
+  ]
+}
