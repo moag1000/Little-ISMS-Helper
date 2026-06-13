@@ -117,7 +117,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
             'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'GDPR',
             'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
             'KRITIS', 'KRITIS-HEALTH', 'DIGAV', 'TKG-2024', 'GXP',
-            'SOC2', 'NIST-CSF', 'CIS-CONTROLS', 'ISO-22301', 'ISO27005',
+            'SOC2', 'NIST-CSF-2.0', 'CIS-CONTROLS', 'ISO-22301', 'ISO27005',
             'BDSG', 'EU-AI-ACT', 'NIS2UMSUCG', 'MRIS-v1.5',
         ];
 
@@ -145,7 +145,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         ];
         $voluntary = [
             'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
-            'SOC2', 'NIST-CSF', 'CIS-CONTROLS', 'ISO-22301', 'ISO27005',
+            'SOC2', 'NIST-CSF-2.0', 'CIS-CONTROLS', 'ISO-22301', 'ISO27005',
         ];
 
         foreach ($frameworks as $framework) {

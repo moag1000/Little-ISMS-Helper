@@ -6,7 +6,6 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
-use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -15,20 +14,24 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated as the registry loader for NIST CSF — this command seeds a curated
+ * 66-subcategory subset with ISO data mappings. The full 106-subcategory catalogue
+ * is loaded by the registry-bound {@see LoadNistCsf2FullCatalogueCommand} under the
+ * canonical code NIST-CSF-2.0. Kept as a plain CLI command; intentionally NOT
+ * implementing FrameworkLoaderInterface so the registry resolves exactly one loader
+ * per code. It now seeds into the canonical NIST-CSF-2.0 framework row (not the
+ * obsolete NIST-CSF row that migration Version20260506213529 merged away).
+ */
 #[AsCommand(
     name: 'app:load-nist-csf-requirements',
-    description: 'Load NIST Cybersecurity Framework 2.0 with ISO 27001 control mappings'
+    description: 'Load NIST CSF 2.0 curated subset with ISO 27001 control mappings (full catalogue: app:load-nist-csf-2-0-full-catalogue)'
 )]
-class LoadNistCsfRequirementsCommand extends Command implements FrameworkLoaderInterface
+class LoadNistCsfRequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
-    }
-
-    public function getFrameworkCode(): string
-    {
-        return 'NIST-CSF';
     }
 
     #[\Override]
@@ -54,14 +57,16 @@ class LoadNistCsfRequirementsCommand extends Command implements FrameworkLoaderI
         $symfonyStyle?->title('Loading NIST CSF 2.0 Requirements');
         $symfonyStyle?->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
-        // Create or get NIST CSF framework
+        // Create or get NIST CSF framework — canonical code is NIST-CSF-2.0
+        // (migration Version20260506213529 merged the legacy NIST-CSF row away;
+        // seeding into NIST-CSF again would resurrect the obsolete duplicate).
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
-            ->findOneBy(['code' => 'NIST-CSF']);
+            ->findOneBy(['code' => 'NIST-CSF-2.0']);
         $isNew = !$framework instanceof ComplianceFramework;
         if ($isNew) {
             $framework = new ComplianceFramework();
         }
-        $framework->setCode('NIST-CSF')
+        $framework->setCode('NIST-CSF-2.0')
             ->setName('NIST Cybersecurity Framework 2.0')
             ->setDescription('Framework for improving critical infrastructure cybersecurity')
             ->setVersion('2.0')

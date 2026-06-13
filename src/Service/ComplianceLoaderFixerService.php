@@ -42,7 +42,7 @@ final class ComplianceLoaderFixerService
         'BSI-C5-2026'     => 'BSI C5:2026',
         'GDPR'            => 'GDPR (2016/679)',
         'BDSG'            => 'BDSG 2018/2024',
-        'NIST-CSF'        => 'NIST CSF 2.0',
+        'NIST-CSF-2.0'    => 'NIST CSF 2.0',
         'SOC2'            => 'SOC 2 (2017 rev. 2022)',
         'CIS-CONTROLS'    => 'CIS Controls v8.1',
         'EU-AI-ACT'       => 'EU AI Act (2024/1689)',

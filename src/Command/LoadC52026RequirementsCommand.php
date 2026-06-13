@@ -6,7 +6,6 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
-use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -15,21 +14,25 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated as the registry loader for BSI-C5-2026 — this command seeds only
+ * the ~43 C5-2026-* DELTA criteria (new-in-2026 highlights), which the
+ * cross-framework mappings do NOT reference. The full catalogue (~174 criteria,
+ * OIS-/IAM-/… ids) is loaded by the registry-bound
+ * {@see LoadC52026FullCatalogueCommand}. Kept as a plain CLI command for the
+ * delta-only seeding use case; intentionally NOT implementing
+ * FrameworkLoaderInterface so the registry resolves exactly one loader per code.
+ */
 #[AsCommand(
     name: 'app:load-c5-2026-requirements',
-    description: 'Load BSI C5:2026 (Cloud Computing Compliance Criteria Catalogue) requirements with ISMS data mappings',
+    description: 'Load BSI C5:2026 delta highlight requirements (new-in-2026 criteria only — full catalogue: app:load-c5-2026-full-catalogue)',
     aliases: ['app:load-c5-2025-requirements']
 )]
-class LoadC52026RequirementsCommand extends Command implements FrameworkLoaderInterface
+class LoadC52026RequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
-    }
-
-    public function getFrameworkCode(): string
-    {
-        return 'BSI-C5-2026';
     }
 
     public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int

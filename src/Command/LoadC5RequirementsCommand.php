@@ -6,7 +6,6 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
-use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -15,20 +14,23 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated as the registry loader for BSI-C5 — this command seeds C5-ORP-1-style
+ * curated ids with ISMS data mappings, which the cross-framework mappings do NOT
+ * reference (they use the official short codes OPS-01 / OIS-05 / AM-01 …). The full
+ * catalogue is loaded by the registry-bound {@see LoadC52020FullCatalogueCommand}.
+ * Kept as a plain CLI command; intentionally NOT implementing
+ * FrameworkLoaderInterface so the registry resolves exactly one loader per code.
+ */
 #[AsCommand(
     name: 'app:load-c5-requirements',
-    description: 'Load BSI C5:2020 (Cloud Computing Compliance Criteria Catalogue) requirements with ISMS data mappings'
+    description: 'Load BSI C5:2020 curated requirements with ISMS data mappings (full catalogue: app:load-c5-2020-full-catalogue)'
 )]
-class LoadC5RequirementsCommand extends Command implements FrameworkLoaderInterface
+class LoadC5RequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
-    }
-
-    public function getFrameworkCode(): string
-    {
-        return 'BSI-C5';
     }
 
     public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
