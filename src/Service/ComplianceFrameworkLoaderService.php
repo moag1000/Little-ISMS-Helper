@@ -447,6 +447,20 @@ final class ComplianceFrameworkLoaderService
                 'icon' => '🛡️',
                 'required_modules' => ['compliance', 'controls'],
             ],
+            [
+                'code' => 'IKT-MINSTD-CH',
+                'name' => 'IKT-Minimalstandard zur Verbesserung der IKT-Resilienz (Schweiz)',
+                'description' => 'Schweizerischer Minimalstandard zur Verbesserung der IKT-Resilienz, Version Mai 2023. Herausgegeben vom NCSC / BWL (Bundesamt fuer wirtschaftliche Landesversorgung). Basiert auf dem NIST Cybersecurity Framework; 108 Massnahmen in 5 Funktionen. Empfohlen fuer Betreiber kritischer Infrastrukturen in der Schweiz.',
+                'industry' => 'critical_infrastructure',
+                'regulatory_body' => 'NCSC / BWL — Bundesamt fuer wirtschaftliche Landesversorgung, Schweiz',
+                'mandatory' => false,
+                'applicability' => 'conditional',
+                'applicability_condition_key' => 'admin.compliance.applicability.condition.ikt_minstd_ch',
+                'version' => '2023',
+                'loaded' => in_array('IKT-MINSTD-CH', $loadedCodes),
+                'icon' => '🇨🇭',
+                'required_modules' => ['compliance', 'controls'],
+            ],
         ];
     }
 
