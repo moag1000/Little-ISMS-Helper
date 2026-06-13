@@ -33,7 +33,7 @@
     },
     {
       "iso": "A.5.19",
-      "baustein": "OPS.2.1",
+      "baustein": "OPS.2.3",
       "state": "ki_validiert",
       "mappingPercentage": 55,
       "realVotes": 4,
@@ -150,7 +150,7 @@
     },
     {
       "iso": "A.5.12",
-      "baustein": "CON.11",
+      "baustein": "CON.11.1",
       "state": "ki_validiert",
       "mappingPercentage": 45,
       "realVotes": 4,
@@ -163,7 +163,7 @@
     },
     {
       "iso": "A.5.13",
-      "baustein": "CON.11",
+      "baustein": "CON.11.1",
       "state": "ki_validiert",
       "mappingPercentage": 40,
       "realVotes": 4,

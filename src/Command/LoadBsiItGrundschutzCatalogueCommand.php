@@ -39,7 +39,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  */
 #[AsCommand(
     name: 'app:load-bsi-grundschutz-catalogue',
-    description: 'Load BSI IT-Grundschutz-Kompendium 2023 from canonical YAML catalogue tree (10 Schichten, 117 Bausteine, ~360 Anforderungen).',
+    description: 'Load BSI IT-Grundschutz-Kompendium 2023 from canonical YAML catalogue tree (10 Schichten, 111 Bausteine, ~1834 Anforderungen).',
 )]
 final class LoadBsiItGrundschutzCatalogueCommand extends Command implements FrameworkLoaderInterface
 {
@@ -149,7 +149,7 @@ final class LoadBsiItGrundschutzCatalogueCommand extends Command implements Fram
             $framework = (new ComplianceFramework())
                 ->setCode(self::FRAMEWORK_CODE)
                 ->setName('BSI IT-Grundschutz')
-                ->setDescription('BSI IT-Grundschutz-Kompendium Edition 2023 — 10 Schichten, 117 Bausteine, Basis/Standard/Hoch-Anforderungen.')
+                ->setDescription('BSI IT-Grundschutz-Kompendium Edition 2023 — 10 Schichten, 111 Bausteine, Basis/Standard/Hoch-Anforderungen.')
                 ->setVersion('Edition 2023')
                 ->setApplicableIndustry('all_sectors')
                 ->setRegulatoryBody('BSI (Bundesamt fuer Sicherheit in der Informationstechnik)')

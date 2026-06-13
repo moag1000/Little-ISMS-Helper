@@ -7,21 +7,105 @@ title: 'Infrastruktur'
 description: 'Schicht fuer infrastrukturelle Sicherheit: Gebaeude, Rechenzentrum, technische Raeume, Bueroarbeitsplaetze, Telearbeitsplaetze, Verkabelung und Gebaeudeautomation.'
 bausteine:
   - id: INF.1
-    title: 'Allgemeines Gebaeude'
+    title: 'Allgemeines Gebäude'
     description: 'Anforderungen an die infrastrukturelle Absicherung allgemeiner Gebaeude.'
     anforderungen:
       basis:
         - id: INF.1.A1
-          title: 'Planung der Gebaeudeabsicherung'
-          requirement_text: 'Die Absicherung von Gebaeuden MUSS geplant werden.'
+          title: 'Planung der Gebäudeabsicherung'
+          requirement_text: 'Je nach der (geplanten) Nutzung eines Gebäudes und dem Schutzbedarf der dort betriebenen Geschäftsprozesse MUSS festgelegt werden, wie das Gebäude abzusichern ist. Bei einem Gebäude MÜSSEN insbesondere Sicherheitsaspekte zum Schutz von Personen im Gebäude, dem Schutz der Wirtschaftsgüter und der IT beachtet werden, von Brandschutz über Elektrik bis hin zur Zutrittskontrolle. Die Sicherheitsanforderungen aus den verschiedenen Bereichen MÜSSEN aufeinander abgestimmt werden.'
         - id: INF.1.A2
-          title: 'Angemessene Zutrittskontrolle und Zugangskontrolle'
-          requirement_text: 'Es MUSS eine angemessene Zutritts- und Zugangskontrolle eingerichtet werden.'
+          title: 'Angepasste Aufteilung der Stromkreise'
+          requirement_text: 'Es MUSS regelmäßig überprüft werden, ob die Absicherung und Auslegung der Stromkreise noch den tatsächlichen Bedürfnissen genügen.'
         - id: INF.1.A3
-          title: 'Brand- und Wasserschutz'
-          requirement_text: 'Es MUESSEN angemessene Massnahmen zum Brand- und Wasserschutz umgesetzt werden. Siehe BSI Kompendium 2023 Baustein INF.1 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Einhaltung von Brandschutzvorschriften'
+          requirement_text: 'Die bestehenden Brandschutzvorschriften sowie die Auflagen der Bauaufsicht MÜSSEN eingehalten werden. Die Fluchtwege MÜSSEN vorschriftsmäßig ausgeschildert und freigehalten werden. Es MUSS regelmäßig kontrolliert werden, dass die Fluchtwege benutzbar und frei von Hindernissen sind, damit das Gebäude in einer Gefahrensituation schnell geräumt werden kann. Bei der Brandschutzplanung SOLLTE die örtliche Feuerwehr hinzugezogen werden. Unnötige Brandlasten MÜSSEN vermieden werden. Es MUSS eine Brandschutzbeauftragte oder einen Brandschutzbeauftragten oder eine mit dem Aufgabengebiet betraute Person geben. Diese Person MUSS geeignet geschult sein.'
+        - id: INF.1.A4
+          title: 'Branderkennung in Gebäuden'
+          requirement_text: 'Gebäude MÜSSEN entsprechend der Auflagen in der Baugenehmigung und dem Brandschutzkonzept folgend mit einer ausreichenden Anzahl von Rauchmeldern ausgestattet sein. Ist eine lokale Alarmierung am Ort des Melders nicht ausreichend, MÜSSEN alle Melder auf eine Brandmeldezentrale (BMZ) aufgeschaltet werden. Bei Rauchdetektion MUSS eine Alarmierung im Gebäude ausgelöst werden. Es MUSS sichergestellt sein, dass alle im Gebäude anwesenden Personen diese wahrnehmen können. Die Funktionsfähigkeit aller Rauchmelder sowie aller sonstigen Komponenten einer Brandmeldeanlage (BMA) MUSS regelmäßig überprüft werden.'
+        - id: INF.1.A5
+          title: 'Handfeuerlöscher'
+          requirement_text: 'Zur Sofortbekämpfung von Bränden MÜSSEN Handfeuerlöscher in der jeweils geeigneten Brandklasse (DIN EN 3 Tragbare Feuerlöscher) in ausreichender Zahl und Größe im Gebäude zur Verfügung stehen. Die Handfeuerlöscher MÜSSEN regelmäßig geprüft und gewartet werden. Die Mitarbeitenden SOLLTEN in die Benutzung der Handfeuerlöscher eingewiesen werden. Die Einweisungen SOLLTEN in zweckmäßigen Zeitabständen wiederholt werden.'
+        - id: INF.1.A6
+          title: 'Geschlossene Fenster und Türen'
+          requirement_text: 'Fenster und von außen zugängliche Türen, etwa von Balkonen oder Terrassen, MÜSSEN zu Zeiten, in denen ein Raum nicht besetzt ist, geschlossen werden. Räume MÜSSEN verschlossen werden, falls dort vertrauliche Informationen zurückgelassen werden. Dafür MUSS es eine entsprechende Anweisung geben. Alle Mitarbeitenden SOLLTEN dazu verpflichtet werden, der Anweisung nachzukommen. Es MUSS regelmäßig überprüft werden, ob die Fenster und Innen- sowie Außentüren nach Verlassen des Gebäudes verschlossen sind. Brand- und Rauchschutztüren DÜRFEN NUR dann dauerhaft offen gehalten werden, wenn dies durch zugelassene Feststellanlagen erfolgt.'
+        - id: INF.1.A7
+          title: 'Zutrittsregelung und -kontrolle'
+          requirement_text: 'Der Zutritt zu schutzbedürftigen Gebäudeteilen und Räumen MUSS geregelt und kontrolliert werden. Es SOLLTE ein Konzept für die Zutrittskontrolle existieren. Die Zahl der zutrittsberechtigten Personen SOLLTE für jeden Bereich auf ein Mindestmaß reduziert werden. Weitere Personen DÜRFEN erst Zutritt erhalten, nachdem geprüft wurde, ob dies notwendig ist. Alle erteilten Zutrittsberechtigungen SOLLTEN dokumentiert werden. Die Zutrittskontrollmaßnahmen MÜSSEN regelmäßig auf ihre Wirksamkeit überprüft werden. Zutrittskontrollen SOLLTEN auch während Umzügen soweit wie möglich vorhanden sein.'
+        - id: INF.1.A8
+          title: 'Rauchverbot'
+          requirement_text: 'Für Räume mit IT oder Datenträgern, in denen Brände oder Verschmutzungen zu hohen Schäden führen können, wie Serverräume, Datenträger- oder Belegarchive, MUSS ein Rauchverbot erlassen werden. Es MUSS regelmäßig kontrolliert werden, dass bei der Einrichtung oder Duldung von Raucherzonen der Zutrittsschutz nicht umgangen wird.'
+        - id: INF.1.A10
+          title: 'Einhaltung einschlägiger Normen und Vorschriften'
+          requirement_text: 'Bei der Planung, der Errichtung und dem Umbau von Gebäuden sowie beim Einbau von technischen Einrichtungen MÜSSEN alle relevanten Normen und Vorschriften berücksichtigt werden.'
+      standard:
+        - id: INF.1.A9
+          title: 'Sicherheitskonzept für die Gebäudenutzung'
+          requirement_text: 'Es SOLLTE ein Sicherheitskonzept für die Gebäudenutzung geben. Das Sicherheitskonzept für das Gebäude SOLLTE mit dem Gesamtsicherheitskonzept der Institution abgestimmt sein. Es SOLLTE dokumentiert und regelmäßig aktualisiert werden. Schützenswerte Räume oder Gebäudeteile SOLLTEN nicht in exponierten oder besonders gefährdeten Bereichen untergebracht sein. Es MUSS ein IT-bezogenes Brandschutzkonzept erstellt und umgesetzt werden.'
+        - id: INF.1.A12
+          title: 'Schlüsselverwaltung'
+          requirement_text: 'Für alle Schlüssel des Gebäudes SOLLTE ein Schließplan vorliegen. Die Herstellung, Aufbewahrung, Verwaltung und Ausgabe von Schlüsseln SOLLTE zentral geregelt sein. Reserveschlüssel SOLLTEN vorgehalten und gesichert, aber für Notfälle griffbereit aufbewahrt werden. Nicht ausgegebene Schlüssel SOLLTEN sicher aufbewahrt werden. Jede Schlüsselausgabe SOLLTE dokumentiert werden.'
+        - id: INF.1.A13
+          title: 'Regelungen für Zutritt zu Verteilern'
+          requirement_text: 'Der Zutritt zu den Verteilern aller Versorgungseinrichtungen in einem Gebäude SOLLTE im Bedarfsfall schnell möglich sein. Der Zutritt zu Verteilern SOLLTE auf einen engen Kreis von Berechtigten beschränkt sein'
+        - id: INF.1.A14
+          title: 'Blitzschutzeinrichtungen'
+          requirement_text: 'Es SOLLTE eine Blitzschutzanlage nach geltender Norm installiert sein. Es SOLLTE ein umfassendes Blitz- und Überspannungsschutzkonzept vorhanden sein. Die Fangeinrichtungen bei Gebäuden mit umfangreicher IT-Ausstattung SOLLTEN mindestens der Schutzklasse II gemäß DIN EN 62305 Blitzschutz entsprechen. Die Blitzschutzanlage SOLLTE regelmäßig geprüft und gewartet werden.'
+        - id: INF.1.A15
+          title: 'Lagepläne der Versorgungsleitungen'
+          requirement_text: 'Es SOLLTEN aktuelle Lagepläne aller Versorgungsleitungen existieren. Es SOLLTE geregelt sein, wer die Lagepläne aller Versorgungsleitungen führt und aktualisiert. Die Pläne SOLLTEN so aufbewahrt werden, dass ausschließlich berechtigte Personen darauf zugreifen können, sie aber im Bedarfsfall schnell verfügbar sind.'
+        - id: INF.1.A16
+          title: 'Vermeidung von Lagehinweisen auf schützenswerte Gebäudeteile'
+          requirement_text: 'Lagehinweise auf schutzwürdige Bereiche SOLLTEN vermieden werden. Schutzwürdige Gebäudebereiche SOLLTEN von außen nicht leicht einsehbar sein.'
+        - id: INF.1.A17
+          title: 'Baulicher Rauchschutz'
+          requirement_text: 'Der bauliche Rauchschutz SOLLTE nach Installations- und Umbauarbeiten überprüft werden. Es SOLLTE regelmäßig überprüft werden, ob die Rauchschutz-Komponenten noch funktionieren.'
+        - id: INF.1.A18
+          title: 'Brandschutzbegehungen'
+          requirement_text: 'Brandschutzbegehungen SOLLTEN regelmäßig, d. h. mindestens ein- bis zweimal im Jahr, stattfinden. Bei Brandschutzbegehungen festgestellte Mängel SOLLTEN unverzüglich behoben werden.'
+        - id: INF.1.A19
+          title: 'Information des oder der Brandschutzbeauftragten'
+          requirement_text: 'Der oder die Brandschutzbeauftragte SOLLTE über Arbeiten an Leitungstrassen, Fluren, Flucht- und Rettungswegen informiert werden. Diese Person SOLLTE die ordnungsgemäße Ausführung von Brandschutzmaßnahmen kontrollieren.'
+        - id: INF.1.A20
+          title: 'Alarmierungsplan und Brandschutzübungen'
+          requirement_text: 'Es SOLLTE ein Alarmierungsplan für die im Brandfall zu ergreifenden Maßnahmen erstellt werden. Der Alarmierungsplan SOLLTE in regelmäßigen Abständen überprüft und aktualisiert werden. Brandschutzübungen SOLLTEN regelmäßig durchgeführt werden.'
+        - id: INF.1.A27
+          title: 'Einbruchschutz'
+          requirement_text: 'Es SOLLTEN ausreichende und den örtlichen Gegebenheiten angepasste Maßnahmen zum Einbruchschutz umgesetzt werden. Bei der Planung, der Umsetzung und im Betrieb SOLLTE beim Einbruchschutz darauf geachtet werden, dass er gleichwertig und durchgängig ist. Er SOLLTE regelmäßig durch eine fachkundige Person begutachtet werden. Die Regelungen zum Einbruchschutz SOLLTEN den Mitarbeitenden bekannt sein.'
+        - id: INF.1.A36
+          title: 'Regelmäßige Aktualisierungen der Dokumentation'
+          requirement_text: 'Die Dokumentation eines Gebäudes, z. B. Baupläne, Trassenpläne, Strangschemata, Fluchtwegpläne und Feuerwehrlaufkarten, SOLLTE immer auf dem aktuellen Stand gehalten werden. Es SOLLTE mindestens einmal innerhalb von drei Jahren überprüft werden, ob alle relevanten Pläne noch aktuell und korrekt sind. Über Änderungen SOLLTEN die Mitarbeitenden informiert werden.'
+      hoch:
+        - id: INF.1.A22
+          title: 'Sichere Türen und Fenster'
+          requirement_text: 'Türen und Fenster SOLLTEN anhand der Schutzziele des zu sichernden Bereichs und des Schutzbedarfs der Institution in der passenden Klassifizierung nach den einschlägigen Normen ausgewählt werden. Alle raumumschließenden Sicherungsmaßnahmen durch Fenster, Türen und Wände SOLLTEN in Bezug auf Einbruch, Brand und Rauch gleichwertig und angemessen sein. Es SOLLTE regelmäßig überprüft werden, dass die Sicherheitstüren und -fenster funktionstüchtig sind.'
+        - id: INF.1.A23
+          title: 'Bildung von Sicherheitszonen'
+          requirement_text: 'Räume ähnlichen Schutzbedarfs SOLLTEN in Zonen zusammengefasst werden, um vergleichbare Risiken einheitlich behandeln und Kosten für erforderliche Sicherheitsmaßnahmen reduzieren zu können.'
+        - id: INF.1.A24
+          title: 'Selbsttätige Entwässerung'
+          requirement_text: 'Alle von Wasser gefährdeten Bereiche SOLLTEN mit einer selbsttätigen Entwässerung ausgestattet sein. Es SOLLTE regelmäßig geprüft werden, ob die aktiven und passiven Entwässerungseinrichtungen noch funktionieren.'
+        - id: INF.1.A25
+          title: 'Geeignete Standortauswahl'
+          requirement_text: 'Bei Planung und Auswahl des Gebäudestandortes SOLLTE geprüft werden, welche Umfeldbedingungen Einfluss auf die Informationssicherheit haben könnten. Es SOLLTE eine Übersicht über standortbedingte Gefährdungen geben. Diesen Gefährdungen SOLLTE mit zusätzlichen kompensierenden Maßnahmen entgegengewirkt werden.'
+        - id: INF.1.A26
+          title: 'Pforten- oder Sicherheitsdienst'
+          requirement_text: 'Die Aufgaben des Pforten- oder Sicherheitsdienstes SOLLTEN klar dokumentiert sein. Der Pfortendienst SOLLTE alle Personenbewegungen an der Pforte und an allen anderen Eingängen beobachten und, je nach Sicherheitskonzept, kontrollieren. Alle Mitarbeitenden und Besuchenden SOLLTEN sich bei dem Pfortendienst ausweisen können. Besuchende SOLLTEN zu den Besuchten begleitet oder an der Pforte abgeholt werden. Der Pfortendienst SOLLTE rechtzeitig darüber informiert werden, wenn sich Zutrittsberechtigungen ändern.'
+        - id: INF.1.A30
+          title: 'Auswahl eines geeigneten Gebäudes'
+          requirement_text: 'Bei der Auswahl eines geeigneten Gebäudes SOLLTE geprüft werden, ob alle für die spätere Nutzung relevanten Sicherheitsanforderungen umgesetzt werden können. Für jedes Gebäude SOLLTEN im Vorfeld die vorhandenen Gefährdungen und die erforderlichen Schäden vorbeugenden oder reduzierenden Maßnahmen dokumentiert werden.'
+        - id: INF.1.A31
+          title: 'Auszug aus Gebäuden'
+          requirement_text: 'Im Vorfeld des Auszugs SOLLTE ein Bestandsverzeichnis aller für die Informationssicherheit für den Umzug relevanten Objekte wie Hardware, Software, Datenträger, Ordner oder Schriftstücke erstellt werden. Nach dem Auszug SOLLTEN alle Räume nach zurückgelassenen Dingen durchsucht werden.'
+        - id: INF.1.A32
+          title: 'Brandschott-Kataster'
+          requirement_text: 'Es SOLLTE ein Brandschott-Kataster geführt werden. In diesem SOLLTEN alle Arten von Schotten individuell aufgenommen werden. Nach Arbeiten an Brandschotten SOLLTEN die Änderungen im Kataster spätestens nach vier Wochen eingetragen werden.'
+        - id: INF.1.A34
+          title: 'Gefahrenmeldeanlage'
+          requirement_text: 'Es SOLLTE eine den Räumlichkeiten und den Risiken angemessene Gefahrenmeldeanlage geben. Die Gefahrenmeldeanlage SOLLTE regelmäßig geprüft und gewartet werden. Es MUSS sichergestellt werden, dass diejenigen, die Gefahrenmeldungen empfangen in der Lage sind, technisch und personell angemessen auf den Alarm zu reagieren.'
+        - id: INF.1.A35
+          title: 'Perimeterschutz'
+          requirement_text: 'Abhängig vom Schutzbedarf des Gebäudes und abhängig vom Gelände SOLLTE dieses über einen Perimeterschutz verfügen. Hierbei SOLLTEN mindestens folgende Komponenten auf ihren Nutzen und ihre Umsetzbarkeit hin betrachtet werden:'
 
   - id: INF.2
     title: 'Rechenzentrum sowie Serverraum'
@@ -29,84 +113,261 @@ bausteine:
     anforderungen:
       basis:
         - id: INF.2.A1
-          title: 'Planung von Rechenzentrum und Serverraum'
-          requirement_text: 'Rechenzentren und Serverraeume MUESSEN angemessen geplant werden.'
+          title: 'Festlegung von Anforderungen'
+          requirement_text: 'Für ein Rechenzentrum MÜSSEN angemessene technische und organisatorische Vorgaben definiert und umgesetzt werden. Wenn ein Rechenzentrum geplant wird oder geeignete Räumlichkeiten ausgewählt werden, MÜSSEN auch geeignete Sicherheitsmaßnahmen unter Berücksichtigung des Schutzbedarfs der IT-Komponenten (insbesondere der Verfügbarkeit) mit geplant werden. Ein Rechenzentrum MUSS insgesamt als geschlossener Sicherheitsbereich konzipiert werden. Es MUSS zudem unterschiedliche Sicherheitszonen aufweisen. Dafür MÜSSEN z. B. Verwaltungs-, Logistik-, IT-Betriebs- und Support-Bereiche klar voneinander getrennt werden. Im Falle eines Serverraums SOLLTE geprüft werden, ob unterschiedliche Sicherheitszonen eingerichtet werden können.'
         - id: INF.2.A2
           title: 'Bildung von Brandabschnitten'
-          requirement_text: 'Es MUESSEN Brandabschnitte gebildet werden.'
+          requirement_text: 'Es MÜSSEN geeignete Brand- und Rauchabschnitte für die Räumlichkeiten eines Rechenzentrums festgelegt werden. Die Brand- und Rauchabschnitte MÜSSEN über den baurechtlich vorgeschriebenen Rahmen hinaus auch Schutz für die darin befindlichen technischen Einrichtungen und deren Verfügbarkeit bieten. Es MUSS verhindert werden, dass sich Brand und Rauch ausbreiten. Im Falle eines Serverraums SOLLTE geprüft werden, ob geeignete Brand- und Rauchabschnitte für die Räumlichkeiten umsetzbar sind.'
         - id: INF.2.A3
-          title: 'Zutrittskontrolle und Ueberwachung'
-          requirement_text: 'Der Zutritt zu Rechenzentren und Serverraeumen MUSS streng kontrolliert und ueberwacht werden. Siehe BSI Kompendium 2023 Baustein INF.2 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Einsatz einer unterbrechungsfreien Stromversorgung'
+          requirement_text: 'Für alle betriebsrelevanten Komponenten des Rechenzentrums MUSS eine unterbrechungsfreie Stromversorgung (USV) installiert werden. Da der Leistungsbedarf von Klimaanlagen oft zu hoch für eine USV ist, MUSS mindestens die Steuerung der Anlagen an die unterbrechungsfreie Stromversorgung angeschlossen werden. Im Falle eines Serverraums SOLLTE je nach Verfügbarkeitsanforderungen der IT-Systeme geprüft werden, ob der Betrieb einer USV notwendig ist. Die USV MUSS ausreichend dimensioniert sein. Bei relevanten Änderungen an den Verbrauchern MUSS überprüft werden, ob die vorhandenen USV-Systeme noch ausreichend dimensioniert sind. Bei USV-Systemen mit Batterie als Energiespeicher MUSS die Batterie im erforderlichen Temperaturbereich gehalten werden. Sie SOLLTE dazu vorzugsweise räumlich getrennt von der Leistungselektronik der USV platziert werden. Die USV MUSS regelmäßig gewartet und auf Funktionsfähigkeit getestet werden. Dafür MÜSSEN die vom herstellenden Unternehmen vorgesehenen Wartungsintervalle eingehalten werden.'
+        - id: INF.2.A4
+          title: 'Notabschaltung der Stromversorgung'
+          requirement_text: 'Es MUSS geeignete Möglichkeiten geben, elektrische Verbraucher im Rechenzentrum spannungsfrei zu schalten. Dabei MUSS darauf geachtet werden, ob und wie eine vorhandene USV räumlich und funktional in die Stromversorgung eingebunden ist. Werden klassische Not-Aus-Schalter eingesetzt, MUSS darauf geachtet werden, dass darüber nicht das komplette Rechenzentrum abgeschaltet wird. Die Notabschaltung MUSS sinnvoll parzelliert und zielgerichtet erfolgen. Alle Not-Aus-Schalter MÜSSEN so geschützt sein, dass sie nicht unbeabsichtigt oder unbefugt betätigt werden können.'
+        - id: INF.2.A5
+          title: 'Einhaltung der Lufttemperatur und -feuchtigkeit'
+          requirement_text: 'Es MUSS sichergestellt werden, dass die Lufttemperatur und Luftfeuchtigkeit im IT-Betriebsbereich innerhalb der vorgeschriebenen Grenzwerte liegen. Die tatsächliche Wärmelast in den gekühlten Bereichen MUSS in regelmäßigen Abständen und nach größeren Umbauten überprüft werden. Eine vorhandene Klimatisierung MUSS regelmäßig gewartet werden. Die Parameter Temperatur und Feuchtigkeit MÜSSEN mindestens so aufgezeichnet werden, dass sich rückwirkend erkennen lässt, ob Grenzwerte überschritten wurden, und dass sie bei der Lokalisierung der Ursache der Abweichung sowie bei der Beseitigung der Ursache unterstützend genutzt werden können.'
+        - id: INF.2.A6
+          title: 'Zutrittskontrolle'
+          requirement_text: 'Der Zutritt zum Rechenzentrum MUSS kontrolliert werden. Zutrittsrechte MÜSSEN gemäß der Vorgaben des Bausteins ORP.4 Identitäts- und Berechtigungsmanagement vergeben werden. Für im Rechenzentrum tätige Personen MUSS sichergestellt werden, dass diese keinen Zutritt zu IT-Systemen außerhalb ihres Tätigkeitsbereiches erhalten. Alle Zutrittsmöglichkeiten zum Rechenzentrum MÜSSEN mit Zutrittskontrolleinrichtungen ausgestattet sein. Jeder Zutritt zum Rechenzentrum MUSS von der Zutrittskontrolle individuell erfasst werden. Im Falle eines Serverraums SOLLTE geprüft werden, ob eine Überwachung aller Zutrittsmöglichkeiten sinnvoll ist. Es MUSS regelmäßig kontrolliert werden, ob die Regelungen zum Einsatz einer Zutrittskontrolle eingehalten werden. Die Anforderungen der Institution an ein Zutrittskontrollsystem MÜSSEN in einem Konzept ausreichend detailliert dokumentiert werden.'
+        - id: INF.2.A7
+          title: 'Verschließen und Sichern'
+          requirement_text: 'Alle Türen des Rechenzentrums MÜSSEN stets verschlossen gehalten werden. Fenster MÜSSEN möglichst schon bei der Planung vermieden werden. Falls sie doch vorhanden sind, MÜSSEN sie ebenso wie die Türen stets verschlossen gehalten werden. Türen und Fenster MÜSSEN einen dem Sicherheitsniveau angemessenen Schutz gegen Angriffe und Umgebungseinflüsse bieten. Sie MÜSSEN mit einem Sichtschutz versehen sein. Dabei MUSS beachtet werden, dass die bauliche Ausführung aller raumbildenden Elemente in Bezug auf die erforderliche Schutzwirkung gleichwertig sein muss.'
+        - id: INF.2.A8
+          title: 'Einsatz einer Brandmeldeanlage'
+          requirement_text: 'In einem Rechenzentrum MUSS eine Brandmeldeanlage installiert sein. Diese MUSS alle Flächen überwachen. Alle Meldungen der Brandmeldeanlage MÜSSEN geeignet weitergeleitet werden (siehe dazu auch INF.2.A13 Planung und Installation von Gefahrenmeldeanlagen). Die Brandmeldeanlage MUSS regelmäßig gewartet werden. Es MUSS sichergestellt werden, dass in Räumen des Rechenzentrums keine besonderen Brandlasten vorhanden sind.'
+        - id: INF.2.A9
+          title: 'Einsatz einer Lösch- oder Brandvermeidungsanlage'
+          requirement_text: 'In einem Rechenzentrum MUSS entweder eine Lösch- oder Brandvermeidungsanlage nach aktuellem Stand der Technik installiert sein oder durch technische (insbesondere durch eine flächendeckende Brandfrüherkennung, siehe INF.2.A17 Brandfrüherkennung) und organisatorische Maßnahmen (geschultes Personal und Reaktionspläne für Meldungen der Brandfrüherkennung) sichergestellt sein, dass unmittelbar (innerhalb von maximal 3 Minuten) auf Meldungen der Brandfrüherkennung mit schadensminimierenden Maßnahmen reagiert wird. In Serverräumen ohne Lösch- oder Brandvermeidungsanlage MÜSSEN Handfeuerlöscher mit geeigneten Löschmitteln in ausreichender Zahl und Größe vorhanden sein. Es MUSS beachtet werden, dass darüber hinausgehende baurechtliche Anforderungen hinsichtlich der Ausstattung mit Handfeuerlöschern davon unberührt bleiben. Die Feuerlöscher MÜSSEN so angebracht werden, dass sie im Brandfall leicht zu erreichen sind. Jeder Feuerlöscher MUSS regelmäßig geprüft und gewartet werden. Alle Mitarbeitenden, die ein Rechenzentrum oder einen Serverraum betreten dürfen, MÜSSEN in die Benutzung der Handfeuerlöscher eingewiesen werden.'
+        - id: INF.2.A10
+          title: 'Inspektion und Wartung der Infrastruktur'
+          requirement_text: 'Für alle Komponenten der baulich-technischen Infrastruktur MÜSSEN mindestens die vom herstellenden Unternehmen empfohlenen oder durch Normen festgelegten Intervalle und Vorschriften für Inspektion und Wartung eingehalten werden. Inspektionen und Wartungsarbeiten MÜSSEN protokolliert werden. Brandschotten MÜSSEN daraufhin geprüft werden, ob sie unversehrt sind. Die Ergebnisse MÜSSEN dokumentiert werden.'
+        - id: INF.2.A11
+          title: 'Automatische Überwachung der Infrastruktur'
+          requirement_text: 'Alle Einrichtungen der Infrastruktur, wie z. B. Leckageüberwachung, Klima-, Strom- und USV-Anlagen, MÜSSEN automatisch überwacht werden. Erkannte Störungen MÜSSEN schnellstmöglich in geeigneter Weise weitergeleitet und bearbeitet werden. Im Falle eines Serverraums SOLLTEN IT- und Supportgeräte, die nicht oder nur selten von einer Person bedient werden müssen, mit einer Fernanzeige für Störungen ausgestattet werden. Die verantwortlichen Mitarbeitenden MÜSSEN zeitnah alarmiert werden.'
+        - id: INF.2.A17
+          title: 'Einsatz einer Brandfrüherkennung'
+          requirement_text: 'Ein Rechenzentrum MUSS mit einer Brandfrüherkennungsanlage ausgestattet werden. Ein Serverraum SOLLTE mit einer Brandfrüherkennungsanlage ausgestattet werden. Die Meldungen der Brandfrüherkennung MÜSSEN an eine ständig besetzte Stelle geleitet werden, die eine Kontrolle und Schutzreaktion innerhalb von maximal 3 Minuten veranlassen kann. Alternativ MUSS eine automatische Schutzreaktion erfolgen. Um ein ausgewogenes Verhältnis zwischen Brandschutz und Verfügbarkeit zu erreichen, MUSS sichergestellt werden, dass sich einander Redundanz gebende Einrichtungen nicht gemeinsam im Wirkungsbereich der gleichen Spannungsfreischaltung befinden.'
+        - id: INF.2.A29
+          title: 'Vermeidung und Überwachung nicht erforderlicher Leitungen'
+          requirement_text: 'In einem Rechenzentrum DÜRFEN NUR Leitungen verlegt werden, die der unmittelbaren Versorgung der im Rechenzentrum aufgebauten Technik (in der Regel IT- und gegebenenfalls Kühltechnik) dienen. Ist es aus baulichen Gründen unabwendbar, Leitungen durch das Rechenzentrum zu führen, um andere Bereiche als die des Rechenzentrums zu versorgen, MUSS dies einschließlich Begründung dokumentiert werden. Die Risiken, die von solchen Leitungen ausgehen, MÜSSEN durch geeignete Maßnahmen minimiert werden, z. B. durch Einhausung und Überwachung. Durch Serverräume dürfen vorgenannte Leitungen geführt werden, ohne zu begründen, warum dies unabwendbar ist, diese MÜSSEN aber genauso behandelt werden, wie für das Rechenzentrum beschrieben. Meldungen aus der Überwachung der Leitungen MÜSSEN unverzüglich hinsichtlich der Gefährdungsrelevanz geprüft und bewertet werden. Gegenmaßnahmen MÜSSEN entsprechend der erkannten Gefährdungsrelevanz zeitgerecht umgesetzt werden (siehe auch INF.2.A13 Planung und Installation von Gefahrenmeldeanlagen).'
+      standard:
+        - id: INF.2.A12
+          title: 'Perimeterschutz für das Rechenzentrum'
+          requirement_text: 'Für Rechenzentren SOLLTE ein Perimeterschutz existieren. Je nach festgelegtem Schutzbedarf für das Rechenzentrum und abhängig vom Gelände SOLLTE der Perimeterschutz aus folgenden Komponenten bestehen:'
+        - id: INF.2.A13
+          title: 'Planung und Installation von Gefahrenmeldeanlagen'
+          requirement_text: 'Basierend auf dem Sicherheitskonzept des Gebäudes SOLLTE geplant werden, welche Gefahrenmeldeanlagen für welche Bereiche des Rechenzentrums benötigt und installiert werden. Hierüber hinaus SOLLTE festgelegt werden, wie mit Alarmmeldungen umzugehen ist. Das Konzept SOLLTE immer angepasst werden, wenn sich die Nutzung der Gebäudebereiche verändert. Es SOLLTE eine zum jeweiligen Einsatzzweck passende Gefahrenmeldeanlage (GMA) installiert werden. Die Meldungen der GMA SOLLTEN unter Beachtung der dafür geltenden Technischen Anschlussbedingungen (TAB) auf eine Alarmempfangsstelle aufgeschaltet werden. Die ausgewählte Alarmempfangsstelle MUSS jederzeit erreichbar sein. Sie MUSS technisch sowie personell in der Lage sein, geeignet auf die gemeldete Gefährdung zu reagieren. Der Übertragungsweg zwischen eingesetzter GMA und Alarmempfangsstelle SOLLTE entsprechend den TAB und nach Möglichkeit redundant ausgelegt werden. Alle vorhandenen Übertragungswege MÜSSEN regelmäßig getestet werden.'
+        - id: INF.2.A14
+          title: 'Einsatz einer Netzersatzanlage'
+          requirement_text: 'Die Energieversorgung eines Rechenzentrums aus dem Netz eines Energieversorgungsunternehmens SOLLTE um eine Netzersatzanlage (NEA) ergänzt werden. Wird eine NEA verwendet, MUSS sie regelmäßig gewartet werden. Bei diesen Wartungen MÜSSEN auch Belastungs- und Funktionstests sowie Testläufe unter Last durchgeführt werden. Der Betriebsmittelvorrat einer NEA MUSS regelmäßig daraufhin überprüft werden, ob er ausreichend ist. Außerdem MUSS regelmäßig kontrolliert werden, ob die Vorräte noch verwendbar sind, vor allem um die sogenannte Dieselpest zu vermeiden. Nach Möglichkeit SOLLTE statt Diesel-Kraftstoff schwefelarmes Heizöl verwendet werden. Die Tankvorgänge von Brennstoffen MÜSSEN protokolliert werden. Aus dem Protokoll MUSS die Art des Brennstoffs, die genutzten Additive, das Tankdatum und die getankte Menge hervorgehen. Wenn für einen Serverraum auf den Einsatz einer NEA verzichtet wird, SOLLTE alternativ zur NEA eine USV mit einer dem Schutzbedarf angemessenen Autonomiezeit realisiert werden.'
+        - id: INF.2.A15
+          title: 'Überspannungsschutzeinrichtung'
+          requirement_text: 'Es SOLLTE auf Basis der aktuell gültigen Norm (DIN EN 62305 Teil 1 bis 4) ein Blitz- und Überspannungsschutzkonzept erstellt werden. Dabei sind die für den ordnungsgemäßen Betrieb des RZ erforderlichen Blitzschutzzonen (LPZ) festzulegen. Für alle für den ordnungsgemäßen Betreib des RZ und dessen Dienstleistungsbereitstellung erforderlichen Einrichtungen SOLLTE das mindestens die LPZ 2 sein. Alle Einrichtungen des Überspannungsschutzes SOLLTEN gemäß DIN EN 62305-3, Tabelle E.2 ein Mal im Jahr einer Umfassenden Prüfung unterzogen werden.'
+        - id: INF.2.A16
+          title: 'Klimatisierung im Rechenzentrum'
+          requirement_text: 'Es SOLLTE sichergestellt werden, dass im Rechenzentrum geeignete klimatische Bedingungen geschaffen und aufrechterhalten werden. Die Klimatisierung SOLLTE für das Rechenzentrum ausreichend dimensioniert sein. Alle relevanten Werte SOLLTEN ständig überwacht werden. Weicht ein Wert von der Norm ab, SOLLTE automatisch alarmiert werden. Die Klimaanlagen SOLLTEN in IT-Betriebsbereichen möglichst ausfallsicher sein.'
+        - id: INF.2.A19
+          title: 'Durchführung von Funktionstests der technischen Infrastruktur'
+          requirement_text: 'Die technische Infrastruktur eines Rechenzentrums SOLLTE regelmäßig (zumindest ein- bis zweimal jährlich) sowie nach Systemumbauten und umfangreichen Reparaturen getestet werden. Die Ergebnisse SOLLTEN dokumentiert werden. Besonders ganze Reaktionsketten SOLLTEN einem echten Funktionstest unterzogen werden.'
+        - id: INF.2.A30
+          title: 'Anlagen zur, Löschung oder Vermeidung von Bränden'
+          requirement_text: 'Ein Rechenzentrum SOLLTE mit einer automatischen Lösch- oder Brandvermeidungsanlage ausgestattet werden.'
+      hoch:
+        - id: INF.2.A21
+          title: 'Ausweichrechenzentrum'
+          requirement_text: 'Es SOLLTE ein geografisch separiertes Ausweichrechenzentrum aufgebaut werden. Das Ausweichrechenzentrum SOLLTE so dimensioniert sein, dass alle Prozesse der Institution aufrechterhalten werden können. Auch SOLLTE es ständig einsatzbereit sein. Alle Daten der Institution SOLLTEN regelmäßig ins Ausweichrechenzentrum gespiegelt werden. Der Schwenk auf das Notfallrechenzentrum SOLLTE regelmäßig getestet und geübt werden. Die Übertragungswege in das Ausweichrechenzentrum SOLLTEN geeignet abgesichert und entsprechend redundant ausgelegt sein.'
+        - id: INF.2.A22
+          title: 'Durchführung von Staubschutzmaßnahmen'
+          requirement_text: 'Bei Baumaßnahmen in einem Rechenzentrum SOLLTEN geeignete Staubschutzmaßnahmen definiert, geplant und umgesetzt werden. Personen, die selbst nicht an den Baumaßnahmen beteiligt sind, SOLLTEN in ausreichend engen Zeitabständen kontrollieren, ob die Staubschutzmaßnahmen ordnungsgemäß funktionieren und die Regelungen zum Staubschutz eingehalten werden.'
+        - id: INF.2.A23
+          title: 'Zweckmäßiger Aufbau der Verkabelung im Rechenzentrum'
+          requirement_text: 'Kabeltrassen in Rechenzentren SOLLTEN sorgfältig geplant und ausgeführt werden. Trassen SOLLTEN hinsichtlich Anordnung und Dimensionierung so ausgelegt sein, dass eine Trennung der Spannungsebenen sowie eine sinnvolle Verteilung von Kabeln auf den Trassen möglich ist und dass auch für zukünftige Bedarfsmehrung ausreichend Platz zur Verfügung steht. Zur optimalen Versorgung von IT-Hardware, die über zwei Netzteile verfügt, SOLLTE ab der Niederspannungshauptverteilung für die IT-Betriebsbereiche eine zweizügige sogenannte A-B-Versorgung aufgebaut werden. Einander Redundanz gebende Leitungen SOLLTEN über getrennte Trassen verlegt werden.'
+        - id: INF.2.A24
+          title: 'Einsatz von Videoüberwachungsanlagen'
+          requirement_text: 'Die Zutrittskontrolle und die Einbruchmeldung SOLLTEN durch Videoüberwachungsanlagen ergänzt werden. Eine Videoüberwachung SOLLTE in das gesamte Sicherheitskonzept eingebettet werden. Bei der Planung, Konzeption und eventuellen Auswertung von Videoaufzeichnungen MUSS der Datenschutzbeauftragte immer mit einbezogen werden. Die für eine Videoüberwachung benötigten zentralen Technikkomponenten SOLLTEN in einer geeigneten Umgebung geschützt aufgestellt werden. Es SOLLTE regelmäßig überprüft werden, ob die Videoüberwachungsanlage korrekt funktioniert und ob die mit dem oder der Datenschutzbeauftragten abgestimmten Blickwinkel eingehalten werden.'
+        - id: INF.2.A25
+          title: 'Redundante Auslegung von unterbrechungsfreien Stromversorgungen'
+          requirement_text: 'USV-Systeme SOLLTEN modular und so aufgebaut sein, dass der Ausfall durch ein redundantes Modul unterbrechungsfrei kompensiert wird. Sofern für die IT-Betriebsbereiche eine zweizügige sogenannte A-B-Versorgung aufgebaut ist, SOLLTE jeder der beiden Strompfade mit einem eigenständigen USV-System ausgestattet sein.'
+        - id: INF.2.A26
+          title: 'Redundante Auslegung von Netzersatzanlagen'
+          requirement_text: 'Netzersatzanlagen SOLLTEN redundant ausgelegt werden. Hinsichtlich der Wartung MÜSSEN auch redundante NEAs entsprechend INF.2.A14 Einsatz einer Netzersatzanlage behandelt werden.'
+        - id: INF.2.A28
+          title: 'Einsatz von höherwertigen Gefahrenmeldeanlagen'
+          requirement_text: 'Für Rechenzentrumsbereiche mit erhöhtem Schutzbedarf SOLLTEN ausschließlich Gefahrenmeldeanlagen der VdS-Klasse C (gemäß VDS-Richtlinie 2311) eingesetzt werden.'
 
   - id: INF.5
-    title: 'Raum sowie Schrank fuer technische Infrastruktur'
+    title: 'Raum sowie Schrank für technische Infrastruktur'
     description: 'Anforderungen an Raeume und Schraenke fuer technische Infrastruktur (z. B. Patch-Schraenke, USV-Raeume).'
     anforderungen:
       basis:
         - id: INF.5.A1
-          title: 'Planung der Raumnutzung fuer technische Infrastruktur'
-          requirement_text: 'Die Raumnutzung fuer technische Infrastruktur MUSS geplant werden.'
+          title: 'Planung der Raumabsicherung'
+          requirement_text: 'Für einen Raum für technische Infrastruktur MÜSSEN angemessene technische und organisatorische Vorgaben definiert und umgesetzt werden. Dabei MUSS das für den Raum zu erreichende Schutzniveau berücksichtigt werden. Bei der Planung MÜSSEN sowohl gesetzliche Regelungen und Vorschriften als auch potenzielle Gefährdungen durch Umwelteinflüsse, Einbruch und Sabotage beachtet werden.'
         - id: INF.5.A2
-          title: 'Zutrittskontrolle zu Raeumen und Schraenken'
-          requirement_text: 'Raeume und Schraenke fuer technische Infrastruktur MUESSEN gegen unbefugten Zutritt gesichert sein. Siehe BSI Kompendium 2023 Baustein INF.5 Anforderung A2.'
+          title: 'Lage und Größe des Raumes für technische Infrastruktur'
+          requirement_text: 'Der Raum für technische Infrastruktur DARF KEIN Durchgangsraum sein. Es MUSS sichergestellt sein, dass ausreichend Fläche für Fluchtwege und Arbeitsfläche vorhanden ist.'
         - id: INF.5.A3
-          title: 'Schutz vor Umweltgefahren'
-          requirement_text: 'Raeume und Schraenke fuer technische Infrastruktur MUESSEN gegen Umweltgefahren (Brand, Wasser, Temperatur, Staub) geschuetzt sein. Siehe BSI Kompendium 2023 Baustein INF.5 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Zutrittsregelung und -kontrolle'
+          requirement_text: 'Der Raum für technische Infrastruktur MUSS gegen unberechtigten Zutritt geschützt werden. Es MUSS geregelt werden, welche Personen für welchen Zeitraum, für welche Bereiche und zu welchem Zweck den Raum betreten dürfen. Dabei MUSS sichergestellt sein, dass keine unnötigen oder zu weitreichenden Zutrittsrechte vergeben werden. Alle Zutritte zum Raum für technische Infrastruktur SOLLTEN von der Zutrittskontrolle individuell erfasst werden.'
+        - id: INF.5.A4
+          title: 'Schutz vor Einbruch'
+          requirement_text: 'Der Raum MUSS vor Einbruch geschützt werden. Je nach erforderlichem Sicherheitsniveau des Raumes für technische Infrastruktur SOLLTEN geeignete raumbildende Teile wie Wände, Decken und Böden sowie Fenster und Türen mit entsprechenden Widerstandsklassen nach DIN EN 1627 ausgewählt werden.'
+        - id: INF.5.A5
+          title: 'Vermeidung sowie Schutz vor elektromagnetischen Störfeldern'
+          requirement_text: 'Elektromagnetische Felder MÜSSEN in unmittelbarer Nähe zum Raum für technische Infrastruktur vermieden werden. Ein ausreichender Abstand zu großen Maschinen wie z. B. Aufzugsmotoren MUSS eingehalten werden.'
+        - id: INF.5.A6
+          title: 'Minimierung von Brandlasten'
+          requirement_text: 'Brandlasten innerhalb und in der direkten Umgebung des Raumes für technische Infrastruktur MÜSSEN auf ein Minimum reduziert werden. Auf brennbare Materialien für raumbildende Teile MUSS verzichtet werden.'
+        - id: INF.5.A7
+          title: 'Verhinderung von Zweckentfremdung'
+          requirement_text: 'Der Raum für technische Infrastruktur DARF NICHT zweckentfremdet werden, z. B. als Abstellraum oder Putzmittellager.'
+        - id: INF.5.A9
+          title: 'Stromversorgung'
+          requirement_text: 'Das Stromversorgungsnetz, über das der Raum für technische Infrastruktur und die daran angeschlossenen Endgeräte versorgt werden, MUSS als TN-S-System errichtet sein.'
+      standard:
+        - id: INF.5.A8
+          title: 'Vermeidung von unkontrollierter elektrostatischer Entladung'
+          requirement_text: 'Im Raum für technische Infrastruktur SOLLTE ein ableitfähiger Fußbodenbelag nach DIN EN 14041 verlegt werden.'
+        - id: INF.5.A10
+          title: 'Einhaltung der Lufttemperatur und -Feuchtigkeit'
+          requirement_text: 'Es SOLLTE sichergestellt werden, dass die Lufttemperatur und Luftfeuchtigkeit im Raum für technische Infrastruktur innerhalb der Grenzen liegen, die in den Datenblättern der darin betriebenen Geräte genannt sind. Dafür SOLLTE eine geeignete raumlufttechnische Anlage eingesetzt werden. Diese SOLLTE ausreichend dimensioniert sein.'
+        - id: INF.5.A11
+          title: 'Vermeidung von Leitungen mit gefährdenden Flüssigkeiten und Gasen'
+          requirement_text: 'Im Raum für technische Infrastruktur SOLLTE es nur Leitungen geben, die für den Betrieb der Technik im Raum unbedingt erforderlich sind. Leitungen wie Abwasserleitungen, Frischwasserleitungen, Gas- und Heizungsrohre sowie Leitungen für Treibstoff oder Ferndampf SOLLTEN NICHT durch den Raum geführt werden.'
+        - id: INF.5.A12
+          title: 'Schutz vor versehentlicher Beschädigung von Zuleitungen'
+          requirement_text: 'Zuleitungen außerhalb des Raumes für technische Infrastruktur SOLLTEN gegen versehentliche Beschädigung geschützt werden.'
+        - id: INF.5.A13
+          title: 'Schutz vor Schädigung durch Brand und Rauchgase'
+          requirement_text: 'Unabhängig von den für den Raum geltenden baurechtlichen Brandschutzvorgaben SOLLTEN alle raumbildenden Teile sowie Türen und Fenster gleichwertig rauchdicht sein. Sie SOLLTEN Feuer und Rauch für mindestens 30 Minuten standhalten. Brandlasten im Bereich der Leitungstrassen SOLLTEN vermieden werden.'
+        - id: INF.5.A14
+          title: 'Minimierung von Brandgefahren aus Nachbarbereichen'
+          requirement_text: 'Der Raum SOLLTE NICHT in unmittelbarer Nähe zu anderen Räumlichkeiten mit brennbaren Materialien liegen, deren Menge über eine bürotypische Nutzung hinaus geht.'
+        - id: INF.5.A15
+          title: 'Blitz- und Überspannungsschutz'
+          requirement_text: 'Es SOLLTE ein Blitz- und Überspannungsschutzkonzept nach dem Prinzip der energetischen Koordination (siehe DIN EN 62305) erstellt und umgesetzt werden. Der Raum für technische Infrastruktur SOLLTE mindestens der Blitzschutzzone 2 (LPZ 2) zugeordnet werden. Die Blitz- und Überspannungsschutzeinrichtungen SOLLTEN regelmäßig und anlassbezogen auf ihre Funktion überprüft und, falls erforderlich, ersetzt werden.'
+        - id: INF.5.A16
+          title: 'Einsatz einer unterbrechungsfreien Stromversorgung'
+          requirement_text: 'Es SOLLTE geprüft werden, welche Geräte an eine USV angeschlossen werden sollen. Falls eine USV erforderlich ist, SOLLTE die Stützzeit der USV so ausgelegt sein, dass alle versorgten Komponenten sicher herunterfahren können. Es SOLLTE berücksichtigt werden, dass die Batterien von USV-Anlagen altern. Bei relevanten Änderungen SOLLTE überprüft werden, ob die vorhandenen USV-Anlagen noch ausreichend dimensioniert sind. Die Batterie der USV SOLLTE im erforderlichen Temperaturbereich gehalten werden. Die USV SOLLTE regelmäßig gewartet und auf Funktionsfähigkeit getestet werden. Dafür SOLLTEN die vom herstellenden Unternehmen vorgesehenen Wartungsintervalle eingehalten werden.'
+        - id: INF.5.A17
+          title: 'Inspektion und Wartung der Infrastruktur'
+          requirement_text: 'Für alle Komponenten der baulich-technischen Infrastruktur SOLLTEN mindestens die vom herstellenden Unternehmen empfohlenen oder durch Normen festgelegten Intervalle und Vorschriften für Inspektion und Wartung eingehalten werden. Kabel- und Rohrdurchführungen durch brand- und rauchabschnittbegrenzende Wände SOLLTEN daraufhin geprüft werden, ob die Schotten die für den jeweiligen Einsatzzweck erforderliche Zulassung haben und unversehrt sind. Inspektionen und Wartungsarbeiten MÜSSEN geeignet protokolliert werden.'
+      hoch:
+        - id: INF.5.A18
+          title: 'Lage des Raumes für technische Infrastruktur'
+          requirement_text: 'Der Raum für technische Infrastruktur SOLLTE so im Gebäude angeordnet werden, dass er weder internen noch externen Gefährdungen wie z. B. Regen, Wasser oder Abwasser ausgesetzt ist. In oberirdischen Geschossen SOLLTE darauf geachtet werden, dass der Raum nicht durch Sonneneinstrahlung erwärmt wird. Wird der Raum im obersten Geschoss des Gebäudes untergebracht, SOLLTE sichergestellt werden, dass kein Wasser über das Dach eindringen kann.'
+        - id: INF.5.A19
+          title: 'Redundanz des Raumes für technische Infrastruktur'
+          requirement_text: 'Der Raum SOLLTE redundant ausgelegt werden. Beide Räume SOLLTEN eine eigene Elektrounterverteilung erhalten, die direkt von der Niederspannungshauptverteilung (NSHV) versorgt wird. Beide Räume SOLLTEN unterschiedlichen Brandabschnitten zugeordnet sein und, sofern erforderlich, jeweils über eine eigene raumlufttechnische Anlage verfügen.'
+        - id: INF.5.A20
+          title: 'Erweiterter Schutz vor Einbruch und Sabotage'
+          requirement_text: 'Der Raum SOLLTE fensterlos sein. Sind dennoch Fenster vorhanden, SOLLTEN sie je nach Geschosshöhe gegen Eindringen von außen angemessen gesichert sein. Gibt es neben Fenstern und Türen weitere betriebsnotwendige Öffnungen, wie z. B. Lüftungskanäle, SOLLTEN diese gleichwertig zur Raumhülle geschützt werden. Es SOLLTEN Einbruchmeldeanlagen nach VdS Klasse C (gemäß VdS-Richtlinie 2311) eingesetzt werden. Alle erforderlichen Türen, Fenster und sonstige geschützte Öffnungen SOLLTEN über die Einbruchmeldeanlage auf Verschluss, Verriegelung und Durchbruch überwacht werden. Vorhandene Fenster SOLLTEN stets geschlossen sein. Die Widerstandsklasse von raumbildenden Teilen, Fenstern und Türen SOLLTE dem Sicherheitsbedarf des Raumes angepasst werden. Die Qualität der Schlösser, Schließzylinder und Schutzbeschläge SOLLTE der Widerstandsklasse der Tür entsprechen.'
+        - id: INF.5.A22
+          title: 'Redundante Auslegung der Stromversorgung'
+          requirement_text: 'Die Stromversorgung SOLLTE durchgängig vom Niederspannungshauptverteiler (NSHV) bis zum Verbraucher im Raum für technische Infrastruktur zweizügig sein. Diese Stromversorgungen SOLLTEN sich in getrennten Brandabschnitten befinden. Der NSHV SOLLTE betriebsredundant ausgelegt sein.'
+        - id: INF.5.A23
+          title: 'Netzersatzanlage'
+          requirement_text: 'Die Energieversorgung der Institution SOLLTE um eine Netzersatzanlage (NEA) ergänzt werden. Der Betriebsmittelvorrat einer NEA SOLLTE regelmäßig kontrolliert werden. Die NEA SOLLTE außerdem regelmäßig gewartet werden. Bei diesen Wartungen SOLLTEN auch Belastungs- und Funktionstests sowie Testläufe unter Last durchgeführt werden.'
+        - id: INF.5.A24
+          title: 'Lüftung und Kühlung'
+          requirement_text: 'Die Lüftungs- und Kühltechnik SOLLTE betriebsredundant ausgelegt werden. Es SOLLTE sichergestellt werden, dass diese Anlagen regelmäßig gewartet werden. Bei sehr hohem Schutzbedarf SOLLTE auch eine Wartungsredundanz vorhanden sein.'
+        - id: INF.5.A25
+          title: 'Erhöhter Schutz vor Schädigung durch Brand und Rauchgase'
+          requirement_text: 'Raumbildende Teile sowie Türen, Fenster und Lüftungsklappen SOLLTEN Feuer und Rauch für mindestens 90 Minuten standhalten. Die Zuleitungen SOLLTEN einen Funktionserhalt von mindestens 90 Minuten gewährleisten. Bei sehr hohem Schutzbedarf SOLLTE die Raumhülle wie ein eigener Brandabschnitt ausgebildet sein. In vorhandenen Lüftungskanälen SOLLTEN Brandschutzklappen eingebaut werden, die über Rauchmelder angesteuert werden. Trassen SOLLTEN bis zum Eintritt in den Raum in getrennten Brandabschnitten geführt werden. Bei sehr hohem Schutzbedarf SOLLTEN ein Brandfrühesterkennungssystem und eine automatische Löschanlage vorhanden sein. Brand- und Rauchmelder SOLLTEN an die Brandmelderzentrale angeschlossen sein. Das Brandfrühesterkennungssystem und die automatische Löschanlage SOLLTEN an die zweizügige Stromversorgung mit USV und NEA angebunden sein.'
+        - id: INF.5.A26
+          title: 'Überwachung der Energieversorgung'
+          requirement_text: 'Es SOLLTEN geeignete Überwachungseinrichtungen eingebaut und betrieben werden, die unzulässig hohe Ströme auf dem Schutzleitersystem und damit auf Leitungsschirmen sowie potenziell störende Oberschwingungen erfassen und an geeigneter Stelle zur Nachverfolgung und Behebung anzeigen können.'
 
   - id: INF.6
-    title: 'Datentraegerarchiv'
+    title: 'Datenträgerarchiv'
     description: 'Anforderungen an Aufbau und Betrieb eines Datentraegerarchivs.'
     anforderungen:
       basis:
         - id: INF.6.A1
-          title: 'Planung des Datentraegerarchivs'
-          requirement_text: 'Das Datentraegerarchiv MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein INF.6 Anforderung A1.'
+          title: 'Handfeuerlöscher'
+          requirement_text: 'Im Brandfall MÜSSEN im Datenträgerarchiv geeignete Handfeuerlöscher leicht erreichbar sein. Diese Handfeuerlöscher MÜSSEN regelmäßig inspiziert und gewartet werden. Mitarbeitende, die in der Nähe eines Datenträgerarchivs tätig sind, MÜSSEN in die Benutzung der Handfeuerlöscher eingewiesen werden.'
         - id: INF.6.A2
-          title: 'Zutrittskontrolle zum Datentraegerarchiv'
-          requirement_text: 'Der Zutritt zum Datentraegerarchiv MUSS streng kontrolliert sein. Siehe BSI Kompendium 2023 Baustein INF.6 Anforderung A2.'
+          title: 'Zutrittsregelung und -kontrolle'
+          requirement_text: 'Der Zutritt zum Datenträgerarchiv DARF NUR für befugte Personen möglich sein. Der Zutritt MUSS auf ein Mindestmaß an Mitarbeitenden reduziert sein. Daher MUSS der Zutritt geregelt und kontrolliert werden. Für die Zutrittskontrolle MUSS ein Konzept entwickelt werden. Die darin festgelegten Maßnahmen für die Zutrittskontrolle SOLLTEN regelmäßig daraufhin überprüft werden, ob sie noch wirksam sind. Um es zu erschweren bzw. zu verhindern, dass eine Zutrittskontrolle umgangen wird, MUSS der komplette Raum einen dem Schutzbedarf genügenden mechanischen Widerstand aufweisen, der keinesfalls unter RC2 (gemäß DIN EN 1627) liegen darf.'
         - id: INF.6.A3
-          title: 'Schutz vor Umweltgefahren'
-          requirement_text: 'Das Datentraegerarchiv MUSS gegen Brand, Wasser und Temperatur geschuetzt sein. Siehe BSI Kompendium 2023 Baustein INF.6 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Schutz vor Staub und anderer Verschmutzung'
+          requirement_text: 'Es MUSS sichergestellt werden, dass die Datenträger im Datenträgerarchiv ausreichend vor Staub und Verschmutzung geschützt sind. Die Anforderungen dafür MÜSSEN bereits in der Planungsphase analysiert werden. Es MUSS in Datenträgerarchiven ein striktes Rauchverbot eingehalten werden.'
+        - id: INF.6.A4
+          title: 'Geschlossene Fenster und abgeschlossene Türen'
+          requirement_text: 'In einem Datenträgerarchiv SOLLTEN, wenn möglich, keine Fenster vorhanden sein. Gibt es dennoch Fenster, MÜSSEN diese beim Verlassen des Datenträgerarchivs geschlossen werden. Ebenso MUSS beim Verlassen die Tür verschlossen werden. Auch Brand- und Rauchschutztüren MÜSSEN geschlossen werden.'
+      standard:
+        - id: INF.6.A5
+          title: 'Verwendung von Schutzschränken'
+          requirement_text: 'Die Datenträger und Medien in Datenträgerarchiven SOLLTEN in geeigneten Schutzschränken gelagert werden.'
+        - id: INF.6.A6
+          title: 'Vermeidung von wasserführenden Leitungen'
+          requirement_text: 'In Datenträgerarchiven SOLLTEN unnötige wasserführende Leitungen generell vermieden werden. Sind dennoch Wasserleitungen durch das Datenträgerarchiv hinweg verlegt, SOLLTEN diese regelmäßig daraufhin überprüft werden, ob sie noch dicht sind. Zudem SOLLTEN Vorkehrungen getroffen werden, um frühzeitig erkennen zu können, ob dort Wasser austritt. Für ein Datenträgerarchiv mit Hochverfügbarkeitsanforderungen SOLLTE es Reaktionspläne geben, die genau vorgeben, wer im Fall eines Lecks informiert werden muss und wie grundsätzlich vorzugehen ist.'
+        - id: INF.6.A7
+          title: 'Einhaltung von klimatischen Bedingungen'
+          requirement_text: 'Es SOLLTE sichergestellt werden, dass die zulässigen Höchst- und Tiefstwerte für Temperatur und Luftfeuchtigkeit sowie der Schwebstoffanteil in der Raumluft im Datenträgerarchiv eingehalten werden. Die Werte von Lufttemperatur und -feuchte SOLLTEN mehrmals im Jahr für die Dauer von einer Woche aufgezeichnet und dokumentiert werden. Dabei festgestellte Abweichungen vom Sollwert SOLLTEN zeitnah behoben werden. Die eingesetzten Klimageräte SOLLTEN regelmäßig gewartet werden.'
+        - id: INF.6.A8
+          title: 'Sichere Türen und Fenster'
+          requirement_text: 'Sicherungsmaßnahmen wie Fenster, Türen und Wände SOLLTEN bezüglich Einbruch, Brand und Rauch gleichwertig und angemessen sein. Abhängig vom Schutzbedarf SOLLTE eine geeignete Widerstandsklasse gemäß der DIN EN 1627 erfüllt werden. Alle Sicherheitstüren und -fenster SOLLTEN regelmäßig daraufhin überprüft werden, ob sie noch entsprechend funktionieren. Der komplette Raum SOLLTE einen dem Schutzbedarf genügenden mechanischen Widerstand aufweisen, der keinesfalls unter RC3 (gemäß DIN EN 1627) liegt.'
+      hoch:
+        - id: INF.6.A9
+          title: 'Gefahrenmeldeanlage'
+          requirement_text: 'Es SOLLTE in Datenträgerarchiven eine angemessene Gefahrenmeldeanlage eingerichtet werden. Diese Gefahrenmeldeanlage SOLLTE regelmäßig geprüft und gewartet werden. Es SOLLTE sichergestellt sein, dass diejenigen Personen, die Gefahrenmeldungen empfangen in der Lage sind, auf Alarmmeldungen angemessen zu reagieren.'
 
   - id: INF.7
-    title: 'Bueroarbeitsplatz'
+    title: 'Büroarbeitsplatz'
     description: 'Anforderungen an die infrastrukturelle Absicherung von Bueroarbeitsplaetzen.'
     anforderungen:
       basis:
         - id: INF.7.A1
-          title: 'Geeignete Auswahl und Nutzung eines Bueroraums'
-          requirement_text: 'Bueroraeume MUESSEN sicher ausgewaehlt und genutzt werden.'
+          title: 'Geeignete Auswahl und Nutzung eines Büroraumes'
+          requirement_text: 'Es DÜRFEN NUR geeignete Räume als Büroräume genutzt werden. Die Büroräume MÜSSEN für den Schutzbedarf bzw. das Schutzniveau der dort verarbeiteten Informationen angemessen ausgewählt und ausgestattet sein. Büroräume mit Publikumsverkehr DÜRFEN NICHT in sicherheitsrelevanten Bereichen liegen. Für den Arbeitsplatz und für die Einrichtung eines Büroraumes MUSS die Arbeitsstättenverordnung umgesetzt werden.'
         - id: INF.7.A2
-          title: 'Geschlossene Fenster und abgeschlossene Tueren'
-          requirement_text: 'Bei Verlassen des Bueros MUESSEN Fenster geschlossen und Tueren abgeschlossen werden. Siehe BSI Kompendium 2023 Baustein INF.7 Anforderung A2.'
+          title: 'Geschlossene Fenster und abgeschlossene Türen'
+          requirement_text: 'Wenn Mitarbeitende ihre Büroräume verlassen, SOLLTEN alle Fenster geschlossen werden. Befinden sich vertrauliche Informationen in dem Büroraum, MÜSSEN beim Verlassen die Türen abgeschlossen werden. Dies SOLLTE insbesondere in Bereichen mit Publikumsverkehr beachtet werden. Die entsprechenden Vorgaben SOLLTEN in einer geeigneten Anweisung festgehalten werden. Alle Mitarbeitenden SOLLTEN dazu verpflichtet werden, der Anweisung nachzukommen. Zusätzlich MUSS regelmäßig geprüft werden, ob beim Verlassen des Büroraums die Fenster geschlossen und, wenn notwendig, die Türen abgeschlossen werden. Ebenso MUSS darauf geachtet werden, dass Brand- und Rauchschutztüren tatsächlich geschlossen werden.'
+      standard:
         - id: INF.7.A3
-          title: 'Clear Desk und Clear Screen'
-          requirement_text: 'Es MUESSEN Regelungen zu Clear Desk und Clear Screen umgesetzt sein. Siehe BSI Kompendium 2023 Baustein INF.7 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Fliegende Verkabelung'
+          requirement_text: 'Die Stromanschlüsse und Zugänge zum Datennetz im Büroraum SOLLTEN sich dort befinden, wo die IT-Geräte aufgestellt sind. Verkabelungen, die über den Boden verlaufen, SOLLTEN geeignet abgedeckt werden.'
+        - id: INF.7.A5
+          title: 'Ergonomischer Arbeitsplatz'
+          requirement_text: 'Die Arbeitsplätze aller Mitarbeitenden SOLLTEN ergonomisch eingerichtet sein. Vor allem die Bildschirme SOLLTEN so aufgestellt werden, dass ein ergonomisches und ungestörtes Arbeiten möglich ist. Dabei SOLLTE beachtet werden, dass Bildschirme nicht durch Unbefugte eingesehen werden können. Die Bildschirmarbeitsschutzverordnung (BildscharbV) SOLLTE umgesetzt werden. Alle Arbeitsplätze SOLLTEN für eine möglichst fehlerfreie Bedienung der IT individuell verstellbar sein.'
+        - id: INF.7.A6
+          title: 'Aufgeräumter Arbeitsplatz'
+          requirement_text: 'Alle Mitarbeitenden SOLLTEN dazu angehalten werden, seinen Arbeitsplatz aufgeräumt zu hinterlassen. Die Mitarbeitenden SOLLTEN dafür sorgen, dass Unbefugte keine vertraulichen Informationen einsehen können. Alle Mitarbeitenden SOLLTEN ihre Arbeitsplätze sorgfältig überprüfen und sicherstellen, dass keine vertraulichen Informationen frei zugänglich sind. Vorgesetzte SOLLTEN Arbeitsplätze sporadisch daraufhin überprüfen, ob dort schutzbedürftige Informationen offen zugreifbar sind.'
+        - id: INF.7.A7
+          title: 'Geeignete Aufbewahrung dienstlicher Unterlagen und Datenträger'
+          requirement_text: 'Die Mitarbeitenden SOLLTEN angewiesen werden, vertrauliche Dokumente und Datenträger verschlossen aufzubewahren, wenn sie nicht verwendet werden. Dafür SOLLTEN geeignete Behältnisse in den Büroräumen oder in deren Umfeld aufgestellt werden.'
+      hoch:
+        - id: INF.7.A8
+          title: 'Einsatz von Diebstahlsicherungen'
+          requirement_text: 'Wenn der Zutritt zu den Räumen nicht geeignet beschränkt werden kann, SOLLTEN für alle IT-Systeme Diebstahlsicherungen eingesetzt werden. In Bereichen mit Publikumsverkehr SOLLTEN Diebstahlsicherungen benutzt werden.'
 
   - id: INF.8
-    title: 'Haeuslicher Arbeitsplatz'
+    title: 'Häuslicher Arbeitsplatz'
     description: 'Anforderungen an die infrastrukturelle Absicherung haeuslicher Arbeitsplaetze (Home Office).'
     anforderungen:
       basis:
         - id: INF.8.A1
-          title: 'Planung des haeuslichen Arbeitsplatzes'
-          requirement_text: 'Die Einrichtung eines haeuslichen Arbeitsplatzes MUSS geplant werden.'
+          title: 'Sichern von dienstlichen Unterlagen am häuslichen Arbeitsplatz'
+          requirement_text: 'Dienstliche Unterlagen und Datenträger MÜSSEN am häuslichen Arbeitsplatz so aufbewahrt werden, dass keine unbefugten Personen darauf zugreifen können. Daher MÜSSEN ausreichend verschließbare Behältnisse (z. B. abschließbare Rollcontainer oder Schränke) vorhanden sein. Alle Mitarbeitenden MÜSSEN ihre Arbeitsplätze aufgeräumt hinterlassen und sicherstellen, dass keine vertraulichen Informationen frei zugänglich sind.'
         - id: INF.8.A2
-          title: 'Schutz vor Einsicht und Zugriff Dritter'
-          requirement_text: 'Am haeuslichen Arbeitsplatz MUESSEN Massnahmen gegen Einsicht und Zugriff Dritter (z. B. Familienangehoerige) umgesetzt sein. Siehe BSI Kompendium 2023 Baustein INF.8 Anforderung A2.'
+          title: 'Transport von Arbeitsmaterial zum häuslichen Arbeitsplatz'
+          requirement_text: 'Es MUSS geregelt werden, welche Datenträger und Unterlagen am häuslichen Arbeitsplatz bearbeitet und zwischen der Institution und dem häuslichen Arbeitsplatz hin und her transportiert werden dürfen. Generell MÜSSEN Datenträger und andere Unterlagen sicher transportiert werden. Diese Regelungen MÜSSEN den Mitarbeitenden in geeigneter Weise bekanntgegeben werden.'
         - id: INF.8.A3
-          title: 'Sichere Aufbewahrung von Geraeten und Unterlagen'
-          requirement_text: 'Dienstliche Geraete und Unterlagen MUESSEN am haeuslichen Arbeitsplatz sicher aufbewahrt werden. Siehe BSI Kompendium 2023 Baustein INF.8 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Schutz vor unbefugtem Zutritt am häuslichen Arbeitsplatz'
+          requirement_text: 'Den Mitarbeitenden MUSS mitgeteilt werden, welche Regelungen und Maßnahmen zum Einbruchs- und Zutrittsschutz zu beachten sind. So MUSS darauf hingewiesen werden, Fenster zu schließen und Türen abzuschließen, wenn der häusliche Arbeitsplatz nicht besetzt ist. Es MUSS sichergestellt werden, dass unbefugte Personen zu keiner Zeit den häuslichen Arbeitsplatz betreten und auf dienstliche IT und Unterlagen zugreifen können. Diese Maßnahmen MÜSSEN in sinnvollen zeitlichen Abständen überprüft werden, mindestens aber, wenn sich die häuslichen Verhältnisse ändern.'
+      standard:
+        - id: INF.8.A4
+          title: 'Geeignete Einrichtung des häuslichen Arbeitsplatzes'
+          requirement_text: 'Der häusliche Arbeitsplatz SOLLTE durch eine geeignete Raumaufteilung von den privaten Bereichen der Wohnung getrennt sein. Der häusliche Arbeitsplatz SOLLTE mit Büromöbeln eingerichtet sein, die ergonomischen Anforderungen entsprechen. Ebenso SOLLTE der häusliche Arbeitsplatz durch geeignete technische Sicherungsmaßnahmen vor Einbrüchen geschützt werden. Die Schutzmaßnahmen SOLLTEN an die örtlichen Gegebenheiten und den vorliegenden Schutzbedarf angepasst sein.'
+        - id: INF.8.A5
+          title: 'Entsorgung von vertraulichen Informationen am häuslichen Arbeitsplatz'
+          requirement_text: 'Vertrauliche Informationen SOLLTEN sicher entsorgt werden. In einer speziellen Sicherheitsrichtlinie SOLLTE daher geregelt werden, wie schutzbedürftiges Material zu beseitigen ist. Es SOLLTEN die dafür benötigten Entsorgungsmöglichkeiten verfügbar sein.'
+      hoch:
+        - id: INF.8.A6
+          title: 'Umgang mit dienstlichen Unterlagen bei erhöhtem Schutzbedarf am häuslichen Arbeitsplatz'
+          requirement_text: 'Wenn Informationen mit erhöhtem Schutzbedarf bearbeitet werden, SOLLTE überlegt werden, von einem häuslichen Arbeitsplatz ganz abzusehen. Anderenfalls SOLLTE der häusliche Arbeitsplatz durch erweiterte, hochwertige technische Sicherungsmaßnahmen geschützt werden.'
 
   - id: INF.9
     title: 'Mobiler Arbeitsplatz'
@@ -114,33 +375,75 @@ bausteine:
     anforderungen:
       basis:
         - id: INF.9.A1
-          title: 'Geeignete Auswahl und Nutzung mobiler Arbeitsplaetze'
-          requirement_text: 'Mobile Arbeitsplaetze MUESSEN sicher ausgewaehlt und genutzt werden.'
+          title: 'Geeignete Auswahl und Nutzung eines mobilen Arbeitsplatzes'
+          requirement_text: 'Die Institution MUSS ihren Mitarbeitenden vorschreiben, wie mobile Arbeitsplätze in geeigneter Weise ausgewählt und benutzt werden sollen. Es MÜSSEN Eigenschaften definiert werden, die für einen mobilen Arbeitsplatz wünschenswert sind. Es MÜSSEN aber auch Ausschlusskriterien definiert werden, die gegen einen mobilen Arbeitsplatz sprechen. Mindestens MUSS geregelt werden:'
         - id: INF.9.A2
-          title: 'Schutz vor Einsicht und Diebstahl'
-          requirement_text: 'An mobilen Arbeitsplaetzen MUESSEN Massnahmen gegen Einsicht und Diebstahl umgesetzt sein (z. B. Sichtschutzfolien, Kabelschloesser). Siehe BSI Kompendium 2023 Baustein INF.9 Anforderung A2.'
+          title: 'Regelungen für mobile Arbeitsplätze'
+          requirement_text: 'Für alle Arbeiten unterwegs MUSS geregelt werden, welche Informationen außerhalb der Institution transportiert und bearbeitet werden dürfen. Es MUSS zudem geregelt werden, welche Schutzvorkehrungen dabei zu treffen sind. Dabei MUSS auch geklärt werden, unter welchen Rahmenbedingungen Mitarbeitende mit mobilen IT-Systemen auf interne Informationen ihrer Institution zugreifen dürfen. Die Mitnahme von IT-Komponenten und Datenträgern MUSS klar geregelt werden. So MUSS festgelegt werden, welche IT-Systeme und Datenträger mitgenommen werden dürfen, wer diese mitnehmen darf und welche grundlegenden Sicherheitsanforderungen dabei beachtet werden müssen. Es MUSS zudem protokolliert werden, wann und von wem welche mobilen Endgeräte außer Haus eingesetzt wurden. Die Benutzenden von mobilen Endgeräten MÜSSEN für den Wert mobiler IT-Systeme und den Wert der darauf gespeicherten Informationen sensibilisiert werden. Sie MÜSSEN über die spezifischen Gefährdungen und Maßnahmen der von ihnen benutzten IT-Systeme aufgeklärt werden. Außerdem MÜSSEN sie darüber informiert werden, welche Art von Informationen auf mobilen IT-Systemen verarbeitet werden darf. Alle Benutzenden MÜSSEN auf die geltenden Regelungen hingewiesen werden, die von ihnen einzuhalten sind. Sie MÜSSEN entsprechend geschult werden'
         - id: INF.9.A3
-          title: 'Schutz vor unsicheren Netzen'
-          requirement_text: 'An mobilen Arbeitsplaetzen MUESSEN Verbindungen ins Unternehmensnetz nur ueber abgesicherte Kanaele (z. B. VPN) erfolgen. Siehe BSI Kompendium 2023 Baustein INF.9 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Zutritts- und Zugriffsschutz'
+          requirement_text: 'Den Mitarbeitenden MUSS bekannt gegeben werden, welche Regelungen und Maßnahmen zum Einbruch- und Zutrittsschutz am mobilen Arbeitsplatz zu beachten sind. Wenn der mobile Arbeitsplatz nicht besetzt ist, MÜSSEN Fenster und Türen abgeschlossen werden. Ist dies nicht möglich, z. B. im Zug, MÜSSEN die Mitarbeitenden alle Unterlagen und IT-Systeme an sicherer Stelle verwahren oder mitführen, wenn sie abwesend sind. Es MUSS sichergestellt werden, dass unbefugte Personen zu keiner Zeit auf dienstliche IT und Unterlagen zugreifen können. Wird der Arbeitsplatz nur kurz verlassen, MÜSSEN die eingesetzten IT-Systeme gesperrt werden, sodass sie nur nach erfolgreicher Authentisierung wieder benutzt werden können.'
+        - id: INF.9.A4
+          title: 'Arbeiten mit fremden IT-Systemen'
+          requirement_text: 'Die Institution MUSS regeln, wie Mitarbeitende mit institutionsfremden IT-Systemen arbeiten dürfen. Alle mobilen Mitarbeitenden MÜSSEN über die Gefahren fremder IT-Systeme aufgeklärt werden. Die Regelungen MÜSSEN vorgeben, ob und wie schützenswerte Informationen an fremden IT-Systemen bearbeitet werden dürfen. Sie MÜSSEN zudem festlegen, wie verhindert wird, dass nicht autorisierte Personen die Informationen einsehen können. Wenn Mitarbeitende mit fremden IT-Systemen arbeiten, MUSS grundsätzlich sichergestellt sein, dass alle währenddessen entstandenen temporären Daten gelöscht werden.'
+      standard:
+        - id: INF.9.A5
+          title: 'Zeitnahe Verlustmeldung'
+          requirement_text: 'Mitarbeitende SOLLTEN ihrer Institution umgehend melden, wenn Informationen, IT-Systeme oder Datenträger verlorengegangen sind oder gestohlen wurden. Dafür SOLLTE es klare Meldewege und Ansprechpartner innerhalb der Institution geben.'
+        - id: INF.9.A6
+          title: 'Entsorgung von vertraulichen Informationen'
+          requirement_text: 'Vertrauliche Informationen SOLLTEN auch unterwegs sicher entsorgt werden. Bevor ausgediente oder defekte Datenträger und Dokumente vernichtet werden, MUSS überprüft werden, ob sie sensible Informationen enthalten. Ist dies der Fall, MÜSSEN die Datenträger und Dokumente wieder mit zurücktransportiert werden und auf institutseigenem Wege entsorgt oder vernichtet werden.'
+        - id: INF.9.A7
+          title: 'Rechtliche Rahmenbedingungen für das mobile Arbeiten'
+          requirement_text: 'Für das mobile Arbeiten SOLLTEN arbeitsrechtliche und arbeitsschutzrechtliche Rahmenbedingungen beachtet und geregelt werden. Alle relevanten Punkte SOLLTEN entweder durch Betriebsvereinbarungen oder durch zusätzlich zum Arbeitsvertrag getroffene individuelle Vereinbarungen zwischen dem mobilen Mitarbeitenden und der Institution geregelt werden.'
+        - id: INF.9.A8
+          title: 'Sicherheitsrichtlinie für mobile Arbeitsplätze'
+          requirement_text: 'Alle relevanten Sicherheitsanforderungen für mobile Arbeitsplätze SOLLTEN in einer für die mobilen Mitarbeitenden verpflichtenden Sicherheitsrichtlinie dokumentiert werden. Sie SOLLTE zudem mit den bereits vorhandenen Sicherheitsrichtlinien der Institution sowie mit allen relevanten Fachabteilungen abgestimmt werden. Die Sicherheitsrichtlinie für mobile Arbeitsplätze SOLLTE regelmäßig aktualisiert werden. Die Mitarbeitenden der Institution SOLLTEN hinsichtlich der aktuellen Sicherheitsrichtlinie sensibilisiert und geschult sein.'
+        - id: INF.9.A9
+          title: 'Verschlüsselung tragbarer IT-Systeme und Datenträger'
+          requirement_text: 'Bei tragbaren IT-Systemen und Datenträgern SOLLTE sichergestellt werden, dass diese entsprechend den internen Richtlinien abgesichert sind. Mobile IT-Systeme und Datenträger SOLLTEN dabei verschlüsselt werden. Die kryptografischen Schlüssel SOLLTEN getrennt vom verschlüsselten Gerät aufbewahrt werden.'
+        - id: INF.9.A12
+          title: 'Nutzung eines Bildschirmschutzes'
+          requirement_text: 'Wenn IT-Systeme an mobilen Arbeitsplätzen genutzt werden, SOLLTEN die Mitarbeitenden einen Sichtschutz für die Bildschirme der IT-Systeme verwenden.'
+      hoch:
+        - id: INF.9.A10
+          title: 'Einsatz von Diebstahlsicherungen'
+          requirement_text: 'Bietet das verwendete IT-System eine Diebstahlsicherung, SOLLTE sie benutzt werden. Die Diebstahlsicherungen SOLLTEN stets dort eingesetzt werden, wo ein erhöhter Publikumsverkehr herrscht oder die Fluktuation von Benutzenden sehr hoch ist. Dabei SOLLTEN die Mitarbeitenden immer beachten, dass der Schutz der auf den IT-Systemen gespeicherten Informationen meist einen höheren Wert besitzt als die Wiederanschaffungskosten des IT-Systems betragen. Die Beschaffungs- und Einsatzkriterien für Diebstahlsicherungen SOLLTEN an die Prozesse der Institution angepasst und dokumentiert werden.'
+        - id: INF.9.A11
+          title: 'Verbot der Nutzung unsicherer Umgebungen'
+          requirement_text: 'Es SOLLTEN Kriterien für die Arbeitsumgebung festgelegt werden, die mindestens erfüllt sein müssen, damit Informationen mit erhöhtem Schutzbedarf mobil bearbeitet werden dürfen. Die Kriterien SOLLTEN mindestens folgende Themenbereiche abdecken:'
 
   - id: INF.10
-    title: 'Besprechungs-, Veranstaltungs-, Schulungsraeume'
+    title: 'Besprechungs-, Veranstaltungs- und Schulungsräume'
     description: 'Anforderungen an die infrastrukturelle Absicherung von Besprechungs-, Veranstaltungs- und Schulungsraeumen.'
     anforderungen:
       basis:
         - id: INF.10.A1
-          title: 'Planung der Nutzung von Besprechungs-, Veranstaltungs- und Schulungsraeumen'
-          requirement_text: 'Fuer die Nutzung von Besprechungs-, Veranstaltungs- und Schulungsraeumen MUSS festgelegt werden, welche Informationen dort verarbeitet werden duerfen.'
+          title: 'Sichere Nutzung von Besprechungs-, Veranstaltungs- und Schulungsräumen'
+          requirement_text: 'In den Räumen vorhandene Gerätschaften MÜSSEN angemessen gegen Diebstahl gesichert werden. Zudem MUSS festgelegt werden, wer die in den Räumen dauerhaft vorhandenen IT- und sonstigen Systeme administriert. Es MUSS auch festgelegt werden, ob und unter welchen Bedingungen von externen Personen mitgebrachte IT-Systeme verwenden dürfen. Weiterhin MUSS festgelegt werden, ob und auf welche Netzzugänge und TK-Schnittstellen externen Personen zugreifen dürfen.'
         - id: INF.10.A3
-          title: 'Beaufsichtigung von externen Personen'
-          requirement_text: 'Externe Personen in Besprechungs-, Veranstaltungs- und Schulungsraeumen MUESSEN beaufsichtigt werden.'
+          title: 'Geschlossene Fenster und Türen'
+          requirement_text: 'Die Fenster und Türen der Besprechungs-, Veranstaltungs- und Schulungsräume MÜSSEN beim Verlassen verschlossen werden. Bei Räumlichkeiten, in denen sich IT-Systeme oder schützenswerte Informationen befinden, MÜSSEN die Türen beim Verlassen abgeschlossen werden. Zusätzlich MUSS regelmäßig geprüft werden, ob die Fenster und Türen nach Verlassen der Räume verschlossen wurden. Ebenso MUSS darauf geachtet werden, dass Brand- und Rauchschutztüren tatsächlich geschlossen werden.'
+      standard:
         - id: INF.10.A4
-          title: 'Sichere Nutzung von Praesentations- und Konferenztechnik'
-          requirement_text: 'Praesentations- und Konferenztechnik MUSS sicher konfiguriert sein und zwischen Sitzungen zurueckgesetzt werden. Siehe BSI Kompendium 2023 Baustein INF.10 Anforderung A4.'
-      standard: []
-      hoch: []
+          title: 'Planung von Besprechungs-, Veranstaltungs- und Schulungsräumen'
+          requirement_text: 'Bei der Planung von Besprechungs-, Veranstaltungs- und Schulungsräumen SOLLTE besonders die Lage der Räume berücksichtigt werden. Insbesondere Räumlichkeiten, die oft zusammen mit oder ausschließlich von externen Personen genutzt werden, SOLLTEN NICHT in Gebäudeteilen liegen, in deren Nähe regelmäßig vertrauliche Informationen besprochen und bearbeitet werden. Es SOLLTE für jeden Raum festgelegt werden, wie vertraulich die Informationen sein dürfen, die dort besprochen oder verarbeitet werden.'
+        - id: INF.10.A5
+          title: 'Fliegende Verkabelung'
+          requirement_text: 'Die Stromanschlüsse SOLLTEN sich dort befinden, wo Beamer, Laptops oder andere elektronische Geräte aufgestellt werden. Verkabelungen, die über den Boden verlaufen, SOLLTEN geeignet abgedeckt werden.'
+        - id: INF.10.A6
+          title: 'Einrichtung sicherer Netzzugänge'
+          requirement_text: 'Es SOLLTE sichergestellt werden, dass mitgebrachte IT-Systeme nicht über das Datennetz mit internen IT-Systemen der Institution verbunden werden können. Auf das LAN der Institution SOLLTEN ausschließlich dafür vorgesehene IT-Systeme zugreifen können. Ein Datennetz für externe Personen SOLLTE vom LAN der Institution getrennt werden. Netzzugänge SOLLTEN so eingerichtet sein, dass verhindert wird, dass Dritte den internen Datenaustausch mitlesen können. Netzanschlüsse in Besprechungs-, Veranstaltungs- oder Schulungsräumen SOLLTEN abgesichert werden. Es SOLLTE verhindert werden, dass IT-Systeme in Besprechungs-, Veranstaltungs- und Schulungsräumen gleichzeitig eine Verbindung zum Intranet und zum Internet aufbauen können. Außerdem SOLLTE die Stromversorgung aus einer Unterverteilung heraus getrennt von anderen Räumen aufgebaut werden.'
+        - id: INF.10.A7
+          title: 'Sichere Konfiguration von Schulungs- und Präsentationsrechnern'
+          requirement_text: 'Dedizierte Schulungs- und Präsentationsrechner SOLLTEN mit einer Minimalkonfiguration versehen werden. Es SOLLTE festgelegt sein, welche Anwendungen auf Schulungs- und Präsentationsrechnern in der jeweiligen Veranstaltung genutzt werden können. Die Schulungs- und Präsentationsrechner SOLLTEN nur an ein separates, vom LAN der Institution getrenntes Datennetz angeschlossen werden.'
+        - id: INF.10.A8
+          title: 'Erstellung eines Nutzungsnachweises für Räume'
+          requirement_text: 'Je nach Nutzungsart der Besprechungs-, Veranstaltungs- und Schulungsräume SOLLTE ersichtlich sein, wer die Räume zu welchem Zeitpunkt genutzt hat. Für Räumlichkeiten, in denen Schulungen an IT-Systemen oder besonders vertrauliche Besprechungen durchgeführt werden, SOLLTEN ebenfalls Nutzungsnachweise erbracht werden. Es SOLLTE überlegt werden, für Räumlichkeiten, die für jeden Mitarbeitenden zugänglich sind, ebenfalls entsprechende Nutzungsnachweise einzuführen.'
+      hoch:
+        - id: INF.10.A9
+          title: 'Zurücksetzen von Schulungs- und Präsentationsrechnern'
+          requirement_text: 'Es SOLLTE ein Verfahren festgelegt werden, um Schulungs- und Präsentationsrechner nach der Nutzung auf einen vorher definierten Zustand zurückzusetzen. Durch von Benutzenden durchgeführte Änderungen SOLLTEN dabei vollständig entfernt werden.'
 
   - id: INF.11
     title: 'Allgemeines Fahrzeug'
@@ -148,16 +451,58 @@ bausteine:
     anforderungen:
       basis:
         - id: INF.11.A1
-          title: 'Regelung zur dienstlichen Nutzung von Fahrzeugen'
-          requirement_text: 'Fuer die dienstliche Nutzung von Fahrzeugen MUESSEN Regelungen zum Umgang mit Informationen und Endgeraeten getroffen werden.'
+          title: 'Planung und Beschaffung'
+          requirement_text: 'Bevor Fahrzeuge beschafft werden, MUSS der Einsatzzweck geplant werden. Die funktionalen Anforderungen an die Fahrzeuge und insbesondere die Anforderungen an die Informationssicherheit, sowie den Datenschutz der verbauten IT-Komponenten MÜSSEN erhoben werden. Hierbei MÜSSEN folgende Aspekte berücksichtigt werden: Die Fahrzeuge MÜSSEN außerdem über angemessene Schließsysteme verfügen, sofern die Fahrzeuge nicht durchgehend durch andere Maßnahmen oder Regelungen gesichert werden können. Während der Planung SOLLTE berücksichtigt werden, dass viele Fahrzeuge Daten an die fahrzeugherstellenden Unternehmen und weitere Dritte übermitteln können.'
         - id: INF.11.A2
-          title: 'Schutz mitgefuehrter IT-Geraete und Datentraeger'
-          requirement_text: 'Mitgefuehrte IT-Geraete und Datentraeger MUESSEN gegen Diebstahl, Verlust und Einsicht geschuetzt werden. Geraete DUERFEN NICHT sichtbar im unbeaufsichtigten Fahrzeug verbleiben.'
+          title: 'Wartung, Inspektion und Updates'
+          requirement_text: 'Die Fahrzeuge und die dazugehörenden IT-Komponenten MÜSSEN nach den Vorgaben des herstellenden Unternehmens gewartet werden. Hierbei MUSS beachtet werden, dass die Intervalle der herkömmlichen Wartung und von Updates der integrierten IT-Komponenten voneinander abweichen können. Es MUSS klar geregelt werden, wer in welcher Umgebung die Updates installieren darf. Auch „Over-the-Air“ (OTA) Updates MÜSSEN geregelt eingespielt werden. Wartungs- und Reparaturarbeiten MÜSSEN von befugtem und qualifiziertem Personal in einer sicheren Umgebung durchgeführt werden. Dabei SOLLTE schon vor der Wartung geklärt werden, wie mit Fremdfirmen umgegangen wird. Werden Fahrzeuge in fremden Institutionen gewartet, SOLLTE geprüft werden, ob alle nicht benötigten, zum Fahrzeug dazugehörigen portablen IT-Systeme entfernt werden. Werden die Fahrzeuge wieder in den Einsatzbetrieb integriert, MUSS mittels Checkliste geprüft werden, ob alle Beanstandungen und Mängel auch behoben wurden. Es MUSS auch geprüft werden, ob die vorhandenen IT-Komponenten einsatzfähig sind.'
         - id: INF.11.A3
-          title: 'Vertraulichkeit waehrend Telefonaten und Videocalls'
-          requirement_text: 'Bei dienstlichen Telefonaten und Videocalls im Fahrzeug MUESSEN Vertraulichkeit (Mithoeren) und Sicherheit (z. B. Freisprecheinrichtung) gewaehrleistet sein. Siehe BSI Kompendium 2023 Baustein INF.11 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Regelungen für die Fahrzeugbenutzung'
+          requirement_text: 'Für alle Tätigkeiten, die sich auf die Sicherheit der in den Fahrzeugen verarbeiteten Informationen auswirken können, MUSS vorher geregelt werden, ob sie in den Fahrzeugen durchgeführt werden dürfen. Hierbei MUSS klar geregelt werden, welche Informationen dabei transportiert und bearbeitet werden dürfen. Ergänzend MUSS festgelegt werden, welche Schutzvorkehrungen dabei zu treffen sind. Dies MUSS für jede Art von Information gelten, auch für Gespräche in den Fahrzeugen. Es MUSS geklärt werden, unter welchen Rahmenbedingungen Mitarbeitende auf welche Art von Informationen ihrer Institution zugreifen dürfen. Außerdem MUSS geregelt werden, in welchem Umfang Infotainmentsysteme, Anwendungen und sonstige Services der Fahrzeuge genutzt werden dürfen. Des Weiteren MUSS festgelegt werden, wie Schnittstellen abzusichern sind. In bestehende Geschäfts- bzw. Dienstanweisungen MUSS beschrieben werden, wie mitgeführte IT in den Fahrzeugen verwendet und aufbewahrt werden darf.'
+      standard:
+        - id: INF.11.A4
+          title: 'Erstellung einer Sicherheitsrichtlinie'
+          requirement_text: 'Alle relevanten Sicherheitsanforderungen für die IT innerhalb der Fahrzeuge SOLLTEN in einer für Mitarbeitende verpflichtenden Sicherheitsrichtlinie dokumentiert werden. Die Richtlinie SOLLTE allen relevanten Mitarbeitenden der Institution bekannt sein und die Grundlage für ihren Umgang mit Fahrzeugen darstellen. In der Richtlinie SOLLTEN die Zuständigkeiten für einzelne Aufgaben klar geregelt sein. Die Sicherheitsrichtlinie SOLLTE regelmäßig überprüft und anlassbezogen aktualisiert werden.'
+        - id: INF.11.A5
+          title: 'Erstellung einer Inventarliste'
+          requirement_text: 'Für jedes Fahrzeug SOLLTE eine Inventarliste über geführt werden. Die Inventarliste SOLLTE regelmäßig und anlassbezogen aktualisiert werden. Dabei SOLLTE überprüft werden, ob noch alle inventarisierten zum Fahrzeug gehörenden IT-Komponenten vorhanden sind. Zusätzlich SOLLTE anhand der Inventarliste überprüft werden, ob keine mobilen Endgeräte unerlaubt mit dem Infotainmentsystem gekoppelt worden sind.'
+        - id: INF.11.A6
+          title: 'Festlegung von Handlungsanweisungen'
+          requirement_text: 'Für alle wesentlichen Situationen, die die Informationssicherheit von Fahrzeugen betreffen, SOLLTEN Handlungsanweisungen in Form von Checklisten vorliegen. Die Handlungsanweisungen SOLLTEN dabei in die Sicherheitsrichtlinie integriert werden und in geeigneter Form als Checklisten verfügbar sein, während das Fahrzeug benutzt wird. Hierbei SOLLTE auch der Fall berücksichtigt werden, dass das Fahrzeug selbst gestohlen wird. Die Handlungsanweisungen SOLLTEN insbesondere nachfolgende Szenarien behandeln: Die Zuständigkeiten für die einzelnen Aufgaben SOLLTEN in der Checkliste dokumentiert sein. Die Anweisungen SOLLTEN von den Fahrzeugbenutzenden in den entsprechenden Situationen angewendet werden. Anhand der Checkliste SOLLTE dokumentiert werden, wie sie in diesen Situationen vorgegangen sind.'
+        - id: INF.11.A7
+          title: 'Sachgerechter Umgang mit Fahrzeugen und schützenswerten Informationen'
+          requirement_text: 'Die Institution SOLLTE die Handlungsanweisungen zur Fahrzeugbenutzung um Aspekte ergänzen, wann, wie und wo Fahrzeuge sachgerecht abgestellt bzw. angedockt werden dürfen. Hierbei SOLLTE primär die Frage beantwortet werden, welche Umgebungen die Fahrzeuge angemessenen vor unerlaubten Zutritt oder Sachbeschädigung schützen. Des Weiteren SOLLTE hierbei berücksichtigt werden, welche Informationen und IT-Systeme in den Fahrzeugen aufbewahrt werden dürfen. Ausreichende Maßnahmen zum Zutrittsschutz SOLLTEN ergriffen werden. Die Ladung der Fahrzeuge SOLLTE sicher verstaut werden. Es SOLLTE sichergestellt werden, dass schützenswerte Informationen nicht von außerhalb der Fahrzeuge von Unbefugten eingesehen, mitgehört oder entwendet werden können. Die Mitarbeitenden SOLLTEN mit der grundlegenden Funktionsweise der Fahrzeuge und den betreffenden IT-Komponenten vertraut gemacht werden. Die Mitarbeitenden SOLLTEN auch über die bestehenden Sicherheitsrisiken informiert werden.'
+        - id: INF.11.A8
+          title: 'Schutz vor witterungsbedingten Einflüssen'
+          requirement_text: 'Fahrzeuge und die darin verbauten IT-Komponenten SOLLTEN vor witterungsbedingten Einflüssen ausreichend geschützt werden. Je nach Fahrzeugart, Einsatzort und Einsatzumgebung SOLLTEN zusätzliche Schutzmaßnahmen ergriffen werden. Für kurzfristig auftretende extreme Wettererscheinungen SOLLTEN entsprechende Schutzmaßnahmen getroffen werden. Diese Schutzmaßnahmen SOLLTEN in den Handlungsanweisungen zur Fahrzeugbenutzung in Form von Checklisten dokumentiert werden.'
+        - id: INF.11.A9
+          title: 'Sicherstellung der Versorgung'
+          requirement_text: 'Bevor Fahrzeuge eingesetzt werden, SOLLTE geplant werden, wie diese mit Betriebsstoffen während des Einsatzes versorgt werden. Die Fahrzeuge SOLLTEN dabei während des Einsatzes immer ausreichend mit Betriebsstoffen versorgt werden.'
+        - id: INF.11.A10
+          title: 'Aussonderung'
+          requirement_text: 'Werden Fahrzeuge ausgesondert, SOLLTEN keine schützenswerten Informationen in den Fahrzeugen verbleiben. Bevor Fahrzeuge endgültig ausgesondert werden, SOLLTE anhand der Inventarliste geprüft werden, ob keine inventarisierten Gegenstände und darüber hinaus relevanten Gegenstände zurückgelassen worden sind.'
+      hoch:
+        - id: INF.11.A11
+          title: 'Ersatzvorkehrungen bei Ausfällen'
+          requirement_text: 'Für den Fall, dass Fahrzeuge oder Fahrzeugführende ausfallen, SOLLTEN innerhalb der Institution vorbereitende Maßnahmen getroffen werden. Abhängig von der Bedeutung der Fahrzeuge SOLLTEN Ersatzfahrzeuge bereitstehen oder alternativ ein Rahmenvertrag mit einer geeigneten Fremdinstitution geschlossen werden. Zusätzlich dazu SOLLTEN Ersatzfahrzeugführende verfügbar sein.'
+        - id: INF.11.A12
+          title: 'Diebstahlsicherung bzw. Bewachung'
+          requirement_text: 'Eine Alarmanlage SOLLTE vorhanden sein. Bei Bodenfahrzeugen SOLLTE darüber hinaus eine Wegfahrsperre vorhanden sein. Wird das Fahrzeug verlassen, SOLLTEN die Alarmanlage und Wegfahrsperre aktiviert werden. Alternativ SOLLTEN die Fahrzeuge bewacht werden.'
+        - id: INF.11.A13
+          title: 'Schädigende Fremdeinwirkung'
+          requirement_text: 'Je nach Art der Fahrzeuge SOLLTEN geeignete Maßnahmen ergriffen werden, um die Fahrzeuge vor potentieller Fremdeinwirkung in der geplanten Einsatzumgebung zu schützen, wie z. B. störenden Funkstrahlen.'
+        - id: INF.11.A14
+          title: 'Schutz sensibler Informationen vor unbefugtem Zugriff und Kenntnisnahme'
+          requirement_text: 'Fahrzeuge und die dazugehörigen IT-Komponenten SOLLTEN so abgesichert werden, dass sensible Informationen durch Unbefugte nicht ausgelesen bzw. manipuliert oder gelöscht werden können. Hierbei SOLLTEN die vorhandenen Schutzvorkehrungen der herstellenden Unternehmen überprüft und bei Bedarf angepasst werden.'
+        - id: INF.11.A15
+          title: 'Physische Absicherung der Schnittstellen'
+          requirement_text: 'Alle physischen internen und externen Schnittstellen der Fahrzeuge SOLLTEN physisch gegen unbefugte Benutzung und äußere Einflüsse abgesichert werden.'
+        - id: INF.11.A16
+          title: 'Brandlöschanlage'
+          requirement_text: 'Die Fahrzeuge SOLLTEN über eine Brandlöschanlage verfügen, die einen Brand von außen und innen löschen kann. Alternativ SOLLTEN geeignete Mittel zur Brandbekämpfung mitgeführt werden.'
+        - id: INF.11.A17
+          title: 'Netztrennung des In-Vehicle-Network mit einem Sonderfahrzeugnetz über Gateways'
+          requirement_text: 'Generell SOLLTE die Institution sicherstellen, dass keine Informationen unerlaubt und undefiniert zwischen ausgetauscht werden. Hierzu SOLLTEN Gateways mit standardisierten Protokollen (z. B. nach Standard CiA 447) eingesetzt werden. Die Gateways SOLLTEN dabei vom fahrzeugherstellenden Unternehmen freigegeben sein.'
 
   - id: INF.12
     title: 'Verkabelung'
@@ -166,46 +511,250 @@ bausteine:
       basis:
         - id: INF.12.A1
           title: 'Auswahl geeigneter Kabeltypen'
-          requirement_text: 'Es MUESSEN geeignete Kabeltypen ausgewaehlt werden.'
+          requirement_text: 'Bei der Auswahl von Kabeltypen MUSS geprüft werden, welche übertragungstechnischen Eigenschaften notwendig sind. Die einschlägigen Normen und Vorschriften MÜSSEN beachtet werden. Auch die Umgebungsbedingungen im Betrieb und bei der Verlegung MÜSSEN berücksichtigt werden. Hinsichtlich der Umgebungsbedingungen MÜSSEN die folgenden Faktoren beachtet werden:'
         - id: INF.12.A2
-          title: 'Schutz der Verkabelung'
-          requirement_text: 'Die Verkabelung MUSS gegen Beschaedigung und unbefugten Zugriff geschuetzt verlegt werden. Siehe BSI Kompendium 2023 Baustein INF.12 Anforderung A2.'
+          title: 'Planung der Kabelführung'
+          requirement_text: 'Kabel, Kabelwege und Kabeltrassen MÜSSEN aus funktionaler und aus physikalischer Sicht ausreichend dimensioniert werden. Dabei MÜSSEN künftige Notwendigkeiten eingerechnet werden, z. B. genügend Platz für mögliche technische Erweiterungen in Kabelkanälen und -trassen. Bei der gemeinsamen Führung von IT- und Stromverkabelung in einer Trasse MUSS das Übersprechen zwischen den einzelnen Kabeln verhindert werden. Es MUSS darauf geachtet werden, dass die IT-Verkabelung und die elektrotechnische Verkabelung mit dem normgerechten Trennungsabstand geführt werden. Erkennbare Gefahrenquellen MÜSSEN umgangen werden.'
         - id: INF.12.A3
-          title: 'Dokumentation der Verkabelung'
-          requirement_text: 'Die Verkabelung MUSS dokumentiert sein. Siehe BSI Kompendium 2023 Baustein INF.12 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Fachgerechte Installation'
+          requirement_text: 'Die Installationsarbeiten der Verkabelung MÜSSEN fachkundig und sorgfältig erfolgen. Bei der Installation MÜSSEN alle relevanten Normen beachtet werden. Die fachgerechte Ausführung der Verkabelung MUSS durch eine fachkundige Person in allen Phasen überprüft werden. Bei Anlieferung des Materials MUSS geprüft werden, ob die richtigen Kabel und Anschlusskomponenten geliefert wurden. Es MUSS darauf geachtet werden, dass die Montage keine Beschädigungen verursacht. Außerdem MÜSSEN die Kabelwege so gewählt werden, dass eine Beschädigung der verlegten Kabel durch die normale Nutzung des Gebäudes ausgeschlossen ist.'
+        - id: INF.12.A4
+          title: 'EMV-taugliche Stromversorgung'
+          requirement_text: 'Die Stromversorgung MUSS EMV (Elektromagnetische Verträglichkeit) -tauglich sein. Dafür MUSS das Stromverteilnetz als TN-S-System aufgebaut sein. Bei Aufbau und Betrieb des Stromverteilnetzes MÜSSEN die in den entsprechenden Normen empfohlenen Trennungsabstände soweit wie möglich eingehalten werden. Vorkehrungen gegen Einstrahlungen von außen, Abstrahlung durch die Stromleitung sowie zur Erkennung von Ausgleichsströmen MÜSSEN getroffen werden.'
+      standard:
+        - id: INF.12.A5
+          title: 'Anforderungsanalyse für die Verkabelung'
+          requirement_text: 'Grundsätzlich SOLLTEN die Anforderungen analysiert werden, die Einfluss auf eine zukunftssichere, bedarfsgerechte und wirtschaftliche Ausführung der Verkabelung haben. In dieser Anforderungsanalyse SOLLTE zunächst abgeschätzt werden, wie die kurzfristige Nutzung der Verkabelung innerhalb der Institution aussieht. Darauf aufbauend SOLLTE die längerfristige Entwicklung der Nutzung abgeschätzt werden. Darüber hinaus MÜSSEN die Schutzziele der Verfügbarkeit, Integrität und Vertraulichkeit bei der Anforderungsanalyse für die Verkabelung mit betrachtet werden.'
+        - id: INF.12.A6
+          title: 'Abnahme der Verkabelung'
+          requirement_text: 'Für die Verkabelung SOLLTE es einen Abnahmeprozess geben. Verkabelungen SOLLTEN immer dann abgenommen werden, wenn alle (gegebenenfalls im Rahmen eines Meilensteins) durchzuführenden Aufgaben abgeschlossen sind. Die Ausführenden SOLLTE hierfür die Aufgaben als abgeschlossen und zur Abnahme bereit gemeldet haben. Außerdem SOLLTEN sich bei den Kontrollen durch die auftraggebende Institution keine inakzeptablen Mängel gezeigt haben. Der Abnahmetermin SOLLTE so gewählt werden, dass die Kontrollen zur Abnahme in ausreichender Zeit vorbereitet werden können. Die auftragnehmende Institution MUSS spätestens zum Abnahmetermin schriftlich belegen, dass sämtliche Normen und Vorschriften eingehalten wurden, die für das Gewerk gelten. Bei der Abnahme MUSS der tatsächliche Umfang der Leistungen überprüft werden. Für das Abnahmeprotokoll SOLLTE eine Checkliste vorbereitet werden. Das Abnahmeprotokoll MUSS von den Teilnehmenden und Verantwortlichen rechtsverbindlich unterzeichnet werden. Das Protokoll MUSS Bestandteil der internen Dokumentation der Verkabelung sein.'
+        - id: INF.12.A7
+          title: 'Überspannungsschutz'
+          requirement_text: 'Jedes elektrisch leitende Netz SOLLTE gegen Überspannungen geschützt werden. Hierfür MUSS ein entsprechendes Überspannungsschutzkonzept erstellt werden, das den gültigen Normen entspricht. Netzersatzanlagen (NEA) und unterbrechungsfreie Stromversorgungen (USV) MÜSSEN in das Überspannungsschutzkonzept aufgenommen werden.'
+        - id: INF.12.A8
+          title: 'Entfernen und Deaktivieren nicht mehr benötigter Kabel'
+          requirement_text: 'Wenn Kabel nicht mehr benötigt werden, SOLLTEN sie fachgerecht und vollständig entfernt werden. Nachdem Kabel entfernt wurden, MÜSSEN die Brandschottungen fachgerecht verschlossen werden. Kabel, die aktuell nicht mehr benötigt werden, aber mit der vorhandenen Technik sinnvoll als Reserve an Ort und Stelle verbleiben können, SOLLTEN in einem betriebsfähigen Zustand erhalten werden. Solche Kabel MÜSSEN mindestens an den Endpunkten entsprechend gekennzeichnet werden. Grundsätzlich SOLLTE eine Übersicht über nicht mehr benötigte Kabel aufgestellt werden. Aus der Dokumentation SOLLTE hervorgehen, welche Kabel entfernt oder deaktiviert wurden.'
+        - id: INF.12.A9
+          title: 'Brandschutz in Trassen'
+          requirement_text: 'Trassen SOLLTEN ausreichend dimensioniert werden. Trassen SOLLTEN über eine ausreichende Be- und Entlüftung verfügen.'
+        - id: INF.12.A10
+          title: 'Dokumentation und Kennzeichnung der Verkabelung'
+          requirement_text: 'Eine Institution SOLLTE sicherstellen, dass sie für ihre Verkabelung sowohl über eine interne als auch eine externe Dokumentation verfügt. Die interne Dokumentation MUSS alle Aufzeichnungen zur Installation und zum Betrieb der Verkabelung enthalten. Die interne Dokumentation SOLLTE so umfangreich angefertigt und gepflegt werden, dass der Betrieb und dessen Weiterentwicklung bestmöglich unterstützt werden. Die externe Dokumentation (Beschriftung von Anschlüssen zur Unterstützung des Betriebs) der Verkabelung SOLLTE möglichst neutral gehalten werden. Jede Veränderung im Netz SOLLTE dokumentiert werden. Eine Interims- oder Arbeitsversion der Dokumentation SOLLTE unmittelbar, d. h. am Tag selbst angepasst werden. Die Stamm-Dokumentation MUSS spätestens 4 Wochen nach Abschluss der jeweiligen Arbeiten aktualisiert sein. Es SOLLTE geprüft werden, ob ein Dokumentenmanagement für die Dokumentation eingesetzt werden kann. Die Dokumentation SOLLTE regelmäßig überprüft und aktualisiert werden. Sämtliche technischen Einrichtungen, die im Rahmen der Verkabelung dokumentiert sind, MÜSSEN hinsichtlich der Dokumentationstreue spätestens nach 4 Jahren geprüft werden.'
+        - id: INF.12.A11
+          title: 'Neutrale Dokumentation in den Verteilern'
+          requirement_text: 'In jedem Verteiler SOLLTE es eine Dokumentation geben, die den derzeitigen Stand von Rangierungen und Leitungsbelegungen wiedergibt. Die Dokumentation im Verteiler MUSS ein sicheres Schalten ermöglichen. Die Dokumentation im Verteiler SOLLTE möglichst neutral gehalten werden. In der Dokumentation im Verteiler SOLLTEN nur bestehende und genutzte Verbindungen sowie auflaufende Reservekabel aufgeführt sein. Falls möglich, SOLLTEN keine Hinweise auf die Art gegeben werden, wie Kabel genutzt werden. Es SOLLTEN nur solche Hinweise gegeben werden, die ausdrücklich vorgeschrieben sind. Alle weitergehenden Informationen SOLLTEN in einer Revisionsdokumentation aufgeführt werden.'
+        - id: INF.12.A12
+          title: 'Kontrolle elektrotechnischer Anlagen und bestehender Verbindungen'
+          requirement_text: 'Alle elektrischen Anlagen und Betriebsmittel SOLLTEN gemäß DGUV Vorschrift 3, entsprechend den in § 5 Prüfung genannten Durchführungsanweisungen, regelmäßig geprüft werden. Alle Unregelmäßigkeiten, die festgestellt werden, MÜSSEN unverzüglich dokumentiert werden. Festgestellte Unregelmäßigkeiten MÜSSEN unverzüglich den zuständigen Organisationseinheiten gemeldet werden. Die zuständigen Organisationseinheiten MÜSSEN die festgestellten Unregelmäßigkeiten so zeitnah beheben, dass eine Gefährdung von Personen ausgeschlossen werden kann. Die Verfügbarkeit der elektrischen Anlagen und Betriebsmittel MUSS hierbei im erforderlichen Maß sichergestellt sein.'
+        - id: INF.12.A13
+          title: 'Vermeidung elektrischer Zündquellen'
+          requirement_text: 'Die Nutzung privater Elektrogeräte innerhalb einer Institution SOLLTE klar geregelt werden. Alle Elektrogeräte MÜSSEN durch eine Elektrofachkraft geprüft und für sicher befunden werden, bevor sie eingesetzt werden. Die Verwendung von Steckdosenleisten SOLLTE soweit wie möglich vermieden werden. Fehlende Steckdosen SOLLTEN durch eine Elektrofachkraft fachgerecht nachgerüstet werden.'
+      hoch:
+        - id: INF.12.A14
+          title: 'A-B-Versorgung'
+          requirement_text: 'Es SOLLTE geprüft werden, ob anstelle einer einzügigen Stromversorgung eine zweizügige sogenannte A-B-Versorgung geschaffen werden soll, die wichtige IT-Komponenten und andere Verbraucher versorgt. Dabei SOLLTE die Funktionsfähigkeit der Stromversorgung permanent durch geeignete technische Einrichtungen überwacht werden.'
+        - id: INF.12.A15
+          title: 'Materielle Sicherung der Verkabelung'
+          requirement_text: 'Für alle Räume eines Gebäudes, insbesondere in Räumen mit Publikumsverkehr sowie in unübersichtlichen Bereichen SOLLTE überlegt werden, Kabel und Verteiler gegen unbefugte Zugriffe zu sichern. In jedem Fall SOLLTEN die Zahl und der Umfang derjenigen Stellen möglichst gering gehalten werden, an denen Einrichtungen der Energieversorgung und Zugangspunkte des Datennetzes für Unbefugte zugänglich sind.'
+        - id: INF.12.A16
+          title: 'Nutzung von Schranksystemen'
+          requirement_text: 'Elektrotechnische Anschlüsse und -verteiler SOLLTEN in Schranksystemen aufgestellt oder in diese eingebaut werden. Bei der Dimensionierung der Schranksysteme SOLLTE das erwartete Wachstum für den geplanten Einsatzzeitraum berücksichtigt werden.'
+        - id: INF.12.A17
+          title: 'Redundanzen für die IT-Verkabelung'
+          requirement_text: 'Es SOLLTE geprüft werden, ob eine redundante primäre IT-Verkabelung geschaffen werden soll, die über unabhängige Trassen geführt wird. Ebenso SOLLTE geprüft werden, ob die Anschlüsse an IT- oder TK-Provider redundant ausgelegt werden sollen. Bei hohen oder sehr hohen Verfügbarkeitsanforderungen SOLLTE überlegt werden, in den relevanten Gebäuden die Sekundär- und Tertiärverkabelung redundant auszulegen. Dabei SOLLTEN redundant ausgelegte Teile der Sekundärverkabelung in unterschiedlichen Brandabschnitten geführt werden. Wird eine redundante Verkabelung verwendet, SOLLTE deren Funktionsfähigkeit regelmäßig geprüft werden.'
 
   - id: INF.13
-    title: 'Technisches Gebaeudemanagement'
+    title: 'Technisches Gebäudemanagement'
     description: 'Anforderungen an Sicherheit von Technischem Gebaeudemanagement (TGM) und zugehoerigen Steuerungssystemen.'
     anforderungen:
       basis:
         - id: INF.13.A1
-          title: 'Planung technischer Raeume'
-          requirement_text: 'Technische Raeume (z. B. fuer Netzwerkverteiler, USV, Klimatechnik) MUESSEN von Beginn an unter Beruecksichtigung ihrer Schutzbeduerfnisse geplant werden.'
+          title: 'Beurteilung des Ist-Zustands bei der Übernahme bestehender Gebäude'
+          requirement_text: 'Bei der Übernahme von bestehenden Gebäuden MÜSSEN die im Gebäude installierten TGA-Anlagen, die Bausubstanz und Einrichtungen sowie vorhandene Dokumentation erfasst und hinsichtlich ihres Zustands (Alter, Supportstatus, Zukunftsfähigkeit, Vollständigkeit der Dokumentation etc.) beurteilt werden.'
         - id: INF.13.A2
-          title: 'Zutrittskontrolle zu technischen Raeumen'
-          requirement_text: 'Technische Raeume MUESSEN durch Zutrittskontrolle gegen unbefugten Zugang gesichert sein. Der Zutritt MUSS protokolliert werden.'
+          title: 'Regelung und Dokumentation von Verantwortlichkeiten und Zuständigkeiten im Gebäude'
+          requirement_text: 'Da es in einem Gebäude meist unterschiedliche Verantwortlichkeiten und Zuständigkeiten für verschiedene Bereiche gibt, MÜSSEN die entsprechenden Rechte, Pflichten, Aufgaben, Kompetenzen und zugehörigen Prozesse geregelt und dokumentiert werden. Hierbei MÜSSEN auch die organisatorischen Strukturen im Gebäude berücksichtigt und dokumentiert werden. Insbesondere MÜSSEN alle Nachfrage- und betreibenden Organisationen erfasst werden. Wird das TGM durch eine externe Organisation betrieben, MÜSSEN die zugehörigen Rechte, Pflichten, Aufgaben und Kompetenzen gemäß Baustein OPS.2.3 Nutzung von Outsourcing vertraglich festgehalten werden. Weiterhin MÜSSEN die Schnittstellen und Meldewege inklusive Eskalation zwischen allen Beteiligten festgelegt und dokumentiert werden. Auch die Koordination verschiedener betreibender Organisationen MUSS geregelt und dokumentiert werden. Der Zugriff auf die Dokumentation MUSS geregelt werden. Die gesamte Dokumentation inklusive der zugehörigen Kontaktinformationen MUSS immer aktuell und verfügbar sein.'
         - id: INF.13.A3
-          title: 'Ueberwachung technischer Raeume'
-          requirement_text: 'Technische Raeume MUESSEN auf Umweltbedingungen (Temperatur, Feuchtigkeit, Rauch, Wassereinbruch) ueberwacht werden. Alarme MUESSEN an eine besetzte Stelle gemeldet werden.'
-      standard: []
-      hoch: []
+          title: 'Dokumentation von Gebäudeeinrichtungen'
+          requirement_text: 'Alle Gebäudeeinrichtungen der TGA inklusive GA MÜSSEN dokumentiert werden. Hierbei MUSS sämtliche, auch schon vorhandene, Dokumentation zusammengeführt, aus dem Blickwinkel des TGM organisiert und um TGM-spezifische Angaben ergänzt werden. Der Zugriff auf die Dokumentation MUSS geregelt werden. Die gesamte Dokumentation inklusive der zugehörigen Kontaktinformationen MUSS immer aktuell und verfügbar sein.'
+      standard:
+        - id: INF.13.A4
+          title: 'Erstellung einer Sicherheitsrichtlinie für TGM'
+          requirement_text: 'Ausgehend von der allgemeinen Sicherheitsleitlinie der Institution SOLLTE eine übergeordnete Sicherheitsrichtlinie für TGM erstellt sowie nachvollziehbar umgesetzt werden. Aus dieser übergeordneten Sicherheitsrichtlinie SOLLTEN spezifische Sicherheitsrichtlinien für die verschiedenen Themenbereiche des TGM abgeleitet werden. In der Sicherheitsrichtlinie für das TGM SOLLTEN nachvollziehbar Anforderungen und Vorgaben beschrieben werden, wie das TGM umgesetzt wird. Die Sicherheitsrichtlinie SOLLTE regelmäßig und zusätzlich bei Bedarf geprüft und gegebenenfalls aktualisiert werden, um dem aktuellen Stand der Technik zu entsprechen und auch neueste Erkenntnisse abdecken zu können. Sie SOLLTE allen im Bereich TGM zuständigen Mitarbeitenden bekannt und grundlegend für ihre Arbeit sein.'
+        - id: INF.13.A5
+          title: 'Planung des TGM'
+          requirement_text: 'Das TGM, die zugrundeliegende Infrastruktur und die zugehörigen Prozesse SOLLTEN geeignet geplant werden. Die Planung SOLLTE dabei mindestens eine detaillierte Anforderungsanalyse, eine ausreichende Grobkonzeptionierung und eine Fein- und Umsetzungsplanung umfassen. Im Rahmen der Anforderungsanalyse SOLLTEN Anforderungen an TGM-Infrastruktur und TGM-Prozesse spezifiziert werden. Dabei SOLLTEN alle wesentlichen Elemente für das TGM berücksichtigt werden. Auch SOLLTE die Sicherheitsrichtlinie für das TGM beachtet werden. Steht die Nachfrageorganisation zum Zeitpunkt der Planung noch nicht fest, SOLLTEN im Rahmen einer universellen Planung zumindest grundlegende Anforderungen erfasst werden, die dem Stand der Technik entsprechen. Für die Anforderungsspezifikation SOLLTEN auch die Schnittstellen der zu verwaltenden Systeme dokumentiert werden, z. B. um die Kompatibilität von TGM-Lösung und zu verwaltenden Systemen zu gewährleisten. Außerdem SOLLTEN vor der Beauftragung von Dienstleistenden oder vor der Anschaffung von Hard- oder Software der durch das TGM zu verwaltenden Systeme die Anforderungen des TGM in einem Lastenheft des TGM spezifiziert werden. In diesem Lastenheft SOLLTE auch die Durchführung von Tests berücksichtigt werden (siehe auch INF.13.A22 Durchführung von Systemtests im TGM). Wenn im TGM Funktionen der Künstlichen Intelligenz (KI) eingesetzt werden, SOLLTE bei dem zuständigen herstellenden Unternehmen angefragt werden, ob und wie die Informationssicherheit hier angemessen berücksichtigt wird. Die Grobkonzeptionierung SOLLTE gemäß INF.13.A6 Erstellung eines TGM-Konzepts erfolgen. In der Fein- und Umsetzungsplanung für das TGM SOLLTEN alle in der Sicherheitsrichtlinie und im TGM-Konzept adressierten Punkte berücksichtigt werden.'
+        - id: INF.13.A6
+          title: 'Erstellung eines TGM-Konzepts'
+          requirement_text: 'Ausgehend von der Sicherheitsrichtlinie für das TGM SOLLTE ein TGM-Konzept erstellt und gepflegt werden. Dabei SOLLTEN mindestens folgende Aspekte bedarfsgerecht berücksichtigt werden: Das TGM-Konzept SOLLTE regelmäßig und zusätzlich bei Bedarf geprüft und gegebenenfalls aktualisiert werden, um dem aktuellen Stand der Technik zu entsprechen und auch neue Erkenntnisse abdecken zu können. Außerdem SOLLTE regelmäßig ein Soll-Ist-Vergleich zwischen den Vorgaben des Konzepts und dem aktuellen Zustand durchgeführt werden. Dabei SOLLTE insbesondere geprüft werden, ob die Systeme gemäß den Vorgaben konfiguriert sind. Die Ergebnisse SOLLTEN nachvollziehbar dokumentiert werden. Abweichungen SOLLTEN behoben werden.'
+        - id: INF.13.A7
+          title: 'Erstellung eines Funkfrequenzkatasters'
+          requirement_text: 'Um Funkfrequenzen weitestgehend störungsfrei nutzen zu können, SOLLTE ein Funkfrequenzkataster erstellt werden, dass die Systeme und Nutzenden des Frequenzspektrums an den Standorten der Institution listet. Dabei SOLLTE bei einer potentiellen Nutzung von Frequenzen durch unterschiedliche Systeme und Nutzende festgelegt werden, wer auf welchen Frequenzen der Primärnutzende ist. Dabei SOLLTE auch eine Abstimmung zwischen IT und TGM erfolgen. Wird in den Gebäuden OT eingesetzt, SOLLTE auch hier eine Abstimmung erfolgen. Das Funkfrequenzkataster SOLLTE regelmäßig und zusätzlich bei Bedarf geprüft und gegebenenfalls aktualisiert werden.'
+        - id: INF.13.A8
+          title: 'Erstellung und Pflege eines Inventars für das TGM'
+          requirement_text: 'Für die Dokumentation von Systemen, die durch das TGM verwaltet werden, SOLLTE ein Inventar erstellt und gepflegt werden. Das Inventar SOLLTE vollständig und aktuell gehalten werden. Aus dem Inventar SOLLTEN für alle Systeme Verantwortlichkeiten und Zuständigkeiten ersichtlich sein. Auch die Elemente der TGM-Infrastruktur selbst SOLLTEN dokumentiert werden.'
+        - id: INF.13.A9
+          title: 'Regelung des Einsatzes von Computer-Aided Facility Management'
+          requirement_text: 'Wird ein Computer-Aided Facility Management-System (CAFM-System) eingesetzt, SOLLTE dieser Einsatz umfassend geplant und konzeptioniert werden. Werden im CAFM Prozesse abgebildet und unterstützt, SOLLTEN entsprechende Rollen und Berechtigungen definiert werden, insbesondere wenn externe Dienstleistende an den Prozessen beteiligt sind.'
+        - id: INF.13.A10
+          title: 'Regelung des Einsatzes von Building Information Modeling'
+          requirement_text: 'Soweit möglich SOLLTE Building Information Modeling (BIM) zur digitalen Modellierung aller relevanten Gebäudedaten eingesetzt werden. Bei der Verwendung von BIM SOLLTE der BIM-Projektabwicklungsplan spezifiziert werden. Weiterhin SOLLTE die BIM-Architektur umfassend geplant und konzeptioniert werden. Auch für die BIM-Werkzeuge SOLLTE die Informationssicherheit angemessen gewährleistet werden.'
+        - id: INF.13.A11
+          title: 'Angemessene Härtung von Systemen im TGM'
+          requirement_text: 'Alle Systeme des TGM sowie die Systeme, die durch das TGM betrieben werden, SOLLTEN angemessen gehärtet werden. Die Härtungsmaßnahmen SOLLTEN dokumentiert, regelmäßig und zusätzlich bei Bedarf überprüft und, falls erforderlich, angepasst werden. Für alle Systeme des TGM sowie die Systeme, die durch das TGM betrieben werden, SOLLTE bei der Beschaffung sichergestellt werden, dass diese angemessen gehärtet werden können und insbesondere sicherheitsrelevante Updates für die geplante Nutzungsdauer bereitgestellt werden. Systeme, für die keine sicherheitsrelevanten Updates verfügbar sind, SOLLTEN nach Bekanntwerden von Schwachstellen nicht mehr genutzt werden. Wenn dies nicht möglich ist, SOLLTEN die betroffenen Systeme mit den Mitteln der Netzsegmentierung separiert und die Kommunikation kontrolliert und reglementiert werden.'
+        - id: INF.13.A12
+          title: 'Sichere Konfiguration der TGM-Systeme'
+          requirement_text: 'Alle Systeme des TGM sowie die Systeme, die durch das TGM betrieben werden, SOLLTEN sicher konfiguriert werden. Die Konfiguration SOLLTE mindestens vor Inbetriebnahme eines Systems getestet werden. Konfigurationsänderungen während des Produktivbetriebs SOLLTEN vor Aktivierung auf einer Testinstanz getestet oder nur im Vier-Augen-Prinzip durchgeführt werden. Die Konfiguration von Systemen SOLLTE gesichert werden, um ein schnelles Wiedereinspielen einer fehlerfreien Version zu ermöglichen (Rollback). Rollback-Tests SOLLTEN auf einem Testsystem eingerichtet oder während Wartungsfenstern durchgeführt werden. Die Konfigurationen SOLLTEN zentral gespeichert werden. Für gleichartige Systeme, inklusive der Geräte der Automations- und Feldebene (siehe Kapitel 4.1 Genutzte TGM-spezifische Fachbegriffe), SOLLTE eine automatisierte Verteilung von Software-Updates und Konfigurationen eingerichtet werden. Konfigurationsänderungen SOLLTEN allen Beteiligten an Betriebs- und Serviceprozessen (Entstörung, Rufbereitschaft, Wartungen etc.) bekannt gemacht werden, insbesondere Es SOLLTE sichergestellt werden, dass im Störungsfall beispielsweise eine Wartungstechnikerin oder ein Wartungstechniker das System bedienen bzw. parametrieren kann. Außerdem SOLLTE regelmäßig und zusätzlich bei Bedarf geprüft werden, ob die Systeme gemäß den Vorgaben konfiguriert sind. Die Ergebnisse SOLLTEN nachvollziehbar dokumentiert werden. Abweichungen von den Vorgaben SOLLTEN behoben werden.'
+        - id: INF.13.A13
+          title: 'Sichere Anbindung von eingeschränkt vertrauenswürdigen Systemen im TGM'
+          requirement_text: 'Eingeschränkt vertrauenswürdige Systeme, die aus wichtigen betrieblichen Gründen im TGM eingebunden werden müssen, SOLLTEN über ein System angebunden werden, das die Kommunikation mit Hilfe von Firewall-Funktionen kontrolliert und reglementiert. Dieses System SOLLTE in der Verantwortlichkeit des TGM liegen.'
+        - id: INF.13.A14
+          title: 'Berücksichtigung spezieller Rollen und Berechtigungen im TGM'
+          requirement_text: 'Im Rollen- und Berechtigungskonzept hinsichtlich des TGM SOLLTEN sowohl Nachfrage- als auch betreibende Organisationen der TGM-Systeme und der TGA-Systeme berücksichtigt werden. Dies SOLLTE insbesondere dann sorgfältig geplant werden, wenn das TGM institutionsübergreifend bereitgestellt wird.'
+        - id: INF.13.A15
+          title: 'Schutz vor Schadsoftware im TGM'
+          requirement_text: 'Können auf einem System keine Virenschutzprogramme gemäß Baustein OPS.1.1.4 Schutz vor Schadprogrammen ausgeführt werden, beispielsweise aufgrund von knappen Ressourcen oder aufgrund von Echtzeitanforderungen, SOLLTEN geeignete alternative Schutzverfahren eingesetzt werden. Jedes externe System und jeder externe Datenträger SOLLTE vor der Verbindung mit einem TGM-System und vor der Datenübertragung auf Schadsoftware geprüft werden.'
+        - id: INF.13.A16
+          title: 'Prozess für Änderungen im TGM'
+          requirement_text: 'Änderungen SOLLTEN immer angekündigt und mit allen beteiligten Gewerken (siehe Kapitel 4.1 Genutzte TGM-spezifische Fachbegriffe), Nachfrage- und betreibenden Organisationen abgestimmt werden. Außerdem SOLLTEN Regelungen für den Fall getroffen werden, dass ein Rückbau von Änderungen mit fehlerhaftem Ergebnis nicht oder nur mit hohem Aufwand möglich ist. Daher sollten im Änderungsmanagement vor Ausführung der Änderung Tests durchgeführt werden, die auch die Fähigkeit des Rückbaus beinhalten. Für die verschiedenen Typen von Änderungen SOLLTE die jeweilige Testtiefe festgelegt werden. Bei der Einführung neuer Systeme und bei großen Änderungen an bestehenden Systemen SOLLTE eine entsprechend hohe Testtiefe vorgesehen werden (siehe INF.13.A22 Durchführung von Systemtests im TGM).'
+        - id: INF.13.A17
+          title: 'Regelung von Wartungs- und Reparaturarbeiten im TGM'
+          requirement_text: 'Gebäudeeinrichtungen SOLLTEN regelmäßig gewartet werden. Hierfür SOLLTE ein Wartungsplan erstellt werden. Es SOLLTE geregelt sein, welche Sicherheitsaspekte bei Wartungs- und Reparaturarbeiten zu beachten sind. Dabei SOLLTEN auch die Abhängigkeiten der verschiedenen Gewerke berücksichtigt werden. Darüber hinaus SOLLTE festgelegt werden, wer für die Wartung oder Reparatur von Einrichtungen zuständig ist. Durchgeführte Wartungsarbeiten SOLLTEN dokumentiert werden. Es SOLLTE zu jedem Zeitpunkt gewährleistet werden, dass Wartungs- und Reparaturarbeiten, die durch Dritte ausgeführt werden, kontrolliert, ausschließlich abgestimmt durchgeführt und abgenommen werden. Hierfür SOLLTEN interne Mitarbeitende der Haustechnik bestimmt werden, die solche Wartungs- und Reparaturarbeiten autorisieren, beobachten, gegebenenfalls unterstützen und abnehmen.'
+        - id: INF.13.A18
+          title: 'Proaktive Instandhaltung im TGM'
+          requirement_text: 'Für Systeme, die durch das TGM verwaltet werden, SOLLTE eine angemessene proaktive Instandhaltung durchgeführt werden. Hierfür SOLLTEN die regelmäßigen Wartungsintervalle je System festgelegt werden. Zusätzlich SOLLTE je System abgewogen werden, ob ergänzend zur regelmäßigen Instandhaltung eine vorausschauende Instandhaltung (engl. Predictive Maintenance) genutzt werden kann und in welchem Umfang hierdurch die regelmäßigen Wartungsintervalle verlängert werden können.'
+        - id: INF.13.A19
+          title: 'Konzeptionierung und Durchführung des Monitorings im TGM'
+          requirement_text: 'Es SOLLTE ein Konzept für das Monitoring im TGM erstellt und umgesetzt werden. Darin SOLLTE spezifiziert werden, wie die durch das TGM zu verwaltenden Systeme in ein möglichst einheitliches Monitoring eingebunden werden können und welche Werte überwacht werden sollten. Hierfür SOLLTEN schon bei der Anforderungsanalyse erforderliche Schnittstellen für das Monitoring wichtiger Zustände von Systemen spezifiziert werden, die durch das TGM verwaltet werden. Außerdem SOLLTEN auch die für das TGM genutzten Systeme in das Monitoring eingebunden werden. Das Konzept SOLLTE regelmäßig und zusätzlich bei Bedarf geprüft und gegebenenfalls aktualisiert werden, um dem aktuellen Stand der Technik zu entsprechen und auch neueste Erkenntnisse abdecken zu können. Statusmeldungen und Monitoringdaten SOLLTEN NUR über sichere Kommunikationswege übertragen werden.'
+        - id: INF.13.A20
+          title: 'Regelung des Ereignismanagements im TGM'
+          requirement_text: 'Im TGM auftretende Ereignisse SOLLTEN hinsichtlich ihrer Bedeutung und ihres Einflusses kategorisiert, gefiltert und klassifiziert werden (englisch Event Management). Für die Ereignisse SOLLTEN Schwellwerte definiert werden, die eine automatisierte Einstufung von Ereignissen ermöglichen. Je nach Klassifizierung der Ereignisse SOLLTEN entsprechende Maßnahmen für Monitoring, Alarmierung und Meldewege (Eskalation) sowie Maßnahmen zur Protokollierung bestimmt werden.'
+        - id: INF.13.A21
+          title: 'Protokollierung im TGM'
+          requirement_text: 'Ereignisse, die im Ereignismanagement entsprechend klassifiziert wurden, SOLLTEN protokolliert werden. Außerdem SOLLTEN für die Systeme sicherheitsrelevante Ereignisse protokolliert werden. Alle Konfigurationszugriffe sowie alle manuellen und automatisierten Steuerungszugriffe SOLLTEN protokolliert werden. Abhängig vom Schutzbedarf SOLLTE eine vollumfängliche Protokollierung inklusive Metadaten und Inhalt der Änderungen erfolgen. Die Protokollierung SOLLTE auf einer zentralen Protokollierungsinstanz zusammengeführt werden. Protokollierungsdaten SOLLTEN NUR über sichere Kommunikationswege übertragen werden. Bei sicherheitskritischen Ereignissen SOLLTE automatisch alarmiert werden.'
+        - id: INF.13.A22
+          title: 'Durchführung von Systemtests im TGM'
+          requirement_text: 'Systeme des TGM und Systeme, die durch das TGM verwaltet werden, SOLLTEN vor der Inbetriebnahme und bei großen Systemänderungen hinsichtlich ihrer funktionalen und nicht-funktionalen Anforderungen getestet werden. Dabei SOLLTE auch das Soll- und Ist-Verhalten von Funktionen und Einstellungen geprüft werden. Bei den nicht-funktionalen Anforderungen SOLLTEN auch Anforderungen der Informationssicherheit getestet sowie zusätzlich bei Bedarf auch Lasttests durchgeführt werden. Für die Tests SOLLTE eine Testspezifikation erstellt werden, die eine Beschreibung der Testumgebung, der Testtiefe und der Testfälle inklusive der Kriterien für eine erfolgreiche Testdurchführung enthält. Die Testdurchführung SOLLTE in einem Testbericht dokumentiert werden. Testspezifikationen SOLLTEN regelmäßig und zusätzlich bei Bedarf geprüft und gegebenenfalls aktualisiert werden, um dem aktuellen Stand der Technik zu entsprechen und auch neueste Erkenntnisse abdecken zu können.'
+        - id: INF.13.A23
+          title: 'Integration des TGM in das Schwachstellenmanagement'
+          requirement_text: 'Systeme des TGM und die durch das TGM verwalteten Systeme SOLLTEN fortlaufend hinsichtlich möglicher Schwachstellen überwacht werden. Hierfür SOLLTEN regelmäßig Informationen über bekanntgewordene Schwachstellen eingeholt und entsprechend berücksichtigt werden. Hierbei SOLLTE auch die Konfiguration der Systeme dahingehend überprüft werden, ob sie bekannt gewordene Schwachstellen begünstigt. Weiterhin SOLLTE entschieden werden, für welche Systeme regelmäßig oder zumindest bei Inbetriebnahme und bei großen Systemänderungen Schwachstellen-Scans durchgeführt werden. Für Schwachstellen-Scans SOLLTE die Scan-Tiefe festgelegt werden. Außerdem SOLLTE festgelegt werden, ob ein passiver oder ein aktiver Scan durchgeführt wird. In Produktivumgebungen SOLLTEN passive Scans bevorzugt werden. Aktive Scans SOLLTEN in Produktivumgebungen nur durchgeführt werden, wenn sie notwendig sind und Personal hinzugezogen wird, das durch den Scan bedingte, eventuell auftretende Fehler oder Ausfälle beheben kann.'
+        - id: INF.13.A24
+          title: 'Sicherstellung der Kontrolle über die Prozesse bei Cloud-Nutzung für das TGM'
+          requirement_text: 'Werden im TGM Cloud-basierte Dienste genutzt, SOLLTE die Kontrolle über alle TGM-Prozesse im TGM verbleiben. Dies SOLLTE bei Nutzung eines Cloud-Dienstes vertraglich mit dem anbietenden Unternehmen festgelegt werden.'
+      hoch:
+        - id: INF.13.A25
+          title: 'Aufbau einer Testumgebung für das TGM'
+          requirement_text: 'Bei erhöhtem Schutzbedarf SOLLTE für Systeme des TGM und für Systeme, die durch das TGM verwaltet werden, eine Testumgebung eingerichtet werden, damit Hard- und Software vor der Inbetriebnahme und bei Änderungen getestet und Fehler im produktiven Betrieb reduziert werden können. Außerdem SOLLTEN Regelungen für den Umgang mit Systemen spezifiziert werden, für die keine Testumgebung aufgebaut werden kann.'
+        - id: INF.13.A26
+          title: 'Absicherung von BIM'
+          requirement_text: 'Werden in BIM auch sicherheitskritische Informationen erfasst, SOLLTEN sowohl auf Ebene der BIM-Architektur als auch für Implementierung und Betrieb der BIM-Lösung entsprechende Sicherheits- und Härtungsmaßnahmen vorgesehen werden. Die Absicherung SOLLTE ein verschärftes Rollen- und Berechtigungskonzept sowie weitergehende Schutzmaßnahmen wie Verschlüsselung, Segmentierung und höherwertige Authentisierungsmechanismen, insbesondere eine 2-Faktor-Authentisierung, beinhalten.'
+        - id: INF.13.A27
+          title: 'Einrichtung einer Private Cloud für das TGM'
+          requirement_text: 'Bei erhöhtem Schutzbedarf SOLLTEN Cloud-Dienste zum TGM in einer Private Cloud On-Premises oder einer Private Cloud bei einem vertrauenswürdigen Anbietenden positioniert werden. Der Einsatz einer Public Cloud SOLLTE vermieden werden.'
+        - id: INF.13.A28
+          title: 'Sichere Nutzung von Künstlicher Intelligenz im TGM'
+          requirement_text: 'Werden bei erhöhtem Schutzbedarf im TGM Funktionen der Künstlichen Intelligenz (KI) genutzt, SOLLTE nur eine KI genutzt werden, die nachweislich sicher ist. Mindestens SOLLTE darauf geachtet werden, dass keine Daten in Netze geleitet werden, die nicht zur eigenen Institution gehören oder nicht vertrauenswürdig sind. Für Cloud-basierte KI-Dienste SOLLTEN über die Anforderungen des Bausteins OPS.2.2 Cloud-Nutzung hinaus auch die Kriterien des AI Cloud Service Compliance Criteria Catalogue (AIC4) des BSI berücksichtigt werden.'
+        - id: INF.13.A29
+          title: 'Integration des TGM in ein SIEM'
+          requirement_text: 'Wird ein System für das Security Information and Event Management (SIEM) genutzt, SOLLTEN die Systeme des TGM und soweit möglich auch die durch das TGM verwalteten Systeme entsprechend eingebunden werden, um system- und anwendungsübergreifende sicherheitsrelevante Vorfälle erkennen und analysieren zu können.'
+        - id: INF.13.A30
+          title: 'Durchführung von Penetrationstests im TGM'
+          requirement_text: 'Um Systeme des TGM und Systeme, die durch das TGM verwaltet werden, entsprechend abzusichern, SOLLTEN bedarfsorientiert Penetrationstests durchgeführt werden. Mindestens SOLLTEN vor der Inbetriebnahme und bei großen Systemänderungen in einer Testumgebung Penetrationstests durchgeführt werden. Werden im TGM Funktionen der KI genutzt, SOLLTEN diese in die Penetrationstests einbezogen werden.'
 
   - id: INF.14
-    title: 'Gebaeudeautomation'
+    title: 'Gebäudeautomation'
     description: 'Anforderungen an Sicherheit von Gebaeudeautomations-Systemen (BAS), die in OT-IT-Konvergenz stehen.'
     anforderungen:
       basis:
         - id: INF.14.A1
-          title: 'Planung der Gebaeudeautomation'
-          requirement_text: 'Der Einsatz und die Vernetzung von Gebaeudeautomation MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein INF.14 Anforderung A1.'
+          title: 'Planung der Gebäudeautomation'
+          requirement_text: 'Für die von der Gebäudeautomation (GA) gesteuerten Gewerke MUSS festgelegt werden, wie die GA sicher gestaltet werden kann. Die GA MUSS bereits bei der Planung von Neubau, Umbau, Erweiterung und Sanierung eines Gebäudes berücksichtigt werden. Daher MUSS die GA in den Planungs- und Bauprozessen, auch in Verbindung mit Building Information Modeling (BIM), für alle GA-relevanten Komponenten und TGA-Anlagen berücksichtigt werden. Im Rahmen der GA-Planung MÜSSEN die einzurichtenden GA-Systeme spezifiziert werden. Es MUSS festgelegt werden, in welchem Umfang TGA-Anlagen über das GA-System automatisiert gesteuert werden sollen. Die GA SOLLTE so geplant werden, dass zur Kopplung und Integration der TGA-Anlagen möglichst wenig unterschiedliche GA-Systeme sowie Kommunikationsprotokolle und -schnittstellen genutzt werden. Es SOLLTEN sichere und standardisierte Protokolle und Schnittstellen eingesetzt werden. Für eine Entscheidung hinsichtlich der notwendigen Systeme, Protokolle und Schnittstellen SOLLTE die erwartete Funktionalität gegenüber einem gegebenenfalls erhöhten Aufwand für Betriebs- und Informationssicherheit abgewogen werden. Die Planung SOLLTE dokumentiert, regelmäßig und zusätzlich bei Bedarf aktualisiert und dem Stand der Technik angepasst werden. Darüber hinaus SOLLTE die Planung regelmäßig und zusätzlich bei Bedarf mit der aktuellen Konfiguration verglichen werden (Soll-Ist-Vergleich).'
         - id: INF.14.A2
-          title: 'Netztrennung der Gebaeudeautomation'
-          requirement_text: 'Systeme der Gebaeudeautomation MUESSEN von der Office-IT segmentiert sein. Siehe BSI Kompendium 2023 Baustein INF.14 Anforderung A2.'
+          title: 'Festlegung eines Inbetriebnahme- und Schnittstellenmanagements für die GA'
+          requirement_text: 'Aufgrund der Vielzahl von TGA-Anlagen und Komponenten in Gebäuden, die in GA-Systemen angebunden werden, MUSS der Ablauf zur Inbetriebnahme der involvierten TGA-Anlagen und GA-relevanten Komponenten aufeinander abgestimmt und übergreifend festgelegt werden. Dieser Ablauf MUSS koordiniert umgesetzt werden, um ein voll funktionsfähiges Gebäude zu gewährleisten. Ebenso MÜSSEN klare Schnittstellen zwischen den betreibenden Organisationen der GA und der GA-relevanten Komponenten sowie den betreibenden Organisationen der TGA-Anlagen definiert werden. Inbetriebnahme- und Schnittstellenmanagement MÜSSEN dokumentiert werden. Sowohl regelmäßig als auch zusätzlich bei Bedarf MÜSSEN die Festlegungen geprüft und gegebenenfalls nachjustiert werden. Insbesondere bei Änderungen innerhalb der GA-Systeme MÜSSEN die Festlegungen angepasst werden.'
         - id: INF.14.A3
-          title: 'Sichere Grundkonfiguration der Gebaeudeautomation'
-          requirement_text: 'Komponenten der Gebaeudeautomation MUESSEN sicher grundkonfiguriert sein, einschliesslich Aenderung von Default-Passwoertern. Siehe BSI Kompendium 2023 Baustein INF.14 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Sichere Anbindung von TGA-Anlagen und GA-Systemen'
+          requirement_text: 'Für alle TGA-Anlagen, GA-Systeme und GA-relevanten Komponenten MUSS festgelegt werden, ob durch andere TGA-Anlagen, GA-Systeme oder GA-relevante Komponenten Aktionen ausgelöst werden dürfen. Falls eine solche Integration zulässig ist, SOLLTE reglementiert werden, welche automatisierten Aktionen durch welche Informationen eines GA-Systems ausgelöst werden dürfen. Falls eine TGA-Anlage nicht in ein GA-System integriert werden kann oder darf, diese jedoch an ein GA-System gekoppelt werden soll, MUSS festgelegt werden, welche Informationen der TGA-Anlage an das GA-System gemeldet werden. Sowohl die Integration von TGA-Anlagen in ein GA-System als auch die rückwirkungsfreie Kopplung von TGA-Anlagen an GA-Systeme MÜSSEN angemessen abgesichert sein. Ebenfalls MUSS die Anbindung von GA-Systemen untereinander angemessen abgesichert werden. Hierzu MÜSSEN insbesondere die Ablauf- und Funktionsketten innerhalb eines GA-Systems bzw. zwischen GA-Systemen angemessen geplant werden. Hierbei MÜSSEN alle Übergänge zwischen Gewerken und Techniken berücksichtigt werden. Diese Ablauf- und Funktionsketten MÜSSEN umfassend getestet und bei Fehlverhalten nachjustiert werden. Die Festlegungen MÜSSEN vollumfänglich dokumentiert werden. Sowohl regelmäßig als auch ergänzend bei Bedarf SOLLTE geprüft werden, ob die Dokumentation noch aktuell ist. Bei Abweichungen MUSS die Ursache für die Abweichungen eruiert und behoben werden.'
+        - id: INF.14.A4
+          title: 'Berücksichtigung von Gefahrenmeldeanlagen in der GA'
+          requirement_text: 'Gefahrenmeldeanlagen inklusive Sicherheitsanlagen MÜSSEN rückwirkungsfrei an GA-Systeme gekoppelt werden. Sie DÜRFEN NICHT in ein GA-System integriert werden. Für die netztechnische Anbindung MÜSSEN physisch getrennte Netzkomponenten und physisch getrennte Segmente genutzt werden. Werden Funknetze zur Kopplung genutzt, MÜSSEN solche TGA-Anlagen als Primärnutzende für die verwendeten Frequenzbereiche festgelegt werden. Für die Kommunikation über Funknetze SOLLTEN zertifizierte Mechanismen genutzt werden.'
+        - id: INF.14.A5
+          title: 'Dokumentation der GA'
+          requirement_text: 'Für die GA MUSS die Vielzahl unterschiedlicher Komponenten und Zugänge dokumentiert werden. Die Dokumentation MUSS regelmäßig und bei Änderungen innerhalb der GA geprüft und angepasst werden. Insbesondere MÜSSEN auch alle deaktivierten physischen Kommunikationsschnittstellen, Protokolle und Zugänge bzw. Zugriffsmöglichkeiten zur GA dokumentiert werden. Darüber hinaus MÜSSEN alle Wechselwirkungen und Abhängigkeiten von GA-relevanten Komponenten sowie von TGA-Anlagen, die in GA-Systeme integriert oder mit GA-Systemen gekoppelt sind, dokumentiert werden. Die verfügbaren und genutzten Sicherheitseigenschaften der verwendeten Protokolle SOLLTEN dokumentiert werden. Die Dokumentation SOLLTE für alle GA-Systeme übergreifend hinsichtlich Inhalten und deren Datenstrukturen abgestimmt werden.'
+        - id: INF.14.A6
+          title: 'Separierung von Netzen der GA'
+          requirement_text: 'GA-Netze MÜSSEN von Büro-Netzen und sonstigen Netzen der Institution mindestens logisch getrennt werden. Jegliche Kommunikation zwischen GA-Systemen und sonstigen IT-Systemen MUSS kontrolliert und reglementiert werden. Hierfür MÜSSEN an allen Übergängen einer solchen Segmentierung entsprechende Komponenten mit Sicherheitsfunktionen, mindestens mit Firewall-Funktion, vorgesehen werden. Wird die GA für einen Gebäudekomplex oder eine Liegenschaft zentral eingerichtet, so MUSS die gebäudeübergreifende GA-Kommunikation über LAN-, WLAN-, WAN-, Funknetz- oder Internet-Verbindungen auch auf Ebene des Netzes separiert werden.'
+      standard:
+        - id: INF.14.A7
+          title: 'Festlegung einer Sicherheitsrichtlinie für die GA'
+          requirement_text: 'Ausgehend von der allgemeinen Sicherheitsleitlinie der Institution und der übergreifenden Sicherheitsrichtlinie für das TGM SOLLTEN die Sicherheitsanforderungen an die GA, d. h. für alle GA-Systeme, in einer GA-Sicherheitsrichtlinie konkretisiert werden. Diese Richtlinie SOLLTE allen Personen, die an Planung, Beschaffung, Implementierung und Betrieb der GA-Systeme beteiligt sind, bekannt und Grundlage für deren Arbeit sein. Die Inhalte und die Umsetzung der geforderten Richtlinieninhalte SOLLTEN regelmäßig überprüft, gegebenenfalls angepasst und die Ergebnisse der Prüfung nachvollziehbar dokumentiert werden. In der Sicherheitsrichtlinie SOLLTEN auch die Vorgaben an Entwicklung und Test für den Einsatz von GA-Systemen spezifiziert werden.'
+        - id: INF.14.A8
+          title: 'Anforderungsspezifikation für GA-Systeme'
+          requirement_text: 'Ausgehend von der GA-Sicherheitsrichtlinie SOLLTE für die GA eine übergreifende und für jedes GA-System eine eigene Anforderungsspezifikation erstellt werden. Aus den Anforderungen SOLLTEN sich alle wesentlichen Elemente für Architektur und Design des jeweiligen GA-Systems und der Kopplung von GA-Systemen ableiten lassen. Die Anforderungsspezifikation SOLLTE dokumentiert sowie regelmäßig und zusätzlich bei Bedarf dem Stand der Technik angepasst werden. Darüber hinaus SOLLTE regelmäßig die Umsetzung der Anforderungen geprüft werden. Es SOLLTEN in der GA ausschließlich Komponenten eingesetzt werden, die eine Authentisierung mindestens über einen änderbaren Anmeldenamen und ein änderbares Passwort bereitstellen.'
+        - id: INF.14.A9
+          title: 'Entwicklung eines GA-Konzepts'
+          requirement_text: 'Ausgehend von der GA-Sicherheitsrichtlinie und den Anforderungsspezifikationen SOLLTE für die GA ein übergreifendes GA-Konzept entwickelt werden. Hieraus abgeleitet SOLLTEN für alle GA-Systeme detaillierte Konzepte entwickelt werden. In den Konzepten SOLLTEN mindestens folgende Punkte angemessen berücksichtigt werden: Die Konzepte SOLLTEN alle technischen und organisatorischen Vorgaben beschreiben. Die erstellten Konzepte SOLLTEN regelmäßig geprüft und gegebenenfalls aktualisiert werden.'
+        - id: INF.14.A10
+          title: 'Bildung von unabhängigen GA-Bereichen'
+          requirement_text: 'In der GA SOLLTEN GA-Bereiche derart geplant und umgesetzt werden, dass Abhängigkeiten zwischen den GA-Bereichen minimiert werden und GA-Bereiche unabhängig gesteuert werden können. Eine Störung in einem GA-Bereich SOLLTE keine oder nur geringe Auswirkungen auf andere GA-Bereiche haben. Insbesondere SOLLTEN die Gebäude innerhalb eines Gebäudekomplexes oder einer Liegenschaft separat steuerbar sein. Die eingerichteten GA-Bereiche SOLLTEN auch im GA-Managementsystem entsprechend sichtbar sein.'
+        - id: INF.14.A11
+          title: 'Absicherung von frei zugänglichen Ports und Zugängen der GA'
+          requirement_text: 'Der Anschluss von Komponenten, speziell von unautorisierten, unbekannten Komponenten und Fremdgeräten, SOLLTE insbesondere an frei zugänglichen Ethernet-Ports, USB-Ports und anderen Schnittstellen der GA kontrolliert und eingeschränkt werden. Der Anschluss einer unautorisierten oder unbekannten Komponente SOLLTE in die Ereignisprotokollierung aufgenommen werden. Eine direkte IP-basierte Kommunikation von solchen Komponenten mit Systemen der GA SOLLTE unterbunden werden (siehe INF.14.A13 Netzsegementierung in der GA). Für frei zugängliche LAN- oder WLAN-Zugänge SOLLTE eine Netzzugangskontrolle gemäß IEEE 802.1X oder vergleichbare Sicherheitsmechanismen eingesetzt werden. Hiermit SOLLTEN unzureichend authentisierte und autorisierte Komponenten in getrennten Netzsegmenten positioniert werden. Frei zugängliche Schnittstellen für temporäre Wartungszwecke, wie beispielsweise USB-Ports an GA-Komponenten, SOLLTEN nur bei Bedarf aktiviert werden.'
+        - id: INF.14.A12
+          title: 'Nutzung sicherer Übertragungsprotokolle für die GA'
+          requirement_text: 'Für Konfiguration, Wartung und Steuerung von GA-relevanten Komponenten, die auf Ethernet und IP basieren, SOLLTEN sichere Protokolle eingesetzt werden, falls nicht über vertrauenswürdige Netzsegmente kommuniziert wird. Außerhalb vertrauenswürdiger Netzsegmente SOLLTE die Kommunikation über Ethernet und IP zwischen GA-Systemen verschlüsselt erfolgen. Die Verschlüsselung SOLLTE mit den jeweils aktuellen Verschlüsselungsmechanismen durchgeführt werden.'
+        - id: INF.14.A13
+          title: 'Netzsegmentierung in der GA'
+          requirement_text: 'Innerhalb des GA-Netzes SOLLTE eine Netzsegmentierung umgesetzt werden, die bedarfsgerecht einzelne GA-Systeme, einzelne TGA-Anlagen oder einzelne Gruppen von TGA-Anlagen innerhalb eines GA-Systems voneinander trennt. Für die Übergänge zwischen den Segmenten SOLLTEN entsprechende Regeln definiert und zur Umsetzung Komponenten mit Sicherheitsfunktionen, mindestens zustandsbehaftete Paketfilter, genutzt werden.'
+        - id: INF.14.A14
+          title: 'Nutzung eines GA-geeigneten Zugriffsschutzes'
+          requirement_text: 'Für die GA SOLLTE ein Identitäts- und Berechtigungsmanagement gemäß Baustein ORP.4 Identitäts und Berechtigungsmanagement genutzt werden, das die Anforderungen der GA angemessen umsetzt. Hierfür SOLLTE bedarfsabhängig eine GA-eigene Authentisierungslösung oder eine geeignete Replikation einer zentralen Authentisierungslösung der Institution realisiert werden. In die Authentisierungslösung SOLLTEN soweit möglich alle GA-relevanten Komponenten eingebunden werden. Betreibende der GA-Systeme, Betreibende der TGA-Anlagen und auch Nachfrageorganisationen SOLLTEN im Rollen- und Berechtigungskonzept hinsichtlich der GA angemessen berücksichtigt werden. Dies SOLLTE insbesondere dann sorgfältig geplant und abgestimmt werden, wenn die GA institutionsübergreifend bereitgestellt wird. Alle GA-relevanten Komponenten, inklusive der Komponenten der Feldebene und Bedienelemente, SOLLTEN geeignete Funktionen zur Absicherung von Zugriffen umsetzen können. Komponenten, die keinen Zugriffsschutz bieten oder für die vom herstellenden Unternehmen vorgegebenen Zugangsparameter nicht änderbar sind, SOLLTEN NICHT genutzt werden.'
+        - id: INF.14.A15
+          title: 'Absicherung von GA-spezifischen Netzen'
+          requirement_text: 'Sind in GA-spezifischen Netzen wie z. B. BACnet Sicherheitsmechanismen der Kommunikation verfügbar, SOLLTEN diese genutzt werden. Mindestens SOLLTEN Mechanismen zur Authentisierung und Verschlüsselung genutzt werden. Für GA-spezifische Netze, die keine angemessenen Sicherheitsmechanismen realisieren können, SOLLTE erwogen werden, diese auf ein GA-spezifisches Netz mit angemessenen Sicherheitsmechanismen umzustellen. Grundsätzlich SOLLTE die Kommunikation mit GA-spezifischen Netzen durch Koppelelemente mit Sicherheitsfunktionen kontrolliert und gegebenenfalls reglementiert werden.'
+        - id: INF.14.A16
+          title: 'Absicherung von drahtloser Kommunikation in GA-Netzen'
+          requirement_text: 'In GA-Netzen, die auf einer drahtlosen Kommunikation wie z. B. EnOcean basieren, SOLLTEN die Sicherheitsmechanismen der jeweiligen Funktechnik zur Absicherung der Kommunikation genutzt werden. Insbesondere SOLLTEN eine angemessene Authentisierung und eine Verschlüsselung auf der Luftschnittstelle umgesetzt werden. Ist dies für die entsprechenden Endgeräte nicht möglich, SOLLTE für diese Endgeräte die Kommunikation am Übergang in kabelgebundene Netze kontrolliert werden, z. B. durch eine Komponente mit Firewall-Funktion. Darüber hinaus SOLLTEN mögliche Störungen für die Ausbreitung der Funkwellen, beispielsweise durch Abschattungen, bei der Planung der GA-Netze berücksichtigt werden.'
+        - id: INF.14.A17
+          title: 'Absicherung von Mobilfunkkommunikation in GA-Netzen'
+          requirement_text: 'Wird im Rahmen der GA Mobilfunk eingesetzt, SOLLTEN für solche GA-Netze die Sicherheitsmechanismen der jeweiligen Mobilfunknetze genutzt werden. Werden öffentliche Mobilfunknetze wie 5G oder Sigfox in der GA verwendet, SOLLTE eine unkontrollierte direkte IP-basierte Kommunikation mit GA-relevanten Komponenten unterbunden werden. GA-Komponenten SOLLTEN nur dann mit einem dedizierten Anschluss an ein öffentliches Mobilfunknetz ausgestattet werden, falls dieser für deren Betrieb essenziell ist. Hierfür SOLLTE geprüft und festgelegt werden, für welche GA-Komponenten ein Anschluss an öffentliche Mobilfunknetze notwendig ist. Sofern im öffentlichen Mobilfunknetz keine Trennung der GA-Netze möglich ist, wie z. B. bei 5G mit Slicing, SOLLTE im Kommunikationspfad eine Entkopplung der IP-Kommunikation durch ein Application Layer Gateway (ALG) stattfinden. Falls Mobilfunktechniken in der GA als Bestandteil der öffentlichen Mobilfunkinfrastruktur eines Mobilfunkunternehmens eingesetzt werden, SOLLTEN mit den Mitteln der entsprechenden Mobilfunktechnik ein oder mehrere virtuelle Mobilfunknetze realisiert werden, die ausschließlich der GA zur Verfügung stehen. Falls in der GA mit Hilfe von Mobilfunktechniken wie LTE und 5G autarke private Mobilfunknetze lokal auf dem Campus eingerichtet werden, SOLLTE der Übergang zwischen diesen Mobilfunknetzen und den sonstigen Netzen durch ein Koppelelement mit Firewall-Funktion abgesichert werden. Auch für private Mobilfunknetze SOLLTE eine Segmentierung in mehrere virtuelle Mobilfunknetze umgesetzt werden.'
+        - id: INF.14.A18
+          title: 'Sichere Anbindung von GA-externen Systemen'
+          requirement_text: 'Die Kommunikation von GA-Systemen mit GA-externen Systemen SOLLTE ausschließlich über definierte Schnittstellen und mit definierten IT-Systemen möglich sein. Die Kommunikation SOLLTE authentisiert und verschlüsselt werden. Die möglichen Schnittstellen zu GA-externen Systemen SOLLTEN auf das notwendige Maß beschränkt werden.'
+        - id: INF.14.A19
+          title: 'Nutzung dedizierter Adressbereiche für GA-Netze'
+          requirement_text: 'Für die GA SOLLTEN dedizierte Adressbereiche genutzt werden, die sich insbesondere von den Adressbereichen der Büro-IT und der OT unterscheiden. Für diese Adressbereiche SOLLTE festgelegt werden, aus welchen Bereichen statische Adressen vergeben werden und welche GA-relevanten Komponenten statische Adressen erhalten. Falls an die GA angebundene Netzbereiche wie TGA-Anlagen identische Adressbereiche nutzen (Replizieren von Anlagenkonfigurationen), MÜSSEN diese in getrennten Segmenten positioniert werden, um Adresskonflikte zu unterbinden. In diesem Fall MUSS die segmentübergreifende Kommunikation durch entsprechende Mechanismen abgesichert werden, beispielsweise durch den Einsatz eines ALG oder von Network Address Translation (NAT).'
+        - id: INF.14.A20
+          title: 'Vermeidung von Broadcast-Kommunikation in GA-Netzen'
+          requirement_text: 'In GA-Netzen SOLLTE die Broadcast-Last auf OSI Layer 2 oder OSI Layer 3 für unbeteiligte Systeme und Komponenten minimiert werden, um eine Überlastung zu vermeiden. Hierzu SOLLTE die Kommunikation auf gruppenspezifische Multicasts umgestellt oder in der Planung der Segmentierung entsprechend berücksichtigt werden.'
+        - id: INF.14.A21
+          title: 'Anzeigen der Gültigkeit von Informationen in GA-Systemen'
+          requirement_text: 'Ein GA-System SOLLTE visualisieren, ob die angezeigten Informationen bezüglich Zeit, Ort, Wert, Zustand oder Ereignis auf planmäßig erhaltenen Informationen basieren. Informationen, die simulierte oder „eingefrorene“ Werte anzeigen, SOLLTEN abhängig vom Schutzbedarf der TGA-Anlagen erkennbar sein oder einen Alarm auslösen.'
+        - id: INF.14.A22
+          title: 'Sicherstellung von autark funktionierenden GA-Systemen und TGA-Anlagen'
+          requirement_text: 'Innerhalb eines GA-Systems SOLLTE sichergestellt werden, dass TGA-Anlagen gemäß ihrem Schutzbedarf auch unabhängig von der Anbindung an das GA-System autark funktionieren. Insbesondere SOLLTEN GA-Systeme so konfiguriert werden, dass keine betriebsverhindernden Abhängigkeiten zum TGM, zu anderen GA-Systemen oder TGA-Anlagen bestehen. Eine TGA-Anlage SOLLTE auch bei Ausfall der Verbindung zur GA für einen bestimmten Zeitraum gemäß dem jeweiligen Schutzbedarf betriebsfähig bleiben und ihre Funktion wahrnehmen.'
+        - id: INF.14.A23
+          title: 'Einsatz von physisch robusten Komponenten für die GA'
+          requirement_text: 'Abhängig von den Einsatzbedingungen der Komponenten in der GA SOLLTEN entsprechend physisch robuste Komponenten eingesetzt werden, die besonders auch für harsche Umgebungsbedingungen vorgesehen bzw. ausgewiesen sind. Sind angemessen robuste Komponenten nicht verfügbar, SOLLTEN entsprechende Kompensationsmaßnahmen ergriffen werden.'
+        - id: INF.14.A24
+          title: 'Zeitsynchronisation für die GA'
+          requirement_text: 'Alle in einem GA-System angebundenen Komponenten und TGA-Anlagen SOLLTEN eine synchrone Uhrzeit nutzen, um ein automatisiertes Messen, Steuern und Regeln zu gewährleisten (siehe auch Baustein OPS.1.2.6 NTP-Zeitsynchronisation). Auch GA-Systeme, die miteinander verbunden sind, SOLLTEN eine synchrone Uhrzeit nutzen. Erstreckt sich die GA über Gebäudekomplexe oder Liegenschaften, SOLLTE die Zeitsynchronisation für alle Gebäude gewährleistet werden. Falls innerhalb eines GA-Systems eine Kommunikation mit Echtzeit-Anforderungen erforderlich ist, SOLLTE für die Zeitsynchronisation PTP oder ein vergleichbarer Mechanismus anstelle von NTP genutzt werden.'
+        - id: INF.14.A25
+          title: 'Dediziertes Monitoring in der GA'
+          requirement_text: 'Für alle Komponenten, die für die GA betriebsrelevant sind, SOLLTE ein geeignetes Monitoringkonzept erstellt und umgesetzt werden. Hierbei SOLLTEN die Verfügbarkeit sowie bedeutsame Parameter der GA-relevanten Komponenten laufend überwacht werden. Fehlerzustände sowie die Überschreitung definierter Grenzwerte SOLLTEN automatisch an die betreibende Organisation gemeldet werden. Es SOLLTEN durch die GA mindestens Alarme ausgelöst werden, wenn TGA-Anlagen ausfallen oder wichtige Funktionen zum automatisierten Steuern und Regeln nicht verfügbar sind. Zudem SOLLTE festgelegt werden, für welche besonders sicherheitsrelevanten Ereignisse und für welche weiteren Ereignisse automatische Alarmmeldungen generiert werden. Statusmeldungen und Monitoringdaten SOLLTEN NUR über sichere Kommunikationswege übertragen werden.'
+        - id: INF.14.A26
+          title: 'Protokollierung in der GA'
+          requirement_text: 'Ergänzend zum Baustein OPS.1.1.5 Protokollierung SOLLTEN Statusänderungen an GA-relevanten Komponenten und sicherheitsrelevante Ereignisse protokolliert werden. Zusätzlich SOLLTEN alle schreibenden Konfigurationszugriffe auf TGA-Anlagen und gegebenenfalls GA-relevante Komponenten sowie alle manuellen und automatisierten Änderungen der Zustände von diesen protokolliert werden. Es SOLLTE festgelegt werden, welche Protokollierungsdaten auf einer zentralen Protokollierungsinstanz zusammengeführt werden. Protokollierungsdaten SOLLTEN NUR über sichere Kommunikationswege übertragen werden.'
+        - id: INF.14.A27
+          title: 'Berücksichtigung von Wechselwirkungen zwischen Komponenten der GA in der Notfallplanung'
+          requirement_text: 'Es SOLLTE initial und in regelmäßigen Abständen nachvollziehbar analysiert werden, wie sich die GA und die abgeleiteten Planungen und Konzepte auf die Notfallplanung auswirken. Insbesondere SOLLTE festgelegt werden, wie bei einem Ausfall von TGA-Anlagen oder GA-relevanten Komponenten durch technischen Defekt oder Angriff die Wechselwirkungen auf andere TGA-Anlagen, GA-relevante Systeme und TGM minimiert werden können. Im Rahmen der Notfallplanung SOLLTE auch festgelegt werden, welches Wartungspersonal für die betroffenen TGA-Anlagen und GA-relevanten Systeme zuständig ist und über welche Meldewege dieses erreicht werden kann. Außerdem SOLLTE festgelegt werden, welche Berechtigungen das Wartungspersonal zur Behebung von Notfällen hat. Es SOLLTE in der Notfallplanung auch spezifiziert werden, wie bei Ausfall der GA-Systeme ein gegebenenfalls erforderlicher Notbetrieb von TGA-Anlagen sichergestellt wird. Dabei SOLLTE für alle TGA-Anlagen und GA-Systeme inklusive aller GA-relevanten Komponenten eine Wiederanlaufreihenfolge festgelegt und in den entsprechenden Wiederanlaufplänen dokumentiert werden.'
+      hoch:
+        - id: INF.14.A28
+          title: 'Physische Trennung der GA'
+          requirement_text: 'Bei erhöhtem Schutzbedarf SOLLTEN GA-Netze als physisch getrennte Zonen gemäß Baustein NET.1.1 Netzarchitektur und -design realisiert werden. Abhängig vom Schutzbedarf SOLLTE für die Anbindung beispielsweise an externe Clouds ein dedizierter, restriktiv reglementierter Internet-Zugang bereitgestellt werden. Ebenfalls SOLLTEN, abhängig vom Schutzbedarf der GA-Systeme, Anbindungen an nicht vertrauenswürdige Netze, gegebenenfalls auch Anbindungen an institutionseigene Büro- oder OT-Netze, unterbunden werden.'
+        - id: INF.14.A29
+          title: 'Trennung einzelner TGA-Anlagen'
+          requirement_text: 'Um einzelne TGA-Anlagen mit erhöhtem Schutzbedarf innerhalb eines GA-Systems abzusichern, SOLLTEN solche TGA-Anlagen in separaten Netzsegmenten positioniert werden. Zur Kontrolle der Kommunikation SOLLTEN Firewall-Funktionen unmittelbar vor dem Anlagennetz positioniert werden.'
+        - id: INF.14.A30
+          title: 'Bereitstellung eines GA-eigenen Zeitservers zur Zeitsynchronisation'
+          requirement_text: 'Bei erhöhtem Schutzbedarf SOLLTE für die GA oder auch für einzelne GA-Systeme ein eigener GA-Zeitserver bereitgestellt werden, der direkt mit einer Atom- oder Funkuhr (Stratum 0) gekoppelt ist und an den gegebenenfalls weitere nachgelagerte GA-Zeitserver angebunden werden.'

@@ -156,7 +156,7 @@ mappings:
     audit_evidence_hint: 'KRY-01: Cloud-Krypto-Policy, Algorithmen-Allowlist (BSI TR-02102 konform), HSM/KMS-Konfiguration. CON.1.A1 Auswahl geeigneter kryptografischer Verfahren, Key-Management-Verfahren.'
 
   - source: 'COM-04'
-    target: 'CON.5'
+    target: 'CON.8'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |

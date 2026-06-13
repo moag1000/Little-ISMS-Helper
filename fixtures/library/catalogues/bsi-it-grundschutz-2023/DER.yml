@@ -12,70 +12,223 @@ bausteine:
     anforderungen:
       basis:
         - id: DER.1.A1
-          title: 'Erstellung eines Notfallkonzepts'
-          requirement_text: 'Es MUSS ein Notfallkonzept erstellt werden.'
+          title: 'Erstellung einer Sicherheitsrichtlinie für die Detektion von sicherheitsrelevanten Ereignissen'
+          requirement_text: 'Ausgehend von der allgemeinen Sicherheitsrichtlinie der Institution MUSS eine spezifische Sicherheitsrichtlinie für die Detektion von sicherheitsrelevanten Ereignissen erstellt werden. In der spezifischen Sicherheitsrichtlinie MÜSSEN nachvollziehbar Anforderungen und Vorgaben beschrieben werden, wie die Detektion von sicherheitsrelevanten Ereignissen geplant, aufgebaut und sicher betrieben werden kann. Die spezifische Sicherheitsrichtlinie MUSS allen im Bereich Detektion zuständigen Mitarbeitenden bekannt und grundlegend für ihre Arbeit sein. Falls die spezifische Sicherheitsrichtlinie verändert wird oder von den Anforderungen abgewichen wird, dann MUSS dies mit dem oder der verantwortlichen ISB abgestimmt und dokumentiert werden. Es MUSS regelmäßig überprüft werden, ob die spezifische Sicherheitsrichtlinie noch korrekt umgesetzt ist. Die Ergebnisse der Überprüfung MÜSSEN sinnvoll dokumentiert werden.'
         - id: DER.1.A2
-          title: 'Festlegung von Meldewegen fuer Sicherheitsvorfaelle'
-          requirement_text: 'Es MUESSEN klare Meldewege fuer Sicherheitsvorfaelle festgelegt werden.'
+          title: 'Einhaltung rechtlicher Bedingungen bei der Auswertung von Protokollierungsdaten'
+          requirement_text: 'Wenn Protokollierungsdaten ausgewertet werden, dann MÜSSEN dabei die Bestimmungen aus den aktuellen Gesetzen zum Bundes- und Landesdatenschutz eingehalten werden. Wenn Detektionssysteme eingesetzt werden, dann MÜSSEN die Persönlichkeitsrechte bzw. Mitbestimmungsrechte der Mitarbeitendenvertretungen gewahrt werden. Ebenso MUSS sichergestellt sein, dass alle weiteren relevanten gesetzlichen Bestimmungen beachtet werden, z. B. das Telemediengesetz (TMG), das Betriebsverfassungsgesetz und das Telekommunikationsgesetz.'
         - id: DER.1.A3
-          title: 'Auswahl geeigneter Detektionsmechanismen'
-          requirement_text: 'Es MUESSEN geeignete Mechanismen zur Detektion sicherheitsrelevanter Ereignisse ausgewaehlt werden. Siehe BSI Kompendium 2023 Baustein DER.1 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Festlegung von Meldewegen für sicherheitsrelevante Ereignisse'
+          requirement_text: 'Für sicherheitsrelevante Ereignisse MÜSSEN geeignete Melde- und Alarmierungswege festgelegt und dokumentiert werden. Es MUSS bestimmt werden, welche Stellen wann zu informieren sind. Es MUSS aufgeführt sein, wie die jeweiligen Personen erreicht werden können. Je nach Dringlichkeit MUSS ein sicherheitsrelevantes Ereignis über verschiedene Kommunikationswege gemeldet werden. Alle Personen, die für die Meldung bzw. Alarmierung relevant sind, MÜSSEN über ihre Aufgaben informiert sein. Alle Schritte des Melde- und Alarmierungsprozesses MÜSSEN ausführlich beschrieben sein. Die eingerichteten Melde- und Alarmierungswege SOLLTEN regelmäßig geprüft, erprobt und aktualisiert werden, falls erforderlich.'
+        - id: DER.1.A4
+          title: 'Sensibilisierung der Mitarbeitenden'
+          requirement_text: 'Alle Benutzenden MÜSSEN dahingehend sensibilisiert werden, dass sie Ereignismeldungen ihrer Clients nicht einfach ignorieren oder schließen. Sie MÜSSEN die Meldungen entsprechend der Alarmierungswege an das verantwortliche Incident Management weitergeben (siehe DER.2.1 Behandlung von Sicherheitsvorfällen). Alle Mitarbeitenden MÜSSEN einen von ihnen erkannten Sicherheitsvorfall unverzüglich dem Incident Management melden.'
+        - id: DER.1.A5
+          title: 'Einsatz von mitgelieferten Systemfunktionen zur Detektion'
+          requirement_text: 'Falls eingesetzte IT-Systeme oder Anwendungen über Funktionen verfügen, mit denen sich sicherheitsrelevante Ereignisse detektieren lassen, dann MÜSSEN diese aktiviert und benutzt werden. Falls ein sicherheitsrelevanter Vorfall vorliegt, dann MÜSSEN die Meldungen der betroffenen IT-Systeme ausgewertet werden. Zusätzlich MÜSSEN die protokollierten Ereignisse anderer IT-Systeme überprüft werden. Auch SOLLTEN die gesammelten Meldungen in verbindlich festgelegten Zeiträumen stichpunktartig kontrolliert werden. Es MUSS geprüft werden, ob zusätzliche Schadcodescanner auf zentralen IT-Systemen installiert werden sollen. Falls zusätzliche Schadcodescanner eingesetzt werden, dann MÜSSEN diese es über einen zentralen Zugriff ermöglichen, ihre Meldungen und Protokolle auszuwerten. Es MUSS sichergestellt sein, dass die Schadcodescanner sicherheitsrelevante Ereignisse automatisch an die Zuständigen melden. Die Zuständigen MÜSSEN die Meldungen auswerten und untersuchen.'
+      standard:
+        - id: DER.1.A6
+          title: 'Kontinuierliche Überwachung und Auswertung von Protokollierungsdaten'
+          requirement_text: 'Alle Protokollierungsdaten SOLLTEN möglichst permanent aktiv überwacht und ausgewertet werden. Es SOLLTEN Mitarbeitende benannt werden, die dafür zuständig sind. Falls die zuständigen Mitarbeitenden aktiv nach sicherheitsrelevanten Ereignissen suchen müssen, z. B. wenn sie IT-Systeme kontrollieren oder testen, dann SOLLTEN solche Aufgaben in entsprechenden Verfahrensanleitungen dokumentiert sein. Für die Detektion von sicherheitsrelevanten Ereignissen SOLLTEN genügend personelle Ressourcen bereitgestellt werden.'
+        - id: DER.1.A7
+          title: 'Schulung von Zuständigen'
+          requirement_text: 'Alle Zuständigen, die Ereignismeldungen kontrollieren, SOLLTEN weiterführende Schulungen und Qualifikationen erhalten. Wenn neue IT-Komponenten beschafft werden, SOLLTE ein Budget für Schulungen eingeplant werden. Bevor die Zuständigen Schulungen für neue IT-Komponenten bekommen, SOLLTE ein Schulungskonzept erstellt werden.'
+        - id: DER.1.A9
+          title: 'Einsatz zusätzlicher Detektionssysteme'
+          requirement_text: 'Anhand des Netzplans SOLLTE festgelegt werden, welche Netzsegmente durch zusätzliche Detektionssysteme geschützt werden müssen. Der Informationsverbund SOLLTE um zusätzliche Detektionssysteme und Sensoren ergänzt werden. Schadcodedetektionssysteme SOLLTEN eingesetzt und zentral verwaltet werden. Auch die im Netzplan definierten Übergange zwischen internen und externen Netzen SOLLTEN um netzbasierte Intrusion Detection Systeme (NIDS) ergänzt werden.'
+        - id: DER.1.A10
+          title: 'Einsatz von TLS-/SSL-Proxies'
+          requirement_text: 'An den Übergängen zu externen Netzen SOLLTEN TLS-/SSL-Proxies eingesetzt werden, welche die verschlüsselte Verbindung unterbrechen und es so ermöglichen, die übertragenen Daten auf Malware zu prüfen. Alle TLS-/SSL-Proxies SOLLTEN vor unbefugten Zugriffen geschützt werden. Auf den TLS-/SSL-Proxies SOLLTEN sicherheitsrelevante Ereignisse automatisch detektiert werden. Es SOLLTE eine organisatorische Regelung erstellt werden, unter welchen datenschutzrechtlichen Voraussetzungen die Logdaten manuell ausgewertet werden dürfen.'
+        - id: DER.1.A11
+          title: 'Nutzung einer zentralen Protokollierungsinfrastruktur für die Auswertung sicherheitsrelevanter Ereignisse'
+          requirement_text: 'Die auf einer zentralen Protokollinfrastruktur gespeicherten Ereignismeldungen der IT-Systeme und Anwendungen (siehe OPS.1.1.5 Protokollierung) SOLLTEN mithilfe eines Tools abgerufen werden können. Mit dem auswählten Tool SOLLTEN die Meldungen ausgewertet werden können. Die gesammelten Ereignismeldungen SOLLTEN regelmäßig auf Auffälligkeiten kontrolliert werden. Die Signaturen der Detektionssysteme SOLLTEN immer aktuell und auf dem gleichen Stand sein, damit sicherheitsrelevante Ereignisse auch nachträglich erkannt werden können.'
+        - id: DER.1.A12
+          title: 'Auswertung von Informationen aus externen Quellen'
+          requirement_text: 'Um neue Erkenntnisse über sicherheitsrelevante Ereignisse für den eigenen Informationsverbund zu gewinnen, SOLLTEN externe Quellen herangezogen werden. Meldungen über unterschiedliche Kanäle SOLLTEN von den Mitarbeitenden auch als relevant erkannt und an die richtige Stelle weitergeleitet werden. Informationen aus zuverlässigen Quellen SOLLTEN grundsätzlich ausgewertet werden. Alle gelieferten Informationen SOLLTEN danach bewertet werden, ob sie relevant für den eigenen Informationsverbund sind. Ist dies der Fall, SOLLTEN die Informationen entsprechend der Sicherheitsvorfallbehandlung eskaliert werden.'
+        - id: DER.1.A13
+          title: 'Regelmäßige Audits der Detektionssysteme'
+          requirement_text: 'Die vorhandenen Detektionssysteme und getroffenen Maßnahmen SOLLTEN in regelmäßigen Audits daraufhin überprüft werden, ob sie noch aktuell und wirksam sind. Es SOLLTEN die Messgrößen ausgewertet werden, die beispielsweise anfallen, wenn sicherheitsrelevante Ereignisse aufgenommen, gemeldet und eskaliert werden. Die Ergebnisse der Audits SOLLTEN nachvollziehbar dokumentiert und mit dem Soll-Zustand abgeglichen werden. Abweichungen SOLLTE nachgegangen werden.'
+      hoch:
+        - id: DER.1.A14
+          title: 'Auswertung der Protokollierungsdaten durch spezialisiertes Personal'
+          requirement_text: 'Es SOLLTEN Mitarbeitende speziell damit beauftragt werden, alle Protokollierungsdaten zu überwachen. Die Überwachung der Protokollierungsdaten SOLLTE die überwiegende Aufgabe der beauftragten Mitarbeitenden sein. Die beauftragten Mitarbeitenden SOLLTEN spezialisierte weiterführende Schulungen und Qualifikationen erhalten. Ein Personenkreis SOLLTE benannt werden, der ausschließlich für das Thema Auswertung von Protokollierungsdaten verantwortlich ist.'
+        - id: DER.1.A15
+          title: 'Zentrale Detektion und Echtzeitüberprüfung von Ereignismeldungen'
+          requirement_text: 'Zentrale Komponenten SOLLTEN eingesetzt werden, um sicherheitsrelevante Ereignisse zu erkennen und auszuwerten. Zentrale, automatisierte Analysen mit Softwaremitteln SOLLTEN eingesetzt werden. Mit diesen zentralen, automatisierten Analysen mit Softwaremitteln SOLLTEN alle in der Systemumgebung anfallenden Ereignisse aufgezeichnet und in Bezug zueinander gesetzt werden. Die sicherheitsrelevanten Vorgänge SOLLTEN sichtbar gemacht werden. Alle eingelieferten Daten SOLLTEN lückenlos in der Protokollverwaltung einsehbar und auswertbar sein. Die Daten SOLLTEN möglichst permanent ausgewertet werden. Werden definierte Schwellwerte überschritten, SOLLTE automatisch alarmiert werden. Das Personal SOLLTE sicherstellen, dass bei einem Alarm unverzüglich eine qualifizierte und dem Bedarf entsprechende Reaktion eingeleitet wird. In diesem Zusammenhang SOLLTEN auch die betroffenen Mitarbeitenden sofort informiert werden. Die Systemverantwortlichen SOLLTEN regelmäßig die Analyseparameter auditieren und anpassen, falls dies erforderlich ist. Zusätzlich SOLLTEN bereits überprüfte Daten regelmäßig hinsichtlich sicherheitsrelevanter Ereignisse automatisch untersucht werden.'
+        - id: DER.1.A16
+          title: 'Einsatz von Detektionssystemen nach Schutzbedarfsanforderungen'
+          requirement_text: 'Anwendungen mit erhöhtem Schutzbedarf SOLLTEN durch zusätzliche Detektionsmaßnahmen geschützt werden. Dafür SOLLTEN z. B. solche Detektionssysteme eingesetzt werden, mit denen sich der erhöhte Schutzbedarf technisch auch sicherstellen lässt.'
+        - id: DER.1.A17
+          title: 'Automatische Reaktion auf sicherheitsrelevante Ereignisse'
+          requirement_text: 'Bei einem sicherheitsrelevanten Ereignis SOLLTEN die eingesetzten Detektionssysteme das Ereignis automatisch melden und mit geeigneten Schutzmaßnahmen reagieren. Hierbei SOLLTEN Verfahren eingesetzt werden, die automatisch mögliche Angriffe, Missbrauchsversuche oder Sicherheitsverletzungen erkennen. Es SOLLTE möglich sein, automatisch in den Datenstrom einzugreifen, um einen möglichen Sicherheitsvorfall zu unterbinden.'
+        - id: DER.1.A18
+          title: 'Durchführung regelmäßiger Integritätskontrollen'
+          requirement_text: 'Alle Detektionssysteme SOLLTEN regelmäßig daraufhin überprüft werden, ob sie noch integer sind. Auch SOLLTEN die Berechtigungen der Benutzenden kontrolliert werden. Zusätzlich SOLLTEN die Sensoren eine Integritätskontrolle von Dateien durchführen. Bei sich ändernden Werten SOLLTE eine automatische Alarmierung ausgelöst werden.'
 
   - id: DER.2.1
-    title: 'Behandlung von Sicherheitsvorfaellen'
+    title: 'Behandlung von Sicherheitsvorfällen'
     description: 'Anforderungen an die strukturierte Behandlung von Sicherheitsvorfaellen.'
     anforderungen:
       basis:
         - id: DER.2.1.A1
-          title: 'Erstellung einer Richtlinie zur Behandlung von Sicherheitsvorfaellen'
-          requirement_text: 'Es MUSS eine Richtlinie zur Behandlung von Sicherheitsvorfaellen erstellt werden.'
+          title: 'Definition eines Sicherheitsvorfalls'
+          requirement_text: 'In einer Institution MUSS klar definiert sein, was ein Sicherheitsvorfall ist. Ein Sicherheitsvorfall MUSS so weit wie möglich von Störungen im Tagesbetrieb abgegrenzt sein. Alle an der Behandlung von Sicherheitsvorfällen beteiligten Mitarbeitenden MÜSSEN die Definition eines Sicherheitsvorfalls kennen. Die Definition und die Eintrittsschwellen eines solchen Vorfalls SOLLTEN sich nach dem Schutzbedarf der betroffenen Geschäftsprozesse, IT-Systeme bzw. Anwendungen richten.'
         - id: DER.2.1.A2
-          title: 'Einrichtung eines Incident-Response-Teams'
-          requirement_text: 'Es MUSS ein Incident-Response-Team eingerichtet werden.'
+          title: 'Erstellung einer Richtlinie zur Behandlung von Sicherheitsvorfällen'
+          requirement_text: 'Eine Richtlinie zur Behandlung von Sicherheitsvorfällen MUSS erstellt werden. Darin MÜSSEN Zweck und Ziel der Richtlinie definiert sowie alle Aspekte der Behandlung von Sicherheitsvorfällen geregelt werden. So MÜSSEN Verhaltensregeln für die verschiedenen Arten von Sicherheitsvorfällen beschrieben sein. Zusätzlich MUSS es für alle Mitarbeitenden zielgruppenorientierte und praktisch anwendbare Handlungsanweisungen geben. Weiterhin SOLLTEN die Schnittstellen zu anderen Managementbereichen berücksichtigt werden, z. B. zum Notfallmanagement. Die Richtlinie MUSS allen Mitarbeitenden bekannt sein. Sie MUSS mit dem IT-Betrieb abgestimmt und durch die Institutionsleitung verabschiedet sein. Die Richtlinie MUSS regelmäßig geprüft und aktualisiert werden.'
         - id: DER.2.1.A3
-          title: 'Festlegung von Verantwortlichkeiten bei Sicherheitsvorfaellen'
-          requirement_text: 'Es MUESSEN Verantwortlichkeiten bei Sicherheitsvorfaellen festgelegt werden.'
-      standard: []
-      hoch: []
+          title: 'Festlegung von Verantwortlichkeiten und Ansprechpersonen bei Sicherheitsvorfällen'
+          requirement_text: 'Es MUSS geregelt werden, wer bei Sicherheitsvorfällen wofür verantwortlich ist. Für alle Mitarbeitenden MÜSSEN die Aufgaben und Kompetenzen bei Sicherheitsvorfällen festgelegt werden. Insbesondere Mitarbeitende, die Sicherheitsvorfälle bearbeiten sollen, MÜSSEN über ihre Aufgaben und Kompetenzen unterrichtet werden. Dabei MUSS auch geregelt sein, wer die mögliche Entscheidung für eine forensische Untersuchung trifft, nach welchen Kriterien diese vorgenommen wird und wann sie erfolgen soll. Die Ansprechpartner oder Ansprechpartnerinnen für alle Arten von Sicherheitsvorfällen MÜSSEN den Mitarbeitenden bekannt sein. Kontaktinformationen MÜSSEN immer aktuell und leicht zugänglich sein.'
+        - id: DER.2.1.A4
+          title: 'Benachrichtigung betroffener Stellen bei Sicherheitsvorfällen'
+          requirement_text: 'Von einem Sicherheitsvorfall MÜSSEN alle betroffenen internen und externen Stellen zeitnah informiert werden. Dabei MUSS geprüft werden, ob der oder die Datenschutzbeauftragte, der Betriebs- und Personalrat sowie Mitarbeitende aus der Rechtsabteilung einbezogen werden müssen. Ebenso MÜSSEN die Meldepflichten für Behörden und regulierte Branchen berücksichtigt werden. Außerdem MUSS gewährleistet sein, dass betroffene Stellen über die erforderlichen Maßnahmen informiert werden.'
+        - id: DER.2.1.A5
+          title: 'Behebung von Sicherheitsvorfällen'
+          requirement_text: 'Damit ein Sicherheitsvorfall erfolgreich behoben werden kann, MÜSSEN die Zuständigen zunächst das Problem eingrenzen und die Ursache finden. Danach MÜSSEN die erforderlichen Maßnahmen auswählt werden, um das Problem zu beheben. Die Leitung des IT-Betriebs MUSS eine Freigabe erteilen, bevor die Maßnahmen umgesetzt werden. Anschließend MUSS die Ursache beseitigt und ein sicherer Zustand hergestellt werden. Eine aktuelle Liste von internen und externen Sicherheitsfachleuten MUSS vorhanden sein, die bei Sicherheitsvorfällen für Fragen aus den erforderlichen Themenbereichen hinzugezogen werden können. Es MÜSSEN sichere Kommunikationsverfahren mit diesen internen und externen Stellen etabliert werden.'
+        - id: DER.2.1.A6
+          title: 'Wiederherstellung der Betriebsumgebung nach Sicherheitsvorfällen'
+          requirement_text: 'Nach einem Sicherheitsvorfall MÜSSEN die betroffenen Komponenten vom Netz genommen werden. Zudem MÜSSEN alle erforderlichen Daten gesichert werden, die Aufschluss über die Art und Ursache des Problems geben könnten. Auf allen betroffenen Komponenten MÜSSEN das Betriebssystem und alle Applikationen auf Veränderungen untersucht werden. Die Originaldaten MÜSSEN von schreibgeschützten Datenträgern wieder eingespielt werden. Dabei MÜSSEN alle sicherheitsrelevanten Konfigurationen und Patches mit aufgespielt werden. Wenn Daten aus Datensicherungen wieder eingespielt werden, MUSS sichergestellt sein, dass diese vom Sicherheitsvorfall nicht betroffen waren. Nach einem Angriff MÜSSEN alle Zugangsdaten auf den betroffenen Komponenten geändert werden, bevor sie wieder in Betrieb genommen werden. Die betroffenen Komponenten SOLLTEN einem Penetrationstest unterzogen werden, bevor sie wieder eingesetzt werden. Bei der Wiederherstellung der sicheren Betriebsumgebung MÜSSEN die Benutzenden in die Anwendungsfunktionstests einbezogen werden. Nachdem alles wiederhergestellt wurde, MÜSSEN die Komponenten inklusive der Netzübergänge gezielt überwacht werden.'
+      standard:
+        - id: DER.2.1.A7
+          title: 'Etablierung einer Vorgehensweise zur Behandlung von Sicherheitsvorfällen'
+          requirement_text: 'Es SOLLTE eine geeignete Vorgehensweise zur Behandlung von Sicherheitsvorfällen definiert werden. Die Abläufe, Prozesse und Vorgaben für die verschiedenen Sicherheitsvorfälle SOLLTEN dabei eindeutig geregelt und geeignet dokumentiert werden. Die Institutionsleitung SOLLTE die festgelegte Vorgehensweise in Kraft setzen und allen Beteiligten zugänglich machen. Es SOLLTE regelmäßig überprüft werden, ob die Vorgehensweise noch aktuell und wirksam ist. Bei Bedarf SOLLTE die Vorgehensweise angepasst werden.'
+        - id: DER.2.1.A8
+          title: 'Aufbau von Organisationsstrukturen zur Behandlung von Sicherheitsvorfällen'
+          requirement_text: 'Für den Umgang mit Sicherheitsvorfällen SOLLTEN geeignete Organisationsstrukturen festgelegt werden. Es SOLLTE ein Sicherheitsvorfall-Team aufgebaut werden, dessen Mitglieder je nach Art des Vorfalls einberufen werden können. Auch wenn das Sicherheitsvorfall-Team nur für einen konkreten Fall zusammentritt, SOLLTEN bereits im Vorfeld geeignete Mitglieder benannt und in ihre Aufgaben eingewiesen sein. Es SOLLTE regelmäßig geprüft werden, ob die Zusammensetzung des Sicherheitsvorfall-Teams noch angemessen ist. Gegebenenfalls SOLLTE das Sicherheitsvorfall-Team neu zusammengestellt werden.'
+        - id: DER.2.1.A9
+          title: 'Festlegung von Meldewegen für Sicherheitsvorfälle'
+          requirement_text: 'Für die verschiedenen Arten von Sicherheitsvorfällen SOLLTEN die jeweils passenden Meldewege aufgebaut sein. Es SOLLTE dabei sichergestellt sein, dass Mitarbeitende Sicherheitsvorfälle über verlässliche und vertrauenswürdige Kanäle schnell und einfach melden können. Wird eine zentrale Anlaufstelle für die Meldung von Störungen oder Sicherheitsvorfällen eingerichtet, SOLLTE dies an alle Mitarbeitende kommuniziert werden. Eine Kommunikations- und Kontaktstrategie SOLLTE vorliegen. Darin SOLLTE geregelt sein, wer grundsätzlich informiert werden muss und wer informiert werden darf, durch wen dies in welcher Reihenfolge erfolgt und in welcher Tiefe informiert wird. Es SOLLTE definiert sein, wer Informationen über Sicherheitsvorfälle an Dritte weitergibt. Ebenso SOLLTE sichergestellt sein, dass keine unautorisierten Personen Informationen über den Sicherheitsvorfall weitergeben.'
+        - id: DER.2.1.A10
+          title: 'Eindämmen der Auswirkung von Sicherheitsvorfällen'
+          requirement_text: 'Parallel zur Ursachenanalyse eines Sicherheitsvorfalls SOLLTE entschieden werden, ob es wichtiger ist, den entstandenen Schaden einzudämmen oder den Vorfall aufzuklären. Um die Auswirkung eines Sicherheitsvorfalls abschätzen zu können, SOLLTEN ausreichend Informationen vorliegen. Für ausgewählte Sicherheitsvorfallszenarien SOLLTEN bereits im Vorfeld Worst-Case-Betrachtungen durchgeführt werden.'
+        - id: DER.2.1.A11
+          title: 'Einstufung von Sicherheitsvorfällen'
+          requirement_text: 'Ein einheitliches Verfahren SOLLTE festgelegt werden, um Sicherheitsvorfälle und Störungen einzustufen. Das Einstufungsverfahren für Sicherheitsvorfälle SOLLTE zwischen Sicherheitsmanagement und der Störungs- und Fehlerbehebung (Incident Management) abgestimmt sein.'
+        - id: DER.2.1.A12
+          title: 'Festlegung der Schnittstellen der Sicherheitsvorfallbehandlung zur Störungs- und Fehlerbehebung'
+          requirement_text: 'Die Schnittstellen zwischen Störungs- und Fehlerbehebung, Notfallmanagement und Sicherheitsmanagement SOLLTEN analysiert werden. Dabei SOLLTEN auch eventuell gemeinsam benutzbare Ressourcen identifiziert werden. Die bei der Störungs- und Fehlerbehebung beteiligten Mitarbeitenden SOLLTEN für die Behandlung von Sicherheitsvorfällen sowie für das Notfallmanagement sensibilisiert werden. Das Sicherheitsmanagement SOLLTE lesenden Zugriff auf eingesetzte Incident-Management-Werkzeuge haben.'
+        - id: DER.2.1.A13
+          title: 'Einbindung in das Sicherheits- und Notfallmanagement'
+          requirement_text: 'Die Behandlung von Sicherheitsvorfällen SOLLTE mit dem Notfallmanagement abgestimmt sein. Falls es in der Institution eine spezielle Rolle für Störungs- und Fehlerbehebung gibt, SOLLTE auch diese mit einbezogen werden.'
+        - id: DER.2.1.A14
+          title: 'Eskalationsstrategie für Sicherheitsvorfälle'
+          requirement_text: 'Über die Kommunikations- und Kontaktstrategie hinaus SOLLTE eine Eskalationsstrategie formuliert werden. Diese SOLLTE zwischen den Verantwortlichen für Störungs- und Fehlerbehebung und dem Informationssicherheitsmanagement abgestimmt werden. Die Eskalationsstrategie SOLLTE eindeutige Handlungsanweisungen enthalten, wer auf welchem Weg bei welcher Art von erkennbaren oder vermuteten Sicherheitsstörungen wann einzubeziehen ist. Es SOLLTE geregelt sein, zu welchen Maßnahmen eine Eskalation führt und wie reagiert werden soll. Für die festgelegte Eskalationsstrategie SOLLTEN geeignete Werkzeuge wie z. B. Ticket-Systeme ausgewählt werden. Diese SOLLTEN sich auch dafür eignen, vertrauliche Informationen zu verarbeiten. Es SOLLTE sichergestellt sein, dass die Werkzeuge auch während eines Sicherheitsvorfalls bzw. Notfalls verfügbar sind. Die Eskalationsstrategie SOLLTE regelmäßig überprüft und gegebenenfalls aktualisiert werden. Die Checklisten (Matching Szenarios) für Störungs- und Fehlerbehebung SOLLTEN regelmäßig um sicherheitsrelevante Themen ergänzt bzw. aktualisiert werden. Die festgelegten Eskalationswege SOLLTEN in Übungen erprobt werden.'
+        - id: DER.2.1.A15
+          title: 'Schulung der Mitarbeitenden des Service Desks'
+          requirement_text: 'Dem Personal des Service Desk SOLLTEN geeignete Hilfsmittel zur Verfügung stehen, damit sie Sicherheitsvorfälle erkennen können. Sie SOLLTEN ausreichend geschult sein, um die Hilfsmittel selbst anwenden zu können. Die Mitarbeitenden des Service Desk SOLLTEN den Schutzbedarf der betroffenen IT-Systeme kennen.'
+        - id: DER.2.1.A16
+          title: 'Dokumentation der Behebung von Sicherheitsvorfällen'
+          requirement_text: 'Die Behebung von Sicherheitsvorfällen SOLLTE nach einem standardisierten Verfahren dokumentiert werden. Es SOLLTEN alle durchgeführten Aktionen inklusive der Zeitpunkte sowie die Protokolldaten der betroffenen Komponenten dokumentiert werden. Dabei SOLLTE die Vertraulichkeit bei der Dokumentation und Archivierung der Berichte gewährleistet sein. Die benötigten Informationen SOLLTEN in die jeweiligen Dokumentationssysteme eingepflegt werden, bevor die Störung als beendet und als abgeschlossen markiert wird. Im Vorfeld SOLLTEN mit dem oder der ISB die dafür erforderlichen Anforderungen an die Qualitätssicherung definiert werden.'
+        - id: DER.2.1.A17
+          title: 'Nachbereitung von Sicherheitsvorfällen'
+          requirement_text: 'Sicherheitsvorfälle SOLLTEN standardisiert nachbereitet werden. Dabei SOLLTE untersucht werden, wie schnell die Sicherheitsvorfälle erkannt und behoben wurden. Weiterhin SOLLTE untersucht werden, ob die Meldewege funktionierten, ausreichend Informationen für die Bewertung verfügbar und ob die Detektionsmaßnahmen wirksam waren. Ebenso SOLLTE geprüft werden, ob die ergriffenen Maßnahmen und Aktivitäten wirksam und effizient waren. Die Erfahrungen aus vergangenen Sicherheitsvorfällen SOLLTEN genutzt werden, um daraus Handlungsanweisungen für vergleichbare Sicherheitsvorfälle zu erstellen. Diese Handlungsanweisungen SOLLTEN den relevanten Personengruppen bekanntgegeben und auf Basis neuer Erkenntnisse regelmäßig aktualisiert werden. Die Institutionsleitung SOLLTE jährlich über die Sicherheitsvorfälle unterrichtet werden. Besteht sofortiger Handlungsbedarf, MUSS die Institutionsleitung umgehend informiert werden.'
+        - id: DER.2.1.A18
+          title: 'Weiterentwicklung der Prozesse durch Erkenntnisse aus Sicherheitsvorfällen und Branchenentwicklungen'
+          requirement_text: 'Nachdem ein Sicherheitsvorfall analysiert wurde, SOLLTE untersucht werden, ob die Prozesse und Abläufe im Rahmen der Behandlung von Sicherheitsvorfällen geändert oder weiterentwickelt werden müssen. Dabei SOLLTEN alle Personen, die an dem Vorfall beteiligt waren, über ihre jeweiligen Erfahrungen berichten. Es SOLLTE geprüft werden, ob es neue Entwicklungen im Bereich Incident Management und in der Forensik gibt und ob diese in die jeweiligen Dokumente und Abläufe eingebracht werden können. Werden Hilfsmittel und Checklisten eingesetzt, z. B. für Service-Desk-Mitarbeitende, SOLLTE geprüft werden, ob diese um relevante Fragen und Informationen zu erweitern sind.'
+      hoch:
+        - id: DER.2.1.A19
+          title: 'Festlegung von Prioritäten für die Behandlung von Sicherheitsvorfällen'
+          requirement_text: 'Es SOLLTEN Prioritäten für die Behandlung von Sicherheitsvorfällen vorab festgelegt und regelmäßig aktualisiert werden. Dabei SOLLTE auch die vorgenommene Einstufung von Sicherheitsvorfällen berücksichtigt werden. Die Prioritäten SOLLTEN von der Institutionsleitung genehmigt und in Kraft gesetzt werden. Sie SOLLTEN allen Verantwortlichen bekannt sein, die mit der Behandlung von Sicherheitsvorfällen zu tun haben. Die festgelegten Prioritätsklassen SOLLTEN außerdem im Incident Management hinterlegt sein.'
+        - id: DER.2.1.A20
+          title: 'Einrichtung einer dedizierten Meldestelle für Sicherheitsvorfälle'
+          requirement_text: 'Eine dedizierte Stelle zur Meldung von Sicherheitsvorfällen SOLLTE eingerichtet werden. Es SOLLTE gewährleistet sein, dass die Meldestelle zu den üblichen Arbeitszeiten erreichbar ist. Zusätzlich SOLLTE es möglich sein, dass Sicherheitsvorfälle auch außerhalb der üblichen Arbeitszeiten gemeldet werden können. Die Mitarbeitenden der Meldestelle SOLLTEN ausreichend geschult und für die Belange der Informationssicherheit sensibilisiert sein. Alle Informationen über Sicherheitsvorfälle SOLLTEN bei der Meldestelle vertraulich behandelt werden.'
+        - id: DER.2.1.A21
+          title: 'Einrichtung eines Teams von Fachleuten für die Behandlung von Sicherheitsvorfällen'
+          requirement_text: 'Es SOLLTE ein Team mit erfahrenen und vertrauenswürdigen Fachleuten zusammengestellt werden. Neben dem technischen Verständnis SOLLTEN die Teammitglieder auch über Kompetenzen im Bereich Kommunikation verfügen. Die Vertrauenswürdigkeit der Mitglieder des Teams SOLLTE überprüft werden. Die Zusammensetzung des Teams SOLLTE regelmäßig überprüft und, wenn nötig, geändert werden. Die Mitglieder des Teams SOLLTEN in die Eskalations- und Meldewege eingebunden sein. Das Experten- und Expertinnenteam SOLLTE für die Analyse von Sicherheitsvorfällen an den in der Institution eingesetzten Systemen ausgebildet werden. Die Mitglieder des Experten- und Expertinnenteams SOLLTEN sich regelmäßig weiterbilden, sowohl zu den eingesetzten Systemen als auch zur Detektion und Reaktion auf Sicherheitsvorfälle. Dem Experten- und Expertinnenteam SOLLTEN alle vorhandenen Dokumentationen sowie finanzielle und technische Ressourcen zur Verfügung stehen, um Sicherheitsvorfälle schnell und diskret zu behandeln. Das Experten- und Expertinnenteams SOLLTE in geeigneter Weise in den Organisationsstrukturen berücksichtigt und in diese integriert werden. Die Zuständigkeiten des Teams SOLLTEN vorher mit denen des Sicherheitsvorfall-Teams abgestimmt werden.'
+        - id: DER.2.1.A22
+          title: 'Überprüfung der Effizienz des Managementsystems zur Behandlung von Sicherheitsvorfällen'
+          requirement_text: 'Das Managementsystem zur Behandlung von Sicherheitsvorfällen SOLLTE regelmäßig daraufhin geprüft werden, ob es noch aktuell und wirksam ist. Dazu SOLLTEN sowohl angekündigte als auch unangekündigte Übungen durchgeführt werden. Die Übungen SOLLTEN vorher mit der Institutionsleitung abgestimmt sein. Es SOLLTEN die Messgrößen ausgewertet werden, die anfallen, wenn Sicherheitsvorfälle aufgenommen, gemeldet und eskaliert werden, z. B. die Zeiträume von der Erstmeldung bis zur verbindlichen Bestätigung eines Sicherheitsvorfalls. Außerdem SOLLTEN Planspiele zur Behandlung von Sicherheitsvorfällen durchgeführt werden.'
 
   - id: DER.2.2
-    title: 'Vorsorge fuer die IT-Forensik'
+    title: 'Vorsorge für die IT-Forensik'
     description: 'Anforderungen an organisatorische und technische Vorsorge fuer forensische Ermittlungen nach Sicherheitsvorfaellen.'
     anforderungen:
       basis:
         - id: DER.2.2.A1
-          title: 'Erstellung eines Auswertungskonzepts fuer Protokolldaten'
-          requirement_text: 'Es MUSS ein Auswertungskonzept fuer Protokolldaten erstellt werden.'
+          title: 'Prüfung rechtlicher und regulatorischer Rahmenbedingungen zur Erfassung und Auswertbarkeit'
+          requirement_text: 'Werden Daten für forensische Untersuchungen erfasst und ausgewertet, MÜSSEN alle rechtlichen und regulatorischen Rahmenbedingungen identifiziert und eingehalten werden (siehe ORP.5 Compliance Management (Anforderungsmanagement)). Auch DARF NICHT gegen interne Regelungen und Mitarbeitendenvereinbarungen verstoßen werden. Dazu MÜSSEN der Betriebs- oder Personalrat sowie der oder die Datenschutzbeauftragte einbezogen werden.'
         - id: DER.2.2.A2
-          title: 'Festlegung von Verfahren zur forensischen Sicherung'
-          requirement_text: 'Es MUESSEN Verfahren zur forensischen Sicherung von Spuren festgelegt werden.'
+          title: 'Erstellung eines Leitfadens für Erstmaßnahmen bei einem IT-Sicherheitsvorfall'
+          requirement_text: 'Es MUSS ein Leitfaden erstellt werden, der für die eingesetzten IT-Systeme beschreibt, welche Erstmaßnahmen bei einem IT-Sicherheitsvorfall durchgeführt werden müssen, um möglichst wenig Spuren zu zerstören. Darin MUSS auch beschrieben sein, durch welche Handlungen potenzielle Spuren vernichtet werden könnten und wie sich das vermeiden lässt.'
         - id: DER.2.2.A3
-          title: 'Schulung der Verantwortlichen fuer IT-Forensik'
-          requirement_text: 'Die Verantwortlichen fuer IT-Forensik MUESSEN angemessen geschult werden. Siehe BSI Kompendium 2023 Baustein DER.2.2 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Vorauswahl von Forensik-Dienstleistenden'
+          requirement_text: 'Verfügt eine Institution nicht über ein eigenes Forensik-Team, MÜSSEN bereits in der Vorbereitungsphase mögliche geeignete Forensik-Dienstleistenden identifiziert werden. Welche Forensik-Dienstleistende infrage kommen, MUSS dokumentiert werden.'
+      standard:
+        - id: DER.2.2.A4
+          title: 'Festlegung von Schnittstellen zum Krisen- und Notfallmanagement'
+          requirement_text: 'Die Schnittstellen zwischen IT-forensischen Untersuchungen und dem Krisen- und Notfallmanagement SOLLTEN definiert und dokumentiert werden. Hierzu SOLLTE geregelt werden, welche Mitarbeitenden für welche Aufgaben verantwortlich sind und wie mit ihnen kommuniziert werden soll. Darüber hinaus SOLLTE sichergestellt werden, dass die zuständigen Kontaktpersonen stets erreichbar sind.'
+        - id: DER.2.2.A5
+          title: 'Erstellung eines Leitfadens für Beweissicherungsmaßnahmen bei IT-Sicherheitsvorfällen'
+          requirement_text: 'Es SOLLTE ein Leitfaden erstellt werden, in dem beschrieben wird, wie Beweise gesichert werden sollen. Darin SOLLTEN Vorgehensweisen, technische Werkzeuge, rechtliche Rahmenbedingungen und Dokumentationsvorgaben aufgeführt werden.'
+        - id: DER.2.2.A6
+          title: 'Schulung des Personals für die Umsetzung der forensischen Sicherung'
+          requirement_text: 'Alle verantwortlichen Mitarbeitenden SOLLTEN wissen, wie sie Spuren korrekt sichern und die Werkzeuge zur Forensik richtig einsetzen. Dafür SOLLTEN geeignete Schulungen durchgeführt werden.'
+        - id: DER.2.2.A7
+          title: 'Auswahl von Werkzeugen zur Forensik'
+          requirement_text: 'Es SOLLTE sichergestellt werden, dass Werkzeuge, mit denen Spuren forensisch gesichert und analysiert werden, auch dafür geeignet sind. Bevor ein Werkzeug zur Forensik eingesetzt wird, SOLLTE zudem geprüft werden, ob es richtig funktioniert. Auch SOLLTE überprüft und dokumentiert werden, dass es nicht manipuliert wurde.'
+        - id: DER.2.2.A8
+          title: 'Auswahl und Reihenfolge der zu sichernden Beweismittel'
+          requirement_text: 'Eine forensische Untersuchung SOLLTE immer damit beginnen, die Ziele bzw. den Arbeitsauftrag zu definieren. Die Ziele SOLLTEN möglichst konkret formuliert sein. Danach SOLLTEN alle notwendigen Datenquellen identifiziert werden. Auch SOLLTE festgelegt werden, in welcher Reihenfolge die Daten gesichert werden und wie genau dabei vorgegangen werden soll. Die Reihenfolge SOLLTE sich danach richten, wie flüchtig (volatil) die zu sichernden Daten sind. So SOLLTEN schnell flüchtige Daten zeitnah gesichert werden. Erst danach SOLLTEN nichtflüchtige Daten wie beispielsweise Festspeicherinhalte und schließlich Backups folgen.'
+        - id: DER.2.2.A9
+          title: 'Vorauswahl forensisch relevanter Daten'
+          requirement_text: 'Es SOLLTE festgelegt werden, welche sekundären Daten (z. B. Logdaten oder Verkehrsmitschnitte) auf welche Weise und wie lange im Rahmen der rechtlichen Rahmenbedingungen für mögliche forensische Beweissicherungsmaßnahmen vorgehalten werden.'
+        - id: DER.2.2.A10
+          title: 'IT-forensische Sicherung von Beweismitteln'
+          requirement_text: 'Datenträger SOLLTEN möglichst komplett forensisch dupliziert werden. Wenn das nicht möglich ist, z. B. bei flüchtigen Daten im RAM oder in SAN-Partitionen, SOLLTE eine Methode gewählt werden, die möglichst wenige Daten verändert. Die Originaldatenträger SOLLTEN versiegelt aufbewahrt werden. Es SOLLTEN schriftlich dokumentierte kryptografische Prüfsummen von den Datenträgern angelegt werden. Diese SOLLTEN getrennt und in mehreren Kopien aufbewahrt werden. Zudem SOLLTE sichergestellt sein, dass die so dokumentierten Prüfsummen nicht verändert werden können. Damit die Daten gerichtlich verwertbar sind, SOLLTE ein Zeuge bestätigen, wie dabei vorgegangen wurde und die erstellten Prüfsummen beglaubigen. Es SOLLTE ausschließlich geschultes Personal (siehe DER.2.2.A6 Schulung des Personals für die Umsetzung der forensischen Sicherung) oder ein Forensik-Dienstleistender (siehe DER.2.2.A3 Vorauswahl von Forensik-Dienstleistenden) eingesetzt werden, um Beweise forensisch zu sichern.'
+        - id: DER.2.2.A11
+          title: 'Dokumentation der Beweissicherung'
+          requirement_text: 'Wenn Beweise forensisch gesichert werden, SOLLTEN alle durchgeführten Schritte dokumentiert werden. Die Dokumentation SOLLTE lückenlos nachweisen, wie mit den gesicherten Originalbeweismitteln umgegangen wurde. Auch SOLLTE dokumentiert werden, welche Methoden eingesetzt wurden und warum sich die Verantwortlichen dafür entschieden haben.'
+        - id: DER.2.2.A12
+          title: 'Sichere Verwahrung von Originaldatenträgern und Beweismitteln'
+          requirement_text: 'Alle sichergestellten Originaldatenträger SOLLTEN physisch so gelagert werden, dass nur ermittelnde und namentlich bekannte Mitarbeitende darauf zugreifen können. Wenn Originaldatenträger und Beweismittel eingelagert werden, SOLLTE festgelegt werden, wie lange sie aufzubewahren sind. Nachdem die Frist abgelaufen ist, SOLLTE geprüft werden, ob die Datenträger und Beweise noch weiter aufbewahrt werden müssen. Nach der Aufbewahrungsfrist SOLLTEN Beweismittel sicher gelöscht oder vernichtet und Originaldatenträger zurückgegeben werden.'
+      hoch:
+        - id: DER.2.2.A13
+          title: 'Rahmenverträge mit externen Dienstleistenden'
+          requirement_text: 'Die Institution SOLLTE Abrufvereinbarungen bzw. Rahmenverträge mit Forensik-Dienstleistenden abschließen, damit IT-Sicherheitsvorfälle schneller forensisch untersucht werden können.'
+        - id: DER.2.2.A14
+          title: 'Festlegung von Standardverfahren für die Beweissicherung'
+          requirement_text: 'Für Anwendungen, IT-Systeme bzw. IT-Systemgruppen mit hohem Schutzbedarf sowie für verbreitete Systemkonfigurationen SOLLTEN Standardverfahren erstellt werden, die es erlauben, flüchtige und nichtflüchtige Daten möglichst vollständig forensisch zu sichern. Die jeweiligen systemspezifischen Standardverfahren SOLLTEN durch erprobte und möglichst automatisierte Prozesse umgesetzt werden. Sie SOLLTEN zudem durch Checklisten und technische Hilfsmittel unterstützt werden, z. B. durch Software, Software-Tools auf mobilen Datenträgern und IT-forensische Hardware wie Schreibblocker.'
+        - id: DER.2.2.A15
+          title: 'Durchführung von Übungen zur Beweissicherung'
+          requirement_text: 'Alle an forensischen Analysen beteiligten Mitarbeitenden SOLLTEN regelmäßig in Form von Übungen trainieren, wie Beweise bei einem IT-Sicherheitsvorfall zu sichern sind.'
 
   - id: DER.2.3
-    title: 'Bereinigung weitreichender Sicherheitsvorfaelle'
+    title: 'Bereinigung weitreichender Sicherheitsvorfälle'
     description: 'Anforderungen an die strukturierte Bereinigung schwerwiegender Sicherheitsvorfaelle (APT, weitreichender Kompromittierungen).'
     anforderungen:
       basis:
         - id: DER.2.3.A1
-          title: 'Vorbereitung der Bereinigung'
-          requirement_text: 'Vor der Bereinigung eines weitreichenden Sicherheitsvorfalls MUESSEN Umfang, betroffene Systeme und Vorgehen geplant und dokumentiert werden.'
+          title: 'Einrichtung eines Leitungsgremiums'
+          requirement_text: 'Um einen APT-Vorfall zu bereinigen, MUSS ein Leitungsgremium eingerichtet werden, das alle notwendigen Aktivitäten plant, koordiniert und überwacht. Dem Gremium MÜSSEN alle für die Aufgaben erforderlichen Weisungsbefugnisse übertragen werden. Wenn ein solches Leitungsgremium zu dem Zeitpunkt, als der APT-Vorfall detektiert und klassifiziert wurde, bereits eingerichtet ist, SOLLTE dasselbe Gremium auch die Bereinigung planen und leiten. Wurden schon spezialisierte Forensikdienstleistende hinzugezogen, um den APT-Vorfall zu analysieren, SOLLTEN diese auch bei der Bereinigung des Vorfalls miteinbezogen werden. Ist die IT zu stark kompromittiert, um weiter betrieben zu werden, oder sind die notwendigen Bereinigungsmaßnahmen sehr umfangreich, SOLLTE geprüft werden, ob ein Krisenstab eingerichtet werden soll. In diesem Fall MUSS das Leitungsgremium die Bereinigungsmaßnahmen überwachen. Das Leitungsgremium MUSS dann dem Krisenstab berichten.'
         - id: DER.2.3.A2
-          title: 'Eindaemmung und Isolation betroffener Systeme'
-          requirement_text: 'Betroffene Systeme MUESSEN konsequent isoliert werden, um weitere Schaeden und Datenabfluesse zu verhindern. Siehe BSI Kompendium 2023 Baustein DER.2.3 Anforderung A2.'
+          title: 'Entscheidung für eine Bereinigungsstrategie'
+          requirement_text: 'Bevor ein APT-Vorfall tatsächlich bereinigt wird, MUSS das Leitungsgremium eine Bereinigungsstrategie festlegen. Dabei MUSS insbesondere entschieden werden, ob die Schadsoftware von kompromittierten IT-Systemen entfernt werden kann, ob IT-Systeme neu installiert werden müssen oder ob IT-Systeme inklusive der Hardware komplett ausgetauscht werden sollen. Weiterhin MUSS festgelegt werden, welche IT-Systeme bereinigt werden. Grundlage für diese Entscheidungen MÜSSEN die Ergebnisse einer zuvor durchgeführten forensischen Untersuchung sein. Es SOLLTEN alle betroffenen IT-Systeme neu installiert werden. Danach MÜSSEN die Wiederanlaufpläne der Institution benutzt werden. Bevor jedoch Backups wieder eingespielt werden, MUSS durch forensische Untersuchungen sichergestellt sein, dass dadurch keine manipulierten Daten oder Programme auf das neu installierte IT-System übertragen werden. Entscheidet sich eine Institution dagegen, alle IT-Systeme neu zu installieren, MUSS eine gezielte APT-Bereinigung umgesetzt werden. Um das Risiko übersehener Hintertüren zu minimieren, MÜSSEN nach der Bereinigung die IT-Systeme gezielt daraufhin überwacht werden, ob sie noch mit den Angreifenden kommunizieren.'
         - id: DER.2.3.A3
-          title: 'Wiederaufbau und Inbetriebnahme bereinigter Systeme'
-          requirement_text: 'Bereinigte Systeme MUESSEN aus vertrauenswuerdigen Quellen neu aufgebaut werden. Vor Inbetriebnahme MUSS eine Pruefung auf Rest-Kompromittierung erfolgen.'
-      standard:
+          title: 'Isolierung der betroffenen Netzabschnitte'
+          requirement_text: 'Die von einem APT-Vorfall betroffenen Netzabschnitte MÜSSEN vollständig isoliert werden (Cut-Off). Insbesondere MÜSSEN die betroffenen Netzabschnitte vom Internet getrennt werden. Um die Angreifenden effektiv auszusperren und zu verhindern, dass sie ihre Spuren verwischen oder noch weitere IT-Systeme sabotieren, MÜSSEN die Netzabschnitte auf einen Schlag isoliert werden. Welche Netzabschnitte isoliert werden müssen, MUSS vorher durch eine forensische Analyse festgelegt werden. Es MÜSSEN dabei sämtliche betroffenen Abschnitte identifiziert werden. Kann das nicht sichergestellt werden, MÜSSEN alle verdächtigen sowie alle auch nur theoretisch infizierten Netzabschnitte isoliert werden. Um Netzabschnitte effektiv isolieren zu können, MÜSSEN sämtliche lokalen Internetanschlüsse, z. B. zusätzliche DSL-Anschlüsse in einzelnen Subnetzen, möglichst vollständig erfasst und ebenfalls berücksichtigt werden.'
         - id: DER.2.3.A4
-          title: 'Lessons Learned nach Bereinigung'
-          requirement_text: 'Nach der Bereinigung SOLLTEN Erkenntnisse strukturiert ausgewertet und in das Sicherheitskonzept zurueckgefuehrt werden.'
-      hoch: []
+          title: 'Sperrung und Änderung von Zugangsdaten und kryptografischen Schlüsseln'
+          requirement_text: 'Alle Zugangsdaten MÜSSEN geändert werden, nachdem das Netz isoliert wurde. Weiterhin MÜSSEN auch zentral verwaltete Zugangsdaten zurückgesetzt werden, z. B. in Active-Directory-Umgebungen oder wenn das Lightweight Directory Access Protocol (LDAP) benutzt wurde. Ist der zentrale Authentisierungsserver (Domaincontroller oder LDAP-Server) kompromittiert, MÜSSEN sämtliche dort vorhandenen Zugänge gesperrt und ihre Passwörter ausgetauscht werden. Dies MÜSSEN erfahrene Administrierende umsetzen, falls erforderlich, auch mithilfe interner oder externer Expertise aus dem Bereich Forensik. Wurden TLS-Schlüssel oder eine interne Certification Authority (CA) durch den APT-Angriff kompromittiert, MÜSSEN entsprechende Schlüssel, Zertifikate und Infrastrukturen neu erzeugt und verteilt werden. Auch MÜSSEN die kompromittierten Schlüssel und Zertifikate zuverlässig gesperrt und zurückgerufen werden.'
+        - id: DER.2.3.A5
+          title: 'Schließen des initialen Einbruchswegs'
+          requirement_text: 'Wurde durch eine forensische Untersuchung herausgefunden, dass die Angreifenden durch eine technische Schwachstelle in das Netz der Institution eingedrungen sind, MUSS diese Schwachstelle geschlossen werden. Konnten die Angreifenden die IT-Systeme durch menschliche Fehlhandlungen kompromittieren, MÜSSEN organisatorische, personelle und technische Maßnahmen ergriffen werden, um ähnliche Vorfälle künftig zu verhindern.'
+        - id: DER.2.3.A6
+          title: 'Rückführung in den Produktivbetrieb'
+          requirement_text: 'Nachdem das Netz erfolgreich bereinigt wurde, MÜSSEN die IT-Systeme geordnet in den Produktivbetrieb zurückgeführt werden. Dabei MÜSSEN sämtliche zuvor eingesetzten IT-Systeme und installierten Programme, mit denen der Angriff beobachtet und analysiert wurde, entweder entfernt oder aber in den Produktivbetrieb überführt werden. Dasselbe MUSS mit Kommunikations- und Kollaborationssystemen erfolgen, die für die Bereinigung angeschafft wurden. Beweismittel und ausgesonderte IT-Systeme MÜSSEN entweder sicher gelöscht bzw. vernichtet oder aber geeignet archiviert werden.'
+      standard:
+        - id: DER.2.3.A7
+          title: 'Gezielte Systemhärtung'
+          requirement_text: 'Nach einem APT-Angriff SOLLTEN alle betroffenen IT-Systeme gehärtet werden. Grundlage hierfür SOLLTEN die Ergebnisse der forensischen Untersuchungen sein. Zusätzlich SOLLTE erneut geprüft werden, ob die betroffene Umgebung noch sicher ist. Wenn möglich, SOLLTEN IT-Systeme bereits während der Bereinigung gehärtet werden. Maßnahmen, die sich nicht kurzfristig durchführen lassen, SOLLTEN in einen Maßnahmenplan aufgenommen und mittelfristig umgesetzt werden. Der oder die ISB SOLLTE den Plan aufzustellen und prüfen, ob er korrekt umgesetzt wurde.'
+        - id: DER.2.3.A8
+          title: 'Etablierung sicherer, unabhängiger Kommunikationskanäle'
+          requirement_text: 'Es SOLLTEN sichere Kommunikationskanäle für das Leitungsgremium und die mit der Bereinigung beauftragten Mitarbeitenden etabliert werden. Wird auf Kommunikationsdienste Dritter zurückgegriffen, SOLLTE auch hier darauf geachtet werden, dass ein sicherer Kommunikationskanal ausgewählt wird.'
+      hoch:
+        - id: DER.2.3.A9
+          title: 'Hardwaretausch betroffener IT-Systeme'
+          requirement_text: 'Es SOLLTE erwogen werden, nach einem APT-Vorfall die Hardware komplett auszutauschen. Auch wenn nach einer Bereinigung bei einzelnen IT-Systemen noch verdächtiges Verhalten beobachtet wird, SOLLTEN die betroffenen IT-Systeme ausgetauscht werden.'
+        - id: DER.2.3.A10
+          title: 'Umbauten zur Erschwerung eines erneuten Angriffs durch dieselben Angreifenden'
+          requirement_text: 'Damit dieselben Angreifenden nicht noch einmal einen APT-Angriff auf die IT-Systeme der Institution durchführen können, SOLLTE der interne Aufbau der Netzumgebung geändert werden. Außerdem SOLLTEN Mechanismen etabliert werden, mit denen sich wiederkehrende Angreifende schnell detektieren lassen.'
 
   - id: DER.3.1
     title: 'Audits und Revisionen'
@@ -83,15 +236,87 @@ bausteine:
     anforderungen:
       basis:
         - id: DER.3.1.A1
-          title: 'Festlegung eines Audit-Programms'
-          requirement_text: 'Ein Audit-Programm MUSS festgelegt werden.'
+          title: 'Definition von Verantwortlichkeiten'
+          requirement_text: 'Die Institutionsleitung MUSS eine Person benennen, die dafür zuständig ist, Audits bzw. Revisionen zu planen und zu initiieren. Dabei MUSS die Institutionsleitung darauf achten, dass keine Interessenkonflikte entstehen. Die Institution MUSS die Ergebnisse der Audits und Revisionen dazu verwenden, um die Sicherheitsmaßnahmen zu verbessern.'
         - id: DER.3.1.A2
-          title: 'Definition von Audit-Zielen'
-          requirement_text: 'Die Audit-Ziele MUESSEN definiert werden.'
+          title: 'Vorbereitung eines Audits oder einer Revision'
+          requirement_text: 'Vor einem Audit oder einer Revision MUSS die Institution den Prüfgegenstand und die Prüfungsziele festlegen. Das betroffene Personal MUSS unterrichtet werden. Abhängig vom Untersuchungsgegenstand MUSS die Personalvertretung über das geplante Audit oder die geplante Revision informiert werden.'
         - id: DER.3.1.A3
-          title: 'Auswahl geeigneter Auditoren'
-          requirement_text: 'Auditoren MUESSEN unabhaengig und fachlich geeignet sein. Siehe BSI Kompendium 2023 Baustein DER.3.1 Anforderung A3.'
-      standard: []
+          title: 'Durchführung eines Audits'
+          requirement_text: 'Bei einem Audit MUSS das Auditteam prüfen, ob die Anforderungen aus Richtlinien, Normen, Standards und anderen relevanten Vorgaben erfüllt sind. Die geprüfte Institution MUSS die Anforderungen kennen. Das Auditteam MUSS bei jedem Audit eine Dokumentenprüfung sowie eine Vor-Ort-Prüfung durchführen. Beim Vor-Ort-Audit MUSS das Auditteam sicherstellen, dass es niemals selbst aktiv in Systeme eingreift und keine Handlungsanweisungen zu Änderungen am Prüfgegenstand erteilt. Das Auditteam MUSS sämtliche Ergebnisse eines Audits schriftlich dokumentieren und in einem Auditbericht zusammenfassen. Der Auditbericht MUSS der zuständigen Stelle in der Institution zeitnah übermittelt werden.'
+        - id: DER.3.1.A4
+          title: 'Durchführung einer Revision'
+          requirement_text: 'Bei einer Revision MUSS das Revisionsteam prüfen, ob die Anforderungen vollständig, korrekt, angemessen und aktuell umgesetzt sind. Die Institution MUSS festgestellte Abweichungen so schnell wie möglich korrigieren. Die jeweiligen Revisionen MÜSSEN mit einer Änderungsverfolgung dokumentiert werden.'
+      standard:
+        - id: DER.3.1.A5
+          title: 'Integration in den Informationssicherheitsprozess'
+          requirement_text: 'Die Institution SOLLTE eine Richtlinie zur internen ISMS-Auditierung vorgeben. Außerdem sollte sie eine Richtlinie zur Lenkung von Korrekturmaßnahmen erstellen. Die Richtlinien SOLLTEN vorgeben, dass regelmäßige Audits und Revisionen ein Teil des Sicherheitsprozesses sind und durch diesen initiiert werden. Der oder die ISB SOLLTE sicherstellen, dass die Ergebnisse der Audits und Revisionen in das ISMS zurückfließen und dieses verbessern. Der oder die ISB SOLLTE die durchgeführten Audits und Revisionen und deren Ergebnisse in den regelmäßigen Bericht an die Institutionsleitung aufnehmen. Auch SOLLTE dort festgehalten werden, welche Mängel beseitigt wurden und wie die Qualität verbessert wurde.'
+        - id: DER.3.1.A6
+          title: 'Definition der Prüfungsgrundlage und eines einheitlichen Bewertungsschemas'
+          requirement_text: 'Die Institution SOLLTE eine einheitliche Prüfungsgrundlage für Audits festlegen. Für die Bewertung der Umsetzung von Anforderungen SOLLTE ein einheitliches Bewertungsschema festgelegt und dokumentiert werden.'
+        - id: DER.3.1.A7
+          title: 'Erstellung eines Auditprogramms'
+          requirement_text: 'Der oder die ISB SOLLTE ein Auditprogramm für mehrere Jahre aufstellen, das alle durchzuführenden Audits und Revisionen erfasst. Für das Auditprogramm SOLLTEN Ziele definiert werden, die sich insbesondere aus den Institutionszielen sowie aus den Informationssicherheitszielen ableiten. Der oder die ISB SOLLTE Reserven für unvorhergesehene Ereignisse in der jährlichen Ressourcenplanung vorsehen. Das Auditprogramm SOLLTE einem eigenen kontinuierlichen Verbesserungsprozess unterliegen.'
+        - id: DER.3.1.A8
+          title: 'Erstellung einer Revisionsliste'
+          requirement_text: 'Der oder die ISB SOLLTE eine oder mehrere Revisionslisten pflegen, die den aktuellen Stand der Revisionsobjekte sowie die geplanten Revisionen dokumentieren.'
+        - id: DER.3.1.A9
+          title: 'Auswahl eines geeigneten Audit- oder Revionsteams'
+          requirement_text: 'Die Institution SOLLTE für jedes Audit bzw. für jede Revision ein geeignetes Team zusammenstellen. Es SOLLTE eine Person benannt werden, die das Audit oder die Revision leitet. Diese SOLLTE die Gesamtverantwortung für die Durchführung der Audits bzw. der Revisionen tragen. Die Größe des Audit- bzw. Revisionsteams SOLLTE dem Prüfbereich entsprechen. Die Institution SOLLTE insbesondere die Kompetenzanforderungen der Prüfthemen sowie die Größe und die örtliche Verteilung des Prüfbereichs berücksichtigen. Die Mitglieder des Audit- bzw. Revisionsteams SOLLTEN angemessen qualifiziert sein. Die Neutralität des Auditteams SOLLTE sichergestellt werden. Darüber hinaus SOLLTE auch das Revisionsteam unabhängig sein. Werden externe Dienstleistende mit einem Audit oder einer Revision beauftragt, SOLLTEN diese auf ihre Unabhängigkeit hin überprüft und zur Verschwiegenheit verpflichtet werden.'
+        - id: DER.3.1.A10
+          title: 'Erstellung eines Audit- oder Revisionsplans'
+          requirement_text: 'Vor einem Audit oder einer größeren Revision SOLLTE ein Audit- bzw. Revisionsplan erstellt werden. Bei Audits SOLLTE der Auditplan Teil des abschließenden Auditberichts sein. Der Auditplan SOLLTE während des gesamten Audits fortgeschrieben und bei Bedarf angepasst werden. Kleinere Revisionen SOLLTEN anhand der Revisionsliste geplant werden. Die Institution SOLLTE genügend Ressourcen für das Audit- bzw. Revisionsteam vorsehen.'
+        - id: DER.3.1.A11
+          title: 'Kommunikation und Verhalten während der Prüfungen'
+          requirement_text: 'Das Auditteam bzw. Revisionsteam SOLLTE klare Regelungen dafür aufstellen, wie das Audit- bzw. Revisionsteam und die Mitarbeitenden der zu prüfenden Institution bzw. Abteilung miteinander Informationen austauschen. Das Auditteam SOLLTE durch geeignete Maßnahmen sicherstellen, dass die bei einem Audit ausgetauschten Informationen auch vertraulich und integer bleiben. Personen, die das Audit begleiten, SOLLTEN NICHT die Prüfungen beeinflussen. Zudem SOLLTEN sie zur Vertraulichkeit verpflichtet werden.'
+        - id: DER.3.1.A12
+          title: 'Durchführung eines Auftaktgesprächs'
+          requirement_text: 'Das Auditteam bzw. das Revisionsteam SOLLTE ein Auftaktgespräch mit den betreffenden Ansprechpartnern oder Ansprechpartnerinnen führen. Das Audit- bzw. Revisionsverfahren SOLLTE erläutert und die Rahmenbedingungen der Vor-Ort-Prüfung abgestimmt werden. Die jeweiligen Verantwortlichen SOLLTEN dies bestätigen.'
+        - id: DER.3.1.A13
+          title: 'Sichtung und Prüfung der Dokumente'
+          requirement_text: 'Die Dokumente SOLLTEN durch das Auditteam anhand der im Prüfplan festgelegten Anforderungen geprüft werden. Alle relevanten Dokumente SOLLTEN daraufhin geprüft werden, ob sie aktuell, vollständig und nachvollziehbar sind. Die Ergebnisse der Dokumentenprüfung SOLLTEN dokumentiert werden. Die Ergebnisse SOLLTEN auch in die Vor-Ort-Prüfung einfließen, soweit dies sinnvoll ist.'
+        - id: DER.3.1.A14
+          title: 'Auswahl von Stichproben'
+          requirement_text: 'Das Auditteam SOLLTE die Stichproben für die Vor-Ort-Prüfung risikoorientiert auswählen und nachvollziehbar begründen. Die ausgewählten Stichproben SOLLTEN dokumentiert werden. Wird das Audit auf der Basis von Baustein-Zielobjekten und Anforderungen durchgeführt, SOLLTEN diese anhand eines vorher definierten Verfahrens ausgewählt werden. Bei der Auswahl von Stichproben SOLLTEN auch die Ergebnisse vorangegangener Audits berücksichtigt werden.'
+        - id: DER.3.1.A15
+          title: 'Auswahl von geeigneten Prüfmethoden'
+          requirement_text: 'Das Auditteam SOLLTE für die jeweils zu prüfenden Sachverhalte geeignete Methoden einsetzen. Außerdem SOLLTE darauf geachtet werden, dass alle Prüfungen verhältnismäßig sind.'
+        - id: DER.3.1.A16
+          title: 'Ablaufplan der Vor-Ort-Prüfung'
+          requirement_text: 'Das Auditteam SOLLTE den Ablaufplan für die Vor-Ort-Prüfung gemeinsam mit der Institution erarbeiten. Die Ergebnisse SOLLTEN im Auditplan dokumentiert werden.'
+        - id: DER.3.1.A17
+          title: 'Durchführung der Vor-Ort-Prüfung'
+          requirement_text: 'Zu Beginn der Vor-Ort-Prüfung SOLLTE das Auditteam ein Eröffnungsgespräch mit der betreffenden Institution führen. Danach SOLLTEN alle im Prüfplan festgelegten Anforderungen mit den vorgesehenen Prüfmethoden kontrolliert werden. Weicht eine ausgewählte Stichprobe vom dokumentierten Status ab, SOLLTE die Stichprobe bedarfsorientiert erweitert werden, bis der Sachverhalt geklärt ist. Nach der Prüfung SOLLTE das Auditteam ein Abschlussgespräch führen. Darin SOLLTE es kurz die Ergebnisse ohne Bewertung sowie die weitere Vorgehensweise darstellen. Das Gespräch SOLLTE protokolliert werden.'
+        - id: DER.3.1.A18
+          title: 'Durchführung von Interviews'
+          requirement_text: 'Das Auditteam SOLLTE strukturierte Interviews führen. Die Fragen SOLLTEN knapp, präzise und leicht verständlich formuliert werden. Zudem SOLLTEN geeignete Fragetechniken eingesetzt werden.'
+        - id: DER.3.1.A19
+          title: 'Überprüfung des Risikobehandlungsplans'
+          requirement_text: 'Das Auditteam SOLLTE prüfen, ob die verbleibenden Restrisiken für den Informationsverbund angemessen und tragbar sind. Es SOLLTE außerdem prüfen, ob sie verbindlich durch die Institutionsleitung getragen werden. Maßnahmen, die grundlegend zur Informationssicherheit der gesamten Institution beitragen, DÜRFEN NICHT in diese Risikoübernahme einfließen. Das Auditteam SOLLTE stichprobenartig verifizieren, ob bzw. wie weit die im Risikobehandlungsplan festgelegten Maßnahmen umgesetzt sind.'
+        - id: DER.3.1.A20
+          title: 'Durchführung einer Abschlussbesprechung'
+          requirement_text: 'Das Auditteam SOLLTE mit der auditierten Institution eine Abschlussbesprechung durchführen. Darin SOLLTEN die vorläufigen Auditergebnisse dargelegt werden. Die weiteren Tätigkeiten SOLLTEN vorgestellt werden.'
+        - id: DER.3.1.A21
+          title: 'Auswertung der Prüfungen'
+          requirement_text: 'Nach der Vor-Ort-Prüfung SOLLTE das Auditteam die gewonnenen Informationen weiter konsolidieren und auswerten. Nachdem auch nachgeforderte Dokumentationen und zusätzliche Informationen ausgewertet wurden, SOLLTEN die geprüften Maßnahmen endgültig bewertet werden. Um die nachgeforderten Dokumentationen bereitstellen zu können, SOLLTE das Auditteam der Institution ein ausreichendes Zeitfenster gewähren. Dokumente, die bis zum vereinbarten Termin nicht eingegangen sind, SOLLTEN als nicht existent gewertet werden.'
+        - id: DER.3.1.A22
+          title: 'Erstellung eines Auditberichts'
+          requirement_text: 'Das Auditteam SOLLTE die gewonnenen Erkenntnisse in einen Auditbericht überführen und dort nachvollziehbar dokumentieren. Die geprüfte Institution SOLLTE sicherstellen, dass alle betroffenen Stellen innerhalb einer angemessenen Frist die für sie wichtigen und notwendigen Passagen des Auditberichts erhalten.'
+        - id: DER.3.1.A23
+          title: 'Dokumentation der Revisionsergebnisse'
+          requirement_text: 'Die Ergebnisse einer Revision SOLLTEN einheitlich durch das Revisionsteam dokumentiert werden.'
+        - id: DER.3.1.A24
+          title: 'Abschluss des Audits oder der Revision'
+          requirement_text: 'Nach dem Audit bzw. der Revision SOLLTE das Auditteam alle relevanten Dokumente, Datenträger und IT-Systeme zurückgeben oder vernichten. Das SOLLTE mit der geprüften Institution abgestimmt werden. Aufbewahrungspflichten aus gesetzlichen oder anderen verbindlichen Anforderungen SOLLTEN hierbei entsprechend berücksichtigt werden. Der oder die ISB SOLLTE alle für das Audit- oder Revisionsteam genehmigten Zugriffe wieder deaktivieren oder löschen lassen. Mit der geprüften Institution SOLLTE vereinbart werden, wie mit den Ergebnissen umzugehen ist. Dabei SOLLTE auch festgelegt werden, dass die Auditergebnisse nicht ohne Genehmigung der geprüften Institution an andere Institutionen weitergeleitet werden dürfen.'
+        - id: DER.3.1.A25
+          title: 'Nachbereitung eines Audits'
+          requirement_text: 'Die Institution SOLLTE die im Auditbericht oder bei einer Revision festgestellten Abweichungen oder Mängel in einer angemessenen Zeit abstellen. Die durchzuführenden Korrekturmaßnahmen inklusive Zeitpunkt und Zuständigkeiten SOLLTEN dokumentiert werden. Auch abgeschlossene Korrekturmaßnahmen SOLLTEN dokumentiert werden. Die Institution SOLLTE dazu ein definiertes Verfahren etablieren und einsetzen. Gab es schwerwiegende Abweichungen oder Mängel, SOLLTE das Audit- bzw. Revisionsteam überprüfen, ob die Korrekturmaßnahmen durchgeführt wurden.'
+        - id: DER.3.1.A26
+          title: 'Überwachen und Anpassen des Auditprogramms'
+          requirement_text: 'Das Auditprogramm SOLLTE kontinuierlich überwacht und angepasst werden, sodass Termine, Auditziele, Auditinhalte und die Auditqualität eingehalten werden. Mithilfe der bestehenden Anforderungen an das Auditprogramm und mit den Ergebnissen der durchgeführten Audits SOLLTE überprüft werden, ob das Auditprogramm angemessen ist. Bei Bedarf SOLLTE es angepasst werden.'
+        - id: DER.3.1.A27
+          title: 'Aufbewahrung und Archivierung von Unterlagen zu Audits und Revisionen'
+          requirement_text: 'Die Institution SOLLTE Auditprogramme sowie Unterlagen zu Audits und Revisionen entsprechend den regulatorischen Anforderungen nachvollziehbar und revisionssicher ablegen und aufbewahren. Dabei SOLLTE sichergestellt werden, dass lediglich berechtigte Personen auf Auditprogramme und Unterlagen zugreifen können. Die Institution SOLLTE die Auditprogramme und Unterlagen nach Ablauf der Aufbewahrungsfrist sicher vernichten.'
       hoch: []
 
   - id: DER.3.2
@@ -100,30 +325,123 @@ bausteine:
     anforderungen:
       basis:
         - id: DER.3.2.A1
-          title: 'Planung der IS-Revision'
-          requirement_text: 'Die IS-Revision MUSS gemaess BSI-Leitfaden geplant werden. Siehe BSI Kompendium 2023 Baustein DER.3.2 Anforderung A1.'
+          title: 'Benennung von Verantwortlichen für die IS-Revision'
+          requirement_text: 'Die Institution MUSS eine verantwortliche Person für die IS-Revision benennen. Diese MUSS die IS-Revisionen planen, initiieren und die Ergebnisse nachverfolgen.'
         - id: DER.3.2.A2
-          title: 'Durchfuehrung der IS-Revision'
-          requirement_text: 'Die IS-Revision MUSS gemaess Leitfaden durchgefuehrt werden. Siehe BSI Kompendium 2023 Baustein DER.3.2 Anforderung A2.'
+          title: 'Erstellung eines IS-Revisionshandbuches'
+          requirement_text: 'Für die IS-Revision MUSS ein IS-Revisionshandbuch erstellt werden, das die angestrebten Ziele, einzuhaltende gesetzliche Vorgaben, Informationen über die Organisation, die Ressourcen und die Rahmenbedingungen enthält. Außerdem MUSS darin die Archivierung der Dokumentation beschrieben sein. Das Handbuch MUSS von der Leitungsebene verabschiedet werden.'
         - id: DER.3.2.A3
-          title: 'Berichterstattung der IS-Revision'
-          requirement_text: 'Ergebnisse der IS-Revision MUESSEN dokumentiert und an die Leitungsebene berichtet werden. Siehe BSI Kompendium 2023 Baustein DER.3.2 Anforderung A3.'
-      standard: []
+          title: 'Definition der Prüfungsgrundlage'
+          requirement_text: 'Die BSI-Standards 200-1 bis 200-3 sowie das IT-Grundschutz-Kompendium MÜSSEN die Prüfungsgrundlagen für die IS-Revision sein. Dabei SOLLTE die Standard-Absicherung des IT-Grundschutzes verwendet werden. Diese Prüfungsgrundlagen MÜSSEN allen Beteiligten bekannt sein.'
+        - id: DER.3.2.A4
+          title: 'Erstellung einer Planung für die IS-Revision'
+          requirement_text: 'Wenn die Institution nicht nach ISO 27001 auf Basis von IT-Grundschutz zertifiziert ist, MUSS sichergestellt werden, dass mindestens alle drei Jahre eine IS-Kurz- oder Querschnitts-Revision durchgeführt wird. Darüber hinaus SOLLTEN weitere Revisionen eingeplant werden, falls der Informationsverbund wesentlich verändert wird. Es SOLLTE eine mehrjährige Grobplanung für die Revisionsvorhaben erstellt werden. Diese SOLLTE dann durch eine jährliche Detailplanung konkretisiert werden.'
+        - id: DER.3.2.A5
+          title: 'Auswahl eines geeigneten IS-Revisionsteams'
+          requirement_text: 'Es MUSS ein aus mindestens zwei Personen bestehendes IS-Revisionsteam zusammengestellt oder beauftragt werden. Dem IS-Revisionsteam MUSS ein uneingeschränktes Informations- und Einsichtnahmerecht für seine Tätigkeit eingeräumt werden. Bei eigenen IS-Revisionsteams MÜSSEN die einzelnen Mitglieder unparteilich sein. Die Mitglieder eines IS-Revisionsteams DÜRFEN NICHT an der Planung oder Umsetzung des ISMS beteiligt sein oder gewesen sein.'
+        - id: DER.3.2.A6
+          title: 'Vorbereitung einer IS-Revision'
+          requirement_text: 'Es MUSS ein IS-Revisionsteam mit einer IS-Revision beauftragt werden. Das IS-Revisionsteam MUSS festlegen, welche Referenzdokumente für eine IS-Revision benötigt werden. Die zu prüfende Institution MUSS das Sicherheitskonzept und alle weiteren erforderlichen Dokumente an das IS-Revisionsteam übergeben.'
+        - id: DER.3.2.A7
+          title: 'Durchführung einer IS-Revision'
+          requirement_text: 'Im Rahmen einer IS-Revision MÜSSEN eine Dokumenten- und eine Vor-Ort-Prüfung durch das IS-Revisionsteam durchgeführt werden. Sämtliche Ergebnisse dieser beiden Prüfungen MÜSSEN dokumentiert und in einem IS-Revisionsbericht zusammengefasst werden. Bevor erstmalig eine IS-Querschnittsrevision durchgeführt wird, MUSS als IS-Revisionsverfahren eine IS-Kurzrevision ausgewählt werden. Die IS-Kurzrevision MUSS mit positivem Votum abgeschlossen werden, bevor eine IS-Querschnittsrevision durchgeführt wird.'
+        - id: DER.3.2.A8
+          title: 'Aufbewahrung von IS-Revisionsberichten'
+          requirement_text: 'Die Institution MUSS den IS-Revisionsbericht und die diesem zugrundeliegenden Referenzdokumente mindestens für zehn Jahre ab Zustellung des Berichts sicher aufbewahren, sofern keine anders lautenden Gesetze oder Verordnungen gelten. Die Institution MUSS sicherstellen, dass lediglich berechtigte Personen auf die IS-Revisionsberichte und die Referenzdokumente zugreifen können.'
+      standard:
+        - id: DER.3.2.A9
+          title: 'Integration in den Informationssicherheitsprozess'
+          requirement_text: 'Die Institution SOLLTE sicherstellen, dass IS-Revisionen ein Teil des Sicherheitsprozesses sind. Außerdem SOLLTEN die Ergebnisse von IS-Revisionen in das ISMS zurückfließen und zu dessen Verbesserung beitragen. Weiter SOLLTEN die Ergebnisse der IS-Revisionen sowie die Aktivitäten, um Mängel zu beseitigen und um die Qualität zu verbessern, in den regelmäßigen Bericht des oder der ISB an die Institutionsleitung aufgenommen werden.'
+        - id: DER.3.2.A10
+          title: 'Kommunikationsabsprache'
+          requirement_text: 'Es SOLLTE klar geregelt werden, wie Informationen zwischen dem IS-Revisionsteam und der zu prüfenden Institution auszutauschen sind. So SOLLTE sichergestellt werden, dass diese Informationen vertraulich und integer bleiben.'
+        - id: DER.3.2.A11
+          title: 'Durchführung eines Auftaktgesprächs für eine IS-Querschnittsrevision'
+          requirement_text: 'Für eine IS-Querschnittsrevision SOLLTE ein Auftaktgespräch zwischen dem IS-Revisionsteam und der zu prüfenden Institution durchgeführt werden. Darin SOLLTEN folgende Inhalte besprochen werden:'
+        - id: DER.3.2.A12
+          title: 'Erstellung eines Prüfplans'
+          requirement_text: 'Vor einer IS-Revision SOLLTE das IS-Revisionsteam einen Prüfplan erstellen. Ist es während der IS-Revision notwendig, die geplanten Abläufe zu erweitern oder anderweitig anzupassen, SOLLTE der Prüfplan entsprechend angepasst werden. Der Prüfplan SOLLTE zudem in den abschließenden IS-Revisionsbericht aufgenommen werden. Bei der IS-Kurzrevision SOLLTE die verbindlich festgelegte Prüfthemenliste des BSI an die Stelle des Prüfplans treten.'
+        - id: DER.3.2.A13
+          title: 'Sichtung und Prüfung der Dokumente'
+          requirement_text: 'Bei der Dokumentenprüfung SOLLTE das IS-Revisionsteam die im Prüfplan festgelegten Anforderungen prüfen. Das IS-Revisionsteam SOLLTE überprüfen, ob alle relevanten Dokumente aktuell und vollständig sind. Bei der Prüfung auf Aktualität SOLLTE die Granularität der Dokumente berücksichtigt werden. Es SOLLTE darauf geachtet werden, dass alle wesentlichen Aspekte erfasst und geeignete Rollen zugewiesen wurden. Weiter SOLLTE geprüft werden, ob die vorliegenden Dokumente und die darin getroffenen Entscheidungen nachvollziehbar sind. Die Ergebnisse der Dokumentenprüfung SOLLTEN dokumentiert werden und, soweit sinnvoll, in die Vor-Ort-Prüfung einfließen.'
+        - id: DER.3.2.A14
+          title: 'Auswahl der Zielobjekte und der zu prüfenden Anforderungen'
+          requirement_text: 'In einer IS-Querschnittsrevision oder IS-Partialrevision SOLLTE das IS-Revisionsteam anhand der Ergebnisse der Dokumentenprüfung die Baustein-Zielobjekte für die Vor-Ort-Prüfung auswählen. Der Baustein zum Informationssicherheitsmanagement (siehe ISMS.1 Sicherheitsmanagement) des IT-Grundschutz-Kompendiums einschließlich aller zugehörigen Anforderungen SOLLTE jedoch immer vollständig geprüft werden. Weitere dreißig Prozent der modellierten Baustein-Zielobjekte SOLLTEN risikoorientiert zur Prüfung ausgewählt werden. Die Auswahl SOLLTE nachvollziehbar dokumentiert werden. Von den so ausgewählten Baustein-Zielobjekten SOLLTEN dreißig Prozent der jeweiligen Anforderungen bei der IS-Revision geprüft werden. Darüber hinaus SOLLTEN bei der Auswahl der zu prüfenden Baustein-Zielobjekte die bemängelten Anforderungen aus vorhergehenden IS-Revisionen berücksichtigt werden. Alle Anforderungen mit schwerwiegenden Sicherheitsmängeln aus vorhergehenden IS-Revisionen SOLLTEN mit geprüft werden.'
+        - id: DER.3.2.A15
+          title: 'Auswahl von geeigneten Prüfmethoden'
+          requirement_text: 'Das IS-Revisionsteam SOLLTE sicherstellen, dass geeignete Prüfmethoden eingesetzt werden, um die zu prüfenden Sachverhalte zu ermitteln. Alle Prüfungen SOLLTEN verhältnismäßig sein.'
+        - id: DER.3.2.A16
+          title: 'Erstellung eines Ablaufplans für die Vor-Ort-Prüfung'
+          requirement_text: 'Gemeinsam mit der zu prüfenden Institution SOLLTE das IS-Revisionsteam einen Ablaufplan für die Vor-Ort-Prüfung erarbeiten. Die Ergebnisse SOLLTEN zusammen mit dem IS-Prüfplan dokumentiert werden.'
+        - id: DER.3.2.A17
+          title: 'Durchführung der Vor-Ort-Prüfung'
+          requirement_text: 'Bei der Vor-Ort-Prüfung SOLLTE das IS-Revisionsteam untersuchen und feststellen, ob die ausgewählten Maßnahmen die Anforderungen des IT-Grundschutzes angemessen und praxistauglich erfüllen. Die Prüfung SOLLTE mit einem Eröffnungsgespräch beginnen. Danach SOLLTEN alle für die Prüfung ausgewählten Anforderungen des Prüfplans bzw. alle Themenfelder der Prüfthemenliste überprüft werden. Dafür SOLLTEN die vorgesehenen Prüfmethoden angewandt werden. Werden bei einer ausgewählten Stichprobe Abweichungen zum dokumentierten Status festgestellt, SOLLTE die Stichprobe bedarfsorientiert erweitert werden, bis der Sachverhalt geklärt ist. Während der Vor-Ort-Prüfung SOLLTEN das IS-Revisionsteam niemals aktiv in IT-Systeme eingreifen und auch keine Handlungsanweisungen zu Änderungen am Revisionsgegenstand erteilen. Alle wesentlichen Sachverhalte und Angaben zu Quellen-, Auskunfts- und Vorlage-Ersuchen sowie durchgeführten Besprechungen SOLLTEN schriftlich festgehalten werden. In einem Abschlussgespräch SOLLTE das IS-Revisionsteam der geprüften Institution wesentliche Feststellungen kurz darstellen. Dabei SOLLTE das IS-Revisionsteam die Feststellungen nicht konkret bewerten, sondern Hinweise auf etwaige Mängel und die weitere Verfahrensweise geben. Auch dieses Abschlussgespräch SOLLTE protokolliert werden.'
+        - id: DER.3.2.A18
+          title: 'Durchführung von Interviews'
+          requirement_text: 'Interviews durch das IS-Revisionsteam SOLLTEN strukturiert erfolgen. Fragen SOLLTEN knapp, präzise und leicht verständlich formuliert werden. Zudem SOLLTEN geeignete Fragetechniken eingesetzt werden.'
+        - id: DER.3.2.A19
+          title: 'Überprüfung der gewählten Risikobehandlungsoptionen'
+          requirement_text: 'Das IS-Revisionsteam SOLLTE prüfen, ob die verbleibenden Restrisiken für den Informationsverbund angemessen und tragbar sind und ob sie verbindlich durch die Institutionsleitung getragen werden. Das IS-Revisionsteam SOLLTE stichprobenartig verifizieren, ob bzw. inwieweit die gewählten Risikobehandlungsoptionen umgesetzt sind.'
+        - id: DER.3.2.A20
+          title: 'Nachbereitung der Vor-Ort-Prüfung'
+          requirement_text: 'Nach der Vor-Ort-Prüfung SOLLTEN die erhobenen Informationen weiter durch das IS-Revisionsteam konsolidiert und ausgewertet werden. Nachdem die eventuell nachgeforderten Dokumente, Dokumentationen und zusätzlichen Informationen ausgewertet wurden, SOLLTEN die geprüften Anforderungen endgültig bewertet werden.'
+        - id: DER.3.2.A21
+          title: 'Erstellung eines IS-Revisionsberichts'
+          requirement_text: 'Das IS-Revisionsteam SOLLTE die gewonnenen Ergebnisse in einen IS-Revisionsbericht überführen und dort nachvollziehbar dokumentieren. Eine Entwurfsversion des Berichts SOLLTE der geprüften Institution vorab übermittelt werden. Es SOLLTE verifiziert werden, ob die durch das IS-Revisionsteam festgestellten Sachverhalte richtig aufgenommen wurden. Die geprüfte Institution SOLLTE sicherstellen, dass alle betroffenen Stellen in der Institution innerhalb einer angemessenen Frist die für sie wichtigen und notwendigen Passagen des IS-Revisionsberichts erhalten. Insbesondere SOLLTEN die Inhalte an die Institutionsleitung, an die Verantwortlichen für die IS-Revision sowie den oder die ISB kommuniziert werden. IS-Revisionsberichte SOLLTEN aufgrund der enthaltenen schützenswerten Informationen mit einer geeigneten Vertraulichkeitseinstufung versehen werden. Es SOLLTE überlegt werden, die Ergebnisse der IS-Revision der Institutionsleitung vom IS-Revisionsteam in Form einer Präsentation vorzustellen.'
+        - id: DER.3.2.A22
+          title: 'Nachbereitung einer IS-Revision'
+          requirement_text: 'Die im IS-Revisionsbericht festgestellten Abweichungen SOLLTEN in einer angemessenen Zeit durch die Institution korrigiert werden. Die durchzuführenden Korrekturmaßnahmen SOLLTEN mit Zuständigkeiten, Umsetzungstermin und dem jeweiligen Status dokumentiert sein. Die Umsetzung SOLLTE kontinuierlich nachverfolgt und der Umsetzungsstatus fortgeschrieben werden. Grundsätzlich SOLLTE geprüft werden, ob ergänzende IS-Revisionen notwendig sind. Die Institution SOLLTE die Grob- und Detailplanung zur IS-Revision anpassen.'
       hoch: []
 
   - id: DER.4
     title: 'Notfallmanagement'
     description: 'Anforderungen an Aufbau und Betrieb eines Notfallmanagements (BCM) gemaess BSI-Standard 200-4.'
     anforderungen:
-      basis:
+      basis: []
+      standard:
         - id: DER.4.A1
           title: 'Erstellung eines Notfallhandbuchs'
-          requirement_text: 'Es MUSS ein Notfallhandbuch erstellt werden.'
+          requirement_text: 'Es SOLLTE ein Notfallhandbuch erstellt werden, in dem die wichtigsten Informationen zu enthalten sind. Zuständigkeiten und Befugnisse SOLLTEN zugewiesen, kommuniziert und im Notfallhandbuch festgehalten werden. Es SOLLTE sichergestellt sein, dass im Notfall entsprechend geschultes Personal zur Verfügung steht. Es SOLLTE regelmäßig durch Tests und Übungen überprüft werden, ob die im Notfallhandbuch beschriebenen Maßnahmen auch wie vorgesehen funktionieren. Es SOLLTE regelmäßig geprüft werden, ob das Notfallhandbuch noch aktuell ist. Gegebenenfalls SOLLTE es aktualisiert werden. Es SOLLTE auch im Notfall zugänglich sein. Das Notfallhandbuch SOLLTE um Verhaltensregeln für spezielle Fälle ergänzt werden, z. B. Brand. Die Regeln SOLLTEN allen Mitarbeitenden bekanntgegeben werden.'
         - id: DER.4.A2
-          title: 'Integration in das Sicherheitskonzept'
-          requirement_text: 'Das Notfallmanagement MUSS in das Sicherheitskonzept integriert werden.'
+          title: 'Integration von Notfallmanagement und Informationssicherheitsmanagement'
+          requirement_text: 'Die Prozesse im Sicherheitsmanagement SOLLTEN mit dem Notfallmanagement abgestimmt werden (siehe DER.2.1 Behandlung von Sicherheitsvorfällen).'
+      hoch:
         - id: DER.4.A3
-          title: 'Sensibilisierung und Schulung zum Notfallmanagement'
-          requirement_text: 'Mitarbeiter mit Notfallaufgaben MUESSEN sensibilisiert und geschult werden. Siehe BSI Kompendium 2023 Baustein DER.4 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Festlegung des Geltungsbereichs und der Notfallmanagementstrategie'
+          requirement_text: 'Der Geltungsbereich für das Notfallmanagementsystem SOLLTE eindeutig festgelegt werden. Die Institutionsleitung SOLLTE eine Notfallmanagementstrategie festlegen, welche die angestrebten Ziele und das Risikoakzeptanzniveau darlegen.'
+        - id: DER.4.A4
+          title: 'Leitlinie zum Notfallmanagement und Übernahme der Gesamtverantwortung durch die Institutionsleitung'
+          requirement_text: 'Die Institutionsleitung SOLLTE eine Leitlinie zum Notfallmanagement verabschieden. Diese SOLLTE die wesentlichen Eckpunkte des Notfallmanagements enthalten. Die Leitlinie zum Notfallmanagement SOLLTE regelmäßig überprüft und gegebenenfalls überarbeitet werden. Sie SOLLTE allen Mitarbeitenden bekanntgegeben werden.'
+        - id: DER.4.A5
+          title: 'Aufbau einer geeigneten Organisationsstruktur für das Notfallmanagement'
+          requirement_text: 'Die Rollen für das Notfallmanagement SOLLTEN für die Gegebenheiten der Institution angemessen festgelegt werden. Dies SOLLTE mit den Aufgaben, Pflichten und Kompetenzen der Rollen schriftlich dokumentiert werden. Es SOLLTEN für alle Rollen im Notfallmanagement qualifizierte Mitarbeitende benannt werden. Die Organisationsstruktur im Notfallmanagement SOLLTE regelmäßig darauf überprüft werden, ob sie praxistauglich, effektiv und effizient ist.'
+        - id: DER.4.A6
+          title: 'Bereitstellung angemessener Ressourcen für das Notfallmanagement'
+          requirement_text: 'Die finanziellen, technischen und personellen Ressourcen für die angestrebten Ziele des Notfallmanagements SOLLTEN angemessen sein. Der oder die Notfallbeauftragte bzw. das Notfallmanagement-Team SOLLTE über genügend Zeit für die Aufgaben im Notfallmanagement verfügen.'
+        - id: DER.4.A7
+          title: 'Erstellung eines Notfallkonzepts'
+          requirement_text: 'Alle kritischen Geschäftsprozesse und Ressourcen SOLLTEN identifiziert werden, beispielsweise mit einer Business-Impact-Analyse (BIA). Es SOLLTEN die wichtigsten relevanten Risiken für die kritischen Geschäftsprozesse und Fachaufgaben sowie deren Ressourcen identifiziert werden. Für jedes identifizierte Risiko SOLLTE entschieden werden, welche Risikostrategien zur Risikobehandlung eingesetzt werden sollen. Es SOLLTEN Kontinuitätsstrategien entwickelt werden, die einen Wiederanlauf und eine Wiederherstellung der kritischen Geschäftsprozesse in der geforderten Zeit ermöglichen. Es SOLLTE ein Notfallkonzept erstellt werden. Es SOLLTEN solche Notfallpläne und Maßnahmen entwickelt und implementiert werden, die eine effektive Notfallbewältigung und eine schnelle Wiederaufnahme der kritischen Geschäftsprozesse ermöglichen. Im Notfallkonzept SOLLTE die Informationssicherheit berücksichtigt und entsprechende Sicherheitskonzepte für die Notfalllösungen entwickelt werden.'
+        - id: DER.4.A8
+          title: 'Integration der Mitarbeitenden in den Notfallmanagement-Prozess'
+          requirement_text: 'Alle Mitarbeitenden SOLLTEN regelmäßig für das Thema Notfallmanagement sensibilisiert werden. Zum Notfallmanagement SOLLTE es ein Schulungs- und Sensibilisierungskonzept geben. Die Mitarbeitenden im Notfallmanagement-Team SOLLTEN regelmäßig geschult werden, um die benötigten Kompetenzen aufzubauen.'
+        - id: DER.4.A9
+          title: 'Integration von Notfallmanagement in organisationsweite Abläufe und Prozesse'
+          requirement_text: 'Es SOLLTE sichergestellt werden, dass Aspekte des Notfallmanagements in allen Geschäftsprozessen und Fachaufgaben der Institution berücksichtigt werden. Die Prozesse, Vorgaben und Verantwortlichkeiten im Notfallmanagement SOLLTEN mit dem Risikomanagement und Krisenmanagement abgestimmt werden.'
+        - id: DER.4.A10
+          title: 'Tests und Notfallübungen'
+          requirement_text: 'Alle wesentlichen Sofortmaßnahmen und Notfallpläne SOLLTEN in angemessener Weise regelmäßig und anlassbezogen getestet und geübt werden. Der zeitliche Rahmen und die fachliche Abdeckung aller Übungen SOLLTEN übergreifend in einem Übungsplan dokumentiert werden. Im Notfallmanagement SOLLTEN ausreichend Ressourcen für die Planung, Konzeption, Durchführung und Auswertung der Tests und Übungen bereitgestellt werden.'
+        - id: DER.4.A12
+          title: 'Dokumentation im Notfallmanagement-Prozess'
+          requirement_text: 'Der Ablauf des Notfallmanagement-Prozesses, die Arbeitsergebnisse der einzelnen Phasen und wichtige Entscheidungen SOLLTEN dokumentiert werden. Ein festgelegtes Verfahren SOLLTE sicherstellen, dass diese Dokumente regelmäßig aktualisiert werden. Darüber hinaus SOLLTE der Zugriff auf die Dokumentation auf autorisierte Personen beschränkt werden.'
+        - id: DER.4.A13
+          title: 'Überprüfung und Steuerung des Notfallmanagement-Systems'
+          requirement_text: 'Die Institutionsleitung SOLLTE sich regelmäßig anhand von Managementberichten über den Stand des Notfallmanagements informieren. Sie SOLLTE so das Notfallmanagement-System regelmäßig überprüfen, bewerten und gegebenenfalls korrigieren.'
+        - id: DER.4.A14
+          title: 'Regelmäßige Überprüfung und Verbesserung der Notfallmaßnahmen'
+          requirement_text: 'Alle Notfallmaßnahmen SOLLTEN regelmäßig oder bei größeren Änderungen daraufhin überprüft werden, ob sie noch eingehalten und korrekt umgesetzt werden. Es SOLLTE geprüft werden, ob sie sich noch dazu eignen, die definierten Ziele zu erreichen. Dabei SOLLTE untersucht werden, ob technische Maßnahmen korrekt implementiert und konfiguriert wurden und ob organisatorische Maßnahmen effektiv und effizient umgesetzt sind. Bei Abweichungen SOLLTEN die Ursachen für die Mängel ermittelt und Verbesserungsmaßnahmen veranlasst werden. Diese Ergebnisübersicht SOLLTE von der Institutionsleitung freigegeben werden. Es SOLLTE zudem ein Prozess etabliert werden, der steuert und überwacht, ob und wie die Verbesserungsmaßnahmen umgesetzt werden. Verzögerungen SOLLTEN frühzeitig an die Institutionsleitung gemeldet werden. Es SOLLTE von der Institutionsleitung festgelegt sein, wie die Überprüfungen koordiniert werden. Die Überprüfungen SOLLTEN so geplant werden, dass kein relevanter Teil ausgelassen wird. Insbesondere SOLLTEN die im Bereich der Revision, der IT, des Sicherheitsmanagements, des Informationssicherheitsmanagements und des Notfallmanagements durchgeführten Überprüfungen miteinander koordiniert werden. Dazu SOLLTE geregelt werden, welche Maßnahmen wann und von wem überprüft werden.'
+        - id: DER.4.A15
+          title: 'Bewertung der Leistungsfähigkeit des Notfallmanagementsystems'
+          requirement_text: 'Es SOLLTE regelmäßig bewertet werden, wie leistungsfähig und effektiv das Notfallmanagement-System ist. Als Grundlage SOLLTEN Mess- und Bewertungskriterien wie z. B. Leistungskennzahlen definiert werden. Diese Messgrößen SOLLTEN regelmäßig ermittelt und mit geeigneten vorangegangenen Werten, mindestens aber mit den Vorjahreswerten, verglichen werden. Weichen die Werte negativ ab, SOLLTEN die Ursachen ermittelt und Verbesserungsmaßnahmen definiert werden. Die Ergebnisse der Bewertung SOLLTEN an die Leitung berichtet werden. Die Leitung SOLLTE entscheiden, mit welchen Maßnahmen das Notfallmanagement weiterentwickelt werden soll. Alle Entscheidungen der Institutionsleitung SOLLTEN dokumentiert und die bisherigen Aufzeichnungen aktualisiert werden.'
+        - id: DER.4.A16
+          title: 'Notfallvorsorge- und Notfallreaktionsplanung für ausgelagerte Komponenten'
+          requirement_text: 'Bei der Notfallvorsorge- und Notfallreaktionsplanung für ausgelagerte Komponenten SOLLTE regelmäßig das Notfallmanagement der liefernden oder dienstleistenden Institution in den unterzeichneten Verträgen geprüft werden. Auch SOLLTEN die Abläufe in Notfalltests und -übungen mit der liefernden oder bereitstellenden Institution abgestimmt und, wenn angemessen, gemeinsam durchgeführt werden. Die Ergebnisse und Auswertungen SOLLTEN regelmäßig zwischen der Institutionsleitung und den liefernden Institutionen oder Dienstleistenden ausgetauscht werden. In den Auswertungen SOLLTEN auch eventuelle Verbesserungsmaßnahmen enthalten sein.'

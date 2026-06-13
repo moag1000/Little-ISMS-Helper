@@ -150,7 +150,7 @@ mappings:
       BSI-Crosswalk bestätigt das 1:1-Mapping.
     audit_evidence_hint: 'CON.1.A1 Auswahl geeigneter kryptografischer Verfahren, Key-Management-Verfahren. CRY-01: Cloud-Krypto-Policy, Algorithmen-Allowlist (BSI TR-02102 konform), HSM/KMS-Konfiguration.'
 
-  - source: 'CON.5'
+  - source: 'CON.8'
     target: 'COM-04'
     relationship: 'superset'
     confidence: 'medium'

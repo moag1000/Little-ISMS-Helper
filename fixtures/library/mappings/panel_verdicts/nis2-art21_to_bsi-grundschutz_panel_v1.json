@@ -55,7 +55,7 @@
     },
     {
       "nis2": "21.2.e",
-      "baustein": "CON.5",
+      "baustein": "CON.8",
       "state": "reject",
       "mappingPercentage": 45,
       "realVotes": 1
@@ -124,7 +124,7 @@
     },
     {
       "nis2": "21.2.d",
-      "baustein": "OPS.2.1",
+      "baustein": "OPS.2.3",
       "state": "ki_validiert",
       "mappingPercentage": 55,
       "refutationSurvived": true,
@@ -194,7 +194,7 @@
     },
     {
       "nis2": "21.2.h",
-      "baustein": "CON.11",
+      "baustein": "CON.11.1",
       "state": "reject",
       "mappingPercentage": 12,
       "realVotes": 1
