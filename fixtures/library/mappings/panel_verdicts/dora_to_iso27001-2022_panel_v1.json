@@ -1,0 +1,249 @@
+{
+  "library": {
+    "source_framework": "DORA",
+    "target_framework": "ISO27001",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (no ESA/EBA verbatim DORA↔ISO 27001 crosswalk published)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
+    "completeness": "72 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 32,
+      "ki_validiert": 19,
+      "needs_review": 7,
+      "reject": 6
+    }
+  },
+  "verdicts": [
+    {
+      "dora": "DORA-5.1",
+      "iso": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "DORA-5.2",
+      "iso": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "DORA-6.1",
+      "iso": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-6.2",
+      "iso": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 48,
+      "realVotes": 3
+    },
+    {
+      "dora": "DORA-7",
+      "iso": "A.5.9",
+      "state": "reject",
+      "mappingPercentage": 80,
+      "realVotes": 1
+    },
+    {
+      "dora": "DORA-8.1",
+      "iso": "A.8.8",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "dora": "DORA-8.2",
+      "iso": "A.8.8",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 2
+    },
+    {
+      "dora": "DORA-8.3",
+      "iso": "A.8.8",
+      "state": "needs_review",
+      "mappingPercentage": 68,
+      "realVotes": 2
+    },
+    {
+      "dora": "DORA-9.1",
+      "iso": "A.8.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-9.2",
+      "iso": "A.8.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-9.3",
+      "iso": "A.8.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 42,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-9.4",
+      "iso": "A.8.7",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "dora": "DORA-10.1",
+      "iso": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-11.1",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-12",
+      "iso": "A.8.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-13.1",
+      "iso": "A.5.27",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-13.2",
+      "iso": "A.5.27",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-13.3",
+      "iso": "A.5.27",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-13.4",
+      "iso": "A.5.27",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 2
+    },
+    {
+      "dora": "DORA-13.5",
+      "iso": "A.5.27",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "dora": "DORA-13.6",
+      "iso": "A.5.27",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "dora": "DORA-14.1",
+      "iso": "A.6.3",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "dora": "DORA-15.1",
+      "iso": "A.5.36",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "dora": "DORA-28.1",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-28.2",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-28.3",
+      "iso": "A.5.19",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 2
+    },
+    {
+      "dora": "DORA-30.1",
+      "iso": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-24.1",
+      "iso": "A.8.29",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "dora": "DORA-24.2",
+      "iso": "A.8.29",
+      "state": "reject",
+      "mappingPercentage": 42,
+      "realVotes": 1
+    },
+    {
+      "dora": "DORA-17.1",
+      "iso": "A.5.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-17.2",
+      "iso": "A.5.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "dora": "DORA-17.3",
+      "iso": "A.5.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    }
+  ]
+}

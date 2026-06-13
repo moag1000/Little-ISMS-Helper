@@ -1,0 +1,379 @@
+{
+  "provenance": {
+    "source_framework": "DORA",
+    "target_framework": "ISO27001",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied to operational mappings without further human review",
+    "candidate_count": 72
+  },
+  "candidates": [
+    {
+      "target": "A.5.2",
+      "mappingPercentage": 80,
+      "rationale": "DORA-5.1: DORA Art. 5 'Governance und Organisation' weist dem Leitungsorgan explizit die Letztverantwortung fuer das ICT-Risk-Management zu und verlangt klar definierte Rollen und Verantwortlichkeiten fuer alle ICT-bezogenen Funktionen. A.5.2 'Information security roles and responsibilities' ist die direkte ISO-Verankerung der Rollen-/Verantwortungs-Zuweisung — defensibel als Baustein. Das Mapping fuehrt A.5.2 selbst als cross_ref, aber NICHT als eigenstaendiges Mapping. Bewusst <100%, da DORA die Board-Letztverantwortung praeskriptiver fordert als A.5.2."
+    },
+    {
+      "target": "A.5.4",
+      "mappingPercentage": 75,
+      "rationale": "DORA-5.1: DORA Art. 5 verlangt aktive Einbindung und Verantwortung des Leitungsorgans (Genehmigung, Ueberwachung, Ressourcenbereitstellung, regelmaessige Schulung). A.5.4 'Management responsibilities' fordert genau, dass das Management die Anwendung der IS-Vorgaben durch alle Beteiligten sicherstellt — direkte Korrespondenz zur DORA-Management-Body-Pflicht. Fehlt im aktuellen Mapping. <100%, da DORA zusaetzlich Strategie-Genehmigung und Board-Reporting verlangt."
+    },
+    {
+      "target": "A.5.3",
+      "mappingPercentage": 55,
+      "rationale": "DORA-5.2: DORA Art. 5 fordert eine angemessene Trennung von ICT-Management-, Kontroll- und internen Audit-Funktionen, um Interessenkonflikte zu vermeiden. A.5.3 'Segregation of duties' ist die ISO-Verankerung der Funktionstrennung. Das Mapping nennt A.5.3 als cross_ref, fuehrt es aber nicht als Mapping. Niedrigeres %, da DORA-Funktionstrennung auf Governance-Ebene (3-Lines-of-Defense) ueber die operative A.5.3 hinausgeht."
+    },
+    {
+      "target": "A.5.2",
+      "mappingPercentage": 60,
+      "rationale": "DORA-6.1: DORA Art. 6 verlangt ein dokumentiertes ICT-Risk-Management-Framework mit klar zugewiesenen Verantwortlichkeiten fuer dessen Umsetzung und Pflege. A.5.2 'Information security roles and responsibilities' deckt die Zuweisung der Framework-Verantwortlichkeiten ab — defensibler Baustein neben A.5.1. Bereits als cross_ref im Mapping gelistet, aber nicht als eigenes Mapping."
+    },
+    {
+      "target": "A.8.6",
+      "mappingPercentage": 70,
+      "rationale": "Art.7: DORA Art. 7 'ICT-Systeme, -Protokolle und -Tools' verlangt explizit, dass ICT-Systeme angemessene Kapazitaet besitzen und technologisch resilient sind, um steigende Informations-/Verarbeitungsanforderungen und Stress-Situationen zu bewaeltigen. A.8.6 'Capacity management' ist die direkte ISO-Korrespondenz zur Kapazitaets-Anforderung — im aktuellen Mapping vollstaendig fehlend (weder Target noch cross_ref). Klar defensibel."
+    },
+    {
+      "target": "A.8.9",
+      "mappingPercentage": 60,
+      "rationale": "Art.7: DORA Art. 7 fordert, dass ICT-Systeme, -Protokolle und -Tools angemessen, zuverlaessig und auf dem Stand der Technik gehalten werden. A.8.9 'Configuration management' verankert das Verwalten gehaerteter, definierter Baseline-Konfigurationen der ICT-Systeme. Bereits als cross_ref gelistet, aber nicht als eigenes Mapping — defensibel als Baustein der DORA-Anforderung an verlaessliche, kontrollierte Systeme."
+    },
+    {
+      "target": "A.5.9",
+      "mappingPercentage": 85,
+      "rationale": "DORA-8.1: DORA Art. 8 verlangt als Kern die Identifikation, Klassifizierung und Dokumentation aller ICT-gestuetzten Geschaeftsfunktionen, Informations- und ICT-Assets. A.5.9 'Inventory of information and other associated assets' ist die zentrale ISO-Verankerung des Asset-Inventars — derzeit ist DORA-8 nur auf A.8.8 (technische Vulns) gemappt, obwohl das Inventar der eigentliche Kern von Art. 8 ist. Starke, klar defensible fehlende Korrespondenz."
+    },
+    {
+      "target": "A.5.12",
+      "mappingPercentage": 75,
+      "rationale": "DORA-8.2: DORA Art. 8 verlangt ausdruecklich die Klassifizierung der identifizierten Informations-/ICT-Assets sowie der von ihnen gestuetzten Geschaeftsfunktionen nach Kritikalitaet. A.5.12 'Classification of information' ist die direkte ISO-Verankerung der Klassifizierungs-Anforderung — fehlt im aktuellen Mapping vollstaendig. Defensibel, da Klassifizierung ein expliziter Art.-8-Bestandteil ist."
+    },
+    {
+      "target": "A.8.9",
+      "mappingPercentage": 60,
+      "rationale": "DORA-8.3: DORA Art. 8 fordert, alle ICT-Assets, ihre Konfigurationen sowie Verbindungen/Abhaengigkeiten zwischen Assets und Geschaeftsfunktionen zu identifizieren und aktuell zu halten. A.8.9 'Configuration management' verankert das Erfassen und Pflegen von Konfigurationen und ist die ISO-Entsprechung der DORA-Dependency-/Configuration-Mapping-Pflicht. Fehlt im aktuellen Mapping — defensibel als Baustein."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 100,
+      "rationale": "DORA-9.1: A.5.30 'ICT readiness for business continuity' is the direct ISO 27001:2022 counterpart to the DORA Art. 11(1) obligation to develop and document ICT business continuity and ICT disaster recovery plans. The current sole mapping to A.8.7 (protection against malware) is essentially unrelated; A.5.30 is the canonical, full correspondence and its absence is the most serious gap."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 80,
+      "rationale": "DORA-9.1: A.5.29 'Information security during disruption' covers maintaining InfoSec while executing recovery/continuity, which the ICT BC and DR plans required by DORA-9.1 must ensure. Strong partial correspondence."
+    },
+    {
+      "target": "A.8.13",
+      "mappingPercentage": 60,
+      "rationale": "DORA-9.1: ICT disaster recovery plans are inoperable without information backup; A.8.13 'Information backup' is a defensible partial correspondence as the technical foundation of the DR plans DORA-9.1 mandates."
+    },
+    {
+      "target": "A.8.14",
+      "mappingPercentage": 60,
+      "rationale": "DORA-9.1: A.8.14 'Redundancy of information processing facilities' supports the availability/continuity outcomes that ICT BC and DR plans are designed to achieve. Defensible partial correspondence."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 100,
+      "rationale": "DORA-9.2: Annual testing of ICT BC and DR plans falls squarely under A.5.30 'ICT readiness for business continuity', whose implementation guidance explicitly requires testing and exercising of the ICT continuity arrangements. Full correspondence; current sole A.8.7 mapping is unrelated."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 70,
+      "rationale": "DORA-9.2: A.5.29 'Information security during disruption' is validated through the BC/DR testing DORA-9.2 requires; testing confirms InfoSec is preserved during disruption. Defensible partial correspondence."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 100,
+      "rationale": "DORA-9.3: Setting RTO and RPO for each critical function is a core deliverable of A.5.30 'ICT readiness for business continuity', whose guidance explicitly calls for defining RTO/RPO. Full correspondence; A.8.7 (malware) is the wrong control."
+    },
+    {
+      "target": "A.8.14",
+      "mappingPercentage": 60,
+      "rationale": "DORA-9.3: Achieving demanding RTO/RPO targets typically depends on A.8.14 'Redundancy of information processing facilities'; redundancy is the primary technical means of meeting recovery-time objectives. Defensible partial correspondence."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 70,
+      "rationale": "DORA-9.4: Crisis communication plans are an integral component of A.5.30 'ICT readiness for business continuity', whose guidance includes communication arrangements during ICT disruption. Strong partial correspondence; current A.8.7 mapping is unrelated."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 80,
+      "rationale": "DORA-9.4: A.5.26 'Response to information security incidents' covers stakeholder communication during incident response, which is exactly what DORA-9.4 crisis communication plans for responsible disclosure of ICT incidents address. Strong partial correspondence."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 60,
+      "rationale": "DORA-9.4: A.5.24 'Information security incident management planning and preparation' requires establishing communication procedures and responsibilities, aligning with the pre-established crisis communication plans DORA-9.4 mandates. Defensible partial correspondence."
+    },
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 50,
+      "rationale": "DORA-9.4: Responsible disclosure of ICT incidents per DORA-9.4 includes notifying authorities; A.5.5 'Contact with authorities' is a defensible partial correspondence for the regulatory-disclosure dimension of crisis communication."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 100,
+      "rationale": "DORA-10.1: Establishing and maintaining ICT response and recovery plans corresponds fully to A.5.26 'Response to information security incidents', which governs the planned response/recovery procedures DORA-10.1 requires. The current sole mapping to A.8.16 (monitoring) is at best peripheral; A.5.26 is the direct counterpart."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 80,
+      "rationale": "DORA-10.1: A.5.29 'Information security during disruption' directly covers the recovery-plan dimension of DORA-10.1 (maintaining and restoring secure operations after an ICT disruption). Strong partial correspondence."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 80,
+      "rationale": "DORA-10.1: The recovery-plan and testing obligations of DORA-10.1 map to A.5.30 'ICT readiness for business continuity', which establishes and tests ICT recovery capability. Strong partial correspondence."
+    },
+    {
+      "target": "A.5.1",
+      "mappingPercentage": 70,
+      "rationale": "DORA-11.1: A simplified ICT risk-management framework under DORA Art. 16 still rests on A.5.1 'Policies for information security' as its documented governance foundation. Strong partial correspondence; current sole mapping to A.5.30 (BC readiness) does not represent the framework/policy nature of DORA-11.1."
+    },
+    {
+      "target": "A.5.2",
+      "mappingPercentage": 60,
+      "rationale": "DORA-11.1: A.5.2 'Information security roles and responsibilities' is required even under the simplified framework, which must still assign accountability for ICT risk. Defensible partial correspondence."
+    },
+    {
+      "target": "A.8.14",
+      "mappingPercentage": 70,
+      "rationale": "DORA-12 (Art. 12 backup/restoration/recovery): A.8.14 'Redundancy of information processing facilities' complements A.8.13 backup for the restoration and recovery methods Art. 12 mandates; redundancy is a defensible partial correspondence to the recovery-method dimension not fully covered by backup alone."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 60,
+      "rationale": "DORA-12 (Art. 12): The restoration and recovery procedures of Art. 12 feed into A.5.30 'ICT readiness for business continuity'; recovery methods underpin ICT continuity readiness. Defensible partial correspondence beyond the existing A.8.13 backup mapping."
+    },
+    {
+      "target": "A.5.15",
+      "mappingPercentage": 100,
+      "rationale": "DORA-13.1: 'ICT systems access control' maps fully to A.5.15 'Access control', the foundational ISO 27001:2022 control for establishing access-control policy. The current sole mapping to A.5.27 (learning from incidents) is incorrect; A.5.15 is the direct counterpart and its absence is a clear gap."
+    },
+    {
+      "target": "A.5.18",
+      "mappingPercentage": 100,
+      "rationale": "DORA-13.1: A.5.18 'Access rights' (provisioning, review, removal of access) is a full correspondence to the DORA-13.1 access-control-policy requirement governing who may access ICT systems."
+    },
+    {
+      "target": "A.5.16",
+      "mappingPercentage": 80,
+      "rationale": "DORA-13.1: A.5.16 'Identity management' underpins the access-control mechanisms DORA-13.1 requires by ensuring unique identities as the basis for authentication and authorization. Strong partial correspondence."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 70,
+      "rationale": "DORA-13.1: DORA-13.1 explicitly references 'appropriate authentication mechanisms'; A.5.17 'Authentication information' governs the management of credentials/authentication secrets underpinning those mechanisms. Strong partial correspondence."
+    },
+    {
+      "target": "A.8.2",
+      "mappingPercentage": 70,
+      "rationale": "DORA-13.1: A.8.2 'Privileged access rights' is a defensible correspondence; DORA Art. 9 access-control obligations specifically demand tight control over privileged/administrative access to ICT systems. Strong partial correspondence."
+    },
+    {
+      "target": "A.8.5",
+      "mappingPercentage": 70,
+      "rationale": "DORA-13.1: A.8.5 'Secure authentication' directly implements the 'appropriate authentication mechanisms' DORA-13.1 calls for at the technical login layer. Strong partial correspondence."
+    },
+    {
+      "target": "A.8.3",
+      "mappingPercentage": 60,
+      "rationale": "DORA-13.1: A.8.3 'Information access restriction' enforces need-to-know at the data/application layer, a defensible partial correspondence to DORA-13.1's access-control-policy requirement for ICT systems."
+    },
+    {
+      "target": "A.8.5",
+      "mappingPercentage": 100,
+      "rationale": "DORA-13.2 (Strong Authentication): DORA explicitly requires strong/multi-factor authentication mechanisms. A.8.5 Secure authentication is the dedicated ISO 27001:2022 control for authentication technique strength (MFA, step-up, secure logon), making it the single most direct correspondent — clearly missing if only A.5.27 is mapped."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 100,
+      "rationale": "DORA-13.2 (Strong Authentication): Authentication mechanisms operate on authentication information (credentials, secrets, tokens). A.5.17 Authentication information governs allocation/management of the secrets that strong authentication relies on — a defensible full correspondence."
+    },
+    {
+      "target": "A.5.16",
+      "mappingPercentage": 70,
+      "rationale": "DORA-13.2 (Strong Authentication): Strong authentication presupposes uniquely identifiable principals. A.5.16 Identity management underpins the binding of authenticators to identities; partial because A.5.16 is broader identity-lifecycle than authentication strength specifically."
+    },
+    {
+      "target": "A.5.15",
+      "mappingPercentage": 60,
+      "rationale": "DORA-13.2 (Strong Authentication): DORA-13.2 is the authentication facet of an access-control policy; A.5.15 Access control is the parent control for authentication-based access decisions — partial because A.5.15 covers authorization breadth beyond authentication."
+    },
+    {
+      "target": "A.5.12",
+      "mappingPercentage": 100,
+      "rationale": "DORA-13.3 (Data Protection): Protecting confidentiality/integrity of data first requires classification to determine protection level. A.5.12 Classification of information is the canonical ISO control driving data-protection measures — directly missing if only A.5.27 is mapped."
+    },
+    {
+      "target": "A.8.24",
+      "mappingPercentage": 80,
+      "rationale": "DORA-13.3 (Data Protection): Confidentiality/integrity protection of data is primarily achieved via cryptography. A.8.24 Use of cryptography is a core technical control delivering DORA-13.3's protection objective; partial because cryptography is one of several protective measures."
+    },
+    {
+      "target": "A.5.34",
+      "mappingPercentage": 70,
+      "rationale": "DORA-13.3 (Data Protection): Where protected data includes personal data, A.5.34 Privacy and protection of PII applies. Partial because DORA-13.3 covers all data, not exclusively PII."
+    },
+    {
+      "target": "A.5.14",
+      "mappingPercentage": 60,
+      "rationale": "DORA-13.3 (Data Protection): Confidentiality/integrity must be preserved when data is transferred. A.5.14 Information transfer governs secure transfer channels; partial as it addresses the in-transit subset of data protection."
+    },
+    {
+      "target": "A.8.11",
+      "mappingPercentage": 50,
+      "rationale": "DORA-13.3 (Data Protection): A.8.11 Data masking is a defensible protective measure reducing exposure of sensitive data; partial because masking is a specific technique, not the whole confidentiality/integrity objective."
+    },
+    {
+      "target": "A.8.12",
+      "mappingPercentage": 50,
+      "rationale": "DORA-13.3 (Data Protection): A.8.12 Data leakage prevention directly protects confidentiality of data; partial since DLP is one targeted control within the broader data-protection requirement."
+    },
+    {
+      "target": "A.8.16",
+      "mappingPercentage": 80,
+      "rationale": "DORA-13.5 (Security Event Logging): DORA requires 'prompt detection of anomalous activities', which is precisely A.8.16 Monitoring activities (detection/analysis of anomalies). The logging-only A.5.27/A.8.15 view omits the detection control that the DORA text explicitly demands."
+    },
+    {
+      "target": "A.8.15",
+      "mappingPercentage": 100,
+      "rationale": "DORA-13.5 (Security Event Logging): A.8.15 Logging is the direct ISO correspondent for establishing event-logging mechanisms named in DORA-13.5; clearly missing if only A.5.27 is mapped."
+    },
+    {
+      "target": "A.8.17",
+      "mappingPercentage": 60,
+      "rationale": "DORA-13.5 (Security Event Logging): Reliable anomaly detection across logs requires synchronised time. A.8.17 Clock synchronisation supports correlatable logging; partial as it is an enabling control, not the logging mechanism itself."
+    },
+    {
+      "target": "A.5.7",
+      "mappingPercentage": 50,
+      "rationale": "DORA-13.5 (Security Event Logging): Detecting anomalous activity is materially strengthened by A.5.7 Threat intelligence feeding detection rules; partial because threat intelligence is supportive rather than the logging mechanism."
+    },
+    {
+      "target": "A.7.5",
+      "mappingPercentage": 100,
+      "rationale": "DORA-14.1 (Physical Security and Environmental Controls): DORA-14.1 explicitly names environmental controls. A.7.5 Protecting against physical and environmental threats is the dedicated ISO control for environmental protection of ICT infrastructure — directly missing if only A.6.3 is mapped."
+    },
+    {
+      "target": "A.7.2",
+      "mappingPercentage": 100,
+      "rationale": "DORA-14.1 (Physical Security): A.7.2 Physical entry controls is a core ISO control for restricting physical access to ICT facilities, squarely within DORA-14.1's physical-security scope."
+    },
+    {
+      "target": "A.7.8",
+      "mappingPercentage": 80,
+      "rationale": "DORA-14.1 (Environmental Controls): A.7.8 Equipment siting and protection protects ICT equipment from environmental hazards; defensible full-to-strong correspondence with DORA-14.1's environmental-control objective."
+    },
+    {
+      "target": "A.7.11",
+      "mappingPercentage": 70,
+      "rationale": "DORA-14.1 (Environmental Controls): A.7.11 Supporting utilities (power, cooling) is a classic environmental control for ICT infrastructure resilience addressed by DORA-14.1; partial as it covers the utilities subset."
+    },
+    {
+      "target": "A.7.1",
+      "mappingPercentage": 70,
+      "rationale": "DORA-14.1 (Physical Security): A.7.1 Physical security perimeters establishes the protective boundary for ICT infrastructure; defensible partial within DORA-14.1's physical-security scope."
+    },
+    {
+      "target": "A.7.12",
+      "mappingPercentage": 50,
+      "rationale": "DORA-14.1 (Physical/Environmental): A.7.12 Cabling security protects ICT infrastructure cabling from interception/damage; partial as it is a specific physical-protection measure."
+    },
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 100,
+      "rationale": "DORA-15.1 (Relationship with Oversight Authorities): DORA-15.1 requires cooperation with and information provision to competent authorities. A.5.5 Contact with authorities is the exact ISO control for maintaining relationships/communication channels with supervisory authorities — the most direct correspondence and clearly missing if only A.5.36 is mapped."
+    },
+    {
+      "target": "A.5.31",
+      "mappingPercentage": 70,
+      "rationale": "DORA-15.1 (Oversight Authorities): Cooperating with and reporting to supervisors is a legal/regulatory obligation. A.5.31 Legal, statutory, regulatory and contractual requirements covers identifying and meeting these supervisory obligations; partial because A.5.31 is broader than authority liaison."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 100,
+      "rationale": "DORA-28.1 (Third-Party Risk Management): DORA Chapter V manages ICT third-party risk specifically along the supply chain. A.5.21 Managing information security in the ICT supply chain is the dedicated ISO control for ICT-supplier-chain risk — directly missing if only A.5.19 is mapped."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 90,
+      "rationale": "DORA-28.1 (Third-Party Risk Management): Managing third-party risk requires ongoing monitoring of providers. A.5.22 Monitoring, review and change management of supplier services is the ISO control for continuous supplier-risk oversight required by DORA-28.1."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 100,
+      "rationale": "DORA-28.1 (Third-Party Risk Management): A.5.19 Information security in supplier relationships is the foundational ISO control for treating supplier risk as an integral part of ICT risk; defensible full correspondence (note: the given baseline already names A.5.19 — included for completeness of the supplier-control cluster, drop if A.5.19 is considered already-mapped)."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 70,
+      "rationale": "DORA-28.1 (Third-Party Risk Management): Treating third-party risk includes embedding security requirements in agreements. A.5.20 Addressing information security within supplier agreements supports DORA-28.1's risk-management objective; partial because contractual content is more directly DORA-28.2/30, but it is a defensible component of integral third-party risk management."
+    },
+    {
+      "target": "A.5.23",
+      "mappingPercentage": 60,
+      "rationale": "DORA-28.1 (Third-Party Risk Management): A large share of ICT third-party services are cloud services; A.5.23 Information security for use of cloud services is a defensible partial correspondent for the cloud subset of DORA third-party risk."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 75,
+      "rationale": "DORA DORA-28.2: Art. 28(2) explicitly requires that contractual arrangements on the use of ICT services include the mandatory elements of the Regulation (full description of services, service levels, data location, audit rights, termination/exit, subcontracting conditions). A.5.20 'Addressing information security in supplier agreements' is the canonical ISO control for embedding security requirements into supplier contracts and is therefore a direct, defensible building block for a contractual-arrangements obligation. The current mapping only attaches A.5.19 (the general supplier-relationship policy), which does not address contract content at all. The project's own LoadDoraRequirementsCommand lists 5.19 AND 5.20 for DORA-28.2, corroborating the gap. Relationship: DORA superset of A.5.20."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 40,
+      "rationale": "DORA DORA-28.2: Art. 28(2)/(7) contractual arrangements must govern subcontracting/chains of ICT sub-providers and supply-chain conditions. A.5.21 'Managing information security in the ICT supply chain' is the specific ISO control for propagating security requirements down the ICT supply/subcontracting chain and is a defensible (though partial) building block for the subcontracting-clause dimension of Art. 28(2). It is currently only carried as a cross_ref, not as a mapped target. Lower percentage because A.5.21 addresses only the supply-chain sub-set of the article. Relationship: DORA superset of A.5.21."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 55,
+      "rationale": "DORA DORA-30.1: Art. 30 key contractual provisions explicitly require provisions on subcontracting/chain conditions and on security measures flowing through to ICT sub-providers. A.5.21 'Managing information security in the ICT supply chain' is the dedicated ISO control for security requirements across the ICT supply chain and is a genuinely defensible additional building block for the subcontracting/chain-of-providers element of Art. 30. Currently only cited as cross_ref (A.5.22) and not mapped; A.5.21 is more on-point than A.5.22 for the chaining provision. Relationship: DORA superset of A.5.21."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 50,
+      "rationale": "DORA DORA-30.1: Art. 30(2)/(3) require ongoing monitoring of ICT third-party service performance, audit/inspection rights and managed change of services, plus exit triggers. A.5.22 'Monitoring, review and change management of supplier services' is the ISO control that operationalises the monitoring/audit-rights/change dimension that these mandatory contract clauses are designed to enforce. It appears in the existing cross_refs but is not a mapped target. Relationship: DORA superset of A.5.22."
+    },
+    {
+      "target": "A.8.8",
+      "mappingPercentage": 70,
+      "rationale": "DORA DORA-24.1: Art. 24/25 require regular testing of ICT tools and systems including, expressly, vulnerability assessments and scans alongside penetration tests. A.8.8 'Management of technical vulnerabilities' is the canonical ISO control for vulnerability identification/scanning/assessment and directly underpins the vulnerability-assessment limb of Art. 24 — a limb A.8.29 (security testing in development and acceptance) does not cover, since A.8.29 is dev/acceptance-scoped not operational-estate-scoped. The project's LoadDoraRequirementsCommand lists 8.8 AND 8.29 for DORA-24.1, and 8.8 is already a cross_ref. Relationship: DORA superset of A.8.8."
+    },
+    {
+      "target": "A.8.8",
+      "mappingPercentage": 75,
+      "rationale": "DORA DORA-24.2: Art. 24(2)/25 require a testing programme that explicitly includes vulnerability assessments and scans as recurring components. A.8.8 'Management of technical vulnerabilities' is the ISO control mandating a managed, ongoing vulnerability-management process (scanning, evaluation, remediation tracking) and is the most directly defensible additional correspondence for a programmatic vulnerability-scan obligation. The current sole mapping A.8.29 covers development/acceptance security testing only; the project's own LoadDoraRequirementsCommand lists 8.8 as the primary control for DORA-24.2. Relationship: DORA superset of A.8.8."
+    },
+    {
+      "target": "A.5.25",
+      "mappingPercentage": 65,
+      "rationale": "DORA DORA-17.1: Art. 17 requires an incident management process to detect, manage AND classify/assess incidents (impact determination). A.5.25 'Assessment and decision on information security events' is the ISO control covering the triage/assessment-and-decision step that is intrinsic to DORA's detect-manage-classify process. The mapping carries A.5.25 only as a cross_ref; it is a defensible direct building block. The project's LoadDoraRequirementsCommand lists 5.24, 5.25 AND 5.26 for DORA-17.1. Relationship: DORA superset of A.5.25."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 65,
+      "rationale": "DORA DORA-17.1: Art. 17 covers the full incident lifecycle to 'detect, manage and notify' incidents — i.e. the active response and notification/handling phase, not just planning/preparation. A.5.24 (planning and preparation) alone is incomplete; A.5.26 'Response to information security incidents' is the ISO control for the manage/respond limb and is a genuinely defensible additional correspondence. Currently only a cross_ref. Relationship: DORA superset of A.5.26."
+    },
+    {
+      "target": "A.5.25",
+      "mappingPercentage": 80,
+      "rationale": "DORA DORA-17.2: Art. 18 classification of incidents requires assessing impact and deciding severity/major-incident status. A.5.25 'Assessment and decision on information security events' is the precise ISO analogue for categorising events and deciding their handling/severity, making it the single most defensible additional correspondence for a classification-of-incidents requirement — arguably more on-point than the currently-mapped A.5.24 (preparation). The project's LoadDoraRequirementsCommand lists 5.24 AND 5.25 for DORA-17.2; A.5.25 is currently only a cross_ref. Relationship: DORA superset of A.5.25."
+    },
+    {
+      "target": "A.5.27",
+      "mappingPercentage": 45,
+      "rationale": "DORA DORA-17.3: Art. 17/incident-register obligations exist so that incident information is captured and used to feed back into the risk framework and improvements (DORA Art. 13 lessons-learned linkage). A.5.27 'Learning from information security incidents' is the ISO control mandating that incident data be recorded and reused to strengthen controls — defensibly adjacent to maintaining an incident register as the evidentiary basis for that learning. Partial/secondary correspondence, hence the lower percentage; A.5.24 alone (preparation) does not capture the register-and-learn purpose. Relationship: DORA superset of A.5.27."
+    }
+  ]
+}
