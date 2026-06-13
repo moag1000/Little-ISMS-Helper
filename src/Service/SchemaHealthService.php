@@ -28,6 +28,28 @@ class SchemaHealthService
         '/^ALTER TABLE .+ DROP /i',
     ];
 
+    /**
+     * Infrastructure tables owned by bundles (not App entities). They must NEVER
+     * be dropped by a reconcile/force — dropping doctrine_migration_versions
+     * wipes Doctrine's migration bookkeeping; messenger_messages is the queue.
+     * The dbal `schema_filter` excludes them from introspection (primary fix);
+     * this list is the belt-and-suspenders guard in {@see applyUpdate()}.
+     */
+    public const PROTECTED_TABLES = ['doctrine_migration_versions', 'messenger_messages'];
+
+    /** True when $statement drops (or drops from) a protected infrastructure table. */
+    private static function isProtectedDrop(string $statement): bool
+    {
+        foreach (self::PROTECTED_TABLES as $table) {
+            $t = preg_quote($table, '/');
+            if (preg_match('/^(DROP TABLE|ALTER TABLE)\s+[`"]?' . $t . '[`"]?\b/i', $statement) === 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
@@ -172,6 +194,35 @@ class SchemaHealthService
             ];
         }
 
+        // Belt-and-suspenders: NEVER drop infrastructure tables (QF B2), even
+        // with allowDestructive=true. The dbal schema_filter already excludes
+        // them from introspection; this guard covers a missing/misconfigured
+        // filter or raw SQL reaching this path. Dropping doctrine_migration_versions
+        // would wipe Doctrine's migration bookkeeping.
+        $protectedDrops = array_values(array_filter($sql, static fn (string $s): bool => self::isProtectedDrop($s)));
+        if ($protectedDrops !== []) {
+            $sql = array_values(array_filter($sql, static fn (string $s): bool => !self::isProtectedDrop($s)));
+            $this->auditLogger->logCustom(
+                'admin.schema.update.protected_table_skipped',
+                'Doctrine',
+                null,
+                null,
+                ['skipped_count' => count($protectedDrops), 'skipped' => $protectedDrops],
+                sprintf('Schema update for %s: refused %d infrastructure-table drop(s) (protected: %s)', $actor, count($protectedDrops), implode(', ', self::PROTECTED_TABLES)),
+            );
+            if ($sql === []) {
+                return [
+                    'success' => true,
+                    'executed_sql' => [],
+                    'sql_hash' => null,
+                    'error' => null,
+                    'blocked' => null,
+                    'dropped_fks' => [],
+                    'skipped_destructive' => [],
+                ];
+            }
+        }
+
         $classified = self::classifyStatements($sql);
         $skippedDestructive = [];
         if (!$allowDestructive && $classified['destructive'] !== []) {
@@ -244,6 +295,8 @@ class SchemaHealthService
                 }
                 $passClassified = self::classifyStatements($passSql);
                 $passToRun = $allowDestructive ? $passSql : $passClassified['additive'];
+                // Never let a protected infra-table drop slip through a later pass.
+                $passToRun = array_values(array_filter($passToRun, static fn (string $s): bool => !self::isProtectedDrop($s)));
                 if (!$allowDestructive && $passClassified['destructive'] !== []) {
                     foreach ($passClassified['destructive'] as $d) {
                         if (!in_array($d, $skippedDestructive, true)) {

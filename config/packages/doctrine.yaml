@@ -7,6 +7,14 @@ doctrine:
         #server_version: '16'
 
         # use_savepoints removed in DBAL 4.0 (now always enabled by default)
+
+        # Exclude infrastructure tables owned by bundles (not App entities) from
+        # schema introspection. Without this, SchemaTool::getUpdateSchemaSql()
+        # sees them as orphan tables and a destructive reconcile/force would
+        # DROP Doctrine's own migration bookkeeping (and the Messenger queue).
+        # The QuickFix force-schema-update path is the concrete risk. Regex
+        # matches table names to KEEP; negative-lookahead excludes the infra set.
+        schema_filter: '~^(?!doctrine_migration_versions$|messenger_messages$)~'
     orm:
         # DoctrineBundle 3.0 removed auto_generate_proxy_classes (not needed with native lazy objects)
         # enable_lazy_ghost_objects removed in DoctrineBundle 3.0

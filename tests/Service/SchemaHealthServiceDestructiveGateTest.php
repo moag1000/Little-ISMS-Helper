@@ -82,4 +82,40 @@ class SchemaHealthServiceDestructiveGateTest extends TestCase
         self::assertContains('ALTER TABLE a DROP COLUMN y', $executed);
         self::assertSame([], $result['skipped_destructive']);
     }
+
+    #[Test]
+    public function neverDropsInfrastructureTablesEvenWhenDestructiveAllowed(): void
+    {
+        // QF B2: a destructive force must NEVER drop doctrine_migration_versions
+        // / messenger_messages, even with allowDestructive=true.
+        $executed = [];
+        $service = $this->makeService(
+            [
+                'ALTER TABLE a ADD COLUMN x INT',
+                'DROP TABLE doctrine_migration_versions',
+                'DROP TABLE messenger_messages',
+                'DROP TABLE genuinely_orphan',
+            ],
+            $executed,
+        );
+
+        $result = $service->applyUpdate('test', bypassMigrationGate: true, allowDestructive: true);
+
+        self::assertTrue($result['success']);
+        self::assertContains('ALTER TABLE a ADD COLUMN x INT', $executed);
+        self::assertContains('DROP TABLE genuinely_orphan', $executed, 'a real orphan IS dropped under allowDestructive');
+        self::assertNotContains('DROP TABLE doctrine_migration_versions', $executed, 'migration bookkeeping must survive');
+        self::assertNotContains('DROP TABLE messenger_messages', $executed, 'queue table must survive');
+    }
+
+    #[Test]
+    public function isProtectedDropMatchesDropAndAlterForms(): void
+    {
+        $ref = new \ReflectionMethod(SchemaHealthService::class, 'isProtectedDrop');
+        self::assertTrue($ref->invoke(null, 'DROP TABLE doctrine_migration_versions'));
+        self::assertTrue($ref->invoke(null, 'DROP TABLE `messenger_messages`'));
+        self::assertTrue($ref->invoke(null, 'ALTER TABLE doctrine_migration_versions DROP COLUMN foo'));
+        self::assertFalse($ref->invoke(null, 'DROP TABLE asset'));
+        self::assertFalse($ref->invoke(null, 'DROP TABLE doctrine_migration_versions_archive'), 'word-boundary: archive table is not protected');
+    }
 }
