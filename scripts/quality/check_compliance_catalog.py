@@ -120,17 +120,12 @@ def collect_code_occurrences() -> dict[str, set[str]]:
     def add(raw: str) -> None:
         groups.setdefault(normalize(raw), set()).add(raw)
 
+    # NOTE: migrations/ is deliberately NOT scanned — historical migrations
+    # legitimately reference retired alias codes (that is their job). Collision
+    # detection is about LIVE config: src/ + fixtures/.
     for php in (ROOT / "src").rglob("*.php"):
         try:
             t = php.read_text(encoding="utf-8", errors="ignore")
-        except OSError:
-            continue
-        for rx in (RE_CODE_ARROW, RE_SETCODE, RE_FINDONEBY_CODE):
-            for m in rx.findall(t):
-                add(m)
-    for mig in (ROOT / "migrations").glob("Version*.php"):
-        try:
-            t = mig.read_text(encoding="utf-8", errors="ignore")
         except OSError:
             continue
         for rx in (RE_CODE_ARROW, RE_SETCODE, RE_FINDONEBY_CODE):

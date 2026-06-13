@@ -119,7 +119,7 @@ final class ComplianceWizardService
                 'categories' => $this->euProvider->getGdprCategories(),
             ],
             'iso22301' => [
-                'code' => 'ISO22301',
+                'code' => 'ISO-22301',
                 'name' => 'ISO 22301:2019 BCM Readiness',
                 'description' => 'wizard.iso22301.description',
                 'icon' => 'recovery',
@@ -169,7 +169,7 @@ final class ComplianceWizardService
                 'categories' => $this->isoProvider->getIso42001Categories(),
             ],
             'bsi_grundschutz' => [
-                'code' => 'BSI-GRUNDSCHUTZ',
+                'code' => 'BSI_GRUNDSCHUTZ',
                 'name' => 'BSI IT-Grundschutz (Basis-Absicherung)',
                 'description' => 'wizard.bsi_grundschutz.description',
                 'icon' => 'ui-flag',
@@ -219,7 +219,7 @@ final class ComplianceWizardService
                 'categories' => $this->bsiProvider->getBsiGrundschutzKernCategories(),
             ],
             'nist_csf' => [
-                'code' => 'NIST-CSF-2.0',
+                'code' => 'NIST-CSF',
                 'name' => 'NIST Cybersecurity Framework 2.0',
                 'description' => 'wizard.nist_csf.description',
                 'icon' => 'shield-check',
@@ -229,7 +229,7 @@ final class ComplianceWizardService
                 'categories' => $this->otherProvider->getNistCsfCategories(),
             ],
             'kritis' => [
-                'code' => 'KRITIS-DE',
+                'code' => 'KRITIS',
                 'name' => 'KRITIS / NIS2-DE-Umsetzung',
                 'description' => 'wizard.kritis.description',
                 'icon' => 'nav-building',
@@ -249,7 +249,7 @@ final class ComplianceWizardService
                 'categories' => $this->otherProvider->getPciDssCategories(),
             ],
             'soc2' => [
-                'code' => 'SOC2-TYPE-II',
+                'code' => 'SOC2',
                 'name' => 'SOC 2 Type II (AICPA Trust Services)',
                 'description' => 'wizard.soc2.description',
                 'icon' => 'nav-patch-check',

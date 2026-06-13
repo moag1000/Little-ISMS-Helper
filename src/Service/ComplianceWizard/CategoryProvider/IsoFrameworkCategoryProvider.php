@@ -780,7 +780,7 @@ final class IsoFrameworkCategoryProvider
      */
     private function isBcmInScope(?Tenant $tenant): bool
     {
-        $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO_22301']);
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO-22301']);
         if ($framework instanceof ComplianceFramework && $framework->isActive() === true) {
             return true;
         }

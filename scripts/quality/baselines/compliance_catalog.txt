@@ -1,6 +1,4 @@
 # check_compliance_catalog.py baseline
 # Classes: parity:<code>:<why> | collision:<norm>:<raws> | competitor:<path>:<line>
-collision:BSIGRUNDSCHUTZ:BSI-GRUNDSCHUTZ|BSI_GRUNDSCHUTZ
-collision:ISO22301:ISO-22301|ISO22301|ISO_22301
 competitor:src/Command/SeedSoc2Iso27001MappingsCommand.php:27
 competitor:src/Controller/ComplianceMappingSeedController.php:68
