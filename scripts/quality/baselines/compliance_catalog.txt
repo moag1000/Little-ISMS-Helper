@@ -1,4 +1,2 @@
 # check_compliance_catalog.py baseline
 # Classes: parity:<code>:<why> | collision:<norm>:<raws> | competitor:<path>:<line>
-competitor:src/Command/SeedSoc2Iso27001MappingsCommand.php:27
-competitor:src/Controller/ComplianceMappingSeedController.php:68
