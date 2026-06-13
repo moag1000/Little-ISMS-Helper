@@ -25,7 +25,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 #[AsCommand(
     name: 'app:load-c5-2026-requirements',
-    description: 'Load BSI C5:2026 delta highlight requirements (new-in-2026 criteria only — full catalogue: app:load-c5-2026-full-catalogue)',
+    description: '[DEPRECATED — canonical: app:load-c5-2026-full-catalogue] Legacy BSI C5:2026 delta-highlight subset (new-in-2026 criteria only).',
     aliases: ['app:load-c5-2025-requirements']
 )]
 class LoadC52026RequirementsCommand extends Command

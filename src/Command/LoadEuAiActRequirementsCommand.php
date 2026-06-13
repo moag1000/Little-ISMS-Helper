@@ -14,9 +14,18 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated as the registry loader for EU-AI-ACT — this command seeds only a
+ * curated 10-item AIACT-N subset with ISO 27001 control mappings, which the
+ * cross-framework mappings do NOT reference (they resolve against the official
+ * Art.N identifiers). The full Art.1-113 catalogue is loaded by the
+ * registry-bound {@see LoadEuAiActFullCommand} (app:load-eu-ai-act-full).
+ * Kept as a plain CLI command; intentionally NOT implementing
+ * FrameworkLoaderInterface so the registry resolves exactly one loader per code.
+ */
 #[AsCommand(
     name: 'app:load-eu-ai-act-requirements',
-    description: 'Load EU AI Act (Regulation EU 2024/1689) compliance requirements with ISO 27001 control mappings'
+    description: '[DEPRECATED — canonical: app:load-eu-ai-act-full] Legacy curated EU AI Act subset (AIACT-N ids with ISO 27001 mappings).'
 )]
 class LoadEuAiActRequirementsCommand extends Command
 {
