@@ -1,0 +1,561 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'nisg-at_to_nis2_v1.0'
+  source_framework: 'NISG-AT'
+  target_framework: 'NIS2'
+  version: 1
+  effective_from: '2026-06-14'
+  effective_until: null
+
+  provenance:
+    primary_source: |
+      Netz- und Informationssystemsicherheitsgesetz 2026 (NISG 2026),
+      BGBl. I Nr. 94/2025, RIS-Gesetzesnummer 20013065 (ris.bka.gv.at);
+      NIS-2-Richtlinie (EU) 2022/2555 des Europäischen Parlaments und des Rates.
+    primary_source_url: 'https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=20013065'
+    secondary_sources:
+      - 'NIS-2-Richtlinie (EU) 2022/2555 — Amtliches Werk der Europäischen Union'
+      - 'ENISA Implementation Guidance on NIS2 Technical and Methodological Requirements (2024-09)'
+      - 'Erläuternde Bemerkungen zum NISG 2026 (Österreichisches Parlament, 2025)'
+    publisher: 'Little ISMS Helper Maintainers'
+    changelog:
+      - version: 1
+        date: '2026-06-14'
+        actor: 'maintainer'
+        note: |
+          Erstversion. NISG 2026 ist österreichische NIS-2-Richtlinie-Umsetzung —
+          nahezu 1:1-Übernahme der NIS-2-Pflichten in nationales Recht.
+          Mapping basiert auf strukturellem Vergleich der §§ mit den
+          korrespondierenden NIS-2-Artikeln. Quelle: RIS (abgerufen 2026-06-14).
+    license_note: |
+      Mapping ist Originalwerk (AGPL-3.0). NISG 2026 ist amtliches Werk der
+      Republik Österreich und frei verwendbar (kein urheberrechtlicher Schutz
+      auf gesetzliche Texte gemäß österreichischem UrhG). NIS-2-Richtlinie
+      © Europäische Union — public-domain-equivalent (Amtliches Werk).
+
+  methodology:
+    type: 'transposition_mapping'
+    description: |
+      Das NISG 2026 ist die österreichische Umsetzung der NIS-2-Richtlinie
+      (EU) 2022/2555 gemäß Art. 41 der Richtlinie. Die Umsetzungspflicht
+      verlangt eine inhaltliche Entsprechung der nationalen §§ zu den
+      Richtlinienartikeln. Dieses Mapping bildet diese Transpositions-
+      Entsprechung ab: NISG-§ → NIS2-Artikel.
+
+      Relationship-Bewertung:
+      - 'equivalent': NISG-§ übernimmt NIS-2-Artikel inhaltlich 1:1
+      - 'subset': NISG-§ setzt nur Teil eines NIS-2-Artikels um
+      - 'superset': NISG-§ geht über NIS-2-Artikel hinaus
+      - 'related': funktional verwandt, aber unterschiedliche Ausgestaltung
+
+      Confidence:
+      - high: direkte Transpositions-Entsprechung, explizit aus Gesetzestext ableitbar
+      - medium: strukturelle Entsprechung, Ausgestaltung variiert
+      - low: interpretative Entsprechung
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-06-14', actor: 'maintainer' }
+      - { state: 'published', date: '2026-06-14', actor: 'maintainer' }
+
+mappings:
+  # ============================================================================
+  # Allgemeine Bestimmungen / Scope
+  # ============================================================================
+
+  - source: 'NISG-§2'
+    target: 'Art.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 2 (Gegenstand und Ziel) setzt Art. 1 NIS-2-Richtlinie um,
+      indem er Maßnahmen zur Erreichung eines hohen Cybersicherheitsniveaus
+      in 18 Sektoren festlegt — funktional deckungsgleich.
+
+  - source: 'NISG-§3'
+    target: 'Art.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 3 (Begriffsbestimmungen) transponiert die Definitionen
+      aus Art. 6 NIS-2-Richtlinie (Cybersicherheit, Schwachstelle, Risiko,
+      CSIRT u. a.) vollständig in nationales Recht.
+
+  - source: 'NISG-§24'
+    target: 'Art.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 24 (Wesentliche und wichtige Einrichtungen) setzt Art. 2
+      NIS-2-Richtlinie (Anwendungsbereich, Einstufung) unmittelbar um;
+      beide definieren wesentliche und wichtige Einrichtungen nach Sektoren
+      und Größenschwellen.
+
+  - source: 'NISG-§25'
+    target: 'Art.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 25 (Ermittlung der Unternehmensgröße) konkretisiert
+      die Größenschwellen des Art. 2 NIS-2-Richtlinie gemäß KMU-Definition
+      für den österreichischen Rechtskontext.
+
+  - source: 'NISG-§26'
+    target: 'Art.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 26 (Größenunabhängige Einstufung) nutzt den in Art. 2
+      Abs. 2 NIS-2-Richtlinie vorgesehenen Ermessensspielraum für kritische
+      Einrichtungen unabhängig von der Unternehmensgröße.
+
+  - source: 'NISG-§27'
+    target: 'Art.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 27 (Ausnahmen aufgrund sektorspezifischer Rechtsakte)
+      transponiert Art. 4 NIS-2-Richtlinie (Sektorspezifische Rechtsakte,
+      Lex-Specialis-Regel) — u. a. Ausnahme für DORA-Finanzsektor.
+
+  # ============================================================================
+  # Behördenstruktur / Governance
+  # ============================================================================
+
+  - source: 'NISG-§3a'
+    target: 'Art.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 3a (Bundesamt für Cybersicherheit) transponiert Art. 8
+      NIS-2-Richtlinie (Zuständige Behörden und nationale zentrale
+      Anlaufstellen); errichtet die österreichische Cybersicherheitsbehörde.
+
+  - source: 'NISG-§4'
+    target: 'Art.8'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 4 (Aufgaben der Cybersicherheitsbehörde) geht mit 15
+      aufgelisteten Aufgaben über Art. 8 Abs. 6 NIS-2-Richtlinie hinaus,
+      beinhaltet jedoch sämtliche dort geforderten Kernaufgaben
+      (ÖSCS-Koordination, EU-Vertretung, GovCERT-Betrieb).
+
+  - source: 'NISG-§5'
+    target: 'Art.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 5 (Zentrale Anlaufstelle) setzt Art. 8 Abs. 3 NIS-2-
+      Richtlinie (zentrale Anlaufstelle für die Zusammenarbeit) um.
+
+  - source: 'NISG-§8'
+    target: 'Art.10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 8 (Zweck und Aufgaben der CSIRTs) transponiert Art. 10
+      NIS-2-Richtlinie (Anforderungen, technische Kapazitäten und Aufgaben
+      der CSIRTs) vollständig.
+
+  - source: 'NISG-§9'
+    target: 'Art.10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 9 (Anforderungen und Eignung von CSIRTs) konkretisiert
+      die technischen und organisatorischen Anforderungen an CSIRTs gemäß
+      Art. 10 NIS-2-Richtlinie.
+
+  - source: 'NISG-§11'
+    target: 'Art.12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 11 (Koordinierte Offenlegung von Schwachstellen)
+      transponiert Art. 12 NIS-2-Richtlinie (Koordinierte Offenlegung von
+      Schwachstellen und europäische Schwachstellendatenbank).
+
+  - source: 'NISG-§15'
+    target: 'Art.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 15 (Nationale Cybersicherheitsstrategie / ÖSCS) setzt
+      Art. 7 NIS-2-Richtlinie (Nationale Cybersicherheitsstrategie)
+      vollständig um, einschließlich der 13 Mindestinhalte.
+
+  - source: 'NISG-§16'
+    target: 'Art.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 16 (Management von Cybersicherheitsvorfällen großen
+      Ausmaßes) transponiert Art. 9 NIS-2-Richtlinie (Rahmen für
+      das Management von Cybersicherheitsvorfällen großen Ausmaßes
+      und Krisenmanagement) einschließlich EU-CyCLONe-Einbindung.
+
+  # ============================================================================
+  # Kernpflichten: Governance und Risikomanagement
+  # ============================================================================
+
+  - source: 'NISG-§31'
+    target: 'Art.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 31 (Governance) transponiert Art. 20 NIS-2-Richtlinie
+      (Governance — Verantwortung des Leitungsorgans) vollständig:
+      Leitungsorgan-Verantwortung, Sicherheitsrichtlinien und
+      regelmäßige Überprüfung der Cybersicherheitsmaßnahmen.
+
+  - source: 'NISG-§31'
+    target: 'Art.20.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 31 setzt Art. 20 Abs. 1 NIS-2-Richtlinie um: das
+      Leitungsorgan muss Cybersicherheitsrisikomanagementmaßnahmen
+      genehmigen und deren Umsetzung überwachen.
+
+  - source: 'NISG-§31'
+    target: 'Art.20.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 31 setzt Art. 20 Abs. 2 NIS-2-Richtlinie um: das
+      Leitungsorgan muss Schulungsangebote im Bereich Cybersicherheit
+      wahrnehmen und vergleichbare Schulungen für alle Mitarbeiter ermöglichen.
+
+  - source: 'NISG-§32'
+    target: 'Art.21'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 (Risikomanagementmaßnahmen) transponiert Art. 21
+      NIS-2-Richtlinie (Cybersicherheits-Risikomanagementmaßnahmen)
+      vollständig: technische und organisatorische Maßnahmen zur
+      Risikoidentifikation, -bewertung und -behandlung.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 1 NIS-2-Richtlinie um: angemessene
+      und verhältnismäßige technische, betriebliche und organisatorische
+      Maßnahmen zur Risikoverwaltung von Netz- und Informationssystemen.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.a'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. a NIS-2-Richtlinie um:
+      Konzepte für die Risikoanalyse und die Sicherheit von
+      Informationssystemen.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.b'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. b NIS-2-Richtlinie um:
+      Bewältigung von Sicherheitsvorfällen (Incident Handling).
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.c'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. c NIS-2-Richtlinie um:
+      Aufrechterhaltung des Betriebs, Backup-Management, Notfallwiederherstellung
+      und Krisenmanagement.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.d'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. d NIS-2-Richtlinie um:
+      Sicherheit der Lieferkette einschließlich sicherheitsbezogener Aspekte
+      der Beziehungen zu Anbietern und Dienstleistern.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.e'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. e NIS-2-Richtlinie um:
+      Sicherheit bei Erwerb, Entwicklung und Wartung von Netz- und
+      Informationssystemen einschließlich Management und Offenlegung von
+      Schwachstellen.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.f'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. f NIS-2-Richtlinie um:
+      Konzepte und Verfahren zur Bewertung der Wirksamkeit der
+      Risikomanagementmaßnahmen im Bereich der Cybersicherheit.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.g'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. g NIS-2-Richtlinie um:
+      grundlegende Cyber-Hygiene-Praktiken und Cybersicherheitsschulungen.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.h'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. h NIS-2-Richtlinie um:
+      Konzepte und Verfahren für den Einsatz von Kryptographie und
+      gegebenenfalls Verschlüsselung.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.i'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. i NIS-2-Richtlinie um:
+      Sicherheit des Personals, Zugriffskontrollkonzepte und
+      Asset-Management.
+
+  - source: 'NISG-§32'
+    target: 'Art.21.2.j'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 setzt Art. 21 Abs. 2 lit. j NIS-2-Richtlinie um:
+      Verwendung von Multi-Faktor-Authentifizierung oder kontinuierlicher
+      Authentifizierung, gesicherten Sprach-, Video- und Textkommunikation.
+
+  # ============================================================================
+  # Nachweispflichten und Zertifizierung
+  # ============================================================================
+
+  - source: 'NISG-§33'
+    target: 'Art.21.2.f'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 33 (Nachweis der Wirksamkeit) geht über Art. 21 Abs. 2
+      lit. f NIS-2-Richtlinie hinaus, indem es verpflichtende externe Prüfungen
+      (alle 2 Jahre für wesentliche, alle 3 Jahre für wichtige Einrichtungen)
+      vorschreibt — NIS-2 verlangt nur Konzepte, NISG 2026 verlangt Nachweise.
+
+  - source: 'NISG-§40'
+    target: 'Art.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 40 (Nutzung europäischer Schemata für Cybersicherheits-
+      zertifizierung) transponiert Art. 24 NIS-2-Richtlinie (Nutzung
+      europäischer Cybersicherheitszertifizierungsschemata als Nachweis).
+
+  # ============================================================================
+  # Meldepflichten
+  # ============================================================================
+
+  - source: 'NISG-§34'
+    target: 'Art.23'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 34 (Berichtspflichten) transponiert Art. 23 NIS-2-
+      Richtlinie (Meldepflichten) vollständig: unverzügliche Meldung
+      erheblicher Cybersicherheitsvorfälle an Cybersicherheitsbehörde
+      und CSIRT.
+
+  - source: 'NISG-§34'
+    target: 'Art.23.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 34 setzt Art. 23 Abs. 1 NIS-2-Richtlinie um: Meldung
+      jedes Vorfalls mit erheblichen Auswirkungen auf die Erbringung
+      der Dienste an zuständige Behörde und CSIRT.
+
+  - source: 'NISG-§34'
+    target: 'Art.23.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 34 setzt Art. 23 Abs. 2 NIS-2-Richtlinie um: Frühwarnung
+      innerhalb von 24 Stunden nach Bekanntwerden eines erheblichen Vorfalls.
+
+  - source: 'NISG-§34'
+    target: 'Art.23.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 34 setzt Art. 23 Abs. 3 NIS-2-Richtlinie um: Vorfalls-
+      meldung innerhalb von 72 Stunden einschließlich Bewertung, Schweregrad,
+      Indikatoren und Bedrohungsart.
+
+  - source: 'NISG-§34'
+    target: 'Art.23.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 34 setzt Art. 23 Abs. 4 NIS-2-Richtlinie um: Abschluss-
+      bericht binnen eines Monats mit Ursachenanalyse, Abhilfemaßnahmen
+      und grenzüberschreitenden Auswirkungen.
+
+  - source: 'NISG-§35'
+    target: 'Art.23.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 35 (Erheblicher Cybersicherheitsvorfall) definiert den
+      Begriff entsprechend Art. 23 Abs. 1 NIS-2-Richtlinie und konkretisiert
+      die Erheblichkeitsschwellen (Verfügbarkeitsverlust, Authentizitäts-,
+      Integritäts- und Vertraulichkeitsverlust).
+
+  - source: 'NISG-§36'
+    target: 'Art.29'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 36 (Vereinbarungen über den Austausch von Informationen)
+      transponiert Art. 29 NIS-2-Richtlinie (Vereinbarungen über
+      den Austausch von Informationen zur Cybersicherheit).
+
+  - source: 'NISG-§37'
+    target: 'Art.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 37 (Freiwillige Meldung) transponiert Art. 30 NIS-2-
+      Richtlinie (Freiwillige Meldung einschlägiger Informationen).
+
+  # ============================================================================
+  # Register / Registrierung
+  # ============================================================================
+
+  - source: 'NISG-§29'
+    target: 'Art.27'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 29 (Register der Einrichtungen) transponiert Art. 27
+      NIS-2-Richtlinie (Verzeichnis der Einrichtungen) vollständig:
+      Führung des Registers wesentlicher und wichtiger Einrichtungen
+      und Übermittlung an ENISA.
+
+  # ============================================================================
+  # Aufsicht und Durchsetzung
+  # ============================================================================
+
+  - source: 'NISG-§38'
+    target: 'Art.32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 38 (Aufsichtsmaßnahmen) transponiert Art. 32 NIS-2-
+      Richtlinie (Aufsichts- und Durchsetzungsmaßnahmen für wesentliche
+      Einrichtungen): Auskunftspflicht, Unterlagenvorlage, Inspektionen,
+      Tests/Audits und forensische Ermittlungen.
+
+  - source: 'NISG-§38'
+    target: 'Art.33'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 38 gilt gleichermaßen für wesentliche wie wichtige
+      Einrichtungen und deckt damit auch Art. 33 NIS-2-Richtlinie
+      (Aufsichts- und Durchsetzungsmaßnahmen für wichtige Einrichtungen) ab.
+
+  - source: 'NISG-§39'
+    target: 'Art.32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 39 (Durchsetzungsmaßnahmen) transponiert Art. 32
+      NIS-2-Richtlinie hinsichtlich der Sanktionsbefugnisse für
+      wesentliche Einrichtungen (bis 10 Mio. € oder 2 % Jahresumsatz).
+
+  - source: 'NISG-§39'
+    target: 'Art.33'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 39 setzt auch Art. 33 NIS-2-Richtlinie um: Sanktionen
+      für wichtige Einrichtungen (bis 7 Mio. € oder 1,4 % Jahresumsatz
+      nach NIS-2; NISG konkretisiert auf bis 5 Mio. € oder 1 %).
+
+  - source: 'NISG-§44'
+    target: 'Art.34'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 44 (Allgemeine Bedingungen für die Verhängung von
+      Geldstrafen) transponiert Art. 34 NIS-2-Richtlinie (Allgemeine
+      Bedingungen für die Verhängung von Geldbußen) vollständig.
+
+  - source: 'NISG-§45'
+    target: 'Art.36'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 45 (Verwaltungsstrafbestimmungen) transponiert Art. 36
+      NIS-2-Richtlinie (Sanktionen) in nationales Verwaltungsstrafrecht.
+
+  # ============================================================================
+  # Zusammenarbeit
+  # ============================================================================
+
+  - source: 'NISG-§20'
+    target: 'Art.11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 20 (Zusammenarbeit auf nationaler Ebene) transponiert
+      Art. 11 NIS-2-Richtlinie (Zusammenarbeit auf nationaler Ebene
+      zwischen Behörden und CSIRTs).
+
+  - source: 'NISG-§22'
+    target: 'Art.17'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 22 (Internationale Zusammenarbeit) transponiert Art. 17
+      NIS-2-Richtlinie (Freiwillige Vereinbarungen über den Informations-
+      austausch) und die allgemeine Verpflichtung zur grenzüberschreitenden
+      Zusammenarbeit.
+
+  - source: 'NISG-§7'
+    target: 'Art.21.2.f'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 7 (Unabhängige Stellen und Prüfer) schafft den
+      institutionellen Rahmen für externe Prüfungen der Wirksamkeit
+      von Risikomanagementmaßnahmen und ergänzt damit Art. 21 Abs. 2
+      lit. f NIS-2-Richtlinie.
+
+  - source: 'NISG-§42'
+    target: 'Art.32'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 42 (Datenverarbeitung) schafft die datenschutzrechtliche
+      Grundlage für Aufsichtstätigkeiten der Cybersicherheitsbehörde und
+      ergänzt die in Art. 32 NIS-2-Richtlinie vorgesehenen Aufsichtsmaßnahmen.
+
+  - source: 'NISG-§17'
+    target: 'Art.21.2.a'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 17 (Betrieb von IKT-Lösungen) ermöglicht Einrichtungen
+      die Teilnahme an staatlichen Früherkennungssystemen und unterstützt
+      damit die Umsetzung von Art. 21 Abs. 2 lit. a (Risikoanalyse und
+      Sicherheitskonzepte) durch hoheitliche Unterstützung.

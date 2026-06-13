@@ -1,0 +1,576 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'nisg-at_to_iso27001-2022_v1.0'
+  source_framework: 'NISG-AT'
+  target_framework: 'ISO27001'
+  version: 1
+  effective_from: '2026-06-14'
+  effective_until: null
+
+  provenance:
+    primary_source: |
+      Netz- und Informationssystemsicherheitsgesetz 2026 (NISG 2026),
+      BGBl. I Nr. 94/2025, RIS-Gesetzesnummer 20013065 (ris.bka.gv.at);
+      ISO/IEC 27001:2022 — Information security, cybersecurity and privacy
+      protection — Information security management systems — Requirements.
+    primary_source_url: 'https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=20013065'
+    secondary_sources:
+      - 'ENISA Implementation Guidance on NIS2 Technical and Methodological Requirements (2024-09)'
+      - 'BSI-Abbildung NIS2 auf ISO/IEC 27001:2022 (Konsultationsfassung 2024-Q4)'
+      - 'ISO/IEC 27002:2022 — Guidance for controls (Annex A Reference)'
+    publisher: 'Little ISMS Helper Maintainers'
+    changelog:
+      - version: 1
+        date: '2026-06-14'
+        actor: 'maintainer'
+        note: |
+          Erstversion. Mapping der österreichischen NISG-2026-Pflichten auf
+          ISO/IEC 27001:2022 Annex-A-Controls. NISG 2026 ist NIS-2-Umsetzung;
+          ISO 27001 gilt als etablierter Standard zur Erfüllung von NIS-2-Pflichten
+          (Art. 24 NIS-2-Richtlinie). Quelle: RIS (abgerufen 2026-06-14).
+    license_note: |
+      Mapping ist Originalwerk (AGPL-3.0). NISG 2026 ist amtliches Werk der
+      Republik Österreich — freie Verwendung. ISO/IEC 27001:2022 © ISO/IEC —
+      nur Annex-A-Kurzreferenzen (Normreferenzen), kein vollständiger Normtext.
+
+  methodology:
+    type: 'standard_mapping'
+    description: |
+      Dieses Mapping verbindet die verpflichtenden Cybersicherheitspflichten
+      des NISG 2026 mit den korrespondierenden ISO/IEC 27001:2022 Annex-A-
+      Controls. ISO 27001 kann als implementierter Standard gemäß Art. 24
+      NIS-2-Richtlinie (bzw. § 40 NISG 2026) zur Demonstration der Compliance
+      mit NISG-2026-Risikomanagementpflichten herangezogen werden.
+
+      Relationship-Bewertung:
+      - 'equivalent': NISG-§ und ISO-Control adressieren dieselbe Sicherheits-
+        anforderung vollständig (seltene, nahezu deckungsgleiche Fälle)
+      - 'subset': NISG-§ ist inhaltlich enger als das ISO-Control (ISO umfasst mehr)
+      - 'superset': NISG-§ geht über das ISO-Control hinaus (NISG spezifischer)
+      - 'partial_overlap': teilweise Überschneidung, aber unterschiedliche Schwerpunkte
+      - 'related': funktional verwandt, aber unterschiedliche Anforderungstiefe
+
+      Confidence:
+      - high: direkte, gut belegbare Entsprechung (ENISA/BSI-Guidance bestätigt)
+      - medium: strukturelle Entsprechung, Ausgestaltung variiert
+      - low: interpretative Entsprechung
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-06-14', actor: 'maintainer' }
+      - { state: 'published', date: '2026-06-14', actor: 'maintainer' }
+
+mappings:
+  # ============================================================================
+  # NISG-§31 — Governance → ISO 27001 Organisational Controls (A.5)
+  # ============================================================================
+
+  - source: 'NISG-§31'
+    target: 'A.5.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 31 (Governance) verlangt Sicherheitsrichtlinien des
+      Leitungsorgans. ISO/IEC 27001:2022 A.5.1 (Policies for information
+      security) konkretisiert dies mit Anforderungen an Erstellung, Genehmigung,
+      Kommunikation und regelmäßige Überprüfung von Sicherheitsrichtlinien.
+
+  - source: 'NISG-§31'
+    target: 'A.5.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 31 ordnet Verantwortlichkeiten dem Leitungsorgan zu.
+      ISO A.5.2 (Information security roles and responsibilities) konkretisiert
+      die Zuweisung und Dokumentation von Sicherheitsverantwortlichkeiten.
+
+  - source: 'NISG-§31'
+    target: 'A.5.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 31 (Governance) entspricht ISO A.5.4 (Management
+      responsibilities): das Leitungsorgan muss Cybersicherheitspflichten
+      kennen, genehmigen und deren Umsetzung aktiv fördern.
+
+  # ============================================================================
+  # NISG-§32 — Risikomanagementmaßnahmen → ISO 27001 Annex A
+  # ============================================================================
+
+  - source: 'NISG-§32'
+    target: 'A.5.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 (Risikomanagementmaßnahmen) verlangt Konzepte für
+      Risikoanalyse und Systemsicherheit — entspricht dem Policy-Framework
+      gemäß ISO A.5.1. ISO ist inhaltlich umfassender (alle IS-Richtlinien,
+      nicht nur Cybersicherheit).
+
+  - source: 'NISG-§32'
+    target: 'A.5.7'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 enthält implizit Anforderungen zur Bedrohungsanalyse
+      als Teil des Risikomanagements. ISO A.5.7 (Threat intelligence) adressiert
+      explizit die Sammlung und Auswertung von Bedrohungsinformationen.
+
+  - source: 'NISG-§32'
+    target: 'A.5.9'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 impliziert Asset-Management als Basis für
+      Risikomanagement. ISO A.5.9 (Inventory of information and other
+      associated assets) konkretisiert die Inventarisierungspflicht.
+
+  - source: 'NISG-§32'
+    target: 'A.5.15'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 Abs. 2 lit. i verlangt Zugriffskontrollkonzepte.
+      ISO A.5.15 (Access control) ist das korrespondierende Control und
+      konkretisiert Zugriffskontrollrichtlinien und -verfahren.
+
+  - source: 'NISG-§32'
+    target: 'A.5.16'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Identitätsmanagement als Teil der
+      Zugriffskontrolle (Art. 21 Abs. 2 lit. i NIS-2). ISO A.5.16
+      (Identity management) konkretisiert Identitätsverwaltung und
+      Nutzerlebenszyklusmanagement.
+
+  - source: 'NISG-§32'
+    target: 'A.5.17'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Multi-Faktor-Authentifizierung (Art. 21
+      Abs. 2 lit. j NIS-2). ISO A.5.17 (Authentication information)
+      regelt Verwaltung von Authentifizierungsinformationen.
+
+  - source: 'NISG-§32'
+    target: 'A.5.19'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Lieferkettensicherheit (Art. 21 Abs. 2
+      lit. d NIS-2). ISO A.5.19 (Information security in supplier
+      relationships) ist das primäre Control für Lieferantenbeziehungen.
+
+  - source: 'NISG-§32'
+    target: 'A.5.20'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt vertragliche Sicherheitsanforderungen an
+      Lieferanten. ISO A.5.20 (Addressing information security within
+      supplier agreements) konkretisiert vertragliche Mindestinhalte.
+
+  - source: 'NISG-§32'
+    target: 'A.5.21'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Sicherheit der gesamten Lieferkette
+      (ICT supply chain). ISO A.5.21 (Managing information security
+      in the ICT supply chain) ist das spezifische Control hierfür.
+
+  - source: 'NISG-§32'
+    target: 'A.5.22'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt kontinuierliches Monitoring von Netz- und
+      Informationssystemen. ISO A.5.22 (Monitoring, review and change
+      management of supplier services) ergänzt dies für externe Dienste.
+
+  - source: 'NISG-§32'
+    target: 'A.5.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Incident-Handling-Konzepte (Art. 21 Abs. 2
+      lit. b NIS-2). ISO A.5.24 (Information security incident management
+      planning and preparation) ist das korrespondierende Control.
+
+  - source: 'NISG-§32'
+    target: 'A.5.26'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 Abs. 2 lit. b verlangt Bewältigung von Sicherheits-
+      vorfällen. ISO A.5.26 (Response to information security incidents)
+      konkretisiert Reaktionsverfahren auf Vorfälle.
+
+  - source: 'NISG-§32'
+    target: 'A.5.27'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt Bewertung der Wirksamkeit von Maßnahmen
+      (Art. 21 Abs. 2 lit. f NIS-2). ISO A.5.27 (Learning from information
+      security incidents) adressiert Lessons-Learned als Teil der
+      Wirksamkeitsbewertung.
+
+  - source: 'NISG-§32'
+    target: 'A.5.29'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Business Continuity und Notfallwiederherstellung
+      (Art. 21 Abs. 2 lit. c NIS-2). ISO A.5.29 (Information security
+      during disruption) ist das korrespondierende Control.
+
+  - source: 'NISG-§32'
+    target: 'A.5.30'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt Backup-Management und BCM. ISO A.5.30
+      (ICT readiness for business continuity) konkretisiert ICT-spezifische
+      BC-Anforderungen — enger als NISG (nur ICT-Anteil).
+
+  - source: 'NISG-§32'
+    target: 'A.5.31'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 setzt gesetzliche Cybersicherheitspflichten um.
+      ISO A.5.31 (Legal, statutory, regulatory and contractual requirements)
+      verlangt die Identifikation und Einhaltung anwendbarer Anforderungen —
+      NISG 2026 ist eine dieser Anforderungen.
+
+  # ============================================================================
+  # NISG-§32 → ISO People Controls (A.6)
+  # ============================================================================
+
+  - source: 'NISG-§32'
+    target: 'A.6.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Cybersicherheitsschulungen für Personal
+      (Art. 21 Abs. 2 lit. g NIS-2). ISO A.6.3 (Information security
+      awareness, education and training) ist das korrespondierende Control.
+
+  # ============================================================================
+  # NISG-§32 → ISO Physical Controls (A.7)
+  # ============================================================================
+
+  - source: 'NISG-§32'
+    target: 'A.7.1'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NISG 2026 § 32 adressiert primär Netz- und Informationssysteme;
+      physische Sicherheit ist nicht explizit genannt, aber implizit als
+      Teil eines ganzheitlichen Risikomanagements zu verstehen. ISO A.7.1
+      (Physical security perimeters) ist ein optionaler Verweis.
+
+  # ============================================================================
+  # NISG-§32 → ISO Technological Controls (A.8)
+  # ============================================================================
+
+  - source: 'NISG-§32'
+    target: 'A.8.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Zugriffskontrolle auf Netz- und
+      Informationssysteme. ISO A.8.1 (User end point devices) ergänzt
+      dies für Endgeräte als Teil der Zugriffsschutzmaßnahmen.
+
+  - source: 'NISG-§32'
+    target: 'A.8.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 (Zugriffskontrolle, Art. 21 Abs. 2 lit. i NIS-2).
+      ISO A.8.2 (Privileged access rights) konkretisiert Verwaltung
+      privilegierter Zugriffsrechte als Kernelement des Zugriffsmanagements.
+
+  - source: 'NISG-§32'
+    target: 'A.8.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Schutz von Authentifizierungsinformationen
+      (Art. 21 Abs. 2 lit. j NIS-2). ISO A.8.3 (Information access
+      restriction) unterstützt Zugriffsbeschränkungen auf Systeme.
+
+  - source: 'NISG-§32'
+    target: 'A.8.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Multi-Faktor-Authentifizierung (Art. 21
+      Abs. 2 lit. j NIS-2). ISO A.8.5 (Secure authentication) ist das
+      direkte Pendant mit Anforderungen an sichere Authentifizierungsverfahren.
+
+  - source: 'NISG-§32'
+    target: 'A.8.6'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt Kapazitätsmanagement als Teil des
+      Risikomanagements. ISO A.8.6 (Capacity management) konkretisiert
+      Monitoring und Planung von IT-Kapazitäten.
+
+  - source: 'NISG-§32'
+    target: 'A.8.7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Schutz vor Malware (Art. 21 Abs. 2
+      lit. b/e NIS-2). ISO A.8.7 (Protection against malware) ist das
+      korrespondierende Control für Schadprogrammschutz.
+
+  - source: 'NISG-§32'
+    target: 'A.8.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Schwachstellenmanagement (Art. 21 Abs. 2
+      lit. e NIS-2). ISO A.8.8 (Management of technical vulnerabilities)
+      ist das direkte Pendant.
+
+  - source: 'NISG-§32'
+    target: 'A.8.9'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt sichere Konfiguration von Netz- und
+      Informationssystemen. ISO A.8.9 (Configuration management)
+      konkretisiert Konfigurationssicherheit.
+
+  - source: 'NISG-§32'
+    target: 'A.8.12'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt Schutz vor unbefugtem Datenzugriff. ISO A.8.12
+      (Data leakage prevention) adressiert ergänzend die Prävention von
+      Datenlecks als technische Maßnahme.
+
+  - source: 'NISG-§32'
+    target: 'A.8.13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Backup-Management und Notfallwiederherstellung
+      (Art. 21 Abs. 2 lit. c NIS-2). ISO A.8.13 (Information backup)
+      ist das primäre Control für Datensicherung.
+
+  - source: 'NISG-§32'
+    target: 'A.8.15'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Logging und Monitoring (Art. 21 Abs. 2
+      lit. a/f NIS-2). ISO A.8.15 (Logging) konkretisiert Anforderungen
+      an Protokollierung und Aufbewahrung.
+
+  - source: 'NISG-§32'
+    target: 'A.8.16'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt kontinuierliches Monitoring. ISO A.8.16
+      (Monitoring activities) konkretisiert Anforderungen an kontinuierliches
+      Monitoring von Netz- und Informationssystemen.
+
+  - source: 'NISG-§32'
+    target: 'A.8.20'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt Netzwerksicherheitsmaßnahmen. ISO A.8.20
+      (Networks security) konkretisiert Netzwerksicherheitskontrollen und
+      -segmentierung.
+
+  - source: 'NISG-§32'
+    target: 'A.8.21'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt Sicherheit von Netzwerkdiensten. ISO A.8.21
+      (Security of network services) adressiert Sicherheitsanforderungen
+      für interne und externe Netzwerkdienste.
+
+  - source: 'NISG-§32'
+    target: 'A.8.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 32 verlangt Kryptographie-Konzepte (Art. 21 Abs. 2
+      lit. h NIS-2). ISO A.8.24 (Use of cryptography) ist das direkte
+      Pendant für Kryptographieeinsatz und Schlüsselverwaltung.
+
+  - source: 'NISG-§32'
+    target: 'A.8.25'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt sichere Entwicklung und Wartung (Art. 21
+      Abs. 2 lit. e NIS-2). ISO A.8.25 (Secure development life cycle)
+      konkretisiert Sicherheitsprinzipien im Entwicklungsprozess.
+
+  - source: 'NISG-§32'
+    target: 'A.8.28'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 32 verlangt sicheres Programmieren (Art. 21 Abs. 2
+      lit. e NIS-2). ISO A.8.28 (Secure coding) konkretisiert Anforderungen
+      an sichere Programmierpraxis.
+
+  # ============================================================================
+  # NISG-§33 — Nachweis der Wirksamkeit → ISO Normative Klauseln
+  # ============================================================================
+
+  - source: 'NISG-§33'
+    target: 'A.5.35'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 33 (Nachweis der Wirksamkeit) verlangt externe Prüfungen.
+      ISO A.5.35 (Independent review of information security) spiegelt
+      genau diese Anforderung: unabhängige, regelmäßige Überprüfung
+      der Informationssicherheit.
+
+  - source: 'NISG-§33'
+    target: 'A.5.36'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 33 verlangt Compliance-Nachweise gegenüber der Behörde.
+      ISO A.5.36 (Compliance with policies, rules and standards) adressiert
+      die interne Überprüfung der Einhaltung von Sicherheitsvorgaben.
+
+  # ============================================================================
+  # NISG-§34 — Berichtspflichten (Meldepflicht) → ISO Incident-Controls
+  # ============================================================================
+
+  - source: 'NISG-§34'
+    target: 'A.5.24'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 34 (Meldepflicht) setzt Planung und Vorbereitung des
+      Incident-Managements voraus — ISO A.5.24 (Information security
+      incident management planning and preparation) schafft hierfür
+      die organisatorische Grundlage.
+
+  - source: 'NISG-§34'
+    target: 'A.5.25'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 34 in Verbindung mit § 35 (Definition erheblicher
+      Vorfälle) entspricht ISO A.5.25 (Assessment and decision on
+      information security events): Bewertung und Einstufung von
+      Sicherheitsereignissen als Voraussetzung für die Meldepflicht.
+
+  - source: 'NISG-§34'
+    target: 'A.5.26'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 34 (Meldepflicht) und ISO A.5.26 (Response to
+      information security incidents) überlappen: NISG adressiert
+      externe Meldepflicht an Behörde, ISO adressiert interne
+      Incident-Response. Beide Aspekte sind erforderlich.
+
+  - source: 'NISG-§34'
+    target: 'A.5.28'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 34 (Meldung an Cybersicherheitsbehörde) setzt
+      Beweissicherung voraus. ISO A.5.28 (Collection of evidence)
+      konkretisiert forensische Beweissicherung als Unterstützung
+      für Behördenmeldungen und -untersuchungen.
+
+  # ============================================================================
+  # NISG-§35 — Erheblicher Cybersicherheitsvorfall → ISO Definitionen
+  # ============================================================================
+
+  - source: 'NISG-§35'
+    target: 'A.5.25'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 35 (Definition erheblicher Cybersicherheitsvorfall)
+      entspricht ISO A.5.25 (Assessment and decision on information
+      security events): beide adressieren die Klassifikation und
+      Erheblichkeitsbewertung von Sicherheitsereignissen.
+
+  # ============================================================================
+  # NISG-§40 — Zertifizierung → ISO Normative Klauseln
+  # ============================================================================
+
+  - source: 'NISG-§40'
+    target: 'A.5.36'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 40 (Nutzung europäischer Cybersicherheitszertifizierungs-
+      schemata) ist komplementär zu ISO A.5.36 (Compliance): eine ISO-27001-
+      Zertifizierung kann gegenüber der österreichischen Cybersicherheits-
+      behörde als Nachweis der Wirksamkeit herangezogen werden.
+
+  # ============================================================================
+  # NISG-§42 — Datenschutz → ISO Privacy Controls
+  # ============================================================================
+
+  - source: 'NISG-§42'
+    target: 'A.5.33'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 42 (Datenverarbeitung durch Behörden) setzt DSGVO-
+      konforme Verarbeitung voraus. ISO A.5.33 (Protection of records)
+      adressiert den Schutz von Aufzeichnungen, einschließlich
+      personenbezogener Daten aus Behördentätigkeiten.
+
+  # ============================================================================
+  # NISG-§44/§45 — Sanktionen → ISO Compliance-Controls
+  # ============================================================================
+
+  - source: 'NISG-§44'
+    target: 'A.5.31'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 44 (Allgemeine Bedingungen für Geldstrafen) verdeutlicht
+      die rechtlichen Konsequenzen. ISO A.5.31 (Legal, statutory, regulatory
+      and contractual requirements) verlangt die Identifikation und Einhaltung
+      dieser Anforderungen — NISG § 44 ist eine dieser Anforderungen.
+
+  - source: 'NISG-§45'
+    target: 'A.5.31'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NISG 2026 § 45 (Verwaltungsstrafbestimmungen) konkretisiert
+      Sanktionsrisiken bei Nichterfüllung der NISG-Pflichten. ISO A.5.31
+      (Legal requirements) verlangt Compliance mit diesen Anforderungen
+      zur Vermeidung von Sanktionen.
+
+  - source: 'NISG-§38'
+    target: 'A.5.35'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NISG 2026 § 38 (Aufsichtsmaßnahmen: Audits, Inspektionen, Tests)
+      ist komplementär zu ISO A.5.35 (Independent review of information
+      security): externe Audits durch die Cybersicherheitsbehörde und
+      ISO-konforme interne unabhängige Reviews decken zusammen das
+      vollständige Prüfungsuniversum ab.
