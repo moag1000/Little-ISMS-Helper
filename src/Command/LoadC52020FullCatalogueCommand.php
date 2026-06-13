@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -15,15 +17,23 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
- * Loads the full BSI C5:2020 catalogue (121 criteria) from the bundled
- * fixtures/library/catalogues/bsi-c5-2020-en/inventory.json (extracted verbatim
- * from BSI's official C5_2020_Editierbar.xlsx reference table).
+ * Registry-bound loader (`app.framework_loader`, code BSI-C5) for the FULL
+ * BSI C5:2020 catalogue (121 criteria) from the bundled
+ * fixtures/library/catalogues/bsi-c5-2020-de/inventory.json (extracted verbatim
+ * from BSI's official C5_2020_Editierbar.xlsx reference table). Ids are the
+ * official short codes (OPS-01, OIS-05, AM-01, …).
+ *
+ * This is the single registry loader for code BSI-C5: the cross-framework
+ * mappings (iso27001-2022_to_bsi-c5-2020, bsi-c5-2020_to_eucs,
+ * bsi-it-grundschutz_to_bsi-c5-2020, bsi-c5-2020_to_iso27001-2022) reference
+ * these official short-code ids, so the partial LoadC5RequirementsCommand
+ * (C5-ORP-1-style ids) must NOT be registry-bound or those mappings silent-skip.
  */
 #[AsCommand(
     name: 'app:load-c5-2020-full-catalogue',
     description: 'Load the full BSI C5:2020 catalogue (121 criteria) from fixtures/library/catalogues/bsi-c5-2020-de/inventory.json.'
 )]
-final class LoadC52020FullCatalogueCommand extends Command
+final class LoadC52020FullCatalogueCommand extends Command implements FrameworkLoaderInterface
 {
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
@@ -34,20 +44,25 @@ final class LoadC52020FullCatalogueCommand extends Command
         parent::__construct();
     }
 
+    public function getFrameworkCode(): string
+    {
+        return 'BSI-C5';
+    }
+
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
         $jsonPath = $this->projectDir . '/fixtures/library/catalogues/bsi-c5-2020-de/inventory.json';
         if (!is_readable($jsonPath)) {
-            $io->error("Inventory not found: {$jsonPath}");
+            $io?->error("Inventory not found: {$jsonPath}");
             return Command::FAILURE;
         }
-        $framework = $this->frameworkRepository->findOneBy(['code' => 'BSI-C5']);
-        if ($framework === null) {
-            $io->error('Framework BSI-C5 not in DB.');
-            return Command::FAILURE;
-        }
+        $framework = $this->resolveFramework();
 
         $inventory = json_decode((string) file_get_contents($jsonPath), true, 512, JSON_THROW_ON_ERROR);
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
@@ -78,7 +93,32 @@ final class LoadC52020FullCatalogueCommand extends Command
             $this->em->persist($req);
         }
         $this->em->flush();
-        $io->success(sprintf('BSI C5:2020 full: %d created, %d updated. Total: %d.', $created, $updated, count($inventory)));
+        $io?->success(sprintf('BSI C5:2020 full: %d created, %d updated. Total: %d.', $created, $updated, count($inventory)));
         return Command::SUCCESS;
+    }
+
+    /**
+     * Resolve (or create) the BSI-C5 framework row so the loader works standalone.
+     */
+    private function resolveFramework(): ComplianceFramework
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'BSI-C5']);
+        if ($framework instanceof ComplianceFramework) {
+            return $framework;
+        }
+
+        $framework = new ComplianceFramework();
+        $framework->setCode('BSI-C5')
+            ->setName('BSI C5:2020 - Cloud Computing Compliance Criteria Catalogue')
+            ->setDescription('German Federal Office for Information Security (BSI) criteria catalogue for secure cloud computing, C5:2020 (full catalogue, 121 criteria).')
+            ->setVersion('2020')
+            ->setApplicableIndustry('cloud_services')
+            ->setRegulatoryBody('BSI - Bundesamt für Sicherheit in der Informationstechnik')
+            ->setMandatory(false)
+            ->setScopeDescription('Cloud service providers and cloud customers in Germany.')
+            ->setActive(true);
+        $this->em->persist($framework);
+
+        return $framework;
     }
 }

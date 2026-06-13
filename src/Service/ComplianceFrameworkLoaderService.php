@@ -263,7 +263,10 @@ final class ComplianceFrameworkLoaderService
                 'required_modules' => ['compliance', 'controls', 'audit_logging'],
             ],
             [
-                'code' => 'NIST-CSF',
+                // Canonical DB code is NIST-CSF-2.0 (migration Version20260506213529
+                // merged the legacy NIST-CSF row away; the cross-framework mappings
+                // and the registry-bound LoadNistCsf2FullCatalogueCommand all use it).
+                'code' => 'NIST-CSF-2.0',
                 'name' => 'NIST Cybersecurity Framework 2.0',
                 'description' => 'US cybersecurity risk management framework with 6 Functions (Govern, Identify, Protect, Detect, Respond, Recover) and ~100 sub-categories',
                 'industry' => 'all_sectors',
@@ -272,7 +275,7 @@ final class ComplianceFrameworkLoaderService
                 'applicability' => 'voluntary',
                 'applicability_condition_key' => null,
                 'version' => '2.0 (2024)',
-                'loaded' => in_array('NIST-CSF', $loadedCodes),
+                'loaded' => in_array('NIST-CSF-2.0', $loadedCodes),
                 'icon' => '🛰️',
                 'required_modules' => ['compliance', 'controls', 'risks'],
             ],

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Library;
 
-use App\Command\LoadC5RequirementsCommand;
+use App\Command\LoadC52020FullCatalogueCommand;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -215,16 +215,18 @@ final class BsiC5ToIso27001OfficialCrtTest extends TestCase
 
     // ─── Framework-code alignment regression guards ───────────────────────────
     // These tests ensure the YAML framework codes match the DB codes set by
-    // LoadC5RequirementsCommand::getFrameworkCode() ('BSI-C5') and ISO27001.
+    // LoadC52020FullCatalogueCommand::getFrameworkCode() ('BSI-C5') and ISO27001.
     // A mismatch causes MappingLibraryLoader to silently skip ALL mapping pairs
-    // (exact-code match in MappingLibraryLoader.php).
+    // (exact-code match in MappingLibraryLoader.php). The full-catalogue command
+    // is the registry-bound loader for BSI-C5 since the full/partial split fix.
 
     /**
-     * Returns the DB code for BSI C5:2020 as defined by LoadC5RequirementsCommand.
+     * Returns the DB code for BSI C5:2020 as defined by the registry-bound
+     * LoadC52020FullCatalogueCommand (the single `app.framework_loader` for BSI-C5).
      */
     private static function expectedC5FrameworkCode(): string
     {
-        $cmd = new \ReflectionClass(LoadC5RequirementsCommand::class);
+        $cmd = new \ReflectionClass(LoadC52020FullCatalogueCommand::class);
         $instance = $cmd->newInstanceWithoutConstructor();
 
         return $instance->getFrameworkCode();
@@ -239,7 +241,7 @@ final class BsiC5ToIso27001OfficialCrtTest extends TestCase
             $expected,
             $actual,
             sprintf(
-                'official-crt source_framework "%s" must match DB code "%s" from LoadC5RequirementsCommand::getFrameworkCode() — '
+                'official-crt source_framework "%s" must match DB code "%s" from LoadC52020FullCatalogueCommand::getFrameworkCode() — '
                 . 'a mismatch causes MappingLibraryLoader to silently skip all mapping pairs.',
                 (string) $actual,
                 $expected,
