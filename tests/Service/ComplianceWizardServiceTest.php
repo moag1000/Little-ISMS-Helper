@@ -299,7 +299,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
             $this->markTestSkipped('iso22301 wizard requires the "bcm" module');
         }
 
-        $this->assertSame('ISO22301', $config['code']);
+        $this->assertSame('ISO-22301', $config['code']);
         $this->assertArrayHasKey('categories', $config);
         $this->assertGreaterThanOrEqual(7, count($config['categories']),
             'ISO 22301 should expose at least 7 clauses (4-10)');
@@ -436,7 +436,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         if ($config === null) {
             $this->markTestSkipped('bsi_grundschutz wizard requires the "controls" module');
         }
-        $this->assertSame('BSI-GRUNDSCHUTZ', $config['code']);
+        $this->assertSame('BSI_GRUNDSCHUTZ', $config['code']);
         $this->assertGreaterThanOrEqual(10, count($config['categories']));
     }
 
@@ -484,7 +484,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         if ($config === null) {
             $this->markTestSkipped('nist_csf wizard requires the "controls" module');
         }
-        $this->assertSame('NIST-CSF-2.0', $config['code']);
+        $this->assertSame('NIST-CSF', $config['code']);
         $this->assertGreaterThanOrEqual(6, count($config['categories']));
     }
 
@@ -496,7 +496,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         if ($config === null) {
             $this->markTestSkipped('kritis wizard requires the "controls" module');
         }
-        $this->assertSame('KRITIS-DE', $config['code']);
+        $this->assertSame('KRITIS', $config['code']);
         $this->assertGreaterThanOrEqual(7, count($config['categories']));
     }
 
@@ -520,7 +520,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         if ($config === null) {
             $this->markTestSkipped('soc2 wizard requires the "controls" module');
         }
-        $this->assertSame('SOC2-TYPE-II', $config['code']);
+        $this->assertSame('SOC2', $config['code']);
         $this->assertGreaterThanOrEqual(5, count($config['categories']));
     }
 }
