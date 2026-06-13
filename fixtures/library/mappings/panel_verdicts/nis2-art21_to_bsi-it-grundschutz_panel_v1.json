@@ -1,0 +1,389 @@
+{
+  "library": {
+    "source_framework": "NIS2",
+    "target_framework": "BSI_GRUNDSCHUTZ",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (BSI publishes no public NIS2 Art.21 ↔ Grundschutz crosswalk)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review/reject)",
+    "completeness": "16 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 52,
+      "ki_validiert": 33,
+      "needs_review": 8,
+      "reject": 11
+    }
+  },
+  "verdicts": [
+    {
+      "nis2": "21.2.a",
+      "baustein": "ISMS.1.4",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 2
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "DER.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.c",
+      "baustein": "DER.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.d",
+      "baustein": "OPS.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "CON.8",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 2
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "ISMS.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.g",
+      "baustein": "ORP.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.h",
+      "baustein": "CON.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.i",
+      "baustein": "ORP.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "ORP.4.6",
+      "state": "reject",
+      "mappingPercentage": 60,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.a",
+      "baustein": "CON.7",
+      "state": "reject",
+      "mappingPercentage": 35,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.i",
+      "baustein": "ORP.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.a",
+      "baustein": "ORP.5",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "ORP.5",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "realVotes": 3
+    },
+    {
+      "nis2": "21.2.g",
+      "baustein": "CON.6",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "CON.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "CON.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.a",
+      "baustein": "CON.11.1",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.i",
+      "baustein": "OPS.1.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "OPS.1.1.5",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 2
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "OPS.1.1.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "OPS.1.1.6",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "DER.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "DER.3.1",
+      "state": "needs_review",
+      "mappingPercentage": 75,
+      "realVotes": 3
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "DER.3.2",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 3
+    },
+    {
+      "nis2": "21.2.i",
+      "baustein": "APP.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 48,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.i",
+      "baustein": "APP.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "APP.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "APP.4.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "APP.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "APP.5.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "APP.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.d",
+      "baustein": "APP.6",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "APP.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "APP.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "NET.3.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.h",
+      "baustein": "NET.3.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "NET.4.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "NET.4.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.c",
+      "baustein": "CON.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.g",
+      "baustein": "OPS.1.1.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "OPS.1.1.4",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "OPS.1.1.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "OPS.1.1.3",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "21.2.d",
+      "baustein": "OPS.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.d",
+      "baustein": "OPS.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.e",
+      "baustein": "OPS.2.2",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "21.2.b",
+      "baustein": "DER.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "21.2.f",
+      "baustein": "DER.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "21.2.j",
+      "baustein": "NET.1.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "21.2.i",
+      "baustein": "INF.1",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "nis2": "21.2.a",
+      "baustein": "ORP.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    }
+  ]
+}

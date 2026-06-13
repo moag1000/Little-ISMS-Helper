@@ -1,0 +1,639 @@
+{
+  "provenance": {
+    "source_framework": "DORA",
+    "target_framework": "ISO27001",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 124
+  },
+  "candidates": [
+    {
+      "target": "ISO27001 A.5.2",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-Art.1 (Commission Delegated Reg. (EU) 2024/1774, Art. 1 — overall security of network and information systems) requires the framework to assign roles and responsibilities for the ICT security policies/procedures/protocols/tools it mandates. A.5.2 (Information security roles and responsibilities) is the direct ISO counterpart for assigning and defining those responsibilities and is not covered by the already-mapped A.5.1 (policies). Defensible because Art. 1's mandate that policies be governed/owned has no home in A.5.1 alone."
+    },
+    {
+      "target": "ISO27001 A.5.4",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-Art.2 (governance and organisation of the ICT risk management framework, incl. management-body roles and risk-management-function setup) corresponds to A.5.4 (Management responsibilities) and ISO 27001 Clauses 5.1/5.3 — the leadership/management accountability that Art. 2 specifically codifies. A.5.1 (policies) does not capture the management-body governance dimension. Defensible."
+    },
+    {
+      "target": "ISO27001 5.3 (Roles, responsibilities and authorities)",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-Art.2 also establishes the segregation of the ICT risk-management/control/audit functions (three-lines model). The ISMS clause 5.3 plus A.5.3 (Segregation of duties) is the defensible counterpart for the independence/segregation requirement that Art. 1's general A.5.1 mapping omits."
+    },
+    {
+      "target": "ISO27001 A.5.3",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-Art.3 (ICT security policy detailed content — must define principles incl. segregation of functions/duties and least privilege) explicitly requires segregation-of-duties provisions. A.5.3 (Segregation of duties) is the precise ISO control for that requirement and is not covered by the policy-existence control A.5.1. Defensible."
+    },
+    {
+      "target": "ISO27001 A.5.10",
+      "mappingPercentage": 65,
+      "rationale": "RTS-ICT-RMF-Art.4 (ICT asset management policy/procedure) requires defining the acceptable use and handling of ICT assets, not merely the inventory. A.5.9 (already mapped) covers the inventory of information and other associated assets; A.5.10 (Acceptable use of information and other associated assets) covers the use/handling dimension Art. 4 also mandates. Defensible additional mapping."
+    },
+    {
+      "target": "ISO27001 A.5.12",
+      "mappingPercentage": 55,
+      "rationale": "RTS-ICT-RMF-Art.4 also requires classification of ICT assets by criticality and the protection level commensurate with it. A.5.12 (Classification of information) is the defensible ISO counterpart for the criticality-classification element that A.5.9 (inventory) does not address."
+    },
+    {
+      "target": "ISO27001 A.8.24",
+      "mappingPercentage": 95,
+      "rationale": "RTS-ICT-RMF-Art.5 (encryption and cryptographic controls policy — algorithms, protocols, encryption of data at rest/in transit/in use) maps directly to A.8.24 (Use of cryptography). The already-mapped A.5.9 (inventory of information assets) is plainly the wrong control for an encryption-controls article; A.8.24 is the correct and required additional mapping. Highly defensible — strong indication the existing A.5.9 mapping is itself an error."
+    },
+    {
+      "target": "ISO27001 A.5.10",
+      "mappingPercentage": 50,
+      "rationale": "RTS-ICT-RMF-Art.7 (ICT operations — operational procedures, documented operating instructions for managing ICT assets) corresponds to A.5.37 (Documented operating procedures) and the operational-handling element of A.5.10. The already-mapped A.8.24 (cryptography) does not cover ICT operations at all. Defensible — the operating-procedures dimension of Art. 7 has no cryptography home."
+    },
+    {
+      "target": "ISO27001 A.8.6",
+      "mappingPercentage": 55,
+      "rationale": "RTS-ICT-RMF-Art.7 (ICT operations, where it covers capacity and performance management of ICT systems) maps to A.8.6 (Capacity management). The existing A.8.24 (cryptography) mapping does not address capacity/performance. Defensible for the capacity element of the operations article."
+    },
+    {
+      "target": "ISO27001 A.8.8",
+      "mappingPercentage": 95,
+      "rationale": "RTS-ICT-RMF-Art.8 (vulnerability and patch management — identification, assessment, remediation of technical vulnerabilities and deployment of patches) maps directly to A.8.8 (Management of technical vulnerabilities). The already-mapped A.8.9 is Configuration management, which is the wrong control for a vulnerability/patch article; A.8.8 is the correct and required additional mapping. Highly defensible — strong indication the existing A.8.9 mapping is itself an error."
+    },
+    {
+      "target": "ISO27001 A.8.19",
+      "mappingPercentage": 45,
+      "rationale": "RTS-ICT-RMF-Art.8 also governs deployment/installation of patches and software updates onto operational systems. A.8.19 (Installation of software on operational systems) is a defensible additional ISO control for the patch-deployment control element that neither A.8.9 (config) nor A.8.8 (vuln assessment) fully captures."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.9",
+      "mappingPercentage": 90,
+      "rationale": "RTS-ICT-RMF-Art.9 (ICT operations security): beyond the capacity dimension (A.8.6), Art. 9 explicitly requires documented operating procedures for ICT operations (lit. on operations performed in a documented and traceable manner) and the monitoring/management of the operational state of ICT assets. A.5.37 (Documented operating procedures) is the direct ISO control for the mandated operating-procedure requirement and is missing. A.8.16 (Monitoring activities) covers the required continuous monitoring of ICT operations/behaviour that A.8.6 (capacity only) does not. Both are defensible additions."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.10",
+      "mappingPercentage": 85,
+      "rationale": "RTS-ICT-RMF-Art.10 (vulnerability and patch management): A.8.8 covers vulnerability identification/assessment, but Art. 10 separately mandates a documented patch-deployment/change procedure for applying patches and updates (testing, scheduling, emergency patching). A.8.32 (Change management) is the missing ISO control for the patch-deployment-as-controlled-change requirement. Additionally Art. 10 requires tracking usage of third-party libraries/components and monitoring vendor advisories, which engages A.8.30/supplier-channel intelligence; the most defensible single addition is A.8.32."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.11",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-Art.11 (data and ICT system security): A.8.12 (DLP) only covers leakage prevention. Art. 11 broadly mandates confidentiality/integrity/availability protection of data at rest, in use and in transit, secure configuration baselines, and restriction of data access. The missing defensible ISO controls are A.8.24 (Use of cryptography) for the required protection of data at rest/in transit, A.8.9 (Configuration management) for the mandated secure-configuration baselines, and A.5.12/A.8.3 for classification-driven access restriction — most defensibly A.8.24 and A.8.9."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.12",
+      "mappingPercentage": 90,
+      "rationale": "RTS-ICT-RMF-Art.12 (logging): A.8.15 covers log generation/content. Art. 12 additionally mandates protection of logs against tampering/unauthorised access and deletion, retention periods, and synchronised time sources for log correlation. A.8.15 in ISO covers protection-of-logs partly, but the explicit time-synchronisation requirement maps to A.8.17 (Clock synchronisation), which is missing and required for the mandated log correlation. Defensible addition: A.8.17."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.13",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-Art.13 (network security management): A.8.22 (Segregation of networks) covers only segmentation. Art. 13 mandates a far broader network security baseline: securing network traffic/perimeter, controlling network connections and filtering, and securing network services/management. The missing defensible ISO controls are A.8.20 (Networks security) as the umbrella network-protection control and A.8.21 (Security of network services) for the mandated securing of network service agreements/mechanisms; most defensible single addition is A.8.20."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.14",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-Art.14 (securing information in transit): A.8.21 (Security of network services) is only a partial fit. Art. 14 mandates protecting confidentiality/integrity/authenticity of data in transit, which is fundamentally a cryptographic-protection requirement — A.8.24 (Use of cryptography) is the missing primary ISO control. Art. 14 also covers secure information-transfer rules/agreements, mapping to A.5.14 (Information transfer), which is missing. Defensible additions: A.8.24 and A.5.14."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.15",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-Art.15 (ICT project management): A.8.32 (Change management) is a weak/partial fit — project management is not change management. The missing primary ISO control is A.5.8 (Information security in project management), which is the direct ISO equivalent of integrating security into ICT projects (objectives, risk assessment, security checkpoints/gates throughout the project lifecycle). This is a strongly defensible addition."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.16",
+      "mappingPercentage": 75,
+      "rationale": "RTS-ICT-RMF-Art.16 (acquisition, development and maintenance of ICT systems): A.8.25 (Secure development lifecycle) covers only the development dimension. Art. 16 additionally mandates security testing of source code/applications before deployment — A.8.29 (Security testing in development and acceptance) is missing. It also addresses outsourced/acquired ICT development, mapping to A.8.30 (Outsourced development), and separation of development/test/production environments, mapping to A.8.31. Defensible additions: A.8.29, A.8.30 and A.8.31."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.17",
+      "mappingPercentage": 90,
+      "rationale": "RTS-ICT-RMF-Art.17: Art. 17 of RTS 2024/1774 is the dedicated physical and environmental security article. It does not stop at physical security monitoring (A.7.4); it requires protection against environmental hazards (power, fire, flooding, climate), securing of premises and equipment, and supporting utilities. The single existing A.7.4 mapping (physical monitoring) leaves the substantive perimeter/zoning and environmental-protection requirements unmapped. Missing: A.7.1 (physical security perimeters), A.7.2 (physical entry), A.7.3 (securing offices/rooms/facilities), A.7.5 (protecting against physical and environmental threats), A.7.8 (equipment siting and protection), A.7.11 (supporting utilities). These are the direct ISO 27002 controls the article's text obligates and are defensibly in-scope, not speculative."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.18",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-Art.18: Art. 18 (human-resources policy in the ICT-security context) goes beyond pre-employment screening (A.6.1). It obligates security responsibilities defined in employment terms, awareness/training, and handling of leavers/role-changes (revocation of access on termination). The existing single A.6.1 mapping omits the lifecycle/awareness obligations. Missing and defensible: A.6.2 (terms and conditions of employment), A.6.3 (information security awareness, education and training), A.6.5 (responsibilities after termination or change of employment). These correspond directly to the article's HR-policy clauses."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.19",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-Art.19: Art. 19 (identity management) is correctly anchored to A.5.16 (identity management). The supporting authentication-information control is closely adjacent and arguably part of the same provision: A.5.17 (authentication information). This is a defensible single addition — the article explicitly addresses unique identities and the authentication credentials bound to them. I do not add A.5.18 (access rights) because that is the distinct access-management subject of Art. 20, avoiding double-counting."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.20",
+      "mappingPercentage": 75,
+      "rationale": "RTS-ICT-RMF-Art.20: Art. 20 (access management) covers the access-rights lifecycle (granting, review, withdrawal) and privileged/elevated access restrictions, not only the access-control policy (A.5.15). Missing and defensible: A.5.18 (access rights — provisioning, periodic review, revocation), A.8.2 (privileged access rights), A.8.3 (information access restriction). The article's explicit treatment of need-to-know, least-privilege enforcement at system level and privileged-account control maps to these technological controls."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.21",
+      "mappingPercentage": 85,
+      "rationale": "RTS-ICT-RMF-Art.21: Art. 21 (ICT-related incident management process) covers more than incident planning/preparation (A.5.24). It obligates detection, assessment/classification, response, learning, and evidence collection. Missing and defensible: A.5.25 (assessment and decision on information security events), A.5.26 (response to information security incidents), A.5.27 (learning from incidents), A.5.28 (collection of evidence). These are the rest of the ISO incident-management cluster the article's full process directly requires."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.22",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-Art.22: Art. 22 (detection of anomalous activities and ICT-related incidents) is anchored to A.8.16 (monitoring activities), which is correct, but the article's detection capability rests on log data and threat context. Defensible additions: A.8.15 (logging — the evidentiary basis monitoring/anomaly-detection consumes) and A.5.7 (threat intelligence — explicitly informing the criteria for detecting anomalous behaviour). Both are directly supportive of the article's anomaly-detection obligation rather than speculative."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.23",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-Art.23: Art. 23 (ICT business continuity policy / components) is anchored to A.5.30 (ICT readiness for business continuity), which is the closest direct control. The article also requires backup and restoration capabilities and redundancy of ICT resources as continuity components. Defensible additions: A.8.13 (information backup), A.8.14 (redundancy of information processing facilities), and A.5.29 (information security during disruption — the ISMS-continuity organisational counterpart). These are operationally mandated by the article's continuity-capability requirements."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.24",
+      "mappingPercentage": 65,
+      "rationale": "RTS-ICT-RMF-Art.24: Art. 24 (response and recovery plans and their testing) is anchored to A.5.30 (ICT readiness for business continuity). The article's core obligation is testing/exercising of continuity and recovery plans plus learning from disruptions, which A.5.30 covers only partially. Defensible additions: A.5.29 (information security during disruption — maintaining controls while executing recovery), A.8.13 (information backup — backups are validated as part of recovery testing) and A.8.14 (redundancy of information processing facilities — the failover capability the recovery plans invoke). These map to the recovery/test substance of the article. A.5.24 is deliberately not added (incident-response planning is Art. 21's subject)."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.25 -> A.5.29",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-Art.25 specifies the ICT business continuity policy and response/recovery objectives (RTO/RPO) for functions supporting critical/important functions. A.5.30 (ICT readiness for business continuity) is correctly mapped, but the provision's core requirement — maintaining information security during disruption and the continuity-plan content itself — is the substance of A.5.29 (Information security during disruption). The current single mapping to A.5.30 captures only the ICT-readiness facet; A.5.29 is the controlling Annex A control for the BC-policy/plan obligation and is defensibly missing."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.25 -> A.8.13",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-Art.25 sets recovery objectives (RPO) that are only achievable through a backup/restoration capability. Recovery to a defined point-in-time directly depends on A.8.13 (Information backup). Since Art.25 mandates the recovery side of the continuity policy, A.8.13 is a defensible additional mapping beyond the BC-readiness control A.5.30."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.26 -> A.5.29",
+      "mappingPercentage": 75,
+      "rationale": "RTS-ICT-RMF-Art.26 governs the testing of ICT business continuity plans (scenarios, frequency, switchover/failover tests). A.5.30 (ICT readiness) is mapped, but the obligation to test the continuity plans that preserve security during disruption is the testing element of A.5.29 (Information security during disruption), whose implementation guidance explicitly requires periodic exercising/testing of continuity arrangements. A.5.29 is defensibly missing."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.27 -> A.5.30",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-Art.27 addresses ICT response and recovery plans together with backup and restoration procedures. A.8.13 (backup) is mapped, but the response/recovery-plan dimension of the article — restoring ICT services supporting critical functions — is the ICT-readiness obligation of A.5.30 (ICT readiness for business continuity), which is defensibly missing alongside the backup control."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.27 -> A.8.14",
+      "mappingPercentage": 55,
+      "rationale": "RTS-ICT-RMF-Art.27 requires restoration capability and redundant resources to meet recovery objectives. Achieving the recovery/availability targets relies not only on backup (A.8.13, already mapped) but on A.8.14 (Redundancy of information processing facilities). Where the article references redundant/geo-separated processing for restoration, A.8.14 is a defensible additional mapping."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.28 -> A.5.19",
+      "mappingPercentage": 75,
+      "rationale": "RTS-ICT-RMF-Art.28 prescribes the format and content of the policy on the use of ICT services provided by third-party providers supporting critical/important functions. A.5.36 (compliance with policies/standards) is mapped, but the substantive Annex A control for a third-party-service policy is A.5.19 (Information security in supplier relationships), which establishes the requirement to have such a policy. A.5.19 is defensibly missing and is a closer match than the chosen A.5.36."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.28 -> A.5.21",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-Art.28 specifically targets ICT services in the ICT supply chain supporting critical functions, including subcontracting-chain considerations. A.5.21 (Managing information security in the ICT supply chain) is the dedicated Annex A control for ICT-supply-chain security requirements and is a defensible additional mapping not covered by A.5.36."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-Art.29 -> A.5.22",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-Art.29 governs the ongoing review/monitoring of the ICT third-party risk and of services supporting critical functions. A.5.36 is mapped, but the precise Annex A control for ongoing monitoring/review of supplier services is A.5.22 (Monitoring, review and change management of supplier services). A.5.22 is the defensibly correct missing mapping for the review obligation."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-SIMPL-Art.1 -> A.5.2",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.1 establishes the overall simplified ICT risk management framework, including governance and the assignment of roles and responsibilities for ICT risk. A.5.1 (Policies for information security) is mapped, but the governance/role-assignment element of the framework corresponds to A.5.2 (Information security roles and responsibilities), which is defensibly missing alongside the policy control."
+    },
+    {
+      "target": "A.5.2 Information security roles and responsibilities",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.4: Art. 4 of the simplified framework requires the management body to define, approve and oversee the ICT risk management framework, and to clearly assign roles and responsibilities for all ICT-related functions. The already-mapped A.5.37 (documented operating procedures) only captures the procedural-documentation facet. The core governance demand of Art. 4 — assigning and communicating accountability for ICT/information security functions — corresponds directly to A.5.2 and is currently missing."
+    },
+    {
+      "target": "A.5.4 Management responsibilities",
+      "mappingPercentage": 75,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.4: Art. 4 places the ICT risk management framework under the approval, direction and periodic review of the management body and obliges management to ensure resources and oversight. This management-direction/accountability obligation maps to A.5.4 (management requiring all personnel to apply information security per policies). A.5.37 alone does not cover the leadership/oversight dimension."
+    },
+    {
+      "target": "A.5.1 Policies for information security",
+      "mappingPercentage": 90,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.5: Art. 5 requires the entity to develop, document and implement an information security policy defining high-level principles and rules, approved by the management body and reviewed. The already-mapped A.5.9 (inventory of information and other associated assets) covers asset identification but not the policy mandate itself. The defining obligation of Art. 5 — establishing and approving the IS policy set — maps squarely to A.5.1, which is missing."
+    },
+    {
+      "target": "A.7.2 Physical entry",
+      "mappingPercentage": 85,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.6: Art. 6 governs physical and environmental security of premises, data centres and sensitive designated areas, including controlling and monitoring physical access. The already-mapped A.5.12 (classification of information) addresses the sensitivity-tiering input but not the entry control itself. Physical entry control of secure areas is the dedicated A.7.2 and is missing."
+    },
+    {
+      "target": "A.7.5 Protecting against physical and environmental threats",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.6: Art. 6 explicitly extends to environmental threats (power, fire, flooding, temperature) affecting ICT assets and facilities. A.5.12 does not address environmental protection at all. A.7.5 (protection against natural disasters, malicious attack, accidents on the physical environment) is the direct ISO counterpart and is missing."
+    },
+    {
+      "target": "A.7.8 Equipment siting and protection",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.6: Where Art. 6 requires securing ICT equipment and supporting facilities against environmental and physical risk, A.7.8 (siting and protecting equipment to reduce environmental threats, hazards and unauthorised access) is a defensible additional control beyond the classification anchor A.5.12, which does not address equipment protection."
+    },
+    {
+      "target": "A.5.18 Access rights",
+      "mappingPercentage": 85,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.7: Art. 7 covers access control management — granting, modifying and revoking access rights on least-privilege and need-to-know, with periodic review. The already-mapped A.8.8 (technical vulnerability management) is mis-anchored for an access-control article; A.5.18 (provisioning, review and removal of access rights) is the direct counterpart and is missing. (Note: A.8.8 fits Art.8-style operations articles, not Art.7 access control.)"
+    },
+    {
+      "target": "A.5.15 Access control",
+      "mappingPercentage": 90,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.7: The foundational requirement of Art. 7 is to establish access-control rules based on business and security requirements (least privilege, need-to-know, segregation). A.5.15 (rules to control physical and logical access based on business and information security requirements) is the canonical ISO control for this and is missing under the A.8.8 anchor."
+    },
+    {
+      "target": "A.8.2 Privileged access rights",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.7: Art. 7 specifically singles out strict management of privileged/administrative and emergency access accounts (restriction, monitoring, time-bound). A.8.2 (allocation and use of privileged access rights restricted and managed) is a defensible additional mapping for the privileged-access facet, not covered by the A.8.8 anchor."
+    },
+    {
+      "target": "A.8.5 Secure authentication",
+      "mappingPercentage": 65,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.7: Art. 7 requires strong authentication mechanisms (including multi-factor) commensurate with the criticality of functions and access to sensitive data. A.8.5 (secure authentication technologies and procedures based on access-control restrictions) is a defensible additional control for this authentication requirement that the A.8.8 anchor does not cover."
+    },
+    {
+      "target": "A.6.2 Terms and conditions of employment",
+      "mappingPercentage": 65,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.8: Art. 8 (human resources policy / security of staff) requires that information security responsibilities be embedded in employment terms and that staff acknowledge ICT security obligations. A.6.2 (employment agreements stating information security responsibilities) is a defensible additional mapping beyond the A.7.1 screening anchor (which is itself mis-anchored: A.7.1 is a physical-perimeter control, whereas the HR-screening control is A.6.1)."
+    },
+    {
+      "target": "A.6.1 Screening",
+      "mappingPercentage": 75,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.8: Art. 8 requires verification/screening of staff prior to engagement proportionate to the criticality of the role. The provided anchor 'A.7.1' is the physical security perimeter control and does not match HR screening; the correct ISO 27001:2022 screening control is A.6.1 (background verification checks), which is missing."
+    },
+    {
+      "target": "A.6.3 Information security awareness, education and training",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.8: Art. 8 obliges the entity to provide ICT-security awareness and training to staff (and management) appropriate to their roles. A.6.3 (awareness, education and training relevant to job function) is a defensible additional mapping for the HR/awareness article that the physical-perimeter anchor A.7.1 does not address."
+    },
+    {
+      "target": "A.6.5 Responsibilities after termination or change of employment",
+      "mappingPercentage": 55,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.8: Where Art. 8 addresses the full HR lifecycle including leavers/role-changers and continuing confidentiality obligations, A.6.5 (defining and enforcing IS responsibilities that remain valid after termination/change) is a defensible additional control beyond the screening anchor."
+    },
+    {
+      "target": "A.5.16 Identity management",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.9: Art. 9 (logical and physical access control / identity management) requires unique identification and management of the identity lifecycle for users and systems. A.5.16 (full lifecycle management of identities, unique IDs) is the direct counterpart and is missing alongside the already-mapped A.5.15 access-control anchor."
+    },
+    {
+      "target": "A.5.17 Authentication information",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.9: Art. 9 governs the secure allocation and management of authentication credentials. A.5.17 (allocation and management of authentication information, secret handling) is a defensible additional mapping for the credential-management facet that A.5.15 (access-control rules) does not specifically cover."
+    },
+    {
+      "target": "A.8.18 Use of privileged utility programs",
+      "mappingPercentage": 55,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.9: To the extent Art. 9 restricts powerful access overriding system controls, A.8.18 (restriction and tight control of utility programs capable of overriding controls) is a defensible additional control. This is supportive rather than central, hence a partial mapping beyond A.5.15."
+    },
+    {
+      "target": "A.8.9 Configuration management",
+      "mappingPercentage": 75,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.10: Art. 10 (ICT operations security / secure operations) requires establishing and maintaining secure baseline configurations and hardening of ICT assets. A.8.9 (establish, document, implement, monitor and review configurations including security configurations) is a defensible additional mapping beyond the A.8.8 vulnerability anchor, which does not cover configuration baselining."
+    },
+    {
+      "target": "A.8.7 Protection against malware",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.10: Art. 10 covers protection of ICT operations including detection and prevention of malicious code. A.8.7 (implementation of protection against malware supported by user awareness) is a defensible additional control for the operations-security article that the vulnerability-management anchor A.8.8 does not cover."
+    },
+    {
+      "target": "A.8.15 Logging",
+      "mappingPercentage": 75,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.10: Art. 10 requires logging of ICT operations and events to enable monitoring and reconstruction. A.8.15 (producing, storing, protecting and analysing logs of activities, exceptions and faults) is a defensible additional mapping for the operations-security article beyond the A.8.8 anchor."
+    },
+    {
+      "target": "A.8.16 Monitoring activities",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.10: Art. 10 requires monitoring of networks, systems and ICT operations to detect anomalous activity. A.8.16 (monitoring networks, systems and applications for anomalous behaviour and to evaluate potential incidents) is a defensible additional control for this article that the A.8.8 anchor does not cover."
+    },
+    {
+      "target": "A.8.6 Capacity management",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.10: Where Art. 10 addresses the secure and resilient operation of ICT systems including ensuring sufficient capacity, A.8.6 (monitoring and tuning resource use to meet capacity requirements) is a defensible additional control beyond the vulnerability anchor A.8.8."
+    },
+    {
+      "target": "A.8.32 Change management",
+      "mappingPercentage": 80,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.11: Art. 11 (ICT project and change management within the simplified framework) requires controlled, tested and approved changes to ICT systems. A.8.32 (changes to information processing facilities and systems subject to change-management procedures) is the direct counterpart and is missing under the A.8.22 (network segregation) anchor — which is itself a network control only partially relevant to change/project management."
+    },
+    {
+      "target": "A.8.31 Separation of development, test and production environments",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.11: Art. 11 requires that ICT changes and projects are tested in environments separated from production before deployment. A.8.31 (separation of development, testing and production environments) is a defensible additional control for the change/project-management article that the network-segregation anchor A.8.22 does not capture."
+    },
+    {
+      "target": "A.8.25 Secure development life cycle",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.11: To the extent Art. 11 covers ICT project management and the acquisition/development of ICT systems, A.8.25 (establishing and applying rules for secure development of software and systems) is a defensible additional mapping beyond the A.8.22 network anchor, which does not address development lifecycle."
+    },
+    {
+      "target": "A.8.29 Security testing in development and acceptance",
+      "mappingPercentage": 55,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.11: Where Art. 11 requires testing of ICT systems/changes prior to acceptance and deployment, A.8.29 (defining and implementing security testing processes in the development lifecycle) is a defensible additional control for the acceptance-testing facet not covered by the network-segregation anchor A.8.22."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-SIMPL-Art.12",
+      "mappingPercentage": 70,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.12 governs ICT operations security for entities under the simplified framework: documented operating procedures for ICT asset/system operation, capacity/performance monitoring, malware protection, logging and physical/environmental protection of ICT resources. The given A.5.24 (incident management planning) covers only the incident-readiness sliver. Defensibly missing: A.8.7 (protection against malware) - Art.12 explicitly requires anti-malware measures; A.8.6 (capacity management) - Art.12 requires monitoring/management of ICT system capacity and performance; A.8.15 (logging) and A.8.16 (monitoring activities) - Art.12 mandates event logging and monitoring of ICT operations; A.7.5/A.7.8 (physical/environmental protection of equipment) - Art.12 covers protection of ICT premises and resources against environmental hazards; A.8.9 (configuration management) - Art.12 requires secure/documented operational configuration of ICT systems."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-SIMPL-Art.13",
+      "mappingPercentage": 60,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.13 covers backup AND restoration/recovery procedures: backup scope/frequency, integrity of backups, restoration testing, and continuity of ICT services after disruption. The given A.8.13 (information backup) covers only the backup-creation half. Defensibly missing: A.8.14 (redundancy of information processing facilities) - Art.13 addresses availability/restoration via redundant resources; A.5.29 (information security during disruption) and A.5.30 (ICT readiness for business continuity) - Art.13's restoration/recovery objective maps directly to ICT continuity readiness, which A.8.13 alone does not capture."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-ICT-RMF-SIMPL-Art.14",
+      "mappingPercentage": 0,
+      "rationale": "RTS-ICT-RMF-SIMPL-Art.14 in the simplified ICT-RMF concerns human-resources/awareness dimension - ICT security awareness and training of staff (and management). The given A.6.3 (information security awareness, education and training) is the correct primary control. No additional ISO control is defensibly required: A.6.1 (screening), A.6.2 (terms of employment) and A.7.2-type clauses address different HR-lifecycle stages not in scope of an awareness/training-focused article. Mapping is already complete."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-CLASS-Art.1",
+      "mappingPercentage": 0,
+      "rationale": "RTS-INC-CLASS-Art.1 sets the materiality threshold criterion 'clients, financial counterparts and transactions affected' for classifying an incident as major. This is a classification-criteria provision, fully served by A.5.25 (assessment of and decision on information security events). No additional ISO control is defensible - the affected-clients/transactions count is a quantitative classification input, not a separate control domain."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-CLASS-Art.2",
+      "mappingPercentage": 0,
+      "rationale": "RTS-INC-CLASS-Art.2 sets the 'reputational impact' classification criterion. This is a classification-criteria provision for incident assessment, fully covered by A.5.25 (assessment of and decision on information security events). No additional ISO Annex A control is defensible; reputational impact is an assessment dimension within event triage, and ISO 27001 has no dedicated reputational-impact control to add."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-CLASS-Art.3",
+      "mappingPercentage": 35,
+      "rationale": "RTS-INC-CLASS-Art.3 sets the 'duration and service downtime' classification criterion. Beyond the assessment activity in A.5.25, duration/downtime is intrinsically an availability/continuity dimension: A.5.30 (ICT readiness for business continuity) is defensibly missing because measuring and reacting to service downtime presupposes RTO/continuity baselines against which downtime is judged. A.8.16 (monitoring activities) is also defensibly missing - reliable measurement of incident duration and downtime requires monitoring that detects start/end times, which A.5.25 (decision-making) does not itself provide."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-CLASS-Art.4",
+      "mappingPercentage": 0,
+      "rationale": "RTS-INC-CLASS-Art.4 sets the 'geographical spread' classification criterion (impact across Member States/locations). This is a classification-criteria dimension served by A.5.25 (assessment of and decision on information security events). No additional ISO Annex A control is defensibly required - geographical spread is a scoping attribute of impact assessment, not a distinct control objective in ISO 27001."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-CLASS-Art.5",
+      "mappingPercentage": 40,
+      "rationale": "RTS-INC-CLASS-Art.5 sets the 'data losses' classification criterion - impact on confidentiality, integrity, authenticity or availability of data. Beyond the assessment in A.5.25, this CIA-impact criterion defensibly implicates A.5.26 (response to information security incidents) - DORA Recital/Art linkage classifies data-loss incidents to drive response, and detecting data integrity/confidentiality loss requires A.8.15/A.8.16 (logging/monitoring) as evidentiary basis for the classification. Most defensible single addition: A.5.26, since classifying a data-loss incident is the trigger for the structured incident-response that A.5.25 (decision) hands off to and that A.5.25 alone does not encompass."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-CLASS-Art.6",
+      "mappingPercentage": 0,
+      "rationale": "RTS-INC-CLASS-Art.6 sets the materiality criterion 'clients, financial counterparts and transactions affected', i.e. quantifying impact on business activities/services. A.5.25 (event assessment and decision) already covers classifying an event as an incident, but the explicit determination of business impact magnitude (number of clients/transactions, criticality of the affected business activity) is the substance of A.5.27 'Learning from information security incidents' only partially. The defensible additional mapping is A.5.30 'ICT readiness for business continuity' is NOT a fit. The genuinely missing control is A.5.27? No. The substance — assessing extent of impact on services/business processes — is the IS event-assessment criteria detailed in A.5.26 response procedures. Most defensible: none beyond A.5.25; classification thresholds are an intra-control refinement of event assessment."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-CLASS-Art.10",
+      "mappingPercentage": 50,
+      "rationale": "RTS-INC-CLASS-Art.10 classifies incidents by 'data losses' affecting the availability, authenticity, integrity or confidentiality of data. A.5.25 (assessment/decision on events) does not capture the substantive requirement to determine impact on the CIA-plus-authenticity properties of data, which is the core protective subject matter. The defensible additional ISO control is A.5.33 'Protection of records' (integrity/authenticity/availability of records) and, more strongly, A.5.34 only for privacy. The strongest defensible mapping is A.8.12 is not impact-class. Given data-loss classification drives breach handling of personal data, A.5.34 'Privacy and protection of PII' SHOULD additionally map where the lost data is personal data, as DORA Art.10 data-loss thresholds explicitly trigger GDPR-coordination."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-CLASS-Art.11",
+      "mappingPercentage": 60,
+      "rationale": "RTS-INC-CLASS-Art.11 covers the criticality-of-services criterion and the classification of 'significant cyber threats' (forward-looking threat materiality), not only realised incidents. Already mapped to A.5.7 (Threat intelligence), which correctly captures the cyber-threat dimension. The additional defensible control is A.5.25 'Assessment and decision on information security events' — Art.11's criticality determination is an event/threat assessment-and-decision activity, and the threshold logic for 'critical services affected' is the same assessment criteria A.5.25 establishes. A.5.25 SHOULD additionally map."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-REPORT-Art.1",
+      "mappingPercentage": 75,
+      "rationale": "RTS-INC-REPORT-Art.1 governs the content of the initial, intermediate and final notifications to the competent authority within DORA timelines (Art.19). Already mapped to A.5.26 (Response to incidents), which covers reporting as part of response. The additional defensible control is A.5.5 'Contact with authorities' — Art.1 is specifically about the structured, time-bound notification channel to the supervisory authority (BaFin/competent authority), which is precisely the subject matter of A.5.5. A.5.5 SHOULD additionally map."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-INC-REPORT-Art.2",
+      "mappingPercentage": 70,
+      "rationale": "RTS-INC-REPORT-Art.2 specifies the detailed data elements/templates of the reports (root cause, indicators, affected functions, classification data carried forward). Already mapped to A.5.26 (Response to incidents). The additional defensible control is A.5.5 'Contact with authorities' (the report is the authority-facing artefact) and A.5.27 'Learning from information security incidents' — Art.2 mandates capture of root-cause and remediation data in the final report, which is the documented knowledge A.5.27 requires gathering from incidents to reduce likelihood/impact of future incidents. Both A.5.5 and A.5.27 SHOULD additionally map."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 80,
+      "rationale": "RTS-INC-REPORT-Art.3 — Art. 3 specifies the mandatory content of the INITIAL notification of a major ICT-related incident (incident designation, description, affected functions, classification criteria triggered). This is the operational act of responding to and recording a confirmed incident, which is the direct subject of A.5.26 (Response to information security incidents) — the existing A.5.27 (learning from incidents) only covers post-incident knowledge capture, not the initial-response/notification content the article actually governs. A.5.26 is therefore a defensible missing mapping for the report-content-at-response-time obligation."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 60,
+      "rationale": "RTS-INC-REPORT-Art.3 — defining the structured content/fields and timeline (24h) of the initial notification presupposes the incident-management planning and preparation control A.5.24 (Information security incident management planning and preparation), which requires establishing reporting procedures, roles and templates. The standardised notification dataset mandated by Art. 3 is an implementation artefact of that planning obligation, making A.5.24 a defensible additional mapping."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 75,
+      "rationale": "RTS-INC-REPORT-Art.4 — Art. 4 governs the content of the INTERMEDIATE report, capturing the evolving status, containment and remediation actions taken while the incident is being handled. This maps directly to A.5.26 (Response to information security incidents), i.e. the ongoing management/handling of a live incident. The already-mapped A.5.7 (threat intelligence) is only tangentially relevant; A.5.26 is the substantively correct missing control for the in-flight response-status reporting the article requires."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 55,
+      "rationale": "RTS-INC-REPORT-Art.4 — the intermediate-report obligation to provide updated status against defined milestones depends on a pre-defined incident-handling and escalation procedure (roles, responsibilities, reporting cadence) established under A.5.24 (incident management planning and preparation). A.5.24 is a defensible additional mapping as the planning foundation the intermediate reporting cadence operationalises."
+    },
+    {
+      "target": "A.5.27",
+      "mappingPercentage": 80,
+      "rationale": "RTS-INC-REPORT-Art.5 — Art. 5 specifies the content of the FINAL report: root-cause analysis, the full impact assessment, and the lessons/remediation outcome of the major incident. This is precisely A.5.27 (Learning from information security incidents) — root-cause and post-incident knowledge capture to reduce likelihood/impact of future incidents. The already-mapped A.5.25 (assessment and decision on IS events) covers triage/classification, not the post-mortem root-cause-and-lessons content of the final report, so A.5.27 is a strong missing mapping."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 50,
+      "rationale": "RTS-INC-REPORT-Art.5 — the final report documents the remediation and corrective actions actually executed to resolve the major incident, which is the response/closure activity governed by A.5.26 (Response to information security incidents). A.5.26 is a defensible secondary mapping for the executed-response-and-closure dimension that the final report records, distinct from the triage already covered by A.5.25."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 70,
+      "rationale": "RTS-INC-REPORT-Art.7 — Art. 7 addresses the aggregation/treatment of RECURRING incidents that, taken together, meet the major-incident threshold. Detecting, grouping and counting recurring incidents over a window is an incident-management-process design obligation: it requires defined classification, aggregation rules and tracking established under A.5.24 (Information security incident management planning and preparation). The already-mapped A.5.22 (monitoring/review/change management of supplier services) does not address recurring-incident aggregation, so A.5.24 is a defensible missing mapping."
+    },
+    {
+      "target": "A.5.25",
+      "mappingPercentage": 60,
+      "rationale": "RTS-INC-REPORT-Art.7 — assessing whether a series of individually non-major incidents collectively crosses the major-incident threshold is an assessment-and-classification decision, the subject of A.5.25 (Assessment of and decision on information security events). A.5.25 is a defensible additional mapping for the recurring-incident threshold-evaluation logic the article mandates."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 55,
+      "rationale": "RTS-INC-REPORT-Art.9 — Art. 9 concerns notifying clients/users about a major incident where it affects their financial interests. Stakeholder/customer communication during an incident is an explicit element of incident response under A.5.26 (Response to information security incidents), which includes communicating with relevant internal and external parties. A.5.26 is a defensible missing mapping; the already-mapped A.5.5 (contact with authorities) only covers the authority-notification leg, not the client/user-notification leg the article requires."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 40,
+      "rationale": "RTS-INC-REPORT-Art.9 — to the extent client/user notification of a major ICT incident is channelled through coordinated disclosure with sectoral/special-interest bodies (e.g. payment-scheme or CERT communities) the obligation touches A.5.6 (Contact with special interest groups). This is a narrower, defensible secondary mapping for the coordinated-communication aspect; it should be flagged as partial since the core of Art. 9 is direct client communication, not interest-group liaison."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 80,
+      "rationale": "RTS-Subcontracting-Art.1 — Art. 1 sets the conditions/requirements that must be reflected in the CONTRACTUAL arrangement before subcontracting of ICT services supporting critical/important functions is permitted (e.g. that the financial entity's rights, monitoring and chain-of-subcontracting conditions are embedded). This is squarely A.5.20 (Addressing information security within supplier agreements) — embedding security requirements, including subcontracting/flow-down clauses, into supplier contracts. A.5.20 is a defensible missing mapping beyond the already-listed A.5.19 (general supplier-relationship policy)."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 65,
+      "rationale": "RTS-Subcontracting-Art.1 — because the article governs the conditions under which an ICT provider may subcontract elements supporting critical/important functions, it directly concerns risk in the ICT supply/subcontracting chain, i.e. A.5.21 (Managing information security in the ICT supply chain), which explicitly addresses propagating requirements down to sub-suppliers. A.5.21 is a defensible additional mapping for the chain-of-subcontracting risk dimension that A.5.19 does not specifically cover."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 80,
+      "rationale": "RTS-Subcontracting-Art.2 — Art. 2 deals with the description and ongoing CONDITIONS of subcontracting and the monitoring of the subcontracting chain (the financial entity's ability to assess and oversee sub-providers across the chain). This maps directly to A.5.21 (Managing information security in the ICT supply chain), which is the dedicated control for managing security across multi-tier supplier/subcontractor chains. A.5.21 is a strong missing mapping not captured by the generic A.5.19."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 70,
+      "rationale": "RTS-Subcontracting-Art.2 — the article's requirement to monitor the subcontracting chain on an ongoing basis (changes in sub-providers, continued compliance) corresponds to A.5.22 (Monitoring, review and change management of supplier services), which governs ongoing oversight of supplier service delivery and changes. A.5.22 is a defensible additional mapping for the continuous-monitoring-of-the-chain obligation."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 60,
+      "rationale": "RTS-Subcontracting-Art.2 — the conditions of subcontracting (rights, security requirements, sub-processor approval) must be anchored in the supplier agreement, the subject of A.5.20 (Addressing information security within supplier agreements). A.5.20 is a defensible secondary mapping for the contractual-anchoring of the subcontracting conditions described in Art. 2."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 80,
+      "rationale": "RTS-Subcontracting-Art.3 — Art. 3 governs MATERIAL CHANGES to subcontracting arrangements (prior notification of, and the financial entity's right to object to, changes in sub-providers supporting critical/important functions). This is directly A.5.22 (Monitoring, review and change management of supplier services), whose core scope is change management of supplier services. A.5.22 is a strong missing mapping that the generic A.5.19 supplier-policy control does not specifically address."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 65,
+      "rationale": "RTS-Subcontracting-Art.3 — because material changes concern the composition and risk of the subcontracting chain, the change-control obligation also engages A.5.21 (Managing information security in the ICT supply chain), which requires the chain's security posture to be reassessed when sub-providers change. A.5.21 is a defensible additional mapping for the supply-chain-risk reassessment triggered by material subcontracting changes."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 55,
+      "rationale": "RTS-Subcontracting-Art.3 — the right to be notified of and object to material subcontracting changes must be a contractually embedded clause, the subject of A.5.20 (Addressing information security within supplier agreements). A.5.20 is a defensible secondary mapping for the contractual basis of the change-notification/objection right that Art. 3 mandates."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-Subcontracting-Art.4",
+      "mappingPercentage": 70,
+      "rationale": "RTS-Subcontracting-Art.4: Art.4 requires the financial entity to assess, BEFORE permitting subcontracting of ICT services supporting critical/important functions, the risks of the subcontracting chain and to decide whether to permit it. This is a pre-contractual due-diligence/risk-assessment activity for supplier relationships, which is the explicit subject of A.5.19 (Information security in supplier relationships) - the umbrella control establishing processes to manage supplier-relationship risk. A.5.22 (already mapped) only covers ongoing monitoring/review/change of services already in place, not the up-front decision to permit a new subcontracting layer. A.5.19 is therefore a defensible missing addition."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-Subcontracting-Art.5",
+      "mappingPercentage": 0,
+      "rationale": "RTS-Subcontracting-Art.5: Art.5 mandates that the contractual arrangement contain a full description of the ICT services, identify which support critical/important functions, and document the locations (countries) where services and data are provided/processed, i.e. visibility into the ICT supply chain. A.5.21 (managing ISsec in the ICT supply chain) is already mapped and is the closest fit. No additional ISO 27001:2022 Annex A control adds a defensible, non-duplicative requirement beyond A.5.21/A.5.20 for the content-of-description obligation; the supplier-relationship umbrella (A.5.19) is arguably implicated but the article is specifically about contractual supply-chain description already captured by A.5.21."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-Subcontracting-Art.6",
+      "mappingPercentage": 55,
+      "rationale": "RTS-Subcontracting-Art.6: Art.6 requires ongoing monitoring of the entire subcontracting chain throughout the lifecycle, including the ICT third-party provider's monitoring of its own subcontractors. While A.5.22 (already mapped) covers monitoring/review of supplier services, the act of monitoring inherently depends on event/availability data; however the more defensible missing addition is A.5.19 (Information security in supplier relationships), which establishes the process and responsibilities for managing supplier relationships of which chain-monitoring is an integral part, and is not redundant with the operational-monitoring focus of A.5.22."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-Subcontracting-Art.7",
+      "mappingPercentage": 70,
+      "rationale": "RTS-Subcontracting-Art.7: Art.7 governs material changes to subcontracting arrangements (notification, prior approval, right to object). A.5.20 (already mapped, addressing ISsec within supplier agreements) covers agreement content. The change-management dimension is additionally and defensibly covered by A.5.22 (Monitoring, review and change management of supplier services), which is the dedicated control for managing changes to supplier service provision and is distinct from the static agreement-terms focus of A.5.20."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-Subcontracting-Art.8",
+      "mappingPercentage": 50,
+      "rationale": "RTS-Subcontracting-Art.8: Art.8 concerns termination rights triggered by subcontracting issues (e.g. impediments to oversight, breaches). A.5.20 (already mapped) covers agreement terms including termination clauses. The exercise of termination requires secure handover/return of information assets, making A.5.11 (Return of assets) a defensible additional mapping for the off-boarding aspect; A.8.10 (Information deletion) is also defensible for the obligation to ensure data is returned/deleted on termination. Both address the operational consequence of termination that A.5.20 (contractual right only) does not cover."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-TLPT-Art.1",
+      "mappingPercentage": 45,
+      "rationale": "RTS-TLPT-Art.1: Art.1 sets criteria for identifying which financial entities must perform TLPT, based on impact/risk to the financial sector and the entity's ICT risk profile. This is a scoping/risk-based-determination activity grounded in risk assessment, defensibly mapping to ISO 27001 Clause 6.1.2 (Information security risk assessment) and 8.2 (operational risk assessment), which drive the risk-based selection of testing rigor. A.8.29 (already mapped) covers the security-testing activity itself but not the risk-based criteria for determining who must be tested; the risk-assessment clauses are a defensible addition."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-TLPT-Art.2",
+      "mappingPercentage": 50,
+      "rationale": "RTS-TLPT-Art.2: Art.2 sets requirements for the use of internal and external testers (independence, competence, certification, indemnity, supervision of external testers). A.8.29 (already mapped) covers security testing in development and acceptance but not tester governance. Defensible additions: A.6.3 / Clause 7.2 (Competence) is over-broad, but A.5.20/A.5.21 (supplier agreements / ICT supply chain security) is a defensible additional mapping where external testers are engaged third parties whose engagement must be contractually governed for confidentiality and security. A.6.6 (Confidentiality or non-disclosure agreements) is also defensible, since testers gain privileged access and NDAs are explicitly required for engaging them."
+    },
+    {
+      "target": "DORA-RTS/ITS RTS-TLPT-Art.3",
+      "mappingPercentage": 60,
+      "rationale": "RTS-TLPT-Art.3: Art.3 governs the TLPT methodology - scope (covering critical/important functions and supporting ICT systems), threat-led approach using threat intelligence, red-team testing of live production systems, and the test phases. A.8.29 (already mapped) covers security testing generically. Defensible additions: A.5.7 (Threat intelligence) is strongly implicated because the test is explicitly threat-LED and must incorporate threat intelligence to build realistic attack scenarios; and A.8.8 (Management of technical vulnerabilities) is defensible because TLPT identifies exploitable vulnerabilities that feed the vulnerability-management process. A.5.7 is the most defensible additional mapping given the threat-led nature is the defining methodological characteristic."
+    },
+    {
+      "target": "A.5.9",
+      "mappingPercentage": 70,
+      "rationale": "RTS-TLPT-Art.4: Scoping a TLPT requires identifying the financial entity's ICT systems, processes and technologies supporting critical/important functions to be tested. This is the same asset/scope-identification logic ISO operationalises through A.5.9 Inventory of information and other associated assets — the systems-in-scope cannot be defined without a maintained asset/function inventory. A.8.29 (already mapped) covers the test activity itself but not the prerequisite scope-asset determination, so A.5.9 is a defensible additional mapping."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 65,
+      "rationale": "RTS-TLPT-Art.5: Governs requirements for testers (independence, qualifications, professional indemnity, internal vs external testers). When external testers are engaged this is a supplier-security relationship — ISO A.5.19 Information security in supplier relationships (and A.5.20 addressing security within supplier agreements) directly correspond to the contractual/assurance requirements DORA places on engaging external TLPT providers. A.8.29 alone (the testing control) does not capture the supplier-management dimension, making A.5.19 a defensible addition."
+    },
+    {
+      "target": "A.6.3",
+      "mappingPercentage": 55,
+      "rationale": "RTS-TLPT-Art.6: Addresses use of internal testers / threat-intelligence and the safeguards including independence and competence of the testing team. ISO A.6.3 Information security awareness, education and training underpins the competence requirement for internal red-team staff, and A.5.2 (roles and responsibilities) covers the segregation/independence of the internal test function from the tested function. A.5.7 (already mapped, Threat intelligence) covers the TI feed but not the tester-competence/role-independence dimension; A.6.3 is the defensible additional mapping for the personnel-competence requirement."
+    },
+    {
+      "target": "A.5.3",
+      "mappingPercentage": 60,
+      "rationale": "RTS-TLPT-Art.6: The independence safeguard for internal testers (testers must not be the same persons who design/operate the tested systems) corresponds to ISO A.5.3 Segregation of duties. A.5.7 (already mapped) does not address the conflict-of-interest/duty-separation safeguard, so A.5.3 is a defensible additional mapping."
+    },
+    {
+      "target": "A.5.8",
+      "mappingPercentage": 55,
+      "rationale": "RTS-TLPT-Art.7: Specifies the TLPT process/phases (preparation, testing, closure) and the control/governance arrangements over the whole exercise including the control team and risk-management of the test. ISO A.5.8 Information security in project management corresponds to running the TLPT as a controlled, planned, risk-managed engagement with defined gates. A.8.29 (already mapped) covers the technical testing but not the project-governance wrapper, making A.5.8 defensible."
+    },
+    {
+      "target": "A.5.7",
+      "mappingPercentage": 75,
+      "rationale": "RTS-TLPT-Art.8: Governs the threat-intelligence-based scenario design and the threat-intelligence provider for the red-team test. While the prompt already maps Art.8 to A.8.16 (Monitoring activities), the core subject — generating threat-led attack scenarios from threat intelligence — corresponds directly to ISO A.5.7 Threat intelligence. A.8.16 covers detection-side monitoring but not the production/consumption of threat intelligence to build attack scenarios, so A.5.7 is a strongly defensible additional mapping."
+    },
+    {
+      "target": "A.5.24",
+      "mappingPercentage": 50,
+      "rationale": "RTS-TLPT-Art.9: Covers risk management during the active test, including measures to prevent/contain harm to live production systems and the control-team's ability to halt the test if real incidents arise. ISO A.5.24 Information security incident management planning and preparation corresponds to the requirement that any disruption triggered during testing is handled under incident response procedures. A.8.8 (already mapped, vulnerability management) covers the findings but not the live-incident-handling safeguard, so A.5.24 is defensible."
+    },
+    {
+      "target": "A.8.8",
+      "mappingPercentage": 70,
+      "rationale": "RTS-TLPT-Art.10: Covers the closure phase — test summary report, root-cause analysis and remediation plans for identified weaknesses. The remediation/follow-up of findings corresponds to ISO A.8.8 Management of technical vulnerabilities (treatment of identified vulnerabilities) and to the corrective-action loop. A.8.29 (already mapped, security testing) produces the findings but does not cover their structured remediation tracking; A.8.8 is the defensible additional mapping for the remediation-plan requirement."
+    },
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 55,
+      "rationale": "RTS-TLPT-Art.11: Covers pooled/joint TLPT testing among multiple financial entities and the involvement/recognition by competent authorities (mutual recognition of test attestations). ISO A.5.5 Contact with authorities corresponds to the required interaction with the supervisory/TLPT authority that validates and recognises the test. A.8.29 (already mapped) does not address the authority-liaison/mutual-recognition dimension, so A.5.5 is a defensible additional mapping."
+    },
+    {
+      "target": "A.6.6 Confidentiality or non-disclosure agreements",
+      "mappingPercentage": 60,
+      "rationale": "RTS-TLPT-Art.12: Art.12 governs the use of internal and external TLPT testers (red team). External testers gain deep, privileged knowledge of the financial entity's live production attack surface, exploited vulnerabilities, and exfiltrated data during the test. The provision mandates testers be bound by confidentiality/secrecy obligations regarding test scope and findings. A.8.29 covers conducting the security test itself but not the contractual secrecy binding of the testing party. A.6.6 (NDA/confidentiality agreements with parties handling sensitive information) is the defensible ISO control for the tester-confidentiality requirement that A.8.29 does not address."
+    },
+    {
+      "target": "A.5.19 Information security in supplier relationships",
+      "mappingPercentage": 50,
+      "rationale": "RTS-TLPT-Art.12: The article sets explicit requirements on EXTERNAL testers as ICT/security service providers (independence, indemnity insurance, qualifications, prior experience). This is a supplier-relationship requirement for the third-party red-team provider distinct from the act of testing (A.8.29). A.5.19 (general principles for managing information security risks of supplier-provided services) is the defensible additional mapping for the tester-as-supplier obligations."
+    },
+    {
+      "target": "A.5.4 Management responsibilities",
+      "mappingPercentage": 40,
+      "rationale": "RTS-TPP-Policy-Art.1: Art.1 establishes the governance of the ICT third-party policy, including approval/oversight by the management body and assignment of roles and responsibilities for the policy. A.5.19 (already mapped) is the supplier-relationship control, but the management-body-accountability dimension corresponds to A.5.4 (management requiring all personnel/the organization to apply information security per established policy) which A.5.19 does not capture."
+    },
+    {
+      "target": "A.5.2 Information security roles and responsibilities",
+      "mappingPercentage": 45,
+      "rationale": "RTS-TPP-Policy-Art.1: The article requires the policy to define and allocate roles and responsibilities for managing ICT third-party arrangements (e.g. who maintains the register, who approves contracts, monitoring owners). A.5.19 covers the supplier-relationship process but not the explicit role/responsibility allocation, which is precisely A.5.2."
+    },
+    {
+      "target": "A.5.20 Addressing information security within supplier agreements",
+      "mappingPercentage": 40,
+      "rationale": "RTS-TPP-Policy-Art.2: Art.2 covers the risk assessment and decisions taken BEFORE entering into a contractual arrangement (pre-contractual assessment of criticality, risk, and required safeguards). The output of this assessment directly determines the security requirements to be embedded in the agreement. While A.5.19 (mapped) covers the general supplier-risk principle, the requirement to translate the pre-contractual assessment into agreed security terms corresponds additionally to A.5.20 (agreeing relevant requirements with each supplier)."
+    },
+    {
+      "target": "A.5.20 Addressing information security within supplier agreements",
+      "mappingPercentage": 35,
+      "rationale": "RTS-TPP-Policy-Art.3: Art.3 covers due diligence on the prospective provider, the results of which must be reflected in contractual safeguards (audit rights, access rights, security commitments). The mapped A.5.19 covers the relationship principle, but the contractual-embedding of due-diligence findings corresponds additionally to A.5.20 (information security within supplier agreements)."
+    },
+    {
+      "target": "A.5.21 Managing information security in the ICT supply chain",
+      "mappingPercentage": 80,
+      "rationale": "RTS-TPP-Policy-Art.6: Art.6 of the TPP-Policy RTS addresses subcontracting / the chain of ICT sub-providers supporting critical or important functions, including conditions for subcontracting and monitoring of the subcontracting chain. A.5.19 (mapped) is the general supplier control, but the supply-CHAIN dimension (sub-providers, propagation of requirements down the chain) is precisely the scope of A.5.21, which is the defensible missing mapping."
+    },
+    {
+      "target": "A.5.20 Addressing information security within supplier agreements",
+      "mappingPercentage": 35,
+      "rationale": "RTS-TPP-Policy-Art.6: Subcontracting conditions must be reflected in the contractual arrangement with the direct provider (consent/notification clauses, flow-down of security obligations to subcontractors). Beyond the supply-chain mapping (A.5.21), the contractual-clause dimension for subcontracting corresponds additionally to A.5.20."
+    },
+    {
+      "target": "A.5.30 ICT readiness for business continuity",
+      "mappingPercentage": 40,
+      "rationale": "RTS-TPP-Policy-Art.7: Art.7 covers exit strategies and termination of ICT third-party arrangements supporting critical/important functions, ensuring the financial entity can exit without disruption to business activities and continuity. A.5.20 (mapped) covers contractual exit clauses, but the continuity-of-service / orderly-transition objective (ensuring ICT capability remains available through the exit) corresponds additionally to A.5.30 (ICT continuity readiness)."
+    },
+    {
+      "target": "A.5.29 Information security during disruption",
+      "mappingPercentage": 35,
+      "rationale": "RTS-TPP-Policy-Art.7: Exit and termination provisions must guarantee secure data retrieval/return and continued protection of information during the transition period away from the provider, i.e. maintaining information security during the disruptive event of a provider exit. A.5.20 (mapped) covers the agreement terms, but the requirement to maintain security during the disruption/transition corresponds additionally to A.5.29."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 85,
+      "rationale": "RTS-TPP-Policy-Art.8: Art. 8 of the RTS on the policy for ICT services supporting critical/important functions (Comm. Del. Reg. (EU) 2024/1773) governs the ONGOING MONITORING of the contractual arrangement — review of the TPP's performance/service levels, periodic reassessment, and supervision of the provider over the relationship lifecycle. The existing map to A.5.21 covers establishing/managing security IN the supply chain, but the monitoring/review/change-management dimension is precisely ISO 27001 A.5.22 (Monitoring, review and change management of supplier services). A.5.21+A.5.22 are the canonical pair; mapping only to A.5.21 leaves the ongoing-supervision half of Art.8 uncovered."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 60,
+      "rationale": "RTS-Oversight-Art.2: Art. 2 fixes the information base for oversight — the financial entity must ensure the contractual arrangement with the (critical) TPP carries the substantive security, sub-contracting, access/audit and reporting clauses the overseer relies on. From the entity-side ISO control perspective this is A.5.20 (Addressing information security within supplier agreements), which is the control that requires those obligations to be contractually anchored. The current A.5.22 (monitoring) map does not cover the agreement-content dimension that Art.2 presupposes."
+    },
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 70,
+      "rationale": "RTS-Oversight-Art.3: Art. 3 concerns cooperation and the exchange of information between the Lead Overseer and competent/supervisory authorities in the conduct of oversight. The directly corresponding ISO control is A.5.5 (Contact with authorities) — maintaining structured interaction and information exchange with supervisory bodies. The existing map to A.5.21 (ICT supply chain) does not capture the authority-liaison nature of Art.3; A.5.5 is the defensible Annex A counterpart for the entity's obligation to interface with and provide information to authorities."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 65,
+      "rationale": "RTS-Oversight-Art.8: Art. 8 governs the conduct of oversight — general investigations and on-site inspections at the (critical) ICT third-party provider. The existing A.5.22 map covers review/monitoring of supplier services, but the audit/inspection RIGHT itself must be contractually established, which is A.5.20 (Addressing information security within supplier agreements — right-to-audit and inspection clauses). Mapping only to A.5.22 omits the agreement-anchoring of the access/inspection rights that make the Art.8 investigations enforceable on the entity side."
+    }
+  ]
+}

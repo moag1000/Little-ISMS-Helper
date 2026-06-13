@@ -1,0 +1,99 @@
+{
+  "provenance": {
+    "source_framework": "NIS2",
+    "target_framework": "BSI_GRUNDSCHUTZ",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 16
+  },
+  "candidates": [
+    {
+      "target": "NIS2 21.2.a",
+      "mappingPercentage": 90,
+      "rationale": "NIS2 21.2.a: Risk analysis policies require asset inventory and organizational risk-base. ISMS.1 (Sicherheitsmanagement) is the umbrella Baustein defining the IS-Leitlinie, scope and risk-management process and belongs alongside the more specific ISMS.1.4 / ORP.1 already listed; it is the canonical home of the policy + risk-process requirement of 21.2.a and is currently missing."
+    },
+    {
+      "target": "NIS2 21.2.a",
+      "mappingPercentage": 90,
+      "rationale": "NIS2 21.2.a: ORP.4 (Identitaets- und Berechtigungsmanagement) is omitted. 'Information system security' policies under 21.2.a regularly encompass access-control policy as a core organizational control (ISO A.5.15-A.5.18 map to ORP.4); without it the policy/risk-base mapping is incomplete on the access-governance dimension."
+    },
+    {
+      "target": "NIS2 21.2.b",
+      "mappingPercentage": 95,
+      "rationale": "NIS2 21.2.b: DER.1 (Detektion sicherheitsrelevanter Ereignisse) is present but OPS.1.1.5 (Protokollierung) is already listed too; the defensible gap is none on detection. No additional Baustein is rigorously required beyond those mapped - incident handling is fully covered by DER.2.1, DER.2.2, DER.1, OPS.1.1.4/5. Empty."
+    },
+    {
+      "target": "NIS2 21.2.c",
+      "mappingPercentage": 65,
+      "rationale": "NIS2 21.2.c: Business continuity explicitly includes 'backup management and disaster recovery'. CON.3 (Datensicherungskonzept) is mapped but the disaster-recovery/crisis-management half rests on DER.4 (Notfallmanagement) which IS listed; missing is OPS.1.2.2 (Archivierung) only where long-term records retention is in scope - weak. The genuinely missing item is none beyond CON.3+DER.4. Empty."
+    },
+    {
+      "target": "NIS2 21.2.c",
+      "mappingPercentage": 65,
+      "rationale": "NIS2 21.2.c: Backup data and recovery infrastructure depend on physical site resilience; INF.2 (Rechenzentrum/Serverraum) covers redundant power, cooling and the physical disaster-recovery substrate (ISO A.7.11/A.8.14 redundancy). For 'disaster recovery' robustness this is a defensible addition currently missing."
+    },
+    {
+      "target": "NIS2 21.2.d",
+      "mappingPercentage": 85,
+      "rationale": "NIS2 21.2.d: Supply-chain security covers cloud service providers. OPS.2.2 (Cloud-Nutzung) is already mapped; OPS.2.3 (Nutzung von Outsourcing), OPS.2.1 (Outsourcing fuer Kunden) and APP.6 are present. The defensible missing item is ORP.5 (Compliance Management) for contractual/legal security requirements in supplier agreements (ISO A.5.20) - currently absent."
+    },
+    {
+      "target": "NIS2 21.2.d",
+      "mappingPercentage": 85,
+      "rationale": "NIS2 21.2.d: CON.8 (Software-Entwicklung) / supplier-delivered software is partly covered by APP.6, but supply-chain risk over externally developed software maps to ISO A.8.30 (Outsourced development) -> OPS.2.1 (already present). No further strictly-required Baustein. The one rigorous addition is ORP.5; otherwise complete."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 90,
+      "rationale": "NIS2 21.2.e: Security in acquisition/development incl. vulnerability handling. CON.8 (Software-Entwicklung) is the central secure-SDLC Baustein (ISO A.8.25/A.8.27/A.8.28) and is conspicuously MISSING from the list despite CON.10 (Webanwendungen) and OPS.1.1.6 being present; CON.8 is the umbrella secure-development requirement and must be added."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 90,
+      "rationale": "NIS2 21.2.e: 'Vulnerability handling and disclosure' maps directly to OPS.1.1.3 (Patch- und Aenderungsmanagement, ISO A.8.8 management of technical vulnerabilities) which is already listed - good. The remaining missing item is CON.8; no other Baustein is strictly required beyond those."
+    },
+    {
+      "target": "NIS2 21.2.f",
+      "mappingPercentage": 90,
+      "rationale": "NIS2 21.2.f: Policies/procedures to assess the EFFECTIVENESS of risk-management measures = internal audit/review. DER.3.1 (Audits und Revisionen) and DER.3.2 are mapped. The defensible missing item is DER.1 is already present; rigorously, ORP.5 (Compliance Management, ISO A.5.36 compliance with policies) belongs here for the conformity-assessment dimension and ISMS.1 is present. No further strictly-required addition beyond what is listed. Empty."
+    },
+    {
+      "target": "NIS2 21.2.g",
+      "mappingPercentage": 70,
+      "rationale": "NIS2 21.2.g: Basic cyber hygiene + training. ORP.3 (Sensibilisierung und Schulung) and OPS.1.1.4 (Schadprogramme) are mapped. MISSING and clearly required: OPS.1.1.3 (Patch- und Aenderungsmanagement) - timely patching is the textbook 'basic cyber hygiene' practice named by ENISA/NIS2 recital, and is currently absent."
+    },
+    {
+      "target": "NIS2 21.2.g",
+      "mappingPercentage": 70,
+      "rationale": "NIS2 21.2.g: ORP.4 (Identitaets- und Berechtigungsmanagement) is missing. Basic cyber hygiene under NIS2/ENISA explicitly includes account-management, least-privilege and credential hygiene (zero-trust principles named in NIS2 recital 89); ORP.4 is the Grundschutz home of this and should be mapped. ORP.2 (Personal) for personnel hygiene is a weaker but arguable addition."
+    },
+    {
+      "target": "NIS2 21.2.h",
+      "mappingPercentage": 75,
+      "rationale": "NIS2 21.2.h: Policies on cryptography AND encryption. CON.1 (Kryptokonzept) is the core mapping (present) and NET.3.3 (VPN) covers transport encryption (present). MISSING: ORP.5 (Compliance Management) is weak; the defensible required additions concern cryptographic key handling on network/transport layers covered by NET.3.2 (Firewall, TLS-termination) - weak. Rigorously no further Baustein strictly required. Empty."
+    },
+    {
+      "target": "NIS2 21.2.i",
+      "mappingPercentage": 90,
+      "rationale": "NIS2 21.2.i: The measure explicitly names \"asset management\" as a distinct pillar, but no Baustein covering asset inventory/classification/acceptable-use is in the mapped set (ORP.4=IdM, ORP.2=Personal, OPS.1.1.2=Admin, APP.2.1/2.2=Verzeichnisdienst, INF.1=Gebaeude). In the BSI_ISO_MAPPING reference, asset inventory (A.5.9), acceptable use (A.5.10), classification (A.5.12) and labelling (A.5.13) all map to ORP.1 (Organisation). Without ORP.1 the asset-management leg of 21.2.i is unaddressed. Add ORP.1."
+    },
+    {
+      "target": "NIS2 21.2.j",
+      "mappingPercentage": 80,
+      "rationale": "NIS2 21.2.j: The \"secured voice, video and text communications\" pillar requires encryption of communication channels, but no cryptography Baustein is mapped (set is product-/network-level only: APP.5.2/5.3/5.4 mail+UC, NET.3.3 VPN, NET.4.1/4.2 TK/VoIP, NET.1.1 Netzarchitektur, ORP.4.6 auth). CON.1 (Kryptokonzept) is the canonical Baustein establishing the cryptographic basis for securing voice/video/text per the reference (A.8.24 Use of cryptography -> CON.1). Add CON.1."
+    },
+    {
+      "target": "NIS2 21.2.j",
+      "mappingPercentage": 70,
+      "rationale": "NIS2 21.2.j: \"Secured ... text communications\" / information exchange has its dedicated IT-Grundschutz home in CON.9 (Informationsaustausch) (BSI_ISO_MAPPING: A.5.14 Information transfer -> CON.9). The mapped Bausteine cover the transport products (mail clients/servers, VoIP, VPN) but not the organisational+procedural securing of information exchange that CON.9 provides. Add CON.9."
+    }
+  ]
+}

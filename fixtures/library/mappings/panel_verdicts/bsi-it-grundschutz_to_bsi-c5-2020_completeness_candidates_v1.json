@@ -1,0 +1,159 @@
+{
+  "provenance": {
+    "source_framework": "BSI-GRUNDSCHUTZ",
+    "target_framework": "BSI-C5",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 28
+  },
+  "candidates": [
+    {
+      "target": "OIS-01",
+      "mappingPercentage": 95,
+      "rationale": "BSI-Grundschutz ISMS.1: ISMS.1 (Sicherheitsmanagement) is the Baustein that establishes the entire ISMS. C5 OIS-01 (IS-Management-System) is its direct counterpart - the requirement to operate a documented information security management system. The current sole mapping to OPS-01 (Betriebsprozeduren/operating procedures) is a weak operational match; the governance-level ISMS Baustein belongs primarily in the OIS (Organisation der Informationssicherheit) domain. OIS-01 is the most defensible missing 1:1 correspondence."
+    },
+    {
+      "target": "OIS-03",
+      "mappingPercentage": 80,
+      "rationale": "BSI-Grundschutz ISMS.1: ISMS.1 mandates definition of security roles and management responsibilities (mirrors ISO A.5.2/A.5.4, which the mapping references back to ISMS.1). C5 OIS-03 (Verantwortlichkeiten) covers exactly the assignment of information-security responsibilities. Defensible and currently missing."
+    },
+    {
+      "target": "OIS-06",
+      "mappingPercentage": 75,
+      "rationale": "BSI-Grundschutz ISMS.1: ISMS.1 requires establishing the risk-management approach as a core ISMS function (BSI 200-2 Sicherheitsprozess includes Risikoanalyse). C5 OIS-06 (Risikomanagement) is the corresponding cloud criterion. Defensible governance-level link not yet captured."
+    },
+    {
+      "target": "OPS-05",
+      "mappingPercentage": 98,
+      "rationale": "BSI-Grundschutz OPS.1.1.4: OPS.1.1.4 (Schutz vor Schadprogrammen) is anti-malware protection. The exact C5:2020 counterpart is OPS-05 (Schutz vor Malware) - a near 1:1 topical correspondence. The existing mapping to OPS-15 does not correspond to any defined C5:2020 OPS criterion (OPS only runs OPS-01..OPS-13), so OPS-05 is the clearly missing and correct mapping."
+    },
+    {
+      "target": "IDM-06",
+      "mappingPercentage": 90,
+      "rationale": "BSI-Grundschutz ORP.4: ORP.4 (Identitaets- und Berechtigungsmanagement) is the umbrella IAM Baustein and maps to the whole C5 IDM domain. Authentication is a core ORP.4 requirement (e.g. ORP.4.A8/A9 secure authentication) and corresponds to C5 IDM-06 (Authentisierung). Currently missing; the existing SIM-01 mapping (incident response) is unrelated to IAM."
+    },
+    {
+      "target": "IDM-03",
+      "mappingPercentage": 88,
+      "rationale": "BSI-Grundschutz ORP.4: ORP.4 governs granting and managing access rights (Berechtigungsvergabe). C5 IDM-03 (Zugriffsrechte) is the direct counterpart and is a defensible missing mapping for the IAM Baustein."
+    },
+    {
+      "target": "IDM-04",
+      "mappingPercentage": 85,
+      "rationale": "BSI-Grundschutz ORP.4: ORP.4 explicitly covers privileged accounts/administrative rights (ISO A.8.2 privileged access rights maps back to ORP.4). C5 IDM-04 (Privilegierte Zugriffsrechte) is the matching cloud criterion and is missing."
+    },
+    {
+      "target": "IDM-05",
+      "mappingPercentage": 80,
+      "rationale": "BSI-Grundschutz ORP.4: ORP.4 requires periodic review/recertification of access rights. C5 IDM-05 (Review von Zugriffsrechten) corresponds directly and is a defensible missing mapping."
+    },
+    {
+      "target": "IDM-08",
+      "mappingPercentage": 75,
+      "rationale": "BSI-Grundschutz ORP.4: ORP.4 covers authentication-information/credential handling including passwords. C5 IDM-08 (Passwort-Management) is the corresponding criterion. Defensible, currently missing."
+    },
+    {
+      "target": "IDM-02",
+      "mappingPercentage": 92,
+      "rationale": "BSI-Grundschutz ORP.4.A8: ORP.4.A8 addresses the regulated setup and removal of user accounts and groups (Einrichtung/Loeschung von Benutzern und Benutzergruppen). C5 IDM-02 (Benutzerregistrierung) - user registration/de-registration - is the precise counterpart at the requirement level. The existing mapping to IDM-09 (Zugriffskontrolle) is broader; IDM-02 is the missing exact match."
+    },
+    {
+      "target": "KOS-02",
+      "mappingPercentage": 85,
+      "rationale": "BSI-Grundschutz NET.1.1: NET.1.1 (Netzarchitektur und -design) requires zoning and network segmentation as a core design principle (ISO A.8.22 Segregation of networks maps back to NET.1.1). C5 KOS-02 (Netzwerktrennung/segregation of networks) corresponds directly and is missing; the existing COS/KOS-01 (Netzwerkmanagement) covers only operational management, not the segmentation/architecture aspect."
+    },
+    {
+      "target": "CRY-02",
+      "mappingPercentage": 85,
+      "rationale": "BSI-Grundschutz CON.1: CON.1 (Kryptokonzept) defines the organization's cryptography approach end-to-end. C5 splits this across the CRY domain. CRY-02 (Verschluesselung/encryption) is the operational application of the crypto concept and is a defensible missing mapping; CRY-01 alone covers only the policy."
+    },
+    {
+      "target": "CRY-03",
+      "mappingPercentage": 85,
+      "rationale": "BSI-Grundschutz CON.1: A Kryptokonzept must define key lifecycle/key management (Schluesselmanagement is an explicit part of CON.1). C5 CRY-03 (Schluesselmanagement) is the direct counterpart and is currently missing."
+    },
+    {
+      "target": "CRY-04",
+      "mappingPercentage": 70,
+      "rationale": "BSI-Grundschutz CON.1: CON.1 requires selecting appropriate/state-of-the-art cryptographic procedures (geeignete kryptografische Verfahren). C5 CRY-04 (Sichere Kryptographieverfahren) corresponds to this algorithm-suitability requirement. Defensible, currently missing."
+    },
+    {
+      "target": "BCM-01",
+      "mappingPercentage": 90,
+      "rationale": "BSI-Grundschutz DER.4: DER.4 (Notfallmanagement) is business continuity / emergency management and maps to ISO A.5.29/A.5.30 (which the mapping links to DER.4 and BCM in C5). The C5 BCM domain is its true home. BCM-01 (BCM-Planung) corresponds directly to establishing the emergency-management process. The existing OPS-06 (Datensicherung/backup) covers only a sub-aspect, so BCM-01 is the principal missing mapping."
+    },
+    {
+      "target": "BCM-03",
+      "mappingPercentage": 85,
+      "rationale": "BSI-Grundschutz DER.4: DER.4 requires creation of contingency/recovery plans (Notfallplaene/Wiederanlaufplaene). C5 BCM-03 (BC-Plaene) is the direct counterpart and is missing."
+    },
+    {
+      "target": "BCM-04",
+      "mappingPercentage": 75,
+      "rationale": "BSI-Grundschutz DER.4: DER.4 mandates testing and exercising of contingency measures (Notfalluebungen/Tests). C5 BCM-04 (Tests) corresponds directly and is a defensible missing mapping."
+    },
+    {
+      "target": "BCM-06",
+      "mappingPercentage": 75,
+      "rationale": "BSI-Grundschutz DER.4: DER.4 covers restoration/return-to-normal operations after a disruption. C5 BCM-06 (Wiederherstellung) is the matching recovery criterion and is currently missing."
+    },
+    {
+      "target": "DEV-03",
+      "mappingPercentage": 80,
+      "rationale": "BSI-Grundschutz CON.8: CON.8 (Software-Entwicklung) is a full secure-SDLC building block, not merely a security-requirements block. Its core requirements mandate secure development guidelines and secure coding practices, which correspond directly to C5 DEV-03 (sichere Entwicklung). The existing DEV-01 (Sicherheitsanforderungen) covers only the requirements-gathering facet, leaving the secure-build facet unmapped."
+    },
+    {
+      "target": "DEV-04",
+      "mappingPercentage": 70,
+      "rationale": "BSI-Grundschutz CON.8: CON.8 explicitly requires source-code review (e.g. CON.8.A5 Quellcode-Pruefung). This maps directly to C5 DEV-04 (Code-Review), a correspondence not covered by DEV-01."
+    },
+    {
+      "target": "DEV-05",
+      "mappingPercentage": 65,
+      "rationale": "BSI-Grundschutz CON.8: CON.8 requires testing of developed software prior to release. C5 DEV-05 (Test) is the dedicated test criterion and is a defensible additional mapping beyond the requirements-only DEV-01."
+    },
+    {
+      "target": "DEV-10",
+      "mappingPercentage": 60,
+      "rationale": "BSI-Grundschutz CON.8: CON.8 includes version/configuration management of source code and build artefacts, corresponding to C5 DEV-10 (Konfigurationsmanagement). Not covered by DEV-01."
+    },
+    {
+      "target": "DEV-10",
+      "mappingPercentage": 75,
+      "rationale": "BSI-Grundschutz CON.8.A4: CON.8.A4 (Versionsverwaltung des Quellcodes) is specifically a source-code version-management requirement. C5 DEV-10 (Konfigurationsmanagement) is the dedicated version/configuration-management criterion and is a far more precise correspondence than the existing DEV-02 (Systemarchitektur), which concerns architecture rather than version control."
+    },
+    {
+      "target": "DEV-03",
+      "mappingPercentage": 70,
+      "rationale": "BSI-Grundschutz APP.4.6: APP.4.6 (SAP ABAP-Programmierung) is a secure-coding building block for ABAP. Its substance is secure development practice, mapping directly to C5 DEV-03 (sichere Entwicklung). The existing PI-01 (Schnittstellen) is only tangentially related; secure development is the dominant unmapped correspondence."
+    },
+    {
+      "target": "DEV-04",
+      "mappingPercentage": 55,
+      "rationale": "BSI-Grundschutz APP.4.6: APP.4.6 mandates review of custom ABAP code for security defects, corresponding to C5 DEV-04 (Code-Review). This is defensible and not covered by the existing PI-01 mapping."
+    },
+    {
+      "target": "COM-02",
+      "mappingPercentage": 85,
+      "rationale": "BSI-Grundschutz CON.2: CON.2 (Datenschutz) is the data-protection building block. The directly corresponding C5 criterion is COM-02 (Datenschutz) within the Compliance domain. The supplied existing mapping (COS-01) does not exist in C5:2020, so the genuine data-protection correspondence COM-02 is missing."
+    },
+    {
+      "target": "PS-01",
+      "mappingPercentage": 75,
+      "rationale": "BSI-Grundschutz INF.1: INF.1 (Allgemeines Gebaeude) addresses building perimeter and physical security zoning. The corresponding C5 criterion is PS-01 (Perimeterschutz) in the Physische Sicherheit domain. The existing HR-01 (Sicherheitsueberpruefung/personnel screening) is miscategorised; the physical-security correspondence is the real one and is missing."
+    },
+    {
+      "target": "PS-02",
+      "mappingPercentage": 70,
+      "rationale": "BSI-Grundschutz INF.1: INF.1 requires controlled physical access to the building and its zones, corresponding to C5 PS-02 (Zutrittskontrolle). This physical access-control correspondence is not captured by the existing personnel-screening HR-01 mapping."
+    }
+  ]
+}

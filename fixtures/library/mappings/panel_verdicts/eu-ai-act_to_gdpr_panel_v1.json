@@ -1,0 +1,179 @@
+{
+  "library": {
+    "source_framework": "EU-AI-ACT",
+    "target_framework": "GDPR",
+    "panel": [
+      "dpo-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (editorial EU AI Act ↔ GDPR mapping)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review/reject)",
+    "completeness": "14 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 22,
+      "ki_validiert": 17,
+      "needs_review": 3,
+      "reject": 2
+    }
+  },
+  "verdicts": [
+    {
+      "eu": "Art.10",
+      "target": "GDPR-5.1.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.10",
+      "target": "GDPR-6",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.10",
+      "target": "GDPR-9",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.10",
+      "target": "GDPR-22",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "eu": "Art.13",
+      "target": "GDPR-13",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.13",
+      "target": "GDPR-14",
+      "state": "ki_validiert",
+      "mappingPercentage": 42,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.14",
+      "target": "GDPR-22",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.15",
+      "target": "GDPR-32",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.26",
+      "target": "GDPR-5.1.a",
+      "state": "needs_review",
+      "mappingPercentage": 25,
+      "realVotes": 2
+    },
+    {
+      "eu": "Art.27",
+      "target": "GDPR-35",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.49",
+      "target": "GDPR-30",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.50",
+      "target": "GDPR-13",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.59",
+      "target": "GDPR-6",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.59",
+      "target": "Art.89",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.73",
+      "target": "GDPR-33",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.73",
+      "target": "GDPR-34",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.85",
+      "target": "Art.77",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.86",
+      "target": "GDPR-22",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.86",
+      "target": "GDPR-15",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.4",
+      "target": "GDPR-39",
+      "state": "reject",
+      "mappingPercentage": 25,
+      "realVotes": 1
+    },
+    {
+      "eu": "Art.5",
+      "target": "GDPR-22",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "eu": "Annex-III",
+      "target": "GDPR-35",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    }
+  ]
+}
