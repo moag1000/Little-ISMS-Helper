@@ -1,0 +1,186 @@
+{
+  "library": {
+    "source_framework": "BSI-C5",
+    "target_framework": "ENISA-EUCS",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (BSI C5:2026 harmonizes with EUCS; mapping is editorial/harmonization-based)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
+    "completeness": "8 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 23,
+      "ki_validiert": 12,
+      "needs_review": 6,
+      "reject": 5
+    }
+  },
+  "verdicts": [
+    {
+      "c5": "AM-01",
+      "target": "AM-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "c5": "BCM-01",
+      "target": "BC-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "c5": "SSO-01",
+      "target": "PM-01",
+      "state": "needs_review",
+      "mappingPercentage": 80,
+      "realVotes": 2
+    },
+    {
+      "c5": "SSO-04",
+      "target": "PM-02",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 2
+    },
+    {
+      "c5": "COM-04",
+      "target": "OIS-04",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "COS-01",
+      "target": "CS-01",
+      "state": "needs_review",
+      "mappingPercentage": 85,
+      "realVotes": 3
+    },
+    {
+      "c5": "CRY-01",
+      "target": "CKM-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "c5": "HR-03",
+      "target": "AT-01",
+      "state": "needs_review",
+      "mappingPercentage": 65,
+      "realVotes": 3
+    },
+    {
+      "c5": "HR-01",
+      "target": "AT-02",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "IDM-01",
+      "target": "IAM-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "c5": "IDM-02",
+      "target": "IAM-02",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "c5": "IDM-09",
+      "target": "IAM-08",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "c5": "OPS-01",
+      "target": "A2-1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "OPS-10",
+      "target": "OS-02",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "c5": "OPS-15",
+      "target": "OS-01",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "c5": "OPS-18",
+      "target": "OS-03",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "c5": "PI-01",
+      "target": "PI-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 88,
+      "realVotes": 4
+    },
+    {
+      "c5": "OPS-06",
+      "target": "A11-1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "OIS-05",
+      "target": "RM-02",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "OIS-01",
+      "target": "OIS-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "c5": "SIM-01",
+      "target": "IM-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "c5": "DEV-01",
+      "target": "DEV-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "c5": "DEV-02",
+      "target": "DEV-02",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    }
+  ]
+}
