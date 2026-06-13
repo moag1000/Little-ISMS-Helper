@@ -1,0 +1,159 @@
+{
+  "provenance": {
+    "source_framework": "EU-CRA",
+    "target_framework": "NIS2",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied to operational mappings without further human review",
+    "candidate_count": 28
+  },
+  "candidates": [
+    {
+      "target": "NIS2 21.2.a",
+      "mappingPercentage": 60,
+      "rationale": "EU-CRA CRA-Annex-I-1.1: The CRA's overarching property that products achieve an 'appropriate level of cybersecurity based on the risks' is definitionally risk-driven. NIS2 Art. 21(2)(a) (Risikoanalyse und Sicherheit der Informationssysteme) is the foundational risk-based requirement that determines what 'appropriate' means. A manufacturer cannot demonstrate an 'appropriate level' without the systematic risk identification/assessment that 21.2.a mandates, so this correspondence is defensible beyond the secure-development home (21.2.e)."
+    },
+    {
+      "target": "NIS2 21.2.f",
+      "mappingPercentage": 45,
+      "rationale": "EU-CRA CRA-Annex-I-1.1: 'Appropriate level of cybersecurity' is an adequacy/effectiveness judgement, not a one-time design act. NIS2 Art. 21(2)(f) (Wirksamkeitsbewertung der Cybersicherheits-Massnahmen) requires periodic assessment of whether measures actually deliver the intended protection level. Demonstrating that a product meets an appropriate level over its lifecycle corresponds to the effectiveness-evaluation duty, making this a defensible secondary mapping."
+    },
+    {
+      "target": "NIS2 21.2.g",
+      "mappingPercentage": 70,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.a: 'Secure-by-default configuration' is the archetypal cyber-hygiene control. NIS2 Art. 21(2)(g) explicitly names 'sichere Konfiguration' (secure configuration) among the basic cyber-hygiene practices required of entities. Shipping products hardened by default is the manufacturer-side counterpart of the operator-side secure-configuration hygiene duty, so this correspondence is strongly defensible in addition to the access-management anchor (21.2.i)."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 55,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.a: A secure-by-default configuration is established during development as a secure design/build baseline. NIS2 Art. 21(2)(e) (Sicherheit in Beschaffung, Entwicklung und Wartung) governs building security into systems by design, which is where default-hardening decisions are made. Defensible as the development-lifecycle origin of the default-secure property."
+    },
+    {
+      "target": "NIS2 21.2.i",
+      "mappingPercentage": 80,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.b: This requirement is explicitly about 'protection from unauthorised access' via authentication, identity and access management. NIS2 Art. 21(2)(i) (Personalsicherheit, Zugriffskontrolle und Asset-Management) directly covers access control / Zugriffskontrolle and is the natural home for unauthorised-access protection. The current mapping to 21.2.h (cryptography) is at best partial; the access-control item is the most defensible correspondence and is missing."
+    },
+    {
+      "target": "NIS2 21.2.j",
+      "mappingPercentage": 70,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.b: The requirement names authentication and identity management as the means of preventing unauthorised access. NIS2 Art. 21(2)(j) mandates multi-factor or continuous authentication solutions. Authentication strength is a core mechanism for the CRA's unauthorised-access protection, making 21.2.j a defensible additional mapping."
+    },
+    {
+      "target": "NIS2 21.2.i",
+      "mappingPercentage": 45,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.c: While encryption (21.2.h) is correctly the primary anchor for protecting confidentiality of stored/transmitted/processed data, confidentiality is also enforced through access control. NIS2 Art. 21(2)(i) (Zugriffskontrolle) restricts who may read data and is a defensible complementary control for the CRA's confidentiality property beyond cryptography alone."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 50,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.d: Protecting the integrity of commands, programs and configurations (not just data-in-transit/at-rest crypto) is largely achieved through secure development, change/configuration management and update integrity. NIS2 Art. 21(2)(e) (Sicherheit in Beschaffung, Entwicklung und Wartung, inkl. Schwachstellenmanagement) governs build/maintenance integrity, making it a defensible addition to the cryptographic anchor (21.2.h)."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 45,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.e: 'Process only data necessary for the intended use' (data minimisation) is a secure-by-design engineering principle realised during product development. NIS2 Art. 21(2)(e) (security in procurement, development and maintenance) is where data-minimisation-by-design is implemented. The current mapping to 21.2.c (business continuity) is not substantively related; 21.2.e is the defensible correspondence and is missing."
+    },
+    {
+      "target": "NIS2 21.2.c",
+      "mappingPercentage": 75,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.f: This requirement is about protecting the availability of essential/basic functions, including resilience to denial-of-service. NIS2 Art. 21(2)(c) (Aufrechterhaltung des Betriebs — business continuity, backup, recovery, crisis management) is the directive's availability/resilience pillar. Availability-and-DoS-resilience corresponds far more directly to 21.2.c than to the currently mapped 21.2.h (cryptography), so this is a strongly defensible missing mapping."
+    },
+    {
+      "target": "NIS2 21.2.a",
+      "mappingPercentage": 40,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.f: Identifying which functions are 'essential/basic' and what DoS/availability threats apply is an output of risk analysis. NIS2 Art. 21(2)(a) (Risikoanalyse und Sicherheit der Informationssysteme) underpins the availability-protection prioritisation the CRA requires, making it a defensible secondary correspondence."
+    },
+    {
+      "target": "21.2.h",
+      "mappingPercentage": 90,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.g: This Annex I, Part 1 requirement obliges products to protect the confidentiality of stored, transmitted or otherwise processed data, by encrypting relevant data at rest or in transit. The natural and primary NIS2 home is Art. 21(2)(h) 'policies and procedures regarding the use of cryptography and, where appropriate, encryption' (ISO 27001 A.8.24). The currently-mapped 21.2.b (incident handling) is a poor fit; the cryptography/encryption measure (h) is the directly corresponding control and is missing."
+    },
+    {
+      "target": "21.2.i",
+      "mappingPercentage": 55,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.g: Beyond encryption, confidentiality-protection of processed data also implements access-control and asset/data-handling measures. NIS2 Art. 21(2)(i) bundles access control policies and asset management (ISO 27001 A.5.9-A.5.10, A.8.2-A.8.5), which is a defensible secondary correspondence for keeping data confidential, though weaker than the cryptography mapping."
+    },
+    {
+      "target": "21.2.h",
+      "mappingPercentage": 70,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.h: Protecting the integrity of stored/transmitted/processed data, commands, programs and configuration against manipulation is routinely achieved by cryptographic integrity controls (hashing, signing, MAC, secure boot, signed updates). NIS2 Art. 21(2)(h) cryptography/encryption (ISO 27001 A.8.24) covers cryptographic integrity measures and is a defensible missing correspondence alongside the already-mapped (f)."
+    },
+    {
+      "target": "21.2.i",
+      "mappingPercentage": 60,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.h: Integrity protection of configuration and of authorised commands/programs corresponds to configuration- and asset-integrity controls and to access control (only authorised changes), which NIS2 Art. 21(2)(i) (access control + asset management, ISO 27001 A.8.2-A.8.5, A.5.9) addresses. Defensible secondary mapping for the configuration/command-manipulation aspect."
+    },
+    {
+      "target": "21.2.e",
+      "mappingPercentage": 65,
+      "rationale": "EU-CRA CRA-Annex-I-1.3.h: Building integrity-protection (signed updates, secure boot, tamper resistance) into the product is a secure-development/maintenance property. NIS2 Art. 21(2)(e) 'security in network and information systems acquisition, development and maintenance' (ISO 27001 A.8.25-A.8.34) is a defensible missing correspondence for the design-time realisation of integrity controls."
+    },
+    {
+      "target": "21.2.b",
+      "mappingPercentage": 65,
+      "rationale": "EU-CRA CRA-Annex-II-2 (Annex I Part II.2 vulnerability handling): The duty to address and remediate vulnerabilities without delay, including by providing security updates, is operationally part of incident/vulnerability handling and recovery. NIS2 Art. 21(2)(b) incident handling (detection, response, recovery; ISO 27001 A.5.24-A.5.28) is a defensible missing correspondence in addition to the already-mapped (e) secure maintenance."
+    },
+    {
+      "target": "21.2.f",
+      "mappingPercentage": 50,
+      "rationale": "EU-CRA CRA-Annex-II-2 (Annex I Part II.2): Timely remediation/patch management is also assessed under policies for evaluating the effectiveness of cybersecurity risk-management measures. NIS2 Art. 21(2)(f) (effectiveness assessment, ISO 27001 Clause 9.1) is a defensible, though secondary, correspondence for the ongoing-effectiveness dimension of vulnerability remediation."
+    },
+    {
+      "target": "21.2.e",
+      "mappingPercentage": 80,
+      "rationale": "EU-CRA CRA-Annex-II-3 (Annex I Part II.3): The obligation to apply effective and regular tests and reviews of the security of the product is a core secure-development-lifecycle activity (security testing, code review, pentesting). NIS2 Art. 21(2)(e) acquisition/development/maintenance (ISO 27001 A.8.25-A.8.34, including security testing in development) is a strong missing correspondence; the item is currently only mapped to (f)."
+    },
+    {
+      "target": "21.2.b",
+      "mappingPercentage": 50,
+      "rationale": "EU-CRA CRA-Annex-II-5 (Annex I Part II.5): Putting in place and enforcing a coordinated vulnerability disclosure policy means establishing intake and handling procedures for externally reported vulnerabilities. This is operationally adjacent to NIS2 Art. 21(2)(b) incident handling (detection, intake, response procedures; ISO 27001 A.5.24-A.5.28), a defensible missing correspondence beyond the already-mapped (e)."
+    },
+    {
+      "target": "21.2.b",
+      "mappingPercentage": 45,
+      "rationale": "EU-CRA CRA-Annex-II-6 (Annex I Part II.6): Measures to facilitate the sharing of information about potential vulnerabilities relate to incident-handling communication and information flows. NIS2 Art. 21(2)(b) incident handling (ISO 27001 A.5.24-A.5.28, incident communication) is a defensible secondary correspondence alongside the already-mapped (d) supply chain security."
+    },
+    {
+      "target": "21.2.e",
+      "mappingPercentage": 70,
+      "rationale": "EU-CRA CRA-Annex-II-7: Free provision of security updates throughout the support period is a maintenance/patch-availability obligation. NIS2 21.2.e covers 'Beschaffung, Entwicklung und WARTUNG inkl. Schwachstellenmanagement'. Every other CRA update/patch obligation (Annex-I-1.3.i secure updates, Annex-II-2 vuln remediation, Annex-II-5 vuln info) is already mapped to 21.2.e; mapping II-7 only to 21.2.b is inconsistent. The manufacturer's guaranteed update availability is the precondition for the operator's regular patch/maintenance cycle (21.2.e Wartungs-Anteil). partial_overlap, addressee-shift (Hersteller-Bereitstellung -> Betreiber-Wartung)."
+    },
+    {
+      "target": "21.2.d",
+      "mappingPercentage": 35,
+      "rationale": "EU-CRA CRA-Annex-II-7: The guaranteed support/update period is a supplier-relationship security aspect the operator must verify and track at procurement (EOL/support-window tracking, vendor lifecycle commitments). NIS2 21.2.d 'Sicherheit der Lieferkette' covers exactly the security-relevant aspects of the relationship to direct suppliers. Weaker than the 21.2.e tie and dependent on the operator consuming the support guarantee as a procurement criterion, hence lower confidence (related/partial_overlap)."
+    },
+    {
+      "target": "21.2.e",
+      "mappingPercentage": 55,
+      "rationale": "EU-CRA CRA-Art-14.1: The 24h early-warning trigger is an ACTIVELY EXPLOITED vulnerability disclosed by the manufacturer to ENISA/CSIRTs. NIS2 21.2.e explicitly includes 'Management und Offenlegung von Schwachstellen' (coordinated/responsible disclosure). The manufacturer's vulnerability-disclosure event corresponds to the operator's vulnerability-management and disclosure process, beyond the pure 23.1 reporting-deadline chain. partial_overlap, addressee-shift, medium confidence."
+    },
+    {
+      "target": "21.2.b",
+      "mappingPercentage": 45,
+      "rationale": "EU-CRA CRA-Art-14.2: The 72h follow-up reports severity, impact and corrective measures taken. That content is operationally the substance of an incident-handling record. NIS2 21.2.b 'Behandlung von Sicherheitsvorfaellen' (detection/analysis/containment/response) is fed directly by this manufacturer follow-up when the operator runs the affected product. The forward mapping already accepts addressee-shift for reporting items, so the IR-input dimension is a defensible additional correspondence beyond the 23.2 deadline chain. partial_overlap, medium-low confidence."
+    },
+    {
+      "target": "21.2.e",
+      "mappingPercentage": 50,
+      "rationale": "EU-CRA CRA-Art-14.3: The final report is due 14 days AFTER the security update is made available; the report is the closure of a vulnerability via an update. This binds it to NIS2 21.2.e 'Wartung inkl. Schwachstellenmanagement' (patch provision + vulnerability-management lifecycle) - the maintenance/vuln-closure activity, not only the 23.3 reporting deadline. partial_overlap, addressee-shift, medium confidence."
+    },
+    {
+      "target": "21.2.b",
+      "mappingPercentage": 30,
+      "rationale": "EU-CRA CRA-Art-14.3: Secondarily, a final report that documents the resolved incident/vulnerability and remediation supplies the operator's incident-closure and lessons-learned step under NIS2 21.2.b. Weaker and partly redundant with the 23.3 chain, so low confidence; included only as an indicative addition. related/partial_overlap."
+    },
+    {
+      "target": "21.2.e",
+      "mappingPercentage": 60,
+      "rationale": "EU-CRA CRA-Art-14.8: Informing affected users about an actively exploited vulnerability and the corrective/recommended measures is a coordinated vulnerability disclosure act. NIS2 21.2.e explicitly covers 'Management und Offenlegung von Schwachstellen' (Responsible Disclosure). This is arguably a cleaner and stronger correspondence than the existing 21.2.b incident-input link: the manufacturer's user notification is the disclosure leg of the operator's vulnerability-management process. partial_overlap, addressee-shift, medium confidence."
+    }
+  ]
+}

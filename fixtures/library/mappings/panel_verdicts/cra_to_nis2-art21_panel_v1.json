@@ -1,0 +1,172 @@
+{
+  "library": {
+    "source_framework": "EU-CRA",
+    "target_framework": "NIS2",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (no official EU CRA↔NIS2 crosswalk; expert/editorial mapping)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
+    "completeness": "28 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 21,
+      "ki_validiert": 8,
+      "needs_review": 7,
+      "reject": 6
+    }
+  },
+  "verdicts": [
+    {
+      "cra": "CRA-Annex-I-1.1",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "cra": "CRA-Annex-I-1.2",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "cra": "CRA-Annex-I-1.3.a",
+      "target": "21.2.i",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 3
+    },
+    {
+      "cra": "CRA-Annex-I-1.3.b",
+      "target": "21.2.h",
+      "state": "needs_review",
+      "mappingPercentage": 65,
+      "realVotes": 3
+    },
+    {
+      "cra": "CRA-Annex-I-1.3.c",
+      "target": "21.2.h",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "cra": "CRA-Annex-I-1.3.d",
+      "target": "21.2.h",
+      "state": "needs_review",
+      "mappingPercentage": 52,
+      "realVotes": 2
+    },
+    {
+      "cra": "CRA-Annex-I-1.3.e",
+      "target": "21.2.c",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "cra": "CRA-Annex-I-1.3.f",
+      "target": "21.2.h",
+      "state": "reject",
+      "mappingPercentage": 70,
+      "realVotes": 1
+    },
+    {
+      "cra": "CRA-Annex-I-1.3.g",
+      "target": "21.2.b",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 2
+    },
+    {
+      "cra": "CRA-Annex-I-1.3.h",
+      "target": "21.2.f",
+      "state": "reject",
+      "mappingPercentage": 62,
+      "realVotes": 1
+    },
+    {
+      "cra": "CRA-Annex-I-1.3.i",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "cra": "CRA-Annex-II-2",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 68,
+      "realVotes": 3
+    },
+    {
+      "cra": "CRA-Annex-II-3",
+      "target": "21.2.f",
+      "state": "reject",
+      "mappingPercentage": 55,
+      "realVotes": 1
+    },
+    {
+      "cra": "CRA-Annex-II-4",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "cra": "CRA-Annex-II-5",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "cra": "CRA-Annex-II-6",
+      "target": "21.2.d",
+      "state": "reject",
+      "mappingPercentage": 38,
+      "realVotes": 1
+    },
+    {
+      "cra": "CRA-Annex-II-7",
+      "target": "21.2.b",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "cra": "CRA-Art-14.1",
+      "target": "23.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "cra": "CRA-Art-14.2",
+      "target": "23.2",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 2
+    },
+    {
+      "cra": "CRA-Art-14.3",
+      "target": "23.3",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "cra": "CRA-Art-14.8",
+      "target": "21.2.b",
+      "state": "reject",
+      "mappingPercentage": 35,
+      "realVotes": 1
+    }
+  ]
+}
