@@ -1,0 +1,991 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'dora-rts-its_to_iso27001-2022_v1.0'
+  source_framework: 'DORA'
+  target_framework: 'ISO27001'
+  version: 1
+  effective_from: '2025-01-17'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ESAs Joint Committee DORA Level-2 (RTS/ITS) Final Reports + EUR-Lex CELEX — mapped to ISO/IEC 27001:2022 Annex A controls'
+    primary_source_url: 'https://www.eba.europa.eu/regulation-and-policy/operational-resilience'
+    secondary_sources:
+      - 'JC 2023 86 Final Report — RTS on ICT Risk Management Framework + Simplified RMF (Art.15/16 DORA)'
+      - 'Commission Delegated Regulation (EU) 2024/1772 — RTS on classification of major ICT-related incidents (Art.18(3) DORA)'
+      - 'Commission Delegated Regulation (EU) 2024/1773 — RTS on policy on contractual arrangements for ICT services supporting CIFs (Art.28(10) DORA)'
+      - 'Commission Implementing Regulation (EU) 2024/2955 — ITS/RTS on incident reporting content and templates (Art.20 DORA)'
+      - 'Commission Delegated Regulation (EU) 2025/532 — RTS on subcontracting of ICT services supporting CIFs (Art.30(5) DORA)'
+      - 'JC 2024 — RTS on Threat-Led Penetration Testing (Art.26(11) DORA)'
+      - 'JC 2024 — RTS on harmonisation of conditions for oversight (Art.41(1) DORA)'
+      - 'ISO/IEC 27002:2022 — implementation guidance for Annex A controls'
+      - 'Provision identifiers as loaded by App\\Command\\LoadDoraRtsItsFullCommand'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      Level-2 (RTS/ITS) detail mapping. For every ISO-mappable DORA Level-2
+      provision (loaded by LoadDoraRtsItsFullCommand into the DORA framework)
+      the corresponding ISO 27001:2022 Annex A control(s) were identified:
+      1. Read the RTS/ITS provision substance (article subject matter).
+      2. Identify the ISO 27001:2022 Annex A control(s) that anchor the
+         requirement, using ISO 27002:2022 implementation guidance.
+      3. Relationship set from the RTS perspective. RTS provisions are
+         generally more prescriptive than the ISO control intent, so the
+         dominant relationship is 'superset' (RTS demands more detail than
+         the ISO control delivers); 'equivalent' where intent matches
+         closely; 'related' where the ISO control is a partial anchor only.
+      4. Multi-anchor where a single RTS article touches several ISO controls
+         (one primary target + cross_refs to the secondary anchors).
+      5. Pure reporting-template / register provisions with no ISO control
+         equivalent (ITS-Register-RT.xx.yy, ITS-INC-REPORT-Art.x) are
+         intentionally NOT mapped — they describe supervisory submission
+         formats, not security controls. Final-provision/application-date
+         articles are likewise excluded.
+
+  lifecycle:
+    state: 'draft'
+    state_history:
+      - { state: 'draft', date: '2025-01-17', actor: 'maintainer' }
+
+# Intentionally-unmapped (no ISO 27001 Annex A control equivalent — supervisory
+# reporting/register formats, not security controls):
+#   - ITS-Register-RT.01.01 … RT.07.01 + ITS-Register-Frequency (18 register templates)
+#   - ITS-INC-REPORT-Art.1 … Art.5 (5 incident-report electronic format/template provisions)
+#   - RTS-INC-REPORT-Art.6 (aggregated annual cost reporting), Art.8 (language),
+#     Art.10 (final provisions) — reporting-format/administrative, no control anchor
+#   - RTS-INC-CLASS-Art.12, RTS-Subcontracting-Art.9, RTS-TPP-Policy-Art.9,
+#     RTS-Oversight-Art.9, RTS-ICT-RMF-Art.30, RTS-TLPT-Art.13 — final provisions
+#   - RTS-Oversight-Art.4/Art.7 (oversight fees / penalties on CTPPs — supervisory,
+#     no financial-entity-side ISO control), GL-JC-01/02 (non-binding guidelines)
+
+mappings:
+  # ════════════════════════════════════════════════════════════════════════
+  # A. RTS on ICT Risk Management Framework (JC 2023 86) — the core block.
+  #    Each article anchored to its ISO 27001:2022 Annex A control(s).
+  # ════════════════════════════════════════════════════════════════════════
+  - source: 'RTS-ICT-RMF-Art.1'
+    target: 'A.5.1'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      RTS Art.1 (subject matter) frames the overall ICT-RMF specification set.
+      A.5.1 "Policies for information security" is the closest ISO anchor as the
+      apex policy obligation, but the RTS scopes a far broader framework.
+    cross_refs: ['A.5.2']
+
+  - source: 'RTS-ICT-RMF-Art.2'
+    target: 'A.5.1'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS Art.2 ties framework design to overall risk profile and complexity
+      (proportionality). ISO has no dedicated proportionality control; A.5.1
+      policy-setting plus the risk-based ISMS scoping (Clause 4/6) is the anchor.
+    cross_refs: ['A.5.2']
+
+  - source: 'RTS-ICT-RMF-Art.3'
+    target: 'A.5.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      RTS Art.3 mandates the main ICT security policy plus supporting topic
+      policies — directly equivalent to A.5.1 "Policies for information security"
+      (overarching + topic-specific policies, defined review cycle).
+
+  - source: 'RTS-ICT-RMF-Art.4'
+    target: 'A.5.2'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.4 requires an independent ICT risk management function with a
+      reporting line to the management body. A.5.2 "Information security roles
+      and responsibilities" anchors role allocation; RTS adds the independence
+      and board-reporting prescription.
+    cross_refs: ['A.5.3', 'A.5.4']
+
+  - source: 'RTS-ICT-RMF-Art.5'
+    target: 'A.5.9'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.5 (ICT asset management policy — ownership, classification,
+      criticality tagging) maps to A.5.9 "Inventory of information and other
+      associated assets", with A.5.12 classification and A.8.9 configuration.
+    cross_refs: ['A.5.12', 'A.8.9']
+
+  - source: 'RTS-ICT-RMF-Art.6'
+    target: 'A.8.24'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.6 (encryption and cryptography incl. post-quantum-readiness
+      assessment) anchors to A.8.24 "Use of cryptography"; RTS adds the explicit
+      crypto-agility / post-quantum forward-looking assessment.
+    cross_refs: ['A.8.20']
+
+  - source: 'RTS-ICT-RMF-Art.7'
+    target: 'A.8.24'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.7 (cryptographic key management lifecycle — generation, storage,
+      rotation, revocation, HSM governance) is the key-management facet of
+      A.8.24 "Use of cryptography", more prescriptive on lifecycle stages.
+
+  - source: 'RTS-ICT-RMF-Art.8'
+    target: 'A.8.9'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.8 (ICT operations security — capacity, performance, configuration
+      baseline) anchors to A.8.9 "Configuration management" plus A.8.6 capacity;
+      RTS bundles operations-security controls under one article.
+    cross_refs: ['A.8.6', 'A.8.32']
+
+  - source: 'RTS-ICT-RMF-Art.9'
+    target: 'A.8.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      RTS Art.9 (capacity and performance management — forecasting, monitoring,
+      scaling) is directly equivalent to A.8.6 "Capacity management".
+
+  - source: 'RTS-ICT-RMF-Art.10'
+    target: 'A.8.8'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.10 (vulnerability and patch management — discovery, assessment,
+      prioritisation, remediation timelines) anchors to A.8.8 "Management of
+      technical vulnerabilities"; RTS adds explicit remediation-SLA expectation.
+    cross_refs: ['A.8.19']
+
+  - source: 'RTS-ICT-RMF-Art.11'
+    target: 'A.8.12'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.11 (data and system security — protection at rest, in transit,
+      in use; data-leakage prevention) anchors to A.8.12 "Data leakage
+      prevention" plus A.8.24 crypto and A.5.10 acceptable use.
+    cross_refs: ['A.8.24', 'A.5.10', 'A.5.12']
+
+  - source: 'RTS-ICT-RMF-Art.12'
+    target: 'A.8.15'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.12 (logging — centralised retention, integrity protection,
+      retention period) anchors to A.8.15 "Logging"; RTS prescribes a minimum
+      retention period and log-integrity protection explicitly.
+    cross_refs: ['A.8.16', 'A.8.17']
+
+  - source: 'RTS-ICT-RMF-Art.13'
+    target: 'A.8.22'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.13 (network security — segmentation, segregation, perimeter,
+      micro-segmentation, allow-listing) anchors to A.8.22 "Segregation of
+      networks" plus A.8.20 networks-security controls.
+    cross_refs: ['A.8.20', 'A.8.21']
+
+  - source: 'RTS-ICT-RMF-Art.14'
+    target: 'A.8.21'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.14 (securing information in transit — encryption-in-transit
+      standards, certificate lifecycle) anchors to A.8.21 "Security of network
+      services" / A.5.14 information transfer, with A.8.24 crypto.
+    cross_refs: ['A.5.14', 'A.8.24']
+
+  - source: 'RTS-ICT-RMF-Art.15'
+    target: 'A.8.32'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.15 (ICT project and change management — pre-prod testing,
+      segregation of duties, rollback plans) anchors to A.8.32 "Change
+      management" plus A.5.3 segregation of duties and A.8.31 environment
+      separation.
+    cross_refs: ['A.5.3', 'A.8.31']
+
+  - source: 'RTS-ICT-RMF-Art.16'
+    target: 'A.8.25'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.16 (ICT systems acquisition, development and maintenance — secure
+      SDLC, dependency management) anchors to A.8.25 "Secure development life
+      cycle" plus A.8.28 secure coding and A.8.30 outsourced development.
+    cross_refs: ['A.8.28', 'A.8.30', 'A.8.26']
+
+  - source: 'RTS-ICT-RMF-Art.17'
+    target: 'A.7.4'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.17 (physical and environmental security — data centre, controlled
+      access, BCP-relevant facilities) anchors to A.7.4 "Physical security
+      monitoring" plus A.7.1 perimeter and A.7.11 supporting utilities.
+    cross_refs: ['A.7.1', 'A.7.2', 'A.7.11']
+
+  - source: 'RTS-ICT-RMF-Art.18'
+    target: 'A.6.1'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.18 (human resources policy — vetting, NDAs, role-based training,
+      secure separation) anchors to A.6.1 "Screening" plus A.6.3 awareness/
+      training and A.6.5 responsibilities after termination.
+    cross_refs: ['A.6.3', 'A.6.5', 'A.6.6']
+
+  - source: 'RTS-ICT-RMF-Art.19'
+    target: 'A.5.16'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      RTS Art.19 (identity management — joiner-mover-leaver lifecycle, unique
+      attribution, periodic review) is equivalent to A.5.16 "Identity
+      management".
+    cross_refs: ['A.5.18']
+
+  - source: 'RTS-ICT-RMF-Art.20'
+    target: 'A.5.15'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.20 (access control — least privilege, segregation of duties,
+      privileged access management) anchors to A.5.15 "Access control" plus
+      A.8.2 privileged access rights and A.5.3 segregation of duties.
+    cross_refs: ['A.8.2', 'A.5.3', 'A.5.18']
+
+  - source: 'RTS-ICT-RMF-Art.21'
+    target: 'A.5.24'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.21 (ICT-related incident management policy — detection,
+      classification, escalation criteria) anchors to A.5.24 "Information
+      security incident management planning and preparation" plus A.5.26
+      response.
+    cross_refs: ['A.5.25', 'A.5.26']
+
+  - source: 'RTS-ICT-RMF-Art.22'
+    target: 'A.8.16'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.22 (incident detection mechanisms — SIEM, EDR, UEBA, anomaly
+      detection, alert thresholds) anchors to A.8.16 "Monitoring activities";
+      RTS prescribes detection-tooling categories and alert thresholds.
+    cross_refs: ['A.8.15']
+
+  - source: 'RTS-ICT-RMF-Art.23'
+    target: 'A.5.30'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.23 (ICT business continuity policy — RTO, RPO, alternate sites,
+      scenario coverage) anchors to A.5.30 "ICT readiness for business
+      continuity" plus A.5.29 continuity during disruption.
+    cross_refs: ['A.5.29']
+
+  - source: 'RTS-ICT-RMF-Art.24'
+    target: 'A.5.30'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.24 (components of the ICT business continuity plans — activation
+      criteria, roles, communication) anchors to A.5.30 "ICT readiness for
+      business continuity" plus A.5.29.
+    cross_refs: ['A.5.29']
+
+  - source: 'RTS-ICT-RMF-Art.25'
+    target: 'A.5.30'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.25 (testing of ICT business continuity plans — annual minimum,
+      severe scenario coverage) anchors to A.5.30 "ICT readiness for business
+      continuity"; RTS prescribes a minimum testing cadence and scenario depth.
+
+  - source: 'RTS-ICT-RMF-Art.26'
+    target: 'A.5.30'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.26 (ICT response and recovery plans — sequencing, dependencies,
+      recovery-point validation) anchors to A.5.30 "ICT readiness for business
+      continuity" plus A.8.13 backup restore validation.
+    cross_refs: ['A.8.13', 'A.5.29']
+
+  - source: 'RTS-ICT-RMF-Art.27'
+    target: 'A.8.13'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS Art.27 (backup policies and procedures — segregation from production,
+      immutability options, restoration tests) anchors to A.8.13 "Information
+      backup" plus A.8.14 redundancy; RTS prescribes restore-testing.
+    cross_refs: ['A.8.14']
+
+  - source: 'RTS-ICT-RMF-Art.28'
+    target: 'A.5.36'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS Art.28 (reporting on review of the ICT-RMF — content, frequency,
+      addressee = management body) anchors to A.5.36 "Compliance with policies,
+      rules and standards" plus A.5.35 independent review; RTS adds the
+      board-addressee and frequency prescription.
+    cross_refs: ['A.5.35']
+
+  - source: 'RTS-ICT-RMF-Art.29'
+    target: 'A.5.36'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS Art.29 (format and content of the ICT-RMF review report — minimum
+      sections) is the documentation facet of the framework-review obligation;
+      A.5.36/A.5.35 anchor the review, A.5.37 the documented procedures.
+    cross_refs: ['A.5.35', 'A.5.37']
+
+  # ════════════════════════════════════════════════════════════════════════
+  # A2. Simplified RTS (JC 2023 86, Art.16 DORA scope) — proportionate set.
+  # ════════════════════════════════════════════════════════════════════════
+  - source: 'RTS-ICT-RMF-SIMPL-Art.1'
+    target: 'A.5.1'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Simplified RTS Art.1 (subject matter — coverage for small and non-
+      interconnected entities) frames a proportionate framework; A.5.1 policy
+      obligation is the closest ISO anchor.
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.2'
+    target: 'A.5.2'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.2 (governance and organisation — proportionate
+      management-body responsibilities) anchors to A.5.2 "Information security
+      roles and responsibilities" plus A.5.4 management responsibilities.
+    cross_refs: ['A.5.4']
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.3'
+    target: 'A.5.3'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Simplified RTS Art.3 (internal controls framework — basic three-lines-of-
+      defence) anchors to A.5.3 "Segregation of duties" and the governance
+      controls; ISO has no dedicated three-lines control.
+    cross_refs: ['A.5.2', 'A.5.36']
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.4'
+    target: 'A.5.37'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.4 (documentation of the framework — minimum content)
+      anchors to A.5.37 "Documented operating procedures" plus A.5.1 policies.
+    cross_refs: ['A.5.1']
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.5'
+    target: 'A.5.9'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.5 (identification of functions, information assets and
+      ICT assets — register-grade list) anchors to A.5.9 "Inventory of
+      information and other associated assets".
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.6'
+    target: 'A.5.12'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.6 (classification of functions and assets — at least
+      binary critical/non-critical) anchors to A.5.12 "Classification of
+      information".
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.7'
+    target: 'A.8.8'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Simplified RTS Art.7 (risk assessment — annual + on material change)
+      anchors to the ISMS risk-assessment process (Clause 6.1.2) with A.8.8
+      vulnerability identification as the technical facet.
+    cross_refs: ['A.5.7']
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.8'
+    target: 'A.7.1'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.8 (physical and environmental security — proportionate
+      measures) anchors to A.7.1 "Physical security perimeters" plus A.7.4
+      monitoring.
+    cross_refs: ['A.7.4']
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.9'
+    target: 'A.5.15'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.9 (access control — basic IAM + privileged-access
+      separation) anchors to A.5.15 "Access control" plus A.8.2 privileged
+      access rights.
+    cross_refs: ['A.8.2', 'A.5.16']
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.10'
+    target: 'A.8.8'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.10 (ICT operations security — patching cadence + basic
+      baseline) anchors to A.8.8 "Management of technical vulnerabilities" plus
+      A.8.9 configuration management.
+    cross_refs: ['A.8.9']
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.11'
+    target: 'A.8.22'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.11 (network security — perimeter and segregation
+      appropriate to size) anchors to A.8.22 "Segregation of networks" plus
+      A.8.20 networks security.
+    cross_refs: ['A.8.20']
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.12'
+    target: 'A.5.24'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.12 (ICT-related incident management — proportionate
+      detection, classification, escalation) anchors to A.5.24 "Information
+      security incident management planning and preparation" plus A.5.26.
+    cross_refs: ['A.5.26', 'A.8.16']
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.13'
+    target: 'A.8.13'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      Simplified RTS Art.13 (backup and recovery — at least one off-site, tested
+      copy) anchors to A.8.13 "Information backup"; RTS prescribes off-site +
+      restore-test minimum.
+
+  - source: 'RTS-ICT-RMF-SIMPL-Art.14'
+    target: 'A.6.3'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      Simplified RTS Art.14 (documentation, awareness training and annual review)
+      anchors to A.6.3 "Awareness, education and training" plus A.5.36 compliance
+      review and A.5.37 documentation.
+    cross_refs: ['A.5.36', 'A.5.37']
+
+  # ════════════════════════════════════════════════════════════════════════
+  # B. RTS on Classification of Major ICT Incidents (CDR 2024/1772)
+  #    → incident-management control family A.5.24–A.5.26.
+  # ════════════════════════════════════════════════════════════════════════
+  - source: 'RTS-INC-CLASS-Art.1'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-CLASS Art.1 (subject matter and definitions — major incidents,
+      recurrent incidents, significant cyber threats) anchors to A.5.25
+      "Assessment and decision on information security events"; the RTS adds
+      the regulatory definition set.
+    cross_refs: ['A.5.24']
+
+  - source: 'RTS-INC-CLASS-Art.2'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-CLASS Art.2 (clients, financial counterparts and transactions
+      affected — quantitative thresholds) is a prescriptive classification
+      criterion feeding A.5.25 event assessment/decision.
+
+  - source: 'RTS-INC-CLASS-Art.3'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-CLASS Art.3 (reputational impact — qualitative criteria) is a
+      classification dimension for A.5.25 "Assessment and decision on
+      information security events"; ISO leaves criteria entity-defined.
+
+  - source: 'RTS-INC-CLASS-Art.4'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-CLASS Art.4 (duration and service downtime threshold) is a
+      time-based classification criterion for A.5.25; RTS sets explicit
+      downtime thresholds ISO does not.
+
+  - source: 'RTS-INC-CLASS-Art.5'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-INC-CLASS Art.5 (geographical spread — Member States impacted) is a
+      classification criterion for A.5.25 event assessment; ISO has no
+      cross-border dimension.
+
+  - source: 'RTS-INC-CLASS-Art.6'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-CLASS Art.6 (data losses — CIA categories, volume, sensitivity)
+      anchors to A.5.25 assessment/decision plus A.5.12 classification of the
+      affected data.
+    cross_refs: ['A.5.12']
+
+  - source: 'RTS-INC-CLASS-Art.7'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-CLASS Art.7 (critical services affected — impact on critical or
+      important functions) anchors to A.5.25 event assessment, with the
+      criticality basis from A.5.9 asset inventory.
+    cross_refs: ['A.5.9']
+
+  - source: 'RTS-INC-CLASS-Art.8'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-INC-CLASS Art.8 (economic impact — direct + indirect cost threshold)
+      is a classification criterion for A.5.25; ISO does not quantify economic
+      impact thresholds.
+
+  - source: 'RTS-INC-CLASS-Art.9'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-CLASS Art.9 (determination of major incidents — combined/cumulative
+      threshold logic) is the decision rule for A.5.25 "Assessment and decision
+      on information security events"; RTS prescribes the aggregation logic.
+
+  - source: 'RTS-INC-CLASS-Art.10'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-INC-CLASS Art.10 (recurrent incidents — definition, aggregation period,
+      joint classification) anchors to A.5.25 assessment/decision, with A.5.27
+      learning informing the recurrence view.
+    cross_refs: ['A.5.27']
+
+  - source: 'RTS-INC-CLASS-Art.11'
+    target: 'A.5.7'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-INC-CLASS Art.11 (materiality threshold for significant cyber threats
+      — voluntary notification trigger) anchors to A.5.7 "Threat intelligence"
+      plus A.5.25 assessment of threat-events.
+    cross_refs: ['A.5.25']
+
+  # ════════════════════════════════════════════════════════════════════════
+  # C. RTS on Incident Reporting CONTENT (CIR 2024/2955, RTS portion).
+  #    Content provisions anchor to incident response + authority contact.
+  #    ITS template/format provisions (ITS-INC-REPORT-*) are NOT mapped.
+  # ════════════════════════════════════════════════════════════════════════
+  - source: 'RTS-INC-REPORT-Art.1'
+    target: 'A.5.26'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-REPORT Art.1 (content of initial notification, 4-hour deadline)
+      anchors to A.5.26 "Response to information security incidents" plus A.5.5
+      "Contact with authorities"; RTS prescribes the report content + deadline.
+    cross_refs: ['A.5.5', 'A.5.24']
+
+  - source: 'RTS-INC-REPORT-Art.2'
+    target: 'A.5.26'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-REPORT Art.2 (intermediate report, 72-hour deadline — status, root
+      cause hypothesis) anchors to A.5.26 incident response and A.5.5 authority
+      contact; the root-cause hypothesis links to A.5.27 learning.
+    cross_refs: ['A.5.5', 'A.5.27']
+
+  - source: 'RTS-INC-REPORT-Art.3'
+    target: 'A.5.27'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-INC-REPORT Art.3 (final report — root cause, remediation, lessons
+      learned) anchors to A.5.27 "Learning from information security incidents"
+      plus A.5.5 authority contact and A.5.26 response.
+    cross_refs: ['A.5.26', 'A.5.5']
+
+  - source: 'RTS-INC-REPORT-Art.4'
+    target: 'A.5.7'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-INC-REPORT Art.4 (voluntary notification of a significant cyber threat
+      — TTPs, IoCs, anticipated impact) anchors to A.5.7 "Threat intelligence"
+      plus A.5.5 contact with authorities.
+    cross_refs: ['A.5.5']
+
+  - source: 'RTS-INC-REPORT-Art.5'
+    target: 'A.5.25'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-INC-REPORT Art.5 (notification when an incident later reaches major
+      classification — re-classification dating) anchors to A.5.25 assessment/
+      decision and A.5.5 authority contact.
+    cross_refs: ['A.5.5']
+
+  - source: 'RTS-INC-REPORT-Art.7'
+    target: 'A.5.22'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-INC-REPORT Art.7 (reporting in case of outsourcing — coverage of ICT
+      third-party-caused incidents) anchors to A.5.22 "Monitoring, review and
+      change management of supplier services" plus A.5.26 response.
+    cross_refs: ['A.5.26', 'A.5.5']
+
+  - source: 'RTS-INC-REPORT-Art.9'
+    target: 'A.5.5'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      RTS-INC-REPORT Art.9 (confidentiality of information shared with the
+      competent authority) anchors to A.5.5 "Contact with authorities" plus
+      A.5.13/A.8.12 protection of the shared information.
+    cross_refs: ['A.5.12', 'A.8.12']
+
+  # ════════════════════════════════════════════════════════════════════════
+  # D. RTS on Subcontracting (CDR 2025/532) → supplier-relationship family
+  #    A.5.19–A.5.23.
+  # ════════════════════════════════════════════════════════════════════════
+  - source: 'RTS-Subcontracting-Art.1'
+    target: 'A.5.19'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-Subcontracting Art.1 (subject matter and scope — subcontracting of ICT
+      services supporting CIFs) anchors to A.5.19 "Information security in
+      supplier relationships"; RTS narrows scope to critical-function subchains.
+
+  - source: 'RTS-Subcontracting-Art.2'
+    target: 'A.5.19'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-Subcontracting Art.2 (conditions for subcontracting — risk assessment,
+      due diligence, contractual chain integrity) anchors to A.5.19 supplier
+      relationships plus A.5.21 ICT supply-chain security.
+    cross_refs: ['A.5.21']
+
+  - source: 'RTS-Subcontracting-Art.3'
+    target: 'A.5.19'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-Subcontracting Art.3 (pre-implementation due diligence on the
+      subcontractor) anchors to A.5.19 "Information security in supplier
+      relationships" (due-diligence facet).
+    cross_refs: ['A.5.21']
+
+  - source: 'RTS-Subcontracting-Art.4'
+    target: 'A.5.22'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-Subcontracting Art.4 (material changes to subcontracting — notification
+      and consent rights) anchors to A.5.22 "Monitoring, review and change
+      management of supplier services".
+
+  - source: 'RTS-Subcontracting-Art.5'
+    target: 'A.5.21'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-Subcontracting Art.5 (sub-outsourcing chain limits and oversight —
+      depth, geography, concentration) anchors to A.5.21 "Managing information
+      security in the ICT supply chain".
+
+  - source: 'RTS-Subcontracting-Art.6'
+    target: 'A.5.22'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-Subcontracting Art.6 (monitoring of subcontracting — KPIs, audit-rights
+      flow-through, incident notification) anchors to A.5.22 "Monitoring, review
+      and change management of supplier services".
+    cross_refs: ['A.5.21']
+
+  - source: 'RTS-Subcontracting-Art.7'
+    target: 'A.5.20'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-Subcontracting Art.7 (termination rights and exit strategy —
+      replacement, data return/deletion, knowledge transfer) anchors to A.5.20
+      "Addressing information security within supplier agreements" plus A.8.10
+      data deletion.
+    cross_refs: ['A.8.10']
+
+  - source: 'RTS-Subcontracting-Art.8'
+    target: 'A.5.20'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-Subcontracting Art.8 (mandatory subcontracting clauses in the contract
+      with the ICT TPP) anchors to A.5.20 "Addressing information security within
+      supplier agreements".
+    cross_refs: ['A.5.19']
+
+  # ════════════════════════════════════════════════════════════════════════
+  # E. RTS on Threat-Led Penetration Testing (TLPT) → testing controls
+  #    A.8.8 / A.8.29 + supporting.
+  # ════════════════════════════════════════════════════════════════════════
+  - source: 'RTS-TLPT-Art.1'
+    target: 'A.8.29'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      RTS-TLPT Art.1 (subject matter and definitions — red/blue/white team,
+      threat-intel provider) frames the TLPT regime; A.8.29 "Security testing in
+      development and acceptance" is the nearest ISO anchor.
+
+  - source: 'RTS-TLPT-Art.2'
+    target: 'A.8.29'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-TLPT Art.2 (identification of in-scope entities — quantitative +
+      qualitative criteria) goes beyond A.8.29; ISO does not mandate which
+      entities undergo adversarial testing.
+
+  - source: 'RTS-TLPT-Art.3'
+    target: 'A.8.29'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TLPT Art.3 (TLPT scope — critical/important functions and supporting
+      ICT systems) anchors to A.8.29 "Security testing" with the criticality
+      scoping from A.5.9 asset inventory.
+    cross_refs: ['A.5.9']
+
+  - source: 'RTS-TLPT-Art.4'
+    target: 'A.8.29'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TLPT Art.4 (methodology and TIBER-EU alignment — phases, artefacts,
+      role separation) anchors to A.8.29 "Security testing in development and
+      acceptance"; RTS prescribes a far more detailed adversarial methodology.
+
+  - source: 'RTS-TLPT-Art.5'
+    target: 'A.8.29'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-TLPT Art.5 (preparation phase — engagement, governance, scoping,
+      risk-management plan) anchors to A.8.29 security testing planning; RTS
+      adds prescriptive governance + risk-management-plan requirements.
+
+  - source: 'RTS-TLPT-Art.6'
+    target: 'A.5.7'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TLPT Art.6 (threat-intelligence phase — generic + targeted threat-
+      intel report) anchors to A.5.7 "Threat intelligence", feeding the
+      A.8.29 test scenarios.
+    cross_refs: ['A.8.29']
+
+  - source: 'RTS-TLPT-Art.7'
+    target: 'A.8.29'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TLPT Art.7 (red-team phase — execution on production, leg-up rules,
+      escalation safeguards) anchors to A.8.29 "Security testing"; RTS prescribes
+      production-system execution with control-safeguards.
+
+  - source: 'RTS-TLPT-Art.8'
+    target: 'A.8.16'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TLPT Art.8 (blue-team phase — detection, response, remediation by
+      defenders) anchors to A.8.16 "Monitoring activities" plus A.5.26 incident
+      response — the defensive side observed during TLPT.
+    cross_refs: ['A.5.26']
+
+  - source: 'RTS-TLPT-Art.9'
+    target: 'A.8.8'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TLPT Art.9 (closure phase — replay workshops, remediation plan,
+      attestation) anchors to A.8.8 "Management of technical vulnerabilities"
+      (remediation of findings) plus A.5.27 learning.
+    cross_refs: ['A.5.27', 'A.8.29']
+
+  - source: 'RTS-TLPT-Art.10'
+    target: 'A.8.29'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      RTS-TLPT Art.10 (pooled TLPT — joint testing across entities sharing common
+      ICT TPPs) is a supervisory coordination concept; A.8.29 testing plus A.5.21
+      supply-chain security are the nearest anchors.
+    cross_refs: ['A.5.21']
+
+  - source: 'RTS-TLPT-Art.11'
+    target: 'A.8.29'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      RTS-TLPT Art.11 (requirements for testers — independence, certification,
+      experience) anchors to A.8.29 security testing; RTS prescribes tester
+      independence/competence the ISO control does not detail.
+    cross_refs: ['A.5.35']
+
+  - source: 'RTS-TLPT-Art.12'
+    target: 'A.8.29'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      RTS-TLPT Art.12 (mutual recognition of TLPT results — passporting between
+      authorities) is a supervisory-recognition rule with only a weak A.8.29
+      anchor (the underlying test artefact).
+
+  # ════════════════════════════════════════════════════════════════════════
+  # F. RTS on TPP Contractual Arrangements Policy (CDR 2024/1773)
+  #    → supplier-relationship family A.5.19–A.5.23.
+  # ════════════════════════════════════════════════════════════════════════
+  - source: 'RTS-TPP-Policy-Art.1'
+    target: 'A.5.19'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TPP-Policy Art.1 (subject matter — policy governing contractual
+      arrangements with ICT TPPs supporting CIFs) anchors to A.5.19 "Information
+      security in supplier relationships" (the supplier-security policy).
+
+  - source: 'RTS-TPP-Policy-Art.2'
+    target: 'A.5.19'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TPP-Policy Art.2 (governance — board approval and review of the TPP
+      policy) anchors to A.5.19 supplier-relationships policy plus A.5.4
+      management responsibilities for board approval.
+    cross_refs: ['A.5.4']
+
+  - source: 'RTS-TPP-Policy-Art.3'
+    target: 'A.5.19'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TPP-Policy Art.3 (pre-contractual phase — risk assessment, due
+      diligence, conflict-of-interest screening) anchors to A.5.19 "Information
+      security in supplier relationships" (due-diligence facet).
+    cross_refs: ['A.5.21']
+
+  - source: 'RTS-TPP-Policy-Art.4'
+    target: 'A.5.20'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TPP-Policy Art.4 (contractual phase — minimum contract clauses,
+      Art.30(2)/(3) DORA expansion) anchors to A.5.20 "Addressing information
+      security within supplier agreements".
+
+  - source: 'RTS-TPP-Policy-Art.5'
+    target: 'A.5.22'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TPP-Policy Art.5 (implementation, monitoring and management of
+      contractual arrangements) anchors to A.5.22 "Monitoring, review and change
+      management of supplier services".
+
+  - source: 'RTS-TPP-Policy-Art.6'
+    target: 'A.5.19'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      RTS-TPP-Policy Art.6 (documentation and Register-of-Information feed —
+      synchronisation) anchors to A.5.19 supplier-relationship documentation plus
+      A.5.9 inventory; the RoI itself is a DORA-specific register.
+    cross_refs: ['A.5.9']
+
+  - source: 'RTS-TPP-Policy-Art.7'
+    target: 'A.5.20'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TPP-Policy Art.7 (exit strategies and termination rights — orderly exit
+      plan, data portability) anchors to A.5.20 supplier agreements plus A.8.10
+      data deletion / A.5.30 continuity on exit.
+    cross_refs: ['A.8.10', 'A.5.30']
+
+  - source: 'RTS-TPP-Policy-Art.8'
+    target: 'A.5.21'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      RTS-TPP-Policy Art.8 (concentration-risk monitoring — quantitative metrics,
+      reporting to management body) anchors to A.5.21 "Managing information
+      security in the ICT supply chain"; RTS adds concentration-risk metrics.
+    cross_refs: ['A.5.22']
+
+  # ════════════════════════════════════════════════════════════════════════
+  # G. RTS on Oversight (Art.41 DORA) — mostly supervisory; only the
+  #    financial-entity-facing provisions with an ISO anchor are mapped.
+  # ════════════════════════════════════════════════════════════════════════
+  - source: 'RTS-Oversight-Art.2'
+    target: 'A.5.22'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      RTS-Oversight Art.2 (information the critical ICT TPP provides to the Lead
+      Overseer) is primarily a CTPP/supervisory obligation; for the financial
+      entity it relates to A.5.22 supplier monitoring evidence supply.
+
+  - source: 'RTS-Oversight-Art.3'
+    target: 'A.5.21'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      RTS-Oversight Art.3 (criteria for assessing the criticality of ICT TPPs)
+      relates to A.5.21 "Managing information security in the ICT supply chain"
+      criticality assessment, though the determination is made by the ESAs.
+    cross_refs: ['A.5.19']
+
+  - source: 'RTS-Oversight-Art.8'
+    target: 'A.5.22'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      RTS-Oversight Art.8 (recommendations to CTPPs and follow-up by competent
+      authorities) relates, for the financial entity, to A.5.22 supplier
+      monitoring and acting on supplier-service findings.
