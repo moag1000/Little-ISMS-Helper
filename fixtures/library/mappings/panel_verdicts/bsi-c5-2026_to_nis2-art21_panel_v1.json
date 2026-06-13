@@ -1,0 +1,543 @@
+{
+  "library": {
+    "source_framework": "BSI-C5-2026",
+    "target_framework": "NIS2",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (editorial C5:2026↔NIS2 Art.21 mapping)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
+    "completeness": "38 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 74,
+      "ki_validiert": 51,
+      "needs_review": 9,
+      "reject": 14
+    }
+  },
+  "verdicts": [
+    {
+      "c5": "OIS-01",
+      "target": "21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "c5": "OIS-02",
+      "target": "20.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "c5": "OIS-04",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "c5": "OIS-05",
+      "target": "21.2.a",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "OIS-06",
+      "target": "23.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "OIS-07",
+      "target": "21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 3
+    },
+    {
+      "c5": "OIS-08",
+      "target": "21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 4
+    },
+    {
+      "c5": "OIS-09",
+      "target": "21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 4
+    },
+    {
+      "c5": "HR-01",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "c5": "HR-02",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 78,
+      "realVotes": 4
+    },
+    {
+      "c5": "HR-03",
+      "target": "21.2.g",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "c5": "HR-03",
+      "target": "20.2",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "c5": "HR-04",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "c5": "HR-05",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "c5": "HR-06",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "c5": "HR-07",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "c5": "AM-01",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "c5": "AM-02",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "c5": "AM-09",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "c5": "IAM-01",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "c5": "IAM-02",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 78,
+      "realVotes": 4
+    },
+    {
+      "c5": "IAM-05",
+      "target": "21.2.f",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "IAM-06",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "c5": "IAM-08",
+      "target": "21.2.j",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "c5": "IAM-09",
+      "target": "21.2.j",
+      "state": "needs_review",
+      "mappingPercentage": 68,
+      "realVotes": 2
+    },
+    {
+      "c5": "CRY-01",
+      "target": "21.2.h",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "c5": "CRY-02",
+      "target": "21.2.h",
+      "state": "ki_validiert",
+      "mappingPercentage": 88,
+      "realVotes": 4
+    },
+    {
+      "c5": "CRY-04",
+      "target": "21.2.h",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "c5": "CRY-05",
+      "target": "21.2.h",
+      "state": "ki_validiert",
+      "mappingPercentage": 78,
+      "realVotes": 4
+    },
+    {
+      "c5": "CRY-17",
+      "target": "21.2.h",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "c5": "COS-01",
+      "target": "21.2.j",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "c5": "COS-08",
+      "target": "21.2.j",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 4
+    },
+    {
+      "c5": "SIM-01",
+      "target": "21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "c5": "SIM-02",
+      "target": "21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "c5": "SIM-03",
+      "target": "21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "c5": "SIM-04",
+      "target": "23.2",
+      "state": "reject",
+      "mappingPercentage": 78,
+      "realVotes": 1
+    },
+    {
+      "c5": "SIM-04",
+      "target": "23.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "c5": "SIM-04",
+      "target": "23.3",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 3
+    },
+    {
+      "c5": "SIM-05",
+      "target": "21.2.g",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "c5": "SIM-06",
+      "target": "21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "c5": "BCM-01",
+      "target": "21.2.c",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "c5": "BCM-02",
+      "target": "21.2.c",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "c5": "BCM-03",
+      "target": "21.2.c",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "c5": "BCM-04",
+      "target": "21.2.c",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "c5": "OPS-06",
+      "target": "21.2.c",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "c5": "OPS-08",
+      "target": "21.2.c",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "c5": "SSO-01",
+      "target": "21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "c5": "SSO-02",
+      "target": "21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "c5": "SSO-04",
+      "target": "21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "c5": "SSO-05",
+      "target": "21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "c5": "SSO-06",
+      "target": "21.2.c",
+      "state": "reject",
+      "mappingPercentage": 55,
+      "realVotes": 1
+    },
+    {
+      "c5": "SSO-08",
+      "target": "21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 68,
+      "realVotes": 4
+    },
+    {
+      "c5": "DEV-01",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "c5": "DEV-04",
+      "target": "21.2.g",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "DEV-06",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "c5": "DEV-07",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "c5": "DEV-11",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "c5": "DEV-13",
+      "target": "21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "c5": "DEV-14",
+      "target": "21.2.d",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "c5": "OPS-04",
+      "target": "21.2.g",
+      "state": "needs_review",
+      "mappingPercentage": 65,
+      "realVotes": 2
+    },
+    {
+      "c5": "OPS-10",
+      "target": "21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 72,
+      "realVotes": 2
+    },
+    {
+      "c5": "OPS-13",
+      "target": "21.2.b",
+      "state": "reject",
+      "mappingPercentage": 55,
+      "realVotes": 1
+    },
+    {
+      "c5": "OPS-18",
+      "target": "21.2.g",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 2
+    },
+    {
+      "c5": "OPS-22",
+      "target": "21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 75,
+      "realVotes": 2
+    },
+    {
+      "c5": "OPS-23",
+      "target": "21.2.f",
+      "state": "reject",
+      "mappingPercentage": 72,
+      "realVotes": 1
+    },
+    {
+      "c5": "OPS-26",
+      "target": "21.2.g",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "OPS-27",
+      "target": "21.2.g",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "c5": "COM-01",
+      "target": "21.2.a",
+      "state": "reject",
+      "mappingPercentage": 55,
+      "realVotes": 1
+    },
+    {
+      "c5": "COM-03",
+      "target": "21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "c5": "COM-04",
+      "target": "20.1",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 2
+    },
+    {
+      "c5": "SP-01",
+      "target": "21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "c5": "SP-02",
+      "target": "21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "c5": "PS-01",
+      "target": "21.2.i",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "c5": "PS-04",
+      "target": "21.2.i",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    }
+  ]
+}
