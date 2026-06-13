@@ -4,7 +4,7 @@ library:
   id: 'cra_to_nis2-art21_v1.0'
   source_framework: 'EU-CRA'
   target_framework: 'NIS2'
-  version: 1
+  version: 2
   effective_from: '2026-05-06'
   effective_until: null
 
@@ -17,6 +17,16 @@ library:
       - 'EU CRA Annex I + Annex VII (Wesentliche Cybersicherheitsanforderungen + Technische Dokumentation)'
       - 'Eigene Volltext-Analyse durch Compliance-Team mit Adressaten-Differenzierung'
     publisher: 'Little ISMS Helper Maintainers'
+    changelog:
+      - version: 2
+        date: '2026-06-13'
+        actor: 'maintainer'
+        note: |
+          depth pass: +9 panel-validated correspondences (multi-anchor enrichment).
+          Promoted from completeness candidates that survived a 4-expert AI judge
+          consensus plus adversarial-refutation round. Targets resolved against the
+          target-framework requirement catalogue; non-resolvable prose/cluster
+          candidates were dropped. Existing rows unchanged.
 
   methodology:
     type: 'text_comparison_with_expert_review'
@@ -362,3 +372,48 @@ mappings:
     gap_warning: |
       Adressaten-Mismatch deutlich: Hersteller-Pflicht zur Endkunden-
       Kommunikation; NIS2-IR-Prozess davon unabhaengig. Mapping nur indikativ.
+  - source: 'CRA-Annex-I-1.1'
+    target: '21.2.a'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 55%).'
+  - source: 'CRA-Annex-I-1.3.b'
+    target: '21.2.i'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 55%).'
+  - source: 'CRA-Annex-I-1.3.b'
+    target: '21.2.j'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 45%).'
+  - source: 'CRA-Annex-I-1.3.d'
+    target: '21.2.e'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 45%).'
+  - source: 'CRA-Annex-I-1.3.h'
+    target: '21.2.e'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 58%).'
+  - source: 'CRA-Annex-II-3'
+    target: '21.2.e'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 55%).'
+  - source: 'CRA-Annex-II-7'
+    target: '21.2.e'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 70%).'
+  - source: 'CRA-Art-14.2'
+    target: '21.2.b'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 65%).'
+  - source: 'CRA-Art-14.3'
+    target: '21.2.b'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 60%).'

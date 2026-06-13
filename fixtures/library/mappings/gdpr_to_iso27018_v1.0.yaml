@@ -4,7 +4,7 @@ library:
   id: 'gdpr_to_iso27018_v1.0'
   source_framework: 'GDPR'
   target_framework: 'ISO27018'
-  version: 1
+  version: 2
   effective_from: '2026-05-06'
   effective_until: null
 
@@ -18,6 +18,16 @@ library:
       - 'EDPB Guidelines 07/2020 (Concepts of controller and processor)'
       - 'fixtures/library/mappings/iso27018_to_gdpr_v1.0.yaml (Reverse-Mapping)'
     publisher: 'Little ISMS Helper Maintainers'
+    changelog:
+      - version: 2
+        date: '2026-06-13'
+        actor: 'maintainer'
+        note: |
+          depth pass: +2 panel-validated correspondences (multi-anchor enrichment).
+          Promoted from completeness candidates that survived a 4-expert AI judge
+          consensus plus adversarial-refutation round. Targets resolved against the
+          target-framework requirement catalogue; non-resolvable prose/cluster
+          candidates were dropped. Existing rows unchanged.
     license_note: 'Mapping is original derivative work (AGPL-3.0). GDPR-Artikel sind EU-Recht (Public Domain). ISO 27018:2019 IDs/titles © ISO.'
 
   methodology:
@@ -572,3 +582,13 @@ mappings:
     relationship: 'related'
     confidence: 'low'
     rationale: 'GDPR Art.94-99 (Final provisions) — Out-of-Scope.'
+  - source: 'Art.29'
+    target: 'A.6.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 60%).'
+  - source: 'GDPR-25'
+    target: 'A.4.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 45%).'
