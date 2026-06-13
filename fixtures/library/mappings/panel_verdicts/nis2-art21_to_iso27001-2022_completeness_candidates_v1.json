@@ -1,0 +1,264 @@
+{
+  "provenance": {
+    "source_framework": "NIS2",
+    "target_framework": "ISO27001",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied to operational mappings without further human review",
+    "candidate_count": 49
+  },
+  "candidates": [
+    {
+      "target": "ISO27001 A.5.25",
+      "mappingPercentage": 85,
+      "rationale": "NIS2-ART21-B: Art. 21(2)(b) covers the full incident-handling lifecycle (detection, response, reporting). A.5.24 (already mapped) only covers planning/preparation. A.5.25 'Assessment and decision on information security events' is the triage step that determines whether an event is an incident — indispensable to incident handling and missing from the current mapping."
+    },
+    {
+      "target": "ISO27001 A.5.26",
+      "mappingPercentage": 90,
+      "rationale": "NIS2-ART21-B: A.5.26 'Response to information security incidents' is the core operational containment/eradication/recovery activity that Art. 21(2)(b) demands. The current single mapping to A.5.24 (planning) leaves the actual response uncovered."
+    },
+    {
+      "target": "ISO27001 A.5.27",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-ART21-B: A.5.27 'Learning from information security incidents' implements the continuous-improvement / lessons-learned dimension implicit in NIS2 incident handling and the Art. 23 reporting feedback loop. Defensible and currently missing."
+    },
+    {
+      "target": "ISO27001 A.5.28",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-ART21-B: A.5.28 'Collection of evidence' supports forensically sound incident handling and the NIS2 reporting obligations (Art. 23), where evidence preservation underpins notifications to CSIRTs. Defensible secondary mapping."
+    },
+    {
+      "target": "ISO27001 A.6.8",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-ART21-B: A.6.8 'Information security event reporting' establishes the internal reporting channel that feeds incident handling — the entry point of the process. Genuinely part of incident handling and absent from the current mapping."
+    },
+    {
+      "target": "ISO27001 A.8.15",
+      "mappingPercentage": 65,
+      "rationale": "NIS2-ART21-B: A.8.15 'Logging' provides the records needed to detect, investigate and reconstruct incidents. Direct enabler of incident handling under Art. 21(2)(b); defensible though supporting rather than primary."
+    },
+    {
+      "target": "ISO27001 A.8.16",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-ART21-B: A.8.16 'Monitoring activities' provides the detection capability that triggers incident handling. Detection is an integral phase of Art. 21(2)(b) incident handling and is currently unmapped."
+    },
+    {
+      "target": "ISO27001 A.8.13",
+      "mappingPercentage": 95,
+      "rationale": "NIS2-ART21-C: Art. 21(2)(c) explicitly names 'backup management'. A.8.13 'Information backup' is the precise Annex A control for backups. Its omission from the current C-mapping (only A.5.29/A.5.30) is a clear gap."
+    },
+    {
+      "target": "ISO27001 A.8.14",
+      "mappingPercentage": 85,
+      "rationale": "NIS2-ART21-C: Art. 21(2)(c) names 'disaster recovery'. A.8.14 'Redundancy of information processing facilities' provides the availability/redundancy capability central to disaster recovery and is missing from the current mapping."
+    },
+    {
+      "target": "ISO27001 A.5.19",
+      "mappingPercentage": 90,
+      "rationale": "NIS2-ART21-D: Art. 21(2)(d) covers 'supply chain security'. A.5.19 'Information security in supplier relationships' is the foundational policy control for managing supplier risk and is missing — A.5.20 (already mapped) only covers the agreements themselves."
+    },
+    {
+      "target": "ISO27001 A.5.21",
+      "mappingPercentage": 90,
+      "rationale": "NIS2-ART21-D: A.5.21 'Managing information security in the ICT supply chain' is the most literal Annex A match for NIS2 'supply chain security', addressing security across the product/service supply chain. Clear gap in the current D-mapping."
+    },
+    {
+      "target": "ISO27001 A.5.22",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-ART21-D: A.5.22 'Monitoring, review and change management of supplier services' covers the ongoing assurance of supplier security that NIS2 supply-chain risk management requires beyond contract signing. Currently missing."
+    },
+    {
+      "target": "ISO27001 A.5.23",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-ART21-D: A.5.23 'Information security for use of cloud services' is a specific supply-chain dimension (cloud providers) directly relevant to NIS2 supply-chain security. Defensible addition."
+    },
+    {
+      "target": "ISO27001 A.8.26",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-ART21-E: Art. 21(2)(e) covers 'security in network and information systems acquisition, development and maintenance'. A.8.26 'Application security requirements' is part of the secure-development cluster only partially captured by A.8.25. Defensible gap."
+    },
+    {
+      "target": "ISO27001 A.8.27",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-ART21-E: A.8.27 'Secure system architecture and engineering principles' directly implements secure-by-design for system acquisition/development under Art. 21(2)(e) and is missing from the current mapping."
+    },
+    {
+      "target": "ISO27001 A.8.28",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-ART21-E: A.8.28 'Secure coding' is a core development-phase control within Art. 21(2)(e) scope and complements A.8.25/A.8.8 already mapped. Currently absent."
+    },
+    {
+      "target": "ISO27001 A.8.29",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-ART21-E: A.8.29 'Security testing in development and acceptance' is the testing dimension of secure acquisition/development and feeds vulnerability identification — directly within Art. 21(2)(e), which couples development security with vulnerability handling. Missing."
+    },
+    {
+      "target": "ISO27001 A.8.31",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-ART21-E: A.8.31 'Separation of development, test and production environments' is a maintenance/development-security control under Art. 21(2)(e). Defensible secondary mapping currently absent."
+    },
+    {
+      "target": "ISO27001 A.8.32",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-ART21-E: A.8.32 'Change management' governs secure maintenance of network and information systems — explicitly part of 'acquisition, development AND maintenance' in Art. 21(2)(e). Currently missing."
+    },
+    {
+      "target": "ISO27001 A.5.36",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-ART21-F: Art. 21(2)(f) requires 'policies and procedures to assess the effectiveness of cybersecurity risk-management measures'. A.5.36 'Compliance with policies, rules and standards for information security' is the conformance-assessment control complementing A.5.35 (independent review, already mapped). Defensible gap."
+    },
+    {
+      "target": "ISO27001 A.8.1",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-ART21-G: Art. 21(2)(g) covers 'basic cyber hygiene practices'. A.8.1 'User endpoint devices' (endpoint hardening, patching, encryption baseline) is a core cyber-hygiene control beyond the malware/training already mapped (A.8.7/A.6.3). Defensible."
+    },
+    {
+      "target": "ISO27001 A.5.17",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-ART21-G: A.5.17 'Authentication information' (password/credential hygiene, MFA) is a textbook 'basic cyber hygiene' practice under Art. 21(2)(g) and is not in the current G-mapping."
+    },
+    {
+      "target": "ISO27001 A.8.5",
+      "mappingPercentage": 65,
+      "rationale": "NIS2-ART21-G: A.8.5 'Secure authentication' (incl. MFA enforcement) is a foundational cyber-hygiene measure that ENISA/NIS2 guidance consistently lists under basic hygiene. Defensible addition to the G-mapping."
+    },
+    {
+      "target": "A.6.2",
+      "mappingPercentage": 90,
+      "rationale": "NIS2-ART21-I: Art. 21(2)(i) explicitly covers personnel security across the FULL employment lifecycle (Einstellung, Beschaeftigung, Ausscheiden). A.6.2 Terms and conditions of employment binds IS obligations into the contract at the employment phase — a core HR-security control the current A.6.1-only mapping omits. The fixture itself anchors I to A.6.2."
+    },
+    {
+      "target": "A.6.3",
+      "mappingPercentage": 85,
+      "rationale": "NIS2-ART21-I: Awareness, education and training is part of the personnel-security lifecycle that ART21-I mandates. Screening (A.6.1) alone does not establish ongoing employee security competence; A.6.3 is the canonical companion control and is anchored to I in the fixture."
+    },
+    {
+      "target": "A.6.4",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-ART21-I: A disciplinary process is an explicit ISO 27002 personnel-security control. ART21-I's 'Sicherheit des Personals' requires enforceable consequences for IS violations during employment — A.6.4 closes that lifecycle element."
+    },
+    {
+      "target": "A.6.5",
+      "mappingPercentage": 90,
+      "rationale": "NIS2-ART21-I: Art. 21(2)(i) explicitly names the exit/leaving (Ausscheiden) phase. A.6.5 Responsibilities after termination or change of employment is the direct ISO control for continuing IS obligations on offboarding — strongly defensible and currently missing."
+    },
+    {
+      "target": "A.6.6",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-ART21-I: Confidentiality / non-disclosure agreements are a personnel-security obligation tied to the access-to-information that ART21-I governs. A.6.6 protects information handled by staff across the lifecycle and is anchored to I in the fixture."
+    },
+    {
+      "target": "A.5.16",
+      "mappingPercentage": 85,
+      "rationale": "NIS2-ART21-I: ART21-I mandates role-based ACCESS CONTROL. A.5.15 (access control policy) is mapped, but identity management (A.5.16 — unique identities, identity lifecycle) is the foundational prerequisite for any RBAC scheme and is genuinely required, not duplicative."
+    },
+    {
+      "target": "A.5.18",
+      "mappingPercentage": 90,
+      "rationale": "NIS2-ART21-I: A.5.18 Access rights (provisioning, periodic review, revocation) is the operational core of the role-based access control ART21-I demands. The mapped A.5.15 is the policy layer; A.5.18 is the enforcement/lifecycle layer and is a defensible distinct anchor."
+    },
+    {
+      "target": "A.5.11",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-ART21-I: ART21-I includes asset management. A.5.11 Return of assets is the offboarding asset-management control directly tied to the leaving phase named in the requirement; A.5.9 (inventory) alone does not cover asset return on exit."
+    },
+    {
+      "target": "A.5.10",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-ART21-I: A.5.10 Acceptable use of information and other associated assets complements the asset inventory (A.5.9) by governing how staff handle assets — a defensible part of the 'Asset-Management' scope of ART21-I, though secondary to inventory itself."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 65,
+      "rationale": "NIS2-ART21-I: Authentication information management underpins the role-based access control mandated by ART21-I (credential issuance/handling for granted access rights). Defensible secondary anchor; the primary home of A.5.17 is the authentication-focused ART21-J."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 90,
+      "rationale": "NIS2-ART21-J: ART21-J mandates MFA / continuous authentication. A.8.5 (secure authentication mechanism) is mapped, but A.5.17 Authentication information (management of credentials/factors used in MFA) is the direct organizational control underpinning multi-factor authentication and is anchored to J in the fixture."
+    },
+    {
+      "target": "A.5.14",
+      "mappingPercentage": 90,
+      "rationale": "NIS2-ART21-J: Art. 21(2)(j) explicitly requires secured voice, video and text communication. A.5.14 Information transfer is the canonical ISO control for securing communication channels/transfers — strongly defensible and currently missing (mapping only has A.8.5 + A.8.20)."
+    },
+    {
+      "target": "A.8.24",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-ART21-J: Secured voice/video/text and emergency communication is technically delivered via cryptography. A.8.24 Use of cryptography provides the encryption/key-management basis for the 'gesicherte Kommunikation' that ART21-J demands — a defensible technical anchor beyond network security (A.8.20)."
+    },
+    {
+      "target": "A.8.21",
+      "mappingPercentage": 65,
+      "rationale": "NIS2-ART21-J: A.8.21 Security of network services governs the security mechanisms/SLAs of the communication services that ART21-J requires to be secured. Defensible complement to A.8.20 (networks security) for service-level secured communication, though narrower."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 60,
+      "rationale": "NIS2-ART21-J: ART21-J explicitly requires secured EMERGENCY communication systems. A.5.30 ICT readiness for business continuity is the ISO control ensuring communication capability remains available during disruption — a defensible link for the emergency-communication element, which the authentication/network anchors do not cover."
+    },
+    {
+      "target": "9.1",
+      "mappingPercentage": 95,
+      "rationale": "NIS2-ART21-F: Art. 21(2)(f) is explicitly about policies/procedures to ASSESS THE EFFECTIVENESS of cyber risk-management measures. Clause 9.1 (Monitoring, measurement, analysis and evaluation) is the canonical ISO 27001 home for effectiveness assessment and is the primary mapping in the reference's own NIS2->ISO table (line 268). The current mapping (A.5.36 compliance, A.8.16 monitoring) covers only operational compliance/log-monitoring, not the management-system-level effectiveness evaluation that (f) demands. This is the central missing correspondence."
+    },
+    {
+      "target": "9.3",
+      "mappingPercentage": 85,
+      "rationale": "NIS2-ART21-F: 'Assess the effectiveness of risk-management measures' is operationalised in ISO 27001 through periodic management review. Clause 9.3 takes effectiveness/performance results as inputs and produces improvement decisions; the reference's own mapping table pairs (f) with Clause 9.1 AND 9.3 (line 268). Missing from the current A.5.36/A.8.16 mapping."
+    },
+    {
+      "target": "9.2",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-ART21-F: Internal audit (Clause 9.2) is a primary procedural mechanism by which an organisation assesses whether its security measures are effectively implemented and maintained (9.2.1). Defensible as a direct contributor to the 'procedures to assess effectiveness' wording, though secondary to 9.1/9.3."
+    },
+    {
+      "target": "A.5.35",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-ART21-F: A.5.35 (Independent review of information security) is precisely a procedure to assess whether security measures remain effective and appropriate. Strong Annex-A complement to the Clause-9 management mechanisms and a defensible addition the current A.5.36/A.8.16 pair omits."
+    },
+    {
+      "target": "10.2",
+      "mappingPercentage": 55,
+      "rationale": "NIS2-ART21-F: Effectiveness assessment under (f) explicitly includes continuous improvement. Clause 10.2 (Nonconformity and corrective action) closes the assess->improve loop by requiring action on shortcomings found and verification of corrective-action effectiveness. Defensible but partial, as (f) centres on the assessment step rather than the corrective step."
+    },
+    {
+      "target": "A.8.5",
+      "mappingPercentage": 95,
+      "rationale": "NIS2-ART21-J: The dominant subject of Art. 21(2)(j) is multi-factor / continuous AUTHENTICATION. A.8.5 (Secure authentication) is the direct ISO 27001 control for MFA and authentication technologies and is the reference's own canonical mapping for (j) (line 272). The current mapping (A.5.14 information transfer) covers only the secured-communications half and entirely omits the MFA core — this is the most significant gap."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-ART21-J: MFA factors (tokens, OTPs, certificates, passwords) are authentication information. A.5.17 (Authentication information) governs allocation/management of these factors and is a defensible complement to A.8.5 for the MFA requirement, missing from the current A.5.14-only mapping."
+    },
+    {
+      "target": "A.5.16",
+      "mappingPercentage": 50,
+      "rationale": "NIS2-ART21-J: Continuous-authentication solutions named in (j) depend on managed unique identities and their lifecycle. A.5.16 (Identity management) is a defensible supporting control, though it addresses identity rather than the authentication act itself, so the correspondence is partial."
+    },
+    {
+      "target": "A.8.8",
+      "mappingPercentage": 78,
+      "rationale": "NIS2-ART21-E: Panel-validated correspondence (ki_validiert, 4/4 expert votes, 78%) absent from the operational mapping — completeness candidate."
+    },
+    {
+      "target": "A.5.35",
+      "mappingPercentage": 55,
+      "rationale": "NIS2-ART21-F: Panel-validated correspondence (ki_validiert, 4/4 expert votes, 55%) absent from the operational mapping — completeness candidate."
+    },
+    {
+      "target": "A.8.20",
+      "mappingPercentage": 55,
+      "rationale": "NIS2-ART21-J: Panel-validated correspondence (ki_validiert, 4/4 expert votes, 55%) absent from the operational mapping — completeness candidate."
+    }
+  ]
+}
