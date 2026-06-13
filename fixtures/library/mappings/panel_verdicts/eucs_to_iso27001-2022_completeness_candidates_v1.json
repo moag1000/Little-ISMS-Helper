@@ -1,0 +1,254 @@
+{
+  "provenance": {
+    "source_framework": "ENISA-EUCS",
+    "target_framework": "ISO27001",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 47
+  },
+  "candidates": [
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 40,
+      "rationale": "EUCS-A1 (Organization of Information Security): EUCS OIS explicitly requires defined contact procedures with relevant authorities (regulators, CERTs, supervisory bodies) as part of organizing the security function. A.5.5 'Contact with authorities' is the canonical Annex-A control for this and is neither the primary target (A.5.2) nor a cross_ref (A.5.3, A.5.4). Defensible partial correspondence."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 30,
+      "rationale": "EUCS-A1 (Organization of Information Security): The EUCS OIS area also covers maintaining contact with special interest groups / security forums as part of the security organization. A.5.6 'Contact with special interest groups' is a genuine sub-aspect of organizing information security and is currently unmapped."
+    },
+    {
+      "target": "A.5.4",
+      "mappingPercentage": 55,
+      "rationale": "EUCS-A2 (Information Security Policies): EUCS requires policies to be approved, endorsed and enforced by management; personnel must apply them. A.5.4 'Management responsibilities' is a defensible additional correspondence to A2's policy-commitment/enforcement dimension, beyond A.5.1's existence-of-policy dimension. Not currently mapped to A2."
+    },
+    {
+      "target": "A.5.37",
+      "mappingPercentage": 35,
+      "rationale": "EUCS-A2 (Information Security Policies): The EUCS policy area extends to documented operating procedures/work instructions derived from policies. A.5.37 'Documented operating procedures' is a defensible additional correspondence representing the procedural layer below policy, currently unmapped to A2."
+    },
+    {
+      "target": "A.5.8",
+      "mappingPercentage": 30,
+      "rationale": "EUCS-A3 (Risk Management): EUCS risk management requires risk to be assessed for projects and significant changes. A.5.8 'Information security in project management' embeds risk assessment into projects and is a defensible additional Annex-A correspondence beyond the A.5.4 (management) anchor and A.5.7 (threat intel) cross_ref already present."
+    },
+    {
+      "target": "A.7.6",
+      "mappingPercentage": 30,
+      "rationale": "EUCS-A5 (Physical Security): EUCS physical security covers working in secure/restricted areas of the data centre, not just perimeters/entry/offices/monitoring. A.7.6 'Working in secure areas' is a defensible additional physical control missing from the current A5 cross_ref set (A.7.2-7.5, 7.11, 7.12)."
+    },
+    {
+      "target": "A.7.8",
+      "mappingPercentage": 30,
+      "rationale": "EUCS-A5 (Physical Security): EUCS physical security includes secure siting and protection of equipment within the facility (hardware placement, environmental protection). A.7.8 'Equipment siting and protection' is a genuine physical-security sub-aspect not covered by the perimeter/entry/utilities/cabling cross_refs."
+    },
+    {
+      "target": "A.7.14",
+      "mappingPercentage": 30,
+      "rationale": "EUCS-A5 (Physical Security): EUCS physical security requires secure disposal/decommissioning of physical equipment and media in the data centre. A.7.14 'Secure disposal or re-use of equipment' is a defensible additional physical control not in the current A5 cross_ref set."
+    },
+    {
+      "target": "A.8.9",
+      "mappingPercentage": 35,
+      "rationale": "EUCS-A6 (Operational Security): EUCS operational security explicitly covers configuration management / secure baseline hardening, which the existing gap_warning bundle (threat-intel, capacity, malware, vuln-mgmt, logging, monitoring) omits. A.8.9 'Configuration management' is a defensible additional operational control."
+    },
+    {
+      "target": "A.8.13",
+      "mappingPercentage": 35,
+      "rationale": "EUCS-A6 (Operational Security): Backup with restore testing is a core EUCS operational-security requirement. A.8.13 'Information backup' is a defensible additional correspondence missing from the A6 anchor (A.8.16) and its cross_refs."
+    },
+    {
+      "target": "A.8.32",
+      "mappingPercentage": 35,
+      "rationale": "EUCS-A6 (Operational Security): EUCS operational security includes change management for operational systems. A.8.32 'Change management' is a defensible additional operational control not covered by the monitoring/logging/malware/vuln/capacity cross_ref bundle."
+    },
+    {
+      "target": "A.8.4",
+      "mappingPercentage": 30,
+      "rationale": "EUCS-A7 (Identity, Authentication and Access Control): EUCS IAM covers restriction of access to source/program code in cloud platform development and operations. A.8.4 'Access to source code' is a defensible additional access-control correspondence not present in the current A7 cross_ref set (A.5.16/17/18, A.8.2/3/5)."
+    },
+    {
+      "target": "A.8.18",
+      "mappingPercentage": 30,
+      "rationale": "EUCS-A7 (Identity, Authentication and Access Control): EUCS IAM controls use of privileged utility programs capable of overriding system/access controls. A.8.18 'Use of privileged utility programs' is a defensible additional control closely tied to privileged-access management, beyond A.8.2 already mapped."
+    },
+    {
+      "target": "A.8.21",
+      "mappingPercentage": 85,
+      "rationale": "EUCS-A9: A.8.21 'Security of network services' is core to Communication Security — securing the network services (SLAs, security features, management) that carry cloud communications. The current single A.8.20 mapping under-covers the area; A.8.21 is a high-confidence additional correspondence."
+    },
+    {
+      "target": "A.8.22",
+      "mappingPercentage": 85,
+      "rationale": "EUCS-A9: A.8.22 'Segregation of networks' directly addresses tenant/network isolation, a central communication-security requirement for CSPs. Genuinely defensible and missing from the A.8.20-only mapping."
+    },
+    {
+      "target": "A.8.23",
+      "mappingPercentage": 65,
+      "rationale": "EUCS-A9: A.8.23 'Web filtering' is part of the networks-security cluster controlling external communications/traffic; defensible additional correspondence though narrower in scope than A.8.21/A.8.22."
+    },
+    {
+      "target": "A.8.24",
+      "mappingPercentage": 50,
+      "rationale": "EUCS-A9: Communication Security inherently requires protection of data in transit (TLS/transport encryption), realized via A.8.24 'Use of cryptography'. Moderate-confidence overlap; A.8.24 is also the primary home of EUCS-A8 (Cryptography), so the correspondence is partial/shared rather than exclusive."
+    },
+    {
+      "target": "A.8.9",
+      "mappingPercentage": 90,
+      "rationale": "EUCS-A11: The area is explicitly 'Change AND Configuration Management'. A.8.32 covers only change management; A.8.9 'Configuration management' (hardening baselines, IaC, drift detection) is the configuration-management half of the area and is a high-confidence missing correspondence."
+    },
+    {
+      "target": "A.8.26",
+      "mappingPercentage": 80,
+      "rationale": "EUCS-A12: 'Development of Information Systems' spans the full secure-dev lifecycle. A.8.26 'Application security requirements' is a core defensible correspondence beyond the lone A.8.25."
+    },
+    {
+      "target": "A.8.27",
+      "mappingPercentage": 75,
+      "rationale": "EUCS-A12: A.8.27 'Secure system architecture and engineering principles' is integral to secure development of cloud systems; defensible additional correspondence."
+    },
+    {
+      "target": "A.8.28",
+      "mappingPercentage": 80,
+      "rationale": "EUCS-A12: A.8.28 'Secure coding' is a central development-security control; high-confidence correspondence missing from the A.8.25-only mapping."
+    },
+    {
+      "target": "A.8.29",
+      "mappingPercentage": 80,
+      "rationale": "EUCS-A12: A.8.29 'Security testing in development and acceptance' (SAST/DAST/pentest gating) is core to the development area; defensible."
+    },
+    {
+      "target": "A.8.30",
+      "mappingPercentage": 70,
+      "rationale": "EUCS-A12: A.8.30 'Outsourced development' is in-scope where CSP development is outsourced; defensible correspondence."
+    },
+    {
+      "target": "A.8.31",
+      "mappingPercentage": 75,
+      "rationale": "EUCS-A12: A.8.31 'Separation of development, test and production environments' is a core secure-development requirement; defensible."
+    },
+    {
+      "target": "A.8.33",
+      "mappingPercentage": 65,
+      "rationale": "EUCS-A12: A.8.33 'Test information' (protection/anonymization of test data) is part of secure development handling; defensible additional correspondence."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 85,
+      "rationale": "EUCS-A13: 'Procurement and Suppliers' requires A.5.20 'Addressing information security within supplier agreements' — the contractual control complementing A.5.19; high-confidence missing correspondence."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 80,
+      "rationale": "EUCS-A13: A.5.21 'Managing information security in the ICT supply chain' is central to CSP sub-supplier (sub-processor) procurement; defensible."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 80,
+      "rationale": "EUCS-A13: A.5.22 'Monitoring, review and change management of supplier services' covers ongoing supplier oversight required by the procurement area; defensible."
+    },
+    {
+      "target": "A.5.23",
+      "mappingPercentage": 60,
+      "rationale": "EUCS-A13: A.5.23 'Information security for use of cloud services' applies where the CSP procures upstream cloud services (sub-CSPs); defensible though secondary."
+    },
+    {
+      "target": "A.5.25",
+      "mappingPercentage": 85,
+      "rationale": "EUCS-A14: Incident Management requires A.5.25 'Assessment and decision on information security events'; core part of the incident lifecycle missing from the A.5.24-only mapping."
+    },
+    {
+      "target": "A.5.26",
+      "mappingPercentage": 85,
+      "rationale": "EUCS-A14: A.5.26 'Response to information security incidents' is a central incident-management control; high-confidence correspondence."
+    },
+    {
+      "target": "A.5.27",
+      "mappingPercentage": 80,
+      "rationale": "EUCS-A14: A.5.27 'Learning from information security incidents' (lessons learned/continuous improvement) is integral to the incident area; defensible."
+    },
+    {
+      "target": "A.5.28",
+      "mappingPercentage": 75,
+      "rationale": "EUCS-A14: A.5.28 'Collection of evidence' (forensics) is part of incident handling, especially for CSP customer notification; defensible."
+    },
+    {
+      "target": "A.6.8",
+      "mappingPercentage": 70,
+      "rationale": "EUCS-A14: A.6.8 'Information security event reporting' provides the event-reporting channel feeding incident management; defensible additional correspondence."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 80,
+      "rationale": "EUCS-A15: A.5.30 'ICT readiness for business continuity' is the ICT/RTO-RPO dimension of the BC area, directly complementing A.5.29; high-confidence missing correspondence."
+    },
+    {
+      "target": "A.8.13",
+      "mappingPercentage": 75,
+      "rationale": "EUCS-A15: A.8.13 'Information backup' is a core enabler of business continuity / data restoration for CSPs; defensible."
+    },
+    {
+      "target": "A.8.14",
+      "mappingPercentage": 70,
+      "rationale": "EUCS-A15: A.8.14 'Redundancy of information processing facilities' (multi-region/HA) is central to cloud business continuity; defensible."
+    },
+    {
+      "target": "A.5.36",
+      "mappingPercentage": 80,
+      "rationale": "EUCS-A16: 'Compliance and Information Security Reviews' requires A.5.36 'Conformance with policies, rules and standards for information security' — the operational compliance-review counterpart to the independent review (A.5.35); high-confidence correspondence."
+    },
+    {
+      "target": "A.5.31",
+      "mappingPercentage": 75,
+      "rationale": "EUCS-A16: A.5.31 'Legal, statutory, regulatory and contractual requirements' is the foundation of the 'Compliance' half of the area; defensible and missing from the A.5.35-only mapping."
+    },
+    {
+      "target": "A.8.34",
+      "mappingPercentage": 65,
+      "rationale": "EUCS-A16: A.8.34 'Protection of information systems during audit testing' directly supports the information-security-reviews/audit dimension of the area; defensible."
+    },
+    {
+      "target": "A.5.34",
+      "mappingPercentage": 50,
+      "rationale": "EUCS-A16: A.5.34 'Privacy and protection of PII' is part of regulatory compliance reviewed under this area; moderate correspondence (overlaps with privacy-specific frameworks)."
+    },
+    {
+      "target": "A.5.33",
+      "mappingPercentage": 45,
+      "rationale": "EUCS-A16: A.5.33 'Protection of records' supports demonstrable compliance/retention obligations reviewed under this area; moderate, somewhat narrower correspondence."
+    },
+    {
+      "target": "A.5.23",
+      "mappingPercentage": 60,
+      "rationale": "EUCS-A17: A17 \"User Documentation\" concerns CSP-supplied tenant guidance on secure use of the cloud service — shared-responsibility matrix, hardening/configuration guides, API documentation. A.5.23 \"Information security for use of cloud services\" is the canonical ISO 27001:2022 control governing the acquisition/use/exit and customer-vs-provider responsibility split of cloud services, which is exactly what such documentation operationalizes. It is currently only listed as a cross_ref, not as a mapping target, despite being the most cloud-specific and defensible correspondence for documentation that defines the shared-responsibility model."
+    },
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 70,
+      "rationale": "EUCS-A18: A18 \"Investigative Requests from Government Agencies\" requires established procedures for receiving, validating, and responding to lawful-access requests from authorities, plus tenant notification. A.5.5 \"Contact with authorities\" is the direct ISO 27001:2022 control for maintaining appropriate contacts with relevant authorities and handling their requests in a controlled manner. It is absent from the current mapping (not even a cross_ref) yet is highly defensible as the procedural backbone for handling government requests."
+    },
+    {
+      "target": "A.5.31",
+      "mappingPercentage": 65,
+      "rationale": "EUCS-A18: Handling government/lawful-access requests is fundamentally a legal/regulatory-obligation problem (Schrems-II transfer-impact, US-CLOUD-Act vs GDPR conflict-of-law). A.5.31 \"Legal, statutory, regulatory and contractual requirements\" directly governs identifying and meeting such obligations, including conflicting jurisdictional demands. It is currently only a cross_ref but is defensibly a core mapping target, arguably stronger than the chosen A.5.34 (which only covers PII-protection basics)."
+    },
+    {
+      "target": "A.8.8",
+      "mappingPercentage": 60,
+      "rationale": "EUCS-A19: A19 \"Product Safety and Security\" explicitly requires a Coordinated Vulnerability Disclosure / intake-and-remediation capability for security weaknesses in the product. A.8.8 \"Management of technical vulnerabilities\" is the direct ISO 27001:2022 control for identifying, evaluating and remediating technical vulnerabilities — the remediation half of a CVD program. It is currently only a cross_ref but is a core, genuinely-missing mapping target."
+    },
+    {
+      "target": "A.8.26",
+      "mappingPercentage": 55,
+      "rationale": "EUCS-A19: A19's \"security-by-design\" requirement for the delivered product maps to A.8.26 \"Application security requirements\", which mandates determining and specifying security requirements for applications/services being developed or acquired. This complements the chosen A.8.25 (secure development lifecycle) by covering the requirements-definition dimension of secure-by-design and is presently only a cross_ref."
+    }
+  ]
+}
