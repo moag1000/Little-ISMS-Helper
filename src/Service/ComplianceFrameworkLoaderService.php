@@ -447,6 +447,20 @@ final class ComplianceFrameworkLoaderService
                 'icon' => '🛡️',
                 'required_modules' => ['compliance', 'controls'],
             ],
+            [
+                'code' => 'REVDSG-CH',
+                'name' => 'revDSG / nDSG — Revidiertes Datenschutzgesetz (SR 235.1)',
+                'description' => 'Schweizerisches Bundesgesetz über den Datenschutz (nDSG), in Kraft seit 01.09.2023. Reguliert Bearbeitung von Personendaten durch private Personen und Bundesorgane in der Schweiz. Zuständige Behörde: EDÖB. Schließt die CH-Lücke im DACH-Portfolio.',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'Bundesrat / EDÖB (Eidgenössischer Datenschutz- und Öffentlichkeitsbeauftragter)',
+                'mandatory' => false,
+                'applicability' => 'conditional',
+                'applicability_condition_key' => 'admin.compliance.applicability.condition.revdsg_ch',
+                'version' => '2023',
+                'loaded' => in_array('REVDSG-CH', $loadedCodes),
+                'icon' => '🇨🇭',
+                'required_modules' => ['compliance', 'privacy'],
+            ],
         ];
     }
 

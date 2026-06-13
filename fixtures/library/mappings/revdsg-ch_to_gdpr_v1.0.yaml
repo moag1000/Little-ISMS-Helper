@@ -1,0 +1,400 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'revdsg-ch_to_gdpr_v1.0'
+  source_framework: 'REVDSG-CH'
+  target_framework: 'GDPR'
+  version: 1
+  effective_from: '2026-06-14'
+  effective_until: null
+
+  provenance:
+    primary_source: 'Bundesgesetz über den Datenschutz (SR 235.1, nDSG/revDSG), in Kraft 2023-09-01'
+    primary_source_url: 'https://www.fedlex.admin.ch/eli/cc/2022/491/de'
+    secondary_sources:
+      - 'Verordnung (EU) 2016/679 (DSGVO/GDPR) — EU Data Protection Regulation'
+      - 'Botschaft zum Datenschutzgesetz (DSG) — Schweizer Bundesrat, 15.09.2017 (BBl 2017 6941)'
+      - 'EDÖB-Leitfaden revDSG 2023 (Erläuterungen zur Rechtsgrundlage)'
+      - 'Zürcher/Langenberger: Das neue Datenschutzrecht der Schweiz im Vergleich mit der DSGVO (2022)'
+      - 'Europäische Kommission — Angemessenheitsbeschluss Schweiz (aktiv seit 2000, bestätigt 2021)'
+    publisher: 'Little ISMS Helper Maintainers'
+    changelog:
+      - version: 1
+        date: '2026-06-14'
+        actor: 'maintainer'
+        note: |
+          Initial release: revDSG Articles → GDPR crosswalk.
+          The Swiss revDSG was deliberately modelled on the GDPR for EU adequacy
+          purposes (Art. 45 GDPR adequacy for Switzerland active since 2000 and
+          re-evaluated for nDSG). Strong structural alignment enables high-confidence
+          pairs across data-processing principles, information duties, data-subject
+          rights, data security, DPIA, breach notification, processor contracts,
+          cross-border transfers and records of processing.
+    license_note: 'Mapping is original derivative work (AGPL-3.0). revDSG is Swiss public law (freely usable). GDPR is EU public law (freely usable).'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      Crosswalk revDSG (SR 235.1) → GDPR (EU 2016/679).
+
+      The Swiss nDSG was designed with EU-GDPR equivalence as an explicit goal
+      (Botschaft 2017, SR 235.1 Erläuterungen). Key structural parallels:
+
+      1. Art.6 revDSG (Grundsätze) ↔ Art.5 GDPR (Principles): same six principles
+         (lawfulness, fairness, purpose limitation, data minimisation, accuracy,
+         storage limitation, integrity/confidentiality).
+      2. Art.8 revDSG (Datensicherheit) ↔ Art.32 GDPR (Security): same risk-based
+         TOM requirement for encryption, pseudonymisation, availability, resilience.
+      3. Art.9 revDSG (Auftragsbearbeiter) ↔ Art.28 GDPR (Processor): same DPA
+         contract requirement with instructions, sub-processor list, audit rights.
+      4. Art.12 revDSG (Bearbeitungsverzeichnis) ↔ Art.30 GDPR (RoPA): same
+         obligation to maintain records of processing activities.
+      5. Art.16-17 revDSG (Grundsätze/Ausnahmen für Auslandübermittlungen) ↔
+         Art.44-46 GDPR (Transfer principles/safeguards): same adequacy + SCC model.
+      6. Art.19 revDSG (Informationspflicht) ↔ Art.13-14 GDPR (Transparency).
+      7. Art.21 revDSG (Automatisierte Einzelentscheidung) ↔ Art.22 GDPR.
+      8. Art.22 revDSG (DSFA) ↔ Art.35 GDPR (DPIA): same high-risk threshold.
+      9. Art.24 revDSG (Meldepflicht Sicherheitsverletzung) ↔ Art.33-34 GDPR.
+      10. Art.25 revDSG (Auskunftsrecht) ↔ Art.15 GDPR (Right of access).
+      11. Art.28 revDSG (Datenportabilität) ↔ Art.20 GDPR (Data portability).
+
+      Notable divergences documented in gap_warning fields:
+      - revDSG targets individual-level criminal sanctions (Art.60-61) instead of
+        administrative fines (GDPR Art.83): structural difference, no direct mapping.
+      - revDSG Art.10 (DSB-Berater) is advisory/optional; GDPR Art.37 DSB is
+        mandatory for certain categories — partial overlap only.
+      - revDSG scope covers legal persons' data in addition to natural persons
+        (Art.2 Abs.2); GDPR covers only natural persons.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-06-14', actor: 'maintainer' }
+      - { state: 'published', date: '2026-06-14', actor: 'maintainer' }
+
+mappings:
+  # ===== 1. Kapitel — Allgemeine Bestimmungen / Scope & Definitions =====
+
+  - source: 'REVDSG-Art.1'
+    target: 'Art.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.1 "Zweck" schützt Persönlichkeit und Grundrechte bei der
+      Bearbeitung von Personendaten — identisches Schutzziel wie GDPR Art.1
+      "Gegenstand und Ziele" (Grundrechte und Grundfreiheiten natürlicher
+      Personen). Beide sind Zweckartikel ohne operative Pflichten.
+
+  - source: 'REVDSG-Art.2'
+    target: 'Art.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.2 "Persönlicher und sachlicher Geltungsbereich" entspricht
+      strukturell GDPR Art.2 "Sachlicher Anwendungsbereich". Hauptunterschied:
+      revDSG erfasst auch Daten juristischer Personen (Art.2 Abs.2); GDPR
+      deckt nur natürliche Personen.
+    gap_warning: 'revDSG deckt auch Daten juristischer Personen — GDPR deckt nur natürliche Personen.'
+
+  - source: 'REVDSG-Art.3'
+    target: 'Art.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.3 "Räumlicher Geltungsbereich" führt — wie GDPR Art.3 — das
+      Marktortprinzip (Auswirkungsprinzip) ein: Anwendung auf Sachverhalte mit
+      Auswirkungen auf Personen in der Schweiz, unabhängig vom Sitz des
+      Verantwortlichen. GDPR Art.3 Abs.2 ist strukturelle Vorlage.
+
+  - source: 'REVDSG-Art.5'
+    target: 'Art.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.5 "Begriffe" definiert Personendaten, besonders schützenswerte
+      Personendaten, Profiling, Verantwortlicher, Auftragsbearbeiter — deckungsgleich
+      mit GDPR Art.4 "Begriffsbestimmungen". Revdsg "besonders schützenswert"
+      entspricht GDPR "besondere Kategorien" (Art.9).
+
+  # ===== 2. Kapitel — Grundsätze / Principles & Security =====
+
+  - source: 'REVDSG-Art.6'
+    target: 'Art.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.6 "Grundsätze" kodifiziert dieselben sechs Datenschutzprinzipien
+      wie GDPR Art.5: Rechtmässigkeit/Treu-und-Glauben, Zweckbindung,
+      Verhältnismässigkeit (Datenminimierung), Richtigkeit, Erkennbarkeit/
+      Transparenz, Datensicherheit. Der Gesetzgeber hat GDPR Art.5 als Vorlage
+      verwendet (Botschaft 2017, BBl 2017 6941, S. 7084).
+    audit_evidence_hint: 'Datenschutzerklärung, Bearbeitungsverzeichnis, Löschkonzept, Nachweis der Rechtmässigkeit.'
+
+  - source: 'REVDSG-Art.7'
+    target: 'Art.25'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.7 "Datenschutz durch Technik und datenschutzfreundliche
+      Voreinstellungen" entspricht direkt GDPR Art.25 "Datenschutz durch
+      Technikgestaltung und durch datenschutzfreundliche Voreinstellungen"
+      (Privacy by Design / Privacy by Default). Inhalt und Anforderungen
+      sind nahezu identisch formuliert.
+    audit_evidence_hint: 'Privacy-by-Design-Nachweis in DPIA, Systemdokumentation mit PbD-Massnahmen, PbD-Voreinstellungen (Opt-in).'
+
+  - source: 'REVDSG-Art.8'
+    target: 'Art.32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.8 "Datensicherheit" entspricht GDPR Art.32 "Sicherheit der
+      Verarbeitung". Beide verlangen angemessene technische und organisatorische
+      Massnahmen (TOMs) nach dem Stand der Technik, risikobasiert, inkl.
+      Verschlüsselung, Pseudonymisierung, Verfügbarkeit und Wiederherstellbarkeit.
+      Art.8 Abs.3 revDSG: Auftragsbearbeiter sichert ebenfalls — parallel zu
+      Art.32 Abs.1-2 GDPR.
+    cross_refs: ['Art.5']
+    audit_evidence_hint: 'TOM-Beschreibung, Kryptokonzept, Backup/Restore-Tests, Pentest-Reports.'
+
+  - source: 'REVDSG-Art.9'
+    target: 'Art.28'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.9 "Bearbeitung durch Auftragsbearbeiter" entspricht GDPR Art.28
+      "Auftragsverarbeiter". Beide fordern schriftlichen Auftragsbearbeitungsvertrag
+      (AVV/DPA), Weisungsgebundenheit, Subauftragnehmer-Genehmigung, Audit-Recht
+      des Verantwortlichen. Art.9 Abs.2 revDSG erlaubt sub-Auftragsbearbeitung
+      nur mit vorgängiger Genehmigung — identisch zu Art.28 Abs.2 GDPR.
+    cross_refs: ['Art.32']
+    audit_evidence_hint: 'AVV/DPA mit Art.9 revDSG-Klauseln, Subauftragnehmer-Liste, Weisungsdokumentation, Audit-Rechte.'
+
+  - source: 'REVDSG-Art.12'
+    target: 'Art.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.12 "Verzeichnis der Bearbeitungstätigkeiten" entspricht GDPR
+      Art.30 "Verzeichnis von Verarbeitungstätigkeiten" (RoPA). Beide Pflichten:
+      Name/Kontakt Verantwortlicher, Zweck, Kategorien von Personendaten,
+      Empfängerkategorien, Aufbewahrungsfristen, Sicherheitsmassnahmen.
+      Ausnahme für Betriebe mit <250 MA (Art.12 Abs.5 revDSG ↔ Art.30 Abs.5 GDPR)
+      ist strukturell gleich.
+    audit_evidence_hint: 'Bearbeitungsverzeichnis (Art.12 revDSG / Art.30 GDPR), RoPA-Dokumentation.'
+
+  # ===== 3. Kapitel — Grenzüberschreitende Bekanntgabe =====
+
+  - source: 'REVDSG-Art.16'
+    target: 'Art.44'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.16 "Grundsätze" für grenzüberschreitende Bekanntgabe entspricht
+      GDPR Art.44 "Allgemeines Übertragungsprinzip": Personendaten dürfen ins
+      Ausland nur bekannt gegeben werden, wenn ein angemessener Schutz
+      gewährleistet ist. Der Bundesrat führt eine Länderliste mit
+      Angemessenheitsentscheiden (Art.16 Abs.1, entspricht Art.45 GDPR).
+    cross_refs: ['Art.45', 'Art.46']
+    audit_evidence_hint: 'Prüfung Bundesrat-Länderliste (Angemessenheit), Transfer-Dokumentation.'
+
+  - source: 'REVDSG-Art.17'
+    target: 'Art.46'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.17 "Ausnahmen" bei fehlender Angemessenheit (Standardklauseln,
+      BCR, Einwilligung, Vertragserfüllung) entspricht GDPR Art.46
+      "Datentransfer mit geeigneten Garantien" (SCC, BCR) und Art.49 "Ausnahmen
+      für bestimmte Fälle". Revdsg Art.17 Abs.1 Buchstaben a-f sind strukturell
+      parallel zu GDPR Art.46 und Art.49.
+    cross_refs: ['Art.49']
+    audit_evidence_hint: 'SCC/Standardklauseln (nach Art.16-17 revDSG), BCR, Einwilligungsdokumentation.'
+
+  # ===== 4. Kapitel — Pflichten des Verantwortlichen =====
+
+  - source: 'REVDSG-Art.19'
+    target: 'Art.13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.19 "Informationspflicht bei der Beschaffung von Personendaten"
+      entspricht GDPR Art.13 "Informationspflicht bei Erhebung beim Betroffenen".
+      Pflichtangaben sind strukturell identisch: Identität Verantwortlicher,
+      Kontakt DSB, Bearbeitungszwecke, Rechtsgrundlage, Empfängerkategorien,
+      Datenschutzbeauftragter, ggf. Drittlandübermittlungen, Betroffenenrechte.
+    cross_refs: ['Art.14']
+    audit_evidence_hint: 'Datenschutzerklärung / Privacy Notice mit Art.19 revDSG-Pflichtangaben.'
+
+  - source: 'REVDSG-Art.21'
+    target: 'Art.22'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.21 "Informationspflicht bei einer automatisierten
+      Einzelentscheidung" entspricht GDPR Art.22 "Automatisierte Entscheidungen
+      im Einzelfall einschliesslich Profiling". Revdsg schreibt vor: Mitteilung
+      an Betroffene, Recht auf Stellungnahme, Überprüfung durch natürliche
+      Person. GDPR Art.22 Abs.3 ist strukturelle Vorlage.
+    audit_evidence_hint: 'Dokumentation automatisierter Entscheidungssysteme, Opt-out / Widerspruchsmöglichkeit, menschliche Überprüfung.'
+
+  - source: 'REVDSG-Art.22'
+    target: 'Art.35'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.22 "Datenschutz-Folgenabschätzung (DSFA)" entspricht GDPR
+      Art.35 "Datenschutz-Folgenabschätzung (DPIA)". Beide fordern DSFA/DPIA
+      bei hohem Risiko für Grundrechte, systematischer Überwachung,
+      Bearbeitung besonders schützenswerter Daten in grossem Umfang.
+      Revdsg Art.22 Abs.4: Konsultation EDÖB bei verbleibendem hohem Risiko —
+      parallel zu GDPR Art.36 (Vorherige Konsultation).
+    cross_refs: ['Art.36']
+    audit_evidence_hint: 'DSFA/DPIA-Dokumentation, Risikobeurteilung, ggf. EDÖB-Konsultationsnachweis.'
+
+  - source: 'REVDSG-Art.23'
+    target: 'Art.36'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.23 "Konsultation des EDÖB" (Pflicht bei verbleibendem hohem
+      Risiko nach DSFA) entspricht GDPR Art.36 "Vorherige Konsultation" der
+      Aufsichtsbehörde. Beide verpflichten zur Behördenkonsultation wenn DPIA/DSFA
+      ergibt, dass das Risiko ohne Gegenmassnahmen hoch verbleibt.
+    audit_evidence_hint: 'EDÖB-Konsultationsnachweis, Massnahmenbeschreibung für Risikoreduzierung.'
+
+  - source: 'REVDSG-Art.24'
+    target: 'Art.33'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.24 "Meldung von Verletzungen der Datensicherheit" entspricht
+      GDPR Art.33 "Meldung von Datenschutzverletzungen an die Aufsichtsbehörde".
+      Revdsg Art.24 Abs.1: unverzügliche Meldung an EDÖB soweit möglich (analog
+      72h-Frist GDPR Art.33 Abs.1). Art.24 Abs.2: Information betroffener
+      Personen bei hohem Risiko — entspricht GDPR Art.34.
+    cross_refs: ['Art.34']
+    audit_evidence_hint: 'Breach-Notification-Workflow mit EDÖB-Meldeschwelle, Breach-Register, Mustermeldung.'
+
+  - source: 'REVDSG-Art.25'
+    target: 'Art.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.25 "Auskunftsrecht" entspricht GDPR Art.15 "Auskunftsrecht der
+      betroffenen Person". Beide gewähren unentgeltliches Recht auf Auskunft über
+      alle bearbeiteten Personendaten, Herkunft, Empfänger, Bearbeitungszwecke,
+      Aufbewahrungsdauer und Rechtsgrundlagen. Frist revDSG: 30 Tage (Art.25 Abs.7).
+    audit_evidence_hint: 'Auskunftsbegehren-Prozess, Frist-Tracking (30 Tage revDSG / 1 Monat GDPR).'
+
+  - source: 'REVDSG-Art.26'
+    target: 'Art.23'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      revDSG Art.26 "Einschränkungen des Auskunftsrechts" (Ausnahmen: überwiegende
+      Interessen Dritter, Geschäftsgeheimnisse, Untersuchungszwecke) entspricht
+      strukturell GDPR Art.23 "Beschränkungen" (mitgliedstaatliche Beschränkungen
+      aus öffentlichem Interesse). Beide normieren Ausnahmetatbestände zum
+      Auskunftsrecht, die Balance Interesse Betroffene vs. öffentliche/private
+      Interessen Dritter betreffend.
+
+  - source: 'REVDSG-Art.28'
+    target: 'Art.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.28 "Recht auf Datenherausgabe oder -übertragung" entspricht
+      GDPR Art.20 "Recht auf Datenübertragbarkeit". Beide gewähren das Recht,
+      Personendaten in einem gängigen, maschinenlesbaren Format herauszugeben
+      oder direkt an anderen Verantwortlichen zu übertragen. Revdsg beschränkt
+      auf automatisiert bearbeitete Daten — identisch mit GDPR Art.20 Abs.1.
+    audit_evidence_hint: 'Datenexport-Funktion, strukturiertes maschinenlesbares Format (JSON/CSV), API oder Direktübertragung.'
+
+  # ===== 5. Kapitel — Rechtsansprüche =====
+
+  - source: 'REVDSG-Art.30'
+    target: 'Art.17'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      revDSG Art.30 "Persönlichkeitsverletzungen" regelt den zivilrechtlichen
+      Anspruch bei widerrechtlicher Datenbearbeitung, einschliesslich Berichtigung,
+      Löschung, Sperrung. Thematisch verwandt mit GDPR Art.17 "Recht auf Löschung"
+      und Art.16 "Recht auf Berichtigung", aber systematisch anders verortet
+      (zivilrechtlicher Anspruch vs. Betroffenenrecht).
+    cross_refs: ['Art.16']
+    gap_warning: 'revDSG Kap.5 ist zivilrechtlich; GDPR Art.16-17 sind Betroffenenrechte. Systematische Parallelität, aber unterschiedliche Rechtsebenen.'
+
+  # ===== 6. Kapitel — Bundesorgane =====
+
+  - source: 'REVDSG-Art.33'
+    target: 'Art.26'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      revDSG Art.33 "Kontrolle und Verantwortung bei gemeinsamer Bearbeitung
+      von Personendaten" durch Bundesorgane entspricht strukturell GDPR Art.26
+      "Gemeinsam Verantwortliche": Regelung der Zuständigkeiten und
+      Verantwortlichkeiten zwischen gemeinsam bearbeitenden Stellen,
+      inkl. Vereinbarung über die Erfüllung der Datenschutzpflichten.
+
+  # ===== 7. Kapitel — EDÖB =====
+
+  - source: 'REVDSG-Art.49'
+    target: 'Art.58'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.49 "Untersuchung" (EDÖB eröffnet Sachverhaltsuntersuchung bei
+      Hinweisen auf Datenschutzverletzungen) entspricht GDPR Art.58 "Befugnisse"
+      der Aufsichtsbehörde, insbesondere Art.58 Abs.1 (Untersuchungsbefugnisse:
+      Auskunft, Zugang zu Daten, Vor-Ort-Kontrolle).
+    audit_evidence_hint: 'Verfahrensdokumentation EDÖB-Untersuchung, Kooperationspflicht.'
+
+  - source: 'REVDSG-Art.50'
+    target: 'Art.58'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      revDSG Art.50 "Befugnisse" des EDÖB (Anordnungsbefugnisse: Bearbeitungen
+      ändern/unterbrechen, Daten vernichten, bekannt geben) entspricht GDPR
+      Art.58 Abs.2 "Abhilfebefugnisse" der Aufsichtsbehörde (Verwarnungen,
+      Anordnungen, temporäre/dauerhafte Bearbeitungsverbote).
+
+  - source: 'REVDSG-Art.51'
+    target: 'Art.58'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      revDSG Art.51 "Verwaltungsmassnahmen" (EDÖB erlässt Verfügungen nach
+      Untersuchung) ist operativer Ausfluss von Art.58 GDPR Abs.2
+      (Abhilfebefugnisse). Revdsg setzt keine administrativen Bussgelder
+      für Private (stattdessen Strafrecht Art.60-61) — strukturelle Divergenz.
+    gap_warning: 'revDSG kennt keine administrativen Bussgelder wie GDPR Art.83. Stattdessen Strafrecht (Art.60-66 revDSG).'
+
+  # ===== 8. Kapitel — Strafbestimmungen =====
+
+  - source: 'REVDSG-Art.60'
+    target: 'Art.84'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      revDSG Art.60 "Verletzung von Informations-, Auskunfts- und
+      Mitwirkungspflichten" (Straftatbestand, Busse bis CHF 250'000) hat kein
+      direktes GDPR-Pendant. GDPR Art.84 ermöglicht mitgliedstaatliche
+      Strafvorschriften zusätzlich zu Art.83-Bussgeldern. Revdsg setzt
+      ausschliesslich auf individuelle Strafverantwortlichkeit, GDPR
+      auf administrative Sanktionen gegen juristische Personen.
+    gap_warning: 'Grundlegende Divergenz: revDSG = individuelle Strafsanktionen (CHF 250k), GDPR = administrative Bussgelder bis 20 Mio EUR / 4% Umsatz. Kein direktes Äquivalent.'
+
+  - source: 'REVDSG-Art.61'
+    target: 'Art.83'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      revDSG Art.61 "Verletzung von Sorgfaltspflichten" (Datensicherheit,
+      Auftragsbearbeitung, Bearbeitungsverzeichnis, DSFA, Meldung) adressiert
+      dieselben Pflichtbereiche wie GDPR Art.83 Abs.4 (Bussgelder für
+      Art.25/28/30/32/35). Beide sanktionieren Pflichtverletzungen, aber
+      mit fundamental unterschiedlichen Sanktionsmechanismen.
+    gap_warning: 'Sanktionsmechanismus fundamental verschieden: revDSG = Individualstrafrecht, GDPR = Unternehmenshaftung.'
