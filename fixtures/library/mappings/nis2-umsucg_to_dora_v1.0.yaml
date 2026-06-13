@@ -4,7 +4,7 @@ library:
   id: 'nis2-umsucg_to_dora_v1.0'
   source_framework: 'NIS2-UmsuCG'
   target_framework: 'DORA'
-  version: 1
+  version: 2
   effective_from: '2026-05-06'
   effective_until: null
 
@@ -20,6 +20,16 @@ library:
       - 'EBA Single Rule Book Q&A 2024_7060: Lex Specialis NIS2 Directive'
       - 'ENISA Technical Implementation Guidance on Cybersecurity Risk-Management Measures v1.0 (June 2025)'
     publisher: 'Little ISMS Helper Maintainers'
+    changelog:
+      - version: 2
+        date: '2026-06-13'
+        actor: 'maintainer'
+        note: |
+          depth pass: +6 panel-validated correspondences (multi-anchor enrichment).
+          Promoted from completeness candidates that survived a 4-expert AI judge
+          consensus plus adversarial-refutation round. Targets resolved against the
+          target-framework requirement catalogue; non-resolvable prose/cluster
+          candidates were dropped. Existing rows unchanged.
     license_note: |
       Mapping is original derivative work (AGPL-3.0). NIS2UmsuCG ist Amtliches Werk der
       Bundesrepublik Deutschland (gemeinfrei nach § 5 UrhG). DORA-Article-Referenzen
@@ -941,3 +951,33 @@ mappings:
       koennen jenseits DORA liegen.
     cross_refs: ['§61']
     audit_evidence_hint: 'Backup-Konzept gemaess DORA Art. 12 + §65 KRITIS-Erweiterung, Off-Site-Lagerungs-Doku.'
+  - source: '§30'
+    target: 'Art.11'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 65%).'
+  - source: '§30'
+    target: 'Art.16'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 55%).'
+  - source: '§43'
+    target: 'Art.5'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 60%).'
+  - source: '§60'
+    target: 'Art.50'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 55%).'
+  - source: '§61'
+    target: 'Art.5'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 55%).'
+  - source: '§65'
+    target: 'Art.17'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 60%).'

@@ -4,7 +4,7 @@ library:
   id: 'bsi-c5-2026_to_nis2-art21_v1.0'
   source_framework: 'BSI-C5-2026'
   target_framework: 'NIS2'
-  version: 1
+  version: 2
   effective_from: '2026-05-06'
   effective_until: null
 
@@ -17,6 +17,16 @@ library:
       - 'fixtures/library/catalogues/bsi-c5-2026-en/ — 18 BSI YAML files (verbatim BSI publication, CC-BY-ND 4.0)'
       - 'EU-Richtlinie (EU) 2022/2555 (NIS2-Richtlinie), Art. 20-23'
     publisher: 'Little ISMS Helper Maintainers'
+    changelog:
+      - version: 2
+        date: '2026-06-13'
+        actor: 'maintainer'
+        note: |
+          depth pass: +9 panel-validated correspondences (multi-anchor enrichment).
+          Promoted from completeness candidates that survived a 4-expert AI judge
+          consensus plus adversarial-refutation round. Targets resolved against the
+          target-framework requirement catalogue; non-resolvable prose/cluster
+          candidates were dropped. Existing rows unchanged.
     license_note: 'Mapping is original derivative work (AGPL-3.0). C5:2026 source IDs and names © BSI 2026 used under CC-BY-ND 4.0 with attribution. NIS2 article references © Europäische Union, public-domain-equivalent (Amtliches Werk).'
 
   methodology:
@@ -919,3 +929,48 @@ mappings:
       auf physischer Ebene — schwacher Anker an 21(2)(i) (Zugriffs-
       Mgmt). Argument analog PS-01.
     audit_evidence_hint: 'Zutrittskontroll-System, Besucher-Mgmt, Access-Logs.'
+  - source: 'OIS-02'
+    target: '21.2.a'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 85%).'
+  - source: 'OIS-06'
+    target: '21.2.a'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 85%).'
+  - source: 'OIS-08'
+    target: '21.2.d'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 80%).'
+  - source: 'IAM-05'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 80%).'
+  - source: 'IAM-06'
+    target: '21.2.j'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 80%).'
+  - source: 'IAM-08'
+    target: '21.2.i'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 75%).'
+  - source: 'DEV-13'
+    target: '21.2.e'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 75%).'
+  - source: 'DEV-14'
+    target: '21.2.e'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 75%).'
+  - source: 'SP-02'
+    target: '21.2.a'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 75%).'
