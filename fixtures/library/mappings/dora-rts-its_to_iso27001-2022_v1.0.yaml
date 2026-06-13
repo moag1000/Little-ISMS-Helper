@@ -4,9 +4,12 @@ library:
   id: 'dora-rts-its_to_iso27001-2022_v1.0'
   source_framework: 'DORA'
   target_framework: 'ISO27001'
-  version: 1
+  version: 2
   effective_from: '2025-01-17'
   effective_until: null
+
+  changelog:
+    - { version: 2, date: '2026-06-13', note: 'depth pass round-2: +38 panel-validated correspondences (multi-anchor depth for SIMPL/INC-REPORT/Subcontracting/TPP-Policy articles)' }
 
   provenance:
     primary_source: 'ESAs Joint Committee DORA Level-2 (RTS/ITS) Final Reports + EUR-Lex CELEX — mapped to ISO/IEC 27001:2022 Annex A controls'
@@ -989,3 +992,237 @@ mappings:
       RTS-Oversight Art.8 (recommendations to CTPPs and follow-up by competent
       authorities) relates, for the financial entity, to A.5.22 supplier
       monitoring and acting on supplier-service findings.
+
+  # ════════════════════════════════════════════════════════════════════════
+  # H. Depth pass round-2 (2026-06-13) — panel-validated additional anchors.
+  #    4-expert consensus + adversarial refutation survivors; multi-anchor
+  #    depth for SIMPL/INC-REPORT/Subcontracting/TPP-Policy articles.
+  # ════════════════════════════════════════════════════════════════════════
+  - source: 'RTS-ICT-RMF-Art.8'
+    target: 'A.8.8'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 85%).
+  - source: 'RTS-ICT-RMF-Art.25'
+    target: 'A.5.29'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'RTS-ICT-RMF-Art.27'
+    target: 'A.5.30'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.4'
+    target: 'A.5.2'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 80%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.4'
+    target: 'A.5.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.5'
+    target: 'A.5.1'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 80%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.6'
+    target: 'A.7.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.6'
+    target: 'A.7.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 75%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.6'
+    target: 'A.7.8'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.7'
+    target: 'A.5.18'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 80%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.7'
+    target: 'A.5.15'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 80%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.7'
+    target: 'A.8.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.7'
+    target: 'A.8.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.8'
+    target: 'A.6.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 62%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.8'
+    target: 'A.6.3'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 75%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.8'
+    target: 'A.6.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.9'
+    target: 'A.5.16'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 82%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.9'
+    target: 'A.5.17'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 80%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.10'
+    target: 'A.8.9'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 80%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.10'
+    target: 'A.8.7'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.10'
+    target: 'A.8.15'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.10'
+    target: 'A.8.16'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.10'
+    target: 'A.8.6'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 50%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.11'
+    target: 'A.8.32'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 75%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.11'
+    target: 'A.8.31'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.11'
+    target: 'A.8.25'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'RTS-ICT-RMF-SIMPL-Art.11'
+    target: 'A.8.29'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'RTS-INC-REPORT-Art.3'
+    target: 'A.5.26'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 55%).
+  - source: 'RTS-INC-REPORT-Art.4'
+    target: 'A.5.26'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 55%).
+  - source: 'RTS-INC-REPORT-Art.5'
+    target: 'A.5.26'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 50%).
+  - source: 'RTS-INC-REPORT-Art.9'
+    target: 'A.5.6'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 45%).
+  - source: 'RTS-Subcontracting-Art.1'
+    target: 'A.5.21'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'RTS-Subcontracting-Art.2'
+    target: 'A.5.21'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'RTS-Subcontracting-Art.2'
+    target: 'A.5.20'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 55%).
+  - source: 'RTS-Subcontracting-Art.3'
+    target: 'A.5.21'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 70%).
+  - source: 'RTS-TPP-Policy-Art.7'
+    target: 'A.5.30'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
+  - source: 'RTS-TPP-Policy-Art.7'
+    target: 'A.5.29'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 60%).
+  - source: 'RTS-TPP-Policy-Art.8'
+    target: 'A.5.22'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 65%).
