@@ -108,7 +108,7 @@ final class DoraRtsItsCatalogueLoader
                     $updated++;
                 }
 
-                $title = is_string($item) ? $item : ($item['title'] ?? $reqId);
+                $title = is_string($item) ? $item : $item['title'];
                 $itemPriority = is_array($item) ? ($item['priority'] ?? $defaultPriority) : $defaultPriority;
                 $rationale = is_array($item) ? ($item['rationale'] ?? null) : null;
                 $unsure = is_array($item) ? (bool) ($item['unsure'] ?? false) : false;
