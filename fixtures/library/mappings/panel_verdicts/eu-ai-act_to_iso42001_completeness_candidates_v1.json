@@ -1,0 +1,164 @@
+{
+  "provenance": {
+    "source_framework": "EU-AI-ACT",
+    "target_framework": "ISO42001",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "isms-specialist",
+      "dpo-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied to operational mappings without further human review",
+    "candidate_count": 29
+  },
+  "candidates": [
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 60,
+      "rationale": "EU-AI-Act Art.5: Several prohibited practices in Art.5 are inherently SOCIETAL harms, not just individual ones — social scoring of natural persons (Art.5(1)(c)), large-scale manipulation exploiting vulnerabilities, and real-time remote biometric identification in publicly accessible spaces all affect groups and society at collective level. ISO 42001 A.5.5 (Assessing societal impacts of AI systems) is the dedicated control for collective/societal-level impact evaluation. The current mapping captures the individual angle via A.5.4 but omits the societal one, even though Art.5's social-scoring and mass-surveillance prohibitions are quintessentially societal red-lines. Defensible 'related' at high confidence; complements the already-mapped A.5.4 (individuals)."
+    },
+    {
+      "target": "A.5.4",
+      "mappingPercentage": 75,
+      "rationale": "EU-AI-Act Art.9: Art.9(9) explicitly requires the risk-management system to give consideration to whether the high-risk AI system may have an adverse impact on persons under 18 and, as appropriate, other vulnerable groups. ISO 42001 A.5.4 (Assessing AI system impact on individuals or groups of individuals) is the precise control for that vulnerable-population/individual-and-group impact analysis. Notably A.5.4 is already cross-referenced inside the existing Art.9->A.5.2 and Art.9->A.5.3 mapping rows but never given its own mapping entry — a clear, defensible omission. Strong 'subset' at high confidence."
+    },
+    {
+      "target": "A.6.2.3",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.11: Art.11 + Annex IV require technical documentation that captures the system's design specifications, design choices, the general logic and key design assumptions, and the development/training methodology. ISO 42001 A.6.2.3 (Documentation of AI system design and development) is specifically about documenting design and development decisions, which is a distinct documentation locus from the operational/technical-documentation control A.6.2.7 already mapped. Annex IV's design-rationale and development-process sections map squarely to A.6.2.3. Defensible 'subset' at medium-high confidence — the current mapping (A.6.2.7 + clause 7.5) covers the technical-doc container and the document-control framework but not the design/development-documentation control."
+    },
+    {
+      "target": "A.6.2.7",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Art.15: Art.15(3) requires that the declared levels of accuracy and the relevant accuracy metrics be stated in the accompanying instructions of use, and Art.15 robustness/cybersecurity characteristics must be documented and declared. ISO 42001 A.6.2.7 (AI system technical documentation) is the control where these declared accuracy metrics, robustness measures and cybersecurity provisions are recorded as part of the system's technical documentation. The current mapping covers the V&V mechanics (A.6.2.4) and operation/monitoring (A.6.2.6) but omits the documentation locus for the declared accuracy/robustness/security characteristics. Defensible 'subset' at medium confidence."
+    },
+    {
+      "target": "ISO42001 Clause 4.4",
+      "mappingPercentage": 85,
+      "rationale": "EU-AI-Act Art.16: Art.16(a) obliges high-risk-AI providers to operate a quality management system (Art.17) that ensures the AI meets the requirements - this is structurally the establishment of the AI management system itself, captured by Clause 4.4 'AI management system'. The current mapping only reaches the A.6 lifecycle controls but omits the management-system-establishment obligation that 16(a) explicitly invokes."
+    },
+    {
+      "target": "ISO42001 A.3.2",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.16: Art.16(b)-(j) allocate concrete provider duties (documentation, logging, conformity, registration, corrective action, accessibility, authorised-representative designation). A.3.2 'AI roles and responsibilities' is the defensible home for the assignment/allocation of these provider responsibilities; the current A.6.* mapping covers lifecycle processes but not the role-allocation dimension that Art.16's enumerated obligations presuppose."
+    },
+    {
+      "target": "ISO42001 A.2.2",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Art.16: Art.16(a)+(c) (QMS + technical documentation discipline) are operationalised through a governing AI policy. A.2.2 'AI policy' is a genuinely defensible additional correspondence because the provider's overarching compliance commitment under Art.16 is policy-anchored, not solely lifecycle-process-anchored."
+    },
+    {
+      "target": "ISO42001 Clause 8.1",
+      "mappingPercentage": 80,
+      "rationale": "EU-AI-Act Art.17: a quality management system per Art.17(1)(a)-(m) is principally operational planning and control of the AI processes. Clause 8.1 'Operational planning and control' is a core missing correspondence - the current mapping captures policy (5.1), performance evaluation (9.3) and improvement (10.1) but omits the operational-control clause that is the substantive heart of any QMS."
+    },
+    {
+      "target": "ISO42001 Clause 7.5",
+      "mappingPercentage": 75,
+      "rationale": "EU-AI-Act Art.17: Art.17(1)(e) 'techniques, procedures and systematic actions for design, design control and verification' and 17(1)(k) 'record-keeping' map directly to Clause 7.5 'Documented information' (creation, control, retention of documented information). This is missing from the current 4.4/5.1/9.3/10.1 set."
+    },
+    {
+      "target": "ISO42001 A.2.2",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Art.17: Art.17(1)(a) 'a strategy for regulatory compliance' is the policy/strategy layer of the QMS, which corresponds to A.2.2 'AI policy'. Defensible as an additional Annex-A anchor beyond the management-system clauses already mapped."
+    },
+    {
+      "target": "ISO42001 A.3.2",
+      "mappingPercentage": 50,
+      "rationale": "EU-AI-Act Art.17: Art.17(1)(j) 'an accountability framework setting out the responsibilities of the management and other staff' corresponds directly to A.3.2 'AI roles and responsibilities'. The current clause-only mapping omits this Annex-A control."
+    },
+    {
+      "target": "ISO42001 Clause 10.1",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.20: corrective actions under Art.20 are not only reactive nonconformity handling (10.2, already mapped) but also feed continual improvement of the AIMS. Clause 10.1 'Continual improvement' is a defensible additional correspondence because Art.20 obliges providers to bring systems into conformity and improve, not merely remediate point defects."
+    },
+    {
+      "target": "ISO42001 A.6.2.6",
+      "mappingPercentage": 60,
+      "rationale": "EU-AI-Act Art.20: Art.20(1) requires providers to take corrective action when a placed-on-market system is non-conforming, which presupposes operational monitoring detecting the issue. A.6.2.6 'AI system operation and monitoring' is the defensible upstream control that triggers and supports the corrective action - missing from the 10.2-only mapping."
+    },
+    {
+      "target": "ISO42001 A.8.4",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Art.20: Art.20(1) requires the provider to 'inform the distributors ... and, where applicable, the deployers' when taking corrective action (withdrawal/recall/disable). A.8.4 (information to interested parties / external reporting of concerns) is a defensible correspondence for this mandatory communication dimension absent from the current mapping."
+    },
+    {
+      "target": "ISO42001 A.3.2",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.25: Art.25 reassigns provider obligations along the value chain and requires written agreements specifying who does what (25(4)). Beyond the third-party-relationship controls already mapped (A.10.2-A.10.4), A.3.2 'AI roles and responsibilities' is a defensible additional correspondence because Art.25 is fundamentally about allocating roles/responsibilities between value-chain actors."
+    },
+    {
+      "target": "ISO42001 A.6.2.6",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.26: deployer obligations include Art.26(5) monitoring the operation of the high-risk AI system per instructions and Art.26(1) human oversight in use. A.6.2.6 'AI system operation and monitoring' is a strongly defensible missing correspondence - the current A.9.* responsible-use controls do not fully capture the operational monitoring duty."
+    },
+    {
+      "target": "ISO42001 A.7.4",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Art.26: Art.26(4) obliges deployers to ensure input data is relevant and sufficiently representative in view of the intended purpose. A.7.4 'Data quality for AI systems' is a defensible additional correspondence covering the deployer's input-data responsibility, which is not addressed by the mapped A.9.* controls."
+    },
+    {
+      "target": "ISO42001 A.5.2",
+      "mappingPercentage": 50,
+      "rationale": "EU-AI-Act Art.26: Art.26(9) requires deployers (in scope) to perform a fundamental-rights impact assessment under Art.27. A.5.2 'AI system impact assessment process' is a defensible cross-link from the deployer obligations, since Art.26 explicitly imports the impact-assessment duty - absent from the A.9-only mapping."
+    },
+    {
+      "target": "ISO42001 A.5.3",
+      "mappingPercentage": 75,
+      "rationale": "EU-AI-Act Art.27: Art.27(1)-(3) require performing AND documenting/recording the fundamental-rights impact assessment and notifying the authority. A.5.3 'Documentation of AI system impact assessments' is the directly defensible missing control - the mapped A.5.2/A.5.4/A.5.5 cover the process and consideration of impacts but not the documentation/record obligation that Art.27 explicitly mandates."
+    },
+    {
+      "target": "ISO42001 A.6.2.4",
+      "mappingPercentage": 75,
+      "rationale": "EU-AI-Act Art.55: Art.55(1)(a) requires model evaluation including adversarial testing to identify and mitigate systemic risk. A.6.2.4 'AI system verification and validation' (testing) is a strongly defensible missing correspondence - the single A.5.5 mapping (impact-on-individuals/society) does not capture the technical evaluation/testing obligation central to Art.55."
+    },
+    {
+      "target": "ISO42001 A.5.2",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.55: Art.55(1)(b) requires assessing and mitigating possible systemic risks at Union level. A.5.2 'AI system impact assessment process' is a defensible missing correspondence for the systemic-risk-assessment duty; the lone A.5.5 mapping is too narrow for the full assessment obligation."
+    },
+    {
+      "target": "ISO42001 A.5.4",
+      "mappingPercentage": 60,
+      "rationale": "EU-AI-Act Art.55: Art.55(1)(b) systemic-risk identification at Union level concerns potential consequences/impacts of the AI system on individuals and society - A.5.4 'Assessing AI system impacts on individuals or groups' is a defensible companion to A.5.5 and should be co-mapped, not omitted."
+    },
+    {
+      "target": "ISO42001 A.6.2.6",
+      "mappingPercentage": 60,
+      "rationale": "EU-AI-Act Art.55: Art.55(1)(c) requires keeping track of, documenting and reporting serious incidents and corrective measures, which is an operational-monitoring obligation. A.6.2.6 'AI system operation and monitoring' is a defensible missing correspondence for the ongoing incident-tracking duty not covered by A.5.5."
+    },
+    {
+      "target": "ISO42001 A.6.2.8 (AI system event logging / recording of operation logs)",
+      "mappingPercentage": 75,
+      "rationale": "EU-AI-Act Art.72: Post-market monitoring under Art.72 is operationally impossible without the underlying event/operation logs. A.72 requires providers to systematically collect and analyse operational data over the system's lifetime; that data is sourced almost entirely from automatically recorded logs. The current mapping (A.6.2.6 operation/monitoring + 9.1) captures the analysis activity but omits the logging substrate that feeds it, which is itself a discrete ISO42001 Annex A control. Defensible and non-redundant."
+    },
+    {
+      "target": "ISO42001 A.6.2.7 (AI system technical documentation)",
+      "mappingPercentage": 45,
+      "rationale": "EU-AI-Act Art.72: Art.72 obliges providers to establish and DOCUMENT a post-market monitoring plan/system as part of the system's technical documentation set. A.6.2.7 covers maintenance of AI system technical documentation, so the documentation-of-the-monitoring-plan facet of Art.72 maps here. Partial because the core obligation is the active monitoring (already mapped), not the documentation per se."
+    },
+    {
+      "target": "ISO42001 Clause 10.2 (Nonconformity and corrective action)",
+      "mappingPercentage": 80,
+      "rationale": "EU-AI-Act Art.73: Art.73 does not stop at notifying authorities of a serious incident (A.8.4); it explicitly requires the provider to investigate the incident and take the necessary corrective action. That investigate-and-correct loop is precisely ISO42001 Clause 10.2 (nonconformity + corrective action). This is the strongest missing correspondence and is currently entirely absent from the mapping, which only covers the external-reporting facet."
+    },
+    {
+      "target": "ISO42001 A.6.2.6 (AI system operation and monitoring)",
+      "mappingPercentage": 60,
+      "rationale": "EU-AI-Act Art.73: A serious incident reportable under Art.73 must first be detected, which happens through AI system operation and monitoring (A.6.2.6). The current Art.73 mapping (A.8.4) covers only outbound reporting and ignores the detection/operational-monitoring control that surfaces the incident in the first place. Defensible as the detection precondition to reporting."
+    },
+    {
+      "target": "ISO42001 A.6.2.8 (AI system event logging / recording of operation logs)",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.73: Serious-incident investigation and the causal/root-cause analysis Art.73 implies depend on recorded event logs (A.6.2.8). Reconstructing what happened and substantiating the report to the market surveillance authority requires the log trail. Missing from the current A.8.4-only mapping; defensible."
+    },
+    {
+      "target": "ISO42001 Clause 9.1 (Monitoring, measurement, analysis and evaluation)",
+      "mappingPercentage": 40,
+      "rationale": "EU-AI-Act Art.73: Identifying that an event crosses the 'serious incident' threshold is an evaluation/measurement activity (Clause 9.1) layered on top of operational monitoring. Lower percentage and partly overlapping with A.6.2.6, but still a defensible management-system correspondence absent from the current mapping."
+    }
+  ]
+}
