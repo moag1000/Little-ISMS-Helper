@@ -94,7 +94,7 @@ mappings:
     gap_warning: 'DORA Art. 6 erwartet ein Framework mit klaren Risk-Tolerance-Niveaus — nicht durch A.5.1 allein abgedeckt.'
 
   - source: 'A.5.9'
-    target: 'Art.7'
+    target: 'DORA-7'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -212,7 +212,7 @@ mappings:
     audit_evidence_hint: 'A.5.30: ICT-BCP. DORA Art. 11: Recovery-Pläne mit RTO/RPO, Test-Reports, Behörden-Meldepfade.'
 
   - source: 'A.8.13'
-    target: 'Art.12'
+    target: 'DORA-12'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
