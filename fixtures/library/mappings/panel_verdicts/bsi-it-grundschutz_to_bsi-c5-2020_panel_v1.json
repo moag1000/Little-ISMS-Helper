@@ -1,0 +1,123 @@
+{
+  "library": {
+    "source_framework": "BSI-GRUNDSCHUTZ",
+    "target_framework": "BSI-C5",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (editorial Grundschutz ↔ C5:2020 mapping)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review/reject)",
+    "completeness": "28 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 14,
+      "ki_validiert": 6,
+      "needs_review": 0,
+      "reject": 8
+    }
+  },
+  "verdicts": [
+    {
+      "bsi": "ISMS.1",
+      "target": "OPS-01",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "bsi": "OPS.1.1.4",
+      "target": "OPS-15",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "bsi": "ORP.4",
+      "target": "IDM-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 78,
+      "realVotes": 4
+    },
+    {
+      "bsi": "ORP.4.A8",
+      "target": "IDM-09",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "bsi": "NET.1.1",
+      "target": "COS-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 3
+    },
+    {
+      "bsi": "CON.1",
+      "target": "CRY-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 88,
+      "realVotes": 4
+    },
+    {
+      "bsi": "CON.8",
+      "target": "COM-04",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "bsi": "DER.4",
+      "target": "OPS-06",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "bsi": "CON.8",
+      "target": "DEV-01",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "bsi": "CON.8.A4",
+      "target": "DEV-02",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "bsi": "ORP.4",
+      "target": "SIM-01",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "bsi": "APP.4.6",
+      "target": "PI-01",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "bsi": "CON.2",
+      "target": "COS-01",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "bsi": "INF.1",
+      "target": "HR-01",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    }
+  ]
+}

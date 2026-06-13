@@ -1,0 +1,89 @@
+{
+  "provenance": {
+    "source_framework": "EU-AI-ACT",
+    "target_framework": "GDPR",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "dpo-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 14
+  },
+  "candidates": [
+    {
+      "target": "EU-AI-Act Art.10",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.10: Art.10(2)-(3) mandate that training, validation and test data sets be relevant, sufficiently representative, free of errors and complete in view of the intended purpose. This is substantively the GDPR accuracy principle (Art.5(1)(d): data must be accurate and kept up to date, inaccurate data erased/rectified). The 'error-free/complete' data-quality duty is the same normative content as accuracy, so GDPR-5.1.d should be mapped and is missing. The already-mapped 5.1.a/6/9/22 cover lawfulness, legal basis, special-category bias-detection (Art.10(5)) and ADM, but none captures the accuracy/quality dimension."
+    },
+    {
+      "target": "EU-AI-Act Art.10",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Art.10: the data-governance requirements (Art.10(2)(b)-(g)) on data collection, preparation and the requirement that data sets be limited to what is needed for the intended purpose correspond to the GDPR data-minimisation principle (Art.5(1)(c)). Defensible but secondary to the accuracy match."
+    },
+    {
+      "target": "EU-AI-Act Art.15",
+      "mappingPercentage": 60,
+      "rationale": "EU-AI-Act Art.15: requires accuracy, robustness and cybersecurity of high-risk AI systems. While GDPR-32 (security of processing) is correctly mapped for the implementing measures, the underlying GDPR principle it operationalises is Art.5(1)(f) integrity and confidentiality (security principle). Art.15's robustness/resilience and protection against unauthorised alteration are the same normative content as the integrity-and-confidentiality principle, so GDPR-5.1.f should be mapped and is missing."
+    },
+    {
+      "target": "EU-AI-Act Art.26",
+      "mappingPercentage": 85,
+      "rationale": "EU-AI-Act Art.26: Art.26(9) explicitly cross-references the GDPR DPIA, requiring deployers to use the information from the high-risk system's instructions to carry out a data protection impact assessment under Art.35 GDPR where applicable. This is a direct, textual substantive correspondence, so GDPR-35 should be mapped and is missing (only 5.1.a is currently mapped)."
+    },
+    {
+      "target": "EU-AI-Act Art.26",
+      "mappingPercentage": 60,
+      "rationale": "EU-AI-Act Art.26: Art.26(11) obliges deployers of high-risk AI systems that make or assist in decisions about natural persons to inform those persons that they are subject to the system. This information-to-affected-persons duty corresponds to the GDPR transparency/information obligations (Art.13, and Art.14 where data are not obtained from the data subject), so GDPR-13 should be mapped and is missing."
+    },
+    {
+      "target": "EU-AI-Act Art.50",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.50: Art.50(3) governs emotion-recognition and biometric-categorisation systems and Art.50(4) governs deepfakes/synthetic content. Emotion-recognition and biometric-categorisation inherently process biometric data and infer special categories (health, ethnic origin, political/sexual indicators), which is the subject matter of GDPR Art.9 (special categories). The disclosure trigger in Art.50 is tightly coupled to that special-category processing, so GDPR-9 should be mapped and is missing (only GDPR-13 is mapped)."
+    },
+    {
+      "target": "EU-AI-Act Art.50",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Art.50: the transparency/labelling duties (informing persons of AI interaction, marking deepfakes/synthetic and AI-generated content) parallel the GDPR information obligation not only at direct collection (Art.13, already mapped) but also where persons are affected by content/data not obtained directly from them, which is the scope of Art.14. GDPR-14 should therefore be mapped and is missing."
+    },
+    {
+      "target": "EU-AI-Act Art.59",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.59: The sandbox provision governs further processing of lawfully-collected personal data for AI development in the public interest. It is built directly on the GDPR purpose-limitation / compatible-further-processing logic of Art.5(1)(b) and the data-minimisation/storage-limitation principles of Art.5 — Art.59(1) explicitly conditions the further use on these principles, so Art.5 is a substantive missing correspondence beyond the bare lawful-basis hook of Art.6. Art.89 (already mapped) only covers the research/archiving safeguards limb."
+    },
+    {
+      "target": "EU-AI-Act Art.59",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Art.59: Art.59(1)(f)-(g) require that sandbox processing be subject to monitoring of identified high risks and effective mitigation, i.e. a prior risk assessment of the further processing of (often special-category) data. This is the substantive analogue of the GDPR Art.35 DPIA duty for high-risk processing — a defensible missing mapping, since the sandbox conditions presuppose a DPIA-equivalent before personal data may be re-used."
+    },
+    {
+      "target": "EU-AI-Act Art.86",
+      "mappingPercentage": 75,
+      "rationale": "EU-AI-Act Art.86: The right to an explanation of individual decision-making for high-risk AI most precisely corresponds to GDPR Art.13(2)(f) and Art.14(2)(g), which mandate 'meaningful information about the logic involved' in automated decision-making. Art.86 effectively operationalises that transparency obligation ex post; Art.13/Art.14 are the ex-ante twin and are stronger substantive correspondences than the access right Art.15 already mapped. Both should be added."
+    },
+    {
+      "target": "EU-AI-Act Art.5",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.5: The prohibited practices include biometric categorisation inferring sensitive attributes (Art.5(1)(g)) and emotion recognition (Art.5(1)(f)), which by definition process special categories of data. This maps substantively to GDPR Art.9 (prohibition + narrow exceptions for special-category data incl. biometric data and data revealing race, political opinion, etc.) — a defensible missing mapping beyond the Art.22 automated-decision hook already present."
+    },
+    {
+      "target": "EU-AI-Act Annex-III",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Annex-III: §1 (biometrics) and several high-risk categories (e.g. emotion/biometric categorisation, certain essential-service and migration uses) inherently process GDPR Art.9 special categories. Annex III high-risk classification therefore correspondingly triggers Art.9 considerations; this is a defensible missing mapping beyond the DPIA hook (Art.35) already present."
+    },
+    {
+      "target": "EU-AI-Act Annex-III",
+      "mappingPercentage": 60,
+      "rationale": "EU-AI-Act Annex-III: High-risk areas such as creditworthiness/credit-scoring, recruitment/employment decisions, and eligibility for essential public/private services are precisely the rights-or-similarly-significant automated decisions governed by GDPR Art.22. The classification list overlaps substantively with the Art.22 scope, making Art.22 a defensible additional mapping beyond Art.35."
+    },
+    {
+      "target": "EU-AI-Act Annex-III",
+      "mappingPercentage": 45,
+      "rationale": "EU-AI-Act Annex-III: §6 (law enforcement) and §7 (migration/asylum/border control) high-risk systems process personal data relating to criminal offences and convictions, which is governed by GDPR Art.10 (and Directive 2016/680). Art.10 is a defensible substantive correspondence for these Annex III categories that the current Art.35-only mapping omits."
+    }
+  ]
+}

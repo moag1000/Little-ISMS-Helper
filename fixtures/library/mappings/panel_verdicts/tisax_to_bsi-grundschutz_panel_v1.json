@@ -1,0 +1,802 @@
+{
+  "library": {
+    "source_framework": "TISAX",
+    "target_framework": "bsi-grundschutz",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (VDA-ISA/TISAX ↔ Grundschutz; VDA catalogue not publicly redistributable, mapping editorial)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review/reject)",
+    "completeness": "53 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 111,
+      "ki_validiert": 67,
+      "needs_review": 21,
+      "reject": 23
+    }
+  },
+  "verdicts": [
+    {
+      "tisax": "1.1.1",
+      "baustein": "ISMS.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.1.1",
+      "baustein": "ORP.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.2.1",
+      "baustein": "ISMS.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.2.1",
+      "baustein": "ORP.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.2.2",
+      "baustein": "ISMS.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.2.2",
+      "baustein": "ORP.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.2.4",
+      "baustein": "OPS.2.3",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "tisax": "1.2.4",
+      "baustein": "OPS.2.2",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "tisax": "1.2.4",
+      "baustein": "OPS.3.2",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "tisax": "1.2.4",
+      "baustein": "ORP.2",
+      "state": "reject",
+      "mappingPercentage": 30,
+      "realVotes": 1
+    },
+    {
+      "tisax": "1.3.1",
+      "baustein": "CON.9",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "1.3.1",
+      "baustein": "ISMS.1",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "tisax": "1.3.1",
+      "baustein": "ORP.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.3.2",
+      "baustein": "CON.9",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "1.3.2",
+      "baustein": "ISMS.1",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 2
+    },
+    {
+      "tisax": "1.3.2",
+      "baustein": "ORP.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.3.3",
+      "baustein": "CON.2",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "tisax": "1.3.3",
+      "baustein": "CON.9",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "tisax": "1.3.3",
+      "baustein": "OPS.2.3",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "tisax": "1.3.3",
+      "baustein": "OPS.2.2",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "tisax": "1.3.3",
+      "baustein": "OPS.3.2",
+      "state": "reject",
+      "mappingPercentage": 40,
+      "realVotes": 1
+    },
+    {
+      "tisax": "1.3.3",
+      "baustein": "ORP.5",
+      "state": "reject",
+      "mappingPercentage": 35,
+      "realVotes": 1
+    },
+    {
+      "tisax": "1.4.1",
+      "baustein": "ISMS.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.5.1",
+      "baustein": "ISMS.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.5.2",
+      "baustein": "DER.3.1",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "tisax": "1.6.1",
+      "baustein": "DER.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.6.2",
+      "baustein": "DER.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.6.2",
+      "baustein": "DER.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "tisax": "1.6.2",
+      "baustein": "DER.2.3",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "tisax": "1.6.3",
+      "baustein": "DER.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "tisax": "2.1.1",
+      "baustein": "ORP.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "tisax": "2.1.2",
+      "baustein": "ORP.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "tisax": "2.1.3",
+      "baustein": "ORP.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "tisax": "2.1.4",
+      "baustein": "CON.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "tisax": "2.1.4",
+      "baustein": "INF.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "tisax": "2.1.4",
+      "baustein": "INF.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "tisax": "2.1.4",
+      "baustein": "NET.3.3",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "INF.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "INF.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "INF.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "INF.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "INF.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "INF.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "INF.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "INF.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "OPS.2.3",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "3.1.1",
+      "baustein": "ORP.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "3.1.3",
+      "baustein": "CON.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.3",
+      "baustein": "SYS.4.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.4",
+      "baustein": "SYS.3.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.4",
+      "baustein": "SYS.3.2.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "tisax": "3.1.4",
+      "baustein": "SYS.3.3",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "tisax": "3.1.4",
+      "baustein": "SYS.4.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "tisax": "4.1.1",
+      "baustein": "ORP.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "tisax": "4.1.2",
+      "baustein": "OPS.1.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 3
+    },
+    {
+      "tisax": "4.1.2",
+      "baustein": "ORP.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 78,
+      "realVotes": 4
+    },
+    {
+      "tisax": "4.1.3",
+      "baustein": "OPS.1.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 3
+    },
+    {
+      "tisax": "4.1.3",
+      "baustein": "ORP.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "tisax": "4.2.1",
+      "baustein": "OPS.1.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 3
+    },
+    {
+      "tisax": "4.2.1",
+      "baustein": "ORP.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.1.1",
+      "baustein": "CON.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.1.1",
+      "baustein": "ORP.5",
+      "state": "reject",
+      "mappingPercentage": 18,
+      "realVotes": 1
+    },
+    {
+      "tisax": "5.1.2",
+      "baustein": "CON.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.1.2",
+      "baustein": "CON.9",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "tisax": "5.1.2",
+      "baustein": "NET.1.1",
+      "state": "reject",
+      "mappingPercentage": 75,
+      "realVotes": 1
+    },
+    {
+      "tisax": "5.1.2",
+      "baustein": "OPS.1.1.7",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "5.2.1",
+      "baustein": "OPS.1.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 42,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.2.1",
+      "baustein": "OPS.1.1.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.2.1",
+      "baustein": "ORP.5",
+      "state": "reject",
+      "mappingPercentage": 18,
+      "realVotes": 1
+    },
+    {
+      "tisax": "5.2.2",
+      "baustein": "CON.10",
+      "state": "needs_review",
+      "mappingPercentage": 48,
+      "realVotes": 2
+    },
+    {
+      "tisax": "5.2.2",
+      "baustein": "CON.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.2.3",
+      "baustein": "DER.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.2.3",
+      "baustein": "OPS.1.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.2.3",
+      "baustein": "OPS.1.1.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.2.4",
+      "baustein": "DER.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.2.4",
+      "baustein": "DER.2.3",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "tisax": "5.2.4",
+      "baustein": "OPS.1.1.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.2.5",
+      "baustein": "IND.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "5.2.5",
+      "baustein": "OPS.1.1.2",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "tisax": "5.2.5",
+      "baustein": "OPS.1.1.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.2.7",
+      "baustein": "NET.1.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.2.7",
+      "baustein": "NET.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "tisax": "5.2.8",
+      "baustein": "DER.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.2.8",
+      "baustein": "INF.1",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "tisax": "5.2.9",
+      "baustein": "CON.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.2.9",
+      "baustein": "OPS.1.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.3.1",
+      "baustein": "CON.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.3.1",
+      "baustein": "CON.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.3.1",
+      "baustein": "OPS.1.1.2",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "tisax": "5.3.1",
+      "baustein": "OPS.1.1.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.3.2",
+      "baustein": "NET.1.1",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.3.2",
+      "baustein": "NET.1.2",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.3.3",
+      "baustein": "CON.2",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "5.3.3",
+      "baustein": "CON.6",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.3.3",
+      "baustein": "CON.9",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "tisax": "5.3.3",
+      "baustein": "ORP.2",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "5.3.3",
+      "baustein": "ORP.5",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "5.3.4",
+      "baustein": "OPS.2.3",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 2
+    },
+    {
+      "tisax": "5.3.4",
+      "baustein": "OPS.2.2",
+      "state": "needs_review",
+      "mappingPercentage": 65,
+      "realVotes": 2
+    },
+    {
+      "tisax": "5.3.4",
+      "baustein": "OPS.3.2",
+      "state": "needs_review",
+      "mappingPercentage": 70,
+      "realVotes": 2
+    },
+    {
+      "tisax": "6.1.1",
+      "baustein": "OPS.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "tisax": "6.1.1",
+      "baustein": "OPS.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "tisax": "6.1.1",
+      "baustein": "OPS.3.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "tisax": "6.1.1",
+      "baustein": "ORP.2",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "6.1.2",
+      "baustein": "CON.2",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "6.1.2",
+      "baustein": "OPS.2.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "tisax": "6.1.2",
+      "baustein": "OPS.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 48,
+      "realVotes": 4
+    },
+    {
+      "tisax": "6.1.2",
+      "baustein": "OPS.3.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 48,
+      "realVotes": 3
+    },
+    {
+      "tisax": "6.1.2",
+      "baustein": "ORP.5",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "tisax": "7.1.1",
+      "baustein": "ORP.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "tisax": "7.1.2",
+      "baustein": "CON.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    }
+  ]
+}

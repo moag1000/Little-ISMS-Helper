@@ -1,0 +1,207 @@
+{
+  "library": {
+    "source_framework": "EU-AI-ACT",
+    "target_framework": "NIS2",
+    "panel": [
+      "isms-specialist",
+      "dpo-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (editorial EU AI Act ↔ NIS2 Art.21 mapping)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review/reject)",
+    "completeness": "19 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 26,
+      "ki_validiert": 14,
+      "needs_review": 6,
+      "reject": 6
+    }
+  },
+  "verdicts": [
+    {
+      "eu": "Art.9",
+      "target": "21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.10",
+      "target": "21.2.h",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "eu": "Art.11",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "eu": "Annex-IV",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.12",
+      "target": "21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.13",
+      "target": "21.2.a",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "eu": "Art.14",
+      "target": "21.2.b",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "eu": "Art.15",
+      "target": "21.2.h",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.15",
+      "target": "21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.15",
+      "target": "21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.16",
+      "target": "21.2.e",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 2
+    },
+    {
+      "eu": "Art.17",
+      "target": "21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.20",
+      "target": "21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.26",
+      "target": "21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.26",
+      "target": "21.2.i",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "eu": "Art.27",
+      "target": "21.2.a",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 2
+    },
+    {
+      "eu": "Art.50",
+      "target": "21.2.a",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "eu": "Art.55",
+      "target": "21.2.a",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.55",
+      "target": "21.2.h",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.72",
+      "target": "21.2.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.73",
+      "target": "23.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.73",
+      "target": "23.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 3
+    },
+    {
+      "eu": "Annex-III",
+      "target": "Annex-I",
+      "state": "reject",
+      "mappingPercentage": 40,
+      "realVotes": 1
+    },
+    {
+      "eu": "Art.5",
+      "target": "21.2.a",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "eu": "Art.16",
+      "target": "21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.43",
+      "target": "21.2.f",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "realVotes": 3
+    }
+  ]
+}

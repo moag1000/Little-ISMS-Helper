@@ -1,0 +1,669 @@
+{
+  "library": {
+    "source_framework": "DORA",
+    "target_framework": "ISO27001",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (DORA RTS/ITS delegated acts carry no public ISO 27001 crosswalk; mapping is editorial)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review/reject)",
+    "completeness": "124 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 92,
+      "ki_validiert": 55,
+      "needs_review": 26,
+      "reject": 11
+    }
+  },
+  "verdicts": [
+    {
+      "dora": "RTS-ICT-RMF-Art.1",
+      "iso": "A.5.1",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.2",
+      "iso": "A.5.1",
+      "state": "needs_review",
+      "mappingPercentage": 80,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.3",
+      "iso": "A.5.1",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.4",
+      "iso": "A.5.2",
+      "state": "needs_review",
+      "mappingPercentage": 85,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.5",
+      "iso": "A.5.9",
+      "state": "needs_review",
+      "mappingPercentage": 75,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.6",
+      "iso": "A.8.24",
+      "state": "needs_review",
+      "mappingPercentage": 90,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.7",
+      "iso": "A.8.24",
+      "state": "needs_review",
+      "mappingPercentage": 80,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.8",
+      "iso": "A.8.9",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.9",
+      "iso": "A.8.6",
+      "state": "reject",
+      "mappingPercentage": 85,
+      "realVotes": 1
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.10",
+      "iso": "A.8.8",
+      "state": "reject",
+      "mappingPercentage": 85,
+      "realVotes": 1
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.11",
+      "iso": "A.8.12",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.12",
+      "iso": "A.8.15",
+      "state": "reject",
+      "mappingPercentage": 90,
+      "realVotes": 1
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.13",
+      "iso": "A.8.22",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.14",
+      "iso": "A.8.21",
+      "state": "needs_review",
+      "mappingPercentage": 60,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.15",
+      "iso": "A.8.32",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.16",
+      "iso": "A.8.25",
+      "state": "needs_review",
+      "mappingPercentage": 80,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.17",
+      "iso": "A.7.4",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.18",
+      "iso": "A.6.1",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.19",
+      "iso": "A.5.16",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.20",
+      "iso": "A.5.15",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.21",
+      "iso": "A.5.24",
+      "state": "reject",
+      "mappingPercentage": 45,
+      "realVotes": 1
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.22",
+      "iso": "A.8.16",
+      "state": "needs_review",
+      "mappingPercentage": 35,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.23",
+      "iso": "A.5.30",
+      "state": "reject",
+      "mappingPercentage": 55,
+      "realVotes": 1
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.24",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.25",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.26",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.27",
+      "iso": "A.8.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.28",
+      "iso": "A.5.36",
+      "state": "reject",
+      "mappingPercentage": 40,
+      "realVotes": 1
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.29",
+      "iso": "A.5.36",
+      "state": "reject",
+      "mappingPercentage": 40,
+      "realVotes": 1
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.1",
+      "iso": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.2",
+      "iso": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.3",
+      "iso": "A.5.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.4",
+      "iso": "A.5.37",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.5",
+      "iso": "A.5.9",
+      "state": "needs_review",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.6",
+      "iso": "A.5.12",
+      "state": "needs_review",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.7",
+      "iso": "A.8.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.8",
+      "iso": "A.7.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.9",
+      "iso": "A.5.15",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.10",
+      "iso": "A.8.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.11",
+      "iso": "A.8.22",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.12",
+      "iso": "A.5.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.13",
+      "iso": "A.8.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.14",
+      "iso": "A.6.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.1",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.2",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.3",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.4",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.5",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.6",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.7",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.8",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.9",
+      "iso": "A.5.25",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.10",
+      "iso": "A.5.25",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-INC-CLASS-Art.11",
+      "iso": "A.5.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.1",
+      "iso": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.2",
+      "iso": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.3",
+      "iso": "A.5.27",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.4",
+      "iso": "A.5.7",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.5",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.7",
+      "iso": "A.5.22",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.9",
+      "iso": "A.5.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.1",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.2",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.3",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.4",
+      "iso": "A.5.22",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.5",
+      "iso": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.6",
+      "iso": "A.5.22",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.7",
+      "iso": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 68,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.8",
+      "iso": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-TLPT-Art.1",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-TLPT-Art.2",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-TLPT-Art.3",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-TLPT-Art.4",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TLPT-Art.5",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-TLPT-Art.6",
+      "iso": "A.5.7",
+      "state": "needs_review",
+      "mappingPercentage": 65,
+      "realVotes": 2
+    },
+    {
+      "dora": "RTS-TLPT-Art.7",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TLPT-Art.8",
+      "iso": "A.8.16",
+      "state": "needs_review",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-TLPT-Art.9",
+      "iso": "A.8.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TLPT-Art.10",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TLPT-Art.11",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-TLPT-Art.12",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.1",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.2",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.3",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.4",
+      "iso": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 68,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.5",
+      "iso": "A.5.22",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.6",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.7",
+      "iso": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.8",
+      "iso": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "dora": "RTS-Oversight-Art.2",
+      "iso": "A.5.22",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "dora": "RTS-Oversight-Art.3",
+      "iso": "A.5.21",
+      "state": "needs_review",
+      "mappingPercentage": 25,
+      "realVotes": 3
+    },
+    {
+      "dora": "RTS-Oversight-Art.8",
+      "iso": "A.5.22",
+      "state": "needs_review",
+      "mappingPercentage": 22,
+      "realVotes": 3
+    }
+  ]
+}

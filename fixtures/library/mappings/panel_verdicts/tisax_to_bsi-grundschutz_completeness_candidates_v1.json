@@ -1,0 +1,284 @@
+{
+  "provenance": {
+    "source_framework": "TISAX",
+    "target_framework": "bsi-grundschutz",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 53
+  },
+  "candidates": [
+    {
+      "target": "TISAX 1.1.1 -> ORP.5",
+      "mappingPercentage": 40,
+      "rationale": "TISAX 1.1.1: The IS-policy control requires the policy to address compliance/legal-and-regulatory obligations and to be reviewed for continued compliance. BSI ORP.5 (Compliance Management) is the canonical Baustein for identifying and tracking the legal/regulatory/contractual requirements a policy must reflect. ISMS.1 + ORP.1 cover the management framework and organisation but not the compliance-requirement-identification dimension that a policy framework must satisfy. Defensible additive mapping."
+    },
+    {
+      "target": "TISAX 1.2.1 -> ORP.4",
+      "mappingPercentage": 35,
+      "rationale": "TISAX 1.2.1 (Organisation of IS — roles, responsibilities, segregation of duties): where the control assigns and segregates security responsibilities and authorities, BSI ORP.4 (Identitaets- und Berechtigungsmanagement) governs the assignment/segregation of rights and roles that operationalise those responsibilities. ISMS.1 + ORP.1 establish the organisation; ORP.4 is the missing piece for role/authority and segregation-of-duty enforcement. Moderately defensible."
+    },
+    {
+      "target": "TISAX 1.2.2 -> ORP.3",
+      "mappingPercentage": 30,
+      "rationale": "TISAX 1.2.2 concerns embedding IS into the organisation and project management, which in VDA-ISA explicitly requires personnel to be made aware of their assigned IS roles/duties. BSI ORP.3 (Sensibilisierung und Schulung) is the dedicated Baustein for awareness of organisational IS responsibilities. ISMS.1 + ORP.1 do not cover the awareness/training dimension. Reasonably defensible additive mapping."
+    },
+    {
+      "target": "TISAX 1.2.4 -> OPS.2.3",
+      "mappingPercentage": 60,
+      "rationale": "TISAX 1.2.4 (use of external IT services / cloud, evidenced by the already-mapped OPS.2.1 Outsourcing-fuer-Kunden, OPS.2.2 Cloud-Nutzung, OPS.3.1, ORP.2): OPS.2.3 (Nutzung von Outsourcing) is the customer-side outsourcing-usage Baustein and is the direct complement to OPS.2.1/2.2 for an organisation consuming external IT services. Its omission alongside OPS.2.1/2.2/3.1 is a clear gap. Strongly defensible."
+    },
+    {
+      "target": "TISAX 1.3.1 -> ORP.4",
+      "mappingPercentage": 20,
+      "rationale": "TISAX 1.3.1 (Asset Management — identification of information assets and assignment of ownership/responsibility): the already-mapped CON.9/ISMS.1/ORP.1 cover information exchange and the management framework, but asset ownership and access responsibility tie into ORP.4 (Identitaets- und Berechtigungsmanagement). Weaker than 1.3.2/1.3.3 mappings; included only as a defensible additive link for owner-to-access binding."
+    },
+    {
+      "target": "TISAX 1.3.2 -> CON.1",
+      "mappingPercentage": 35,
+      "rationale": "TISAX 1.3.2 (Asset Management — classification of information): classification drives the required protection level. BSI maps ISO A.5.12 'Classification of information' to CON.1 (Kryptokonzept) and ORP.1; the protection-level/classification-to-control linkage runs through CON.1. The already-mapped CON.9/ISMS.1/ORP.1 omit the classification-to-protection-requirement Baustein. Defensible per the BSI-ISO crosswalk (A.5.12 -> CON.1, ORP.1)."
+    },
+    {
+      "target": "TISAX 1.3.3 -> SYS.4.5",
+      "mappingPercentage": 50,
+      "rationale": "TISAX 1.3.3 (handling of assets / removable media and physical information carriers — evidenced by the already-mapped CON.6 Loeschen-und-Vernichten and ORP.5): the BSI-ISO crosswalk maps A.7.10 'Storage media' to SYS.4.5 (Wechseldatentraeger) AND CON.6. CON.6 is already present but its companion SYS.4.5 for the secure handling/use of removable data carriers is missing. Strongly defensible per the explicit A.7.10 -> SYS.4.5, CON.6 mapping."
+    },
+    {
+      "target": "TISAX 1.4.1 -> CON.2",
+      "mappingPercentage": 15,
+      "rationale": "TISAX 1.4.1 (IS Risk Management — only ISMS.1 mapped): BSI handles risk analysis methodologically via BSI 200-3 rather than a dedicated Kompendium-Baustein, so ISMS.1 (which embeds the risk-management process) is largely correct. The defensible additive Baustein is CON.2 (Datenschutz) only where privacy/PII risk is in scope, since data-protection risk feeds the IS risk picture (A.5.34 -> CON.2). Conditional and module-gated; offered as the single defensible extension. If privacy is out of scope, the existing ISMS.1-only mapping is complete."
+    },
+    {
+      "target": "ISMS.1 is correct as primary; ORP.1 (Organisation) is the defensible missing addition.",
+      "mappingPercentage": 80,
+      "rationale": "TISAX 1.5.1 (VDA-ISA: \"To what extent is information security managed within the organisation?\") requires not only an established ISMS (ISMS.1) but the assignment of an overall information-security organisation, roles, responsibilities and the security policy. In the canonical ISO 27001->IT-Grundschutz mapping, A.5.1/A.5.2/A.5.4 (policies, roles, management responsibility) map to BOTH ISMS.1 AND ORP.1. ORP.1 (Organisation) is the Baustein that carries role/responsibility assignment and is consistently paired with ISMS.1 for the management-of-information-security control family. It is missing and defensibly required."
+    },
+    {
+      "target": "ORP.5 (Compliance Management)",
+      "mappingPercentage": 40,
+      "rationale": "TISAX 1.5.1 also asks whether the ISMS scope reflects internal and external (legal/contractual) requirements applicable to the organisation. The duty to identify and track applicable legal, regulatory and contractual requirements is carried by ORP.5 (Compliance Management) in IT-Grundschutz (maps to ISO A.5.31/A.5.36). For a defensible 1.5.1 scope-definition mapping this is a secondary but legitimate addition."
+    },
+    {
+      "target": "DER.3.1 is appropriate but incomplete; ISMS.1 is the defensible missing primary.",
+      "mappingPercentage": 75,
+      "rationale": "TISAX 1.5.2 (VDA-ISA: \"To what extent are information security risks managed?\") covers the full risk-management cycle: identification, analysis, evaluation, treatment and acceptance of information-security risks. In IT-Grundschutz risk management is the core content of the ISMS Baustein ISMS.1 (Sicherheitsmanagement) together with the Risikoanalyse methodology of BSI 200-3. DER.3.1 (Audits/Revisionen) only covers the review/verification facet, not the risk-assessment and risk-treatment core. ISMS.1 is therefore a defensible missing primary mapping for the risk-management requirement."
+    },
+    {
+      "target": "DER.1 is mis-scoped; the defensible primary for TISAX 1.6.1 is DER.2.1 (Behandlung von Sicherheitsvorfaellen).",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 1.6.1 (VDA-ISA: \"To what extent are information security events and weaknesses reported and assessed?\") is about reporting and assessing security EVENTS — i.e. the front end of incident management (ISO A.6.8 / A.5.25). In IT-Grundschutz the reporting/assessment of security events is governed by DER.2.1 (Behandlung von Sicherheitsvorfaellen), which the official mapping pairs with A.5.24/A.5.25/A.5.26/A.6.8. DER.1 (Detektion) only covers technical detection/monitoring, not the organisational reporting-and-assessment process the control demands. DER.2.1 is the missing defensible mapping."
+    },
+    {
+      "target": "DER.2.3 does not exist in the IT-Grundschutz-Kompendium and should be dropped; no additional Baustein is defensibly required beyond DER.2.1/DER.2.2.",
+      "mappingPercentage": 0,
+      "rationale": "TISAX 1.6.2 (VDA-ISA: \"To what extent are information security incidents managed?\") maps correctly to DER.2.1 (incident handling) and DER.2.2 (Vorsorge fuer die IT-Forensik, for evidence collection per A.5.28). The listed DER.2.3 is not a valid Baustein (the DER.2 family contains only DER.2.1 and DER.2.2). Beyond removing the phantom, DER.2.1/DER.2.2 already cover the incident-management requirement; no further Baustein is defensibly missing."
+    },
+    {
+      "target": "DER.4 is correct; no additional BSI Baustein is defensibly required for TISAX 1.6.3.",
+      "mappingPercentage": 0,
+      "rationale": "TISAX 1.6.3 (VDA-ISA: \"To what extent is the continuity of business-critical processes / handling of crises ensured?\" — business-continuity/crisis facet) maps cleanly to DER.4 (Notfallmanagement), the IT-Grundschutz BCM Baustein that the official mapping pairs with A.5.29/A.5.30. The continuity-of-information-security requirement is fully carried by DER.4; no other Baustein adds defensible coverage. Empty."
+    },
+    {
+      "target": "ORP.3 (Sensibilisierung und Schulung)",
+      "mappingPercentage": 65,
+      "rationale": "TISAX 2.1.1 (VDA-ISA: \"To what extent is the qualification of employees for sensitive activities ensured?\") concerns employee qualification, awareness and training for security-relevant duties. ORP.2 (Personal) covers the HR lifecycle (screening, terms, termination) but the qualification/awareness/training facet (ISO A.6.3) is the dedicated content of ORP.3 (Sensibilisierung und Schulung). ORP.3 is a defensible missing mapping for the qualification requirement."
+    },
+    {
+      "target": "ORP.2 is correct; no additional Baustein is defensibly required for TISAX 2.1.2.",
+      "mappingPercentage": 0,
+      "rationale": "TISAX 2.1.2 (VDA-ISA: \"To what extent is the obligation/commitment of employees to information security ensured?\" — terms of employment, confidentiality undertakings, disciplinary process) maps directly to ORP.2 (Personal), which the official mapping links to A.6.1/A.6.2/A.6.4/A.6.5/A.6.6. Confidentiality undertakings could touch ORP.5, but the employee-obligation core is wholly within ORP.2; nothing else is defensibly required. Empty."
+    },
+    {
+      "target": "ORP.3 (Sensibilisierung und Schulung)",
+      "mappingPercentage": 85,
+      "rationale": "TISAX 2.1.3 (VDA-ISA: \"To what extent is staff made aware of and trained with respect to the risks arising from the handling of information?\") is squarely an awareness-and-training control (ISO A.6.3). ORP.2 (Personal) does not carry awareness/training; the dedicated IT-Grundschutz Baustein is ORP.3 (Sensibilisierung und Schulung). ORP.3 is the defensible missing mapping — arguably it should be the PRIMARY mapping for 2.1.3 rather than ORP.2."
+    },
+    {
+      "target": "OPS.1.2.4",
+      "mappingPercentage": 85,
+      "rationale": "TISAX 2.1.4: This is the mobile-working / remote-working control. The existing set covers crypto-transport (NET.3.3 VPN) and the physical environments (INF.8 home, INF.9 mobile, CON.7 travel) but NOT the organisational/operational rules for teleworking itself. OPS.1.2.4 (Telearbeit) is the canonical Grundschutz building block defining teleworking governance, agreements, secure operation and is the direct counterpart of ISO 27001 A.6.7 (Remote working). Its absence is a real gap."
+    },
+    {
+      "target": "SYS.3.1",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 2.1.4: Mobile working is performed on laptops; their hardening, encryption (BitLocker/LUKS), boot protection and theft handling are governed by SYS.3.1 (Laptops). The current mapping has only the physical workplace and VPN, leaving the actual mobile endpoint device unaddressed. ISO A.8.1 (User endpoint devices) anchors this."
+    },
+    {
+      "target": "SYS.3.2.1",
+      "mappingPercentage": 65,
+      "rationale": "TISAX 2.1.4: Smartphones/tablets are standard mobile-working devices; SYS.3.2.1 (Allgemeine Smartphones und Tablets) covers their secure configuration and data protection. Defensible as a co-target alongside SYS.3.1 for the device layer of mobile work (ISO A.8.1)."
+    },
+    {
+      "target": "NET.2.2",
+      "mappingPercentage": 55,
+      "rationale": "TISAX 2.1.4: Mobile work typically connects over untrusted/public WLAN before the VPN tunnel. NET.2.2 (WLAN-Nutzung) addresses secure use of wireless networks from the client side, complementing NET.3.3 (VPN). Defensible but secondary."
+    },
+    {
+      "target": "INF.12",
+      "mappingPercentage": 40,
+      "rationale": "TISAX 3.1.1: The existing mapping for physical security zones is already very comprehensive (INF.1/2/5/6/7/8/9/10). The only defensible additive gap is INF.12 (Verkabelung) — protection of cabling within the security perimeter, the direct counterpart of ISO 27001 A.7.12 (Cabling security), which is a recognised physical-perimeter requirement not covered by the room/building Bausteine. Weak but defensible."
+    },
+    {
+      "target": "CON.1",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 3.1.3: Handling of mobile/supporting data media off-premises requires encryption of those media; CON.1 (Kryptokonzept) is the Grundschutz building block for cryptographic protection (ISO A.7.10 / A.8.24). The current set (CON.6 deletion, SYS.4.5 removable media) addresses media lifecycle and removable-media handling but omits the cryptographic protection that is the primary safeguard for data carriers leaving the site."
+    },
+    {
+      "target": "INF.6",
+      "mappingPercentage": 55,
+      "rationale": "TISAX 3.1.3: Secure storage of data media is part of media handling; INF.6 (Datenträgerarchiv) governs the protected storage location for data carriers. Defensible complement to SYS.4.5 and CON.6 for the storage dimension of media handling (ISO A.7.10)."
+    },
+    {
+      "target": "SYS.3.2.2",
+      "mappingPercentage": 80,
+      "rationale": "TISAX 3.1.4: Handling/management of mobile IT devices centrally is implemented via Mobile Device Management; SYS.3.2.2 (Mobile Device Management) is the canonical Grundschutz building block for enforcing configuration, encryption, remote-wipe and policy on mobile devices. The existing mapping lists the device Bausteine (SYS.3.1, SYS.3.2.1) but omits the central management/enforcement layer, which is exactly what a mobile-device handling control demands. (Note: SYS.3.3 in the current set is not a valid Kompendium ID.)"
+    },
+    {
+      "target": "CON.1",
+      "mappingPercentage": 65,
+      "rationale": "TISAX 3.1.4: Secure handling of mobile devices and mobile data storage requires full-device/media encryption; CON.1 (Kryptokonzept) provides the cryptographic framework (ISO A.8.1, A.8.24). Not covered by the device or removable-media Bausteine in the current set."
+    },
+    {
+      "target": "APP.2.1",
+      "mappingPercentage": 60,
+      "rationale": "TISAX 4.1.1: Identity/user-account registration and lifecycle management is technically realised in a directory service; APP.2.1 (Allgemeiner Verzeichnisdienst) is the Grundschutz building block for the system that stores and manages identities. ORP.4 covers the organisational identity & access governance, but the technical directory implementing user registration/provisioning is a defensible additional target (ISO A.5.16)."
+    },
+    {
+      "target": "APP.2.1",
+      "mappingPercentage": 55,
+      "rationale": "TISAX 4.1.2: Management of privileged access rights and access to networks/services relies on the underlying directory service that holds the privileged accounts and role assignments; APP.2.1 (Allgemeiner Verzeichnisdienst) is a defensible additional technical target beyond the organisational ORP.4 and admin-handling OPS.1.1.2 (ISO A.5.18 / A.8.2)."
+    },
+    {
+      "target": "NET.3.4",
+      "mappingPercentage": 50,
+      "rationale": "TISAX 4.1.2: Where this control covers access to networks and network services, NET.3.4 (Network Access Control) is the direct Grundschutz building block enforcing that only authorised devices/users reach the network (ISO A.5.15 / A.8.20). Defensible if the control scope includes network-service access, which the OPS.1.1.2 pairing suggests."
+    },
+    {
+      "target": "APP.2.1",
+      "mappingPercentage": 60,
+      "rationale": "TISAX 4.1.3: Authentication/login mechanisms are validated against the directory service; APP.2.1 (Allgemeiner Verzeichnisdienst) is the technical building block providing authentication backends (password/MFA verification), the implementation counterpart of ISO A.8.5 (Secure authentication) and A.5.17. ORP.4 only covers the organisational side."
+    },
+    {
+      "target": "CON.1",
+      "mappingPercentage": 60,
+      "rationale": "TISAX 4.2.1: In current VDA-ISA the 4.2.x block addresses requirements for cryptographic procedures. CON.1 (Kryptokonzept) is the canonical Grundschutz building block for defining cryptographic algorithms, key lengths and key management (ISO A.8.24 Use of cryptography) and is conspicuously absent from the present ORP.4/OPS.1.1.2 pairing. Strongly defensible if the control concerns cryptography."
+    },
+    {
+      "target": "TISAX 5.1.1",
+      "mappingPercentage": 80,
+      "rationale": "TISAX 5.1.1 (To what extent are information security requirements taken into account in new or further developed information systems? / operating procedures and responsibilities for IT operations): The documented-operating-procedures core of this control corresponds to BSI OPS.1.1.1 (Allgemeiner IT-Betrieb), which is the canonical Baustein for ISO A.5.37 (Documented operating procedures). The existing CON.1 (crypto) and ORP.5 (compliance) do not cover day-to-day operational procedure documentation. ORP.1 (Organisation) should also map for the assignment of operational roles/responsibilities and segregation of duties (A.5.2/A.5.3) inherent in this control."
+    },
+    {
+      "target": "TISAX 5.1.2",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 5.1.2 (change management for information systems): The 'already' list cites OPS.1.1.7, which does not exist in the IT-Grundschutz-Kompendium catalog (the canonical change/patch Baustein is OPS.1.1.3, Patch- und Aenderungsmanagement) - this is the defensible mapping for the change-management substance and A.8.32. Additionally OPS.1.1.6 (Software-Tests und -Freigaben) is missing and required, since change management for systems mandates separation of and controlled release from dev/test/prod environments (A.8.29/A.8.31/A.8.33)."
+    },
+    {
+      "target": "TISAX 5.2.1",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 5.2.1 (management of IT administration / privileged operations): OPS.1.1.2 (ordnungsgemaesse IT-Administration) is mapped, but the privileged-access-rights and account-lifecycle dimension (A.8.2 privileged access, A.8.18 privileged utility programs, A.5.18 access rights) belongs to ORP.4 (Identitaets- und Berechtigungsmanagement), which is missing. Where administration is performed remotely, OPS.1.2.5 (Fernwartung) should additionally map."
+    },
+    {
+      "target": "TISAX 5.2.2",
+      "mappingPercentage": 65,
+      "rationale": "TISAX 5.2.2 (separation of development/test/operational environments and secure software development): CON.8 (Software-Entwicklung) and CON.10 (Webanwendungen) cover the secure-coding/SDLC content, but the test-and-release-control dimension (A.8.29 security testing, A.8.31 separation of environments, A.8.33 test information) maps to OPS.1.1.6 (Software-Tests und -Freigaben), which is missing. For in-house individual software development APP.7 (Entwicklung von Individualsoftware) should additionally map, and APP.3.1 (Webanwendungen und Webservices) where the operated result is a web application."
+    },
+    {
+      "target": "TISAX 5.2.3",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 5.2.3 (protection against malware): OPS.1.1.4 (Schutz vor Schadprogrammen) is correctly the core. However the principal malware entry vectors - office documents and browsers - are addressed by dedicated Bausteine APP.1.1 (Office-Produkte) and APP.1.2 (Webbrowser), which are missing and defensibly in scope. CON.9 (Informationsaustausch) is also relevant where malware enters via information exchange/transfer channels (A.5.14)."
+    },
+    {
+      "target": "TISAX 5.2.4",
+      "mappingPercentage": 75,
+      "rationale": "TISAX 5.2.4 (event logging, detection and incident handling): The 'already' list cites DER.2.3, which does not exist in the catalog. OPS.1.1.5 (Protokollierung) and DER.2.2 (IT-Forensik) are correct, but the detection-of-security-events dimension (A.8.16 monitoring, A.5.7 threat intelligence) maps to DER.1 (Detektion sicherheitsrelevanter Ereignisse), which is missing, and the incident-handling/response dimension (A.5.24-A.5.27, A.6.8) maps to DER.2.1 (Behandlung von Sicherheitsvorfaellen), also missing. OPS.1.2.6 (NTP-Zeitsynchronisation) should map for reliable log timestamps/correlation (A.8.17 clock synchronization)."
+    },
+    {
+      "target": "TISAX 5.2.5",
+      "mappingPercentage": 65,
+      "rationale": "TISAX 5.2.5 (security of operational/industrial systems and monitoring): IND.1 (Prozessleit- und Automatisierungstechnik) plus OPS administration Bausteine are mapped, but the component-level industrial Baustein IND.2.1 (Allgemeine ICS-Komponente) is missing and in scope for hardening of ICS components. Where industrial systems are remotely maintained, IND.3.2 (Fernwartung im industriellen Umfeld) should map. The monitoring/detection dimension (A.8.16) belongs to DER.1, which is missing."
+    },
+    {
+      "target": "TISAX 5.2.7",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 5.2.7 (network security and segmentation): NET.1.1 (Netzarchitektur und -design) and NET.1.2 (Netzmanagement) are mapped for architecture/management, but the enforcement controls are missing: NET.3.2 (Firewall) for network segregation/perimeter and web filtering (A.8.20/A.8.22/A.8.23), NET.3.1 (Router und Switches) for the enforcing network devices, and NET.3.3 (VPN) for secured network services/remote access (A.8.21). NET.3.4 (Network Access Control) is additionally defensible where endpoint admission control is part of the segmentation concept."
+    },
+    {
+      "target": "INF.2 (Rechenzentrum sowie Serverraum)",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 5.2.8: Das Control adressiert Verfuegbarkeit/Stoerungsbehandlung des IT-Betriebs (bereits DER.4 Notfallmanagement, INF.1 Allgemeines Gebaeude). INF.1 deckt nur das allgemeine Gebaeude ab; die betriebskritische Versorgungssicherheit (USV, Klima, Brandschutz, redundante Versorgung) eines Serverraums/RZ - die fuer Betriebskontinuitaet zentral ist - liegt im Baustein INF.2. Defensibel als ergaenzender physisch-betrieblicher Baustein zur Verfuegbarkeit."
+    },
+    {
+      "target": "OPS.1.1.3 (Patch- und Aenderungsmanagement)",
+      "mappingPercentage": 85,
+      "rationale": "TISAX 5.3.1: Das Control deckt sichere Entwicklung UND Aenderungs-/Freigabeprozesse ab (bereits CON.8 Software-Entwicklung, CON.10 Webanwendungen, OPS.1.1.2 Administration, OPS.1.1.6 Software-Tests/Freigaben). Das Aenderungsmanagement - kontrollierte Aenderung und Einbringung von Software/Konfiguration in die Produktion - ist der kanonische Baustein OPS.1.1.3 und fehlt. ISO-Mapping bestaetigt A.8.32 Change management -> OPS.1.1.3 und A.8.9 -> OPS.1.1.3."
+    },
+    {
+      "target": "APP.7 (Entwicklung von Individualsoftware)",
+      "mappingPercentage": 60,
+      "rationale": "TISAX 5.3.1: Bei eigener Software-Entwicklung (bereits CON.8, CON.10) ist der systembezogene Baustein APP.7 Entwicklung von Individualsoftware der einschlaegige Umsetzungsbaustein und ergaenzt die konzeptionellen CON-Bausteine. Defensibel, da CON.8 die Vorgehensweise, APP.7 die konkrete Anwendungsschicht abdeckt."
+    },
+    {
+      "target": "NET.3.2 (Firewall)",
+      "mappingPercentage": 75,
+      "rationale": "TISAX 5.3.2: Das Control adressiert Netzwerksicherheit/Segmentierung (bereits NET.1.1 Netzarchitektur, NET.1.2 Netzmanagement). Die durchsetzende Komponente fuer Segmentierung und Perimeterschutz ist die Firewall (NET.3.2). ISO-Mapping fuehrt A.8.20/A.8.22/A.8.23 explizit auf NET.1.1 UND NET.3.2 - der zweite Baustein fehlt hier."
+    },
+    {
+      "target": "NET.3.1 (Router und Switches)",
+      "mappingPercentage": 55,
+      "rationale": "TISAX 5.3.2: Netzwerksicherheit (bereits NET.1.1, NET.1.2) wird auf Geraeteebene durch gehaertete und sicher konfigurierte Router/Switches umgesetzt; NET.3.1 ist der einschlaegige Komponentenbaustein zur Realisierung der in NET.1.1 entworfenen Segmentierung. Defensibel ergaenzend."
+    },
+    {
+      "target": "CON.1 (Kryptokonzept)",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 5.3.3: Das Control deckt Informationsaustausch/-uebertragung und Handhabung ab (bereits CON.9 Informationsaustausch, CON.6 Loeschen/Vernichten, CON.2 Datenschutz, ORP.2, ORP.5). Sicherer Informationsaustausch beruht massgeblich auf Verschluesselung sicherer Kanaele; das Kryptokonzept (CON.1) ist der kanonische Baustein und fehlt. ISO-Mapping: A.5.14 Information transfer setzt verschluesselte/sichere Kanaele voraus (A.8.24 -> CON.1)."
+    },
+    {
+      "target": "NET.3.3 (VPN)",
+      "mappingPercentage": 55,
+      "rationale": "TISAX 5.3.3: Sicherer Informationsaustausch ueber unsichere Netze (bereits CON.9 Informationsaustausch) wird durch VPN-Tunnel realisiert; NET.3.3 ist der einschlaegige Baustein fuer den geschuetzten Transportkanal. Defensibel ergaenzend zum reinen Austausch-Konzept CON.9."
+    },
+    {
+      "target": "OPS.2.3 (Nutzung von Outsourcing)",
+      "mappingPercentage": 80,
+      "rationale": "TISAX 5.3.4: Das Control adressiert die Nutzung externer IT-Dienstleistungen aus Kundensicht (bereits OPS.2.1, OPS.2.2 Cloud-Nutzung, OPS.3.1). OPS.2.1 (Outsourcing fuer Kunden) ist die Anbietersicht; der kanonische Baustein fuer die NUTZENDE Organisation ist OPS.2.3 Nutzung von Outsourcing - dieser fehlt. ISO-Mapping fuehrt A.5.19/A.5.20/A.5.21 explizit auf OPS.2.1 UND OPS.2.3."
+    },
+    {
+      "target": "OPS.2.3 (Nutzung von Outsourcing)",
+      "mappingPercentage": 80,
+      "rationale": "TISAX 6.1.1: Identifikation und Anforderungsstellung an Lieferanten/Dienstleister (bereits OPS.2.1, OPS.2.2, OPS.3.1, ORP.2). Aus Sicht der bestellenden/nutzenden Organisation ist OPS.2.3 Nutzung von Outsourcing der einschlaegige Baustein (Steuerung des Dienstleisters), waehrend OPS.2.1 die Anbieter-/Bereitstellungssicht ist. Fehlt und ist kanonisch (ISO A.5.19-A.5.22 -> OPS.2.1 + OPS.2.3)."
+    },
+    {
+      "target": "OPS.2.3 (Nutzung von Outsourcing)",
+      "mappingPercentage": 75,
+      "rationale": "TISAX 6.1.2: Lieferantenvereinbarungen/Vertraege/Anforderungen in der Lieferkette (bereits CON.2, OPS.2.1, OPS.2.2, OPS.3.1, ORP.5). Die vertraglichen Sicherheitsanforderungen aus Sicht der nutzenden Organisation gehoeren in OPS.2.3 Nutzung von Outsourcing; dieser kanonische Baustein fehlt (ISO A.5.20 Addressing IS in supplier agreements -> OPS.2.1 + OPS.2.3)."
+    },
+    {
+      "target": "ORP.2 (Personal)",
+      "mappingPercentage": 55,
+      "rationale": "TISAX 6.1.2: Lieferantenvereinbarungen umfassen regelmaessig Vertraulichkeitsverpflichtungen/NDA (bereits ORP.5 Compliance, CON.2). Vertraulichkeits-/Geheimhaltungsvereinbarungen mappen in ISO (A.6.6 Confidentiality agreements) auf ORP.2 und ORP.5; ORP.2 ist in 6.1.1 vorhanden, fehlt aber in 6.1.2, obwohl die NDA-Komponente der Lieferantenvertraege es defensibel erfordert."
+    },
+    {
+      "target": "DER.3.1",
+      "mappingPercentage": 70,
+      "rationale": "TISAX 7.1.1: The control demands not only identification of applicable legal, statutory, regulatory and contractual requirements but explicit periodic VERIFICATION that they are met. ORP.5 covers the compliance-management organisation, but the assurance/review dimension is the dedicated Baustein DER.3.1 (Audits und Revisionen). This is corroborated by the BSI<->ISO mapping where A.5.36 (Compliance with policies and standards) and A.5.35 (Independent review of IS) both resolve to DER.3.1 in addition to ORP.5. Without DER.3.1 the compliance-verification half of 7.1.1 is unmapped."
+    },
+    {
+      "target": "CON.6",
+      "mappingPercentage": 60,
+      "rationale": "TISAX 7.1.2: Protection of personal data per GDPR includes storage limitation and erasure (Art. 5(1)(e), Art. 17 right to be forgotten) - the secure deletion/destruction of personal data once the purpose ends. CON.2 (Datenschutz) is the data-protection management Baustein but the operational secure-erasure requirement is owned by CON.6 (Loeschen und Vernichten), consistent with ISO A.8.10 (Information deletion) -> CON.6. Defensible as a data-protection lifecycle obligation not contained in CON.2."
+    },
+    {
+      "target": "CON.1",
+      "mappingPercentage": 55,
+      "rationale": "TISAX 7.1.2: The control is explicitly about how personal-data protection is taken into account 'when IMPLEMENTING information security' - i.e. the technical measures (Art. 32 GDPR TOM). Encryption and pseudonymisation/data masking of personal data are the core technical safeguards and live in CON.1 (Kryptokonzept), corroborated by ISO A.8.11 (Data masking) -> CON.1 and A.8.24 (Use of cryptography) -> CON.1. CON.2 alone covers the organisational privacy programme, not the cryptographic protection of the personal data itself."
+    }
+  ]
+}

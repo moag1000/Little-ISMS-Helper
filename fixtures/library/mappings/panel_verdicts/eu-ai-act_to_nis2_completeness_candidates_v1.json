@@ -1,0 +1,114 @@
+{
+  "provenance": {
+    "source_framework": "EU-AI-ACT",
+    "target_framework": "NIS2",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "isms-specialist",
+      "dpo-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 19
+  },
+  "candidates": [
+    {
+      "target": "NIS2 Art.21(2)(f)",
+      "mappingPercentage": 85,
+      "rationale": "EU-AI-Act Art.9: Art.9 establishes a risk management system that is explicitly continuous and iterative across the entire lifecycle, requiring systematic review and regular updating (Art.9(2)(a-d)) plus testing against pre-defined metrics/probabilistic thresholds. This is substantively the same control-objective as NIS2 21.2.f (policies/procedures to assess the effectiveness of risk-management measures, continuous improvement). The existing 21.2.a mapping captures the risk-analysis/policy dimension but not the effectiveness-evaluation and continuous-improvement loop that Art.9 mandates."
+    },
+    {
+      "target": "NIS2 Art.21(2)(i)",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.10: Art.10 mandates data governance and management practices including data integrity, quality, and appropriate data-set handling for training/validation/testing. Data-set integrity and governance are substantively asset-management and information-handling controls covered by NIS2 21.2.i (asset management). The existing 21.2.h (cryptography) mapping does not capture the asset/data-governance dimension, which is the core of Art.10."
+    },
+    {
+      "target": "NIS2 Art.21(2)(b)",
+      "mappingPercentage": 75,
+      "rationale": "EU-AI-Act Art.12: Art.12 requires automatic recording of events (logs) over the system lifetime, enabling traceability and identification of situations that may cause risk or substantial modification. Automatic event-logging is a direct prerequisite and enabler of incident detection under NIS2 21.2.b (detection mechanisms, incident handling). The existing 21.2.f mapping (effectiveness assessment) captures the monitoring/review purpose of logs but not their primary incident-detection function."
+    },
+    {
+      "target": "NIS2 Art.21(2)(e)",
+      "mappingPercentage": 80,
+      "rationale": "EU-AI-Act Art.15: Art.15 explicitly requires resilience against attempts by unauthorised third parties to alter use, outputs or performance by exploiting system vulnerabilities, and technical measures against data/model poisoning and adversarial examples. This is substantively secure development plus vulnerability handling, the core objective of NIS2 21.2.e (security in acquisition, development and maintenance, including vulnerability handling). The existing 21.2.h/b/f mappings do not capture the secure-SDLC / vulnerability-handling dimension that Art.15's cybersecurity-by-design wording demands."
+    },
+    {
+      "target": "NIS2 Art.21(2)(i)",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.15: Art.15's requirement of resilience against unauthorised alteration of the system's use or outputs by third parties is, in part, an access-control objective (preventing unauthorised actors from modifying the model/inputs). NIS2 21.2.i (access control policies, asset management) substantively corresponds to this prevent-unauthorised-access dimension, which none of the existing mappings (21.2.h cryptography, 21.2.b incident handling, 21.2.f effectiveness) cover."
+    },
+    {
+      "target": "NIS2 Art.21(2)(c)",
+      "mappingPercentage": 60,
+      "rationale": "EU-AI-Act Art.15: Art.15(4) requires robustness achieved through technical redundancy solutions, which may include backup or fail-safe plans, so that the system can withstand errors, faults or inconsistencies. This is a direct substantive correspondence to NIS2 21.2.c (business continuity, backup management and disaster recovery). The existing mappings do not capture this redundancy/backup/fail-safe resilience dimension."
+    },
+    {
+      "target": "NIS2 Art.21(2)(a)",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.16: Art.16 makes the provider accountable for the high-risk AI system's compliance with Art.15 (accuracy, robustness AND cybersecurity, incl. resilience against data-poisoning, model-poisoning, adversarial/evasion attacks). That obligation is, in substance, a duty to operate risk-analysis and information-system-security policies for the AI system. Only effectiveness (21.2.f) and SDLC/vulnerability handling (21.2.e) are currently mapped; the underlying obligation to maintain a documented risk-and-security policy baseline (21.2.a) is the foundational measure these build on and is missing."
+    },
+    {
+      "target": "NIS2 Art.21(2)(b)",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.16: Art.16(g)/(j) require providers to take corrective actions and to cooperate on incidents (linking to Art.20 corrective actions and Art.73 serious-incident reporting). Substantively this is incident handling. Only 21.2.e and 21.2.f are mapped; the corrective-action/incident-response duty corresponds to 21.2.b and is missing."
+    },
+    {
+      "target": "NIS2 Art.21(2)(a)",
+      "mappingPercentage": 75,
+      "rationale": "EU-AI-Act Art.17: The QMS under Art.17(1)(g) must contain the risk-management system (Art.9) and an accountability/governance framework. This is in substance the obligation to maintain risk-analysis and information-system-security policies. Currently only effectiveness (21.2.f) is mapped; the policy/risk-governance backbone (21.2.a) is missing."
+    },
+    {
+      "target": "NIS2 Art.21(2)(b)",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.17: Art.17(1)(i)/(j) require the QMS to include procedures for serious-incident reporting (Art.73) and for communication with authorities. That is a documented incident-handling capability, which corresponds to 21.2.b and is not yet mapped (only 21.2.f is)."
+    },
+    {
+      "target": "NIS2 Art.21(2)(f)",
+      "mappingPercentage": 55,
+      "rationale": "EU-AI-Act Art.20: A corrective action (withdraw/disable/recall a non-conforming system) presupposes that the provider has assessed that a control/measure failed to keep the system conformant. The duty to determine non-conformity and act on it corresponds to policies/procedures to assess the effectiveness of risk-management measures (21.2.f). Only incident handling (21.2.b) is mapped; the effectiveness-assessment trigger behind corrective action is missing."
+    },
+    {
+      "target": "NIS2 Art.21(2)(b)",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Art.26: Art.26(5) obliges deployers to monitor operation and, where use may present a risk, suspend use and inform the provider and market-surveillance authority; Art.26(5) also covers serious-incident notification. This is substantively incident detection, response and notification, corresponding to 21.2.b, which is missing (only 21.2.a and 21.2.i are mapped)."
+    },
+    {
+      "target": "NIS2 Art.21(2)(h)",
+      "mappingPercentage": 50,
+      "rationale": "EU-AI-Act Art.50: Art.50(2) requires that AI-generated/manipulated content be marked in a machine-readable, robust, reliable and interoperable way, with the recital/technical means expressly including watermarks, cryptographic methods and provenance metadata for authenticity. Cryptographic content-provenance/signing corresponds to the use of cryptography (21.2.h), which is not yet mapped (only 21.2.a is)."
+    },
+    {
+      "target": "NIS2 Art.21(2)(b)",
+      "mappingPercentage": 80,
+      "rationale": "EU-AI-Act Art.55: Art.55(1)(c) expressly requires providers of GPAI models with systemic risk to keep track of, document and report serious incidents and possible corrective measures to the AI Office/authorities without undue delay. This is a direct incident-handling obligation corresponding to 21.2.b, which is missing (only 21.2.a and 21.2.h are mapped)."
+    },
+    {
+      "target": "NIS2 Art.21(2)(f)",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.55: Art.55(1)(a) requires model evaluation including adversarial testing/red-teaming to identify and mitigate systemic risk, and Art.55(1)(b) requires ongoing assessment and mitigation of systemic risks. Adversarial testing/red-teaming is in substance a procedure to assess the effectiveness of the cybersecurity risk-management measures, corresponding to 21.2.f, which is missing."
+    },
+    {
+      "target": "NIS2 Art.21(2)(b)",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.72: The post-market monitoring system actively and systematically collects, documents and analyses data on the system's performance throughout its lifetime, which is the detection/analysis engine that feeds corrective actions (Art.20) and serious-incident reporting (Art.73). This monitoring-to-response chain corresponds to incident handling (21.2.b) and is missing (only 21.2.f is mapped)."
+    },
+    {
+      "target": "NIS2 Art.23 final report (final/conclusive incident report stage, ≤1 month per Art.23(6))",
+      "mappingPercentage": 85,
+      "rationale": "EU-AI-Act Art.73: Art.73 mandates a two-stage external reporting flow for serious incidents – an immediate report to the market-surveillance authority plus a subsequent follow-up/final report once root cause and corrective measures are established. The current mapping only covers the NIS2 early-warning (23.1) and 72h incident-notification (23.2) stages. NIS2's three-stage reporting regime culminates in a final report (Art.23(6), ≤1 month, type of threat/root cause + applied mitigation), which substantively corresponds to the AI-Act follow-up report. The conclusive-report stage is the missing counterpart; the obligation to deliver a final, root-cause-bearing report to the authority is materially the same external-reporting duty."
+    },
+    {
+      "target": "NIS2 Annex-II (Important Entities sectors)",
+      "mappingPercentage": 70,
+      "rationale": "EU-AI-Act Annex-III: Annex-III enumerates high-risk AI use areas that span sectors falling under BOTH NIS2 entity annexes, not only essential entities. The current mapping links only to NIS2 Annex-I (Essential Entities). Several Annex-III high-risk domains correspond to NIS2 Annex-II (Important Entities) sectors – e.g. manufacturing of medical devices/machinery/motor vehicles, and digital providers (online marketplaces, search engines, social networks). Restricting the correspondence to Annex-I under-represents the sectoral overlap; Annex-II is the missing, defensible counterpart that completes the entity-scope correspondence."
+    },
+    {
+      "target": "NIS2 Art.21(2)(e) – security in network and information systems acquisition, development and maintenance (secure SDLC)",
+      "mappingPercentage": 65,
+      "rationale": "EU-AI-Act Art.43: Art.43 governs the conformity-assessment procedure that a high-risk AI system must pass before being placed on the market – i.e. verification, embedded in the development/QMS lifecycle, that the system was built to meet the required (incl. security/robustness, Art.15) requirements. The current mapping to 21.2.f captures only ongoing effectiveness assessment (ISO Cl.9.1/9.3). It misses 21.2.e, which covers building and verifying security into the acquisition/development/maintenance lifecycle (secure SDLC, A.8.25–A.8.34). Conformity assessment is precisely the pre-deployment gate that secure-development assurance addresses, so 21.2.e is a substantively correct additional correspondence that the effectiveness-assessment mapping alone does not reach."
+    }
+  ]
+}
