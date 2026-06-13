@@ -50,8 +50,8 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $frameworks = $this->service->getAvailableFrameworks();
 
         $this->assertIsArray($frameworks);
-        // 24 base + 5 newly-wired catalogues (ISO42001, ISO27017, ISO27018, EU-CRA, PCI-DSS).
-        $this->assertCount(29, $frameworks);
+        // 29 base + 3 DACH frameworks (NISG-AT, REVDSG-CH, IKT-MINSTD-CH).
+        $this->assertCount(32, $frameworks);
 
         // Verify TISAX framework structure
         $this->assertEquals('TISAX', $frameworks[0]['code']);
@@ -84,7 +84,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
     {
         $stats = $this->service->getFrameworkStatistics();
 
-        $this->assertEquals(29, $stats['total_available']);
+        $this->assertEquals(32, $stats['total_available']);
         $this->assertArrayHasKey('total_loaded', $stats);
         $this->assertArrayHasKey('total_not_loaded', $stats);
         $this->assertArrayHasKey('compliance_percentage', $stats);
@@ -119,6 +119,8 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
             'KRITIS', 'KRITIS-HEALTH', 'DIGAV', 'TKG-2024', 'GXP',
             'SOC2', 'NIST-CSF-2.0', 'CIS-CONTROLS', 'ISO-22301', 'ISO27005',
             'BDSG', 'EU-AI-ACT', 'NIS2UMSUCG', 'MRIS-v1.5',
+            // DACH frameworks
+            'NISG-AT', 'REVDSG-CH', 'IKT-MINSTD-CH',
         ];
 
         foreach ($expectedCodes as $expectedCode) {
@@ -142,6 +144,8 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
             'MRIS-v1.5',
             // Newly-wired catalogues (Welle 1a) — all conditional + mandatory=false.
             'ISO42001', 'ISO27017', 'ISO27018', 'EU-CRA', 'PCI-DSS-4.0.1',
+            // DACH frameworks — conditional (applicability by country/sector).
+            'NISG-AT', 'REVDSG-CH', 'IKT-MINSTD-CH',
         ];
         $voluntary = [
             'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
