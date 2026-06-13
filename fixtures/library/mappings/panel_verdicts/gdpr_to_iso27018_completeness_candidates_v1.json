@@ -1,0 +1,214 @@
+{
+  "provenance": {
+    "source_framework": "GDPR",
+    "target_framework": "ISO27018",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "dpo-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 39
+  },
+  "candidates": [
+    {
+      "target": "A.9",
+      "mappingPercentage": 70,
+      "rationale": "GDPR Art.3 (territorial/market-location scope). The current map links Art.3 only to A.7.1 (CSP general). ISO 27018 A.9 (Data location / information about storage locations) is genuinely defensible: Art.3 hinges on where processing/data subjects sit, and A.9 requires the CSP to disclose the geographic location(s) where PII is stored — the operational fact-pattern that determines whether a cloud processing chain falls inside or outside EU jurisdiction and thus triggers GDPR applicability. Defensible but partial because A.9 is a disclosure control, not a scope-determination rule."
+    },
+    {
+      "target": "A.8",
+      "mappingPercentage": 60,
+      "rationale": "GDPR Art.3 (territorial scope). A.8 (Disclosure of jurisdictions / transparency about which legal regimes the PII may be subject to) corresponds to Art.3's market-location and establishment logic: a CSP must surface the countries/jurisdictions whose law could reach the PII, which is exactly the information needed to assess Art.3 applicability of EU law to a given processing chain. Partial because A.8 is about transparency of potential government access, not the applicability test itself."
+    },
+    {
+      "target": "A.6",
+      "mappingPercentage": 85,
+      "rationale": "GDPR GDPR-7 (conditions for consent, incl. withdrawal as easy as giving it). Currently mapped only to A.2.1. ISO 27018 A.6 (Cooperation with PII principals — providing means for data subjects to exercise their rights, including modifying/withdrawing consent) is strongly defensible: Art.7(3) requires the controller to enable withdrawal of consent at any time, and the CSP-side obligation to provide the technical means for that sits squarely in A.6. The reference's own crosswalk maps consent to Art.7."
+    },
+    {
+      "target": "A.7",
+      "mappingPercentage": 75,
+      "rationale": "GDPR GDPR-6 (lawfulness of processing). Currently mapped only to 18.1.4. ISO 27018 A.7 (Purpose restriction — the CSP must not process PII for purposes other than those instructed by the cloud customer) is defensible against Art.6 because lawfulness under Art.6 is bound to a defined legal basis tied to a specific purpose; a processor exceeding instructed purposes lacks a lawful basis. The reference's crosswalk explicitly ties purpose-binding into the lawful-processing cluster. Partial because A.7 is processor-side purpose limitation rather than the controller's choice of legal basis."
+    },
+    {
+      "target": "A.7",
+      "mappingPercentage": 60,
+      "rationale": "GDPR GDPR-5.1.a (lawfulness, fairness, transparency principle). Currently mapped only to 18.1.4. A.7 (Purpose restriction) is a defensible additional correspondence: Art.5(1)(a) lawfulness is operationally enforced in a cloud chain by the processor confining processing to instructed/lawful purposes (A.7), preventing covert secondary use that would breach the fairness/lawfulness limb. Partial because Art.5(1)(a) is broader than purpose restriction (which maps more tightly to 5(1)(b))."
+    },
+    {
+      "target": "A.6",
+      "mappingPercentage": 65,
+      "rationale": "GDPR GDPR-12 (transparent information/communication and modalities for exercising data-subject rights). Currently mapped only to A.1.1. ISO 27018 A.6 (Cooperation with PII principals — CSP provides mechanisms enabling data subjects to exercise access/correction/erasure rights) is strongly defensible: Art.12 governs the modalities and facilitation of rights exercise (Art.12(2): controller shall facilitate the exercise of rights), and in a cloud setting that facilitation depends on the processor's A.6 cooperation mechanisms."
+    },
+    {
+      "target": "A.1.1",
+      "mappingPercentage": 60,
+      "rationale": "GDPR-14 (Art.14, information obligation where PII not obtained from the data subject): A.1.1 'Obligation to co-operate regarding PII principals' rights' is missing. The information duty is part of the processor's duty to support the controller in fulfilling data-subject rights/transparency. The maintainers' own reverse mapping (iso27018_to_gdpr) clusters the transparency/rights articles under A.1.1, but GDPR-14 forward-maps only to A.7.2, creating an asymmetry. Defensible as a subset/related correspondence."
+    },
+    {
+      "target": "A.7.1",
+      "mappingPercentage": 50,
+      "rationale": "GDPR-14 (Art.14): A.7.1 'Geographical location of PII' is missing. The parallel article GDPR-13 (info obligation at collection) maps to A.7.1 + A.11.2, but GDPR-14 (the identical content duty for indirectly-collected data, which under Art.14 even ADDS the source/category disclosures) maps only to A.7.2. The geographic-location transparency element of the Art.14 information notice mirrors GDPR-13 and should carry the same A.7.1 link."
+    },
+    {
+      "target": "A.11.2",
+      "mappingPercentage": 50,
+      "rationale": "GDPR-14 (Art.14): A.11.2 'PII protection legislation compliance' is missing as a target. The mapping's own rationale text explicitly names A.11.2 ('Teil von 27018 A.7.2 plus A.11.2') and the parallel GDPR-13 maps it, yet A.11.2 is not in GDPR-14's target/cross_refs. A.11.2 is the legislation-compliance/transparency anchor that the Art.14 information notice operationalises for the processor."
+    },
+    {
+      "target": "A.1.1",
+      "mappingPercentage": 55,
+      "rationale": "GDPR-17 (Art.17, right to erasure): A.1.1 'Obligation to co-operate regarding PII principals' rights' is missing. While A.5.2 (data return/disposal) is the correct strong anchor, erasure is also a data-subject right the cloud processor must cooperate on; the reverse mapping explicitly cross-refs Art.17 from A.1.1. The cooperation/request-handling layer (receiving and actioning the erasure request) is distinct from the technical disposal in A.5.2."
+    },
+    {
+      "target": "A.10.13",
+      "mappingPercentage": 45,
+      "rationale": "GDPR-17 (Art.17, right to erasure): A.10.13 'Access to data on pre-used data storage space' is missing. Genuine erasure in a public cloud requires ensuring deleted PII is not recoverable from re-allocated/pre-used storage; A.10.13 is the Annex A control addressing PII residue on storage media, complementing the A.4.1 temp-file erasure already cross-referenced. Defensible as a related/subset technical correspondence."
+    },
+    {
+      "target": "A.1.1",
+      "mappingPercentage": 60,
+      "rationale": "GDPR-18 (Art.18, right to restriction of processing): A.1.1 'Obligation to co-operate regarding PII principals' rights' is missing. A.6.2 (PII processing restrictions) is the correct technical anchor, but the processor must also cooperate in receiving and actioning the restriction request from the controller/principal — the reverse mapping explicitly cross-refs Art.18 from A.1.1. The cooperation duty is additive to the technical restriction capability."
+    },
+    {
+      "target": "A.5.2",
+      "mappingPercentage": 70,
+      "rationale": "GDPR-20 (Art.20, right to data portability): A.5.2 'PII data return, transfer and disposal' is missing and is a strong correspondence. Portability is operationally the structured RETURN/TRANSFER of PII to the data subject or another controller, which is exactly the substance of A.5.2. The current sole mapping to A.1.1 (cooperation) captures the obligation but omits the concrete data-return/transfer control that delivers it."
+    },
+    {
+      "target": "A.6.2",
+      "mappingPercentage": 45,
+      "rationale": "GDPR-21 (Art.21, right to object): A.6.2 'PII processing restrictions' is missing. A successful objection (especially the absolute objection to direct marketing under Art.21(2), and pending the balancing test under Art.21(1) per Art.18(1)(d)) requires the processor to stop/restrict processing — operationally the same restriction capability as A.6.2. Defensible as a related correspondence beyond the cooperation-only A.1.1 link."
+    },
+    {
+      "target": "ISO27018 A.9.1 (Notification of a data breach involving PII)",
+      "mappingPercentage": 95,
+      "rationale": "GDPR Art.33 (GDPR-33): Art.33 is the controller's obligation to notify the supervisory authority of a personal-data breach within 72h. ISO27018 A.9.1 is the dedicated cloud-PII control requiring the processor to promptly notify the cloud customer of any breach involving PII so the customer can meet its statutory notification deadlines. The current mapping only links GDPR-33 to A.8.1 (security incident handling generically); the breach-notification-specific A.9.1 is the direct substantive counterpart and is missing."
+    },
+    {
+      "target": "ISO27018 A.10 (PII breach notification content / response obligations)",
+      "mappingPercentage": 70,
+      "rationale": "GDPR Art.33 (GDPR-33): Art.33(3) prescribes the minimum content of the breach notification (nature, contact point, likely consequences, remedial measures). ISO27018's information-security/breach controls in the A.10 cluster require the processor to provide the customer with the information needed to make a compliant notification. Defensible secondary correspondence beyond the generic A.8.1 already mapped."
+    },
+    {
+      "target": "ISO27018 A.9.1 (Notification of a data breach involving PII)",
+      "mappingPercentage": 60,
+      "rationale": "GDPR Art.34 is not in scope of this batch, but Art.32 (GDPR-32, security of processing) underpins breach detection; A.9.1 only partially corresponds. Listed at moderate strength because GDPR-32 already maps to A.10.6 (a security-of-processing control); A.9.1's detection/notification angle is a defensible additional link for Art.32's 'ability to ensure ongoing confidentiality/integrity and to detect incidents'."
+    },
+    {
+      "target": "ISO27018 A.11 cluster (Sub-processors / use of sub-contractors processing PII)",
+      "mappingPercentage": 90,
+      "rationale": "GDPR Art.28 (GDPR-28): Art.28(2)+(4) govern engagement of sub-processors (prior authorisation, flow-down of equivalent obligations). ISO27018 A.7.1 (disclosure of sub-contracted PII processing) and the A.11 sub-processor controls are the direct cloud-PII counterparts. The current mapping links GDPR-28 only to A.3.1; the sub-processor control (A.7.1 / A.11.x) is a core, defensible Art.28 correspondence that is missing."
+    },
+    {
+      "target": "ISO27018 A.5 cluster (Use, retention and disclosure limitation; PII disclosure notification)",
+      "mappingPercentage": 65,
+      "rationale": "GDPR Art.28 (GDPR-28): Art.28(3)(a) requires the processor to act only on documented instructions of the controller. ISO27018 A.2.1 (processor's purpose limited to customer instruction) and A.5.x (use/disclosure limitation, A.5.1 disclosure notification) directly implement the 'process only on instruction' duty. Defensible additional link beyond A.3.1."
+    },
+    {
+      "target": "ISO27018 A.9.3 (PII return, transfer and disposal)",
+      "mappingPercentage": 75,
+      "rationale": "GDPR Art.28 (GDPR-28): Art.28(3)(g) obliges the processor to delete or return all personal data at end of provision of services. ISO27018 A.9.3 (return/transfer/disposal of PII) and Annex A.11 confirmation-of-deletion controls are the precise cloud-PII counterparts. Missing from the current single A.3.1 mapping."
+    },
+    {
+      "target": "ISO27018 A.2.1 (Public cloud PII processor's purpose - process only per customer instruction)",
+      "mappingPercentage": 85,
+      "rationale": "GDPR Art.29 (Art.29, processing under authority of controller/processor - process only on instruction): the entire substance of Art.29 is that anyone acting under the controller/processor processes personal data only on instruction. ISO27018 A.2.1 mandates that the cloud PII processor process PII only for the purposes/instructions of the cloud customer. The current mapping links Art.29 to 7.2.2 (a generic awareness/responsibilities control); A.2.1 is the substantively-correct missing counterpart."
+    },
+    {
+      "target": "ISO27018 confidentiality-undertaking control (A.10 personnel / confidentiality of those processing PII)",
+      "mappingPercentage": 60,
+      "rationale": "GDPR Art.29 (Art.29) plus Art.28(3)(b) require that persons authorised to process have committed to confidentiality. ISO27018's personnel-confidentiality control (extension of 27002 7.x/13.2 family in the 2019 numbering, and Annex A confidentiality undertakings) is a defensible additional link beyond the already-mapped 7.2.2."
+    },
+    {
+      "target": "ISO27018 A.7.1 (Disclosure of sub-contracted PII processing) and A.11 geographic-location controls",
+      "mappingPercentage": 55,
+      "rationale": "GDPR Art.30 (GDPR-30, records of processing): Art.30 records must capture categories of processing, recipients incl. third countries, and sub-processors. ISO27018 A.7.1 (disclosure of sub-contracted processing) and A.11 (specification/disclosure of geographic location and intended destination of PII) supply exactly the recipient/sub-processor/transfer attributes a RoPA needs. Defensible addition beyond the already-mapped A.4.1."
+    },
+    {
+      "target": "ISO27018 A.2.2 (Commercial use - no processing of PII for own purposes / advertising)",
+      "mappingPercentage": 50,
+      "rationale": "GDPR Art.25 (GDPR-25, data protection by design and by default): A.2.2 restricts the processor from using PII for its own marketing/advertising absent express instruction, operationalising 'by default' minimisation in the cloud. Defensible secondary correspondence to Art.25's by-default principle beyond the already-mapped 14.1.1 (secure development)."
+    },
+    {
+      "target": "ISO27018 A.4.1 (Secure erasure of temporary files)",
+      "mappingPercentage": 50,
+      "rationale": "GDPR Art.25 (GDPR-25): data-minimisation-by-default in cloud is concretely implemented by A.4.1's requirement to securely erase temporary files containing PII. Defensible additional link for Art.25 beyond 14.1.1; data minimisation is a core Art.25(2) by-default obligation that 14.1.1 alone does not cover."
+    },
+    {
+      "target": "ISO27018 A.1.1 (Obligation to co-operate regarding PII principals' rights to access/correct/erase)",
+      "mappingPercentage": 45,
+      "rationale": "GDPR Art.24 (GDPR-24, responsibility of the controller): Art.24 requires controller to implement measures to ensure and demonstrate compliance, including enabling data-subject rights. A.1.1 obliges the cloud processor to co-operate so the controller can meet PII-principal rights. Defensible accountability-support link beyond the already-mapped 5.1.1 (policies for information security)."
+    },
+    {
+      "target": "ISO27018 A.10 / accountability documentation controls (A.9.2 retention period for administrative security policies)",
+      "mappingPercentage": 45,
+      "rationale": "GDPR Art.24 (GDPR-24): the accountability/'demonstrate compliance' core of Art.24 is supported by A.9.2 (defined retention of administrative security policies and procedures) and the A.10 records controls. Defensible additional demonstrate-compliance link beyond 5.1.1."
+    },
+    {
+      "target": "ISO27018 A.8.1 / personnel-responsibility control (7.2.x management responsibilities)",
+      "mappingPercentage": 40,
+      "rationale": "GDPR Art.22 (GDPR-22, automated individual decision-making incl. profiling) is poorly served by 27018, which has no automated-decision control; A.1.1 (already mapped) covering co-operation with PII principals' rights is the closest. No additional genuinely-defensible 27018 control corresponds, so this entry flags that the only weak adjacent link (transparency about processing to PII principals via the A.7 openness cluster) is marginal and likely should NOT be added."
+    },
+    {
+      "target": "A.4",
+      "mappingPercentage": 85,
+      "rationale": "GDPR GDPR-34: Art. 34 (notification of the data subject following a personal-data breach) is mapped only to A.8.1. ISO 27018 A.4 (PII breach notification) is the directly on-point Annex-A control and is missing: in a cloud setting the CSP/processor must notify the cloud customer (controller) of any breach so the controller can discharge its Art. 34 duty toward data subjects. Without A.4 the operational enabler of Art. 34 is unmapped. Highly defensible."
+    },
+    {
+      "target": "A.5",
+      "mappingPercentage": 60,
+      "rationale": "GDPR GDPR-39: Art. 39 (DPO tasks — monitoring compliance, advising, audits, cooperation with the supervisory authority) is mapped only to 7.2.2. ISO 27018 A.5 (audit and compliance) is a defensible additional correspondence: the DPO's monitoring/compliance-verification function (Art. 39(1)(b)) maps to the audit-and-compliance control that ensures verifiable adherence to PII-protection obligations. Moderately defensible."
+    },
+    {
+      "target": "A.9",
+      "mappingPercentage": 70,
+      "rationale": "GDPR GDPR-44: Art. 44 (general principle for third-country transfers — the EU protection level must not be undermined) is mapped only to A.7.1. ISO 27018 A.9 (data location — information about where PII is stored/processed) is a missing, genuinely defensible correspondence: any assessment of whether a transfer undermines the protection level presupposes knowing the storage/processing location and jurisdiction. Defensible."
+    },
+    {
+      "target": "A.8",
+      "mappingPercentage": 60,
+      "rationale": "GDPR GDPR-44: Art. 44 (general transfer principle) is mapped only to A.7.1. ISO 27018 A.8 (disclosure — transparency about the jurisdictions / countries in which PII may be processed or sub-contracted) is a defensible additional correspondence, since transparency about cross-border jurisdictions is integral to the general transfer principle. Moderately defensible."
+    },
+    {
+      "target": "A.9",
+      "mappingPercentage": 75,
+      "rationale": "GDPR Art.45: Art. 45 (transfer on the basis of an adequacy decision) is mapped only to A.11.1. ISO 27018 A.9 (data location) is the genuinely defensible missing correspondence: an adequacy decision is country/jurisdiction-bound, so identifying the destination country/storage location is the precondition for relying on Art. 45. Strongly defensible; A.11.1 (return/disposal confirmation) appears unrelated to adequacy, making A.9 the substantive match."
+    },
+    {
+      "target": "A.8",
+      "mappingPercentage": 55,
+      "rationale": "GDPR Art.45: Art. 45 (adequacy decision) is mapped only to A.11.1. ISO 27018 A.8 (disclosure / transparency about the jurisdictions of processing) is a defensible secondary correspondence — reliance on an adequacy decision depends on transparent disclosure of which jurisdiction PII is transferred to. Moderately defensible."
+    },
+    {
+      "target": "A.2",
+      "mappingPercentage": 65,
+      "rationale": "GDPR GDPR-46: Art. 46 (appropriate safeguards — SCCs, BCR, codes/certifications) is mapped only to A.7.2. ISO 27018 A.2 (sub-processors — disclosure and control of sub-contracted processing) is a defensible missing correspondence: Art. 46 safeguards (notably SCC flow-down) must propagate to onward transfers to sub-processors, so the sub-processor control is integral to maintaining the appropriate-safeguards chain. Defensible."
+    },
+    {
+      "target": "A.9",
+      "mappingPercentage": 55,
+      "rationale": "GDPR GDPR-46: Art. 46 (appropriate safeguards for third-country transfers) is mapped only to A.7.2. ISO 27018 A.9 (data location) is a defensible additional correspondence, since selecting/operating appropriate safeguards requires knowing the third-country location to which PII is transferred. Moderately defensible."
+    },
+    {
+      "target": "A.2",
+      "mappingPercentage": 65,
+      "rationale": "GDPR Art.47: Art. 47 (Binding Corporate Rules) is mapped only to A.7.2. ISO 27018 A.2 (sub-processors) is a defensible missing correspondence: BCR govern intra-group and onward transfers, which in a cloud context are realised through sub-processor arrangements; the sub-processor disclosure/control requirement directly supports BCR enforceability across group entities. Defensible."
+    },
+    {
+      "target": "A.3",
+      "mappingPercentage": 85,
+      "rationale": "GDPR Art.48: Art. 48 (transfers/disclosures not authorised by Union law — i.e. responses to foreign court/authority orders) is mapped only to A.5.1. ISO 27018 A.3 (PII disclosure notification — notification of any disclosure of PII to public authorities/law enforcement) is the directly on-point and clearly missing correspondence: A.3 governs exactly the authority-disclosure scenario Art. 48 regulates, requiring the CSP to notify the customer of such requests. Highly defensible."
+    },
+    {
+      "target": "A.9",
+      "mappingPercentage": 50,
+      "rationale": "GDPR Art.49: Art. 49 (derogations for specific transfer situations) is mapped only to A.7.1. ISO 27018 A.9 (data location) is a defensible — though weaker — additional correspondence: even when relying on a derogation, the controller must know the destination jurisdiction/storage location to document and justify the specific-situation transfer. Borderline-defensible."
+    }
+  ]
+}
