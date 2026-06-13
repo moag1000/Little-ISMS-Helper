@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Library;
 
+use App\Service\Compliance\DoraRtsItsCatalogueLoader;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
@@ -12,8 +14,11 @@ use Symfony\Component\Yaml\Yaml;
  * Codes-alignment guard for the DORA Level-2 (RTS/ITS) → ISO 27001:2022 mapping.
  *
  * This is the audit-detail layer beneath the Level-1 DORA↔ISO mapping: it maps
- * the granular RTS provisions (loaded by App\Command\LoadDoraRtsItsFullCommand
- * into the DORA framework) to ISO 27001:2022 Annex A controls.
+ * the granular RTS provisions (loaded by App\Service\Compliance\DoraRtsItsCatalogueLoader
+ * into the DORA framework — via BOTH the standalone CLI
+ * App\Command\LoadDoraRtsItsFullCommand AND the framework-loader registry path
+ * App\Command\LoadDoraRequirementsCommand::loadRequirements()) to ISO 27001:2022
+ * Annex A controls.
  *
  * Verification scope (modeled on DoraIso27001MappingCodesAlignmentTest):
  *  1. File exists and parses; required top-level keys present.
@@ -27,18 +32,21 @@ use Symfony\Component\Yaml\Yaml;
  *  7. Required per-row fields (source/target/relationship/confidence/rationale).
  *  8. >= 40 mapping pairs (audit-detail depth requirement).
  *  9. No duplicate source+target pairs.
- * 10. Anti-silent-skip: every source id exactly matches a requirementId
- *     declared by LoadDoraRtsItsFullCommand.
+ * 10. Anti-silent-skip / resolution-guard: every source id exactly matches a
+ *     requirementId produced by DoraRtsItsCatalogueLoader — the SAME catalogue
+ *     the registry 'DORA' loader now emits, so loading the DORA framework the
+ *     normal way (setup-wizard / admin UI) actually populates the rows these
+ *     mappings resolve against.
  *
- * No Symfony kernel or DB required — pure file/YAML unit tests.
+ * No Symfony kernel or DB required — pure file/YAML unit tests. The loader's
+ * id-set is obtained via the kernel-free DoraRtsItsCatalogueLoader::requirementIds()
+ * (the catalogue is pure PHP data — no EntityManager interaction is triggered).
  */
 final class DoraRtsItsIso27001MappingCodesAlignmentTest extends TestCase
 {
     private const MAPPING_DIR = __DIR__ . '/../../../fixtures/library/mappings';
 
     private const FILE = self::MAPPING_DIR . '/dora-rts-its_to_iso27001-2022_v1.0.yaml';
-
-    private const COMMAND_FILE = __DIR__ . '/../../../src/Command/LoadDoraRtsItsFullCommand.php';
 
     /** Canonical DB code for the DORA framework (RTS provisions live in DORA). */
     private const DB_CODE_DORA = 'DORA';
@@ -74,21 +82,23 @@ final class DoraRtsItsIso27001MappingCodesAlignmentTest extends TestCase
     }
 
     /**
-     * Build the set of all requirementIds the loader command actually persists.
-     * Parses the array keys of the form 'RTS-...' / 'ITS-...' in the source file.
+     * Build the set of all requirementIds the catalogue loader actually persists,
+     * straight from the production code path (DoraRtsItsCatalogueLoader). This is
+     * the exact id-set the registry 'DORA' loader now emits, so the assertion
+     * proves the mappings resolve against what a real framework-load produces.
+     *
+     * requirementIds() / getAllBlocks() are pure PHP data — they never touch the
+     * EntityManager — so a never-invoked stub satisfies the constructor.
      *
      * @return array<string, true>
      */
     private function loaderSourceIds(): array
     {
-        self::assertFileExists(self::COMMAND_FILE, 'LoadDoraRtsItsFullCommand.php must exist');
-        $php = (string) file_get_contents(self::COMMAND_FILE);
-
-        // Match keys 'RTS-...' => or 'ITS-...' => (string value OR array value).
-        preg_match_all("/'((?:RTS|ITS)-[A-Za-z0-9.\\-]+)'\\s*=>/", $php, $matches);
+        $em = $this->createStub(EntityManagerInterface::class);
+        $loader = new DoraRtsItsCatalogueLoader($em);
 
         $ids = [];
-        foreach ($matches[1] as $id) {
+        foreach ($loader->requirementIds() as $id) {
             $ids[$id] = true;
         }
 
@@ -234,7 +244,7 @@ final class DoraRtsItsIso27001MappingCodesAlignmentTest extends TestCase
     public function every_source_id_matches_a_loaded_requirement_id(): void
     {
         $loaded = $this->loaderSourceIds();
-        self::assertNotEmpty($loaded, 'Could not parse any RTS/ITS ids from LoadDoraRtsItsFullCommand.');
+        self::assertNotEmpty($loaded, 'DoraRtsItsCatalogueLoader produced no RTS/ITS ids.');
 
         $violations = [];
         foreach ($this->mappings() as $idx => $entry) {
@@ -246,8 +256,9 @@ final class DoraRtsItsIso27001MappingCodesAlignmentTest extends TestCase
 
         self::assertEmpty(
             $violations,
-            'Anti-silent-skip: every source must exactly match a requirementId loaded by '
-                . 'LoadDoraRtsItsFullCommand. Unresolved: ' . implode(', ', $violations),
+            'Resolution-guard: every mapping source must exactly match a requirementId '
+                . 'produced by DoraRtsItsCatalogueLoader (the id-set the registry "DORA" loader '
+                . 'now emits). Unresolved: ' . implode(', ', $violations),
         );
     }
 
