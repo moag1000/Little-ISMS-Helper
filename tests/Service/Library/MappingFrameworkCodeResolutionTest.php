@@ -24,9 +24,10 @@ final class MappingFrameworkCodeResolutionTest extends TestCase
     /** Registered runtime framework codes (FrameworkLoaderInterface implementations). */
     private const REGISTERED = [
         'BDSG', 'BSI-C5', 'BSI-C5-2026', 'BSI_GRUNDSCHUTZ', 'CIS-CONTROLS', 'DIGAV', 'DORA',
-        'EU-AI-ACT', 'EU-CRA', 'EUCS', 'GDPR', 'GXP', 'ISO-22301', 'ISO27001', 'ISO27005',
+        'EU-AI-ACT', 'EU-CRA', 'EUCS', 'GDPR', 'GXP', 'IKT-MINSTD-CH', 'ISO-22301', 'ISO27001', 'ISO27005',
         'ISO27017', 'ISO27018', 'ISO27701', 'ISO27701_2025', 'ISO42001', 'KRITIS', 'KRITIS-HEALTH',
-        'MRIS-v1.5', 'NIS2', 'NIS2UMSUCG', 'NIST-CSF-2.0', 'PCI-DSS-4.0.1', 'SOC2', 'TISAX', 'TKG-2024',
+        'MRIS-v1.5', 'NIS2', 'NIS2UMSUCG', 'NISG-AT', 'NIST-CSF-2.0', 'PCI-DSS-4.0.1', 'REVDSG-CH',
+        'SOC2', 'TISAX', 'TKG-2024',
     ];
 
     /** Documented orphans — target framework not yet loaded (mapping inert until then). */

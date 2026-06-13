@@ -1,0 +1,722 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'ikt-minstd-ch_to_iso27001-2022_v1.0'
+  source_framework: 'IKT-MINSTD-CH'
+  target_framework: 'ISO27001'
+  version: 1
+  effective_from: '2026-06-14'
+  effective_until: null
+
+  provenance:
+    primary_source: 'Minimalstandard zur Verbesserung der IKT-Resilienz, Version Mai 2023 (IKT-Minimalstandard 2023), NCSC / BWL — Bundesamt fuer wirtschaftliche Landesversorgung, Schweiz'
+    primary_source_url: 'https://www.ncsc.admin.ch/ncsc/de/home/infos-fuer/infos-unternehmen/aktuelle-themen/ikt-minimalstandards.html'
+    secondary_sources:
+      - 'ISO/IEC 27001:2022 Annex A (93 controls)'
+      - 'ISO/IEC 27002:2022 Implementation Guidance'
+      - 'IKT-Minimalstandard 2023 ISO 27001:2022 Referenztabellen (Abschnitt 2.2–2.6)'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: |
+      IKT-Minimalstandard 2023 ist eine oeffentliche Schweizer Bundesveroffentlichung (NCSC/BWL),
+      frei verwendbar fuer Referenzzwecke. ISO 27001:2022 Referenzen werden fuer Crosswalk-Zwecke
+      verwendet. Das Mapping ist ein abgeleitetes Werk (AGPL-3.0).
+
+  methodology:
+    type: 'expert_derived'
+    description: |
+      Das IKT-Minimalstandard-Dokument selbst enthaelt in jeder Tabelle (Abschnitt 2.2–2.6)
+      eine offizielle Spalte "ISO 27001:2022" mit Referenzen auf Annex-A-Controls und
+      Clauses. Diese Referenztabellen wurden als primaere Quelle fuer das Mapping verwendet.
+
+      Mapping-Ansatz:
+      1. Fuer jede IKT-Massnahme wurden die im Standard selbst angegebenen ISO-27001:2022-
+         Referenzen (Annex-A-Controls A.5.x, A.6.x, A.7.x, A.8.x) als Ausgangspunkt genutzt.
+      2. Bei mehreren Referenzen pro Massnahme wurde die repraesentativste Control gewaehlt
+         (naechste inhaltliche Entsprechung, hohe Confidence) und weitere als cross_refs.
+      3. Confidence-Festlegung:
+         - high   = der IKT-Outcome bildet den ISO-Control-Outcome 1:1 ab
+         - medium = teilweise Abdeckung oder breiter ISO-Control adressiert Massnahme als Teilaspekt
+         - low    = ISO-Clause (4–10) adressiert den Governance-Kontext ohne spezifischen Control
+      4. Nur Annex-A-Controls (A.x.y-Format) als target-IDs; ISO-Clauses werden als
+         audit_evidence_hint erwaehnt, aber nicht als target-ID.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-06-14', actor: 'maintainer' }
+      - { state: 'published', date: '2026-06-14', actor: 'maintainer' }
+
+mappings:
+  # ── IDENTIFIZIEREN / Identify ──────────────────────────────────────────────
+
+  # 2.2.1 Asset Management
+  - source: 'ID.AM-1'
+    target: 'A.5.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-1 "vollstaendiges Inventar der IKT-Betriebsmittel" entspricht
+      ISO 27001:2022 A.5.9 "Inventory of information and other associated assets" — direktes Aequivalent.
+    audit_evidence_hint: 'Aktuelles Asset-Inventar, Inventarisierungsprozessbeschreibung.'
+    cross_refs:
+      - 'A.5.2'
+
+  - source: 'ID.AM-2'
+    target: 'A.5.9'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-2 "Softwareplattformen und Applikationen inventarisieren" ist Teilaspekt von
+      ISO A.5.9 (Inventory of information and assets) und A.8.8 (Management of technical vulnerabilities).
+    cross_refs:
+      - 'A.8.8'
+
+  - source: 'ID.AM-3'
+    target: 'A.5.14'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.AM-3 "Kommunikation und Datenfluesse abbilden" adressiert
+      ISO A.5.14 "Information transfer" (Datenflussregelungen) als naechste Entsprechung.
+      Technisches Netzwerkdatenfluss-Mapping wird auch von A.8.20 (Network security) adressiert.
+    cross_refs:
+      - 'A.8.20'
+
+  - source: 'ID.AM-5'
+    target: 'A.5.12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-5 "Ressourcen nach Kritikalitaet priorisieren" entspricht
+      ISO A.5.12 "Classification of information" (Klassifizierung und Priorisierung nach Kritikalitaet).
+    cross_refs:
+      - 'A.5.9'
+
+  - source: 'ID.AM-6'
+    target: 'A.5.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-6 "Cybersecurity-Rollen und -Verantwortlichkeiten festlegen" entspricht
+      ISO A.5.2 "Information security roles and responsibilities".
+
+  # 2.2.2 Geschaeftsumfeld / Business Environment
+  - source: 'ID.BE-1'
+    target: 'A.5.19'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.BE-1 "Rolle in der Versorgungskette identifizieren" adressiert Aspekte von
+      ISO A.5.19 "Information security in supplier relationships" (eigene Rolle in der Lieferkette).
+    cross_refs:
+      - 'A.5.21'
+
+  - source: 'ID.BE-4'
+    target: 'A.5.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.BE-4 "Abhaengigkeiten und kritische Funktionen bestimmen" entspricht
+      ISO A.5.30 "ICT readiness for business continuity" — Identifikation kritischer Funktionen
+      ist Grundlage der ICT-BCM-Readiness.
+    cross_refs:
+      - 'A.8.14'
+
+  - source: 'ID.BE-5'
+    target: 'A.8.14'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.BE-5 "Resilienzziele fuer alle Betriebszustaende festlegen" entspricht
+      ISO A.8.14 "Redundancy of information processing facilities" (Resilience unter Last und Ausfall).
+    cross_refs:
+      - 'A.5.30'
+
+  # 2.2.3 Vorgaben / Governance
+  - source: 'ID.GV-1'
+    target: 'A.5.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.GV-1 "Informationssicherheitspolitik festlegen" entspricht
+      ISO A.5.1 "Policies for information security" — Top-Level-Policy und thematische Policies.
+    audit_evidence_hint: 'Genehmigte ISMS-Policy, Verteilungsnachweise, Review-Nachweise.'
+
+  - source: 'ID.GV-2'
+    target: 'A.5.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.GV-2 "Rollen und Verantwortlichkeiten koordinieren" entspricht
+      ISO A.5.2 "Information security roles and responsibilities".
+
+  - source: 'ID.GV-3'
+    target: 'A.5.31'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.GV-3 "Gesetzliche und regulatorische Vorgaben einhalten" entspricht
+      ISO A.5.31 "Legal, statutory, regulatory and contractual requirements".
+    cross_refs:
+      - 'A.5.32'
+      - 'A.5.34'
+
+  - source: 'ID.GV-4'
+    target: 'A.5.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.GV-4 "Cyberrisiken im unternehmensweiten Risikomanagement verankern" adressiert
+      ISO A.5.1 (Policy-Integration) sowie den ISO-Clause 6.1.1 (Risk management — im Annex A
+      keine direkte 1:1-Control). Naechste Annex-A-Control: A.5.4 "Management responsibilities".
+    cross_refs:
+      - 'A.5.4'
+
+  # 2.2.4 Risikoanalyse / Risk Assessment
+  - source: 'ID.RA-1'
+    target: 'A.8.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RA-1 "Verwundbarkeiten identifizieren und dokumentieren" entspricht
+      ISO A.8.8 "Management of technical vulnerabilities".
+    cross_refs:
+      - 'A.8.7'
+      - 'A.8.3'
+
+  - source: 'ID.RA-2'
+    target: 'A.5.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RA-2 "Cyber-Bedrohungsinformationen aus Foren einholen" entspricht
+      ISO A.5.7 "Threat intelligence".
+
+  - source: 'ID.RA-3'
+    target: 'A.8.7'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.RA-3 "Interne und externe Bedrohungen identifizieren" adressiert
+      den Threat-Identifikationsteil des Risikoprozesses (ISO Clause 6.1.2) —
+      naechste Annex-A-Control: A.8.7 "Protection against malware" ergaenzt durch A.5.7.
+    cross_refs:
+      - 'A.5.7'
+
+  - source: 'ID.RA-5'
+    target: 'A.5.9'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.RA-5 "Risiken bewerten" entspricht dem Risikobewertungsprozess nach ISO Clause 8.2.
+      Naechste Annex-A-Control: A.5.37 "Documented operating procedures" fuer den Prozess.
+      Der Risikobehandlungsplan selbst ist A.5.4 (Management responsibilities).
+    cross_refs:
+      - 'A.5.37'
+
+  - source: 'ID.RA-6'
+    target: 'A.8.8'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.RA-6 "Sofortmassnahmen bei Risikoeinritt definieren" adressiert
+      Risikoreaktionsplanung (ISO 6.1.3); naechste Annex-A-Control: A.8.8 (Vulnerability Management
+      inkl. Reaktionsmassnahmen) und A.5.29 (Information security during disruption).
+    cross_refs:
+      - 'A.5.29'
+
+  # 2.2.5 Risikomanagementstrategie / Risk Management Strategy
+  - source: 'ID.RM-1'
+    target: 'A.5.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.RM-1 "Risikomanagementprozesse etablieren" adressiert die Risikomanagement-
+      Framework-Etablierung (ISO Clause 6.1). Naechste Annex-A-Control: A.5.1 (Policies als
+      Grundlage) und A.5.4 (Management responsibilities).
+    cross_refs:
+      - 'A.5.4'
+
+  - source: 'ID.RM-3'
+    target: 'A.5.30'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.RM-3 "Sektorspezifische Risikoanalysen beruecksichtigen" adressiert
+      Kontext-Beruecksichtigung (ISO Clause 4.1/4.2) und kritische Infrastruktur-Resilienz
+      nach A.5.30 "ICT readiness for business continuity".
+
+  # 2.2.6 Lieferketten-Risikomanagement / Supply Chain Risk Management
+  - source: 'ID.SC-1'
+    target: 'A.5.19'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.SC-1 "Supply-Chain-Risikomanagementprozesse etablieren" entspricht
+      ISO A.5.19 "Information security in supplier relationships".
+    cross_refs:
+      - 'A.5.20'
+      - 'A.5.21'
+
+  - source: 'ID.SC-2'
+    target: 'A.5.21'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.SC-2 "Lieferanten nach Risiko priorisieren" entspricht
+      ISO A.5.21 "Managing information security in the ICT supply chain".
+
+  - source: 'ID.SC-3'
+    target: 'A.5.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.SC-3 "Cybersicherheitsanforderungen in Lieferantenvertraegen verankern" entspricht
+      ISO A.5.20 "Addressing information security within supplier agreements".
+
+  - source: 'ID.SC-4'
+    target: 'A.5.22'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.SC-4 "Lieferanten-Compliance ueberwachen" entspricht
+      ISO A.5.22 "Monitoring, review and change management of supplier services".
+
+  - source: 'ID.SC-5'
+    target: 'A.5.29'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.SC-5 "Reaktions- und Wiederherstellungsprozesse mit Lieferanten definieren" adressiert
+      ISO A.5.29 "Information security during disruption" (BCM-Koordination mit Lieferanten)
+      und A.5.19 (Supplier relationships inkl. Incident-Koordination).
+    cross_refs:
+      - 'A.5.19'
+
+  # ── SCHUETZEN / Protect ───────────────────────────────────────────────────
+
+  # 2.3.1 Zugriffsmanagement / Access Control
+  - source: 'PR.AC-1'
+    target: 'A.5.16'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-1 "Berechtigungen und Zugangsdaten verwalten" entspricht
+      ISO A.5.16 "Identity management" und A.5.15 "Access control".
+    cross_refs:
+      - 'A.5.15'
+      - 'A.5.18'
+
+  - source: 'PR.AC-2'
+    target: 'A.7.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-2 "Physischen Zugriff schuetzen" entspricht
+      ISO A.7.1 "Physical security perimeters" und A.7.2 "Physical entry".
+    cross_refs:
+      - 'A.7.2'
+
+  - source: 'PR.AC-3'
+    target: 'A.8.20'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.AC-3 "Fernzugriffsmanagement etablieren" ist Teilaspekt von
+      ISO A.8.20 "Networks security" und A.6.7 "Remote working".
+    cross_refs:
+      - 'A.6.7'
+
+  - source: 'PR.AC-4'
+    target: 'A.5.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-4 "Minimale Berechtigungen und Aufgabentrennung" entspricht
+      ISO A.5.15 "Access control" (Least Privilege, Segregation of Duties).
+    cross_refs:
+      - 'A.5.3'
+
+  - source: 'PR.AC-5'
+    target: 'A.8.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-5 "Netzwerkintegritaet schuetzen und segmentieren" entspricht
+      ISO A.8.20 "Networks security" und A.8.22 "Segregation of networks".
+    cross_refs:
+      - 'A.8.22'
+
+  - source: 'PR.AC-6'
+    target: 'A.5.16'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-6 "Digitale Identitaeten verifizierten Personen zuordnen" entspricht
+      ISO A.5.16 "Identity management".
+
+  - source: 'PR.AC-7'
+    target: 'A.8.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-7 "Risikobasierte Authentifizierung" entspricht
+      ISO A.8.5 "Secure authentication".
+
+  # 2.3.2 Sensibilisierung und Ausbildung / Awareness and Training
+  - source: 'PR.AT-1'
+    target: 'A.6.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AT-1 "Mitarbeitende schulen" entspricht
+      ISO A.6.3 "Information security awareness, education and training".
+
+  - source: 'PR.AT-2'
+    target: 'A.6.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AT-2 "Privilegierte Benutzer besonders sensibilisieren" ist Teilaspekt von
+      ISO A.6.3 (Information security training — spezialisierte Rollen).
+
+  # 2.3.3 Datensicherheit / Data Security
+  - source: 'PR.DS-1'
+    target: 'A.8.24'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-1 "Gespeicherte Daten schuetzen (CIA)" adressiert v.a. die Verschluesselung
+      gespeicherter Daten nach ISO A.8.24 "Use of cryptography" sowie allgemeine
+      Datenschutzmassnahmen aus A.5.12 (Classification) und A.8.12 (Data leakage prevention).
+    cross_refs:
+      - 'A.5.12'
+      - 'A.8.12'
+
+  - source: 'PR.DS-2'
+    target: 'A.8.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-2 "Daten bei der Uebertragung schuetzen" entspricht
+      ISO A.8.24 "Use of cryptography" (Transport-Verschluesselung) und A.5.14 "Information transfer".
+    cross_refs:
+      - 'A.5.14'
+
+  - source: 'PR.DS-3'
+    target: 'A.7.14'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-3 "Datenschutz bei Betriebsmittelentsorgung" entspricht
+      ISO A.7.14 "Secure disposal or reuse of equipment".
+
+  - source: 'PR.DS-4'
+    target: 'A.8.14'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-4 "Kapazitaetsreserven sicherstellen" entspricht
+      ISO A.8.14 "Redundancy of information processing facilities".
+    cross_refs:
+      - 'A.8.6'
+
+  - source: 'PR.DS-5'
+    target: 'A.8.12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-5 "Datenlecks verhindern" entspricht
+      ISO A.8.12 "Data leakage prevention".
+
+  - source: 'PR.DS-6'
+    target: 'A.8.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-6 "Integritaet von Firmware und Software verifizieren" entspricht
+      ISO A.8.9 "Configuration management" (Integritaetssicherung von Konfigurationen und Software).
+    cross_refs:
+      - 'A.8.20'
+
+  - source: 'PR.DS-7'
+    target: 'A.8.31'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-7 "Entwicklungs- und Testumgebungen trennen" entspricht
+      ISO A.8.31 "Separation of development, test and production environments".
+
+  - source: 'PR.DS-8'
+    target: 'A.5.21'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.DS-8 "Hardware-Integritaet verifizieren" adressiert die Lieferketten-Integritaet von
+      Hardware nach ISO A.5.21 "Managing information security in the ICT supply chain".
+
+  # 2.3.4 Informationsschutzrichtlinien / Information Protection Processes
+  - source: 'PR.IP-1'
+    target: 'A.8.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-1 "Standardkonfiguration erstellen" entspricht
+      ISO A.8.9 "Configuration management".
+
+  - source: 'PR.IP-3'
+    target: 'A.8.32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-3 "Konfigurationsaenderungen kontrollieren" entspricht
+      ISO A.8.32 "Change management".
+
+  - source: 'PR.IP-4'
+    target: 'A.8.13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-4 "Regelmaessige Backups" entspricht
+      ISO A.8.13 "Information backup".
+
+  - source: 'PR.IP-6'
+    target: 'A.8.10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-6 "Daten vernichten" entspricht
+      ISO A.8.10 "Deletion of information".
+
+  - source: 'PR.IP-9'
+    target: 'A.5.26'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-9 "Incident-Response-Plan und BCM etablieren" entspricht
+      ISO A.5.26 "Response to information security incidents" und A.5.30 "ICT readiness for BCM".
+    cross_refs:
+      - 'A.5.30'
+
+  - source: 'PR.IP-10'
+    target: 'A.5.26'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-10 "Reaktions- und Wiederherstellungsplaene testen" ist Testaspekt von
+      ISO A.5.26 (Incident Response) und A.5.30 "ICT readiness for business continuity".
+    cross_refs:
+      - 'A.5.30'
+
+  - source: 'PR.IP-11'
+    target: 'A.6.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-11 "Cybersecurity in Personalrekrutierung" entspricht
+      ISO A.6.1 "Screening" (Sicherheitsueberpruefung bei Einstellung).
+
+  - source: 'PR.IP-12'
+    target: 'A.8.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-12 "Prozess zum Umgang mit Schwachstellen" entspricht
+      ISO A.8.8 "Management of technical vulnerabilities".
+
+  # 2.3.5 Unterhalt / Maintenance
+  - source: 'PR.MA-1'
+    target: 'A.8.9'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.MA-1 "Betrieb und Wartung protokollieren" adressiert Wartungs-Logging
+      als Teilaspekt von ISO A.8.9 (Configuration Management / Betriebsdokumentation).
+    cross_refs:
+      - 'A.5.37'
+
+  # 2.3.6 Schutztechnologie / Protective Technology
+  - source: 'PR.PT-1'
+    target: 'A.8.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.PT-1 "Audit- und Log-Aufzeichnungen" entspricht
+      ISO A.8.15 "Logging".
+
+  - source: 'PR.PT-2'
+    target: 'A.8.11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.PT-2 "Wechseldatentraeger kontrollieren" entspricht
+      ISO A.8.11 "Data masking" ist naeher an A.5.13 "Labelling of information" oder
+      besser ISO A.7.10 "Storage media" — physische Wechseldatentraegerverwaltung.
+    cross_refs:
+      - 'A.7.10'
+
+  - source: 'PR.PT-3'
+    target: 'A.8.9'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.PT-3 "Minimalfunktionalitaet / Minimalkonfiguration" ist Konfigurationsaspekt
+      von ISO A.8.9 (Configuration Management, Secure-by-Default-Prinzip).
+
+  - source: 'PR.PT-4'
+    target: 'A.8.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.PT-4 "Kommunikations- und Steuernetzwerke schuetzen" entspricht
+      ISO A.8.20 "Networks security".
+    cross_refs:
+      - 'A.8.22'
+
+  - source: 'PR.PT-5'
+    target: 'A.8.14'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.PT-5 "Ausfallsicherheitsmechanismen" entspricht
+      ISO A.8.14 "Redundancy of information processing facilities".
+
+  # ── ERKENNEN / Detect ─────────────────────────────────────────────────────
+
+  # 2.4.2 Ueberwachung / Security Continuous Monitoring
+  - source: 'DE.CM-1'
+    target: 'A.8.16'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-1 "Kontinuierliches Netzwerkmonitoring" entspricht
+      ISO A.8.16 "Monitoring activities".
+
+  - source: 'DE.CM-3'
+    target: 'A.8.16'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT DE.CM-3 "Mitarbeiteraktivitaeten ueberwachen" ist Teilaspekt von
+      ISO A.8.16 (Monitoring activities, inkl. User-Activity-Monitoring).
+
+  - source: 'DE.CM-4'
+    target: 'A.8.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-4 "Schadsoftware erkennen" entspricht
+      ISO A.8.7 "Protection against malware".
+
+  - source: 'DE.CM-8'
+    target: 'A.8.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-8 "Verwundbarkeitsscans" entspricht
+      ISO A.8.8 "Management of technical vulnerabilities".
+
+  # 2.4.3 Detektionsprozess / Detection Processes
+  - source: 'DE.DP-3'
+    target: 'A.8.16'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT DE.DP-3 "Detektionsprozesse testen" ist Testaspekt von
+      ISO A.8.16 (Monitoring) und A.5.36 "Compliance with policies, rules and standards" (Prozess-Pruefung).
+    cross_refs:
+      - 'A.5.36'
+
+  # ── REAGIEREN / Respond ───────────────────────────────────────────────────
+
+  - source: 'RS.RP-1'
+    target: 'A.5.26'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.RP-1 "Reaktionsplan ausfuehren" entspricht
+      ISO A.5.26 "Response to information security incidents".
+
+  - source: 'RS.CO-2'
+    target: 'A.5.24'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT RS.CO-2 "Meldepflichten definieren" ist Teilaspekt von
+      ISO A.5.24 "Information security incident management planning and preparation" —
+      Meldeketten sind Teil der Incident-Management-Vorbereitung.
+    cross_refs:
+      - 'A.6.8'
+
+  - source: 'RS.CO-3'
+    target: 'A.5.28'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT RS.CO-3 "Informationen zu Vorfaellen teilen" ist Teilaspekt von
+      ISO A.5.28 "Collection of evidence" und A.5.5 "Contact with authorities"
+      (Informationsweitergabe an relevante Stellen).
+    cross_refs:
+      - 'A.5.5'
+
+  - source: 'RS.AN-3'
+    target: 'A.5.28'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.AN-3 "Forensische Analysen" entspricht
+      ISO A.5.28 "Collection of evidence".
+
+  - source: 'RS.MI-1'
+    target: 'A.5.26'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT RS.MI-1 "Vorfaelle eindaemmen" ist Containment-Aspekt von
+      ISO A.5.26 "Response to information security incidents".
+
+  - source: 'RS.MI-3'
+    target: 'A.8.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.MI-3 "Verwundbarkeiten reduzieren" entspricht
+      ISO A.8.8 "Management of technical vulnerabilities" (Behebung oder dokumentierte Akzeptanz).
+
+  - source: 'RS.IM-1'
+    target: 'A.5.27'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.IM-1 "Lehren aus Vorfaellen in Reaktionsplaene einfliessen lassen" entspricht
+      ISO A.5.27 "Learning from information security incidents".
+
+  # ── WIEDERHERSTELLEN / Recover ────────────────────────────────────────────
+
+  - source: 'RC.RP-1'
+    target: 'A.5.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RC.RP-1 "Wiederherstellungsplan ausfuehren" entspricht
+      ISO A.5.30 "ICT readiness for business continuity".
+    cross_refs:
+      - 'A.5.29'
+
+  - source: 'RC.IM-1'
+    target: 'A.5.27'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT RC.IM-1 "Lehren in Wiederherstellungsplaene einfliessen lassen" ist Lernaspekt von
+      ISO A.5.27 "Learning from information security incidents" (auch Recovery-Lessons-Learned).
+
+  - source: 'RC.CO-3'
+    target: 'A.5.26'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT RC.CO-3 "Wiederherstellungsaktivitaeten kommunizieren" ist Kommunikationsaspekt
+      des gesamten Incident-Response-Prozesses aus ISO A.5.26 "Response to information security incidents".
+    cross_refs:
+      - 'A.5.24'

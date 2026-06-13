@@ -1,0 +1,829 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'ikt-minstd-ch_to_nist-csf-2-0_v1.0'
+  source_framework: 'IKT-MINSTD-CH'
+  target_framework: 'NIST-CSF-2.0'
+  version: 1
+  effective_from: '2026-06-14'
+  effective_until: null
+
+  provenance:
+    primary_source: 'Minimalstandard zur Verbesserung der IKT-Resilienz, Version Mai 2023 (IKT-Minimalstandard 2023), NCSC / BWL — Bundesamt fuer wirtschaftliche Landesversorgung, Schweiz'
+    primary_source_url: 'https://www.ncsc.admin.ch/ncsc/de/home/infos-fuer/infos-unternehmen/aktuelle-themen/ikt-minimalstandards.html'
+    secondary_sources:
+      - 'NIST Cybersecurity Framework 2.0 (NIST CSWP.29, 2024-02-26)'
+      - 'fixtures/library/catalogues/nist-csf-2-0/csf2_subcategories.json'
+      - 'IKT-Minimalstandard 2023 Tabellen mit Referenzen (Abschnitt 2.2–2.6)'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: |
+      IKT-Minimalstandard 2023 ist eine oeffentliche Schweizer Bundesveroffentlichung (NCSC/BWL),
+      frei verwendbar fuer Referenzzwecke. NIST CSF 2.0 IDs sind Public Domain (US-Regierungswerk).
+      Das Mapping ist ein abgeleitetes Werk (AGPL-3.0).
+
+  methodology:
+    type: 'expert_derived'
+    description: |
+      Der IKT-Minimalstandard 2023 basiert explizit auf dem NIST Cybersecurity Framework
+      und verwendet dieselbe Strukturierung in fuenf Funktionen (Identifizieren, Schuetzen,
+      Erkennen, Reagieren, Wiederherstellen) sowie dieselben Kategorienkuerzel (ID.AM, PR.AC etc.)
+      — allerdings in der CSF 1.1 Notation.
+
+      Mapping-Ansatz:
+      1. IKT-Minstd-CH Massnahmen-IDs (CSF-1.1-Notation, z.B. ID.AM-1) werden auf
+         die semantisch naechste CSF-2.0-Subcategory gemappt (z.B. ID.AM-01).
+         Wo der CSF 2.0 die Kategorie umbenannt hat (PR.AC → PR.AA, PR.IP → PR.PS/PR.IR
+         PR.PT → PR.PS, DE.CM refokussiert), wurde semantisch abgeglichen.
+      2. Confidence 'high': direkte Entsprechung mit weitgehend identischem Outcome.
+      3. Confidence 'medium': inhaltliche Ueberlappung, aber Formulierung oder Scope
+         leicht abweichend (CSF 2.0 oft breiter durch Governance-Funktion GV).
+      4. Confidence 'low': nur teilweise Abdeckung oder Umformulierung in CSF 2.0 mit
+         anderer Kategorisierung.
+
+      Neue CSF-2.0-Funktionskategorie GV (Govern) hat kein direktes 1.1-Pendant, wird
+      aber durch ID.GV-Massnahmen adressiert.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-06-14', actor: 'maintainer' }
+      - { state: 'published', date: '2026-06-14', actor: 'maintainer' }
+
+mappings:
+  # ── IDENTIFIZIEREN / Identify ──────────────────────────────────────────────
+
+  # 2.2.1 Asset Management
+  - source: 'ID.AM-1'
+    target: 'ID.AM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-1 "vollstaendiges Inventar der IKT-Betriebsmittel" entspricht
+      CSF 2.0 ID.AM-01 "Inventories of hardware managed by the organization are maintained" — direktes Aequivalent.
+
+  - source: 'ID.AM-2'
+    target: 'ID.AM-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-2 "Softwareplattformen/-Lizenzen und Applikationen inventarisieren"
+      entspricht CSF 2.0 ID.AM-02 "Inventories of software, services, and systems" — direktes Aequivalent.
+
+  - source: 'ID.AM-3'
+    target: 'ID.AM-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-3 "Kommunikation und Datenfluesse abbilden" entspricht
+      CSF 2.0 ID.AM-03 "Representations of the organization's authorized network communication ... are maintained".
+
+  - source: 'ID.AM-4'
+    target: 'ID.AM-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-4 "Externe Informationssysteme katalogisieren" entspricht
+      CSF 2.0 ID.AM-04 "Inventories of services provided by suppliers are maintained".
+
+  - source: 'ID.AM-5'
+    target: 'ID.AM-05'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-5 "Ressourcen nach Kritikalitaet priorisieren" entspricht
+      CSF 2.0 ID.AM-05 "Assets are prioritized based on classification, criticality, resources, and impact".
+
+  - source: 'ID.AM-6'
+    target: 'GV.RR-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.AM-6 "Cybersecurity-Rollen und -Verantwortlichkeiten festlegen" wurde in
+      CSF 2.0 in die neue Funktion GV (Govern) verschoben: GV.RR-02
+      "Roles, responsibilities, and authorities related to cybersecurity risk management are established".
+
+  # 2.2.2 Geschaeftsumfeld / Business Environment
+  - source: 'ID.BE-1'
+    target: 'GV.OC-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.BE-1 "Rolle in der Versorgungskette identifizieren" entspricht
+      CSF 2.0 GV.OC-04 "Critical objectives, capabilities, and services that external stakeholders depend on
+      are understood and communicated" — Supply-Chain-Rolle als Teil des Organizational Context.
+
+  - source: 'ID.BE-2'
+    target: 'GV.OC-05'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.BE-2 "Bedeutung als kritische Infrastruktur kommunizieren" entspricht
+      CSF 2.0 GV.OC-05 "Outcomes, capabilities, and services that the organization depends on are understood"
+      — inhaltlich nah, CSF 2.0 fokussiert eher auf interne Abhaengigkeiten.
+
+  - source: 'ID.BE-3'
+    target: 'GV.RM-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.BE-3 "Geschaeftsziele und -aktivitaeten priorisieren" ist Teilaspekt von
+      CSF 2.0 GV.RM-01 "Risk management objectives are established and agreed to by organizational stakeholders".
+
+  - source: 'ID.BE-4'
+    target: 'ID.AM-05'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.BE-4 "Abhaengigkeiten und kritische Funktionen bestimmen" hat groesste Naeher zu
+      CSF 2.0 ID.AM-05 (Asset-Prioritaet inkl. mission impact) sowie GV.OC-04.
+      Abhaengigkeitsmanagement wurde in CSF 2.0 breiter in GV.SC (Supply Chain) und GV.OC verankert.
+
+  - source: 'ID.BE-5'
+    target: 'PR.IR-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.BE-5 "Resilienzziele fuer alle Betriebszustaende festlegen" entspricht
+      CSF 2.0 PR.IR-03 "Mechanisms are implemented to achieve resilience requirements in normal and adverse situations".
+
+  # 2.2.3 Vorgaben / Governance
+  - source: 'ID.GV-1'
+    target: 'GV.PO-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.GV-1 "Informationssicherheitspolitik festlegen" entspricht
+      CSF 2.0 GV.PO-01 "Policy for managing cybersecurity risks is established ... and enforced".
+
+  - source: 'ID.GV-2'
+    target: 'GV.RR-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.GV-2 "Rollen und Verantwortlichkeiten koordinieren" entspricht
+      CSF 2.0 GV.RR-02 "Roles, responsibilities, and authorities related to cybersecurity risk management are established".
+
+  - source: 'ID.GV-3'
+    target: 'GV.OC-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.GV-3 "Gesetzliche und regulatorische Vorgaben einhalten" entspricht
+      CSF 2.0 GV.OC-03 "Legal, regulatory, and contractual requirements regarding cybersecurity — including privacy and civil liberties obligations — are understood and managed".
+
+  - source: 'ID.GV-4'
+    target: 'GV.RM-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.GV-4 "Cyberrisiken im unternehmensweiten Risikomanagement verankern" entspricht
+      CSF 2.0 GV.RM-03 "Cybersecurity risk management activities and outcomes are included in enterprise risk management processes".
+
+  # 2.2.4 Risikoanalyse / Risk Assessment
+  - source: 'ID.RA-1'
+    target: 'ID.RA-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RA-1 "Verwundbarkeiten der Betriebsmittel identifizieren" entspricht
+      CSF 2.0 ID.RA-01 "Vulnerabilities in assets are identified, validated, and recorded".
+
+  - source: 'ID.RA-2'
+    target: 'ID.RA-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RA-2 "Aktuelle Cyber-Bedrohungsinformationen einholen" entspricht
+      CSF 2.0 ID.RA-02 "Cyber threat intelligence is received from information sharing forums and sources".
+
+  - source: 'ID.RA-3'
+    target: 'ID.RA-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RA-3 "Interne und externe Bedrohungen identifizieren" entspricht
+      CSF 2.0 ID.RA-03 "Internal and external threats to the organization are identified and recorded".
+
+  - source: 'ID.RA-4'
+    target: 'ID.RA-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RA-4 "Auswirkungen und Eintretenswahrscheinlichkeit bewerten" entspricht
+      CSF 2.0 ID.RA-04 "Potential impacts and likelihoods of threats exploiting vulnerabilities are identified and recorded".
+
+  - source: 'ID.RA-5'
+    target: 'ID.RA-05'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RA-5 "Risiken fuer die Organisation bewerten" entspricht
+      CSF 2.0 ID.RA-05 "Threats, vulnerabilities, likelihoods, and impacts are used to understand inherent risk and inform risk response prioritization".
+
+  - source: 'ID.RA-6'
+    target: 'ID.RA-06'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RA-6 "Risikosofortmassnahmen definieren und priorisieren" entspricht
+      CSF 2.0 ID.RA-06 "Risk responses are chosen, prioritized, planned, tracked, and communicated".
+
+  # 2.2.5 Risikomanagementstrategie / Risk Management Strategy
+  - source: 'ID.RM-1'
+    target: 'GV.RM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RM-1 "Risikomanagementprozesse etablieren" entspricht
+      CSF 2.0 GV.RM-01 "Risk management objectives are established and agreed to by organizational stakeholders".
+
+  - source: 'ID.RM-2'
+    target: 'GV.RM-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.RM-2 "Maximal tragbare Risiken definieren" entspricht
+      CSF 2.0 GV.RM-02 "Risk appetite and risk tolerance statements are established, communicated, and maintained".
+
+  - source: 'ID.RM-3'
+    target: 'GV.RM-04'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      IKT ID.RM-3 "Sektorspezifische Risikoanalysen beruecksichtigen" entspricht
+      CSF 2.0 GV.RM-04 "Strategic direction that describes appropriate risk response options is established and communicated".
+      Sektorspezifischer Kontext ist Teilaspekt der strategischen Risikoresponse-Ausrichtung.
+
+  # 2.2.6 Lieferketten-Risikomanagement / Supply Chain Risk Management
+  - source: 'ID.SC-1'
+    target: 'GV.SC-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.SC-1 "Cyber-Supply-Chain-Risikomanagementprozesse etablieren" entspricht
+      CSF 2.0 GV.SC-01 "A cybersecurity supply chain risk management program, strategy, objectives, policies, and processes are established and agreed to by organizational stakeholders".
+
+  - source: 'ID.SC-2'
+    target: 'GV.SC-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.SC-2 "Lieferanten nach Risiko priorisieren" entspricht
+      CSF 2.0 GV.SC-04 "Suppliers are known and prioritized by criticality".
+
+  - source: 'ID.SC-3'
+    target: 'GV.SC-05'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.SC-3 "Cybersicherheitsanforderungen in Lieferantenvertraegen verankern" entspricht
+      CSF 2.0 GV.SC-05 "Requirements to address cybersecurity risks in supply chains are established, prioritized, and integrated into contracts".
+
+  - source: 'ID.SC-4'
+    target: 'GV.SC-07'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.SC-4 "Lieferanten-Compliance ueberwachen" entspricht
+      CSF 2.0 GV.SC-07 "The risks posed by a supplier, their products and services, and other third parties are understood, recorded, prioritized, assessed, responded to, and monitored over the course of the relationship".
+
+  - source: 'ID.SC-5'
+    target: 'GV.SC-08'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT ID.SC-5 "Reaktions- und Wiederherstellungsprozesse mit Lieferanten definieren" entspricht
+      CSF 2.0 GV.SC-08 "Relevant suppliers and other third parties are included in incident planning, response, and recovery activities".
+
+  # ── SCHUETZEN / Protect ───────────────────────────────────────────────────
+
+  # 2.3.1 Zugriffsmanagement und -steuerung (Access Control → PR.AA in CSF 2.0)
+  - source: 'PR.AC-1'
+    target: 'PR.AA-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-1 "Berechtigungen und Zugangsdaten verwalten" entspricht
+      CSF 2.0 PR.AA-01 "Identities and credentials for authorized users, services, and hardware are managed by the organization".
+
+  - source: 'PR.AC-2'
+    target: 'PR.AA-06'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-2 "Physischen Zugriff schuetzen" entspricht
+      CSF 2.0 PR.AA-06 "Physical access to assets is managed, monitored, and enforced commensurate with risk".
+
+  - source: 'PR.AC-3'
+    target: 'PR.AA-05'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.AC-3 "Fernzugriffsmanagement etablieren" ist Teilaspekt von
+      CSF 2.0 PR.AA-05 "Access permissions, entitlements, and authorizations are defined in a policy, managed, enforced, and reviewed".
+      Fernzugriff ist eine Dimension von Zugriffsberechtigungen.
+
+  - source: 'PR.AC-4'
+    target: 'PR.AA-05'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-4 "Minimale Berechtigungen und Aufgabentrennung" entspricht
+      CSF 2.0 PR.AA-05 "Access permissions, entitlements, and authorizations are defined in a policy, managed, enforced, and reviewed" — inkl. Least-Privilege-Prinzip.
+
+  - source: 'PR.AC-5'
+    target: 'PR.IR-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-5 "Netzwerkintegritaet schuetzen und segmentieren" entspricht
+      CSF 2.0 PR.IR-01 "Networks and environments are protected from unauthorized logical access and usage".
+
+  - source: 'PR.AC-6'
+    target: 'PR.AA-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-6 "Digitale Identitaeten verifizierten Personen zuordnen" entspricht
+      CSF 2.0 PR.AA-02 "Identities are proofed and bound to credentials based on the context of interactions".
+
+  - source: 'PR.AC-7'
+    target: 'PR.AA-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AC-7 "Risikobasierte Authentifizierung" entspricht
+      CSF 2.0 PR.AA-03 "Users, services, and hardware are authenticated".
+
+  # 2.3.2 Sensibilisierung und Ausbildung (Awareness and Training)
+  - source: 'PR.AT-1'
+    target: 'PR.AT-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AT-1 "Mitarbeitende schulen" entspricht
+      CSF 2.0 PR.AT-01 "Personnel are provided with awareness and training so that they possess the knowledge and skills to perform general tasks with cybersecurity risks in mind".
+
+  - source: 'PR.AT-2'
+    target: 'PR.AT-02'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT PR.AT-2 "Privilegierte Benutzer sensibilisieren" entspricht
+      CSF 2.0 PR.AT-02 "Individuals in specialized roles are provided with awareness and training so that they possess the knowledge and skills to perform relevant tasks with cybersecurity risks in mind".
+
+  # 2.3.3 Datensicherheit (Data Security)
+  - source: 'PR.DS-1'
+    target: 'PR.DS-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-1 "Gespeicherte Daten schuetzen" entspricht
+      CSF 2.0 PR.DS-01 "The confidentiality, integrity, and availability of data-at-rest are protected".
+
+  - source: 'PR.DS-2'
+    target: 'PR.DS-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-2 "Daten bei der Uebertragung schuetzen" entspricht
+      CSF 2.0 PR.DS-02 "The confidentiality, integrity, and availability of data-in-transit are protected".
+
+  - source: 'PR.DS-3'
+    target: 'ID.AM-08'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.DS-3 "Datenschutz bei Betriebsmittelentsorgung" ist Teil des
+      CSF 2.0 ID.AM-08 "Systems, hardware, software, services, and data are managed throughout their life cycles"
+      — Entsorgung/Entfernung ist eine Lebenszyklusphase.
+
+  - source: 'PR.DS-4'
+    target: 'PR.IR-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-4 "Kapazitaetsreserven sicherstellen" entspricht
+      CSF 2.0 PR.IR-04 "Adequate resource capacity to ensure availability is maintained".
+
+  - source: 'PR.DS-5'
+    target: 'PR.DS-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.DS-5 "Datenlecks verhindern" ist Teilaspekt von
+      CSF 2.0 PR.DS-01 (Vertraulichkeit gespeicherter Daten). In CSF 2.0 kein eigenes DLP-Subcategory.
+
+  - source: 'PR.DS-6'
+    target: 'PR.DS-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.DS-6 "Integritaet von Firmware und Software verifizieren" adressiert Integritaetsaspekte
+      aus CSF 2.0 PR.DS-01 (data-at-rest CIA) und ID.RA-09 "The authenticity and integrity of hardware
+      and software are assessed prior to acquisition and use".
+    cross_refs:
+      - 'ID.RA-09'
+
+  - source: 'PR.DS-7'
+    target: 'PR.PS-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.DS-7 "Entwicklungs- und Testumgebungen trennen" ist eine Konfigurationsmanagement-
+      Massnahme, naechst zu CSF 2.0 PR.PS-01 "Configuration management practices are established and applied".
+
+  - source: 'PR.DS-8'
+    target: 'ID.RA-09'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.DS-8 "Hardware-Integritaet verifizieren" entspricht
+      CSF 2.0 ID.RA-09 "The authenticity and integrity of hardware and software are assessed prior to acquisition and use".
+
+  # 2.3.4 Informationsschutzrichtlinien (Information Protection Processes → PR.PS/PR.IR in CSF 2.0)
+  - source: 'PR.IP-1'
+    target: 'PR.PS-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-1 "Standardkonfiguration der IKT-Infrastruktur" entspricht
+      CSF 2.0 PR.PS-01 "Configuration management practices are established and applied".
+
+  - source: 'PR.IP-2'
+    target: 'ID.AM-08'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-2 "Lebenszyklus-Prozess fuer IKT-Betriebsmittel" entspricht
+      CSF 2.0 ID.AM-08 "Systems, hardware, software, services, and data are managed throughout their life cycles".
+
+  - source: 'PR.IP-3'
+    target: 'PR.PS-01'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-3 "Konfigurationsaenderungen kontrollieren" ist Teilaspekt des
+      CSF 2.0 PR.PS-01 "Configuration management practices are established and applied" — Change Control ist integraler Bestandteil.
+
+  - source: 'PR.IP-4'
+    target: 'PR.DS-11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-4 "Regelmaessige Backups durchfuehren und testen" entspricht
+      CSF 2.0 PR.DS-11 "Backups of data are created, protected, maintained, and tested".
+
+  - source: 'PR.IP-6'
+    target: 'PR.PS-03'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.IP-6 "Daten gemaess Vorgaben vernichten" ist Aspekt von
+      CSF 2.0 PR.PS-03 "Hardware is maintained, replaced, and removed commensurate with risk"
+      (inkl. sichere Datenvernichtung beim Austausch).
+
+  - source: 'PR.IP-7'
+    target: 'ID.IM-03'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.IP-7 "Informationssicherheitsprozesse kontinuierlich verbessern" entspricht
+      CSF 2.0 ID.IM-03 "Improvements are identified from execution of operational processes, procedures, and activities".
+
+  - source: 'PR.IP-9'
+    target: 'ID.IM-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-9 "Incident-Response- und Business-Continuity-Plan etablieren" entspricht
+      CSF 2.0 ID.IM-04 "Incident response plans and other cybersecurity plans that affect operations are established, communicated, and maintained".
+
+  - source: 'PR.IP-10'
+    target: 'ID.IM-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-10 "Reaktions- und Wiederherstellungsplaene testen" entspricht
+      CSF 2.0 ID.IM-02 "Improvements are identified from security tests and exercises, including those done in coordination with suppliers and relevant third parties".
+
+  - source: 'PR.IP-11'
+    target: 'GV.RR-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-11 "Cybersecurity-Aspekte in Personalrekrutierung" entspricht
+      CSF 2.0 GV.RR-04 "Cybersecurity is included in human resources practices".
+
+  - source: 'PR.IP-12'
+    target: 'ID.RA-08'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.IP-12 "Prozess zum Umgang mit Schwachstellen" entspricht
+      CSF 2.0 ID.RA-08 "Processes for receiving, analyzing, and responding to vulnerability disclosures are established".
+
+  # 2.3.5 Unterhalt / Maintenance
+  - source: 'PR.MA-1'
+    target: 'PR.PS-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.MA-1 "Betrieb und Wartung protokollieren" entspricht
+      CSF 2.0 PR.PS-02 "Software is maintained, replaced, and removed commensurate with risk"
+      (inkl. Wartungsdokumentation und -protokollierung).
+
+  - source: 'PR.MA-2'
+    target: 'PR.PS-02'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.MA-2 "Fernwartung absichern" ist Teilaspekt von PR.PS-02 (Maintainance-Prozesse)
+      mit spezifischem Fokus auf Remote-Access-Sicherheit.
+
+  # 2.3.6 Einsatz von Schutztechnologie / Protective Technology (→ PR.PS in CSF 2.0)
+  - source: 'PR.PT-1'
+    target: 'PR.PS-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.PT-1 "Audit- und Log-Aufzeichnungen definieren" entspricht
+      CSF 2.0 PR.PS-04 "Log records are generated and made available for continuous monitoring".
+
+  - source: 'PR.PT-2'
+    target: 'PR.PS-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT PR.PT-2 "Wechseldatentraeger kontrollieren" ist Konfigurationsmanagement-Aspekt
+      aus CSF 2.0 PR.PS-01 (Configuration Management) inkl. Geraeterestriktionen.
+
+  - source: 'PR.PT-3'
+    target: 'PR.PS-05'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.PT-3 "Minimalfunktionalitaet der Systeme sicherstellen" entspricht
+      CSF 2.0 PR.PS-05 "Installation and execution of unauthorized software are prevented"
+      — Minimalkonfigurationsprinzip verwandt mit "deny-by-default".
+
+  - source: 'PR.PT-4'
+    target: 'PR.IR-01'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT PR.PT-4 "Kommunikations- und Steuernetzwerke schuetzen" ist Teilaspekt von
+      CSF 2.0 PR.IR-01 "Networks and environments are protected from unauthorized logical access and usage".
+
+  - source: 'PR.PT-5'
+    target: 'PR.IR-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT PR.PT-5 "Ausfallsicherheitsmechanismen implementieren" entspricht
+      CSF 2.0 PR.IR-03 "Mechanisms are implemented to achieve resilience requirements in normal and adverse situations".
+
+  # ── ERKENNEN / Detect ─────────────────────────────────────────────────────
+
+  # 2.4.1 Auffaelligkeiten und Vorfaelle / Anomalies and Events
+  - source: 'DE.AE-1'
+    target: 'DE.CM-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT DE.AE-1 "Standardwerte fuer Netzwerkoperationen definieren" (Baseline-Definition
+      fuer Anomalie-Erkennung) ist Voraussetzung fuer
+      CSF 2.0 DE.CM-01 "Networks and network services are monitored to find potentially adverse events".
+      In CSF 2.0 keine eigene DE.AE-Baseline-Subcategory mehr; Outcome in CM integriert.
+
+  - source: 'DE.AE-2'
+    target: 'DE.AE-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.AE-2 "Cybersecurity-Vorfaelle analysieren" entspricht
+      CSF 2.0 DE.AE-02 "Potentially adverse events are analyzed to better understand associated activities".
+
+  - source: 'DE.AE-3'
+    target: 'DE.AE-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.AE-3 "Vorfallsinformationen aggregieren" entspricht
+      CSF 2.0 DE.AE-03 "Information is correlated from multiple sources".
+
+  - source: 'DE.AE-4'
+    target: 'DE.AE-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.AE-4 "Auswirkungen moeglicher Ereignisse bestimmen" entspricht
+      CSF 2.0 DE.AE-04 "The estimated impact and scope of adverse events are understood".
+
+  - source: 'DE.AE-5'
+    target: 'DE.AE-08'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.AE-5 "Schwellenwerte fuer Vorfallswarnungen" entspricht
+      CSF 2.0 DE.AE-08 "Incidents are declared when adverse events meet the defined incident criteria"
+      — Schwellenwert-Definition ist der Kern dieses Outcomestatements.
+
+  # 2.4.2 Ueberwachung / Security Continuous Monitoring
+  - source: 'DE.CM-1'
+    target: 'DE.CM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-1 "Kontinuierliches Netzwerkmonitoring" entspricht
+      CSF 2.0 DE.CM-01 "Networks and network services are monitored to find potentially adverse events".
+
+  - source: 'DE.CM-2'
+    target: 'DE.CM-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-2 "Physische Betriebsmittel ueberwachen" entspricht
+      CSF 2.0 DE.CM-02 "The physical environment is monitored to find potentially adverse events".
+
+  - source: 'DE.CM-3'
+    target: 'DE.CM-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-3 "Mitarbeiteraktivitaeten ueberwachen" entspricht
+      CSF 2.0 DE.CM-03 "Personnel activity and technology usage are monitored to find potentially adverse events".
+
+  - source: 'DE.CM-4'
+    target: 'DE.CM-09'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-4 "Schadsoftware erkennen" ist Teilaspekt von
+      CSF 2.0 DE.CM-09 "Computing hardware and software, runtime environments, and their data are monitored
+      to find potentially adverse events" — Malware-Detection ist ein zentrales Ergebnis des Computing-Monitorings.
+
+  - source: 'DE.CM-5'
+    target: 'DE.CM-09'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT DE.CM-5 "Schadsoftware auf Mobilgeraeten erkennen" ist Teilaspekt von
+      CSF 2.0 DE.CM-09 (Computing-Hardware-Monitoring inkl. mobile Endgeraete).
+
+  - source: 'DE.CM-6'
+    target: 'DE.CM-06'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-6 "Aktivitaeten externer Dienstleister ueberwachen" entspricht
+      CSF 2.0 DE.CM-06 "External service provider activities and services are monitored to find potentially adverse events".
+
+  - source: 'DE.CM-7'
+    target: 'DE.CM-09'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-7 "Unbefugte Aktivitaeten erkennen" ist Teilaspekt von
+      CSF 2.0 DE.CM-09 (allgemeines Computing-Hardware/Software-Monitoring auf potentielle Anomalien).
+
+  - source: 'DE.CM-8'
+    target: 'ID.RA-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT DE.CM-8 "Verwundbarkeitsscans durchfuehren" entspricht
+      CSF 2.0 ID.RA-01 "Vulnerabilities in assets are identified, validated, and recorded"
+      — Vulnerability Scanning ist das primaere Werkzeug fuer diesen Outcome.
+
+  # ── REAGIEREN / Respond ───────────────────────────────────────────────────
+
+  # 2.5.1 Reaktionsplanung / Response Planning
+  - source: 'RS.RP-1'
+    target: 'RS.MA-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.RP-1 "Reaktionsplan bei Cybersecurity-Vorfaellen ausfuehren" entspricht
+      CSF 2.0 RS.MA-01 "The incident response plan is executed in coordination with relevant third parties once an incident is declared".
+
+  # 2.5.2 Kommunikation / Communications
+  - source: 'RS.CO-2'
+    target: 'RS.CO-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.CO-2 "Meldepflichten bei Vorfaellen definieren" entspricht
+      CSF 2.0 RS.CO-02 "Internal and external stakeholders are notified of incidents".
+
+  - source: 'RS.CO-3'
+    target: 'RS.CO-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.CO-3 "Informationen zu Vorfaellen teilen" entspricht
+      CSF 2.0 RS.CO-03 "Information is shared with designated internal and external stakeholders".
+
+  # 2.5.3 Analyse / Analysis
+  - source: 'RS.AN-3'
+    target: 'RS.AN-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.AN-3 "Forensische Analysen durchfuehren" entspricht
+      CSF 2.0 RS.AN-03 "Analysis is performed to establish what has taken place during an incident and the root cause of the incident".
+
+  - source: 'RS.AN-4'
+    target: 'RS.MA-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.AN-4 "Vorfaelle kategorisieren" entspricht
+      CSF 2.0 RS.MA-03 "Incidents are categorized and prioritized".
+
+  - source: 'RS.AN-5'
+    target: 'ID.RA-08'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.AN-5 "Schwachstellenmeldungen empfangen und verarbeiten" entspricht
+      CSF 2.0 ID.RA-08 "Processes for receiving, analyzing, and responding to vulnerability disclosures are established".
+
+  # 2.5.4 Schadensminderung / Mitigation
+  - source: 'RS.MI-1'
+    target: 'RS.MI-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.MI-1 "Cybersecurity-Vorfaelle eindaemmen" entspricht
+      CSF 2.0 RS.MI-01 "Incidents are contained".
+
+  - source: 'RS.MI-2'
+    target: 'RS.MI-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.MI-2 "Auswirkungen von Vorfaellen mindern" entspricht
+      CSF 2.0 RS.MI-02 "Incidents are eradicated".
+
+  - source: 'RS.MI-3'
+    target: 'ID.RA-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT RS.MI-3 "Verwundbarkeiten reduzieren oder als Restrisiko akzeptieren" ist rueckgekoppelt auf
+      CSF 2.0 ID.RA-01 (Verwundbarkeitsidentifikation und -dokumentation) als Teil des iterativen Risikoprozesses.
+
+  # 2.5.5 Verbesserungen / Improvements
+  - source: 'RS.IM-1'
+    target: 'ID.IM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RS.IM-1 "Lehren aus Vorfaellen in Reaktionsplaene einfliessen lassen" entspricht
+      CSF 2.0 ID.IM-01 "Improvements are identified from evaluations".
+
+  - source: 'RS.IM-2'
+    target: 'ID.IM-04'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT RS.IM-2 "Reaktionsstrategien aktualisieren" ist Teilaspekt von
+      CSF 2.0 ID.IM-04 "Incident response plans and other cybersecurity plans that affect operations are established, communicated, and maintained" — Aktualisierung ist Teil der Pflege des Plans.
+
+  # ── WIEDERHERSTELLEN / Recover ────────────────────────────────────────────
+
+  # 2.6.1 Wiederherstellungsplanung / Recovery Planning
+  - source: 'RC.RP-1'
+    target: 'RC.RP-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RC.RP-1 "Wiederherstellungsplan ausfuehren" entspricht
+      CSF 2.0 RC.RP-01 "The recovery portion of the incident response plan is executed once initiated from the incident response process".
+
+  # 2.6.2 Verbesserungen / Improvements
+  - source: 'RC.IM-1'
+    target: 'ID.IM-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT RC.IM-1 "Lehren in Wiederherstellungsplaene einfliessen lassen" ist Teilaspekt von
+      CSF 2.0 ID.IM-01 "Improvements are identified from evaluations" (Wiederherstellungs-Post-Mortems als Evaluationsquelle).
+
+  - source: 'RC.IM-2'
+    target: 'ID.IM-04'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      IKT RC.IM-2 "Wiederherstellungsstrategie aktualisieren" ist Teilaspekt von
+      CSF 2.0 ID.IM-04 (Aktualisierung von Incident-Response- und Recovery-Plaenen).
+
+  # 2.6.3 Kommunikation / Communications
+  - source: 'RC.CO-3'
+    target: 'RC.CO-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      IKT RC.CO-3 "Wiederherstellungsaktivitaeten intern kommunizieren" entspricht
+      CSF 2.0 RC.CO-03 "Recovery activities and progress in restoring operational capabilities are communicated to designated internal and external stakeholders".
