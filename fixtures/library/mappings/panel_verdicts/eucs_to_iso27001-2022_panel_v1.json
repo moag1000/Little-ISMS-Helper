@@ -1,0 +1,165 @@
+{
+  "library": {
+    "source_framework": "ENISA-EUCS",
+    "target_framework": "ISO27001",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (EUCS scheme not yet adopted; no official EUCS↔ISO 27001 crosswalk)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
+    "completeness": "47 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 20,
+      "ki_validiert": 18,
+      "needs_review": 0,
+      "reject": 2
+    }
+  },
+  "verdicts": [
+    {
+      "eucs": "EUCS-A1",
+      "iso": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A2",
+      "iso": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 95,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A3",
+      "iso": "A.5.4",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "eucs": "EUCS-A4",
+      "iso": "A.5.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A5",
+      "iso": "A.7.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A6",
+      "iso": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A7",
+      "iso": "A.5.15",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A8",
+      "iso": "A.8.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 92,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A9",
+      "iso": "A.8.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A10",
+      "iso": "A.5.23",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A11",
+      "iso": "A.8.32",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A12",
+      "iso": "A.8.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A13",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 88,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A14",
+      "iso": "A.5.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A15",
+      "iso": "A.5.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A16",
+      "iso": "A.5.35",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A17",
+      "iso": "A.5.37",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A18",
+      "iso": "A.5.34",
+      "state": "reject",
+      "mappingPercentage": 50,
+      "realVotes": 1
+    },
+    {
+      "eucs": "EUCS-A19",
+      "iso": "A.8.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "eucs": "EUCS-A20",
+      "iso": "A.6.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 95,
+      "realVotes": 4
+    }
+  ]
+}
