@@ -1,0 +1,194 @@
+{
+  "provenance": {
+    "source_framework": "NIS2-UmsuCG",
+    "target_framework": "DORA",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 35
+  },
+  "candidates": [
+    {
+      "target": "DORA-12.1",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-UmsuCG §30 — §30 transposes NIS2 Art. 21(2)(c) 'Aufrechterhaltung des Betriebs, Backup-Management, Wiederherstellung nach einem Notfall und Krisenmanagement'. The current mapping covers detection (Art.10), backup is referenced via Art.12 only by its absence — DORA Art. 12 (Backup policies and procedures, restoration and recovery procedures and methods) is the direct DORA counterpart to the backup/recovery prong of §30 and should be present, not merely Art.11 response. Art.12.1 specifically codifies backup policy obligations matching §30 Nr. 3."
+    },
+    {
+      "target": "Art.11",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-UmsuCG §30 — the response-and-recovery prong of §30 (Art. 21(2)(b) NIS2 'Bewältigung von Sicherheitsvorfällen' and (c) business continuity) corresponds to DORA Art. 11 (Response and recovery), which is conspicuously absent from the current mapping despite Art.10 detection and Art.12 backup being implicitly in scope. §30 obliges incident handling and continuity, which DORA decomposes into Detection (10) + Response/Recovery (11) + Backup (12); only the bracketing articles are mapped, leaving the recovery core unmapped."
+    },
+    {
+      "target": "Art.28.4",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §30 — §30 (Art. 21(2)(d) NIS2) requires 'Sicherheit der Lieferkette einschließlich sicherheitsbezogener Aspekte der Beziehungen zwischen den Einrichtungen und ihren unmittelbaren Anbietern oder Diensteanbietern'. The mapping already links DORA-28.1/.2/.3 (general third-party principles) but omits Art. 28.4, which establishes the strategy/register of information on contractual arrangements — a defensible continuation of the same supply-chain-security obligation already partially mapped."
+    },
+    {
+      "target": "DORA-6.8",
+      "mappingPercentage": 65,
+      "rationale": "NIS2-UmsuCG §30 — §30 (Art. 21(2)(f) NIS2) mandates 'Konzepte und Verfahren zur Bewertung der Wirksamkeit von Risikomanagementmaßnahmen'. DORA Art. 6.8 requires the periodic internal-audit-based review and documented review of the ICT risk management framework — the direct effectiveness-assessment counterpart. The current mapping covers framework establishment (6.1/6.2) but not the 6.8 effectiveness-review prong that §30 explicitly demands."
+    },
+    {
+      "target": "Art.16",
+      "mappingPercentage": 55,
+      "rationale": "NIS2-UmsuCG §30 — §30 applies a proportionality/size criterion (Art. 21(1) NIS2). DORA Art. 16 sets the simplified ICT risk management framework for smaller/non-significant entities, mirroring the proportionality logic of §30. Defensible but partial: NIS2 proportionality is graded across all measures rather than a single simplified-regime article, so the correspondence is structural rather than one-to-one."
+    },
+    {
+      "target": "Art.6.4",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §31 — §31 transposes the governance/management-body accountability of NIS2 Art. 20 (approval of risk-management measures, oversight of implementation, liability). The current mapping only links DORA-5.1/5.2 (governance arrangements, role of the management body). DORA Art. 6.4 requires assigning responsibility for managing/overseeing ICT risk and an independent control function — a direct governance-responsibility counterpart to §31 that is missing."
+    },
+    {
+      "target": "Art.5.3",
+      "mappingPercentage": 60,
+      "rationale": "NIS2-UmsuCG §31 — §31 (Art. 20(2) NIS2) requires that management-body members undergo regular training to identify and assess risks. DORA Art. 5.3 obliges members of the management body to actively keep up to date with sufficient knowledge and skills (training) regarding ICT risk. This is a precise textual parallel to the §31 training duty and is absent from the current §31 mapping, which stops at the general governance articles 5.1/5.2."
+    },
+    {
+      "target": "Art.19.1",
+      "mappingPercentage": 60,
+      "rationale": "NIS2-UmsuCG §32 — §32 is the incident-reporting obligation (Art. 23 NIS2: early warning, incident notification, intermediate/final report). The mapping covers DORA-17 (incident management process), Art.18 (classification), DORA-19.1 only via Art.19.4 (the final report). DORA Art. 19.1 is the core obligation to report major ICT-related incidents to the competent authority and is the strongest single counterpart to §32's report-to-authority duty — its omission while 19.4 is mapped is an inconsistency."
+    },
+    {
+      "target": "Art.19.3",
+      "mappingPercentage": 55,
+      "rationale": "NIS2-UmsuCG §32 — §32 sets staged reporting deadlines (early warning ≤24h, notification ≤72h, final report ≤1 month). DORA Art. 19.3 prescribes the initial-notification / intermediate-report / final-report sequencing with deadlines. This staged-timeline parallel is the defensible counterpart to the §32 multi-stage reporting cadence; the current mapping captures only the final-report article (19.4)."
+    },
+    {
+      "target": "DORA Art. 5",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-UmsuCG §35: §35 is the core catalogue of risk-management measures (Art. 21(2) NIS2). DORA Art. 5 (Governance and Organisation) is the umbrella obligation to establish, approve and maintain the ICT risk-management framework that contains exactly these measures. Genuine correspondence; the existing testing-only mapping (24.1/24.2) covers only the effectiveness-assessment limb."
+    },
+    {
+      "target": "DORA Art. 6",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-UmsuCG §35: §35(2) requires appropriate technical/operational measures on ICT systems and tools. DORA Art. 6 (ICT systems, protocols, tools — appropriate capacity, up-to-date, minimise ICT risk) is the direct technical-measures counterpart."
+    },
+    {
+      "target": "DORA Art. 7",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §35: §35(2) Nr.1 (risk analysis) and Nr.9 (asset management/inventory) correspond to DORA Art. 7 (Identification — identify ICT-supported functions, ICT assets, configurations and dependencies)."
+    },
+    {
+      "target": "DORA Art. 8",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-UmsuCG §35: the protective/preventive limbs of §35(2) (security policies, protection of systems, cryptography Nr.8, access control Nr.i) correspond to DORA Art. 8 (Protection and Prevention)."
+    },
+    {
+      "target": "DORA Art. 9",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §35: the incident-detection element of §35(2)(b) (detection mechanisms) corresponds to DORA Art. 9 (Detection — mechanisms to detect anomalous activities, monitoring of critical systems)."
+    },
+    {
+      "target": "DORA Art. 10",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-UmsuCG §35: §35(2)(b) incident handling/response/recovery and §35(2)(c) backup/disaster-recovery correspond to DORA Art. 10 (Response and Recovery — response plans, restoration procedures)."
+    },
+    {
+      "target": "DORA Art. 11",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-UmsuCG §35: §35(2)(c) business continuity, backup management, disaster recovery and crisis management correspond directly to DORA Art. 11 (Business continuity / backup / response-and-recovery plans)."
+    },
+    {
+      "target": "DORA Art. 28",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §35: §35(2)(d) supply-chain / supplier-relationship security corresponds to DORA Art. 28 (General principles on ICT third-party risk as part of ICT risk management)."
+    },
+    {
+      "target": "DORA Art. 30",
+      "mappingPercentage": 60,
+      "rationale": "NIS2-UmsuCG §35: §35(2)(d) security-related aspects of supplier relationships corresponds to DORA Art. 30 (key contractual provisions for ICT third-party arrangements), which operationalises supply-chain security."
+    },
+    {
+      "target": "DORA Art. 17",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §41: §41 is the incident-reporting obligation (Art. 23 NIS2). DORA Art. 17 (ICT-related incident management process — detection, management, recording, notification procedures) is the foundational incident-management correspondence; the existing 6.1/6.2 (ICT systems) mapping is a mis-fit."
+    },
+    {
+      "target": "DORA Art. 18",
+      "mappingPercentage": 65,
+      "rationale": "NIS2-UmsuCG §41: reporting depends on classifying a 'significant' incident (NIS2 Art. 23(3) criteria). DORA Art. 18 (classification of ICT-related incidents — impact, duration, geographical spread, data loss, criticality) is the corresponding classification gate."
+    },
+    {
+      "target": "DORA Art. 20",
+      "mappingPercentage": 85,
+      "rationale": "NIS2-UmsuCG §41: the strongest correspondence — §41's staged reporting (early warning 24h / notification 72h / final report 1 month) maps to DORA Art. 20 (harmonised reporting of major ICT-related incidents — initial ≤4h / intermediate / final ≤1 month). Both are the mandatory authority-notification regimes."
+    },
+    {
+      "target": "DORA Art. 23",
+      "mappingPercentage": 65,
+      "rationale": "NIS2-UmsuCG §41: the content/detail requirements of the staged reports under §41 correspond to DORA Art. 23 (Details of reports — standardised templates and required report content)."
+    },
+    {
+      "target": "DORA Art. 13",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §42: §42 concerns informing service recipients / the public about significant incidents (Art. 23(1)-(2) NIS2). DORA Art. 13 (Communication — communication plans for disclosure to clients, counterparts and the public) is the genuine counterpart; the existing Art.6.5 mapping captures only the internal communication sub-paragraph."
+    },
+    {
+      "target": "DORA Art. 5",
+      "mappingPercentage": 85,
+      "rationale": "NIS2-UmsuCG §43: §43 is the management-body accountability/approval/oversight and training duty (Art. 20 NIS2). DORA Art. 5 (Governance and Organisation — management body bears responsibility, approves and reviews the ICT risk-management framework, allocates budget) is the direct governance correspondence; the existing 6.1/6.2 (ICT systems) mapping is a mis-fit for a governance section."
+    },
+    {
+      "target": "DORA Art. 50",
+      "mappingPercentage": 85,
+      "rationale": "NIS2-UmsuCG §60: §60 is the penalty/fine regime (Art. 34 NIS2). The clearly correct correspondence is DORA's administrative-penalty regime (Art. 50, penalties and remedial measures by competent authorities) — penalties↔penalties; the existing Art.2 (scope) mapping is a mis-fit."
+    },
+    {
+      "target": "DORA Art. 5 (Governance and Organisation)",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §61: §61 transposes NIS2 Art. 21(2), the full 10-measure risk-management catalogue, which is anchored in a management-approved, documented risk-management framework with defined roles, tolerance and budget. DORA Art. 5 is the direct functional counterpart (management-body responsibility, ICT risk-management framework approval, BC policy, ICT budget). The current mapping only reaches DORA Art. 6 (ICT systems/tools), leaving the governing-framework dimension of §61 unmapped. Defensible because §61's measures (a)+(f) presuppose exactly the framework Art. 5 governs."
+    },
+    {
+      "target": "DORA Art. 7 (Identification)",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-UmsuCG §61: §61's measure (i) (asset management / asset inventory) and the prerequisite risk-analysis in measure (a) require identification of all ICT-supported functions, assets, configurations and dependencies. DORA Art. 7 is the dedicated identification article (same ISO 27001 A.5.9/A.5.10 anchor). Art. 6 alone does not cover asset/function identification, so this is a genuinely missing, defensible correspondence."
+    },
+    {
+      "target": "DORA Art. 8 (Protection and Prevention)",
+      "mappingPercentage": 80,
+      "rationale": "NIS2-UmsuCG §61: Several §61 measures are pure protection/prevention — (e) secure acquisition/development/maintenance, (h) cryptography/encryption, (i) access control, (j) MFA. DORA Art. 8 (policies to protect data and ICT infrastructure, security mechanisms, testing/effectiveness of protective measures; ISO A.8.5/A.8.24/A.8.23) is the precise counterpart. The current Art. 6 mapping does not capture protection/encryption/access, so Art. 8 is a defensible missing target."
+    },
+    {
+      "target": "DORA Art. 9 (Detection)",
+      "mappingPercentage": 65,
+      "rationale": "NIS2-UmsuCG §61: §61 measure (b) incident handling explicitly includes detection mechanisms, and measure (f) requires monitoring/assessment of effectiveness. DORA Art. 9 (mechanisms to detect anomalous activities, thresholds, monitoring of critical systems; ISO A.8.16) maps directly to the detection limb of §61(b). Not covered by the existing Art. 6 mapping, hence a genuine gap."
+    },
+    {
+      "target": "DORA Art. 10 (Response and Recovery)",
+      "mappingPercentage": 75,
+      "rationale": "NIS2-UmsuCG §61: §61 measures (b) incident response/recovery procedures and (c) business continuity, backup, disaster recovery and crisis management correspond squarely to DORA Art. 10 (dedicated response plans, restoration procedures, communication plans; ISO A.5.24-28/A.5.29-30). This is a substantive, defensible correspondence absent from the current §61→Art.6 mapping."
+    },
+    {
+      "target": "DORA Art. 28 (ICT Third-Party Risk — General Principles)",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §61: §61 measure (d) supply-chain security (security aspects of supplier relationships, supply-chain measures) has no counterpart in DORA Art. 6 but maps directly to DORA Art. 28, which establishes ICT third-party risk as part of ICT risk with risk-proportionate contractual arrangements and pre-contract risk assessment (ISO A.5.19-A.5.23). Genuine and defensible; both reference materials anchor supply-chain on the same ISO controls."
+    },
+    {
+      "target": "DORA Art. 17 (ICT-Related Incident Management Process)",
+      "mappingPercentage": 70,
+      "rationale": "NIS2-UmsuCG §65: §65 transposes the NIS2 Art. 23 reporting cascade, which presupposes an incident management/notification process and an incident register. DORA Art. 17 (detection, management and notification procedures, recording of incidents in registers) is the functional counterpart to the procedural backbone of §65. The current mapping to Art. 12 does not address the incident-management/reporting process; Art. 17 is a defensible missing target."
+    },
+    {
+      "target": "DORA Art. 18 (Classification of ICT-Related Incidents)",
+      "mappingPercentage": 65,
+      "rationale": "NIS2-UmsuCG §65: §65/NIS2 Art. 23 reporting is triggered only by 'significant' incidents and requires severity assessment in the early warning. DORA Art. 18 provides the classification of major incidents vs significant cyber threats using impact, duration, geographical spread, data losses and criticality. The significance/classification gate is intrinsic to §65's threshold logic and is a genuinely defensible correspondence not captured by Art. 12."
+    },
+    {
+      "target": "DORA Art. 20 (Harmonised Reporting of Major ICT-Related Incidents)",
+      "mappingPercentage": 85,
+      "rationale": "NIS2-UmsuCG §65: This is the strongest correspondence. §65 mirrors NIS2 Art. 23's staged timeline (24h early warning / 72h notification / 1-month final report). DORA Art. 20 is the directly analogous harmonised-reporting article with its own staged cascade (initial notification within 4h of awareness, intermediate report, final report within 1 month). Both are the regulator-facing incident-reporting timeline obligation. Its omission from the current §65→Art.12 mapping is the most material gap; defensible at high confidence despite differing exact deadlines."
+    },
+    {
+      "target": "DORA Art. 23 (Details of Reports)",
+      "mappingPercentage": 60,
+      "rationale": "NIS2-UmsuCG §65: §65/NIS2 Art. 23 prescribes the content of early-warning, notification and final report (severity, impact, indicators of compromise, root cause, mitigation, cross-border impact). DORA Art. 23 specifies the content/standardised templates of incident reports (per ITS 2024/1502). The report-content dimension of §65 maps defensibly to DORA Art. 23 and is absent from the current Art. 12 mapping."
+    }
+  ]
+}

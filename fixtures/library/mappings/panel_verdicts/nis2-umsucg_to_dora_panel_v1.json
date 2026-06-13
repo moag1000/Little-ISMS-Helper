@@ -1,0 +1,403 @@
+{
+  "library": {
+    "source_framework": "NIS2-UmsuCG",
+    "target_framework": "DORA",
+    "panel": [
+      "isms-specialist",
+      "risk-management-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (German NIS2 transposition ↔ DORA; legal-text editorial)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
+    "completeness": "35 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 54,
+      "ki_validiert": 45,
+      "needs_review": 1,
+      "reject": 8
+    }
+  },
+  "verdicts": [
+    {
+      "nis2": "§1",
+      "target": "Art.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§28",
+      "target": "Art.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§29",
+      "target": "Art.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 3
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-6.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-6.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "Art.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-8.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-8.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-8.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 52,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-9.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-9.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-9.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-9.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 52,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-10.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-11.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "Art.12",
+      "state": "ki_validiert",
+      "mappingPercentage": 48,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-13.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-13.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "realVotes": 3
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-13.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-13.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 3
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-13.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-13.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 20,
+      "realVotes": 3
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-14.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 30,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-28.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-28.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-28.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 18,
+      "realVotes": 3
+    },
+    {
+      "nis2": "§30",
+      "target": "DORA-30.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 25,
+      "realVotes": 3
+    },
+    {
+      "nis2": "§31",
+      "target": "DORA-5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§31",
+      "target": "DORA-5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§32",
+      "target": "DORA-17.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§32",
+      "target": "DORA-17.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§32",
+      "target": "DORA-17.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§32",
+      "target": "Art.18",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§32",
+      "target": "DORA-19.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 3
+    },
+    {
+      "nis2": "§32",
+      "target": "Art.19.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§33",
+      "target": "Art.6.5",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "§34",
+      "target": "Art.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§35",
+      "target": "DORA-24.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "§35",
+      "target": "DORA-24.2",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "§41",
+      "target": "DORA-6.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§41",
+      "target": "DORA-6.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§42",
+      "target": "Art.6.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 68,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§43",
+      "target": "DORA-6.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "§43",
+      "target": "DORA-6.2",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "§44",
+      "target": "DORA-32.1",
+      "state": "needs_review",
+      "mappingPercentage": 45,
+      "realVotes": 2
+    },
+    {
+      "nis2": "§48",
+      "target": "Art.1",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "§48",
+      "target": "Art.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§49",
+      "target": "Art.50",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "nis2": "§60",
+      "target": "Art.2",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "nis2": "§61",
+      "target": "DORA-6.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 3
+    },
+    {
+      "nis2": "§61",
+      "target": "DORA-6.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 3
+    },
+    {
+      "nis2": "§65",
+      "target": "Art.12",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    }
+  ]
+}
