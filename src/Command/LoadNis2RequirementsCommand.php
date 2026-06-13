@@ -15,9 +15,17 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.12 — partial hardcoded subset of the NIS2 Directive.
+ * Canonical source-of-truth: app:load-nis2-full (LoadNis2FullCommand,
+ * fixture-based EU NIS2 catalogue). Kept for the FrameworkLoaderRegistry
+ * re-seed path (registered under framework code NIS2) and the
+ * LoadNis2RequirementsCommandTest / ComplianceReuseJourneyTest references;
+ * do not delete.
+ */
 #[AsCommand(
     name: 'app:load-nis2-requirements',
-    description: 'Load NIS2 Directive (EU 2022/2555) requirements with ISO 27001 control mappings'
+    description: '[DEPRECATED — use app:load-nis2-full] Partial NIS2 (EU 2022/2555) loader.'
 )]
 class LoadNis2RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
@@ -101,10 +109,10 @@ class LoadNis2RequirementsCommand extends Command implements FrameworkLoaderInte
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return $this->loadRequirements(
-            (bool) $input->getOption('update'),
-            new SymfonyStyle($input, $output),
-        );
+        $io = new SymfonyStyle($input, $output);
+        $io->warning('Deprecated loader — canonical source is app:load-nis2-full. Loading anyway.');
+
+        return $this->loadRequirements((bool) $input->getOption('update'), $io);
     }
 
     private function getNis2Requirements(): array

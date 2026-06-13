@@ -14,9 +14,17 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.12 — partial hardcoded EU AI Act subset and a redundant
+ * CLI entrypoint. Canonical source-of-truth: app:load-eu-ai-act-full
+ * (LoadEuAiActFullCommand), which is the loader registered with the
+ * FrameworkLoaderRegistry under framework code EU-AI-ACT. This command does NOT
+ * implement FrameworkLoaderInterface and is not chained by the registry or any
+ * orchestrator; it is kept only to avoid breaking any direct CLI references.
+ */
 #[AsCommand(
     name: 'app:load-eu-ai-act-requirements',
-    description: 'Load EU AI Act (Regulation EU 2024/1689) compliance requirements with ISO 27001 control mappings'
+    description: '[DEPRECATED — use app:load-eu-ai-act-full] Partial EU AI Act (EU 2024/1689) loader.'
 )]
 class LoadEuAiActRequirementsCommand extends Command
 {
@@ -36,6 +44,7 @@ class LoadEuAiActRequirementsCommand extends Command
     {
         $update = (bool) $input->getOption('update');
         $symfonyStyle = new SymfonyStyle($input, $output);
+        $symfonyStyle->warning('Deprecated loader — canonical source is app:load-eu-ai-act-full. Loading anyway.');
         $updateMode = $update;
 
         $symfonyStyle->title('Loading EU AI Act Requirements');

@@ -15,9 +15,19 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.12 as a direct CLI entrypoint — partial hardcoded
+ * ISO 27001:2022 Annex A subset. Canonical Annex A source-of-truth:
+ * app:load-iso27001-annexa-full (LoadIso27001AnnexAFullCommand) +
+ * app:load-iso27001-clauses (LoadIso27001ClausesCommand, Clauses 4-10).
+ * Kept for the FrameworkLoaderRegistry re-seed path (registered under
+ * framework code ISO27001 — it also seeds the management Clauses 4-10 in the
+ * same load) and the LoadIso27001RequirementsCommandTest /
+ * ComplianceReuseJourneyTest references; do not delete.
+ */
 #[AsCommand(
     name: 'app:load-iso27001-requirements',
-    description: 'Load ISO 27001:2022 Annex A as ComplianceRequirements for cross-framework mapping (separate from Control entities)'
+    description: '[DEPRECATED — use app:load-iso27001-annexa-full + app:load-iso27001-clauses] Partial ISO 27001:2022 loader.'
 )]
 class LoadIso27001RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
@@ -136,10 +146,10 @@ class LoadIso27001RequirementsCommand extends Command implements FrameworkLoader
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return $this->loadRequirements(
-            (bool) $input->getOption('update'),
-            new SymfonyStyle($input, $output),
-        );
+        $io = new SymfonyStyle($input, $output);
+        $io->warning('Deprecated loader — canonical source is app:load-iso27001-annexa-full + app:load-iso27001-clauses. Loading anyway.');
+
+        return $this->loadRequirements((bool) $input->getOption('update'), $io);
     }
 
     private function getIso27001Requirements(): array

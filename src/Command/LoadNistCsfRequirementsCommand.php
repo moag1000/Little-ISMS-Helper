@@ -15,9 +15,17 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.12 — partial hardcoded NIST CSF subset under framework
+ * code NIST-CSF. Canonical source-of-truth: app:load-nist-csf-2-0-full-catalogue
+ * (LoadNistCsf2FullCatalogueCommand, fixture-based, framework code
+ * NIST-CSF-2.0 — a SEPARATE framework row). Kept for the FrameworkLoaderRegistry
+ * re-seed path (registered under framework code NIST-CSF) and the
+ * LoadNistCsfRequirementsCommandTest reference; do not delete.
+ */
 #[AsCommand(
     name: 'app:load-nist-csf-requirements',
-    description: 'Load NIST Cybersecurity Framework 2.0 with ISO 27001 control mappings'
+    description: '[DEPRECATED — use app:load-nist-csf-2-0-full-catalogue] Partial NIST CSF loader (code NIST-CSF).'
 )]
 class LoadNistCsfRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
@@ -40,10 +48,10 @@ class LoadNistCsfRequirementsCommand extends Command implements FrameworkLoaderI
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return $this->loadRequirements(
-            (bool) $input->getOption('update'),
-            new SymfonyStyle($input, $output),
-        );
+        $io = new SymfonyStyle($input, $output);
+        $io->warning('Deprecated loader — canonical source is app:load-nist-csf-2-0-full-catalogue. Loading anyway.');
+
+        return $this->loadRequirements((bool) $input->getOption('update'), $io);
     }
 
     public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int

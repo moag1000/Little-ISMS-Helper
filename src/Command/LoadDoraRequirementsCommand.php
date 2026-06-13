@@ -15,9 +15,16 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.11 — partial hardcoded subset of EU-DORA.
+ * Canonical source-of-truth: app:load-dora-full (LoadDoraFullCommand, L1)
+ * + app:load-dora-rts-its-full (LoadDoraRtsItsFullCommand, L2 RTS/ITS).
+ * Kept for the FrameworkLoaderRegistry re-seed path (framework code DORA)
+ * and the SampleDataController demo-data trigger; do not delete.
+ */
 #[AsCommand(
     name: 'app:load-dora-requirements',
-    description: 'Load EU-DORA (Digital Operational Resilience Act) requirements with ISMS data mappings'
+    description: '[DEPRECATED — use app:load-dora-full + app:load-dora-rts-its-full] Partial EU-DORA loader.'
 )]
 class LoadDoraRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
@@ -104,10 +111,10 @@ class LoadDoraRequirementsCommand extends Command implements FrameworkLoaderInte
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return $this->loadRequirements(
-            (bool) $input->getOption('update'),
-            new SymfonyStyle($input, $output),
-        );
+        $io = new SymfonyStyle($input, $output);
+        $io->warning('Deprecated loader — canonical source is app:load-dora-full + app:load-dora-rts-its-full. Loading anyway.');
+
+        return $this->loadRequirements((bool) $input->getOption('update'), $io);
     }
 
     private function getDoraRequirements(): array

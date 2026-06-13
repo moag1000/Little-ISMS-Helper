@@ -109,7 +109,10 @@ class LoadBsiItGrundschutzRequirementsCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return $this->loadLegacyRequirements(new SymfonyStyle($input, $output));
+        $io = new SymfonyStyle($input, $output);
+        $io->warning('Deprecated loader — canonical source is app:load-bsi-grundschutz-catalogue. Loading anyway.');
+
+        return $this->loadLegacyRequirements($io);
     }
 
     private function getBsiGrundschutzRequirements(): array

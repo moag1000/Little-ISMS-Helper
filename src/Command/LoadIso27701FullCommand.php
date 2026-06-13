@@ -14,16 +14,24 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * ISO/IEC 27701:2025 standalone Privacy Information Management System.
+ * ISO/IEC 27701 standalone Privacy Information Management System (legacy loader).
  *
  * Loads:
  * - Annex A: PII controller specific extended control set (~31 controls)
  * - Annex B: PII processor specific extended control set (~21 controls)
  * - Clauses 5-9 (PIMS-specific GDPR/PII guidance)
+ *
+ * @deprecated since 3.12 — older loader that writes against the legacy
+ * framework code ISO27701. Canonical current-edition source-of-truth:
+ * app:load-iso27701v2025-requirements (LoadIso27701v2025RequirementsCommand,
+ * framework code ISO27701_2025), the loader registered with the
+ * FrameworkLoaderRegistry. This command does NOT implement
+ * FrameworkLoaderInterface and is not chained by any orchestrator; it is kept
+ * only to avoid breaking direct CLI references.
  */
 #[AsCommand(
     name: 'app:load-iso27701-full',
-    description: 'Load ISO/IEC 27701:2025 PIMS Annex A + B controls + clauses 5-9 as ComplianceRequirement rows.'
+    description: '[DEPRECATED — use app:load-iso27701v2025-requirements] Legacy ISO/IEC 27701 PIMS loader.'
 )]
 final class LoadIso27701FullCommand extends Command
 {
@@ -112,6 +120,7 @@ final class LoadIso27701FullCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $io->warning('Deprecated loader — canonical source is app:load-iso27701v2025-requirements. Loading anyway.');
         $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO27701']);
         if ($framework === null) {
             $io->error('Framework ISO27701 not in DB.');

@@ -16,9 +16,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.12 — ISO 27701:2019 (superseded edition) hardcoded subset.
+ * Current edition source-of-truth: app:load-iso27701v2025-requirements
+ * (LoadIso27701v2025RequirementsCommand, framework code ISO27701_2025).
+ * Kept for the FrameworkLoaderRegistry re-seed path (registered under the
+ * legacy 2019 framework code ISO27701, used by MapIso27701VersionsCommand for
+ * 2019→2025 version mapping) and the LoadIso27701RequirementsCommandTest
+ * reference; do not delete.
+ */
 #[AsCommand(
     name: 'app:load-iso27701-requirements',
-    description: 'Load ISO 27701:2019 Privacy Information Management System (PIMS) requirements with ISMS data mappings'
+    description: '[DEPRECATED — use app:load-iso27701v2025-requirements] ISO 27701:2019 (superseded edition) loader.'
 )]
 class LoadIso27701RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
@@ -107,7 +116,10 @@ class LoadIso27701RequirementsCommand extends Command implements FrameworkLoader
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
+        $io = new SymfonyStyle($input, $output);
+        $io->warning('Deprecated loader — canonical source is app:load-iso27701v2025-requirements. Loading anyway.');
+
+        return $this->loadRequirements(false, $io);
     }
 
     private function getIso27701Requirements(): array

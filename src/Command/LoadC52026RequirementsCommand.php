@@ -15,9 +15,16 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.11 — partial hardcoded subset of BSI C5:2026.
+ * Canonical source-of-truth: app:load-c5-2026-full-catalogue
+ * (LoadC52026FullCatalogueCommand, reads fixtures/library/catalogues/
+ * bsi-c5-2026-en/). Kept for the FrameworkLoaderRegistry re-seed path
+ * (registered under framework code BSI-C5-2026); do not delete.
+ */
 #[AsCommand(
     name: 'app:load-c5-2026-requirements',
-    description: 'Load BSI C5:2026 (Cloud Computing Compliance Criteria Catalogue) requirements with ISMS data mappings',
+    description: '[DEPRECATED — use app:load-c5-2026-full-catalogue] Partial BSI C5:2026 loader.',
     aliases: ['app:load-c5-2025-requirements']
 )]
 class LoadC52026RequirementsCommand extends Command implements FrameworkLoaderInterface
@@ -113,10 +120,10 @@ class LoadC52026RequirementsCommand extends Command implements FrameworkLoaderIn
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return $this->loadRequirements(
-            (bool) $input->getOption('update'),
-            new SymfonyStyle($input, $output),
-        );
+        $io = new SymfonyStyle($input, $output);
+        $io->warning('Deprecated loader — canonical source is app:load-c5-2026-full-catalogue. Loading anyway.');
+
+        return $this->loadRequirements((bool) $input->getOption('update'), $io);
     }
 
     /**

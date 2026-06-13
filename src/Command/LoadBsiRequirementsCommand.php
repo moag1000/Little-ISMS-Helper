@@ -41,6 +41,7 @@ class LoadBsiRequirementsCommand extends Command
     {
         $update = (bool) $input->getOption('update');
         $symfonyStyle = new SymfonyStyle($input, $output);
+        $symfonyStyle->warning('Deprecated loader — canonical source is app:load-bsi-grundschutz-catalogue. Loading anyway.');
         // Create or get BSI framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);

@@ -16,9 +16,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.12 — partial hardcoded subset of the GDPR.
+ * Canonical source-of-truth: app:load-gdpr-full (LoadGdprFullCommand,
+ * fixture-based GDPR catalogue). Kept for the FrameworkLoaderRegistry re-seed
+ * path (registered under framework code GDPR) and the
+ * LoadGdprRequirementsCommandTest reference; do not delete.
+ */
 #[AsCommand(
     name: 'app:load-gdpr-requirements',
-    description: 'Load GDPR (General Data Protection Regulation) requirements with ISMS data mappings'
+    description: '[DEPRECATED — use app:load-gdpr-full] Partial GDPR (2016/679) loader.'
 )]
 class LoadGdprRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
@@ -106,7 +113,10 @@ class LoadGdprRequirementsCommand extends Command implements FrameworkLoaderInte
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
+        $io = new SymfonyStyle($input, $output);
+        $io->warning('Deprecated loader — canonical source is app:load-gdpr-full. Loading anyway.');
+
+        return $this->loadRequirements(false, $io);
     }
 
     private function getGdprRequirements(): array
