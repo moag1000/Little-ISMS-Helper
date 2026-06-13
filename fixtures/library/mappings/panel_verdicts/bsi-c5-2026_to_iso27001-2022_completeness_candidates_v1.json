@@ -1,0 +1,654 @@
+{
+  "provenance": {
+    "source_framework": "BSI-C5-2026",
+    "target_framework": "ISO27001",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 127
+  },
+  "candidates": [
+    {
+      "target": "A.5.2",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 OIS-01: OIS-01 establishes the information security management SYSTEM, which inherently requires the assignment and structuring of IS roles, responsibilities and authorities. ISO 27001 A.5.2 (Information security roles and responsibilities) is the canonical Annex A control for the organizational backbone of an ISMS and is a genuinely defensible additional correspondence beyond the policy-only A.5.1 currently mapped."
+    },
+    {
+      "target": "A.5.4",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 OIS-01: An ISMS per OIS-01 requires top-management direction and accountability. A.5.4 (Management responsibilities) covers the demand that management require all personnel to apply IS per established policies — a defensible secondary mapping for the ISMS-establishment criterion, though weaker than A.5.2."
+    },
+    {
+      "target": "A.5.2",
+      "mappingPercentage": 95,
+      "rationale": "BSI-C5-2026 OIS-03: OIS-03 IS literally Verantwortlichkeiten (responsibilities). The current mapping to A.5.23 (cloud services) is unrelated; the correct and clearly missing correspondence is A.5.2 (Information security roles and responsibilities), an almost one-to-one match."
+    },
+    {
+      "target": "A.5.4",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 OIS-03: Beyond role definition (A.5.2), the responsibilities criterion also touches management-level accountability for IS, defensibly mapping to A.5.4 (Management responsibilities) as a secondary correspondence."
+    },
+    {
+      "target": "A.5.5",
+      "mappingPercentage": 95,
+      "rationale": "BSI-C5-2026 OIS-05: OIS-05 is Kontakt zu Behoerden (contact with authorities). The current mapping to A.5.7 (threat intelligence) is incorrect; the directly corresponding, missing control is A.5.5 (Contact with authorities) — a near one-to-one match."
+    },
+    {
+      "target": "A.5.6",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 OIS-05: C5 OIS contact criteria conventionally also encompass external-party engagement such as CERTs and special interest groups, defensibly mapping to A.5.6 (Contact with special interest groups) as a secondary correspondence to the authorities-contact criterion."
+    },
+    {
+      "target": "A.5.8",
+      "mappingPercentage": 40,
+      "rationale": "BSI-C5-2026 OIS-06: OIS-06 is Risikomanagement (risk management). ISO 27001 places risk management in management-system clauses 6.1.2/6.1.3 rather than a single Annex A control, so no strong Annex A target exists; A.5.8 (IS in project management, which mandates risk assessment in initiatives) is the only weakly defensible Annex A correspondence. The current mapping to A.5.5 (contact with authorities) is incorrect."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 OIS-10: In C5:2026 the OIS domain is explicitly extended with Supply-Chain-Governance. An OIS criterion in this extended scope corresponds to A.5.19 (Information security in supplier relationships), a defensible additional mapping beyond the project-management A.5.8 currently assigned."
+    },
+    {
+      "target": "A.5.21",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 OIS-10: The C5:2026 OIS supply-chain-governance extension targets ICT/cloud supply-chain assurance, mapping most precisely to A.5.21 (Managing information security in the ICT supply chain), a strong and defensible missing correspondence."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 OIS-10: Supply-chain governance per the C5:2026 OIS extension also encompasses contractual IS requirements with providers, defensibly mapping to A.5.20 (Addressing information security within supplier agreements) as a secondary correspondence."
+    },
+    {
+      "target": "A.5.2",
+      "mappingPercentage": 35,
+      "rationale": "BSI-C5-2026 SP-01: SP-01 (documentation of policies) is well covered by the already-mapped A.5.1. The only weakly defensible Annex A addition is A.5.2, since documented policies must assign roles/responsibilities; the stronger correspondence is the management-system documentation clause 7.5, which is not an Annex A control."
+    },
+    {
+      "target": "A.5.1",
+      "mappingPercentage": 90,
+      "rationale": "BSI-C5-2026 SP-03: SP-03 (Kommunikation von Richtlinien) corresponds primarily to ISO 27001 A.5.1, which explicitly requires that information security policies be 'published, communicated to and acknowledged by relevant personnel and interested parties'. Communication of policies is a constituent obligation of A.5.1, yet the current mapping only links SP-03 to A.5.36 (compliance/conformance with policies). A.5.36 covers verifying adherence, not the act of disseminating/communicating the policy text. A.5.1 is the genuinely missing and stronger correspondence."
+    },
+    {
+      "target": "A.6.6",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 HR-02: HR-02 (Arbeitsvertraege / terms and conditions of employment) requires that the employment contract embed information security obligations. In practice, and per ISO 27002 guidance, confidentiality/non-disclosure undertakings (A.6.6) are a standard component of the contractual terms an employee accepts on hiring. Where C5 HR-06 separately maps to A.6.6, the contractual-anchoring of the confidentiality duty established at contract conclusion is a defensible secondary correspondence for HR-02 (the terms themselves bind the NDA). Partial because the dedicated NDA lifecycle still belongs to HR-06/A.6.6."
+    },
+    {
+      "target": "A.5.11",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 HR-05: HR-05 (Beendigung oder Aenderung des Beschaeftigungsverhaeltnisses) governs the offboarding/role-change process. ISO 27002 ties the termination process to A.5.11 (Return of assets), since recovery of all organisational assets is a mandatory step of any termination/change. The current mapping (A.6.5 only) covers the continuance of obligations after termination but omits the asset-return action that C5 HR-05 expects as part of the leaving process. A.5.11 is a defensible additional correspondence."
+    },
+    {
+      "target": "A.5.18",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 HR-05: HR-05 (Beendigung/Aenderung Beschaeftigung) requires that access rights be adjusted or revoked when employment ends or changes. ISO 27001 A.5.18 (Access rights) explicitly mandates removal/adjustment of access rights upon termination or change of employment. This deprovisioning step is part of the C5 HR-05 leaving/mover process but is absent from the current mapping (which only references A.6.5). A.5.18 is a genuinely defensible additional correspondence; rated partial because the access-management lifecycle is shared with IDM-domain criteria."
+    },
+    {
+      "target": "A.8.1",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 HR-07: This is one of the net-new HR-domain criteria added in C5:2026 to address remote-work aspects (C5:2020 HR domain stopped at HR-06). A.6.7 captures the personnel/organizational dimension of remote working, but ISO 27002 explicitly frames A.6.7 as requiring technical + organizational + physical measures. The technical pillar of secure remote/home working is realized through A.8.1 User endpoint devices (MDM, disk encryption, patching of remote-used laptops). A remote-work criterion cannot be defended as adequate without the endpoint-device control, so A.8.1 is a genuinely missing correspondence."
+    },
+    {
+      "target": "A.7.9",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 HR-07: The physical pillar of A.6.7 remote working — equipment and information taken off the organization's premises — is covered by A.7.9 Security of assets off-premises. Remote-work criteria address protecting devices/information outside controlled facilities, which is precisely the scope of A.7.9. Defensible additional target alongside the already-mapped A.6.7."
+    },
+    {
+      "target": "A.6.3",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 HR-08: As the second net-new C5:2026 HR remote-work criterion, the personnel-awareness obligation for staff working remotely (secure handling of information outside the office, phishing/Wi-Fi risks) maps to A.6.3 IS awareness, education and training (role-/situation-based awareness). Beyond the already-mapped A.6.7, the awareness dimension is a defensible additional correspondence; rated moderate because A.6.7 partially absorbs awareness guidance itself."
+    },
+    {
+      "target": "A.8.1",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 HR-08: The technical enforcement side of the remote-work HR criterion (secured, managed endpoints for home/mobile working) corresponds to A.8.1 User endpoint devices in addition to the mapped A.6.7. Defensible because a remote-work control without endpoint hardening is incomplete."
+    },
+    {
+      "target": "A.5.12",
+      "mappingPercentage": 90,
+      "rationale": "BSI-C5-2026 AM-02: This C5 criterion is Asset/Information Classification (Klassifizierung). The current mapping to A.5.9 (Inventory of information) is a category mismatch — inventory is AM-01, not classification. The genuinely corresponding ISO 27001 control is A.5.12 Classification of information, which is a near-direct semantic equivalent. Strongly defensible missing correspondence."
+    },
+    {
+      "target": "A.5.13",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 AM-02: Classification criteria in C5 require that classification results be made operational through marking/labelling of assets and information. A.5.13 Labelling of information is the companion control to classification and is a defensible additional correspondence beyond A.5.12 (and certainly beyond the mis-mapped A.5.9)."
+    },
+    {
+      "target": "A.7.14",
+      "mappingPercentage": 85,
+      "rationale": "BSI-C5-2026 AM-05: This criterion is Asset/Media Disposal (Entsorgung). It is currently mapped to A.5.10 (Acceptable use), which is unrelated. Secure disposal of physical assets and media corresponds directly to A.7.14 Secure disposal or re-use of equipment — a strongly defensible missing correspondence."
+    },
+    {
+      "target": "A.8.10",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 AM-05: Disposal in a cloud/C5 context covers the data/information dimension as well as physical media. The logical-data side of secure disposal corresponds to A.8.10 Information deletion (secure erasure before re-use/decommissioning), which is missing and defensible alongside A.7.14."
+    },
+    {
+      "target": "A.7.10",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 AM-05: Secure disposal practically depends on storage-media handling controls (encryption/sanitization before destruction). A.7.10 Storage media is a defensible additional correspondence for the media-handling aspect of the disposal criterion; rated moderate as it overlaps with A.7.14/A.8.10."
+    },
+    {
+      "target": "A.8.10",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 AM-07: Mapped to A.7.14 (physical secure disposal/re-use). For cloud-native assets the data-erasure dimension of disposal/re-use is realized through A.8.10 Information deletion (logical/secure deletion of data on virtual storage before reuse). This is a genuinely missing and defensible correspondence for a cloud asset-management catalogue."
+    },
+    {
+      "target": "A.6.5",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 AM-08: Mapped to A.5.11 Return of assets. Return of assets is operationally triggered by employment termination/change, whose personnel-side obligations are A.6.5 Responsibilities after termination or change of employment. A.6.5 is a defensible additional correspondence for the offboarding-driven return criterion; moderate because A.5.11 already carries the asset-return substance."
+    },
+    {
+      "target": "A.5.13",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 AM-09: Mapped to A.5.12 Classification of information. Classification is only effective when operationalized via labelling/marking, covered by A.5.13 Labelling of information — the standard companion control to A.5.12. Defensible missing correspondence."
+    },
+    {
+      "target": "A.5.9",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 AM-09: If AM-09 covers asset classification (mapped to A.5.12), classification presupposes a maintained asset inventory carrying the classification attribute, i.e. A.5.9 Inventory of information and other associated assets. This is a defensible linkage correspondence; rated moderate because it is a supporting rather than primary mapping."
+    },
+    {
+      "target": "A.7.14",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 AM-12: AM media handling (storage media, primary A.7.10) is inseparable from secure media disposal/re-use. A.7.14 Secure disposal or re-use of equipment covers sanitisation of media before disposal — a core part of the C5 AM media-handling lifecycle (the C5:2020 AM domain explicitly bundled Datentraeger-Handhabung with Entsorgung). Strongly defensible secondary correspondence."
+    },
+    {
+      "target": "A.8.10",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 AM-12: Storage-media handling includes secure erasure of data on media. A.8.10 Information deletion governs the deletion of information no longer required, which underpins the data-destruction step of media handling/decommissioning. Defensible as a logical complement to the physical A.7.10 mapping."
+    },
+    {
+      "target": "A.5.13",
+      "mappingPercentage": 45,
+      "rationale": "BSI-C5-2026 AM-12: C5 media handling requires that storage media be handled per its classification, which presupposes labelling. A.5.13 Labelling of information governs marking media according to classification. Defensible but secondary — the labelling itself is more squarely an organisational control than a media-handling one."
+    },
+    {
+      "target": "A.7.8",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 PS-01: Protection against physical/environmental threats (primary A.7.5) requires that equipment be sited and protected to reduce exposure to those threats. A.7.8 Equipment siting and protection directly addresses positioning equipment to minimise environmental/physical risk — a genuine secondary correspondence."
+    },
+    {
+      "target": "A.7.11",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 PS-01: Threat protection (A.7.5) overlaps with safeguarding supporting utilities (power/cooling/water) whose failure is itself an environmental threat. A.7.11 Supporting utilities is defensibly correspondent where PS-01 covers protection against utility-borne disruptions."
+    },
+    {
+      "target": "A.7.4",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 PS-03: Physical security perimeters (primary A.7.1) are operationally enforced through perimeter surveillance. A.7.4 Physical security monitoring (CCTV, intrusion detection at the perimeter) is a strongly defensible secondary correspondence to perimeter protection."
+    },
+    {
+      "target": "A.7.2",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 PS-03: Perimeter protection (A.7.1) inherently includes controlled perimeter entry points. A.7.2 Physical entry is a defensible secondary correspondence since perimeter integrity depends on entry-point controls."
+    },
+    {
+      "target": "A.7.4",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 PS-04: Physical entry (primary A.7.2) is enforced and evidenced through monitoring (entry logging, CCTV at access points). A.7.4 Physical security monitoring is a strongly defensible secondary correspondence to entry control."
+    },
+    {
+      "target": "A.7.1",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 PS-04: Physical entry control (A.7.2) operates at defined perimeter boundaries; A.7.1 Physical security perimeters is the structural prerequisite for meaningful entry control and a defensible secondary correspondence."
+    },
+    {
+      "target": "A.7.8",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 PS-05: Protection against physical/environmental threats (primary A.7.5) requires siting and protecting equipment against those threats. A.7.8 Equipment siting and protection is a genuine secondary correspondence, mirroring PS-01."
+    },
+    {
+      "target": "A.7.11",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 PS-05: Environmental-threat protection (A.7.5) overlaps with safeguarding supporting utilities (power/cooling/water). A.7.11 Supporting utilities is defensibly correspondent where PS-05 addresses utility-borne environmental risks."
+    },
+    {
+      "target": "A.7.5",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 PS-06: Supporting utilities (primary A.7.11) protect against environmental threats from utility failure. A.7.5 Protecting against physical and environmental threats is a strongly defensible secondary correspondence, as utility resilience is a core threat-protection measure."
+    },
+    {
+      "target": "A.7.8",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 PS-06: Supporting utilities (A.7.11) feed and protect equipment; A.7.8 Equipment siting and protection is defensibly correspondent where PS-06 covers protecting equipment from utility-related hazards (e.g. proximity to power/HVAC)."
+    },
+    {
+      "target": "A.7.8",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 PS-07: Protection against physical/environmental threats (primary A.7.5) requires equipment to be sited/protected against those threats. A.7.8 Equipment siting and protection is a genuine secondary correspondence, consistent with PS-01/PS-05."
+    },
+    {
+      "target": "A.7.11",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 PS-07: Environmental-threat protection (A.7.5) overlaps with safeguarding supporting utilities whose failure constitutes an environmental threat. A.7.11 Supporting utilities is a defensible secondary correspondence."
+    },
+    {
+      "target": "A.8.1",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 PS-08: Clear desk and clear screen (primary A.7.7) is implemented on endpoints via automatic screen lock and device-side controls. A.8.1 User endpoint devices directly governs the clear-screen/auto-lock measures, making it a strongly defensible secondary correspondence."
+    },
+    {
+      "target": "A.7.6",
+      "mappingPercentage": 45,
+      "rationale": "BSI-C5-2026 PS-08: Clear desk/screen (A.7.7) is part of the broader discipline for handling information in protected work zones. A.7.6 Working in secure areas is a defensible but secondary correspondence, as clear-desk rules are typically a component of secure-area procedures."
+    },
+    {
+      "target": "A.8.3",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 IAM-01 (Berechtigungsrichtlinie / access-control policy) is mapped only to A.5.15. The policy mandates need-to-know / least-privilege at the information-resource level, which is exactly the scope of A.8.3 Information access restriction. A.5.15 sets the organisational policy intent; A.8.3 is the technical restriction the policy operationalises, so it is a defensible additional correspondence."
+    },
+    {
+      "target": "A.5.18",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 IAM-02 (Benutzerregistrierung / user registration and de-registration) is mapped only to A.5.16. Registration/de-registration of users is the provisioning-and-deactivation lifecycle that A.5.18 Access rights explicitly governs (assigning/revoking access on the unique identity). A.5.16 covers the identity object itself; A.5.18 covers the rights bound to it during registration, making it a genuine additional match."
+    },
+    {
+      "target": "A.8.2",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 IAM-03 (Zugriffsrechte / access rights) is mapped only to A.5.18. Granting and managing access rights in cloud operations centrally includes privileged/administrative rights, which is the specific scope of A.8.2 Privileged access rights. A.5.18 is the general access-rights control; A.8.2 is the specialised privileged subset and is a defensible additional correspondence."
+    },
+    {
+      "target": "A.8.2",
+      "mappingPercentage": 95,
+      "rationale": "BSI-C5-2026 IAM-04 (Privilegierte Zugriffsrechte / privileged access rights) is mapped only to A.5.18. This is the textbook one-to-one match for A.8.2 Privileged access rights, which is currently absent. The control title and intent are near-identical (allocation and restriction of administrative/elevated rights), so A.8.2 is the single most obviously missing correspondence."
+    },
+    {
+      "target": "A.8.2",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 IAM-05 (Review von Zugriffsrechten / review of access rights) is mapped only to A.5.18. While A.5.18 does cover periodic review of access rights generally, the C5 review requirement places particular emphasis on re-validating privileged/administrative accounts, which falls under A.8.2 Privileged access rights (which mandates regular review of privileged allocations). A.8.2 is therefore a defensible additional target."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 85,
+      "rationale": "BSI-C5-2026 IAM-06 (Authentisierung / authentication) is mapped only to A.8.2 (which actually concerns privileged access, not authentication). Authentication is governed by A.5.17 Authentication information (allocation and management of credentials/MFA/certificates). A.5.17 is the primary missing correspondence for an authentication control."
+    },
+    {
+      "target": "A.8.5",
+      "mappingPercentage": 85,
+      "rationale": "BSI-C5-2026 IAM-06 (Authentisierung / authentication) is mapped only to A.8.2. The technical enforcement of authentication is A.8.5 Secure authentication (authentication technologies and procedures, MFA enforcement). A.8.5 is a strong additional correspondence alongside the organisational A.5.17."
+    },
+    {
+      "target": "A.8.5",
+      "mappingPercentage": 90,
+      "rationale": "BSI-C5-2026 IAM-07 (Sichere Anmeldung / secure log-on) is mapped only to A.5.34 (Privacy and PII), which is an evident mismatch. Secure log-on procedures correspond directly to A.8.5 Secure authentication (secure log-on procedures, failed-attempt handling, MFA). A.8.5 is the primary missing and correct correspondence."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 IAM-07 (Sichere Anmeldung / secure log-on) is mapped only to A.5.34. Secure log-on relies on the management of authentication information (credentials, MFA factors) governed by A.5.17 Authentication information. A.5.17 is a defensible secondary correspondence in addition to A.8.5."
+    },
+    {
+      "target": "A.5.17",
+      "mappingPercentage": 90,
+      "rationale": "BSI-C5-2026 IAM-08 (Passwort-Management / password management) is mapped only to A.8.5. Password management is the core subject of A.5.17 Authentication information, which explicitly addresses allocation, distribution and management of secret authentication information including passwords. A.5.17 is the primary missing correspondence."
+    },
+    {
+      "target": "A.8.5",
+      "mappingPercentage": 85,
+      "rationale": "IAM-09: C5 IAM-09 (Zugriffskontrolle/secure access) governs the technical authentication and logon mechanism. A.5.17 (already mapped) only covers the management of authentication *information* (secrets, passwords, MFA tokens). The actual secure-authentication mechanism is ISO 27001:2022 A.8.5 (Secure authentication), the technical twin of A.5.17 and the strongest missing correspondence for an access-control/logon criterion."
+    },
+    {
+      "target": "A.5.15",
+      "mappingPercentage": 70,
+      "rationale": "IAM-09: The criterion is literally the access-control criterion of the IAM/IDM domain (need-to-know / least-privilege enforcement on cloud resources). This is the explicit subject of A.5.15 (Access control), which is not in the current single mapping to A.5.17."
+    },
+    {
+      "target": "A.8.2",
+      "mappingPercentage": 55,
+      "rationale": "IAM-09: Access control over cloud management/admin interfaces inherently includes restriction of privileged accounts (cloud root/admin). ISO 27001:2022 A.8.2 (Privileged access rights) is a defensible additional correspondence, though narrower than the general access-control scope."
+    },
+    {
+      "target": "A.5.1",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 CRY-01: CRY-01 is the Kryptographie-RICHTLINIE (cryptography policy) criterion. While A.8.24 (already mapped) covers cryptographic use including a crypto policy, the topic-specific-policy requirement is independently anchored in A.5.1 (Policies for information security), which mandates the existence, approval and review of such policies. Defensible additional mapping for the explicit policy criterion."
+    },
+    {
+      "target": "A.5.14",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 CRY-02: CRY-02 (Verschluesselung) covers encryption of data-in-transit as well as at-rest. A.8.24 (already mapped) supplies the algorithm/key-length requirement, but encryption-in-transit is the protective measure mandated by A.5.14 (Information transfer), which requires transfer over secure/encrypted channels. Defensible additional correspondence."
+    },
+    {
+      "target": "A.8.21",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 COS-01: COS-01 is the network-management criterion of the Kommunikationssicherheit domain. A.8.20 (already mapped, Networks security) is correct, but secure operation/management of network *services* (their security mechanisms and SLAs) is the distinct subject of A.8.21 (Security of network services), which belongs in the mapping."
+    },
+    {
+      "target": "A.8.22",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 COS-01: Network management in a multi-tenant cloud (C5 KOS family explicitly includes Netzwerktrennung) inherently requires segregation of networks. ISO 27001:2022 A.8.22 (Segregation of networks) is a defensible additional correspondence beyond the general A.8.20."
+    },
+    {
+      "target": "A.8.20",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 COS-02 — The C5 Communication-Security criterion on network services (currently mapped to A.8.21 Security of network services) cannot be satisfied without the underlying network itself being secured. A.8.20 (Networks security) is the parent control under which A.8.21 sits in ISO 27002; C5 COS network-service requirements (managed service features, SLAs, controlled access to the carrying network) directly invoke general network security. Defensible additional correspondence."
+    },
+    {
+      "target": "A.8.20",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 COS-06 — Network segregation (mapped to A.8.22 Segregation of networks) is, in ISO 27002, an implementation technique of A.8.20 (Networks security). C5's segregation criterion (multi-tenant separation, zone/segment controls, service-mesh isolation in 2026) is operationally inseparable from the general network-security control. Strong additional correspondence."
+    },
+    {
+      "target": "A.8.21",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 COS-07 — General network security (mapped to A.8.20 Networks security) in C5 explicitly requires securing the network services delivered over that network. A.8.21 (Security of network services) is the sibling control covering security mechanisms, service levels and management requirements of network services and is regularly co-cited with A.8.20. Defensible additional correspondence."
+    },
+    {
+      "target": "A.8.22",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 COS-07 — The C5 network-security criterion (mapped to A.8.20) for a multi-tenant cloud inherently mandates segmentation/zoning between tenants and trust levels. A.8.22 (Segregation of networks) is the dedicated ISO control for that aspect and is a defensible additional correspondence, though narrower than the COS-07 scope."
+    },
+    {
+      "target": "A.8.24",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 COS-08 — The C5 data/information-transfer criterion (mapped to A.5.14 Information transfer) requires that transferred information be protected against interception/modification, i.e. encryption in transit and agreed cryptographic protocols. A.8.24 (Use of cryptography) is the control governing that protection and is a defensible technical companion to the organizational A.5.14 transfer control."
+    },
+    {
+      "target": "A.8.16",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 OPS-01 — Capacity management (mapped to A.8.6) is fundamentally a monitoring-driven control: tuning and projecting future capacity requires continuous observation of resource utilization against thresholds. A.8.16 (Monitoring activities) is the ISO control supplying that detective layer and is a defensible additional correspondence for the capacity/operations criterion."
+    },
+    {
+      "target": "A.8.14",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 OPS-06 — Information backup (mapped to A.8.13) and A.8.14 (Redundancy of information processing facilities) are the paired availability-assurance controls in ISO 27002. C5's data-protection/backup criterion for cloud necessarily covers redundancy of processing facilities (geo-redundancy, failover) to meet recovery objectives. Strong additional correspondence."
+    },
+    {
+      "target": "A.5.30",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 OPS-06 — The backup criterion (mapped to A.8.13) exists to support recoverability; A.5.30 (ICT readiness for business continuity) is the control under which backup/restore capabilities and RTO/RPO targets are validated. Defensible additional correspondence, though A.5.30 has a broader BC scope than backup alone."
+    },
+    {
+      "target": "A.8.16",
+      "mappingPercentage": 85,
+      "rationale": "BSI-C5-2026 OPS-10 — Logging (mapped to A.8.15) and A.8.16 (Monitoring activities) are the canonical detective-control pair in ISO 27002: logs are the raw material that A.8.16 analyzes/correlates for anomaly detection. C5's logging-and-monitoring operations criterion covers both generation and evaluation, so A.8.16 is a strong additional correspondence."
+    },
+    {
+      "target": "A.8.17",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 OPS-10 — The logging criterion (mapped to A.8.15) requires reliable, correlatable timestamps; A.8.17 (Clock synchronization) ensures log entries across systems share a trusted time base, which is a prerequisite for forensically usable logs (and explicitly relevant in cloud/multi-host environments). Defensible additional correspondence."
+    },
+    {
+      "target": "ISO27001:A.8.15",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 OPS-13: Already mapped to A.8.16 (Monitoring activities). Monitoring is inseparable from Logging — the monitored events are derived from log data. C5 OPS treats Protokollierung (logging) and Monitoring as a coupled control pair (cf. C5:2020 OPS-07/OPS-08). Any monitoring criterion that scopes the event sources it observes maps materially to A.8.15 as well. Defensible co-requisite, not a stretch."
+    },
+    {
+      "target": "ISO27001:A.8.16",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 OPS-14: Already mapped to A.8.15 (Logging). Logging exists to feed Monitoring (A.8.16); a logging criterion that requires logs be collected for detection/alerting purposes corresponds directly to monitoring-activities. This is the symmetric counterpart of the OPS-13->A.8.15 gap and is equally defensible."
+    },
+    {
+      "target": "ISO27001:A.8.17",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 OPS-14: Already mapped to A.8.15 (Logging). C5 logging criteria require accurate, attributable, correlatable log timestamps, which is exactly the purpose of A.8.17 Clock synchronization. Reliable log correlation/forensics is impossible without synchronized clocks, so A.8.17 is a genuine co-requisite of any C5 logging criterion."
+    },
+    {
+      "target": "ISO27001:A.8.16",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 OPS-15: Already mapped to A.8.15 (Logging). As with OPS-14, a C5 logging criterion whose purpose is detection of anomalous/unauthorized activity corresponds to A.8.16 Monitoring activities — logging and monitoring are the standard ISO control pair (A.8.15/A.8.16). Defensible."
+    },
+    {
+      "target": "ISO27001:A.8.17",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 OPS-15: Already mapped to A.8.15 (Logging). Same justification as OPS-14: C5 mandates time-accurate, correlatable logs, which requires synchronized clocks (A.8.17). Slightly lower confidence than OPS-14 because OPS-15 may address a logging facet (e.g. log protection) where clock-sync is secondary, but still defensible."
+    },
+    {
+      "target": "ISO27001:A.8.19",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 OPS-18: Already mapped to A.8.8 (Management of technical vulnerabilities). Vulnerability management is operationally completed by patch deployment, which ISO splits out into A.8.19 Installation of software on operational systems. C5 OPS vulnerability criteria explicitly require timely remediation/patching, so A.8.19 is a direct missing correspondence, not just adjacent."
+    },
+    {
+      "target": "ISO27001:A.5.7",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 OPS-18: Already mapped to A.8.8 (Management of technical vulnerabilities). Identifying technical vulnerabilities requires intake of vulnerability/threat intelligence (CVE feeds, vendor advisories), which ISO scopes under A.5.7 Threat intelligence. C5 vuln-mgmt criteria reference obtaining timely information on vulnerabilities, so A.5.7 is a defensible upstream correspondence."
+    },
+    {
+      "target": "ISO27001:A.8.29",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 OPS-22: Already mapped to A.8.8 (Management of technical vulnerabilities). A second OPS criterion mapped to A.8.8 most plausibly addresses active discovery (vulnerability scanning / penetration testing), which ISO carves out as A.8.29 Security testing in development and acceptance. C5 OPS requires regular technical security testing/penetration tests, making A.8.29 a strongly defensible missing target."
+    },
+    {
+      "target": "ISO27001:A.8.19",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 OPS-26: Already mapped to A.8.9 (Configuration management). Secure configuration is enforced and maintained through controlled software installation/patching on operational systems (A.8.19); C5 configuration criteria cover establishing and maintaining hardened baselines, which entails governed installation. Defensible co-requisite."
+    },
+    {
+      "target": "ISO27001:A.8.8",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 OPS-26: Already mapped to A.8.9 (Configuration management). Hardened/secure baselines (config management) directly reduce technical vulnerabilities; C5 OPS configuration criteria require removing insecure default settings and services, which overlaps materially with A.8.8 Management of technical vulnerabilities. Defensible but secondary."
+    },
+    {
+      "target": "ISO27001:A.5.12",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 OPS-30: Already mapped to A.5.13 (Labelling of information). Labelling is meaningless without an underlying classification scheme — A.5.13 is the operational expression of A.5.12 Classification of information, and ISO treats them as an inseparable pair. Any C5 criterion requiring information to be labelled per its protection need necessarily invokes classification. Highly defensible."
+    },
+    {
+      "target": "ISO27001:A.8.31",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 OPS-34: Already mapped to A.8.9 (Configuration management). A second OPS criterion on configuration in a cloud-native (C5:2026 Container/IaC/DevSecOps) context most defensibly covers environment configuration and separation of dev/test/prod, which ISO scopes as A.8.31 Separation of development, test and production environments. Defensible given the 2026 OPS expansion into IaC/pipeline configuration."
+    },
+    {
+      "target": "ISO27001:A.8.19",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 OPS-34: Already mapped to A.8.9 (Configuration management). As with OPS-26, maintaining configuration baselines in operation is enforced via controlled software/image installation and updates (A.8.19), especially for container images and IaC artifacts in the C5:2026 scope. Defensible co-requisite."
+    },
+    {
+      "target": "A.8.16 Monitoring activities",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 SIM-02 (Erkennung / detection of security incidents). C5:2026 explicitly elevates 'Automatisierte Erkennung' for the SIM domain. Incident detection is operationally realized through anomaly/threat detection and SIEM correlation, which is the substance of A.8.16. The current sole mapping to A.5.26 (Response) covers the post-detection reaction but not the detection capability itself; A.8.16 is the genuinely missing detective correspondence."
+    },
+    {
+      "target": "A.8.15 Logging",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 SIM-02 (Erkennung). Reliable automated detection presupposes comprehensive event logging as the evidentiary and signal basis. A.8.15 is a defensible secondary correspondence as the prerequisite control for detection; weaker than A.8.16 since logging alone is enabling rather than the detection act, hence partial."
+    },
+    {
+      "target": "A.6.8 Information security event reporting",
+      "mappingPercentage": 85,
+      "rationale": "BSI-C5-2026 SIM-03 (Meldung / reporting and notification of incidents). A.6.8 is the dedicated ISO 27001:2022 control for low-threshold reporting of security events through defined channels and is the direct title-level counterpart to a reporting/notification criterion. The current mapping to A.5.25 (Assessment) misaligns reporting with evaluation; A.6.8 is the strongly defensible missing link."
+    },
+    {
+      "target": "A.5.25 Assessment and decision on information security events",
+      "mappingPercentage": 90,
+      "rationale": "BSI-C5-2026 SIM-04 (Bewertung / assessment and classification of incidents). A.5.25 is a near-exact title and intent match (assessing events and deciding whether they are incidents, including severity classification). The current mapping to A.5.28 (Collection of evidence) is the forensics control, not the assessment control; A.5.25 is the directly corresponding control that is missing."
+    },
+    {
+      "target": "A.5.26 Response to information security incidents",
+      "mappingPercentage": 90,
+      "rationale": "BSI-C5-2026 SIM-05 (Reaktion / response to incidents). A.5.26 is the direct title and intent counterpart for executing the documented incident-response actions. The current mapping to A.6.8 (event reporting) addresses notification rather than response; A.5.26 is the strongly defensible missing correspondence."
+    },
+    {
+      "target": "A.5.30 ICT readiness for business continuity",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 BCM-01 (BCM-Planung / BIA). BCM planning and the Business Impact Analysis establish the RTO/RPO and ICT-readiness requirements that A.5.30 operationalizes. A.5.30 is a defensible additional correspondence beyond the mapped A.5.29 (IS during disruption), as planning/BIA directly feeds ICT readiness targets."
+    },
+    {
+      "target": "A.8.14 Redundancy of information processing facilities",
+      "mappingPercentage": 45,
+      "rationale": "BSI-C5-2026 BCM-01 (BCM-Planung / BIA). The BIA determines availability requirements that drive redundancy provisioning; the existing BSI-ISO mapping reference itself associates BCM(C5) with A.8.14. Partial because BCM-01 is the planning/analysis criterion rather than the technical redundancy implementation, making this a supporting rather than primary correspondence."
+    },
+    {
+      "target": "A.5.29 Information security during disruption",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 BCM-02 (BC-Plaene / Wiederherstellung). Maintaining and recovering services through BC plans during a disruptive event is the core of A.5.29 (preserving information security during disruption). A.5.29 is a strongly defensible additional correspondence beyond the mapped A.5.30, as the plan-execution and recovery aspect aligns directly with disruption handling."
+    },
+    {
+      "target": "A.8.14 Redundancy of information processing facilities",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 BCM-02 (BC-Plaene / Redundanz / Wiederherstellung). The redundancy aspect of BCM-02 maps to A.8.14 (geo-redundancy, failover) and the BSI-ISO mapping reference explicitly links BCM(C5) to A.8.14. Defensible secondary correspondence covering the technical resilience portion not captured by A.5.30 alone."
+    },
+    {
+      "target": "A.8.13 Information backup",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 BCM-02 (Wiederherstellung / recovery). Recovery of data and services within BC plans relies on backup and restore capability (3-2-1 rule), which is the substance of A.8.13. Defensible additional correspondence for the data-recovery dimension of BCM-02; partial since A.8.13 is a focused backup control rather than the full BC-plan scope."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 BCM-03: BCM-03 (business-continuity planning/contingency for the cloud service) directly concerns maintaining information security during disruption. ISO 27001 A.5.29 (Information security during disruption) is the dedicated security-continuity control and is the natural ISMS counterpart to BC-planning content; A.5.30 (ICT readiness) alone covers only the technical-readiness slice, so A.5.29 is a defensible additional mapping for the planning/organisational dimension."
+    },
+    {
+      "target": "A.8.13",
+      "mappingPercentage": 45,
+      "rationale": "BSI-C5-2026 BCM-03: BC planning in C5 explicitly relies on data backup as a recovery prerequisite (RPO/restore). ISO 27001 A.8.13 (Information backup) is a genuine partial correspondent because backup is an enabling control referenced inside BC planning, though it is not the full scope of BCM-03 — hence partial."
+    },
+    {
+      "target": "A.8.14",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 BCM-04: BCM-04 (BC testing / redundancy / resilience verification, expanded with chaos-engineering in C5:2026) corresponds to ISO 27001 A.8.14 (Redundancy of information processing facilities). Redundancy of processing is the technical resilience mechanism that BC testing validates, making A.8.14 a defensible additional mapping beyond the readiness-only A.5.30."
+    },
+    {
+      "target": "A.5.29",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 BCM-04: The exercising/verification of continuity arrangements (BCM-04) maintains assurance that information security is preserved during disruption, which is the object of ISO 27001 A.5.29 (Information security during disruption). A.5.30 covers only ICT-readiness; A.5.29 is the broader security-continuity control validated by BC testing."
+    },
+    {
+      "target": "A.8.27",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 DEV-01: DEV-01 governs secure-development policies/governance over the whole SDLC. ISO 27001 A.8.27 (Secure system architecture and engineering principles) is a defensible additional correspondent because secure-by-design architecture principles are a core part of development-policy scope, distinct from the lifecycle-process focus of A.8.25."
+    },
+    {
+      "target": "A.8.25",
+      "mappingPercentage": 40,
+      "rationale": "BSI-C5-2026 DEV-02: DEV-02 (outsourced/externally-procured development) is already mapped to A.8.30, but outsourced development must still satisfy the organisation's secure-development-lifecycle requirements. ISO 27001 A.8.25 (Secure development life cycle) is a defensible partial mapping because SDLC requirements must be imposed on and verified for outsourced suppliers."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 45,
+      "rationale": "BSI-C5-2026 DEV-02: Outsourcing development is a supplier relationship; security requirements for the outsourced work must be contractually fixed. ISO 27001 A.5.20 (Addressing information security within supplier agreements) is a defensible additional mapping because DEV-02 controls hinge on agreement-level security clauses with the development supplier, beyond the technical A.8.30."
+    },
+    {
+      "target": "A.8.9",
+      "mappingPercentage": 40,
+      "rationale": "BSI-C5-2026 DEV-03: DEV-03 (change management for developed cloud software) is mapped to A.8.32, but controlled change is tightly coupled with maintaining authorised, known configurations. ISO 27001 A.8.9 (Configuration management) is a defensible partial correspondent because change records and configuration baselines are jointly enforced during development changes."
+    },
+    {
+      "target": "A.8.25",
+      "mappingPercentage": 40,
+      "rationale": "BSI-C5-2026 DEV-05: DEV-05 (security embedded in development/architecture) is mapped to A.8.27, but security must be planned and integrated across the lifecycle, not only the architecture phase. ISO 27001 A.8.25 (Secure development life cycle) is a defensible additional mapping for the lifecycle-integration dimension of secure design."
+    },
+    {
+      "target": "A.8.26",
+      "mappingPercentage": 45,
+      "rationale": "BSI-C5-2026 DEV-05: Secure architecture/design must be driven by defined security requirements for the application. ISO 27001 A.8.26 (Application security requirements) is a defensible additional correspondent because architecture-level security decisions (DEV-05) are derived from and verified against application security requirements."
+    },
+    {
+      "target": "A.8.28",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 DEV-07: DEV-07 (security testing in development, expanded to SAST/DAST in C5:2026) is mapped to A.8.29, but security testing validates secure-coding practices. ISO 27001 A.8.28 (Secure coding) is a defensible additional mapping because SAST/secure-code analysis sits at the intersection of testing (A.8.29) and coding standards (A.8.28)."
+    },
+    {
+      "target": "A.8.8",
+      "mappingPercentage": 45,
+      "rationale": "BSI-C5-2026 DEV-07: Security testing during development identifies and feeds the remediation of technical vulnerabilities (DAST/pentest/dependency-SBOM scanning in C5:2026). ISO 27001 A.8.8 (Management of technical vulnerabilities) is a defensible additional correspondent because the findings of DEV-07 testing are managed through the technical-vulnerability process."
+    },
+    {
+      "target": "A.8.33",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 DEV-11: DEV-11 (separation of development/test/production environments) is mapped to A.8.31, but separating environments is inseparable from controlling the data used in non-production. ISO 27001 A.8.33 (Test information) is a defensible additional mapping because protection/selection of test data is the data-side complement to environment separation."
+    },
+    {
+      "target": "A.8.33",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 DEV-12: C5 DEV-12 covers separation of development, test and production environments. The dominant residual risk of mixing environments is the leakage/misuse of test information. A.8.33 (Test information) is the canonical ISO 27001 companion to A.8.31 (Separation of environments) — both ISO 27002 group them together (8.30-8.33 development cluster) and an auditor would expect test-data protection evidence alongside environment separation. Genuinely defensible additional correspondence."
+    },
+    {
+      "target": "A.8.25",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 DEV-12: Environment separation is an explicit requirement of a secure development lifecycle. A.8.25 (Secure development lifecycle) is the umbrella control under which 8.31 separation sits; defensible as a secondary mapping, lower percentage because it is the broader framing rather than the specific control."
+    },
+    {
+      "target": "A.8.28",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 DEV-13: DEV-13 in the C5 development domain addresses secure coding practices and controlled source-code management as part of the DevSecOps lifecycle. The current single mapping to A.8.30 (Outsourced development) only captures the third-party-development facet. A.8.28 (Secure coding) is the direct ISO 27001 control for the coding-practice substance of this criterion and should be present."
+    },
+    {
+      "target": "A.8.4",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 DEV-13: The same criterion governs controlled access to and management of source code (version control, repository access). A.8.4 (Access to source code) is the defensible ISO 27001 correspondence for the source-code-control aspect, which A.8.30 alone does not cover."
+    },
+    {
+      "target": "A.8.30",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 DEV-14: DEV-14 concerns security in the ICT/development supply chain (third-party and outsourced development components). It is currently mapped only to A.5.19/A.5.20-style supplier framing via A.5.21; A.8.30 (Outsourced development) is the technologically-specific ISO 27001 control for security of outsourced/third-party development work and is a defensible additional mapping."
+    },
+    {
+      "target": "A.5.20",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 SSO-01: SSO-01 establishes the inventory/governance of service-provider relationships (mapped to A.5.19). The act of establishing relationships is operationally inseparable from agreeing security terms; A.5.20 (Addressing IS in supplier agreements) is the immediate ISO companion and an auditor would expect both 5.19 and 5.20 cited together for the supplier-relationship lifecycle."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 SSO-02: SSO-02 (supplier agreements, mapped A.5.20) presupposes the supplier-relationship governance framework. A.5.19 (IS in supplier relationships) is the parent control that A.5.20 operationalises; defensible reciprocal mapping for the relationship-establishment substance the criterion relies on."
+    },
+    {
+      "target": "A.5.23",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 SSO-03: SSO-03 covers ICT supply-chain security (mapped A.5.21). Where the supply chain consists of cloud sub-service providers — the dominant case in a C5 cloud-attestation context — A.5.23 (IS for use of cloud services) is a genuinely defensible additional correspondence for the cloud-sourced links of the chain."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 SSO-03: Managing the ICT supply chain (A.5.21) requires ongoing monitoring of the chained providers. A.5.22 (Monitoring, review and change management of supplier services) is a defensible companion mapping because supply-chain assurance is sustained through continuous supplier-service review, not just initial chain definition."
+    },
+    {
+      "target": "A.5.19",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 SSO-05: SSO-05 (monitoring/review of provider services, mapped A.5.22) operates on the relationships governed by A.5.19. A.5.19 (IS in supplier relationships) is a defensible secondary mapping as the relationship framework that the monitoring activity reviews."
+    },
+    {
+      "target": "A.5.22",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 SSO-06: SSO-06 (supplier agreement provisions, mapped A.5.20) typically embeds the right to monitor and review provider service delivery and change management. A.5.22 (Monitoring, review and change management of supplier services) is the defensible companion control for the monitoring/change clauses the agreement establishes."
+    },
+    {
+      "target": "A.5.23",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 SSO-06: In a C5 cloud context, the supplier agreements addressed by SSO-06 are predominantly cloud-service contracts. A.5.23 (IS for use of cloud services) is a defensible additional correspondence for the cloud-specific contractual security requirements not captured by the generic A.5.20 mapping alone."
+    },
+    {
+      "target": "A.5.36",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 COM-01: Compliance-Management entails not only identifying legal/regulatory requirements (A.5.31, already mapped) but also establishing and operating the process that verifies ongoing conformance with those requirements, policies, standards and contractual obligations. ISO 27001:2022 A.5.36 (Compliance with policies, rules and standards for information security) is the direct counterpart for the conformance-monitoring half of a compliance-management criterion and is genuinely missing."
+    },
+    {
+      "target": "A.5.36",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 COM-02: An audit/independent-review criterion (mapped to A.5.35 Independent review) inherently checks whether the ISMS and operations actually comply with the defined policies and standards. A.5.36 (Compliance with policies, rules and standards) is the substantive object of such audits and is a defensible additional correspondence alongside A.5.35."
+    },
+    {
+      "target": "A.8.34",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 COM-02: Compliance audits and independent reviews of cloud production systems require controlled, protected access to live information systems during testing. ISO 27001:2022 A.8.34 (Protection of information systems during audit testing) directly governs how such audit/review activity is conducted without disrupting operations, a genuine additional fit for an audit-execution criterion that A.5.35 alone does not cover."
+    },
+    {
+      "target": "A.5.36",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 COM-03: A compliance criterion focused on evidencing/verifying adherence and internal compliance checks corresponds to A.5.36 (Compliance with policies, rules and standards for information security), the control that requires regular review of conformance. This is missing alongside the mapped A.5.35 (Independent review)."
+    },
+    {
+      "target": "A.5.14",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 PI-03: Interoperability has no dedicated ISO 27001:2022 Annex A control; the closest substantive correspondence for secure interoperable data exchange between systems/clouds is A.5.14 (Information transfer), which governs the rules, agreements and protection of data moving across interoperable interfaces. This is more defensible than the currently mapped A.8.10 (Information deletion) and should be added."
+    },
+    {
+      "target": "A.8.29",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 PSS-02: Product vulnerability management (mapped to A.8.8 Management of technical vulnerabilities) in C5:2026 is tightly coupled with proactively finding product weaknesses. ISO 27001:2022 A.8.29 (Security testing in development and acceptance) covers the SAST/DAST/pentest activity that surfaces those vulnerabilities and is a genuine additional correspondence for a product-security vulnerability criterion."
+    },
+    {
+      "target": "A.8.8",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 PSS-12: A product-security criterion concerning security updates / EOL handling / patch provision corresponds substantively to A.8.8 (Management of technical vulnerabilities), which mandates timely remediation/patching of identified vulnerabilities. The current sole mapping to A.5.34 (Privacy and PII) does not capture the security-update/patch dimension, so A.8.8 is a defensible missing correspondence."
+    }
+  ]
+}
