@@ -1,0 +1,209 @@
+{
+  "provenance": {
+    "source_framework": "BSI-C5-2026",
+    "target_framework": "NIS2",
+    "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
+    "panel": [
+      "bsi-specialist",
+      "isms-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "completeness-sweep (panel gap analysis)",
+    "run_date": "2026-06-13",
+    "note": "UNREFUTED completeness proposals — NOT applied without further human review",
+    "candidate_count": 38
+  },
+  "candidates": [
+    {
+      "target": "NIS2 Art. 20.1",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 OIS-01 — OIS-01 establishes the ISMS as the top-level governance structure. NIS2 Art. 20.1 obliges the management body to approve and oversee the cyber-risk-management measures (i.e. the very management system OIS-01 defines). An ISMS criterion that omits management-body approval/oversight is incomplete against NIS2; the management-system mandate and its governing-body accountability are two halves of the same control. Defensible additional link beyond the existing 21.2.a (risk-analysis-policy) anchor."
+    },
+    {
+      "target": "NIS2 Art. 21.2.a",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 OIS-02 — OIS-02 is the IS-policy criterion (information security policies / Sicherheitsleitlinie). NIS2 Art. 21.2.a explicitly names 'policies on risk analysis and information system security' as a required measure. OIS-02 is currently mapped only to the governance Art. 20.1; the substantive policy obligation lives in 21.2.a, which is the direct content match and is missing."
+    },
+    {
+      "target": "NIS2 Art. 21.2.i",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 OIS-04 — OIS-04 covers segregation of duties (Funktionstrennung). It is already mapped to 21.2.i (HR security/access control/asset management), under which segregation/least-privilege legitimately sits — so 21.2.i is correctly present, not missing. No additional defensible NIS2 article: segregation of duties is an access-governance control fully absorbed by 21.2.i, and stretching it to 21.2.a or 20 would be over-reach. Empty additions."
+    },
+    {
+      "target": "NIS2 Art. 21.2.f",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 OIS-05 — OIS-05 is contact with authorities. NIS2 has no dedicated 'authority-liaison' risk-measure article; Art. 23 (reporting to CSIRT/competent authority) is the closest operational anchor, since maintaining authority contacts is a precondition for the incident-notification duty. The existing 21.2.a mapping is weak for this criterion. Add Art. 23.1 as the genuinely-corresponding link (authority contact enables the 24h/72h notification flow); 21.2.f is borderline and not asserted."
+    },
+    {
+      "target": "NIS2 Art. 23.1",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 OIS-05 — Contact with authorities (OIS-05) is functionally the standing channel through which NIS2 Art. 23.1 incident notifications to the CSIRT/competent authority are made. Without maintained authority contacts the 23.1 reporting obligation cannot be met, so this is a defensible direct correspondence currently missing (only 21.2.a is mapped)."
+    },
+    {
+      "target": "NIS2 Art. 21.2.a",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 OIS-06 — OIS-06 is the risk-management criterion. NIS2 Art. 21.2.a ('policies on risk analysis and information system security') is the single most direct NIS2 anchor for any risk-management control and is currently missing (OIS-06 is mapped only to the reporting article 23.1, which is an evident mis-anchor). The risk-management process is the core of 21.2.a."
+    },
+    {
+      "target": "NIS2 Art. 21.2.a",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 OIS-07 — OIS-07 addresses cloud-/provider-specific risks (Cloud-spezifische Risiken). This is risk identification/analysis for the cloud context and falls squarely under Art. 21.2.a (risk-analysis policies), which is already the existing mapping and therefore correct, not missing. The genuinely additional link is supply-chain (21.2.d) because cloud-specific risk in C5:2026 explicitly incorporates provider/sub-processor dependency risk."
+    },
+    {
+      "target": "NIS2 Art. 21.2.d",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 OIS-07 — In C5:2026 the OIS domain was expanded with Supply-Chain-Governance, and cloud-specific risk inherently means provider and sub-processor (supply-chain) dependency risk. NIS2 Art. 21.2.d ('supply chain security, including security-related aspects concerning relationships between each entity and its direct suppliers or service providers') is therefore a defensible additional correspondence beyond the mapped 21.2.a, and is currently missing."
+    },
+    {
+      "target": "NIS2 Art. 21.2.d",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 OIS-08 — Per the C5:2026 reference, the OIS domain is expanded specifically with Supply-Chain-Governance; OIS-08 is a supply-chain-governance criterion. NIS2 Art. 21.2.d (supply chain security / supplier-relationship security) is the direct and defensible correspondence, and the current mapping (only 21.2.a) misses it entirely. This is the strongest single missing link in the set."
+    },
+    {
+      "target": "NIS2 Art. 21.2.d",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 OIS-09 — As with OIS-08, OIS-09 belongs to the C5:2026 OIS Supply-Chain-Governance expansion. NIS2 Art. 21.2.d (supply-chain / direct-supplier security) is the direct content match and is missing from the current mapping (only 21.2.a). Defensible high-confidence addition."
+    },
+    {
+      "target": "NIS2 21.2.(j)",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 HR-07 — C5:2026 newly extends the HR domain with Remote-Work/teleworking aspects (ISO A.6.7 Remote working). Remote/telework security is currently mapped only to the broad 21.2.(i) HR-security/access-control/asset-management catch-all. It SHOULD additionally map to 21.2.(j): NIS2 explicitly names MFA/continuous authentication AND 'secured voice, video and text communications' and 'emergency communication systems' under (j). Secure remote access is the canonical trigger for mandatory MFA and secured communication channels — a concrete, defensible correspondence that 21.2.(i) does not capture at the authentication/secured-comms level. This is the technical authentication backbone of any teleworking control."
+    },
+    {
+      "target": "NIS2 21.2.(g)",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 HR-07 — Remote-Work/teleworking (ISO A.6.7) also defensibly corresponds to 21.2.(g) 'basic cyber hygiene practices and cybersecurity training'. Teleworking controls are largely behavioural cyber-hygiene (home-network use, device handling, clear-screen off-site, phishing exposure on personal networks) and are typically delivered via the same awareness/hygiene programme. Currently only 21.2.(i) is mapped; the hygiene/behavioural dimension of remote work is a genuine, though secondary, correspondence to (g). Lower confidence than (j) because the core enforced control is technical access, not training."
+    },
+    {
+      "target": "NIS2 21.2.f",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 IAM-01: IAM-01 is the access-authorization policy criterion. NIS2 21.2.f covers 'policies and procedures to assess the effectiveness of cybersecurity risk-management measures'; the canonical NIS2->ISO mapping anchors (f) to access-control controls A.5.15-A.5.18 / A.8.2-A.8.5. An access-control POLICY is precisely the kind of measure whose effectiveness (f) requires assessing, and access-policy review is the operational hook for (f). Currently only (i) is mapped; (f) is a genuinely defensible additional correspondence."
+    },
+    {
+      "target": "NIS2 21.2.f",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 IAM-09: IAM-09 (Zugriffskontrolle / access control enforcement) is mapped to (j) but not (f). The NIS2 reference explicitly maps 21.2.f to access-control controls A.5.15-A.5.18 / A.8.2-A.8.5, making access-control effectiveness assessment a defensible (f) correspondence in addition to its access-control nature."
+    },
+    {
+      "target": "NIS2 21.2.i",
+      "mappingPercentage": 90,
+      "rationale": "BSI-C5-2026 IAM-05: IAM-05 is review of access rights. 21.2.i explicitly enumerates 'access control policies' (incl. A.8.2-A.8.5 access control). Periodic access-rights recertification is a core access-control measure squarely within (i), not only the effectiveness/(f) dimension it is currently mapped to. Adding (i) is strongly defensible."
+    },
+    {
+      "target": "NIS2 21.2.j",
+      "mappingPercentage": 85,
+      "rationale": "BSI-C5-2026 IAM-06: IAM-06 is the authentication criterion. NIS2 21.2.j is 'use of multi-factor authentication or continuous authentication solutions' and maps to ISO A.8.5 (secure authentication). An authentication-controls criterion directly underpins (j); currently only (i) is mapped, so (j) is a strong missing correspondence."
+    },
+    {
+      "target": "NIS2 21.2.i",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 IAM-08: IAM-08 is password management. 21.2.i covers 'access control policies' including authentication-information handling (A.8.5 secure authentication / A.5.17 authentication information sit within the access-control bucket of (i)). Password management is a core access-control hygiene measure under (i), in addition to the (j) authentication mapping it currently holds."
+    },
+    {
+      "target": "21.2.f",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 BCM-04: BCM-04 \"Testing Business Continuity\" requires that BC/recovery measures be regularly reviewed, tested and exercised (incl. third-party involvement). Testing/exercising is fundamentally an effectiveness-verification activity, which is exactly what NIS2 Art. 21(2)(f) demands ('policies and procedures to assess the effectiveness of cybersecurity risk-management measures'). The current mapping treats BC-testing only as continuity-of-operations (21.2.c) but the test RESULTS are the primary evidence that the continuity measures actually work. The same file already routes OPS-22 (pentests), OPS-23 (measurements) and SP-02 (policy review) to 21.2.f on identical 'Wirksamkeitsbewertung' logic, and OPS-08 restore-testing is described as 'kritisch für BCM-Effektivität' — so BC-exercise testing belongs to 21.2.f by the file's own reasoning. Defensible as 'subset'/medium; primary anchor remains 21.2.c."
+    },
+    {
+      "target": "21.2.h",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 OPS-06: OPS-06 \"Data Backup and Recovery - Policies and Procedures\" Basic-criterion 01B item 2 explicitly mandates 'Data is backed up in encrypted, state of the art form' and item 3 'Secure storage, transfer, management and disposal of backup data'. Backup encryption is a direct cryptography/encryption control, which NIS2 Art. 21(2)(h) covers verbatim ('policies and procedures regarding the use of cryptography and, where appropriate, encryption'). The mapping file routes every other encryption control (CRY-01/04/05 encryption-at-rest/in-transit) to 21.2.h but leaves OPS-06's explicit backup-encryption obligation mapped only to 21.2.c. This is a genuine missing anchor (subset/medium); 21.2.c stays as the primary backup-management anchor."
+    },
+    {
+      "target": "21.2.f",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 OPS-08: OPS-08 \"Data Backup and Recovery - Regular Testing\" requires at-least-annual restore tests that 'allow an assessment as to whether the contractual agreements as well as the specifications for RTO and RPO are adhered to' with deviation-reporting (Basic 02B/05B). Restore testing is a measure-effectiveness verification, the exact scope of NIS2 Art. 21(2)(f) ('assess the effectiveness of cybersecurity risk-management measures'). The file's own rationale calls OPS-08 'kritisch für 21.2.c (BCM-Effektivität)' yet only maps it to 21.2.c; by the same effectiveness-assessment logic used for OPS-22/OPS-23 it should also map to 21.2.f. Defensible as subset/medium alongside the existing 21.2.c anchor."
+    },
+    {
+      "target": "21.2.d",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 SSO-06: SSO-06 \"Contract Termination Strategy for Service Organisations\" (exit strategies) is triggered by the risk assessment of service organisations 'regarding scope, complexity and uniqueness... very high dependency' and mitigates supplier lock-in / supplier-failure — i.e. security aspects of the relationship between the entity and its direct suppliers/service providers, which is the core of NIS2 Art. 21(2)(d) ('supply chain security'). It currently maps ONLY to 21.2.c (continuity-of-operations for provider-outage). Yet the file's own SSO-02 rationale explicitly files 'Vendor-Lock-in-Analyse' under 21.2.d, and SSO-01/02/04/05 all anchor on 21.2.d. SSO-06 exit strategy is the direct treatment of supplier-relationship/dependency risk and therefore strongly belongs to 21.2.d (subset/high) in addition to its 21.2.c BC anchor."
+    },
+    {
+      "target": "21.2.e",
+      "mappingPercentage": 45,
+      "rationale": "BSI-C5-2026 SSO-08 — \"Controlling Exchanges with Suppliers of Functional Components\" requires the CSP to authorise every piece of content (notably software updates) provided by a supplier BEFORE it is transferred to a functional component running in production, and to keep traces of proposed operations, verifications and transfers. Beyond the supply-chain dimension (21.2.d, already mapped), gating and verifying supplier-delivered updates to operational system components is a maintenance-security measure squarely within NIS2 21(2)(e) \"security in acquisition, development AND maintenance of IT systems\". The sibling software-supply controls DEV-13/DEV-14 are recognised in this same mapping as touching 21.2.e, so the correspondence is defensible. Subset, medium confidence."
+    },
+    {
+      "target": "21.2.d",
+      "mappingPercentage": 40,
+      "rationale": "BSI-C5-2026 DEV-01 — the criterion is explicitly \"Policies for the Development/Procurement of System Components\". The procurement leg (01AC: prefer Common-Criteria EAL4-certified products, risk assessment per OIS-07 when buying non-certified products; aspect 3 of basic-1 covers reaction to vulnerabilities in components) governs how externally sourced components enter the cloud service. Procurement/acquisition of third-party system components is supply-chain security in the sense of NIS2 21(2)(d), not only secure-development (21.2.e, already mapped). Subset, medium confidence."
+    },
+    {
+      "target": "21.2.f",
+      "mappingPercentage": 40,
+      "rationale": "BSI-C5-2026 DEV-07 — \"Testing Changes\" requires security-feature tests that fully cover the DEV-05 specification incl. all error conditions, severity rating of identified errors/vulnerabilities, and (01AC) pre-launch penetration tests per the OPS-22 framework. Penetration testing and security-feature verification are classic effectiveness-assessment activities; this same mapping maps OPS-22 (pentests) to NIS2 21(2)(f) \"policies and procedures to assess the effectiveness of risk-management measures\". DEV-07's pre-launch pentest + full security-feature test coverage is therefore an additional, defensible correspondence to 21.2.f beyond the maintenance anchor 21.2.e. Subset, medium confidence."
+    },
+    {
+      "target": "21.2.c",
+      "mappingPercentage": 30,
+      "rationale": "BSI-C5-2026 DEV-11 — \"Protection of Development and Test Environments\" explicitly requires extending the backup plan (OPS-06) to the necessary parts of those environments based on a risk assessment. OPS-06 is mapped in this catalogue to NIS2 21(2)(c) (backup management / operational continuity). The backup-extension obligation in DEV-11 is thus a genuine, if narrow, contribution to 21(2)(c) \"backup management and disaster recovery\", in addition to the secure-development anchor 21.2.e. Subset, low-medium confidence."
+    },
+    {
+      "target": "21.2.e",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 DEV-13 — \"Transparency about Software Components\" (software component list / SBOM per TR-03183-2). The existing mapping rationale itself notes that SBOM supports secure development and vulnerability tracking, yet only maps to 21.2.d. SBOM detail \"allows the CSP to identify all cloud services affected by any given known vulnerability\" — this is core vulnerability handling within secure development/maintenance, which is exactly NIS2 21(2)(e) \"security in acquisition, development and maintenance of IT systems, including vulnerability handling and disclosure\". Adding 21.2.e is strongly defensible. Subset, medium-high confidence."
+    },
+    {
+      "target": "21.2.e",
+      "mappingPercentage": 50,
+      "rationale": "BSI-C5-2026 DEV-14 — \"Secure Use of Third Party Hardware and Software\" requires policies for third-party/open-source software use, a dependency list, retrieval only from trusted sources with authenticity verification, and a per-product risk assessment (OIS-07). Controlling the trustworthiness and integrity of third-party components consumed IN the development of the cloud service is a secure-development/maintenance practice under NIS2 21(2)(e), not only a supplier-relationship matter (21.2.d, already mapped). Subset, medium-high confidence."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 OPS-04 (Protection Against Malware - Policies and Procedures): defensible but secondary. Operating and keeping malware-protection programs current on system components is an aspect of security in operation/maintenance of network and information systems (Art. 21(2)(e) under the Implementing Regulation (EU) 2024/2690 'security in acquisition, development and maintenance', which covers operational security configuration). The existing (g) basic-cyber-hygiene mapping remains the primary fit; (e) is a genuine but lower-weight additional correspondence. No (b) link because malware-protection policy itself is preventive hygiene, not incident detection/handling."
+    },
+    {
+      "target": "NIS2 21.2.b",
+      "mappingPercentage": 80,
+      "rationale": "BSI-C5-2026 OPS-10 (Logging and Monitoring - Policies and Procedures): strongly missing. Logging and monitoring of security-relevant events is the foundational detection mechanism for incident handling - Art. 21(2)(b) explicitly lists 'detection' alongside response and recovery. The criterion defines events that could violate protection goals, log activation/retention and time-synchronisation - all prerequisites for detecting and reconstructing incidents. The current (f) effectiveness-assessment mapping is the weaker fit; (b) is the primary defensible correspondence that is missing."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 OPS-18 (Managing Vulnerabilities - Policies and Procedures): strongly missing. NIS2 Art. 21(2)(e) (security in network and information systems acquisition, development and maintenance) is the textual home of 'vulnerability handling and disclosure' per the Implementing Regulation (EU) 2024/2690. OPS-18 covers proactive vulnerability identification (scans, pentests, CWE), CVSS severity assessment, security-patch deployment, CVD/RFC 9116 disclosure and SBOM/CVE/VEX formats - the canonical vulnerability-handling-and-disclosure measure. The existing (g) hygiene mapping is a valid secondary, but (e) is the missing primary."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 55,
+      "rationale": "BSI-C5-2026 OPS-22 (Managing Vulnerabilities, Incidents and Crashes - Penetration Tests): defensible additional. Penetration testing is a security-testing activity within the development/maintenance lifecycle (pre-launch and post-launch tests, source-code/architecture review, root-cause analysis feeding vulnerability remediation) which the Implementing Regulation (EU) 2024/2690 places under Art. 21(2)(e) 'security testing'. The existing (f) effectiveness-assessment mapping is correct as the primary; (e) is a genuine secondary correspondence that is currently missing."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 OPS-26 (Managing Vulnerabilities, Incidents and Crashes - System Hardening): defensible missing. Hardening of production system components to industry standards (CIS Benchmarks, BSI IT-Grundschutz), documented hardening requirements, immutable-image compliance checks and continuous configuration monitoring constitute secure configuration, which the Implementing Regulation (EU) 2024/2690 lists under Art. 21(2)(e) (security in acquisition, development and maintenance / secure configuration). The existing (g) basic-cyber-hygiene mapping is valid, but (e) secure-configuration is a stronger, currently-missing correspondence."
+    },
+    {
+      "target": "NIS2 21.2.e",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 OPS-27 (Managing Vulnerabilities - Patch Management Policies and Procedures): defensible missing. Security-patch management is explicitly named under Art. 21(2)(e) in the Implementing Regulation (EU) 2024/2690 ('security patch management' within security in acquisition, development and maintenance). OPS-27 governs timely deployment of security patches, maintenance-window scheduling, test-before-rollout with rollback, harmonisation with change management (DEV-03) and third-party patch handling. The existing (g) hygiene/software-update mapping is valid, but (e) is the missing primary regulatory hook."
+    },
+    {
+      "target": "20.1",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 COM-01: COM-01 requires identifying applicable legal, regulatory, self-imposed and contractual cybersecurity requirements. Under NIS2 Art. 20(1) the management body must approve the cybersecurity risk-management measures and oversee their implementation, which is only possible on the basis of a known, maintained register of applicable legal/regulatory obligations. The act of establishing which compliance obligations apply is the governance substrate of management-body accountability, making 20.1 a defensible additional correspondence beyond the 21.2.a policy mapping."
+    },
+    {
+      "target": "21.2.f",
+      "mappingPercentage": 65,
+      "rationale": "BSI-C5-2026 COM-04: COM-04 covers the handling/reporting and remediation of compliance deviations and policy violations. NIS2 Art. 21(2)(f) requires policies and procedures to assess the effectiveness of cybersecurity risk-management measures and drive continuous improvement; tracking, escalating and remediating identified non-compliances is an integral part of that effectiveness-assessment loop, so 21.2.f is a defensible additional correspondence beyond the existing 20.1 governance mapping."
+    },
+    {
+      "target": "20.1",
+      "mappingPercentage": 75,
+      "rationale": "BSI-C5-2026 SP-01: SP-01 covers establishment, documentation and formal approval of the information security policy. NIS2 Art. 20(1) makes approval of the cybersecurity measures (of which the InfoSec policy is the foundational artifact) an explicit, non-delegable management-body duty. Policy approval is therefore directly a management-body governance act, making 20.1 a defensible additional correspondence beyond the 21.2.a InfoSec-policy mapping."
+    },
+    {
+      "target": "21.2.a",
+      "mappingPercentage": 70,
+      "rationale": "BSI-C5-2026 SP-02: SP-02 requires review of the security policies at planned intervals and upon significant change. This is the maintenance arm of the InfoSec policy lifecycle, which NIS2 Art. 21(2)(a) covers as 'information security policies' that must be kept appropriate and current. The periodic-review obligation is intrinsic to maintaining the policies named in 21.2.a, making it a defensible additional correspondence beyond the 21.2.f effectiveness mapping."
+    },
+    {
+      "target": "21.2.c",
+      "mappingPercentage": 60,
+      "rationale": "BSI-C5-2026 PS-04: PS-04 covers protection of physical facilities against external and environmental threats and resilience of supporting utilities (power, cooling, fire suppression, flood). NIS2 Art. 21(2)(c) covers business continuity, backup management, disaster recovery and crisis management; environmental-threat and supporting-utility protection of data-center infrastructure is a recognized availability/continuity safeguard that underpins DR readiness, making 21.2.c a defensible additional correspondence beyond the 21.2.i asset/access mapping."
+    }
+  ]
+}
