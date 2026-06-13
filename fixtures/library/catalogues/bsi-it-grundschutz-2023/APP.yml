@@ -11,20 +11,41 @@ bausteine:
     description: 'Anforderungen an die sichere Auswahl, Konfiguration und Nutzung von Office-Produkten.'
     anforderungen:
       basis:
-        - id: APP.1.1.A1
-          title: 'Planung und Konzeption einer Standard-Software'
-          requirement_text: 'Die Einfuehrung einer Standard-Software MUSS geplant werden.'
         - id: APP.1.1.A2
-          title: 'Auswahl und Freigabe von Office-Produkten'
-          requirement_text: 'Fuer den produktiven Einsatz MUESSEN ausschliesslich Office-Produkte verwendet werden, die offiziell freigegeben wurden. Nicht freigegebene Office-Software DARF NICHT installiert werden.'
+          title: 'Einschränken von Aktiven Inhalten'
+          requirement_text: 'Die Funktion, dass eingebettete Aktive Inhalte automatisch ausgeführt werden, MUSS deaktiviert werden. Falls es dennoch notwendig ist, Aktive Inhalte auszuführen, MUSS darauf geachtet werden, dass Aktive Inhalte nur ausgeführt werden, wenn sie aus vertrauenswürdigen Quellen stammen. Alle Benutzenden MÜSSEN hinsichtlich der Funktionen, die Aktive Inhalte einschränken, eingewiesen werden.'
         - id: APP.1.1.A3
-          title: 'Einschraenkung von Makrofunktionen'
-          requirement_text: 'Makros und aktive Inhalte MUESSEN standardmaessig deaktiviert sein. Signierte Makros duerfen nur nach Pruefung und Freigabe durch zentrale IT-Rollen zugelassen werden.'
+          title: 'Sicheres Öffnen von Dokumenten aus externen Quellen'
+          requirement_text: 'Alle aus externen Quellen bezogenen Dokumente MÜSSEN auf Schadsoftware überprüft werden, bevor sie geöffnet werden. Alle als problematisch eingestuften und alle innerhalb der Institution nicht benötigten Dateiformate MÜSSEN verboten werden. Falls möglich, SOLLTEN sie blockiert werden. Durch technische Maßnahmen SOLLTE erzwungen werden, dass Dokumente aus externen Quellen geprüft werden.'
+        - id: APP.1.1.A17
+          title: 'Sensibilisierung zu spezifischen Office-Eigenschaften'
+          requirement_text: 'Alle Benutzenden MÜSSEN geeignet bezüglich der Gefährdungen durch Aktive Inhalte in Office-Dateien sensibilisiert werden. Die Benutzenden MÜSSEN zum Umgang mit Dokumenten aus externen Quellen geeignet sensibilisiert werden. Die Benutzenden SOLLTEN über die Möglichkeiten und Grenzen von Sicherheitsfunktionen der eingesetzten Software und der genutzten Speicherformate informiert werden. Den Benutzenden SOLLTE vermittelt werden, mit welchen Funktionen sie Dokumente vor nachträglicher Veränderung und Bearbeitung schützen können. Benutzende SOLLTEN im Umgang mit den Verschlüsselungsfunktionen in Office-Produkten sensibilisiert werden.'
       standard:
-        - id: APP.1.1.A4
-          title: 'Dokumentenpruefung auf Metadaten'
-          requirement_text: 'Office-Dokumente, die das Unternehmen verlassen, SOLLTEN auf versehentlich enthaltene Metadaten (Kommentare, Aenderungshistorie, Autor) geprueft werden.'
-      hoch: []
+        - id: APP.1.1.A6
+          title: 'Testen neuer Versionen von Office-Produkten'
+          requirement_text: 'Neue Versionen von Office-Produkten SOLLTEN vor dem produktiven Einsatz auf Kompatibilität mit etablierten Arbeitsmitteln wie Makros, Dokumentenvorlagen oder Formularen der Institution geprüft werden (Siehe hierzu OPS.1.1.6 Software-Tests und -Freigaben). Es SOLLTE sichergestellt sein, dass wichtige Arbeitsmittel auch mit der neuen Software-Version einwandfrei funktionieren. Bei entdeckten Inkompatibilitäten SOLLTEN geeignete Lösungen für die betroffenen Arbeitsmittel gefunden werden.'
+        - id: APP.1.1.A10
+          title: 'Regelung der Software-Entwicklung durch Endbenutzende'
+          requirement_text: 'Für die Software-Entwicklung auf Basis von Office-Anwendungen, z. B. mit Makros, SOLLTEN verbindliche Regelungen getroffen werden (siehe auch APP.1.1.A2 Einschränken von Aktiven Inhalten). Zunächst SOLLTE in jeder Institution die Grundsatzentscheidung getroffen werden, ob solche Eigenentwicklungen überhaupt erwünscht sind. Die Entscheidung SOLLTE in den betroffenen Sicherheitsrichtlinien dokumentiert werden. Werden Eigenentwicklungen erlaubt, SOLLTE ein Verfahren für den Umgang mit entsprechenden Funktionen der Office-Produkte für die Endbenutzenden erstellt werden. Zuständigkeiten SOLLTEN klar definiert werden. Alle notwendigen Informationen über die erstellten Anwendungen SOLLTEN angemessen dokumentiert werden. Aktuelle Versionen der Regelungen SOLLTEN allen betroffenen Benutzenden zeitnah zugänglich gemacht und von diesen beachtet werden.'
+        - id: APP.1.1.A11
+          title: 'Geregelter Einsatz von Erweiterungen für Office-Produkte'
+          requirement_text: 'Alle Erweiterungen von Office-Produkten, wie Add-ons und Extensions, SOLLTEN vor dem produktiven Einsatz genauso getestet werden wie neue Versionen. Hierbei SOLLTE ausschließlich auf isolierten Testsystemen getestet werden. Die Tests SOLLTEN prüfen, ob Erweiterungen negative Auswirkungen auf die Office-Produkte und die laufenden IT-Systeme haben. Die Tests der eingesetzten Erweiterungen SOLLTEN einem definierten Testplan folgen. Dieser Testplan SOLLTE so gestaltet sein, dass Dritte das Vorgehen nachvollziehen können.'
+        - id: APP.1.1.A12
+          title: 'Verzicht auf Cloud-Speicherung'
+          requirement_text: 'Die in einigen Office-Produkten integrierten Funktionen für Cloud-Speicher SOLLTEN grundsätzlich deaktiviert werden. Alle Cloud-Laufwerke SOLLTEN deaktiviert werden. Alle Dokumente SOLLTEN durch die Benutzenden auf zentral verwalteten Fileservern der Institution gespeichert werden. Um Dokumente für Dritte freizugeben, SOLLTEN spezialisierte Anwendungen eingesetzt werden. Diese Anwendungen SOLLTEN mindestens über eine verschlüsselte Datenablage und -versendung sowie ein geeignetes System zur Konten- und Rechteverwaltung verfügen.'
+        - id: APP.1.1.A13
+          title: 'Verwendung von Viewer-Funktionen'
+          requirement_text: 'Daten aus potenziell unsicheren Quellen SOLLTEN automatisch in einem geschützten Modus geöffnet werden. Diese Funktion SOLLTE NICHT durch die Benutzenden deaktivierbar sein. Eine Liste vertrauenswürdiger Quellen SOLLTE definiert werden, von denen Inhalte unmittelbar geöffnet und bearbeitet werden können. In dem geschützten Modus SOLLTEN Daten NICHT unmittelbar bearbeitet werden können. Aktive Inhalte, wie Makros und Skripte, SOLLTEN im geschützten Modus NICHT automatisch ausgeführt werden. Nur eine allgemeine Navigation SOLLTE ermöglicht werden. Wenn die Dokumente lediglich betrachtet werden sollen, SOLLTEN entsprechende Viewer-Anwendungen verwendet werden, wenn diese verfügbar sind.'
+        - id: APP.1.1.A14
+          title: 'Schutz gegen nachträgliche Veränderungen von Dokumenten'
+          requirement_text: 'Je nach geplantem Verwendungszweck von Dokumenten SOLLTEN Dokumente geeignet gegen nachträgliche Veränderung geschützt werden.'
+      hoch:
+        - id: APP.1.1.A15
+          title: 'Einsatz von Verschlüsselung und Digitalen Signaturen'
+          requirement_text: 'Daten mit erhöhtem Schutzbedarf SOLLTEN nur verschlüsselt gespeichert bzw. übertragen werden. Bevor ein in ein Office-Produkt integriertes Verschlüsselungsverfahren genutzt wird, SOLLTE geprüft werden, ob es einen ausreichenden Schutz bietet. Zusätzlich SOLLTE ein Verfahren eingesetzt werden, mit dem Makros und Dokumente digital signiert werden können.'
+        - id: APP.1.1.A16
+          title: 'Integritätsprüfung von Dokumenten'
+          requirement_text: 'Wenn Daten mit erhöhtem Schutzbedarf gespeichert oder übertragen werden, SOLLTEN geeignete Verfahren zur Integritätsprüfung eingesetzt werden. Falls Daten vor Manipulation geschützt werden sollen, SOLLTEN darüber hinaus kryptografische Verfahren eingesetzt werden.'
 
   - id: APP.1.2
     title: 'Webbrowser'
@@ -32,33 +53,72 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.1.2.A1
-          title: 'Sichere Grundkonfiguration des Webbrowsers'
-          requirement_text: 'Webbrowser MUESSEN sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.1.2 Anforderung A1.'
+          title: 'Verwendung von grundlegenden Sicherheitsmechanismen'
+          requirement_text: 'Der eingesetzte Webbrowser MUSS sicherstellen, dass jede Instanz und jeder Verarbeitungsprozess nur auf die eigenen Ressourcen zugreifen kann (Sandboxing). Webseiten MÜSSEN als eigenständige Prozesse oder mindestens als eigene Threads voneinander isoliert werden. Plug-ins und Erweiterungen MÜSSEN ebenfalls in isolierten Bereichen ausgeführt werden. Der verwendete Webbrowser MUSS die Content Security Policy (CSP) umsetzen. Der aktuell höchste Level der CSP SOLLTE erfüllt werden. Der Browser MUSS Maßnahmen zur Same-Origin-Policy und Subresource Integrity unterstützen.'
         - id: APP.1.2.A2
-          title: 'Plug-ins und Erweiterungen'
-          requirement_text: 'Plug-ins und Browser-Erweiterungen MUESSEN auf das Notwendige beschraenkt sein. Siehe BSI Kompendium 2023 Baustein APP.1.2 Anforderung A2.'
+          title: 'Unterstützung sicherer Verschlüsselung der Kommunikation'
+          requirement_text: 'Der Webbrowser MUSS Transport Layer Security (TLS) in einer sicheren Version unterstützen. Verbindungen zu Webservern MÜSSEN mit TLS verschlüsselt werden, falls dies vom Webserver unterstützt wird. Unsichere Versionen von TLS SOLLTEN deaktiviert werden. Der Webbrowser MUSS den Sicherheitsmechanismus HTTP Strict Transport Security (HSTS) gemäß RFC 6797 unterstützen und einsetzen.'
         - id: APP.1.2.A3
-          title: 'Aktuelle Browser-Versionen'
-          requirement_text: 'Es MUESSEN ausschliesslich vom Hersteller unterstuetzte und gepatchte Browser-Versionen eingesetzt werden. Siehe BSI Kompendium 2023 Baustein APP.1.2 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Verwendung von vertrauenswürdigen Zertifikaten'
+          requirement_text: 'Falls der Webbrowser eine eigene Liste von vertrauenswürdigen Wurzelzertifikaten bereitstellt, MUSS sichergestellt werden, dass nur der IT-Betrieb diese ändern kann. Falls dies nicht durch technische Maßnahmen möglich ist, MUSS den Benutzenden verboten werden, diese Liste zu ändern. Außerdem MUSS sichergestellt werden, dass der Webbrowser Zertifikate lokal widerrufen kann. Der Webbrowser MUSS die Gültigkeit der Server-Zertifikate mithilfe des öffentlichen Schlüssels und unter Berücksichtigung des Gültigkeitszeitraums vollständig prüfen. Auch der Sperrstatus der Server-Zertifikate MUSS vom Webbrowser geprüft werden. Die Zertifikatskette einschließlich des Wurzelzertifikats MUSS verifiziert werden. Der Webbrowser MUSS den Benutzenden eindeutig und gut sichtbar darstellen, ob die Kommunikation im Klartext oder verschlüsselt erfolgt. Der Webbrowser SOLLTE den Benutzenden auf Anforderung das verwendete Serverzertifikat anzeigen können. Der Webbrowser MUSS den Benutzenden signalisieren, wenn Zertifikate fehlen, ungültig sind oder widerrufen wurden. Der Webbrowser MUSS in diesem Fall die Verbindung abbrechen, bis die Benutzenden diese ausdrücklich bestätigt haben.'
+        - id: APP.1.2.A6
+          title: 'Kennwortmanagement im Webbrowser'
+          requirement_text: 'Wird ein Kennwortmanager im Webbrowser verwendet, MUSS er eine direkte und eindeutige Beziehung zwischen Webseite und hierfür gespeichertem Kennwort herstellen. Der Kennwortspeicher MUSS die Passwörter verschlüsselt speichern. Es MUSS sichergestellt werden, dass auf die im Kennwortmanager gespeicherten Passwörter nur nach Eingabe eines Master-Kennworts zugegriffen werden kann. Außerdem MUSS sichergestellt sein, dass die Authentisierung für den kennwortgeschützten Zugriff nur für die aktuelle Sitzung gültig ist. Der IT-Betrieb MUSS sicherstellen, dass der verwendete Browser den Benutzenden die Möglichkeit bietet, gespeicherte Passwörter zu löschen.'
+        - id: APP.1.2.A13
+          title: 'Nutzung von DNS-over-HTTPS'
+          requirement_text: 'Die Institution MUSS entscheiden, ob die verwendeten Browser DNS-over-HTTPS (DoH) verwenden sollen. Die Browser MÜSSEN entsprechend dieser Entscheidung konfiguriert werden. Falls ein interner DNS-Resolver verwendet wird, MUSS dieser auch vom Browser verwendet werden.'
+      standard:
+        - id: APP.1.2.A7
+          title: 'Datensparsamkeit in Webbrowsern'
+          requirement_text: 'Cookies von fremden Institutionen SOLLTEN im Webbrowser abgelehnt werden. Gespeicherte Cookies SOLLTEN durch die Benutzenden gelöscht werden können. Die Funktion zur Autovervollständigung von Daten SOLLTE deaktiviert werden. Wird die Funktion dennoch genutzt, SOLLTEN die Benutzenden diese Daten löschen können. Die Benutzenden SOLLTE außerdem die Historiendaten des Webbrowsers löschen können. Sofern vorhanden, SOLLTE eine Synchronisation des Webbrowsers mit Cloud-Diensten deaktiviert werden. Telemetriefunktionen sowie das automatische Senden von Absturzberichten, URL-Eingaben und Sucheingaben aus der Institution heraus oder an Externe SOLLTEN soweit wie möglich deaktiviert werden. Peripheriegeräte wie Mikrofon oder Webcam sowie Standortfreigaben SOLLTEN nur für Webseiten aktiviert werden, bei denen sie unbedingt benötigt werden. Der Browser SOLLTE eine Möglichkeit bieten, WebRTC, HSTS und JavaScript zu konfigurieren bzw. abzuschalten.'
+      hoch:
+        - id: APP.1.2.A9
+          title: 'Einsatz einer isolierten Webbrowser-Umgebung'
+          requirement_text: 'Die Institution SOLLTE speziell abgesicherte, isolierte Browserumgebungen einsetzen, wie z. B. ReCoBS oder virtualisierte Instanzen.'
+        - id: APP.1.2.A10
+          title: 'Verwendung des privaten Modus'
+          requirement_text: 'Der Webbrowser SOLLTE bei erhöhten Anforderungen bezüglich der Vertraulichkeit im sogenannten privaten Modus ausgeführt werden, sodass keine Informationen oder Inhalte dauerhaft auf dem IT-System der Benutzenden gespeichert werden. Der Browser SOLLTE so konfiguriert werden, dass lokale Inhalte beim Beenden gelöscht werden.'
+        - id: APP.1.2.A11
+          title: 'Überprüfung auf schädliche Inhalte'
+          requirement_text: 'Aufgerufene Internetadressen SOLLTEN durch den Webbrowser auf potenziell schädliche Inhalte geprüft werden. Der Webbrowser SOLLTE die Benutzenden warnen, wenn Informationen über schädliche Inhalte vorliegen. Eine als schädlich klassifizierte Verbindung SOLLTE NICHT aufgerufen werden können. Das verwendete Verfahren zur Überprüfung DARF NICHT gegen Datenschutz- oder Geheimschutz-Vorgaben verstoßen.'
+        - id: APP.1.2.A12
+          title: 'Zwei-Browser-Strategie'
+          requirement_text: 'Für den Fall von ungelösten Sicherheitsproblemen mit dem verwendeten Webbrowser SOLLTE ein alternativer Browser mit einer anderen Plattform installiert sein, der den Benutzenden als Ausweichmöglichkeit dient.'
 
   - id: APP.1.4
-    title: 'Mobile Anwendungen'
+    title: 'Mobile Anwendungen (Apps)'
     description: 'Anforderungen an Auswahl, Beschaffung und Betrieb mobiler Anwendungen (Apps).'
     anforderungen:
       basis:
         - id: APP.1.4.A1
-          title: 'Sicherheitsrichtlinie fuer Mobile Apps'
-          requirement_text: 'Fuer den Einsatz mobiler Apps MUSS eine Richtlinie festgelegt werden, die zulaessige App-Quellen, Freigabe-Prozess und Schutzmassnahmen regelt.'
-        - id: APP.1.4.A2
-          title: 'Sichere Beschaffung und Installation mobiler Apps'
-          requirement_text: 'Apps MUESSEN aus vertrauenswuerdigen Quellen (MDM-Katalog, offizielle Stores mit Unternehmens-Account) bezogen werden. Seitliche Installationen ("sideloading") MUESSEN unterbunden sein.'
+          title: 'Anforderungsanalyse für die Nutzung von Apps'
+          requirement_text: 'In der Anforderungsanalyse MÜSSEN insbesondere Risiken betrachtet werden, die sich aus der mobilen Nutzung ergeben. Die Institution MUSS prüfen, ob ihre Kontroll- und Einflussmöglichkeiten auf die Betriebssystemumgebung mobiler Endgeräte ausreichend sind, um sie sicher nutzen zu können.'
+        - id: APP.1.4.A5
+          title: 'Minimierung und Kontrolle von App-Berechtigungen'
+          requirement_text: 'Sicherheitsrelevante Berechtigungseinstellungen MÜSSEN so fixiert werden, dass sie nicht durch Personen oder Apps geändert werden können. Wo dies technisch nicht möglich ist, MÜSSEN die Berechtigungseinstellungen regelmäßig geprüft und erneut gesetzt werden. Bevor eine App in einer Institution eingeführt wird, MUSS sichergestellt werden, dass sie nur die minimal benötigten App-Berechtigungen für ihre Funktion erhält. Nicht unbedingt notwendige Berechtigungen MÜSSEN hinterfragt und gegebenenfalls unterbunden werden.'
+        - id: APP.1.4.A7
+          title: 'Sichere Speicherung lokaler App-Daten'
+          requirement_text: 'Wenn Apps auf interne Dokumente der Institution zugreifen können, MUSS sichergestellt sein, dass die lokale Datenhaltung der App angemessen abgesichert ist. Insbesondere MÜSSEN Zugriffsschlüssel verschlüsselt abgelegt werden. Außerdem DÜRFEN vertrauliche Daten NICHT vom Betriebssystem an anderen Ablageorten zwischengespeichert werden.'
+        - id: APP.1.4.A8
+          title: 'Verhinderung von Datenabfluss'
+          requirement_text: 'Um zu verhindern, dass Apps ungewollt vertrauliche Daten versenden oder aus den gesendeten Daten Profile über die Benutzenden erstellt werden, MUSS die App-Kommunikation geeignet eingeschränkt werden. Dazu SOLLTE die Kommunikation im Rahmen des Test- und Freigabeverfahrens analysiert werden. Weiterhin SOLLTE überprüft werden, ob eine App ungewollte Protokollierungs- oder Hilfsdateien schreibt, die möglicherweise vertrauliche Informationen enthalten.'
+      standard:
         - id: APP.1.4.A3
-          title: 'Pruefung mobiler Apps auf Sicherheitsmaengel'
-          requirement_text: 'Mobile Apps MUESSEN vor Freigabe auf Sicherheitsmaengel geprueft werden. Siehe BSI Kompendium 2023 Baustein APP.1.4 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Verteilung schutzbedürftiger Apps'
+          requirement_text: 'Interne Apps der Institution und Apps, die schutzbedürftige Informationen verarbeiten, SOLLTEN über einen institutionseigenen App Store oder via MDM verteilt werden.'
+        - id: APP.1.4.A12
+          title: 'Sichere Deinstallation von Apps'
+          requirement_text: 'Werden Apps deinstalliert, SOLLTEN auch Daten gelöscht werden, die auf externen Systemen, beispielsweise bei den App-Anbietenden, gespeichert wurden.'
+      hoch:
+        - id: APP.1.4.A14
+          title: 'Unterstützung zusätzlicher Authentisierungsmerkmale bei Apps'
+          requirement_text: 'Falls möglich, SOLLTE für die Authentisierung in Apps ein zweiter Faktor benutzt werden. Hierbei SOLLTE darauf geachtet werden, dass eventuell benötigte Sensoren oder Schnittstellen in allen verwendeten Geräten vorhanden sind. Zusätzlich SOLLTE bei biometrischen Verfahren berücksichtigt werden, wie resistent die Authentisierung gegen mögliche Fälschungsversuche ist.'
+        - id: APP.1.4.A15
+          title: 'Durchführung von Penetrationstests für Apps'
+          requirement_text: 'Bevor eine App für den Einsatz freigegeben wird, SOLLTE ein Penetrationstest durchgeführt werden. Dabei SOLLTEN alle Kommunikationsschnittstellen zu Backend-Systemen sowie die lokale Speicherung von Daten auf mögliche Sicherheitslücken untersucht werden. Die Penetrationstests SOLLTEN regelmäßig und zusätzlich bei größeren Änderungen an der App wiederholt werden.'
+        - id: APP.1.4.A16
+          title: 'Mobile Application Management'
+          requirement_text: 'Falls möglich, SOLLTE für das zentrale Konfigurieren von dienstlichen Apps ein Mobile Application Management verwendet werden.'
 
   - id: APP.2.1
     title: 'Allgemeiner Verzeichnisdienst'
@@ -66,16 +126,61 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.2.1.A1
-          title: 'Erstellung einer Active Directory-Sicherheitsrichtlinie'
-          requirement_text: 'Es MUSS eine Sicherheitsrichtlinie fuer Active Directory erstellt werden.'
+          title: 'Erstellung einer Sicherheitsrichtlinie für Verzeichnisdienste'
+          requirement_text: 'Es MUSS eine Sicherheitsrichtlinie für den Verzeichnisdienst erstellt werden. Diese SOLLTE mit dem übergreifenden Sicherheitskonzept der gesamten Institution abgestimmt sein.'
         - id: APP.2.1.A2
           title: 'Planung des Einsatzes von Verzeichnisdiensten'
-          requirement_text: 'Der Einsatz von Verzeichnisdiensten MUSS sorgfaeltig geplant werden.'
+          requirement_text: 'Der Einsatz von Verzeichnisdiensten MUSS sorgfältig geplant werden. Die konkrete Nutzung des Verzeichnisdienstes MUSS festgelegt werden. Es MUSS sichergestellt sein, dass der Verzeichnisdienst und alle ihn verwendenden Anwendungen kompatibel sind. Zudem MUSS ein Konzept für eine Struktur aus Objektklassen und Attributtypen entwickelt werden, dass den Ansprüchen der vorgesehenen Nutzungsarten genügt. Bei der Planung eines Verzeichnisdienstes, der personenbezogene Daten beinhaltet, MÜSSEN Personalvertretung und Datenschutzbeauftragte beteiligt werden. Es MUSS ein bedarfsgerechtes Berechtigungskonzept zum Verzeichnisdienst entworfen werden. Generell SOLLTE die geplante Verzeichnisdienststruktur vollständig dokumentiert und die Dokumentation bei Änderungen fortgeschrieben werden. Maßnahmen SOLLTEN geplant und umgesetzt werden, die es unterbinden, aus dem Verzeichnisdienst unbefugt Daten sammeln zu können.'
         - id: APP.2.1.A3
-          title: 'Sichere Grundkonfiguration des Verzeichnisdienstes'
-          requirement_text: 'Verzeichnisdienste MUESSEN sicher grundkonfiguriert sein. Siehe BSI Kompendium 2023 Baustein APP.2.1 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Einrichtung von Zugriffsberechtigungen auf Verzeichnisdienste'
+          requirement_text: 'Die Administration des Verzeichnisdienstes selbst und die eigentliche Verwaltung der Daten MÜSSEN getrennt werden. Alle administrativen Aufgabenbereiche und Berechtigungen SOLLTEN ausreichend dokumentiert werden. Bei einer eventuellen Zusammenführung mehrerer Verzeichnisdienstbäume MÜSSEN die daraus resultierenden effektiven Rechte kontrolliert werden.'
+        - id: APP.2.1.A5
+          title: 'Sichere Konfiguration und Konfigurationsänderungen von Verzeichnisdiensten'
+          requirement_text: 'Der Verzeichnisdienst MUSS sicher konfiguriert werden. Für die sichere Konfiguration einer Verzeichnisdienste-Infrastruktur MÜSSEN neben dem Server auch die Clients (IT-Systeme und Anwendungen) einbezogen werden. Wird die Konfiguration des Verzeichnisdienstes oder der mit ihm vernetzten IT-Systeme geändert, SOLLTEN die Benutzenden rechtzeitig über Wartungsarbeiten informiert werden.'
+        - id: APP.2.1.A6
+          title: 'Sicherer Betrieb von Verzeichnisdiensten'
+          requirement_text: 'Die Sicherheit des Verzeichnisdienstes MUSS im Betrieb permanent aufrechterhalten werden. Alle den Betrieb eines Verzeichnisdienst-Systems betreffenden Richtlinien, Regelungen und Prozesse SOLLTEN nachvollziehbar dokumentiert und aktuell gehalten werden. Sofern der Verzeichnisdienst zur Verwaltung von Anmeldedaten verwendet wird, MÜSSEN dedizierte Clients bei der Fernwartung eingesetzt werden. Der Zugriff auf alle Administrationswerkzeuge MUSS für normale Benutzende unterbunden werden.'
+        - id: APP.2.1.A17
+          title: 'Absicherung von schutzbedürftigen Anmeldeinformationen'
+          requirement_text: 'Für Attribute, die schutzbedürftige Anmeldeinformationen wie beispielsweise Passwörter enthalten, MUSS der Zugriff stark eingeschränkt werden.'
+      standard:
+        - id: APP.2.1.A8
+          title: 'Planung einer Partitionierung im Verzeichnisdienst'
+          requirement_text: 'Sofern eine Partitionierung geplant ist, SOLLTE sich diese an den Schutzzielen des Verzeichnisdienstes orientieren und diese geeignet unterstützen. Eine Partitionierung SOLLTE so geplant werden, dass sie die Schadensauswirkungen bei Sicherheitsvorfällen begrenzt, die unabhängige Administration verschiedener Partitionen ermöglicht und organisatorischen bzw. Sicherheitsgrenzen folgt.'
+        - id: APP.2.1.A9
+          title: 'Geeignete Auswahl von Komponenten für Verzeichnisdienste'
+          requirement_text: 'Für den Einsatz eines Verzeichnisdienstes SOLLTEN geeignete Komponenten identifiziert werden. Es SOLLTE unter Berücksichtigung von APP.6 Allgemeine Software ein Anforderungskatalog erstellt werden, nach dem die Komponenten für den Verzeichnisdienst ausgewählt und beschafft werden. Im Rahmen der Planung und Konzeption des Verzeichnisdienstes SOLLTEN passend zum Einsatzzweck Anforderungen an dessen Sicherheit formuliert werden. Insbesondere SOLLTE bereits bei der Produktauswahl berücksichtigt werden, wie weitere Sicherheitsanforderungen unter Einsatz der jeweiligen Komponente umgesetzt werden können.'
+        - id: APP.2.1.A11
+          title: 'Einrichtung des Zugriffs auf Verzeichnisdienste'
+          requirement_text: 'Der Zugriff auf den Verzeichnisdienst SOLLTE entsprechend der Sicherheitsrichtlinie konfiguriert werden. Wird der Verzeichnisdienst als Server im Internet eingesetzt, SOLLTE er entsprechend durch ein Sicherheitsgateway geschützt werden.'
+        - id: APP.2.1.A12
+          title: 'Überwachung von Verzeichnisdiensten'
+          requirement_text: 'Verzeichnisdienste SOLLTEN gemeinsam mit dem Server beobachtet und protokolliert werden, auf dem sie betrieben werden. Insbesondere Änderungen innerhalb des Verzeichnisdienstes sowie Konfigurationsänderungen des Verzeichnisdienstes SOLLTEN vorrangig protokolliert werden.'
+        - id: APP.2.1.A13
+          title: 'Absicherung der Kommunikation mit Verzeichnisdiensten'
+          requirement_text: 'Werden vertrauliche Informationen übertragen, SOLLTE die gesamte Kommunikation mit dem Verzeichnisdienst über ein sicheres Protokoll entsprechend der Technischen Richtlinie TR-02102 des BSI (z. B. TLS) verschlüsselt werden. Der Datenaustausch zwischen Client und Verzeichnisdienst-Server SOLLTE abgesichert werden. Es SOLLTE definiert werden, auf welche Daten zugegriffen werden darf.'
+        - id: APP.2.1.A14
+          title: 'Geregelte Außerbetriebnahme eines Verzeichnisdienstes'
+          requirement_text: 'Bei einer Außerbetriebnahme des Verzeichnisdienstes SOLLTE sichergestellt sein, dass weiterhin benötigte Rechte bzw. Informationen in ausreichendem Umfang zur Verfügung stehen. Alle anderen Rechte und Informationen SOLLTEN gelöscht werden. Zudem SOLLTEN die Benutzenden darüber informiert werden, wenn ein Verzeichnisdienst außer Betrieb genommen wird. Bei der Außerbetriebnahme einzelner Partitionen eines Verzeichnisdienstes SOLLTE darauf geachtet werden, dass dadurch andere Partitionen nicht beeinträchtigt werden.'
+        - id: APP.2.1.A15
+          title: 'Migration von Verzeichnisdiensten'
+          requirement_text: 'Bei einer geplanten Migration von Verzeichnisdiensten SOLLTE vorab ein Migrationskonzept erstellt werden. In dem Migrationskonzept SOLLTE berücksichtigt werden, ob das Berechtigungsmanagement von altem und neuem Verzeichnisdienst analog funktioniert oder ob neue Berechtigungsstrukturen erforderlich sind. Die Schema-Änderungen, die am Verzeichnisdienst vorgenommen wurden, SOLLTEN vor der Migration analysiert und dokumentiert werden. Weitreichende Berechtigungen, die dazu verwendet wurden, die Migration des Verzeichnisdienstes durchzuführen, SOLLTEN wieder zurückgesetzt werden. Bei der Migration SOLLTE berücksichtigt werden, dass IT-Systeme, die auf den Verzeichnisdienst zugreifen, gegebenenfalls lokale Caches vorhalten oder aus anderen Gründen dort eine Aktualisierung der migrierten Verzeichnisdienstinhalte initiiert werden muss.'
+        - id: APP.2.1.A18
+          title: 'Planung einer Replikation im Verzeichnisdienst'
+          requirement_text: 'Bei jeder Replikation MUSS festgelegt werden, welches Ziel diese Replikation verfolgt. Dafür SOLLTEN eine Replikationstopologie und -strategie gewählt werden, die zum Ziel bzw. Einsatzszenario passen. Bei Replikationen, die nicht der Hochverfügbarkeit des Dienstes dienen, MUSS der replizierte Inhalt des Verzeichnisdienstes auf die erforderlichen Objekte beschränkt werden. Um die Replikationen zeitgerecht ausführen zu können, SOLLTE eine ausreichende Bandbreite sichergestellt werden.'
+        - id: APP.2.1.A19
+          title: 'Umgang mit anonymen Zugriffen auf Verzeichnisdienste'
+          requirement_text: 'Sollen anonymen Benutzenden auf einzelne Teilbereiche des Verzeichnisbaums Zugriffe eingeräumt werden, so SOLLTE hierfür ein Proxy-Dienst vorgelagert werden. Dieser Proxy-Dienst SOLLTE über ein gesondertes Konto, einen sogenannten Proxy-User, auf den eigentlichen Verzeichnisdienst zugreifen. Die Zugriffsrechte für diesen Proxy-User SOLLTEN hinreichend restriktiv vergeben werden. Sie SOLLTEN zudem wieder komplett entzogen werden, wenn der Account nicht mehr gebraucht wird. Damit nicht versehentlich schutzbedürftige Informationen herausgegeben werden, SOLLTE die Suchfunktion des Verzeichnisdienstes dem Einsatzzweck angemessen eingeschränkt werden.'
+      hoch:
+        - id: APP.2.1.A16
+          title: 'Erstellung eines Notfallplans für den Ausfall eines Verzeichnisdienstes'
+          requirement_text: 'Im Rahmen der Notfallvorsorge SOLLTE es eine bedarfsgerechte Notfallplanung für Verzeichnisdienste geben. Für den Ausfall wichtiger Verzeichnisdienst-Systeme SOLLTEN Notfallpläne vorliegen. Alle Notfall-Prozeduren für die gesamte Systemkonfiguration der Verzeichnisdienst-Komponenten SOLLTEN dokumentiert werden.'
+        - id: APP.2.1.A20
+          title: 'Absicherung der Replikation'
+          requirement_text: 'Replikationen von vertraulichen Inhalten SOLLTEN zusätzlich zu einer Verschlüsselung auf Applikations- oder Transportebene durch z. B. IPsec gesichert werden. Für die Authentisierung im Rahmen der Replikation SOLLTEN möglichst starke Authentisierungsverfahren verwendet werden.'
+        - id: APP.2.1.A21
+          title: 'Hochverfügbarkeit des Verzeichnisdienstes'
+          requirement_text: 'Es SOLLTE eine geeignete Strategie zur Hochverfügbarkeit gewählt werden. Hierbei SOLLTE entschieden werden, ob eine Master-Master-Replikation oder Master-Replica-Replikation (früher als Master-Slave-Replikation bezeichnet) geeigneter ist. Es SOLLTEN auch Randbedingungen wie verteilte Standorte oder Verhalten bei Inkonsistenzen berücksichtigt werden.'
 
   - id: APP.2.2
     title: 'Active Directory Domain Services'
@@ -83,16 +188,58 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.2.2.A1
-          title: 'Planung des Active Directory Domain Services'
-          requirement_text: 'Der Einsatz von Active Directory Domain Services (AD DS) MUSS sorgfaeltig geplant werden.'
-        - id: APP.2.2.A2
-          title: 'Haertung der Domaenencontroller'
-          requirement_text: 'Domaenencontroller MUESSEN nach BSI-Vorgaben gehaertet sein. Siehe BSI Kompendium 2023 Baustein APP.2.2 Anforderung A2.'
+          title: 'Planung von Active Directory Domain Services'
+          requirement_text: 'Es MUSS eine Funktionsebene für die Domäne(n) und die Gesamtstruktur von mindestens Windows Server 2016 gewählt werden. Ein bedarfsgerechtes Berechtigungskonzept für die Domäne(n) und die Gesamtstruktur MUSS entworfen werden. Dabei MUSS berücksichtigt werden, dass zwischen den einzelnen Domänen einer Gesamtstruktur produktbedingt keine Sicherheitsgrenzen bestehen und daher keine sichere Begrenzung der administrativen Bereiche innerhalb einer Gesamtstruktur möglich ist. Administrative Delegationen MÜSSEN mit restriktiven und bedarfsgerechten Berechtigungen ausgestattet sein. Die geplante Struktur einschließlich etwaiger Schema-Änderungen MUSS nachvollziehbar dokumentiert sein.'
         - id: APP.2.2.A3
-          title: 'Tiering-Modell und privilegierte Konten'
-          requirement_text: 'Privilegierte Konten MUESSEN nach Tiering-Modell getrennt verwaltet werden. Siehe BSI Kompendium 2023 Baustein APP.2.2 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Planung der Gruppenrichtlinien unter Windows'
+          requirement_text: 'Es MUSS ein Konzept zur Einrichtung von Gruppenrichtlinien vorliegen. Mehrfachüberdeckungen MÜSSEN beim Gruppenrichtlinienkonzept möglichst vermieden werden. In der Dokumentation des Gruppenrichtlinienkonzepts MÜSSEN Ausnahmeregelungen erkannt werden können. Alle Gruppenrichtlinienobjekte MÜSSEN durch restriktive Zugriffsrechte geschützt sein. Für die Parameter in allen Gruppenrichtlinienobjekten MÜSSEN sichere Vorgaben festgelegt sein.'
+        - id: APP.2.2.A5
+          title: 'Absicherung des Domänencontrollers'
+          requirement_text: 'Aufgrund der zentralen Rolle und der Schadensauswirkung bei Kompromittierung des AD DS für die Infrastruktur SOLLTE eine Risikobetrachtung durchgeführt werden. Der Notfallzugriff auf den Domänencontroller mit dem lokalen Restore-Konto DSRM (Directory Services Restore Mode) MUSS im Rahmen des Notfallmanagements geplant werden. Auf dem Domänencontroller MUSS eine ausreichende Größe für das Sicherheitsprotokoll auf Grundlage des in DER.1 Detektion von sicherheitsrelevanten Ereignissen festgelegten Zeitraums eingestellt sein. Aufgrund der zentralen Bedeutung des Domänencontrollers SOLLTEN auf diesem Server keine weiteren Dienste betrieben werden, sofern diese nicht zwingend auf dem gleichen Server zum Betrieb des AD DS erforderlich sind.'
+        - id: APP.2.2.A6
+          title: 'Sichere Konfiguration von Vertrauensbeziehungen'
+          requirement_text: 'Alle Vertrauensbeziehungen zwischen Domänen und zwischen Gesamtstrukturen MÜSSEN regelmäßig auf ihre Notwendigkeit und Absicherungsmaßnahmen evaluiert werden. Dabei MUSS geprüft werden, ob eine bidirektionale Vertrauensbeziehung notwendig ist. Wenn eine Domäne keine bidirektionale Vertrauensbeziehung zu anderen Domänen in der Gesamtstruktur benötigt, SOLLTE diese Domäne in eine eigene Gesamtstruktur ausgelagert werden, da innerhalb einer Gesamtstruktur produktbedingt keine Anpassung der Vertrauensbeziehungen möglich ist. Die SID-(Security Identifier)-Filterung bei Vertrauensstellungen zwischen Gesamtstrukturen DARF NICHT deaktiviert werden. Die voreingestellten SIDs DÜRFEN NICHT entfernt werden. Hat der in der Gesamtstruktur abgebildete Informationsverbund, dem vertraut wird, kein ausreichendes Sicherheitsniveau, MUSS für die Vertrauensbeziehung zu dieser Gesamtstruktur „Selective Authentication“ verwendet werden.'
+        - id: APP.2.2.A7
+          title: 'Umsetzung sicherer Verwaltungsmethoden für Active Directory'
+          requirement_text: 'Es MUSS sichergestellt sein, dass die Konten von Dienste-Administrierenden ausschließlich von Mitgliedern der Gruppe der Dienste-Administrierenden verwaltet werden. Bevor Konten vordefinierten AD-DS-Gruppen hinzugefügt werden, SOLLTE geprüft werden, ob alle der Gruppe zugehörigen Rechte für die mit den Konten verbundenen Tätigkeiten erforderlich sind. Den Gruppen „Schema-Admins“ / „Schema-Administratoren“ sowie der Gruppe „Enterprise Admins“ / „Organisations-Administratoren“ und „Domain Admins“ / „Domänen-Administratoren“ SOLLTEN neben dem AD-DS-Built-In-Konto für Administrierende weitere administrative Konten nur temporär für den Zeitraum zugewiesen werden, in dem sie diese Berechtigungen benötigen.'
+        - id: APP.2.2.A16
+          title: 'Härtung der AD-DS-Konten'
+          requirement_text: 'Built-in-AD-DS-Konten MÜSSEN mit komplexen Passwörtern versehen werden. Sie DÜRFEN NUR als Notfallkonten dienen. Das Built-in „Guest“- / „Gast“-Konto MUSS deaktiviert werden. Die Berechtigungen für die Gruppe „Everyone“ / „Jeder“ MUSS beschränkt werden. Privilegierte Konten MÜSSEN Mitglied der Gruppe „Protected Users“ / „Geschütze Benutzer“ sein. Für Dienstkonten MÜSSEN (Group) Managed Service Accounts verwendet werden. Vor dem Löschen nicht mehr verwendeter Konten MUSS geprüft werden, nach welcher Aufbewahrungsfrist diese gelöscht werden können. Dabei MÜSSEN die Auswirkungen auf die Detektion und gesetzliche Aufbewahrungs- und Löschfristen berücksichtigt werden. Der Zugriff auf das AdminSDHolder-Objekt SOLLTE zum Schutz der Berechtigungen besonders geschützt sein.'
+        - id: APP.2.2.A17
+          title: 'Anmelderestriktionen für hochprivilegierte Konten der Gesamtstruktur auf Clients und Servern'
+          requirement_text: 'Die Anmeldung von hochpriviligierten Domänen- und Gesamtstruktur-Konten und Gruppen MUSS technisch auf die minimal notwendigen IT-Systeme einschränkt werden. Insbesondere die Anmeldung von Mitgliedern der Gruppen „Schema Admins“ / „Schema-Administratoren“, „Enterprise Admins“ / „Enterprise-Administratoren“ und „Domain Admins“ / „Domänen-Administratoren“ SOLLTE technisch auf den Domänencontroller beschränkt werden, eine Anmeldung an anderen IT-Systemen ist für diese Gruppen also zu unterbinden.'
+        - id: APP.2.2.A18
+          title: 'Einschränken des Hinzufügens neuer Computer-Objekte zur Domäne'
+          requirement_text: 'Die Berechtigung, in der Domäne neue Computer-Objekte hinzuzufügen, MUSS auf die notwendigen administrativen Konten beschränkt werden.'
+      standard:
+        - id: APP.2.2.A8
+          title: 'Absicherung des „Sicheren Kanals“'
+          requirement_text: 'Der „Sichere Kanal“ SOLLTE so konfiguriert sein, dass alle übertragenen Daten immer verschlüsselt und signiert werden.'
+        - id: APP.2.2.A9
+          title: 'Schutz der Authentisierung beim Einsatz von AD DS'
+          requirement_text: 'In der Gesamtstruktur SOLLTE konsequent das Authentisierungsprotokoll Kerberos eingesetzt werden. Dabei SOLLTE für die Absicherung AES128_HMAC_SHA1 oder AES256_HMAC_SHA1 verwendet werden. Wenn aus Kompatibilitätsgründen übergangsweise NTLMv2 eingesetzt wird, SOLLTE die Migration auf Kerberos geplant und terminiert werden. Die LM-Authentisierung und NTLMv1 MÜSSEN deaktiviert sein. Der SMB-Datenverkehr MUSS signiert sein. SMBv1 MUSS deaktiviert sein. Anonyme Zugriffe auf Domänencontroller SOLLTEN unterbunden sein. LDAP-Sitzungen SOLLTEN nur signiert und mit konfiguriertem Channel Binding Token (CBT) erfolgen.'
+        - id: APP.2.2.A12
+          title: 'Datensicherung für Domänencontroller'
+          requirement_text: 'Aufgrund der besonderen Gefährdung der unsicher gespeicherten Passwörter SOLLTE der Zugriff auf die Backups des Domänencontrollers vergleichbar dem Zugriff auf den Domänencontroller selbst abgesichert sein.'
+      hoch:
+        - id: APP.2.2.A15
+          title: 'Auslagerung der Administration in eine eigene Gesamtstruktur'
+          requirement_text: 'Besonders kritische IT-Systeme und Konten zur Administration der Domänen oder der Gesamtstruktur SOLLTEN in eine eigene Gesamtstruktur (häufig als „Red Forest“ bezeichnet) ausgegliedert werden, zu der von der zu verwaltenden Gesamtstruktur eine einseitige Vertrauensstellung besteht. Dies SOLLTE im Rahmen des Notfallmanagements bei der Erstellung des Notfallhandbuchs besonders berücksichtigt werden.'
+        - id: APP.2.2.A19
+          title: 'Betrieb von virtualisierten Domänencontrollern'
+          requirement_text: 'Virtualisierte Domänencontroller SOLLTEN nicht gemeinsam mit weiteren virtuell betriebenen IT-Systemen auf dem gleichen physischen Host betrieben werden. Bei der Absicherung der administrativen Konten für den Zugriff über die Virtualisierungsschicht SOLLTE berücksichtigt werden, dass diese Vollzugriffe auf den Domänencontroller haben und dieser dann vergleichbar mit dem der Gruppe „Domain Admins“ / „Domänen-Administratoren“ ist. Der Virtualisierungshost, die IT-Systeme, die am Virtualisierungsmanagement beteiligt sind sowie die Administrationskonten für die Virtualisierungsschicht SOLLTEN NICHT zur Gesamtstruktur gehören, zu der der virtualisierte Domänencontroller gehört.'
+        - id: APP.2.2.A20
+          title: 'Trennung von Organisationseinheiten'
+          requirement_text: 'Organisationseinheiten, die aus IT-Sicherheitsgründen oder sonstigen Gründen Unabhängigkeit voneinander gewährleisten müssen, SOLLTEN sich nicht in der gleichen Gesamtstruktur befinden.'
+        - id: APP.2.2.A21
+          title: 'Konfiguration eines Schichtenmodells'
+          requirement_text: 'Die Berechtigungsstruktur innerhalb der Gesamtstruktur SOLLTE in Schichten, die sich am Schutzbedarf der Konten, IT-Systeme und Anwendungen orientieren, entworfen werden. Bei dieser Strukturierung SOLLTEN alle Konten, IT-Systeme und Anwendungen innerhalb einer Gesamtstruktur eindeutig einer Schicht zugeordnet werden können. Konten einer höheren Schicht SOLLTEN sich nicht auf Ressourcen einer niedrigeren Schicht anmelden können. Konten einer niedrigeren Schicht SOLLTEN keine Kontrollmöglichkeit über Konten und Ressourcen höherer Schichten besitzen.'
+        - id: APP.2.2.A22
+          title: 'Zeitlich befristete Berechtigungen für die Administration'
+          requirement_text: 'Konten, die für die Administration verwendet werden, SOLLTEN nur bei Bedarf auf das benötigte Zeitfenster befristetet die für die administrative Aufgabe notwendigen Berechtigungen zugewiesen werden.'
+        - id: APP.2.2.A23
+          title: 'Regelmäßige Analyse von Berechtigungen und resultierenden Angriffspfaden'
+          requirement_text: 'Aufgrund der Komplexität von Berechtigungen, die nicht immer unmittelbar ersichtlich sind, SOLLTE eine regelmäßige Analyse der Berechtigungsstrukturen im AD DS vorgenommen werden. Insbesondere Berechtigungen, die durch die Integration von Anwendungen in AD DS entstehen (beispielsweise Microsoft Exchange) SOLLTEN kritisch auf ihre Notwendigkeit hin geprüft und auf die minimal notwendigen Berechtigungen reduziert werden. Aktualisierungen können ebenfalls auch Berechtigungsstrukturen im AD DS ändern, daher SOLLTE die Analyse auch nach entsprechenden Aktualisierungen durchgeführt werden. Mögliche Angriffspfade über die Berechtigungen der AD-DS-Konten, die beispielsweise bei Kompromittierung von Konten zur Kompromittierung der Domäne bzw. der vollständigen Gesamtstruktur führen, SOLLTEN möglichst gering sein. Die Aktivitäten der verbleibenden, als kritisch identifizierten Konten SOLLTEN besonders überwacht werden.'
 
   - id: APP.2.3
     title: 'OpenLDAP'
@@ -100,15 +247,33 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.2.3.A1
-          title: 'Planung des OpenLDAP-Einsatzes'
-          requirement_text: 'Der Einsatz von OpenLDAP MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein APP.2.3 Anforderung A1.'
-        - id: APP.2.3.A2
-          title: 'Sichere Grundkonfiguration von OpenLDAP'
-          requirement_text: 'OpenLDAP MUSS sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.2.3 Anforderung A2.'
+          title: 'Planung und Auswahl von Backends und Overlays für OpenLDAP'
+          requirement_text: 'Der Einsatz von OpenLDAP in einer Institution MUSS sorgfältig geplant werden. Soll OpenLDAP gemeinsam mit anderen Anwendungen verwendet werden, so MÜSSEN die Planung, Konfiguration und Installation der Anwendungen mit OpenLDAP aufeinander abgestimmt werden. Für die zur Datenhaltung verwendete Datenbank MUSS sichergestellt werden, dass die verwendete Version kompatibel ist. Backends und Overlays für OpenLDAP MÜSSEN restriktiv selektiert werden. Dazu MUSS sichergestellt werden, dass die OpenLDAP-Overlays in der korrekten Reihenfolge eingesetzt werden. Bei der Planung von OpenLDAP MÜSSEN die auszuwählenden und unterstützten Client-Anwendungen berücksichtigt werden.'
         - id: APP.2.3.A3
-          title: 'Absicherung der Replikation'
-          requirement_text: 'Die Replikation zwischen LDAP-Servern MUSS abgesichert sein. Siehe BSI Kompendium 2023 Baustein APP.2.3 Anforderung A3.'
-      standard: []
+          title: 'Sichere Konfiguration von OpenLDAP'
+          requirement_text: 'Für die sichere Konfiguration von OpenLDAP MUSS der slapd-Server korrekt konfiguriert werden. Es MÜSSEN auch die verwendeten Client-Anwendungen sicher konfiguriert werden. Bei der Konfiguration von OpenLDAP MUSS darauf geachtet werden, dass im Betriebssystem die Berechtigungen korrekt gesetzt sind. Die Vorgabewerte aller relevanten Konfigurationsdirektiven von OpenLDAP MÜSSEN geprüft und gegebenenfalls angepasst werden. Die Backends und Overlays von OpenLDAP MÜSSEN in die Konfiguration einbezogen werden. Für die Suche innerhalb von OpenLDAP MÜSSEN angemessene Zeit- und Größenbeschränkungen festgelegt werden. Die Konfiguration am slapd-Server MUSS nach jeder Änderung geprüft werden.'
+        - id: APP.2.3.A4
+          title: 'Konfiguration der durch OpenLDAP verwendeten Datenbank'
+          requirement_text: 'Die Zugriffsrechte für neu angelegte Datenbankdateien MÜSSEN auf die Kennung beschränkt werden, in deren Kontext der slapd-Server betrieben wird. Die Standard-Einstellungen der von OpenLDAP genutzten Datenbank MÜSSEN angepasst werden.'
+        - id: APP.2.3.A5
+          title: 'Sichere Vergabe von Zugriffsrechten auf dem OpenLDAP'
+          requirement_text: 'Die in OpenLDAP geführten globalen und datenbankspezifischen Zugriffskontrolllisten (Access Control Lists) MÜSSEN beim Einsatz von OpenLDAP korrekt berücksichtigt werden. Datenbank-Direktiven MÜSSEN Vorrang vor globalen Direktiven haben.'
+        - id: APP.2.3.A6
+          title: 'Sichere Authentisierung gegenüber OpenLDAP'
+          requirement_text: 'Wenn der Verzeichnisdienst zwischen verschiedenen Benutzenden unterscheiden soll, MÜSSEN sich diese geeignet authentisieren. Die Authentisierung zwischen dem slapd-Server und den Kommunikationsbeteiligten MUSS verschlüsselt werden. Es SOLLTEN NUR die Hashwerte von Passwörtern auf den Clients und Servern abgespeichert werden. Es MUSS ein geeigneter Hashing-Algorithmus verwendet werden.'
+      standard:
+        - id: APP.2.3.A8
+          title: 'Einschränkungen von Attributen bei OpenLDAP'
+          requirement_text: 'Anhand von Overlays SOLLTEN die Attribute in OpenLDAP eingeschränkt werden. OpenLDAP SOLLTE so angepasst werden, dass Werte im Verzeichnisdienst nur einem bestimmten regulären Ausdruck entsprechen. Zudem SOLLTE mit Hilfe von Overlays sichergestellt werden, das ausgesuchte Werte nur einmal im Verzeichnisbaum vorhanden sind. Solche Restriktionen SOLLTEN ausschließlich auf Daten von Nutzenden angewendet werden.'
+        - id: APP.2.3.A9
+          title: 'Partitionierung und Replikation bei OpenLDAP'
+          requirement_text: 'Bei einer Partitionierung oder Replikation von OpenLDAP SOLLTE die Aufteilung geeignet für die Sicherheitsziele ausgewählt werden. Dabei SOLLTEN Veränderungen an den Daten durch Replikation zwischen den Servern ausgetauscht werden. Ein Replikationsmodus SOLLTE in Abhängigkeit von Netzverbindungen und Verfügbarkeitsanforderungen gewählt werden.'
+        - id: APP.2.3.A10
+          title: 'Sichere Aktualisierung von OpenLDAP'
+          requirement_text: 'Bei Updates SOLLTE darauf geachtet werden, ob die Änderungen eingesetzte Backends oder Overlays sowie Softwareabhängigkeiten betreffen. Beim Update auf neue Releases SOLLTE geprüft werden, ob die verwendeten Overlays und Backends in der neuen Version weiterhin zur Verfügung stehen. Ist dies nicht der Fall, SOLLTEN geeignete Migrationspfade ausgewählt werden. Setzen Administrierende eigene Skripte ein, SOLLTEN sie daraufhin überprüft werden, ob sie mit der aktualisierten Version von OpenLDAP problemlos zusammenarbeiten. Die Konfiguration und die Zugriffsrechte SOLLTEN nach einer Aktualisierung sorgfältig geprüft werden.'
+        - id: APP.2.3.A11
+          title: 'Einschränkung der OpenLDAP-Laufzeitumgebung'
+          requirement_text: 'Die Laufzeitumgebung des slapd-Servers SOLLTE, möglichst mit Mitteln des Betriebssystems, auf die minimal benötigten Dateien, Verzeichnisse und vom Betriebssystem bereitgestellten Funktionen eingeschränkt werden. Werden hierfür Containerisierungstechniken eingesetzt, SOLLTEN diese unter Berücksichtigung von SYS.1.6 Containerisierung genutzt werden. Wird der slapd-Server als exklusiver Dienst auf einem dedizierten Server betrieben, SOLLTE dieser ausreichend gehärtet sein.'
       hoch: []
 
   - id: APP.3.1
@@ -117,16 +282,40 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.3.1.A1
-          title: 'Authentisierung bei Webanwendungen'
-          requirement_text: 'Bei Webanwendungen MUSS eine sichere Authentisierung implementiert werden.'
-        - id: APP.3.1.A2
-          title: 'Sicherer Betrieb von Webanwendungen'
-          requirement_text: 'Webanwendungen MUESSEN sicher betrieben werden, einschliesslich Konfiguration, Patches und Monitoring. Siehe BSI Kompendium 2023 Baustein APP.3.1 Anforderung A2.'
-        - id: APP.3.1.A3
-          title: 'Schutz vor typischen Angriffen auf Webanwendungen'
-          requirement_text: 'Webanwendungen MUESSEN gegen typische Angriffe (z. B. OWASP Top 10) abgesichert sein. Siehe BSI Kompendium 2023 Baustein APP.3.1 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Authentisierung'
+          requirement_text: 'Der IT-Betrieb MUSS Webanwendungen und Webservices so konfigurieren, dass sich Clients gegenüber der Webanwendung oder dem Webservice authentisieren müssen, wenn diese auf geschützte Ressourcen zugreifen wollen. Dafür MUSS eine angemessene Authentisierungsmethode ausgewählt werden. Der Auswahlprozess SOLLTE dokumentiert werden. Der IT-Betrieb MUSS geeignete Grenzwerte für fehlgeschlagene Anmeldeversuche festlegen.'
+        - id: APP.3.1.A4
+          title: 'Kontrolliertes Einbinden von Dateien und Inhalten'
+          requirement_text: 'Falls eine Webanwendung oder ein Webservice eine Upload-Funktion für Dateien anbietet, MUSS diese Funktion durch den IT-Betrieb so weit wie möglich eingeschränkt werden. Insbesondere MÜSSEN die erlaubte Dateigröße, erlaubte Dateitypen und erlaubte Speicherorte festgelegt werden. Es MUSS festgelegt werden, welche Clients die Funktion verwenden dürfen. Auch MÜSSEN Zugriffs- und Ausführungsrechte restriktiv gesetzt werden. Zudem MUSS sichergestellt werden, dass Clients Dateien nur im vorgegebenen erlaubten Speicherort speichern können.'
+        - id: APP.3.1.A7
+          title: 'Schutz vor unerlaubter automatisierter Nutzung'
+          requirement_text: 'Der IT-Betrieb MUSS sicherstellen, dass Webanwendungen und Webservices vor unberechtigter automatisierter Nutzung geschützt werden. Dabei MUSS jedoch berücksichtigt werden, wie sich die Schutzmechanismen auf die Nutzungsmöglichkeiten berechtigter Clients auswirken. Wenn die Webanwendung RSS-Feeds oder andere Funktionen enthält, die explizit für die automatisierte Nutzung vorgesehen sind, MUSS dies ebenfalls bei der Konfiguration der Schutzmechanismen berücksichtigt werden.'
+        - id: APP.3.1.A14
+          title: 'Schutz vertraulicher Daten'
+          requirement_text: 'Der IT-Betrieb MUSS sicherstellen, dass Zugangsdaten zur Webanwendung oder zum Webservice serverseitig mithilfe von sicheren kryptografischen Algorithmen vor unbefugtem Zugriff geschützt werden. Dazu MÜSSEN Salted Hash-Verfahren verwendet werden. Die Dateien mit den Quelltexten der Webanwendung oder des Webservices MÜSSEN vor unerlaubten Abrufen geschützt werden.'
+      standard:
+        - id: APP.3.1.A8
+          title: 'Systemarchitektur'
+          requirement_text: 'Sicherheitsaspekte SOLLTEN bereits während der Planung von Webanwendungen und Webservices betrachtet werden. Auch SOLLTE darauf geachtet werden, dass die Architektur der Webanwendung oder des Webservice die Geschäftslogik der Institution exakt erfasst und korrekt umsetzt.'
+        - id: APP.3.1.A9
+          title: 'Beschaffung von Webanwendungen und Webservices'
+          requirement_text: 'Zusätzlich zu den allgemeinen Aspekten der Beschaffung von Software SOLLTE die Institution mindestens folgendes bei der Beschaffung von Webanwendungen und Webservices berücksichtigen:'
+        - id: APP.3.1.A11
+          title: 'Sichere Anbindung von Hintergrundsystemen'
+          requirement_text: 'Der Zugriff auf Hintergrundsysteme, auf denen Funktionen und Daten ausgelagert werden, SOLLTE ausschließlich über definierte Schnittstellen und von definierten IT-Systemen aus möglich sein. Bei der Kommunikation über Netz- und Standortgrenzen hinweg SOLLTE der Datenverkehr authentisiert und verschlüsselt werden.'
+        - id: APP.3.1.A12
+          title: 'Sichere Konfiguration'
+          requirement_text: 'Webanwendungen und Webservices SOLLTEN so konfiguriert sein, dass auf ihre Ressourcen und Funktionen ausschließlich über die vorgesehenen, abgesicherten Kommunikationspfade zugegriffen werden kann. Der Zugriff auf nicht benötigte Ressourcen und Funktionen SOLLTE deaktiviert werden. Falls dies nicht möglich ist, SOLLTE der Zugriff soweit wie möglich eingeschränkt werden. Folgendes SOLLTE bei der Konfiguration von Webanwendungen und Webservices umgesetzt werden:'
+        - id: APP.3.1.A21
+          title: 'Sichere HTTP-Konfiguration bei Webanwendungen'
+          requirement_text: 'Zum Schutz vor Clickjacking, Cross-Site-Scripting und anderen Angriffen SOLLTE der IT-Betrieb geeignete HTTP-Response-Header setzen. Dazu SOLLTEN mindestens die folgenden HTTP-Header verwendet werden: Die verwendeten HTTP-Header SOLLTEN so restriktiv wie möglich sein. Cookies SOLLTEN grundsätzlich mit den Attributen secure, SameSite und httponly gesetzt werden.'
+        - id: APP.3.1.A22
+          title: 'Penetrationstest und Revision'
+          requirement_text: 'Webanwendungen und Webservices SOLLTEN regelmäßig auf Sicherheitsprobleme hin überprüft werden. Insbesondere SOLLTEN regelmäßig Revisionen durchgeführt werden. Die Ergebnisse SOLLTEN nachvollziehbar dokumentiert, ausreichend geschützt und vertraulich behandelt werden. Abweichungen SOLLTE nachgegangen werden. Die Ergebnisse SOLLTEN dem ISB vorgelegt werden.'
+      hoch:
+        - id: APP.3.1.A20
+          title: 'Einsatz von Web Application Firewalls'
+          requirement_text: 'Institutionen SOLLTEN Web Application Firewalls (WAF) einsetzen. Die Konfiguration der eingesetzten WAF SOLLTE auf die zu schützende Webanwendung oder den Webservice angepasst werden. Nach jedem Update der Webanwendung oder des Webservices SOLLTE die Konfiguration der WAF geprüft werden.'
 
   - id: APP.3.2
     title: 'Webserver'
@@ -135,35 +324,98 @@ bausteine:
       basis:
         - id: APP.3.2.A1
           title: 'Sichere Konfiguration eines Webservers'
-          requirement_text: 'Ein Webserver MUSS sicher konfiguriert werden. Nicht benoetigte Module, Dienste und Funktionen MUESSEN deaktiviert sein.'
+          requirement_text: 'Nachdem der IT-Betrieb einen Webserver installiert hat, MUSS er eine sichere Grundkonfiguration vornehmen. Dazu MUSS er insbesondere den Webserver-Prozess einem Konto mit minimalen Rechten zuweisen. Der Webserver MUSS in einer gekapselten Umgebung ausgeführt werden, sofern dies vom Betriebssystem unterstützt wird. Ist dies nicht möglich, SOLLTE jeder Webserver auf einem eigenen physischen oder virtuellen Server ausgeführt werden. Dem Webserver-Dienst MÜSSEN alle nicht notwendige Schreibberechtigungen entzogen werden. Nicht benötigte Module und Funktionen des Webservers MÜSSEN deaktiviert werden.'
         - id: APP.3.2.A2
-          title: 'Schutz der Webserver-Dateien und -Skripte'
-          requirement_text: 'Die Dateien und Skripte des Webservers MUESSEN vor unberechtigter Veraenderung geschuetzt werden. Rechte MUESSEN minimal gesetzt sein.'
-        - id: APP.3.2.A5
+          title: 'Schutz der Webserver-Dateien'
+          requirement_text: 'Der IT-Betrieb MUSS alle Dateien auf dem Webserver, insbesondere Skripte und Konfigurationsdateien, so schützen, dass sie nicht unbefugt gelesen und geändert werden können. Es MUSS sichergestellt werden, dass Webanwendungen nur auf einen definierten Verzeichnisbaum zugreifen können (WWW-Wurzelverzeichnis). Der Webserver MUSS so konfiguriert sein, dass er nur Dateien ausliefert, die sich innerhalb des WWW-Wurzelverzeichnisses befinden. Der IT-Betrieb MUSS alle nicht benötigten Funktionen, die Verzeichnisse auflisten, deaktivieren. Vertrauliche Daten MÜSSEN vor unberechtigtem Zugriff geschützt werden. Insbesondere MUSS der IT-Betrieb sicherstellen, dass vertrauliche Dateien nicht in öffentlichen Verzeichnissen des Webservers liegen. Der IT-Betrieb MUSS regelmäßig überprüfen, ob vertrauliche Dateien in öffentlichen Verzeichnissen gespeichert wurden.'
+        - id: APP.3.2.A3
+          title: 'Absicherung von Datei-Uploads und -Downloads'
+          requirement_text: 'Alle mithilfe des Webservers veröffentlichten Dateien MÜSSEN vorher auf Schadprogramme geprüft werden. Es MUSS eine Maximalgröße für Datei-Uploads spezifiziert sein. Für Uploads MUSS genügend Speicherplatz reserviert werden.'
+        - id: APP.3.2.A4
           title: 'Protokollierung von Ereignissen'
-          requirement_text: 'Sicherheitsrelevante Ereignisse am Webserver MUESSEN protokolliert werden. Die Protokolle MUESSEN regelmaessig ausgewertet werden.'
-      standard: []
-      hoch: []
+          requirement_text: 'Der Webserver MUSS mindestens folgende Ereignisse protokollieren: Die Protokollierungsdaten SOLLTEN regelmäßig ausgewertet werden.'
+        - id: APP.3.2.A5
+          title: 'Authentisierung'
+          requirement_text: 'Wenn sich Clients mit Hilfe von Passwörtern am Webserver authentisieren, MÜSSEN diese kryptografisch gesichert und vor unbefugtem Zugriff geschützt gespeichert werden.'
+        - id: APP.3.2.A7
+          title: 'Rechtliche Rahmenbedingungen für Webangebote'
+          requirement_text: 'Werden über den Webserver Inhalte für Dritte publiziert oder Dienste angeboten, MÜSSEN dabei die relevanten rechtlichen Rahmenbedingungen beachtet werden. Die Institution MUSS die jeweiligen Telemedien- und Datenschutzgesetze sowie das Urheberrecht einhalten.'
+        - id: APP.3.2.A11
+          title: 'Verschlüsselung über TLS'
+          requirement_text: 'Der Webserver MUSS für alle Verbindungen durch nicht vertrauenswürdige Netze eine sichere Verschlüsselung über TLS anbieten (HTTPS). Falls es aus Kompatibilitätsgründen erforderlich ist, veraltete Verfahren zu verwenden, SOLLTEN diese auf so wenige Fälle wie möglich beschränkt werden. Wenn eine HTTPS-Verbindung genutzt wird, MÜSSEN alle Inhalte über HTTPS ausgeliefert werden. Sogenannter Mixed Content DARF NICHT verwendet werden.'
+      standard:
+        - id: APP.3.2.A8
+          title: 'Planung des Einsatzes eines Webservers'
+          requirement_text: 'Es SOLLTE geplant und dokumentiert werden, für welchen Zweck der Webserver eingesetzt und welche Inhalte er bereitstellen soll. In der Dokumentation SOLLTEN auch die Informationen oder Dienstleistungen des Webangebots und die jeweiligen Zielgruppen beschrieben werden. Für den technischen Betrieb und die Webinhalte SOLLTEN geeignete Zuständige festgelegt werden.'
+        - id: APP.3.2.A9
+          title: 'Festlegung einer Sicherheitsrichtlinie für den Webserver'
+          requirement_text: 'Es SOLLTE eine Sicherheitsrichtlinie erstellt werden, in der die erforderlichen Maßnahmen und Zuständigkeiten benannt sind. Weiterhin SOLLTE geregelt werden, wie Informationen zu aktuellen Sicherheitslücken besorgt werden. Auch SOLLTE geregelt werden, wie Sicherheitsmaßnahmen umgesetzt werden und wie vorgegangen werden soll, wenn Sicherheitsvorfälle eintreten.'
+        - id: APP.3.2.A10
+          title: 'Auswahl eines geeigneten Webhosters'
+          requirement_text: 'Betreibt die Institution den Webserver nicht selbst, sondern nutzt Angebote externer Unternehmen im Rahmen von Webhosting, SOLLTE die Institution bei der Auswahl eines geeigneten Webhosters auf folgende Punkte achten:'
+        - id: APP.3.2.A12
+          title: 'Geeigneter Umgang mit Fehlern und Fehlermeldungen'
+          requirement_text: 'Aus den HTTP-Informationen und den angezeigten Fehlermeldungen SOLLTEN weder der Produktname noch die verwendete Version des Webservers ersichtlich sein. Fehlermeldungen SOLLTEN keine Details zu Systeminformationen oder Konfigurationen ausgeben. Der IT-Betrieb SOLLTE sicherstellen, dass der Webserver ausschließlich allgemeine Fehlermeldungen ausgibt, die Clients darauf hinweisen, dass ein Fehler aufgetreten ist. Die Fehlermeldung SOLLTE ein eindeutiges Merkmal enthalten, das es dem IT-Betrieb ermöglicht, den Fehler nachzuvollziehen. Bei unerwarteten Fehlern SOLLTE sichergestellt sein, dass der Webserver nicht in einem Zustand verbleibt, in dem er anfällig für Angriffe ist.'
+        - id: APP.3.2.A13
+          title: 'Zugriffskontrolle für Webcrawler'
+          requirement_text: 'Der Zugriff von Webcrawlern SOLLTE nach dem Robots-Exclusion-Standard geregelt werden. Inhalte SOLLTEN mit einem Zugriffsschutz versehen werden, um sie vor Webcrawlern zu schützen, die sich nicht an diesen Standard halten.'
+        - id: APP.3.2.A14
+          title: 'Integritätsprüfungen und Schutz vor Schadsoftware'
+          requirement_text: 'Der IT-Betrieb SOLLTE regelmäßig prüfen, ob die Konfigurationen des Webservers und die von ihm bereitgestellten Dateien noch integer sind und nicht durch Angriffe verändert wurden. Die zur Veröffentlichung vorgesehenen Dateien SOLLTEN regelmäßig auf Schadsoftware geprüft werden.'
+        - id: APP.3.2.A16
+          title: 'Penetrationstest und Revision'
+          requirement_text: 'Webserver SOLLTEN regelmäßig auf Sicherheitsprobleme hin überprüft werden. Auch SOLLTEN regelmäßig Revisionen durchgeführt werden. Die Ergebnisse SOLLTEN nachvollziehbar dokumentiert, ausreichend geschützt und vertraulich behandelt werden. Abweichungen SOLLTE nachgegangen werden. Die Ergebnisse SOLLTEN dem ISB vorgelegt werden.'
+        - id: APP.3.2.A20
+          title: 'Benennung von Anzusprechenden'
+          requirement_text: 'Bei umfangreichen Webangeboten SOLLTE die Institution zentrale Anzusprechende für die Webangebote bestimmen. Es SOLLTEN Prozesse, Vorgehensweisen und Zuständige für Probleme oder Sicherheitsvorfälle benannt werden. Die Institution SOLLTE eine Kontaktmöglichkeit auf ihrer Webseite veröffentlichen, über die Sicherheitsprobleme an die Institution gemeldet werden können. Für die Behandlung von externen Sicherheitsmeldungen SOLLTE die Institution Prozesse definieren.'
+      hoch:
+        - id: APP.3.2.A15
+          title: 'Redundanz'
+          requirement_text: 'Webserver SOLLTEN redundant ausgelegt werden. Auch die Internetanbindung des Webservers und weiterer IT-Systeme, wie etwa der Webanwendungsserver, SOLLTEN redundant ausgelegt sein.'
+        - id: APP.3.2.A18
+          title: 'Schutz vor Denial-of-Service-Angriffen'
+          requirement_text: 'Der Webserver SOLLTE ständig überwacht werden. Des Weiteren SOLLTEN Maßnahmen definiert und umgesetzt werden, die DDoS-Angriffe verhindern oder zumindest abschwächen.'
 
   - id: APP.3.3
     title: 'Fileserver'
     description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Fileservern (zentrale Datenablage im LAN).'
     anforderungen:
       basis:
-        - id: APP.3.3.A1
-          title: 'Planung des Fileserver-Einsatzes'
-          requirement_text: 'Vor dem Einsatz eines Fileservers MUSS geplant werden, welche Daten gespeichert werden, welche Zugriffsrechte gelten und welche Backup-Strategie umgesetzt wird.'
         - id: APP.3.3.A2
-          title: 'Sichere Konfiguration eines Fileservers'
-          requirement_text: 'Fileserver MUESSEN sicher konfiguriert sein. Nicht benoetigte Dienste, Freigaben und Protokolle MUESSEN deaktiviert sein. Default-Konten MUESSEN umbenannt sein.'
+          title: 'Einsatz von RAID-Systemen'
+          requirement_text: 'Der IT-Betrieb MUSS festlegen, ob im Fileserver ein RAID-System eingesetzt werden soll. Eine Entscheidung gegen ein solches System MUSS nachvollziehbar dokumentiert werden. Falls ein RAID-System eingesetzt werden soll, MUSS der IT-Betrieb entscheiden: In einem RAID SOLLTEN Hotspare-Festplatten vorgehalten werden.'
         - id: APP.3.3.A3
-          title: 'Berechtigungskonzept fuer Fileserver-Freigaben'
-          requirement_text: 'Fuer Fileserver-Freigaben MUSS ein Berechtigungskonzept nach dem Need-to-Know-Prinzip existieren. Berechtigungen MUESSEN regelmaessig geprueft werden.'
+          title: 'Einsatz von Viren-Schutzprogrammen'
+          requirement_text: 'Alle Daten MÜSSEN durch ein Viren-Schutzprogramm auf Schadsoftware untersucht werden, bevor sie auf dem Fileserver abgelegt werden.'
+        - id: APP.3.3.A15
+          title: 'Planung von Fileservern'
+          requirement_text: 'Bevor eine Institution einen oder mehrere Fileserver einführt, SOLLTE sie entscheiden, wofür die Fileserver genutzt und welche Informationen darauf verarbeitet werden. Die Institution SOLLTE jede benutzte Funktion eines Fileservers einschließlich deren Sicherheitsaspekte planen. Arbeitsplatzrechner DÜRFEN NICHT als Fileserver eingesetzt werden. Der Speicherplatz des Fileservers MUSS ausreichend dimensioniert sein. Auch ausreichende Speicherreserven SOLLTEN vorgehalten werden. Es SOLLTE ausschließlich Massenspeicher verwendet werden, der für einen Dauerbetrieb ausgelegt ist. Die Geschwindigkeit und die Anbindung der Massenspeicher MUSS für den Einsatzzweck angemessen sein.'
       standard:
-        - id: APP.3.3.A5
-          title: 'Datensicherung des Fileservers'
-          requirement_text: 'Auf Fileservern gespeicherte Daten SOLLTEN regelmaessig gesichert und die Wiederherstellbarkeit getestet werden.'
-      hoch: []
+        - id: APP.3.3.A6
+          title: 'Beschaffung eines Fileservers und Auswahl eines Dienstes'
+          requirement_text: 'Die Fileserver-Software SOLLTE geeignet ausgewählt werden. Der Fileserver-Dienst SOLLTE den Einsatzzweck des Fileservers unterstützen, z. B. Einbindung von Netzlaufwerken in den Clients, Streaming von Multimedia-Inhalten, Übertragung von Boot-Images von festplattenlosen IT-Systemen oder ausschließliche Dateiübertragung über FTP. Die Leistung, die Speicherkapazität, die Bandbreite sowie die Anzahl der Benutzenden, die den Fileserver nutzen, SOLLTEN bei der Beschaffung des Fileservers berücksichtigt werden.'
+        - id: APP.3.3.A7
+          title: 'Auswahl eines Dateisystems'
+          requirement_text: 'Der IT-Betrieb SOLLTE eine Anforderungsliste erstellen, nach der die Dateisysteme des Fileservers bewertet werden. Das Dateisystem SOLLTE den Anforderungen der Institution entsprechen. Das Dateisystem SOLLTE eine Journaling-Funktion bieten. Auch SOLLTE es über einen Schutzmechanismus verfügen, der verhindert, dass mehrere Benutzende oder Anwendungen gleichzeitig schreibend auf eine Datei zugreifen.'
+        - id: APP.3.3.A8
+          title: 'Strukturierte Datenhaltung'
+          requirement_text: 'Es SOLLTE eine Struktur festgelegt werden, nach der Daten abzulegen sind. Die Benutzenden SOLLTEN regelmäßig über die geforderte strukturierte Datenhaltung informiert werden. Die Dateien SOLLTEN ausschließlich strukturiert auf den Fileserver abgelegt werden. Es SOLLTE schriftlich festgelegt werden, welche Daten lokal und welche auf dem Fileserver gespeichert werden dürfen. Programm- und Arbeitsdaten SOLLTEN in getrennten Verzeichnissen gespeichert werden. Die Institution SOLLTE regelmäßig überprüfen, ob die Vorgaben zur strukturierten Datenhaltung eingehalten werden.'
+        - id: APP.3.3.A9
+          title: 'Sicheres Speichermanagement'
+          requirement_text: 'Der IT-Betrieb SOLLTE regelmäßig überprüfen, ob die Massenspeicher des Fileservers noch wie vorgesehen funktionieren. Es SOLLTEN geeignete Ersatzspeicher vorgehalten werden. Wurde eine Speicherhierarchie (Primär-, Sekundär- bzw. Tertiärspeicher) aufgebaut, SOLLTE ein (teil-)automatisiertes Speichermanagement verwendet werden. Werden Daten automatisiert verteilt, SOLLTE regelmäßig manuell überprüft werden, ob dies korrekt funktioniert. Es SOLLTEN mindestens nicht-autorisierte Zugriffsversuche auf Dateien und Änderungen von Zugriffsrechten protokolliert werden.'
+        - id: APP.3.3.A11
+          title: 'Einsatz von Speicherbeschränkungen'
+          requirement_text: 'Der IT-Betrieb SOLLTE bei mehreren Benutzenden auf dem Fileserver prüfen, Beschränkungen des Speicherplatzes für einzelne Benutzende (Quotas) einzurichten. Alternativ SOLLTEN Mechanismen des verwendeten Datei- oder Betriebssystems genutzt werden, um die Benutzenden bei einem bestimmten Füllstand der Festplatte zu warnen oder in diesem Fall nur noch dem IT-Betrieb Schreibrechte einzuräumen.'
+        - id: APP.3.3.A14
+          title: 'Einsatz von Error-Correction-Codes'
+          requirement_text: 'Der IT-Betrieb SOLLTE ein fehlererkennendes bzw. fehlerkorrigierendes Dateisystem einsetzen. Hierfür SOLLTE genügend Speicherplatz vorgehalten werden. Der IT-Betrieb SOLLTE beachten, dass, je nach eingesetztem Verfahren, Fehler nur mit einer gewissen Wahrscheinlichkeit erkannt und auch nur in begrenzter Größenordnung behoben werden können.'
+      hoch:
+        - id: APP.3.3.A12
+          title: 'Verschlüsselung des Datenbestandes'
+          requirement_text: 'Die Massenspeicher des Fileservers SOLLTEN auf Dateisystem- oder Hardwareebene verschlüsselt werden. Falls Hardwareverschlüsselung eingesetzt wird, SOLLTEN Produkte verwendet werden, deren Verschlüsselungsfunktion zertifiziert wurde. Es SOLLTE sichergestellt werden, dass der Virenschutz die verschlüsselten Daten auf Schadsoftware prüfen kann.'
+        - id: APP.3.3.A13
+          title: 'Replikation zwischen Standorten'
+          requirement_text: 'Für hochverfügbare Fileserver SOLLTE eine angemessene Replikation der Daten auf mehreren Massenspeichern stattfinden. Daten SOLLTEN zudem zwischen unabhängigen Fileservern repliziert werden, die sich an unabhängigen Standorten befinden. Dafür SOLLTE vom IT-Betrieb ein geeigneter Replikationsmechanismus ausgewählt werden. Damit die Replikation wie vorgesehen funktionieren kann, SOLLTEN hinreichend genaue Zeitdienste genutzt und betrieben werden.'
 
   - id: APP.3.4
     title: 'Samba'
@@ -171,16 +423,46 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.3.4.A1
-          title: 'Planung des Samba-Einsatzes'
-          requirement_text: 'Der Einsatz von Samba MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein APP.3.4 Anforderung A1.'
+          title: 'Planung des Einsatzes eines Samba-Servers'
+          requirement_text: 'Der IT-Betrieb MUSS die Einführung eines Samba-Servers sorgfältig planen und regeln. Der IT-Betrieb MUSS abhängig vom Einsatzszenario definieren, welche Aufgaben der Samba-Server zukünftig erfüllen soll und in welcher Betriebsart er betrieben wird. Außerdem MUSS festgelegt werden, welche Komponenten von Samba und welche weiteren Komponenten dafür erforderlich sind. Soll die Cluster-Lösung CTDB (Cluster Trivia Data Base) eingesetzt werden, MUSS der IT-Betrieb diese Lösung sorgfältig konzeptionieren. Falls Samba die Active-Directory-(AD)-Dienste auch für Linux- und Unix-Systeme bereitstellen soll, MÜSSEN diese Dienste ebenfalls sorgfältig geplant und getestet werden. Des Weiteren MUSS das Authentisierungsverfahren für das AD sorgfältig konzipiert und implementiert werden. Die Einführung und die Reihenfolge, in der die Stackable-Virtual-File-System-(VFS)-Module ausgeführt werden, MUSS sorgfältig konzipiert werden. Die Umsetzung SOLLTE dokumentiert werden. Soll IPv6 unter Samba eingesetzt werden, MUSS auch dies sorgfältig geplant werden. Zudem MUSS in einer betriebsnahen Testumgebung überprüft werden, ob die Integration fehlerfrei funktioniert.'
         - id: APP.3.4.A2
-          title: 'Sichere Grundkonfiguration von Samba'
-          requirement_text: 'Samba MUSS sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.3.4 Anforderung A2.'
+          title: 'Sichere Grundkonfiguration eines Samba-Servers'
+          requirement_text: 'Der IT-Betrieb MUSS den Samba-Server sicher konfigurieren. Hierfür MÜSSEN unter anderem die Einstellungen für die Zugriffskontrollen angepasst werden. Das gleiche SOLLTE auch für Einstellungen gelten, welche die Leistungsfähigkeit des Servers beeinflussen. Samba MUSS vom IT-Betrieb so konfiguriert werden, dass Verbindungen nur von sicheren Hosts und Netzen entgegengenommen werden. Änderungen an der Konfiguration SOLLTEN sorgfältig dokumentiert werden, sodass zu jeder Zeit nachvollzogen werden kann, wer aus welchem Grund was geändert hat. Dabei MUSS nach jeder Änderung überprüft werden, ob die Syntax der Konfigurationsdatei noch korrekt ist. Zusätzliche Softwaremodule wie SWAT DÜRFEN NICHT installiert werden.'
+      standard:
         - id: APP.3.4.A3
-          title: 'Absicherung der Samba-Freigaben'
-          requirement_text: 'Samba-Freigaben MUESSEN nach dem Prinzip der geringsten Rechte konfiguriert sein. Siehe BSI Kompendium 2023 Baustein APP.3.4 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Sichere Konfiguration eines Samba-Servers'
+          requirement_text: 'Datenbanken im Trivial-Database-(TDB)-Format SOLLTEN NICHT auf einer Partition gespeichert werden, die ReiserFS als Dateisystem benutzt. Wird eine netlogon-Freigabe konfiguriert, SOLLTEN unberechtigte Benutzende KEINE Dateien in dieser Freigabe modifizieren können. Das Betriebssystem eines Samba-Servers SOLLTE Access Control Lists (ACLs) in Verbindung mit dem eingesetzten Dateisystem unterstützen. Zusätzlich SOLLTE sichergestellt werden, dass das Dateisystem mit den passenden Parametern eingebunden wird. Die Voreinstellungen von SMB Message Signing SOLLTEN beibehalten werden, sofern sie nicht im Widerspruch zu den existierenden Sicherheitsrichtlinien im Informationsverbund stehen.'
+        - id: APP.3.4.A4
+          title: 'Vermeidung der NTFS-Eigenschaften auf einem Samba-Server'
+          requirement_text: 'Wird eine Version von Samba eingesetzt, die im New Technology File System (NTFS) keine ADS abbilden kann und sollen Dateisystemobjekte über Systemgrenzen hinweg kopiert oder verschoben werden, SOLLTEN Dateisystemobjekte KEINE ADS mit wichtigen Informationen enthalten.'
+        - id: APP.3.4.A5
+          title: 'Sichere Konfiguration der Zugriffssteuerung bei einem Samba-Server'
+          requirement_text: 'Die von Samba standardmäßig verwendeten Parameter, mit denen DOS-Attribute auf das Unix-Dateisystem abgebildet werden, SOLLTEN NICHT verwendet werden. Stattdessen SOLLTE Samba so konfiguriert werden, dass es DOS-Attribute und die Statusindikatoren zur Vererbung (Flag) in Extended Attributes speichert. Die Freigaben SOLLTEN ausschließlich über die Samba-Registry verwaltet werden. Ferner SOLLTEN die effektiven Zugriffsberechtigungen auf die Freigaben des Samba-Servers regelmäßig überprüft werden.'
+        - id: APP.3.4.A6
+          title: 'Sichere Konfiguration von Winbind unter Samba'
+          requirement_text: 'Für jedes Domänen-Konto einer Windows-Domäne SOLLTE im Betriebssystem des Servers ein Konto mit allen notwendigen Gruppenmitgliedschaften vorhanden sein. Falls das nicht möglich ist, SOLLTE Winbind eingesetzt werden, um Domänen-Konten in Unix-Konten umsetzen. Beim Einsatz von Winbind SOLLTE sichergestellt werden, dass Kollisionen zwischen lokalen Benutzenden in Unix und Benutzenden in der Domäne verhindert werden. Des Weiteren SOLLTEN die PAM (Pluggable Authentication Modules) eingebunden werden.'
+        - id: APP.3.4.A7
+          title: 'Sichere Konfiguration von DNS unter Samba'
+          requirement_text: 'Wenn Samba als DNS-Server eingesetzt wird, SOLLTE die Einführung sorgfältig geplant und die Umsetzung vorab getestet werden. Da Samba verschiedene AD-Integrationsmodi unterstützt, SOLLTE der IT-Betrieb die DNS-Einstellungen entsprechend dem Verwendungsszenario von Samba vornehmen.'
+        - id: APP.3.4.A8
+          title: 'Sichere Konfiguration von LDAP unter Samba'
+          requirement_text: 'Werden die Benutzenden unter Samba mit LDAP verwaltet, SOLLTE die Konfiguration sorgfältig vom IT-Betrieb geplant und dokumentiert werden. Die Zugriffsberechtigungen auf das LDAP SOLLTEN mittels ACLs geregelt werden.'
+        - id: APP.3.4.A9
+          title: 'Sichere Konfiguration von Kerberos unter Samba'
+          requirement_text: 'Zur Authentisierung SOLLTE das von Samba implementierte Heimdal Kerberos Key Distribution Center (KDC) verwendet werden. Es SOLLTE darauf geachtet werden, dass die von Samba vorgegebene Kerberos-Konfigurationsdatei verwendet wird. Es SOLLTEN nur sichere Verschlüsselungsverfahren für Kerberos-Tickets benutzt werden. Wird mit Kerberos authentisiert, SOLLTE der zentrale Zeitserver lokal auf dem Samba-Server installiert werden. Der NTP-Dienst SOLLTE so konfiguriert werden, dass nur autorisierte Clients die Zeit abfragen können.'
+        - id: APP.3.4.A10
+          title: 'Sicherer Einsatz externer Programme auf einem Samba-Server'
+          requirement_text: 'Vom IT-Betrieb SOLLTE sichergestellt werden, dass Samba nur auf schadhafte Funktionen überprüfte und vertrauenswürdige externe Programme aufruft.'
+        - id: APP.3.4.A12
+          title: 'Schulung der Administrierenden eines Samba-Servers'
+          requirement_text: 'Die Administrierenden SOLLTEN zu den genutzten spezifischen Bereichen von Samba wie z. B. Benutzendenauthentisierung, Windows- und Unix-Rechtemodelle, aber auch zu NTFS ACLs und NTFS ADS geschult werden.'
+        - id: APP.3.4.A13
+          title: 'Regelmäßige Sicherung wichtiger Systemkomponenten eines Samba-Servers'
+          requirement_text: 'Es SOLLTEN alle Systemkomponenten in das institutionsweite Datensicherungskonzept eingebunden werden, die erforderlich sind, um einen Samba-Server wiederherzustellen. Auch die Kontoinformationen aus allen eingesetzten Backends SOLLTEN berücksichtigt werden. Ebenso SOLLTEN alle TDB-Dateien gesichert werden. Des Weiteren SOLLTE die Samba-Registry mit gesichert werden, falls sie für Freigaben eingesetzt wurde.'
+      hoch:
+        - id: APP.3.4.A15
+          title: 'Verschlüsselung der Datenpakete unter Samba'
+          requirement_text: 'Um die Sicherheit der Datenpakete auf dem Transportweg zu gewährleisten, SOLLTEN die Datenpakete mit den ab SMB Version 3 integrierten Verschlüsselungsverfahren verschlüsselt werden.'
 
   - id: APP.3.6
     title: 'DNS-Server'
@@ -189,15 +471,66 @@ bausteine:
       basis:
         - id: APP.3.6.A1
           title: 'Planung des DNS-Einsatzes'
-          requirement_text: 'Vor dem Einsatz eines DNS-Servers MUSS geplant werden, welche Dienste bereitgestellt werden, welche Master-/Slave-Rollen existieren und welche Zonen verwaltet werden.'
+          requirement_text: 'Der Einsatz von DNS-Servern MUSS sorgfältig geplant werden. Es MUSS zuerst festgelegt werden, wie der Netzdienst DNS aufgebaut werden soll. Es MUSS festgelegt werden, welche Domain-Informationen schützenswert sind. Es MUSS geplant werden, wie DNS-Server in das Netz des Informationsverbunds eingebunden werden sollen. Die getroffenen Entscheidungen MÜSSEN geeignet dokumentiert werden.'
         - id: APP.3.6.A2
+          title: 'Einsatz redundanter DNS-Server'
+          requirement_text: 'Advertising DNS-Server MÜSSEN redundant ausgelegt werden. Für jeden Advertising DNS-Server MUSS es mindestens einen zusätzlichen Secondary DNS-Server geben.'
+        - id: APP.3.6.A3
+          title: 'Verwendung von separaten DNS-Servern für interne und externe Anfragen'
+          requirement_text: 'Advertising DNS-Server und Resolving DNS-Server MÜSSEN serverseitig getrennt sein. Die Resolver der internen IT-Systeme DÜRFEN NUR die internen Resolving DNS-Server verwenden.'
+        - id: APP.3.6.A4
           title: 'Sichere Grundkonfiguration eines DNS-Servers'
-          requirement_text: 'Ein DNS-Server MUSS gehaertet konfiguriert werden. Nicht benoetigte Funktionen (wie Zonentransfers an Unbekannte) MUESSEN deaktiviert sein.'
-        - id: APP.3.6.A5
-          title: 'Ueberwachung von DNS-Servern'
-          requirement_text: 'DNS-Server MUESSEN auf Verfuegbarkeit und Anomalien ueberwacht werden. Unerwartete Aenderungen an Zonendaten MUESSEN erkannt werden.'
-      standard: []
-      hoch: []
+          requirement_text: 'Ein Resolving DNS-Server MUSS so konfiguriert werden, dass er ausschließlich Anfragen aus dem internen Netz akzeptiert. Wenn ein Resolving DNS-Server Anfragen versendet, MUSS er zufällige Source Ports benutzen. Sind DNS-Server bekannt, die falsche Domain-Informationen liefern, MUSS der Resolving DNS-Server daran gehindert werden, Anfragen dorthin zu senden. Ein Advertising DNS-Server MUSS so konfiguriert werden, dass er Anfragen aus dem Internet immer iterativ behandelt. Es MUSS sichergestellt werden, dass DNS-Zonentransfers zwischen Primary und Secondary DNS-Servern funktionieren. Zonentransfers MÜSSEN so konfiguriert werden, dass diese nur zwischen Primary und Secondary DNS-Servern möglich sind. Zonentransfers MÜSSEN auf bestimmte IP-Adressen beschränkt werden. Die Version des verwendeten DNS-Server-Produktes MUSS verborgen werden.'
+        - id: APP.3.6.A6
+          title: 'Absicherung von dynamischen DNS-Updates'
+          requirement_text: 'Es MUSS sichergestellt werden, dass nur legitimierte IT-Systeme Domain-Informationen ändern dürfen. Es MUSS festgelegt werden, welche Domain-Informationen die IT-Systeme ändern dürfen.'
+        - id: APP.3.6.A7
+          title: 'Überwachung von DNS-Servern'
+          requirement_text: 'DNS-Server MÜSSEN laufend überwacht werden. Es MUSS überwacht werden, wie ausgelastet die DNS-Server sind, um rechtzeitig die Leistungskapazität der Hardware anpassen zu können. DNS-Server MÜSSEN so konfiguriert werden, dass mindestens die folgenden sicherheitsrelevanten Ereignisse protokolliert werden:'
+        - id: APP.3.6.A8
+          title: 'Verwaltung von Domainnamen'
+          requirement_text: 'Es MUSS sichergestellt sein, dass die Registrierungen für alle Domains, die von einer Institution benutzt werden, regelmäßig und rechtzeitig verlängert werden. Eine Person MUSS bestimmt werden, die dafür zuständig ist, die Internet-Domainnamen zu verwalten. Falls Dienstleistende mit der Domainverwaltung beauftragt werden, MUSS darauf geachtet werden, dass die Institution die Kontrolle über die Domains behält.'
+        - id: APP.3.6.A9
+          title: 'Erstellen eines Notfallplans für DNS-Server'
+          requirement_text: 'Ein Notfallplan für DNS-Server MUSS erstellt werden. Der Notfallplan für DNS-Server MUSS in die bereits vorhandenen Notfallpläne der Institution integriert werden. Im Notfallplan für DNS-Server MUSS ein Datensicherungskonzept für die Zonen- und Konfigurationsdateien beschrieben sein. Das Datensicherungskonzept für die Zonen- und Konfigurationsdateien MUSS in das existierende Datensicherungskonzept der Institution integriert werden. Der Notfallplan für DNS-Server MUSS einen Wiederanlaufplan für alle DNS-Server im Informationsverbund enthalten.'
+      standard:
+        - id: APP.3.6.A10
+          title: 'Auswahl eines geeigneten DNS-Server-Produktes'
+          requirement_text: 'Wird ein DNS-Server-Produkt beschafft, dann SOLLTE darauf geachtet werden, dass es sich in der Praxis ausreichend bewährt hat. Das DNS-Server-Produkt SOLLTE die aktuellen RFC-Standards unterstützen. Das DNS-Server-Produkt SOLLTE die Zuständigen dabei unterstützen, syntaktisch korrekte Master Files zu erstellen.'
+        - id: APP.3.6.A11
+          title: 'Ausreichende Dimensionierung der DNS-Server'
+          requirement_text: 'Die Hardware des DNS-Servers SOLLTE ausreichend dimensioniert sein. Die Hardware des DNS-Servers SOLLTE ausschließlich für den Betrieb dieses DNS-Servers benutzt werden. Die Netzanbindungen sämtlicher DNS-Server im Informationsverbund SOLLTEN ausreichend bemessen sein.'
+        - id: APP.3.6.A13
+          title: 'Einschränkung der Sichtbarkeit von Domain-Informationen'
+          requirement_text: 'Der Namensraum eines Informationsverbunds SOLLTE in einen öffentlichen und einen institutionsinternen Bereich aufgeteilt werden. Im öffentlichen Teil SOLLTEN nur solche Domain-Informationen enthalten sein, die von Diensten benötigt werden, die von extern erreichbar sein sollen. IT-Systeme im internen Netz SOLLTEN selbst dann keinen von außen auflösbaren DNS-Namen erhalten, wenn sie eine öffentliche IP-Adresse besitzen.'
+        - id: APP.3.6.A14
+          title: 'Platzierung der Nameserver'
+          requirement_text: 'Primary und Secondary Advertising DNS-Server SOLLTEN in verschiedenen Netzsegmenten platziert werden.'
+        - id: APP.3.6.A15
+          title: 'Auswertung der Logdaten'
+          requirement_text: 'Die Logdateien des DNS-Servers SOLLTEN regelmäßig überprüft werden. Die Logdateien des DNS-Servers SOLLTEN regelmäßig ausgewertet werden. Mindestens die folgenden sicherheitsrelevanten Ereignisse SOLLTEN ausgewertet werden:'
+        - id: APP.3.6.A16
+          title: 'Integration eines DNS-Servers in eine "P-A-P"-Struktur'
+          requirement_text: 'Die DNS-Server SOLLTEN in eine „Paketfilter - Application-Level-Gateway - Paketfilter“-(P-A-P)-Struktur integriert werden (siehe auch NET.1.1 Netzarchitektur und -design). Der Advertising DNS-Server SOLLTE in diesem Fall in einer demilitarisierten Zone (DMZ) des äußeren Paketfilters angesiedelt sein. Der Resolving DNS-Server SOLLTE in einer DMZ des inneren Paketfilters aufgestellt sein.'
+        - id: APP.3.6.A17
+          title: 'Einsatz von DNSSEC'
+          requirement_text: 'Die DNS-Protokollerweiterung DNSSEC SOLLTE sowohl auf Resolving DNS-Servern als auch auf Advertising DNS-Servern aktiviert werden. Die dabei verwendeten Schlüssel Key-Signing-Keys (KSK) und Zone-Signing-Keys (ZSK) SOLLTEN regelmäßig gewechselt werden.'
+        - id: APP.3.6.A18
+          title: 'Erweiterte Absicherung von Zonentransfers'
+          requirement_text: 'Um Zonentransfers stärker abzusichern, SOLLTEN zusätzlich Transaction Signatures (TSIG) eingesetzt werden.'
+        - id: APP.3.6.A19
+          title: 'Aussonderung von DNS-Servern'
+          requirement_text: 'Der DNS-Server SOLLTE sowohl aus dem Domain-Namensraum als auch aus dem Netzverbund gelöscht werden.'
+      hoch:
+        - id: APP.3.6.A20
+          title: 'Prüfung des Notfallplans auf Durchführbarkeit'
+          requirement_text: 'Es SOLLTE regelmäßig überprüft werden, ob der Notfallplan für DNS-Server durchführbar ist.'
+        - id: APP.3.6.A21
+          title: 'Hidden Master'
+          requirement_text: 'Um Angriffe auf den primären Advertising DNS-Server zu erschweren, SOLLTE eine sogenannte Hidden-Master-Anordnung vorgenommen werden.'
+        - id: APP.3.6.A22
+          title: 'Anbindung der DNS-Server über unterschiedliche Provider'
+          requirement_text: 'Extern erreichbare DNS-Server SOLLTEN über unterschiedliche Provider angebunden werden.'
 
   - id: APP.4.2
     title: 'SAP-ERP-System'
@@ -205,33 +538,156 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.4.2.A1
-          title: 'Planung des SAP-Einsatzes'
-          requirement_text: 'Der Einsatz von SAP-ERP-Systemen MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein APP.4.2 Anforderung A1.'
+          title: 'Sichere Konfiguration des SAP-ABAP-Stacks'
+          requirement_text: 'Der SAP-ABAP-Stack MUSS sicher konfiguriert werden. Dazu MÜSSEN die jeweiligen Profilparameter gesetzt werden, z. B. für die Passwortsicherheit, Authentisierung und Verschlüsselung. Auch MÜSSEN die Systemänderbarkeit und die Mandanten konfiguriert, das IMG-Customizing durchgeführt und die Betriebssystemkommandos abgesichert werden.'
         - id: APP.4.2.A2
-          title: 'Sichere SAP-Grundkonfiguration'
-          requirement_text: 'SAP-Systeme MUESSEN nach BSI-/SAP-Vorgaben sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.4.2 Anforderung A2.'
+          title: 'Sichere Konfiguration des SAP-JAVA-Stacks'
+          requirement_text: 'Der SAP-JAVA-Stack MUSS sicher konfiguriert werden, falls dieser eingesetzt wird. Dafür MÜSSEN andere Sicherheitsmechanismen und -konzepte erstellt werden als für den SAP-ABAP-Stack. Deshalb MÜSSEN Administrierende die Architektur des JAVA-Stacks kennen und wissen, wie er administriert wird. Zudem MÜSSEN nicht benötigte Dienste abgeschaltet, Standardinhalte entfernt, HTTP-Dienste geschützt und Zugriffe auf Administrationsschnittstellen eingeschränkt werden.'
         - id: APP.4.2.A3
-          title: 'Berechtigungsmanagement in SAP'
-          requirement_text: 'In SAP-Systemen MUSS ein rollenbasiertes Berechtigungsmanagement umgesetzt sein. Siehe BSI Kompendium 2023 Baustein APP.4.2 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Netzsicherheit'
+          requirement_text: 'Um die Netzsicherheit zu gewährleisten, MÜSSEN entsprechende Konzepte unter Berücksichtigung des SAP-ERP-Systems erstellt und Einstellungen am System durchgeführt werden. Weiterhin SOLLTEN der SAP-Router und SAP Web Dispatcher eingesetzt werden, um ein sicheres SAP-Netz zu implementieren und aufrechtzuerhalten. Um Sicherheitslücken aufgrund von Fehlinterpretationen oder Missverständnissen zu vermeiden, MÜSSEN sich die Bereiche IT-Betrieb, Firewall-Betrieb, Portalbetrieb und SAP-Betrieb miteinander abstimmen.'
+        - id: APP.4.2.A4
+          title: 'Absicherung der ausgelieferten SAP-Standard-Konten'
+          requirement_text: 'Direkt nach der Installation eines SAP-ERP-Systems MÜSSEN die voreingestellten Passwörter der SAP-Standard-Konten geändert werden. Auch MÜSSEN die eingerichteten SAP-Standard-Konten mithilfe geeigneter Maßnahmen abgesichert werden. Bestimmte SAP-Standard-Konten DÜRFEN NICHT benutzt werden, z. B. für RFC-Verbindungen und Background-Jobs.'
+        - id: APP.4.2.A5
+          title: 'Konfiguration und Absicherung der SAP-Konten-Verwaltung'
+          requirement_text: 'Die SAP-Konten-Verwaltung für ABAP-Systeme MUSS sorgfältig und sicher administriert werden. Aktivitäten, wie Konten anlegen, ändern und löschen, Passwörter zurücksetzen und entsperren sowie Rollen und Profile zuordnen, MÜSSEN zu den Aufgaben der Konto-Administration gehören.'
+        - id: APP.4.2.A6
+          title: 'Erstellung und Umsetzung eines Konten- und Berechtigungskonzeptes'
+          requirement_text: 'Für SAP-ERP-Systeme MUSS ein Konten- und Berechtigungskonzept ausgearbeitet und umgesetzt werden. Dabei MÜSSEN folgende Punkte berücksichtigt werden: Es SOLLTEN geeignete Kontrollmechanismen angewandt werden, um SoD-Konfliktfreiheit von Rollen und die Vergabe von kritischen Berechtigungen an Konten zu überwachen. Werden neben dem ABAP-Backend weitere Komponenten wie SAP HANA und SAP NetWeaver Gateway (für Fiori-Anwendungen) verwendet, MUSS das Design der Berechtigungen zwischen den Komponenten abgestimmt und synchronisiert werden.'
+        - id: APP.4.2.A7
+          title: 'Absicherung der SAP-Datenbanken'
+          requirement_text: 'Der Zugriff auf SAP-Datenbanken MUSS abgesichert werden. Administrierende SOLLTEN möglichst nur mit SAP-Tools auf die Datenbanken zugreifen können. Wird dazu Software von fremden Institutionen benutzt, MÜSSEN zusätzliche Sicherheitsmaßnahmen umgesetzt werden. Es DARF dann kein Schema-Konto des SAP Systems für die Verbindung zur Datenbank genutzt werden. Außerdem MÜSSEN Standardpasswörter geändert und bestimmte Datenbanktabellen (z. B. USR* Tabellen) besonders geschützt werden.'
+        - id: APP.4.2.A8
+          title: 'Absicherung der SAP-RFC-Schnittstelle'
+          requirement_text: 'Zum Schutz der Remote-Function-Call (RFC)-Schnittstelle MÜSSEN RFC-Verbindungen, RFC-Berechtigungen und die RFC-Gateways sicher konfiguriert werden. Es MÜSSEN für alle RFC-Verbindungen einheitliche Verwaltungsrichtlinien erstellt und umgesetzt werden. Dazu SOLLTEN die benötigten RFC-Verbindungen definiert und dokumentiert werden. Verbindungen mit hinterlegtem Passwort SOLLTEN nicht von niedriger privilegierten auf höher privilegierte Systeme (z. B. von Dev nach Prod) konfiguriert sein. Nicht mehr benutzte RFC-Verbindungen MÜSSEN gelöscht werden. Alle RFC-Gateways MÜSSEN sicher administriert werden. Dazu MÜSSEN geeignete Profilparameter gesetzt werden, z. B. gw/monitor, gw/reg_no_conn_info und snc/permit_insecure_start. Alle Verbindungen über ein Gateway MÜSSEN unter dem Sicherheitsaspekt analysiert und bewertet werden. Außerdem MUSS die Protokollierung aktiv sein. Es MÜSSEN Zugriffssteuerungslisten (ACLs) definiert werden.'
+        - id: APP.4.2.A9
+          title: 'Absicherung und Überwachung des Message-Servers'
+          requirement_text: 'Der Message-Server MUSS durch geeignete Einstellungen in den Profilparametern abgesichert werden. Es MUSS unter anderem entschieden werden, ob für den internen Message-Server noch ACLs aufgebaut werden. Der Message-Server MUSS mithilfe von geeigneten Mechanismen überwacht werden, damit z. B. Systemausfälle des Message-Servers schnell erkannt werden.'
+      standard:
+        - id: APP.4.2.A11
+          title: 'Sichere Installation eines SAP-ERP-Systems'
+          requirement_text: 'Bei der Installation eines SAP-ERP-Systems SOLLTEN aktuelle SAP-Sicherheitsleitfäden und -Dokumentationen berücksichtigt werden. Außerdem SOLLTEN die Sicherheitsrichtlinien der Institution eingehalten werden. Ebenso SOLLTE gewährleistet sein, dass das SAP-ERP-System auf einem abgesicherten Betriebssystem installiert wird.'
+        - id: APP.4.2.A12
+          title: 'SAP-Berechtigungsentwicklung'
+          requirement_text: 'Die technischen Berechtigungen SOLLTEN aufgrund fachlicher Vorgaben entwickelt werden. Des Weiteren SOLLTEN SAP-Berechtigungen auf dem Entwicklungssystem der SAP-Landschaft angepasst oder neu erstellt werden. Das SOLLTE auch bei S/4HANA die Berechtigungsentwicklung auf HANA-Datenbanken mit einschließen. Hier SOLLTEN Repository-Rollen aufgebaut und transportiert werden. Datenbankprivilegien SOLLTEN NICHT direkt an Konten vergeben werden. Bei Eigenentwicklungen für z. B. Transaktionen oder Berechtigungsobjekte SOLLTE die Transaktion SU24 gepflegt werden (Zuordnungen von Berechtigungsobjekten zu Transaktionen). Die Gesamtberechtigung * oder Intervalle in Objektausprägungen SOLLTEN vermieden werden. Die Berechtigungsentwicklung SOLLTE im Rahmen eines Änderungsmanagements durchgeführt werden. Es SOLLTE sichergestellt sein, dass das Produktivsystem ausreichend vor Berechtigungsänderungen geschützt ist und keine Entwicklerschlüssel vergeben werden. Das Qualitätssicherungssystem SOLLTE bei der Berechtigungsvergabe und ergänzenden Einstellungen analog zum Produktivsystem betrieben werden.'
+        - id: APP.4.2.A13
+          title: 'SAP-Passwortsicherheit'
+          requirement_text: 'Um eine sichere Anmeldung am SAP-ERP-System zu gewährleisten, SOLLTEN Profilparameter, Customizing-Schalter oder Sicherheitsrichtlinien geeignet eingestellt werden. Die eingesetzten Hash-Algorithmen für die gespeicherten Hashwerte der Passwörter in einem SAP-ERP-System SOLLTEN den aktuellen Sicherheitsstandards entsprechen. Zugriffe auf Tabellen mit Hashwerten SOLLTEN eingeschränkt werden.'
+        - id: APP.4.2.A14
+          title: 'Identifizierung kritischer SAP-Berechtigungen'
+          requirement_text: 'Der Umgang mit kritischen Berechtigungen SOLLTE streng kontrolliert werden. Es SOLLTE darauf geachtet werden, dass diese Berechtigungen, Rollen und Profile nur restriktiv vergeben werden. Dies SOLLTE auch für kritische Rollenkombinationen und additive Effekte wie z. B. Kreuzberechtigungen sichergestellt sein. Kritische Berechtigungen SOLLTEN regelmäßig identifiziert, überprüft und bewertet werden. Die SAP-Profile SAP_ALL und SAP_NEW* sowie das SAP-Berechtigungsobjekt S_DEVELOP (mit Änderungsberechtigungen ACTVT 01 und 02) SOLLTEN im Produktivsystem nicht vergeben werden. Notfall-Konten SOLLTEN von dieser Vorgabe ausgeschlossen sein.'
+        - id: APP.4.2.A15
+          title: 'Sichere Konfiguration des SAP-Routers'
+          requirement_text: 'Der SAP-Router SOLLTE den Zugang zum Netz regeln und die bestehende Firewall-Architektur zweckmäßig ergänzen. Auch SOLLTE er den Zugang zum SAP-ERP-System kontrollieren.'
+        - id: APP.4.2.A16
+          title: 'Umsetzung von Sicherheitsanforderungen für das Betriebssystem Windows'
+          requirement_text: 'Das SAP-ERP-System SOLLTE NICHT auf einem Windows-Domaincontroller installiert werden. Die SAP-spezifischen Konten wie <sid>adm oder SAPService <sid> SOLLTEN abgesichert werden. Nach der Installation SOLLTE das Konto <db><sid> gesperrt werden. Das Konto SAPService <sid> SOLLTE KEINE Rechte zur interaktiven Anmeldung besitzen. In Bezug auf diese Berechtigungen SOLLTEN die zum SAP-ERP-System dazugehörigen Systemressourcen wie Dateien, Prozesse und gemeinsam genutzte Speicher geschützt werden. Die spezifischen Berechtigungen der vom SAP-ERP-System angelegten Konten Guest, System, SAP system users = <sapsid>adm, SAPService<SAPSID> und Database users = <database-specific users> und Benutzendengruppen SOLLTEN mithilfe geeigneter Einstellungen abgesichert werden.'
+        - id: APP.4.2.A17
+          title: 'Umsetzung von Sicherheitsanforderungen für das Betriebssystem Unix'
+          requirement_text: 'Für die SAP-ERP-Systemverzeichnisse unter Unix SOLLTEN Zugriffsberechtigungen festgelegt werden. Auch SOLLTEN die Passwörter der systemspezifischen Konten <sid>adm und <db><sid> geändert werden. Nach der Installation SOLLTE das Konto <db><sid> gesperrt werden.'
+        - id: APP.4.2.A18
+          title: 'Abschaltung von unsicherer Kommunikation'
+          requirement_text: 'Die Kommunikation mit und zwischen SAP-ERP-Systemen SOLLTE mit SNC abgesichert werden. Sofern Datenbank und SAP-Applikationsserver auf verschiedenen Systemen betrieben werden, SOLLTE die Datenbankverbindung in geeigneter Weise verschlüsselt werden. Die internen Dienste des SAP-Applikationsservers SOLLTEN NUR mittels TLS miteinander kommunizieren.'
+        - id: APP.4.2.A19
+          title: 'Definition der Sicherheitsrichtlinien für Konten'
+          requirement_text: 'Für die jeweiligen Konten und Kontengruppen SOLLTEN spezifische Sicherheitsrichtlinien für Passwörter und Anmelderestriktionen erstellt werden. So SOLLTEN beispielsweise Konten mit kritischen Berechtigungen durch starke Passwortregeln abgesichert sein (Transaktion SECPOL). Die Sicherheitsrichtlinien SOLLTEN den Konten korrekt zugeordnet und regelmäßig überprüft werden.'
+        - id: APP.4.2.A20
+          title: 'Sichere SAP-GUI-Einstellungen'
+          requirement_text: 'Die SAP GUI SOLLTE auf allen Clients installiert und regelmäßig aktualisiert werden. Auch SOLLTEN SAP GUI ACLs aktiviert sowie angemessene Administrationsregeln verteilt und aktiviert werden.'
+        - id: APP.4.2.A22
+          title: 'Schutz des Spools im SAP-ERP-System'
+          requirement_text: 'Es SOLLTE sichergestellt sein, dass auf Daten der sequenziellen Datenverarbeitung wie Spool oder Druck nur eingeschränkt zugegriffen werden kann. Auch SOLLTE verhindert werden, dass unberechtigte Konten auf die vom SAP-Spoolsystem benutzte Datenablage TemSe zugreifen können. Die hierfür vergebenen Berechtigungen SOLLTEN regelmäßig überprüft werden.'
+        - id: APP.4.2.A23
+          title: 'Schutz der SAP-Hintergrundverarbeitung'
+          requirement_text: 'Die SAP-Hintergrundverarbeitung SOLLTE vor unberechtigten Zugriffen geschützt werden. Dafür SOLLTEN für Batch-Jobs verschiedene System-Konten nach ihren Funktionsbereichen definiert und angelegt werden. Der so genannte Benutzertyp Dialog SOLLTE dafür grundsätzlich NICHT zugelassen werden.'
+        - id: APP.4.2.A24
+          title: 'Aktivierung und Absicherung des Internet Communication Frameworks'
+          requirement_text: 'Es SOLLTE darauf geachtet werden, dass nur notwendige ICF-Dienste aktiviert werden. Alle ICF-Dienste, die unter einem ICF-Objekt sind, SOLLTEN nur einzeln aktiviert werden. ICF-Berechtigungen SOLLTEN restriktiv vergeben werden. Die Kommunikation SOLLTE verschlüsselt erfolgen.'
+        - id: APP.4.2.A25
+          title: 'Sichere Konfiguration des SAP Web Dispatchers'
+          requirement_text: 'Der SAP Web Dispatcher SOLLTE nicht der erste Einstiegspunkt aus dem Internet zum SAP-ERP-System sein. Der SAP Web Dispatcher SOLLTE auf dem aktuellen Stand sein. Er SOLLTE sicher konfiguriert sein.'
+        - id: APP.4.2.A26
+          title: 'Schutz von selbstentwickeltem Code im SAP-ERP-System'
+          requirement_text: 'Es SOLLTE ein Custom-Code-Managementprozess definiert werden, damit selbstentwickelter Code ausgetauscht oder entfernt wird, falls er durch SAP-Standard-Code ersetzt werden kann oder er nicht mehr benutzt wird. Ferner SOLLTEN die Anforderungen aus der Richtlinie für die Entwicklung von ABAP-Programmen berücksichtigt werden.'
+        - id: APP.4.2.A27
+          title: 'Audit des SAP-ERP-Systems'
+          requirement_text: 'Damit sichergestellt ist, dass alle internen und externen Richtlinien sowie Vorgaben eingehalten werden, SOLLTEN alle SAP-ERP-Systeme regelmäßig auditiert werden. Dafür SOLLTE der Security Optimization Service im SAP Solution Manager benutzt werden. Die Ergebnisse des Audits SOLLTEN ausgewertet und dokumentiert werden.'
+        - id: APP.4.2.A28
+          title: 'Erstellung eines Notfallkonzeptes'
+          requirement_text: 'Für SAP-ERP-Systeme SOLLTE ein Notfallkonzept erstellt und betrieben werden. Es SOLLTE die Geschäftsaktivitäten absichern und mit den Vorgaben aus dem Krisenmanagement oder dem Business-Continuity-Management übereinstimmen. Im Notfallkonzept SOLLTEN folgende Punkte beschrieben und definiert werden: Das Notfallkonzept SOLLTE regelmäßig aktualisiert werden.'
+        - id: APP.4.2.A29
+          title: 'Einrichten von Notfall-Konten'
+          requirement_text: 'Es SOLLTEN Notfall-Konten angelegt werden. Die eingerichteten Konten und Berechtigungen SOLLTEN stark kontrolliert und genau dokumentiert werden. Außerdem SOLLTEN alle von Notfall-Konten durchgeführten Aktivitäten protokolliert werden.'
+        - id: APP.4.2.A30
+          title: 'Implementierung eines kontinuierlichen Monitorings der Sicherheitseinstellungen'
+          requirement_text: 'Es SOLLTE ständig überwacht werden, ob alle Sicherheitseinstellungen des SAP-ERP-Systems korrekt sind. Außerdem SOLLTE überwacht werden, ob alle Patches und Updates ordnungsgemäß eingespielt wurden. Das SAP-Monitoring SOLLTE in die allgemeine Systemüberwachung der Institution integriert werden.'
+        - id: APP.4.2.A31
+          title: 'Konfiguration von SAP Single-Sign-On'
+          requirement_text: 'Sind mehrere SAP-ERP-Systeme vorhanden, SOLLTEN die Benutzenden auf die Systeme mit SAP Single-Sign-On (SAP SSO) zugreifen. Es SOLLTE in der Planungsphase entschieden werden, zwischen welchen SAP-ERP-Systemen der SSO-Mechanismus benutzt wird. Das SSO SOLLTE sicher konfiguriert und betrieben werden.'
+      hoch:
+        - id: APP.4.2.A32
+          title: 'Echtzeiterfassung und Alarmierung von irregulären Vorgängen'
+          requirement_text: 'Die wichtigsten Sicherheitsaufzeichnungsfunktionen der SAP-ERP-Systeme wie Security Audit Log oder System Log SOLLTEN kontinuierlich überwacht werden. Bei verdächtigen Vorgängen SOLLTEN automatisch die zuständigen Mitarbeitenden alarmiert werden. Um SAP-spezifische Sicherheitsvorfälle analysieren und Falschmeldungen von echten Sicherheitsvorfällen abgrenzen zu können, SOLLTEN entweder Mitarbeitende geschult oder entsprechende Serviceleistungen von Drittanbietenden genutzt werden.'
 
   - id: APP.4.3
-    title: 'Relationale Datenbanksysteme'
+    title: 'Relationale Datenbanken'
     description: 'Anforderungen an die sichere Planung, Konfiguration und den Betrieb relationaler Datenbanksysteme.'
     anforderungen:
       basis:
         - id: APP.4.3.A1
-          title: 'Planung des Einsatzes einer relationalen Datenbank'
-          requirement_text: 'Der Einsatz einer relationalen Datenbank MUSS sorgfaeltig geplant werden.'
-        - id: APP.4.3.A2
-          title: 'Sichere Grundkonfiguration des Datenbanksystems'
-          requirement_text: 'Das Datenbanksystem MUSS sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.4.3 Anforderung A2.'
+          title: 'Erstellung einer Sicherheitsrichtlinie für Datenbanksysteme'
+          requirement_text: 'Ausgehend von der allgemeinen Sicherheitsrichtlinie der Institution MUSS eine spezifische Sicherheitsrichtlinie für Datenbanksysteme erstellt werden. Darin MÜSSEN nachvollziehbar Anforderungen und Vorgaben beschrieben sein, wie Datenbanksysteme sicher betrieben werden sollen. Die Richtlinie MUSS allen im Bereich Datenbanksysteme zuständigen Mitarbeitenden bekannt sein. Sie MUSS grundlegend für ihre Arbeit sein. Wird die Richtlinie verändert oder wird von den Anforderungen abgewichen, MUSS dies mit dem oder der ISB abgestimmt und dokumentiert werden. Es MUSS regelmäßig überprüft werden, ob die Richtlinie noch korrekt umgesetzt ist. Die Ergebnisse MÜSSEN sinnvoll dokumentiert werden.'
         - id: APP.4.3.A3
-          title: 'Restriktive Vergabe von Datenbank-Berechtigungen'
-          requirement_text: 'Datenbank-Berechtigungen MUESSEN restriktiv nach dem Prinzip der geringsten Rechte vergeben werden. Siehe BSI Kompendium 2023 Baustein APP.4.3 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Basishärtung des Datenbankmanagementsystems'
+          requirement_text: 'Das Datenbankmanagementsystem MUSS gehärtet werden. Hierfür MUSS eine Checkliste mit den durchzuführenden Schritten zusammengestellt und abgearbeitet werden. Passwörter DÜRFEN NICHT im Klartext gespeichert werden. Die Basishärtung MUSS regelmäßig überprüft und, falls erforderlich, angepasst werden.'
+        - id: APP.4.3.A4
+          title: 'Geregeltes Anlegen neuer Datenbanken'
+          requirement_text: 'Neue Datenbanken MÜSSEN nach einem definierten Prozess angelegt werden. Wenn eine neue Datenbank angelegt wird, MÜSSEN Grundinformationen zur Datenbank nachvollziehbar dokumentiert werden.'
+        - id: APP.4.3.A9
+          title: 'Datensicherung eines Datenbanksystems'
+          requirement_text: 'Es MÜSSEN regelmäßig Systemsicherungen des DBMS und der Daten durchgeführt werden. Auch bevor eine Datenbank neu erzeugt wird, MUSS das Datenbanksystem gesichert werden. Hierfür SOLLTEN die dafür zulässigen Dienstprogramme benutzt werden. Alle Transaktionen SOLLTEN so gesichert werden, dass sie jederzeit wiederherstellbar sind. Wenn die Datensicherung die verfügbaren Kapazitäten übersteigt, SOLLTE ein erweitertes Konzept erstellt werden, um die Datenbank zu sichern, z. B. eine inkrementelle Sicherung. Abhängig vom Schutzbedarf der Daten SOLLTEN die Wiederherstellungsparameter vorgegeben werden (siehe CON.3 Datensicherungskonzept).'
+      standard:
+        - id: APP.4.3.A11
+          title: 'Ausreichende Dimensionierung der Hardware'
+          requirement_text: 'Datenbankmanagementsysteme SOLLTEN auf ausreichend dimensionierter Hardware installiert werden. Die Hardware SOLLTE über genügend Reserven verfügen, um auch eventuell steigenden Anforderungen gerecht zu werden. Zeichnen sich trotzdem während des Betriebs Ressourcenengpässe ab, SOLLTEN diese frühzeitig behoben werden. Wenn die Hardware dimensioniert wird, SOLLTE das erwartete Wachstum für den geplanten Einsatzzeitraum berücksichtigt werden.'
+        - id: APP.4.3.A12
+          title: 'Einheitlicher Konfigurationsstandard von Datenbankmanagementsystemen'
+          requirement_text: 'Für alle eingesetzten Datenbankmanagementsysteme SOLLTE ein einheitlicher Konfigurationsstandard definiert werden. Alle Datenbankmanagementsysteme SOLLTEN nach diesem Standard konfiguriert und einheitlich betrieben werden. Falls es bei einer Installation notwendig ist, vom Konfigurationsstandard abzuweichen, SOLLTEN alle Schritte von dem oder der ISB freigegeben und nachvollziehbar dokumentiert werden. Der Konfigurationsstandard SOLLTE regelmäßig überprüft und, falls erforderlich, angepasst werden.'
+        - id: APP.4.3.A13
+          title: 'Restriktive Handhabung von Datenbank-Links'
+          requirement_text: 'Es SOLLTE sichergestellt sein, dass nur Zuständige dazu berechtigt sind, Datenbank-Links (DB-Links) anzulegen. Werden solche Links angelegt, MÜSSEN so genannte Private DB-Links vor Public DB-Links bevorzugt angelegt werden. Alle von den Zuständigen angelegten DB-Links SOLLTEN dokumentiert und regelmäßig überprüft werden. Zudem SOLLTEN DB-Links mitberücksichtigt werden, wenn das Datenbanksystem gesichert wird (siehe APP.4.3.A9 Datensicherung eines Datenbanksystems).'
+        - id: APP.4.3.A16
+          title: 'Verschlüsselung der Datenbankanbindung'
+          requirement_text: 'Das Datenbankmanagementsystem SOLLTE so konfiguriert werden, dass Datenbankverbindungen immer verschlüsselt werden. Die dazu eingesetzten kryptografischen Verfahren und Protokolle SOLLTEN den internen Vorgaben der Institution entsprechen (siehe CON.1 Kryptokonzept).'
+        - id: APP.4.3.A17
+          title: 'Datenübernahme oder Migration'
+          requirement_text: 'Es SOLLTE vorab definiert werden, wie initial oder regelmäßig Daten in eine Datenbank übernommen werden sollen. Nachdem Daten übernommen wurden, SOLLTE geprüft werden, ob sie vollständig und unverändert sind.'
+        - id: APP.4.3.A18
+          title: 'Überwachung des Datenbankmanagementsystems'
+          requirement_text: 'Die für den sicheren Betrieb kritischen Parameter, Ereignisse und Betriebszustände des Datenbankmanagementsystems SOLLTEN definiert werden. Diese SOLLTEN mithilfe eines Monitoring-Systems überwacht werden. Für alle kritischen Parameter, Ereignisse und Betriebszustände SOLLTEN Schwellwerte festgelegt werden. Wenn diese Werte überschritten werden, MUSS geeignet reagiert werden. Hierbei SOLLTEN die zuständigen Mitarbeitenden alarmiert werden. Anwendungsspezifische Parameter, Ereignisse, Betriebszustände und deren Schwellwerte SOLLTEN mit den Zuständigen für die Fachanwendungen abgestimmt werden.'
+        - id: APP.4.3.A19
+          title: 'Schutz vor schädlichen Datenbank-Skripten'
+          requirement_text: 'Werden Datenbank-Skripte entwickelt, SOLLTEN dafür verpflichtende Qualitätskriterien definiert werden (siehe CON.8 Software-Entwicklung). Datenbank-Skripte SOLLTEN ausführlichen Funktionstests auf gesonderten Testsystemen unterzogen werden, bevor sie produktiv eingesetzt werden. Die Ergebnisse SOLLTEN dokumentiert werden.'
+        - id: APP.4.3.A20
+          title: 'Regelmäßige Audits'
+          requirement_text: 'Bei allen Komponenten des Datenbanksystems SOLLTE regelmäßig überprüft werden, ob alle festgelegten Sicherheitsmaßnahmen umgesetzt und diese korrekt konfiguriert sind. Dabei SOLLTE geprüft werden, ob der dokumentierte Stand dem Ist-Zustand entspricht und ob die Konfiguration des Datenbankmanagementsystems der dokumentierten Standardkonfiguration entspricht. Zudem SOLLTE geprüft werden, ob alle Datenbank-Skripte benötigt werden. Auch SOLLTE geprüft werden, ob sie dem Qualitätsstandard der Institution genügen. Zusätzlich SOLLTEN die Protokolldateien des Datenbanksystems und des Betriebssystems nach Auffälligkeiten untersucht werden (siehe DER.1 Detektion von sicherheitsrelevanten Ereignissen). Die Auditergebnisse SOLLTEN nachvollziehbar dokumentiert sein. Sie SOLLTEN mit dem Soll-Zustand abgeglichen werden. Abweichungen SOLLTE nachgegangen werden.'
+      hoch:
+        - id: APP.4.3.A21
+          title: 'Einsatz von Datenbank Security Tools'
+          requirement_text: 'Es SOLLTEN Informationssicherheitsprodukte für Datenbanken eingesetzt werden. Die eingesetzten Produkte SOLLTEN folgende Funktionen bereitstellen:'
+        - id: APP.4.3.A22
+          title: 'Notfallvorsorge'
+          requirement_text: 'Für das Datenbankmanagementsystem SOLLTE ein Notfallplan erstellt werden, der festlegt, wie ein Notbetrieb realisiert werden kann. Die für den Notfallplan notwendigen Ressourcen SOLLTEN ermittelt werden. Zusätzlich SOLLTE der Notfallplan definieren, wie aus dem Notbetrieb der Regelbetrieb wiederhergestellt werden kann. Der Notfallplan SOLLTE die nötigen Meldewege, Reaktionswege, Ressourcen und Reaktionszeiten der Fachverantwortlichen festlegen. Auf Basis eines Koordinationsplans zum Wiederanlauf SOLLTEN alle von der Datenbank abhängigen IT-Systeme vorab ermittelt und berücksichtigt werden.'
+        - id: APP.4.3.A23
+          title: 'Archivierung'
+          requirement_text: 'Ist es erforderlich, Daten eines Datenbanksystems zu archivieren, SOLLTE ein entsprechendes Archivierungskonzept erstellt werden. Es SOLLTE sichergestellt sein, dass die Datenbestände zu einem späteren Zeitpunkt wieder vollständig und konsistent verfügbar sind. Im Archivierungskonzept SOLLTEN sowohl die Intervalle der Archivierung als auch die Vorhaltefristen der archivierten Daten festgelegt werden. Zusätzlich SOLLTE dokumentiert werden, mit welcher Technik die Datenbanken archiviert wurden. Mit den archivierten Daten SOLLTEN regelmäßig Wiederherstellungstests durchgeführt werden. Die Ergebnisse SOLLTEN dokumentiert werden.'
+        - id: APP.4.3.A24
+          title: 'Datenverschlüsselung in der Datenbank'
+          requirement_text: 'Die Daten in den Datenbanken SOLLTEN verschlüsselt werden. Dabei SOLLTEN vorher unter anderem folgende Faktoren betrachtet werden:'
+        - id: APP.4.3.A25
+          title: 'Sicherheitsprüfungen von Datenbanksystemen'
+          requirement_text: 'Datenbanksysteme SOLLTEN regelmäßig mithilfe von Sicherheitsprüfungen kontrolliert werden. Bei den Sicherheitsprüfungen SOLLTEN die systemischen und spezifischen Aspekte des herstellenden Unternehmens der eingesetzten Datenbank-Infrastruktur (z. B. Verzeichnisdienste) sowie des eingesetzten Datenbankmanagementsystems betrachtet werden.'
 
   - id: APP.4.4
     title: 'Kubernetes'
@@ -239,16 +695,70 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.4.4.A1
-          title: 'Planung der Absicherung von Kubernetes'
-          requirement_text: 'Bevor Kubernetes eingesetzt wird, MUSS die Absicherung auf allen Ebenen (Cluster, Nodes, Pods, Images) geplant werden.'
+          title: 'Planung der Separierung der Anwendungen'
+          requirement_text: 'Vor der Inbetriebnahme MUSS geplant werden, wie die in den Pods betriebenen Anwendungen und deren unterschiedlichen Test- und Produktions-Betriebsumgebungen separiert werden. Auf Basis des Schutzbedarfs der Anwendungen MUSS festgelegt werden, welche Architektur der Namespaces, Meta-Tags, Cluster und Netze angemessen auf die Risiken eingeht und ob auch virtualisierte Server und Netze zum Einsatz kommen sollen. Die Planung MUSS Regelungen zu Netz-, CPU- und Festspeicherseparierung enthalten. Die Separierung SOLLTE auch das Netzzonenkonzept und den Schutzbedarf beachten und auf diese abgestimmt sein. Anwendungen SOLLTEN jeweils in einem eigenen Kubernetes-Namespace laufen, der alle Programme der Anwendung umfasst. Nur Anwendungen mit ähnlichem Schutzbedarf und ähnlichen möglichen Angriffsvektoren SOLLTEN einen Kubernetes-Cluster teilen.'
+        - id: APP.4.4.A2
+          title: 'Planung der Automatisierung mit CI/CD'
+          requirement_text: 'Wenn eine Automatisierung des Betriebs von Anwendungen in Kubernetes mithilfe von CI/CD stattfindet, DARF diese NUR nach einer geeigneten Planung erfolgen. Die Planung MUSS den gesamten Lebenszyklus von Inbetrieb- bis Außerbetriebnahme inklusive Entwicklung, Tests, Betrieb, Überwachung und Updates umfassen. Das Rollen- und Rechtekonzept sowie die Absicherung von Kubernetes Secrets MÜSSEN Teil der Planung sein.'
+        - id: APP.4.4.A3
+          title: 'Identitäts- und Berechtigungsmanagement bei Kubernetes'
+          requirement_text: 'Kubernetes und alle anderen Anwendungen der Control Plane MÜSSEN jede Aktion eines Benutzenden oder, im automatisierten Betrieb, einer entsprechenden Software authentifizieren und autorisieren, unabhängig davon, ob die Aktionen über einen Client, eine Weboberfläche oder über eine entsprechende Schnittstelle (API) erfolgt. Administrative Handlungen DÜRFEN NICHT anonym erfolgen. Benutzende DÜRFEN NUR die unbedingt notwendigen Rechte erhalten. Berechtigungen ohne Einschränkungen MÜSSEN sehr restriktiv vergeben werden. Nur ein kleiner Kreis von Personen SOLLTE berechtigt sein, Prozesse der Automatisierung zu definieren. Nur ausgewählte Administrierende SOLLTEN in Kubernetes das Recht erhalten, Freigaben für Festspeicher (Persistent Volumes) anzulegen oder zu ändern.'
         - id: APP.4.4.A4
-          title: 'Absicherung der Konfiguration der Control-Plane'
-          requirement_text: 'Die Control-Plane von Kubernetes MUSS gehaertet konfiguriert werden; administrative Zugriffe MUESSEN auf das Noetigste beschraenkt sein.'
+          title: 'Separierung von Pods'
+          requirement_text: 'Der Betriebssystem-Kernel der Nodes MUSS über Isolationsmechanismen zur Beschränkung von Sichtbarkeit und Ressourcennutzung der Pods untereinander verfügen (vergleiche Linux Namespaces und cgroups). Die Trennung MUSS dabei mindestens IDs von Prozessen sowie Benutzenden, Inter-Prozess-Kommunikation, Dateisystem und Netz inklusive Hostname umfassen.'
+        - id: APP.4.4.A5
+          title: 'Datensicherung im Cluster'
+          requirement_text: 'Es MUSS eine Datensicherung des Clusters erfolgen. Die Datensicherung MUSS umfassen: Es SOLLTEN auch Snapshots für den Betrieb der Anwendungen betrachtet werden. Snapshots DÜRFEN die Datensicherung NICHT ersetzen.'
       standard:
+        - id: APP.4.4.A6
+          title: 'Initialisierung von Pods'
+          requirement_text: 'Sofern im Pod zum Start eine Initialisierung z. B. einer Anwendung erfolgt, SOLLTE diese in einem eigenen Init-Container stattfinden. Es SOLLTE sichergestellt sein, dass die Initialisierung alle bereits laufenden Prozesse beendet. Kubernetes SOLLTE nur bei erfolgreicher Initialisierung die weiteren Container starten.'
+        - id: APP.4.4.A7
+          title: 'Separierung der Netze bei Kubernetes'
+          requirement_text: 'Die Netze für die Administration der Nodes, der Control Plane sowie die einzelnen Netze der Anwendungsdienste SOLLTEN separiert werden. Es SOLLTEN NUR die für den Betrieb notwendigen Netzports der Pods in die dafür vorgesehenen Netze freigegeben werden. Bei mehreren Anwendungen auf einem Kubernetes-Cluster SOLLTEN zunächst alle Netzverbindungen zwischen den Kubernetes-Namespaces untersagt und nur benötigte Netzverbindungen gestattet sein (Whitelisting). Die zur Administration der Nodes, der Runtime und von Kubernetes inklusive seiner Erweiterungen notwendigen Netzports SOLLTEN NUR aus dem Administrationsnetz und von Pods, die diese benötigen, erreichbar sein. Nur ausgewählte Administrierende SOLLTEN in Kubernetes berechtigt sein, das CNI zu verwalten und Regeln für das Netz anzulegen oder zu ändern.'
         - id: APP.4.4.A8
-          title: 'Separierung von Workloads ueber Namespaces'
-          requirement_text: 'Workloads unterschiedlicher Schutzklassen SOLLTEN durch Namespaces und Netzwerkrichtlinien voneinander getrennt werden.'
-      hoch: []
+          title: 'Absicherung von Konfigurationsdateien bei Kubernetes'
+          requirement_text: 'Die Konfigurationsdateien des Kubernetes-Clusters, inklusive aller Erweiterungen und Anwendungen, SOLLTEN versioniert und annotiert werden. Zugangsrechte auf die Verwaltungssoftware der Konfigurationsdateien SOLLTEN minimal vergeben werden. Zugriffsrechte für lesenden und schreibenden Zugriff auf die Konfigurationsdateien der Control Plane SOLLTEN besonders sorgfältig vergeben und eingeschränkt sein.'
+        - id: APP.4.4.A9
+          title: 'Nutzung von Kubernetes Service-Accounts'
+          requirement_text: 'Pods SOLLTEN NICHT den "default"-Service-Account nutzen. Dem "default"-Service-Account SOLLTEN keine Rechte eingeräumt werden. Pods für unterschiedliche Anwendungen SOLLTEN jeweils unter eigenen Service-Accounts laufen. Berechtigungen für die Service-Accounts der Pods der Anwendungen SOLLTEN auf die unbedingt notwendigen Rechte beschränkt werden. Pods, die keinen Service-Account benötigen, SOLLTEN diesen nicht einsehen können und keinen Zugriff auf entsprechende Token haben. Nur Pods der Control Plane und Pods, die diese unbedingt benötigen, SOLLTEN privilegierte Service-Accounts nutzen. Programme der Automatisierung SOLLTEN jeweils eigene Token erhalten, auch wenn sie aufgrund ähnlicher Aufgaben einen gemeinsamen Service-Account nutzen.'
+        - id: APP.4.4.A10
+          title: 'Absicherung von Prozessen der Automatisierung'
+          requirement_text: 'Alle Prozesse der Automatisierungssoftware, wie CI/CD und deren Pipelines, SOLLTEN nur mit unbedingt notwendigen Rechten arbeiten. Wenn unterschiedliche Gruppen von Benutzenden die Konfiguration über die Automatisierungssoftware verändern oder Pods starten können, SOLLTE dies für jede Gruppe durch eigene Prozesse durchgeführt werden, die nur die für die jeweilige Gruppe notwendigen Rechte besitzen.'
+        - id: APP.4.4.A11
+          title: 'Überwachung der Container'
+          requirement_text: 'In Pods SOLLTE jeder Container einen Health Check für den Start und den Betrieb („readiness“ und „liveness“) definieren. Diese Checks SOLLTEN Auskunft über die Verfügbarkeit der im Pod ausgeführten Software geben. Die Checks SOLLTEN fehlschlagen, wenn die überwachte Software ihre Aufgaben nicht ordnungsgemäß wahrnehmen kann. Für jede dieser Kontrollen SOLLTE eine dem im Pod betriebenen Dienst angemessene Zeitspanne definieren. Auf Basis dieser Checks SOLLTE Kubernetes die Pods löschen oder neu starten.'
+        - id: APP.4.4.A12
+          title: 'Absicherung der Infrastruktur-Anwendungen'
+          requirement_text: 'Sofern eine eigene Registry für Images oder eine Software zur Automatisierung, zur Verwaltung des Festspeichers, zur Speicherung von Konfigurationsdateien oder ähnliches im Einsatz ist, SOLLTE deren Absicherung mindestens betrachten:'
+      hoch:
+        - id: APP.4.4.A13
+          title: 'Automatisierte Auditierung der Konfiguration'
+          requirement_text: 'Es SOLLTE ein automatisches Audit der Einstellungen der Nodes, von Kubernetes und der Pods der Anwendungen gegen eine definierte Liste der erlaubten Einstellungen und gegen standardisierte Benchmarks erfolgen. Kubernetes SOLLTE die aufgestellten Regeln im Cluster durch Anbindung geeigneter Werkzeuge durchsetzen.'
+        - id: APP.4.4.A14
+          title: 'Verwendung dedizierter Nodes'
+          requirement_text: 'In einem Kubernetes-Cluster SOLLTEN die Nodes dedizierte Aufgaben zugewiesen bekommen und jeweils nur Pods betreiben, welche der jeweiligen Aufgabe zugeordnet sind. Bastion Nodes SOLLTEN alle ein- und ausgehenden Datenverbindungen der Anwendungen zu anderen Netzen übernehmen. Management Nodes SOLLTEN die Pods der Control Plane betreiben und sie SOLLTEN nur die Datenverbindungen der Control Plane übernehmen. Sofern eingesetzt, SOLLTEN Speicher-Nodes nur die Pods der Festspeicherdienste im Cluster betreiben.'
+        - id: APP.4.4.A15
+          title: 'Trennung von Anwendungen auf Node- und Cluster-Ebene'
+          requirement_text: 'Anwendungen mit einem sehr hohen Schutzbedarf SOLLTEN jeweils eigene Kubernetes-Cluster oder dedizierte Nodes nutzen, die nicht für andere Anwendungen bereitstehen.'
+        - id: APP.4.4.A16
+          title: 'Verwendung von Operatoren'
+          requirement_text: 'Die Automatisierung von Betriebsaufgaben in Operatoren SOLLTE bei besonders kritischen Anwendungen und den Programmen der Control Plane zum Einsatz kommen.'
+        - id: APP.4.4.A17
+          title: 'Attestierung von Nodes'
+          requirement_text: 'Nodes SOLLTEN eine kryptografisch und möglichst mit einem TPM verifizierte gesicherte Zustandsmeldung an die Control Plane senden. Die Control Plane SOLLTE nur Nodes in den Cluster aufnehmen, die erfolgreich ihre Unversehrtheit nachweisen konnten.'
+        - id: APP.4.4.A18
+          title: 'Verwendung von Mikro-Segmentierung'
+          requirement_text: 'Die Pods SOLLTEN auch innerhalb eines Kubernetes-Namespace nur über die notwendigen Netzports miteinander kommunizieren können. Es SOLLTEN Regeln innerhalb des CNI existieren, die alle bis auf die für den Betrieb notwendigen Netzverbindungen innerhalb des Kubernetes-Namespace unterbinden. Diese Regeln SOLLTEN Quelle und Ziel der Verbindungen genau definieren und dafür mindestens eines der folgenden Kriterien nutzen: Service-Name, Metadaten („Labels"), die Kubernetes Service Accounts oder zertifikatsbasierte Authentifizierung. Alle Kriterien, die als Bezeichnung für diese Verbindung dienen, SOLLTEN so abgesichert sein, dass sie nur von berechtigten Personen und Verwaltungs-Diensten verändert werden können.'
+        - id: APP.4.4.A19
+          title: 'Hochverfügbarkeit von Kubernetes'
+          requirement_text: 'Der Betrieb SOLLTE so aufgebaut sein, dass bei Ausfall eines Standortes die Cluster und damit die Anwendungen in den Pods entweder ohne Unterbrechung weiterlaufen oder in kurzer Zeit an einem anderen Standort neu anlaufen können. Für den Wiederanlauf SOLLTEN alle notwendigen Konfigurationsdateien, Images, Nutzdaten, Netzverbindungen und sonstige für den Betrieb benötigten Ressourcen inklusive der zum Betrieb nötigen Hardware bereits an diesem Standort verfügbar sein. Für den unterbrechungsfreien Betrieb des Clusters SOLLTEN die Control Plane von Kubernetes, die Infrastruktur-Anwendungen der Cluster sowie die Pods der Anwendungen anhand von Standort-Daten der Nodes über mehrere Brandabschnitte so verteilt werden, dass der Ausfall eines Brandabschnitts nicht zum Ausfall der Anwendung führt.'
+        - id: APP.4.4.A20
+          title: 'Verschlüsselte Datenhaltung bei Pods'
+          requirement_text: 'Die Dateisysteme mit den persistenten Daten der Control Plane (hier besonders etcd) und der Anwendungsdienste SOLLTEN verschlüsselt werden.'
+        - id: APP.4.4.A21
+          title: 'Regelmäßiger Restart von Pods'
+          requirement_text: 'Bei einem erhöhten Risiko für Fremdeinwirkung und einem sehr hohen Schutzbedarf SOLLTEN Pods regelmäßig gestoppt und neu gestartet werden. Kein Pod SOLLTE länger als 24 Stunden laufen. Dabei SOLLTE die Verfügbarkeit der Anwendungen im Pod sichergestellt sein.'
 
   - id: APP.4.6
     title: 'SAP ABAP-Programmierung'
@@ -256,67 +766,220 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.4.6.A1
-          title: 'Sichere ABAP-Programmierung'
-          requirement_text: 'ABAP-Code MUSS nach den Prinzipien sicherer Software-Entwicklung erstellt werden. Siehe BSI Kompendium 2023 Baustein APP.4.6 Anforderung A1.'
+          title: 'Absicherung von Reports mit Berechtigungsprüfungen'
+          requirement_text: 'Es MUSS sichergestellt sein, dass nur berechtigte Personen selbst programmierte Auswertungen (Reports) starten können. Deswegen MUSS jeder Report explizite, zum Kontext passende Berechtigungsprüfungen durchführen.'
         - id: APP.4.6.A2
-          title: 'Code-Review und ABAP Test Cockpit'
-          requirement_text: 'ABAP-Code MUSS einem Review unterzogen und mit ABAP Test Cockpit (oder gleichwertig) auf Schwachstellen geprueft werden. Siehe BSI Kompendium 2023 Baustein APP.4.6 Anforderung A2.'
+          title: 'Formal korrekte Auswertung von Berechtigungsprüfungen'
+          requirement_text: 'Jede Berechtigungsprüfung im Code MUSS durch Abfrage des Rückgabewertes SY-SUBRC ausgewertet werden.'
         - id: APP.4.6.A3
-          title: 'Trennung von Entwicklungs-, Test- und Produktivsystem'
-          requirement_text: 'Entwicklungs-, Test- und Produktivsysteme MUESSEN getrennt sein. Siehe BSI Kompendium 2023 Baustein APP.4.6 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Berechtigungsprüfung vor dem Start einer Transaktion'
+          requirement_text: 'Wenn Entwickelnde den Befehl CALL TRANSACTION verwenden, MUSS vorher immer eine Startberechtigungsprüfung durchgeführt werden.'
+        - id: APP.4.6.A4
+          title: 'Verzicht auf proprietäre Berechtigungsprüfungen'
+          requirement_text: 'Jede Berechtigungsprüfung MUSS technisch über den dafür vorgesehenen Befehl AUTHORITY-CHECK erfolgen. Proprietäre Berechtigungsprüfungen, z. B. basierend auf Konto-Kennungen, DÜRFEN NICHT benutzt werden.'
+      standard:
+        - id: APP.4.6.A5
+          title: 'Erstellung einer Richtlinie für die ABAP-Entwicklung'
+          requirement_text: 'Es SOLLTE eine Richtlinie für die Entwicklung von ABAP-Programmen erstellt werden. Die Richtlinie SOLLTE neben Namenskonventionen auch Vorgaben zu ABAP-Elementen beinhalten, die verwendet bzw. nicht verwendet werden dürfen. Die Anforderungen aus diesem Baustein SOLLTEN in die Richtlinie aufgenommen werden. Die Richtlinie SOLLTE für die Entwickelnden verbindlich sein.'
+        - id: APP.4.6.A6
+          title: 'Vollständige Ausführung von Berechtigungsprüfungen'
+          requirement_text: 'Bei einer Berechtigungsprüfung im ABAP-Code (AUTHORITY-CHECK <OBJECT>) SOLLTE sichergestellt sein, dass alle Felder des relevanten Berechtigungsobjekts überprüft werden. Wenn einzelne Felder tatsächlich nicht benötigt werden, SOLLTEN sie als DUMMY gekennzeichnet werden. Zusätzlich SOLLTE am Feld der Grund für die Ausnahme dokumentiert werden.'
+        - id: APP.4.6.A7
+          title: 'Berechtigungsprüfung während der Eingabeverarbeitung'
+          requirement_text: 'Funktionscodes und Bildschirmelemente von ABAP-Dynpro-Anwendungen SOLLTEN konsistent sein. Wenn ein Bildschirmelement abgeschaltet wurde, dann SOLLTE eine Anwendung NICHT ohne adäquate Berechtigungsprüfungen auf Ereignisse dieses Elements reagieren. Wenn bestimmte Einträge eines Dynpro-Menüs ausgeblendet oder einzelne Schaltflächen deaktiviert werden, dann SOLLTEN auch die zugehörigen Funktionscodes nicht ausgeführt werden.'
+        - id: APP.4.6.A8
+          title: 'Schutz vor unberechtigten oder manipulierenden Zugriffen auf das Dateisystem'
+          requirement_text: 'Wenn Zugriffe auf Dateien des SAP-Servers von Eingaben der Benutzenden abhängen, SOLLTEN diese Eingaben vor dem Zugriff validiert werden.'
+        - id: APP.4.6.A9
+          title: 'Berechtigungsprüfung in remote-fähigen Funktionsbausteinen'
+          requirement_text: 'Es SOLLTE sichergestellt werden, dass alle remote-fähigen Funktionsbausteine im Programmcode explizit prüfen, ob der Aufrufende berechtigt ist, die zugehörige Businesslogik auszuführen.'
+        - id: APP.4.6.A10
+          title: 'Verhinderung der Ausführung von Betriebssystemkommandos'
+          requirement_text: 'Jedem Aufruf eines erlaubten Betriebssystemkommandos SOLLTE eine entsprechende Berechtigungsprüfung (Berechtigungsobjekt S_LOG_COM) vorangestellt werden. Eingaben von Benutzenden SOLLTEN NICHT Teil eines Kommandos sein. Deswegen SOLLTEN Betriebssystemaufrufe ausschließlich über dafür vorgesehene SAP-Standardfunktionsbausteine ausgeführt werden.'
+        - id: APP.4.6.A11
+          title: 'Vermeidung von eingeschleustem Schadcode'
+          requirement_text: 'Die ABAP-Befehle INSERT REPORT und GENERATE SUBROUTINE POOL SOLLTEN NICHT verwendet werden.'
+        - id: APP.4.6.A12
+          title: 'Vermeidung von generischer Modulausführung'
+          requirement_text: 'Transaktionen, Programme, Funktionsbausteine und Methoden SOLLTEN NICHT generisch ausführbar sein. Sollte es wichtige Gründe für eine generische Ausführung geben, SOLLTE detailliert dokumentiert werden, wo und warum dies geschieht. Zusätzlich SOLLTE eine Allowlist definiert werden, die alle erlaubten Module enthält. Bevor ein Modul aufgerufen wird, SOLLTE die Eingabe von Benutzenden mit der Allowlist abgeglichen werden.'
+        - id: APP.4.6.A13
+          title: 'Vermeidung von generischem Zugriff auf Tabelleninhalte'
+          requirement_text: 'Tabelleninhalte SOLLTEN NICHT generisch ausgelesen werden. Sollte es wichtige Gründe dafür geben, dies doch zu tun, SOLLTE detailliert dokumentiert werden, wo und warum dies geschieht. Außerdem SOLLTE dann gewährleistet sein, dass sich der dynamische Tabellenname auf eine kontrollierbare Liste von Werten beschränkt.'
+        - id: APP.4.6.A14
+          title: 'Vermeidung von nativen SQL-Anweisungen'
+          requirement_text: 'Die Schnittstelle ABAP Database Connectivity (ADBC) SOLLTE NICHT verwendet werden. Eingaben von Benutzenden SOLLTEN NICHT Teil von ADBC-Befehlen sein.'
+        - id: APP.4.6.A15
+          title: 'Vermeidung von Datenlecks'
+          requirement_text: 'Es SOLLTE eine ausreichend sichere Berechtigungsprüfung durchgeführt werden, bevor geschäftskritische Daten angezeigt, übermittelt oder exportiert werden. Vorgesehene (gewollte) Möglichkeiten des Exports SOLLTEN dokumentiert werden.'
+        - id: APP.4.6.A16
+          title: 'Verzicht auf systemabhängige Funktionsausführung'
+          requirement_text: 'ABAP-Programme SOLLTEN NICHT systemabhängig programmiert werden, so dass sie nur auf einem bestimmten SAP-System ausgeführt werden können. Sollte dies jedoch unbedingt erforderlich sein, SOLLTE es detailliert dokumentiert werden. Außerdem SOLLTE der Code dann manuell überprüft werden.'
+        - id: APP.4.6.A17
+          title: 'Verzicht auf mandantenabhängige Funktionsausführung'
+          requirement_text: 'ABAP-Programme SOLLTEN NICHT mandantenabhängig programmiert werden, so dass sie nur von einem bestimmten Mandanten ausgeführt werden können. Sollte dies jedoch unbedingt erforderlich sein, SOLLTE es detailliert dokumentiert werden. Außerdem SOLLTEN dann zusätzliche Sicherheitsmaßnahmen ergriffen werden, wie beispielsweise eine manuelle Code-Überprüfung (manuelles Code-Review) oder eine Qualitätssicherung auf dem entsprechenden Mandanten.'
+        - id: APP.4.6.A18
+          title: 'Vermeidung von Open-SQL-Injection-Schwachstellen'
+          requirement_text: 'Dynamisches Open SQL SOLLTE NICHT verwendet werden. Falls Datenbankzugriffe mit dynamischen SQL-Bedingungen notwendig sind, SOLLTEN KEINE Eingaben von Benutzenden in der jeweiligen Abfrage übertragen werden. Wenn das dennoch der Fall ist, SOLLTEN die Eingaben von Benutzenden zwingend geprüft werden (Output Encoding).'
+        - id: APP.4.6.A19
+          title: 'Schutz vor Cross-Site-Scripting'
+          requirement_text: 'Auf selbst entwickeltes HTML in Business-Server-Pages-(BSP)-Anwendungen oder HTTP-Handlern SOLLTE möglichst verzichtet werden.'
+        - id: APP.4.6.A20
+          title: 'Keine Zugriffe auf Daten eines anderen Mandanten'
+          requirement_text: 'Die automatische Mandantentrennung SOLLTE NICHT umgangen werden. Auf Daten anderer Mandanten SOLLTE NICHT mittels EXEC SQL oder der Open SQL Option CLIENT SPECIFIED zugegriffen werden.'
+        - id: APP.4.6.A21
+          title: 'Verbot von verstecktem ABAP-Quelltext'
+          requirement_text: 'Der Quelltext eines selbst erstellten ABAP-Programms SOLLTE immer lesbar sein. Techniken, die das verhindern (Obfuskation), SOLLTEN NICHT verwendet werden.'
+      hoch:
+        - id: APP.4.6.A22
+          title: 'Einsatz von ABAP-Codeanalyse Werkzeugen'
+          requirement_text: 'Zur automatisierten Überprüfung von ABAP-Code auf sicherheitsrelevante Programmierfehler, funktionale und technische Fehler sowie auf qualitative Schwachstellen SOLLTE ein ABAP-Codeanalyse-Werkzeug eingesetzt werden.'
 
   - id: APP.5.2
-    title: 'Microsoft Exchange/Outlook'
+    title: 'Microsoft Exchange und Outlook'
     description: 'Anforderungen an die sichere Planung und den Betrieb von Microsoft Exchange und Outlook.'
     anforderungen:
       basis:
         - id: APP.5.2.A1
-          title: 'Planung des Einsatzes eines Microsoft Exchange-Servers'
-          requirement_text: 'Der Einsatz von Microsoft Exchange MUSS sorgfaeltig geplant werden.'
+          title: 'Planung des Einsatzes von Exchange und Outlook'
+          requirement_text: 'Bevor Exchange und Outlook eingesetzt werden, MUSS die Institution deren Einsatz sorgfältig planen. Dabei MUSS sie mindestens folgende Punkte beachten:'
         - id: APP.5.2.A2
-          title: 'Sichere Grundkonfiguration von Exchange'
-          requirement_text: 'Exchange-Server MUESSEN nach BSI-/Microsoft-Vorgaben sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.5.2 Anforderung A2.'
+          title: 'Auswahl einer geeigneten Exchange-Infrastruktur'
+          requirement_text: 'Der IT-Betrieb MUSS auf Basis der Planung des Einsatzes von Exchange entscheiden, mit welchen IT-Systemen und Anwendungskomponenten sowie in welcher hierarchischen Abstufung die Exchange-Infrastruktur realisiert wird. Im Rahmen der Auswahl MUSS auch entschieden werden, ob die Exchange-Systeme als Cloud- oder lokaler Dienst betrieben werden sollen.'
         - id: APP.5.2.A3
-          title: 'Schutz vor Spam und Schadsoftware'
-          requirement_text: 'Exchange-Server MUESSEN gegen Spam, Phishing und Schadsoftware geschuetzt sein. Siehe BSI Kompendium 2023 Baustein APP.5.2 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Berechtigungsmanagement und Zugriffsrechte'
+          requirement_text: 'Zusätzlich zum allgemeinen Berechtigungskonzept MUSS die Institution ein Berichtigungskonzept für die Systeme der Exchange-Infrastruktur erstellen, geeignet dokumentieren und anwenden. Der IT-Betrieb MUSS serverseitige Benutzendenprofile für einen rechnerunabhängigen Zugriff der Benutzenden auf Exchange-Daten verwenden. Er MUSS die Standard-NTFS-Berechtigungen für das Exchange-Verzeichnis so anpassen, dass nur autorisierte Administrierende und Systemkonten auf die Daten in diesem Verzeichnis zugreifen können.'
+        - id: APP.5.2.A5
+          title: 'Datensicherung von Exchange'
+          requirement_text: 'Exchange-Server MÜSSEN vor Installationen und Konfigurationsänderungen sowie in zyklischen Abständen gesichert werden. Dabei MÜSSEN insbesondere die Exchange-Server-Datenbanken gesichert werden. Gelöschte Exchange-Objekte SOLLTEN erst nach einiger Zeit aus der Datenbank entfernt werden.'
+      standard:
+        - id: APP.5.2.A7
+          title: 'Migration von Exchange-Systemen'
+          requirement_text: 'Der IT-Betrieb SOLLTE alle Migrationsschritte gründlich planen und dokumentieren. Der IT-Betrieb SOLLTE dabei Postfächer, Objekte, Sicherheitsrichtlinien, Active-Directory-Konzepte sowie die Anbindung an andere E-Mail-Systeme berücksichtigen. Außerdem SOLLTE er Funktionsunterschiede zwischen verschiedenen Versionen von Exchange beachten. Das neue Exchange-System SOLLTE, bevor es installiert wird, in einem separaten Testnetz geprüft werden.'
+        - id: APP.5.2.A9
+          title: 'Sichere Konfiguration von Exchange-Servern'
+          requirement_text: 'Der IT-Betrieb SOLLTE Exchange-Server entsprechend der Vorgaben aus der Sicherheitsrichtlinie installieren und konfigurieren. Konnektoren SOLLTEN sicher konfiguriert werden. Der IT-Betrieb SOLLTE die Protokollierung des Exchange-Systems aktivieren. Für vorhandene benutzendenspezifische Anpassungen SOLLTE ein entsprechendes Konzept erstellt werden. Bei der Verwendung von funktionalen Erweiterungen SOLLTE sichergestellt sein, dass die definierten Anforderungen an die Schutzziele Vertraulichkeit, Integrität und Verfügbarkeit weiterhin erfüllt sind.'
+        - id: APP.5.2.A10
+          title: 'Sichere Konfiguration von Outlook'
+          requirement_text: 'Der IT-Betrieb SOLLTE für jeden Benutzenden ein eigenes Outlook-Profil mit benutzendenspezifischen Einstellungen anlegen. Der IT-Betrieb SOLLTE Outlook so konfigurieren, dass nur notwendige Informationen an andere Benutzende übermittelt werden. Der IT-Betrieb SOLLTE die Benutzenden darüber informieren, welche Informationen automatisiert an andere Benutzende übermittelt werden. Lesebestätigungen und Informationen, die auf die interne Struktur der Institution schließen lassen, SOLLTEN NICHT an Externe übermittelt werden.'
+        - id: APP.5.2.A11
+          title: 'Absicherung der Kommunikation zwischen Exchange-Systemen'
+          requirement_text: 'Der IT-Betrieb SOLLTE nachvollziehbar entscheiden, mit welchen Schutzmechanismen die Kommunikation zwischen Exchange-Systemen abgesichert wird. Insbesondere SOLLTE der IT-Betrieb festlegen, wie die Kommunikation zu folgenden Schnittstellen abgesichert wird:'
+        - id: APP.5.2.A12
+          title: 'Einsatz von Outlook Anywhere, MAPI over HTTP und Outlook im Web'
+          requirement_text: 'Der IT-Betrieb SOLLTE Outlook Anywhere, MAPI over HTTP und Outlook im Web entsprechend den Sicherheitsanforderungen der Institution konfigurieren. Der Zugriff auf Exchange über das Internet SOLLTE auf die notwendigen Benutzenden beschränkt werden.'
+      hoch:
+        - id: APP.5.2.A17
+          title: 'Verschlüsselung von Exchange-Datenbankdateien'
+          requirement_text: 'Der IT-Betrieb SOLLTE ein Konzept für die Verschlüsselung von PST-Dateien und Informationsspeicher-Dateien erstellen. Die Institution SOLLTE die Benutzenden über die Funktionsweise und die Schutzmechanismen bei der Verschlüsselung von PST-Dateien informieren. Weitere Aspekte für lokale PST-Dateien, die berücksichtigt werden SOLLTEN, wenn Exchange-Systemdatenbanken verschlüsselt werden, sind: Mechanismen wie z. B. Encrypting File System oder Windows BitLocker Laufwerkverschlüsselung SOLLTEN zur Absicherung der PST-Dateien genutzt werden.'
 
   - id: APP.5.3
-    title: 'Allgemeiner E-Mail-Client/-Server'
+    title: 'Allgemeiner E-Mail-Client und -Server'
     description: 'Anforderungen an Konfiguration und Betrieb allgemeiner E-Mail-Clients und -Server.'
     anforderungen:
       basis:
         - id: APP.5.3.A1
-          title: 'Sichere Konfiguration von E-Mail-Clients'
-          requirement_text: 'E-Mail-Clients MUESSEN sicher konfiguriert werden.'
+          title: 'Sichere Konfiguration der E-Mail-Clients'
+          requirement_text: 'Die Institution MUSS eine sichere Konfiguration für die E-Mail-Clients vorgeben. Die E-Mail-Clients MÜSSEN den Benutzenden vorkonfiguriert zur Verfügung gestellt werden. Die Institution SOLLTE sicherstellen, dass sicherheitsrelevante Teile der Konfiguration nicht von Benutzenden geändert werden können. Ist dies nicht möglich, MUSS die Institution darauf hinweisen, dass die Konfiguration nicht selbstständig geändert werden darf. Bevor Dateianhänge aus E-Mails geöffnet werden, MÜSSEN sie auf Schadsoftware überprüft werden. Die Dateianhänge MÜSSEN auf dem Client oder auf dem E-Mail-Server überprüft werden. E-Mail-Clients MÜSSEN so konfiguriert werden, dass sie eventuell vorhandenen HTML-Code und andere aktive Inhalte in E-Mails nicht automatisch interpretieren. Vorschaufunktionen für Datei-Anhänge MÜSSEN so konfiguriert werden, dass sie Dateien nicht automatisch interpretieren. E-Mail-Filterregeln sowie die automatische Weiterleitung von E-Mails MÜSSEN auf notwendige Anwendungsfälle beschränkt werden. E-Mail-Clients MÜSSEN für die Kommunikation mit E-Mail-Servern über nicht vertrauenswürdige Netze eine sichere Transportverschlüsselung einsetzen.'
         - id: APP.5.3.A2
-          title: 'Verschluesselung und Signatur von E-Mails'
-          requirement_text: 'Vertrauliche E-Mails MUESSEN verschluesselt und ggf. signiert werden. Siehe BSI Kompendium 2023 Baustein APP.5.3 Anforderung A2.'
+          title: 'Sicherer Betrieb von E-Mail-Servern'
+          requirement_text: 'Für den E-Mail-Empfang über nicht vertrauenswürdige Netze MÜSSEN E-Mail-Server eine sichere Transportverschlüsselung anbieten. Der Empfang von E-Mails über unverschlüsselte Verbindungen SOLLTE deaktiviert werden. Versenden E-Mail-Server von sich aus E-Mails an andere E-Mail-Server, SOLLTEN sie eine sichere Transportverschlüsselung nutzen. Der IT-Betrieb SOLLTE den E-Mail-Versand durch unsichere Netze über unverschlüsselte Verbindungen deaktivieren. Der IT-Betrieb MUSS den E-Mail-Server so konfigurieren, dass E-Mail-Clients nur über eine sichere Transportverschlüsselung auf Postfächer zugreifen können, wenn dies über nicht vertrauenswürdige Netze passiert. Die Institution MUSS alle erlaubten E-Mail-Protokolle und Dienste festlegen. Der IT-Betrieb MUSS Schutzmechanismen gegen Denial-of-Service (DoS)-Attacken ergreifen. Werden Nachrichten auf einem E-Mail-Server gespeichert, MUSS der IT-Betrieb eine geeignete Größenbeschränkung für das serverseitige Postfach einrichten und dokumentieren. Außerdem MUSS der IT-Betrieb den E-Mail-Server so einstellen, dass er nicht als Spam-Relay missbraucht werden kann.'
         - id: APP.5.3.A3
-          title: 'Schutz des E-Mail-Servers'
-          requirement_text: 'E-Mail-Server MUESSEN sicher konfiguriert und gegen Spam und Schadsoftware geschuetzt sein. Siehe BSI Kompendium 2023 Baustein APP.5.3 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Datensicherung und Archivierung von E-Mails'
+          requirement_text: 'Der IT-Betrieb MUSS die Daten der E-Mail-Server und -Clients regelmäßig sichern. Dafür MUSS die Institution regeln, wie die gesendeten und empfangenen E-Mails der E-Mail-Clients sowie die E-Mails auf den Servern gesichert werden. Die Institution SOLLTE ebenfalls bei der Archivierung beachten, dass E-Mails möglicherweise nur lokal auf Clients gespeichert sind.'
+        - id: APP.5.3.A4
+          title: 'Spam- und Virenschutz auf dem E-Mail-Server'
+          requirement_text: 'Der IT-Betrieb MUSS sicherstellen, dass auf E-Mail-Servern eingehende und ausgehende E-Mails, insbesondere deren Anhänge, auf Spam-Merkmale und schädliche Inhalte überprüft werden. Die Einführung und Nutzung von E-Mail-Filterprogrammen MUSS mit den Datenschutzbeauftragten und der Personalvertretung abgestimmt werden. Die Institution MUSS festlegen, wie mit verschlüsselten E-Mails zu verfahren ist, wenn diese nicht durch das Virenschutzprogramm entschlüsselt werden können.'
+      standard:
+        - id: APP.5.3.A5
+          title: 'Festlegung von Vertretungsregelungen bei E-Mail-Nutzung'
+          requirement_text: 'Die Institution SOLLTE Vertretungsregelungen für die Bearbeitung von E-Mails festlegen. Werden E-Mails weitergeleitet, SOLLTEN die Vertretenen mindestens darüber informiert werden. Bei der Weiterleitung von E-Mails MÜSSEN datenschutzrechtliche Aspekte berücksichtigt werden. Die Institution SOLLTE für Autoreply-Funktionen in E-Mail-Programmen Regelungen etablieren, die beschreiben, wie diese Funktionen sicher verwendet werden können. Wenn die Autoreply-Funktion benutzt wird, SOLLTEN keine internen Informationen weitergegeben werden.'
+        - id: APP.5.3.A6
+          title: 'Festlegung einer Sicherheitsrichtlinie für E-Mail'
+          requirement_text: 'Die Institution SOLLTE eine Sicherheitsrichtlinie für die Nutzung von E-Mails erstellen und regelmäßig aktualisieren. Die Institution SOLLTE alle Benutzenden und Administrierenden über neue oder veränderte Sicherheitsvorgaben für E-Mail-Anwendungen informieren. Die E-Mail-Sicherheitsrichtlinie SOLLTE konform zu den geltenden übergeordneten Sicherheitsrichtlinien der Institution sein. Die Institution SOLLTE prüfen, ob die Sicherheitsrichtlinie korrekt angewendet wird. Die E-Mail-Sicherheitsrichtlinie für Benutzende SOLLTE vorgeben, Die E-Mail-Sicherheitsrichtlinie SOLLTE ergänzend für die Administrierenden die Einstellungsoptionen der E-Mail-Anwendungen beinhalten, außerdem die Vorgaben für mögliche Zugriffe von anderen Servern auf einen E-Mail-Server. Auch Angaben zu berechtigten Zugriffspunkten, von denen aus auf einen E-Mail-Server zugegriffen werden darf, SOLLTEN in der Richtlinie enthalten sein. Die E-Mail-Sicherheitsrichtlinie SOLLTE den Umgang mit Newsgroups und Mailinglisten regeln.'
+        - id: APP.5.3.A7
+          title: 'Schulung zu Sicherheitsmechanismen von E-Mail-Clients für Benutzende'
+          requirement_text: 'Die Institution SOLLTE das Personal darüber aufklären, welche Risiken entstehen, wenn E-Mail-Anwendungen benutzt werden und wie sicher mit E-Mails umgegangen werden kann. Dies SOLLTE zusätzlich zur allgemeinen Schulung und Sensibilisierung geschehen. Die Institution SOLLTE zu den Gefahren sensibilisieren, die entstehen können, wenn E-Mail-Anhänge geöffnet werden. Die Schulungen SOLLTEN ebenfalls darauf eingehen, wie E-Mails von gefälschten Absendeadressen erkannt werden können. Die Institution SOLLTE davor warnen, an E-Mail-Kettenbriefen teilzunehmen oder zu viele Mailinglisten zu abonnieren.'
+        - id: APP.5.3.A8
+          title: 'Umgang mit Spam durch Benutzende'
+          requirement_text: 'Grundsätzlich SOLLTEN die Benutzenden alle Spam-E-Mails ignorieren und löschen. Die Benutzenden SOLLTEN auf unerwünschte E-Mails nicht antworten. Sie SOLLTEN Links in diesen E-Mails nicht folgen. Falls die Institution über ein zentrales Spam-Management verfügt, SOLLTEN die Benutzenden Spam-E-Mails an dieses weiterleiten und die E-Mails danach löschen.'
+        - id: APP.5.3.A9
+          title: 'Erweiterte Sicherheitsmaßnahmen auf dem E-Mail-Server'
+          requirement_text: 'Die E-Mail-Server einer Institution SOLLTEN eingehende E-Mails mittels des Sender Policy Framework (SPF) und mit Hilfe von DomainKeys Identified Mail (DKIM) überprüfen. Die Institution SOLLTE selbst DKIM und SPF einsetzen, um von ihr versendete E-Mails zu authentisieren. Wird SPF verwendet, SOLLTEN alle sendeberechtigten E-Mail-Server für eine Domain im SPF-Eintrag angegeben werden. Der SPF-Eintrag SOLLTE den "-all" Parameter enthalten. Der Softfail-Parameter („~“) SOLLTE nur zu Testzwecken verwendet werden. Die Institution SOLLTE Domain-based Message Authentication, Reporting and Conformance (DMARC) nutzen, um festzulegen, wie von ihr versendete E-Mails durch den empfangenden E-Mail-Server überprüft werden sollen. DMARC-Einträge SOLLTEN vorgeben, dass E-Mails im Fehlerfall abgewiesen werden. DMARC-Reporte SOLLTEN regelmäßig ausgewertet werden. Die Institution SOLLTE festlegen, ob DMARC-Reporte über empfangene E-Mails an andere Institutionen versendet werden. Die Institution SOLLTE die E-Mail-Kommunikation über DANE und MTA-STS absichern.'
+      hoch:
+        - id: APP.5.3.A10
+          title: 'Ende-zu-Ende-Verschlüsselung und Signatur'
+          requirement_text: 'Die Institution SOLLTE eine Ende-zu-Ende-Verschlüsselung sowie digitale Signaturen für E-Mails einsetzen. Es SOLLTEN nur Protokolle zur Verschlüsselung und Signatur genutzt werden, die dem aktuellen Stand der Technik entsprechen.'
+        - id: APP.5.3.A11
+          title: 'Einsatz redundanter E-Mail-Server'
+          requirement_text: 'Die Institution SOLLTE redundante E-Mail-Server betreiben. Die redundanten E-Mail-Server SOLLTEN mit geeigneter Priorität in den MX-Records der betroffenen Domains hinterlegt werden. Die Institution SOLLTE festlegen, wie E-Mails zwischen den E-Mail-Servern synchronisiert werden.'
+        - id: APP.5.3.A12
+          title: 'Überwachung öffentlicher Block-Listen'
+          requirement_text: 'Der IT-Betrieb SOLLTE regelmäßig überprüfen, ob die E-Mail-Server der Institution auf öffentlichen Spam- oder Block-Listen aufgeführt sind.'
+        - id: APP.5.3.A13
+          title: 'TLS-Reporting'
+          requirement_text: 'Die Institution SOLLTE TLS-Reporting einsetzen. Es SOLLTE festgelegt werden, ob TLS-Reports an andere Institutionen versendet werden.'
 
   - id: APP.5.4
-    title: 'Unified Communications und Collaboration'
+    title: 'Unified Communications und Collaboration (UCC)'
     description: 'Anforderungen an Auswahl, Konfiguration und Betrieb von Unified-Communications- und Collaboration-Loesungen.'
     anforderungen:
       basis:
         - id: APP.5.4.A1
-          title: 'Planung des UC/Collaboration-Einsatzes'
-          requirement_text: 'Der Einsatz von UC- und Collaboration-Loesungen MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein APP.5.4 Anforderung A1.'
+          title: 'Planung von UCC'
+          requirement_text: 'Es MUSS umfassend und detailliert geplant werden, wie und für welchen Zweck UCC eingesetzt werden soll. Die Planung MUSS insbesondere die Wechselwirkungen der UCC-Dienste berücksichtigen und mindestens folgende Aspekte beinhalten: Bei der Planung MUSS berücksichtigt werden, wie UCC in die IT-Infrastruktur der Institution integriert wird. Hierbei MUSS insbesondere betrachtet werden, ob und wie die Systeme der UCC-Dienste innerhalb des Netzes separiert werden sollen und welche Schnittstellen zu weiteren benutzten Anwendungen notwendig sind.'
         - id: APP.5.4.A2
-          title: 'Sichere Grundkonfiguration der UC/Collaboration-Plattform'
-          requirement_text: 'Die UC/Collaboration-Plattform MUSS sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.5.4 Anforderung A2.'
+          title: 'Berücksichtigung von UCC in der Netzplanung'
+          requirement_text: 'Bevor UCC-Dienste eingeführt werden, MUSS geprüft werden, ob das Netz die UCC-spezifischen Leistungsparameter erfüllt. Falls die Leistungsparameter nicht erfüllt werden, MUSS festgelegt werden, wie hiermit umgegangen wird. Sollen UCC-Dienste benutzt werden, SOLLTEN im Rahmen der allgemeinen Netzplanung insbesondere folgende Aspekte berücksichtigt werden: Falls die UCC-Dienste erweitert werden, SOLLTEN diese Aspekte erneut geprüft werden.'
         - id: APP.5.4.A3
-          title: 'Verschluesselung der Kommunikation'
-          requirement_text: 'Sprach-, Video- und Chat-Kommunikation MUSS Ende-zu-Ende oder transportverschluesselt erfolgen. Siehe BSI Kompendium 2023 Baustein APP.5.4 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Initiales und regelmäßiges Testen der UCC-Dienste'
+          requirement_text: 'Für die UCC-Dienste MÜSSEN initial Tests durchgeführt werden, die verifizieren, dass die UCC-Komponenten untereinander und mit anderen UCC-Diensten interferenzfrei funktionieren. Ebenfalls MÜSSEN Tests mit ausgewählten Benutzenden durchgeführt werden, um insbesondere Wechselwirkungen mit anderen Anwendungen zu überprüfen. Diese Tests SOLLTEN wiederholt werden, wenn die UCC-Dienste erweitert oder verändert werden. Zusätzlich SOLLTE die Konfiguration der UCC-Dienste in regelmäßigen Abständen auf Plausibilität und Konformität für die festgelegten Einsatzzwecke überprüft werden.'
+        - id: APP.5.4.A4
+          title: 'Deaktivierung nicht benötigter Funktionen und Dienste'
+          requirement_text: 'UCC-Dienste DÜRFEN NUR mit dem geringsten notwendigen Funktionsumfang betrieben werden. Die verfügbaren Funktionen und Dienste MÜSSEN entsprechend der definierten Einsatzzwecke ausgewählt werden. Dabei MÜSSEN gegebenenfalls auftretende Wechselwirkungen zwischen den verschiedenen Komponenten eines UCC-Dienstes berücksichtigt werden. Außerdem MÜSSEN insbesondere die folgenden Dienste und Funktionen auf Notwendigkeit geprüft und gegebenenfalls deaktiviert oder eingeschränkt werden: Konversationsbezogene Log-Daten DÜRFEN NUR in minimal notwendigem Umfang gespeichert werden. Funktionen und Dienste, die auf (dauerhaft) gespeicherte Log-Daten zugreifen, MÜSSEN auf ihre Notwendigkeit geprüft und gegebenenfalls deaktiviert werden.'
+        - id: APP.5.4.A5
+          title: 'Rollen- und Berechtigungskonzept für UCC'
+          requirement_text: 'Das Rollen- und Berechtigungskonzept MUSS um UCC-spezifische Definitionen von Rollen und Berechtigungen ergänzt werden. Solche Definitionen MÜSSEN sowohl für alle internen Benutzenden als auch für die externen Benutzenden getroffen werden. Es MÜSSEN folgende Aspekte berücksichtigt werden: Darüber hinaus MÜSSEN die Berechtigungen der Konten ebenfalls auf das notwendige Minimum reduziert werden. Dienste, die nur für einen Teil der Benutzenden zur Verfügung stehen, DÜRFEN NICHT für die restlichen Benutzenden zugänglich sein. Zudem SOLLTEN nur Benutzende mit einer entsprechenden Berechtigung auf Daten wie Aufzeichnungen oder Dateiablagen zugreifen können. Die Festlegungen MÜSSEN festgehalten, regelmäßig und anlassbezogen geprüft und aktualisiert werden.'
+        - id: APP.5.4.A6
+          title: 'Verschlüsselung von UCC-Daten'
+          requirement_text: 'Sämtliche Kommunikation über unzureichend vertrauenswürdige Netze MUSS mit sicheren Verfahren verschlüsselt werden, sofern dies durch die jeweilige UCC-Komponente unterstützt wird. Falls eine Verschlüsselung für einzelne UCC-Komponenten oder einzelne Konversationen nicht möglich ist, MUSS die Festlegung, welche Informationen über diese UCC-Komponenten übertragen werden dürfen, geprüft und gegebenenfalls angepasst werden. Insbesondere MUSS bei anwendungsübergreifender Kommunikation festgelegt werden, für welche Konversationen die Medienströme und die Signalisierung und welche weiteren Daten wie Chat oder Dateitransfer verschlüsselt übertragen werden müssen. Dateiablagen, die persistente personenbezogene oder vertrauliche Daten enthalten, MÜSSEN mit Hilfe von sicheren Verschlüsselungsmechanismen abgesichert werden. Hierbei MÜSSEN sowohl interne Dateiablagen der UCC-Dienste als auch über Schnittstellen angebundene externe Dateiablagen berücksichtigt werden. Die Benutzenden MÜSSEN zudem über den Status der Verschlüsselung innerhalb von Konversationen informiert werden.'
+        - id: APP.5.4.A7
+          title: 'Regelungen für eine sichere Benutzung der UCC-Dienste'
+          requirement_text: 'Konversationen, die mit Hilfe von UCC durchgeführt werden, MÜSSEN abgesichert werden. Hierbei MÜSSEN folgende Aspekte berücksichtigt werden: Die Benutzenden MÜSSEN über Funktionen informiert werden, über die Konversationen abgesichert werden können. Ebenso MÜSSEN die Benutzenden dafür sensibilisiert werden, wie die UCC-Dienste sicher benutzt werden, insbesondere für externe Chats oder Videokonferenzen.'
+      standard:
+        - id: APP.5.4.A8
+          title: 'Einsatz eines Session Border Controller am Provider-Übergang'
+          requirement_text: 'Für die UCC-Kommunikation über eingeschränkt vertrauenswürdige Netze SOLLTE mindestens für Sprachdienste ein Session Border Controller (SBC) am Netzübergang bzw. beim Übergang zum SIP-Provider eingesetzt werden. Der SBC SOLLTE als Verschlüsselungsendpunkt die Signalisierung und die Medienströme terminieren. Der SBC SOLLTE für die Signalisierung und die Medienströme Filterfunktionen unterstützen, die die jeweiligen Konversationen zusätzlich absichern.'
+        - id: APP.5.4.A9
+          title: 'Sichere Konfiguration von UCC'
+          requirement_text: 'Um UCC sicher zu konfigurieren, SOLLTEN mindestens die folgenden Aspekte berücksichtigt werden: Gespeicherte Daten SOLLTEN verschlüsselt werden. Auf gespeicherte Daten SOLLTEN Benutzende nur nach vorheriger Authentisierung zugreifen können. Der IT-Betrieb SOLLTE sichere Einstellungen vorgeben, die verwendet werden, wenn Konversationen erstellt werden. Für textbasierte Konversationen SOLLTE ein Malware-Schutz aktiviert werden. Die Umsetzung SOLLTE festgehalten, regelmäßig und anlassbezogen auf Einhaltung der Vorgaben geprüft und angepasst werden.'
+        - id: APP.5.4.A10
+          title: 'Absicherung und Einschränkung von Auswertungen von Inhalten'
+          requirement_text: 'Die Art einer (automatischen) Auswertung von Konversationsinhalten SOLLTE schon im Vorfeld sorgfältig geprüft werden und ihr Nutzen gegen den Schutzbedarf abgewogen werden. Es SOLLTE die Möglichkeit bestehen, entsprechende Funktionen entweder vollständig oder pro Konversation zu deaktivieren und eine inhaltliche Auswertung der Kommunikation zu verhindern. Besondere Beachtung SOLLTEN KI-Funktionen und die Übertragung von Daten an Onlinedienste erhalten. Werden Inhalte über den Zweck der Konversation hinausgehend ausgewertet, MUSS dazu auch eine Zustimmung der an der Konversation teilnehmenden Personen eingeholt werden. Werden während der Auswertung von Konversationen persistente Daten erzeugt, SOLLTEN für diese geeignete Schutzmaßnahmen umgesetzt werden.'
+      hoch:
+        - id: APP.5.4.A11
+          title: 'Sicherstellung der Verfügbarkeit von Kommunikationsdiensten'
+          requirement_text: 'Die Verfügbarkeit von UCC-Diensten SOLLTE insbesondere durch folgende technische Maßnahmen sichergestellt werden: Darüber hinaus SOLLTE bei Cloud-basierten UCC-Diensten der Cloud-Provider sowie der Internet-Provider ausfallsicher an das eigene Netz angebunden werden. Zudem SOLLTE ein SIP-Provider, der Rufnummern bereitstellt und den Übergang ins öffentliche Telefonnetz bildet, hochverfügbar an das eigene Netz angebunden werden. Die Verfügbarkeit SOLLTE durch ein Monitoring der UCC-Dienste überwacht werden.'
+        - id: APP.5.4.A12
+          title: 'Einbindung von UCC in die Notfallplanung'
+          requirement_text: 'Ausgehend von einer Business Impact Analyse SOLLTE geprüft werden, welche UCC-Dienste in der Notfallplanung berücksichtigt werden sollen. Hierbei SOLLTEN in Notfallsituationen für einzelne UCC-Dienste alternative Anwendungen bereitgestellt werden. Insbesondere SOLLTE für die Benutzenden die Erreichbarkeit von wichtigen Diensten wie der Notruf gewährleistet werden. Zudem SOLLTE ein Notfallplan für die UCC-Dienste erstellt werden, in dem notwendige Konfigurationen sowie Routing-Anpassungen, die über den Telefonie-Provider realisiert werden, behandelt werden. Ebenso SOLLTE der Wiederanlauf der UCC-Komponenten und -Dienste unter Berücksichtigung der Wechselwirkungen innerhalb der UCC-Dienste festgelegt werden.'
+        - id: APP.5.4.A13
+          title: 'Sichere Administration von SIP-Trunks'
+          requirement_text: 'Wenn SIP-Trunks administriert werden, SOLLTE für folgende Tätigkeiten ein 4-Augen-Prinzip angewendet werden:'
+        - id: APP.5.4.A14
+          title: 'Ende-zu-Ende-Verschlüsselung'
+          requirement_text: 'Für UCC-Kommunikation SOLLTE eine sichere Ende-zu-Ende-Verschlüsselung benutzt werden. Die Ende-zu-Ende-Verschlüsselung SOLLTE sich sowohl auf die Signalisierung als auch auf die Mediendaten von Audio- und Videokommunikation mit zwei oder mehr Teilnehmenden erstrecken. Bei Konversationen zwischen UCC-Diensten von verschiedenen Herstellenden SOLLTEN die übertragenen Informationen eingeschränkt werden, sofern eine Ende-zu-Ende-Verschlüsselung nach Stand der Technik nicht möglich ist.'
+        - id: APP.5.4.A15
+          title: 'Einschränkung von KI-Funktionen'
+          requirement_text: 'Die Benutzung von KI-Funktionen SOLLTE deaktiviert oder auf ein Minimum reduziert werden. Ist eine permanente Deaktivierung nicht möglich oder erwünscht, SOLLTE festgelegt werden, dass Benutzende der UCC-Dienste zu Beginn einer Konversation zielgerichtet KI-Funktionen deaktivieren, falls dies möglich ist.'
+        - id: APP.5.4.A16
+          title: 'Einsatz eines SBC an weiteren Netzübergängen'
+          requirement_text: 'Ergänzend zu einem SBC am Netzübergang zum Provider, SOLLTEN weitere SBC an internen Netzübergängen eingesetzt werden. Hierbei SOLLTEN insbesondere Netzübergänge zwischen Netzsegmenten mit unterschiedlichem Schutzbedarf berücksichtigt werden. Der SBC SOLLTE sicherstellen, dass die Verschlüsselungsmechanismen an den SBC-gesicherten Netzsegmentübergängen anforderungskonform realisiert werden.'
+        - id: APP.5.4.A17
+          title: 'Einschränkung der Benutzung von UCC-Diensten'
+          requirement_text: 'Folgende Aspekte SOLLTEN mindestens berücksichtigt werden, um die UCC-Dienste sowie die übertragenen Daten zusätzlich abzusichern: Darüber hinaus SOLLTEN zusätzliche technische und organisatorische Vorkehrungen getroffen werden, um Konversationen über die Vergabe von PINs bzw. Passwörtern hinaus abzusichern.'
+        - id: APP.5.4.A18
+          title: 'Einbindung von UCC in ein Sicherheitsmonitoring'
+          requirement_text: 'Die zentralen UCC-Komponenten SOLLTEN durch ein Sicherheitsmonitoring überwacht werden. Dies SOLLTE mindestens für Komponenten umgesetzt werden, die wie Multipoint Control Units Verschlüsselungsendpunkte realisieren oder die wie SBCs an Vertrauensgrenzen positioniert sind. Wird für die IT der Institution ein System zur zentralen Detektion und automatisierten Echtzeitüberprüfung von Ereignismeldungen eingesetzt, SOLLTEN die zentralen UCC-Komponenten hierin eingebunden werden.'
 
   - id: APP.6
     title: 'Allgemeine Software'
@@ -324,16 +987,49 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.6.A1
-          title: 'Planung der Softwareauswahl'
-          requirement_text: 'Bevor allgemeine Software beschafft wird, MUSS der Bedarf dokumentiert und gegen vorhandene Loesungen geprueft werden.'
+          title: 'Planung des Software-Einsatzes'
+          requirement_text: 'Bevor eine Institution eine (neue) Software einführt, MUSS sie entscheiden, Hierbei MÜSSEN bereits Sicherheitsaspekte berücksichtigt werden. Zusätzlich MUSS die Institution die Zuständigkeiten für fachliche Betreuung, Freigabe und betriebliche Administration schon im Vorfeld klären und festlegen. Die Zuständigkeiten MÜSSEN dokumentiert und bei Bedarf aktualisiert werden.'
         - id: APP.6.A2
-          title: 'Einsatz freigegebener Versionen'
-          requirement_text: 'Es MUESSEN ausschliesslich vom Hersteller unterstuetzte Versionen der Software eingesetzt werden.'
+          title: 'Erstellung eines Anforderungskatalogs für Software'
+          requirement_text: 'Auf Basis der Ergebnisse der Planung MÜSSEN die Anforderungen an die Software in einem Anforderungskatalog erhoben werden. Der Anforderungskatalog MUSS dabei die grundlegenden funktionalen Anforderungen umfassen. Darüber hinaus MÜSSEN die nichtfunktionalen Anforderungen und hier insbesondere die Sicherheitsanforderungen in den Anforderungskatalog integriert werden. Hierbei MÜSSEN sowohl die Anforderungen von den Fachverantwortlichen als auch vom IT-Betrieb berücksichtigt werden. Insbesondere MÜSSEN auch die rechtlichen Anforderungen, die sich aus dem Kontext der zu verarbeitenden Daten ergeben, berücksichtigt werden. Der fertige Anforderungskatalog SOLLTE mit allen betroffenen Fachabteilungen abgestimmt werden.'
         - id: APP.6.A3
-          title: 'Lizenzmanagement'
-          requirement_text: 'Lizenzen fuer eingesetzte Software MUESSEN ordnungsgemaess verwaltet werden. Siehe BSI Kompendium 2023 Baustein APP.6 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Sichere Beschaffung von Software'
+          requirement_text: 'Wenn Software beschafft wird, MUSS auf Basis des Anforderungskatalogs eine geeignete Software ausgewählt werden. Die ausgewählte Software MUSS aus vertrauenswürdigen Quellen beschafft werden. Die vertrauenswürdige Quelle SOLLTE eine Möglichkeit bereitstellen, die Software auf Integrität zu überprüfen. Darüber hinaus SOLLTE die Software mit einem geeigneten Wartungsvertrag oder einer vergleichbaren Zusage des herstellenden oder anbietenden Unternehmens beschafft werden. Diese Verträge oder Zusagen SOLLTEN insbesondere garantieren, dass auftretende Sicherheitslücken und Schwachstellen der Software während des gesamten Nutzungszeitraums zeitnah behoben werden.'
+        - id: APP.6.A4
+          title: 'Regelung für die Installation und Konfiguration von Software'
+          requirement_text: 'Die Installation und Konfiguration der Software MUSS durch den IT-Betrieb so geregelt werden, dass Hierbei MÜSSEN auch abhängige Komponenten (unter anderem Laufzeitumgebungen, Bibliotheken, Schnittstellen sowie weitere Programme) mitbetrachtet werden. Der IT-Betrieb MUSS in Abstimmung mit den Fachverantwortlichen festlegen, wer die Software wie installieren darf. Idealerweise SOLLTE Software immer zentral durch den IT-Betrieb installiert werden. Ist es erforderlich, dass die Software (teilweise) manuell installiert wird, dann MUSS der IT-Betrieb eine Installationsanweisung erstellen, in der klar geregelt wird, welche Zwischenschritte zur Installation durchzuführen und welche Konfigurationen vorzunehmen sind. Darüber hinaus MUSS der IT-Betrieb regeln, wie die Integrität der Installationsdateien überprüft wird. Falls zu einem Installationspaket digitale Signaturen oder Prüfsummen verfügbar sind, MÜSSEN mit diesen die Integrität überprüft werden. Sofern erforderlich, SOLLTE der IT-Betrieb eine sichere Standardkonfiguration der Software festlegen, mit der die Software konfiguriert wird. Die Standardkonfiguration SOLLTE dokumentiert werden.'
+        - id: APP.6.A5
+          title: 'Sichere Installation von Software'
+          requirement_text: 'Software MUSS entsprechend der Regelung für die Installation auf den IT-Systemen installiert werden. Dabei MÜSSEN ausschließlich unveränderte Versionen der freigegebenen Software verwendet werden. Wird von diesen Anweisungen abgewichen, MUSS dies durch Vorgesetzte und den IT-Betrieb genehmigt werden und entsprechend dokumentiert werden.'
+      standard:
+        - id: APP.6.A6
+          title: 'Berücksichtigung empfohlener Sicherheitsanforderungen'
+          requirement_text: 'Die Institution SOLLTE die nachfolgenden Sicherheitsanforderungen im Anforderungskatalog für die Software berücksichtigen: Die sich aus den Sicherheitsanforderungen ergebenden Funktionen der Software SOLLTEN im Betrieb verwendet werden.'
+        - id: APP.6.A7
+          title: 'Auswahl und Bewertung potentieller Software'
+          requirement_text: 'Anhand des Anforderungskatalogs SOLLTEN die am Markt erhältlichen Produkte gesichtet werden. Sie SOLLTEN mithilfe einer Bewertungsskala miteinander verglichen werden. Danach SOLLTE untersucht werden, ob die Produkte aus der engeren Wahl die Anforderungen der Institution erfüllen. Gibt es mehrere Alternativen für Produkte, SOLLTEN auch die Akzeptanz der Benutzenden und der zusätzliche Aufwand für z. B. Schulungen oder die Migration berücksichtigt werden. Fachverantwortliche SOLLTEN gemeinsam mit dem IT-Betrieb anhand der Bewertungen und Testergebnisse ein geeignetes Softwareprodukt auswählen.'
+        - id: APP.6.A8
+          title: 'Regelung zur Verfügbarkeit der Installationsdateien'
+          requirement_text: 'Der IT-Betrieb SOLLTE die Verfügbarkeit der Installationsdateien sicherstellen, um die Installation reproduzieren zu können. Hierzu SOLLTE der IT-Betrieb Zusätzlich SOLLTE sichergestellt werden, dass Software reproduzierbar konfiguriert werden kann. Hierzu SOLLTEN die Konfigurationsdateien gesichert werden. Alternativ SOLLTE geeignet dokumentiert werden, wie die Software konfiguriert wird. Diese Regelung SOLLTE in das Datensicherungskonzept der Institution integriert werden.'
+        - id: APP.6.A9
+          title: 'Inventarisierung von Software'
+          requirement_text: 'Software SOLLTE inventarisiert werden. In einem Bestandsverzeichnis SOLLTE dokumentiert werden, auf welchen Systemen die Software unter welcher Lizenz eingesetzt wird. Bei Bedarf SOLLTEN zusätzlich die sicherheitsrelevanten Einstellungen miterfasst werden. Software SOLLTE nur mit Lizenzen eingesetzt werden, die dem Einsatzzweck und den vertraglichen Bestimmungen entsprechen. Die Lizenz SOLLTE den gesamten vorgesehenen Benutzungszeitraum der Software abdecken. Wird von einer Standardkonfiguration abgewichen, SOLLTE dies dokumentiert werden. Das Bestandsverzeichnis SOLLTE anlassbezogen durch den IT-Betrieb aktualisiert werden, insbesondere wenn Software installiert wird. Das Bestandsverzeichnis SOLLTE so aufgebaut sein, dass bei Sicherheitsvorfällen eine schnelle Gesamtübersicht mit den notwendigen Details ermöglicht wird.'
+        - id: APP.6.A10
+          title: 'Erstellung einer Sicherheitsrichtlinie für den Einsatz der Software'
+          requirement_text: 'Die Institution SOLLTE die Regelungen, die festlegen, wie die Software eingesetzt und betrieben wird, in einer Sicherheitsrichtlinie zusammenfassen. Die Richtlinie SOLLTE allen relevanten Verantwortlichen, Zuständigen und Mitarbeitenden der Institution bekannt sein und die Grundlage für ihre Arbeit und ihr Handeln bilden. Inhaltlich SOLLTE die Richtlinie auch ein Benutzenden-Handbuch umfassen, dass erläutert, wie die Software zu benutzen und zu administrieren ist. Es SOLLTE regelmäßig und stichprobenartig überprüft werden, ob die Mitarbeitenden sich an die Richtlinie halten. Die Richtlinie SOLLTE regelmäßig aktualisiert werden.'
+        - id: APP.6.A11
+          title: 'Verwendung von Plug-ins und Erweiterungen'
+          requirement_text: 'Es SOLLTEN nur unbedingt notwendige Plug-ins und Erweiterungen installiert werden. Werden Erweiterungen eingesetzt, SOLLTE die Software die Möglichkeit bieten, Erweiterungen zu konfigurieren und abzuschalten.'
+        - id: APP.6.A12
+          title: 'Geregelte Außerbetriebnahme von Software'
+          requirement_text: 'Wenn Software außer Betrieb genommen wird, SOLLTE der IT-Betrieb mit den Fachverantwortlichen regeln, wie dies im Detail durchzuführen ist. Ebenfalls SOLLTE geregelt werden, wie die Benutzenden hierüber zu informieren sind. Hierbei SOLLTE geklärt werden, ob die funktionalen Anforderungen fortbestehen (z. B. zur Bearbeitung von Fachaufgaben). Ist dies der Fall, dann SOLLTE geregelt werden, wie die benötigten Funktionen der betroffenen Software weiter verfügbar sein werden.'
+        - id: APP.6.A13
+          title: 'Deinstallation von Software'
+          requirement_text: 'Wird Software deinstalliert, SOLLTEN alle angelegten und nicht mehr benötigten Dateien entfernt werden. Alle Einträge in Systemdateien, die für das Produkt vorgenommen wurden und nicht länger benötigt werden, SOLLTEN rückgängig gemacht werden.'
+      hoch:
+        - id: APP.6.A14
+          title: 'Nutzung zertifizierter Software'
+          requirement_text: 'Bei der Beschaffung von Software SOLLTE festgelegt werden, ob Zusicherungen des herstellenden oder anbietenden Unternehmens über implementierte Sicherheitsfunktionen als ausreichend vertrauenswürdig anerkannt werden können. Ist dies nicht der Fall, SOLLTE eine Zertifizierung der Anwendung z. B. nach Common Criteria als Entscheidungskriterium herangezogen werden. Stehen mehrere Produkte zur Auswahl, SOLLTEN insbesondere dann Sicherheitszertifikate berücksichtigt werden, wenn der evaluierte Funktionsumfang die Mindestfunktionalität (weitestgehend) umfasst und die Mechanismenstärke dem Schutzbedarf entspricht.'
 
   - id: APP.7
     title: 'Entwicklung von Individualsoftware'
@@ -341,13 +1037,34 @@ bausteine:
     anforderungen:
       basis:
         - id: APP.7.A1
-          title: 'Sicherheitsrichtlinie fuer Softwareentwicklung'
-          requirement_text: 'Fuer die Entwicklung eigener Software MUSS eine Richtlinie festgelegt werden, die Sicherheitsanforderungen ueber den gesamten Lebenszyklus regelt.'
+          title: 'Erweiterung der Planung des Software-Einsatzes um Aspekte von Individualsoftware'
+          requirement_text: 'Die Planung des Software-Einsatzes MUSS um Aspekte von Individualsoftware ergänzt werden, indem definiert wird, Individualsoftware SOLLTE im Rahmen eines Entwicklungsprojektes entwickelt werden. Das Entwicklungsprojekt sollte anhand eines Ablaufplans zeitlich grob geplant werden.'
         - id: APP.7.A2
-          title: 'Auswahl vertrauenswuerdiger Entwicklungswerkzeuge'
-          requirement_text: 'Werkzeuge zur Softwareentwicklung MUESSEN so ausgewaehlt werden, dass sie keine bekannten Schwachstellen einbringen.'
+          title: 'Festlegung von Sicherheitsanforderungen an den Prozess der Software-Entwicklung'
+          requirement_text: 'Die Institution MUSS klare Anforderungen an den Prozess der Software-Entwicklung definieren. Aus den Anforderungen MUSS hervorgehen, in was für einer Umgebung die Software entwickelt werden darf und welche technischen und organisatorischen Maßnahmen von Seiten der beauftragten Software-Entwickelnden umzusetzen sind.'
+        - id: APP.7.A3
+          title: 'Festlegung der Sicherheitsfunktionen zur Systemintegration'
+          requirement_text: 'Der IT-Betrieb und die zuständigen Fachverantwortlichen MÜSSEN Anforderungen an die technische Einsatzumgebung der geplanten Individualsoftware erstellen und mit der Software-Entwicklung abstimmen. Aus den Anforderungen MUSS klar hervorgehen: die Anwendung eingesetzt werden soll. Schnittstellen mit anderen IT-Systemen SOLLTEN in standardisierten technischen Formaten modelliert und definiert werden.'
+        - id: APP.7.A4
+          title: 'Anforderungsgerechte Beauftragung'
+          requirement_text: 'Wird Individualsoftware durch die eigene Institution entwickelt oder extern beauftragt, dann MÜSSEN neben den bestehenden rechtlichen und organisatorischen Vorgaben insbesondere als Grundlage zur Software-Entwicklung verwendet werden.'
       standard:
+        - id: APP.7.A5
+          title: 'Geeignete Steuerung der Anwendungsentwicklung'
+          requirement_text: 'Bei der Entwicklung von Individualsoftware SOLLTE ein geeignetes Steuerungs- und Projektmanagementmodell verwendet werden. Hierbei SOLLTE das ausgewählte Modell mit dem Auftragnehmenden abgestimmt werden. Bei der Steuerung SOLLTE es berücksichtigt werden. Es SOLLTE insbesondere berücksichtigt werden, dass das benötigte Personal ausreichend qualifiziert ist. Alle relevanten Phasen SOLLTEN während des Lebenszyklus der Software abgedeckt werden. Außerdem SOLLTE es ein geeignetes Entwicklungsmodell, ein Risikomanagement sowie Qualitätsziele enthalten.'
+        - id: APP.7.A6
+          title: 'Dokumentation der Anforderungen an die Individualsoftware'
+          requirement_text: 'Die Anforderungen aus den Anforderungskatalog, die Sicherheitsanforderungen an den Prozess der Software-Entwicklung, sowie die Sicherheitsfunktionen zur Systemintegration SOLLTEN umfassend dokumentiert werden. Insbesondere SOLLTE ein Sicherheitsprofil für die Anwendung erstellt werden. Dieses SOLLTE den Schutzbedarf der zu verarbeitenden Daten und Funktionen dokumentieren. Die Dokumentation mitsamt Sicherheitsprofil SOLLTE den Entwickelnden zur Software-Entwicklung zur Verfügung gestellt werden. Die Dokumentation SOLLTE bei Änderungen an der Individualsoftware sowie bei funktionalen Updates aktualisiert werden.'
         - id: APP.7.A7
-          title: 'Trennung von Entwicklungs-, Test- und Produktivumgebung'
-          requirement_text: 'Entwicklungs-, Test- und Produktivumgebungen SOLLTEN getrennt betrieben werden.'
-      hoch: []
+          title: 'Sichere Beschaffung von Individualsoftware'
+          requirement_text: 'Das Entwicklungsprojekt SOLLTE im Rahmen des hierfür bestens geeigneten Projektmanagementmodells beauftragt werden. Sicherheitsaspekte SOLLTEN dabei bereits bei der Ausschreibung und Vergabe berücksichtigt werden, sodass In der Institution SOLLTEN definierte Prozesse und festgelegte Kontaktpersonen existieren, die sicherstellen, dass die jeweiligen Rahmenbedingungen berücksichtigt werden.'
+        - id: APP.7.A8
+          title: 'Frühzeitige Beteiligung der Fachverantwortlichen bei entwicklungsbegleitenden Software-Tests'
+          requirement_text: 'Fachverantwortliche SOLLTEN schon vor der endgültigen Abnahme frühzeitig an entwicklungsbegleitenden Tests der Software-Entwickelnden beteiligt werden. Dies SOLLTE in Abstimmung mit dem Auftragnehmenden bereits initial im Projektablaufplan berücksichtigt werden.'
+      hoch:
+        - id: APP.7.A9
+          title: 'Treuhänderische Hinterlegung'
+          requirement_text: 'Für institutionskritische Anwendungen SOLLTE geprüft werden, ob diese gegen Ausfall des herstellenden Unternehmens abgesichert werden. Dafür SOLLTEN nicht zum Lieferumfang der Anwendung gehörende Materialien und Informationen treuhänderisch hinterlegt werden, etwa bei einer Escrow-Agentur. Dokumentierter Code, Konstruktionspläne, Schlüssel oder Passwörter SOLLTEN dazu gehören. Die Pflichten der Escrow-Agentur zur Hinterlegung und Herausgabe SOLLTEN vertraglich geregelt werden. Es SOLLTE geklärt werden, wann das Hinterlegte an wen herausgegeben werden darf.'
+        - id: APP.7.A10
+          title: 'Beauftragung zertifizierter Software-Entwicklungsunternehmen'
+          requirement_text: 'Werden besonders sicherheitskritische Anwendungen entwickelt, SOLLTEN hierzu zertifizierte Software-Entwicklungsunternehmen beauftragt werden. Die Zertifizierung SOLLTE Sicherheitsaspekte für relevante Aspekte der Software-Entwicklung umfassen.'

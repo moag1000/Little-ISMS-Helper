@@ -12,50 +12,206 @@ bausteine:
     anforderungen:
       basis:
         - id: OPS.1.1.1.A1
-          title: 'Planung des IT-Betriebs'
-          requirement_text: 'Der IT-Betrieb MUSS systematisch geplant werden.'
+          title: 'Festlegung der Aufgaben und Zuständigkeiten des IT-Betriebs'
+          requirement_text: 'Für alle betriebenen IT-Komponenten MUSS festgelegt werden, welche Aufgaben für den IT-Betrieb anfallen und wer dafür zuständig ist. Hierfür MÜSSEN die entsprechenden Rechte, Pflichten, Aufgaben mit den hierfür erforderlichen Tätigkeiten, Befugnisse und zugehörigen Prozesse geregelt werden. Weiterhin MÜSSEN die Schnittstellen und Meldewege sowie das Eskalationsmanagement zwischen verschiedenen Betriebseinheiten und gegenüber anderen organisatorischen Einheiten der Institution festgelegt werden.'
         - id: OPS.1.1.1.A2
-          title: 'Festlegung von Betriebsprozessen'
-          requirement_text: 'Wesentliche Betriebsprozesse MUESSEN festgelegt und dokumentiert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.1 Anforderung A2.'
+          title: 'Festlegung von Rollen und Berechtigungen für den IT-Betrieb'
+          requirement_text: 'Für alle betriebenen IT-Komponenten MUSS das jeweilige Rollen- und Berechtigungskonzept auch Rollen und zugehörige Berechtigungen für den IT-Betrieb festlegen. Für die Betriebsmittel MUSS ebenfalls ein Rollen- und Berechtigungskonzept erstellt werden. Das Rollen- und Berechtigungskonzept für den IT-Betrieb MUSS die IT-Nutzung von IT-Betriebsaufgaben trennen. Administrationsaufgaben und sonstige Betriebsaufgaben MÜSSEN durch unterschiedliche Rollen getrennt werden. Grundsätzlich SOLLTE der IT-Betrieb für unterschiedliche Betriebstätigkeiten unterschiedliche Rollen festlegen, die für die jeweiligen Tätigkeiten die erforderlichen Berechtigungen besitzen. Sammel-Accounts DÜRFEN NUR in begründeten Ausnahmefällen eingerichtet werden. Die Rollen und Berechtigungen MÜSSEN regelmäßig geprüft und auf die aktuellen Gegebenheiten angepasst werden. Insbesondere MÜSSEN die Berechtigungen von ausgeschiedenem Personal auf den IT-Komponenten entfernt werden. Ebenso MÜSSEN die Rollen und Berechtigungen gelöscht werden, wenn IT-Komponenten außer Betrieb genommenen werden.'
+      standard:
         - id: OPS.1.1.1.A3
-          title: 'Zuweisung von Verantwortlichkeiten im IT-Betrieb'
-          requirement_text: 'Verantwortlichkeiten fuer den IT-Betrieb MUESSEN zugewiesen sein. Siehe BSI Kompendium 2023 Baustein OPS.1.1.1 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Erstellen von Betriebshandbüchern für die betriebene IT'
+          requirement_text: 'Für alle betriebenen IT-Komponenten SOLLTEN die Betriebsaufgaben geplant und in Betriebshandbüchern erfasst werden. Die Betriebshandbücher SOLLTEN stets verfügbar sein und mindestens die folgenden Themen adressieren: Die Betriebshandbücher SOLLTEN regelmäßig und anlassbezogen geprüft und angepasst werden.'
+        - id: OPS.1.1.1.A4
+          title: 'Bereitstellen ausreichender Personal- und Sachressourcen'
+          requirement_text: 'Der IT-Betrieb SOLLTE über ausreichende Personal-Ressourcen verfügen, um einen ordnungsgemäßen IT-Betrieb gewährleisten zu können. Hierfür SOLLTE der Aufwand für alle Tätigkeiten des IT-Betriebs ermittelt werden. Die Personal-Ressourcen SOLLTEN mit angemessenen Redundanzen und Reserven geplant werden und auch kurzfristige Personalausfälle sowie temporär erhöhte Personalbedarfe berücksichtigen. Ebenfalls SOLLTEN geeignete Sach-Ressourcen bereitstehen. Hierfür SOLLTE für jede Tätigkeit des IT-Betriebs identifiziert werden, welche Betriebsmittel erforderlich sind. Die Ressourcenplanung SOLLTE regelmäßig und anlassbezogen überprüft und an die aktuellen Erfordernisse angepasst werden.'
+        - id: OPS.1.1.1.A5
+          title: 'Festlegen von gehärteten Standardkonfigurationen'
+          requirement_text: 'Der IT-Betrieb SOLLTE die betriebenen IT-Komponenten kategorisieren und für diese Kategorien gehärtete Standardkonfigurationen festlegen und bereitstellen. Für IT-Plattformen wie Virtualisierungshosts, auf denen weitere IT-Komponenten bereitgestellt und betrieben werden, SOLLTE eine abgestimmte Härtung entwickelt und umgesetzt werden, die alle Elemente der IT-Komponenten berücksichtigt. Hierbei SOLLTEN verschiedene Ausprägungen der IT-Komponenten berücksichtigt und erlaubte Abweichungen spezifiziert werden. Die Konfigurationsvorgaben SOLLTEN die Sicherheitsanforderungen der Institution umsetzen und die Empfehlungen der jeweiligen Herstellenden berücksichtigen. Die gehärteten Standard-Konfigurationen SOLLTEN in den jeweiligen Betriebshandbüchern dokumentiert werden. Jede Standardkonfiguration SOLLTE vor Bereitstellung getestet werden. Die gehärteten Standardkonfigurationen SOLLTEN regelmäßig und anlassbezogen geprüft und gemäß der verfügbaren Informationen an den aktuellen Stand der Technik angepasst werden. Der IT-Betrieb SOLLTE gewährleisten, dass die aktuellen Konfigurationsvorgaben stets verfügbar sind und über eine Versionierung und eine Beschreibung identifizierbar sind.'
+        - id: OPS.1.1.1.A6
+          title: 'Durchführung des IT-Asset-Managements'
+          requirement_text: 'Der IT-Betrieb SOLLTE eine Übersicht aller vorhandenen IT-Assets erstellen, regelmäßig prüfen und aktuell halten. Im IT-Asset-Management (ITAM) SOLLTEN alle produktiven IT-Komponenten, Test-Instanzen und IT-Komponenten der Reservevorhaltung erfasst werden. Auch vorhandene, aber nicht mehr genutzte IT-Assets SOLLTEN erfasst werden. Es SOLLTEN ITAM-Tools eingesetzt werden, die eine zentrale Verwaltung der IT-Assets ermöglichen.'
+        - id: OPS.1.1.1.A7
+          title: 'Sicherstellung eines ordnungsgemäßen IT-Betriebs'
+          requirement_text: 'Der IT-Betrieb SOLLTE für alle IT-Komponenten Betriebskonzepte entwickeln. Diese Betriebskonzepte SOLLTEN regelmäßig geprüft und angepasst werden. Die sicherheitsrelevanten Vorgaben zur Konfiguration SOLLTEN umgesetzt werden. Dafür SOLLTEN die gehärteten Standard-Konfigurationen genutzt werden. Der IT-Betrieb SOLLTE für alle Tätigkeiten Prüfkriterien festlegen, die in ihrer Gesamtheit als Leitfaden für den ordnungsgemäßen IT-Betrieb dienen. Die Freigabe von installierten oder geänderten IT-Komponenten in den produktiven Betrieb SOLLTE über diese Prüfkriterien nachgewiesen werden. Bei Inbetriebnahme und nach Updates oder Umstrukturierungen SOLLTEN Systemtests für die IT-Komponenten durchgeführt werden. Der IT-Betrieb SOLLTE festlegen, in welcher Umgebung die jeweiligen Systemtests mit welcher Testabdeckung und Testtiefe durchgeführt werden. Der IT-Betrieb SOLLTE Vorkehrungen für die Ersatzbeschaffung von IT-Komponenten treffen. Hierfür SOLLTEN eine Reservevorhaltung oder Lieferverträge vorgesehen werden. Alle Tätigkeiten des IT-Betriebs SOLLTEN umfassend und nachvollziehbar erfasst werden. Hierfür SOLLTE der IT-Betrieb ein geeignetes Werkzeug wie ein Ticketsystem nutzen. Der IT-Betrieb SOLLTE insbesondere die Qualität der Betriebsprozesse, die Einhaltung von SLAs und die Zufriedenheit der Benutzenden systematisch erfassen. Es SOLLTEN regelmäßig Reports erstellt werden, die dem Nachweis eines ordnungsgemäßen IT-Betriebs dienen.'
+        - id: OPS.1.1.1.A8
+          title: 'Regelmäßiger Soll-Ist-Vergleich'
+          requirement_text: 'Der IT-Betrieb SOLLTE regelmäßig und anlassbezogen für alle betriebenen IT-Komponenten sowie für die Betriebsmittel prüfen, ob die aktuelle Konfiguration dem Sollzustand entspricht. Darüber hinaus SOLLTE geprüft werden, ob die gelebten Prozesse die festgelegten Prozesse des IT-Betriebs umsetzen.'
+        - id: OPS.1.1.1.A9
+          title: 'Durchführung von IT-Monitoring'
+          requirement_text: 'Alle IT-Komponenten SOLLTEN in ein einheitliches IT-Monitoring eingebunden werden, das alle relevanten Parameter der IT-Komponenten beinhaltet. Das IT-Monitoring SOLLTE mit dem übergeordneten Service-Management abgestimmt werden. Der IT-Betrieb SOLLTE das IT-Monitoring entsprechend eines vorher festgelegten Monitoring-Plans durchführen. Je IT-Komponente SOLLTEN angemessene Schwellwerte ermittelt werden, die eine Meldung oder einen Alarm auslösen. Der IT-Betrieb SOLLTE für das IT-Monitoring spezifizieren, welche Meldewege genutzt werden und welche Konsequenzen aus den Meldungen oder Alarmen gezogen werden. Auf Basis von Monitoring-Ergebnissen SOLLTE überprüft werden, ob die Infrastruktur erweitert oder angepasst wird. Über die gewonnenen Erkenntnisse SOLLTEN regelmäßig Reports erstellt werden, die das aktuelle Lagebild der betriebenen IT und die zeitliche Entwicklung sowie Trends darstellen. Die Konzeption des IT-Monitorings SOLLTE regelmäßig und anlassbezogen geprüft und aktualisiert werden, um dem aktuellen Stand der Technik und der betriebenen Infrastruktur zu entsprechen. Die Monitoring-Daten SOLLTEN nur über sichere Kommunikationswege übertragen werden.'
+        - id: OPS.1.1.1.A10
+          title: 'Führen eines Schwachstelleninventars'
+          requirement_text: 'Der IT-Betrieb SOLLTE ein Schwachstelleninventar führen, in dem die Schwachstellen aller betriebenen IT-Komponenten und der Umgang mit diesen zentral erfasst und gepflegt werden. Der IT-Betrieb SOLLTE die Behandlung der Schwachstellen initiieren, nachhalten und sicherstellen. Es SOLLTE ein Prozess definiert werden, der den Umgang mit den Schwachstellen festlegt. Mindestens SOLLTE spezifiziert werden,'
+        - id: OPS.1.1.1.A11
+          title: 'Festlegung und Einhaltung von SLAs'
+          requirement_text: 'Für alle IT-Komponenten und alle Tätigkeiten SOLLTE der IT-Betrieb Service Level Agreements (SLAs) definieren und überwachen, die dem Schutzbedarf der IT-Komponenten entsprechen und innerhalb der Institution abgestimmt sind. Die festgelegten SLAs SOLLTEN die Rollen und Berechtigungen sowie eventuelle Abhängigkeiten der jeweiligen Tätigkeit von anderen Organisationseinheiten berücksichtigen.'
+        - id: OPS.1.1.1.A12
+          title: 'Spezifikation und Umsetzung klarer Betriebsprozesse'
+          requirement_text: 'Der IT-Betrieb SOLLTE für alle Aufgaben Betriebsprozesse spezifizieren, die für die jeweilige Aufgabe alle Tätigkeiten und Abhängigkeiten umfassen und gewährleisten, dass die Tätigkeiten des IT-Betriebs nachvollziehbar sind. Es SOLLTE für jeden Prozess festgelegt werden, wer den Prozess initiieren darf und wer diesen umsetzt. Für jeden Prozess SOLLTEN die organisatorischen Schnittstellen zu anderen Gruppen des IT-Betriebs oder anderen Organisationseinheiten spezifiziert werden. Das Personal des IT-Betriebs SOLLTE für die relevanten Betriebsprozesse eingewiesen werden. Wenn Prozesse durchlaufen wurden, SOLLTE dies protokolliert werden. Das Ergebnis des Durchlaufs SOLLTE protokolliert werden. Für jeden Prozessschritt SOLLTE festgelegt werden, ob dokumentiert werden muss, dass er bearbeitet wurde. Darüber hinaus SOLLTE festgelegt werden, wann der Prozess erfolgreich abgeschlossen ist. Der IT-Betrieb SOLLTE einen Prozess spezifizieren, der grundsätzlich beschreibt, wie mit Situationen umzugehen ist, die nicht in den regulären Betriebsprozessen enthalten sind. Mindestens SOLLTEN Fallback-Prozesse definiert sein und beschrieben werden, wie bei fehlerhaftem oder manipuliertem Betrieb vorzugehen ist.'
+        - id: OPS.1.1.1.A13
+          title: 'Absicherung der Betriebsmittel und der Dokumentation'
+          requirement_text: 'Auf die Betriebsmittel, die Dokumentation und die Betriebshandbücher SOLLTEN nur berechtigte Personen des IT-Betriebs zugreifen können. Der IT-Betrieb SOLLTE sicherstellen, dass die Betriebsmittel und die Dokumentation zu jeder Zeit verfügbar sind. Falls die IT-Systeme und -Anwendungen der Betriebsmittel über die produktive Infrastruktur kommunizieren, SOLLTEN sichere Protokolle verwendet werden. Vertrauliche Daten SOLLTEN ausschließlich über sichere Protokolle übertragen werden. Die Betriebsmittel SOLLTEN in das Schwachstellenmanagement und das IT-Monitoring eingebunden werden.'
+        - id: OPS.1.1.1.A14
+          title: 'Berücksichtigung der Betreibbarkeit bei Konzeption und Beschaffung'
+          requirement_text: 'Für die IT-Komponenten SOLLTEN Anforderungen für einen effizienten und sicheren Betrieb bereits bei der Konzeption und der Beschaffung berücksichtigt werden. Hierfür SOLLTEN die Anforderungen des IT-Betriebs erhoben und berücksichtigt werden. Der IT-Betrieb SOLLTE dabei auch die Komplexität der IT berücksichtigen.'
+        - id: OPS.1.1.1.A15
+          title: 'Planung und Einsatz von Betriebsmitteln'
+          requirement_text: 'Der IT-Betrieb SOLLTE für alle IT-Komponenten die Betriebsmittel bedarfsgerecht planen, beschaffen und einsetzen. Der IT-Betrieb SOLLTE die Anforderungen an die jeweiligen Betriebsmittel ermitteln und diese mit den anderen betroffenen Organisationseinheiten der Institution abstimmen. Die Netze, in denen die Betriebsmittel positioniert sind, SOLLTEN von den sonstigen Netzen der Institution mindestens logisch getrennt werden (siehe Baustein NET.1.1 Netzarchitektur und -design). Das Netz für die Betriebsmittel SOLLTE abhängig von Sicherheitsrichtlinie und Funktionsabhängigkeiten weiter unterteilt werden. Als Basis für die weitere Segmentierung SOLLTEN die unterschiedlichen Betriebsgruppen und Zielsysteme verwendet werden.'
+        - id: OPS.1.1.1.A16
+          title: 'Schulung des Betriebspersonals'
+          requirement_text: 'Für den IT-Betrieb SOLLTE durch einen Schulungsplan sichergestellt werden, dass für alle IT-Komponenten und Betriebsmittel jeweils mehrere Personen die erforderlichen Fähigkeiten und Qualifikationen besitzen. In den Schulungsmaßnahmen SOLLTEN insbesondere die folgenden Themen adressiert werden: Wenn neue IT-Komponenten beschafft werden, SOLLTE ein Budget für entsprechende Schulungsmaßnahmen des IT-Betriebs eingeplant werden.'
+        - id: OPS.1.1.1.A17
+          title: 'Planung des IT-Betriebs unter besonderer Berücksichtigung von Mangel- und Notsituationen'
+          requirement_text: 'Der IT-Betrieb SOLLTE für die betriebenen IT-Komponenten definieren, wann eine Mangel- oder eine Notsituation vorliegt. Für diese Situationen SOLLTE nach den Vorgaben des allgemeinen Notfallmanagements festgelegt werden, welche IT-Komponenten vorrangig betrieben werden oder für einen Mindestbetrieb benötigt werden. Die Notfallplanung SOLLTE die folgenden Punkte beinhalten:'
+        - id: OPS.1.1.1.A18
+          title: 'Planung des Einsatzes von Dienstleistenden'
+          requirement_text: 'Der IT-Betrieb SOLLTE den Einsatz von Dienstleistenden koordinieren und diese unter anderem über SLAs so steuern, dass die Dienstleistung in ausreichendem Maße erbracht wird. Der Einsatz von verschiedenen Dienstleistenden SOLLTE aufeinander abgestimmt werden, insbesondere falls diese für den gleichen Tätigkeitsbereich vorgesehen sind. Für solche Situationen SOLLTE jeweils eine eindeutige Kommunikationsschnittstelle festgelegt werden. Der IT-Betrieb SOLLTE die Festlegungen zum Dienstleistendenmanagement sowie die für die Dienstleistenden vorgesehenen Tätigkeiten festhalten, regelmäßig prüfen und anpassen.'
+        - id: OPS.1.1.1.A19
+          title: 'Regelungen für Wartungs- und Reparaturarbeiten'
+          requirement_text: 'IT-Komponenten SOLLTEN regelmäßig gewartet werden. Es SOLLTE geregelt sein, welche Sicherheitsaspekte bei Wartungs- und Reparaturarbeiten zu beachten sind. Es SOLLTE festgelegt werden, wer für die Wartung oder Reparatur von IT-Komponenten zuständig ist. Durchgeführte Wartungs- und Reparaturarbeiten SOLLTEN dokumentiert werden. Es SOLLTE sichergestellt werden, dass Wartungs- und Reparaturarbeiten, die durch Dritte ausgeführt werden, mit den Beteiligten abgestimmt sind. Es SOLLTEN interne Mitarbeitende des IT-Betriebs bestimmt werden, die solche Arbeiten autorisieren, gegebenenfalls beobachten oder unterstützen und abnehmen.'
+        - id: OPS.1.1.1.A20
+          title: 'Prüfen auf Schwachstellen'
+          requirement_text: 'Der IT-Betrieb SOLLTE regelmäßig Informationen über bekannt gewordene Schwachstellen bezüglich der IT-Plattformen, Firmware, Betriebssysteme, eingesetzter IT-Anwendungen und Dienste einholen, diese für die konkreten Gegebenheiten analysieren und berücksichtigen. Die IT-Komponenten SOLLTEN regelmäßig und anlassbezogen auf Schwachstellen getestet werden. Für jede IT-Komponente SOLLTEN die angemessene Test-Abdeckung, -Tiefe und -Methode festgelegt werden. Die Tests und identifizierten Schwachstellen SOLLTEN nachvollziehbar erfasst werden. Die Schwachstellen SOLLTEN so schnell wie möglich behoben werden. Solange keine entsprechenden Patches zur Verfügung stehen, MÜSSEN für schwerwiegende Schwachstellen und Bedrohungen andere Maßnahmen zum Schutz der IT-Komponente getroffen werden. Falls dies für eine IT-Komponente nicht möglich ist, SOLLTE diese nicht weiter betrieben werden.'
+      hoch:
+        - id: OPS.1.1.1.A21
+          title: 'Einbinden der Betriebsmittel in das Sicherheitsmonitoring'
+          requirement_text: 'Die IT-Systeme und -Anwendungen, die als Betriebsmittel genutzt werden, SOLLTEN in ein Sicherheitsmonitoring eingebunden werden. Falls die Institution ein System zur zentralen Detektion und automatisierten Echtzeitüberprüfung von Ereignismeldungen einsetzt, SOLLTEN die Betriebsmittel darin eingebunden werden. Betriebsmittel wie IT-Management- und IT-Monitoring-Systeme SOLLTEN als Datenquelle für das Sicherheitsmonitoring genutzt werden.'
+        - id: OPS.1.1.1.A22
+          title: 'Automatisierte Tests auf Schwachstellen'
+          requirement_text: 'Alle IT-Komponenten SOLLTEN regelmäßig und automatisiert auf Schwachstellen getestet werden. Die Ergebnisse der Tests SOLLTEN automatisiert protokolliert und anderen Werkzeugen im Sicherheitsmonitoring bereitgestellt werden. Bei kritischen Schwachstellen SOLLTE eine automatisierte Alarmierung erfolgen.'
+        - id: OPS.1.1.1.A23
+          title: 'Durchführung von Penetrationstests'
+          requirement_text: 'Für alle IT-Komponenten SOLLTEN Penetrationstests durchgeführt werden. Hierfür SOLLTE ein Konzept erstellt und umgesetzt werden, das neben den zu verwendenden Testmethoden und Testtiefen auch die Erfolgskriterien festlegt.'
+        - id: OPS.1.1.1.A24
+          title: 'Umfassendes Protokollieren der Prozessschritte im IT-Betrieb'
+          requirement_text: 'Für die Betriebsprozesse SOLLTE jeder Prozessschritt nachvollziehbar protokolliert werden.'
+        - id: OPS.1.1.1.A25
+          title: 'Sicherstellen von autark funktionierenden Betriebsmitteln'
+          requirement_text: 'Für die Betriebsmittel SOLLTE sichergestellt werden, dass diese auch bei äußeren Störungen genutzt werden können. Insbesondere SOLLTE eine ausgefallende Internet-Anbindung nicht zu einer Störung der Betriebsmittel führen. Die Betriebsmittel SOLLTEN so konfiguriert und verortet werden, dass die Abhängigkeiten zwischen den verschiedenen Betriebsmitteln minimiert wird. Es SOLLTE verhindert werden, dass der Ausfall eines Betriebsmittels zu einer betriebsverhindernden Störung eines anderen Betriebsmittels führt.'
+        - id: OPS.1.1.1.A26
+          title: 'Proaktive Instandhaltung im IT-Betrieb'
+          requirement_text: 'Für die IT-Systeme SOLLTE eine proaktive Instandhaltung durchgeführt werden, in der in festgelegten Intervallen vorbeugende Instandhaltungsmaßnahmen durchgeführt werden. Ergänzend zu der regelmäßigen Wartung und der proaktiven Instandhaltung SOLLTE je IT-Komponente abgewogen werden, ob eine vorausschauende Instandhaltung (engl. Predictive Maintenance) genutzt wird.'
 
   - id: OPS.1.1.2
-    title: 'Ordnungsgemaesse IT-Administration'
+    title: 'Ordnungsgemäße IT-Administration'
     description: 'Anforderungen an die ordnungsgemaesse, nachvollziehbare und sichere Durchfuehrung administrativer Taetigkeiten.'
     anforderungen:
       basis:
-        - id: OPS.1.1.2.A1
-          title: 'Personalauswahl fuer administrative Taetigkeiten'
-          requirement_text: 'Administratoren MUESSEN sorgfaeltig ausgewaehlt werden.'
         - id: OPS.1.1.2.A2
-          title: 'Vertretungsregelungen und Notfallvorsorge'
-          requirement_text: 'Es MUESSEN Vertretungsregelungen fuer Administratoren festgelegt werden.'
-        - id: OPS.1.1.2.A3
-          title: 'Dokumentation von administrativen Taetigkeiten'
-          requirement_text: 'Administrative Taetigkeiten MUESSEN nachvollziehbar dokumentiert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.2 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Vertretungsregelungen'
+          requirement_text: 'Für jede Administrationsaufgabe MUSS eine Vertretung benannt werden. Die Vertretung MUSS über die notwendigen administrativen Berechtigungen (organisatorisch und technisch) verfügen, um die Tätigkeit durchführen zu können. Eine benannte Vertretung MUSS über die im Kontext der Administrationsaufgabe notwendigen Kenntnisse verfügen. Die Regelung der Vertretung MUSS Mangel- und Notfallsituationen berücksichtigen.'
+        - id: OPS.1.1.2.A4
+          title: 'Beendigung der Tätigkeit in der IT-Administration'
+          requirement_text: 'Falls eine Person von Administrationsaufgaben entbunden wird, MÜSSEN ihr alle damit zusammenhängenden privilegierten Berechtigungen auf organisatorischer und technischer Ebene entzogen werden. Insbesondere MÜSSEN persönliche administrative Konten gesperrt und Passwörter aller administrativer Konten geändert werden, die der Person bekannt sind. Weiterhin MÜSSEN alle betroffenen Parteien darauf hingewiesen werden, dass diese Person von den entsprechenden Aufgaben entbunden ist und daher keine administrativen Berechtigungen mehr haben darf. Es MUSS geregelt werden unter welchen Rahmenbedingungen geprüft wird, ob sich zusätzliche nicht dokumentierte administrative Rechte verschafft wurden. Diese Prüfung SOLLTE insbesondere erfolgen, falls die Entscheidung eine Person von Administrationsaufgaben zu entbinden nicht im Einvernehmen mit der entsprechenden Person getroffen wurde. Falls solche administrativen Rechte gefunden wurden, MÜSSEN diese wieder entzogen werden.'
+        - id: OPS.1.1.2.A5
+          title: 'Nachweisbarkeit von administrativen Tätigkeiten'
+          requirement_text: 'Administrative Tätigkeiten MÜSSEN nachweisbar sein. Dafür MUSS mindestens festgehalten werden, Die Institution MUSS jederzeit nachweisen können, welche Person welche administrativen Tätigkeiten durchgeführt hat. Dazu SOLLTEN alle Administrierenden über eine eigene Zugangskennung verfügen. Auch Vertretungen von Administrierenden SOLLTEN eigene Zugangskennungen erhalten. Jeder Anmeldevorgang (Login) über eine Administrationskennung MUSS protokolliert werden.'
+        - id: OPS.1.1.2.A6
+          title: 'Schutz administrativer Tätigkeiten'
+          requirement_text: 'Administrative Schnittstellen und Funktionen DÜRFEN NUR berechtigten Personen zur Verfügung stehen. Für diese Schnittstellen und Funktionen MÜSSEN geeignete Verfahren zur Authentisierung festgelegt werden. Es MUSS sichergestellt sein, dass IT-Administrationstätigkeiten nur durchgeführt werden können, falls vorher eine dementsprechende Authentisierung erfolgt ist. Es MUSS festgelegt werden, welche Protokolle für Administrationsschnittstellen verwendet werden dürfen, so dass die bei der Administration stattfindende Kommunikation abgesichert ist.'
+        - id: OPS.1.1.2.A21
+          title: 'Regelung der IT-Administrationsrollen'
+          requirement_text: 'Es MÜSSEN Rollen definiert werden, die ausschließlich zur IT-Administration vergeben werden. Administrationsrollen MÜSSEN aufgrund des tatsächlichen Bedarfs im Aufgabenbereich der IT-Administration nachvollziehbar vergeben werden. Alle notwendigen IT-Administrationstätigkeiten MÜSSEN durch Berechtigungen in den Administrationsrollen nach dem Minimalprinzip abgedeckt sein. Die IT-Administration unterschiedlicher Ebenen der IT-Komponenten, z. B. die Trennung von Betriebssystem- und Anwendungsadministration, MUSS bei der Konzeption der Administrationsrollen berücksichtigt werden.'
+        - id: OPS.1.1.2.A22
+          title: 'Trennung von administrativen und anderen Tätigkeiten'
+          requirement_text: 'Die durchführende Person MUSS wissen, bei welchem Teil ihrer Aufgabe es sich um administrative Tätigkeiten handelt. Aufgaben, die keine Administrationsrechte benötigen, DÜRFEN NICHT mit Administrationsrechten ausgeführt werden. Es MUSS sichergestellt werden, dass Administrationswerkzeuge klar als solche erkennbar sind. Wenn eine Anwendung zur Erfüllung einer Administrationsaufgabe benutzt wird, DARF NICHT dieselbe Instanz dieser Anwendung für andere Aufgaben verwendet werden. Dies SOLLTE auf technischer Ebene sichergestellt werden. Die Zugangskennungen, die zur IT-Administration genutzt werden, SOLLTEN sich von Zugangskennungen unterscheiden, die in anderem Kontext genutzt werden.'
+      standard:
+        - id: OPS.1.1.2.A7
+          title: 'Regelung der IT-Administrationstätigkeit'
+          requirement_text: 'Jede IT-Administrationstätigkeit SOLLTE einer klar definierten Aufgabe zugeordnet sein. Für diese Aufgaben SOLLTE geregelt werden, Es SOLLTE nachvollziehbar sein, in welchen Prozessen sich Administrationsaufgaben einfügen. IT-Administrationstätigkeiten SOLLTEN nur mit denjenigen Berechtigungen durchgeführt werden, die zur Erfüllung der entsprechenden Aufgabe notwendig sind. Es SOLLTE festgelegt werden, wie IT-Administrationstätigkeiten auszuführen sind. Die Regelungen für IT-Administrationstätigkeiten SOLLTEN regelmäßig und anlassbezogen überprüft und aktualisiert werden. Für jede IT-Administrationstätigkeit SOLLTE sichergestellt werden, dass diese bei Bedarf auch im Notfall ausgeführt werden kann.'
+        - id: OPS.1.1.2.A8
+          title: 'Administration von Fachanwendungen'
+          requirement_text: 'Es SOLLTE geregelt und dokumentiert werden, welche Administrationsaufgaben für Fachanwendungen vom IT-Betrieb und welche durch die Fachadministration durchgeführt werden. Für Fachanwendungen SOLLTE identifiziert werden, welche Zugriffe der IT-Betrieb auf Systemebene benötigt. Alle Schnittstellen und Abhängigkeiten zwischen der Fachadministration und der Administration durch den IT-Betrieb SOLLTEN identifiziert werden. Immer wenn Administrationsprozesse erstellt und gepflegt werden, SOLLTEN die Zuständigkeiten und Abhängigkeiten dieser Schnittstellen berücksichtigt werden.'
+        - id: OPS.1.1.2.A11
+          title: 'Dokumentation von IT-Administrationstätigkeiten'
+          requirement_text: 'Durchgeführte IT-Administrationstätigkeiten SOLLTEN nachvollziehbar dokumentiert werden. Es SOLLTE geprüft werden, welche grundsätzlichen Anforderungen an die Dokumentation der IT-Administrationstätigkeiten existieren. Es SOLLTE identifiziert werden, welche Ziele mit der Dokumentation erreicht werden sollen. Aufgrund dieser Anforderungen und Ziele SOLLTE verbindlich festgelegt werden, welche Schritte in welchem Detailierungsgrad dokumentiert werden. Aus der Dokumentation SOLLTE mindestens hervorgehen, Dokumentation im Kontext einer IT-Administrationstätigkeit SOLLTE in Standard-Arbeitsabläufen enthalten sein. Es SOLLTE geregelt werden, welche Möglichkeiten zu nutzen sind, falls IT-Administrationstätigkeiten außerplanmäßig durchgeführt werden. Es SOLLTE identifiziert werden, unter welchen Umständen ein Zugriff auf die Dokumentation notwendig ist. Der Zugriff SOLLTE dementsprechend gewährleistet sein.'
+        - id: OPS.1.1.2.A16
+          title: 'Erweiterte Sicherheitsmaßnahmen für Administrationszugänge'
+          requirement_text: 'Der Zugang zu administrativen Oberflächen und Schnittstellen SOLLTE auf IT-Systeme, die zur IT-Administration verwendet werden, beschränkt sein. Daher SOLLTEN Netze, die zur IT-Administration verwendet werden, durch Filter- und Segmentierungsmaßnahmen von produktiven Netzen zu administrierender Komponenten getrennt werden (Out-of-Band-Management). Wo kein Out-of-Band-Management möglich ist, SOLLTEN Software-Schnittstellen und physische Schnittstellen zur IT-Administration durch zusätzliche Maßnahmen abgesichert werden und nur für Personen erreichbar sein, die für deren Nutzung berechtigt sind. Hierzu SOLLTE eine Zwei-Faktor-Authentisierung verwendet werden.'
+        - id: OPS.1.1.2.A23
+          title: 'Rollen- und Berechtigungskonzept für administrative Zugriffe'
+          requirement_text: 'Es SOLLTE ein angemessenes Rollen- und Berechtigungskonzept für administrative Zugriffe existieren. Darin SOLLTEN grundsätzliche Vorgaben gemacht werden, mindestens darüber,'
+        - id: OPS.1.1.2.A24
+          title: 'Prüfen von IT-Administrationstätigkeiten'
+          requirement_text: 'Bevor eine IT-Administrationstätigkeit durchgeführt wird, SOLLTE geprüft werden, ob der Anlass und die Art der Tätigkeit im Kontext der zugrundeliegenden Aufgabe plausibel sind. Nachdem eine IT-Administrationstätigkeit an einer Komponente durchgeführt wurde, SOLLTE geprüft werden, ob die Konfiguration und der Status der Komponente dem gewünschten Zielzustand entspricht. Falls eine zusätzliche Qualitätssicherung der ausgeführten Administrationsaufgabe notwendig ist, SOLLTE diese nicht durch dieselbe Person durchgeführt werden, die die entsprechenden Tätigkeiten durchgeführt hat. Für IT-Administrationstätigkeiten mit potenziell weitreichenden Folgen SOLLTE geprüft werden, ob diese Tätigkeiten die Verfügbarkeit der IT-Administration selbst einschränken könnten. In diesem Fall SOLLTEN entsprechende Vorkehrungen getroffen werden, um einen Rollback der IT-Administrationstätigkeiten zu ermöglichen.'
+        - id: OPS.1.1.2.A25
+          title: 'Zeitfenster für schwerwiegende IT-Administrationstätigkeiten'
+          requirement_text: 'Für IT-Administrationstätigkeiten mit potenziell weitreichenden Folgen SOLLTEN durch den IT-Betrieb Wartungsfenster abgestimmt werden. Falls der IT-Betrieb für IT-Administrationstätigkeiten Vorgaben zu Zeitfenstern macht, MÜSSEN diese eingehalten werden.'
+        - id: OPS.1.1.2.A26
+          title: 'Backup der Konfiguration'
+          requirement_text: 'Alle Konfigurationen SOLLTEN durch regelmäßige Backups auf Anwendungsebene und auf IT-Systemebene gesichert werden. Vor IT-Administrationstätigkeiten mit potenziell weitreichenden Folgen SOLLTE ein zusätzliches Backup gemacht werden. Für Backups SOLLTE gewährleistet sein, dass sie im Fehlerfall wieder eingespielt werden können.'
+        - id: OPS.1.1.2.A27
+          title: 'Ersatz für zentrale IT-Administrationswerkzeuge'
+          requirement_text: 'Für zentrale IT-Administrationswerkzeuge SOLLTEN Alternativen zur Verfügung stehen, mit denen im Bedarfsfall administriert werden kann. Hierzu SOLLTEN Sprungsysteme mit Zugriff auf entsprechende Administrationsnetze zur Verfügung stehen. Falls solche Alternativen nicht zur Verfügung stehen, SOLLTE zur IT-Administration der Zugang und der direkte Zugriff auf die zu administrierende IT möglich sein.'
+        - id: OPS.1.1.2.A28
+          title: 'Protokollierung administrativer Tätigkeiten'
+          requirement_text: 'Administrative Tätigkeiten SOLLTEN protokolliert werden. Die Protokolldateien SOLLTEN für eine angemessene Zeitdauer geschützt aufbewahrt werden. Die ausführenden Administrierenden SOLLTEN keine Möglichkeiten haben, die aufgezeichneten Protokolldateien zu verändern oder zu löschen. Protokolldaten SOLLTEN regelmäßig geprüft werden.'
+      hoch:
+        - id: OPS.1.1.2.A17
+          title: 'IT-Administration im Vier-Augen-Prinzip'
+          requirement_text: 'Es SOLLTE geregelt werden, welche Administrationsaufgaben eine zusätzliche Person erfordern, die die Ausführung überwacht. Diese Person SOLLTE im Kontext der durchzuführenden IT-Administrationstätigkeiten auch über die zur Ausführung notwendigen Qualifikationen verfügen.'
+        - id: OPS.1.1.2.A18
+          title: 'Durchgängige Protokollierung administrativer Tätigkeiten'
+          requirement_text: 'Bei IT-Komponenten mit hohem Schutzbedarf SOLLTEN alle administrativen Tätigkeiten in sämtlichen Bereichen protokolliert werden. Dabei SOLLTE jede administrative Aktion vollständig nachvollzogen werden. Die ausführenden Administrierenden SOLLTEN keinen Einfluss auf Art und Umfang der Protokollierung nehmen können.'
+        - id: OPS.1.1.2.A19
+          title: 'Nutzung hochverfügbarer IT-Administrationswerkzeuge'
+          requirement_text: 'Administrationswerkzeuge SOLLTEN redundant ausgelegt werden. Es SOLLTE sichergestellt werden, dass im Störungsfall weiterhin alle Administrationsaufgaben ohne wesentliche Einschränkungen ausgeführt werden können.'
+        - id: OPS.1.1.2.A29
+          title: 'Monitoring der IT-Administrationswerkzeuge'
+          requirement_text: 'Für IT-Administrationswerkzeuge SOLLTEN Kenngrößen zur Verfügbarkeit identifiziert werden. Diese Kenngrößen SOLLTEN kontinuierlich überwacht werden. Es SOLLTEN tolerierbare Grenzwerte dieser Kenngrößen festgelegt werden. Werden diese nicht eingehalten, SOLLTEN die zuständigen Teams automatisch benachrichtigt werden.'
+        - id: OPS.1.1.2.A30
+          title: 'Sicherheitsmonitoring administrativer Tätigkeiten'
+          requirement_text: 'Falls ein IT-System zur zentralen Detektion und automatisierten Echtzeitüberprüfung von Ereignismeldungen genutzt wird, SOLLTEN dort Ereignisdaten zu administrativen Tätigkeiten ausgewertet werden. Hierzu SOLLTEN bestehende Monitoring-Systeme der IT sowie kritische Administrationswerkzeuge in dieses IT-System eingebunden werden.'
 
   - id: OPS.1.1.3
-    title: 'Patch- und Aenderungsmanagement'
+    title: 'Patch- und Änderungsmanagement'
     description: 'Anforderungen an einen geregelten Patch- und Aenderungsmanagement-Prozess.'
     anforderungen:
       basis:
         - id: OPS.1.1.3.A1
-          title: 'Erstellung eines Patchmanagement-Konzepts'
-          requirement_text: 'Es MUSS ein Patchmanagement-Konzept erstellt werden.'
+          title: 'Konzept für das Patch- und Änderungsmanagement'
+          requirement_text: 'Wenn IT-Komponenten, Software oder Konfigurationsdaten geändert werden, MUSS es dafür Vorgaben geben, die auch Sicherheitsaspekte berücksichtigen. Diese MÜSSEN in einem Konzept für das Patch- und Änderungsmanagement festgehalten und befolgt werden. Alle Patches und Änderungen MÜSSEN geeignet geplant, genehmigt und dokumentiert werden. Patches und Änderungen SOLLTEN vorab geeignet getestet werden (siehe hierzu auch OPS.1.1.6 Software-Tests und Freigaben). Wenn Patches installiert und Änderungen durchgeführt werden, MÜSSEN Rückfall-Lösungen vorhanden sein. Bei größeren Änderungen MUSS zudem der oder die ISB beteiligt sein. Insgesamt MUSS sichergestellt werden, dass das angestrebte Sicherheitsniveau während und nach den Änderungen erhalten bleibt. Insbesondere SOLLTEN auch die gewünschten Sicherheitseinstellungen erhalten bleiben.'
         - id: OPS.1.1.3.A2
-          title: 'Festlegung von Zustaendigkeiten im Patchmanagement'
-          requirement_text: 'Die Zustaendigkeiten fuer das Patchmanagement MUESSEN festgelegt werden.'
+          title: 'Festlegung der Zuständigkeiten'
+          requirement_text: 'Für alle Organisationsbereiche MÜSSEN Zuständige für das Patch- und Änderungsmanagement festgelegt werden. Die definierten Zuständigkeiten MÜSSEN sich auch im Berechtigungskonzept widerspiegeln.'
         - id: OPS.1.1.3.A3
-          title: 'Konzept fuer Patch- und Aenderungsmanagement'
-          requirement_text: 'Fuer das Patch- und Aenderungsmanagement MUSS ein schriftliches Konzept existieren, das Prozessschritte, Verantwortlichkeiten und Zeitvorgaben festlegt.'
-      standard: []
-      hoch: []
+          title: 'Konfiguration von Autoupdate-Mechanismen'
+          requirement_text: 'Innerhalb der Strategie zum Patch- und Änderungsmanagement MUSS definiert werden, wie mit integrierten Update-Mechanismen (Autoupdate) der eingesetzten Software umzugehen ist. Insbesondere MUSS festgelegt werden, wie diese Mechanismen abgesichert und passend konfiguriert werden. Außerdem SOLLTEN neue Komponenten daraufhin überprüft werden, welche Update-Mechanismen sie haben.'
+        - id: OPS.1.1.3.A15
+          title: 'Regelmäßige Aktualisierung von IT-Systemen und Software'
+          requirement_text: 'IT-Systeme und Software SOLLTEN regelmäßig aktualisiert werden. Grundsätzlich SOLLTEN Patches zeitnah nach Veröffentlichung eingespielt werden. Basierend auf dem Konzept für das Patch- und Änderungsmanagement MÜSSEN Patches zeitnah nach Veröffentlichung bewertet und entsprechend priorisiert werden. Für die Bewertung SOLLTE geprüft werden, ob es zu diesem Patch bekannte Schwachstellen gibt. Es MUSS entschieden werden, ob der Patch eingespielt werden soll. Wenn ein Patch eingespielt wird, SOLLTE kontrolliert werden, ob dieser auf allen relevanten Systemen zeitnah erfolgreich eingespielt wurde. Wenn ein Patch nicht eingespielt wird, MÜSSEN die Entscheidung und die Gründe dafür dokumentiert werden. Falls Hardware- oder Software-Produkte eingesetzt werden sollen, die nicht mehr von den Herstellenden unterstützt werden oder für die kein Support mehr vorhanden ist, MUSS geprüft werden, ob diese dennoch sicher betrieben werden können. Ist dies nicht der Fall, DÜRFEN diese Hardware- oder Software-Produkte NICHT mehr verwendet werden.'
+      standard:
+        - id: OPS.1.1.3.A5
+          title: 'Umgang mit Änderungsanforderungen'
+          requirement_text: 'Alle Änderungsanforderungen (Request for Changes, RfCs) SOLLTEN erfasst und dokumentiert werden. Die Änderungsanforderungen SOLLTEN von den jeweiligen Fachverantwortlichen für das Patch- und Änderungsmanagement daraufhin kontrolliert werden, ob die Aspekte der Informationssicherheit ausreichend berücksichtigt wurden.'
+        - id: OPS.1.1.3.A6
+          title: 'Abstimmung von Änderungsanforderungen'
+          requirement_text: 'Der zu einer Änderung zugehörige Abstimmungsprozess SOLLTE alle relevanten Zielgruppen und die Auswirkungen auf die Informationssicherheit berücksichtigen. Die von der Änderung betroffenen Zielgruppen SOLLTEN sich nachweisbar dazu äußern können. Auch SOLLTE es ein festgelegtes Verfahren geben, wodurch wichtige Änderungsanforderungen beschleunigt werden können.'
+        - id: OPS.1.1.3.A7
+          title: 'Integration des Änderungsmanagements in die Geschäftsprozesse'
+          requirement_text: 'Der Änderungsmanagementprozess SOLLTE in die Geschäftsprozesse beziehungsweise Fachaufgaben integriert werden. Bei geplanten Änderungen SOLLTE die aktuelle Situation der davon betroffenen Geschäftsprozesse berücksichtigt werden. Alle relevanten Fachabteilungen SOLLTEN über anstehende Änderungen informiert werden. Auch SOLLTE es eine Eskalationsebene geben, deren Mitglieder der Leitungsebene der Institution angehören. Die Mitglieder dieser Eskalationsebene SOLLTEN in Zweifelsfällen über Priorität und Terminplanung einer Hard- oder Software-Änderung entscheiden.'
+        - id: OPS.1.1.3.A8
+          title: 'Sicherer Einsatz von Werkzeugen für das Patch- und Änderungsmanagement'
+          requirement_text: 'Anforderungen und Rahmenbedingungen SOLLTEN definiert werden, nach denen Werkzeuge für das Patch- und Änderungsmanagement ausgewählt werden. Außerdem SOLLTE eine spezifische Sicherheitsrichtlinie für die eingesetzten Werkzeuge erstellt werden.'
+        - id: OPS.1.1.3.A9
+          title: 'Test- und Abnahmeverfahren für neue Hardware'
+          requirement_text: 'Wenn neue Hardware ausgewählt wird, SOLLTE geprüft werden, ob die eingesetzte Software und insbesondere die relevanten Betriebssysteme mit der Hardware und deren Treibersoftware kompatibel sind. Neue Hardware SOLLTE getestet werden, bevor sie eingesetzt wird. Diese SOLLTE ausschließlich in einer isolierten Umgebung getestet werden. Für IT-Systeme SOLLTE es ein Abnahmeverfahren und eine Freigabeerklärung geben. Die Zuständigen SOLLTEN die Freigabeerklärungen an geeigneter Stelle schriftlich hinterlegen. Für den Fall, dass trotz der Abnahme- und Freigabeverfahren im laufenden Betrieb Fehler festgestellt werden, SOLLTE es ein Verfahren zur Fehlerbehebung geben.'
+        - id: OPS.1.1.3.A10
+          title: 'Sicherstellung der Integrität und Authentizität von Softwarepaketen'
+          requirement_text: 'Während des gesamten Patch- oder Änderungsprozesses SOLLTE die Authentizität und Integrität von Softwarepaketen sichergestellt werden. Dazu SOLLTE geprüft werden, ob für die eingesetzten Softwarepakete Prüfsummen oder digitale Signaturen verfügbar sind. Falls ja, SOLLTEN diese vor der Installation des Pakets überprüft werden. Ebenso SOLLTE darauf geachtet werden, dass die notwendigen Programme zur Überprüfung vorhanden sind. Software und Updates SOLLTEN grundsätzlich nur aus vertrauenswürdigen Quellen bezogen werden.'
+        - id: OPS.1.1.3.A11
+          title: 'Kontinuierliche Dokumentation der Informationsverarbeitung'
+          requirement_text: 'Änderungen SOLLTEN in allen Phasen, allen Anwendungen und allen Systemen dokumentiert werden. Dazu SOLLTEN entsprechende Regelungen erarbeitet werden.'
+      hoch:
+        - id: OPS.1.1.3.A12
+          title: 'Einsatz von Werkzeugen beim Änderungsmanagement'
+          requirement_text: 'Bevor ein Werkzeug zum Änderungsmanagement benutzt wird, SOLLTE sorgfältig geprüft werden, ob damit die Änderungen angemessen im Informationsverbund verteilt werden können. Zusätzlich SOLLTEN Unterbrechungspunkte definiert werden können, an denen die Verteilung einer fehlerhaften Änderung gestoppt wird.'
+        - id: OPS.1.1.3.A13
+          title: 'Erfolgsmessung von Änderungsanforderungen'
+          requirement_text: 'Um zu überprüfen, ob eine Änderung erfolgreich war, SOLLTEN die jeweiligen Fachverantwortlichen für das Patch- und Änderungsmanagement sogenannte Nachtests durchführen. Dazu SOLLTEN sie geeignete Referenzsysteme als Qualitätssicherungssysteme auswählen. Die Ergebnisse der Nachtests SOLLTEN im Rahmen des Änderungsprozesses dokumentiert werden.'
+        - id: OPS.1.1.3.A14
+          title: 'Synchronisierung innerhalb des Änderungsmanagements'
+          requirement_text: 'Im Änderungsmanagementprozess SOLLTE durch geeignete Mechanismen sichergestellt werden, dass auch zeitweise oder längerfristig nicht erreichbare Geräte die Patches und Änderungen erhalten.'
 
   - id: OPS.1.1.4
     title: 'Schutz vor Schadprogrammen'
@@ -63,16 +219,43 @@ bausteine:
     anforderungen:
       basis:
         - id: OPS.1.1.4.A1
-          title: 'Erstellung eines Konzepts fuer den Schutz vor Schadprogrammen'
-          requirement_text: 'Es MUSS ein Konzept fuer den Schutz vor Schadprogrammen erstellt werden.'
+          title: 'Erstellung eines Konzepts für den Schutz vor Schadprogrammen'
+          requirement_text: 'Es MUSS ein Konzept erstellt werden, das beschreibt, welche IT-Systeme vor Schadprogrammen geschützt werden müssen. Hierbei MÜSSEN auch IoT-Geräte und Produktionssysteme berücksichtigt werden. Außerdem MUSS festgehalten werden, wie der Schutz zu erfolgen hat. Ist kein verlässlicher Schutz möglich, so SOLLTEN die identifizierten IT-Systeme NICHT betrieben werden. Das Konzept SOLLTE nachvollziehbar dokumentiert und aktuell gehalten werden.'
         - id: OPS.1.1.4.A2
           title: 'Nutzung systemspezifischer Schutzmechanismen'
-          requirement_text: 'Die systemspezifischen Schutzmechanismen MUESSEN aktiviert und konfiguriert werden.'
+          requirement_text: 'Es MUSS geprüft werden, welche Schutzmechanismen die verwendeten IT-Systeme sowie die darauf genutzten Betriebssysteme und Anwendungen bieten. Diese Mechanismen MÜSSEN genutzt werden, sofern es keinen mindestens gleichwertigen Ersatz gibt oder gute Gründe dagegen sprechen. Werden sie nicht genutzt, MUSS dies begründet und dokumentiert werden.'
         - id: OPS.1.1.4.A3
-          title: 'Auswahl eines Virenschutzprogramms'
-          requirement_text: 'Ein geeignetes Virenschutzprogramm MUSS ausgewaehlt und installiert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.4 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Auswahl eines Virenschutzprogrammes'
+          requirement_text: 'Abhängig vom verwendeten Betriebssystem, anderen vorhandenen Schutzmechanismen sowie der Verfügbarkeit geeigneter Virenschutzprogramme MUSS für den konkreten Einsatzzweck ein entsprechendes Schutzprogramm ausgewählt und installiert werden. Für Gateways und IT-Systeme, die dem Datenaustausch dienen, MUSS ein geeignetes Virenschutzprogramm ausgewählt und installiert werden. Es DÜRFEN NUR Produkte für den Enterprise-Bereich mit auf die Institution zugeschnittenen Service- und Supportleistungen eingesetzt werden. Produkte für die reine Heimanwendung oder Produkte ohne Support DÜRFEN NICHT im professionellen Wirkbetrieb eingesetzt werden. Cloud-Dienste zur Verbesserung der Detektionsleistung der Virenschutzprogramme SOLLTEN genutzt werden. Falls Cloud-Funktionen solcher Produkte verwendet werden, MUSS sichergestellt werden, dass dies nicht im Widerspruch zum Daten- oder Geheimschutz steht. Neben Echtzeit- und On-Demand-Scans MUSS eine eingesetzte Lösung die Möglichkeit bieten, auch komprimierte Daten nach Schadprogrammen zu durchsuchen.'
+        - id: OPS.1.1.4.A5
+          title: 'Betrieb und Konfiguration von Virenschutzprogrammen'
+          requirement_text: 'Das Virenschutzprogramm MUSS für seine Einsatzumgebung geeignet konfiguriert werden. Die Erkennungsleistung SOLLTE dabei im Vordergrund stehen, sofern nicht Datenschutz- oder Leistungsgründe im jeweiligen Einzelfall dagegen sprechen. Wenn sicherheitsrelevante Funktionen des Virenschutzprogramms nicht genutzt werden, SOLLTE dies begründet und dokumentiert werden. Bei Schutzprogrammen, die speziell für die Desktop-Virtualisierung optimiert sind, SOLLTE nachvollziehbar dokumentiert sein, ob auf bestimmte Detektionsverfahren zugunsten der Leistung verzichtet wird. Es MUSS sichergestellt werden, dass die Benutzenden keine sicherheitsrelevanten Änderungen an den Einstellungen der Antivirenprogramme vornehmen können.'
+        - id: OPS.1.1.4.A6
+          title: 'Regelmäßige Aktualisierung der eingesetzten Virenschutzprogramme'
+          requirement_text: 'Auf den damit ausgestatteten IT-Systemen MÜSSEN die Virenschutzprogramme nach Empfehlung der herstellenden Institution regelmäßig und zeitnah aktualisiert werden.'
+        - id: OPS.1.1.4.A7
+          title: 'Sensibilisierung und Verpflichtung der Benutzenden'
+          requirement_text: 'Benutzende MÜSSEN regelmäßig über die Bedrohung durch Schadprogramme aufgeklärt werden. Sie MÜSSEN die grundlegenden Verhaltensregeln einhalten, um die Gefahr eines Befalls durch Schadprogramme zu reduzieren. Dateien, E-Mails, Webseiten usw. aus nicht vertrauenswürdigen Quellen SOLLTEN NICHT geöffnet werden. Sie MÜSSEN entsprechenden Kontaktpersonen für den Fall eines Verdacht auf eine Infektion mit einem Schadprogramm bekannt sein. Sie MÜSSEN sich an die ihnen benannten Kontaktpersonen wenden, wenn der Verdacht auf eine Infektion mit einem Schadprogramm besteht.'
+      standard:
+        - id: OPS.1.1.4.A9
+          title: 'Meldung von Infektionen mit Schadprogrammen'
+          requirement_text: 'Das eingesetzte Virenschutzprogramm SOLLTE eine Infektion mit einem Schadprogramm automatisch blockieren und melden. Die automatische Meldung SOLLTE an einer zentralen Stelle angenommen werden. Dabei SOLLTEN die zuständigen Mitarbeitenden je nach Sachlage über das weitere Vorgehen entscheiden. Das Vorgehen bei Meldungen und Alarmen der Virenschutzprogramme SOLLTE geplant, dokumentiert und getestet werden. Es SOLLTE insbesondere geregelt sein, was im Falle einer bestätigten Infektion geschehen soll.'
+      hoch:
+        - id: OPS.1.1.4.A10
+          title: 'Nutzung spezieller Analyseumgebungen'
+          requirement_text: 'Automatisierte Analysen in einer speziellen Testumgebung (basierend auf Sandboxen bzw. separaten virtuellen oder physischen Systemen) SOLLTEN für eine Bewertung von verdächtigen Dateien ergänzend herangezogen werden.'
+        - id: OPS.1.1.4.A11
+          title: 'Einsatz mehrerer Scan-Engines'
+          requirement_text: 'Zur Verbesserung der Erkennungsleistung SOLLTEN für besonders schutzwürdige IT-Systeme, wie Gateways und IT-Systeme zum Datenaustausch, Virenschutzprogramme mit mehreren alternativen Scan-Engines eingesetzt werden.'
+        - id: OPS.1.1.4.A12
+          title: 'Einsatz von Datenträgerschleusen'
+          requirement_text: 'Bevor insbesondere Datenträger von Dritten mit den IT-Systemen der Institution verbunden werden, SOLLTEN diese durch eine Datenträgerschleuse geprüft werden.'
+        - id: OPS.1.1.4.A13
+          title: 'Umgang mit nicht vertrauenswürdigen Dateien'
+          requirement_text: 'Ist es notwendig, nicht vertrauenswürdige Dateien zu öffnen, SOLLTE dies nur auf einem isolierten IT-System geschehen. Die betroffenen Dateien SOLLTEN dort z. B. in ein ungefährliches Format umgewandelt oder ausgedruckt werden, wenn sich hierdurch das Risiko einer Infektion durch Schadsoftware verringert.'
+        - id: OPS.1.1.4.A14
+          title: 'Auswahl und Einsatz von Cyber-Sicherheitsprodukten gegen gezielte Angriffe'
+          requirement_text: 'Der Einsatz sowie der Mehrwert von Produkten und Services, die im Vergleich zu herkömmlichen Virenschutzprogrammen einen erweiterten Schutzumfang bieten, SOLLTE geprüft werden. Solche Sicherheitsprodukte gegen gezielte Angriffe SOLLTEN z. B. bei der Ausführung von Dateien in speziellen Analyseumgebungen, bei der Härtung von Clients oder bei der Kapselung von Prozessen eingesetzt werden. Vor einer Kaufentscheidung für ein Sicherheitsprodukt SOLLTEN Schutzwirkung und Kompatibilität zur eigenen IT-Umgebung getestet werden.'
 
   - id: OPS.1.1.5
     title: 'Protokollierung'
@@ -80,16 +263,40 @@ bausteine:
     anforderungen:
       basis:
         - id: OPS.1.1.5.A1
-          title: 'Erstellung eines Protokollierungskonzepts'
-          requirement_text: 'Es MUSS ein Protokollierungskonzept erstellt werden.'
-        - id: OPS.1.1.5.A2
-          title: 'Konfiguration der Protokollierung'
-          requirement_text: 'Die Protokollierung MUSS so konfiguriert werden, dass sicherheitsrelevante Ereignisse protokolliert werden.'
+          title: 'Erstellung einer Sicherheitsrichtlinie für die Protokollierung'
+          requirement_text: 'Ausgehend von der allgemeinen Sicherheitsrichtlinie der Institution MUSS eine spezifische Sicherheitsrichtlinie für die Protokollierung erstellt werden. In dieser Sicherheitsrichtlinie MÜSSEN nachvollziehbar Anforderungen und Vorgaben beschrieben sein, wie die Protokollierung zu planen, aufzubauen und sicher zu betreiben ist. In der spezifischen Sicherheitsrichtlinie MUSS geregelt werden, wie, wo und was zu protokollieren ist. Dabei SOLLTEN sich Art und Umfang der Protokollierung am Schutzbedarf der Informationen orientieren. Die spezifische Sicherheitsrichtlinie MUSS von dem oder der ISB gemeinsam mit den Fachverantwortlichen erstellt werden. Sie MUSS allen für die Protokollierung zuständigen Mitarbeitenden bekannt und grundlegend für ihre Arbeit sein. Wird die spezifische Sicherheitsrichtlinie verändert oder wird von den Anforderungen abgewichen, MUSS dies mit dem oder der ISB abgestimmt und dokumentiert werden. Es MUSS regelmäßig überprüft werden, ob die spezifische Sicherheitsrichtlinie noch korrekt umgesetzt ist. Die Ergebnisse der Überprüfung MÜSSEN dokumentiert werden.'
         - id: OPS.1.1.5.A3
-          title: 'Speicherung von Protokolldaten'
-          requirement_text: 'Protokolldaten MUESSEN zentral und manipulationssicher gespeichert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.5 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Konfiguration der Protokollierung auf System- und Netzebene'
+          requirement_text: 'Alle sicherheitsrelevanten Ereignisse von IT-Systemen und Anwendungen MÜSSEN protokolliert werden. Sofern die in der Protokollierungsrichtlinie als relevant definierten IT-Systeme und Anwendungen über eine Protokollierungsfunktion verfügen, MUSS diese benutzt werden. Wenn die Protokollierung eingerichtet wird, MÜSSEN dabei die Vorgaben des herstellenden Unternehmens für die jeweiligen IT-Systeme oder Anwendungen beachtet werden. In angemessenen Intervallen MUSS stichpunktartig überprüft werden, ob die Protokollierung noch korrekt funktioniert. Die Prüfintervalle MÜSSEN in der Protokollierungsrichtlinie definiert werden. Falls betriebs- und sicherheitsrelevante Ereignisse nicht auf einem IT-System protokolliert werden können, MÜSSEN zusätzliche IT-Systeme zur Protokollierung (z. B. von Ereignissen auf Netzebene) integriert werden.'
+        - id: OPS.1.1.5.A4
+          title: 'Zeitsynchronisation der IT-Systeme'
+          requirement_text: 'Die Systemzeit aller protokollierenden IT-Systeme und Anwendungen MUSS immer synchron sein. Es MUSS sichergestellt sein, dass das Datums- und Zeitformat der Protokolldateien einheitlich ist.'
+        - id: OPS.1.1.5.A5
+          title: 'Einhaltung rechtlicher Rahmenbedingungen'
+          requirement_text: 'Bei der Protokollierung MÜSSEN die Bestimmungen aus den aktuellen Gesetzen zum Bundes- sowie Landesdatenschutz eingehalten werden (siehe CON.2 Datenschutz). Darüber hinaus MÜSSEN eventuelle Persönlichkeitsrechte bzw. Mitbestimmungsrechte der Mitarbeitendenvertretungen gewahrt werden. Ebenso MUSS sichergestellt sein, dass alle weiteren relevanten gesetzlichen Bestimmungen beachtet werden. Protokollierungsdaten MÜSSEN nach einem festgelegten Prozess gelöscht werden. Es MUSS technisch unterbunden werden, dass Protokollierungsdaten unkontrolliert gelöscht oder verändert werden.'
+      standard:
+        - id: OPS.1.1.5.A6
+          title: 'Aufbau einer zentralen Protokollierungsinfrastruktur'
+          requirement_text: 'Alle gesammelten sicherheitsrelevanten Protokollierungsdaten SOLLTEN an einer zentralen Stelle gespeichert werden. Dafür SOLLTE eine zentrale Protokollierungsinfrastruktur im Sinne eines Logserver-Verbunds aufgebaut und in einem hierfür eingerichteten Netzsegment platziert werden (siehe NET.1.1 Netzarchitektur und -design). Zusätzlich zu sicherheitsrelevanten Ereignissen (siehe OPS.1.1.5.A3 Konfiguration der Protokollierung auf System- und Netzebene) SOLLTE eine zentrale Protokollierungsinfrastruktur auch allgemeine Betriebsereignisse protokollieren, die auf einen Fehler hindeuten. Die Protokollierungsinfrastruktur SOLLTE ausreichend dimensioniert sein. Die Möglichkeit einer Skalierung im Sinne einer erweiterten Protokollierung SOLLTE berücksichtigt werden. Dafür SOLLTEN genügend technische, finanzielle und personelle Ressourcen verfügbar sein.'
+        - id: OPS.1.1.5.A8
+          title: 'Archivierung von Protokollierungsdaten'
+          requirement_text: 'Protokollierungsdaten SOLLTEN archiviert werden. Dabei SOLLTEN die gesetzlich vorgeschriebenen Regelungen berücksichtigt werden.'
+        - id: OPS.1.1.5.A9
+          title: 'Bereitstellung von Protokollierungsdaten für die Auswertung'
+          requirement_text: 'Die gesammelten Protokollierungsdaten SOLLTEN gefiltert, normalisiert, aggregiert und korreliert werden. Die so bearbeiteten Protokollierungsdaten SOLLTEN geeignet verfügbar gemacht werden, damit sie ausgewertet werden können. Damit sich die Daten automatisiert auswerten lassen, SOLLTEN die Protokollanwendungen über entsprechende Schnittstellen für die Auswertungsprogramme verfügen. Es SOLLTE sichergestellt sein, dass bei der Auswertung von Protokollierungsdaten die Sicherheitsanforderungen eingehalten werden, die in der Protokollierungsrichtlinie definiert sind. Auch wenn die Daten bereitgestellt werden, SOLLTEN betriebliche und interne Vereinbarungen berücksichtigt werden. Die Protokollierungsdaten SOLLTEN zusätzlich in unveränderter Originalform aufbewahrt werden.'
+        - id: OPS.1.1.5.A10
+          title: 'Zugriffsschutz für Protokollierungsdaten'
+          requirement_text: 'Es SOLLTE sichergestellt sein, dass die ausführenden Administrierenden selbst keine Berechtigung haben, die aufgezeichneten Protokollierungsdaten zu verändern oder zu löschen.'
+      hoch:
+        - id: OPS.1.1.5.A11
+          title: 'Steigerung des Protokollierungsumfangs'
+          requirement_text: 'Bei erhöhtem Schutzbedarf von Anwendungen oder IT-Systemen SOLLTEN grundsätzlich mehr Ereignisse protokolliert werden, sodass sicherheitsrelevante Vorfälle möglichst lückenlos nachvollziehbar sind. Um die Protokollierungsdaten in Echtzeit auswerten zu können, SOLLTEN sie in verkürzten Zeitabständen von den protokollierenden IT-Systemen und Anwendungen zentral gespeichert werden. Die Protokollierung SOLLTE eine Auswertung über den gesamten Informationsverbund ermöglichen. Anwendungen und IT-Systeme, mit denen eine zentrale Protokollierung nicht möglich ist, SOLLTEN bei einem erhöhten Schutzbedarf NICHT eingesetzt werden.'
+        - id: OPS.1.1.5.A12
+          title: 'Verschlüsselung der Protokollierungsdaten'
+          requirement_text: 'Um Protokollierungsdaten sicher übertragen zu können, SOLLTEN sie verschlüsselt werden. Alle gespeicherten Protokolle SOLLTEN digital signiert werden. Auch archivierte und außerhalb der Protokollierungsinfrastruktur gespeicherte Protokollierungsdaten SOLLTEN immer verschlüsselt gespeichert werden.'
+        - id: OPS.1.1.5.A13
+          title: 'Hochverfügbare Protokollierungsinfrastruktur'
+          requirement_text: 'Eine hochverfügbare Protokollierungsinfrastruktur SOLLTE aufgebaut werden.'
 
   - id: OPS.1.1.6
     title: 'Software-Tests und -Freigaben'
@@ -98,15 +305,48 @@ bausteine:
       basis:
         - id: OPS.1.1.6.A1
           title: 'Planung der Software-Tests'
-          requirement_text: 'Software-Tests MUESSEN geplant werden.'
+          requirement_text: 'Die Rahmenbedingungen für Software-Tests MÜSSEN vor den Tests innerhalb der Institution entsprechend der Schutzbedarfe, Organisationseinheiten, technischen Möglichkeiten und Test-Umgebungen festlegt sein. Die Software MUSS auf Basis der Anforderungen des Anforderungskatalogs zu der Software getestet werden. Liegt auch ein Pflichtenheft vor, dann MUSS dieses zusätzlich berücksichtigt werden. Die Testfälle MÜSSEN so ausgewählt werden, sodass diese möglichst repräsentativ alle Funktionen der Software überprüfen. Zusätzlich SOLLTEN auch Negativ-Tests berücksichtigt werden, die überprüfen, ob die Software keine ungewollten Funktionen enthält. Die Testumgebung MUSS so ausgewählt werden, sodass diese möglichst repräsentativ alle in der Institution eingesetzten Gerätemodelle und Betriebssystemumgebungen abdeckt. Es SOLLTE dabei getestet werden, ob die Software mit den eingesetzten Betriebssystemen in den vorliegenden Konfigurationen kompatibel und funktionsfähig ist.'
         - id: OPS.1.1.6.A2
-          title: 'Durchfuehrung von Software-Tests'
-          requirement_text: 'Software MUSS vor der Inbetriebnahme getestet werden.'
+          title: 'Durchführung von funktionalen Software-Tests'
+          requirement_text: 'Mit funktionalen Software-Tests MUSS die ordnungsgemäße und vollständige Funktion der Software überprüft werden. Die funktionalen Software-Tests MÜSSEN so durchgeführt werden, dass sie den Produktivbetrieb nicht beeinflussen.'
         - id: OPS.1.1.6.A3
-          title: 'Freigabe von Software'
-          requirement_text: 'Vor dem produktiven Einsatz MUESSEN Software-Versionen formal freigegeben werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.6 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Auswertung der Testergebnisse'
+          requirement_text: 'Die Ergebnisse der Software-Tests MÜSSEN ausgewertet werden. Es SOLLTE ein Soll-Ist-Vergleich mit definierten Vorgaben durchgeführt werden. Die Auswertung MUSS dokumentiert werden.'
+        - id: OPS.1.1.6.A4
+          title: 'Freigabe der Software'
+          requirement_text: 'Die fachlich zuständige Organisationseinheit MUSS die Software freigeben, sobald die Software-Tests erfolgreich durchgeführt wurden. Die Freigabe MUSS in Form einer Freigabeerklärung dokumentiert werden. Die freigebende Organisationseinheit MUSS überprüfen, ob die Software gemäß den Anforderungen getestet wurde. Die Ergebnisse der Software-Tests MÜSSEN mit den vorher festgelegten Erwartungen übereinstimmen. Auch MUSS überprüft werden, ob die rechtlichen und organisatorischen Vorgaben eingehalten wurden.'
+        - id: OPS.1.1.6.A5
+          title: 'Durchführung von Software-Tests für nicht funktionale Anforderungen'
+          requirement_text: 'Es MÜSSEN Software-Tests durchgeführt werden, die überprüfen, ob alle wesentlichen nichtfunktionalen Anforderungen erfüllt werden. Insbesondere MÜSSEN sicherheitsspezifische Software-Tests durchgeführt werden, wenn die Anwendung sicherheitskritische Funktionen mitbringt. Die durchgeführten Testfälle, sowie die Testergebnisse, MÜSSEN dokumentiert werden.'
+        - id: OPS.1.1.6.A11
+          title: 'Verwendung von anonymisierten oder pseudonymisierten Testdaten'
+          requirement_text: 'Wenn Produktivdaten für Software-Tests verwendet werden, die schützenswerte Informationen enthalten, dann MÜSSEN diese Testdaten angemessen geschützt werden. Enthalten diese Daten personenbezogene Informationen, dann MÜSSEN diese Daten mindestens pseudonymisiert werden. Falls möglich, SOLLTEN die Testdaten mit Personenbezug vollständig anonymisiert werden. Wenn ein Personenbezug von den Testdaten abgeleitet werden könnte, MUSS der oder die Datenschutzbeauftragte und unter Umständen die Personalvertretung hinzugezogen werden.'
+      standard:
+        - id: OPS.1.1.6.A6
+          title: 'Geordnete Einweisung der Software-Testenden'
+          requirement_text: 'Die Software-Testenden SOLLTEN über die durchzuführenden Testarten und die zu testenden Bereiche einer Software von Fachverantwortlichen informiert werden. Darüber hinaus SOLLTEN die Software-Testende über die Anwendungsfälle und mögliche weitere Anforderungen der Software informiert werden.'
+        - id: OPS.1.1.6.A7
+          title: 'Personalauswahl der Software-Testenden'
+          requirement_text: 'Bei der Auswahl der Software-Testenden SOLLTEN gesonderte Auswahlkriterien berücksichtigt werden. Die Software-Testenden SOLLTEN die erforderliche berufliche Qualifikation haben. Wird Individualsoftware auf Quellcode-Ebene überprüft, dann SOLLTEN die Testenden über ausreichendes Fachwissen über die zu testenden Programmiersprache und der Entwicklungsumgebung verfügen. Der Quellcode SOLLTE NICHT ausschließlich von Testenden überprüft werden, die auch an der Erstellung des Quellcodes beteiligt waren.'
+        - id: OPS.1.1.6.A10
+          title: 'Erstellung eines Abnahmeplans'
+          requirement_text: 'In einem Abnahmeplan SOLLTEN die durchzuführenden Testarten, Testfälle und die erwarteten Ergebnisse dokumentiert sein. Außerdem SOLLTE der Abnahmeplan die Freigabekriterien beinhalten. Es SOLLTE eine Vorgehensweise für die Situation festgelegt werden, wenn eine Freigabe abgelehnt wird.'
+        - id: OPS.1.1.6.A12
+          title: 'Durchführung von Regressionstests'
+          requirement_text: 'Wenn Software verändert wurde, SOLLTEN Regressionstests durchgeführt werden. Hierbei SOLLTE überprüft werden, ob bisherige bestehende Sicherheitsmechanismen und -einstellungen durch das Update ungewollt verändert wurden. Regressionstests SOLLTEN vollständig durchgeführt werden und hierbei auch Erweiterungen sowie Hilfsmittel umfassen. Werden Testfälle ausgelassen, SOLLTE dies begründet und dokumentiert werden. Die durchgeführten Testfälle und die Testergebnisse SOLLTEN dokumentiert werden.'
+        - id: OPS.1.1.6.A13
+          title: 'Trennung der Testumgebung von der Produktivumgebung'
+          requirement_text: 'Software SOLLTE nur in einer hierfür vorgesehenen Testumgebung getestet werden. Die Testumgebung SOLLTE von der Produktivumgebung getrennt betrieben werden. Die in der Testumgebung verwendeten Architekturen und Mechanismen SOLLTEN dokumentiert werden. Es SOLLTEN Verfahren dokumentiert werden, wie mit der Testumgebung nach Abschluss des Software-Tests zu verfahren ist.'
+        - id: OPS.1.1.6.A15
+          title: 'Überprüfung der Installation und zugehörigen Dokumentation'
+          requirement_text: 'Die Installation der Software SOLLTE entsprechend der Regelungen zur Installation und Konfiguration von Software (siehe Baustein APP.6 Allgemeine Software) überprüft werden. Falls vorhanden, SOLLTE zusätzlich die Installations- und Konfigurationsdokumentation geprüft werden.'
+      hoch:
+        - id: OPS.1.1.6.A14
+          title: 'Durchführung von Penetrationstests'
+          requirement_text: 'Für Anwendungen beziehungsweise IT-Systeme mit erhöhtem Schutzbedarf SOLLTEN Penetrationstests als Testmethode durchgeführt werden. Ein Konzept für Penetrationstests SOLLTE erstellt werden. Im Konzept für Penetrationstests SOLLTEN neben den zu verwendenden Testmethoden auch die Erfolgskriterien dokumentiert werden. Der Penetrationstest SOLLTE nach den Rahmenbedingungen des Penetrationstest-Konzepts erfolgen. Die durch den Penetrationstest aufgefundenen Sicherheitslücken SOLLTEN klassifiziert und dokumentiert sein.'
+        - id: OPS.1.1.6.A16
+          title: 'Sicherheitsüberprüfung der Testenden'
+          requirement_text: 'Sofern Testende auf besonders schützenswerte Informationen zugreifen müssen, SOLLTE die Institution Nachweise über ihre Integrität und Reputation einholen. Handelt es sich dabei um klassifizierte Verschlusssachen, SOLLTEN sich die Software-Testenden einer Sicherheitsüberprüfung nach dem Sicherheitsüberprüfungsgesetz (SÜG) unterziehen. Hierzu SOLLTE der oder die ISB die Geheimschutzbeauftragten bzw. Sicherheitsbevollmächtigten der Institution einbeziehen.'
 
   - id: OPS.1.1.7
     title: 'Systemmanagement'
@@ -114,33 +354,85 @@ bausteine:
     anforderungen:
       basis:
         - id: OPS.1.1.7.A1
-          title: 'Planung des Systemmanagements'
-          requirement_text: 'Vor dem Einsatz eines zentralen Systemmanagements MUSS die Systemmanagement-Strategie geplant werden. Verantwortlichkeiten, Werkzeuge und Schnittstellen MUESSEN festgelegt sein.'
+          title: 'Anforderungsspezifikation für das Systemmanagement'
+          requirement_text: 'Anforderungen an die Systemmanagement-Infrastruktur und -Prozesse MÜSSEN spezifiziert werden. Dabei MÜSSEN alle wesentlichen Elemente für das Systemmanagement berücksichtigt werden. Auch MÜSSEN die Sicherheitsaspekte für das Systemmanagement von Beginn an beachtet werden. Zudem MÜSSEN die Schnittstellen der zu verwaltenden IT-Systeme dokumentiert werden, z. B. um die Kompatibilität von Systemmanagement-Lösung und zu verwaltendem System zu gewährleisten.'
         - id: OPS.1.1.7.A2
-          title: 'Sichere Konfiguration von Systemmanagement-Werkzeugen'
-          requirement_text: 'Systemmanagement-Werkzeuge MUESSEN sicher konfiguriert sein. Administrative Schnittstellen DUERFEN NUR aus vertrauenswuerdigen Netzen erreichbar sein. Siehe BSI Kompendium 2023 Baustein OPS.1.1.7 Anforderung A2.'
+          title: 'Planung des Systemmanagements'
+          requirement_text: 'Die Systemmanagement-Lösung und die zugrundeliegende Infrastruktur MÜSSEN geeignet geplant werden. Die Planung MUSS mindestens die folgenden Inhalte umfassen: Dabei MÜSSEN alle in der Anforderungsspezifikation genannten Punkte sowie das Rollen- und Berechtigungskonzept berücksichtigt werden. Es MÜSSEN mindestens die folgenden Themen berücksichtigt werden:'
         - id: OPS.1.1.7.A3
-          title: 'Aktuelle Inventarisierung von IT-Komponenten'
-          requirement_text: 'Das Systemmanagement MUSS eine aktuelle Inventarisierung der verwalteten IT-Komponenten fuehren und regelmaessig abgleichen.'
-      standard: []
-      hoch: []
-
-  - id: OPS.1.2.1
-    title: 'Operative IT-Prozesse'
-    description: 'Anforderungen an die geregelte Steuerung und Dokumentation operativer ITSM-Prozesse (Incident-, Problem-, Service-Request-Management).'
-    anforderungen:
-      basis:
-        - id: OPS.1.2.1.A1
-          title: 'Festlegung operativer IT-Prozesse'
-          requirement_text: 'Die wesentlichen operativen IT-Prozesse (Incident-, Problem-, Service-Request-, Change-Management) MUESSEN festgelegt und dokumentiert sein.'
-        - id: OPS.1.2.1.A2
-          title: 'Zuweisung von Verantwortlichkeiten in IT-Prozessen'
-          requirement_text: 'Fuer jeden operativen IT-Prozess MUESSEN Prozessverantwortliche und Bearbeiterrollen benannt sein. Siehe BSI Kompendium 2023 Baustein OPS.1.2.1 Anforderung A2.'
-        - id: OPS.1.2.1.A3
-          title: 'Dokumentation und Auswertung operativer IT-Prozesse'
-          requirement_text: 'Operative IT-Prozesse MUESSEN nachvollziehbar dokumentiert und regelmaessig auf Wirksamkeit ausgewertet werden.'
-      standard: []
-      hoch: []
+          title: 'Zeitsynchronisation für das Systemmanagement'
+          requirement_text: 'Alle Komponenten der Systemmanagement-Lösung, inklusive der zu verwaltenden Systeme, MÜSSEN eine synchrone Uhrzeit nutzen. Die Systemzeit MUSS für jedes zu verwaltende System und für die Systemmanagement-Lösung über geeignete Protokolle synchronisiert werden.'
+        - id: OPS.1.1.7.A4
+          title: 'Absicherung der Systemmanagement-Kommunikation'
+          requirement_text: 'Sobald die Systemmanagement-Lösung und die zu verwaltenden Systeme über die produktive Infrastruktur kommunizieren, MÜSSEN dafür sichere Protokolle verwendet werden. Falls keine sicheren Protokolle verwendet werden können, dann MUSS ein eigens dafür vorgesehenes Administrationsnetz (Out-of-Band-Management) verwendet werden (siehe NET.1.1 Netzarchitektur und -design). Ist auch dies nicht möglich, dann MÜSSEN ergänzende Sicherheitsmechanismen auf anderer Ebene eingesetzt werden, z. B. Tunnelmechanismen über verschlüsseltes VPN oder vergleichbare Lösungen.'
+        - id: OPS.1.1.7.A5
+          title: 'Gegenseitige Authentisierung von Systemmanagement-Lösung und zu verwaltenden Systemen'
+          requirement_text: 'Die Authentisierung zwischen Systemmanagement-Lösung und zu verwaltenden Systemen MUSS in beide Richtungen erfolgen. Die Authentisierung MUSS in das übergreifende Authentisierungskonzept eingebunden sein. Die Authentisierung MUSS mittels sicherer Protokolle erfolgen.'
+        - id: OPS.1.1.7.A6
+          title: 'Absicherung des Zugriffs auf die Systemmanagement-Lösung'
+          requirement_text: 'Der Zugriff von Benutzenden auf die Systemmanagement-Lösung MUSS abgesichert werden durch Eine angemessene Authentisierungsmethode MUSS ausgewählt werden. Der Auswahlprozess MUSS dokumentiert werden. Die Stärke der verwendeten kryptografischen Verfahren und Schlüssel MUSS regelmäßig überprüft und bei Bedarf angepasst werden. Die Systemmanagement-Lösung MUSS über eine Autorisierungskomponente sicherstellen, dass Benutzende ausschließlich solche Aktionen durchführen können, zu denen sie berechtigt sind.'
+      standard:
+        - id: OPS.1.1.7.A7
+          title: 'Festlegung einer Sicherheitsrichtlinie für das Systemmanagement'
+          requirement_text: 'Für das Systemmanagement SOLLTE eine Sicherheitsrichtlinie erstellt und nachhaltig gepflegt werden. Die Richtlinie SOLLTE allen Personen, die am Systemmanagement beteiligt sind, bekannt sein. Die Sicherheitsrichtlinie SOLLTE zudem grundlegend für die Arbeit dieser Personen sein. Es SOLLTE regelmäßig und nachvollziehbar überprüft werden, dass die in der Richtlinie geforderten Inhalte umgesetzt werden. Die Ergebnisse SOLLTEN dokumentiert werden. Die Sicherheitsrichtlinie SOLLTE mindestens das Folgende festlegen:'
+        - id: OPS.1.1.7.A8
+          title: 'Erstellung eines Systemmanagement-Konzepts'
+          requirement_text: 'Ausgehend von der Sicherheitsrichtlinie für das Systemmanagement SOLLTE ein Systemmanagement-Konzept erstellt und kontinuierlich gepflegt werden. Dabei SOLLTEN mindestens folgende Aspekte bedarfsgerecht berücksichtigt werden:'
+        - id: OPS.1.1.7.A9
+          title: 'Fein- und Umsetzungsplanung für das Systemmanagement'
+          requirement_text: 'Eine Fein- und Umsetzungsplanung für die Systemmanagement-Lösung SOLLTE erstellt werden. Dabei SOLLTEN alle in der Sicherheitsrichtlinie und im Systemmanagement-Konzept adressierten Punkte berücksichtigt werden.'
+        - id: OPS.1.1.7.A10
+          title: 'Konzept für den sicheren Betrieb der Systemmanagement-Lösung'
+          requirement_text: 'Ausgehend von den Sicherheitsrichtlinien und dem Systemmanagement-Konzept SOLLTE ein Konzept für den sicheren Betrieb der Systemmanagement-Lösung und der zugrundeliegenden Infrastruktur erstellt werden. Auch SOLLTE geprüft werden, wie sich die Leistungen anderer operativer Einheiten einbinden und steuern lassen.'
+        - id: OPS.1.1.7.A11
+          title: 'Regelmäßiger Soll-Ist-Vergleich im Rahmen des Systemmanagements'
+          requirement_text: 'Der IT-Betrieb SOLLTE regelmäßig überprüfen, inwieweit die von der Systemmanagement-Lösung verwalteten Daten, Konfigurationen und Skripte dem Sollzustand entsprechen. Mindestens folgende Aspekte SOLLTEN im Soll-Ist-Vergleich geprüft werden: Dabei SOLLTE geprüft werden, ob die genannten Aspekte noch die Sicherheitsrichtlinie und Anforderungsspezifikation erfüllen. Weiter SOLLTE verglichen werden, ob die Softwareversion der Systemmanagement-Lösung aktuell ist.'
+        - id: OPS.1.1.7.A12
+          title: 'Auslösung von Aktionen durch die zentralen Komponenten der Systemmanagement-Lösung'
+          requirement_text: 'Aktionen, die durch das Systemmanagement auf den verwalteten Systemen ausgeführt werden, SOLLTEN ausschließlich von der Systemmanagement-Lösung ausgelöst werden. Dafür SOLLTEN nur diejenigen Management-Funktionen auf der Systemmanagement-Lösung und den zu verwaltenden Systemen aktiviert werden, die tatsächlich benötigt werden.'
+        - id: OPS.1.1.7.A13
+          title: 'Verpflichtung zur Nutzung der vorgesehenen Schnittstellen für das Systemmanagement'
+          requirement_text: 'Management-Zugriffe auf zu verwaltende Systeme SOLLTEN ausschließlich über die dafür vorgesehenen Schnittstellen der Systemmanagement-Lösung erfolgen. Falls ein direkter Zugriff auf zu verwaltende Systeme notwendig ist, z. B. nach einem Ausfall eines zu verwaltenden Systems, SOLLTEN sowohl der direkte Zugriff als auch alle in diesem Rahmen vorgenommenen Änderungen dokumentiert und im notwendigen Umfang in die Systemmanagement-Lösung eingepflegt werden.'
+        - id: OPS.1.1.7.A14
+          title: 'Zentrale Konfigurationsverwaltung für zu verwaltende Systeme'
+          requirement_text: 'Software und Konfigurationsdaten für die zu verwaltenden Systeme SOLLTEN konsequent in einem Konfigurationsmanagement verwaltet werden, das eine Versionierung und Änderungsverfolgung ermöglicht. Die zugehörige Dokumentation zur Konfigurationsverwaltung SOLLTE vollständig und immer aktuell sein. Die benötigten Dokumentationen SOLLTEN an zentraler Stelle sicher verfügbar sein sowie in die Datensicherung eingebunden werden. Die zentrale Konfigurationsverwaltung SOLLTE nachhaltig gepflegt und regelmäßig auditiert werden. Sämtliche Schnittstellen zwischen Systemmanagement-Lösung und anderen Anwendungen und Diensten SOLLTEN dokumentiert und vollständig in einem Konfigurationsmanagement verwaltet werden. Zwischen relevanten Betriebsbereichen SOLLTEN funktionale Änderungen an den Schnittstellen frühzeitig abgestimmt und dokumentiert werden. Die Konfigurationsdaten für die zu verwaltenden Systeme SOLLTEN automatisch über das Netz verteilt und ohne Betriebsunterbrechung installiert und aktiviert werden können.'
+        - id: OPS.1.1.7.A15
+          title: 'Statusüberwachung, Protokollierung und Alarmierung bei relevanten Ereignissen im Systemmanagement-Lösung und den zu verwaltenden Systemen'
+          requirement_text: 'Die grundlegenden Performance- und Verfügbarkeitsparameter der Systemmanagement-Lösung und der zu verwaltenden Systeme SOLLTEN kontinuierlich überwacht werden. Dafür SOLLTEN vorab die jeweiligen Schwellwerte ermittelt werden (Baselining). Werden definierte Schwellwerte überschritten, SOLLTE das zuständige Personal automatisch benachrichtigt werden. Zur besseren Fehleranalyse SOLLTEN Informationen aus der Statusüberwachung anderer Bereiche, z. B. aus einem eigenen Bereich „Netze“, ebenfalls betrachtet werden, um die genaue Ursache für eine Störung zu finden. Wichtige Ereignisse auf zu verwaltenden Systemen und auf der Systemmanagement-Lösung SOLLTEN automatisch an eine zentrale Protokollierungsinfrastruktur übermittelt und dort protokolliert werden (siehe OPS.1.1.5 Protokollierung). Wichtige Ereignisse SOLLTEN mindestens für folgende Aspekte definiert werden: Ereignismeldungen sowie Protokollierungs-Daten SOLLTEN an ein zentrales Logging-System übermittelt werden. Alarmmeldungen SOLLTEN sofort, wenn sie auftreten, übermittelt werden.'
+        - id: OPS.1.1.7.A16
+          title: 'Einbindung des Systemmanagements in die Notfallplanung'
+          requirement_text: 'Die Systemmanagement-Lösung SOLLTE in die Notfallplanung der Institution eingebunden werden. Dazu SOLLTEN sowohl die Systemmanagement-Lösung als auch die Konfigurationen der zu verwaltenden Systeme gesichert und in die Wiederanlaufpläne integriert sein.'
+        - id: OPS.1.1.7.A17
+          title: 'Kontrolle der Systemmanagement-Kommunikation'
+          requirement_text: 'Die Kommunikation zwischen den Benutzenden und der Systemmanagement-Lösung sowie zwischen der Systemmanagement-Lösung und den zu verwaltenden IT-Systemen SOLLTE über geeignete Filtertechniken auf unbedingt notwendige Verbindungen eingeschränkt werden.'
+        - id: OPS.1.1.7.A18
+          title: 'Überprüfung des Systemzustands'
+          requirement_text: 'Die Konsistenz zwischen realem Systemzustand und dem von der Systemmanagement-Lösung angenommenen Zustand SOLLTE regelmäßig geprüft werden. Werden Abweichungen festgestellt, SOLLTE der in der Systemmanagement-Lösung vorgesehene Zustand wiederhergestellt werden.'
+        - id: OPS.1.1.7.A19
+          title: 'Absicherung der Systemmanagement-Kommunikation zwischen der Systemmanagement-Lösung und den zu verwaltenden Systemen'
+          requirement_text: 'Die Systemmanagement-Kommunikation zwischen der Systemmanagement-Lösung und den zu verwaltenden Systemen SOLLTE grundsätzlich verschlüsselt sein. Die Stärke der verwendeten kryptografischen Verfahren und Schlüssel SOLLTE regelmäßig überprüft und bei Bedarf angepasst werden.'
+      hoch:
+        - id: OPS.1.1.7.A20
+          title: 'Hochverfügbare Realisierung der Systemmanagement-Lösung'
+          requirement_text: 'Eine zentrale Systemmanagement-Lösung SOLLTE hochverfügbar betrieben werden. Dazu SOLLTEN die für die Systemmanagement-Lösung eingesetzten Server bzw. Werkzeuge inklusive der Netzanbindungen redundant ausgelegt sein.'
+        - id: OPS.1.1.7.A21
+          title: 'Physische Trennung der zentralen Systemmanagementnetze'
+          requirement_text: 'Das Managementnetz für das Systemmanagement SOLLTE physisch von den funktionalen, insbesondere produktiven, Netzen getrennt werden.'
+        - id: OPS.1.1.7.A22
+          title: 'Einbindung des Systemmanagements in automatisierte Detektionssysteme'
+          requirement_text: 'Die Protokollierung von sicherheitsrelevanten Ereignissen des Systemmanagements SOLLTE in ein Security Information and Event Management (SIEM) eingebunden werden. Dabei SOLLTE nachvollziehbar festgelegt werden, welche Ereignisse an das SIEM weitergeleitet werden. Im Anforderungskatalog zur Auswahl einer Systemmanagement-Lösung SOLLTEN die erforderlichen Schnittstellen und Übergabeformate spezifiziert werden. Eine Systemmanagement-Lösung SOLLTE mit einem System zur Erkennung sicherheitsrelevanter Schwachstellen automatisiert überwacht werden.'
+        - id: OPS.1.1.7.A23
+          title: 'Standort-übergreifende Zeitsynchronisation für das Systemmanagement'
+          requirement_text: 'Die Zeitsynchronisation SOLLTE sowohl für die Systemmanagement-Lösung als auch für die zu verwaltenden Systeme über alle Standorte der Institution sichergestellt werden. Dafür SOLLTE eine gemeinsame Referenzzeit benutzt werden.'
+        - id: OPS.1.1.7.A24
+          title: 'Automatisierte Überprüfung von sicherheitsrelevanten Konfigurationen durch geeignete Detektionssysteme'
+          requirement_text: 'Sicherheitsrelevante Konfigurationen der Systemmanagement-Lösung und der zu verwaltenden Systeme SOLLTEN durch geeignete Detektionssysteme regelmäßig auf Abweichungen vom Sollzustand sowie auf potenzielle Schwachstellen überprüft werden.'
+        - id: OPS.1.1.7.A25
+          title: 'Protokollierung und Reglementierung von Systemmanagement-Sitzungen'
+          requirement_text: 'Die Sitzungsinhalte, insbesondere die Aktivitäten von Benutzenden auf der Systemmanagement-Lösung sowie sämtliche direkte Zugriffe auf zu verwaltende Systeme, SOLLTEN kontinuierlich durch eine technische Lösung protokolliert und reglementiert werden. Dabei SOLLTEN die Aktivitäten auf Befehlsebene, d. h. manuelle und automatisierte Befehle, kontrolliert und gegebenenfalls unterbunden werden. Während der Überwachung SOLLTE nicht nur bei konkreten Regelverstößen, sondern auch bei Anomalien im Benutzendenverhalten eine Alarmierung erfolgen.'
+        - id: OPS.1.1.7.A26
+          title: 'Entkopplung von Zugriffen auf die Systemmanagement-Lösung'
+          requirement_text: 'Jeder administrative Zugriff auf die Systemmanagement-Lösung SOLLTE durch die Nutzung von Sprungservern abgesichert werden.'
 
   - id: OPS.1.2.2
     title: 'Archivierung'
@@ -148,33 +440,70 @@ bausteine:
     anforderungen:
       basis:
         - id: OPS.1.2.2.A1
-          title: 'Erstellung einer Richtlinie zur Archivierung'
-          requirement_text: 'Es MUSS eine Richtlinie zur Archivierung erstellt werden.'
+          title: 'Ermittlung von Einflussfaktoren für die elektronische Archivierung'
+          requirement_text: 'Bevor entschieden wird, welche Verfahren und Produkte für die elektronische Archivierung eingesetzt werden, MÜSSEN die technischen, rechtlichen und organisatorischen Einflussfaktoren ermittelt und dokumentiert werden. Die Ergebnisse MÜSSEN in das Archivierungskonzept einfließen.'
         - id: OPS.1.2.2.A2
-          title: 'Auswahl geeigneter Archivierungsverfahren'
-          requirement_text: 'Es MUESSEN geeignete Archivierungsverfahren und -medien ausgewaehlt werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.2 Anforderung A2.'
+          title: 'Entwicklung eines Archivierungskonzepts'
+          requirement_text: 'Es MUSS definiert werden, welche Ziele mit der Archivierung erreicht werden sollen. Hierbei MUSS insbesondere berücksichtigt werden, welche Regularien einzuhalten sind, welche Mitarbeitende zuständig sind und welcher Funktions- und Leistungsumfang angestrebt wird. Die Ergebnisse MÜSSEN in einem Archivierungskonzept erfasst werden. Die Institutionsleitung MUSS in diesen Prozess einbezogen werden. Das Archivierungskonzept MUSS regelmäßig an die aktuellen Gegebenheiten der Institution angepasst werden.'
         - id: OPS.1.2.2.A3
-          title: 'Schutz und Wiederherstellbarkeit archivierter Daten'
-          requirement_text: 'Archivierte Daten MUESSEN ueber den Aufbewahrungszeitraum gegen Verlust und unberechtigte Aenderungen geschuetzt sein. Siehe BSI Kompendium 2023 Baustein OPS.1.2.2 Anforderung A3.'
-      standard: []
-      hoch: []
-
-  - id: OPS.1.2.3
-    title: 'Informations- und Datentraegeraustausch'
-    description: 'Anforderungen an den geregelten Austausch von Informationen und Datentraegern mit internen wie externen Stellen.'
-    anforderungen:
-      basis:
-        - id: OPS.1.2.3.A1
-          title: 'Regelung des Informations- und Datentraegeraustauschs'
-          requirement_text: 'Der Austausch von Informationen und Datentraegern MUSS geregelt werden. Es MUESSEN zulaessige Wege, Empfaenger und Schutzmassnahmen festgelegt sein.'
-        - id: OPS.1.2.3.A2
-          title: 'Verpackung und Versand von Datentraegern'
-          requirement_text: 'Datentraeger MUESSEN angemessen verpackt und gegen Verlust und unbefugten Zugriff geschuetzt versandt werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.3 Anforderung A2.'
-        - id: OPS.1.2.3.A3
-          title: 'Verschluesselung beim Datentraegeraustausch'
-          requirement_text: 'Vertrauliche Informationen auf Datentraegern MUESSEN beim Austausch verschluesselt sein. Schluessel MUESSEN getrennt vom Datentraeger uebermittelt werden.'
-      standard: []
-      hoch: []
+          title: 'Geeignete Aufstellung von Archivsystemen und Lagerung von Archivmedien'
+          requirement_text: 'Die IT-Komponenten eines Archivsystems MÜSSEN in gesicherten Räumen aufgestellt werden. Es MUSS sichergestellt sein, dass nur berechtigte Personen die Räume betreten dürfen. Archivspeichermedien MÜSSEN geeignet gelagert werden.'
+        - id: OPS.1.2.2.A4
+          title: 'Konsistente Indizierung von Daten bei der Archivierung'
+          requirement_text: 'Alle in einem Archiv abgelegten Daten, Dokumente und Datensätze MÜSSEN eindeutig indiziert werden. Dazu MUSS bereits während der Konzeption festgelegt werden, welche Struktur und welchen Umfang die Indexangaben für ein Archiv haben sollen.'
+        - id: OPS.1.2.2.A5
+          title: 'Regelmäßige Aufbereitung von archivierten Datenbeständen'
+          requirement_text: 'Über den gesamten Archivierungszeitraum hinweg MUSS sichergestellt werden, dass'
+        - id: OPS.1.2.2.A6
+          title: 'Schutz der Integrität der Indexdatenbank von Archivsystemen'
+          requirement_text: 'Die Integrität der Indexdatenbank MUSS sichergestellt und überprüfbar sein. Außerdem MUSS die Indexdatenbank regelmäßig gesichert werden. Die Datensicherungen MÜSSEN wiederherstellbar sein. Mittlere und große Archive SOLLTEN über redundante Indexdatenbanken verfügen.'
+        - id: OPS.1.2.2.A7
+          title: 'Regelmäßige Datensicherung der System- und Archivdaten'
+          requirement_text: 'Alle Archivdaten, die zugehörigen Indexdatenbanken sowie die Systemdaten MÜSSEN regelmäßig gesichert werden (siehe CON.3 Datensicherungskonzept).'
+        - id: OPS.1.2.2.A8
+          title: 'Protokollierung der Archivzugriffe'
+          requirement_text: 'Alle Zugriffe auf elektronische Archive MÜSSEN protokolliert werden. Dafür SOLLTEN Datum, Uhrzeit, Benutzender, Client und die ausgeführten Aktionen sowie Fehlermeldungen aufgezeichnet werden. Im Archivierungskonzept SOLLTE festgelegt werden, wie lange die Protokolldaten aufbewahrt werden. Die Protokolldaten der Archivzugriffe SOLLTEN regelmäßig ausgewertet werden. Dabei SOLLTEN die institutionsinternen Vorgaben beachtet werden. Auch SOLLTE definiert sein, welche Ereignisse welchen Mitarbeitenden angezeigt werden, wie z. B. Systemfehler, Timeouts oder wenn Datensätze kopiert werden. Kritische Ereignisse SOLLTEN sofort nach der Erkennung geprüft und, falls nötig, weiter eskaliert werden.'
+        - id: OPS.1.2.2.A9
+          title: 'Auswahl geeigneter Datenformate für die Archivierung von Dokumenten'
+          requirement_text: 'Für die Archivierung MUSS ein geeignetes Datenformat ausgewählt werden. Es MUSS gewährleisten, dass sich Archivdaten sowie ausgewählte Merkmale des ursprünglichen Dokumentmediums langfristig und originalgetreu reproduzieren lassen. Die Dokumentstruktur des ausgewählten Datenformats MUSS eindeutig interpretierbar und elektronisch verarbeitbar sein. Die Syntax und Semantik der verwendeten Datenformate SOLLTE dokumentiert und von einer Standardisierungsorganisation veröffentlicht sein. Es SOLLTE für eine beweis- und revisionssichere Archivierung ein verlustfreies Bildkompressionsverfahren benutzt werden.'
+      standard:
+        - id: OPS.1.2.2.A10
+          title: 'Erstellung einer Richtlinie für die Nutzung von Archivsystemen'
+          requirement_text: 'Es SOLLTE sichergestellt werden, dass Mitarbeitende das Archivsystem so benutzen, wie es im Archivierungskonzept vorgesehen ist. Dazu SOLLTE eine Administrations- und eine Benutzungsrichtlinie erstellt werden. Die Administrationsrichtlinie SOLLTE folgende Punkte enthalten:'
+        - id: OPS.1.2.2.A11
+          title: 'Einweisung in die Administration und Bedienung des Archivsystems'
+          requirement_text: 'Die zuständigen Mitarbeitende des IT-Betriebs und die Benutzenden SOLLTEN für ihren Aufgabenbereich geschult werden. Die Schulung der Mitarbeitenden des IT-Betriebs SOLLTE folgende Themen umfassen: Die Schulung der Benutzende SOLLTE folgende Themen umfassen: Die Durchführung der Schulungen sowie die Teilnahme SOLLTEN dokumentiert werden.'
+        - id: OPS.1.2.2.A12
+          title: 'Überwachung der Speicherressourcen von Archivmedien'
+          requirement_text: 'Die auf den Archivmedien vorhandene freie Speicherkapazität SOLLTE kontinuierlich überwacht werden. Sobald ein definierter Grenzwert unterschritten wird, MÜSSEN zuständige Mitarbeitende automatisch alarmiert werden. Die Alarmierung SOLLTE rollenbezogen erfolgen. Es MÜSSEN immer ausreichend leere Archivmedien verfügbar sein, um Speicherengpässen schnell vorbeugen zu können.'
+        - id: OPS.1.2.2.A13
+          title: 'Regelmäßige Revision der Archivierungsprozesse'
+          requirement_text: 'Es SOLLTE regelmäßig überprüft werden, ob die Archivierungsprozesse noch korrekt und ordnungsgemäß funktionieren. Dazu SOLLTE eine Checkliste erstellt werden, die Fragen zu Verantwortlichkeiten, Organisationsprozessen, zum Einsatz der Archivierung, zur Redundanz der Archivdaten, zur Administration und zur technischen Beurteilung des Archivsystems enthält. Die Auditergebnisse SOLLTEN nachvollziehbar dokumentiert und mit dem Soll-Zustand abgeglichen werden. Abweichungen SOLLTE nachgegangen werden.'
+        - id: OPS.1.2.2.A14
+          title: 'Regelmäßige Beobachtung des Marktes für Archivsysteme'
+          requirement_text: 'Der Markt für Archivsysteme SOLLTE regelmäßig und systematisch beobachtet werden. Dabei SOLLTEN unter anderem folgende Kriterien beobachtet werden:'
+        - id: OPS.1.2.2.A15
+          title: 'Regelmäßige Aufbereitung von kryptografisch gesicherten Daten bei der Archivierung'
+          requirement_text: 'Es SOLLTE kontinuierlich beobachtet werden, wie sich das Gebiet der Kryptografie entwickelt, um beurteilen zu können, ob ein Algorithmus weiterhin zuverlässig und ausreichend sicher ist (siehe auch OPS.1.2.2.A20 Geeigneter Einsatz kryptografischer Verfahren bei der Archivierung). Archivdaten, die mit kryptografischen Verfahren gesichert wurden, die sich in absehbarer Zeit nicht mehr zur Sicherung eignen werden, SOLLTEN rechtzeitig mit geeigneten Verfahren neu gesichert werden.'
+        - id: OPS.1.2.2.A16
+          title: 'Regelmäßige Erneuerung technischer Archivsystem-Komponenten'
+          requirement_text: 'Archivsysteme SOLLTEN über lange Zeiträume auf dem aktuellen technischen Stand gehalten werden. Neue Hard- und Software SOLLTE vor der Installation in einem laufenden Archivsystem ausführlich getestet werden. Wenn neue Komponenten in Betrieb genommen oder neue Dateiformate eingeführt werden, SOLLTE ein Migrationskonzept erstellt werden. Darin SOLLTEN alle Änderungen, Tests und erwarteten Testergebnisse beschrieben sein. Die Konvertierung der einzelnen Daten SOLLTE dokumentiert werden (Transfervermerk). Wenn Archivdaten in neue Formate konvertiert werden, SOLLTE geprüft werden, ob die Daten aufgrund rechtlicher Anforderungen zusätzlich in ihren ursprünglichen Formaten zu archivieren sind.'
+        - id: OPS.1.2.2.A17
+          title: 'Auswahl eines geeigneten Archivsystems'
+          requirement_text: 'Ein neues Archivsystem SOLLTE immer auf Basis der im Archivierungskonzept beschriebenen Vorgaben ausgewählt werden. Es SOLLTE die dort formulierten Anforderungen erfüllen.'
+        - id: OPS.1.2.2.A18
+          title: 'Verwendung geeigneter Archivmedien'
+          requirement_text: 'Für die Archivierung SOLLTEN geeignete Medien ausgewählt und benutzt werden. Dabei SOLLTEN folgende Aspekte berücksichtigt werden: Ebenfalls SOLLTEN die Archivmedien die Anforderungen an eine Langzeitarchivierung hinsichtlich Revisionssicherheit und Lebensdauer erfüllen.'
+        - id: OPS.1.2.2.A19
+          title: 'Regelmäßige Funktions- und Recoverytests bei der Archivierung'
+          requirement_text: 'Für die Archivierung SOLLTEN regelmäßige Funktions- und Recoverytests durchgeführt werden. Die Archivierungsdatenträger SOLLTEN mindestens einmal jährlich daraufhin überprüft werden, ob sie noch lesbar und integer sind. Für die Fehlerbehebung SOLLTEN geeignete Prozesse definiert werden. Weiterhin SOLLTEN die Hardwarekomponenten des Archivsystems regelmäßig auf ihre einwandfreie Funktion hin geprüft werden. Es SOLLTE regelmäßig geprüft werden, ob alle Archivierungsprozesse fehlerfrei funktionieren.'
+      hoch:
+        - id: OPS.1.2.2.A20
+          title: 'Geeigneter Einsatz kryptografischer Verfahren bei der Archivierung'
+          requirement_text: 'Um lange Aufbewahrungsfristen abdecken zu können, SOLLTEN Archivdaten nur mit kryptografischen Verfahren auf Basis aktueller Standards und Normen gesichert werden.'
+        - id: OPS.1.2.2.A21
+          title: 'Übertragung von Papierdaten in elektronische Archive'
+          requirement_text: 'Werden z. B. Dokumente auf Papier digitalisiert und in ein elektronisches Archiv überführt, SOLLTE sichergestellt werden, dass die digitale Kopie mit dem Originaldokument bildlich und inhaltlich übereinstimmt.'
 
   - id: OPS.1.2.4
     title: 'Telearbeit'
@@ -182,15 +511,30 @@ bausteine:
     anforderungen:
       basis:
         - id: OPS.1.2.4.A1
-          title: 'Konzept fuer die Telearbeit'
-          requirement_text: 'Es MUSS ein Konzept fuer die Telearbeit erstellt werden.'
+          title: 'Regelungen für Telearbeit'
+          requirement_text: 'Alle relevanten Aspekte der Telearbeit MÜSSEN geregelt werden. Zu Informationszwecken MÜSSEN den Telearbeitenden die geltenden Regelungen oder ein dafür vorgesehenes Merkblatt ausgehändigt werden, das die zu beachtenden Sicherheitsmaßnahmen erläutert. Alle strittigen Punkte MÜSSEN entweder durch Betriebsvereinbarungen oder durch zusätzlich zum Arbeitsvertrag getroffene individuelle Vereinbarungen zwischen dem Mitarbeitenden und der Institution geregelt werden. Die Regelungen MÜSSEN regelmäßig aktualisiert werden.'
         - id: OPS.1.2.4.A2
-          title: 'Sicherheitsrichtlinie fuer Telearbeit'
-          requirement_text: 'Eine Sicherheitsrichtlinie fuer die Telearbeit MUSS erstellt werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.4 Anforderung A2.'
-        - id: OPS.1.2.4.A3
-          title: 'Sichere Anbindung des Telearbeitsplatzes'
-          requirement_text: 'Telearbeitsplaetze MUESSEN sicher an das interne Netz angebunden werden (z. B. ueber VPN). Siehe BSI Kompendium 2023 Baustein OPS.1.2.4 Anforderung A3.'
-      standard: []
+          title: 'Sicherheitstechnische Anforderungen an den Telearbeitsrechner'
+          requirement_text: 'Es MÜSSEN sicherheitstechnische Anforderungen festgelegt werden, die ein IT-System für die Telearbeit erfüllen muss. Es MUSS sichergestellt werden, dass nur autorisierte Personen Zugang zu den Telearbeitsrechnern haben. Darüber hinaus MUSS der Telearbeitsrechner so abgesichert werden, dass er nur für autorisierte Zwecke benutzt werden kann.'
+        - id: OPS.1.2.4.A5
+          title: 'Sensibilisierung und Schulung der Mitarbeitenden'
+          requirement_text: 'Anhand eines Leitfadens MÜSSEN die Mitarbeitenden für die Gefahren sensibilisiert werden, die mit der Telearbeit verbunden sind. Außerdem MÜSSEN sie in die entsprechenden Sicherheitsmaßnahmen der Institution eingewiesen und im Umgang mit diesen geschult werden. Die Schulungs- und Sensibilisierungsmaßnahmen für Mitarbeitenden SOLLTEN regelmäßig wiederholt werden.'
+      standard:
+        - id: OPS.1.2.4.A6
+          title: 'Erstellen eines Sicherheitskonzeptes für Telearbeit'
+          requirement_text: 'Es SOLLTE ein Sicherheitskonzept für die Telearbeit erstellt werden, das Sicherheitsziele, Schutzbedarf, Sicherheitsanforderungen sowie Risiken beschreibt. Das Konzept SOLLTE regelmäßig aktualisiert und überarbeitet werden. Das Sicherheitskonzept zur Telearbeit SOLLTE auf das übergreifende Sicherheitskonzept der Institution abgestimmt werden.'
+        - id: OPS.1.2.4.A7
+          title: 'Regelung der Nutzung von Kommunikationsmöglichkeiten bei Telearbeit'
+          requirement_text: 'Es SOLLTE klar geregelt werden, welche Kommunikationsmöglichkeiten bei der Telearbeit unter welchen Rahmenbedingungen genutzt werden dürfen. Die dienstliche und private Nutzung von Internetdiensten bei der Telearbeit SOLLTE geregelt werden. Dabei SOLLTE auch geklärt werden, ob eine private Nutzung generell erlaubt oder unterbunden wird.'
+        - id: OPS.1.2.4.A8
+          title: 'Informationsfluss zwischen Mitarbeitenden und Institution'
+          requirement_text: 'Ein regelmäßiger innerbetrieblicher Informationsaustausch zwischen den Mitarbeitenden und der Institution SOLLTE gewährleistet sein. Alle Mitarbeitenden SOLLTEN zeitnah über geänderte Sicherheitsanforderungen und andere sicherheitsrelevante Aspekte informiert werden. Allen Kollegen und Kolleginnen der jeweiligen Mitarbeitenden SOLLTE bekannt sein, wann und wo diese erreicht werden können. Technische und organisatorische Telearbeitsregelungen zur Aufgabenbewältigung, zu Sicherheitsvorfällen und sonstigen Problemen SOLLTEN geregelt und an die Mitarbeitenden kommuniziert werden.'
+        - id: OPS.1.2.4.A9
+          title: 'Betreuungs- und Wartungskonzept für Telearbeitsplätze'
+          requirement_text: 'Für Telearbeitsplätze SOLLTE ein spezielles Betreuungs- und Wartungskonzept erstellt werden. Darin SOLLTEN folgende Aspekte geregelt werden: Kontaktperson des IT-Betriebs, Wartungstermine, Fernwartung, Transport der IT-Geräte und Einführung von Standard-Telearbeitsrechnern. Damit die Mitarbeitenden einsatzfähig bleiben, SOLLTEN für sie Kontaktpersonen für Hard- und Softwareprobleme benannt werden.'
+        - id: OPS.1.2.4.A10
+          title: 'Durchführung einer Anforderungsanalyse für den Telearbeitsplatz'
+          requirement_text: 'Bevor ein Telearbeitsplatz eingerichtet wird, SOLLTE eine Anforderungsanalyse durchgeführt werden. Daraus SOLLTE z. B. hervorgehen, welche Hard- und Software-Komponenten für den Telearbeitsplatz benötigt werden. Die Anforderungen an den jeweiligen Telearbeitsplatz SOLLTEN mit den IT-Verantwortlichen abgestimmt werden. Es SOLLTE immer festgestellt und dokumentiert werden, welchen Schutzbedarf die am Telearbeitsplatz verarbeiteten Informationen haben.'
       hoch: []
 
   - id: OPS.1.2.5
@@ -199,16 +543,58 @@ bausteine:
     anforderungen:
       basis:
         - id: OPS.1.2.5.A1
-          title: 'Planung der Fernwartung'
-          requirement_text: 'Fernwartungszugriffe MUESSEN geplant und dokumentiert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.5 Anforderung A1.'
+          title: 'Planung des Einsatzes der Fernwartung'
+          requirement_text: 'Der Einsatz der Fernwartung MUSS an die Institution angepasst werden. Die Fernwartung MUSS hinsichtlich technischer und organisatorischer Aspekte bedarfsgerecht geplant werden. Dabei MUSS mindestens berücksichtigt werden, welche IT-Systeme ferngewartet werden sollen und wer dafür zuständig ist.'
         - id: OPS.1.2.5.A2
-          title: 'Sichere Authentisierung bei Fernwartung'
-          requirement_text: 'Fernwartungszugriffe MUESSEN durch starke Authentisierung abgesichert sein. Siehe BSI Kompendium 2023 Baustein OPS.1.2.5 Anforderung A2.'
+          title: 'Sicherer Verbindungsaufbau bei der Fernwartung von Clients'
+          requirement_text: 'Wird per Fernwartung auf Desktop-Umgebungen von Clients zugegriffen, MUSS die Fernwartungssoftware so konfiguriert sein, dass sie eine Verbindung erst nach expliziter Zustimmung der Benutzenden aufbaut.'
         - id: OPS.1.2.5.A3
-          title: 'Protokollierung der Fernwartung'
-          requirement_text: 'Fernwartungstaetigkeiten MUESSEN protokolliert und ausgewertet werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.5 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Absicherung der Schnittstellen zur Fernwartung'
+          requirement_text: 'Die möglichen Zugänge und Kommunikationsverbindungen für die Fernwartung MÜSSEN auf das notwendige Maß beschränkt werden. Alle Fernwartungsverbindungen MÜSSEN nach dem Fernzugriff getrennt werden. Es MUSS sichergestellt werden, dass Fernwartungssoftware nur auf IT-Systemen installiert ist, auf denen sie benötigt wird. Fernwartungsverbindungen über nicht vertrauenswürdige Netze MÜSSEN verschlüsselt werden. Alle anderen Fernwartungsverbindungen SOLLTEN verschlüsselt werden.'
+      standard:
+        - id: OPS.1.2.5.A5
+          title: 'Einsatz von Online-Diensten'
+          requirement_text: 'Die Institution SOLLTE festlegen, unter welchen Umständen Online-Dienste zur Fernwartung genutzt werden dürfen, bei denen die Verbindung über einen externen Server hergestellt wird. Der Einsatz solcher Dienste SOLLTE generell auf möglichst wenige Fälle beschränkt werden. Die IT-Systeme SOLLTEN keine automatisierten Verbindungen zum Online-Dienst aufbauen. Es SOLLTE sichergestellt werden, dass der eingesetzte Online-Dienst die übertragenen Informationen Ende-zu-Ende-verschlüsselt.'
+        - id: OPS.1.2.5.A6
+          title: 'Erstellung einer Richtlinie für die Fernwartung'
+          requirement_text: 'Die Institution SOLLTE eine Richtlinie zur Fernwartung erstellen, in der alle relevanten Regelungen zur Fernwartung dokumentiert werden. Die Richtlinie SOLLTE allen Zuständigen bekannt sein, die an der Konzeption, dem Aufbau und dem Betrieb der Fernwartung beteiligt sind.'
+        - id: OPS.1.2.5.A7
+          title: 'Dokumentation bei der Fernwartung'
+          requirement_text: 'Die Fernwartung SOLLTE geeignet dokumentiert werden. Aus der Dokumentation SOLLTE hervorgehen, welche Fernwartungszugänge existieren und ob diese aktiviert sind. Die Dokumente SOLLTEN an geeigneten Orten und vor unberechtigtem Zugriff geschützt abgelegt werden. Die Dokumente SOLLTEN im Rahmen des Notfallmanagements zur Verfügung stehen.'
+        - id: OPS.1.2.5.A8
+          title: 'Sichere Protokolle bei der Fernwartung'
+          requirement_text: 'Nur als sicher eingestufte Kommunikationsprotokolle SOLLTEN eingesetzt werden. Dafür SOLLTEN sichere kryptografische Verfahren verwendet werden. Die Stärke der verwendeten kryptografischen Verfahren und Schlüssel SOLLTE regelmäßig überprüft und bei Bedarf angepasst werden. Wird auf die Fernwartungszugänge von IT-Systemen im internen Netz über ein öffentliches Datennetz zugegriffen, SOLLTE ein abgesichertes Virtuelles Privates Netz (VPN) genutzt werden.'
+        - id: OPS.1.2.5.A9
+          title: 'Auswahl und Beschaffung geeigneter Fernwartungswerkzeuge'
+          requirement_text: 'Die Auswahl geeigneter Fernwartungswerkzeuge SOLLTE sich aus den betrieblichen, sicherheitstechnischen und datenschutzrechtlichen Anforderungen der Institution ergeben. Alle Beschaffungsentscheidungen SOLLTEN mit den System- und Anwendungsverantwortlichen sowie dem oder der Informationssicherheitsbeauftragten abgestimmt werden.'
+        - id: OPS.1.2.5.A10
+          title: 'Umgang mit Fernwartungswerkzeugen'
+          requirement_text: 'Es SOLLTEN organisatorische Verwaltungsprozesse zum Umgang mit den ausgewählten Fernwartungswerkzeugen etabliert werden. Es SOLLTE eine Bedienungsanleitung für den Umgang mit den Fernwartungswerkzeugen vorliegen. Ergänzend zu den allgemeinen Schulungsmaßnahmen SOLLTEN Musterabläufe für die passive und die aktive Fernwartung erstellt und kommuniziert werden. Zusätzlich zu den allgemeinen Schulungsmaßnahmen SOLLTE der IT-Betrieb besonders im Umgang mit den Fernwartungswerkzeugen sensibilisiert und geschult werden. Es SOLLTE ein Ansprechpartner oder eine Ansprechpartnerin für alle fachlichen Fragen zu den Fernwartungswerkzeugen benannt werden.'
+        - id: OPS.1.2.5.A17
+          title: 'Authentisierungsmechanismen bei der Fernwartung'
+          requirement_text: 'Für die Fernwartung SOLLTEN Mehr-Faktor-Verfahren zur Authentisierung eingesetzt werden. Die Auswahl der Authentisierungsmethode und die Gründe, die zu der Auswahl geführt haben, SOLLTEN dokumentiert werden. Fernwartungszugänge SOLLTEN im Identitäts- und Berechtigungsmanagement der Institution berücksichtigt werden.'
+        - id: OPS.1.2.5.A19
+          title: 'Fernwartung durch Dritte'
+          requirement_text: 'Wird die Fernwartung von Externen durchgeführt, SOLLTEN alle Fernwartungsaktivitäten von internen Mitarbeitenden beobachtet werden. Alle Fernwartungsvorgänge durch Dritte SOLLTEN aufgezeichnet werden. Mit externem Wartungspersonal MÜSSEN vertragliche Regelungen über die Sicherheit der betroffenen IT-Systeme und Informationen geschlossen werden. Die Pflichten und Kompetenzen des externen Wartungspersonals SOLLTEN in den vertraglichen Regelungen festgehalten werden. Sollten Dienstleistende mehrere Kunden und Kundinnen fernwarten, MUSS gewährleistet sein, dass die Netze der Kunden und Kundinnen nicht miteinander verbunden werden. Die Fernwartungsschnittstellen SOLLTEN so konfiguriert sein, dass es Dienstleistenden nur möglich ist, auf die IT-Systeme und Netzsegmente zuzugreifen, die für seine Arbeit benötigt werden.'
+        - id: OPS.1.2.5.A20
+          title: 'Betrieb der Fernwartung'
+          requirement_text: 'Ein Meldeprozess für Support- und Fernwartungsanliegen SOLLTE etabliert werden. Es SOLLTEN Mechanismen zur Erkennung und Abwehr von hochvolumigen Angriffen, TCP-State-Exhaustion-Angriffen und Angriffen auf Applikationsebene implementiert sein. Alle Fernwartungsvorgänge SOLLTEN protokolliert werden.'
+        - id: OPS.1.2.5.A21
+          title: 'Erstellung eines Notfallplans für den Ausfall der Fernwartung'
+          requirement_text: 'Es SOLLTE ein Konzept entwickelt werden, wie die Folgen eines Ausfalls von Fernwartungskomponenten minimiert werden können. Dieses SOLLTE festhalten, wie im Falle eines Ausfalls zu reagieren ist. Durch den Notfallplan SOLLTE sichergestellt sein, dass Störungen, Schäden und Folgeschäden minimiert werden. Außerdem SOLLTE festgelegt werden, wie eine zeitnahe Wiederherstellung des Normalbetriebs erfolgen kann.'
+        - id: OPS.1.2.5.A24
+          title: 'Absicherung integrierter Fernwartungssysteme'
+          requirement_text: 'Bei der Beschaffung von neuen IT-Systemen SOLLTE geprüft werden, ob diese IT-Systeme oder einzelne Komponenten der IT-Systeme über Funktionen zur Fernwartung verfügen. Werden diese Funktionen nicht verwendet, SOLLTEN sie deaktiviert werden. Die Funktionen SOLLTEN ebenfalls deaktiviert werden, wenn sie durch bekannte Sicherheitslücken gefährdet sind. Werden Fernwartungsfunktionen verwendet, die in die Firmware einzelner Komponenten integriert sind, SOLLTEN deren Funktionen und der Zugriff darauf so weit wie möglich eingeschränkt werden. Die Fernwartungsfunktionen SOLLTEN nur aus einem getrennten Managementnetz erreichbar sein.'
+        - id: OPS.1.2.5.A25
+          title: 'Entkopplung der Kommunikation bei der Fernwartung'
+          requirement_text: 'Direkte Fernwartungszugriffe von einem Fernwartungs-Client außerhalb der Managementnetze auf ein IT-System SOLLTEN vermieden werden. Ist ein solcher Zugriff notwendig, SOLLTE die Kommunikation entkoppelt werden. Dazu SOLLTEN Sprungserver verwendet werden. Der Zugriff auf Sprungserver SOLLTE nur von vertrauenswürdigen IT-Systemen aus möglich sein.'
+      hoch:
+        - id: OPS.1.2.5.A14
+          title: 'Dedizierte Clients und Konten bei der Fernwartung'
+          requirement_text: 'Zur Fernwartung SOLLTEN IT-Systeme eingesetzt werden, die ausschließlich zur Administration von anderen IT-Systemen dienen. Alle weiteren Funktionen auf diesen IT-Systemen SOLLTEN deaktiviert werden. Die Netzkommunikation der Administrationssysteme SOLLTE so eingeschränkt werden, dass nur Verbindungen zu IT-Systemen möglich sind, die administriert werden sollen. Für Fernwartungszugänge SOLLTEN dedizierte Konten verwendet werden.'
+        - id: OPS.1.2.5.A22
+          title: 'Redundante Kommunikationsverbindungen'
+          requirement_text: 'Für Fernwartungszugänge SOLLTEN redundante Kommunikationsverbindungen eingerichtet werden. Die Institution SOLLTE Anbindungen zum Out-Of-Band-Management vorhalten.'
 
   - id: OPS.1.2.6
     title: 'NTP-Zeitsynchronisation'
@@ -216,50 +602,43 @@ bausteine:
     anforderungen:
       basis:
         - id: OPS.1.2.6.A1
-          title: 'Planung der Zeitsynchronisation'
-          requirement_text: 'Eine zentrale Zeitsynchronisation MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.6 Anforderung A1.'
+          title: 'Planung des NTP- Einsatzes'
+          requirement_text: 'Der IT-Betrieb MUSS planen, wo und wie NTP eingesetzt wird. Dies SOLLTE vollständig dokumentiert werden. Dabei MUSS ermittelt werden, welche Anwendungen auf eine genaue Zeitinformation angewiesen sind. Die Anforderungen des Informationsverbunds hinsichtlich genauer Zeit der IT-Systeme MÜSSEN definiert und dokumentiert werden. Der IT-Betrieb MUSS definieren, welche NTP-Server von welchen NTP-Clients genutzt werden sollen. Es MUSS festgelegt werden, ob NTP-Server im Client-Server- oder im Broadcast-Modus arbeiten.'
         - id: OPS.1.2.6.A2
-          title: 'Auswahl vertrauenswuerdiger NTP-Quellen'
-          requirement_text: 'Es MUESSEN vertrauenswuerdige NTP-Quellen ausgewaehlt werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.6 Anforderung A2.'
+          title: 'Sichere Nutzung fremder Zeitquellen'
+          requirement_text: 'Falls Zeitinformationen von einem NTP-Server außerhalb des Netzes der Institution bezogen werden, dann MUSS der IT-Betrieb beurteilen, ob der NTP-Server hinreichend verlässlich ist. Der IT-Betrieb MUSS sicherstellen, dass nur als verlässlich eingestufte NTP-Server verwendet werden. Der IT-Betrieb MUSS die Nutzungsregeln des NTP-Servers kennen und beachten.'
         - id: OPS.1.2.6.A3
-          title: 'Absicherung der Zeitsynchronisation'
-          requirement_text: 'Die Kommunikation zur Zeitsynchronisation MUSS gegen Manipulation geschuetzt sein. Siehe BSI Kompendium 2023 Baustein OPS.1.2.6 Anforderung A3.'
-      standard: []
-      hoch: []
-
-  - id: OPS.2.1
-    title: 'Outsourcing fuer Kunden'
-    description: 'Anforderungen an Sicherheit und Steuerung, wenn die Institution selbst Outsourcing-Dienstleistungen erbringt.'
-    anforderungen:
-      basis:
-        - id: OPS.2.1.A1
-          title: 'Sicherheitsanforderungen an Outsourcing-Leistungen'
-          requirement_text: 'Sicherheitsanforderungen an die erbrachten Outsourcing-Leistungen MUESSEN festgelegt sein. Siehe BSI Kompendium 2023 Baustein OPS.2.1 Anforderung A1.'
-        - id: OPS.2.1.A2
-          title: 'Vertragliche Regelungen mit dem Kunden'
-          requirement_text: 'Vertragliche Regelungen mit dem Kunden MUESSEN sicherheitsrelevante Anforderungen einschliesslich SLA und Meldewege enthalten. Siehe BSI Kompendium 2023 Baustein OPS.2.1 Anforderung A2.'
-        - id: OPS.2.1.A3
-          title: 'Mandantentrennung'
-          requirement_text: 'Die Daten und Systeme verschiedener Kunden MUESSEN sicher voneinander getrennt sein. Siehe BSI Kompendium 2023 Baustein OPS.2.1 Anforderung A3.'
-      standard: []
-      hoch: []
-
-  - id: OPS.2.2
-    title: 'Cloud-Nutzung'
-    description: 'Anforderungen an die sichere Nutzung von Cloud-Diensten.'
-    anforderungen:
-      basis:
-        - id: OPS.2.2.A1
-          title: 'Erstellung einer Cloud-Strategie'
-          requirement_text: 'Vor der Nutzung von Cloud-Diensten MUSS eine Cloud-Strategie erstellt werden, die Auswahlkriterien, Exit-Anforderungen und Datenschutz-Rahmenbedingungen regelt.'
-        - id: OPS.2.2.A2
-          title: 'Auswahl geeigneter Cloud-Dienste'
-          requirement_text: 'Cloud-Dienste MUESSEN anhand vorher definierter Kriterien (Sicherheit, Verfuegbarkeit, Compliance, Exit-Moeglichkeiten) ausgewaehlt und dokumentiert werden.'
-        - id: OPS.2.2.A3
-          title: 'Vertragliche Gestaltung der Cloud-Nutzung'
-          requirement_text: 'Vertragliche Regelungen mit dem Cloud-Dienstleister MUESSEN sicherheitsrelevante Anforderungen, SLA, Datenortsgarantien und Audit-Rechte enthalten.'
-      standard: []
-      hoch: []
+          title: 'Sichere Konfiguration von NTP-Servern'
+          requirement_text: 'Der IT-Betrieb MUSS den NTP-Server so konfigurieren, dass Clients nur dann Einstellungen des NTP-Servers verändern können, wenn dies explizit vorgesehen ist. Darüber hinaus MUSS sichergestellt werden, dass nur vertrauenswürdige Clients Status-Informationen abfragen können. Falls die internen NTP-Server der Institution nicht selbst hinreichend genaue Zeitquellen nutzen, dann MUSS der IT-Betrieb diese NTP-Server so konfigurieren, dass sie regelmäßig genaue Zeitinformationen von externen NTP-Servern abfragen.'
+        - id: OPS.1.2.6.A4
+          title: 'Nichtberücksichtigung unaufgeforderter Zeitinformationen'
+          requirement_text: 'Der IT-Betrieb MUSS alle NTP-Clients so konfigurieren, dass sie Zeitinformationen verwerfen, die sie unaufgefordert von anderen IT-Systemen erhalten.'
+      standard:
+        - id: OPS.1.2.6.A5
+          title: 'Nutzung des Client-Server-Modus für NTP'
+          requirement_text: 'Der IT-Betrieb SOLLTE alle IT-Systeme so konfigurieren, dass sie den NTP-Dienst im Client-Server-Modus nutzen. NTP-Server SOLLTEN Zeitinformationen nur dann an Clients versenden, wenn diese aktiv anfragen.'
+        - id: OPS.1.2.6.A6
+          title: 'Überwachung von IT-Systemen mit NTP-Nutzung'
+          requirement_text: 'Der IT-Betrieb SOLLTE die Verfügbarkeit, die Kapazität und die Systemzeit der internen NTP-Server überwachen. Der IT-Betrieb SOLLTE IT-Systeme, die ihre Zeit per NTP synchronisieren, so konfigurieren, dass sie folgende Ereignisse protokollieren: Falls der NTP-Server von sich aus regelmäßig Zeitinformationen versendet (Broadcast-Modus), dann SOLLTE der IT-Betrieb die NTP-Clients daraufhin überwachen, ob sie ungewöhnliche Zeitinformationen erhalten.'
+        - id: OPS.1.2.6.A7
+          title: 'Sichere Konfiguration von NTP-Clients'
+          requirement_text: 'Der IT-Betrieb SOLLTE festlegen, welche Zeitinformationen ein IT-System verwenden soll, wenn es neu gestartet wurde. Der IT-Betrieb SOLLTE festlegen, welche Zeitinformationen ein IT-System verwenden soll, wenn sein NTP-Dienst neu gestartet wurde. Der IT-Betrieb SOLLTE festlegen, wie NTP-Clients auf stark abweichende Zeitinformationen reagieren. Insbesondere SOLLTE entschieden werden, ob stark abweichende Zeitinformationen von NTP-Servern nach einem Systemneustart akzeptiert werden. Der IT-Betrieb SOLLTE Grenzwerte für stark abweichende Zeitinformationen festlegen. Der IT-Betrieb SOLLTE sicherstellen, dass NTP-Clients auch dann noch ausreichende Zeitinformationen erhalten, wenn sie von einem NTP-Server aufgefordert werden, weniger oder gar keine Anfragen zu senden.'
+        - id: OPS.1.2.6.A8
+          title: 'Einsatz sicherer Protokolle zur Zeitsynchronisation'
+          requirement_text: 'Der IT-Betrieb SOLLTE prüfen, ob sichere Protokolle zur Zeitsynchronisation eingesetzt werden können (z. B. Network Time Security (NTS)). Falls dies möglich ist, SOLLTEN sichere Protokolle eingesetzt werden.'
+      hoch:
+        - id: OPS.1.2.6.A9
+          title: 'Verfügbarkeit ausreichend vieler genauer Zeitquellen'
+          requirement_text: 'Falls korrekte Systemzeiten von erheblicher Bedeutung sind, dann SOLLTE eine Institution über mehrere Stratum-1-NTP-Server in ihrem Netz verfügen. Die IT-Systeme des Informationsverbunds mit NTP-Dienst SOLLTEN die Stratum-1-NTP-Server direkt oder indirekt als Zeitreferenz nutzen. Die Straum-1-Server SOLLTEN jeweils über verschiedene Zeitquellen verfügen.'
+        - id: OPS.1.2.6.A10
+          title: 'Ausschließlich interne NTP-Server'
+          requirement_text: 'Jedes IT-System des Informationsverbunds mit NTP-Dienst SOLLTE Zeitinformationen ausschließlich von NTP-Servern innerhalb des Netzes der Institution beziehen.'
+        - id: OPS.1.2.6.A11
+          title: 'Redundante NTP-Server'
+          requirement_text: 'IT-Systeme, bei denen die Genauigkeit der Systemzeit von erheblicher Bedeutung ist, SOLLTEN Zeitinformationen von mindestens vier unabhängigen NTP-Servern beziehen.'
+        - id: OPS.1.2.6.A12
+          title: 'NTP-Server mit authentifizierten Auskünften'
+          requirement_text: 'NTP-Server SOLLTEN sich bei der Kommunikation gegenüber Clients authentisieren. Dies SOLLTE auch für die Server gelten, von denen der NTP-Server seinerseits Zeitinformationen erhält. Die NTP-Clients SOLLTEN nur authentifizierte NTP-Daten akzeptieren.'
 
   - id: OPS.2.3
     title: 'Nutzung von Outsourcing'
@@ -267,50 +646,212 @@ bausteine:
     anforderungen:
       basis:
         - id: OPS.2.3.A1
-          title: 'Erstellung einer Outsourcing-Strategie'
-          requirement_text: 'Fuer die Nutzung von Outsourcing MUSS eine Strategie festgelegt werden, die Risiken, Governance und Exit-Optionen regelt.'
+          title: 'Erstellung von Anforderungsprofilen für Prozesse'
+          requirement_text: 'Falls keine Business-Impact-Analyse (BIA) vorhanden ist, MÜSSEN Anforderungsprofile in Form von Steckbriefen für die Prozesse angefertigt werden, die potenziell ausgelagert werden sollen. Diese Anforderungsprofile MÜSSEN die Funktion, verarbeite Daten, Schnittstellen sowie eine Bewertung der Informationssicherheit enthalten. Insbesondere MÜSSEN die Abhängigkeiten zwischen den Prozessen sowie zu untergeordneten Teilprozessen berücksichtigt werden. Die Anforderungsprofile MÜSSEN die Kritikalität des jeweiligen Prozesses für den ordentlichen Geschäftsbetrieb abbilden.'
         - id: OPS.2.3.A2
-          title: 'Vertragliche Regelungen mit dem Outsourcing-Dienstleister'
-          requirement_text: 'Die Anforderungen an den Dienstleister MUESSEN vertraglich geregelt sein, einschliesslich SLA, Audit-Rechten und Meldewegen.'
+          title: 'Verfolgung eines risikoorientierten Ansatzes im Auslagerungsmanagement'
+          requirement_text: 'Für Prozesse, die potenziell ausgelagert werden sollen, MUSS risikoorientiert betrachtet und entschieden werden, ob diese ausgelagert werden können. Für diese Bewertung SOLLTEN die Anforderungsprofile als Grundlage genutzt werden. Wenn der Prozess ausgelagert wird, SOLLTE das Resultat im Auslagerungsregister abgelegt werden. Um Änderungen an Prozessen oder der Gefährdungslage zu berücksichtigen, MÜSSEN in regelmäßigen Abständen sowie anlassbezogen die ausgelagerten Prozesse erneut risikoorientiert betrachtet werden.'
         - id: OPS.2.3.A3
-          title: 'Festlegung von Sicherheitsanforderungen'
-          requirement_text: 'Sicherheitsanforderungen an den Dienstleister MUESSEN festgelegt sein. Siehe BSI Kompendium 2023 Baustein OPS.2.3 Anforderung A3.'
-      standard:
+          title: 'Festlegung von Eignungsanforderungen an Anbietende von Outsourcing'
+          requirement_text: 'Interne Eignungsanforderungen an potenzielle Anbietende von Outsourcing MÜSSEN festgelegt werden. Diese Eignungsanforderungen MÜSSEN die erforderlichen Kompetenzen, um den Prozess aus Sicht der Informationssicherheit abzusichern, sowie die Reputation hinsichtlich der Vertrauenswürdigkeit und Zuverlässigkeit berücksichtigen. Diese Eignungsanforderungen SOLLTEN auf Basis der Unternehmensstrategie (siehe OPS.2.3.A8 Erstellung einer Strategie für Outsourcing-Vorhaben) erstellt werden. Es MUSS geprüft werden, ob potenzielle Interessenkonflikte vorliegen. Ferner SOLLTEN die Anbietenden von Outsourcing regelmäßig gegen die Eignungsanforderungen geprüft werden. Wenn die Anbietenden von Outsourcing nicht die Eignungsanforderungen erfüllen, SOLLTEN Handlungsmaßnahmen getroffen und in einem Maßnahmenkatalog festgehalten werden.'
+        - id: OPS.2.3.A4
+          title: 'Grundanforderungen an Verträge mit Anbietenden von Outsourcing'
+          requirement_text: 'Einheitliche Grundanforderungen an Outsourcing-Verträge MÜSSEN entwickelt werden. Diese Grundanforderungen MÜSSEN Aspekte der Informationssicherheit, einen Zustimmungsvorbehalt bei Weiterverlagerungen sowie ein Recht auf Prüfung, Revision und Audit beinhalten. Bei der Entwicklung der Grundanforderungen SOLLTEN die Resultate der risikoorientierten Betrachtung sowie Eignungsanforderungen an Anbietende von Outsourcing mit einfließen. Mit den Anbietenden von Outsourcing SOLLTE eine Verschwiegenheitserklärung zum Schutz von sensiblen Daten vereinbart werden. Die Grundanforderungen MÜSSEN in Vereinbarungen und Verträgen einheitlich umgesetzt werden. Auf Basis der Grundanforderungen SOLLTE eine einheitliche Vertragsvorlage erstellt und für alle Outsourcing-Vorhaben genutzt werden.'
+        - id: OPS.2.3.A5
+          title: 'Vereinbarung der Mandantenfähigkeit'
+          requirement_text: 'In einer Vereinbarung zur Mandantenfähigkeit mit den Anbietenden von Outsourcing MUSS sichergestellt werden, dass die Daten und Verarbeitungskontexte durch den Anbietenden von Outsourcing ausreichend sicher getrennt sind. In dieser Vereinbarung SOLLTE ein Mandantentrennungskonzept von den Anbietenden von Outsourcing gefordert werden. Das Mandantentrennungskonzept SOLLTE zwischen mandantenabhängigen und mandantenübergreifenden Daten und Objekten unterscheiden und darlegen, mit welchen Mechanismen die Anbietenden von Outsourcing trennen.'
         - id: OPS.2.3.A6
-          title: 'Ueberwachung des Outsourcing-Dienstleisters'
-          requirement_text: 'Die Einhaltung der vereinbarten Sicherheitsanforderungen SOLLTE regelmaessig ueberprueft werden.'
-      hoch: []
+          title: 'Festlegung von Sicherheitsanforderungen und Erstellung eines Sicherheitskonzeptes für das Outsourcing-Vorhaben'
+          requirement_text: 'Mit den Anbietenden von Outsourcing MUSS vertraglich vereinbart werden, dass IT-Grundschutz umgesetzt oder mindestens die Anforderungen aus den relevanten Bausteinen geeignet erfüllt werden. Darüber hinaus SOLLTE mit den Anbietenden von Outsourcing vereinbart werden, dass sie ein Managementsystem für Informationssicherheit (ISMS) etablieren. Die Nutzenden von Outsourcing MÜSSEN für jedes Outsourcing-Vorhaben ein Sicherheitskonzept basierend auf den sich aus dem IT-Grundschutz ergebenen Sicherheitsanforderungen erstellen. Dabei MUSS das Sicherheitskonzept der Nutzenden mit den Anbietenden von Outsourcing abgestimmt werden. Ebenso SOLLTE jeder Anbietende ein individuelles Sicherheitskonzept für das jeweilige Outsourcing-Vorhaben vorlegen. Das Sicherheitskonzept der Anbietenden von Outsourcing und dessen Umsetzung SOLLTE zu einem gesamten Sicherheitskonzept zusammengeführt werden. Wenn Risikoanalysen notwendig sind, MÜSSEN Vereinbarungen getroffen werden, wie die Risikoanalyse geprüft und gegebenenfalls in das eigene Risikomanagement überführt werden kann. Die Nutzenden von Outsourcing oder unabhängige Dritte MÜSSEN regelmäßig überprüfen, ob das Sicherheitskonzept wirksam ist.'
+        - id: OPS.2.3.A7
+          title: 'Regelungen für eine geplante oder ungeplante Beendigung eines Outsourcing-Verhältnisses'
+          requirement_text: 'Für geplante sowie ungeplante Beendigungen des Outsourcing-Verhältnisses MÜSSEN Regelungen getroffen werden. Es MUSS festgelegt werden, wie alle Informationen, Daten und Hardware der Nutzenden vom Anbietenden von Outsourcing zurückgegeben werden. Hierbei MÜSSEN gesetzliche Vorgaben zur Aufbewahrung von Daten beachtet werden. Ferner SOLLTE überprüft werden, ob die Zugangs-, Zutritts- und Zugriffsrechte für die Anbietenden von Outsourcing mit der Beendigung des Outsourcing-Verhältnisses aufgehoben wurden.'
+      standard:
+        - id: OPS.2.3.A8
+          title: 'Erstellung einer Strategie für Outsourcing-Vorhaben'
+          requirement_text: 'Eine Strategie für Outsourcing-Vorhaben SOLLTE erstellt und etabliert werden. In dieser Strategie SOLLTEN die Ziele, Chancen und Risiken der Outsourcing-Vorhaben beschrieben werden. Die Strategie SOLL der Institution einen Rahmen für die Anforderungsprofile, die Eignungsanforderung an Anbietende von Outsourcing sowie dem Auslagerungsmanagement vorgeben. Darüber hinaus SOLLTEN neben den wirtschaftlichen, technischen, organisatorischen und rechtlichen Rahmenbedingungen auch die relevanten Aspekte der Informationssicherheit berücksichtigt werden. Es SOLLTE eine Multi-Sourcing Strategie verfolgt werden, um Engpässe sowie Abhängigkeiten von Anbietenden von Outsourcing zu vermeiden. Die Nutzenden von Outsourcing SOLLTEN ausreichend Fähigkeiten, Kompetenzen sowie Ressourcen behalten, um einer Abhängigkeit gegenüber den Anbietenden von Outsourcing vorzubeugen.'
+        - id: OPS.2.3.A9
+          title: 'Etablierung einer Richtlinie zur Auslagerung'
+          requirement_text: 'Auf Basis der Strategie für Outsourcing-Vorhaben SOLLTE eine Richtlinie für den Bezug von Outsourcing-Dienstleistungen erstellt und in der Institution etabliert werden. Diese SOLLTE die allgemeinen Anforderungen basierend auf der Anforderung OPS.2.3.A4 Grundanforderungen an Verträge mit Anbietenden von Outsourcing sowie weitere Aspekte der Informationssicherheit für Outsourcing-Vorhaben standardisieren. Das Test- und Freigabeverfahren für Outsourcing-Vorhaben SOLLTE in dieser Richtlinie geregelt sein. Darüber hinaus SOLLTEN Maßnahmen berücksichtigt sein, um Compliance-Risiken bei Anbietenden von Outsourcing sowie bei Sub-Dienstleistenden zu bewältigen.'
+        - id: OPS.2.3.A10
+          title: 'Etablierung einer zuständigen Person für das Auslagerungsmanagement'
+          requirement_text: 'Die verschiedenen Outsourcing-Vorhaben SOLLTEN durch eine zuständige Person für das Auslagerungsmanagement verwaltet werden. Die zuständige Person SOLLTE ernannt und die Befugnisse festgelegt und dokumentiert werden. Die zuständige Person SOLLTE als Schnittstelle in der Kommunikation zwischen den Nutzenden und Anbietenden von Outsourcing eingesetzt werden. Darüber hinaus SOLLTE die zuständige Person Berichte über das Outsourcing in regelmäßigen Abständen und anlassbezogen anfertigen und der Institutionsleitung übergeben. In der Vertragsgestaltung SOLLTE die zuständige Person einbezogen werden. Die zuständige Person SOLLTE ein angemessenes Kontingent von Arbeitstagen für die Aufgaben des Auslagerungsmanagements eingeräumt bekommen. Darüber hinaus SOLLTE die zuständige Person hinsichtlich Informationssicherheit geschult und sensibilisiert sein.'
+        - id: OPS.2.3.A11
+          title: 'Führung eines Auslagerungsregisters'
+          requirement_text: 'Die zuständige Person für das Auslagerungsmanagement SOLLTE ein Auslagerungsregister erstellen und pflegen, dass die Dokumentation der Outsourcing-Prozesse und Vorhaben in der Institution zentralisiert. Dieses SOLLTE auf der Basis der Anforderungsprofile erstellt werden und Informationen zu den Anbietenden von Outsourcing, Leistungskennzahlen, Kritikalität des Prozesses, abgeschlossene Verträgen und Vereinbarungen sowie Änderungen enthalten. Änderungen am Auslagerungsregister SOLLTEN geeignet nachgehalten werden.'
+        - id: OPS.2.3.A12
+          title: 'Erstellung von Auslagerungsberichten'
+          requirement_text: 'Die zuständige Person für das Auslagerungsmanagement SOLLTE regelmäßig interne Auslagerungsberichte auf Basis des Auslagerungsregisters erstellen. Diese Auslagerungsberichte SOLLTEN den aktuellen Status des Outsourcing-Vorhabens mit allgemeinen Problemen und Risiken sowie Aspekte der Informationssicherheit enthalten. Der Auslagerungsbericht SOLLTE der Institutionsleitung vorgelegt werden.'
+        - id: OPS.2.3.A13
+          title: 'Bereitstellung der erforderlichen Kompetenzen bei der Vertragsgestaltung'
+          requirement_text: 'Die Verträge SOLLTEN durch verschiedene Vertreter aus unterschiedlichen Bereichen gestaltet werden. Dabei SOLLTE ein Interessenkonflikt zwischen operativem Geschäft und Informationssicherheit vermieden werden.'
+        - id: OPS.2.3.A14
+          title: 'Erweiterte Anforderungen an Verträge mit Anbietenden von Outsourcing'
+          requirement_text: 'Mit Anbietenden von Outsourcing SOLLTE vereinbart werden, auf welche Bereiche und Dienste die Anbietenden im Netz der Nutzenden von Outsourcing zugreifen dürfen. Der Umgang mit anfallenden Metadaten SOLLTE geregelt werden. Die Nutzenden SOLLTEN Leistungskennzahlen für die Anbietenden von Outsourcing definieren und im Vertrag festlegen. Für den Fall, dass die vereinbarten Leistungskennzahlen unzureichend erfüllt werden, SOLLTEN mit den Anbietenden von Outsourcing Konsequenzen, wie z. B. Vertragsstrafen, festgelegt werden. Die Verträge SOLLTEN Kündigungsoptionen, um das Outsourcing-Verhältnisses aufzulösen, enthalten. Hierbei SOLLTE auch geregelt sein, wie das Eigentum der Nutzenden von Outsourcing zurückgegeben wird. Im Vertrag SOLLTEN Verantwortlichkeiten hinsichtlich des Notfall- und Krisenmanagements definiert und benannt werden.'
+        - id: OPS.2.3.A15
+          title: 'Anbindung an die Netze der Outsourcing-Partner'
+          requirement_text: 'Bevor das Datennetz der Nutzenden an das Datennetz der Anbietenden von Outsourcing angebunden wird, SOLLTEN alle sicherheitsrelevanten Aspekte schriftlich vereinbart werden. Es SOLLTE geprüft und dokumentiert werden, dass die Vereinbarungen für die Netzanbindung eingehalten werden. Das geforderte Sicherheitsniveau SOLLTE nachweislich bei den Anbietenden von Outsourcing umgesetzt und überprüft werden, bevor die Netzanbindung zu den Nutzenden von Outsourcing aktiviert wird. Bevor die Netze angebunden werden, SOLLTE mit Testdaten die Verbindung getestet werden. Gibt es Sicherheitsprobleme auf einer der beiden Seiten, SOLLTE festgelegt sein, wer informiert und wie eskaliert wird.'
+        - id: OPS.2.3.A16
+          title: 'Prüfung der Anbietenden von Outsourcing'
+          requirement_text: 'Die Anbietenden von Outsourcing SOLLTEN hinsichtlich der vertraglich festgelegten Sicherheitsanforderungen überprüft und die Resultate dokumentiert werden. Die Anbietenden von Outsourcing sind in regelmäßigen Abständen und anlassbezogen zu auditieren.'
+        - id: OPS.2.3.A17
+          title: 'Regelungen für den Einsatz des Personals von Anbietenden von Outsourcing'
+          requirement_text: 'Die Beschäftigten der Anbietenden von Outsourcing SOLLTEN schriftlich verpflichtet werden, einschlägige Gesetze, Vorschriften sowie die Regelungen der Nutzenden von Outsourcing einzuhalten. Die Beschäftigten der Anbietenden von Outsourcing SOLLTEN geregelt in ihre Aufgaben eingewiesen und über bestehende Regelungen zur Informationssicherheit unterrichtet werden. Für die Beschäftigten der Anbietenden von Outsourcing SOLLTEN Vertretungsregelungen existieren. Es SOLLTE ein geregeltes Verfahren festgelegt werden, das beschreibt, wie das Auftragsverhältnis mit den Beschäftigten der Anbietenden von Outsourcing beendet wird. Fremdpersonal der Anbietenden von Outsourcing, das kurzfristig oder nur einmal eingesetzt wird, SOLLTE wie Besuchende behandelt werden.'
+        - id: OPS.2.3.A18
+          title: 'Überprüfung der Vereinbarungen mit Anbietenden von Outsourcing'
+          requirement_text: 'Vereinbarungen mit Anbietenden von Outsourcing hinsichtlich der Angemessenheit der festgelegten Sicherheitsanforderungen sowie sonstigen Sicherheitsanforderungen SOLLTEN in regelmäßigen Abständen und anlassbezogen überprüft werden. Vereinbarungen mit Anbietenden von Outsourcing mit unzureichend festgelegten Sicherheitsanforderungen SOLLTEN nachgebessert werden. Die Anbietenden von Outsourcing SOLLTEN dazu verpflichtet werden, bei veränderter Gefährdungs- oder Gesetzeslage, die festgelegten Sicherheitsanforderungen nachzubessern.'
+        - id: OPS.2.3.A19
+          title: 'Überprüfung der Handlungsalternativen hinsichtlich einer geplanten oder ungeplanten Beendigung eines Outsourcing-Verhältnisses'
+          requirement_text: 'Handlungsalternativen SOLLTEN entwickelt werden für den Fall einer geplanten oder ungeplanten Beendigung des Outsourcing-Verhältnisses. Das Resultat SOLLTE in einem Maßnahmenkatalog für geplante und ungeplante Beendigung des Outsourcing-Verhältnisses dokumentiert werden. Dabei SOLLTEN auch alternative Anbietende von Outsourcing ermittelt werden, die über das notwendige Niveau an Informationssicherheit verfügen, um den Prozess sicher umzusetzen. Dies SOLLTE in regelmäßigen Abständen und anlassbezogen geprüft werden.'
+        - id: OPS.2.3.A20
+          title: 'Etablierung sowie Einbeziehung von Anbietenden von Outsourcing im Notfallkonzept'
+          requirement_text: 'Ein Notfallkonzept SOLLTE in der Institution etabliert sein. Dies SOLLTE auf der Basis einer Business-Impact-Analyse basieren und die Abhängigkeiten der ausgelagerten Prozesse mit den intern verbliebenen Prozessen berücksichtigen. Das Notfallkonzept SOLLTE den Anbietenden von Outsourcing in seiner Notfallvorsorge und -bewältigung berücksichtigen und mit diesem abgestimmt sein. Dabei SOLLTEN die Schnittstellen zu Anbietenden von Outsourcing mit Verantwortlichen benannt und besetzt werden, um einen Informationsaustausch sowie eine effektive Kollaboration in einer Not- oder Krisensituation zu ermöglichen. Gemeinsame Not- und Krisenfallpläne SOLLTEN für eine Störung oder einen Ausfall der Anbietenden von Outsourcing erstellt werden. Standardisierte Protokolle und Berichte SOLLTEN zur Meldung von Sicherheitsvorfällen etabliert werden.'
+      hoch:
+        - id: OPS.2.3.A21
+          title: 'Abschluss von ESCROW-Verträgen bei softwarenahen Dienstleistungen'
+          requirement_text: 'Wird Software von Anbietenden von Outsourcing bezogen, SOLLTE ein ESCROW-Vertrag abgeschlossen werden. Dieser SOLLTE Verwertungs- und Bearbeitungsrechte der Software sowie Herausgabefälle des Quellcodes regeln. Darüber hinaus SOLLTE festgelegt werden, wie häufig der Quellcode hinterlegt und dokumentiert wird. Weiterhin SOLLTEN Geheimhaltungspflichten über den hinterlegten Quellcode und die zugehörige Dokumentation geregelt werden.'
+        - id: OPS.2.3.A23
+          title: 'Einsatz von Verschlüsselungen'
+          requirement_text: 'Sensible Daten SOLLTEN angemessen verschlüsselt werden, wenn sie zum Anbietenden von Outsourcing übertragen werden. Die abgelegten Daten SOLLTEN durch eine Datenverschlüsselung oder eine Verschlüsselung des Speichermediums geschützt werden. Nach Möglichkeit SOLLTE eine vom BSI geprüfte und freigegebene Verschlüsselungssoftware genutzt werden.'
+        - id: OPS.2.3.A24
+          title: 'Sicherheits- und Eignungsüberprüfung von Mitarbeitenden'
+          requirement_text: 'Mit externen Anbietenden von Outsourcing SOLLTE vertraglich vereinbart werden, dass die Vertrauenswürdigkeit des eingesetzten Personals geeignet überprüft wird. Dazu SOLLTEN gemeinsam Kriterien festgelegt und dokumentiert werden.'
+        - id: OPS.2.3.A25
+          title: 'Errichtung und Nutzung einer Sandbox für eingehende Daten vom Anbietenden von Outsourcing'
+          requirement_text: 'Für eingehende Daten vom Anbietenden von Outsourcing SOLLTE eine Sandbox eingerichtet werden. Hierbei SOLLTEN E-Mail-Anhänge in der Sandbox standardisiert geöffnet werden. Updates und Anwendungen eines softwarenahen Anbietenden von Outsourcing SOLLTEN in der Sandbox initial getestet werden.'
 
-  - id: OPS.3.1
-    title: 'Outsourcing fuer Dienstleister'
-    description: 'Anforderungen an die Erbringung von Outsourcing-Leistungen aus Sicht des Dienstleisters (Provider-Perspektive).'
+  - id: OPS.2.2
+    title: 'Cloud-Nutzung'
+    description: 'Anforderungen an die sichere Nutzung von Cloud-Diensten.'
     anforderungen:
       basis:
-        - id: OPS.3.1.A1
-          title: 'Sicherheitskonzept fuer Outsourcing-Dienstleistungen'
-          requirement_text: 'Der Dienstleister MUSS ein Sicherheitskonzept fuer die erbrachten Outsourcing-Leistungen erstellen und mit dem Kunden abstimmen.'
-        - id: OPS.3.1.A2
-          title: 'Vertragsgestaltung mit Auftraggebern'
-          requirement_text: 'Vertragliche Vereinbarungen mit Auftraggebern MUESSEN sicherheitsrelevante Anforderungen, SLA, Meldewege, Datenortsgarantien und Audit-Rechte abdecken. Siehe BSI Kompendium 2023 Baustein OPS.3.1 Anforderung A2.'
-        - id: OPS.3.1.A3
-          title: 'Sichere Trennung der Mandantendaten'
-          requirement_text: 'Daten verschiedener Auftraggeber MUESSEN beim Dienstleister technisch und organisatorisch sicher voneinander getrennt sein.'
-      standard: []
-      hoch: []
+        - id: OPS.2.2.A1
+          title: 'Erstellung einer Strategie für die Cloud-Nutzung'
+          requirement_text: 'Eine Strategie für die Cloud-Nutzung MUSS erstellt werden. Darin MÜSSEN Ziele, Chancen und Risiken definiert werden, die die Institution mit der Cloud-Nutzung verbindet. Zudem MÜSSEN die rechtlichen und organisatorischen Rahmenbedingungen sowie die technischen Anforderungen untersucht werden, die sich aus der Nutzung von Cloud-Diensten ergeben. Die Ergebnisse dieser Untersuchung MÜSSEN in einer Machbarkeitsstudie dokumentiert werden. Es MUSS festgelegt werden, welche Dienste in welchem Bereitstellungsmodell zukünftig von Cloud-Diensteanbietenden bezogen werden sollen. Zudem MUSS sichergestellt werden, dass bereits in der Planungsphase zur Cloud-Nutzung alle grundlegenden technischen und organisatorischen Sicherheitsaspekte ausreichend berücksichtigt werden. Für den geplanten Cloud-Dienst SOLLTE eine grobe individuelle Sicherheitsanalyse durchgeführt werden. Diese SOLLTE wiederholt werden, wenn sich technische und organisatorische Rahmenbedingungen wesentlich verändern. Für größere Cloud-Projekte SOLLTE zudem eine Roadmap erarbeitet werden, die festlegt, wann und wie ein Cloud-Dienst eingeführt wird.'
+        - id: OPS.2.2.A2
+          title: 'Erstellung einer Sicherheitsrichtlinie für die Cloud-Nutzung'
+          requirement_text: 'Auf Basis der Strategie für die Cloud-Nutzung MUSS eine Sicherheitsrichtlinie für die Cloud-Nutzung erstellt werden. Sie MUSS konkrete Sicherheitsvorgaben beinhalten, mit denen sich Cloud-Dienste innerhalb der Institution umsetzen lassen. Außerdem MÜSSEN darin spezielle Sicherheitsanforderungen an die Cloud-Diensteanbietenden sowie das festgelegte Schutzniveau für Cloud-Dienste hinsichtlich Vertraulichkeit, Integrität und Verfügbarkeit dokumentiert werden. Wenn Cloud-Dienste von internationalen Anbietenden genutzt werden, MÜSSEN die speziellen länderspezifischen Anforderungen und gesetzlichen Bestimmungen berücksichtigt werden.'
+        - id: OPS.2.2.A3
+          title: 'Service-Definition für Cloud-Dienste'
+          requirement_text: 'Für jeden Cloud-Dienst MUSS eine Service-Definition erarbeitet werden. Zudem SOLLTEN alle geplanten und genutzten Cloud-Dienste dokumentiert werden.'
+        - id: OPS.2.2.A4
+          title: 'Festlegung von Verantwortungsbereichen und Schnittstellen'
+          requirement_text: 'Basierend auf der Service-Definition für Cloud-Dienste MÜSSEN alle relevanten Schnittstellen und Verantwortlichkeiten für die Cloud-Nutzung identifiziert und dokumentiert werden. Es MUSS klar erkennbar sein, wie die Verantwortungsbereiche zwischen Cloud-Diensteanbietenden und der auftraggebenden Institution voneinander abgegrenzt sind.'
+      standard:
+        - id: OPS.2.2.A5
+          title: 'Planung der sicheren Migration zu einem Cloud-Dienst'
+          requirement_text: 'Bevor zu einem Cloud-Dienst migriert wird, SOLLTE ein Migrationskonzept erstellt werden. Dafür SOLLTEN zunächst organisatorische Regelungen sowie die Aufgabenverteilung festgelegt werden. Zudem SOLLTEN bestehende Betriebsprozesse hinsichtlich der Cloud-Nutzung identifiziert und angepasst werden. Es SOLLTE sichergestellt werden, dass die eigene IT ausreichend im Migrationsprozess berücksichtigt wird. Auch SOLLTEN die Zuständigen ermitteln, ob die Mitarbeitenden auf Seiten der Institution zusätzlich geschult werden sollten.'
+        - id: OPS.2.2.A6
+          title: 'Planung der sicheren Einbindung von Cloud-Diensten'
+          requirement_text: 'Bevor ein Cloud-Dienst genutzt wird, SOLLTE sorgfältig geplant werden, wie er in die IT der Institution eingebunden werden soll. Hierfür SOLLTE mindestens geprüft werden, ob Anpassungen der Schnittstellen, der Netzanbindung, des Administrationsmodells sowie des Datenmanagementmodells notwendig sind. Die Ergebnisse SOLLTEN dokumentiert und regelmäßig aktualisiert werden.'
+        - id: OPS.2.2.A7
+          title: 'Erstellung eines Sicherheitskonzeptes für die Cloud-Nutzung'
+          requirement_text: 'Auf Grundlage der identifizierten Sicherheitsanforderungen (siehe OPS.2.2.A2 Erstellung einer Sicherheitsrichtlinie für die Cloud-Nutzung) SOLLTE ein Sicherheitskonzept für die Nutzung von Cloud-Diensten erstellt werden.'
+        - id: OPS.2.2.A8
+          title: 'Sorgfältige Auswahl von Cloud-Diensteanbietenden'
+          requirement_text: 'Basierend auf der Service-Definition für den Cloud-Dienst SOLLTE ein detailliertes Anforderungsprofil für Cloud-Diensteanbietende erstellt werden. Eine Leistungsbeschreibung und ein Lastenheft SOLLTEN erstellt werden. Für die Bewertung von Cloud-Diensteanbietenden SOLLTEN auch ergänzende Informationsquellen herangezogen werden. Ebenso SOLLTEN verfügbare Service-Beschreibungen der Cloud-Diensteanbietenden sorgfältig geprüft und hinterfragt werden.'
+        - id: OPS.2.2.A9
+          title: 'Vertragsgestaltung mit den Cloud-Diensteanbietenden'
+          requirement_text: 'Die vertraglichen Regelungen zwischen der auftraggebenden Institution und den Cloud-Diensteanbietenden SOLLTEN in Art, Umfang und Detaillierungsgrad dem Schutzbedarf der Informationen angepasst sein, die im Zusammenhang mit der Cloud-Nutzung stehen. Es SOLLTE geregelt werden, an welchem Standort die Cloud-Diensteanbietenden ihre Leistung erbringen. Zusätzlich SOLLTEN Eskalationsstufen und Kommunikationswege zwischen der Institution und den Cloud-Diensteanbietenden definiert werden. Auch SOLLTE vereinbart werden, wie die Daten der Institution sicher zu löschen sind. Ebenso SOLLTEN Kündigungsregelungen schriftlich fixiert werden. Die Cloud-Diensteanbietenden SOLLTEN alle Subunternehmen offenlegen, die sie für den Cloud-Dienst benötigen.'
+        - id: OPS.2.2.A10
+          title: 'Sichere Migration zu einem Cloud-Dienst'
+          requirement_text: 'Die Migration zu einem Cloud-Dienst SOLLTE auf Basis des erstellten Migrationskonzeptes erfolgen. Während der Migration SOLLTE überprüft werden, ob das Sicherheitskonzept für die Cloud-Nutzung an potenzielle neue Anforderungen angepasst werden muss. Auch SOLLTEN alle Notfallvorsorgemaßnahmen vollständig und aktuell sein. Die Migration zu einem Cloud-Dienst SOLLTE zunächst in einem Testlauf überprüft werden. Ist der Cloud-Dienst in den produktiven Betrieb übergegangen, SOLLTE abgeglichen werden, ob die Cloud-Diensteanbietenden die definierten Anforderungen der Institution erfüllen.'
+        - id: OPS.2.2.A11
+          title: 'Erstellung eines Notfallkonzeptes für einen Cloud-Dienst'
+          requirement_text: 'Für die genutzten Cloud-Dienste SOLLTE ein Notfallkonzept erstellt werden. Es SOLLTE alle notwendigen Angaben zu Zuständigkeiten und Kontaktpersonen enthalten. Zudem SOLLTEN detaillierte Regelungen hinsichtlich der Datensicherung getroffen werden. Auch Vorgaben zu redundant auszulegenden Management-Tools und Schnittstellensystemen SOLLTEN festgehalten sein.'
+        - id: OPS.2.2.A12
+          title: 'Aufrechterhaltung der Informationssicherheit im laufenden Cloud-Nutzungs-Betrieb'
+          requirement_text: 'Alle für die eingesetzten Cloud-Dienste erstellten Dokumentationen und Richtlinien SOLLTEN regelmäßig aktualisiert werden. Es SOLLTE außerdem periodisch kontrolliert werden, ob die vertraglich zugesicherten Leistungen erbracht werden. Auch SOLLTEN sich die Cloud-Diensteanbietenden und die Institution nach Möglichkeit regelmäßig abstimmen. Ebenso SOLLTE geplant und geübt werden, wie auf Systemausfälle zu reagieren ist.'
+        - id: OPS.2.2.A13
+          title: 'Nachweis einer ausreichenden Informationssicherheit bei der Cloud-Nutzung'
+          requirement_text: 'Die Institution SOLLTE sich von den Cloud-Diensteanbietenden regelmäßig nachweisen lassen, dass die vereinbarten Sicherheitsanforderungen erfüllt sind. Der Nachweis SOLLTE auf einem international anerkannten Regelwerk basieren (z. B. IT-Grundschutz, ISO/IEC 27001, Anforderungskatalog Cloud Computing (C5), Cloud Controls Matrix der Cloud Security Alliance). Die Institution SOLLTE prüfen, ob der Geltungsbereich und Schutzbedarf die genutzten Cloud-Dienste erfasst. Nutzen Cloud-Diensteanbietende Subunternehmen, um die Cloud-Dienste zu erbringen, SOLLTEN Cloud-Diensteanbietende der Institution regelmäßig nachweisen, dass diese Subunternehmen die notwendigen Audits durchführen.'
+        - id: OPS.2.2.A14
+          title: 'Geordnete Beendigung eines Cloud-Nutzungs-Verhältnisses'
+          requirement_text: 'Wenn das Dienstleistungsverhältnis mit den Cloud-Diensteanbietenden beendet wird, SOLLTE sichergestellt sein, dass dadurch die Geschäftstätigkeit oder die Fachaufgaben der Institution nicht beeinträchtigt wird. Die Verträge mit den Cloud-Diensteanbietenden SOLLTEN regeln, wie das jeweilige Dienstleistungsverhältnis geordnet aufgelöst werden kann.'
+      hoch:
+        - id: OPS.2.2.A15
+          title: 'Sicherstellung der Portabilität von Cloud-Diensten'
+          requirement_text: 'Die Institution SOLLTE alle Anforderungen definieren, die es ermöglichen, Cloud-Diensteanbietende zu wechseln oder den Cloud-Dienst bzw. die Daten in die eigene IT-Infrastruktur zurückzuholen. Zudem SOLLTE die Institution regelmäßig Portabilitätstests durchführen. In den Verträgen mit den Cloud-Diensteanbietenden SOLLTEN Vorgaben festgehalten werden, mit denen sich die notwendige Portabilität gewährleisten lässt.'
+        - id: OPS.2.2.A16
+          title: 'Durchführung eigener Datensicherungen'
+          requirement_text: 'Die Institution SOLLTE prüfen, ob, zusätzlich zu den vertraglich festgelegten Datensicherungen der Cloud-Diensteanbietenden, eigene Datensicherungen erstellt werden sollen. Zudem SOLLTE sie detaillierte Anforderungen an einen Backup-Service erstellen.'
+        - id: OPS.2.2.A17
+          title: 'Einsatz von Verschlüsselung bei Cloud-Nutzung'
+          requirement_text: 'Wenn Daten durch Cloud-Diensteanbietende verschlüsselt werden, SOLLTE vertraglich geregelt werden, welche Verschlüsselungsmechanismen und welche Schlüssellängen eingesetzt werden dürfen. Wenn eigene Verschlüsselungsmechanismen genutzt werden, SOLLTE ein geeignetes Schlüsselmanagement sichergestellt sein. Bei der Verschlüsselung SOLLTEN die eventuellen Besonderheiten des gewählten Cloud-Service-Modells berücksichtigt werden.'
+        - id: OPS.2.2.A18
+          title: 'Einsatz von Verbunddiensten'
+          requirement_text: 'Es SOLLTE geprüft werden, ob bei einem Cloud-Nutzungs-Vorhaben Verbunddienste (Federation Services) eingesetzt werden. Es SOLLTE sichergestellt sein, dass in einem SAML (Security Assertion Markup Language)-Ticket nur die erforderlichen Informationen an die Cloud-Diensteanbietenden übertragen werden. Die Berechtigungen SOLLTEN regelmäßig überprüft werden, sodass nur berechtigten Benutzenden ein SAML-Ticket ausgestellt wird.'
+        - id: OPS.2.2.A19
+          title: 'Sicherheitsüberprüfung von Mitarbeitenden'
+          requirement_text: 'Mit externen Cloud-Diensteanbietenden SOLLTE vertraglich vereinbart werden, dass in geeigneter Weise überprüft wird, ob das eingesetzte Personal qualifiziert und vertrauenswürdig ist. Dazu SOLLTEN gemeinsam Kriterien festgelegt werden.'
 
   - id: OPS.3.2
-    title: 'Anbindung externer IT-Systeme'
+    title: 'Anbieten von Outsourcing'
     description: 'Anforderungen an die sichere Anbindung externer IT-Systeme (Partnernetze, Kunden, Dienstleister) an das eigene Netz.'
     anforderungen:
       basis:
         - id: OPS.3.2.A1
-          title: 'Planung der externen Anbindung'
-          requirement_text: 'Vor der Anbindung externer IT-Systeme MUSS geplant werden, welche Daten ausgetauscht, welche Zugriffe ermoeglicht und welche Schutzmassnahmen umgesetzt werden.'
+          title: 'Einhaltung der Schutzziele der Informationssicherheit durch ein Informationssicherheitsmanagement'
+          requirement_text: 'Der Schutzbedarf für Vertraulichkeit, Integrität und Verfügbarkeit von Nutzenden von Outsourcing MUSS im Outsourcing-Prozess berücksichtigen werden. Dabei MUSS sichergestellt werden, dass das von den Nutzenden von Outsourcing geforderte Minimum an Informationssicherheit eingehalten wird. Zudem MÜSSEN die geltenden regulatorischen und gesetzlichen Aspekte berücksichtigt werden.'
         - id: OPS.3.2.A2
-          title: 'Sichere Anbindung externer Systeme'
-          requirement_text: 'Externe IT-Systeme MUESSEN ueber abgesicherte Schnittstellen (VPN, TLS, Reverse-Proxy) angebunden werden. Direkter Zugriff auf interne Systeme MUSS auf das Notwendige begrenzt sein.'
+          title: 'Grundanforderungen an Verträge mit Nutzenden von Outsourcing'
+          requirement_text: 'Einheitliche Grundanforderungen an Outsourcing-Verträge MÜSSEN entwickelt werden. Diese SOLLTEN einheitlich in Verträgen umgesetzt werden. Diese Grundanforderungen MÜSSEN Aspekte der Informationssicherheit und Sicherheitsanforderungen der Nutzenden von Outsourcing beinhalten. Zudem MÜSSEN sie beinhalten, wie mit Weiterverlagerungen durch die Anbietenden umgegangen wird. Die Grundanforderungen MÜSSEN beinhalten, dass die Nutzenden das Recht haben Prüfungen, Revisionen und Auditierungen durchzuführen, um sicherzustellen, dass die vertraglich geregelten Anforderungen an die Informationssicherheit eingehalten werden. Mit den Nutzenden von Outsourcing SOLLTE eine Verschwiegenheitserklärung zum Schutz von sensiblen Daten, Vereinbarungen zum Informationsaustausch und Service-Level-Agreements vereinbart werden. Die Grundanforderungen MÜSSEN in Vereinbarungen und Verträgen einheitlich umgesetzt werden. Auf Basis der Grundanforderungen SOLLTE eine einheitliche Vertragsvorlage erstellt und für alle Outsourcing-Vorhaben genutzt werden.'
         - id: OPS.3.2.A3
-          title: 'Authentisierung und Autorisierung externer Stellen'
-          requirement_text: 'Externe Stellen MUESSEN eindeutig authentifiziert und auf die fuer ihre Aufgabe erforderlichen Ressourcen begrenzt sein. Siehe BSI Kompendium 2023 Baustein OPS.3.2 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Weitergabe der vertraglich geregelten Bestimmungen mit Nutzenden von Outsourcing an Sub-Dienstleistende'
+          requirement_text: 'Werden Prozesse von Anbietenden von Outsourcing weiter an Sub-Dienstleistende verlagert, MÜSSEN die vertraglichen Bestimmungen mit den Nutzenden von Outsourcing an die Sub-Dienstleistenden weitergegeben werden. Dies MUSS in den Verträgen mit den Sub-Dienstleistenden entsprechend festlegt und durchgesetzt werden. Auf Nachfrage von Nutzenden von Outsourcing MÜSSEN diese Verträge vorgelegt werden.'
+        - id: OPS.3.2.A4
+          title: 'Erstellung eines Mandantentrennungskonzepts'
+          requirement_text: 'Es MUSS ein Mandantentrennungskonzept erstellt und umgesetzt werden. Das Mandantentrennungskonzept MUSS sicherstellen, dass Daten und Verarbeitungskontexte verschiedener Nutzender von Outsourcing ausreichend sicher getrennt werden. Dabei MUSS zwischen mandantenabhängigen und mandantenübergreifenden Daten und Objekten unterschieden werden. Es MUSS dargelegt werden, mit welchen Mechanismen die Anbietenden von Outsourcing die Mandanten trennen. Die benötigten Mechanismen zur Mandantentrennung MÜSSEN durch die Anbietenden von Outsourcing ausreichend umgesetzt werden. Das Mandantentrennungskonzept MUSS durch die Anbietenden von Outsourcing erstellt und den Nutzenden von Outsourcing zur Verfügung gestellt werden. Darüber hinaus MUSS es für den Schutzbedarf der Daten der Nutzenden von Outsourcing eine angemessene Sicherheit bieten.'
+        - id: OPS.3.2.A5
+          title: 'Erstellung eines Sicherheitskonzepts für die Outsourcing-Dienstleistung'
+          requirement_text: 'Die Anbietenden von Outsourcing MÜSSEN für ihre Dienstleistungen ein Sicherheitskonzept erstellen. Für individuelle Outsourcing-Vorhaben MÜSSEN zusätzlich spezifische Sicherheitskonzepte erstellt werden, die auf den Sicherheitsanforderungen der Nutzenden von Outsourcing basieren. Das Sicherheitskonzept für das jeweilige Outsourcing-Vorhaben SOLLTE jedem und jeder Nutzenden von Outsourcing vorgelegt werden. Das Sicherheitskonzept der Anbietenden von Outsourcing und dessen Umsetzung SOLLTE zu einem gesamten Sicherheitskonzept zusammengeführt werden. Anbietende und Nutzende von Outsourcing MÜSSEN gemeinsam Sicherheitsziele erarbeiten und diese dokumentieren. Es MUSS außerdem eine gemeinsame Klassifikation für alle schutzbedürftigen Informationen erstellt werden. Darüber hinaus MÜSSEN die Anbietenden von Outsourcing regelmäßig überprüfen, ob das Sicherheitskonzept umgesetzt wurde.'
+        - id: OPS.3.2.A6
+          title: 'Regelungen für eine geplante und ungeplante Beendigung eines Outsourcing-Verhältnisses'
+          requirement_text: 'Es MÜSSEN Regelungen getroffen werden, wie verfahren wird, wenn Outsourcing-Verhältnisse geplant oder ungeplant beendet werden. Es MUSS festgelegt werden, wie alle Informationen, Daten und Hardware der Nutzenden von den Anbietenden von Outsourcing zurückgegeben werden. Anschließend MÜSSEN die verbleibenden Datenbestände der Nutzenden von Outsourcing nach Ablauf der gesetzlichen Vorgaben zur Datenaufbewahrung sicher gelöscht werden. Dies MUSS durch die Anbietenden von Outsourcing dokumentiert werden. Ferner SOLLTE überprüft werden, ob die Zugangs-, Zutritts- und Zugriffsrechte für die Nutzenden von Outsourcing aufgehoben wurden, nachdem das Outsourcing-Verhältnis beendet wurde.'
+      standard:
+        - id: OPS.3.2.A7
+          title: 'Bereitstellung der ausgelagerten Dienstleistung durch multiple Sub-Dienstleistende'
+          requirement_text: 'Werden Prozesse von Anbietenden von Outsourcing weiter an Sub-Dienstleistende verlagert, SOLLTEN die Anbietenden von Outsourcing mehrere qualifizierte Sub-Dienstleistende zur Verfügung haben, falls Sub-Dienstleistende ausfallen oder kündigen. Dies SOLLTE gemeinsam mit den Nutzenden von Outsourcing dokumentiert werden.'
+        - id: OPS.3.2.A8
+          title: 'Erstellung einer Richtlinie für die Outsourcing-Dienstleistungen'
+          requirement_text: 'Es SOLLTE eine Richtlinie für das Anbieten von Outsourcing-Dienstleistungen erstellt und in der Institution etabliert werden. Diese SOLLTE das Test- und Freigabeverfahren regeln. Dabei SOLLTE die Weiterverlagerung an Sub-Dienstleistende berücksichtigt werden. Die Richtlinie SOLLTE Maßnahmen berücksichtigen, um Compliance-Risiken bei Anbietenden von Outsourcing sowie bei Sub-Dienstleistenden zu bewältigen.'
+        - id: OPS.3.2.A9
+          title: 'Überprüfung der Vereinbarung mit Nutzenden von Outsourcing'
+          requirement_text: 'Vereinbarungen mit Nutzenden von Outsourcing hinsichtlich der Angemessenheit der festgelegten Sicherheitsanforderungen sowie sonstigen Sicherheitsanforderungen SOLLTEN in regelmäßigen Abständen und anlassbezogen überprüft werden. Vereinbarungen mit Nutzenden von Outsourcing mit unzureichend festgelegten Sicherheitsanforderungen SOLLTEN nachgebessert werden. Bei veränderter Gefährdungs- oder Gesetzeslage SOLLTEN die festgelegten Sicherheitsanforderungen nachgebessert werden. Alle Änderungen SOLLTEN durch die Anbietenden von Outsourcing dokumentiert werden.'
+        - id: OPS.3.2.A10
+          title: 'Etablierung eines sicheren Kommunikationskanals und Festlegung der Kommunikationspartner'
+          requirement_text: 'Die Anbietenden von Outsourcing SOLLTEN einen sicheren Kommunikationskanal zu den Nutzenden von Outsourcing einrichten. Es SOLLTE dokumentiert sein, welche Informationen über diesen Kommunikationskanal an den Outsourcing-Partner übermittelt werden. Dabei SOLLTE sichergestellt werden, dass an den jeweiligen Enden des Kommunikationskanals entsprechend Zuständige benannt sind. Dabei SOLLTE regelmäßig und anlassbezogen überprüft werden, ob diese Personen noch in ihrer Funktion als dedizierte Kommunikationspartner beschäftigt sind. Zwischen den Outsourcing-Partnern SOLLTE geregelt sein, nach welchen Kriterien welcher Kommunikationspartner welche Informationen erhalten darf.'
+        - id: OPS.3.2.A11
+          title: 'Etablierung eines Notfallkonzepts'
+          requirement_text: 'Ein Notfallkonzept SOLLTE in der Institution etabliert sein. In diesem Notfallkonzept SOLLTEN Nutzende von Outsourcing sowie Sub-Dienstleistende berücksichtigt werden.'
+        - id: OPS.3.2.A12
+          title: 'Durchführung einer risikoorientierten Betrachtung von Prozessen, Anwendungen und IT-Systemen'
+          requirement_text: 'Werden Prozesse, Anwendungen oder IT-Systeme neu aufgebaut und Kunden bereitgestellt, SOLLTEN diese regelmäßig und anlassbezogen risikoorientiert betrachtet und dokumentiert werden. Aus den sich daraus ergebenen Ergebnissen SOLLTEN geeignete Maßnahmen festgelegt werden. Darüber hinaus SOLLTEN die Resultate dazu verwendet werden, um das Informationssicherheitsmanagement weiter zu verbessern.'
+        - id: OPS.3.2.A13
+          title: 'Anbindung an die Netze der Outsourcing-Partner'
+          requirement_text: 'Bevor das Datennetz der Anbietenden an das Datennetz der Nutzenden von Outsourcing angebunden wird, SOLLTEN alle sicherheitsrelevanten Aspekte schriftlich vereinbart werden. Bevor beide Netze verbunden werden, SOLLTEN sie auf bekannte Sicherheitslücken analysiert werden. Es SOLLTE geprüft werden, ob die Vereinbarungen für die Netzanbindung eingehalten werden und das geforderte Sicherheitsniveau nachweislich erreicht wird. Bevor die Netze angebunden werden, SOLLTE mit Testdaten die Verbindung getestet werden. Gibt es Sicherheitsprobleme auf einer der beiden Seiten, SOLLTE festgelegt sein, wer informiert und wie eskaliert wird.'
+        - id: OPS.3.2.A14
+          title: 'Überwachung der Prozesse, Anwendungen und IT-Systeme'
+          requirement_text: 'Die für Kunden eingesetzten Prozesse, Anwendungen und IT-Systeme SOLLTEN kontinuierlich überwacht werden.'
+        - id: OPS.3.2.A15
+          title: 'Berichterstattung gegenüber den Nutzenden von Outsourcing'
+          requirement_text: 'Die Anbietenden von Outsourcing SOLLTEN den Nutzenden von Outsourcing in festgelegten Abständen Berichte über den ausgelagerten Prozess bereitstellen. Es SOLLTE ein Bericht an die Nutzenden von Outsourcing versendet werden, wenn Änderungen am Prozess durch die Anbietenden von Outsourcing oder Sub-Dienstleistenden stattfanden. Dazu SOLLTEN standardisierte Protokolle zur Berichterstattung etabliert werden.'
+        - id: OPS.3.2.A16
+          title: 'Transparenz über die Outsourcing-Kette der ausgelagerten Kundenprozesse'
+          requirement_text: 'Die Anbietenden von Outsourcing SOLLTEN ein Auslagerungsregister für die in Kundenprozessen eingesetzten Sub-Dienstleistenden führen. Dieses SOLLTE Informationen zu den Sub-Dienstleistenden, Leistungskennzahlen, Kritikalität der Prozesse, abgeschlossenen Verträgen und Vereinbarung sowie Änderungen enthalten. Änderungen am Auslagerungsregister SOLLTEN nachgehalten werden. Das Auslagerungsregister SOLLTE auch die Weiterverlagerungen durch die Sub-Dienstleistenden behandeln. Die Anbietenden von Outsourcing SOLLTEN das Auslagerungsregister regelmäßig und anlassbezogen überprüfen.'
+        - id: OPS.3.2.A17
+          title: 'Zutritts-, Zugangs- und Zugriffskontrolle'
+          requirement_text: 'Zutritts-, Zugangs- und Zugriffsberechtigungen SOLLTEN sowohl für das Personal der Anbietenden von Outsourcing als auch für das Personal der Nutzenden von Outsourcing geregelt sein. Ebenfalls SOLLTEN Zutritts-, Zugangs- und Zugriffsberechtigungen für Auditoren und andere Prüfer festgelegt werden. Dabei SOLLTEN nur so viele Rechte vergeben werden, wie für die Tätigkeit notwendig ist.'
+        - id: OPS.3.2.A18
+          title: 'Regelungen für den Einsatz von Sub-Dienstleistenden'
+          requirement_text: 'Personal der Anbietenden von Outsourcing sowie der Sub-Dienstleistenden SOLLTEN in ihre Aufgaben eingewiesen und über bestehende Regelungen zur Informationssicherheit der Anbietenden von Outsourcing unterrichtet werden. Soweit es gefordert ist, SOLLTEN das Personal der Anbietenden von Outsourcing sowie der Sub-Dienstleistenden nach Vorgaben der Nutzenden von Outsourcing überprüft werden, z. B. durch ein Führungszeugnis. Das Personal der Anbietenden von Outsourcing sowie der Sub-Dienstleistenden SOLLTEN schriftlich dazu verpflichtet werden, einschlägige Gesetze und Vorschriften, Vertraulichkeitsvereinbarungen sowie interne Regelungen einzuhalten. Es SOLLTEN Vertretungsregelungen in allen Bereichen existieren.'
+      hoch:
+        - id: OPS.3.2.A19
+          title: 'Sicherheitsüberprüfung von Beschäftigten'
+          requirement_text: 'Die Vertrauenswürdigkeit des Personals der Anbietenden von Outsourcing SOLLTE durch geeignete Nachweise überprüft werden. Es SOLLTEN mit den Nutzenden von Outsourcing vertragliche Kriterien vereinbart werden.'
+        - id: OPS.3.2.A20
+          title: 'Verschlüsselte Datenübertragung und -speicherung'
+          requirement_text: 'Für die Übertragung von Daten von und zu den Nutzenden von Outsourcing sowie die Speicherung SOLLTE mit den Nutzenden von Outsourcing eine sicheres Verschlüsselungsverfahren festgelegt werden. Dabei SOLLTE sich die eingesetzte Verschlüsselungsmethode am Schutzbedarf der Daten orientieren. Die Verschlüsselungsmethode SOLLTE regelmäßig und anlassbezogen auf ihre Funktionsfähigkeit hin überprüft werden.'
+        - id: OPS.3.2.A21
+          title: 'Durchführung von gemeinsamen Notfall- und Krisenübungen'
+          requirement_text: 'Gemeinsame Notfall- und Krisenübungen mit den Nutzenden von Outsourcing SOLLTEN durchgeführt und dokumentiert werden (siehe DER.4 Notfallmanagement). Das Resultat der Übung SOLLTE dazu genutzt werden, um das Notfallkonzept sowie insbesondere die gemeinsamen Maßnahmenpläne zu verbessern. Die Notfall- und Krisenübungen SOLLTEN regelmäßig und anlassbezogen durchgeführt werden.'

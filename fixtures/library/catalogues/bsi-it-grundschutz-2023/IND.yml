@@ -12,16 +12,76 @@ bausteine:
     anforderungen:
       basis:
         - id: IND.1.A1
-          title: 'Segmentierung der OT-Netze'
-          requirement_text: 'OT-Netze MUESSEN von anderen Netzen (z. B. Office-IT) segmentiert werden.'
-        - id: IND.1.A2
-          title: 'Einschraenkung der Fernwartung'
-          requirement_text: 'Fernwartungszugaenge fuer ICS-Komponenten MUESSEN eingeschraenkt werden.'
+          title: 'Einbindung in die Sicherheitsorganisation'
+          requirement_text: 'Ein Managementsystem für Informationssicherheit (ISMS) für den Betrieb der OT-Infrastruktur MUSS entweder als selbständiges ISMS oder als Teil eines Gesamt-ISMS existieren. Eine gesamtverantwortliche Person für die Informationssicherheit im OT-Bereich MUSS benannt werden. Er oder sie MUSS innerhalb der Institution bekannt gegeben werden.'
         - id: IND.1.A3
-          title: 'Inventarisierung der OT-Komponenten'
-          requirement_text: 'Alle OT-Komponenten MUESSEN inventarisiert sein. Siehe BSI Kompendium 2023 Baustein IND.1 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Schutz vor Schadprogrammen'
+          requirement_text: 'Beim Einsatz von Virenschutz-Software auf OT-Komponenten MUSS berücksichtigt werden, ob und in welcher Konfiguration der Betrieb von Virenschutz-Software vom herstellenden Unternehmen unterstützt wird. Ist dies nicht der Fall, MUSS der Bedarf an alternativen Schutzverfahren geprüft werden. Die Virensignaturen DÜRFEN NICHT von OT-Systemen direkt aus dem Internet bezogen werden.'
+        - id: IND.1.A18
+          title: 'Protokollierung'
+          requirement_text: 'Jede Änderung an ICS-Komponenten MUSS protokolliert werden. Außerdem MÜSSEN alle Zugriffe auf ICS-Komponenten protokolliert werden.'
+        - id: IND.1.A19
+          title: 'Erstellung von Datensicherungen'
+          requirement_text: 'Programme und Daten MÜSSEN regelmäßig gesichert werden. Auch nach jeder Systemänderung an OT-Komponenten MUSS eine Sicherung erstellt werden.'
+      standard:
+        - id: IND.1.A4
+          title: 'Dokumentation der OT-Infrastruktur'
+          requirement_text: 'Alle sicherheitsrelevanten Parameter der OT-Infrastruktur SOLLTEN dokumentiert sein. In einem Bestandsverzeichnis SOLLTEN alle Software- und Systemkomponenten geführt werden. Hieraus SOLLTEN die eingesetzten Produkt- und Protokollversionen sowie die Zuständigkeiten hervorgehen. Zu den eingesetzten Komponenten SOLLTEN eventuelle Restriktionen der herstellenden Unternehmen oder regulatorische Auflagen bestimmt sein. Diese Dokumentation und ein Systeminventar SOLLTEN beispielsweise in einem Leitsystem geführt werden. Zusätzlich SOLLTE ein aktueller Netzplan Zonen, Zonenübergänge (Conduits), eingesetzte Kommunikationsprotokolle und -verfahren sowie Außenschnittstellen dokumentieren. Bei den Schnittstellen SOLLTEN aktive Netzkomponenten und manuelle Datentransferverfahren, z. B. durch Wechseldatenträger, berücksichtigt werden. Zonen und Conduits schützen die OT-Infrastrukur, indem die Automatisierungslösung in Zellen und Kommunikationskanälen strukturiert werden SOLLTE.'
+        - id: IND.1.A5
+          title: 'Entwicklung eines geeigneten Zonenkonzepts'
+          requirement_text: 'Die OT-Infrastruktur SOLLTE auch horizontal in unabhängige Funktionsbereiche, wie etwa Anlagen, segmentiert werden. Die einzelnen Zonen SOLLTEN, so weit wie möglich, im Betrieb voneinander unabhängig sein. Insbesondere die Zonen, in denen der technische Prozess gesteuert wird, SOLLTEN bei einem Ausfall der anderen Zonen für einen gewissen Zeitraum weiter funktionstüchtig sein. Auch SOLLTE die Abkopplung nach einem Angriff weiter funktionieren. Dieser Zeitraum SOLLTE geeignet definiert und dokumentiert werden. Das Netz SOLLTE manipulations- und fehlerresistent konzipiert werden.'
+        - id: IND.1.A6
+          title: 'Änderungsmanagement im OT-Betrieb'
+          requirement_text: 'Für Änderungen an der OT SOLLTE ein eigener Änderungsprozess definiert, dokumentiert und gelebt werden.'
+        - id: IND.1.A7
+          title: 'Etablieren einer übergreifenden Berechtigungsverwaltung zwischen der OT und in der Office-IT'
+          requirement_text: 'Die Institution SOLLTE einen Prozess zur Verwaltung von Zugängen und zugeordneten Berechtigungen für den Zugriff auf die OT etablieren. Die Berechtigungsverwaltung SOLLTE den Prozess, die Durchführung und die Dokumentation für die Beantragung, Einrichtung und den Entzug von Berechtigungen umfassen. Die Berechtigungsverwaltung SOLLTE gewährleisten, dass Berechtigungen nach dem Minimalprinzip vergeben und regelmäßig überprüft werden. In der Berechtigungsverwaltung SOLLTEN die Zugriffe auf IT-Systeme für Mitarbeitende, Administrierende und Dritte geregelt sein. Jeder oder jede Beteiligte SOLLTE regelmäßig zu den einzuhaltenden Regelungen sensibilisiert werden. Die Einhaltung SOLLTE überprüft werden. Fehlverhalten SOLLTE sanktioniert werden.'
+        - id: IND.1.A8
+          title: 'Sichere Administration'
+          requirement_text: 'Für die Erstkonfiguration, Verwaltung und Fernwartung in der OT SOLLTEN entweder sichere Protokolle oder abgetrennte Administrationsnetze mit entsprechendem Schutzbedarf genutzt werden. Der Zugang zu diesen Schnittstellen SOLLTE auf die Berechtigten eingeschränkt sein. Es SOLLTE nur der Zugriff auf die Systeme und Funktionen gewährt sein, die für die jeweilige Administrationsaufgabe benötigt werden. Die Systeme und Kommunikationskanäle, mit denen die Administration oder Fernwartung durchgeführt wird, SOLLTEN das gleiche Schutzniveau aufweisen wie die verwaltete OT-Komponente.'
+        - id: IND.1.A9
+          title: 'Restriktiver Einsatz von Wechseldatenträgern und mobilen Endgeräten in ICS-Umgebungen'
+          requirement_text: 'Für die Nutzung von Wechseldatenträgern und mobilen Endgeräten SOLLTEN Regelungen aufgestellt und bekannt gegeben werden. Der Einsatz von Wechseldatenträgern und mobilen Endgeräten in ICS-Umgebungen SOLLTE beschränkt werden. Für Medien und Geräte von Dienstleistenden SOLLTEN ein Genehmigungsprozess und eine Anforderungsliste existieren. Die Vorgaben SOLLTEN allen Dienstleistenden bekannt sein und von diesen schriftlich bestätigt werden. Auf den OT-Komponenten SOLLTEN alle nicht benötigten Schnittstellen deaktiviert werden. An den aktiven Schnittstellen SOLLTE die Nutzung auf bestimmte Geräte oder Medien eingeschränkt werden.'
+        - id: IND.1.A10
+          title: 'Monitoring, Protokollierung und Detektion'
+          requirement_text: 'Betriebs- und sicherheitsrelevante Ereignisse SOLLTEN zeitnah identifiziert werden. Hierzu SOLLTE ein geeignetes Log- und Event-Management entwickelt und umgesetzt werden. Das Log- und Event-Management SOLLTE angemessene Maßnahmen umfassen, um sicherheitsrelevante Ereignisse zu erkennen und zu erheben. Es SOLLTE zudem einen Reaktionsplan (Security Incident Response) enthalten. Der Reaktionsplan SOLLTE Verfahren zur Behandlung von Sicherheitsvorfällen festlegen. Darin abgedeckt sein SOLLTEN die Klassifizierung von Ereignissen, Meldewege und Festlegung der einzubeziehenden Organisationseinheiten, Reaktionspläne zur Schadensbegrenzung, Analyse und Wiederherstellung von Systemen und Diensten sowie die Dokumentation und Nachbereitung von Vorfällen.'
+        - id: IND.1.A11
+          title: 'Sichere Beschaffung und Systementwicklung'
+          requirement_text: 'Sollen OT-Systeme beschafft, geplant oder entwickelt werden, SOLLTEN Regelungen zur Informationssicherheit getroffen und dokumentiert werden. Die Unterlagen SOLLTEN Teil der Ausschreibung sein. Bei Beschaffungen, Planungen oder Entwicklungen SOLLTE die Informationssicherheit in dem gesamten Lebenszyklus berücksichtigt werden. Voraussetzungen und Umsetzungshinweise für einen sicheren Betrieb von ICS-Komponenten von den herstellenden Unternehmen SOLLTEN frühzeitig eingeplant und umgesetzt werden. Für ICS-Komponenten SOLLTEN einheitliche und dem Schutzbedarf angemessene Anforderungen an die Informationssicherheit definiert werden. Diese SOLLTEN berücksichtigt werden, wenn neue ICS-Komponenten beschafft werden. Die Einhaltung und Umsetzung SOLLTE dokumentiert werden. Die Institution SOLLTE dokumentieren, wie sich das System in die Konzepte für die Zoneneinteilung, das Berechtigungs- und Schwachstellen-Management sowie für den Virenschutz einfügt und diese gegebenenfalls anpassen. Es SOLLTE geregelt sein, wie der Betrieb aufrechterhalten werden kann, falls einer der Kooperationspartner keine Dienstleistungen mehr anbietet.'
+        - id: IND.1.A12
+          title: 'Etablieren eines Schwachstellen-Managements'
+          requirement_text: 'Für den sicheren Betrieb einer OT-Umgebung SOLLTE die Institution ein Schwachstellen-Management etablieren. Das Schwachstellen-Management SOLLTE Lücken in Software, Komponenten, Protokollen und Außenschnittstellen der Umgebung identifizieren. Außerdem SOLLTEN sich daraus erforderliche Handlungen ableiten, bewerten und umsetzen lassen. Grundlage dafür SOLLTEN Schwachstellenmeldungen von herstellenden Unternehmen oder öffentlich verfügbare CERT-Meldungen sein. Ergänzend hierzu SOLLTEN organisatorische und technische Audits zur Schwachstellenanalyse durchgeführt werden.'
+        - id: IND.1.A20
+          title: 'Systemdokumentation'
+          requirement_text: 'Es SOLLTE eine erweiterte Systemdokumentation erstellt werden. Darin SOLLTEN Besonderheiten im Betrieb und die Möglichkeiten zur Systemverwaltung festgehalten werden. Außerdem SOLLTE dokumentiert werden, wenn ICS-Komponenten verändert werden.'
+        - id: IND.1.A21
+          title: 'Dokumentation der Kommunikationsbeziehungen'
+          requirement_text: 'Es SOLLTE dokumentiert werden, mit welchen Systemen eine ICS-Komponente welche Daten austauscht. Außerdem SOLLTEN die Kommunikationsverbindungen neu integrierter ICS-Komponenten dokumentiert werden.'
+        - id: IND.1.A22
+          title: 'Zentrale Systemprotokollierung und -überwachung'
+          requirement_text: 'Die Protokollierungsdaten von ICS-Komponenten SOLLTEN zentral gespeichert werden. Bei sicherheitskritischen Ereignissen SOLLTE automatisch alarmiert werden.'
+        - id: IND.1.A23
+          title: 'Aussonderung von ICS-Komponenten'
+          requirement_text: 'Wenn alte oder defekte ICS-Komponenten ausgesondert werden, SOLLTEN alle schützenswerten Daten sicher gelöscht werden. Es SOLLTE insbesondere sichergestellt sein, dass alle Zugangsdaten nachhaltig entfernt wurden.'
+      hoch:
+        - id: IND.1.A13
+          title: 'Notfallplanung für OT'
+          requirement_text: 'Notfallpläne für den Ausfall und für die Kompromittierung jeder Zone SOLLTEN definiert, dokumentiert, nach jeder größeren Änderung getestet und regelmäßig geübt sein. Zudem SOLLTE ein wirksames Ersatzverfahren für den Ausfall der (Fern-) Administrationsmöglichkeit definiert, dokumentiert und getestet sein.'
+        - id: IND.1.A14
+          title: 'Starke Authentisierung an OT-Komponenten'
+          requirement_text: 'Zur sicheren Authentisierung von privilegierten Benutzenden in Steuerungssystemen SOLLTE ein zentraler Verzeichnisdienst eingerichtet werden (siehe Baustein ORP.4 Identitäts- und Berechtigungsmanagement). Die Authentisierung SOLLTE durch den Einsatz mehrerer Faktoren wie Wissen, Besitz oder Biometrie zusätzlich abgesichert werden. Bei der Planung SOLLTE darauf geachtet werden, dass daraus entstehende Abhängigkeiten in der Authentisierung bekannt sind und bei der Umsetzung der Lösung berücksichtigt werden. Es SOLLTE sichergestellt werden, dass die Authentisierung von betrieblich erforderlichen technischen Konten auch in Notfällen durchgeführt werden kann.'
+        - id: IND.1.A15
+          title: 'Überwachung von weitreichenden Berechtigungen'
+          requirement_text: 'Die Institution SOLLTE ein Bestandsverzeichnis führen, das alle vergebenen Zutritts-, Zugangs und Zugriffsrechte auf kritische Systeme enthält. Das Verzeichnis SOLLTE beinhalten, welche Rechte ein bestimmter Benutzender oder eine bestimme Benutzende effektiv hat und wer an einem bestimmten System über welche Rechte verfügt. Alle kritischen administrativen Tätigkeiten SOLLTEN protokolliert werden. Der IT-Betrieb SOLLTE NICHT die Protokolle löschen oder manipulieren können.'
+        - id: IND.1.A16
+          title: 'Stärkere Abschottung der Zonen'
+          requirement_text: 'Bei hoch schutzbedürftigen oder schlecht absicherbaren ICS-Umgebungen SOLLTEN vorbeugend Schnittstellensysteme mit Sicherheitsprüffunktionen eingesetzt werden. Durch Realisierung einer oder mehrerer Anbindungszonen (DMZ) in P-A-P-Struktur SOLLTEN durchgängige Außenverbindungen terminiert werden. Erforderliche Sicherheitsprüfungen SOLLTEN so erfolgen, dass die ICS-Anlage nicht angepasst werden muss.'
+        - id: IND.1.A17
+          title: 'Regelmäßige Sicherheitsüberprüfung'
+          requirement_text: 'Die Sicherheitskonfiguration von OT-Komponenten SOLLTE regelmäßig und bedarfsorientiert bei plötzlich auftretenden neuen, bisher unbekannten Gefährdungen überprüft werden. Die Sicherheitsüberprüfung SOLLTE zumindest die exponierten Systeme mit Außenschnittstellen oder Benutzendeninteraktion umfassen. Auch das realisierte Sicherheitskonzept SOLLTE regelmäßig überprüft werden. Die Sicherheitsüberprüfung SOLLTE als Konfigurationsprüfung oder auch durch automatisierte Konformitätsprüfungen erfolgen.'
+        - id: IND.1.A24
+          title: 'Kommunikation im Störfall'
+          requirement_text: 'Alternative und unabhängige Kommunikationsmöglichkeiten SOLLTEN aufgebaut und betrieben werden.'
 
   - id: IND.2.1
     title: 'Allgemeine ICS-Komponente'
@@ -29,32 +89,59 @@ bausteine:
     anforderungen:
       basis:
         - id: IND.2.1.A1
-          title: 'Sichere Konfiguration von ICS-Komponenten'
-          requirement_text: 'ICS-Komponenten MUESSEN sicher konfiguriert werden.'
+          title: 'Einschränkung des Zugriffs auf Konfigurations- und Wartungsschnittstellen'
+          requirement_text: 'Standardmäßig eingerichtete bzw. vom herstellenden Unternehmen gesetzte Passwörter MÜSSEN gewechselt werden (siehe ORP.4 Identitäts- und Berechtigungsmanagement). Der Wechsel MUSS dokumentiert werden. Die Passwörter MÜSSEN sicher hinterlegt werden. Es MUSS sichergestellt werden, dass nur berechtigte Mitarbeitende auf Konfigurations- und Wartungsschnittstellen von ICS-Komponenten zugreifen können. Die Konfiguration von ICS-Komponenten DARF NUR nach einer Freigabe durch die verantwortliche Person oder nach einer Authentisierung geändert werden.'
         - id: IND.2.1.A2
-          title: 'Aenderung von Default-Passwoertern'
-          requirement_text: 'Default-Passwoerter und -Konten von ICS-Komponenten MUESSEN geaendert oder deaktiviert werden. Siehe BSI Kompendium 2023 Baustein IND.2.1 Anforderung A2.'
-        - id: IND.2.1.A3
-          title: 'Patchmanagement fuer ICS-Komponenten'
-          requirement_text: 'ICS-Komponenten MUESSEN soweit moeglich mit sicherheitsrelevanten Updates versorgt werden. Siehe BSI Kompendium 2023 Baustein IND.2.1 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Nutzung sicherer Übertragungs-Protokolle für die Konfiguration und Wartung'
+          requirement_text: 'Für die Konfiguration und Wartung von ICS-Komponenten MÜSSEN sichere Protokolle eingesetzt werden. Die Informationen MÜSSEN geschützt übertragen werden.'
+        - id: IND.2.1.A4
+          title: 'Deaktivierung oder Deinstallation nicht genutzter Dienste, Funktionen und Schnittstellen'
+          requirement_text: 'Alle nicht genutzten Dienste, Funktionen und Schnittstellen der ICS-Komponenten MÜSSEN deaktiviert oder deinstalliert werden.'
+        - id: IND.2.1.A6
+          title: 'Netzsegmentierung'
+          requirement_text: 'ICS-Komponenten MÜSSEN von der Office-IT getrennt werden. Hängen ICS-Komponenten von anderen Diensten im Netz ab, SOLLTE das ausreichend dokumentiert werden. ICS-Komponenten SOLLTEN so wenig wie möglich mit anderen ICS-Komponenten kommunizieren.'
+      standard:
+        - id: IND.2.1.A7
+          title: 'Erstellung von Datensicherungen'
+          requirement_text: 'Vor jeder Systemänderung an einer ICS-Komponente MÜSSEN Backups erstellt werden.'
+        - id: IND.2.1.A8
+          title: 'Schutz vor Schadsoftware'
+          requirement_text: 'ICS-Komponenten SOLLTEN durch geeignete Mechanismen vor Schadprogrammen geschützt werden (siehe OPS.1.1.4 Schutz vor Schadprogrammen). Wird dafür ein Virenschutzprogramm benutzt, SOLLTEN das Programm und die Virensignaturen nach der Freigabe durch das herstellende Unternehmen immer auf dem aktuellen Stand sein. Wenn die Ressourcen auf der ICS-Komponente nicht ausreichend sind oder die Echtzeitanforderung durch den Einsatz von Virenschutzprogrammen gefährdet werden könnte, SOLLTEN alternative Maßnahmen ergriffen werden, etwa die Abschottung der ICS-Komponente oder des Produktionsnetzes.'
+        - id: IND.2.1.A11
+          title: 'Wartung der ICS-Komponenten'
+          requirement_text: 'Bei der Wartung einer ICS-Komponente SOLLTEN immer die aktuellen und freigegebenen Sicherheitsupdates eingespielt werden. Updates für das Betriebssystem SOLLTEN erst nach Freigabe durch das herstellende Unternehmen einer ICS-Komponente installiert werden. Alternativ SOLLTE die Aktualisierung in einer Testumgebung erprobt werden, bevor diese in einer produktiven ICS-Komponente eingesetzt wird. Für kritische Sicherheitsupdates SOLLTE kurzfristig eine Wartung durchgeführt werden.'
+        - id: IND.2.1.A13
+          title: 'Geeignete Inbetriebnahme von ICS-Komponenten'
+          requirement_text: 'Bevor ICS-Komponenten in Betrieb genommen werden, SOLLTEN sie dem aktuellen, intern freigegebenen Firmware-, Software- und Patch-Stand entsprechen. Neue ICS-Komponenten SOLLTEN in die bestehenden Betriebs-, Überwachungs- und Informationssicherheitsmanagement-Prozesse eingebunden werden.'
+        - id: IND.2.1.A16
+          title: 'Schutz externer Schnittstellen'
+          requirement_text: 'Von außen erreichbare Schnittstellen SOLLTEN vor Missbrauch geschützt werden.'
+        - id: IND.2.1.A17
+          title: 'Nutzung sicherer Protokolle für die Übertragung von Mess- und Steuerdaten'
+          requirement_text: 'Mess- oder Steuerdaten SOLLTEN bei der Übertragung vor unberechtigten Zugriffen oder Veränderungen geschützt werden. Bei Anwendungen mit Echtzeitanforderungen SOLLTE geprüft werden, ob dies umsetzbar ist. Werden Mess- oder Steuerdaten über öffentliche Netze übertragen, SOLLTEN sie angemessen geschützt werden.'
+      hoch:
+        - id: IND.2.1.A18
+          title: 'Kommunikation im Störfall'
+          requirement_text: 'Es SOLLTE alternative und unabhängige Kommunikationsmöglichkeiten geben, die bei einem Störfall benutzt werden können, um handlungsfähig zu bleiben.'
+        - id: IND.2.1.A19
+          title: 'Security-Tests'
+          requirement_text: 'Mithilfe von regelmäßigen Security-Tests SOLLTE geprüft werden, ob die technischen Sicherheitsmaßnahmen noch effektiv umgesetzt sind. Die Security-Tests SOLLTEN nicht im laufenden Anlagenbetrieb erfolgen. Die Tests SOLLTEN auf die Wartungszeiten geplant werden. Die Ergebnisse SOLLTEN dokumentiert werden. Erkannte Risiken SOLLTEN bewertet und behandelt werden.'
+        - id: IND.2.1.A20
+          title: 'Vertrauenswürdiger Code'
+          requirement_text: 'Firmware-Updates oder neue Steuerungsprogramme SOLLTEN NUR eingespielt werden, wenn vorher ihre Integrität überprüft wurde. Sie SOLLTEN nur aus vertrauenswürdigen Quellen stammen.'
 
   - id: IND.2.2
     title: 'Speicherprogrammierbare Steuerung (SPS)'
     description: 'Anforderungen an die sichere Planung, Konfiguration und den Betrieb von Speicherprogrammierbaren Steuerungen.'
     anforderungen:
-      basis:
+      basis: []
+      standard:
         - id: IND.2.2.A1
-          title: 'Planung des SPS-Einsatzes'
-          requirement_text: 'Der Einsatz von Speicherprogrammierbaren Steuerungen (SPS) MUSS geplant werden.'
-        - id: IND.2.2.A2
-          title: 'Sichere Konfiguration von SPS'
-          requirement_text: 'SPS MUESSEN sicher konfiguriert werden. Programmieranschluesse MUESSEN abgesichert sein. Siehe BSI Kompendium 2023 Baustein IND.2.2 Anforderung A2.'
+          title: 'Erweiterte Systemdokumentation für Speicherprogrammierbare Steuerungen'
+          requirement_text: 'Steuerungsprogramme und Konfigurationen SOLLTEN immer gesichert werden, bevor an ihnen etwas verändert wird. Änderungen an der Konfiguration oder der Tausch von Komponenten SOLLTEN vollständig dokumentiert werden.'
         - id: IND.2.2.A3
-          title: 'Schutz der SPS-Programme vor unbefugter Aenderung'
-          requirement_text: 'SPS-Programme MUESSEN gegen unbefugte Aenderung geschuetzt sein. Siehe BSI Kompendium 2023 Baustein IND.2.2 Anforderung A3.'
-      standard: []
+          title: 'Zeitsynchronisation'
+          requirement_text: 'Die Systemzeit SOLLTE automatisch über eine zentrale automatisierte Zeitsynchronisation eingestellt werden.'
       hoch: []
 
   - id: IND.2.3
@@ -63,16 +150,16 @@ bausteine:
     anforderungen:
       basis:
         - id: IND.2.3.A1
-          title: 'Planung des Einsatzes von Sensoren und Aktoren'
-          requirement_text: 'Der Einsatz von Sensoren und Aktoren MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein IND.2.3 Anforderung A1.'
+          title: 'Installation von Sensoren'
+          requirement_text: 'Sensoren MÜSSEN in geeigneter Weise installiert werden. Sensoren MÜSSEN ausreichend robust sein. Sie MÜSSEN zuverlässig unter den vorhandenen Umgebungsbedingungen wie großer Wärme, Kälte, Staub, Vibration oder Korrosion messen können.'
+      standard:
         - id: IND.2.3.A2
-          title: 'Sichere Anbindung von Sensoren und Aktoren'
-          requirement_text: 'Sensoren und Aktoren MUESSEN sicher in das OT-Netz eingebunden sein. Siehe BSI Kompendium 2023 Baustein IND.2.3 Anforderung A2.'
+          title: 'Kalibrierung von Sensoren'
+          requirement_text: 'Wenn notwendig, SOLLTEN Sensoren regelmäßig kalibriert werden. Die Kalibrierungen SOLLTEN geeignet dokumentiert werden. Der Zugang zur Kalibrierung eines Sensors MUSS geschützt sein.'
+      hoch:
         - id: IND.2.3.A3
-          title: 'Manipulationsschutz'
-          requirement_text: 'Sensoren und Aktoren MUESSEN soweit moeglich gegen physische und logische Manipulation geschuetzt sein. Siehe BSI Kompendium 2023 Baustein IND.2.3 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Drahtlose Kommunikation'
+          requirement_text: 'Drahtlose Verwaltungsschnittstellen wie Bluetooth, WLAN oder NFC SOLLTEN NICHT benutzt werden. Alle nicht benutzten Kommunikationsschnittstellen SOLLTEN deaktiviert werden.'
 
   - id: IND.2.4
     title: 'Maschine'
@@ -80,33 +167,57 @@ bausteine:
     anforderungen:
       basis:
         - id: IND.2.4.A1
-          title: 'Planung der Maschinenintegration'
-          requirement_text: 'Die Integration von Maschinen in die Produktions-IT MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein IND.2.4 Anforderung A1.'
+          title: 'Fernwartung durch Maschinen- und Anlagenbauende'
+          requirement_text: 'Für die Fernwartung einer Maschine MUSS es eine zentrale Richtlinie geben. Darin MUSS geregelt werden, wie die jeweiligen Fernwartungslösungen einzusetzen sind. Die Richtlinie MUSS auch festlegen, wie Kommunikationsverbindungen geschützt werden sollen. Hierüber hinaus MUSS sie auch beschreiben, welche Aktivitäten während der Fernwartung überwacht werden sollen. Außerdem SOLLTE NICHT möglich sein, dass über die Fernwartung einer Maschine auf andere IT-Systeme oder Maschinen der Institution zugegriffen werden kann. Mit Dienstleistenden MUSS vereinbart werden, wie sie die in der Maschine gespeicherten Informationen verwerten dürfen.'
         - id: IND.2.4.A2
-          title: 'Sichere Anbindung von Maschinen'
-          requirement_text: 'Maschinen MUESSEN sicher in das Netz eingebunden sein, einschliesslich Segmentierung. Siehe BSI Kompendium 2023 Baustein IND.2.4 Anforderung A2.'
-        - id: IND.2.4.A3
-          title: 'Sichere Wartung von Maschinen'
-          requirement_text: 'Wartungszugaenge fuer Maschinen MUESSEN abgesichert und protokolliert sein. Siehe BSI Kompendium 2023 Baustein IND.2.4 Anforderung A3.'
+          title: 'Betrieb nach Ende der Gewährleistung'
+          requirement_text: 'Es MUSS ein Prozess etabliert werden, der gewährleistet, dass die Maschine auch über den Gewährleistungszeitraum hinaus sicher weiterbetrieben werden kann. Hierzu MÜSSEN mit den Liefernden weitere Unterstützungsleistungen vertraglich vereinbart werden.'
       standard: []
       hoch: []
 
   - id: IND.2.7
-    title: 'Safety-Instrumented Systems'
+    title: 'Safety Instrumented Systems'
     description: 'Anforderungen an Sicherheit von sicherheitsgerichteten Systemen (SIS) in industriellen Umgebungen.'
     anforderungen:
       basis:
         - id: IND.2.7.A1
-          title: 'Trennung von SIS und Prozessleitsystem'
-          requirement_text: 'Sicherheitsgerichtete Systeme MUESSEN logisch und moeglichst auch physisch von der Prozessleitebene getrennt sein. Siehe BSI Kompendium 2023 Baustein IND.2.7 Anforderung A1.'
+          title: 'Erfassung und Dokumentation'
+          requirement_text: 'Alle zum SIS gehörenden Hardware- und Softwarekomponenten, relevante Informationen, Verbindungen sowie Rollen und Zuständigkeiten MÜSSEN gesondert erfasst und dokumentiert werden.'
         - id: IND.2.7.A2
-          title: 'Schutz vor unbefugter Aenderung'
-          requirement_text: 'Sicherheitsfunktionen von SIS MUESSEN gegen unbefugte Aenderung geschuetzt sein. Siehe BSI Kompendium 2023 Baustein IND.2.7 Anforderung A2.'
+          title: 'Zweckgebundene Nutzung der Hard- und Softwarekomponenten'
+          requirement_text: 'Die Hard- und Softwarekomponenten, die zum SIS gehören oder im Zusammenhang mit diesem genutzt werden, DÜRFEN NICHT zweckentfremdet werde.'
         - id: IND.2.7.A3
-          title: 'Pruefung und Aenderungsmanagement'
-          requirement_text: 'Aenderungen an SIS MUESSEN einem geregelten Aenderungs- und Pruefprozess unterzogen werden. Siehe BSI Kompendium 2023 Baustein IND.2.7 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Änderung des Anwendungsprogramms auf dem Logiksystem'
+          requirement_text: 'Bereits vorhandene Schutzmechanismen am Logiksystem MÜSSEN aktiviert sein. Wenn dies nicht möglich ist, MÜSSEN alternative Maßnahmen ergriffen werden. Anwendungsprogramme auf den Logiksystemen DÜRFEN NUR von autorisierten Personen geändert oder zur Übertragung freigegeben werden.'
+      standard:
+        - id: IND.2.7.A4
+          title: 'Verankerung von Informationssicherheit im Functional Safety Management'
+          requirement_text: 'Alle Prozesse und Zuständigkeiten bezüglich der Informationssicherheit von SIS SOLLTEN klar definiert sein. Im Functional Safety Management SOLLTEN diese beschrieben und namentlich genannt sein.'
+        - id: IND.2.7.A5
+          title: 'Notfallmanagement von SIS'
+          requirement_text: 'Die Behandlung von Sicherheitsvorfällen SOLLTE in einem Vorfallreaktionsplan festgehalten werden. Dieser SOLLTE die Rollen und Zuständigkeiten festhalten und die zu ergreifenden Maßnahmen enthalten.'
+        - id: IND.2.7.A6
+          title: 'Sichere Planung und Spezifikation des SIS'
+          requirement_text: 'Versehentliche oder unautorisierte Änderungen an der Spezifikation, Implementierung und an den Engineering-Daten SOLLTEN verhindert werden.'
+        - id: IND.2.7.A7
+          title: 'Trennung und Unabhängigkeit des SIS von der Umgebung'
+          requirement_text: 'Das SIS SOLLTE rückwirkungsfrei von seiner Umgebung betrieben werden, um seine Sicherheitsfunktionen gewährleisten zu können. Prozesse, die potenziell Auswirkungen auf das SIS haben, SOLLTEN dem Änderungsmanagementprozess des Functional Safety Management unterstellt werden.'
+        - id: IND.2.7.A8
+          title: 'Sichere Übertragung von Engineering Daten auf SIS'
+          requirement_text: 'Die Integrität der Engineering-Daten SOLLTE während der Übertragung auf SIS sichergestellt werden.'
+        - id: IND.2.7.A9
+          title: 'Absicherung der Daten- und Signalverbindungen'
+          requirement_text: 'Sofern keine Rückwirkungsfreiheit von Daten- und Signalverbindungen (Unidirektionalität) nachgewiesen werden kann, SOLLTEN diese Verbindungen geeignet abgesichert werden.'
+        - id: IND.2.7.A10
+          title: 'Anzeige und Alarmierung von simulierten oder gebrückten Variablen'
+          requirement_text: 'Variablen der SIS, die durch Ersatzwerte besetzt (simuliert) oder von außen gebrückt werden, SOLLTEN in geeigneter Weise überwacht werden. Die Werte SOLLTEN den Benutzenden fortlaufend angezeigt werden. Grenzwerte SOLLTEN definiert werden. Wenn diese Grenzwerte erreicht werden, SOLLTEN die zuständigen Personen in geeigneter Weise alarmiert werden.'
+        - id: IND.2.7.A11
+          title: 'Umgang mit integrierten Systemen'
+          requirement_text: 'Für integrierte Systeme SOLLTE eine passende Strategie entwickelt werden, die den Umgang mit Komponenten regelt, welche die funktionale Sicherheit (Safety) betreffen.'
+      hoch:
+        - id: IND.2.7.A12
+          title: 'Sicherstellen der Integrität und Authentizität von Anwendungsprogrammen und Konfigurationsdaten'
+          requirement_text: 'Es SOLLTE darauf geachtet werden, dass die herstellenden Unternehmen geeignete Mechanismen entwickeln und integrieren, die die Integrität und Authentizität von Konfigurationsdaten und Anwendungsprogrammen auf dem Logiksystem oder auf den damit verbundenen Sensoren und Aktoren gewährleisten. Jegliche Software, die als Download angeboten wird, SOLLTE vor Manipulation geschützt werden. Verletzungen der Integrität SOLLTEN automatisch erkannt und gemeldet werden.'
 
   - id: IND.3.2
     title: 'Fernwartung im industriellen Umfeld'
@@ -114,13 +225,46 @@ bausteine:
     anforderungen:
       basis:
         - id: IND.3.2.A1
-          title: 'Planung der Fernwartung'
-          requirement_text: 'Die Fernwartung von ICS-Komponenten MUSS sorgfaeltig geplant werden.'
+          title: 'Planung des Einsatzes der Fernwartung in der OT'
+          requirement_text: 'Im industriellen Umfeld MUSS für sämtliche Einrichtungen zur Fernwartung ein einheitliches, zentrales Fernwartungskonzept für die gesamte OT der Institution erstellt werden. In dem OT-Fernwartungskonzept MÜSSEN folgende Aspekte berücksichtigt werden: Alle diese Aspekte MÜSSEN mit sämtlichen beteiligten internen und externen Stellen abgestimmt werden. Sämtliche Fernwartungszugänge, über die Zugriffe auf ein ICS der Institution möglich sind, MÜSSEN in einer zentralen Dokumentation erfasst werden. Für neu anzuschaffende fernwartbare Maschinen MÜSSEN die Anforderungen an die Informationssicherheit mit den Liefernden abgestimmt werden. Das Ziel SOLLTE eine Standardisierung der verwendeten Fernwartungslösungen sein. Sobald standardisierte Lösungen für die Fernwartung geplant werden, MÜSSEN sich die OT und die Büro- und Gebäude-IT gemeinsam abstimmen.'
         - id: IND.3.2.A2
-          title: 'Sichere Anbindung der Fernwartung'
-          requirement_text: 'Fernwartungszugaenge MUESSEN ueber dedizierte, abgesicherte Kanaele (z. B. VPN mit MFA) erfolgen. Siehe BSI Kompendium 2023 Baustein IND.3.2 Anforderung A2.'
+          title: 'Konsistente Dokumentation der Fernwartung durch OT sowie Büro- und Gebäude-IT'
+          requirement_text: 'Im industriellen Umfeld MÜSSEN die OT und die Büro- und Gebäude-IT sämtliche OT-Fernwartungszugänge gemeinsam erfassen und dokumentieren. Insbesondere bei Fernwartungskomponenten, die in Package Units integriert sind, MÜSSEN auch alle deaktivierten Zugänge dokumentiert werden.'
         - id: IND.3.2.A3
-          title: 'Protokollierung der Fernwartung'
-          requirement_text: 'Fernwartungstaetigkeiten MUESSEN vollstaendig protokolliert und nachvollziehbar sein. Siehe BSI Kompendium 2023 Baustein IND.3.2 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Regelmäßige Prüfungen sowie Ausnahmegenehmigungen bestehender OT-Fernwartungszugänge'
+          requirement_text: 'Sämtliche Anlagen MÜSSEN regelmäßig geprüft werden, ob alle ihre Fernwartungszugänge dem Soll-Zustand, d. h. dem aktuellen Fernwartungskonzept für die OT, entsprechen. Für notwendige Abweichungen vom Konzept MUSS innerhalb der OT ein Genehmigungsprozess etabliert werden.'
+        - id: IND.3.2.A4
+          title: 'Verbindliche Regelung der OT-Fernwartung durch Dritte'
+          requirement_text: 'Mit sämtlichen externen Benutzenden, d. h. herstellenden Unternehmen, Integratoren und Wartungsdienstleistenden, MÜSSEN angemessen restriktive Regelungen für die OT-Fernwartung vertraglich vereinbart werden. Diese vertraglichen Regelungen MÜSSEN zu jedem Zeitpunkt gewährleisten, dass externe Benutzende jegliche OT-Fernwartungszugänge ausschließlich kontrolliert und abgestimmt nutzen. Intern MUSS festgelegt werden, über welche Fernwartungszugänge welche Tätigkeiten durch welche externen Benutzenden zulässig sind. Darüber hinaus MUSS festgelegt werden, welche internen Mitarbeitende Fernwartungszugriffe und -tätigkeiten von Externen autorisieren, beobachten und gegebenenfalls unterstützen. Im industriellen Umfeld MUSS sichergestellt werden, dass Personen an oder in Anlagen und Maschinen weder direkt noch indirekt durch eine aktive Fernwartung gefährdet werden können. Insbesondere bei Safety-Maschinen MUSS der oder die interne OT-Mitarbeitende sowohl organisatorisch als auch technisch die Hoheit über den Beginn und das Ende der Fernwartung haben. Vertraglich MUSS ausgeschlossen werden, dass der Remote-Zugriff ohne explizite Zustimmung der internen OT-Mitarbeitenden aufgebaut und aufrechterhalten werden kann.'
+        - id: IND.3.2.A5
+          title: 'Interne Abstimmung für die OT-Fernwartung mit der Büro- und Gebäude-IT'
+          requirement_text: 'Die OT, die Büro- und Gebäude-IT sowie alle weiteren beteiligten Organisationseinheiten MÜSSEN angemessen restriktive Regelungen für sämtliche Komponenten und Schnittstellen festlegen, die direkt oder indirekt OT-Fernwartung in der Institution ermöglichen. Diese internen Regelungen MÜSSEN zu jedem Zeitpunkt eine kontrollierte und abgestimmte Nutzung der jeweiligen OT-Fernwartungszugänge gewährleisten. Folgende Aspekte MÜSSEN geregelt werden:'
+        - id: IND.3.2.A6
+          title: 'Absicherung jedes Fernwartungszugriffs auf die OT'
+          requirement_text: 'Im industriellen Umfeld MUSS die OT jeden Zugriff auf ein IT-System, das einen Fernwartungsdienst für die OT bereitstellt, selbst steuern können. Hierfür MUSS der Zugriff durch mindestens eine Sicherheitskomponente in der Zuständigkeit der OT abgesichert werden. Der Zugang zur Fernwartung SOLLTE für alle Zugriffe vereinheitlicht werden. Jeder Zugriff SOLLTE mithilfe zentraler Authentisierungskomponenten kontrolliert und explizit zugelassen werden. Falls Komponenten von OT-Fernwartungszugängen dezentral liegen oder in Package Units integriert sind, dann MÜSSEN diese Zugänge durch eine zusätzliche Sicherheitskomponente abgesichert werden, die ihrerseits zentral liegt und nicht in eine Package Unit integriert ist.'
+      standard:
+        - id: IND.3.2.A7
+          title: 'Technische Entkopplung von Zugriffen'
+          requirement_text: 'Jeder Fernzugriff auf jegliche Komponenten in einer OT-Zone SOLLTE entkoppelt erfolgen. In jedem Fernwartungszugang in die OT SOLLTE ein IT-System positioniert sein, das die Verbindung vor dem Übergang in die OT-Zielzone terminiert und zum Fernwartungsdienst eine neue, überwachte und reglementierte Kommunikation aufbaut. Alle für die Fernwartung benötigten Werkzeuge und Programme SOLLTEN auf dem IT-System des Fernwartungszugangs installiert und lauffähig sein sowie einen Mehrbenutzendenbetrieb unterstützen. Das IT-System SOLLTE ein Sprungserver oder ein vergleichbares Application Layer Gateway (ALG) sein, das in einem dedizierten Sicherheitssegment, z. B. in einer demilitarisierten Zone (DMZ) positioniert ist. Für das IT-System zur Entkopplung der Zugriffe SOLLTE die OT zuständig sein, d. h. es liegt idealerweise in einer OT-DMZ.'
+        - id: IND.3.2.A8
+          title: 'Explizite Freigabe jeder OT-Fernwartungssitzung'
+          requirement_text: 'Jede Fernwartungssitzung SOLLTE vorab durch einen oder einer OT-Mitarbeitenden der betreibenden Institution, der oder die für das Zielsystem der Sitzung zuständig ist, genehmigt werden. Erst danach SOLLTE der oder die OT-Mitarbeitende den Fernwartungszugang freischalten. Die explizite Freigabe SOLLTE sowohl im Bedarfsfall als auch während abgestimmter Wartungsfenster eingehalten werden. Die Freigabe SOLLTE grundsätzlich nur für einen begrenzten Zeitraum gültig sein, d. h. die zuständigen OT-Mitarbeitenden behalten die Hoheit über den Zeitpunkt der Fernwartung (siehe Anforderung IND.3.2.A3 Regelmäßige Prüfungen sowie Ausnahmegenehmigungen bestehender OT-Fernwartungszugänge). Darüber hinaus SOLLTEN externe Fernwartungszugriffe ausschließlich von innen nach außen, d. h. aus dem OT-Netz heraus, aufgebaut werden.'
+        - id: IND.3.2.A9
+          title: 'Sicherer Austausch von Dateien begleitend zur OT-Fernwartung'
+          requirement_text: 'Für einen Dateiaustausch im Rahmen der OT-Fernwartung, z. B. von Konfigurationsdateien, Updates oder Handbüchern, SOLLTE ein sicheres Vorgehen etabliert werden. Dies MUSS mindestens eine Überprüfung auf Schadsoftware beinhalten. Der Verbindungsaufbau zwischen einem Datenaustauschsystem und der Dateiquelle SOLLTE nicht automatisiert erfolgen, sondern vor jedem Dateiaustausch von der OT der Institution initiiert und authentisiert werden. Ein Dateiaustausch SOLLTE grundsätzlich protokolliert werden.'
+        - id: IND.3.2.A10
+          title: 'Beobachtung und Kontrolle von OT-Fernwartungssitzungen'
+          requirement_text: 'Im industriellen Umfeld MUSS sichergestellt werden, dass weder direkt noch indirekt Personen an oder in Anlagen und Maschinen sowie die Anlagen oder Maschinen selbst durch eine aktive Fernwartung gefährdet werden können. Darüber hinaus MUSS sichergestellt werden, dass eine aktive Fernwartung den Produktionsprozess nicht beeinträchtigt. Falls Personen- oder Sachschäden möglich sind, MUSS sichergestellt sein, dass die OT-Mitarbeitenden die Fernwartungstätigkeiten vor Ort mitverfolgen können (Vier-Augen-Prinzip). Die OT-Mitarbeitenden SOLLTEN bei Bedarf eingreifen können sowie eine Fernwartungssitzung unterbrechen können.'
+        - id: IND.3.2.A11
+          title: 'Zentrale Verwaltung aller Konten für die OT-Fernwartung'
+          requirement_text: 'Für den Fernwartungszugriff in der OT SOLLTEN ausschließlich Konten verwendet werden, die in einem zentralen Verzeichnisdienst der OT oder der Institution verwaltet werden.'
+      hoch:
+        - id: IND.3.2.A12
+          title: 'Dedizierte Fernwartungslösung in der OT'
+          requirement_text: 'Für die Fernwartung im industriellen Umfeld SOLLTE eine dedizierte OT-Fernwartungslösung eingesetzt werden, die unabhängig von der Büro- und Gebäude-IT ist. Alle weiteren Funktionen auf den IT-Systemen zur OT-Fernwartung, insbesondere auch Funktionen zur Administration von IT-Systemen und Netzen außerhalb der OT, SOLLTEN deaktiviert bzw. unterbunden werden. Falls eine maximale Unabhängigkeit realisiert werden soll, SOLLTE auch ein dedizierter Internet-Zugang für die OT-Fernwartung genutzt werden.'
+        - id: IND.3.2.A13
+          title: 'Protokollierung der Inhalte von Fernwartungszugriffen in der OT'
+          requirement_text: 'Für die Fernwartung von OT-Anwendungen oder -Systemen SOLLTE die Protokollierung so ausgeweitet werden, dass sämtliche Tätigkeiten lückenlos und umgehend nachvollziehbar sind. Hierzu SOLLTEN ergänzend zur Protokollierung von Ereignissen und Sitzungsdaten auch die Inhalte von Fernwartungszugriffen protokolliert werden.'
+        - id: IND.3.2.A14
+          title: 'Technische Kontrolle von Fernwartungssitzungen'
+          requirement_text: 'OT-Fernwartungssitzungen SOLLTEN ergänzend zu IND.3.2.A10 Beobachtung und Kontrolle von OT-Fernwartungssitzungen kontinuierlich durch eine technische Lösung reglementiert werden. Dabei SOLLTEN die Aktivitäten auf Befehlsebene, d. h. manuelle und automatisierte Befehle, technisch überwacht und gegebenenfalls automatisch unterbunden werden. Zusätzlich SOLLTEN Sitzungen komponentenübergreifend überwacht werden. Falls technisch überwacht wird, dann SOLLTE nicht nur bei konkreten Regelverstößen, sondern auch bei Anomalien im Benutzungsverhalten ein Alarm ausgelöst werden, z. B. sobald ein plötzlich erhöhtes Kommunikationsvolumen erkannt wird.'

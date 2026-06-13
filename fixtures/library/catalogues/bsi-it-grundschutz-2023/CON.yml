@@ -12,16 +12,46 @@ bausteine:
     anforderungen:
       basis:
         - id: CON.1.A1
-          title: 'Erstellung eines Kryptokonzepts'
-          requirement_text: 'Es MUSS ein Kryptokonzept erstellt werden.'
+          title: 'Auswahl geeigneter kryptografischer Verfahren'
+          requirement_text: 'Es MÜSSEN geeignete kryptografische Verfahren ausgewählt werden. Dabei MUSS sichergestellt sein, dass etablierte Algorithmen verwendet werden, die von der Fachwelt intensiv untersucht wurden und von denen keine Sicherheitslücken bekannt sind. Ebenso MÜSSEN aktuell empfohlene Schlüssellängen verwendet werden. Um eine geeignete Schlüssellänge auszuwählen, SOLLTE berücksichtigt werden, wie lange das kryptografische Verfahren eingesetzt werden soll. Bei einer längeren Einsatzdauer SOLLTEN entsprechend längere Schlüssellängen eingesetzt werden.'
         - id: CON.1.A2
-          title: 'Auswahl geeigneter kryptographischer Verfahren'
-          requirement_text: 'Es MUESSEN geeignete kryptographische Verfahren nach dem Stand der Technik ausgewaehlt werden. Siehe BSI Kompendium 2023 Baustein CON.1 Anforderung A2.'
-        - id: CON.1.A3
-          title: 'Sichere Schluesselerzeugung und -verwaltung'
-          requirement_text: 'Kryptographische Schluessel MUESSEN ueber den gesamten Lebenszyklus sicher erzeugt, gespeichert und verwaltet werden. Siehe BSI Kompendium 2023 Baustein CON.1 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Datensicherung beim Einsatz kryptografischer Verfahren'
+          requirement_text: 'In Datensicherungen MÜSSEN kryptografische Schlüssel vom IT-Betrieb derart gespeichert oder aufbewahrt werden, dass Unbefugte nicht darauf zugreifen können. Langlebige kryptografische Schlüssel MÜSSEN offline, außerhalb der eingesetzten IT-Systeme, aufbewahrt werden. Bei einer Langzeitspeicherung verschlüsselter Informationen SOLLTE regelmäßig geprüft werden, ob die verwendeten kryptografischen Algorithmen und die Schlüssellängen noch für die jeweiligen Informationen geeignet sind. Der IT-Betrieb MUSS sicherstellen, dass auf verschlüsselt gespeicherte Informationen auch nach längeren Zeiträumen noch zugegriffen werden kann. Verwendete Hard- oder Software mit kryptografischen Funktionen SOLLTE archiviert werden.'
+        - id: CON.1.A4
+          title: 'Geeignetes Schlüsselmanagement'
+          requirement_text: 'In einem geeigneten Schlüsselmanagement für kryptografische Hard oder Software MUSS festgelegt werden, wie Schlüssel und Zertifikate erzeugt, gespeichert, ausgetauscht und wieder gelöscht oder vernichtet werden. Es MUSS ferner festgelegt werden, wie die Integrität und Authentizität der Schlüssel sichergestellt wird. Kryptografische Schlüssel SOLLTEN immer mit geeigneten Schlüsselgeneratoren und in einer sicheren Umgebung erzeugt werden. In Hard- oder Software mit kryptografischen Funktionen SOLLTEN voreingestellte Schlüssel (ausgenommen öffentliche Zertifikate) ersetzt werden. Ein Schlüssel SOLLTE möglichst nur einem Einsatzzweck dienen. Insbesondere SOLLTEN für die Verschlüsselung und Signaturbildung unterschiedliche Schlüssel benutzt werden. Kryptografische Schlüssel SOLLTEN mit sicher geltenden Verfahren ausgetauscht werden. Wenn öffentliche Schlüssel von Dritten verwendet werden, MUSS sichergestellt sein, dass die Schlüssel authentisch sind und die Integrität der Schlüsseldaten gewährleistet ist. Geheime Schlüssel MÜSSEN sicher gespeichert und vor unbefugtem Zugriff geschützt werden. Alle kryptografischen Schlüssel SOLLTEN hinreichend häufig gewechselt werden. Grundsätzlich SOLLTE geregelt werden, wie mit abgelaufenen Schlüsseln und damit verbundenen Signaturen verfahren wird. Falls die Gültigkeit von Schlüsseln oder Zertifikaten zeitlich eingeschränkt wird, dann MUSS durch die Institution sichergestellt werden, dass die zeitlich eingeschränkten Zertifikate oder Schlüssel rechtzeitig erneuert werden. Eine Vorgehensweise SOLLTE für den Fall festgelegt werden, dass ein privater Schlüssel offengelegt wird. Alle erzeugten kryptografischen Schlüssel SOLLTEN sicher aufbewahrt und verwaltet werden.'
+      standard:
+        - id: CON.1.A5
+          title: 'Sicheres Löschen und Vernichten von kryptografischen Schlüsseln'
+          requirement_text: 'Nicht mehr benötigte private Schlüssel SOLLTEN sicher gelöscht oder vernichtet werden. Die Vorgehensweisen und eingesetzten Methoden, um nicht mehr benötigte private Schlüssel zu löschen oder zu vernichten, SOLLTEN im Kryptokonzept dokumentiert werden.'
+        - id: CON.1.A9
+          title: 'Festlegung von Kriterien für die Auswahl von Hard- oder Software mit kryptografischen Funktionen'
+          requirement_text: 'Im Kryptokonzept SOLLTE festgelegt werden, anhand welcher Kriterien und Anforderungen Hard- oder Software mit kryptografischen Funktionen ausgesucht wird. Hierbei SOLLTEN Aspekte wie berücksichtigt und im Kryptokonzept dokumentiert werden. Dabei SOLLTE grundsätzlich zertifizierte Hard- oder Software mit kryptografischen Funktionen, deren Zertifizierung die jeweils relevanten Aspekte der Kryptografie umfasst, bevorzugt ausgewählt werden.'
+        - id: CON.1.A10
+          title: 'Erstellung eines Kryptokonzepts'
+          requirement_text: 'Ausgehend von dem allgemeinen Sicherheitskonzept der Institution SOLLTE ein Kryptokonzept für Hard- oder Software mit kryptografischen Funktionen erstellt werden. Im Kryptokonzept SOLLTE beschrieben werden, Weiterhin SOLLTE im Kryptokonzept beschrieben werden, wie sichergestellt wird, dass kryptografische Funktionen von Hard- oder Software sicher konfiguriert und korrekt eingesetzt werden. Im Kryptokonzept SOLLTEN alle technischen Vorgaben für Hard- und Software mit kryptografischen Funktionen beschrieben werden (z. B. Anforderungen, Konfiguration oder Parameter). Um geeignete kryptografische Verfahren auszuwählen, SOLLTE die BSI TR 02102 berücksichtigt werden. Wird das Kryptokonzept verändert oder von ihm abgewichen, SOLLTE dies mit dem oder der ISB abgestimmt und dokumentiert werden. Das Kryptokonzept SOLLTE allen bekannt sein, die kryptografische Verfahren einsetzen. Außerdem SOLLTE es bindend für ihre Arbeit sein. Insbesondere der IT-Betrieb SOLLTE die kryptografischen Vorgaben des Kryptokonzepts umsetzen.'
+        - id: CON.1.A15
+          title: 'Reaktion auf praktische Schwächung eines Kryptoverfahrens'
+          requirement_text: 'Die Institution SOLLTE mindestens jährlich anhand des Krypto-Katasters überprüfen, ob die eingesetzten kryptografischen Verfahren und die zugehörigen Parameter noch ausreichend sicher sind und keine bekannten Schwachstellen aufweisen. Im Kryptokonzept SOLLTE ein Prozess für den Fall definiert und dokumentiert werden, dass Schwachstellen in kryptografischen Verfahren auftreten. Dabei SOLLTE sichergestellt werden, dass das geschwächte kryptografische Verfahren entweder abgesichert oder durch eine geeignete Alternative abgelöst wird, sodass hieraus kein Sicherheitsrisiko entsteht.'
+        - id: CON.1.A19
+          title: 'Erstellung eines Krypto-Katasters'
+          requirement_text: 'Für jede Gruppe von IT-Systemen SOLLTEN folgende Informationen im Krypto-Kataster festgehalten werden:'
+      hoch:
+        - id: CON.1.A11
+          title: 'Test von Hardware mit kryptografischen Funktionen'
+          requirement_text: 'Im Kryptokonzept SOLLTEN Testverfahren für Hardware mit kryptografischen Funktionen festgelegt werden. Bevor Hardware mit kryptografischen Funktionen eingesetzt wird, sollte getestet werden, ob die kryptografischen Funktionen korrekt funktionieren. Wenn ein IT-System geändert wird, SOLLTE getestet werden, ob die eingesetzte kryptografische Hardware noch ordnungsgemäß funktioniert. Die Konfiguration der kryptografischen Hardware SOLLTE regelmäßig überprüft werden.'
+        - id: CON.1.A16
+          title: 'Physische Absicherung von Hardware mit kryptografischen Funktionen'
+          requirement_text: 'Im Kryptokonzept SOLLTE festgelegt werden, wie der IT-Betrieb sicherstellt, dass nicht unautorisiert physisch auf Hardware mit kryptografischen Funktionen zugegriffen werden kann.'
+        - id: CON.1.A17
+          title: 'Abstrahlsicherheit'
+          requirement_text: 'Es SOLLTE geprüft werden, ob zusätzliche Maßnahmen hinsichtlich der Abstrahlsicherheit notwendig sind. Dies SOLLTE insbesondere dann geschehen, wenn staatliche Verschlusssachen (VS) der Geheimhaltungsgrade VS-VERTRAULICH und höher verarbeitet werden. Getroffene Maßnahmen hinsichtlich der Abstrahlsicherheit SOLLTEN im Kryptokonzept dokumentiert werden.'
+        - id: CON.1.A18
+          title: 'Kryptografische Ersatzhardware'
+          requirement_text: 'Hardware mit kryptografischen Funktionen (z. B. Hardware-Token für Zwei-Faktor-Authentifizierung) SOLLTE vorrätig sein. Im Kryptokonzept SOLLTE dokumentiert werden, für welche Hardware mit kryptografischen Funktionen Ersatzhardware zur Verfügung steht und wie diese ausgetauscht werden kann.'
+        - id: CON.1.A20
+          title: 'Manipulationserkennung für Hard- oder Software mit kryptografischen Funktionen'
+          requirement_text: 'Hard- und Software mit kryptografischen Funktionen SOLLTE auf Manipulationsversuche hin überwacht werden.'
 
   - id: CON.2
     title: 'Datenschutz'
@@ -29,14 +59,8 @@ bausteine:
     anforderungen:
       basis:
         - id: CON.2.A1
-          title: 'Festlegung von Verantwortlichkeiten fuer den Datenschutz'
-          requirement_text: 'Die Verantwortlichkeiten fuer den Datenschutz MUESSEN festgelegt werden.'
-        - id: CON.2.A2
-          title: 'Erstellung eines Datenschutzkonzepts'
-          requirement_text: 'Ein Datenschutzkonzept gemaess DSGVO/BDSG MUSS erstellt und gepflegt werden. Siehe BSI Kompendium 2023 Baustein CON.2 Anforderung A2.'
-        - id: CON.2.A3
-          title: 'Verzeichnis der Verarbeitungstaetigkeiten'
-          requirement_text: 'Ein Verzeichnis der Verarbeitungstaetigkeiten MUSS gefuehrt werden. Siehe BSI Kompendium 2023 Baustein CON.2 Anforderung A3.'
+          title: 'Umsetzung Standard-Datenschutzmodell'
+          requirement_text: 'Die gesetzlichen Bestimmungen zum Datenschutz (DSGVO, BDSG, die Datenschutzgesetze der Bundesländer und gegebenenfalls einschlägige bereichsspezifische Datenschutzregelungen) MÜSSEN eingehalten werden. Wird die SDM-Methodik nicht berücksichtigt, die Maßnahmen also nicht auf der Basis der Gewährleistungsziele systematisiert und mit dem Referenzmaßnahmen-Katalog des SDM abgeglichen, SOLLTE dies begründet und dokumentiert werden.'
       standard: []
       hoch: []
 
@@ -46,70 +70,72 @@ bausteine:
     anforderungen:
       basis:
         - id: CON.3.A1
-          title: 'Erhebung der Einflussfaktoren der Datensicherung'
-          requirement_text: 'Es MUESSEN die Einflussfaktoren fuer die Datensicherung erhoben werden.'
+          title: 'Erhebung der Einflussfaktoren für Datensicherungen'
+          requirement_text: 'Der IT-Betrieb MUSS für jedes IT-System und darauf ausgeführten Anwendungen die Rahmenbedingungen für die Datensicherung erheben. Dazu MÜSSEN die Fachverantwortlichen für die Anwendungen ihre Anforderungen an die Datensicherung definieren. Der IT-Betrieb MUSS mindestens die nachfolgenden Rahmenbedingungen mit den Fachverantwortlichen abstimmen: Die Einflussfaktoren MÜSSEN nachvollziehbar und auf geeignete Weise festgehalten werden. Neue Anforderungen MÜSSEN zeitnah berücksichtigt werden.'
         - id: CON.3.A2
-          title: 'Festlegung der Verfahrensweise fuer die Datensicherung'
-          requirement_text: 'Es MUSS ein Verfahren fuer die Datensicherung festgelegt werden.'
-        - id: CON.3.A3
-          title: 'Regelmaessige Pruefung der Datensicherung'
-          requirement_text: 'Datensicherungen MUESSEN regelmaessig auf Wiederherstellbarkeit geprueft werden. Siehe BSI Kompendium 2023 Baustein CON.3 Anforderung A3.'
-      standard: []
-      hoch: []
-
-  - id: CON.4
-    title: 'Auswahl und Einsatz von Standardsoftware'
-    description: 'Anforderungen an Auswahl, Beschaffung, Test und sicheren Betrieb von Standardsoftware.'
-    anforderungen:
-      basis:
-        - id: CON.4.A1
-          title: 'Erstellung eines Anforderungskatalogs fuer Standardsoftware'
-          requirement_text: 'Vor der Beschaffung einer Standardsoftware MUSS ein Anforderungskatalog erstellt werden, der funktionale, sicherheits- und compliance-relevante Anforderungen enthaelt.'
-        - id: CON.4.A2
-          title: 'Auswahl geeigneter Standardsoftware'
-          requirement_text: 'Standardsoftware MUSS anhand des Anforderungskatalogs ausgewaehlt werden. Anbieter-Reife, Update-Politik und Support MUESSEN bewertet sein. Siehe BSI Kompendium 2023 Baustein CON.4 Anforderung A2.'
-        - id: CON.4.A3
-          title: 'Sichere Installation und Konfiguration'
-          requirement_text: 'Standardsoftware MUSS auf Basis dokumentierter Haertungs-Vorgaben installiert und konfiguriert werden. Default-Konten und ungenutzte Module MUESSEN deaktiviert sein.'
+          title: 'Festlegung der Verfahrensweisen für die Datensicherung'
+          requirement_text: 'Der IT-Betrieb MUSS Verfahren festlegen, wie die Daten gesichert werden. Für die Datensicherungsverfahren MÜSSEN Art, Häufigkeit und Zeitpunkte der Datensicherungen bestimmt werden. Dies MUSS wiederum auf Basis der erhobenen Einflussfaktoren und in Abstimmung mit den jeweiligen Fachverantwortlichen geschehen. Auch MUSS definiert sein, welche Speichermedien benutzt werden und wie die Transport- und Aufbewahrungsmodalitäten ausgestaltet sein müssen. Datensicherungen MÜSSEN immer auf separaten Speichermedien für die Datensicherung gespeichert werden. Besonders schützenswerte Speichermedien für die Datensicherung SOLLTEN nur während der Datensicherung und Datenwiederherstellung mit dem Netz der Institution oder dem Ursprungssystem verbunden werden. In virtuellen Umgebungen sowie für Storage-Systeme SOLLTE geprüft werden, ob das IT-System ergänzend durch Snapshot-Mechanismen gesichert werden kann, um hierdurch mehrere schnell wiederherstellbare Zwischenversionen zwischen den vollständigen Datensicherungen zu erstellen.'
+        - id: CON.3.A4
+          title: 'Erstellung von Datensicherungsplänen'
+          requirement_text: 'Der IT-Betrieb MUSS Datensicherungspläne je IT-System oder Gruppe von IT-Systemen auf Basis der festgelegten Verfahrensweise für die Datensicherung erstellen. Diese MÜSSEN festlegen, welche Anforderungen für die Datensicherung mindestens einzuhalten sind. Die Datensicherungspläne MÜSSEN mindestens eine kurze Beschreibung dazu enthalten:'
+        - id: CON.3.A5
+          title: 'Regelmäßige Datensicherung'
+          requirement_text: 'Regelmäßige Datensicherungen MÜSSEN gemäß den Datensicherungsplänen erstellt werden. Alle Mitarbeitenden MÜSSEN über die Regelungen zur Datensicherung informiert sein. Auch MÜSSEN sie darüber informiert werden, welche Aufgaben sie bei der Erstellung von Datensicherungen haben.'
+        - id: CON.3.A12
+          title: 'Sichere Aufbewahrung der Speichermedien für die Datensicherungen'
+          requirement_text: 'Die Speichermedien für die Datensicherung MÜSSEN räumlich getrennt von den gesicherten IT-Systemen aufbewahrt werden. Sie SOLLTEN in einem anderen Brandabschnitt aufbewahrt werden. Der Aufbewahrungsort SOLLTE so klimatisiert sein, dass die Datenträger entsprechend der zeitlichen Vorgaben des Datensicherungskonzepts aufbewahrt werden können.'
+        - id: CON.3.A14
+          title: 'Schutz von Datensicherungen'
+          requirement_text: 'Die erstellten Datensicherungen MÜSSEN in geeigneter Weise vor unbefugtem Zugriff geschützt werden. Hierbei MUSS insbesondere sichergestellt werden, dass Datensicherungen nicht absichtlich oder unbeabsichtigt überschrieben werden können. IT-Systeme, die für die Datensicherung eingesetzt werden, SOLLTEN einen schreibenden Zugriff auf die Speichermedien für die Datensicherung nur für autorisierte Datensicherungen oder autorisierte Administrationstätigkeiten gestatten. Alternativ SOLLTEN die Speichermedien für die Datensicherung nur für autorisierte Datensicherungen oder autorisierte Administrationstätigkeiten mit den entsprechenden IT-Systemen verbunden werden.'
+        - id: CON.3.A15
+          title: 'Regelmäßiges Testen der Datensicherungen'
+          requirement_text: 'Es MUSS regelmäßig getestet werden, ob die Datensicherungen wie gewünscht funktionieren, vor allem, ob gesicherte Daten einwandfrei und in angemessener Zeit zurückgespielt werden können.'
       standard:
-        - id: CON.4.A5
-          title: 'Test vor Inbetriebnahme'
-          requirement_text: 'Standardsoftware SOLLTE vor dem produktiven Einsatz in einer Testumgebung erprobt und freigegeben werden.'
-      hoch: []
-
-  - id: CON.5
-    title: 'Entwicklung und Einsatz von Allgemeinen Anwendungen'
-    description: 'Anforderungen an die sichere Entwicklung, Einfuehrung und den Betrieb allgemeiner Anwendungen.'
-    anforderungen:
-      basis:
-        - id: CON.5.A1
-          title: 'Planung des Einsatzes Allgemeiner Anwendungen'
-          requirement_text: 'Der Einsatz Allgemeiner Anwendungen MUSS systematisch geplant und Sicherheitsanforderungen MUESSEN dokumentiert werden.'
-        - id: CON.5.A2
-          title: 'Sichere Konfiguration Allgemeiner Anwendungen'
-          requirement_text: 'Allgemeine Anwendungen MUESSEN sicher konfiguriert sein. Default-Passwoerter MUESSEN geaendert, nicht benoetigte Funktionen deaktiviert werden.'
-        - id: CON.5.A3
-          title: 'Geregelte Inbetriebnahme'
-          requirement_text: 'Vor dem produktiven Einsatz MUESSEN Allgemeine Anwendungen formal freigegeben werden. Siehe BSI Kompendium 2023 Baustein CON.5 Anforderung A3.'
-      standard: []
-      hoch: []
+        - id: CON.3.A6
+          title: 'Entwicklung eines Datensicherungskonzepts'
+          requirement_text: 'Die Institution SOLLTE ein Datensicherungskonzept erstellen, dass mindestens die nachfolgenden Punkte umfasst: Der IT-Betrieb SOLLTE das Datensicherungskonzept mit den jeweiligen Fachverantwortlichen der betreffenden Anwendungen abstimmen. Wird ein zentrales Datensicherungssystem für die Sicherung der Daten eingesetzt, SOLLTE beachtet werden, dass sich aufgrund der Konzentration der Daten ein höherer Schutzbedarf ergeben kann. Datensicherungen SOLLTEN regelmäßig gemäß dem Datensicherungskonzept durchgeführt werden. Das Datensicherungskonzept selbst SOLLTE auch in einer Datensicherung enthalten sein. Die im Datensicherungskonzept enthaltenen technischen Informationen, um Systeme und Datensicherungen wiederherzustellen (Datensicherungspläne), SOLLTEN in der Art gesichert werden, dass sie auch verfügbar sind, wenn die Datensicherungssysteme selbst ausfallen. Die Mitarbeitenden SOLLTEN über den Teil des Datensicherungskonzepts unterrichtet werden, der sie betrifft. Regelmäßig SOLLTE kontrolliert werden, ob das Datensicherungskonzept korrekt umgesetzt wird.'
+        - id: CON.3.A7
+          title: 'Beschaffung eines geeigneten Datensicherungssystems'
+          requirement_text: 'Bevor ein Datensicherungssystem beschafft wird, SOLLTE der IT-Betrieb eine Anforderungsliste erstellen, nach der die am Markt erhältlichen Produkte bewertet werden. Die angeschafften Datensicherungssysteme SOLLTEN die Anforderungen des Datensicherungskonzepts der Institution erfüllen.'
+        - id: CON.3.A9
+          title: 'Voraussetzungen für die Online-Datensicherung'
+          requirement_text: 'Wenn für die Datensicherung ein Online-Speicher genutzt werden soll, SOLLTEN mindestens folgende Punkte vertraglich geregelt werden: Zudem SOLLTEN Sicherungssystem und Netzanbindung so beschaffen sein, dass die zulässigen Sicherungs- bzw. Wiederherstellungszeiten nicht überschritten werden.'
+      hoch:
+        - id: CON.3.A13
+          title: 'Einsatz kryptografischer Verfahren bei der Datensicherung'
+          requirement_text: 'Um die Vertraulichkeit der gesicherten Daten zu gewährleisten, SOLLTE der IT-Betrieb alle Datensicherungen verschlüsseln. Es SOLLTE sichergestellt werden, dass sich die verschlüsselten Daten auch nach längerer Zeit wieder einspielen lassen. Verwendete kryptografische Schlüssel SOLLTEN mit einer getrennten Datensicherung geschützt werden.'
 
   - id: CON.6
-    title: 'Loeschen und Vernichten'
+    title: 'Löschen und Vernichten'
     description: 'Anforderungen an das geregelte Loeschen und Vernichten von Informationen und Datentraegern.'
     anforderungen:
       basis:
         - id: CON.6.A1
-          title: 'Regelung der Vorgehensweise fuer das Loeschen und Vernichten'
-          requirement_text: 'Es MUSS eine Vorgehensweise fuer das Loeschen und Vernichten von Informationen und Datentraegern festgelegt werden.'
+          title: 'Regelung für die Löschung und Vernichtung von Informationen'
+          requirement_text: 'Die Institution MUSS das Löschen und Vernichten von Informationen regeln. Dabei MÜSSEN die Fachverantwortlichen für jedes Fachverfahren bzw. Geschäftsprozess regeln, welche Informationen unter welchen Voraussetzungen gelöscht und entsorgt werden müssen. Hierbei MÜSSEN die gesetzlichen Bestimmungen beachtet werden, Sind personenbezogene Daten betroffen, dann MÜSSEN die Regelungen zum Löschen und Vernichten mit Bezug zu personenbezogenen Daten mit dem oder der Datenschutzbeauftragten abgestimmt werden. Das Löschen und Vernichten von Informationen MUSS dabei für Fachverfahren, Geschäftsprozesse und IT-Systeme geregelt werden, bevor diese produktiv eingeführt worden sind.'
         - id: CON.6.A2
-          title: 'Ordnungsgemaesses Loeschen und Vernichten von Informationen'
-          requirement_text: 'Alle Informationen MUESSEN so geloescht werden, dass keine Rueckschluesse auf die Inhalte moeglich sind.'
-        - id: CON.6.A3
-          title: 'Beauftragung Dritter mit der Datentraegervernichtung'
-          requirement_text: 'Werden Dritte mit der Datentraegervernichtung beauftragt, MUSS dies vertraglich geregelt sein. Siehe BSI Kompendium 2023 Baustein CON.6 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Ordnungsgemäßes Löschen und Vernichten von schützenswerten Betriebsmitteln und Informationen'
+          requirement_text: 'Bevor schutzbedürftigen Informationen und Datenträger entsorgt werden, MÜSSEN sie sicher gelöscht oder vernichtet werden. Zu diesem Zweck MUSS der Prozess klar geregelt werden. Einzelne Mitarbeitende MÜSSEN darüber informiert werden, welche Aufgaben sie zum sicheren Löschen und Vernichten erfüllen müssen. Der Prozess zum Löschen und Vernichten von Datenträgern MUSS auch Datensicherungen, wenn erforderlich, berücksichtigen. Der Standort von Vernichtungseinrichtungen auf dem Gelände der Institution MUSS klar geregelt sein. Dabei MUSS auch berücksichtigt werden, dass Informationen und Betriebsmittel eventuell erst gesammelt und erst später gelöscht oder vernichtet werden. Eine solche zentrale Sammelstelle MUSS vor unbefugten Zugriffen abgesichert werden.'
+        - id: CON.6.A11
+          title: 'Löschung und Vernichtung von Datenträgern durch externe Dienstleistende'
+          requirement_text: 'Wenn externe Dienstleistende beauftragt werden, MUSS der Prozess zum Löschen und Vernichten ausreichend sicher und nachvollziehbar sein. Die von externen Dienstleistenden eingesetzten Verfahrensweisen zum sicheren Löschen und Vernichten MÜSSEN mindestens die institutionsinternen Anforderungen an die Verfahrensweisen zur Löschung und Vernichtung erfüllen. Die mit der Löschung und Vernichtung beauftragten Unternehmen SOLLTEN regelmäßig daraufhin überprüft werden, ob der Lösch- bzw. Vernichtungsvorgang noch korrekt abläuft.'
+        - id: CON.6.A12
+          title: 'Mindestanforderungen an Verfahren zur Löschung und Vernichtung'
+          requirement_text: 'Die Institution MUSS mindestens die nachfolgenden Verfahren zum Löschen und Vernichten von schützenswerten Datenträgern einsetzen. Diese Verfahren SOLLTEN in Abhängigkeit des Schutzbedarfs der verarbeiteten Daten überprüft und, falls erforderlich, angepasst werden:'
+      standard:
+        - id: CON.6.A4
+          title: 'Auswahl geeigneter Verfahren zur Löschung oder Vernichtung von Datenträgern'
+          requirement_text: 'Die Institution SOLLTE überprüfen, ob die Mindestanforderungen an die Verfahrensweisen zur Löschung und Vernichtung (siehe dazu CON.6.A12 Mindestanforderungen an Verfahren zur Löschung und Vernichtung) für die tatsächlich eingesetzten Datenträger und darauf befindlichen Informationen ausreichend sicher sind. Auf diesem Ergebnis aufbauend SOLLTE die Institution geeignete Verfahren zur Löschung und Vernichtung je Datenträger bestimmen. Für alle eingesetzten Datenträgerarten, die von der Institution selbst vernichtet bzw. gelöscht werden, SOLLTE es geeignete Geräte und Werkzeuge geben, mit denen die zuständigen Mitarbeitenden die gespeicherten Informationen löschen oder vernichten können. Die ausgewählten Verfahrensweisen SOLLTEN allen verantwortlichen Mitarbeitenden bekannt sein. Die Institution SOLLTE regelmäßig kontrollieren, ob die gewählten Verfahren noch dem Stand der Technik entsprechen und für die Institution noch ausreichend sicher sind.'
+        - id: CON.6.A8
+          title: 'Erstellung einer Richtlinie für die Löschung und Vernichtung von Informationen'
+          requirement_text: 'Die Regelungen der Institution zum Löschen und Vernichten SOLLTEN in einer Richtlinie dokumentiert werden. Die Richtlinie SOLLTE allen relevanten Mitarbeitenden der Institution bekannt sein und die Grundlage für ihre Arbeit und ihr Handeln bilden. Inhaltlich SOLLTE die Richtlinie alle eingesetzten Datenträger, Anwendungen, IT-Systeme und sonstigen Betriebsmittel und Informationen enthalten, die vom Löschen und Vernichten betroffen sind. Es SOLLTE regelmäßig und stichprobenartig überprüft werden, ob die Mitarbeitenden sich an die Richtlinie halten. Die Richtlinie SOLLTE regelmäßig aktualisiert werden.'
+        - id: CON.6.A13
+          title: 'Vernichtung defekter digitaler Datenträger'
+          requirement_text: 'Können digitale Datenträger mit schützenswerten Informationen aufgrund eines Defekts nicht sicher entsprechend der Verfahren zur Löschung von Datenträgern gelöscht werden, dann SOLLTEN diese mindestens entsprechend der Sicherheitsstufe 3 nach ISO/IEC 21964-2 vernichtet werden. Alternativ SOLLTE für den Fall, dass defekte Datenträger ausgetauscht oder repariert werden, vertraglich mit den hierzu beauftragten Dienstleistenden vereinbart werden, dass diese Datenträger durch die Dienstleistenden sicher vernichtet oder gelöscht werden. Die Verfahrensweisen der Dienstleistenden SOLLTEN hierbei mindestens die institutionsinternen Anforderungen an die Verfahrensweisen zur Löschung und Vernichtung erfüllen.'
+      hoch:
+        - id: CON.6.A14
+          title: 'Vernichten von Datenträgern auf erhöhter Sicherheitsstufe'
+          requirement_text: 'Die Institution SOLLTE die erforderliche Sicherheitsstufe zur Vernichtung von Datenträgern entsprechend der ISO/IEC 21964-1 anhand des Schutzbedarf der zu vernichtenden Datenträger bestimmen. Die Datenträger SOLLTEN entsprechend der zugewiesenen Sicherheitsstufe nach ISO/IEC 21964-2 vernichtet werden.'
 
   - id: CON.7
     title: 'Informationssicherheit auf Auslandsreisen'
@@ -117,33 +143,123 @@ bausteine:
     anforderungen:
       basis:
         - id: CON.7.A1
-          title: 'Sicherheitsrichtlinie fuer Auslandsreisen'
-          requirement_text: 'Fuer Auslandsreisen MUSS eine Sicherheitsrichtlinie erstellt werden.'
+          title: 'Sicherheitsrichtlinie zur Informationssicherheit auf Auslandsreisen'
+          requirement_text: 'Alle für die Informationssicherheit relevanten Aspekte, die in Verbindung mit den Tätigkeiten im Ausland stehen, MÜSSEN betrachtet und geregelt werden. Die Sicherheitsmaßnahmen, die in diesem Zusammenhang ergriffen werden, MÜSSEN in einer Sicherheitsrichtlinie zur Informationssicherheit auf Auslandsreisen dokumentiert werden. Diese Sicherheitsrichtlinie oder ein entsprechendes Merkblatt mit zu beachtenden Sicherheitsmaßnahmen MÜSSEN transnational agierenden Mitarbeitenden ausgehändigt werden. Erweiternd MUSS ein Sicherheitskonzept zum Umgang mit tragbaren IT-Systemen auf Auslandsreisen erstellt werden, das alle Sicherheitsanforderungen und -maßnahmen angemessen detailliert beschreibt. Die Umsetzung des Sicherheitskonzeptes MUSS regelmäßig überprüft werden.'
         - id: CON.7.A2
-          title: 'Sensibilisierung der Mitarbeiter fuer Auslandsreisen'
-          requirement_text: 'Mitarbeiter MUESSEN vor Auslandsreisen ueber Risiken und Verhaltensregeln sensibilisiert werden. Siehe BSI Kompendium 2023 Baustein CON.7 Anforderung A2.'
+          title: 'Sensibilisierung der Mitarbeitenden zur Informationssicherheit auf Auslandsreisen'
+          requirement_text: 'Benutzende MÜSSEN im verantwortungsvollen Umgang mit Informationstechnik bzw. tragbaren IT-Systemen auf Auslandsreisen sensibilisiert und geschult werden. Benutzende MÜSSEN die Gefahren kennen, die durch den unangemessenen Umgang mit Informationen, die unsachgemäße Vernichtung von Daten und Datenträgern oder durch Schadsoftware und den unsicheren Datenaustausch entstehen können. Außerdem MÜSSEN die Grenzen der eingesetzten Sicherheitsmaßnahmen aufgezeigt werden. Die Benutzenden MÜSSEN dazu befähigt und darin bestärkt werden, einem Verlust oder Diebstahl vorzubeugen bzw. bei Ungereimtheiten fachliche Beratung einzuholen. Außerdem SOLLTEN Mitarbeitende auf gesetzliche Anforderungen einzelner Reiseziele in Bezug auf die Reisesicherheit hingewiesen werden. Hierzu MUSS sich der oder die Informationssicherheitsbeauftragte über die gesetzlichen Anforderungen im Rahmen der Informationssicherheit (z. B. Datenschutz, IT-Sicherheitsgesetz) informieren und die Mitarbeitenden sensibilisieren.'
         - id: CON.7.A3
-          title: 'Schutz mitgefuehrter IT-Geraete'
-          requirement_text: 'Mitgefuehrte IT-Geraete MUESSEN gegen Verlust, Diebstahl und unbefugten Zugriff geschuetzt werden. Siehe BSI Kompendium 2023 Baustein CON.7 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Identifikation länderspezifischer Regelungen, Reise- und Umgebungsbedingungen'
+          requirement_text: 'Vor Reiseantritt MÜSSEN die jeweils geltenden Regelungen der einzelnen Länder durch das Informationssicherheitsmanagement bzw. die Personalabteilung geprüft und an die entsprechenden Mitarbeitenden kommuniziert werden. Die Institution MUSS geeignete Regelungen und Maßnahmen erstellen, umsetzen und kommunizieren, die den angemessenen Schutz interner Daten ermöglichen. Dabei MÜSSEN die individuellen Reise- und Umgebungsbedingungen berücksichtigt werden. Außerdem MÜSSEN sich Mitarbeitende vor Reiseantritt mit den klimatischen Bedingungen des Reiseziels auseinandersetzen und abklären, welche Schutzmaßnahmen er für sich benötigt, z. B. Impfungen, und welche Schutzmaßnahmen für die mitgeführte Informationstechnik nötig sind.'
+        - id: CON.7.A4
+          title: 'Verwendung von Sichtschutz-Folien'
+          requirement_text: 'Benutzende MÜSSEN insbesondere im Ausland darauf achten, dass bei der Arbeit mit mobilen IT-Geräten keine schützenswerten Informationen ausgespäht werden können. Dazu MUSS ein angemessener Sichtschutz verwendet werden, der den gesamten Bildschirm des jeweiligen Gerätes umfasst und ein Ausspähen von Informationen erschwert.'
+        - id: CON.7.A5
+          title: 'Verwendung der Bildschirm-/Code-Sperre'
+          requirement_text: 'Eine Bildschirm- bzw. Code-Sperre, die verhindert, dass Dritte auf die Daten mobiler Endgeräte zugreifen können, MUSS verwendet werden. Die Benutzenden MÜSSEN dazu einen angemessenen Code bzw. ein sicheres Gerätepasswort verwenden. Die Bildschirmsperre MUSS sich nach einer kurzen Zeit der Inaktivität automatisch aktivieren.'
+        - id: CON.7.A6
+          title: 'Zeitnahe Verlustmeldung'
+          requirement_text: 'Mitarbeitende MÜSSEN ihrer Institution umgehend melden, wenn Informationen, IT-Systeme oder Datenträger verloren gegangen sind oder gestohlen wurden. Hierfür MUSS es klare Meldewege und Kontaktpersonen innerhalb der Institution geben. Die Institution MUSS die möglichen Auswirkungen des Verlustes bewerten und geeignete Gegenmaßnahmen ergreifen.'
+        - id: CON.7.A7
+          title: 'Sicherer Remote-Zugriff auf das Netz der Institution'
+          requirement_text: 'Um Beschäftigten auf Auslandsreisen einen sicheren Fernzugriff auf das Netz der Institution zu ermöglichen, MUSS zuvor vom IT-Betrieb ein sicherer Remote-Zugang eingerichtet worden sein, z. B. ein Virtual Private Network (VPN). Der VPN-Zugang MUSS kryptografisch abgesichert sein. Außerdem MÜSSEN Benutzende über angemessen sichere Zugangsdaten verfügen, um sich gegenüber dem Endgerät und dem Netz der Institution erfolgreich zu authentisieren. Mitarbeitende MÜSSEN den sicheren Remote-Zugriff für jegliche darüber mögliche Kommunikation nutzen. Es MUSS sichergestellt werden, dass nur autorisierte Personen auf IT-Systeme zugreifen dürfen, die über einen Fernzugriff verfügen. Mobile IT-Systeme MÜSSEN im Rahmen der Möglichkeiten vor dem direkten Anschluss an das Internet durch eine restriktiv konfigurierte Personal Firewall geschützt werden.'
+        - id: CON.7.A8
+          title: 'Sichere Nutzung von öffentlichen WLANs'
+          requirement_text: 'Grundsätzlich MUSS geregelt werden, ob mobile IT-Systeme direkt auf das Internet zugreifen dürfen. Für den Zugriff auf das Netz der Institution über öffentlich zugängliche WLANs MÜSSEN Benutzende ein VPN oder vergleichbare Sicherheitsmechanismen verwenden (siehe CON.7.A7 Sicherer Remote-Zugriff und NET.2.2 WLAN-Nutzung). Bei der Benutzung von WLAN-Hotspots MÜSSEN ebenfalls Sicherheitsmaßnahmen getroffen werden, siehe auch INF.9 Mobiler Arbeitsplatz.'
+        - id: CON.7.A9
+          title: 'Sicherer Umgang mit mobilen Datenträgern'
+          requirement_text: 'Werden mobile Datenträger verwendet, MÜSSEN Benutzende vorab gewährleisten, dass diese nicht mit Schadsoftware infiziert sind. Vor der Weitergabe mobiler Datenträger MÜSSEN Benutzende außerdem sicherstellen, dass keine schützenswerten Informationen darauf enthalten sind. Wird er nicht mehr genutzt, MUSS der Datenträger sicher gelöscht werden, insbesondere wenn er an andere Personen weitergegeben wird. Dazu MUSS der Datenträger mit einem in der Institution festgelegten, ausreichend sicheren Verfahren überschrieben werden.'
+        - id: CON.7.A10
+          title: 'Verschlüsselung tragbarer IT-Systeme und Datenträger'
+          requirement_text: 'Damit schützenswerte Informationen nicht durch unberechtigte Dritte eingesehen werden können, MÜSSEN Mitarbeitende vor Reiseantritt sicherstellen, dass alle schützenswerten Informationen entsprechend den internen Richtlinien abgesichert sind. Mobile Datenträger und IT-Systeme SOLLTEN dabei vor Reiseantritt durch Benutzende oder den IT-Betrieb verschlüsselt werden. Die kryptografischen Schlüssel MÜSSEN getrennt vom verschlüsselten Gerät aufbewahrt werden. Bei der Verschlüsselung von Daten SOLLTEN die gesetzlichen Regelungen des Ziellandes beachtet werden. Insbesondere landesspezifische Gesetze zur Herausgabe von Passwörtern und zur Entschlüsselung von Daten SOLLTEN berücksichtigt werden.'
+        - id: CON.7.A12
+          title: 'Sicheres Vernichten von schutzbedürftigen Materialien und Dokumenten'
+          requirement_text: 'Die Institution MUSS den Beschäftigten Möglichkeiten aufzeigen, schutzbedürftige Dokumente angemessen und sicher zu vernichten. Benutzende MÜSSEN diese Regelungen einhalten. Sie DÜRFEN interne Unterlagen der Institution NICHT entsorgen, bevor diese sicher vernichtet worden sind. Ist dies vor Ort nicht möglich oder handelt es sich um Dokumente bzw. Datenträger mit besonders schützenswerten Informationen, MÜSSEN diese bis zur Rückkehr behalten und anschließend angemessen vernichtet werden.'
+      standard:
+        - id: CON.7.A11
+          title: 'Einsatz von Diebstahl-Sicherungen'
+          requirement_text: 'Zum Schutz der mobilen IT-Systeme außerhalb der Institution SOLLTEN Benutzende Diebstahl-Sicherungen einsetzen, vor allem dort, wo ein erhöhter Publikumsverkehr herrscht oder die Fluktuation von Benutzenden sehr hoch ist. Die Beschaffungs- und Einsatzkriterien für Diebstahl-Sicherungen SOLLTEN an die Prozesse der Institution angepasst und dokumentiert werden.'
+        - id: CON.7.A13
+          title: 'Mitnahme notwendiger Daten und Datenträger'
+          requirement_text: 'Vor Reiseantritt SOLLTEN Benutzende prüfen, welche Daten während der Reise nicht unbedingt auf den IT-Systemen gebraucht werden. Ist es nicht notwendig, diese Daten auf den Geräten zu lassen, SOLLTEN diese sicher gelöscht werden. Ist es nötig, schützenswerte Daten mit auf Reisen zu nehmen, SOLLTE dies nur in verschlüsselter Form erfolgen. Darüber hinaus SOLLTE schriftlich geregelt sein, welche mobilen Datenträger auf Auslandsreisen mitgenommen werden dürfen und welche Sicherheitsmaßnahmen dabei zu berücksichtigen sind (z. B. Schutz vor Schadsoftware, Verschlüsselung geschäftskritischer Daten, Aufbewahrung mobiler Datenträger). Die Mitarbeitenden SOLLTEN diese Regelungen vor Reiseantritt kennen und beachten. Diese sicherheitstechnischen Anforderungen SOLLTEN sich nach dem Schutzbedarf der zu bearbeitenden Daten im Ausland und der Daten, auf die zugegriffen werden soll, richten.'
+        - id: CON.7.A14
+          title: 'Kryptografisch abgesicherte E-Mail-Kommunikation'
+          requirement_text: 'Die E-Mail-basierte Kommunikation SOLLTEN Benutzende entsprechend den internen Vorgaben der Institution kryptografisch absichern. Die E-Mails SOLLTEN ebenfalls geeignet verschlüsselt bzw. digital signiert werden. Öffentliche IT-Systeme, etwa in Hotels oder Internetcafés, SOLLTEN NICHT für den Zugriff auf E-Mails genutzt werden. Bei der Kommunikation über E-Mail-Dienste, z. B. Webmail, SOLLTE durch den IT-Betrieb vorab geklärt werden, welche Sicherheitsmechanismen beim Provider umgesetzt werden und ob damit die internen Sicherheitsanforderungen erfüllt werden. Hierzu SOLLTE z. B. der sichere Betrieb der Server, der Aufbau einer verschlüsselten Verbindung und die Dauer der Datenspeicherung zählen.'
+      hoch:
+        - id: CON.7.A15
+          title: 'Abstrahlsicherheit tragbarer IT-Systeme'
+          requirement_text: 'Es SOLLTE vor Beginn der Reise festgelegt werden, welchen Schutzbedarf die einzelnen Informationen haben, die auf dem mobilen Datenträger bzw. Client der Mitarbeitenden im Ausland verarbeitet werden. Die Institution SOLLTE prüfen, ob die mitgeführten Informationen einen besonderen Schutzbedarf haben, und entsprechend abstrahlarme bzw. -sichere Datenträger und Clients einsetzen.'
+        - id: CON.7.A16
+          title: 'Integritätsschutz durch Check-Summen oder digitale Signaturen'
+          requirement_text: 'Benutzende SOLLTEN Check-Summen im Rahmen der Datenübertragung und Datensicherung verwenden, um die Integrität der Daten überprüfen zu können. Besser noch SOLLTEN digitale Signaturen verwendet werden, um die Integrität von schützenswerten Informationen zu bewahren.'
+        - id: CON.7.A17
+          title: 'Verwendung vorkonfigurierter Reise-Hardware'
+          requirement_text: 'Damit schützenswerte Informationen der Institution auf Auslandsreisen nicht von Dritten abgegriffen werden können, SOLLTE der IT-Betrieb den Mitarbeitenden vorkonfigurierte Reise-Hardware zur Verfügung stellen. Diese Reise-Hardware SOLLTE auf Basis des Minimalprinzips nur die Funktionen und Informationen bereitstellen, die zur Durchführung der Geschäftstätigkeit unbedingt erforderlich sind.'
+        - id: CON.7.A18
+          title: 'Eingeschränkte Berechtigungen auf Auslandsreisen'
+          requirement_text: 'Vor Reiseantritt SOLLTE geprüft werden, welche Berechtigungen Mitarbeitende wirklich brauchen, um ihrem Alltagsgeschäft im Ausland nachgehen zu können. Dabei SOLLTE geprüft werden, ob Zugriffsrechte für die Reisedauer der Benutzenden durch den IT-Betrieb entzogen werden können, um einen unbefugten Zugriff auf Informationen der Institution zu verhindern.'
 
   - id: CON.8
     title: 'Software-Entwicklung'
     description: 'Anforderungen an die sichere Entwicklung von Eigen- und Auftragssoftware.'
     anforderungen:
       basis:
-        - id: CON.8.A1
-          title: 'Planung und Dokumentation der Software-Entwicklung'
-          requirement_text: 'Software-Entwicklungsprojekte MUESSEN geplant und dokumentiert werden.'
         - id: CON.8.A2
-          title: 'Auswahl und Verwendung von Programmiersprachen und Entwicklungsumgebungen'
-          requirement_text: 'Die eingesetzten Programmiersprachen und Entwicklungsumgebungen MUESSEN auf ihre Eignung geprueft werden.'
+          title: 'Auswahl eines Vorgehensmodells'
+          requirement_text: 'Ein geeignetes Vorgehensmodell zur Software-Entwicklung MUSS festgelegt werden. Anhand des gewählten Vorgehensmodells MUSS ein Ablaufplan für die Software-Entwicklung erstellt werden. Die Sicherheitsanforderungen der Auftraggebenden an die Vorgehensweise MÜSSEN im Vorgehensmodell integriert werden. Das ausgewählte Vorgehensmodell, einschließlich der festgelegten Sicherheitsanforderungen, MUSS eingehalten werden. Das Personal SOLLTE in der Methodik des gewählten Vorgehensmodells geschult sein.'
         - id: CON.8.A3
-          title: 'Sicherheitsanforderungen an die Software-Entwicklung'
-          requirement_text: 'Sicherheitsanforderungen an die zu entwickelnde Software MUESSEN festgelegt sein. Siehe BSI Kompendium 2023 Baustein CON.8 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Auswahl einer Entwicklungsumgebung'
+          requirement_text: 'Eine Liste der erforderlichen und optionalen Auswahlkriterien für eine Entwicklungsumgebung MUSS von Fachverantwortlichen für die Software-Entwicklung erstellt werden. Die Entwicklungsumgebung MUSS anhand der vorgegebenen Kriterien ausgewählt werden.'
+        - id: CON.8.A5
+          title: 'Sicheres Systemdesign'
+          requirement_text: 'Folgende Grundregeln des sicheren Systemdesigns MÜSSEN in der zu entwickelnden Software berücksichtigt werden: Das Systemdesign MUSS dokumentiert werden. Es MUSS überprüft werden, ob alle Sicherheitsanforderungen an das Systemdesign erfüllt wurden.'
+        - id: CON.8.A6
+          title: 'Verwendung von externen Bibliotheken aus vertrauenswürdigen Quellen'
+          requirement_text: 'Wird im Rahmen des Entwicklungs- und Implementierungsprozesses auf externe Bibliotheken zurückgegriffen, MÜSSEN diese aus vertrauenswürdigen Quellen bezogen werden. Bevor externe Bibliotheken verwendet werden, MUSS deren Integrität sichergestellt werden.'
+        - id: CON.8.A7
+          title: 'Durchführung von entwicklungsbegleitenden Software-Tests'
+          requirement_text: 'Schon bevor die Software im Freigabeprozess getestet und freigegeben wird, MÜSSEN entwicklungsbegleitende Software-Tests durchgeführt und der Quellcode auf Fehler gesichtet werden. Hierbei SOLLTEN bereits die Fachverantwortlichen des Auftraggebenden oder der beauftragenden Fachabteilung beteiligt werden. Die entwicklungsbegleitenden Tests MÜSSEN die funktionalen und nichtfunktionalen Anforderungen der Software umfassen. Die Software-Tests MÜSSEN dabei auch Negativtests abdecken. Zusätzlich MÜSSEN auch alle kritischen Grenzwerte der Eingabe sowie der Datentypen überprüft werden. Testdaten SOLLTEN dafür sorgfältig ausgewählt und geschützt werden. Darüber hinaus SOLLTE eine automatische statische Code-Analyse durchgeführt werden. Die Software MUSS in einer Test- und Entwicklungsumgebung getestet werden, die getrennt von der Produktionsumgebung ist. Außerdem MUSS getestet werden, ob die Systemvoraussetzungen für die vorgesehene Software ausreichend dimensioniert sind.'
+        - id: CON.8.A8
+          title: 'Bereitstellung von Patches, Updates und Änderungen'
+          requirement_text: 'Es MUSS sichergestellt sein, dass sicherheitskritische Patches und Updates für die entwickelte Software zeitnah durch die Entwickelnden bereitgestellt werden. Werden für verwendete externe Bibliotheken sicherheitskritische Updates bereitgestellt, dann MÜSSEN die Entwickelnden ihre Software hierauf anpassen und ihrerseits entsprechende Patches und Updates zur Verfügung stellen. Für die Installations-, Update- oder Patchdateien MÜSSEN vom Entwickelnden Checksummen oder digitale Signaturen bereitgestellt werden.'
+        - id: CON.8.A10
+          title: 'Versionsverwaltung des Quellcodes'
+          requirement_text: 'Der Quellcode des Entwicklungsprojekts MUSS über eine geeignete Versionsverwaltung verwaltet werden. Die Institution MUSS den Zugriff auf die Versionsverwaltung regeln und festlegen, wann Änderungen am Quellcode durch die Entwickelnden als eigene Version in der Versionsverwaltung gespeichert werden sollen. Es MUSS sichergestellt sein, dass durch die Versionsverwaltung alle Änderungen am Quellcode nachvollzogen und rückgängig gemacht werden können. Die Versionsverwaltung MUSS in dem Datensicherungskonzept berücksichtigt werden. Die Versionsverwaltung DARF NICHT ohne Datensicherung erfolgen.'
+        - id: CON.8.A20
+          title: 'Überprüfung von externen Komponenten'
+          requirement_text: 'Unbekannte externe Komponenten (bzw. Programm-Bibliotheken), deren Sicherheit nicht durch etablierte und anerkannte Peer-Reviews oder vergleichbares sichergestellt werden kann, MÜSSEN auf Schwachstellen überprüft werden. Alle externen Komponenten MÜSSEN auf potentielle Konflikte überprüft werden. Die Integrität von externen Komponenten MUSS durch Prüfsummen oder kryptographische Zertifikate überprüft werden. Darüber hinaus SOLLTEN keine veralteten Versionen von externen Komponenten in aktuellen Entwicklungsprojekten verwendet werden.'
+      standard:
+        - id: CON.8.A1
+          title: 'Definition von Rollen und Zuständigkeiten'
+          requirement_text: 'Für den Software-Entwicklungsprozess SOLLTE eine gesamtzuständige Person ein benannt werden. Außerdem SOLLTEN die Rollen und Zuständigkeiten für alle Aktivitäten im Rahmen der Software-Entwicklung festgelegt werden. Die Rollen SOLLTEN dabei fachlich die nachfolgenden Themen abdecken: Für jedes Entwicklungsvorhaben SOLLTE eine zuständige Person für die Informationssicherheit benannt werden.'
+        - id: CON.8.A11
+          title: 'Erstellung einer Richtlinie für die Software-Entwicklung'
+          requirement_text: 'Es SOLLTE eine Richtlinie für die Software-Entwicklung erstellt und aktuell gehalten werden. Die Richtlinie SOLLTE neben Namenskonventionen auch Vorgaben zu Elementen beinhalten, die verwendet bzw. nicht verwendet werden dürfen. Die relevanten Anforderungen aus diesem Baustein SOLLTEN in die Richtlinie aufgenommen werden. Die Richtlinie SOLLTE für die Entwickelnden verbindlich sein.'
+        - id: CON.8.A12
+          title: 'Ausführliche Dokumentation'
+          requirement_text: 'Es SOLLTEN ausreichende Projekt-, Funktions- und Schnittstellendokumentationen erstellt und aktuell gehalten werden. Die Betriebsdokumentation SOLLTE konkrete Sicherheitshinweise für die Installation und Konfiguration für Administration, sowie für die Benutzung des Produktes beinhalten. Die Software-Entwicklung SOLLTE so dokumentiert sein, dass Fachleute mithilfe der Dokumentation den Programm-Code nachvollziehen und weiterentwickeln können. Die Dokumentation SOLLTE dabei auch die Software-Architektur und Bedrohungsmodellierung umfassen. Die Aspekte zur Dokumentation SOLLTEN im Vorgehensmodell zur Software-Entwicklung berücksichtigt werden.'
+        - id: CON.8.A14
+          title: 'Schulung des Entwicklungsteams zur Informationssicherheit'
+          requirement_text: 'Die Entwickelnden und die übrigen Mitglieder des Entwicklungsteams SOLLTEN zu generellen Informationssicherheitsaspekten und zu den jeweils speziell für sie relevanten Aspekten geschult sein:'
+        - id: CON.8.A16
+          title: 'Geeignete Steuerung der Software-Entwicklung'
+          requirement_text: 'Bei einer Software-Entwicklung SOLLTE ein geeignetes Steuerungs- bzw. Projektmanagementmodell auf Basis des ausgewählten Vorgehensmodells verwendet werden. Das Steuerungs- bzw. Projektmanagementmodell SOLLTE in die Richtlinie zur Software Entwicklung integriert werden. Dabei SOLLTEN insbesondere die benötigten Qualifikationen beim Personal und die Abdeckung aller relevanten Phasen während des Lebenszyklus der Software berücksichtigt werden. Für das Vorgehensmodell SOLLTE ein geeignetes Risikomanagement festgelegt werden. Außerdem SOLLTEN geeignete Qualitätsziele für das Entwicklungsprojekt definiert werden.'
+        - id: CON.8.A21
+          title: 'Bedrohungsmodellierung'
+          requirement_text: 'In der Entwurfsphase der Software-Entwicklung SOLLTE eine Bedrohungsmodellierung durchgeführt werden. Hierzu SOLLTEN auf Basis des Sicherheitsprofils, des Anforderungskatalogs und der geplanten Einsatzumgebung bzw. Einsatzszenarios potentielle Bedrohungen identifiziert werden. Die Bedrohungen SOLLTEN hinsichtlich ihrer Eintrittswahrscheinlichkeit und Auswirkung bewertet werden.'
+        - id: CON.8.A22
+          title: 'Sicherer Software-Entwurf'
+          requirement_text: 'Der Software-Entwurf SOLLTE den Anforderungskatalog, das Sicherheitsprofil und die Ergebnisse der Bedrohungsmodellierung berücksichtigen. Im Rahmen des sicheren Software-Entwurfs SOLLTE eine sichere Software-Architektur entwickelt werden, auf deren Grundlage der Quellcode der Anwendung zu entwickeln ist. Hierbei SOLLTEN möglichst zukünftige Standards und Angriffstechniken berücksichtigt werden, damit die zu entwickelnde Software auch zukünftig leicht gewartet werden kann.'
+      hoch:
+        - id: CON.8.A17
+          title: 'Auswahl vertrauenswürdiger Entwicklungswerkzeuge'
+          requirement_text: 'Zur Entwicklung der Software SOLLTEN nur Werkzeuge mit nachgewiesenen Sicherheitseigenschaften verwendet werden. An die herstellenden Unternehmen von Hardware oder Software SOLLTEN hinreichende Anforderungen zur Sicherheit ihrer Werkzeuge gestellt werden.'
+        - id: CON.8.A18
+          title: 'Regelmäßige Sicherheitsaudits für die Entwicklungsumgebung'
+          requirement_text: 'Es SOLLTEN regelmäßige Sicherheitsaudits der Software-Entwicklungsumgebung und der Software-Testumgebung durchgeführt werden.'
+        - id: CON.8.A19
+          title: 'Regelmäßige Integritätsprüfung der Entwicklungsumgebung'
+          requirement_text: 'Die Integrität der Entwicklungsumgebung SOLLTE regelmäßig mit kryptographischen Mechanismen entsprechend dem Stand der Technik geprüft werden. Die Prüfsummendateien und das Prüfprogramm selbst SOLLTEN ausreichend vor Manipulationen geschützt sein. Wichtige Hinweise auf einen Integritätsverlust SOLLTEN nicht in einer Fülle irrelevanter Warnmeldungen (false positives) untergehen.'
 
   - id: CON.9
     title: 'Informationsaustausch'
@@ -151,16 +267,34 @@ bausteine:
     anforderungen:
       basis:
         - id: CON.9.A1
-          title: 'Regelungen zum Informationsaustausch'
-          requirement_text: 'Es MUESSEN Regelungen fuer den Informationsaustausch mit externen Partnern erstellt werden.'
+          title: 'Festlegung zulässiger Empfangender'
+          requirement_text: 'Die zentrale Verwaltungsstelle MUSS sicherstellen, dass durch die Weitergabe von Informationen nicht gegen rechtliche Rahmenbedingungen verstoßen wird. Die zentrale Verwaltungsstelle MUSS festlegen, wer welche Informationen erhalten und weitergeben darf. Es MUSS festgelegt werden, auf welchen Wegen die jeweiligen Informationen ausgetauscht werden dürfen. Alle Beteiligten MÜSSEN vor dem Austausch von Informationen sicherstellen, dass die empfangende Stelle die notwendigen Berechtigungen für den Erhalt und die Weiterverarbeitung der Informationen besitzt.'
         - id: CON.9.A2
-          title: 'Vereinbarungen zum Informationsaustausch'
-          requirement_text: 'Mit externen Partnern MUESSEN Vereinbarungen ueber den sicheren Informationsaustausch geschlossen werden. Siehe BSI Kompendium 2023 Baustein CON.9 Anforderung A2.'
+          title: 'Regelung des Informationsaustausches'
+          requirement_text: 'Bevor Informationen ausgetauscht werden, MUSS die Institution festlegen, wie schutzbedürftig die Informationen sind. Sie MUSS festlegen, wie die Informationen bei der Übertragung zu schützen sind. Falls schutzbedürftige Daten übermittelt werden, MUSS die Institution die Empfangenden darüber informieren, wie schutzbedürftig die Informationen sind. Falls die Informationen schutzbedürftig sind, MUSS die Institution die Empfangenden darauf hingewiesen werden, dass diese die Daten ausschließlich zu dem Zweck nutzen dürfen, zu dem sie übermittelt wurden.'
         - id: CON.9.A3
-          title: 'Schutz beim Informationsaustausch'
-          requirement_text: 'Beim Informationsaustausch MUESSEN angemessene Schutzmassnahmen (z. B. Verschluesselung) angewendet werden. Siehe BSI Kompendium 2023 Baustein CON.9 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Unterweisung des Personals zum Informationsaustausch'
+          requirement_text: 'Fachverantwortliche MÜSSEN die Mitarbeitenden über die Rahmenbedingungen jedes Informationsaustauschs informieren. Die Fachverantwortlichen MÜSSEN sicherstellen, dass die Mitarbeitenden wissen, welche Informationen sie wann, wo und wie weitergeben dürfen.'
+      standard:
+        - id: CON.9.A4
+          title: 'Vereinbarungen zum Informationsaustausch mit Externen'
+          requirement_text: 'Bei einem regelmäßigen Informationsaustausch mit anderen Institutionen SOLLTE die Institution die Rahmenbedingungen für den Informationsaustausch formal vereinbaren. Die Vereinbarung für den Informationsaustausch SOLLTE Angaben zum Schutz aller vertraulichen Informationen enthalten.'
+        - id: CON.9.A5
+          title: 'Beseitigung von Restinformationen vor Weitergabe'
+          requirement_text: 'Zusätzlich zu den allgemeinen Schulungsmaßnahmen SOLLTE die Institution über die Gefahren von Rest- und Zusatzinformationen in Dokumenten und Dateien informieren. Es SOLLTE vermittelt werden, wie sie Rest- und Zusatzinformationen in Dokumenten und Dateien vermeiden werden können. Die Institution SOLLTE Anleitungen bereitstellen, die vorgeben wie unerwünschte Restinformationen vom Austausch auszuschließen sind. Jede Datei und jedes Dokument SOLLTE vor der Weitergabe auf unerwünschte Restinformationen überprüft werden. Unerwünschte Restinformationen SOLLTEN vor der Weitergabe aus Dokumenten und Dateien entfernt werden.'
+        - id: CON.9.A6
+          title: 'Kompatibilitätsprüfung des Sende- und Empfangssystems'
+          requirement_text: 'Vor einem Informationsaustausch SOLLTE überprüfen werden, ob die eingesetzten IT-Systeme und Produkte kompatibel sind.'
+        - id: CON.9.A7
+          title: 'Sicherungskopie der übermittelten Daten'
+          requirement_text: 'Die Institution SOLLTE eine Sicherungskopie der übermittelten Informationen anfertigen, falls die Informationen nicht aus anderen Quellen wiederhergestellt werden können.'
+        - id: CON.9.A8
+          title: 'Verschlüsselung und digitale Signatur'
+          requirement_text: 'Die Institution SOLLTE prüfen, ob Informationen während des Austausches kryptografisch gesichert werden können. Falls die Informationen kryptografisch gesichert werden, SOLLTEN dafür ausreichend sichere Verfahren eingesetzt werden.'
+      hoch:
+        - id: CON.9.A9
+          title: 'Vertraulichkeitsvereinbarungen'
+          requirement_text: 'Bevor vertrauliche Informationen an andere Institutionen weitergeben werden, SOLLTE die zentrale Verwaltung informiert werden. Die zentrale Verwaltung SOLLTE eine Vertraulichkeitsvereinbarung mit der empfangenden Institution abschließen. Die Vertraulichkeitsvereinbarung SOLLTE regeln, wie die Informationen durch die empfangende Institution aufbewahrt werden dürfen. In der Vertraulichkeitsvereinbarung SOLLTE festgelegt werden, wer bei der empfangenden Institution Zugriff auf welche übermittelten Informationen haben darf.'
 
   - id: CON.10
     title: 'Entwicklung von Webanwendungen'
@@ -168,30 +302,120 @@ bausteine:
     anforderungen:
       basis:
         - id: CON.10.A1
-          title: 'Sichere Entwicklung von Webanwendungen'
-          requirement_text: 'Webanwendungen MUESSEN nach dem Prinzip der sicheren Software-Entwicklung erstellt werden.'
+          title: 'Authentisierung bei Webanwendungen'
+          requirement_text: 'Die Entwickelnden MÜSSEN sicherstellen, dass sich die Benutzenden gegenüber der Webanwendung sicher und angemessen authentisieren, bevor diese auf geschützte Funktionen oder Inhalte zugreifen können. Es MUSS eine angemessene Authentisierungsmethode ausgewählt werden. Der Auswahlprozess MUSS dokumentiert werden. Eine zentrale Authentisierungskomponente MUSS verwendet werden. Die zentrale Authentisierungskomponente SOLLTE mit etablierten Standardkomponenten (z. B. aus Frameworks oder Programmbibliotheken) umgesetzt werden. Falls eine Webanwendung Authentisierungsdaten auf einem Client speichert, MUSS explizit auf die Risiken der Funktion hingewiesen werden und zustimmen („Opt-In“). Die Webanwendung MUSS die Möglichkeit bieten, Grenzwerte für fehlgeschlagene Anmeldeversuche festzulegen. Die Webanwendung MUSS Benutzende sofort informieren, wenn deren Passwort zurückgesetzt wurde.'
         - id: CON.10.A2
-          title: 'Authentisierung in Webanwendungen'
-          requirement_text: 'Webanwendungen MUESSEN starke Authentisierungsverfahren und Session-Management implementieren. Siehe BSI Kompendium 2023 Baustein CON.10 Anforderung A2.'
+          title: 'Zugriffskontrolle bei Webanwendungen'
+          requirement_text: 'Die Entwickelnden MÜSSEN mittels einer Autorisierungskomponente sicherstellen, dass die Benutzenden ausschließlich solche Aktionen durchführen können, zu denen sie berechtigt sind. Jeder Zugriff auf geschützte Inhalte und Funktionen MUSS kontrolliert werden, bevor er ausgeführt wird. Die Autorisierungskomponente MUSS sämtliche Ressourcen und Inhalte berücksichtigen, die von der Webanwendung verwaltet werden. Ist die Zugriffskontrolle fehlerhaft, MÜSSEN Zugriffe abgelehnt werden. Es MUSS eine Zugriffskontrolle bei URL-Aufrufen und Objekt-Referenzen geben.'
         - id: CON.10.A3
-          title: 'Schutz vor typischen Angriffen'
-          requirement_text: 'Webanwendungen MUESSEN gegen typische Angriffe (z. B. OWASP Top 10) abgesichert werden. Siehe BSI Kompendium 2023 Baustein CON.10 Anforderung A3.'
-      standard: []
-      hoch: []
+          title: 'Sicheres Session-Management'
+          requirement_text: 'Session-IDs MÜSSEN geeignet geschützt werden. Session-IDs MÜSSEN zufällig und mit ausreichender Entropie erzeugt werden. Falls das Framework der Webanwendung sichere Session-IDs generieren kann, MUSS diese Funktion des Frameworks verwendet werden. Sicherheitsrelevante Konfigurationsmöglichkeiten des Frameworks MÜSSEN berücksichtigt werden. Wenn Session-IDs übertragen und von den Clients gespeichert werden, MÜSSEN sie ausreichend geschützt übertragen werden. Eine Webanwendung MUSS die Möglichkeit bieten, eine bestehende Sitzung explizit zu beenden. Nachdem ein Konto angemeldet wurde, MUSS eine bereits bestehende Session-ID durch eine neue ersetzt werden. Sitzungen MÜSSEN eine maximale Gültigkeitsdauer besitzen (Timeout). Inaktive Sitzungen MÜSSEN automatisch nach einer bestimmten Zeit ungültig werden. Nachdem die Sitzung ungültig ist, MÜSSEN alle Sitzungsdaten ungültig und gelöscht sein.'
+        - id: CON.10.A4
+          title: 'Kontrolliertes Einbinden von Inhalten bei Webanwendungen'
+          requirement_text: 'Es MUSS sichergestellt werden, dass eine Webanwendung ausschließlich vorgesehene Daten und Inhalte einbindet ausliefert. Die Ziele der Weiterleitungsfunktion einer Webanwendung MÜSSEN ausreichend eingeschränkt werden, sodass ausschließlich auf vertrauenswürdige Webseiten weitergeleitet wird. Falls die Vertrauensdomäne verlassen wird, MUSS ihn die Webanwendung darüber informieren.'
+        - id: CON.10.A5
+          title: 'Upload-Funktionen'
+          requirement_text: 'Die Entwickelnden MÜSSEN sicherstellen, dass die Benutzenden Dateien nur im vorgegebenen Pfad speichern können. Die Entwickelnden MÜSSEN sicherstellen, dass die Benutzenden den Ablageort der Uploads nicht beeinflussen kann. Die Entwickelnden MÜSSEN Funktionen in die Webanwendung integrieren, mit denen die Uploads während des Betriebs der Webanwendung konfiguriert werden können.'
+        - id: CON.10.A6
+          title: 'Schutz vor unerlaubter automatisierter Nutzung von Webanwendungen'
+          requirement_text: 'Die Entwickelnden MÜSSEN Sicherheitsmechanismen implementieren, die die Webanwendung vor automatisierten Zugriffen schützen. Bei der Implementierung der Sicherheitsmechanismen MUSS berücksichtigt werden, wie sich diese auf die Nutzungsmöglichkeiten der berechtigten Konten auswirken.'
+        - id: CON.10.A7
+          title: 'Schutz vertraulicher Daten'
+          requirement_text: 'Die Entwickelnden MÜSSEN sicherstellen, dass vertrauliche Daten von den Clients zu den Servern nur mit der HTTP-Post-Methode übertragen werden. Entwickelnde MÜSSEN durch Direktiven in der Webanwendung gewährleisten, dass clientseitig keine schützenswerten Daten zwischengespeichert werden. Entwickelnde MÜSSEN sicherstellen, dass in Formularen keine vertraulichen Formulardaten im Klartext angezeigt werden. Die Webanwendung SOLLTE verhindern, dass vertrauliche Daten vom Webbrowser unerwartet gespeichert werden. Sämtliche Zugangsdaten der Webanwendung MÜSSEN serverseitig mithilfe von sicheren kryptografischen Algorithmen vor unbefugtem Zugriff geschützt werden (Salted Hash). Die Dateien mit den Quelltexten der Webanwendung MÜSSEN vor unerlaubten Abrufen geschützt werden.'
+        - id: CON.10.A8
+          title: 'Umfassende Eingabevalidierung und Ausgabekodierung'
+          requirement_text: 'Die Entwickelnden MÜSSEN sämtliche an eine Webanwendung übergebenen Daten als potenziell gefährlich behandeln und geeignet filtern. Sämtliche Eingabedaten sowie Datenströme und Sekundärdaten, wie z. B. Session-IDs, MÜSSEN serverseitig validiert werden. Fehleingaben SOLLTEN möglichst nicht automatisch behandelt werden (Sanitizing). Lässt es sich jedoch nicht vermeiden, MUSS Sanitizing sicher umgesetzt werden. Ausgabedaten MÜSSEN so kodiert werden, dass schadhafter Code auf dem Zielsystem nicht interpretiert oder ausgeführt wird.'
+        - id: CON.10.A9
+          title: 'Schutz vor SQL-Injection'
+          requirement_text: 'Falls Daten an ein Datenbankmanagementsystem (DBMS) weitergeleitet werden, MÜSSEN Stored Procedures bzw. Prepared SQL Statements eingesetzt werden. Falls Daten an ein DBMS weitergeleitet werden und weder Stored Procedures noch Prepared SQL Statements von der Einsatzumgebung unterstützt werden, MÜSSEN die SQL-Queries separat abgesichert werden.'
+        - id: CON.10.A10
+          title: 'Restriktive Herausgabe sicherheitsrelevanter Informationen'
+          requirement_text: 'Die Entwickelnden MÜSSEN sicherstellen, dass Webseiten, Rückantworten und Fehlermeldungen von Webanwendungen keine Informationen enthalten, die Angreifenden Hinweise darauf geben, wie er Sicherheitsmechanismen umgehen kann.'
+      standard:
+        - id: CON.10.A11
+          title: 'Softwarearchitektur einer Webanwendung'
+          requirement_text: 'Die Entwickelnden SOLLTEN die Softwarearchitektur der Webanwendung mit allen Bestandteilen und Abhängigkeiten dokumentieren. Die Dokumentation SOLLTE bereits während des Entwicklungsverlaufs aktualisiert und angepasst werden. Die Dokumentation SOLLTE so gestaltet sein, dass sie schon in der Entwicklungsphase benutzt werden kann und Entscheidungen nachvollziehbar sind. In der Dokumentation SOLLTEN alle für den Betrieb notwendigen Komponenten gekennzeichnet werden, die nicht Bestandteil der Webanwendung sind. In der Dokumentation SOLLTE beschrieben sein, welche Komponenten welche Sicherheitsmechanismen umsetzen, wie die Webanwendung in eine bestehende Infrastruktur integriert wird und welche kryptografischen Funktionen und Verfahren eingesetzt werden.'
+        - id: CON.10.A12
+          title: 'Verifikation essenzieller Änderungen'
+          requirement_text: 'Falls wichtige Einstellungen mit der Anwendung geändert werden sollen, dann SOLLTEN die Entwickelnden sicherstellen, dass die Änderungen durch die Eingabe eines Passworts erneut verifiziert werden. Falls dies nicht möglich ist, dann SOLLTE die Webanwendung auf andere geeignete Weise sicherstellen, dass sich die Benutzenden authentisieren. Die Benutzenden SOLLTEN über Änderungen mithilfe von Kommunikationswegen außerhalb der Webanwendung informiert werden.'
+        - id: CON.10.A13
+          title: 'Fehlerbehandlung'
+          requirement_text: 'Treten während der Laufzeit einer Webanwendung Fehler auf, SOLLTEN diese so behandelt werden, dass die Webanwendung weiter in einem konsistenten Zustand bleibt. Die Webanwendung SOLLTE Fehlermeldungen protokollieren. Falls eine veranlasste Aktion einen Fehler verursacht, SOLLTE die Webanwendung diese Aktion abbrechen. Die Webanwendung SOLLTE im Fehlerfall den Zugriff auf eine angeforderte Ressource oder Funktion verweigern. Zuvor reservierte Ressourcen SOLLTEN im Rahmen der Fehlerbehandlung wieder freigegeben werden. Der Fehler SOLLTE möglichst von der Webanwendung selbst behandelt werden.'
+        - id: CON.10.A14
+          title: 'Sichere HTTP-Konfiguration bei Webanwendungen'
+          requirement_text: 'Zum Schutz vor Clickjacking, Cross-Site-Scripting und anderen Angriffen SOLLTEN geeignete HTTP-Response-Header gesetzt werden. Es SOLLTEN mindestens die folgenden HTTP-Header verwendet werden: Content-Security-Policy, Strict-Transport-Security, Content-Type, X-Content-Type-Options sowie Cache-Control. Die verwendeten HTTP-Header SOLLTEN auf die Webanwendung abgestimmt werden. Die verwendeten HTTP-Header SOLLTEN so restriktiv wie möglich sein. Cookies SOLLTEN grundsätzlich mit den Attributen secure, SameSite und httponly gesetzt werden.'
+        - id: CON.10.A15
+          title: 'Verhinderung von Cross-Site-Request-Forgery'
+          requirement_text: 'Die Entwickelnden SOLLTEN die Webanwendung mit solchen Sicherheitsmechanismen ausstatten, die eine Unterscheidung zwischen beabsichtigten Seitenaufrufen und unbeabsichtigt weitergeleiteten Befehlen Dritter ermöglichen. Dabei SOLLTE mindestens geprüft werden, ob neben der Session-ID ein geheimes Token für den Zugriff auf geschützte Ressourcen und Funktionen benötigt wird.'
+        - id: CON.10.A16
+          title: 'Mehr-Faktor-Authentisierung'
+          requirement_text: 'Es SOLLTE eine Mehr-Faktor-Authentisierung implementiert werden.'
+      hoch:
+        - id: CON.10.A17
+          title: 'Verhinderung der Blockade von Ressourcen'
+          requirement_text: 'Zum Schutz vor Denial-of-Service (DoS)-Angriffen SOLLTEN ressourcenintensive Operationen vermieden werden. Falls ressourcenintensive Operationen notwendig sind, dann SOLLTEN diese besonders abgesichert werden. Bei Webanwendungen SOLLTE ein möglicher Überlauf von Protokollierungsdaten überwacht und verhindert werden.'
+        - id: CON.10.A18
+          title: 'Kryptografische Absicherung vertraulicher Daten'
+          requirement_text: 'Vertrauliche Daten einer Webanwendung SOLLTEN durch sichere, kryptografische Algorithmen abgesichert werden.'
 
-  - id: CON.11
-    title: 'Geheimschutz'
-    description: 'Anforderungen an den Schutz von Verschlusssachen und besonders sensiblen Informationen.'
+  - id: CON.11.1
+    title: 'Geheimschutz VS-NUR FÜR DEN DIENSTGEBRAUCH (VS-NfD)'
+    description: 'Ziel dieses Bausteins ist es, dass die Anforderungen des Geheimschutzes frühzeitig in den Informationssicherheitskonzepten berücksichtigt werden (Security-by-Design).'
     anforderungen:
       basis:
-        - id: CON.11.A1
-          title: 'Regelung der Kommunikation'
-          requirement_text: 'Fuer die Kommunikation MUESSEN Regelungen festgelegt werden, einschliesslich zulaessiger Kanaele, Verschluesselungsanforderungen und Klassifizierungsstufen.'
-        - id: CON.11.A2
-          title: 'Sichere Uebertragung vertraulicher Informationen'
-          requirement_text: 'Vertrauliche Informationen MUESSEN bei der Uebertragung durch kryptographische Verfahren geschuetzt werden.'
-        - id: CON.11.A3
-          title: 'Klassifizierung und Kennzeichnung'
-          requirement_text: 'Verschlusssachen MUESSEN klassifiziert und entsprechend gekennzeichnet werden. Siehe BSI Kompendium 2023 Baustein CON.11 Anforderung A3.'
+        - id: CON.11.1.A1
+          title: 'Einhaltung der Grundsätze zur VS-Verarbeitung mit IT nach § 3, 4 und 6 und Nr. 1 Anlage V zur VSA'
+          requirement_text: 'VS des Geheimhaltungsgrades VS-NfD DÜRFEN NUR mit VS-IT verarbeitet, die hierfür freigegeben ist. Private IT DARF NICHT für die Verarbeitung von Verschlusssachen eingesetzt werden. Bei der Verarbeitung von VS mit VS-IT MUSS der Grundsatz "Kenntnis nur, wenn nötig" eingehalten werden. Es DÜRFEN NUR Personen Kenntnis von einer VS erhalten, die auf Grund ihrer Aufgabenerfüllung von ihr Kenntnis erhalten müssen. Personen DÜRFEN NICHT umfassender oder eher über eine VS unterrichtet werden, als dies aus Gründen der Aufgabenerfüllung notwendig ist. Die Einhaltung des Grundsatzes „Kenntnis nur, wenn nötig“ SOLLTE, insbesondere falls die VS-IT durch mehrere Benutzende verwendet wird, primär über technische Maßnahmen sichergestellt werden. Nach dem Grundsatz der mehrschichtigen Sicherheit MÜSSEN personelle, organisatorische, materielle und technische Maßnahmen getroffen werden, die in ihrem Zusammenwirken Bei der Erfüllung der Anforderungen des vorliegenden Bausteins MÜSSEN die relevanten Technischen Leitlinien des BSI (BSI TL) beachtet werden. Falls von den BSI TL abgewichen werden soll, dann DARF dies NUR in Ausnahmefällen und im Einvernehmen mit dem BSI erfolgen.'
+        - id: CON.11.1.A2
+          title: 'Erstellung und Fortschreibung der VS-IT-Dokumentation nach § 12 und Nr. 2.2 Anlage II zur VSA'
+          requirement_text: 'Jede Dienststelle, die VS-IT einsetzt, MUSS als Teil der Geheimschutzdokumentation eine VS-IT-Dokumentation erstellen. Die VS-IT-Dokumentation MUSS alle Dokumente beinhalten, welche in Nr. 2.2 Anlage II zur VSA aufgeführt sind. Die VS-IT-Dokumentation MUSS bei allen geheimschutzrelevanten Änderungen aktualisiert werden. Sie MUSS zudem mindestens alle drei Jahre auf Aktualität, Vollständigkeit und Erforderlichkeit bestehender und noch zu treffender Geheimschutzmaßnahmen überprüft werden.'
+        - id: CON.11.1.A3
+          title: 'Einsatz von IT-Sicherheitsprodukten nach §§ 51, 52 VSA'
+          requirement_text: 'Auf Basis der im VS-Produktkatalog für einzelne Produkttypen vom BSI festgelegten Zulassungsrelevanz und insbesondere basierend auf den Ergebnissen der Strukturanalyse MÜSSEN alle für die geplante VS-IT relevanten IT-Sicherheitsfunktionen identifiziert werden. Diese lassen sich den folgenden Kategorien gemäß § 52 VSA zuordnen: Anschließend MÜSSEN die identifizierten IT-Sicherheitsfunktionen den jeweiligen Teilkomponenten der VS-IT unter Berücksichtigung des VS-Produktkataloges des BSI zugeordnet werden. Jede identifizierte und für den Schutz von VS wesentlich verantwortliche Teilkomponente MUSS als IT-Sicherheitsprodukt gemäß VSA festgelegt und behandelt werden Sofern das identifizierte IT-Sicherheitsprodukt einem Produkttyp angehört für das eine Zulassungsaussage gemäß BSI TL - IT 01 erforderlich ist, MUSS ein entsprechendes Produkt gemäß BSI Schrift 7164 (Liste der zugelassenen Produkte) verwendet werden. Sofern dort keine IT-Sicherheitsprodukte gelistet sind, MUSS Kontakt mit der Zulassungsstelle des BSI aufgenommen werden. Bei der Verwendung von IT-Sicherheitsprodukten mit Zulassungsaussage MÜSSEN zusätzlich die Bestimmungen des BSI für den Einsatz und Betrieb (SecOPs) des jeweiligen Produktes eingehalten werden.'
+        - id: CON.11.1.A4
+          title: 'Beschaffung von VS-IT nach § 49 VSA'
+          requirement_text: 'Bevor VS-IT beschafft wird, MUSS sichergestellt werden, dass deren Sicherheit während des gesamten Lebenszyklus ab dem Zeitpunkt, zu dem fest steht, dass die IT zur VS-Verarbeitung eingesetzt werden soll, bis zur Aussonderung kontinuierlich gewährleistet wird. Um einen durchgehenden Geheimschutz sicherzustellen, MÜSSEN die Vergabeunterlagen so formuliert werden, dass die Anforderungen der VSA vollständig erfüllt werden können. Bei Beschaffungsaufträgen für VS-IT MÜSSEN die notwendigen IT-Sicherheitsfunktionen der jeweiligen IT-Produkte vorab festgelegt werden. Bei der Formulierung der Vergabeunterlagen MÜSSEN insbesondere die berücksichtigt werden. Sofern einem zu beschaffenden IT-Produkt eine IT-Sicherheitsfunktion zugeordnet ist, SOLLTE ein IT-Produkt aus der Liste der zugelassenen IT-Sicherheitsprodukte beschafft werden. Wird stattdessen ein Produkt ohne Zulassungsaussage ausgewählt, dann SOLLTE im Vorhinein mit dem BSI abgeklärt werden, ob es zugelassen werden kann. Zusätzlich SOLLTE in der Ausschreibung aufgenommen werden, dass der Hersteller an einem Zulassungsverfahren mitwirken muss (siehe BSI TL - IT 01). Verträge MÜSSEN derart gestaltet werden, dass bei einer Rückgabe von defekten oder geleasten IT-Produkten deren Datenträger oder sonstige Komponenten, auf denen VS gespeichert sein könnten, im Besitz der Dienststelle verbleiben.'
+        - id: CON.11.1.A5
+          title: 'Verpflichtung bei Zugang zu VS nach § 4 VSA und Anlage V zur VSA'
+          requirement_text: 'Bevor eine Person Zugang zu VS des Geheimhaltungsgrades VS-NfD erhält, MUSS sie auf Anlage V verpflichtet werden. Ein Exemplar der Anlage V zur VSA MUSS jeder Person gegen Empfangsbestätigung zugänglich gemacht werden. Wird Personal von nichtöffentlichen Stellen Zugang zu VS gewährt, so MUSS Nr. 6.6 Anlage V zur VSA beachtet werden. Von der Verpflichtung einer Person DARF NUR abgesehen werden, falls an VS-IT nur kurzzeitig gearbeitet und währenddessen ein Zugriff auf VS ausgeschlossen werden kann.'
+        - id: CON.11.1.A6
+          title: 'Beaufsichtigung und Begleitung von Fremdpersonal für VS-IT nach §§ 3, 4 VSA'
+          requirement_text: 'Nicht verpflichtetes Fremdpersonal, das an VS-IT arbeitet, MUSS während der gesamten Zeit begleitet und beaufsichtigt werden. Die begleitenden Personen MÜSSEN über die notwendigen Fachkenntnisse verfügen, um die Tätigkeiten kontrollieren zu können.'
+        - id: CON.11.1.A7
+          title: 'Kennzeichnung von elektronischen VS und Datenträgern nach §§ 20, 54 und Anlage III, V und VIII zur VSA'
+          requirement_text: 'Elektronische VS MÜSSEN nach den Vorgaben der VSA gekennzeichnet werden. Die Kennzeichnung MUSS bei der Verarbeitung von VS mit VS-IT während der gesamten Dauer ihrer Einstufung jederzeit erkennbar sein. Die Kennzeichnung MUSS auch bei kopierten, elektronisch versendeten oder ausgedruckten VS erhalten bleiben. Falls die Beschaffenheit elektronischer VS eine Kennzeichnung nach VSA nicht zulässt, dann MÜSSEN VS sinngemäß gekennzeichnet werden. Der Dateiname einer elektronischen VS SOLLTE eine Kennzeichnung enthalten, die den VS-Charakter des Inhalts erkennen lässt, ohne die VS öffnen zu müssen. E-Mails MÜSSEN entsprechend des Musters 11 der Anlage VIII zur VSA gekennzeichnet werden. Falls eine elektronische Kennzeichnung von VS (im Sinne von Metadaten) verwendet werden soll, dann MUSS geprüft werden, ob diese IT-Sicherheitsfunktionen übernimmt (siehe CON.11.1.A3 Einsatz von IT-Sicherheitsprodukten nach §§ 51, 52 VSA). Datenträger, auf denen elektronische VS des Geheimhaltungsgrades VS-NfD durch Produkte ohne Zulassungsaussage verschlüsselt gespeichert sind, MÜSSEN mit dem Geheimhaltungsgrad der darauf gespeicherten VS gekennzeichnet werden. Falls sich durch die Zusammenstellung der VS auf dem Datenträger ein Datenbestand ergibt, welcher eine höhere Einstufung erforderlich macht, dann MUSS der Datenträger selbst als VS des Geheimhaltungsgrades VS-VERTRAULICH behandelt und gekennzeichnet werden.'
+        - id: CON.11.1.A8
+          title: 'Verwaltung und Nachweis von elektronischen VS nach § 21 VSA'
+          requirement_text: 'Für die Verwaltung von elektronischen VS MÜSSEN die Grundsätze ordnungsgemäßer Aktenführung (gemäß Registraturrichtlinie für das Bearbeiten und Verwalten von Schriftgut in Bundesministerien) und die Vorgaben der VSA zur Verwaltung und Nachweisführung von VS eingehalten werden (keine Nachweisführung für VS des Geheimhaltungsgrades VS-NfD erforderlich). Elektronische VS, die als VS-NfD eingestuft sind, DÜRFEN NUR unter Einhaltung des Grundsatzes „Kenntnis nur, wenn nötig“ in offenen (elektronischen) Registraturen verwaltet werden.'
+        - id: CON.11.1.A9
+          title: 'Speicherung elektronischer VS nach § 23 und Nr. 5 Anlage V zur VSA'
+          requirement_text: 'Elektronische VS MÜSSEN mit einem IT-Sicherheitsprodukt mit Zulassungsaussage verschlüsselt gespeichert oder entsprechend den Vorgaben der VSA materiell gesichert werden (siehe CON.11.1.A15 Handhabung von Datenträgern und IT-Produkten nach § 54 und Anlage V zur VSA).'
+        - id: CON.11.1.A10
+          title: 'Elektronische Übertragung von VS nach §§ 24, 53, 55 und Nr. 6.2 Anlage V zur VSA'
+          requirement_text: 'Falls VS elektronisch übertragen werden sollen, MÜSSEN die Regelungen der VSA zur Weitergabe von VS (§ 24 VSA) eingehalten werden. Für die Weitergabe an Parlamente, Landesbehörden und nicht öffentliche Stellen MÜSSEN zusätzlich die besonderen Regelungen nach §§ 25 und 26 VSA beachtet werden. Die VS-IT aller Kommunikationspartner MUSS für die Verarbeitung von VS des Geheimhaltungsgrads VS-NfD freigegeben sein. Werden VS elektronisch übertragen, MÜSSEN sie grundsätzlich durch ein IT-Sicherheitsprodukt mit Zulassungsaussage verschlüsselt werden. Auf eine Verschlüsselung DARF NUR verzichtet werden, falls: Es DARF NUR innerhalb von Räumen und Bereichen, die gegen unkontrollierten Zutritt geschützt sind, von einem Zugriffsschutz ausgegangen werden. VS DÜRFEN NUR in Ausnahmefällen nach § 55 Abs. 2-4 VSA unter Einhaltung der dort genannten Anforderungen und Vorsichtsmaßnahmen auf anderem Wege elektronisch übertragen werden. Falls im Vorhinein zu erwarten ist, dass VS elektronisch übertragen werden könnten, DARF die Ausnahmeregelung nach § 55 VSA NICHT angewendet werden.'
+        - id: CON.11.1.A11
+          title: 'Mitnahme elektronischer VS nach § 28 VSA und Nr. 7 Anlage V zur VSA'
+          requirement_text: 'Elektronische VS DÜRFEN NUR auf Dienstreisen und zu Dienstbesprechungen mitgenommen werden, soweit dies dienstlich notwendig ist und sie angemessen gegen unbefugte Kenntnisnahme gesichert werden. Werden diese persönlich mitgenommen, MÜSSEN diese folgendermaßen gespeichert werden: Falls VS des Geheimhaltungsgrades VS-NfD in Privatwohnungen verarbeitet werden sollen, dann DÜRFEN diese NUR elektronisch mit hierfür freigegebener VS-IT verarbeitet werden.'
+        - id: CON.11.1.A12
+          title: 'Archivierung elektronischer VS nach §§ 30, 31 VSA'
+          requirement_text: 'VS MÜSSEN entsprechend dem Bundesarchivgesetz wie nicht eingestufte Informationen ausgesondert werden. Schon bei Einführung von Systemen zur elektronischen Schriftgutverwaltung und Vorgangsbearbeitung MÜSSEN die technischen Verfahren zur Aussonderung frühzeitig mit dem zuständigen Archiv abgesprochen werden. Falls das zuständige Archiv VS nicht übernehmen möchte, MÜSSEN VS gemäß CON.11.1.A13 Löschung elektronischer VS, Vernichtung von Datenträgern und IT-Produkten nach §§ 32, 56 VSA sicher gelöscht bzw. vernichtet werden.'
+        - id: CON.11.1.A13
+          title: 'Löschung elektronischer VS, Vernichtung von Datenträgern und IT-Produkten nach §§ 32, 56 und Nr. 8 Anlage V zur VSA'
+          requirement_text: 'Um VS oder Datenträger zu löschen, die mit einem IT-Sicherheitsprodukt mit Zulassungsaussage verschlüsselt wurden, MUSS der Schlüssel unter Beachtung der SecOPs gelöscht werden. Sollen elektronische VS gelöscht werden, die nicht durch ein IT-Sicherheitsprodukt mit Zulassungsaussage verschlüsselt wurden, dann MUSS der gesamte Datenträger oder das IT-Produkt, auf dem VS gespeichert sind, mittels eines IT-Sicherheitsprodukts mit Zulassungsaussage gelöscht werden. Die Datenträger oder IT-Produkte MÜSSEN gelöscht werden, bevor sie die gesicherte Einsatzumgebung dauerhaft verlassen. Sie MÜSSEN physisch vernichtet werden, falls sie nicht gelöscht werden können. Für die Vernichtung MÜSSEN Produkte oder Verfahren eingesetzt oder Dienstleister beauftragt werden, die die Anforderungen der BSI TL - M 50 erfüllen. Die zuvor beschriebenen Teilanforderungen MÜSSEN auch bei defekten Datenträgern und IT-Produkten eingehalten werden.'
+        - id: CON.11.1.A14
+          title: 'Zugangs- und Zugriffsschutz nach § 3 VSA'
+          requirement_text: 'VS-IT, die für VS-NfD eingestufte VS eingesetzt wird, MUSS so geschützt werden, dass ein Zugang zur VS-IT und ein Zugriff auf VS nur für verpflichtete Personen (siehe CON.11.1.A5 Verpflichtung bei Zugang zu VS nach § 4 und Anlage V zur VSA) möglich ist. Der Schutz der VS MUSS sichergestellt werden über: Für den Zugangs- und Zugriffsschutz SOLLTE eine Mehr-Faktor-Authentisierung genutzt werden.'
+        - id: CON.11.1.A15
+          title: 'Handhabung von Datenträgern und IT-Produkten nach § 54 und Anlage V zur VSA'
+          requirement_text: 'Datenträger und IT-Produkte MÜSSEN bei Nichtgebrauch in verschlossenen Behältern oder Räumen aufbewahrt werden, falls:'
+        - id: CON.11.1.A16
+          title: 'Zusammenschaltung von VS-IT nach § 58 VSA'
+          requirement_text: 'Bevor VS-IT mit anderer VS-IT zusammengeschaltet werden darf, MUSS geprüft werden, ob und inwieweit Informationen zwischen der zusammengeschalteten VS-IT ausgetauscht werden dürfen. Bei der Prüfung MUSS das jeweilige Schutzniveau und der Grundsatz „Kenntnis nur, wenn nötig“ berücksichtigt werden. Abhängig vom Ergebnis der Prüfung MÜSSEN IT-Sicherheitsfunktionen zum Schutz der Systemübergänge implementiert werden (siehe CON.11.1.A3 Einsatz von IT-Sicherheitsprodukten nach §§ 51, 52 VSA). Vor der Zusammenschaltung der VS-IT MUSS bewertet und dokumentiert werden, ob diese für das angestrebte Szenario zwingend erforderlich ist und ob durch die Zusammenschaltung eine besondere Gefährdung der einzelnen Teilsysteme entsteht. Es MUSS geprüft werden, ob der durch die Zusammenschaltung von VS-IT entstandene Gesamtbestand der Daten höher einzustufen ist und weitere Geheimschutzmaßnahmen notwendig werden. Wird VS-IT für die Verarbeitung von VS des Geheimhaltungsgrads VS-NfD direkt oder kaskadiert mit VS-IT für die Verarbeitung von VS des Geheimhaltungsgrades STRENG GEHEIM gekoppelt, dann MUSS sichergestellt werden, dass keine Verbindungen zu ungeschützten oder öffentlichen Netzen hergestellt werden.'
+        - id: CON.11.1.A17
+          title: 'Wartungs- und Instandsetzungsarbeiten von VS-IT nach § 3 Abs. 3 VSA'
+          requirement_text: 'Wartungs- und Instandsetzungsarbeiten an Komponenten der VS-IT SOLLTEN innerhalb der eigenen Dienstliegenschaft durchgeführt werden. Ist dies nicht möglich, MUSS sichergestellt werden, dass die Anforderungen der VSA sowohl während des Transports als auch bei den Wartungs- und Instandsetzungsarbeiten erfüllt werden. Während der Wartungs- und Instandsetzungsarbeiten SOLLTE die Verarbeitung von VS in dem von der Wartung betroffenen Bereich der VS-IT eingestellt werden. Ist dies nicht möglich, MUSS während des Zeitraums der Wartungs- und Instandsetzungsarbeiten lückenlos sichergestellt werden, dass keine VS abfließen können. Nach Abschluss der Wartungs- und Instandsetzungsarbeiten MUSS der oder die Geheimschutzbeauftragte bewerten, ob sich geheimschutzrelevante Änderungen an der VS-IT ergeben haben.'
+        - id: CON.11.1.A18
+          title: 'Fernwartung von VS-IT nach § 3 Abs. 3 VSA'
+          requirement_text: 'Wird VS-IT ferngewartet, dann MUSS die Fernwartungsverbindung verschlüsselt sein. Für die Verschlüsselung MÜSSEN IT-Sicherheitsprodukte mit Zulassungsaussage eingesetzt werden. Die IT, mit der die Fernwartung durchgeführt wird, sowie die Übertragungsstrecken MÜSSEN als VS-IT behandelt und als Schutzobjekte definiert werden. Die Fernwartungsverbindung MUSS durch die Dienststelle auf- und abgebaut werden. Die Dienststelle MUSS in der Lage sein, die Verbindung bei Auffälligkeiten auch während der Wartung zu unterbrechen. Für die Fernwartung von VS-IT MUSS ein Informationssicherheitskonzept erstellt werden, das alle Komponenten, die an der Fernwartung beteiligt sind, berücksichtigt. Hierbei MÜSSEN insbesondere die Netzübergänge und die VS-IT, aus dem die Fernwartung gesteuert wird, betrachtet werden.'
       standard: []
       hoch: []

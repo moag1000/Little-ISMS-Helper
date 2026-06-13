@@ -110,7 +110,7 @@ mappings:
     audit_evidence_hint: 'A.5.7: Threat-Intel-Quellen-Liste (CERT-Bund, BSI-CERT). DER.1.A4 SIEM-Korrelationsregeln, Sharing-Protokolle.'
 
   - source: 'A.5.19'
-    target: 'OPS.2.1'
+    target: 'OPS.2.3'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -393,18 +393,18 @@ mappings:
       Inverse Sicht zum Forward-Mapping 'CON.10' → 'A.8.28': ISO-Annex-A-Kontrolle 'A.8.28' korrespondiert mit IT-Grundschutz-Baustein 'CON.10' (Entwicklung von Webanwendungen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
     audit_evidence_hint: 'A.8.28: ISO-Annex-A-Nachweis. CON.10: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
   - source: 'A.5.12'
-    target: 'CON.11'
+    target: 'CON.11.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
-      Inverse Sicht zum Forward-Mapping 'CON.11' → 'A.5.12': ISO-Annex-A-Kontrolle 'A.5.12' korrespondiert mit IT-Grundschutz-Baustein 'CON.11' (Geheimschutz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+      Inverse Sicht zum Forward-Mapping 'CON.11.1' → 'A.5.12': ISO-Annex-A-Kontrolle 'A.5.12' korrespondiert mit IT-Grundschutz-Baustein 'CON.11.1' (Geheimschutz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
     audit_evidence_hint: 'A.5.12: ISO-Annex-A-Nachweis. CON.11: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
   - source: 'A.5.13'
-    target: 'CON.11'
+    target: 'CON.11.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
-      Inverse Sicht zum Forward-Mapping 'CON.11' → 'A.5.13': ISO-Annex-A-Kontrolle 'A.5.13' korrespondiert mit IT-Grundschutz-Baustein 'CON.11' (Geheimschutz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+      Inverse Sicht zum Forward-Mapping 'CON.11.1' → 'A.5.13': ISO-Annex-A-Kontrolle 'A.5.13' korrespondiert mit IT-Grundschutz-Baustein 'CON.11.1' (Geheimschutz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
     audit_evidence_hint: 'A.5.13: ISO-Annex-A-Nachweis. CON.11: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
   - source: 'A.5.37'
     target: 'OPS.1.1.1'

@@ -99,7 +99,7 @@ mappings:
     cross_refs: ['A.8.16']
     audit_evidence_hint: 'Threat-Intel-Quellen-Liste (CERT-Bund, BSI-CERT), DER.1.A4 SIEM-Korrelationsregeln, Sharing-Protokolle der letzten 12 Monate.'
 
-  - source: 'OPS.2.1'
+  - source: 'OPS.2.3'
     target: 'A.5.19'
     relationship: 'superset'
     confidence: 'high'
@@ -378,14 +378,14 @@ mappings:
     rationale: |
       CON.10 'Entwicklung von Webanwendungen' deckt Web-spezifische Sicherheits-Anforderungen ab und überschneidet mit A.8.26 'Application security requirements' und A.8.28 'Secure coding'.
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.10.'
-  - source: 'CON.11'
+  - source: 'CON.11.1'
     target: 'A.5.12'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       CON.11 'Geheimschutz' adressiert den Schutz von Verschlusssachen; überschneidet mit A.5.12 'Classification of information' und A.5.13 'Labelling of information'.
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.11.'
-  - source: 'CON.11'
+  - source: 'CON.11.1'
     target: 'A.5.13'
     relationship: 'partial_overlap'
     confidence: 'medium'

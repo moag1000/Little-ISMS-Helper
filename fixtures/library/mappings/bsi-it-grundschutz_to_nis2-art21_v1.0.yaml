@@ -113,7 +113,7 @@ mappings:
       Lieferanten-Risikobewertung nach ISMS.1.4.
     audit_evidence_hint: 'Outsourcing-Verträge nach OPS.2.3 mit Sicherheitsanforderungen, Lieferantenverzeichnis mit Risikoeinstufung, Audit-Reports kritischer Dienstleister, AVV nach DSGVO; ergänzend NIS2-Art.-21(2)(d)-Lieferkettenbewertung.'
 
-  - source: 'CON.5'
+  - source: 'CON.8'
     target: '21.2.e'
     relationship: 'equivalent'
     confidence: 'high'
@@ -258,7 +258,7 @@ mappings:
     rationale: |
       Baustein CON.10 'Entwicklung von Webanwendungen' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
-  - source: 'CON.11'
+  - source: 'CON.11.1'
     target: '21.2.a'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -447,7 +447,7 @@ mappings:
     rationale: |
       Baustein OPS.1.1.3 'Patch- und Aenderungsmanagement' adressiert die NIS2-Anforderung Art. 21(2)(f) über Wirksamkeitsbewertung der Sicherheitsmaßnahmen. Schnittmenge: relevante Teilabdeckung.
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(f)-Compliance-Nachweis.'
-  - source: 'OPS.2.1'
+  - source: 'OPS.2.3'
     target: '21.2.d'
     relationship: 'partial_overlap'
     confidence: 'medium'
