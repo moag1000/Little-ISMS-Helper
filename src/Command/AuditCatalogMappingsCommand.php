@@ -272,8 +272,8 @@ final class AuditCatalogMappingsCommand extends Command
         $header = null;
         $rows = [];
         while (($line = fgetcsv($fh)) !== false) {
-            if ($line === [null] || $line === false) {
-                continue;
+            if ($line === [null]) {
+                continue; // blank line — fgetcsv yields [null]
             }
             $first = (string) ($line[0] ?? '');
             if ($header === null) {
