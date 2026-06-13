@@ -1,0 +1,354 @@
+{
+  "library": {
+    "source_framework": "EU-AI-ACT",
+    "target_framework": "ISO42001",
+    "panel": [
+      "isms-specialist",
+      "dpo-specialist",
+      "persona-consultant-senior",
+      "persona-auditor-external"
+    ],
+    "method": "build-time Workflow: 4-expert consensus + adversarial refutation + completeness loop",
+    "amtlich_source": "none (no official EU AI-Act↔ISO 42001 crosswalk published)",
+    "run_date": "2026-06-13",
+    "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
+    "completeness": "29 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
+    "verdict_counts": {
+      "total": 47,
+      "ki_validiert": 45,
+      "needs_review": 0,
+      "reject": 2
+    }
+  },
+  "verdicts": [
+    {
+      "eu": "Art.5",
+      "target": "A.2.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 35,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.5",
+      "target": "A.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.9",
+      "target": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.9",
+      "target": "A.5.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.9",
+      "target": "6.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.9",
+      "target": "8.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 78,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.9",
+      "target": "8.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.10",
+      "target": "A.7.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.10",
+      "target": "A.7.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.10",
+      "target": "A.7.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.10",
+      "target": "A.7.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 62,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.10",
+      "target": "A.7.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.11",
+      "target": "A.6.2.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 82,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.11",
+      "target": "7.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.12",
+      "target": "A.6.2.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.13",
+      "target": "A.8.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.13",
+      "target": "A.8.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.14",
+      "target": "A.9.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.14",
+      "target": "A.9.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 3
+    },
+    {
+      "eu": "Art.14",
+      "target": "A.9.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.15",
+      "target": "A.6.2.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.15",
+      "target": "A.6.2.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.16",
+      "target": "A.6.1.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.16",
+      "target": "A.6.1.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.16",
+      "target": "A.6.1.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.17",
+      "target": "4.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.17",
+      "target": "5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.17",
+      "target": "9.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.17",
+      "target": "10.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 48,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.20",
+      "target": "10.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.25",
+      "target": "A.10.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.25",
+      "target": "A.10.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.25",
+      "target": "A.10.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.26",
+      "target": "A.9.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.26",
+      "target": "A.9.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.26",
+      "target": "A.9.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.27",
+      "target": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.27",
+      "target": "A.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.27",
+      "target": "A.5.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.50",
+      "target": "A.8.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 52,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.50",
+      "target": "A.8.3",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "eu": "Art.50",
+      "target": "A.8.4",
+      "state": "reject",
+      "mappingPercentage": 0,
+      "realVotes": 0
+    },
+    {
+      "eu": "Art.50",
+      "target": "A.8.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.55",
+      "target": "A.5.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 40,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.72",
+      "target": "A.6.2.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 68,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.72",
+      "target": "9.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 4
+    },
+    {
+      "eu": "Art.73",
+      "target": "A.8.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 4
+    }
+  ]
+}
