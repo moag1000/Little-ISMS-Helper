@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'nis2_to_nis2-umsucg_v1.0'
   source_framework: 'NIS2'
-  target_framework: 'NIS2-UmsuCG'
+  target_framework: 'NIS2UMSUCG'
   version: 1
   effective_from: '2026-05-06'
   effective_until: null

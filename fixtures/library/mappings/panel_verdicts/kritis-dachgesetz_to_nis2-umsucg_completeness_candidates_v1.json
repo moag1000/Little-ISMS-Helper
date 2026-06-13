@@ -1,7 +1,7 @@
 {
   "provenance": {
-    "source_framework": "KRITIS-DE",
-    "target_framework": "NIS2-UmsuCG",
+    "source_framework": "KRITIS",
+    "target_framework": "NIS2UMSUCG",
     "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
     "panel": [
       "isms-specialist",

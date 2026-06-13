@@ -1,6 +1,6 @@
 {
   "library": {
-    "source_framework": "BSI-GRUNDSCHUTZ",
+    "source_framework": "BSI_GRUNDSCHUTZ",
     "target_framework": "BSI-C5",
     "panel": [
       "bsi-specialist",

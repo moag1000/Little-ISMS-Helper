@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "source_framework": "NIS2-UmsuCG",
+    "source_framework": "NIS2UMSUCG",
     "target_framework": "DORA",
     "description": "Completeness candidates discovered by panel gap-analysis — additional defensible correspondences MISSING from the operational mapping. Logged for human review; NOT auto-applied.",
     "panel": [

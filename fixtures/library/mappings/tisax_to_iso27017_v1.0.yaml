@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'tisax_to_iso27017_v1.0'
   source_framework: 'TISAX'
-  target_framework: 'iso27017'
+  target_framework: 'ISO27017'
   version: 1
   effective_from: '2024-04-01'
   effective_until: null

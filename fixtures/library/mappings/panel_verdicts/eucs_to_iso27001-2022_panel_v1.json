@@ -1,6 +1,6 @@
 {
   "library": {
-    "source_framework": "ENISA-EUCS",
+    "source_framework": "EUCS",
     "target_framework": "ISO27001",
     "panel": [
       "bsi-specialist",

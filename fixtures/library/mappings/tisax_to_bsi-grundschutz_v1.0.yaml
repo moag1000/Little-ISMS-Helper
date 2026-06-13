@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'tisax_to_bsi-grundschutz_v1.0'
   source_framework: 'TISAX'
-  target_framework: 'bsi-grundschutz'
+  target_framework: 'BSI_GRUNDSCHUTZ'
   version: 2
   effective_from: '2024-04-01'
   effective_until: null
