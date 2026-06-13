@@ -53,7 +53,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * @see ApplyPanelVerdictsCommand           — CLI entrypoint (app:bsi:apply-panel-verdicts)
  * @see MappingCorroborationService         — stage 1 CRT corroboration
  */
-final class PanelVerdictApplier
+final class PanelVerdictApplier implements PanelVerdictApplierInterface
 {
     /** Default fixture path (ISO 27001 → BSI IT-Grundschutz) — backward-compatible default */
     public const FIXTURE_PATH = 'fixtures/library/mappings/panel_verdicts/iso27001-2022_to_bsi-grundschutz_panel_v1.json';

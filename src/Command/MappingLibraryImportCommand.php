@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Service\Bsi\PanelVerdictAutoApplier;
 use App\Service\MappingLibraryLoader;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,6 +22,7 @@ class MappingLibraryImportCommand extends Command
 {
     public function __construct(
         private readonly MappingLibraryLoader $loader,
+        private readonly PanelVerdictAutoApplier $panelVerdictAutoApplier,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -77,6 +79,41 @@ class MappingLibraryImportCommand extends Command
             ));
         }
 
+        // After the mapping library is (re)loaded, apply the build-time expert-panel
+        // verdicts so the customer-facing quality UI reflects them immediately:
+        //   - reject pairs become lifecycleState='deprecated' (drop out of coverage),
+        //   - ki_validiert pairs get provenanceSource='panel' (ki_validiert trust-tier),
+        //   - needs_review pairs land in the review queue.
+        // Only runs for the full-library load (no single-file argument). Idempotent
+        // and non-fatal — a verdict-apply hiccup must not fail the import itself.
+        if ($file === null) {
+            $this->applyPanelVerdicts($io);
+        }
+
         return $hadError ? Command::FAILURE : Command::SUCCESS;
+    }
+
+    private function applyPanelVerdicts(SymfonyStyle $io): void
+    {
+        $io->section('Panel verdicts (quality grades + deprecations)');
+
+        try {
+            $summary = $this->panelVerdictAutoApplier->applyAll(false);
+            $io->success(sprintf(
+                'Panel verdicts: %d fixture(s) applied, %d skipped — '
+                . '%d ki_validiert, %d deprecated, %d needs_review, %d new mapping(s).',
+                $summary['applied'],
+                $summary['skipped'],
+                $summary['ki_validiert'],
+                $summary['rejected'],
+                $summary['needs_review'],
+                $summary['panel_discovered'],
+            ));
+        } catch (\Throwable $e) {
+            // Never fail the import because verdict application stumbled — the
+            // mappings are loaded; verdicts can be re-applied via
+            // `app:apply-all-panel-verdicts` at any time (idempotent).
+            $io->warning('Panel verdict auto-apply skipped: ' . $e->getMessage());
+        }
     }
 }
