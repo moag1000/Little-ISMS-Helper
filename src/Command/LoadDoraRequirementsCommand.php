@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
+use App\Service\Compliance\DoraRtsItsCatalogueLoader;
 use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -21,8 +22,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadDoraRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly DoraRtsItsCatalogueLoader $rtsItsCatalogueLoader,
+    ) {
         parent::__construct();
     }
 
@@ -90,8 +93,24 @@ class LoadDoraRequirementsCommand extends Command implements FrameworkLoaderInte
                 $stats['created']++;
             }
         }
+        // Level-2 catalogue (RTS / ITS / CIRs / Joint Guidelines). Loaded through
+        // the SAME framework instance so the registry path (setup-wizard / admin
+        // "load framework" UI) populates the granular 'RTS-ICT-RMF-Art.*',
+        // 'ITS-Register-RT.*', 'RTS-TLPT-Art.*' … requirementIds. Without this the
+        // dora-rts-its_to_iso27001-2022 mapping had nothing to resolve against and
+        // the Level-2 depth was invisible at runtime. Idempotent: when $update is
+        // false, pre-existing Level-2 rows are skipped (findOneBy guard).
+        $rtsStats = $this->rtsItsCatalogueLoader->load($framework, $update);
         $this->entityManager->flush();
         $io?->success(sprintf('EU-DORA requirements: %d created, %d updated, %d skipped', $stats['created'], $stats['updated'], $stats['skipped']));
+        $io?->success(sprintf(
+            'EU-DORA Level-2 (RTS/ITS): %d created, %d updated, %d skipped (%d IDs across %d blocks)',
+            $rtsStats['created'],
+            $rtsStats['updated'],
+            $rtsStats['skipped'],
+            $rtsStats['total'],
+            $rtsStats['blocks'],
+        ));
         return Command::SUCCESS;
     }
 
