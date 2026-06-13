@@ -174,10 +174,32 @@ Reihenfolge: WS-1.2 (Codes) **vor** WS-1.1 (Loader), sonst Doppelarbeit.
 
 ---
 
-## 9. Offene Verifikationspunkte (in Phase 0 zu klären)
+## 9. Verifikationspunkte — Phase-0-Inventar-Ergebnis (2026-06-13)
 
-- Exakte Seed-Mapping-Counts + Überschneidung der 3 Mapping-Quellen (Dedup-Umfang).
-- ISO27701 Seed-Mismatch (`27701-GDPR-*`/`27701-5.*`) — Anzahl real skippender Mappings.
-- Ob `app:mappings:import-csv` im Deploy/CI automatisch läuft (dann faktisch SoT, nicht Seeds).
-- Vollständiges dangling-Inventar (welche YAML/CSV-Paare auf nicht-erzeugte Schemata zeigen).
+Gemessen via `app:audit-catalog-mappings` gegen Scratch-DB mit allen 29 verdrahteten
+Frameworks geladen (2039 produzierte `(code, requirementId)`-Paare).
+Report: `var/audit/catalog_mappings_inventory.json`.
+
+- **YAML-Library: 64 Dateien (nicht 57), 2978 Mappings → 1838 dangling source + 1900
+  dangling target (~63%).** 24 Dateien komplett tot (beide Seiten unauflösbar/fehlend).
+- **CSV-public: 22 Dateien, 463 Mappings → 237 dangling source + 91 dangling target.**
+  3 Dateien komplett tot (`bdsg_gdpr`, `dora_iso22301`, `nis2_iso22301`).
+- **Unresolved Framework-Refs** (kein geladenes Framework matcht): `BAIT`,
+  `ENISA-EUCS`, `BSI-GRUNDSCHUTZ-2024`, `TISAX-VDA-ISA-6`, `NIST-CSF-2.0`,
+  `KRITIS-DE`, `iec-isa-62443`, `iso27002`, `nist-csf-1.1`, `nist-sp800-53r5`.
+
+**Einordnung (bestimmt Phase-1/2-Reihenfolge):**
+- Ein großer Teil des Danglings ist Folge von **C1** (UI lädt Legacy-Loader mit
+  weniger/anderen IDs, z.B. BSI-C5 ~30 statt 121) und **C4** (Code-Spelling:
+  `BSI-GRUNDSCHUTZ-2024`, `NIST-CSF-2.0`, `KRITIS-DE` sind via Alias auflösbar).
+  → WS-1.1 + WS-1.2 lösen einen erheblichen Anteil automatisch auf; danach
+  Inventar neu messen.
+- Der **echte Rest** (kein Loader existiert): `BAIT` (obsolet, DORA löst ab),
+  `iec-isa-62443`, `iso27002` (Basis-Norm ohne eigenes Framework), `nist-csf-1.1`,
+  `nist-sp800-53r5`, `ENISA-EUCS`, `TISAX-VDA-ISA-6` → in WS-2.2 entscheiden:
+  Framework ergänzen ODER betroffene Mapping-Dateien deprecaten.
+- Dedup-Umfang über die 3 Quellen + ISO27701-`27701-GDPR-*`-Mismatch werden in
+  WS-2.2 aus demselben Report-JSON abgeleitet (per-File source/target-Listen).
+- `dangling = hartes FAIL` im künftigen Mapping-Importer (WS-2.2) verhindert
+  Rückfall.
 </content>

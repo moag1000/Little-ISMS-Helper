@@ -19,7 +19,7 @@ für eine saubere Re-Architektur, ohne einen Teil zu vergessen.
    **dünnen Legacy-Loader**, während der vollständige Katalog als CLI-Orphan
    ungenutzt liegt. (§3A)
 2. **Drei-Quellen-Spagat ohne SoT.** Katalog-Inhalte kommen aus (a) ~90
-   PHP-Loader-Commands, (b) 57 YAML in `fixtures/library/mappings/`, (c) 22 CSV in
+   PHP-Loader-Commands, (b) 64 YAML in `fixtures/library/mappings/`, (c) 22 CSV in
    `fixtures/mappings/public/`. Drei Wahrheiten, keine kanonische Quelle. (§2)
 3. **Framework-Code-Kollisionen.** Gleiche Norm, mehrere Code-Strings
    (`ISO-22301`/`ISO22301`/`ISO_22301`, `BSI_GRUNDSCHUTZ`/`BSI-GRUNDSCHUTZ`,
@@ -75,13 +75,13 @@ aller. 2. Tenant der dasselbe lädt → `UniqueConstraintViolationException`.
 | Quelle | Ort | Umfang | Lädt was | Verdrahtung |
 |---|---|---|---|---|
 | **PHP-Loader-Commands** | `src/Command/Load*/Seed*/Supplement*` | ~90 Commands | Requirements (hardcoded Arrays od. fixtures) + manche Framework-Rows | UI nur über `ComplianceFrameworkLoaderService` match (1 pro Code), Rest CLI-Orphan |
-| **Mapping-Library YAML** | `fixtures/library/mappings/*.yaml` | **57 Dateien** | Cross-Framework-Mappings + Metadaten (methodology, gap_warning, provenance, confidence) | CLI `app:mapping:library:import` (kein UI) |
+| **Mapping-Library YAML** | `fixtures/library/mappings/*.yaml` | **64 Dateien** | Cross-Framework-Mappings + Metadaten (methodology, gap_warning, provenance, confidence) | CLI `app:mapping:library:import` (kein UI) |
 | **Mapping-CSV (public)** | `fixtures/mappings/public/*.csv` | **22 Dateien** | Cross-Framework-Mappings (CI/CD-Bootstrap) | CLI `app:mappings:import-csv` (kein UI) |
 | **Seed-Mappings (Code)** | `src/Command/Seed*Iso27001Mappings*` | 8 Commands | Vorgefertigte Crosswalks X↔ISO27001/27701 | UI `ComplianceMappingSeedController` |
 | **Industry-Baselines** | `fixtures/baselines/*.yaml` | 5+ | referenzieren nur Framework-CODES (laden NICHT) | `app:load-industry-baselines` |
 | **Framework-Row-Pre-Create** | Migrationen `Version20260506213310`, `…531120000` | 11+ Rows | leere Framework-Rows für „Full"-Loader | automatisch beim Deploy |
 
-→ Mapping-Daten existieren **dreifach** (Seeds-Code, 57 YAML, 22 CSV) mit
+→ Mapping-Daten existieren **dreifach** (Seeds-Code, 64 YAML, 22 CSV) mit
 teils überlappenden Paaren und unterschiedlicher ID-Toleranz. Keine
 Single-Source-of-Truth, keine Dedup-Regel zwischen den drei.
 
@@ -150,7 +150,7 @@ Paare (jeweils ↔ ISO27001, außer letzter): BSI~42, SOC2~40, C5-2026~18, NIS2~
 DORA~70, TISAX~100, GDPR~40, GDPR↔ISO27701~60. *(Counts ca., zu verifizieren.)*
 
 **Datei-Bibliothek (CLI):**
-- `app:mapping:library:import` ← 57 YAML (`fixtures/library/mappings/`),
+- `app:mapping:library:import` ← 64 YAML (`fixtures/library/mappings/`),
   Validierung via `MappingValidatorService`, MQS post-persist
 - `app:mappings:import-csv` ← 22 CSV (`fixtures/mappings/public/`), ID-Varianten-tolerant
 - `app:import-cross-framework-mappings` ← Consultant-CSV, **UI**
@@ -197,7 +197,7 @@ nicht erzeugt:
 | Korrektur | migrate-framework-version, ensure-requirements | ⚠️ CLI-only | kein UI |
 | Mapping | Mapping-CRUD/Wizard/Bulk/Eval | ✅ UI | |
 | Mapping | 8 Seeds | ✅ UI (SeedController) | |
-| Mapping | 57 YAML-Library, 22 CSV | ⚠️ CLI-only | nicht im UI, Bootstrap/CI |
+| Mapping | 64 YAML-Library, 22 CSV | ⚠️ CLI-only | nicht im UI, Bootstrap/CI |
 | Mapping | transitiv-auto | ⚠️ POST, kein Button | |
 | Konsum | Inheritance/Reuse/Gap/Export | ✅ | |
 
@@ -212,7 +212,7 @@ nicht erzeugt:
 | C3 | Coverage | DORA RTS/ITS-Katalog nie geladen + 2 Instrumente fehlen (CDR 2024/1502, 2024/1505) + falsche Nummern (Incident-Reporting 2025/301+302) | Level-2 unvollständig & unmappbar im Normalbetrieb |
 | C4 | Code-Kollision | ISO-22301/ISO22301/ISO_22301; BSI_GRUNDSCHUTZ/-/-KERN/-STANDARD; NIST-CSF/-2.0; BSI-C5/-2025/-2026; KRITIS/-DE; SOC2/-TYPE-II; ENISA-EUCS ohne Loader | dangling Mappings, tote Baseline-Referenzen |
 | C5 | ID-Drift | Mappings (Seeds/YAML/CSV) ↔ Loader-IDs uneinheitlich (DORA RTS, ISO27701-GDPR-*) | Mappings hängen ins Leere/werden geskippt |
-| C6 | Mehr-Quellen | Mapping-Daten dreifach (8 Seeds + 57 YAML + 22 CSV) ohne SoT/Dedup | Doppel/Widerspruch, Pflege unklar |
+| C6 | Mehr-Quellen | Mapping-Daten dreifach (8 Seeds + 64 YAML + 22 CSV) ohne SoT/Dedup | Doppel/Widerspruch, Pflege unklar |
 | C7 | Idempotenz | GDPR early-return; ISO27701 Blind-Insert; *Full pre-exist-Abbruch | Re-Run kaputt / harte Fails |
 | C8 | Referenz-Integrität | Framework/Requirement-Delete verwaist Mappings (FK ohne onDelete-Strategie auf framework) | Broken FKs |
 | C9 | Korrektur-Zersplitterung | CRUD-UI + CLI-migrate + QuickFix + Doctrine-Migration, kein gemeinsames Modell; Re-Key nur per SQL | schwer wartbar, fehleranfällig |
@@ -273,7 +273,7 @@ QuickFix/DataRepair-Controller, Merge-Migrationen `Version20260507212829`,
 `ComplianceMappingImportController.php`, `MappingQualityController.php`,
 `src/Command/Seed*MappingsCommand.php` (8), `MappingLibraryImportCommand.php`,
 `Import*MappingsCommand.php`, `src/Service/MappingLibraryLoader.php`,
-`MappingValidatorService`, `fixtures/library/mappings/` (57 YAML),
+`MappingValidatorService`, `fixtures/library/mappings/` (64 YAML),
 `fixtures/mappings/public/` (22 CSV)
 
 **Konsumieren:** `src/Service/ComplianceInheritanceService.php`,
@@ -290,6 +290,6 @@ QuickFix/DataRepair-Controller, Merge-Migrationen `Version20260507212829`,
 
 - Exakte Seed-Mapping-Counts + ob YAML/CSV/Seed-Paare sich überschneiden (Dedup-Bedarf).
 - ISO27701 Seed-Mismatch (`27701-GDPR-*`/`27701-5.*`) — wieviele Mappings real skippen.
-- Welche der 57 YAML / 22 CSV auf Codes/Schemata zeigen die der UI-Loader NICHT erzeugt (dangling-Inventar).
+- Welche der 64 YAML / 22 CSV auf Codes/Schemata zeigen die der UI-Loader NICHT erzeugt (dangling-Inventar).
 - Ob `app:mappings:import-csv` im Deploy/CI automatisch läuft (dann sind CSV faktisch SoT, nicht die Seeds).
 </content>
