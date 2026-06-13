@@ -24,7 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 #[AsCommand(
     name: 'app:load-c5-requirements',
-    description: 'Load BSI C5:2020 curated requirements with ISMS data mappings (full catalogue: app:load-c5-2020-full-catalogue)'
+    description: '[DEPRECATED — canonical: app:load-c5-2020-full-catalogue] Legacy curated BSI C5:2020 subset with ISMS data mappings.'
 )]
 class LoadC5RequirementsCommand extends Command
 {

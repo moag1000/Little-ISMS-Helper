@@ -25,7 +25,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 #[AsCommand(
     name: 'app:load-nist-csf-requirements',
-    description: 'Load NIST CSF 2.0 curated subset with ISO 27001 control mappings (full catalogue: app:load-nist-csf-2-0-full-catalogue)'
+    description: '[DEPRECATED — canonical: app:load-nist-csf-2-0-full-catalogue] Legacy curated NIST CSF 2.0 subset with ISO 27001 control mappings.'
 )]
 class LoadNistCsfRequirementsCommand extends Command
 {
