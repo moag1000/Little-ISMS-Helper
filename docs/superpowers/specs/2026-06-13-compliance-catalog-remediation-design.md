@@ -55,6 +55,7 @@ Diese Regeln (CLAUDE.md + Team-Feedback) sind Teil der Akzeptanzkriterien:
 - **Schema-driven-Import wiederverwenden**: vorhandenes `ImportSchemaProvider`-Muster, nicht neu erfinden (WS-2.4).
 - **UI-Konventionen**: Term „Organisation" (nicht Tenant/Mandant); neue Routes `/{_locale}/…`; keine nativen Dialoge (`window.faConfirm`/fa-modal).
 - **Prozess**: lokale CI-Gates vor Push; nur betroffene Tests je Task; per-Framework-PRs squash-merge on green; Release via release-please/Mo-Cycle.
+- **Ausführungsmodell**: Massenarbeit (per-Framework-Loader-Swaps, Scrub-Sweep, Mapping-Migration) an **Sonnet-Subagenten** delegieren; Opus überwacht kritisch — Review-Gate je Workstream, `verification-before-completion` vor jedem Merge, Stichproben gegen das Konsistenz-Gate. Gate-Design + Re-Key-Migrationen (Fulfillment-Erhalt, kritisch) bleiben bei Opus.
 
 ---
 
