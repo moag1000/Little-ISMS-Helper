@@ -22,8 +22,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadIso27701RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoadIso27701FullCommand $loadIso27701FullCommand,
+    ) {
         parent::__construct();
     }
 
@@ -68,6 +70,9 @@ class LoadIso27701RequirementsCommand extends Command implements FrameworkLoader
                     'Framework ISO 27701 already has %d requirements loaded. Skipping to avoid duplicates.',
                     count($existingRequirements)
                 ));
+                // Always ensure the full Annex A/B catalogue (unprefixed IDs) is populated,
+                // even on the early-return path — the two namespaces are disjoint and additive.
+                $this->loadIso27701FullCommand->loadFullCatalogue($framework, $update, $symfonyStyle);
                 return Command::SUCCESS;
             }
 
@@ -101,6 +106,11 @@ class LoadIso27701RequirementsCommand extends Command implements FrameworkLoader
             $symfonyStyle?->error('Failed to load ISO 27701 requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
+
+        // Additively load the full Annex A/B catalogue with unprefixed IDs (A.7.2.1, B.8.x, clauses).
+        // These are disjoint from the 27701-prefixed IDs above and safe to run idempotently.
+        $this->loadIso27701FullCommand->loadFullCatalogue($framework, $update, $symfonyStyle);
+
         return Command::SUCCESS;
     }
 
