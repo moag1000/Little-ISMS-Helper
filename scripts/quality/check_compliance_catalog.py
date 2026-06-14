@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
 """
 check_compliance_catalog.py — Static consistency gate for the compliance-catalog
-loader wiring.
+framework wiring.
 
-Background (see docs/COMPLIANCE_CATALOG_ARCHITECTURE.md): catalog loading is wired
-through a single registry + match-statement in
-`src/Service/ComplianceFrameworkLoaderService.php`. Over time this drifted:
-framework-code collisions (ISO-22301 vs ISO22301 vs ISO_22301, BSI_GRUNDSCHUTZ vs
-BSI-GRUNDSCHUTZ, ...), registry entries without a loadable match-arm, and
-competitor product names leaking into shipped catalog/mapping files.
+Background (see docs/COMPLIANCE_CATALOG_ARCHITECTURE.md): framework loading is
+wired through `ComplianceFrameworkLoaderService::getAvailableFrameworks()` (the
+hand-maintained UI list) + a `FrameworkLoaderRegistry` that collects tagged
+`FrameworkLoaderInterface` loaders by `getFrameworkCode()`. Drift between the UI
+list and the loaders means a framework appears installable in the UI but has no
+loader (broken "Load" button). Codes also drifted into spelling collisions
+(ISO-22301 vs ISO22301, BSI_GRUNDSCHUTZ vs BSI-GRUNDSCHUTZ), and competitor names
+leaked into shipped catalog/mapping files.
 
 This gate FAILS (above baseline) on three static defect classes:
 
-  parity:<CODE>            registry code with no match-arm, or match-arm with no
-                           registry entry — code appears installable but isn't,
-                           or vice-versa.
-  collision:<norm>:<raw>   two distinct raw framework-code strings normalise to
-                           the same key (same standard, different spelling) where
-                           the normalised key is a real registry framework.
-  competitor:<path>:<line> banned competitor product name in a catalog/mapping
-                           source file (team constraint — see MEMORY).
+  parity:<CODE>:no-loader   a getAvailableFrameworks() code has no loader whose
+                            getFrameworkCode() returns it (UI lists it, nothing
+                            loads it).
+  collision:<norm>:<raws>   two distinct framework-code spellings normalise to the
+                            same key, where that key is a real registry framework.
+  competitor:<path>:<line>  banned competitor product name in a catalog/mapping
+                            source file (team constraint — see MEMORY).
 
-It is intentionally STATIC. The dynamic check "does every mapping target a
-requirementId that the wired loader actually produces" needs a built DB and lives
-in `app:audit-catalog-mappings` (Task 0.3), not here.
+STATIC by design. The dynamic check "does every mapping target a requirementId the
+loader actually produces" lives in `app:audit-catalog-mappings`, not here.
 
 Baseline-gated like the other scripts/quality/check_*.py gates.
 """
@@ -52,14 +52,22 @@ COMPETITOR_GLOBS = [
     ("fixtures/mappings", "*.yaml"),
 ]
 
-# Framework-code occurrences across PHP. yaml handled separately.
+# Framework-code occurrences across PHP / fixtures (for collision detection).
 RE_CODE_ARROW = re.compile(r"'code'\s*=>\s*'([^']+)'")
 RE_SETCODE = re.compile(r"->setCode\(\s*['\"]([^'\"]+)['\"]")
 RE_FINDONEBY_CODE = re.compile(r"findOneBy\(\s*\[\s*'code'\s*=>\s*'([^']+)'")
 RE_YAML_CODE = re.compile(r"^\s*code:\s*['\"]?([A-Za-z0-9_.\-]+)['\"]?\s*$")
 
-# match-arm in loadFramework(): 'CODE' => $this->loadXCommand,
-RE_MATCH_ARM = re.compile(r"'([^']+)'\s*=>\s*\$this->")
+# Loader code: FrameworkLoaderInterface::getFrameworkCode() — literal or self::CODE.
+RE_GETCODE_LITERAL = re.compile(
+    r"function\s+getFrameworkCode\s*\([^)]*\)\s*:\s*string\s*\{\s*return\s*'([^']+)'",
+    re.DOTALL,
+)
+RE_GETCODE_CONST = re.compile(
+    r"function\s+getFrameworkCode\s*\([^)]*\)\s*:\s*string\s*\{\s*return\s*self::CODE\b",
+    re.DOTALL,
+)
+RE_CONST_CODE = re.compile(r"const\s+CODE\s*=\s*'([^']+)'")
 
 
 def _rel(p: Path) -> Path:
@@ -104,13 +112,31 @@ def load_baseline(path: Path | None) -> set[str]:
     return out
 
 
-def collect_registry(text: str) -> tuple[set[str], set[str]]:
-    """Return (registry_codes, match_arm_codes) from the loader service."""
+def collect_registry_codes(text: str) -> list[str]:
+    """getAvailableFrameworks() literal 'code' => '...' values (variable codes skipped)."""
     avail = _slice_method(text, "function getAvailableFrameworks")
-    load = _slice_method(text, "function loadFramework")
-    registry = set(RE_CODE_ARROW.findall(avail))
-    arms = {c for c in RE_MATCH_ARM.findall(load) if c != "default"}
-    return registry, arms
+    return RE_CODE_ARROW.findall(avail)
+
+
+def collect_loader_codes() -> set[str]:
+    """getFrameworkCode() return values across src/ (literal + self::CODE resolved)."""
+    codes: set[str] = set()
+    for php in (ROOT / "src").rglob("*.php"):
+        try:
+            t = php.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        if "function getFrameworkCode" not in t:
+            continue
+        m = RE_GETCODE_LITERAL.search(t)
+        if m:
+            codes.add(m.group(1))
+            continue
+        if RE_GETCODE_CONST.search(t):
+            cm = RE_CONST_CODE.search(t)
+            if cm:
+                codes.add(cm.group(1))
+    return codes
 
 
 def collect_code_occurrences() -> dict[str, set[str]]:
@@ -121,8 +147,8 @@ def collect_code_occurrences() -> dict[str, set[str]]:
         groups.setdefault(normalize(raw), set()).add(raw)
 
     # NOTE: migrations/ is deliberately NOT scanned — historical migrations
-    # legitimately reference retired alias codes (that is their job). Collision
-    # detection is about LIVE config: src/ + fixtures/.
+    # legitimately reference retired alias codes. Collision detection is about
+    # LIVE config: src/ + fixtures/.
     for php in (ROOT / "src").rglob("*.php"):
         try:
             t = php.read_text(encoding="utf-8", errors="ignore")
@@ -131,10 +157,8 @@ def collect_code_occurrences() -> dict[str, set[str]]:
         for rx in (RE_CODE_ARROW, RE_SETCODE, RE_FINDONEBY_CODE):
             for m in rx.findall(t):
                 add(m)
-    for sub in ("fixtures",):
-        base = ROOT / sub
-        if not base.is_dir():
-            continue
+    base = ROOT / "fixtures"
+    if base.is_dir():
         for y in base.rglob("*.yaml"):
             try:
                 for line in y.read_text(encoding="utf-8", errors="ignore").splitlines():
@@ -146,8 +170,8 @@ def collect_code_occurrences() -> dict[str, set[str]]:
     return groups
 
 
-def find_competitors() -> list[tuple[Path, int, str]]:
-    hits: list[tuple[Path, int, str]] = []
+def find_competitors() -> list[tuple[Path, int]]:
+    hits: list[tuple[Path, int]] = []
     seen: set[Path] = set()
     for sub, pat in COMPETITOR_GLOBS:
         base = ROOT / sub
@@ -160,7 +184,7 @@ def find_competitors() -> list[tuple[Path, int, str]]:
             try:
                 for idx, line in enumerate(f.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
                     if COMPETITOR_RE.search(line):
-                        hits.append((f, idx, COMPETITOR_RE.search(line).group(0)))
+                        hits.append((f, idx))
             except OSError:
                 continue
     return hits
@@ -171,22 +195,21 @@ def compute_violations() -> list[str]:
 
     if not LOADER_SERVICE.is_file():
         violations.append(f"parity:MISSING-LOADER-SERVICE:{_rel(LOADER_SERVICE)}")
-        registry, arms = set(), set()
+        registry_codes: list[str] = []
     else:
         text = LOADER_SERVICE.read_text(encoding="utf-8", errors="ignore")
-        registry, arms = collect_registry(text)
-        for code in sorted(registry - arms):
-            violations.append(f"parity:{code}:registry-without-match-arm")
-        for code in sorted(arms - registry):
-            violations.append(f"parity:{code}:match-arm-without-registry")
+        registry_codes = collect_registry_codes(text)
+        loader_codes = collect_loader_codes()
+        for code in sorted(set(registry_codes)):
+            if code not in loader_codes:
+                violations.append(f"parity:{code}:no-loader")
 
-    registry_norms = {normalize(c) for c in registry}
+    registry_norms = {normalize(c) for c in registry_codes}
     for norm, raws in sorted(collect_code_occurrences().items()):
         if len(raws) > 1 and norm in registry_norms:
-            raw_list = "|".join(sorted(raws))
-            violations.append(f"collision:{norm}:{raw_list}")
+            violations.append(f"collision:{norm}:{'|'.join(sorted(raws))}")
 
-    for path, line, _word in find_competitors():
+    for path, line in find_competitors():
         violations.append(f"competitor:{_rel(path)}:{line}")
 
     return sorted(set(violations))
@@ -205,7 +228,7 @@ def main() -> int:
         args.write_baseline.parent.mkdir(parents=True, exist_ok=True)
         with args.write_baseline.open("w", encoding="utf-8") as fh:
             fh.write("# check_compliance_catalog.py baseline\n")
-            fh.write("# Classes: parity:<code>:<why> | collision:<norm>:<raws> | competitor:<path>:<line>\n")
+            fh.write("# Classes: parity:<code>:no-loader | collision:<norm>:<raws> | competitor:<path>:<line>\n")
             for v in violations:
                 fh.write(v + "\n")
         print(f"check_compliance_catalog: wrote {len(violations)} entries to {args.write_baseline}")
@@ -217,17 +240,17 @@ def main() -> int:
     baselined = total - len(new)
 
     if not new:
-        msg = f"check_compliance_catalog: OK ({total} total, all baselined)"
-        if not args.quiet:
-            msg = f"check_compliance_catalog: OK — {total} known issue(s), {baselined} baselined."
-        print(msg)
+        if args.quiet:
+            print(f"check_compliance_catalog: OK ({total} total, all baselined)")
+        else:
+            print(f"check_compliance_catalog: OK — {total} known issue(s), {baselined} baselined.")
         return 0
 
     print("check_compliance_catalog: VIOLATIONS\n")
     for v in new:
         print(f"FAIL {v}")
     print(f"\ncheck_compliance_catalog: {len(new)} new violation(s) ({baselined} baselined, {total} total).")
-    print("Classes: parity (registry<->match-arm), collision (code spellings), competitor (banned name).")
+    print("Classes: parity (registry code without a loader), collision (code spellings), competitor (banned name).")
     print("To accept existing issues into the baseline: --write-baseline scripts/quality/baselines/compliance_catalog.txt")
     return 1
 

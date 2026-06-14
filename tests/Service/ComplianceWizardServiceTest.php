@@ -484,7 +484,7 @@ class ComplianceWizardServiceTest extends KernelTestCase
         if ($config === null) {
             $this->markTestSkipped('nist_csf wizard requires the "controls" module');
         }
-        $this->assertSame('NIST-CSF', $config['code']);
+        $this->assertSame('NIST-CSF-2.0', $config['code']);
         $this->assertGreaterThanOrEqual(6, count($config['categories']));
     }
 

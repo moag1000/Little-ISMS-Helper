@@ -220,7 +220,7 @@ final class ComplianceWizardService
                 'categories' => $this->bsiProvider->getBsiGrundschutzKernCategories(),
             ],
             'nist_csf' => [
-                'code' => 'NIST-CSF',
+                'code' => 'NIST-CSF-2.0',
                 'name' => 'NIST Cybersecurity Framework 2.0',
                 'description' => 'wizard.nist_csf.description',
                 'icon' => 'shield-check',

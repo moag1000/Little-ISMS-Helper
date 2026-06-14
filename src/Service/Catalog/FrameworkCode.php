@@ -9,27 +9,23 @@ namespace App\Service\Catalog;
  *
  * Background: framework codes drifted into spelling/version collisions
  * (ISO-22301 vs ISO22301 vs ISO_22301, NIS2UMSUCG vs NIS2-UmsuCG, ...). The
- * `ComplianceFrameworkLoaderService` registry + the seed-mapping commands use the
+ * `ComplianceFrameworkLoaderService` registry (getAvailableFrameworks) and the
+ * registry-bound loaders (FrameworkLoaderInterface::getFrameworkCode) use the
  * CANONICAL spellings below; everything else (legacy DB rows, fixture/library
- * framework identifiers) must resolve onto these.
+ * framework identifiers, wizard config) must resolve onto these.
  *
- * Decision (2026-06-13): canonical = what the UI registry + seeds already use.
+ * CANONICAL mirrors the real framework set on main: every getAvailableFrameworks
+ * literal code + the loader-only codes (TISAX is registered via a meta variable,
+ * EUCS is a loader-only mapping target). check_compliance_catalog.py enforces
+ * that every registry code has a loader.
  *
- * This class is consumed by:
- *  - the merge/rename migration that consolidates legacy alias rows,
- *  - the mapping importer (resolve library framework id -> canonical code),
- *  - check_compliance_catalog.py (indirectly — collision baseline must reach 0).
- *
- * NOT covered here (deferred to WS-2.2 per decision — frameworks referenced by
- * mappings but with no loader, kept untouched for now): BAIT, ENISA-EUCS,
- * TISAX-VDA-ISA-6, BSI-GRUNDSCHUTZ-KERN, BSI-GRUNDSCHUTZ-STANDARD, iso27002,
- * iec-isa-62443, nist-csf-1.1, nist-sp800-53r5.
+ * Deferred (separate process frameworks, not aliases): BSI-GRUNDSCHUTZ-KERN,
+ * BSI-GRUNDSCHUTZ-STANDARD. Unknown/no-loader mapping refs handled in WS-2.2.
  */
 final class FrameworkCode
 {
     /**
-     * Canonical framework codes — mirror of ComplianceFrameworkLoaderService
-     * getAvailableFrameworks(). check_compliance_catalog.py parity keeps these in sync.
+     * Canonical framework codes — the real framework set on main.
      *
      * @var list<string>
      */
@@ -57,12 +53,18 @@ final class FrameworkCode
         'TKG-2024',
         'GXP',
         'SOC2',
-        'NIST-CSF',
+        'NIST-CSF-2.0',
         'CIS-CONTROLS',
         'EU-AI-ACT',
         'EU-CRA',
         'PCI-DSS-4.0.1',
         'MRIS-v1.5',
+        // DACH frameworks (added on main via #962, registry-bound)
+        'NISG-AT',
+        'REVDSG-CH',
+        'IKT-MINSTD-CH',
+        // Loader-only mapping target (not surfaced in the UI framework list)
+        'EUCS',
     ];
 
     /**
@@ -79,8 +81,8 @@ final class FrameworkCode
         // BSI IT-Grundschutz — separator drift (underscore is canonical)
         'BSI-GRUNDSCHUTZ' => 'BSI_GRUNDSCHUTZ',
         'BSI-GRUNDSCHUTZ-2024' => 'BSI_GRUNDSCHUTZ',
-        // NIST CSF — the catalogue IS 2.0; canonical code carries no version suffix
-        'NIST-CSF-2.0' => 'NIST-CSF',
+        // NIST CSF — main's canonical code carries the 2.0 suffix
+        'NIST-CSF' => 'NIST-CSF-2.0',
         // SOC 2 — Type II is an attestation flavour, not a separate framework
         'SOC2-TYPE-II' => 'SOC2',
         // German NIS2 transposition — separator/casing drift
@@ -88,6 +90,8 @@ final class FrameworkCode
         'NIS2-UMSUCG' => 'NIS2UMSUCG',
         // KRITIS — DE suffix is redundant
         'KRITIS-DE' => 'KRITIS',
+        // EUCS — ENISA prefix variant collapses to the loader code
+        'ENISA-EUCS' => 'EUCS',
     ];
 
     public static function isCanonical(string $code): bool

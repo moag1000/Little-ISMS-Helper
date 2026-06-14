@@ -13,13 +13,18 @@ use Doctrine\Migrations\AbstractMigration;
  * merged in the WRONG direction (toward ISO22301 / NIST-CSF-2.0 / SOC2-TYPE-II)
  * and did so naively (no requirementId de-dup, no mapping/fulfillment repoint).
  *
- * Decision (2026-06-13): canonical = what the UI registry + seed-mappings use:
+ * Canonical = what the UI registry + registry-bound loaders use on main
+ * (App\Service\Catalog\FrameworkCode):
  *   ISO22301/ISO_22301        -> ISO-22301
- *   NIST-CSF-2.0              -> NIST-CSF
  *   SOC2-TYPE-II             -> SOC2
  *   NIS2-UmsuCG / NIS2-UMSUCG -> NIS2UMSUCG
  *   KRITIS-DE                -> KRITIS
  *   BSI-GRUNDSCHUTZ(-2024)    -> BSI_GRUNDSCHUTZ
+ *   ENISA-EUCS               -> EUCS
+ * NOTE: NIST-CSF-2.0 is the CANONICAL code on main (carries the 2.0 suffix) — it
+ * is NOT merged away. (The earlier wrong-direction 20260506213529 merged toward
+ * NIST-CSF-2.0/ISO22301/SOC2-TYPE-II; this migration reverses the spelling drift
+ * but keeps NIST-CSF-2.0.)
  *
  * Two cases, per alias:
  *   RENAME  — canonical row absent: just rewrite the code. Requirement ids stay,
@@ -30,9 +35,8 @@ use Doctrine\Migrations\AbstractMigration;
  *             (dropping a conflicting duplicate fulfillment first), then delete
  *             the duplicate requirement. Finally drop the alias framework.
  *
- * Pure DML — kept transactional (atomic). NOT touched: deferred frameworks with
- * no loader (BAIT, ENISA-EUCS, TISAX-VDA-ISA-6, BSI-GRUNDSCHUTZ-KERN/-STANDARD,
- * ...) — those are a WS-2.2 decision.
+ * Pure DML — kept transactional (atomic). NOT touched: separate process
+ * frameworks (BSI-GRUNDSCHUTZ-KERN/-STANDARD) and no-loader mapping refs — WS-2.2.
  */
 final class Version20260614120000 extends AbstractMigration
 {
@@ -42,11 +46,11 @@ final class Version20260614120000 extends AbstractMigration
         'ISO_22301' => 'ISO-22301',
         'BSI-GRUNDSCHUTZ' => 'BSI_GRUNDSCHUTZ',
         'BSI-GRUNDSCHUTZ-2024' => 'BSI_GRUNDSCHUTZ',
-        'NIST-CSF-2.0' => 'NIST-CSF',
         'SOC2-TYPE-II' => 'SOC2',
         'NIS2-UmsuCG' => 'NIS2UMSUCG',
         'NIS2-UMSUCG' => 'NIS2UMSUCG',
         'KRITIS-DE' => 'KRITIS',
+        'ENISA-EUCS' => 'EUCS',
     ];
 
     public function getDescription(): string

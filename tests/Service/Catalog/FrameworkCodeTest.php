@@ -64,7 +64,8 @@ final class FrameworkCodeTest extends TestCase
     {
         $this->assertSame('ISO-22301', FrameworkCode::canonicalize('ISO-22301'));
         $this->assertSame('ISO-22301', FrameworkCode::canonicalize('ISO22301'));
-        $this->assertSame('NIST-CSF', FrameworkCode::canonicalize('NIST-CSF-2.0'));
+        $this->assertSame('NIST-CSF-2.0', FrameworkCode::canonicalize('NIST-CSF-2.0'));
+        $this->assertSame('NIST-CSF-2.0', FrameworkCode::canonicalize('NIST-CSF'));
         $this->assertSame('NIS2UMSUCG', FrameworkCode::canonicalize('NIS2-UmsuCG'));
         $this->assertNull(FrameworkCode::canonicalize('BAIT'), 'Deferred framework must not resolve');
     }
