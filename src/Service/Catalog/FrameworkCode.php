@@ -63,7 +63,7 @@ final class FrameworkCode
         'NISG-AT',
         'REVDSG-CH',
         'IKT-MINSTD-CH',
-        // Loader-only mapping target (not surfaced in the UI framework list)
+        // Cloud certification scheme — surfaced in the UI framework list (getAvailableFrameworks)
         'EUCS',
     ];
 
