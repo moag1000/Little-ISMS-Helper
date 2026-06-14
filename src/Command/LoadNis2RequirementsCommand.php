@@ -21,8 +21,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadNis2RequirementsCommand extends Command implements FrameworkLoaderInterface
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoadNis2FullCommand $nis2FullCommand,
+    ) {
         parent::__construct();
     }
 
@@ -89,6 +91,13 @@ class LoadNis2RequirementsCommand extends Command implements FrameworkLoaderInte
         }
         $this->entityManager->flush();
         $io?->success(sprintf('NIS2 requirements: %d created, %d updated, %d skipped', $stats['created'], $stats['updated'], $stats['skipped']));
+
+        // Additively load full Art.N catalogue alongside thematic NIS2-xx.y rows.
+        // The two identifier schemes are disjoint (Art.N vs NIS2-21.x) so there is
+        // no collision. Calling this unconditionally ensures a re-run of the thin
+        // loader also catches up the full catalogue (idempotent).
+        $this->nis2FullCommand->loadFullCatalogue($framework, $update, $io);
+
         return Command::SUCCESS;
     }
 

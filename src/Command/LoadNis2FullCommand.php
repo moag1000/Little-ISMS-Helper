@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -116,17 +117,21 @@ final class LoadNis2FullCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    /**
+     * Load Art.N full catalogue additively into an already-existing framework row.
+     *
+     * Designed to be called from LoadNis2RequirementsCommand after the thematic
+     * NIS2-xx.y rows are persisted, so both identifier schemes coexist on the
+     * same NIS2 framework without collision.
+     *
+     * @return array{created: int, updated: int} counts for logging
+     */
+    public function loadFullCatalogue(ComplianceFramework $framework, bool $update = false, ?SymfonyStyle $io = null): array
     {
-        $io = new SymfonyStyle($input, $output);
-        $framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2']);
-        if ($framework === null) {
-            $io->error('Framework NIS2 not in DB.');
-            return Command::FAILURE;
-        }
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
-        $created = 0; $updated = 0;
+        $created = 0;
+        $updated = 0;
+
         foreach (self::REQUIREMENTS as $reqId => $title) {
             $category = match (true) {
                 str_starts_with($reqId, 'Art.21.2') => 'Art.21(2) Risk-Mgmt-Measures',
@@ -139,6 +144,7 @@ final class LoadNis2FullCommand extends Command
                 str_starts_with($reqId, 'Art.20'), str_starts_with($reqId, 'Art.21'), str_starts_with($reqId, 'Art.23') => 'high',
                 default => 'medium',
             };
+
             $req = $reqRepo->findOneBy(['framework' => $framework, 'requirementId' => $reqId]);
             if ($req === null) {
                 $req = new ComplianceRequirement();
@@ -148,15 +154,45 @@ final class LoadNis2FullCommand extends Command
                 $req->setPriority($priority);
                 $created++;
             } else {
+                if ($update) {
+                    $req->setPriority($priority);
+                }
                 $updated++;
             }
+
             $req->setTitle(mb_substr($title, 0, 250));
-            $req->setDescription(sprintf('NIS2 Directive (EU 2022/2555) / %s — %s. Quelle: Richtlinie (EU) 2022/2555 + ENISA Implementation Guidance + BSI NIS2-UmsuCG.', $reqId, $title));
+            $req->setDescription(sprintf(
+                'NIS2 Directive (EU 2022/2555) / %s — %s. Quelle: Richtlinie (EU) 2022/2555 + ENISA Implementation Guidance + BSI NIS2-UmsuCG.',
+                $reqId,
+                $title,
+            ));
             $req->setCategory($category);
             $this->em->persist($req);
         }
+
         $this->em->flush();
-        $io->success(sprintf('NIS2 Directive: %d created, %d updated. Total: %d.', $created, $updated, count(self::REQUIREMENTS)));
+        $io?->success(sprintf(
+            'NIS2 full Art.N catalogue: %d created, %d updated. Total: %d.',
+            $created,
+            $updated,
+            count(self::REQUIREMENTS),
+        ));
+
+        return ['created' => $created, 'updated' => $updated];
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2']);
+        if ($framework === null) {
+            $io->error('Framework NIS2 not in DB. Run app:load-nis2-requirements first.');
+            return Command::FAILURE;
+        }
+
+        $this->loadFullCatalogue($framework, false, $io);
+
         return Command::SUCCESS;
     }
 }
