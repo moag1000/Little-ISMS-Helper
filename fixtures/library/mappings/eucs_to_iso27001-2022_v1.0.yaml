@@ -1,3 +1,4 @@
+# TODO: EUCS-A1.. ids are a non-authentic scheme; remap to real EUCS control ids (OIS-01 etc.) using an authoritative EUCS<->ISO27001 crosswalk.
 schema_version: '1.1'
 library:
   type: mapping

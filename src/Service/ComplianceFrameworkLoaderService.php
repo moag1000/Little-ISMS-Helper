@@ -490,6 +490,20 @@ final class ComplianceFrameworkLoaderService
                 'icon' => '🇨🇭',
                 'required_modules' => ['compliance', 'controls', 'risks'],
             ],
+            [
+                'code' => 'EUCS',
+                'name' => 'EUCS — European Cybersecurity Certification Scheme for Cloud Services (ENISA)',
+                'description' => 'ENISA European Cybersecurity Certification Scheme for Cloud Services (EUCS) — candidate scheme under the EU Cybersecurity Act (Regulation (EU) 2019/881). 120 controls across 20 categories. Assurance levels: Basic, Substantial, High.',
+                'industry' => 'cloud_services',
+                'regulatory_body' => 'ENISA',
+                'mandatory' => false,
+                'applicability' => 'voluntary',
+                'applicability_condition_key' => null,
+                'version' => 'Candidate scheme (2020 draft)',
+                'loaded' => in_array('EUCS', $loadedCodes),
+                'icon' => 'asset-cloud',
+                'required_modules' => ['compliance', 'controls'],
+            ],
         ];
     }
 
