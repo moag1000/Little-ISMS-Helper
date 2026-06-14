@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -145,18 +146,24 @@ final class LoadGdprFullCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new SymfonyStyle($input, $output);
-        $framework = $this->frameworkRepository->findOneBy(['code' => 'GDPR']);
-        if ($framework === null) {
-            $io->error('Framework GDPR not in DB.');
-            return Command::FAILURE;
-        }
-
+    /**
+     * Load all GDPR Articles (Art.1–Art.99) into the given framework.
+     * Idempotent: existing rows are updated in-place (title/description/category);
+     * no duplicates are created regardless of how many times this is called.
+     *
+     * Called by LoadGdprRequirementsCommand so the full article catalogue is
+     * always present alongside the thematic GDPR-* requirements.
+     *
+     * @return array{created: int, updated: int, skipped: int}
+     */
+    public function loadFullCatalogue(
+        ComplianceFramework $framework,
+        bool $update = false,
+        ?SymfonyStyle $io = null,
+    ): array {
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
-        $created = 0; $updated = 0;
+        $stats = ['created' => 0, 'updated' => 0, 'skipped' => 0];
+
         foreach (self::ARTICLES as $reqId => $title) {
             $artNum = (int) substr($reqId, 4);
             $chapter = match (true) {
@@ -179,17 +186,53 @@ final class LoadGdprFullCommand extends Command
                 $req->setRequirementId($reqId);
                 $req->setRequirementType('core');
                 $req->setPriority($artNum >= 24 && $artNum <= 39 ? 'high' : 'medium');
-                $created++;
+                $req->setTitle($title);
+                $req->setDescription(sprintf(
+                    'GDPR (Regulation EU 2016/679) / %s — %s. Quelle: Verordnung (EU) 2016/679 (DSGVO), Amtliches Werk der EU.',
+                    $reqId,
+                    $title,
+                ));
+                $req->setCategory($chapter);
+                $this->em->persist($req);
+                $stats['created']++;
+            } elseif ($update) {
+                $req->setTitle($title);
+                $req->setDescription(sprintf(
+                    'GDPR (Regulation EU 2016/679) / %s — %s. Quelle: Verordnung (EU) 2016/679 (DSGVO), Amtliches Werk der EU.',
+                    $reqId,
+                    $title,
+                ));
+                $req->setCategory($chapter);
+                $stats['updated']++;
             } else {
-                $updated++;
+                $stats['skipped']++;
             }
-            $req->setTitle($title);
-            $req->setDescription(sprintf('GDPR (Regulation EU 2016/679) / %s — %s. Quelle: Verordnung (EU) 2016/679 (DSGVO), Amtliches Werk der EU.', $reqId, $title));
-            $req->setCategory($chapter);
-            $this->em->persist($req);
         }
         $this->em->flush();
-        $io->success(sprintf('GDPR: %d created, %d updated. Total: %d Articles.', $created, $updated, count(self::ARTICLES)));
+
+        $io?->success(sprintf(
+            'GDPR full catalogue: %d created, %d updated, %d skipped. Total: %d Articles.',
+            $stats['created'],
+            $stats['updated'],
+            $stats['skipped'],
+            count(self::ARTICLES),
+        ));
+
+        return $stats;
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'GDPR']);
+        if ($framework === null) {
+            $io->error('Framework GDPR not in DB.');
+            return Command::FAILURE;
+        }
+
+        $this->loadFullCatalogue($framework, false, $io);
+
         return Command::SUCCESS;
     }
 }

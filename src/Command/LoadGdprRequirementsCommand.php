@@ -22,8 +22,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadGdprRequirementsCommand extends Command implements FrameworkLoaderInterface
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoadGdprFullCommand $loadGdprFullCommand,
+    ) {
         parent::__construct();
     }
 
@@ -64,9 +66,11 @@ class LoadGdprRequirementsCommand extends Command implements FrameworkLoaderInte
                 $framework->setUpdatedAt(new DateTimeImmutable());
                 $this->entityManager->flush();
                 $io?->warning(sprintf(
-                    'Framework GDPR already has %d requirements loaded. Skipping to avoid duplicates.',
+                    'Framework GDPR already has %d requirements loaded. Skipping thematic requirements to avoid duplicates.',
                     count($existingRequirements)
                 ));
+                // Still populate the full Art.1-99 catalogue additively (idempotent).
+                $this->loadGdprFullCommand->loadFullCatalogue($framework, $update, $io);
                 return Command::SUCCESS;
             }
 
@@ -94,12 +98,17 @@ class LoadGdprRequirementsCommand extends Command implements FrameworkLoaderInte
             $this->entityManager->flush();
             $this->entityManager->commit();
 
-            $io?->success(sprintf('Successfully loaded %d GDPR requirements', count($requirements)));
+            $io?->success(sprintf('Successfully loaded %d GDPR thematic requirements', count($requirements)));
         } catch (Exception $e) {
             $this->entityManager->rollback();
             $io?->error('Failed to load GDPR requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
+
+        // Additively populate the full Art.1-99 article catalogue. The Art.* IDs
+        // are disjoint from the thematic GDPR-* IDs, so no collision is possible.
+        $this->loadGdprFullCommand->loadFullCatalogue($framework, $update, $io);
+
         return Command::SUCCESS;
     }
 
