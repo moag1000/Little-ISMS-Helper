@@ -518,6 +518,10 @@ jobs:
         # in_request runner (the default) → job hangs at "pending". Use the
         # JobDispatcher facade instead (fixed 7 such sites).
         run: python3 scripts/quality/check_no_direct_job_messenger.py --quiet
+      - name: "Gate 58: compliance-catalog wiring consistency"
+        # Registry<->match parity, framework-code collisions, competitor names in
+        # catalog/mapping sources. See docs/COMPLIANCE_CATALOG_ARCHITECTURE.md.
+        run: python3 scripts/quality/check_compliance_catalog.py --baseline scripts/quality/baselines/compliance_catalog.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

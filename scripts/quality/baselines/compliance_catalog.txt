@@ -1,0 +1,2 @@
+# check_compliance_catalog.py baseline
+# Classes: parity:<code>:<why> | collision:<norm>:<raws> | competitor:<path>:<line>

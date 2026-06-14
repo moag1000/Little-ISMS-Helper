@@ -121,7 +121,7 @@ final class ComplianceWizardServiceBsiBcmIntegrationTest extends KernelTestCase
 
         $em = static::getContainer()->get('doctrine.orm.entity_manager');
         $framework = $em->getRepository(ComplianceFramework::class)
-            ->findOneBy(['code' => 'ISO_22301']);
+            ->findOneBy(['code' => 'ISO-22301']);
 
         // getIso22301Categories() calls buildBcmPolicyWizardCategory() internally.
         $categories = $isoProvider->getIso22301Categories();
@@ -167,7 +167,7 @@ final class ComplianceWizardServiceBsiBcmIntegrationTest extends KernelTestCase
         $bsiFramework = $em->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
         $bcmFramework = $em->getRepository(ComplianceFramework::class)
-            ->findOneBy(['code' => 'ISO_22301']);
+            ->findOneBy(['code' => 'ISO-22301']);
 
         // For frameworks not active in this kernel, the builders MUST return
         // null. For frameworks that ARE active, the test exercises the

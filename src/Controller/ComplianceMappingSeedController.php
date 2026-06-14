@@ -65,7 +65,7 @@ class ComplianceMappingSeedController extends AbstractController
                 'source_label' => 'SOC 2 Trust Services Criteria',
                 'target_label' => 'ISO/IEC 27001:2022 Annex A',
                 'mapping_count' => 38,
-                'rationale_source' => 'AICPA Trust Services Criteria + Vanta/Drata Cross-Refs',
+                'rationale_source' => 'AICPA Trust Services Criteria + ISO/IEC 27001:2022 Annex A',
                 'icon' => 'ui-globe',
             ],
             [
