@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -108,19 +109,28 @@ final class LoadIso27701FullCommand extends Command
         parent::__construct();
     }
 
-    #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new SymfonyStyle($input, $output);
-        $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO27701']);
-        if ($framework === null) {
-            $io->error('Framework ISO27701 not in DB.');
-            return Command::FAILURE;
-        }
-
+    /**
+     * Load the full Annex A/B catalogue + PIMS clauses (unprefixed IDs) for the
+     * given framework row. Idempotent: uses findOneBy before every insert so
+     * re-runs only update titles/descriptions.
+     *
+     * Called from LoadIso27701RequirementsCommand after the prefixed thin-loader
+     * completes so that both ID namespaces are always in sync:
+     *   - thin:  27701-A.7.2.1  (prefixed, for cross-framework mapping)
+     *   - full:       A.7.2.1  (unprefixed, canonical Annex reference)
+     *
+     * @return array{created: int, updated: int, total: int}
+     */
+    public function loadFullCatalogue(
+        ComplianceFramework $framework,
+        bool $update = false,
+        ?SymfonyStyle $io = null,
+    ): array {
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
-        $created = 0; $updated = 0;
+        $created = 0;
+        $updated = 0;
         $combined = self::ANNEX_A_CONTROLLER + self::ANNEX_B_PROCESSOR + self::CLAUSES;
+
         foreach ($combined as $reqId => $title) {
             $category = match (true) {
                 str_starts_with($reqId, 'A.') => 'Annex-A-Controller',
@@ -135,17 +145,53 @@ final class LoadIso27701FullCommand extends Command
                 $req->setRequirementType('core');
                 $req->setPriority('medium');
                 $created++;
-            } else {
+            } elseif ($update) {
                 $updated++;
+            } else {
+                // skip existing when not in update mode
+                continue;
             }
+
             $req->setTitle($title);
             $req->setDescription(sprintf('ISO/IEC 27701:2025 / %s — %s.', $reqId, $title));
             $req->setCategory($category);
             $this->em->persist($req);
         }
+
         $this->em->flush();
-        $io->success(sprintf('ISO/IEC 27701:2025: %d created, %d updated. Total: %d (%d Annex A controller + %d Annex B processor + %d clauses).',
-            $created, $updated, count($combined), count(self::ANNEX_A_CONTROLLER), count(self::ANNEX_B_PROCESSOR), count(self::CLAUSES)));
+
+        $total = count($combined);
+        $io?->note(sprintf(
+            'ISO/IEC 27701:2025 full catalogue: %d created, %d updated. Total: %d (%d Annex A + %d Annex B + %d clauses).',
+            $created,
+            $updated,
+            $total,
+            count(self::ANNEX_A_CONTROLLER),
+            count(self::ANNEX_B_PROCESSOR),
+            count(self::CLAUSES),
+        ));
+
+        return ['created' => $created, 'updated' => $updated, 'total' => $total];
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO27701']);
+        if ($framework === null) {
+            $io->error('Framework ISO27701 not in DB.');
+            return Command::FAILURE;
+        }
+
+        $stats = $this->loadFullCatalogue($framework, false, $io);
+        $io->success(sprintf(
+            'ISO/IEC 27701:2025 full catalogue loaded: %d created, %d updated, %d total.',
+            $stats['created'],
+            $stats['updated'],
+            $stats['total'],
+        ));
+
         return Command::SUCCESS;
     }
 }
