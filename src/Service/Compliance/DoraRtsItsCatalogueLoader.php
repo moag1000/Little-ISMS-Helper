@@ -276,9 +276,9 @@ final class DoraRtsItsCatalogueLoader
             // C. JC 2024 — RTS on Incident Reporting Content + Templates (Art.20(a) DORA)
             //    + ITS on reporting format (Art.20(b) DORA) -> CIR (EU) 2024/2955
             // ================================================================
-            'JC 2024 — RTS/ITS on incident reporting content and templates (Art.20 DORA, CIR 2024/2955)' => [
-                'primary_source_url' => 'https://eur-lex.europa.eu/eli/reg_impl/2024/2955/oj',
-                'category' => 'RTS/ITS — Incident Reporting Templates (Art.20 DORA / CIR 2024/2955)',
+            'CDR 2025/301 (RTS) + CIR 2025/302 (ITS) — incident reporting content and templates (Art.20 DORA)' => [
+                'primary_source_url' => 'https://eur-lex.europa.eu/eli/reg_del/2025/301/oj',
+                'category' => 'RTS/ITS — Incident Reporting (Art.20 DORA / CDR 2025/301 + CIR 2025/302)',
                 'priority' => 'critical',
                 'lifecycle_state' => 'published',
                 'items' => [
@@ -372,9 +372,9 @@ final class DoraRtsItsCatalogueLoader
             // ================================================================
             // F. JC 2024 — RTS on Threat-Led Penetration Testing (Art.26(11) DORA)
             // ================================================================
-            'JC 2024 — RTS on Threat-Led Penetration Testing (Art.26(11) DORA)' => [
-                'primary_source_url' => 'https://www.eba.europa.eu/regulation-and-policy/operational-resilience/joint-rts-on-threat-led-penetration-testing-tlpt',
-                'category' => 'RTS — Threat-Led Penetration Testing (TLPT, Art.26(11) DORA)',
+            'CDR 2025/1190 — RTS on Threat-Led Penetration Testing (Art.26(11) DORA)' => [
+                'primary_source_url' => 'https://eur-lex.europa.eu/eli/reg_del/2025/1190/oj',
+                'category' => 'RTS — Threat-Led Penetration Testing (TLPT, CDR 2025/1190, Art.26(11) DORA)',
                 'priority' => 'high',
                 'lifecycle_state' => 'published',
                 'items' => [
@@ -397,9 +397,9 @@ final class DoraRtsItsCatalogueLoader
             // ================================================================
             // G. JC 2024 — RTS on Oversight Framework (Art.41(1) DORA)
             // ================================================================
-            'JC 2024 — RTS on harmonisation of conditions for oversight (Art.41(1) DORA)' => [
-                'primary_source_url' => 'https://www.eba.europa.eu/regulation-and-policy/operational-resilience/joint-rts-on-harmonisation-of-conditions-for-oversight',
-                'category' => 'RTS — Oversight Framework for Critical ICT TPPs (Art.41 DORA)',
+            'CDR 2025/295 (oversight conditions) + CDR 2025/420 (JET composition) — Art.41 DORA' => [
+                'primary_source_url' => 'https://eur-lex.europa.eu/eli/reg_del/2025/295/oj',
+                'category' => 'RTS — Oversight Framework for Critical ICT TPPs (CDR 2025/295 + 2025/420, Art.41 DORA)',
                 'priority' => 'medium',
                 'lifecycle_state' => 'published',
                 'items' => [
@@ -434,6 +434,44 @@ final class DoraRtsItsCatalogueLoader
                     'RTS-TPP-Policy-Art.7' => 'Exit strategies and termination rights — orderly exit plan, data portability',
                     'RTS-TPP-Policy-Art.8' => 'Concentration risk monitoring — quantitative metrics and reporting to management body',
                     'RTS-TPP-Policy-Art.9' => 'Final provisions — application date',
+                ],
+            ],
+
+            // ================================================================
+            // H2. CDR (EU) 2024/1502 — RTS on criteria for designating critical
+            //     ICT third-party service providers (Art.31(6) DORA)
+            // ================================================================
+            'CDR 2024/1502 — RTS on criteria for designating critical ICT TPPs (Art.31(6) DORA)' => [
+                'primary_source_url' => 'https://eur-lex.europa.eu/eli/reg_del/2024/1502/oj',
+                'category' => 'RTS — CTPP Designation Criteria (CDR 2024/1502)',
+                'priority' => 'high',
+                'lifecycle_state' => 'published',
+                'items' => [
+                    'RTS-CTPP-Crit-Art.1' => 'Subject matter — criteria for designating critical ICT third-party service providers',
+                    'RTS-CTPP-Crit-Art.2' => 'Systemic impact — number and significance of financial entities relying on the provider',
+                    'RTS-CTPP-Crit-Art.3' => 'Systemic character / importance of the financial entities served',
+                    'RTS-CTPP-Crit-Art.4' => 'Reliance on the provider for critical or important functions',
+                    'RTS-CTPP-Crit-Art.5' => 'Substitutability — degree of dependence and migration difficulty',
+                    'RTS-CTPP-Crit-Art.6' => 'Quantitative relevance thresholds and assessment methodology',
+                    'RTS-CTPP-Crit-Art.7' => 'Final provisions — application date',
+                ],
+            ],
+
+            // ================================================================
+            // H3. CDR (EU) 2024/1505 — oversight fees charged to critical ICT
+            //     third-party service providers (Art.43(2) DORA)
+            // ================================================================
+            'CDR 2024/1505 — oversight fees charged to critical ICT TPPs (Art.43(2) DORA)' => [
+                'primary_source_url' => 'https://eur-lex.europa.eu/eli/reg_del/2024/1505/oj',
+                'category' => 'CDR — Oversight Fees for CTPPs (CDR 2024/1505)',
+                'priority' => 'medium',
+                'lifecycle_state' => 'published',
+                'items' => [
+                    'CDR-Oversight-Fees-Art.1' => 'Subject matter — determination of oversight fees charged by the Lead Overseer to CTPPs',
+                    'CDR-Oversight-Fees-Art.2' => 'Expenditure to be recovered through oversight fees',
+                    'CDR-Oversight-Fees-Art.3' => 'Method for calculating the fee per CTPP (applicable turnover basis)',
+                    'CDR-Oversight-Fees-Art.4' => 'Payment terms, invoicing and reimbursement',
+                    'CDR-Oversight-Fees-Art.5' => 'Final provisions — application date',
                 ],
             ],
 
