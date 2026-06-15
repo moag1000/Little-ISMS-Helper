@@ -3,6 +3,62 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.12.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.11.0...v3.12.0) (2026-06-14)
+
+
+### Added
+
+* **bsi:** CRT-corroboration of heuristic ISO↔BSI mappings (WS-5b stage 1) ([#926](https://github.com/moag1000/Little-ISMS-Helper/issues/926)) ([b1a5955](https://github.com/moag1000/Little-ISMS-Helper/commit/b1a5955e56b8aaa131b100bfe1b71c61fa32c2bd))
+* **bsi:** ISO 27001 → BSI IT-Grundschutz gap (honest, guided, tour-ready) ([#924](https://github.com/moag1000/Little-ISMS-Helper/issues/924)) ([19792c0](https://github.com/moag1000/Little-ISMS-Helper/commit/19792c098e85aa685636ba0bb66148144b909477))
+* **catalogue:** complete BSI IT-Grundschutz 2023 (Basis+Standard+Hoch, ~1816 Anforderungen from official XML) + fix obsolete Baustein IDs ([#946](https://github.com/moag1000/Little-ISMS-Helper/issues/946)) ([e88383c](https://github.com/moag1000/Little-ISMS-Helper/commit/e88383c772024ac3ffb0282eb8d906a9f4a05953))
+* **compliance:** auto-apply panel verdicts at setup so quality grades + deprecations surface in the UI ([#956](https://github.com/moag1000/Little-ISMS-Helper/issues/956)) ([f31a7ba](https://github.com/moag1000/Little-ISMS-Helper/commit/f31a7ba1a7289a2974f2b9ad71f5b31e4056802f))
+* **compliance:** catalog consistency gate + canonical FrameworkCode + alias-merge migration ([#963](https://github.com/moag1000/Little-ISMS-Helper/issues/963)) ([51eb285](https://github.com/moag1000/Little-ISMS-Helper/commit/51eb2854228b4b57f5c4647a5c7d525bc5a56622))
+* **eucs:** full ENISA EUCS control catalogue (~120 controls) + registry surface ([#970](https://github.com/moag1000/Little-ISMS-Helper/issues/970)) ([252b8ef](https://github.com/moag1000/Little-ISMS-Helper/commit/252b8efe640456d17ebf8bfa373f8f61e97aa91c))
+* **framework:** add DACH frameworks — Austrian NISG, Swiss revDSG + IKT-Minimalstandard (catalogues + mappings, registry-bound) ([#962](https://github.com/moag1000/Little-ISMS-Helper/issues/962)) ([ccae7a9](https://github.com/moag1000/Little-ISMS-Helper/commit/ccae7a965ef131500a44dd5d7be895cbb82c9fce))
+* **gdpr:** additively load full Art.1-99 catalogue alongside thematic requirements ([#965](https://github.com/moag1000/Little-ISMS-Helper/issues/965)) ([a09d833](https://github.com/moag1000/Little-ISMS-Helper/commit/a09d8337cc306aea94416d81d5eb165f780d28ce))
+* **iso27701:** additively load full Annex-A/B catalogue alongside prefixed requirements ([#967](https://github.com/moag1000/Little-ISMS-Helper/issues/967)) ([bdebe6d](https://github.com/moag1000/Little-ISMS-Helper/commit/bdebe6dfa77c7ba50694429b374c9a852d3db9bb))
+* **mapping:** BSI-C5:2026↔ISO 27001 AI-expert-panel verdicts + completeness candidates ([#943](https://github.com/moag1000/Little-ISMS-Helper/issues/943)) ([8e1892c](https://github.com/moag1000/Little-ISMS-Helper/commit/8e1892c431fb377d5e04374f6a51ae01d0550634))
+* **mapping:** BSI-C5:2026↔NIS2 AI-expert-panel verdicts + completeness candidates ([#944](https://github.com/moag1000/Little-ISMS-Helper/issues/944)) ([7d4c5b7](https://github.com/moag1000/Little-ISMS-Helper/commit/7d4c5b70fb0a99190c2dc0b91134c3c3952336f9))
+* **mapping:** BSI-C5↔EUCS AI-expert-panel verdicts + completeness candidates ([#940](https://github.com/moag1000/Little-ISMS-Helper/issues/940)) ([0ddcf12](https://github.com/moag1000/Little-ISMS-Helper/commit/0ddcf121377547d9f3acdc7d137bcea2fbb6cb9a))
+* **mapping:** DACH+EU Tier-A mapping quality — C5/GDPR/DORA/NIST (P3) ([#934](https://github.com/moag1000/Little-ISMS-Helper/issues/934)) ([8020515](https://github.com/moag1000/Little-ISMS-Helper/commit/802051540fb39d19160ffc62d793d8d490e4343b))
+* **mapping:** depth pass — promote 198 panel-validated correspondences into operational mappings (multi-anchor) ([#947](https://github.com/moag1000/Little-ISMS-Helper/issues/947)) ([72b9620](https://github.com/moag1000/Little-ISMS-Helper/commit/72b9620526f04c69034c21d39eea53027a299fe3))
+* **mapping:** depth pass round-2 — +63 validated multi-anchor correspondences ([#955](https://github.com/moag1000/Little-ISMS-Helper/issues/955)) ([80aa989](https://github.com/moag1000/Little-ISMS-Helper/commit/80aa9895bbfe03678ed18cf2d85025dc44e7342d))
+* **mapping:** DORA RTS/ITS (Level-2) → ISO 27001 — audit-detail mapping depth ([#949](https://github.com/moag1000/Little-ISMS-Helper/issues/949)) ([75a7489](https://github.com/moag1000/Little-ISMS-Helper/commit/75a74898670c60cc26125cb372726ba74af08099))
+* **mapping:** DORA↔ISO 27001 quality — ID-fix + AI-expert-panel verdicts ([#935](https://github.com/moag1000/Little-ISMS-Helper/issues/935)) ([b3c2a86](https://github.com/moag1000/Little-ISMS-Helper/commit/b3c2a865bada7dae1e20e42e9777f9e4962b933d))
+* **mapping:** EU-AI-Act↔ISO 42001 quality — AI-expert-panel verdicts ([#937](https://github.com/moag1000/Little-ISMS-Helper/issues/937)) ([7ec44a4](https://github.com/moag1000/Little-ISMS-Helper/commit/7ec44a4b5c4ca9cfdc655caf312dc5658c5907a7))
+* **mapping:** EU-CRA↔NIS2 quality — codes-guard + AI-expert-panel verdicts ([#936](https://github.com/moag1000/Little-ISMS-Helper/issues/936)) ([2dea2eb](https://github.com/moag1000/Little-ISMS-Helper/commit/2dea2eb6306c61800a3097c2f34b30b0abd23297))
+* **mapping:** EUCS↔ISO 27001 AI-expert-panel verdicts + completeness candidates ([#939](https://github.com/moag1000/Little-ISMS-Helper/issues/939)) ([cf5e62f](https://github.com/moag1000/Little-ISMS-Helper/commit/cf5e62fb89df302ad7bbcf96e20e91a26dadbfc9))
+* **mapping:** GDPR↔ISO 27018 AI-expert-panel verdicts + completeness candidates ([#941](https://github.com/moag1000/Little-ISMS-Helper/issues/941)) ([8169b63](https://github.com/moag1000/Little-ISMS-Helper/commit/8169b636bfaef25132107e30b192aeab25a93622))
+* **mapping:** generalize mapping-quality pipeline (P2) ([#929](https://github.com/moag1000/Little-ISMS-Helper/issues/929)) ([372e237](https://github.com/moag1000/Little-ISMS-Helper/commit/372e237fbe675e50914042bc063277db5aecd660))
+* **mapping:** KRITIS-DachG↔NIS2-UmsuCG AI-expert-panel verdicts + completeness candidates ([#942](https://github.com/moag1000/Little-ISMS-Helper/issues/942)) ([503e8ca](https://github.com/moag1000/Little-ISMS-Helper/commit/503e8ca9451e8779e0e5d02078b5b31276efa59e))
+* **mapping:** NIS2-UmsuCG↔DORA AI-expert-panel verdicts + completeness candidates ([#945](https://github.com/moag1000/Little-ISMS-Helper/issues/945)) ([ed8d005](https://github.com/moag1000/Little-ISMS-Helper/commit/ed8d00579f412f8ed556cd90409021369f348fda))
+* **mapping:** NIS2↔ISO 27001 quality — ID-fix + AI-expert-panel verdicts ([#938](https://github.com/moag1000/Little-ISMS-Helper/issues/938)) ([0728ab9](https://github.com/moag1000/Little-ISMS-Helper/commit/0728ab9fdf143d05a450a543e8f60605691b7686))
+* **mapping:** panel-verdict quality evidence for 6 more mappings (DORA-RTS, TISAX↔Grundschutz, Grundschutz↔NIS2/C5, AI-Act↔NIS2/GDPR) ([#953](https://github.com/moag1000/Little-ISMS-Helper/issues/953)) ([7bdcd86](https://github.com/moag1000/Little-ISMS-Helper/commit/7bdcd868b3d68962cc265cdb1e523c9e0cc60158))
+* **nis2:** additively load full Art.N catalogue alongside thematic requirements ([#966](https://github.com/moag1000/Little-ISMS-Helper/issues/966)) ([848b48d](https://github.com/moag1000/Little-ISMS-Helper/commit/848b48de8e2f0a7126eae6367c82522636355bbc))
+* **nis2:** NIS2↔BSI mapping quality (P1) ([#928](https://github.com/moag1000/Little-ISMS-Helper/issues/928)) ([ca00638](https://github.com/moag1000/Little-ISMS-Helper/commit/ca00638513844504f566bb4df609b4d014928701))
+
+
+### Fixed
+
+* **compliance:** load DORA RTS/ITS via the framework registry so Level-2 mappings resolve ([#951](https://github.com/moag1000/Little-ISMS-Helper/issues/951)) ([049964f](https://github.com/moag1000/Little-ISMS-Helper/commit/049964f813ac84c079675ab6f88ea2210a321bed))
+* **compliance:** registry-bind full C5/NIST catalogues so their mappings resolve ([#952](https://github.com/moag1000/Little-ISMS-Helper/issues/952)) ([6c8a83a](https://github.com/moag1000/Little-ISMS-Helper/commit/6c8a83aefac63fda575d3955c428431c7e21653c))
+* **dora:** complete RTS/ITS Level-2 catalogue — add CTPP designation + oversight fees, correct OJ numbers ([#964](https://github.com/moag1000/Little-ISMS-Helper/issues/964)) ([e7501ca](https://github.com/moag1000/Little-ISMS-Helper/commit/e7501cae3c8caa3c1ed89f89e58f724eac031f25))
+* **mapping:** correct framework-code mismatches so cross-framework mappings resolve at runtime ([#957](https://github.com/moag1000/Little-ISMS-Helper/issues/957)) ([7dc8dfd](https://github.com/moag1000/Little-ISMS-Helper/commit/7dc8dfd59a98154504db4e7065149cf5f6615e38))
+* **modules:** enforce vulnerability_intel gate on Vulnerability + ThreatIntelligence controllers ([#921](https://github.com/moag1000/Little-ISMS-Helper/issues/921)) ([3b7b318](https://github.com/moag1000/Little-ISMS-Helper/commit/3b7b3181e94f7875eba178e29d6db91b6b387f7a))
+* **quick-fix:** never drop Doctrine/Messenger infra tables on destructive force (B2) ([#948](https://github.com/moag1000/Little-ISMS-Helper/issues/948)) ([2325eac](https://github.com/moag1000/Little-ISMS-Helper/commit/2325eac9f40defb028ed7bfb97e1c45b48d3f77f))
+* **quick-fix:** schema-repair hardening — 10 safety findings (QF-1..QF-10) ([#927](https://github.com/moag1000/Little-ISMS-Helper/issues/927)) ([19de2c3](https://github.com/moag1000/Little-ISMS-Helper/commit/19de2c3a3318e2524e4ba18f6e2f0c15c7cdc720))
+
+
+### Changed
+
+* **notifications:** observability logging for DomainEventNotifier rule engine ([#920](https://github.com/moag1000/Little-ISMS-Helper/issues/920)) ([f564582](https://github.com/moag1000/Little-ISMS-Helper/commit/f56458236a1e7023ec55ef484a47367e05694e4a))
+
+
+### Documentation
+
+* **catalogue:** single-source-of-truth map + deprecate superseded legacy loaders ([#954](https://github.com/moag1000/Little-ISMS-Helper/issues/954)) ([ecaa030](https://github.com/moag1000/Little-ISMS-Helper/commit/ecaa030fab4d1e84b9fb0a07bdbae410316ae6c8))
+* **compliance:** decision-ready dangling-mapping inventory ([#969](https://github.com/moag1000/Little-ISMS-Helper/issues/969)) ([09c6c0a](https://github.com/moag1000/Little-ISMS-Helper/commit/09c6c0a73b66c59ddaf9f51a201ced134e758661))
+
 ## [3.11.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.10.0...v3.11.0) (2026-06-07)
 
 
