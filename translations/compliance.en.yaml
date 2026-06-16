@@ -122,6 +122,7 @@ compliance:
         low: Low
     manage_frameworks: __compliance.manage_frameworks
     manage_frameworks_subtitle: __compliance.manage_frameworks_subtitle
+    load_screen_intro: 'Loading a framework copies its full requirement catalogue into your organisation so you can assess, map and reuse it. Non-destructive; safe to run at any time.'
     framework_statistics: __compliance.framework_statistics
     total_available: __compliance.total_available
     loaded: __compliance.loaded
