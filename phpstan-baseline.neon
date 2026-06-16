@@ -205,6 +205,24 @@ parameters:
 			path: src/Command/ImportMappingCsvCommand.php
 
 		-
+			message: '#^Parameter \#1 \$array \(non\-empty\-list\<non\-falsy\-string\>\) to function array_filter does not contain falsy values, the array will always stay the same\.$#'
+			identifier: arrayFilter.same
+			count: 1
+			path: src/Command/AuditCatalogMappingsCommand.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Command/AuditCatalogMappingsCommand.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/Command/AuditCatalogMappingsCommand.php
+
+		-
 			message: '#^Method App\\Service\\DashboardStatisticsService\:\:getManagementKPIs\(\) invoked with 1 parameter, 0 required\.$#'
 			identifier: arguments.count
 			count: 1

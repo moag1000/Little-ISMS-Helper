@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Catalog\FrameworkCode;
 use App\Service\ComplianceFrameworkLoaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -218,6 +219,15 @@ final class AuditCatalogMappingsCommand extends Command
         $files = glob($dir . '/*.csv') ?: [];
         $out = ['file_count' => count($files), 'files' => [], 'unresolved_frameworks' => []];
 
+        // Build a per-framework list of all produced requirement IDs for prefix matching.
+        // Keys: canonicalCode => list<requirementId>
+        /** @var array<string, list<string>> $producedByCodeList */
+        $producedByCodeList = [];
+        foreach (array_keys($produced) as $pair) {
+            [$code, $rid] = explode('::', $pair, 2);
+            $producedByCodeList[$code][] = $rid;
+        }
+
         foreach ($files as $file) {
             $rows = $this->readCsv($file);
             if ($rows === []) {
@@ -241,10 +251,10 @@ final class AuditCatalogMappingsCommand extends Command
                     $out['unresolved_frameworks'][$tgtFw] = true;
                 }
                 $total++;
-                if ($srcCode === null || !isset($produced[$srcCode . '::' . $s])) {
+                if ($srcCode === null || !$this->resolveRequirementId($srcCode, $s, $produced, $producedByCodeList)) {
                     $danglingSrc[] = $srcFw . ':' . $s;
                 }
-                if ($tgtCode === null || !isset($produced[$tgtCode . '::' . $t])) {
+                if ($tgtCode === null || !$this->resolveRequirementId($tgtCode, $t, $produced, $producedByCodeList)) {
                     $danglingTgt[] = $tgtFw . ':' . $t;
                 }
             }
@@ -261,6 +271,136 @@ final class AuditCatalogMappingsCommand extends Command
     }
 
     /**
+     * Mirror of ImportMappingCsvCommand::getRequirement() tolerance logic — checks
+     * whether a CSV requirement ID resolves to any produced (code, requirementId) pair.
+     *
+     * Resolution order:
+     *   1. Exact match
+     *   2. Candidate variants (Art./§ stripped, framework-prefix added, Annex-A stripped)
+     *   3. Prefix match: any produced ID that starts with a candidate prefix
+     *
+     * @param array<string,true>           $produced         All produced code::rid pairs
+     * @param array<string, list<string>>  $producedByCode   code => list<rid>
+     */
+    private function resolveRequirementId(
+        string $code,
+        string $id,
+        array $produced,
+        array $producedByCode,
+    ): bool {
+        // 1. Exact match
+        if (isset($produced[$code . '::' . $id])) {
+            return true;
+        }
+
+        // 2. Candidate variants (strip Art./§, add framework prefixes, strip A.)
+        foreach ($this->candidateIds($code, $id) as $candidate) {
+            if (isset($produced[$code . '::' . $candidate])) {
+                return true;
+            }
+        }
+
+        // 3. Prefix fallback: any produced ID starting with a candidate prefix
+        $rids = $producedByCode[$code] ?? [];
+        if ($rids === []) {
+            return false;
+        }
+        foreach ($this->prefixCandidates($code, $id) as $prefix) {
+            foreach ($rids as $rid) {
+                if (str_starts_with($rid, $prefix)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function candidateIds(string $code, string $id): array
+    {
+        $candidates = [$id];
+
+        $stripped = preg_replace('/^(Art\.|§)/i', '', $id) ?? $id;
+        $strippedAnnex = preg_replace('/^A\./i', '', $stripped) ?? $stripped;
+        foreach ([$stripped, $strippedAnnex] as $variant) {
+            if ($variant !== $id && $variant !== null) {
+                $candidates[] = $variant;
+            }
+        }
+
+        foreach ([$id, $stripped, $strippedAnnex] as $core) {
+            if ($core === null || $core === '') {
+                continue;
+            }
+            foreach ($this->prefixesFor($code) as $prefix) {
+                $candidates[] = $prefix . '-' . $core;
+                $candidates[] = $prefix . '_' . $core;
+            }
+        }
+
+        foreach ($this->prefixesFor($code) as $prefix) {
+            if (preg_match('/^' . preg_quote($prefix, '/') . '[-_]/', $id)) {
+                $suffix = substr($id, strlen($prefix) + 1);
+                $candidates[] = 'Art.' . $suffix;
+                $candidates[] = $suffix;
+            }
+        }
+
+        return array_values(array_unique(array_filter($candidates)));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function prefixCandidates(string $code, string $id): array
+    {
+        $stripped = preg_replace('/^(Art\.|§)/i', '', $id) ?? $id;
+        $strippedAnnex = preg_replace('/^A\./i', '', $stripped) ?? $stripped;
+        $candidates = [$stripped . '.', $strippedAnnex . '.'];
+        foreach ($this->prefixesFor($code) as $prefix) {
+            foreach ([$stripped, $strippedAnnex] as $core) {
+                $candidates[] = $prefix . '-' . $core . '.';
+                $candidates[] = $prefix . '-' . $core;
+            }
+        }
+        return array_values(array_unique(array_filter($candidates)));
+    }
+
+    /**
+     * Known prefix variants per framework code — mirrors ImportMappingCsvCommand::prefixesFor().
+     *
+     * @return list<string>
+     */
+    private function prefixesFor(string $code): array
+    {
+        $map = [
+            'DORA'        => ['DORA'],
+            'ISO27701'    => ['27701', 'ISO27701'],
+            'ISO27001'    => ['ISO27001'],
+            'ISO27005'    => ['27005', 'ISO27005'],
+            'ISO-22301'   => ['ISO22301', 'ISO-22301', '22301'],
+            'EU-AI-ACT'   => ['AIACT', 'EUAIACT', 'EU-AI-ACT'],
+            'BSI-C5-2026' => ['C5-2026', 'C52026', 'BSI-C5-2026'],
+            'BSI-C5'      => ['C5', 'BSI-C5'],
+            'CIS-CONTROLS' => ['CIS', 'CIS-CONTROLS'],
+            'TKG-2024'    => ['TKG', 'TKG-2024'],
+            'KRITIS'      => ['KRITIS'],
+            'NIS2UMSUCG'  => ['NIS2UMSUCG', 'NIS2UmsuCG'],
+            'NIST-CSF-2.0' => ['NIST-CSF', 'NISTCSF', 'NIST-CSF-2.0'],
+            'BDSG'        => ['BDSG'],
+            'NIS2'        => ['NIS2'],
+        ];
+
+        if (isset($map[$code])) {
+            return $map[$code];
+        }
+        return array_values(array_unique([$code, str_replace(['-', '_'], '', $code)]));
+    }
+
+    /**
      * @return list<array<string,string>>
      */
     private function readCsv(string $file): array
@@ -271,7 +411,7 @@ final class AuditCatalogMappingsCommand extends Command
         }
         $header = null;
         $rows = [];
-        while (($line = fgetcsv($fh)) !== false) {
+        while (($line = fgetcsv($fh, 0, ',', '"', '\\')) !== false) {
             if ($line === [null]) {
                 continue; // blank line — fgetcsv yields [null]
             }
@@ -307,6 +447,11 @@ final class AuditCatalogMappingsCommand extends Command
         }
         if (isset($byCode[$libId])) {
             return $libId;
+        }
+        // Check canonical aliases (e.g. NIST-CSF -> NIST-CSF-2.0)
+        $canonical = FrameworkCode::canonicalize($libId);
+        if ($canonical !== null && isset($byCode[$canonical])) {
+            return $canonical;
         }
         $norm = self::normalize($libId);
         return $normToCode[$norm] ?? null;
