@@ -158,6 +158,15 @@ final class AuditCatalogMappingsCommand extends Command
         $files = glob($dir . '/*.yaml') ?: [];
         $out = ['file_count' => count($files), 'files' => [], 'unresolved_frameworks' => []];
 
+        // Build a per-framework list of all produced requirement IDs for prefix matching
+        // (same as auditCsv — needed by resolveRequirementId()).
+        /** @var array<string, list<string>> $producedByCodeList */
+        $producedByCodeList = [];
+        foreach (array_keys($produced) as $pair) {
+            [$code, $rid] = explode('::', $pair, 2);
+            $producedByCodeList[$code][] = $rid;
+        }
+
         foreach ($files as $file) {
             try {
                 $data = Yaml::parseFile($file);
@@ -183,13 +192,46 @@ final class AuditCatalogMappingsCommand extends Command
             $danglingSrc = [];
             $danglingTgt = [];
             foreach ($mappings as $m) {
-                $s = (string) ($m['source'] ?? '');
-                $t = (string) ($m['target'] ?? '');
-                if ($srcCode === null || !isset($produced[$srcCode . '::' . $s])) {
-                    $danglingSrc[] = $s;
+                // Normalise source(s): accept scalar `source:` OR list `sources:`.
+                // A mapping entry counts as dangling-source only if NONE of its IDs resolve.
+                $srcIds = $this->normaliseIds($m, 'source', 'sources');
+                if ($srcCode === null) {
+                    // Framework itself unresolved — every entry dangling by definition.
+                    $danglingSrc[] = implode(',', $srcIds) ?: '(empty)';
+                } elseif ($srcIds !== []) {
+                    $allDangling = true;
+                    foreach ($srcIds as $sid) {
+                        if ($this->resolveRequirementId($srcCode, $sid, $produced, $producedByCodeList)) {
+                            $allDangling = false;
+                            break;
+                        }
+                    }
+                    if ($allDangling) {
+                        $danglingSrc[] = implode(',', $srcIds);
+                    }
                 }
-                if ($tgtCode === null || !isset($produced[$tgtCode . '::' . $t])) {
-                    $danglingTgt[] = $t;
+
+                // Normalise target(s): accept scalar `target:` OR list `targets:`.
+                // Empty list (targets: []) means "no mapping by design" — skip silently.
+                // An entry is dangling-target only if it has IDs and NONE resolve.
+                $tgtIds = $this->normaliseIds($m, 'target', 'targets');
+                if ($tgtIds === []) {
+                    // Intentionally unmapped (e.g. PP/DP controls with no ISO anchor).
+                    continue;
+                }
+                if ($tgtCode === null) {
+                    $danglingTgt[] = implode(',', $tgtIds);
+                } else {
+                    $allDangling = true;
+                    foreach ($tgtIds as $tid) {
+                        if ($this->resolveRequirementId($tgtCode, $tid, $produced, $producedByCodeList)) {
+                            $allDangling = false;
+                            break;
+                        }
+                    }
+                    if ($allDangling) {
+                        $danglingTgt[] = implode(',', $tgtIds);
+                    }
                 }
             }
             $out['files'][basename($file)] = [
@@ -206,6 +248,38 @@ final class AuditCatalogMappingsCommand extends Command
         }
         $out['unresolved_frameworks'] = array_keys($out['unresolved_frameworks']);
         return $out;
+    }
+
+    /**
+     * Normalise a mapping entry's source or target IDs into a flat list.
+     *
+     * Accepts both the scalar form (`source: 'A.5.1'`) and the list form
+     * (`targets: ['A.5.1', 'A.5.2']`).  Empty-list entries (`targets: []`)
+     * return an empty array, which the caller interprets as "no mapping by design".
+     *
+     * @param array<string,mixed> $entry     Single mapping entry from the YAML mappings array
+     * @param string              $scalarKey Singular key (e.g. 'source', 'target')
+     * @param string              $listKey   Plural key  (e.g. 'sources', 'targets')
+     * @return list<string>
+     */
+    private function normaliseIds(array $entry, string $scalarKey, string $listKey): array
+    {
+        // Prefer the list key if present (even if empty — intentional no-mapping).
+        if (array_key_exists($listKey, $entry)) {
+            $raw = $entry[$listKey];
+            if (!is_array($raw)) {
+                $raw = $raw !== null ? [(string) $raw] : [];
+            }
+            return array_values(array_filter(array_map('strval', $raw), static fn (string $v) => $v !== ''));
+        }
+
+        // Fall back to scalar key.
+        if (array_key_exists($scalarKey, $entry)) {
+            $v = (string) ($entry[$scalarKey] ?? '');
+            return $v !== '' ? [$v] : [];
+        }
+
+        return [];
     }
 
     /**
