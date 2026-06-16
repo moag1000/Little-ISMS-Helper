@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use Exception;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ModuleConfigurationService;
 use Psr\Log\LoggerInterface;
@@ -22,12 +23,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Admin wrapper for Compliance Framework Management
  * Integrates existing compliance framework functionality into admin panel.
  *
- * Role-Scope: index + load → ROLE_MANAGER (implementers and above may load
- * framework catalogues — non-destructive operation). Delete → ROLE_ADMIN only
- * (destructive; class-level ADMIN_OWN_TENANT removed so managers can reach
- * the lighter actions).
+ * Role-Scope: class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT}
+ * (Phase 4e — system-settings cluster). Existing method-level
+ * `COMPLIANCE_VIEW`/`COMPLIANCE_MANAGE` permission attributes remain in force
+ * and are evaluated on top of the class-level guard.
  */
-#[IsGranted('ROLE_MANAGER')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class AdminComplianceController extends AbstractController
 {
     public function __construct(
@@ -40,10 +41,9 @@ class AdminComplianceController extends AbstractController
     }
     /**
      * Compliance Framework Management Overview
-     * Accessible to ROLE_MANAGER and above so implementers can see and load frameworks.
      */
     #[Route('/admin/compliance', name: 'admin_compliance_index', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('COMPLIANCE_VIEW')]
     public function index(): Response
     {
         $availableFrameworks = $this->complianceFrameworkLoaderService->getAvailableFrameworks();
@@ -61,10 +61,9 @@ class AdminComplianceController extends AbstractController
     }
     /**
      * Load/Activate a Compliance Framework
-     * ROLE_MANAGER and above may load frameworks — non-destructive catalogue copy.
      */
     #[Route('/admin/compliance/frameworks/load/{code}', name: 'admin_compliance_load_framework', methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('COMPLIANCE_MANAGE')]
     public function loadFramework(string $code, Request $request): JsonResponse
     {
         // Validate CSRF token
@@ -90,7 +89,7 @@ class AdminComplianceController extends AbstractController
      * Get Available Frameworks (API)
      */
     #[Route('/admin/compliance/frameworks/available', name: 'admin_compliance_available_frameworks', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('COMPLIANCE_VIEW')]
     public function getAvailableFrameworks(): JsonResponse
     {
         $frameworks = $this->complianceFrameworkLoaderService->getAvailableFrameworks();
@@ -102,10 +101,10 @@ class AdminComplianceController extends AbstractController
         ]);
     }
     /**
-     * Delete a Compliance Framework — ROLE_ADMIN only (destructive, irreversible).
+     * Delete a Compliance Framework
      */
     #[Route('/admin/compliance/frameworks/delete/{code}', name: 'admin_compliance_delete_framework', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('COMPLIANCE_MANAGE')]
     public function deleteFramework(string $code, Request $request): JsonResponse
     {
         // Validate CSRF token
@@ -166,7 +165,7 @@ class AdminComplianceController extends AbstractController
      * Framework Statistics Dashboard
      */
     #[Route('/admin/compliance/statistics', name: 'admin_compliance_statistics', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('COMPLIANCE_VIEW')]
     public function statistics(): Response
     {
         $statistics = $this->complianceFrameworkLoaderService->getFrameworkStatistics();

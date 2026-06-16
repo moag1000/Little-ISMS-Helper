@@ -23,7 +23,7 @@
             { label: 'compliance.button.cross_framework'|trans({}, 'compliance'), href: path('app_compliance_cross_framework'), variant: 'ghost', icon: 'link' },
             { label: 'compliance.button.transitive'|trans({}, 'compliance'), href: path('app_compliance_transitive'), variant: 'ghost', icon: 'nav-bar-chart' },
             { label: 'compliance.button.compare_frameworks'|trans({}, 'compliance'), href: path('app_compliance_compare'), variant: 'ghost', icon: 'nav-sliders' }
-        ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'compliance.manage_frameworks'|trans({}, 'compliance'), href: path('admin_compliance_index'), variant: 'primary', icon: 'nav-gear' }] : [])
+        ]|merge(is_granted('ROLE_ADMIN') ? [{ label: 'compliance.manage_frameworks'|trans({}, 'compliance'), href: path('admin_compliance_index'), variant: 'primary', icon: 'nav-gear' }] : [])
     }) }}
 {% set _global_hints = alva_hints('compliance_index') %}
 {% if _global_hints|length > 0 %}
@@ -183,7 +183,7 @@
         {% else %}
             <div class="col-span-all text-center p-xl">
                 <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans({}, 'compliance') }}</p>
-                {% if is_granted('ROLE_MANAGER') %}
+                {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                     <span class="icon"><i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i></span> {{ 'compliance.add_frameworks'|trans({}, 'compliance') }}
                 </a>
