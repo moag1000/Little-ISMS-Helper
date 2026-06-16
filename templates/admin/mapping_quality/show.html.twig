@@ -29,9 +29,9 @@
                 <div class="fa-section__header">
                     <div>
                         <h2 class="fa-section__title">
-                            <code>{{ mapping.sourceRequirement.requirementId }}</code>
+                            <code title="{{ mapping.sourceRequirement.title }}">{{ mapping.sourceRequirement.requirementId }}</code>
                             <i class="fa-icon fa-icon--util-arrow-right small" aria-hidden="true"></i>
-                            <code>{{ mapping.targetRequirement.requirementId }}</code>
+                            <code title="{{ mapping.targetRequirement.title }}">{{ mapping.targetRequirement.requirementId }}</code>
                         </h2>
                         <div class="small text-muted mt-1">
                             {{ mapping.sourceRequirement.framework.name }} → {{ mapping.targetRequirement.framework.name }}

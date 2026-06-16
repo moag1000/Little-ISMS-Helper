@@ -68,10 +68,10 @@
                     <tr>
                         <td><small>{{ mapping.id }}</small></td>
                         <td>
-                            <strong>{{ mapping.sourceRequirement.requirementId }}</strong>
+                            <strong title="{{ mapping.sourceRequirement.title }}">{{ mapping.sourceRequirement.requirementId }}</strong>
                             <small class="text-muted d-block">{{ mapping.sourceRequirement.framework.code }}</small>
                             →
-                            <strong>{{ mapping.targetRequirement.requirementId }}</strong>
+                            <strong title="{{ mapping.targetRequirement.title }}">{{ mapping.targetRequirement.requirementId }}</strong>
                             <small class="text-muted d-block">{{ mapping.targetRequirement.framework.code }}</small>
                         </td>
                         <td class="text-center">
@@ -147,10 +147,10 @@
                     <tr>
                         <td>
                             <strong>{{ mapping.sourceRequirement.framework.code }}</strong>
-                            {{ mapping.sourceRequirement.requirementId }}
+                            <abbr title="{{ mapping.sourceRequirement.title }}">{{ mapping.sourceRequirement.requirementId }}</abbr>
                             →
                             <strong>{{ mapping.targetRequirement.framework.code }}</strong>
-                            {{ mapping.targetRequirement.requirementId }}
+                            <abbr title="{{ mapping.targetRequirement.title }}">{{ mapping.targetRequirement.requirementId }}</abbr>
                         </td>
                         <td class="text-center">
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: mapping.calculatedPercentage ~ '%' } %}
@@ -215,10 +215,10 @@
                     <tr>
                         <td>
                             <strong>{{ mapping.sourceRequirement.framework.code }}</strong>
-                            {{ mapping.sourceRequirement.requirementId }}
+                            <abbr title="{{ mapping.sourceRequirement.title }}">{{ mapping.sourceRequirement.requirementId }}</abbr>
                             →
                             <strong>{{ mapping.targetRequirement.framework.code }}</strong>
-                            {{ mapping.targetRequirement.requirementId }}
+                            <abbr title="{{ mapping.targetRequirement.title }}">{{ mapping.targetRequirement.requirementId }}</abbr>
                         </td>
                         <td class="text-center">
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.mappingPercentage ~ '%' } %}

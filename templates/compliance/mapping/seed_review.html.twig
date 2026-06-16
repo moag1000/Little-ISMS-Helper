@@ -72,13 +72,13 @@
                             <td class="fa-table__cell">
                                 <small class="text-muted">{{ m.sourceRequirement.framework.code }}</small><br>
                                 <a href="{{ path('app_compliance_mapping_show', {id: m.id}) }}">
-                                    <code>{{ m.sourceRequirement.requirementId }}</code>
+                                    <code title="{{ m.sourceRequirement.title }}">{{ m.sourceRequirement.requirementId }}</code>
                                 </a>
                                 <div class="small text-muted">{{ m.sourceRequirement.title|u.truncate(60, '…') }}</div>
                             </td>
                             <td class="fa-table__cell">
                                 <small class="text-muted">{{ m.targetRequirement.framework.code }}</small><br>
-                                <code>{{ m.targetRequirement.requirementId }}</code>
+                                <code title="{{ m.targetRequirement.title }}">{{ m.targetRequirement.requirementId }}</code>
                                 <div class="small text-muted">{{ m.targetRequirement.title|u.truncate(60, '…') }}</div>
                             </td>
                             <td class="fa-table__cell">
