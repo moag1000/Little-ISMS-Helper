@@ -21,6 +21,13 @@
         ]
     }) }}
 
+    {# Introductory explanation for junior implementers #}
+    {{ _fa_alert.render({
+        variant: 'info',
+        class: 'mb-4',
+        body: 'compliance.load_screen_intro'|trans({}, 'compliance')
+    }) }}
+
     {# Statistics #}
     <section class="fa-section mb-4">
         <div class="fa-section__header">

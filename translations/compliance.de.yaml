@@ -122,6 +122,7 @@ compliance:
         low: Niedrig
     manage_frameworks: 'Frameworks verwalten'
     manage_frameworks_subtitle: 'Compliance-Frameworks laden und konfigurieren'
+    load_screen_intro: 'Ein Framework laden kopiert dessen vollständigen Anforderungskatalog in Ihre Organisation, sodass Sie Anforderungen bewerten, mappen und wiederverwenden können. Der Vorgang ist nicht destruktiv und kann jederzeit sicher durchgeführt werden.'
     framework_statistics: Framework-Statistiken
     total_available: 'Gesamt verfügbar'
     loaded: Geladen
