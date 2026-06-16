@@ -58,9 +58,9 @@ class ComplianceController extends AbstractController
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
-        private readonly ?ComplianceFrameworkLoaderService $complianceFrameworkLoaderService = null,
-        private readonly ?FrameworkMaturityService $frameworkMaturityService = null,
-        private readonly ?TranslatorInterface $translator = null,
+        private readonly ComplianceFrameworkLoaderService $complianceFrameworkLoaderService,
+        private readonly FrameworkMaturityService $frameworkMaturityService,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     protected function getFlashDomain(): string
@@ -70,10 +70,6 @@ class ComplianceController extends AbstractController
 
     protected function getTranslator(): TranslatorInterface
     {
-        if ($this->translator === null) {
-            // @intentional-assertion: nullable-translator fallback exists only for test ctor compat
-            throw new \RuntimeException('TranslatorInterface not injected — flash methods unavailable.');
-        }
         return $this->translator;
     }
 
@@ -95,7 +91,7 @@ class ComplianceController extends AbstractController
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
-        $maturityPortfolio = $this->frameworkMaturityService?->computePortfolio($tenant) ?? [];
+        $maturityPortfolio = $this->frameworkMaturityService->computePortfolio($tenant);
 
         return $this->render('compliance/index.html.twig', [
             'frameworks' => $frameworks,
@@ -573,10 +569,6 @@ class ComplianceController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function frameworkLibrary(): Response
     {
-        if ($this->complianceFrameworkLoaderService === null) {
-            throw new \RuntimeException('ComplianceFrameworkLoaderService not injected.');
-        }
-
         $availableFrameworks = $this->complianceFrameworkLoaderService->getAvailableFrameworks();
         $statistics = $this->complianceFrameworkLoaderService->getFrameworkStatistics();
         $allModules = $this->moduleConfigurationService->getAllModules();
@@ -599,10 +591,6 @@ class ComplianceController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function loadFrameworkForManager(string $code, Request $request): JsonResponse
     {
-        if ($this->complianceFrameworkLoaderService === null) {
-            throw new \RuntimeException('ComplianceFrameworkLoaderService not injected.');
-        }
-
         $token = $request->headers->get('X-CSRF-Token');
         if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('load_framework', $token))) {
             return new JsonResponse([

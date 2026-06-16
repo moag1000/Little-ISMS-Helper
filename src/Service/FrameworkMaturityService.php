@@ -40,7 +40,7 @@ use App\Repository\KpiSnapshotRepository;
  * so the CM can explain *why* the framework is not yet at the next
  * level.
  */
-final class FrameworkMaturityService
+class FrameworkMaturityService
 {
     public const LEVEL_NA = 0;
     public const LEVEL_INITIAL = 1;

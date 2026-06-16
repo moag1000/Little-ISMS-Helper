@@ -35,8 +35,10 @@ use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
+use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\ExcelExportService;
+use App\Service\FrameworkMaturityService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
@@ -49,6 +51,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -66,6 +69,9 @@ class ComplianceControllerTest extends TestCase
     private MockObject $pdfExportService;
     private MockObject $complianceRequirementFulfillmentService;
     private MockObject $tenantContext;
+    private MockObject $complianceFrameworkLoaderService;
+    private MockObject $frameworkMaturityService;
+    private MockObject $translator;
     private ComplianceController $controller;
 
     protected function setUp(): void
@@ -81,6 +87,9 @@ class ComplianceControllerTest extends TestCase
         $this->pdfExportService = $this->createMock(PdfExportService::class);
         $this->complianceRequirementFulfillmentService = $this->createMock(ComplianceRequirementFulfillmentService::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
+        $this->complianceFrameworkLoaderService = $this->createMock(ComplianceFrameworkLoaderService::class);
+        $this->frameworkMaturityService = $this->createMock(FrameworkMaturityService::class);
+        $this->translator = $this->createMock(TranslatorInterface::class);
 
         $this->controller = new ComplianceController(
             $this->complianceFrameworkRepository,
@@ -91,7 +100,10 @@ class ComplianceControllerTest extends TestCase
             $this->csrfTokenManager,
             $this->moduleConfigurationService,
             $this->complianceRequirementFulfillmentService,
-            $this->tenantContext
+            $this->tenantContext,
+            $this->complianceFrameworkLoaderService,
+            $this->frameworkMaturityService,
+            $this->translator,
         );
 
         // Setup container for rendering
