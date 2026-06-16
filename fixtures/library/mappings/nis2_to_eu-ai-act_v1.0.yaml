@@ -62,7 +62,7 @@ library:
       - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
 
 mappings:
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'Art.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -83,7 +83,7 @@ mappings:
     cross_refs: ['Art.26']
     audit_evidence_hint: 'Cyber-Risk-Register Gesamt-IT (Betreiber NIS2), AI-Risk-Register je System (zusaetzlich falls Provider).'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'Art.13'
     relationship: 'related'
     confidence: 'low'
@@ -97,7 +97,7 @@ mappings:
       (Funktionsweise, Genauigkeit, Risiken in Nutzeranleitung).
       NIS2 21.2.a ist betriebliche Sicherheits-Policy. Nur indikativ.
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'Art.50'
     relationship: 'related'
     confidence: 'low'
@@ -110,7 +110,7 @@ mappings:
       (Wissen, dass KI involviert ist). NIS2 schuetzt Cyber-Resilienz.
       Mapping nur indikativ.
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'Art.55'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -123,7 +123,7 @@ mappings:
       Provider mit Modellen >= 10^25 FLOPs (sehr enger Akteurskreis).
       NIS2-Betreiber ist nur in seltenen Faellen GPAI-Provider.
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'Art.26'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -135,7 +135,7 @@ mappings:
       (Anomalie-Beobachtung, menschliche Aufsicht, Logs, ggf. Meldungen).
     audit_evidence_hint: 'Risikoregister mit AI-Sub-Domain, Sicherheits-Policy mit AI-Klausel, Schnittstelle NIS2-IR ↔ AI-Anomalie-Mgmt.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'Art.27'
     relationship: 'related'
     confidence: 'low'
@@ -148,7 +148,7 @@ mappings:
       (Diskriminierung, Privatsphaere, Wuerde) — kein NIS2-Schutzziel.
       Methodik-Reuse moeglich, Inhalts-Reuse nicht.
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'Art.14'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -161,7 +161,7 @@ mappings:
     cross_refs: ['Art.20']
     audit_evidence_hint: 'IR-Playbook (NIS2-Betreiber) mit Override-Spec aus KI-System (Provider) verlinkt.'
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'Art.15'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -175,7 +175,7 @@ mappings:
       Provider-Designanforderung VOR Marktzugang; NIS2-IR ist Betreiber-
       Operations.
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'Art.20'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -188,7 +188,7 @@ mappings:
       Adressaten-Mismatch: Art. 20 ist Provider-Pflicht; NIS2-IR ist
       Betreiber-Pflicht. Schnittmenge nur in Reaktions-Logik.
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'Art.73'
     relationship: 'related'
     confidence: 'medium'
@@ -202,7 +202,7 @@ mappings:
       AUCH Provider ist (Eigen-Entwicklung KI), muss Art. 73-Meldung
       separat abwickeln (an Markt-Behoerde, nicht an BSI).
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'Art.15'
     relationship: 'related'
     confidence: 'low'
@@ -215,7 +215,7 @@ mappings:
       Behoerden-Meldewege haben KEIN AI-Act-Pendant. Art. 15
       Produkt-Resilienz deckt nur Sub-Aspekt der NIS2-BC-Anforderung ab.
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'Art.16'
     relationship: 'related'
     confidence: 'low'
@@ -230,7 +230,7 @@ mappings:
       Provider-Pflichten decken nur AI-Produkt-Konformitaet ab. Mapping
       indikativ — Vendor-Mgmt-Prozess bleibt NIS2-only.
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'Art.11'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -247,7 +247,7 @@ mappings:
     cross_refs: ['Annex-IV', 'Art.16']
     audit_evidence_hint: 'Tech-Doku Annex IV (Provider), Secure-SDLC-Policy (Betreiber).'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'Annex-IV'
     relationship: 'related'
     confidence: 'medium'
@@ -260,7 +260,7 @@ mappings:
       detaillierter als NIS2 21.2.e fuer den AI-Anteil; nicht
       erschoepfend fuer die uebrige IT-Landschaft.
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'Art.16'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -274,7 +274,7 @@ mappings:
       zeichnung, EU-Datenbank-Registrierung sind AI-Act-spezifisch
       OHNE NIS2-Pendant.
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'Art.10'
     relationship: 'related'
     confidence: 'low'
@@ -288,7 +288,7 @@ mappings:
       Bias, Repraesentativitaet — kein NIS2-Schutzziel. Mapping
       indikativ.
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'Art.17'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -303,7 +303,7 @@ mappings:
       inkl. Konformitaets-Spezifika). NIS2-Wirksamkeitspruefung ist
       Betreiber-Pflicht.
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'Art.72'
     relationship: 'equivalent'
     confidence: 'high'
@@ -315,7 +315,7 @@ mappings:
       Synergien hoch — NIS2-KPI-Dashboard kann AI-PMM aufnehmen.
     audit_evidence_hint: 'Wirksamkeits-KPI-Reports (Betreiber NIS2), PMM-Plan + AI-KPIs (Provider), gemeinsames Dashboard bei integriertem Akteur.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'Art.12'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -325,7 +325,7 @@ mappings:
       liefern messbare Wirksamkeits-Daten fuer das KI-System.
     audit_evidence_hint: 'Logging-Spec im KI-System, SIEM-Integration, Wirksamkeits-KPI-Dashboard.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'Art.15'
     relationship: 'related'
     confidence: 'medium'
@@ -334,7 +334,7 @@ mappings:
       Genauigkeits-Metriken und Performance-Monitoring zugreifen.
     cross_refs: ['Art.72']
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'Art.43'
     relationship: 'related'
     confidence: 'low'
@@ -346,7 +346,7 @@ mappings:
       KRITISCH: Konformitaetsbewertung ist AI-Act-spezifisch ohne
       NIS2-Pendant. Wer NIS2-konform ist, hat KEINE AI-Act-Konformitaet.
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'Art.10'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -361,7 +361,7 @@ mappings:
       gilt nur fuer Daten-Schutz waehrend Training/Inference.
     audit_evidence_hint: 'Krypto-Policy fuer Trainings-Daten-Storage, Verschluesselung in-transit/at-rest, Daten-Governance-Policy.'
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'Art.15'
     relationship: 'equivalent'
     confidence: 'high'
@@ -373,7 +373,7 @@ mappings:
       ist Sub-Domain der Betreiber-Cyber-Hygiene.
     audit_evidence_hint: 'Adversarial-Robustness-Tests, Model-Hardening, Crypto-Schutz fuer Modelle.'
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'Art.55'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -386,7 +386,7 @@ mappings:
       Provider-only (GPAI). Schnittmenge nur bei integrierten Akteuren
       (z.B. NIS2-digitale-Infra-Betreiber, der GPAI hostet/trainiert).
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'Art.26'
     relationship: 'related'
     confidence: 'low'
@@ -399,7 +399,7 @@ mappings:
       Qualitaet (Repraesentativitaet, Vollstaendigkeit). NIS2 21.2.i
       ist Berechtigungs-Mgmt. Mapping indikativ.
 
-  - source: '23.1'
+  - source: 'Art.23.1'
     target: 'Art.73'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -421,7 +421,7 @@ mappings:
       Reporting-Loesung 2026 noch im Aufbau.
     audit_evidence_hint: 'NIS2-Vorfallmeldungs-Templates (Betreiber, BSI), AI-Incident-Templates (Provider, Markt-Behoerde), Eskalationsplan beide Pfade.'
 
-  - source: '23.2'
+  - source: 'Art.23.2'
     target: 'Art.73'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -435,7 +435,7 @@ mappings:
       vom AI-Act-Status. Wer Betreiber UND Provider ist, muss beide
       Meldungen separat unterhalten.
 
-  - source: '23.3'
+  - source: 'Art.23.3'
     target: 'Art.73'
     relationship: 'related'
     confidence: 'low'

@@ -63,7 +63,7 @@ library:
       - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
 
 mappings:
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'CRA-Annex-I-1.3.g'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -79,7 +79,7 @@ mappings:
       eigenstaendige Betreiber-Pflicht.
     audit_evidence_hint: 'IR-Plan, IR-Uebungen, Post-Incident-Reviews (Betreiber); Produkt-Containment-Spec (Hersteller).'
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'CRA-Art-14.8'
     relationship: 'related'
     confidence: 'low'
@@ -93,7 +93,7 @@ mappings:
       IR-Trigger-Quellen (CTI-Feeds, SIEM-Alerts, Mitarbeiter-Meldungen).
       Mapping nur indikativ.
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'CRA-Annex-I-1.3.e'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -109,7 +109,7 @@ mappings:
       CRA-Pendant und bleiben NIS2-only-Pflichten.
     audit_evidence_hint: 'BC-Plan + Krisenmanagementplan (Betreiber); Produkt-Resilienz-Test-Reports (Hersteller).'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'CRA-Annex-II-6'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -126,7 +126,7 @@ mappings:
       Vertragsklauseln, Audit-Rights) und hat darin kein CRA-Pendant.
     audit_evidence_hint: 'SBOM-Konsumptions-Prozess (Betreiber), Dependency-Tracking-Tool, SBOM in CycloneDX/SPDX-Format vom Hersteller.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'CRA-Art-11'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -141,7 +141,7 @@ mappings:
       breiter und haben KEIN CRA-Pendant.
     audit_evidence_hint: 'Vendor-Assessment-Checkliste mit CVD-Policy-Pruefung, security.txt-Verifikation in Beschaffungsdossier.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'CRA-Art-13'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -156,7 +156,7 @@ mappings:
       keine direkte aequivalente Pflicht.
     audit_evidence_hint: 'CE-Kennzeichnungs-Pruefung im Beschaffungsprozess, CRA-Konformitaetserklaerungen archiviert.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'CRA-Annex-I-1.1'
     relationship: 'partial_overlap'
     confidence: 'high'
@@ -171,7 +171,7 @@ mappings:
       Security-Anforderungen im RfP).
     audit_evidence_hint: 'Secure-SDLC-Policy, Threat-Modelling-Reports, Default-Hardening-Guides.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'CRA-Annex-I-1.3.i'
     relationship: 'partial_overlap'
     confidence: 'high'
@@ -181,7 +181,7 @@ mappings:
       Betreiber nutzt diesen fuer Patch-Compliance.
     audit_evidence_hint: 'Update-Mechanismus mit Signaturpruefung (Hersteller), Patch-Compliance-Dashboard (Betreiber).'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'CRA-Annex-II-2'
     relationship: 'partial_overlap'
     confidence: 'high'
@@ -192,7 +192,7 @@ mappings:
     cross_refs: ['CRA-Annex-II-7']
     audit_evidence_hint: 'Patch-Release-Notes (Hersteller), Patch-Rollout-Statistik mit MTTR (Betreiber).'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'CRA-Annex-II-4'
     relationship: 'related'
     confidence: 'high'
@@ -202,7 +202,7 @@ mappings:
       Cybersicherheit". Bei In-House identische Pflicht.
     audit_evidence_hint: 'Pentest-Schedule, Vulnerability-Assessment-Reports, Code-Review-Prozess.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'CRA-Annex-II-5'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -213,7 +213,7 @@ mappings:
       Input-Lieferung fuer Betreiber.
     audit_evidence_hint: 'Vulnerability-Disclosure-Dokumente vom Hersteller, Patch-Triagierungs-Process beim Betreiber.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'CRA-Annex-I-1.3.h'
     relationship: 'related'
     confidence: 'high'
@@ -224,7 +224,7 @@ mappings:
       Logging-Grundlage. Beide Aspekte sind komplementaer.
     audit_evidence_hint: 'Logging-Spec (Hersteller), SIEM-Integration + KPI-Dashboard (Betreiber).'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'CRA-Annex-II-3'
     relationship: 'partial_overlap'
     confidence: 'low'
@@ -237,7 +237,7 @@ mappings:
       Schwache Verbindung. CRA-Disclosure-Policy ist Hersteller-Pflicht;
       NIS2-Wirksamkeit ist Betreiber-Pflicht. Mapping nur indikativ.
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'CRA-Annex-I-1.3.b'
     relationship: 'related'
     confidence: 'high'
@@ -249,7 +249,7 @@ mappings:
       NIS2 organisatorisch in der Policy.
     audit_evidence_hint: 'Krypto-Algorithmen-Whitelist Produkt + Betreiber-Policy, Key-Management-Verfahren.'
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'CRA-Annex-I-1.3.c'
     relationship: 'related'
     confidence: 'medium'
@@ -259,7 +259,7 @@ mappings:
       produktseitige Pruefsummen + digitale Signaturen.
     cross_refs: ['CRA-Annex-I-1.3.b']
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'CRA-Annex-I-1.3.f'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -272,7 +272,7 @@ mappings:
       CRA-Werks-Hardening und NIS2-Betriebszeit-Hardening sind komplementaer,
       nicht aequivalent.
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'CRA-Annex-I-1.3.a'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -288,7 +288,7 @@ mappings:
       deckt NIS2 21.2.i NICHT ab.
     audit_evidence_hint: 'Produkt-AuthN-Spec (Hersteller); IAM-Policy, Zugriffsreviews, Onboarding-Checklisten, NDA-Templates (Betreiber).'
 
-  - source: '21.2.j'
+  - source: 'Art.21.2.j'
     target: 'CRA-Annex-I-1.3.a'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -303,7 +303,7 @@ mappings:
       Kommunikation (NIS2-Teilaspekt) hat KEIN direktes CRA-Pendant.
     audit_evidence_hint: 'MFA-Spec im Produkt (Hersteller); MFA-Coverage-Report + Notfall-Kommunikationsplan (Betreiber).'
 
-  - source: '23.1'
+  - source: 'Art.23.1'
     target: 'CRA-Art-14.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -321,7 +321,7 @@ mappings:
       Aufbau, aber 2026 noch nicht final etabliert.
     audit_evidence_hint: 'NIS2-Meldeprotokolle BSI (Betreiber), CRA-Meldeprotokolle ENISA + CSIRT (Hersteller), Eskalationsplan mit beiden Wegen.'
 
-  - source: '23.2'
+  - source: 'Art.23.2'
     target: 'CRA-Art-14.2'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -336,7 +336,7 @@ mappings:
       muss beide Meldungen separat unterhalten.
     audit_evidence_hint: 'NIS2-Vorfallsmeldungs-Templates (Betreiber), CRA-Folgemeldungs-Templates (Hersteller), beide mit Zeitstempel.'
 
-  - source: '23.3'
+  - source: 'Art.23.3'
     target: 'CRA-Art-14.3'
     relationship: 'partial_overlap'
     confidence: 'low'

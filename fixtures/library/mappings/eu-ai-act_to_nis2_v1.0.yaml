@@ -73,7 +73,7 @@ library:
 
 mappings:
   - source: 'Art.9'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -98,7 +98,7 @@ mappings:
     audit_evidence_hint: 'AI-Risk-Register je System (Provider), Cyber-Risk-Register Gesamt-IT (Betreiber), Schnittstellen-Doku zwischen beiden.'
 
   - source: 'Art.10'
-    target: '21.2.h'
+    target: 'Art.21.2.h'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -119,7 +119,7 @@ mappings:
     audit_evidence_hint: 'Daten-Governance-Policy mit Bias-Pruefprotokollen, Krypto-Policy fuer Trainings-Daten-Storage, Verschluesselung in-transit/at-rest.'
 
   - source: 'Art.11'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -141,7 +141,7 @@ mappings:
     audit_evidence_hint: 'Tech-Doku nach Annex IV (Provider), Secure-SDLC-Policy + Code-Review-Reports (Betreiber), Schnittmenge bei Eigenentwicklung.'
 
   - source: 'Annex-IV'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -158,7 +158,7 @@ mappings:
     cross_refs: ['Art.11']
 
   - source: 'Art.12'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -172,7 +172,7 @@ mappings:
     audit_evidence_hint: 'Logging-Spec im KI-System (Provider), SIEM-Integration mit AI-Audit-Trails (Betreiber), Wirksamkeits-KPI-Dashboard.'
 
   - source: 'Art.13'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -189,7 +189,7 @@ mappings:
       direktes NIS2-Pendant.
 
   - source: 'Art.14'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -207,7 +207,7 @@ mappings:
     audit_evidence_hint: 'Override-Spec im KI-System (Provider), IR-Playbook fuer KI-Incidents (Betreiber), Eskalationsmatrix.'
 
   - source: 'Art.15'
-    target: '21.2.h'
+    target: 'Art.21.2.h'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -221,7 +221,7 @@ mappings:
     audit_evidence_hint: 'Adversarial-Robustness-Tests, Model-Hardening-Reports, Crypto-Schutz fuer Modelle (Provider+Betreiber).'
 
   - source: 'Art.15'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -234,7 +234,7 @@ mappings:
       NIS2-IR ist Betreiber-Operations. Komplementaer, nicht aequivalent.
 
   - source: 'Art.15'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -245,7 +245,7 @@ mappings:
     cross_refs: ['Art.72']
 
   - source: 'Art.16'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -262,7 +262,7 @@ mappings:
       NICHT — separate Konformitaetsbewertung erforderlich.
 
   - source: 'Art.17'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -281,7 +281,7 @@ mappings:
     cross_refs: ['Art.20']
 
   - source: 'Art.20'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -297,7 +297,7 @@ mappings:
       Reaktions-Logik, nicht in Massnahme-Tiefe.
 
   - source: 'Art.26'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -317,7 +317,7 @@ mappings:
     audit_evidence_hint: 'Deployer-Logs (6 Monate), Anomalie-Monitoring, Schnittstelle Risikoregister NIS2 ↔ AI-Risikoregister.'
 
   - source: 'Art.26'
-    target: '21.2.i'
+    target: 'Art.21.2.i'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -332,7 +332,7 @@ mappings:
       Berechtigungs-Mgmt. Mapping nur indikativ.
 
   - source: 'Art.27'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -349,7 +349,7 @@ mappings:
       Methodik aus NIS2-Risikomgmt wiederverwenden.
 
   - source: 'Art.50'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -365,7 +365,7 @@ mappings:
       ist AI-only.
 
   - source: 'Art.55'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -383,7 +383,7 @@ mappings:
       starke Synergien.
 
   - source: 'Art.55'
-    target: '21.2.h'
+    target: 'Art.21.2.h'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -396,7 +396,7 @@ mappings:
       Provider-only; Schnittmenge nur bei integrierten Akteuren.
 
   - source: 'Art.72'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
@@ -411,7 +411,7 @@ mappings:
     audit_evidence_hint: 'PMM-Plan (Provider), Wirksamkeits-KPI-Reports (Betreiber), Schnittstelle bei integriertem Akteur.'
 
   - source: 'Art.73'
-    target: '23.1'
+    target: 'Art.23.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -437,7 +437,7 @@ mappings:
     audit_evidence_hint: 'AI-Incident-Meldungs-Templates (Provider, Markt-Behoerde), NIS2-Vorfallmeldungs-Templates (Betreiber, BSI), Eskalationsplan mit beiden Pfaden.'
 
   - source: 'Art.73'
-    target: '23.2'
+    target: 'Art.23.2'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -475,7 +475,7 @@ mappings:
     audit_evidence_hint: 'KI-Inventar mit Annex-III-Klassifikation, NIS2-Sektor-Einordnung, Cross-Mapping in GRC-Tool.'
 
   - source: 'Art.5'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -493,7 +493,7 @@ mappings:
       bei Beschaffung/Eigenentwicklung von KI-Systemen.
 
   - source: 'Art.16'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -507,7 +507,7 @@ mappings:
       Wirksamkeitspruefung ist Betreiber-Mgmt-System. Mapping indikativ.
 
   - source: 'Art.43'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -529,7 +529,7 @@ mappings:
   # resolve to a single canonical NIS2 requirementId.
   # ─────────────────────────────────────────────────────────────────────────
   - source: 'Art.73'
-    target: '23.3'
+    target: 'Art.23.3'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |

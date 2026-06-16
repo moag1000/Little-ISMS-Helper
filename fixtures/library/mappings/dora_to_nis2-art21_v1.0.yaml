@@ -54,7 +54,7 @@ library:
 
 mappings:
   - source: 'DORA-5.1'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -73,7 +73,7 @@ mappings:
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll, Risikoinventar inkl. Nicht-ICT-Risiken, jährlicher Review-Bericht, Risk-Tolerance-Statement.'
 
   - source: 'DORA-5.2'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -92,7 +92,7 @@ mappings:
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll, Risikoinventar inkl. Nicht-ICT-Risiken, jährlicher Review-Bericht, Risk-Tolerance-Statement.'
 
   - source: 'DORA-6.1'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -111,7 +111,7 @@ mappings:
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll, Risikoinventar inkl. Nicht-ICT-Risiken, jährlicher Review-Bericht, Risk-Tolerance-Statement.'
 
   - source: 'DORA-6.2'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -130,7 +130,7 @@ mappings:
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll, Risikoinventar inkl. Nicht-ICT-Risiken, jährlicher Review-Bericht, Risk-Tolerance-Statement.'
 
   - source: 'DORA-17.1'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -148,7 +148,7 @@ mappings:
     audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS 2024/1772, Meldeprotokolle mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung, Eskalationsplan inkl. Behörden-Kontakte.'
 
   - source: 'DORA-17.2'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -166,7 +166,7 @@ mappings:
     audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS 2024/1772, Meldeprotokolle mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung, Eskalationsplan inkl. Behörden-Kontakte.'
 
   - source: 'DORA-17.3'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -184,7 +184,7 @@ mappings:
     audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS 2024/1772, Meldeprotokolle mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung, Eskalationsplan inkl. Behörden-Kontakte.'
 
   - source: 'DORA-19.1'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -202,7 +202,7 @@ mappings:
     audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS 2024/1772, Meldeprotokolle mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung, Eskalationsplan inkl. Behörden-Kontakte.'
 
   - source: 'DORA-11.1'
-    target: '21.2.c'
+    target: 'Art.21.2.c'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -219,7 +219,7 @@ mappings:
     audit_evidence_hint: 'BC-Policy mit Board-Approval, jährliche BC-Test-Berichte, Severe-Scenario-Test-Report, RTO/RPO-Tabelle pro kritischer ICT-Funktion, Krisenkommunikationsplan mit BSI-Kontakt.'
 
   - source: 'Art.12'
-    target: '21.2.c'
+    target: 'Art.21.2.c'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -236,7 +236,7 @@ mappings:
     audit_evidence_hint: 'BC-Policy mit Board-Approval, jährliche BC-Test-Berichte, Severe-Scenario-Test-Report, RTO/RPO-Tabelle pro kritischer ICT-Funktion, Krisenkommunikationsplan mit BSI-Kontakt.'
 
   - source: 'DORA-28.1'
-    target: '21.2.d'
+    target: 'Art.21.2.d'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -254,7 +254,7 @@ mappings:
     audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-XBRL-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
 
   - source: 'DORA-28.2'
-    target: '21.2.d'
+    target: 'Art.21.2.d'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -272,7 +272,7 @@ mappings:
     audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-XBRL-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
 
   - source: 'DORA-28.3'
-    target: '21.2.d'
+    target: 'Art.21.2.d'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -290,7 +290,7 @@ mappings:
     audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-XBRL-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
 
   - source: 'DORA-30.1'
-    target: '21.2.d'
+    target: 'Art.21.2.d'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -308,7 +308,7 @@ mappings:
     audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-XBRL-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
 
   - source: 'DORA-8.1'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -326,7 +326,7 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit DORA-Klassifizierung, SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards, Asset-Re-Assessment-Bericht.'
 
   - source: 'DORA-8.2'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -344,7 +344,7 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit DORA-Klassifizierung, SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards, Asset-Re-Assessment-Bericht.'
 
   - source: 'DORA-8.3'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -362,7 +362,7 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit DORA-Klassifizierung, SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards, Asset-Re-Assessment-Bericht.'
 
   - source: 'DORA-9.1'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -380,7 +380,7 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit DORA-Klassifizierung, SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards, Asset-Re-Assessment-Bericht.'
 
   - source: 'DORA-9.2'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -398,7 +398,7 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit DORA-Klassifizierung, SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards, Asset-Re-Assessment-Bericht.'
 
   - source: 'DORA-9.3'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -416,7 +416,7 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit DORA-Klassifizierung, SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards, Asset-Re-Assessment-Bericht.'
 
   - source: 'DORA-9.4'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -434,7 +434,7 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit DORA-Klassifizierung, SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards, Asset-Re-Assessment-Bericht.'
 
   - source: 'DORA-13.1'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
@@ -451,7 +451,7 @@ mappings:
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit, MTTD/MTTR-Reports.'
 
   - source: 'DORA-13.2'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
@@ -468,7 +468,7 @@ mappings:
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit, MTTD/MTTR-Reports.'
 
   - source: 'DORA-13.3'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
@@ -485,7 +485,7 @@ mappings:
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit, MTTD/MTTR-Reports.'
 
   - source: 'DORA-13.4'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
@@ -502,7 +502,7 @@ mappings:
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit, MTTD/MTTR-Reports.'
 
   - source: 'DORA-13.5'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
@@ -519,7 +519,7 @@ mappings:
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit, MTTD/MTTR-Reports.'
 
   - source: 'DORA-13.6'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
@@ -536,7 +536,7 @@ mappings:
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit, MTTD/MTTR-Reports.'
 
   - source: 'DORA-13.6'
-    target: '21.2.g'
+    target: 'Art.21.2.g'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -554,7 +554,7 @@ mappings:
     audit_evidence_hint: 'Schulungs-Curriculum mit RTS-Mindestthemen, Phishing-Simulationen mit Klickraten, Schulungsquote pro Mitarbeiter, separate Board-Schulungsbelege gemäß DORA Art. 5(4).'
 
   - source: 'DORA-9.3'
-    target: '21.2.h'
+    target: 'Art.21.2.h'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -571,7 +571,7 @@ mappings:
     audit_evidence_hint: 'Krypto-Policy mit Algorithmus-Whitelist, Key-Management-Verfahren (Generation/Storage/Rotation/Revocation), HSM-Inventar, Krypto-Audit-Reports, Post-Quantum-Roadmap (proaktiv).'
 
   - source: 'DORA-9.1'
-    target: '21.2.i'
+    target: 'Art.21.2.i'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -589,7 +589,7 @@ mappings:
     audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, NDA-Templates, physische Zutrittsprotokolle Rechenzentrum.'
 
   - source: 'DORA-9.2'
-    target: '21.2.i'
+    target: 'Art.21.2.i'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -607,7 +607,7 @@ mappings:
     audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, NDA-Templates, physische Zutrittsprotokolle Rechenzentrum.'
 
   - source: 'DORA-9.3'
-    target: '21.2.i'
+    target: 'Art.21.2.i'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -625,7 +625,7 @@ mappings:
     audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, NDA-Templates, physische Zutrittsprotokolle Rechenzentrum.'
 
   - source: 'DORA-9.4'
-    target: '21.2.i'
+    target: 'Art.21.2.i'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -643,7 +643,7 @@ mappings:
     audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, NDA-Templates, physische Zutrittsprotokolle Rechenzentrum.'
 
   - source: 'DORA-9.1'
-    target: '21.2.j'
+    target: 'Art.21.2.j'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -662,7 +662,7 @@ mappings:
     audit_evidence_hint: 'MFA-Coverage-Report (privilegierte vs. Standard-Accounts), Notfall-Kommunikationsplan mit Out-of-Band-Kanälen, Test-Protokolle der Notfall-Kommunikation, IDS-RTS-Compliance-Nachweis.'
 
   - source: 'DORA-9.2'
-    target: '21.2.j'
+    target: 'Art.21.2.j'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -681,7 +681,7 @@ mappings:
     audit_evidence_hint: 'MFA-Coverage-Report (privilegierte vs. Standard-Accounts), Notfall-Kommunikationsplan mit Out-of-Band-Kanälen, Test-Protokolle der Notfall-Kommunikation, IDS-RTS-Compliance-Nachweis.'
 
   - source: 'DORA-9.3'
-    target: '21.2.j'
+    target: 'Art.21.2.j'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
@@ -700,7 +700,7 @@ mappings:
     audit_evidence_hint: 'MFA-Coverage-Report (privilegierte vs. Standard-Accounts), Notfall-Kommunikationsplan mit Out-of-Band-Kanälen, Test-Protokolle der Notfall-Kommunikation, IDS-RTS-Compliance-Nachweis.'
 
   - source: 'DORA-9.4'
-    target: '21.2.j'
+    target: 'Art.21.2.j'
     relationship: 'superset'
     confidence: 'high'
     rationale: |

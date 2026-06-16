@@ -71,7 +71,7 @@ library:
 
 mappings:
   # ===== Art. 20(1) — Governance =====
-  - source: '20.1'
+  - source: 'Art.20.1'
     target: 'OIS-02'
     relationship: 'subset'
     confidence: 'medium'
@@ -91,7 +91,7 @@ mappings:
     cross_refs: ['COM-04', 'OIS-01']
     audit_evidence_hint: 'Geschäftsführungs-/Vorstands-Beschluss zur InfoSec-Policy + dokumentierte Mgmt-Review-Routine die alle 21(2)(a-j)-Bereiche abdeckt + Beschluss-Trail.'
 
-  - source: '20.1'
+  - source: 'Art.20.1'
     target: 'COM-04'
     relationship: 'subset'
     confidence: 'medium'
@@ -103,7 +103,7 @@ mappings:
     audit_evidence_hint: 'Management-Review-Protokolle (mind. jährlich), KPI-Dashboard für Geschäftsführung, Beschluss-Trail.'
 
   # ===== Art. 20(2) — Mgmt-Schulung =====
-  - source: '20.2'
+  - source: 'Art.20.2'
     target: 'HR-03'
     relationship: 'subset'
     confidence: 'medium'
@@ -120,7 +120,7 @@ mappings:
     audit_evidence_hint: 'Geschäftsführungs-/Vorstands-Schulungs-Nachweis, jährliche Wiederholung, Themenkatalog NIS2-konform.'
 
   # ===== Art. 21(2)(a) — Risikoanalyse + Sicherheitsrichtlinien =====
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'OIS-07'
     relationship: 'equivalent'
     confidence: 'high'
@@ -131,7 +131,7 @@ mappings:
     cross_refs: ['OIS-08', 'OIS-09']
     audit_evidence_hint: 'Risikomanagement-Richtlinie, Risikoregister, Risk-Treatment-Plan, jährliche Reviews.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'OIS-08'
     relationship: 'equivalent'
     confidence: 'high'
@@ -140,7 +140,7 @@ mappings:
       Assessment" operationalisiert die Risikoanalyse aus 21(2)(a).
     audit_evidence_hint: 'Risk-Assessment-Reports letzte 12 Monate, Risikoregister mit Owner und Behandlungsstatus.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'OIS-09'
     relationship: 'equivalent'
     confidence: 'high'
@@ -149,7 +149,7 @@ mappings:
       Treatment" deckt Risikobehandlung aus 21(2)(a) ab.
     audit_evidence_hint: 'Risk-Treatment-Plan, Restrisiko-Akzeptanzen, Tracking offener Risk-Treatments.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'OIS-01'
     relationship: 'superset'
     confidence: 'medium'
@@ -159,7 +159,7 @@ mappings:
       Architektur. ISMS-Doku gilt als Sicherheitsrichtlinien-Anker.
     audit_evidence_hint: 'ISMS-Scope-Dokument, ISMS-Handbuch, ISO-27001-Zertifikat oder gleichwertig.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'SP-01'
     relationship: 'subset'
     confidence: 'medium'
@@ -170,7 +170,7 @@ mappings:
     cross_refs: ['SP-02', 'SP-03']
     audit_evidence_hint: 'Policy-Inventar mit Review-Datum und Genehmiger, Policy-Distribution-Nachweis.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'COM-01'
     relationship: 'subset'
     confidence: 'medium'
@@ -180,7 +180,7 @@ mappings:
       Anforderungen ins Risikomanagement ein.
     audit_evidence_hint: 'Compliance-Anforderungs-Register (GDPR, NIS2, DORA), Reviews letzte 12 Monate.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'OIS-05'
     relationship: 'related'
     confidence: 'medium'
@@ -190,7 +190,7 @@ mappings:
     audit_evidence_hint: 'Threat-Intel-Quellen-Inventar, ausgewertete Meldungen letzte 12 Monate.'
 
   # ===== Art. 21(2)(b) — Incident Handling =====
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'SIM-01'
     relationship: 'equivalent'
     confidence: 'high'
@@ -201,7 +201,7 @@ mappings:
     cross_refs: ['SIM-02', 'SIM-03', 'SIM-04']
     audit_evidence_hint: 'IR-Policy, Eskalations-Matrix, dokumentierte Rollen, externe Kommunikations-Templates.'
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'SIM-02'
     relationship: 'subset'
     confidence: 'high'
@@ -211,7 +211,7 @@ mappings:
       Layer für 21(2)(b).
     audit_evidence_hint: 'IR-Playbooks pro Incident-Typ, jährlicher Review, Tabletop-Übungs-Protokolle.'
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'SIM-03'
     relationship: 'subset'
     confidence: 'high'
@@ -220,7 +220,7 @@ mappings:
       Forensik-Chain-of-Custody operationalisiert 21(2)(b).
     audit_evidence_hint: 'Incident-Tickets letzte 12 Monate mit Klassifikation, RCA-Reports, Forensik-Chain-of-Custody.'
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'OPS-13'
     relationship: 'subset'
     confidence: 'medium'
@@ -230,7 +230,7 @@ mappings:
     audit_evidence_hint: 'SIEM-Use-Case-Inventar, Detection-Tuning-Reports, MTTD-KPI.'
 
   # ===== Art. 21(2)(c) — BC, Backup, DR, Krisenmgmt =====
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'BCM-01'
     relationship: 'equivalent'
     confidence: 'high'
@@ -241,7 +241,7 @@ mappings:
     cross_refs: ['BCM-02', 'BCM-03', 'BCM-04']
     audit_evidence_hint: 'BC-Strategie, Top-Management-Freigabe, BIA, BC-Plans, Krisenmgmt-Strukturen, Übungs-Reports.'
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'BCM-02'
     relationship: 'subset'
     confidence: 'high'
@@ -250,7 +250,7 @@ mappings:
       Methodik-Pflicht aus 21(2)(c).
     audit_evidence_hint: 'BIA-Methodik, BIA-Ergebnisse je Geschäftsprozess, RTO/RPO-Definitionen.'
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'BCM-03'
     relationship: 'subset'
     confidence: 'high'
@@ -259,7 +259,7 @@ mappings:
       aus 21(2)(c) ab.
     audit_evidence_hint: 'BC-Plans pro kritischem Service, Eigentümer-Zuordnung, jährlicher Review.'
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'BCM-04'
     relationship: 'subset'
     confidence: 'high'
@@ -268,7 +268,7 @@ mappings:
       aus 21(2)(c) ab (mind. jährliche Übungen).
     audit_evidence_hint: 'BC-Test-Protokolle letzte 24 Monate, Tabletop-Übungen, Lessons Learned.'
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'OPS-06'
     relationship: 'subset'
     confidence: 'high'
@@ -278,7 +278,7 @@ mappings:
     cross_refs: ['OPS-07', 'OPS-08', 'OPS-09']
     audit_evidence_hint: 'Backup-Konzept, Recovery-Test-Protokolle, Backup-Retention.'
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'OPS-08'
     relationship: 'subset'
     confidence: 'high'
@@ -287,7 +287,7 @@ mappings:
       Restore-Test-Pflicht — kritisch für 21(2)(c).
     audit_evidence_hint: 'Restore-Test-Protokolle (mind. quartalsweise), Recovery-Time-Messungen.'
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'SSO-06'
     relationship: 'subset'
     confidence: 'medium'
@@ -297,7 +297,7 @@ mappings:
     audit_evidence_hint: 'Exit-Strategie pro kritischem Sub-Provider, Datenrücknahme-Plan, Migrations-Runbook.'
 
   # ===== Art. 21(2)(d) — Lieferkettensicherheit =====
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'SSO-01'
     relationship: 'equivalent'
     confidence: 'high'
@@ -308,7 +308,7 @@ mappings:
     cross_refs: ['SSO-02', 'SSO-04', 'SSO-05']
     audit_evidence_hint: 'Sub-Provider-Policy, Vertragstemplate mit InfoSec-Klauseln, Monitoring-Berichte.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'SSO-02'
     relationship: 'subset'
     confidence: 'high'
@@ -317,7 +317,7 @@ mappings:
       CSOC-Bewertung ist Lieferketten-Risiko-Methodik aus 21(2)(d).
     audit_evidence_hint: 'Sub-Provider-Risikobewertungen, CSOC-Tracking, Vendor-Diversification-Analyse.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'SSO-04'
     relationship: 'subset'
     confidence: 'high'
@@ -326,7 +326,7 @@ mappings:
       Lieferketten-Inventar — Voraussetzung für 21(2)(d).
     audit_evidence_hint: 'Sub-Provider-Verzeichnis mit Klassifikation, Standorten, Compliance-Status.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'SSO-05'
     relationship: 'subset'
     confidence: 'high'
@@ -336,7 +336,7 @@ mappings:
       Lieferketten-Monitoring aus 21(2)(d).
     audit_evidence_hint: 'SOC-2-Berichte, ISAE-3402-Berichte, Lieferanten-Audit-Reports letzte 24 Monate.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'DEV-13'
     relationship: 'subset'
     confidence: 'medium'
@@ -347,7 +347,7 @@ mappings:
     cross_refs: ['DEV-14']
     audit_evidence_hint: 'SBOM pro Software-Release (CycloneDX/SPDX), CVE-Tracking gegen SBOM.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'DEV-14'
     relationship: 'subset'
     confidence: 'medium'
@@ -356,7 +356,7 @@ mappings:
       adressiert Drittanbieter-Komponenten-Risiken aus 21(2)(d).
     audit_evidence_hint: '3rd-Party-Software-Inventar, Vulnerability-Scans, Lizenz-Compliance.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'SSO-08'
     relationship: 'subset'
     confidence: 'medium'
@@ -367,7 +367,7 @@ mappings:
     audit_evidence_hint: 'Update-Authorisierungs-Protokolle, Supplier-Update-Channel-Inventar.'
 
   # ===== Art. 21(2)(e) — Sichere Beschaffung/Entwicklung/Wartung =====
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DEV-01'
     relationship: 'equivalent'
     confidence: 'high'
@@ -379,7 +379,7 @@ mappings:
     cross_refs: ['DEV-02', 'DEV-04']
     audit_evidence_hint: 'Secure-SDLC-Richtlinie, Procurement-Policy mit Security-Anforderungen.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DEV-06'
     relationship: 'subset'
     confidence: 'high'
@@ -389,7 +389,7 @@ mappings:
       aus 21(2)(e).
     audit_evidence_hint: 'Change-Risk-Bewertung, CAB-Protokolle, Change-Tickets.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DEV-07'
     relationship: 'subset'
     confidence: 'high'
@@ -398,7 +398,7 @@ mappings:
       Production-Deployment aus 21(2)(e).
     audit_evidence_hint: 'Test-Plan, Pre-Prod-Tests, automatisierte CI-Pipelines mit Security-Gates.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DEV-11'
     relationship: 'subset'
     confidence: 'medium'
@@ -407,7 +407,7 @@ mappings:
       sichert Dev/Test-Umgebungen — Teilaspekt sicherer Entwicklung.
     audit_evidence_hint: 'Dev-/Test-Environment-Hardening, Daten-Klassifikations-Compliance.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DEV-15'
     relationship: 'subset'
     confidence: 'medium'
@@ -417,7 +417,7 @@ mappings:
     audit_evidence_hint: 'Emergency-Change-Protokolle, retrospektive Review, Genehmigungs-Trail.'
 
   # ===== Art. 21(2)(f) — Wirksamkeitsprüfung =====
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'COM-03'
     relationship: 'equivalent'
     confidence: 'high'
@@ -427,7 +427,7 @@ mappings:
       C5:2026 COM-03 „Internal Audits of the ISMS" (ISO-19011-konform).
     audit_evidence_hint: 'Audit-Plan, Audit-Reports letzte 24 Monate, Maßnahmen-Tracking aus Audit-Findings.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'OPS-23'
     relationship: 'subset'
     confidence: 'high'
@@ -437,7 +437,7 @@ mappings:
       KPI-basierte Wirksamkeitsmessung aus 21(2)(f).
     audit_evidence_hint: 'KPI-Dashboard (MTTD, MTTR, Patch-SLA-Compliance), Verbesserungs-Maßnahmen-Tracking.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'OPS-22'
     relationship: 'subset'
     confidence: 'medium'
@@ -446,7 +446,7 @@ mappings:
       Prüfungs-Maßnahme aus 21(2)(f).
     audit_evidence_hint: 'Pentest-Reports letzte 24 Monate, Findings-Tracking, Re-Test-Nachweis.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'OPS-10'
     relationship: 'subset'
     confidence: 'high'
@@ -455,7 +455,7 @@ mappings:
       ist Wirksamkeits-Bewertungs-Maßnahme über Sicherheits-Monitoring.
     audit_evidence_hint: 'Logging-Konzept, SIEM-Use-Case-Katalog, 24/7-SOC-Coverage.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'IAM-05'
     relationship: 'subset'
     confidence: 'medium'
@@ -464,7 +464,7 @@ mappings:
       Wirksamkeitsbewertung am Beispiel Berechtigungs-Compliance.
     audit_evidence_hint: 'Access-Review-Protokolle, Bereinigungsmaßnahmen, Re-Zertifizierungs-Logs.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'SIM-06'
     relationship: 'subset'
     confidence: 'medium'
@@ -473,7 +473,7 @@ mappings:
       verbessert Incident-Mgmt-Wirksamkeit (KPI, Lessons Learned).
     audit_evidence_hint: 'PIR-Reports, MTTD/MTTR-Dashboard, Recurrence-Rate-Tracking.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'SP-02'
     relationship: 'subset'
     confidence: 'medium'
@@ -483,7 +483,7 @@ mappings:
     audit_evidence_hint: 'Policy-Review-Protokolle, Genehmigungs-Workflow, Versions-Historie.'
 
   # ===== Art. 21(2)(g) — Cyber-Hygiene + Schulung =====
-  - source: '21.2.g'
+  - source: 'Art.21.2.g'
     target: 'HR-03'
     relationship: 'equivalent'
     confidence: 'high'
@@ -493,7 +493,7 @@ mappings:
       and Awareness Programme".
     audit_evidence_hint: 'Schulungsplan, Schulungsquoten ≥95%, rollenspezifische Curricula, Phishing-Drill-Ergebnisse.'
 
-  - source: '21.2.g'
+  - source: 'Art.21.2.g'
     target: 'OPS-04'
     relationship: 'subset'
     confidence: 'high'
@@ -503,7 +503,7 @@ mappings:
     cross_refs: ['OPS-05']
     audit_evidence_hint: 'Malware-Schutz-Konzept, AV/EDR-Coverage-Report, Quarantäne-Statistiken.'
 
-  - source: '21.2.g'
+  - source: 'Art.21.2.g'
     target: 'OPS-18'
     relationship: 'subset'
     confidence: 'high'
@@ -513,7 +513,7 @@ mappings:
     cross_refs: ['OPS-25', 'OPS-26', 'OPS-27']
     audit_evidence_hint: 'Vulnerability-Scan-Reports, Patch-Compliance-Dashboard, CVE-Tracking.'
 
-  - source: '21.2.g'
+  - source: 'Art.21.2.g'
     target: 'OPS-26'
     relationship: 'subset'
     confidence: 'high'
@@ -522,7 +522,7 @@ mappings:
       Technik-Cyberhygiene aus 21(2)(g).
     audit_evidence_hint: 'Hardening-Baselines, CIS-Benchmark-Compliance-Reports, Drift-Detection.'
 
-  - source: '21.2.g'
+  - source: 'Art.21.2.g'
     target: 'OPS-27'
     relationship: 'subset'
     confidence: 'high'
@@ -531,7 +531,7 @@ mappings:
       Patching-Pflichten aus 21(2)(g).
     audit_evidence_hint: 'Patch-Mgmt-Policy mit SLA, Patch-Compliance-Dashboard, Exception-Tracking.'
 
-  - source: '21.2.g'
+  - source: 'Art.21.2.g'
     target: 'DEV-04'
     relationship: 'subset'
     confidence: 'medium'
@@ -541,7 +541,7 @@ mappings:
       Schulung für DevOps.
     audit_evidence_hint: 'Secure-Coding-Schulung, DevSecOps-Curriculum, Schulungsquoten Entwickler.'
 
-  - source: '21.2.g'
+  - source: 'Art.21.2.g'
     target: 'SIM-05'
     relationship: 'subset'
     confidence: 'medium'
@@ -552,7 +552,7 @@ mappings:
     audit_evidence_hint: 'Meldekanal (Hotline/Mailbox), Awareness-Schulung, Incident-Reporting-Statistiken.'
 
   # ===== Art. 21(2)(h) — Kryptographie =====
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'CRY-01'
     relationship: 'equivalent'
     confidence: 'high'
@@ -563,7 +563,7 @@ mappings:
     cross_refs: ['CRY-04', 'CRY-05']
     audit_evidence_hint: 'Krypto-Richtlinie BSI TR-02102 konform, Algorithmen-Allowlist, HSM-Inventar.'
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'CRY-04'
     relationship: 'subset'
     confidence: 'high'
@@ -572,7 +572,7 @@ mappings:
       IPsec) ist konkrete Verschlüsselungs-Maßnahme aus 21(2)(h).
     audit_evidence_hint: 'TLS-Konfigurations-Tests, VPN-Konfiguration, Cipher-Suite-Inventar.'
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'CRY-05'
     relationship: 'subset'
     confidence: 'high'
@@ -581,7 +581,7 @@ mappings:
       Verschlüsselungs-Maßnahme aus 21(2)(h).
     audit_evidence_hint: 'Disk-/Object-Storage-Encryption-Konfiguration, KMS-Integration, Stichprobe verschlüsselter Volumes.'
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'CRY-02'
     relationship: 'subset'
     confidence: 'medium'
@@ -591,7 +591,7 @@ mappings:
       bezogen auf Stand-der-Technik-Übergang.
     audit_evidence_hint: 'Krypto-Inventar, PQC-Migration-Roadmap, Algorithmen-Sunset-Plan.'
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'CRY-17'
     relationship: 'subset'
     confidence: 'medium'
@@ -601,7 +601,7 @@ mappings:
     audit_evidence_hint: 'Key-Mgmt-Policy, Rotations-Protokolle, KMS-Audit-Logs.'
 
   # ===== Art. 21(2)(i) — Personalsicherheit / Zugang / Asset-Mgmt =====
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'HR-01'
     relationship: 'subset'
     confidence: 'high'
@@ -611,7 +611,7 @@ mappings:
     cross_refs: ['HR-02', 'HR-04', 'HR-06']
     audit_evidence_hint: 'Hintergrundüberprüfungen, Führungszeugnis (privilegierte Rollen), Referenzprüfungen.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'IAM-01'
     relationship: 'subset'
     confidence: 'high'
@@ -620,7 +620,7 @@ mappings:
       Zugriffskonzept-Anteil von 21(2)(i) ab.
     audit_evidence_hint: 'Identity-Mgmt-Richtlinie, Berechtigungskonzept, Rollen-Modell, RBAC-Matrix.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'IAM-02'
     relationship: 'subset'
     confidence: 'high'
@@ -629,7 +629,7 @@ mappings:
       Rights" operationalisiert Joiner/Mover/Leaver-Provisioning.
     audit_evidence_hint: 'Provisioning-Workflow, Joiner/Mover/Leaver-Tickets letzte 90 Tage.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'IAM-06'
     relationship: 'subset'
     confidence: 'high'
@@ -638,7 +638,7 @@ mappings:
       Massnahme für privilegierte Zugriffe aus 21(2)(i).
     audit_evidence_hint: 'PAM-Lösung mit Session-Recording, Just-in-Time-Vergabe-Protokolle.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'AM-01'
     relationship: 'subset'
     confidence: 'high'
@@ -648,7 +648,7 @@ mappings:
     cross_refs: ['AM-02', 'AM-09']
     audit_evidence_hint: 'Asset-Mgmt-Framework-Dokument, Owner-Zuordnung, Asset-Lebenszyklus-Definition.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'AM-02'
     relationship: 'subset'
     confidence: 'high'
@@ -657,7 +657,7 @@ mappings:
       Pflicht aus 21(2)(i).
     audit_evidence_hint: 'Asset-Inventar, Owner-Feld, Klassifikation, Cloud-Provisioning-Stichtagsabgleich.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'AM-09'
     relationship: 'subset'
     confidence: 'medium'
@@ -666,7 +666,7 @@ mappings:
       Schutzbedarfsklassen — Voraussetzung für angemessene Schutzmaßnahmen.
     audit_evidence_hint: 'Klassifikations-Schema, Labelling-Konvention, Stichprobe klassifizierter Assets.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'OIS-04'
     relationship: 'subset'
     confidence: 'medium'
@@ -675,7 +675,7 @@ mappings:
       bei Rollen-/Rechtevergabe — Teilaspekt von 21(2)(i).
     audit_evidence_hint: 'SoD-Matrix für kritische Prozesse, Konflikt-Reviews letzte 12 Monate.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'HR-05'
     relationship: 'subset'
     confidence: 'medium'
@@ -684,7 +684,7 @@ mappings:
       Change of Employment" deckt Joiner/Mover/Leaver-Pflichten ab.
     audit_evidence_hint: 'Offboarding-Checkliste, Asset-Rückgabe, Berechtigungs-Entzug-Protokolle.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'HR-07'
     relationship: 'subset'
     confidence: 'medium'
@@ -693,7 +693,7 @@ mappings:
       Telearbeit — Teilaspekt des Asset/Access-Mgmt aus 21(2)(i).
     audit_evidence_hint: 'Remote-Work-Policy, VPN-Konfiguration, Endpoint-Hardening für mobile Geräte.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'PS-04'
     relationship: 'subset'
     confidence: 'low'
@@ -708,7 +708,7 @@ mappings:
     audit_evidence_hint: 'Zutrittskontroll-System, Besucher-Mgmt, Access-Logs.'
 
   # ===== Art. 21(2)(j) — MFA + sichere Kommunikation =====
-  - source: '21.2.j'
+  - source: 'Art.21.2.j'
     target: 'IAM-08'
     relationship: 'equivalent'
     confidence: 'high'
@@ -719,7 +719,7 @@ mappings:
     cross_refs: ['IAM-09']
     audit_evidence_hint: 'MFA-Coverage 100% Admin-Accounts, MFA-Methoden-Inventar (FIDO2 / TOTP / Smartcard).'
 
-  - source: '21.2.j'
+  - source: 'Art.21.2.j'
     target: 'COS-01'
     relationship: 'subset'
     confidence: 'medium'
@@ -730,7 +730,7 @@ mappings:
     cross_refs: ['COS-02', 'COS-07']
     audit_evidence_hint: 'Netzwerk-Segmentierungs-Konzept, Firewall-Rule-Review, Topologie-Dokument.'
 
-  - source: '21.2.j'
+  - source: 'Art.21.2.j'
     target: 'COS-08'
     relationship: 'subset'
     confidence: 'medium'
@@ -745,7 +745,7 @@ mappings:
       dokumentieren.
     audit_evidence_hint: 'Datenübertragungs-Richtlinie, Encryption-in-Transit-Stichproben, Notfall-Kommunikations-Plan (separat).'
 
-  - source: '21.2.j'
+  - source: 'Art.21.2.j'
     target: 'IAM-09'
     relationship: 'subset'
     confidence: 'medium'
@@ -756,7 +756,7 @@ mappings:
     audit_evidence_hint: 'Password-Hashing-Konfiguration, Secret-Mgmt-Lösung (Vault), Rotation-Logs.'
 
   # ===== Art. 23 — Meldepflichten =====
-  - source: '23.1'
+  - source: 'Art.23.1'
     target: 'SIM-04'
     relationship: 'subset'
     confidence: 'medium'
@@ -771,7 +771,7 @@ mappings:
     cross_refs: ['OIS-06', 'SIM-01']
     audit_evidence_hint: 'Meldekette-Dokumentation, 24h-Test-Protokolle, NIS2-Behörden-Routing-Verzeichnis.'
 
-  - source: '23.1'
+  - source: 'Art.23.1'
     target: 'OIS-06'
     relationship: 'subset'
     confidence: 'medium'
@@ -781,7 +781,7 @@ mappings:
       BSI/CSIRT müssen vor Vorfall etabliert sein.
     audit_evidence_hint: 'Kontaktverzeichnis BSI/CERT-Bund/zuständige NIS2-Behörde, Eskalations-Matrix, Test der Meldekette.'
 
-  - source: '23.2'
+  - source: 'Art.23.2'
     target: 'SIM-04'
     relationship: 'subset'
     confidence: 'high'
@@ -792,7 +792,7 @@ mappings:
     cross_refs: ['SIM-01', 'SIM-03']
     audit_evidence_hint: 'Incident-Reports mit Zeitstempel-Trail (24h → 72h → Abschluss), Behörden-Meldungs-Templates.'
 
-  - source: '23.3'
+  - source: 'Art.23.3'
     target: 'SIM-04'
     relationship: 'subset'
     confidence: 'medium'
@@ -803,7 +803,7 @@ mappings:
       SLA-seitig getrackt werden.
     audit_evidence_hint: 'Abschlussbericht-Template, SLA-Tracking ≤30 Tage, Zwischenbericht-Mechanismus bei laufender Behandlung.'
 
-  - source: '23.3'
+  - source: 'Art.23.3'
     target: 'SIM-06'
     relationship: 'related'
     confidence: 'medium'

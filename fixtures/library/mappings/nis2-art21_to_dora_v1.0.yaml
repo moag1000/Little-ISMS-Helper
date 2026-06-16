@@ -49,7 +49,7 @@ library:
       - { state: 'published', date: '2025-04-22', actor: 'ciso-signoff' }
 
 mappings:
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'DORA-5.1'
     relationship: 'subset'
     confidence: 'high'
@@ -67,7 +67,7 @@ mappings:
       abgedeckt — kein Gap aus NIS2-Sicht.
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll der letzten 12 Monate, Risikoinventar, jährlicher Review-Bericht.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'DORA-5.2'
     relationship: 'subset'
     confidence: 'high'
@@ -85,7 +85,7 @@ mappings:
       abgedeckt — kein Gap aus NIS2-Sicht.
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll der letzten 12 Monate, Risikoinventar, jährlicher Review-Bericht.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'DORA-6.1'
     relationship: 'subset'
     confidence: 'high'
@@ -103,7 +103,7 @@ mappings:
       abgedeckt — kein Gap aus NIS2-Sicht.
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll der letzten 12 Monate, Risikoinventar, jährlicher Review-Bericht.'
 
-  - source: '21.2.a'
+  - source: 'Art.21.2.a'
     target: 'DORA-6.2'
     relationship: 'subset'
     confidence: 'high'
@@ -121,7 +121,7 @@ mappings:
       abgedeckt — kein Gap aus NIS2-Sicht.
     audit_evidence_hint: 'ICT-Risk-Management-Framework-Dokument mit Board-Approval-Protokoll der letzten 12 Monate, Risikoinventar, jährlicher Review-Bericht.'
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'DORA-17.1'
     relationship: 'subset'
     confidence: 'high'
@@ -140,7 +140,7 @@ mappings:
       BSI/CSIRT für NIS2). Single-Reporting reicht NICHT.
     audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS, Meldeprotokolle der letzten 12 Monate mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung.'
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'DORA-17.2'
     relationship: 'subset'
     confidence: 'high'
@@ -159,7 +159,7 @@ mappings:
       BSI/CSIRT für NIS2). Single-Reporting reicht NICHT.
     audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS, Meldeprotokolle der letzten 12 Monate mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung.'
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'DORA-17.3'
     relationship: 'subset'
     confidence: 'high'
@@ -178,7 +178,7 @@ mappings:
       BSI/CSIRT für NIS2). Single-Reporting reicht NICHT.
     audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS, Meldeprotokolle der letzten 12 Monate mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung.'
 
-  - source: '21.2.b'
+  - source: 'Art.21.2.b'
     target: 'DORA-19.1'
     relationship: 'subset'
     confidence: 'high'
@@ -197,7 +197,7 @@ mappings:
       BSI/CSIRT für NIS2). Single-Reporting reicht NICHT.
     audit_evidence_hint: 'Incident-Klassifizierungs-Matrix nach RTS, Meldeprotokolle der letzten 12 Monate mit Zeitstempeln, Belege für parallele BaFin- + BSI-Meldung.'
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'DORA-11.1'
     relationship: 'subset'
     confidence: 'high'
@@ -215,7 +215,7 @@ mappings:
       nicht explizit dokumentiert.
     audit_evidence_hint: 'BC-Policy mit Board-Approval, jährliche BC-Test-Berichte, Severe-Scenario-Test-Report, RTO/RPO-Tabelle pro kritischer ICT-Funktion, Restore-Test-Logs.'
 
-  - source: '21.2.c'
+  - source: 'Art.21.2.c'
     target: 'Art.12'
     relationship: 'subset'
     confidence: 'high'
@@ -233,7 +233,7 @@ mappings:
       nicht explizit dokumentiert.
     audit_evidence_hint: 'BC-Policy mit Board-Approval, jährliche BC-Test-Berichte, Severe-Scenario-Test-Report, RTO/RPO-Tabelle pro kritischer ICT-Funktion, Restore-Test-Logs.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'DORA-28.1'
     relationship: 'subset'
     confidence: 'high'
@@ -250,7 +250,7 @@ mappings:
       übererfüllt NIS2 21(2)(d). KEIN Gap.
     audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'DORA-28.2'
     relationship: 'subset'
     confidence: 'high'
@@ -267,7 +267,7 @@ mappings:
       übererfüllt NIS2 21(2)(d). KEIN Gap.
     audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'DORA-28.3'
     relationship: 'subset'
     confidence: 'high'
@@ -284,7 +284,7 @@ mappings:
       übererfüllt NIS2 21(2)(d). KEIN Gap.
     audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
 
-  - source: '21.2.d'
+  - source: 'Art.21.2.d'
     target: 'DORA-30.1'
     relationship: 'subset'
     confidence: 'high'
@@ -301,7 +301,7 @@ mappings:
       übererfüllt NIS2 21(2)(d). KEIN Gap.
     audit_evidence_hint: 'Register of Information (RoI) im aktuellen ESA-Format, TPP-Vertragstexte mit Art.-30-Klauseln, Pre-Contractual-Assessment-Reports, Exit-Strategien für kritische TPPs.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DORA-8.1'
     relationship: 'subset'
     confidence: 'high'
@@ -318,7 +318,7 @@ mappings:
       erfüllt, deckt NIS2 21(2)(e) komplett ab.
     audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DORA-8.2'
     relationship: 'subset'
     confidence: 'high'
@@ -335,7 +335,7 @@ mappings:
       erfüllt, deckt NIS2 21(2)(e) komplett ab.
     audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DORA-8.3'
     relationship: 'subset'
     confidence: 'high'
@@ -352,7 +352,7 @@ mappings:
       erfüllt, deckt NIS2 21(2)(e) komplett ab.
     audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DORA-9.1'
     relationship: 'subset'
     confidence: 'high'
@@ -369,7 +369,7 @@ mappings:
       erfüllt, deckt NIS2 21(2)(e) komplett ab.
     audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DORA-9.2'
     relationship: 'subset'
     confidence: 'high'
@@ -386,7 +386,7 @@ mappings:
       erfüllt, deckt NIS2 21(2)(e) komplett ab.
     audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DORA-9.3'
     relationship: 'subset'
     confidence: 'high'
@@ -403,7 +403,7 @@ mappings:
       erfüllt, deckt NIS2 21(2)(e) komplett ab.
     audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
 
-  - source: '21.2.e'
+  - source: 'Art.21.2.e'
     target: 'DORA-9.4'
     relationship: 'subset'
     confidence: 'high'
@@ -420,7 +420,7 @@ mappings:
       erfüllt, deckt NIS2 21(2)(e) komplett ab.
     audit_evidence_hint: 'Asset-Inventar mit Klassifizierung "critical or important function", SDLC-Dokumentation, Change-Mgmt-Tickets der letzten 12 Monate, Patch-Compliance-Dashboards.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'DORA-13.1'
     relationship: 'subset'
     confidence: 'medium'
@@ -437,7 +437,7 @@ mappings:
       (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'DORA-13.2'
     relationship: 'subset'
     confidence: 'medium'
@@ -454,7 +454,7 @@ mappings:
       (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'DORA-13.3'
     relationship: 'subset'
     confidence: 'medium'
@@ -471,7 +471,7 @@ mappings:
       (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'DORA-13.4'
     relationship: 'subset'
     confidence: 'medium'
@@ -488,7 +488,7 @@ mappings:
       (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'DORA-13.5'
     relationship: 'subset'
     confidence: 'medium'
@@ -505,7 +505,7 @@ mappings:
       (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
 
-  - source: '21.2.f'
+  - source: 'Art.21.2.f'
     target: 'DORA-13.6'
     relationship: 'subset'
     confidence: 'medium'
@@ -522,7 +522,7 @@ mappings:
       (z.B. Mean-Time-to-Detect, Patch-Compliance-Rate).
     audit_evidence_hint: 'Post-Incident-Review-Berichte, Threat-Intel-Subscriptions (FS-ISAC, BaFin-CERT), Lessons-Learned-Tracking, KPI-Dashboards für ICT-Risk-Wirksamkeit.'
 
-  - source: '21.2.g'
+  - source: 'Art.21.2.g'
     target: 'DORA-13.6'
     relationship: 'subset'
     confidence: 'high'
@@ -539,7 +539,7 @@ mappings:
     cross_refs: ['DORA.Art.5.4']
     audit_evidence_hint: 'Schulungs-Curriculum mit Mindestthemen, Phishing-Simulationen mit Klickraten, Schulungsquote pro Mitarbeiter, separate Board-Schulungsbelege.'
 
-  - source: '21.2.h'
+  - source: 'Art.21.2.h'
     target: 'DORA-9.3'
     relationship: 'subset'
     confidence: 'high'
@@ -555,7 +555,7 @@ mappings:
       übererfüllt NIS2 21(2)(h).
     audit_evidence_hint: 'Krypto-Policy mit Algorithmus-Whitelist, Key-Management-Verfahren (Generation/Storage/Rotation/Revocation), HSM-Inventar, Krypto-Audit-Reports.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'DORA-9.1'
     relationship: 'subset'
     confidence: 'medium'
@@ -572,7 +572,7 @@ mappings:
       nachgewiesen werden. NIS2 21(2)(i) erwartet diese Aspekte explizit.
     audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, physische Zutrittsprotokolle Rechenzentrum.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'DORA-9.2'
     relationship: 'subset'
     confidence: 'medium'
@@ -589,7 +589,7 @@ mappings:
       nachgewiesen werden. NIS2 21(2)(i) erwartet diese Aspekte explizit.
     audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, physische Zutrittsprotokolle Rechenzentrum.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'DORA-9.3'
     relationship: 'subset'
     confidence: 'medium'
@@ -606,7 +606,7 @@ mappings:
       nachgewiesen werden. NIS2 21(2)(i) erwartet diese Aspekte explizit.
     audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, physische Zutrittsprotokolle Rechenzentrum.'
 
-  - source: '21.2.i'
+  - source: 'Art.21.2.i'
     target: 'DORA-9.4'
     relationship: 'subset'
     confidence: 'medium'
@@ -623,7 +623,7 @@ mappings:
       nachgewiesen werden. NIS2 21(2)(i) erwartet diese Aspekte explizit.
     audit_evidence_hint: 'IAM-Policy mit Least-Privilege-Nachweis, Zugriffsreviews der letzten 12 Monate, Onboarding/Offboarding-Checklisten, Background-Check-Verfahren, physische Zutrittsprotokolle Rechenzentrum.'
 
-  - source: '21.2.j'
+  - source: 'Art.21.2.j'
     target: 'DORA-9.1'
     relationship: 'subset'
     confidence: 'high'
@@ -642,7 +642,7 @@ mappings:
     cross_refs: ['DORA.Art.11.6']
     audit_evidence_hint: 'MFA-Coverage-Report (privilegierte vs. Standard-Accounts), Notfall-Kommunikationsplan mit Out-of-Band-Kanälen, Test-Protokolle der Notfall-Kommunikation.'
 
-  - source: '21.2.j'
+  - source: 'Art.21.2.j'
     target: 'DORA-9.2'
     relationship: 'subset'
     confidence: 'high'
@@ -661,7 +661,7 @@ mappings:
     cross_refs: ['DORA.Art.11.6']
     audit_evidence_hint: 'MFA-Coverage-Report (privilegierte vs. Standard-Accounts), Notfall-Kommunikationsplan mit Out-of-Band-Kanälen, Test-Protokolle der Notfall-Kommunikation.'
 
-  - source: '21.2.j'
+  - source: 'Art.21.2.j'
     target: 'DORA-9.3'
     relationship: 'subset'
     confidence: 'high'
@@ -680,7 +680,7 @@ mappings:
     cross_refs: ['DORA.Art.11.6']
     audit_evidence_hint: 'MFA-Coverage-Report (privilegierte vs. Standard-Accounts), Notfall-Kommunikationsplan mit Out-of-Band-Kanälen, Test-Protokolle der Notfall-Kommunikation.'
 
-  - source: '21.2.j'
+  - source: 'Art.21.2.j'
     target: 'DORA-9.4'
     relationship: 'subset'
     confidence: 'high'

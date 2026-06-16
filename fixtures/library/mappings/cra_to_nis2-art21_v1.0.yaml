@@ -69,7 +69,7 @@ library:
 
 mappings:
   - source: 'CRA-Annex-I-1.1'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
@@ -88,7 +88,7 @@ mappings:
     audit_evidence_hint: 'Secure-SDLC-Policy, Threat-Modelling-Reports, Default-Konfigurations-Hardening-Guides, Penetration-Test-Reports vor Release.'
 
   - source: 'CRA-Annex-I-1.2'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -105,7 +105,7 @@ mappings:
     audit_evidence_hint: 'Vulnerability-Scan-Reports vor Release (Hersteller), CRA-Konformitaetserklaerung im Beschaffungsdossier (Betreiber).'
 
   - source: 'CRA-Annex-I-1.3.a'
-    target: '21.2.i'
+    target: 'Art.21.2.i'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -122,7 +122,7 @@ mappings:
     audit_evidence_hint: 'Produkt-Spec mit AuthN-Mechanismen (Hersteller), IAM-Policy + Zugriffsreviews (Betreiber).'
 
   - source: 'CRA-Annex-I-1.3.b'
-    target: '21.2.h'
+    target: 'Art.21.2.h'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -135,7 +135,7 @@ mappings:
     audit_evidence_hint: 'Krypto-Algorithmen-Whitelist im Produkt, Krypto-Policy beim Betreiber, Key-Management-Verfahren auf beiden Seiten.'
 
   - source: 'CRA-Annex-I-1.3.c'
-    target: '21.2.h'
+    target: 'Art.21.2.h'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -147,7 +147,7 @@ mappings:
     cross_refs: ['CRA-Annex-I-1.3.b']
 
   - source: 'CRA-Annex-I-1.3.d'
-    target: '21.2.h'
+    target: 'Art.21.2.h'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -163,7 +163,7 @@ mappings:
       indikativ. Empfehlung: Cross-Mapping zu GDPR Art. 5 statt NIS2.
 
   - source: 'CRA-Annex-I-1.3.e'
-    target: '21.2.c'
+    target: 'Art.21.2.c'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -179,7 +179,7 @@ mappings:
     audit_evidence_hint: 'Produkt-Resilienz-Test-Reports (Hersteller), BC-Plan + Tabletop-Uebungen (Betreiber).'
 
   - source: 'CRA-Annex-I-1.3.f'
-    target: '21.2.h'
+    target: 'Art.21.2.h'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -193,7 +193,7 @@ mappings:
       sind komplementaer, nicht aequivalent.
 
   - source: 'CRA-Annex-I-1.3.g'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -208,7 +208,7 @@ mappings:
       Lessons-Learned bleiben unabhaengig vom Produkt nachzuweisen.
 
   - source: 'CRA-Annex-I-1.3.h'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -220,7 +220,7 @@ mappings:
     audit_evidence_hint: 'Logging-Spec im Produkt, SIEM-Integration beim Betreiber, Log-Retention-Policy auf beiden Seiten.'
 
   - source: 'CRA-Annex-I-1.3.i'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
@@ -231,7 +231,7 @@ mappings:
     audit_evidence_hint: 'Update-Mechanismus-Spec mit Signaturpruefung (Hersteller), Patch-Compliance-Dashboard (Betreiber).'
 
   - source: 'CRA-Annex-II-2'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
@@ -242,7 +242,7 @@ mappings:
     audit_evidence_hint: 'Patch-Release-Notes (Hersteller), Patch-Rollout-Statistik mit MTTR (Betreiber).'
 
   - source: 'CRA-Annex-II-3'
-    target: '21.2.f'
+    target: 'Art.21.2.f'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -256,7 +256,7 @@ mappings:
       Pflicht (KPIs, Audits). Schwache Verbindung — Mapping nur indikativ.
 
   - source: 'CRA-Annex-II-4'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -266,7 +266,7 @@ mappings:
     audit_evidence_hint: 'Pentest-Schedule, Vulnerability-Assessment-Reports, Code-Review-Prozessdokumentation.'
 
   - source: 'CRA-Annex-II-5'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -279,7 +279,7 @@ mappings:
       Betreiber-Pflicht (Information verarbeiten). Direkte Mapping-Tiefe niedrig.
 
   - source: 'CRA-Annex-II-6'
-    target: '21.2.d'
+    target: 'Art.21.2.d'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -295,7 +295,7 @@ mappings:
     audit_evidence_hint: 'SBOM in CycloneDX/SPDX-Format (Hersteller), Dependency-Tracking-Tool mit CVE-Integration (Betreiber).'
 
   - source: 'CRA-Annex-II-7'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -309,7 +309,7 @@ mappings:
       Schnittmenge.
 
   - source: 'CRA-Art-14.1'
-    target: '23.1'
+    target: 'Art.23.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -329,7 +329,7 @@ mappings:
     audit_evidence_hint: 'CRA-Meldeprotokolle ENISA + CSIRT (Hersteller), NIS2-Meldeprotokolle BSI (Betreiber), Eskalationsplan mit beiden Meldewegen.'
 
   - source: 'CRA-Art-14.2'
-    target: '23.2'
+    target: 'Art.23.2'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -346,7 +346,7 @@ mappings:
     audit_evidence_hint: 'CRA-Folgemeldungs-Templates (Hersteller), NIS2-Vorfallsmeldungs-Templates (Betreiber), beide mit Zeitstempel.'
 
   - source: 'CRA-Art-14.3'
-    target: '23.3'
+    target: 'Art.23.3'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -361,7 +361,7 @@ mappings:
       tracken — automatische Single-Reporting-Loesung fehlt 2026 noch.
 
   - source: 'CRA-Art-14.8'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'related'
     confidence: 'low'
     rationale: |
@@ -373,47 +373,47 @@ mappings:
       Adressaten-Mismatch deutlich: Hersteller-Pflicht zur Endkunden-
       Kommunikation; NIS2-IR-Prozess davon unabhaengig. Mapping nur indikativ.
   - source: 'CRA-Annex-I-1.1'
-    target: '21.2.a'
+    target: 'Art.21.2.a'
     relationship: 'related'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 55%).'
   - source: 'CRA-Annex-I-1.3.b'
-    target: '21.2.i'
+    target: 'Art.21.2.i'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 55%).'
   - source: 'CRA-Annex-I-1.3.b'
-    target: '21.2.j'
+    target: 'Art.21.2.j'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 45%).'
   - source: 'CRA-Annex-I-1.3.d'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'related'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 45%).'
   - source: 'CRA-Annex-I-1.3.h'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'related'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 58%).'
   - source: 'CRA-Annex-II-3'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'subset'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 55%).'
   - source: 'CRA-Annex-II-7'
-    target: '21.2.e'
+    target: 'Art.21.2.e'
     relationship: 'subset'
     confidence: 'high'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 70%).'
   - source: 'CRA-Art-14.2'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'related'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 65%).'
   - source: 'CRA-Art-14.3'
-    target: '21.2.b'
+    target: 'Art.21.2.b'
     relationship: 'related'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 60%).'
