@@ -11,19 +11,15 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\ComplianceAssessmentService;
-use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\FrameworkMaturityService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -54,11 +50,9 @@ class ComplianceController extends AbstractController
         private readonly ComplianceMappingRepository $complianceMappingRepository,
         private readonly ComplianceAssessmentService $complianceAssessmentService,
         private readonly ComplianceMappingService $complianceMappingService,
-        private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
-        private readonly ComplianceFrameworkLoaderService $complianceFrameworkLoaderService,
         private readonly FrameworkMaturityService $frameworkMaturityService,
         private readonly TranslatorInterface $translator,
     ) {}
@@ -558,56 +552,6 @@ class ComplianceController extends AbstractController
         ));
 
         return $this->redirectToRoute('app_compliance_framework', ['id' => $id]);
-    }
-
-    /**
-     * Framework Library — catalogue of available frameworks with Load buttons.
-     * Accessible to ROLE_MANAGER (= implementers) in addition to admins.
-     * Admins continue to access the same data via /admin/compliance.
-     */
-    #[Route('/compliance/frameworks', name: 'app_compliance_framework_library', methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
-    public function frameworkLibrary(): Response
-    {
-        $availableFrameworks = $this->complianceFrameworkLoaderService->getAvailableFrameworks();
-        $statistics = $this->complianceFrameworkLoaderService->getFrameworkStatistics();
-        $allModules = $this->moduleConfigurationService->getAllModules();
-        $activeModules = $this->moduleConfigurationService->getActiveModules();
-
-        return $this->render('compliance/framework_library.html.twig', [
-            'available_frameworks' => $availableFrameworks,
-            'statistics' => $statistics,
-            'all_modules' => $allModules,
-            'active_modules' => $activeModules,
-        ]);
-    }
-
-    /**
-     * Load a compliance framework — non-admin route accessible to ROLE_MANAGER.
-     * Mirrors AdminComplianceController::loadFramework but lives under /compliance
-     * so the admin-role-scope gate does not apply.
-     */
-    #[Route('/compliance/frameworks/load/{code}', name: 'app_compliance_user_load_framework', methods: ['POST'])]
-    #[IsGranted('ROLE_MANAGER')]
-    public function loadFrameworkForManager(string $code, Request $request): JsonResponse
-    {
-        $token = $request->headers->get('X-CSRF-Token');
-        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('load_framework', $token))) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Invalid CSRF token',
-            ], Response::HTTP_FORBIDDEN);
-        }
-
-        $result = $this->complianceFrameworkLoaderService->loadFramework($code);
-
-        if ($result['success']) {
-            $this->addFlash('success', $result['message']);
-        } else {
-            $this->addFlash('error', $result['message']);
-        }
-
-        return new JsonResponse($result);
     }
 
     /**
