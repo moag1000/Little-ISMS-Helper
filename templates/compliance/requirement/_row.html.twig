@@ -8,7 +8,7 @@
 {% set fulfillment = fulfillment is defined ? fulfillment : (fulfillments is defined and fulfillments[requirement.id] is defined ? fulfillments[requirement.id] : null) %}
 <tr id="compliance-requirement-row-{{ requirement.id }}"
     data-compliance-requirement-id="{{ requirement.id }}">
-    <td><code>{{ requirement.requirementId }}</code></td>
+    <td><code title="{{ requirement.title }}">{{ requirement.requirementId }}</code></td>
     <td>
         <a href="{{ path('app_compliance_requirement_show', {id: requirement.id, _locale: app.request.locale}) }}"
            data-turbo-frame="fa-form-modal" class="fa-row-link"><strong>{{ requirement.title }}</strong></a>
