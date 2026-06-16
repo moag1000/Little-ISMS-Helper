@@ -27,6 +27,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * (destructive; class-level ADMIN_OWN_TENANT removed so managers can reach
  * the lighter actions).
  */
+#[IsGranted('ROLE_MANAGER')]
 class AdminComplianceController extends AbstractController
 {
     public function __construct(
