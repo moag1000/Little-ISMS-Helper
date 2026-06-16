@@ -1,0 +1,285 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+
+{% block title %}{{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index', {_locale: app.request.locale}) },
+            { label: 'compliance.manage_frameworks'|trans({}, 'compliance') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'Compliance' },
+        title: 'compliance.manage_frameworks'|trans({}, 'compliance'),
+        subtitle: 'compliance.manage_frameworks_subtitle'|trans({}, 'compliance'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_index', {_locale: app.request.locale}) }
+        ]
+    }) }}
+
+    {# Introductory explanation — what loading means and that it is non-destructive #}
+    {{ _fa_alert.render({
+        variant: 'info',
+        class: 'mb-4',
+        body: 'compliance.load_screen_intro'|trans({}, 'compliance')
+    }) }}
+
+    {# Statistics #}
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'compliance.framework_statistics'|trans({}, 'compliance') }}</h2>
+        </div>
+        <div class="fa-section__body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    {{ _fa_kpi_card.render({
+                        value: statistics.total_available,
+                        label: 'compliance.total_available'|trans({}, 'compliance')
+                    }) }}
+                </div>
+                <div class="col-md-3">
+                    {{ _fa_kpi_card.render({
+                        value: statistics.total_loaded,
+                        label: 'compliance.loaded'|trans({}, 'compliance')
+                    }) }}
+                </div>
+                <div class="col-md-3">
+                    {{ _fa_kpi_card.render({
+                        value: statistics.total_not_loaded,
+                        label: 'compliance.not_loaded'|trans({}, 'compliance')
+                    }) }}
+                </div>
+                <div class="col-md-3">
+                    {{ _fa_kpi_card.render({
+                        value: statistics.mandatory_not_loaded,
+                        label: 'compliance.mandatory_missing'|trans({}, 'compliance')
+                    }) }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Available Frameworks #}
+    <div class="frameworks-container">
+        <h2 class="mb-2">{{ 'compliance.available_frameworks'|trans({}, 'compliance') }}</h2>
+
+        <div class="framework-cards-grid">
+            {% for framework in available_frameworks %}
+                <div class="framework-card {% if framework.loaded %}loaded{% endif %}">
+                    {% set _applicability = framework.applicability|default(framework.mandatory ? 'universal' : 'voluntary') %}
+                    <div class="framework-card-header {% if _applicability == 'universal' %}bg-gradient-danger{% elseif _applicability == 'conditional' %}bg-gradient-warning{% else %}bg-gradient-primary{% endif %}">
+                        <div class="framework-icon">{{ framework.icon }}</div>
+                        <div class="framework-title">
+                            <h3>{{ framework.code }}</h3>
+                            <p>{{ framework.name }}</p>
+                        </div>
+                        {% if framework.loaded %}
+                            <span class="fa-status-pill fa-status-pill--success">{{ 'compliance.loaded'|trans({}, 'compliance') }}</span>
+                        {% else %}
+                            <span class="fa-status-pill fa-status-pill--warning">{{ 'compliance.not_loaded'|trans({}, 'compliance') }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="framework-card-body">
+                        <div class="framework-info">
+                            <div class="info-item">
+                                <span class="label">{{ 'compliance.version'|trans({}, 'compliance') }}:</span>
+                                <span class="value">{{ framework.version }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">{{ 'compliance.industry_label'|trans({}, 'compliance') }}:</span>
+                                <span class="value">{{ ('compliance.industry.' ~ framework.industry)|trans({}, 'compliance') }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">{{ 'compliance.regulatory_body'|trans({}, 'compliance') }}:</span>
+                                <span class="value">{{ framework.regulatory_body }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">{{ 'admin.compliance.applicability.label'|trans({}, 'compliance') }}:</span>
+                                <span class="value">
+                                    {% if _applicability == 'universal' %}
+                                        <span class="fa-status-pill fa-status-pill--danger">{{ 'admin.compliance.applicability.universal'|trans({}, 'compliance') }}</span>
+                                    {% elseif _applicability == 'conditional' %}
+                                        <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.compliance.applicability.conditional'|trans({}, 'compliance') }}</span>
+                                    {% else %}
+                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.compliance.applicability.voluntary'|trans({}, 'compliance') }}</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        {% if _applicability == 'conditional' and framework.applicability_condition_key %}
+                            {{ _fa_alert.render({ variant: 'warning', class: 'small py-2 px-3 mb-2', body: '<strong>' ~ 'admin.compliance.applicability.applies_when'|trans({}, 'compliance') ~ ':</strong> ' ~ framework.applicability_condition_key|trans({}, 'compliance') }) }}
+                        {% endif %}
+
+                        <p class="framework-description">{{ framework.description }}</p>
+
+                        {% if framework.required_modules is defined and framework.required_modules|length > 0 %}
+                            <div class="framework-modules">
+                                <h3 class="modules-title">{{ 'compliance.required_modules'|trans({}, 'compliance') }}</h3>
+                                <div class="modules-list">
+                                    {% for moduleKey in framework.required_modules %}
+                                        {% set module = all_modules[moduleKey] ?? null %}
+                                        {% set isActive = moduleKey in active_modules %}
+
+                                        {% if module %}
+                                            <div class="module-badge {% if isActive %}active{% else %}inactive{% endif %}"
+                                                 data-bs-toggle="tooltip" data-bs-placement="top"
+                                                 title="{{ module.description }}">
+                                                <span class="module-icon">{% if isActive %}<i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>{% else %}<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>{% endif %}</span>
+                                                <span class="module-name">{{ module.name }}</span>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="framework-actions">
+                            {% if framework.loaded %}
+                                <button class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--full" disabled>
+                                    <span class="icon"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span> {{ 'compliance.already_loaded'|trans({}, 'compliance') }}
+                                </button>
+                                {% if framework.id is defined and framework.id %}
+                                    <a href="{{ path('app_compliance_framework', {id: framework.id, _locale: app.request.locale}) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--full mt-1">
+                                        <span class="icon">🚀</span> Start Working →
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <button class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--full load-framework-btn"
+                                        data-framework-code="{{ framework.code }}"
+                                        data-framework-name="{{ framework.name }}">
+                                    <span class="icon"><i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-muted">{{ 'compliance.available_frameworks'|trans({}, 'compliance') }}: —</p>
+            {% endfor %}
+        </div>
+    </div>
+
+{# framework-card styles live in assets/styles/fairy-aurora-components.css #}
+
+<script>
+// Turbo re-eval guard: wrap in IIFE so top-level symbols are not re-declared on body-swap
+(function () {
+{# Aurora migration complete: JS template-literals below use `fa-icon fa-icon--*` markup. #}
+function initializeLoadButtons() {
+    const loadButtons = document.querySelectorAll('.load-framework-btn');
+    const csrfToken = '{{ csrf_token('load_framework') }}';
+    const loadUrl = '{{ path('app_compliance_user_load_framework', {code: '__CODE__', _locale: app.request.locale}) }}';
+
+    loadButtons.forEach(button => {
+        if (button.dataset.initialized === 'true') {
+            return;
+        }
+        button.dataset.initialized = 'true';
+
+        button.addEventListener('click', async function() {
+            const code = this.dataset.frameworkCode;
+            const name = this.dataset.frameworkName;
+
+            if (!await window.faConfirm('{{ 'compliance.confirm_load'|trans({}, 'compliance') }}' + '\n\n' + name, { tone: 'warn' })) {
+                return;
+            }
+
+            this.disabled = true;
+            this.innerHTML = '<span class="icon">⏳</span> {{ 'compliance.loading'|trans({}, 'compliance') }}...';
+
+            try {
+                const response = await fetch(loadUrl.replace('__CODE__', code), {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': csrfToken
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    this.innerHTML = '<span class="icon"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span> {{ 'compliance.successfully_loaded'|trans({}, 'compliance') }}';
+                    this.classList.remove('fa-cyber-btn--primary');
+                    this.classList.add('fa-cyber-btn--success');
+
+                    this.closest('.framework-card').classList.add('loaded');
+
+                    if (result.framework_id) {
+                        const actionContainer = this.closest('.framework-actions');
+                        const locale = '{{ app.request.locale }}';
+                        actionContainer.innerHTML = `
+                            <button class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--full" disabled>
+                                <span class="icon"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span> {{ 'compliance.successfully_loaded'|trans({}, 'compliance') }}
+                            </button>
+                            <a href="/${locale}/compliance/framework/${result.framework_id}"
+                               class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--full mt-1">
+                                <span class="icon">🚀</span> Start Working →
+                            </a>
+                        `;
+                    } else {
+                        setTimeout(() => { window.location.reload(); }, 2000);
+                    }
+                } else {
+                    this.innerHTML = '<span class="icon"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i></span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
+                    this.classList.add('fa-cyber-btn--danger');
+
+                    window.faToast('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + result.message, 'danger');
+
+                    setTimeout(() => {
+                        this.disabled = false;
+                        this.innerHTML = '<span class="icon"><i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}';
+                        this.classList.remove('fa-cyber-btn--danger');
+                        this.classList.add('fa-cyber-btn--primary');
+                    }, 3000);
+                }
+            } catch (error) {
+                console.error('Error loading framework:', error);
+                this.innerHTML = '<span class="icon"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i></span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
+                this.classList.add('fa-cyber-btn--danger');
+
+                window.faToast('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + error.message, 'danger');
+
+                setTimeout(() => {
+                    this.disabled = false;
+                    this.innerHTML = '<span class="icon"><i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}';
+                    this.classList.remove('fa-cyber-btn--danger');
+                    this.classList.add('fa-cyber-btn--primary');
+                }, 3000);
+            }
+        });
+    });
+}
+
+document.addEventListener('turbo:before-cache', function() {
+    document.querySelectorAll('.load-framework-btn[data-initialized="true"]').forEach(btn => {
+        delete btn.dataset.initialized;
+    });
+});
+
+if (!window.complianceLibraryTurboRegistered) {
+    window.complianceLibraryTurboRegistered = false;
+}
+document.addEventListener('turbo:load', function() {
+    window.complianceLibraryTurboRegistered = true;
+    initializeLoadButtons();
+});
+setTimeout(function() {
+    if (!window.complianceLibraryTurboRegistered) {
+        initializeLoadButtons();
+    }
+}, 100);
+})();
+</script>
+</div>
+{% endblock %}
