@@ -10,6 +10,7 @@ use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\Catalog\FrameworkCode;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -226,7 +227,15 @@ final class ImportMappingCsvCommand extends Command
     private function getFramework(string $code, array &$cache): ?ComplianceFramework
     {
         if (!array_key_exists($code, $cache)) {
-            $cache[$code] = $this->frameworkRepository->findOneBy(['code' => $code]);
+            // Try the literal code first, then the canonical alias (e.g. NIST-CSF -> NIST-CSF-2.0)
+            $fw = $this->frameworkRepository->findOneBy(['code' => $code]);
+            if ($fw === null) {
+                $canonical = FrameworkCode::canonicalize($code);
+                if ($canonical !== null && $canonical !== $code) {
+                    $fw = $this->frameworkRepository->findOneBy(['code' => $canonical]);
+                }
+            }
+            $cache[$code] = $fw;
         }
         return $cache[$code];
     }
@@ -343,18 +352,21 @@ final class ImportMappingCsvCommand extends Command
     private function prefixesFor(string $code): array
     {
         $map = [
-            'ISO27701' => ['27701', 'ISO27701'],
-            'ISO27001' => ['ISO27001'],
-            'ISO27005' => ['27005', 'ISO27005'],
-            'ISO-22301' => ['ISO22301', 'ISO-22301', '22301'],
-            'EU-AI-ACT' => ['AIACT', 'EUAIACT', 'EU-AI-ACT'],
-            'BSI-C5-2026' => ['C5-2026', 'C52026', 'BSI-C5-2026'],
-            'BSI-C5' => ['C5', 'BSI-C5'],
+            'DORA'         => ['DORA'],
+            'ISO27701'     => ['27701', 'ISO27701'],
+            'ISO27001'     => ['ISO27001'],
+            'ISO27005'     => ['27005', 'ISO27005'],
+            'ISO-22301'    => ['ISO22301', 'ISO-22301', '22301'],
+            'EU-AI-ACT'    => ['AIACT', 'EUAIACT', 'EU-AI-ACT'],
+            'BSI-C5-2026'  => ['C5-2026', 'C52026', 'BSI-C5-2026'],
+            'BSI-C5'       => ['C5', 'BSI-C5'],
             'CIS-CONTROLS' => ['CIS', 'CIS-CONTROLS'],
-            'TKG-2024' => ['TKG', 'TKG-2024'],
-            'KRITIS' => ['KRITIS'],
-            'NIS2UMSUCG' => ['NIS2UMSUCG', 'NIS2UmsuCG'],
-            'NIST-CSF' => ['NIST-CSF', 'NISTCSF'],
+            'TKG-2024'     => ['TKG', 'TKG-2024'],
+            'KRITIS'       => ['KRITIS'],
+            'NIS2UMSUCG'   => ['NIS2UMSUCG', 'NIS2UmsuCG'],
+            // NIST-CSF-2.0 is the canonical code; NIST-CSF is the alias handled by getFramework().
+            'NIST-CSF'     => ['NIST-CSF', 'NISTCSF'],
+            'NIST-CSF-2.0' => ['NIST-CSF', 'NISTCSF', 'NIST-CSF-2.0'],
         ];
 
         if (isset($map[$code])) {
