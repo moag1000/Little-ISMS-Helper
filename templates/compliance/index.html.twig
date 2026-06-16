@@ -23,7 +23,7 @@
             { label: 'compliance.button.cross_framework'|trans({}, 'compliance'), href: path('app_compliance_cross_framework'), variant: 'ghost', icon: 'link' },
             { label: 'compliance.button.transitive'|trans({}, 'compliance'), href: path('app_compliance_transitive'), variant: 'ghost', icon: 'nav-bar-chart' },
             { label: 'compliance.button.compare_frameworks'|trans({}, 'compliance'), href: path('app_compliance_compare'), variant: 'ghost', icon: 'nav-sliders' }
-        ]|merge(is_granted('ROLE_ADMIN') ? [{ label: 'compliance.manage_frameworks'|trans({}, 'compliance'), href: path('admin_compliance_index'), variant: 'primary', icon: 'nav-gear' }] : [])
+        ]|merge(is_granted('ROLE_ADMIN') ? [{ label: 'compliance.manage_frameworks'|trans({}, 'compliance'), href: path('admin_compliance_index'), variant: 'primary', icon: 'nav-gear' }] : (is_granted('ROLE_MANAGER') ? [{ label: 'compliance.manage_frameworks'|trans({}, 'compliance'), href: path('app_compliance_framework_library'), variant: 'primary', icon: 'nav-download' }] : []))
     }) }}
 {% set _global_hints = alva_hints('compliance_index') %}
 {% if _global_hints|length > 0 %}

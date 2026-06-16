@@ -37,6 +37,7 @@ use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\ExcelExportService;
+use App\Service\FrameworkMaturityService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
@@ -48,7 +49,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -60,12 +61,13 @@ class ComplianceControllerTest extends TestCase
     private MockObject $complianceMappingRepository;
     private MockObject $complianceAssessmentService;
     private MockObject $complianceMappingService;
-    private MockObject $csrfTokenManager;
     private MockObject $excelExportService;
     private MockObject $moduleConfigurationService;
     private MockObject $pdfExportService;
     private MockObject $complianceRequirementFulfillmentService;
     private MockObject $tenantContext;
+    private MockObject $frameworkMaturityService;
+    private MockObject $translator;
     private ComplianceController $controller;
 
     protected function setUp(): void
@@ -75,12 +77,13 @@ class ComplianceControllerTest extends TestCase
         $this->complianceMappingRepository = $this->createMock(ComplianceMappingRepository::class);
         $this->complianceAssessmentService = $this->createMock(ComplianceAssessmentService::class);
         $this->complianceMappingService = $this->createMock(ComplianceMappingService::class);
-        $this->csrfTokenManager = $this->createMock(CsrfTokenManagerInterface::class);
         $this->excelExportService = $this->createMock(ExcelExportService::class);
         $this->moduleConfigurationService = $this->createMock(ModuleConfigurationService::class);
         $this->pdfExportService = $this->createMock(PdfExportService::class);
         $this->complianceRequirementFulfillmentService = $this->createMock(ComplianceRequirementFulfillmentService::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
+        $this->frameworkMaturityService = $this->createMock(FrameworkMaturityService::class);
+        $this->translator = $this->createMock(TranslatorInterface::class);
 
         $this->controller = new ComplianceController(
             $this->complianceFrameworkRepository,
@@ -88,10 +91,11 @@ class ComplianceControllerTest extends TestCase
             $this->complianceMappingRepository,
             $this->complianceAssessmentService,
             $this->complianceMappingService,
-            $this->csrfTokenManager,
             $this->moduleConfigurationService,
             $this->complianceRequirementFulfillmentService,
-            $this->tenantContext
+            $this->tenantContext,
+            $this->frameworkMaturityService,
+            $this->translator,
         );
 
         // Setup container for rendering
@@ -140,6 +144,7 @@ class ComplianceControllerTest extends TestCase
         $overview = ['total' => 10, 'compliant' => 5];
         $mappingStats = ['total_mappings' => 100];
         $reuseValue = ['estimated_hours_saved' => 40];
+        $tenant = $this->createTenant(1, 'Test Tenant');
 
         $this->complianceFrameworkRepository->method('findActiveFrameworks')
             ->willReturn($frameworks);
@@ -155,6 +160,12 @@ class ComplianceControllerTest extends TestCase
 
         $this->complianceMappingService->method('calculateDataReuseValue')
             ->willReturn($reuseValue);
+
+        $this->tenantContext->method('getCurrentTenant')
+            ->willReturn($tenant);
+
+        $this->frameworkMaturityService->method('computePortfolio')
+            ->willReturn([]);
 
         $response = $this->controller->index();
 

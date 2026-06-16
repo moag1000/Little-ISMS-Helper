@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Service to manage and load compliance frameworks via UI
  */
-final class ComplianceFrameworkLoaderService
+class ComplianceFrameworkLoaderService
 {
     public function __construct(
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,

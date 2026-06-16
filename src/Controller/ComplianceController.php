@@ -20,7 +20,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -51,12 +50,11 @@ class ComplianceController extends AbstractController
         private readonly ComplianceMappingRepository $complianceMappingRepository,
         private readonly ComplianceAssessmentService $complianceAssessmentService,
         private readonly ComplianceMappingService $complianceMappingService,
-        private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
-        private readonly ?FrameworkMaturityService $frameworkMaturityService = null,
-        private readonly ?TranslatorInterface $translator = null,
+        private readonly FrameworkMaturityService $frameworkMaturityService,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     protected function getFlashDomain(): string
@@ -66,10 +64,6 @@ class ComplianceController extends AbstractController
 
     protected function getTranslator(): TranslatorInterface
     {
-        if ($this->translator === null) {
-            // @intentional-assertion: nullable-translator fallback exists only for test ctor compat
-            throw new \RuntimeException('TranslatorInterface not injected — flash methods unavailable.');
-        }
         return $this->translator;
     }
 
@@ -91,7 +85,7 @@ class ComplianceController extends AbstractController
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
-        $maturityPortfolio = $this->frameworkMaturityService?->computePortfolio($tenant) ?? [];
+        $maturityPortfolio = $this->frameworkMaturityService->computePortfolio($tenant);
 
         return $this->render('compliance/index.html.twig', [
             'frameworks' => $frameworks,
