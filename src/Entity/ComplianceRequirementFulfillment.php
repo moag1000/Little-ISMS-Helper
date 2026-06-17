@@ -171,6 +171,7 @@ class ComplianceRequirementFulfillment
     {
         $this->createdAt = new DateTimeImmutable();
         $this->responsibleDeputyPersons = new ArrayCollection();
+        $this->evidenceDocuments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -526,6 +527,72 @@ class ComplianceRequirementFulfillment
     public function setEvidenceOutdated(bool $evidenceOutdated): self
     {
         $this->evidenceOutdated = $evidenceOutdated;
+        return $this;
+    }
+
+    // ── Certificate evidence-document link + verification fields ─────────────
+
+    /**
+     * Evidence documents linked to this fulfillment (e.g. compliance certificates).
+     *
+     * @var Collection<int, Document>
+     */
+    #[ORM\ManyToMany(targetEntity: Document::class)]
+    #[ORM\JoinTable(name: 'compliance_fulfillment_evidence_documents')]
+    private Collection $evidenceDocuments;
+
+    /**
+     * Timestamp when this fulfillment was formally verified.
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $verifiedAt = null;
+
+    /**
+     * User who performed the formal verification.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'verified_by_id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $verifiedBy = null;
+
+    /** @return Collection<int, Document> */
+    public function getEvidenceDocuments(): Collection
+    {
+        return $this->evidenceDocuments;
+    }
+
+    public function addEvidenceDocument(Document $d): static
+    {
+        if (!$this->evidenceDocuments->contains($d)) {
+            $this->evidenceDocuments->add($d);
+        }
+        return $this;
+    }
+
+    public function removeEvidenceDocument(Document $d): static
+    {
+        $this->evidenceDocuments->removeElement($d);
+        return $this;
+    }
+
+    public function getVerifiedAt(): ?DateTimeImmutable
+    {
+        return $this->verifiedAt;
+    }
+
+    public function setVerifiedAt(?DateTimeImmutable $verifiedAt): static
+    {
+        $this->verifiedAt = $verifiedAt;
+        return $this;
+    }
+
+    public function getVerifiedBy(): ?User
+    {
+        return $this->verifiedBy;
+    }
+
+    public function setVerifiedBy(?User $verifiedBy): static
+    {
+        $this->verifiedBy = $verifiedBy;
         return $this;
     }
 }
