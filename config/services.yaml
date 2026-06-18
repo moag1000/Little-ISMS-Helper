@@ -510,8 +510,12 @@ services:
 # ── Test-only service publicity ──────────────────────────────────────────────
 # Loaded last so it wins over the `App\` resource-glob default (public: false).
 # CertificateBulkFulfillmentService is fetched directly from the container by its
-# integration test; it has no in-app caller yet, so without this it would be
-# removed/inlined at compile time.
+# integration test; it has no in-app caller yet, so the compiler's
+# RemoveUnusedDefinitionsPass strips it before the test container can re-publicize
+# it (verified: without this block the test fails with ServiceNotFoundException).
+# TODO: remove this block once T7 wires the controller that injects the service —
+# at that point it becomes a referenced (surviving) private service and the test
+# container exposes it automatically, making this publicity declaration dead config.
 when@test:
     services:
         App\Service\Certificate\CertificateBulkFulfillmentService:
