@@ -507,3 +507,15 @@ services:
         arguments:
             $bridges: '%lifecycle.approval_bridges%'
 
+# ── Test-only service publicity ──────────────────────────────────────────────
+# Loaded last so it wins over the `App\` resource-glob default (public: false).
+# CertificateBulkFulfillmentService is fetched directly from the container by its
+# integration test; it has no in-app caller yet, so without this it would be
+# removed/inlined at compile time.
+when@test:
+    services:
+        App\Service\Certificate\CertificateBulkFulfillmentService:
+            autowire: true
+            autoconfigure: true
+            public: true
+
