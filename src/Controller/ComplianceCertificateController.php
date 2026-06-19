@@ -26,6 +26,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * ComplianceCertificateController
  *
+ * @em-write-allowed: trivial CSRF-guarded delete of a single tenant-scoped
+ *   certificate row in delete() — no business logic to extract into a service.
+ *
  * User-facing layer for the Compliance-Certificate feature. Lets a manager
  * upload an external certificate (ISO 27001, SOC 2, TISAX, …), preview which
  * compliance requirements it would fulfil, and bulk-apply the coverage.

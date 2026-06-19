@@ -45,6 +45,7 @@ tests/Controller/Tisax/TisaxImportWizardE2ETest.php:328
 tests/Controller/Tisax/TisaxImportWizardE2ETest.php:520
 tests/Service/Certificate/CertificateBulkFulfillmentServiceTest.php:89
 tests/Service/Certificate/CertificateBulkFulfillmentServiceTest.php:120
+tests/Service/Certificate/CertificateExpiryReviewTest.php:101
 tests/Service/Import/SpreadsheetParserTest.php:269
 tests/Service/IndustryBaselineApplierTest.php:192
 tests/Service/IndustryBaselineApplierTest.php:193
