@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'compliance.certificate.show.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index', {_locale: app.request.locale}) },
+            { label: 'compliance.certificate.index.title'|trans({}, 'compliance'), url: path('app_compliance_certificate_index', {_locale: app.request.locale}) },
+            { label: certificate.certNumber ?? certificate.frameworkCode }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'Compliance' },
+        title: certificate.certNumber ?? certificate.frameworkCode,
+        subtitle: certificate.certBody,
+        actions: [
+            { label: 'compliance.certificate.actions.preview'|trans({}, 'compliance'), variant: 'ghost', icon: 'util-eye', href: path('app_compliance_certificate_preview', {_locale: app.request.locale, id: certificate.id}) }
+        ]
+    }) }}
+
+    <section class="fa-section mb-4">
+        <div class="fa-section__body">
+            <dl class="row">
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.framework'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.frameworkCode }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.cert_body'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.certBody }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.cert_number'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.certNumber ?? '—' }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.holder'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.holder ?? '—' }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.cert_class'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.certClass ?? '—' }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.scope_text'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.scopeText ?? '—' }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.scope_tags'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.scopeTags|join(', ') ?: '—' }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.issue_date'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.issueDate ? certificate.issueDate|date('Y-m-d') : '—' }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.valid_until'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.validUntil ? certificate.validUntil|date('Y-m-d') : '—' }}</dd>
+
+                <dt class="col-sm-3">{{ 'compliance.certificate.field.status'|trans({}, 'compliance') }}</dt>
+                <dd class="col-sm-9">{{ certificate.status }}</dd>
+            </dl>
+        </div>
+    </section>
+
+    {% if is_granted(constant('App\\Security\\Voter\\ComplianceCertificateVoter::CERT_DELETE'), certificate) %}
+        <form method="post"
+              action="{{ path('app_compliance_certificate_delete', {_locale: app.request.locale, id: certificate.id}) }}"
+              data-controller="fa-confirm"
+              data-action="fa-confirm#confirm">
+            <input type="hidden" name="_token" value="{{ csrf_token('cert_delete') }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
+                <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.delete'|trans({}, 'compliance') }}</span>
+            </button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

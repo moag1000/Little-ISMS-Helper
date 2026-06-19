@@ -43,6 +43,8 @@ tests/Controller/QuickFixControllerTest.php:114
 tests/Controller/Tisax/TisaxImportWizardE2ETest.php:291
 tests/Controller/Tisax/TisaxImportWizardE2ETest.php:328
 tests/Controller/Tisax/TisaxImportWizardE2ETest.php:520
+tests/Service/Certificate/CertificateBulkFulfillmentServiceTest.php:89
+tests/Service/Certificate/CertificateBulkFulfillmentServiceTest.php:120
 tests/Service/Import/SpreadsheetParserTest.php:269
 tests/Service/IndustryBaselineApplierTest.php:192
 tests/Service/IndustryBaselineApplierTest.php:193

@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'compliance.certificate.index.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index', {_locale: app.request.locale}) },
+            { label: 'compliance.certificate.index.title'|trans({}, 'compliance') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'Compliance' },
+        title: 'compliance.certificate.index.title'|trans({}, 'compliance'),
+        subtitle: 'compliance.certificate.index.subtitle'|trans({}, 'compliance'),
+        actions: [
+            { label: 'compliance.certificate.actions.upload'|trans({}, 'compliance'), variant: 'primary', icon: 'util-plus', href: path('app_compliance_certificate_new', {_locale: app.request.locale}) }
+        ]
+    }) }}
+
+    {% if certificates|length == 0 %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'compliance.certificate.empty.title'|trans({}, 'compliance'),
+            text: 'compliance.certificate.empty.text'|trans({}, 'compliance'),
+            actions: [
+                { label: 'compliance.certificate.actions.upload'|trans({}, 'compliance'), href: path('app_compliance_certificate_new', {_locale: app.request.locale}), variant: 'primary' }
+            ]
+        }) }}
+    {% else %}
+        {% set rows = [] %}
+        {% for cert in certificates %}
+            {% set rows = rows|merge([[
+                '<a href="' ~ path('app_compliance_certificate_show', {_locale: app.request.locale, id: cert.id}) ~ '">' ~ (cert.certNumber ?? cert.frameworkCode)|e ~ '</a>',
+                cert.frameworkCode|e,
+                cert.certBody|e,
+                (cert.validUntil ? cert.validUntil|date('Y-m-d') : '—'),
+                cert.status|e
+            ]]) %}
+        {% endfor %}
+
+        {{ _fa_table.render({
+            headers: [
+                { label: 'compliance.certificate.field.cert_number'|trans({}, 'compliance') },
+                { label: 'compliance.certificate.field.framework'|trans({}, 'compliance') },
+                { label: 'compliance.certificate.field.cert_body'|trans({}, 'compliance') },
+                { label: 'compliance.certificate.field.valid_until'|trans({}, 'compliance') },
+                { label: 'compliance.certificate.field.status'|trans({}, 'compliance') }
+            ],
+            rows: rows,
+            striped: true
+        }) }}
+    {% endif %}
+</div>
+{% endblock %}

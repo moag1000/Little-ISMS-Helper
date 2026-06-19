@@ -1038,6 +1038,53 @@ compliance:
                 total: 'Total:'
                 days_at_8h: 'Tage bei einem 8h-Arbeitstag'
                 tracking: 'Tracking'
+    certificate:
+        index:
+            title: 'Compliance-Zertifikate'
+            subtitle: 'Externe Zertifikate (ISO 27001, SOC 2, TISAX, …), die Ihre Organisation hält.'
+        new:
+            title: 'Zertifikat hochladen'
+            subtitle: 'Externes Compliance-Zertifikat manuell hinzufügen.'
+            select_framework: 'Framework auswählen…'
+            scope_tags_hint: 'Kommagetrennt, z. B. cloud, de'
+        preview:
+            title: 'Abdeckungs-Vorschau'
+            rule_notice: 'Eine Abdeckungsregel hat gegriffen. Beim Anwenden werden nur die unten gelisteten Anforderungen erfüllt.'
+            fallback_notice: 'Keine Abdeckungsregel hat gegriffen — als Fallback wird das gesamte Framework verwendet. Bitte vor dem Anwenden prüfen.'
+            covered_requirements: 'Abgedeckte Anforderungen'
+            no_coverage: 'Dieses Zertifikat deckt keine Anforderungen ab.'
+        show:
+            title: 'Zertifikat-Details'
+        field:
+            framework: 'Framework'
+            cert_body: 'Zertifizierungsstelle'
+            cert_number: 'Zertifikatsnummer'
+            holder: 'Inhaber'
+            cert_class: 'Klasse / Stufe'
+            scope_tags: 'Geltungsbereich-Tags'
+            scope_text: 'Geltungsbereich-Beschreibung'
+            issue_date: 'Ausstellungsdatum'
+            valid_until: 'Gültig bis'
+            status: 'Status'
+            requirement_id: 'Anforderungs-ID'
+            file: 'Zertifikatsdatei (PDF)'
+        actions:
+            upload: 'Zertifikat hochladen'
+            upload_and_preview: 'Hochladen & Abdeckung anzeigen'
+            apply: 'Abdeckung anwenden'
+            preview: 'Abdeckung anzeigen'
+            view_details: 'Details anzeigen'
+            delete: 'Löschen'
+        empty:
+            title: 'Noch keine Zertifikate'
+            text: 'Laden Sie Ihr erstes externes Compliance-Zertifikat hoch, um Anforderungen gesammelt zu erfüllen.'
+        flash:
+            file_required: 'Bitte wählen Sie eine Zertifikatsdatei zum Hochladen aus.'
+            upload_failed: 'Das Zertifikat konnte nicht hochgeladen werden. Bitte prüfen Sie die Datei und versuchen Sie es erneut.'
+            created: 'Zertifikat erfolgreich hochgeladen.'
+            applied: 'Abdeckung angewendet — %count% Anforderung(en) als verifiziert markiert.'
+            fallback_used: 'Es wurde die Framework-weite Fallback-Abdeckung verwendet, da keine Regel griff.'
+            deleted: 'Zertifikat gelöscht.'
 compliance_mapping:
     mapping_type:
         weak: 'Schwach (0-49%)'

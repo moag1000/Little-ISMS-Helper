@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
+
+{% block title %}{{ 'compliance.certificate.preview.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index', {_locale: app.request.locale}) },
+            { label: 'compliance.certificate.index.title'|trans({}, 'compliance'), url: path('app_compliance_certificate_index', {_locale: app.request.locale}) },
+            { label: 'compliance.certificate.preview.title'|trans({}, 'compliance') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'Compliance' },
+        title: 'compliance.certificate.preview.title'|trans({}, 'compliance'),
+        subtitle: certificate.frameworkCode ~ ' · ' ~ (certificate.certNumber ?? '')
+    }) }}
+
+    {% if coverage.isFallback %}
+        {{ _fa_alert.render({
+            variant: 'warning',
+            class: 'mb-4',
+            body: 'compliance.certificate.preview.fallback_notice'|trans({}, 'compliance')
+        }) }}
+    {% else %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            class: 'mb-4',
+            body: 'compliance.certificate.preview.rule_notice'|trans({}, 'compliance')
+        }) }}
+    {% endif %}
+
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                {{ 'compliance.certificate.preview.covered_requirements'|trans({}, 'compliance') }}
+                ({{ coverage.requirementIds|length }})
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {% set rows = [] %}
+            {% for rid in coverage.requirementIds %}
+                {% set rows = rows|merge([[ rid|e ]]) %}
+            {% endfor %}
+            {{ _fa_table.render({
+                headers: [ { label: 'compliance.certificate.field.requirement_id'|trans({}, 'compliance') } ],
+                rows: rows,
+                empty: 'compliance.certificate.preview.no_coverage'|trans({}, 'compliance')
+            }) }}
+        </div>
+    </section>
+
+    <div class="d-flex gap-2">
+        <form method="post" action="{{ path('app_compliance_certificate_apply', {_locale: app.request.locale, id: certificate.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('cert_apply') }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary"{% if coverage.requirementIds|length == 0 %} disabled{% endif %}>
+                <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.apply'|trans({}, 'compliance') }}</span>
+            </button>
+        </form>
+        <a href="{{ path('app_compliance_certificate_show', {_locale: app.request.locale, id: certificate.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+            <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.view_details'|trans({}, 'compliance') }}</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
