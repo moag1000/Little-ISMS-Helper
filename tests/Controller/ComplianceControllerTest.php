@@ -320,7 +320,7 @@ class ComplianceControllerTest extends TestCase
         $this->complianceMappingRepository->method('findCrossFrameworkMappings')
             ->willReturn($mappings);
 
-        $response = $this->controller->crossFrameworkMappings();
+        $response = $this->controller->crossFrameworkMappings(new Request());
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(200, $response->getStatusCode());
