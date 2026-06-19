@@ -1760,4 +1760,31 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Count mappings visible to the given tenant.
+     *
+     * Mirrors the visibility rule from {@see findAllForTenant()}:
+     *   (a) both requirements are global (uploadTenant IS NULL), OR
+     *   (b) at least one requirement belongs to this tenant.
+     *
+     * Used by the mapping-onboarding workflow to snapshot a baseline count at
+     * workflow start so a "new load during the workflow" can be detected as a
+     * count increase.
+     */
+    public function countByTenant(Tenant $tenant): int
+    {
+        return (int) $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->join('cm.sourceRequirement', 'sr')
+            ->join('cm.targetRequirement', 'tr')
+            ->where(
+                '(sr.uploadTenant IS NULL AND tr.uploadTenant IS NULL) '
+                . 'OR sr.uploadTenant = :tenant '
+                . 'OR tr.uploadTenant = :tenant'
+            )
+            ->setParameter('tenant', $tenant)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
