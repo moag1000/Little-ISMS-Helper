@@ -1787,4 +1787,30 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function latestReviewedAtForTenant(Tenant $tenant): ?\DateTimeInterface
+    {
+        $v = $this->createQueryBuilder('cm')
+            ->select('MAX(cm.reviewedAt)')
+            ->join('cm.sourceRequirement', 'sr')
+            ->join('cm.targetRequirement', 'tr')
+            ->where('(sr.uploadTenant IS NULL AND tr.uploadTenant IS NULL) OR sr.uploadTenant = :tenant OR tr.uploadTenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->getQuery()->getSingleScalarResult();
+
+        return $v ? new \DateTimeImmutable((string) $v) : null;
+    }
+
+    public function latestCreatedAtForTenant(Tenant $tenant): ?\DateTimeInterface
+    {
+        $v = $this->createQueryBuilder('cm')
+            ->select('MAX(cm.createdAt)')
+            ->join('cm.sourceRequirement', 'sr')
+            ->join('cm.targetRequirement', 'tr')
+            ->where('(sr.uploadTenant IS NULL AND tr.uploadTenant IS NULL) OR sr.uploadTenant = :tenant OR tr.uploadTenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->getQuery()->getSingleScalarResult();
+
+        return $v ? new \DateTimeImmutable((string) $v) : null;
+    }
 }
