@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Repository\TenantRepository;
+use App\Service\Evidence\EvidenceCascadeInvalidationService;
 use App\Service\ReviewReminderService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
@@ -85,7 +87,9 @@ TXT
 class SendReviewRemindersCommand
 {
     public function __construct(
-        private readonly ReviewReminderService $reviewReminderService
+        private readonly ReviewReminderService $reviewReminderService,
+        private readonly EvidenceCascadeInvalidationService $evidenceCascadeInvalidationService,
+        private readonly TenantRepository $tenantRepository,
     ) {
     }
 
@@ -149,6 +153,15 @@ class SendReviewRemindersCommand
                 ];
             }
             $symfonyStyle->table(['Reference', 'Title', 'Time', 'Status'], $breachData);
+        }
+
+        // Evidence-expiry re-review (per active tenant). Certificate-applied
+        // fulfillments get nextReviewDate = cert.validUntil, so this scan is the
+        // production caller that flags them outdated once the certificate expires.
+        // Skipped in stats-only/breaches-only (no mutation) and reported (not run)
+        // in dry-run.
+        if (!$breachesOnly && !$statsOnly) {
+            $this->scanExpiredEvidence($symfonyStyle, $dryRun);
         }
 
         if ($statsOnly) {
@@ -227,5 +240,43 @@ class SendReviewRemindersCommand
         );
 
         return $results['failed'] > 0 ? Command::FAILURE : Command::SUCCESS;
+    }
+
+    /**
+     * Flag overdue ComplianceRequirementFulfillments (nextReviewDate < now) as
+     * evidenceOutdated for every active tenant. This is the signal that picks up
+     * certificate-fulfilled controls once the certificate's validUntil passes.
+     *
+     * flagExpiredEvidence() has no dry mode, so in dry-run we only report intent
+     * and do not mutate.
+     */
+    private function scanExpiredEvidence(SymfonyStyle $symfonyStyle, bool $dryRun): void
+    {
+        $symfonyStyle->section('Evidence Expiry Re-Review');
+
+        $tenants = $this->tenantRepository->findActive();
+
+        if ($dryRun) {
+            $symfonyStyle->note([
+                'DRY RUN: No evidence flagged.',
+                sprintf('Would scan %d active tenant(s) for expired evidence (incl. expired certificates).', count($tenants)),
+            ]);
+
+            return;
+        }
+
+        $totalFlagged = 0;
+        foreach ($tenants as $tenant) {
+            $totalFlagged += $this->evidenceCascadeInvalidationService->flagExpiredEvidence($tenant);
+        }
+
+        if ($totalFlagged > 0) {
+            $symfonyStyle->warning(sprintf(
+                '%d fulfillment(s) flagged for re-review due to expired evidence (incl. expired certificates).',
+                $totalFlagged,
+            ));
+        } else {
+            $symfonyStyle->writeln('No expired evidence found across active tenants.');
+        }
     }
 }
