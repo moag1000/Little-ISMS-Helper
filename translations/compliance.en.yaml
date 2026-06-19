@@ -1038,6 +1038,54 @@ compliance:
                 total: 'Total:'
                 days_at_8h: 'days at an 8-hour work day'
                 tracking: 'Tracking'
+    certificate:
+        index:
+            title: 'Compliance Certificates'
+            subtitle: 'External certificates (ISO 27001, SOC 2, TISAX, …) held by your organization.'
+        new:
+            title: 'Upload Certificate'
+            subtitle: 'Manually add an external compliance certificate.'
+            select_framework: 'Select a framework…'
+            scope_tags_hint: 'Comma-separated, e.g. cloud, de'
+        preview:
+            title: 'Coverage Preview'
+            rule_notice: 'A coverage rule matched. Only the requirements below will be fulfilled when you apply this certificate.'
+            fallback_notice: 'No coverage rule matched — the full framework will be used as fallback. Review carefully before applying.'
+            covered_requirements: 'Covered Requirements'
+            no_coverage: 'This certificate covers no requirements.'
+        show:
+            title: 'Certificate Details'
+        field:
+            framework: 'Framework'
+            cert_body: 'Certification Body'
+            cert_number: 'Certificate Number'
+            holder: 'Holder'
+            cert_class: 'Class / Level'
+            scope_tags: 'Scope Tags'
+            scope_text: 'Scope Description'
+            issue_date: 'Issue Date'
+            valid_until: 'Valid Until'
+            status: 'Status'
+            requirement_id: 'Requirement ID'
+            file: 'Certificate File (PDF)'
+        actions:
+            upload: 'Upload Certificate'
+            upload_and_preview: 'Upload & Preview Coverage'
+            apply: 'Apply Coverage'
+            preview: 'Preview Coverage'
+            view_details: 'View Details'
+            delete: 'Delete'
+        empty:
+            title: 'No certificates yet'
+            text: 'Upload your first external compliance certificate to bulk-fulfil requirements.'
+        flash:
+            file_required: 'Please select a certificate file to upload.'
+            upload_failed: 'The certificate could not be uploaded. Please check the file and try again.'
+            created: 'Certificate uploaded successfully.'
+            applied: 'Coverage applied — %count% requirement(s) marked verified.'
+            nothing_applied: 'No requirement was covered — no matching coverage rule exists for this certificate.'
+            fallback_used: 'Framework-wide fallback coverage was used because no rule matched.'
+            deleted: 'Certificate deleted.'
 compliance_mapping:
     mapping_type:
         weak: 'Weak (0-49%)'
