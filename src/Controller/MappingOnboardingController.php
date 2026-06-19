@@ -8,6 +8,7 @@ use App\Service\MappingOnboardingService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
@@ -47,17 +48,27 @@ class MappingOnboardingController extends AbstractController
 
     #[Route('/advance', name: 'app_mapping_onboarding_advance', methods: ['POST'])]
     #[IsCsrfTokenValid('mapping_onboarding')]
-    public function advance(): JsonResponse
+    public function advance(Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
-            return $this->json(['error' => 'no_tenant'], Response::HTTP_BAD_REQUEST);
+            if ($request->isXmlHttpRequest()) {
+                return $this->json(['error' => 'no_tenant'], Response::HTTP_BAD_REQUEST);
+            }
+            $this->addFlash('warning', 'Kein aktiver Mandant-Kontext.');
+
+            return $this->redirectToRoute('app_dashboard');
         }
         $state = $this->onboarding->advance($user, $tenant);
 
-        return $this->json(['step' => $state['step'], 'completed' => $state['completed']]);
+        if ($request->isXmlHttpRequest()) {
+            return $this->json(['step' => $state['step'], 'completed' => $state['completed']]);
+        }
+
+        // PRG for the no-JS path: back to the hub (now showing the next step / progress).
+        return $this->redirectToRoute('app_mapping_onboarding');
     }
 
     #[Route('/reset', name: 'app_mapping_onboarding_reset', methods: ['POST'])]
