@@ -1083,6 +1083,7 @@ compliance:
             upload_failed: 'The certificate could not be uploaded. Please check the file and try again.'
             created: 'Certificate uploaded successfully.'
             applied: 'Coverage applied — %count% requirement(s) marked verified.'
+            nothing_applied: 'No requirement was covered — no matching coverage rule exists for this certificate.'
             fallback_used: 'Framework-wide fallback coverage was used because no rule matched.'
             deleted: 'Certificate deleted.'
 compliance_mapping:

@@ -38,6 +38,9 @@ class ComplianceCertificateControllerTest extends WebTestCase
     private ?CertificateCoverageRule $rule = null;
     private ?ComplianceCertificate $cert = null;
 
+    private ?Tenant $otherTenant = null;
+    private ?ComplianceCertificate $otherCert = null;
+
     private string $frameworkCode;
 
     protected function setUp(): void
@@ -50,6 +53,8 @@ class ComplianceCertificateControllerTest extends WebTestCase
     protected function tearDown(): void
     {
         $this->safeRemove(ComplianceRequirementFulfillment::class, fn () => $this->em->getRepository(ComplianceRequirementFulfillment::class)->findBy(['tenant' => $this->tenant]));
+        $this->safeRemoveOne($this->otherCert);
+        $this->safeRemoveOne($this->otherTenant);
         $this->safeRemoveOne($this->cert);
         $this->safeRemoveOne($this->rule);
         $this->safeRemoveOne($this->r1);
@@ -152,6 +157,22 @@ class ComplianceCertificateControllerTest extends WebTestCase
             ->setStatus('active');
         $this->em->persist($this->cert);
 
+        // A SECOND tenant owning its own certificate — used to lock cross-tenant
+        // 404 (never 403 — must not leak existence).
+        $this->otherTenant = new Tenant();
+        $this->otherTenant->setName('Cert Other Tenant ' . $uid);
+        $this->otherTenant->setCode('cert_other_' . $uid);
+        $this->em->persist($this->otherTenant);
+
+        $this->otherCert = new ComplianceCertificate();
+        $this->otherCert->setTenant($this->otherTenant)
+            ->setFrameworkCode($this->frameworkCode)
+            ->setCertBody('Other CB')
+            ->setCertNumber('OTHER-' . $uid)
+            ->setValidUntil(new \DateTimeImmutable('+2 years'))
+            ->setStatus('active');
+        $this->em->persist($this->otherCert);
+
         $this->em->flush();
     }
 
@@ -237,5 +258,65 @@ class ComplianceCertificateControllerTest extends WebTestCase
         self::assertInstanceOf(ComplianceRequirementFulfillment::class, $fulfillment);
         self::assertSame(100, $fulfillment->getFulfillmentPercentage());
         self::assertSame(ComplianceRequirementFulfillmentStatus::Verified, $fulfillment->getStatusEnum());
+    }
+
+    #[Test]
+    public function applyWithZeroCoverageShowsNothingAppliedWarning(): void
+    {
+        $this->client->loginUser($this->managerUser);
+
+        // A certificate for an UNKNOWN framework code → coverage resolves to
+        // empty → fulfilled === 0 → warning flash, not the success flash.
+        $uid = uniqid('zero_', true);
+        $zeroCert = new ComplianceCertificate();
+        $zeroCert->setTenant($this->tenant)
+            ->setFrameworkCode('UNKNOWN_FW_' . $uid)
+            ->setCertBody('Zero CB')
+            ->setCertNumber('ZERO-' . $uid)
+            ->setValidUntil(new \DateTimeImmutable('+2 years'))
+            ->setStatus('active');
+        $this->em->persist($zeroCert);
+        $this->em->flush();
+        $zeroCertId = $zeroCert->getId();
+
+        // Obtain a valid cert_apply CSRF token via the preview page.
+        $crawler = $this->client->request('GET', '/en/compliance/certificates/' . $zeroCertId . '/preview');
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->filter('form[action*="/apply"]')->form();
+        $this->client->submit($form);
+        $this->assertResponseRedirects();
+
+        $this->client->followRedirect();
+        $body = (string) $this->client->getResponse()->getContent();
+        self::assertStringContainsString('No requirement was covered', $body);
+        self::assertStringNotContainsString('marked verified', $body);
+
+        // Cleanup (tearDown only knows the shared $this->cert).
+        $fresh = $this->em->find(ComplianceCertificate::class, $zeroCertId);
+        if ($fresh !== null) {
+            $this->em->remove($fresh);
+            $this->em->flush();
+        }
+    }
+
+    #[Test]
+    public function previewOfForeignTenantCertificateReturns404(): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $this->client->request('GET', '/en/compliance/certificates/' . $this->otherCert->getId() . '/preview');
+
+        // 404 (not 403) — requireCertificate() must not leak existence of another
+        // tenant's certificate.
+        self::assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+    }
+
+    #[Test]
+    public function showOfForeignTenantCertificateReturns404(): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $this->client->request('GET', '/en/compliance/certificates/' . $this->otherCert->getId());
+
+        self::assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 }

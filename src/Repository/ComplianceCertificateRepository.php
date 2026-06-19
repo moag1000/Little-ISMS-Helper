@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\ComplianceCertificate;
 use App\Entity\Tenant;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -52,5 +53,29 @@ class ComplianceCertificateRepository extends ServiceEntityRepository
     public function findByTenant(Tenant $tenant): array
     {
         return $this->findBy(['tenant' => $tenant], ['createdAt' => 'DESC']);
+    }
+
+    /**
+     * Return active certificates of a tenant whose validity has lapsed
+     * (status='active' AND validUntil < now AND validUntil IS NOT NULL).
+     *
+     * Drives the cron-side status flip from 'active' to 'expired' so expired
+     * certificates stop being treated as active by
+     * {@see findActiveByTenantAndFramework()}.
+     *
+     * @return ComplianceCertificate[]
+     */
+    public function findExpiredActive(Tenant $tenant, DateTimeImmutable $now): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.tenant = :tenant')
+            ->andWhere('c.status = :status')
+            ->andWhere('c.validUntil IS NOT NULL')
+            ->andWhere('c.validUntil < :now')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('status', 'active')
+            ->setParameter('now', $now)
+            ->getQuery()
+            ->getResult();
     }
 }

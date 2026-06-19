@@ -141,10 +141,16 @@ class ComplianceCertificateController extends AbstractController
 
         $stats = $this->bulkFulfillmentService->apply($cert, $this->currentUser());
 
-        $this->addFlash('success', $this->trans('compliance.certificate.flash.applied', ['%count%' => $stats['fulfilled']]));
+        if ($stats['fulfilled'] === 0) {
+            // Nothing matched (unknown framework / empty coverage). A success
+            // flash here would mislead the user — surface an informational note.
+            $this->addFlash('warning', $this->trans('compliance.certificate.flash.nothing_applied'));
+        } else {
+            $this->addFlash('success', $this->trans('compliance.certificate.flash.applied', ['%count%' => $stats['fulfilled']]));
 
-        if ($stats['isFallback']) {
-            $this->addFlash('warning', $this->trans('compliance.certificate.flash.fallback_used'));
+            if ($stats['isFallback']) {
+                $this->addFlash('warning', $this->trans('compliance.certificate.flash.fallback_used'));
+            }
         }
 
         return $this->redirectToRoute('app_compliance_certificate_show', [

@@ -1083,6 +1083,7 @@ compliance:
             upload_failed: 'Das Zertifikat konnte nicht hochgeladen werden. Bitte prüfen Sie die Datei und versuchen Sie es erneut.'
             created: 'Zertifikat erfolgreich hochgeladen.'
             applied: 'Abdeckung angewendet — %count% Anforderung(en) als verifiziert markiert.'
+            nothing_applied: 'Keine Anforderung wurde abgedeckt — für dieses Zertifikat existiert keine passende Abdeckungsregel.'
             fallback_used: 'Es wurde die Framework-weite Fallback-Abdeckung verwendet, da keine Regel griff.'
             deleted: 'Zertifikat gelöscht.'
 compliance_mapping:
