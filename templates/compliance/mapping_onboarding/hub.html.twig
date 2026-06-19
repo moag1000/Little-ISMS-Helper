@@ -85,6 +85,7 @@
                         <form method="post"
                               action="{{ path('app_mapping_onboarding_advance') }}"
                               class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('mapping_onboarding') }}">
                             <button type="submit" class="btn btn-outline-secondary">
                                 {{ 'onboarding.mapping.check_done'|trans }}
                             </button>

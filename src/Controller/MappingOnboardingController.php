@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/compliance/mapping-onboarding')]
@@ -45,6 +46,7 @@ class MappingOnboardingController extends AbstractController
     }
 
     #[Route('/advance', name: 'app_mapping_onboarding_advance', methods: ['POST'])]
+    #[IsCsrfTokenValid('mapping_onboarding')]
     public function advance(): JsonResponse
     {
         /** @var User $user */
