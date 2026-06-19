@@ -1440,3 +1440,43 @@ bsi:
             '-': '—'
     level:
         invalid: 'Ungültige Absicherungsstufe. Erlaubt: basis, standard, kern.'
+onboarding:
+    mapping:
+        title: 'Mapping-Workflow'
+        subtitle: 'In vier Schritten: Laden, Reviewen, Mappen, Wiederverwenden.'
+        do_now: 'Jetzt machen'
+        check_done: 'Schritt prüfen'
+        step_done: 'erledigt'
+        all_done: 'Alle vier Schritte erledigt — dein Framework-Mapping steht.'
+        banner:
+            title: 'Starte deinen Mapping-Workflow'
+            body: 'Alva führt dich durch Laden, Reviewen, Mappen und Wiederverwenden.'
+            cta: 'Workflow starten'
+        card:
+            title: 'Mapping-Workflow starten / fortsetzen'
+        step:
+            laden:
+                label: 'Laden'
+                line: 'Welchen Standards folgst du?'
+                sub: 'Ich lade die passenden Mappings.'
+                heading: 'Mappings laden'
+                body: 'Wähle ein kuratiertes Seed-Paket oder importiere eine CSV.'
+                blocked_by_role: 'Das Laden übernimmt eine Manager-Rolle. Du kannst danach reviewen und mappen.'
+            reviewen:
+                label: 'Reviewen'
+                line: 'Schau dir die Benotung an.'
+                sub: 'Amtlich, KI-validiert oder Review nötig — Vertrauen sichtbar.'
+                heading: 'Qualität reviewen'
+                body: 'Sichte die Trust-Tiers und arbeite die Review-Queue ab.'
+            mappen:
+                label: 'Mappen'
+                line: 'Füllen wir die Lücken.'
+                sub: 'Wo fehlt eine Entsprechung?'
+                heading: 'Lücken mappen'
+                body: 'Bearbeite offene Gaps oder lege ein Mapping per Assistent an.'
+            wiederverwenden:
+                label: 'Wiederverwenden'
+                line: 'Ein Control, viele Frameworks.'
+                sub: 'So sparst du echten Aufwand.'
+                heading: 'Wiederverwenden'
+                body: 'Sieh die Cross-Framework-Abdeckung und den gesparten Aufwand.'
