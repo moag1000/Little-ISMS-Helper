@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Repository\ComplianceCertificateRepository;
+use App\Repository\TenantRepository;
+use App\Service\Evidence\EvidenceCascadeInvalidationService;
 use App\Service\ReviewReminderService;
+use App\Service\TenantContext;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
@@ -85,7 +90,12 @@ TXT
 class SendReviewRemindersCommand
 {
     public function __construct(
-        private readonly ReviewReminderService $reviewReminderService
+        private readonly ReviewReminderService $reviewReminderService,
+        private readonly EvidenceCascadeInvalidationService $evidenceCascadeInvalidationService,
+        private readonly TenantRepository $tenantRepository,
+        private readonly TenantContext $tenantContext,
+        private readonly ComplianceCertificateRepository $certificateRepository,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -149,6 +159,15 @@ class SendReviewRemindersCommand
                 ];
             }
             $symfonyStyle->table(['Reference', 'Title', 'Time', 'Status'], $breachData);
+        }
+
+        // Evidence-expiry re-review (per active tenant). Certificate-applied
+        // fulfillments get nextReviewDate = cert.validUntil, so this scan is the
+        // production caller that flags them outdated once the certificate expires.
+        // Skipped in stats-only/breaches-only (no mutation) and reported (not run)
+        // in dry-run.
+        if (!$breachesOnly && !$statsOnly) {
+            $this->scanExpiredEvidence($symfonyStyle, $dryRun);
         }
 
         if ($statsOnly) {
@@ -227,5 +246,99 @@ class SendReviewRemindersCommand
         );
 
         return $results['failed'] > 0 ? Command::FAILURE : Command::SUCCESS;
+    }
+
+    /**
+     * Flag overdue ComplianceRequirementFulfillments (nextReviewDate < now) as
+     * evidenceOutdated for every active tenant. This is the signal that picks up
+     * certificate-fulfilled controls once the certificate's validUntil passes.
+     *
+     * flagExpiredEvidence() has no dry mode, so in dry-run we only report intent
+     * and do not mutate.
+     */
+    private function scanExpiredEvidence(SymfonyStyle $symfonyStyle, bool $dryRun): void
+    {
+        $symfonyStyle->section('Evidence Expiry Re-Review');
+
+        $tenants = $this->tenantRepository->findActive();
+
+        if ($dryRun) {
+            $expiredCerts = 0;
+            $now = new \DateTimeImmutable();
+            foreach ($tenants as $tenant) {
+                $expiredCerts += count($this->certificateRepository->findExpiredActive($tenant, $now));
+            }
+
+            $symfonyStyle->note([
+                'DRY RUN: No evidence flagged, no certificate status changed.',
+                sprintf('Would scan %d active tenant(s) for expired evidence (incl. expired certificates).', count($tenants)),
+                sprintf('Would mark %d active certificate(s) as expired.', $expiredCerts),
+            ]);
+
+            return;
+        }
+
+        $totalFlagged = 0;
+        $totalCertsExpired = 0;
+
+        // FIX 1 (ISO 27001 Cl. 7.5.3): AuditLogger resolves the audit-row tenant
+        // from TenantContext, which is NULL in CLI. Without setting it per tenant
+        // the fulfillment.evidence_expired audit rows would all be written with a
+        // null/fallback tenant, breaking the tenant-scoped audit trail. Restore to
+        // null in finally so no tenant leaks into later command work.
+        try {
+            $now = new \DateTimeImmutable();
+            foreach ($tenants as $tenant) {
+                $this->tenantContext->setCurrentTenant($tenant);
+
+                $totalFlagged += $this->evidenceCascadeInvalidationService->flagExpiredEvidence($tenant);
+                $totalCertsExpired += $this->expireLapsedCertificates($tenant, $now);
+            }
+        } finally {
+            $this->tenantContext->setCurrentTenant(null);
+        }
+
+        if ($totalFlagged > 0) {
+            $symfonyStyle->warning(sprintf(
+                '%d fulfillment(s) flagged for re-review due to expired evidence (incl. expired certificates).',
+                $totalFlagged,
+            ));
+        } else {
+            $symfonyStyle->writeln('No expired evidence found across active tenants.');
+        }
+
+        if ($totalCertsExpired > 0) {
+            $symfonyStyle->warning(sprintf(
+                '%d certificate(s) marked as expired (validity lapsed).',
+                $totalCertsExpired,
+            ));
+        } else {
+            $symfonyStyle->writeln('No active certificates have lapsed.');
+        }
+    }
+
+    /**
+     * FIX 4: ComplianceCertificate::isExpired() exists but nothing flips the
+     * cert's own status. findActiveByTenantAndFramework() filters status='active',
+     * so a lapsed cert would linger as active forever. Flip status to 'expired'
+     * for every active cert whose validUntil has passed.
+     *
+     * @return int Number of certificates flipped to 'expired'.
+     */
+    private function expireLapsedCertificates(\App\Entity\Tenant $tenant, \DateTimeImmutable $now): int
+    {
+        $expired = $this->certificateRepository->findExpiredActive($tenant, $now);
+
+        if ($expired === []) {
+            return 0;
+        }
+
+        foreach ($expired as $cert) {
+            $cert->setStatus('expired');
+        }
+
+        $this->entityManager->flush();
+
+        return count($expired);
     }
 }

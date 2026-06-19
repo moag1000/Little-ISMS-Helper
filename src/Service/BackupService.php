@@ -159,6 +159,7 @@ class BackupService
         'PhysicalAccessLog',
         'FourEyesApprovalRequest',  // FK: Tenant, User (requester/approver/reviewer)
         'EvidenceReverificationTask', // FK: Tenant, DocumentVersion, Control, ComplianceRequirementFulfillment, User
+        'ComplianceCertificate',      // FK: Tenant, Document (certificateDocument), User (verifiedBy) — external cert held by tenant
 
         // Workflows
         'Workflow',
@@ -231,6 +232,7 @@ class BackupService
         'IndustryPresetBundle'  => 'global seeded catalogue (no tenant_id) — wizard W4-B preset bundles',
         'ElementaryThreat'      => 'global BSI threat catalogue, re-loadable via LoadElementaryThreats command',
         'IctProviderLibrary'    => 'global seeded catalogue (no tenant_id), re-loadable via app:load-ict-provider-library',
+        'CertificateCoverageRule' => 'global seeded catalogue (no tenant_id) — certificate→requirement coverage rules, re-loadable via fixtures',
 
         // Derived / re-computable snapshots
         'PortfolioSnapshot'     => 'derived trend-cache, re-computable from primary entities',

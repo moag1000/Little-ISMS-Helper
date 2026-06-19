@@ -818,6 +818,15 @@
                     <span class="fly-item__sub">{{ 'nav.mega.desc.industry_baselines'|trans({}, 'nav') }}</span>
                 </span>
             </a>
+            {% if is_granted('ROLE_MANAGER') %}
+            <a href="{{ path('app_compliance_certificate_index') }}" class="fly-item {% if current_route starts with 'app_compliance_certificate_' %}is-active{% endif %}" data-turbo-action="advance" role="menuitem" data-density="standard">
+                <span class="fly-item__icon"><i class="fa-icon fa-icon--checklist-stamped" aria-hidden="true"></i></span>
+                <span class="fly-item__body">
+                    <span class="fly-item__title">{{ 'nav.certificates'|trans({}, 'nav') }}</span>
+                    <span class="fly-item__sub">{{ 'nav.mega.desc.certificates'|trans({}, 'nav') }}</span>
+                </span>
+            </a>
+            {% endif %}
             {# Mapping-Tour starten — geführte Themen-Tour für Junior-ISBs #}
             <button type="button" class="fly-item w-100 text-start border-0 bg-transparent" role="menuitem"
                     data-action="click->guided-tour#start"

@@ -185,6 +185,72 @@ class EvidenceCascadeInvalidationService
         );
     }
 
+    /**
+     * Date-based expiry re-review: flag every ComplianceRequirementFulfillment
+     * whose review is overdue (nextReviewDate < now) and not yet flagged as
+     * outdated, setting evidenceOutdated=true.
+     *
+     * This is the generic mechanism that picks up certificate-fulfilled
+     * controls once the certificate expires: {@see CertificateBulkFulfillmentService}
+     * sets each covered fulfillment's nextReviewDate = cert.validUntil, so once
+     * that date passes the fulfillment is included by the existing
+     * {@see ComplianceRequirementFulfillmentRepository::findOverdueForReview()}
+     * scan and re-review is triggered here — no certificate-specific code path.
+     *
+     * Unlike the document-version cascade, an expiry has no triggering
+     * DocumentVersion, so no EvidenceReverificationTask (which requires a
+     * non-null documentVersion FK) is created — the evidenceOutdated flag is
+     * the canonical "due for re-review" signal surfaced in the UI and Alva-Hint.
+     *
+     * @return int Number of fulfillments newly flagged outdated.
+     */
+    public function flagExpiredEvidence(Tenant $tenant, ?User $triggeredBy = null): int
+    {
+        $overdue = $this->complianceRequirementFulfillmentRepository->findOverdueForReview($tenant);
+
+        $perEntityData = [];
+        foreach ($overdue as $fulfillment) {
+            if ($fulfillment->isEvidenceOutdated()) {
+                continue; // already flagged — idempotent
+            }
+
+            $fulfillment->setEvidenceOutdated(true);
+
+            $perEntityData[] = [
+                'action' => 'update',
+                'entity_id' => $fulfillment->getId(),
+                'old_values' => ['evidence_outdated' => false],
+                'new_values' => [
+                    'evidence_outdated' => true,
+                    'next_review_date' => $fulfillment->getNextReviewDate()?->format('Y-m-d'),
+                ],
+            ];
+        }
+
+        if ($perEntityData === []) {
+            return 0;
+        }
+
+        $this->entityManager->flush();
+
+        $this->auditLogger->logBulk(
+            eventType: 'fulfillment.evidence_expired',
+            entityType: 'ComplianceRequirementFulfillment',
+            batchData: [
+                'tenant_id' => $tenant->getId(),
+                'impacted_count' => count($perEntityData),
+                'triggered_by' => $triggeredBy?->getId(),
+            ],
+            perEntityData: $perEntityData,
+            description: sprintf(
+                'Evidence expiry re-review: %d overdue fulfillment(s) flagged outdated',
+                count($perEntityData),
+            ),
+        );
+
+        return count($perEntityData);
+    }
+
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
