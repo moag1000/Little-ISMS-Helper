@@ -19,6 +19,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Policy-Wizard SOC 2 — seed the 10 SOC 2 Trust Services Criteria
  * (TSC 2017, revised 2022) Pflicht-Templates as PolicyTemplate rows.
  *
+ * @deprecated since 3.11.x — superseded by {@see \App\Service\PolicyWizard\SectionExtension\Soc2SectionCatalogue}.
+ *   The catalogue delivers SOC 2 TSC section-extensions for ISO 27001 topic
+ *   policies at runtime without requiring a seeder run. This command is kept
+ *   for backward-compat (existing deployments may have seeded rows) but MUST
+ *   NOT be referenced in new code.
+ *
+ * [DEPRECATED — superseded by Soc2SectionCatalogue]
+ *
+ * MIGRATION: Existing PolicyTemplate rows seeded by this command remain valid
+ *   and are not deleted. New deployments should rely exclusively on
+ *   Soc2SectionCatalogue; this command may be removed in a future major release.
+ *
  * SOC 2 was added to the Compliance-Wizard standard picker in commit
  * 8e286cbc but had zero policy templates seeded. This command closes
  * that gap and mirrors {@see SeedBsiPolicyTemplatesCommand} (W5-A) and
