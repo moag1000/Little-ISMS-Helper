@@ -114,6 +114,7 @@ translations/compliance.de.yaml:1308:coverage
 translations/compliance.de.yaml:1321:mapping_admin
 translations/compliance.de.yaml:1334:export
 translations/compliance.de.yaml:1430:bsi
+translations/compliance.de.yaml:1491:onboarding
 translations/compliance.en.yaml:1089:compliance_mapping
 translations/compliance.en.yaml:1099:compliance_requirement
 translations/compliance.en.yaml:1148:mapping_review
@@ -125,6 +126,7 @@ translations/compliance.en.yaml:1317:nis2
 translations/compliance.en.yaml:1321:mapping_admin
 translations/compliance.en.yaml:1334:export
 translations/compliance.en.yaml:1430:bsi
+translations/compliance.en.yaml:1491:onboarding
 translations/compliance_wizard.de.yaml:3:diff
 translations/compliance_wizard.de.yaml:26:delta
 translations/compliance_wizard.en.yaml:3:diff

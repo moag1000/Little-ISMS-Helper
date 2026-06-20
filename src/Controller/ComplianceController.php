@@ -14,6 +14,7 @@ use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\FrameworkMaturityService;
+use App\Service\MappingOnboardingService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,6 +56,7 @@ class ComplianceController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly FrameworkMaturityService $frameworkMaturityService,
         private readonly TranslatorInterface $translator,
+        private readonly MappingOnboardingService $mappingOnboarding,
     ) {}
 
     protected function getFlashDomain(): string
@@ -232,8 +234,12 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/compliance/cross-framework', name: 'app_compliance_cross_framework', methods: ['GET'])]
-    public function crossFrameworkMappings(): Response
+    public function crossFrameworkMappings(Request $request): Response
     {
+        if ($request->query->get('wf') === 'mapping-onboarding' && ($u = $this->getUser()) instanceof \App\Entity\User) {
+            $this->mappingOnboarding->markSignal($u, 'crossFrameworkSeen');
+        }
+
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
         $crossMappings = [];
         $coverageMatrix = [];

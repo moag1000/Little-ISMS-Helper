@@ -1488,3 +1488,43 @@ bsi:
             '-': '—'
     level:
         invalid: 'Invalid assurance level. Allowed: basis, standard, kern.'
+onboarding:
+    mapping:
+        title: 'Mapping workflow'
+        subtitle: 'In four steps: Load, Review, Map, Reuse.'
+        do_now: 'Do it now'
+        check_done: 'Check step'
+        step_done: 'done'
+        all_done: 'All four steps done — your framework mapping is in place.'
+        banner:
+            title: 'Start your mapping workflow'
+            body: 'Alva guides you through Load, Review, Map and Reuse.'
+            cta: 'Start workflow'
+        card:
+            title: 'Start / resume mapping workflow'
+        step:
+            laden:
+                label: 'Load'
+                line: 'Which standards do you follow?'
+                sub: 'I load the matching mappings.'
+                heading: 'Load mappings'
+                body: 'Pick a curated seed pack or import a CSV.'
+                blocked_by_role: 'Loading is a manager task. You can review and map afterwards.'
+            reviewen:
+                label: 'Review'
+                line: 'Look at the grading.'
+                sub: 'Official, AI-validated or needs review — trust made visible.'
+                heading: 'Review quality'
+                body: 'Inspect the trust tiers and work the review queue.'
+            mappen:
+                label: 'Map'
+                line: 'Let us fill the gaps.'
+                sub: 'Where is a correspondence missing?'
+                heading: 'Map the gaps'
+                body: 'Resolve open gaps or create a mapping via the wizard.'
+            wiederverwenden:
+                label: 'Reuse'
+                line: 'One control, many frameworks.'
+                sub: 'That is how you save real effort.'
+                heading: 'Reuse'
+                body: 'See the cross-framework coverage and the effort saved.'

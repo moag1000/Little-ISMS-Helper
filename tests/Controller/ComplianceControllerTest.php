@@ -38,6 +38,7 @@ use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\ExcelExportService;
 use App\Service\FrameworkMaturityService;
+use App\Service\MappingOnboardingService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
@@ -68,6 +69,7 @@ class ComplianceControllerTest extends TestCase
     private MockObject $tenantContext;
     private MockObject $frameworkMaturityService;
     private MockObject $translator;
+    private MockObject $mappingOnboarding;
     private ComplianceController $controller;
 
     protected function setUp(): void
@@ -84,6 +86,7 @@ class ComplianceControllerTest extends TestCase
         $this->tenantContext = $this->createMock(TenantContext::class);
         $this->frameworkMaturityService = $this->createMock(FrameworkMaturityService::class);
         $this->translator = $this->createMock(TranslatorInterface::class);
+        $this->mappingOnboarding = $this->createMock(MappingOnboardingService::class);
 
         $this->controller = new ComplianceController(
             $this->complianceFrameworkRepository,
@@ -96,6 +99,7 @@ class ComplianceControllerTest extends TestCase
             $this->tenantContext,
             $this->frameworkMaturityService,
             $this->translator,
+            $this->mappingOnboarding,
         );
 
         // Setup container for rendering
@@ -316,7 +320,7 @@ class ComplianceControllerTest extends TestCase
         $this->complianceMappingRepository->method('findCrossFrameworkMappings')
             ->willReturn($mappings);
 
-        $response = $this->controller->crossFrameworkMappings();
+        $response = $this->controller->crossFrameworkMappings(new Request());
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(200, $response->getStatusCode());

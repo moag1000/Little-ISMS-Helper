@@ -144,6 +144,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $completedTours = [];
 
     /**
+     * Mapping-onboarding workflow progress (Laden->Reviewen->Mappen->Wiederverwenden).
+     * Shape: { step:int, completed: list<string>, snapshot: {startedAt:string, mappingCount:int}, signals: {crossFrameworkSeen:bool} }
+     *
+     * @var array<string, mixed>
+     */
+    #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
+    private array $mappingOnboardingState = [];
+
+    /**
      * Audit-S5 P-12 — previous QM-System background.
      *
      * Controls visibility of "Norm-Bridge" hints (ISO 27001 ↔ ISO 9001 etc.)
@@ -643,6 +652,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function resetAllTours(): static
     {
         $this->completedTours = [];
+        return $this;
+    }
+
+    /** @return array<string, mixed> */
+    public function getMappingOnboardingState(): array
+    {
+        return $this->mappingOnboardingState;
+    }
+
+    /** @param array<string, mixed> $state */
+    public function setMappingOnboardingState(array $state): static
+    {
+        $this->mappingOnboardingState = $state;
+
         return $this;
     }
 
