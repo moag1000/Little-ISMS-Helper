@@ -765,6 +765,54 @@ final class PolicyWizardController extends AbstractController
             $extras['approver_match_map'] = $matchMap;
         }
 
+        // Targeted re-run Step 1 — Topic picker: group the tenant's existing
+        // approved/published governance documents by their best-match topic key
+        // so the template can render a selectable topic table instead of the
+        // empty-state alert. Uses the same inventory + matcher path as
+        // buildBestandsaufnahmePayload() to keep data consistent.
+        if ($step === WizardStepKeys::STEP_TARGETED_PICK && $tenant !== null) {
+            $topicsByKey = [];
+            foreach ($this->inventoryService->inventoryFor($tenant) as $row) {
+                $documentId = $row['id'];
+                $document = $this->documentRepository->find($documentId);
+                if ($document === null) {
+                    continue;
+                }
+                // Only surface documents the tenant has actually signed off on.
+                $status = $document->getStatus();
+                if ($status !== 'approved' && $status !== 'published') {
+                    continue;
+                }
+                $suggestions = $this->documentMatcher->match($document);
+                if ($suggestions === []) {
+                    continue;
+                }
+                // Use the highest-confidence suggestion as the topic key.
+                // Skip the synthetic "sammelpolitik" flag — it is not a real topic.
+                $topicKey = null;
+                foreach ($suggestions as $suggestion) {
+                    $candidate = $suggestion['topic'];
+                    if ($candidate !== '' && $candidate !== ExistingDocumentMatcher::MATCHER_SAMMELPOLITIK) {
+                        $topicKey = $candidate;
+                        break;
+                    }
+                }
+                if ($topicKey === null) {
+                    continue;
+                }
+                $nextReview = $document->getNextReviewDate();
+                // lastApprovedAt is a proxy (updatedAt ∨ uploadedAt) matching
+                // the inventory row shape the template already uses for Step 0.
+                $topicsByKey[$topicKey][] = [
+                    'id' => $documentId,
+                    'title' => $row['title'],
+                    'lastApprovedAt' => $row['lastApprovedAt'],
+                    'nextReviewDate' => $nextReview,
+                ];
+            }
+            $extras['existing_topics_by_key'] = $topicsByKey;
+        }
+
         // Step 7 — Review & Generate: surface non-blocking warnings +
         // build the curated, audit-friendly review-summary view-model
         // (Persona-ISB Wish: replace the raw `inputs_so_far` JSON dump
