@@ -8,6 +8,7 @@ use App\Entity\Document;
 use App\Entity\Tenant;
 use App\Entity\WizardRun;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\AuditLogger;
 use App\Service\ComplianceRequirementFulfillmentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -44,17 +45,19 @@ final class PolicyFulfillmentSyncService
      * (allowed: not_started, in_progress, implemented, verified).
      */
     private const array STATUS_RANK = [
-        'not_started'      => 0,
-        'not_implemented'  => 0,
-        'in_progress'      => 3,
-        'implemented'      => 4,
-        'verified'         => 5,
+        'not_started'  => 0,
+        'in_progress'  => 3,
+        'implemented'  => 4,
+        'verified'     => 5,
     ];
+
+    private const string AUDIT_TAG = 'policy-wizard';
 
     public function __construct(
         private readonly ComplianceRequirementFulfillmentService $fulfillmentService,
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly ?AuditLogger $auditLogger = null,
         private readonly LoggerInterface $logger = new NullLogger(),
     ) {
     }
@@ -90,7 +93,7 @@ final class PolicyFulfillmentSyncService
                 $template->getLinkedDoraArticles() ?? [],
                 $template->getIso27701Clauses2025() ?? [],
             ),
-            static fn (string $r): bool => $r !== '',
+            static fn ($r): bool => $r !== '',
         )));
 
         if ($allIds === []) {
@@ -137,8 +140,45 @@ final class PolicyFulfillmentSyncService
 
         if ($result !== []) {
             $this->entityManager->flush();
+            $this->emitAuditBatch($result, $document, $run);
         }
 
         return $result;
+    }
+
+    /**
+     * Emit a single audit-log entry summarising all fulfillment bumps that
+     * happened in this sync call. Mirrors the SoaAutoUpdateService logCustom
+     * pattern; uses the requirement_id list as entity context since there is
+     * no single entity to attach the event to.
+     *
+     * @param array<string, string> $result requirement_id => new_status
+     */
+    private function emitAuditBatch(array $result, Document $document, WizardRun $run): void
+    {
+        if ($this->auditLogger === null) {
+            return;
+        }
+        $this->auditLogger->logCustom(
+            action: 'policy_wizard.fulfillment_auto_updated',
+            entityType: 'ComplianceRequirementFulfillment',
+            entityId: null,
+            oldValues: null,
+            newValues: [
+                'requirement_ids' => array_keys($result),
+                'new_status'      => self::TARGET_STATUS,
+                'document_id'     => $document->getId(),
+                'wizard_run_id'   => $run->getId(),
+                'tag'             => self::AUDIT_TAG,
+            ],
+            description: sprintf(
+                '[%s] %d fulfillment(s) bumped to "%s" (Document #%d, WizardRun #%d)',
+                self::AUDIT_TAG,
+                count($result),
+                self::TARGET_STATUS,
+                $document->getId() ?? 0,
+                $run->getId() ?? 0,
+            ),
+        );
     }
 }

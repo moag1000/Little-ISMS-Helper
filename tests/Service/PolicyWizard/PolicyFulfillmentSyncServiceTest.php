@@ -70,10 +70,12 @@ final class PolicyFulfillmentSyncServiceTest extends TestCase
         array $linkedDoraArticles = [],
         array $iso27701Clauses2025 = [],
     ): PolicyTemplate {
-        $template = new PolicyTemplate();
-        if ($linkedAnnexAControls !== []) {
-            $template->setLinkedAnnexAControls($linkedAnnexAControls);
-        }
+        $template = $this->createStub(PolicyTemplate::class);
+        $template->method('getLinkedAnnexAControls')->willReturn($linkedAnnexAControls);
+        $template->method('getLinkedBausteine')->willReturn($linkedBausteine);
+        $template->method('getLinkedBsiBausteine')->willReturn($linkedBsiBausteine);
+        $template->method('getLinkedDoraArticles')->willReturn($linkedDoraArticles);
+        $template->method('getIso27701Clauses2025')->willReturn($iso27701Clauses2025);
         return $template;
     }
 
@@ -245,6 +247,7 @@ final class PolicyFulfillmentSyncServiceTest extends TestCase
 
         $em = $this->createMock(EntityManagerInterface::class);
         $em->expects(self::never())->method('persist');
+        $em->expects(self::never())->method('flush');
 
         $service = $this->makeService(
             ['A.5.19' => $fulfillment],
@@ -331,5 +334,37 @@ final class PolicyFulfillmentSyncServiceTest extends TestCase
         $result = $service->syncForDocument($document, $this->makeWizardRun());
 
         self::assertSame([], $result);
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // Non-AnnexA link field tests
+    // ────────────────────────────────────────────────────────────────────────
+
+    #[Test]
+    public function testBumpsDoraArticleToInProgress(): void
+    {
+        $tenant   = $this->makeTenant();
+        // Use a DORA article link — no AnnexA controls
+        $template = $this->makePolicyTemplate(linkedDoraArticles: ['Art. 9.4']);
+        $document = $this->makeDocument($tenant, $template);
+        $run      = $this->makeWizardRun();
+
+        $req         = $this->makeRequirement('Art. 9.4');
+        $fulfillment = $this->makeFulfillment('not_started', 0);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->expects(self::once())->method('persist');
+        $em->expects(self::once())->method('flush');
+
+        $service = $this->makeService(
+            ['Art. 9.4' => $fulfillment],
+            ['Art. 9.4' => [$req]],
+            $em,
+        );
+
+        $result = $service->syncForDocument($document, $run);
+
+        self::assertSame('in_progress', $fulfillment->getStatus());
+        self::assertSame(['Art. 9.4' => 'in_progress'], $result);
     }
 }
