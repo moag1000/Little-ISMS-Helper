@@ -411,10 +411,18 @@ final class GuidedTourService
 
     /**
      * MAPPING-Topic-Tour — themenbezogen, nicht rollenbezogen.
-     * 6 Stopps, die das Mapping-Konzept für Junior-ISBs (IT-/9001-Hintergrund)
-     * von Grund auf erklären: Was ist ein Mapping → Data-Reuse/Vererbung →
-     * Coverage lesen → Confidence vs. MQS → Lifecycle (draft→published) →
-     * Wo nutze ich es. Alle Stopps sind hinter dem `compliance`-Modul gegated.
+     * 9 Stopps, die das Mapping-Konzept für Junior-ISBs (IT-/9001-Hintergrund)
+     * von Grund auf erklären und alle 4 Hub-Workflow-Ziele abdecken:
+     *   1. what-is-mapping  → Hub (Einstieg)
+     *   2. why-reuse        → Hub (Vererbungs-Nutzen)
+     *   3. seeds            → app_compliance_mapping_seeds_index (Laden)
+     *   4. read-coverage    → app_mapping_quality_dashboard (Coverage lesen)
+     *   5. quality          → app_mapping_quality_dashboard (Confidence vs. MQS)
+     *   6. gaps             → app_mapping_quality_gaps (Mappen / Lücken)
+     *   7. lifecycle        → app_mapping_quality_dashboard (draft→published)
+     *   8. cross-framework  → app_compliance_cross_framework (Wiederverwenden)
+     *   9. where-used       → Hub (Abschluss)
+     * Alle Stopps sind hinter dem `compliance`-Modul gegated.
      *
      * Selektoren zeigen auf `data-tour`-Anker in den Mapping-Templates; bei
      * fehlendem Anker fällt der Controller auf zentriertes Popover zurück.
@@ -423,9 +431,11 @@ final class GuidedTourService
      */
     private function mappingSteps(): array
     {
-        $hub = $this->urlFor('app_compliance_mapping_hub');
-        $transitive = $this->urlFor('app_compliance_transitive');
+        $hub     = $this->urlFor('app_compliance_mapping_hub');
+        $seeds   = $this->urlFor('app_compliance_mapping_seeds_index');
         $quality = $this->urlFor('app_mapping_quality_dashboard');
+        $gaps    = $this->urlFor('app_mapping_quality_gaps');
+        $cross   = $this->urlFor('app_compliance_cross_framework');
 
         return [
             [
@@ -443,11 +453,18 @@ final class GuidedTourService
                 'url' => $hub, 'placement' => 'center',
             ],
             [
+                'id' => 'seeds', 'module' => 'compliance', 'icon' => 'ui-check',
+                'target' => null,
+                'title_key' => 'guided_tour.mapping.step.seeds.title',
+                'body_key' => 'guided_tour.mapping.step.seeds.body',
+                'url' => $seeds, 'placement' => 'center',
+            ],
+            [
                 'id' => 'read-coverage', 'module' => 'compliance', 'icon' => 'nav-grid',
                 'target' => '[data-tour="mapping-coverage"]',
                 'title_key' => 'guided_tour.mapping.step.read_coverage.title',
                 'body_key' => 'guided_tour.mapping.step.read_coverage.body',
-                'url' => $transitive, 'placement' => 'top',
+                'url' => $quality, 'placement' => 'top',
             ],
             [
                 'id' => 'quality', 'module' => 'compliance', 'icon' => 'ui-check',
@@ -457,11 +474,25 @@ final class GuidedTourService
                 'url' => $quality, 'placement' => 'center',
             ],
             [
+                'id' => 'gaps', 'module' => 'compliance', 'icon' => 'status-warning',
+                'target' => null,
+                'title_key' => 'guided_tour.mapping.step.gaps.title',
+                'body_key' => 'guided_tour.mapping.step.gaps.body',
+                'url' => $gaps, 'placement' => 'center',
+            ],
+            [
                 'id' => 'lifecycle', 'module' => 'compliance', 'icon' => 'nav-workflow',
                 'target' => '[data-tour="mapping-lifecycle"]',
                 'title_key' => 'guided_tour.mapping.step.lifecycle.title',
                 'body_key' => 'guided_tour.mapping.step.lifecycle.body',
                 'url' => $quality, 'placement' => 'center',
+            ],
+            [
+                'id' => 'cross-framework', 'module' => 'compliance', 'icon' => 'nav-link',
+                'target' => null,
+                'title_key' => 'guided_tour.mapping.step.cross_framework.title',
+                'body_key' => 'guided_tour.mapping.step.cross_framework.body',
+                'url' => $cross, 'placement' => 'center',
             ],
             [
                 'id' => 'where-used', 'module' => 'compliance', 'icon' => 'nav-book',
@@ -508,7 +539,7 @@ final class GuidedTourService
                 self::TOUR_RISK_OWNER => 1,
                 self::TOUR_AUDITOR => 2,
                 self::TOUR_MRIS => 6,
-                self::TOUR_MAPPING => 4,
+                self::TOUR_MAPPING => 5,
                 default => 3,
             },
         ];

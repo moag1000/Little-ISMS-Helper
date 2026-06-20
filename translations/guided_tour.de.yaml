@@ -225,6 +225,15 @@ guided_tour:
             lifecycle:
                 title: 'Lifecycle: draft vs. published'
                 body: 'Ein Mapping im Status „draft" (Entwurf) ist noch nicht geprüft und zählt NICHT in der Coverage. Erst nach dem Review-Gate, also „published", wird es operativ wirksam. Sehen Sie viele Entwürfe? Das ist Ihr Review-Stapel. 9001-Analogie: ein Dokument im Entwurf gilt erst nach Freigabe.'
+            seeds:
+                title: 'Seed-Review: Maschinen-Mappings prüfen'
+                body: 'Unter Seed-Review finden Sie alle maschinengenerierten Mappings (verified_by=app:seed-*). Gehen Sie diese einmal durch und genehmigen oder lehnen Sie ab — relevant, wenn der Prüfer fragt „Wer hat dieses Mapping erstellt?".'
+            gaps:
+                title: 'Lücken schließen'
+                body: 'Die Gaps-Seite zeigt alle Anforderungen, die noch kein gültiges Mapping haben. Das ist Ihr Aktionsplan: hier sehen Sie auf einen Blick, wo noch Verbindungen fehlen und welche Frameworks davon betroffen sind.'
+            cross_framework:
+                title: 'Cross-Framework-Nutzung'
+                body: 'Die Cross-Framework-Ansicht zeigt, wie Ihr Mapping-Netz Frameworks verbindet — welche Anforderungen über mehrere Normen geteilt werden und wie die Transitivitätsketten aussehen. Hier sehen Sie den Wert Ihrer gesamten Mapping-Arbeit.'
             where_used:
                 title: 'Wo nutze ich das?'
                 body: 'Drei Orte: die Coverage-/Transitiv-Matrix (das große %-Bild), die Vererbungs-Vorschläge (Data-Reuse-Hub: „dieser Nachweis passt auch hier") und das Qualitäts-Dashboard (Reviews, Confidence/MQS, Gaps). Tour fertig — Sie können sie jederzeit über „Tour starten" auf der Mapping-Seite neu starten.'
