@@ -127,11 +127,11 @@ final class PolicyWizardTargetedRerunTest extends WebTestCase
 
     private function createTenantAndUser(): void
     {
-        $uniqueId = uniqid('pwtgt_', true);
+        $uniqueId = bin2hex(random_bytes(8));
 
         $this->tenant = new Tenant();
         $this->tenant->setName('TargetedRerun Tenant ' . $uniqueId);
-        $this->tenant->setCode('pwtgt_' . substr($uniqueId, 0, 14));
+        $this->tenant->setCode('pwt_' . $uniqueId);
         $this->entityManager->persist($this->tenant);
 
         $this->cisoUser = new User();
@@ -166,7 +166,8 @@ final class PolicyWizardTargetedRerunTest extends WebTestCase
         $doc->setUploadedAt(new DateTimeImmutable('-2 months'));
         $doc->setUploadedBy($this->cisoUser);
         // Give it a concrete next review date so the column is non-null.
-        $doc->setNextReviewDate(new DateTimeImmutable('+10 months'));
+        // next_review_date is a DATE_MUTABLE column → must be a mutable \DateTime.
+        $doc->setNextReviewDate(new \DateTime('+10 months'));
         $this->entityManager->persist($doc);
         $this->entityManager->flush();
 
