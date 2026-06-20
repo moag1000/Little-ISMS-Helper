@@ -13,6 +13,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\PolicyWizard\SectionExtension\SectionExtensionRegistry;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -78,6 +79,22 @@ final readonly class CrossCoverageCalculator
         'ISO27701'        => 'getIso27701Clauses2025',
     ];
 
+    /**
+     * Maps section-extension catalogue standard tokens (as stored in
+     * {@see WizardRun::getStandardsAdopted()}) to the uppercase framework
+     * code used in {@see FRAMEWORK_DEFAULTS} / {@see FIELD_ACCESSORS}.
+     *
+     * GDPR is intentionally absent — its coverage is derived from section_keys
+     * via {@see collectGdprRefs}, not from SectionExtension::controlRefs.
+     * Adding a new standard here (e.g. 'nis2' → 'NIS2') also requires an
+     * entry in {@see FRAMEWORK_DEFAULTS}.
+     *
+     * @var array<string, string> standard_token => framework_code
+     */
+    private const array SECTION_EXTENSION_FRAMEWORK_MAP = [
+        'dora' => 'DORA',
+    ];
+
     public function __construct(
         private DocumentRepository $documentRepository,
         private WorkflowInstanceRepository $workflowInstanceRepository,
@@ -85,6 +102,7 @@ final readonly class CrossCoverageCalculator
         private ?ComplianceFrameworkRepository $complianceFrameworkRepository = null,
         private ?ComplianceRequirementRepository $complianceRequirementRepository = null,
         private LoggerInterface $logger = new NullLogger(),
+        private ?SectionExtensionRegistry $sectionExtensionRegistry = null,
     ) {
     }
 
@@ -146,6 +164,39 @@ final readonly class CrossCoverageCalculator
                     'label' => self::FRAMEWORK_DEFAULTS['GDPR']['label'],
                     'refs'  => $gdprRefs,
                 ];
+            }
+
+            // Section-extension path: for each adopted standard whose catalogue
+            // is registered, union the SectionExtension::controlRefs into the
+            // matching framework coverage bucket. array_unique() deduplicates
+            // against refs already contributed by FIELD_ACCESSORS above.
+            if ($this->sectionExtensionRegistry !== null) {
+                $topic = $template->getTopic() ?? '';
+                foreach ($run->getStandardsAdopted() ?? [] as $standardToken) {
+                    $frameworkCode = self::SECTION_EXTENSION_FRAMEWORK_MAP[$standardToken] ?? null;
+                    if ($frameworkCode === null) {
+                        continue; // no mapping for this standard (e.g. 'iso27001', 'bsi')
+                    }
+                    $catalogue = $this->sectionExtensionRegistry->forStandard($standardToken);
+                    if ($catalogue === null || $topic === '') {
+                        continue;
+                    }
+                    $extensionRefs = [];
+                    foreach ($catalogue->sectionsForTopic($topic) as $section) {
+                        foreach ($section->controlRefs as $ref) {
+                            if ($ref !== '') {
+                                $extensionRefs[] = $ref;
+                            }
+                        }
+                    }
+                    if ($extensionRefs === []) {
+                        continue;
+                    }
+                    $coveredRefsByFramework[$frameworkCode] = array_values(array_unique(array_merge(
+                        $coveredRefsByFramework[$frameworkCode],
+                        $extensionRefs,
+                    )));
+                }
             }
 
             $documentToFrameworks[(int) $document->getId()] = $perDocFrameworks;
