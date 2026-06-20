@@ -239,6 +239,8 @@ translations/patches.de.yaml:1:patch
 translations/patches.en.yaml:1:patch
 translations/people.de.yaml:1:person
 translations/people.en.yaml:1:person
+translations/policy_bcm.de.yaml:1:policy
+translations/policy_bcm.en.yaml:1:policy
 translations/policy_bcm_batch1.de.yaml:1:policy
 translations/policy_bcm_batch1.en.yaml:1:policy
 translations/policy_bcm_batch2.de.yaml:1:policy

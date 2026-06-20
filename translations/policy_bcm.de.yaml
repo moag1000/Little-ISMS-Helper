@@ -1,0 +1,27 @@
+policy:
+    iso27001:
+        top_level:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS-Erweiterung (Cl. 5.1 + 5.2):** Gemaess ISO 22301:2019 Klausel 5.2 ist eine dokumentierte Business-Continuity-Leitlinie (BC-Policy) durch die oberste Leitung zu genehmigen, zu kommunizieren und aufrechtzuerhalten. Die Leitlinie muss BCMS-Ziele und Verbesserungsverpflichtung enthalten (Cl. 5.2 a-f). Die Geschaeftsfuehrung traegt gemaess Klausel 5.1 die nicht delegierbare Verantwortung fuer Ressourcenbereitstellung, Rollenzuweisung und Wirksamkeitsbewertung. Nachweis: aktuelle BC-Policy mit Genehmigungsvermerk der obersten Leitung, Kommunikationsprotokoll.
+        continuity:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS-Erweiterung (Cl. 8.2 – 8.5):** ISO 22301:2019 verlangt ein vollstaendiges operatives BCMS. Klausel 8.2 schreibt eine Business Impact Analysis (BIA) vor mit Bestimmung kritischer Prozesse, RTO, RPO und MTPD pro Prozess sowie Abhaengigkeits-Mapping (Personal, IT, Lieferanten, Standorte). Klausel 8.3 fordert dokumentierte BC-Strategien je kritischem Prozess (Ausweichstandort, Personalreserven, IT-Failover). Klausel 8.4 verlangt Business-Continuity-Plaene (BCPs) mit Aktivierungskriterien, Eskalationsstrukturen, Krisenstab-Organisation (BSI 200-4 Kap. 6.2) und Wiederanlaufverfahren. Klausel 8.5 fordert ein jaehrliches Uebungsprogramm (Tabletop, Walkthrough, Vollsimulation); Ergebnisse sind zu dokumentieren und in die Planpflege einzuspeisen (Lessons-Learned-Loop). Verantwortlich: Notfallbeauftragter / BCM-Manager. Nachweis: aktueller BIA-Bericht, BC-Strategiedokument, BCPs pro Prozess, Uebungsberichte der letzten 12 Monate.
+        backup:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS-Erweiterung (Cl. 8.3 + 8.4):** Backup-Verfahren sind in der BC-Strategie (Cl. 8.3) als Recovery-Ressource zu verankern: RPO-konforme Backup-Frequenz, Aufbewahrungsdauer, Offsite-/Offline-Lagerung (3-2-1-Prinzip) und Verschluesselung sensibler Daten at rest. In den Business-Continuity-Plaenen (Cl. 8.4) sind Restore-Schritte, Verantwortliche, Priorisierungsreihenfolge und erwartete Wiederherstellungszeiten zu dokumentieren. Restore-Tests erfolgen mindestens vierteljaehrlich (Teil des Uebungsprogramms Cl. 8.5). Nachweis: BC-Strategie mit Backup-Abschnitt, BCP-Abschnitt Wiederherstellung, Restore-Test-Protokolle.
+        incident_management:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS-Erweiterung (Cl. 8.4):** ISO 22301 Klausel 8.4 fordert strukturierte Vorfalls-Reaktionsplaene als Teil der Business-Continuity-Prozeduren: klare Aktivierungstrigger fuer den BCM-Notfall, definierte Krisenstab-Zusammensetzung und Eskalationsregeln (8.4.2), Warn- und Kommunikationsverfahren fuer interne und externe Stakeholder (8.4.3) sowie BC-Plan-Aktivierungssequenz bei Eintreten des Schadensszenarios. Die Schnittstelle zwischen ISO 27001 Incident-Response (A.5.24-5.28) und ISO 22301 Continuity Activation ist dokumentiert und wird jaehrlich im Tabletop-Test ueberprueft. Nachweis: BC-Plan-Aktivierungsverfahren, Krisenstab-Ordnung, Kommunikationsplan, Uebungsprotokoll.
+        supplier_relationships:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS-Erweiterung (Cl. 8.3):** Die BC-Strategie (ISO 22301 Cl. 8.3) erfordert eine Lieferanten-Abhaengigkeitsanalyse als BIA-Eingabe: welche kritischen Geschaeftsprozesse haengen von welchem Lieferanten ab, mit welchen RTOs? Fuer jeden kritisch abhaengigen Lieferanten sind Kontinuitaetsanforderungen vertraglich zu verankern (Uptime-Garantien, eigene BCP-Nachweispflicht, Eskalationshotline). Alternativlieferanten oder manuelle Rueckfallverfahren werden in der BC-Strategie dokumentiert. Konzentrationsrisiken (Single Points of Failure in der Lieferkette) sind dem Risikomanagement zu melden. Nachweis: Lieferanten-Abhaengigkeits-Matrix in der BIA, BC-Strategie-Abschnitt Dritte, Lieferantenvertraege mit Kontinuitaetsklauseln.
