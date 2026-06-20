@@ -21,36 +21,70 @@
     }) }}
 
     {% if ocrAvailable|default(false) %}
+        {# ── OCR path: upload-only form ──────────────────────────────────────────
+           When the OCR pipeline is available the user uploads the file ONLY.
+           The async OCR job extracts the metadata and the confirm-draft form lets
+           the user review and correct every field before the certificate is saved.
+           Do NOT render _certificate_fields.html.twig here — any values entered
+           would be silently discarded by ProcessCertificateOcrJob::applyDraft.
+        #}
         <div class="alert alert-info d-flex align-items-center gap-2" role="status">
             <i class="fa-icon fa-icon--file-earmark-text" aria-hidden="true"></i>
             <span>{{ 'compliance.certificate.ocr.available_hint'|trans({}, 'compliance') }}</span>
         </div>
+
+        <section class="fa-section mb-4">
+            <div class="fa-section__body">
+                <form method="post"
+                      action="{{ path('app_compliance_certificate_new', {_locale: app.request.locale}) }}"
+                      enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cert_new') }}">
+
+                    <div class="mb-4">
+                        <label for="cert_file" class="form-label">{{ 'compliance.certificate.field.file'|trans({}, 'compliance') }}</label>
+                        <input type="file" id="cert_file" name="certificate_file" class="form-control" required>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.upload_and_preview'|trans({}, 'compliance') }}</span>
+                        </button>
+                        <a href="{{ path('app_compliance_certificate_index', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    {% else %}
+        {# ── Manual path: full metadata form ─────────────────────────────────────
+           No OCR available — the user fills in all metadata fields plus the file.
+        #}
+        <section class="fa-section mb-4">
+            <div class="fa-section__body">
+                <form method="post"
+                      action="{{ path('app_compliance_certificate_new', {_locale: app.request.locale}) }}"
+                      enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cert_new') }}">
+
+                    {{ include('compliance/certificate/_certificate_fields.html.twig', { frameworks: frameworks, certificate: null }) }}
+
+                    <div class="mb-4">
+                        <label for="cert_file" class="form-label">{{ 'compliance.certificate.field.file'|trans({}, 'compliance') }}</label>
+                        <input type="file" id="cert_file" name="certificate_file" class="form-control" required>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.upload_and_preview'|trans({}, 'compliance') }}</span>
+                        </button>
+                        <a href="{{ path('app_compliance_certificate_index', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </section>
     {% endif %}
-
-    <section class="fa-section mb-4">
-        <div class="fa-section__body">
-            <form method="post"
-                  action="{{ path('app_compliance_certificate_new', {_locale: app.request.locale}) }}"
-                  enctype="multipart/form-data">
-                <input type="hidden" name="_token" value="{{ csrf_token('cert_new') }}">
-
-                {{ include('compliance/certificate/_certificate_fields.html.twig', { frameworks: frameworks, certificate: null }) }}
-
-                <div class="mb-4">
-                    <label for="cert_file" class="form-label">{{ 'compliance.certificate.field.file'|trans({}, 'compliance') }}</label>
-                    <input type="file" id="cert_file" name="certificate_file" class="form-control" required>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.upload_and_preview'|trans({}, 'compliance') }}</span>
-                    </button>
-                    <a href="{{ path('app_compliance_certificate_index', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
-                    </a>
-                </div>
-            </form>
-        </div>
-    </section>
 </div>
 {% endblock %}

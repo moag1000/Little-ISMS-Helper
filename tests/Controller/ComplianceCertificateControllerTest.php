@@ -477,6 +477,49 @@ class ComplianceCertificateControllerTest extends WebTestCase
         self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
+    // ── Upload form rendering (OCR vs manual path) ────────────────────────────
+
+    /**
+     * When the OCR pipeline is available the /new page must render an
+     * UPLOAD-ONLY form: the file input MUST be present and the
+     * frameworkCode select MUST NOT be present (to prevent users typing
+     * metadata that would be silently discarded by the OCR job).
+     */
+    #[Test]
+    public function newWithOcrAvailableRendersUploadOnlyForm(): void
+    {
+        StubOcrCapabilityDetector::setAvailable(true);
+        $this->client->loginUser($this->managerUser);
+
+        $this->client->request('GET', '/en/compliance/certificates/new');
+        $this->assertResponseIsSuccessful();
+
+        // File input must be present — it is the only form field in OCR mode.
+        self::assertSelectorExists('input[name="certificate_file"]');
+
+        // The full metadata select must NOT appear — its presence would expose
+        // a field that the OCR job silently overwrites.
+        self::assertSelectorNotExists('select[name="frameworkCode"]');
+    }
+
+    /**
+     * When OCR is NOT available the /new page must render the full manual form,
+     * including the frameworkCode select and certBody text input.
+     */
+    #[Test]
+    public function newWithoutOcrRendersFullManualForm(): void
+    {
+        StubOcrCapabilityDetector::setAvailable(false);
+        $this->client->loginUser($this->managerUser);
+
+        $this->client->request('GET', '/en/compliance/certificates/new');
+        $this->assertResponseIsSuccessful();
+
+        // Full form: file input AND framework select must both be present.
+        self::assertSelectorExists('input[name="certificate_file"]');
+        self::assertSelectorExists('select[name="frameworkCode"]');
+    }
+
     // ── OCR test helpers ──────────────────────────────────────────────────────
 
     /**

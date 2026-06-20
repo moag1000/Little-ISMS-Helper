@@ -120,6 +120,15 @@ final class ProcessCertificateOcrJob implements AsyncJobInterface
     }
 
     /**
+     * Map OCR-extracted fields back onto the certificate.
+     *
+     * Defense-in-depth: only write an extracted value when the certificate's
+     * current value is EMPTY. The OCR upload form deliberately omits the metadata
+     * fields (upload-only path) so field values will always be empty at this
+     * point. The guard is an additional safety net against any future code path
+     * that pre-populates the record before dispatching the job — user-typed data
+     * must NEVER be silently discarded by an automated extractor.
+     *
      * @param array{
      *     certBody: string|null,
      *     certNumber: string|null,
@@ -132,22 +141,22 @@ final class ProcessCertificateOcrJob implements AsyncJobInterface
      */
     private function applyDraft(ComplianceCertificate $cert, array $draft): void
     {
-        if ($draft['certBody'] !== null) {
+        if ($draft['certBody'] !== null && $cert->getCertBody() === '') {
             $cert->setCertBody($draft['certBody']);
         }
-        if ($draft['certNumber'] !== null) {
+        if ($draft['certNumber'] !== null && $cert->getCertNumber() === null) {
             $cert->setCertNumber($draft['certNumber']);
         }
-        if ($draft['holder'] !== null) {
+        if ($draft['holder'] !== null && $cert->getHolder() === null) {
             $cert->setHolder($draft['holder']);
         }
-        if ($draft['frameworkGuess'] !== null) {
+        if ($draft['frameworkGuess'] !== null && $cert->getFrameworkCode() === '') {
             $cert->setFrameworkCode($draft['frameworkGuess']);
         }
-        if ($draft['validUntil'] !== null) {
+        if ($draft['validUntil'] !== null && $cert->getValidUntil() === null) {
             $cert->setValidUntil(new DateTimeImmutable($draft['validUntil']));
         }
-        if ($draft['issueDate'] !== null) {
+        if ($draft['issueDate'] !== null && $cert->getIssueDate() === null) {
             $cert->setIssueDate(new DateTimeImmutable($draft['issueDate']));
         }
 

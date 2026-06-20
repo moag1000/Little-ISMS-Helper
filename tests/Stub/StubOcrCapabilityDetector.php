@@ -16,7 +16,7 @@ use App\Service\Certificate\OcrCapabilityInterface;
  * boots the kernel.
  *
  * Bound to {@see OcrCapabilityInterface} only in the test environment
- * (config/packages/test/services.yaml). Default verdict is `false`, so unless a
+ * (config/services_test.yaml). Default verdict is `false`, so unless a
  * test explicitly opts in, every other functional test sees the manual upload
  * path (identical to a production host without the OCR binaries).
  */

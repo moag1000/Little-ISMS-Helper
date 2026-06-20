@@ -13,7 +13,7 @@ namespace App\Service\Certificate;
  * may not have those binaries installed. Consumers that only need the
  * availability verdict (e.g. {@see \App\Controller\ComplianceCertificateController})
  * depend on this narrow interface instead, so the test environment can bind a
- * hermetic stub (see config/packages/test/services.yaml) that toggles
+ * hermetic stub (see config/services_test.yaml) that toggles
  * availability without touching the filesystem.
  *
  * Production binds this to {@see OcrCapabilityDetector} (config/services.yaml).
