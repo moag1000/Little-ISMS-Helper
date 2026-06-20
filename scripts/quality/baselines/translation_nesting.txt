@@ -280,7 +280,9 @@ translations/policy_privacy_batch1.en.yaml:1:policy
 translations/policy_privacy_sections.de.yaml:1:policy
 translations/policy_privacy_sections.en.yaml:1:policy
 translations/policy_soc2.de.yaml:1:policy
+translations/policy_soc2.de.yaml:597:iso27001
 translations/policy_soc2.en.yaml:1:policy
+translations/policy_soc2.en.yaml:637:iso27001
 translations/policy_tisax.de.yaml:1:policy
 translations/policy_tisax.en.yaml:1:policy
 translations/policy_wizard.de.yaml:1524:policy_ack
