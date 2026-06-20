@@ -41,10 +41,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * Mirrors {@see SeedDoraPolicyTemplatesCommand} (W4-A) in shape so
  * downstream wizard tooling can treat both standards uniformly.
+ *
+ * @deprecated since 2026-06-20 — superseded by BsiSectionCatalogue which provides
+ *             the same BSI Baustein extensions via the Policy Wizard section-extension
+ *             registry. This command remains for backward-compatible DB seeding of
+ *             PolicyTemplate rows; the section-extension prose is now driven by
+ *             BsiSectionCatalogue. Run only if PolicyTemplate rows are missing.
+ *             // MIGRATION: Any unique DB content (bsi_tier, linked_bsi_bausteine,
+ *             // linked_annex_a_controls per topic) is preserved in TEMPLATES const.
  */
 #[AsCommand(
     name: 'app:policy-wizard:seed-bsi',
-    description: 'Seeds the 28 BSI Pflicht-Richtlinien + 1 Schutzbedarfs-Methode-Dokument (W5-A).',
+    description: '[DEPRECATED — superseded by BsiSectionCatalogue] Seeds the 28 BSI Pflicht-Richtlinien + 1 Schutzbedarfs-Methode-Dokument (W5-A).',
 )]
 final class SeedBsiPolicyTemplatesCommand extends Command
 {
