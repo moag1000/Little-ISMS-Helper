@@ -30,7 +30,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Tab-basiert — beide Listen passen auf einen Screen und der Junior
  * sieht das ganze Bild ohne Click-Through.
  */
-#[IsGranted('ROLE_MANAGER')]
+#[IsGranted('ROLE_USER')]
 class DataReuseHubController extends AbstractController
 {
     public function __construct(
