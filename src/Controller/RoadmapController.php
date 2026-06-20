@@ -12,6 +12,7 @@ use App\Repository\PlanningSettingsRepository;
 use App\Repository\RoadmapAllocationRepository;
 use App\Repository\RoadmapTaskRepository;
 use App\Service\ModuleConfigurationService;
+use App\Service\Planning\CapacityRollupService;
 use App\Service\Planning\CapacityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +40,7 @@ final class RoadmapController extends AbstractController
         private readonly RoadmapAllocationRepository $allocationRepository,
         private readonly PersonRepository $personRepository,
         private readonly CapacityService $capacityService,
+        private readonly CapacityRollupService $capacityRollupService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
@@ -113,67 +115,31 @@ final class RoadmapController extends AbstractController
     }
 
     /**
-     * ISO 27001 Cl. 9.3 management-review input: Σ planned PT per ISMS domain
-     * over the horizon vs total available capacity.
+     * ISO 27001 Cl. 9.3 management-review input + Cl. 7.1 resource-need statement.
+     *
+     * Resolves the current ISO year/week here (controller concern) and passes them
+     * to CapacityRollupService so the service stays deterministic + unit-testable.
      */
     #[Route('/planning/roadmap/report', name: 'app_planning_roadmap_report', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function report(Request $request): Response
+    public function report(): Response
     {
         if ($redirect = $this->checkModuleActive('resource_planning')) {
             return $redirect;
         }
 
         $tenant = $this->security->getUser()?->getTenant();
-        $settings = $tenant instanceof Tenant ? $this->settingsRepository->findForTenant($tenant) : null;
-        $weekCount = max(1, min(self::MAX_WEEKS, $settings?->getRoadmapHorizonWeeks() ?? self::DEFAULT_WEEKS));
-        $window = $this->buildWindow($weekCount);
-
-        $tasks = $tenant instanceof Tenant ? $this->taskRepository->findActiveByTenant($tenant) : [];
-        $persons = $tenant instanceof Tenant
-            ? $this->personRepository->findBy(['tenant' => $tenant, 'active' => true])
-            : [];
-
-        // Σ planned PT per ISMS domain across the whole window.
-        $allocations = [];
-        if ($tenant instanceof Tenant) {
-            $byYear = [];
-            foreach ($window as $w) {
-                $byYear[$w['year']][] = $w['week'];
-            }
-            foreach ($byYear as $year => $weeks) {
-                foreach ($this->allocationRepository->findForWindowKeyed($tenant, (int) $year, $weeks) as $alloc) {
-                    $allocations[$alloc->getRoadmapTask()?->getId() . '-' . $year . '-' . $alloc->getIsoWeek()]
-                        = $alloc->getPlannedPt();
-                }
-            }
+        if (!$tenant instanceof Tenant) {
+            throw $this->createAccessDeniedException();
         }
 
-        $byDomain = [];
-        foreach ($tasks as $task) {
-            $domain = $task->getIsmsDomain() ?: '—';
-            $sum = 0.0;
-            foreach ($window as $w) {
-                $sum += (float) ($allocations[$task->getId() . '-' . $w['year'] . '-' . $w['week']] ?? 0);
-            }
-            $byDomain[$domain] = ($byDomain[$domain] ?? 0.0) + $sum;
-        }
-        ksort($byDomain);
+        $now = new \DateTimeImmutable('monday this week');
+        $currentIsoYear = (int) $now->format('o');
+        $currentIsoWeek = (int) $now->format('W');
 
-        $totalCapacity = 0.0;
-        foreach ($window as $w) {
-            foreach ($persons as $person) {
-                $totalCapacity += $this->capacityService->personAvailablePt($person, $tenant, $w['year'], $w['week']);
-            }
-        }
-        $totalPlanned = array_sum($byDomain);
+        $rollup = $this->capacityRollupService->rollup($tenant, $currentIsoYear, $currentIsoWeek);
 
-        return $this->render('planning/roadmap/report.html.twig', [
-            'weeks' => $weekCount,
-            'byDomain' => $byDomain,
-            'totalPlanned' => round($totalPlanned, 1),
-            'totalCapacity' => round($totalCapacity, 1),
-        ]);
+        return $this->render('planning/roadmap/report.html.twig', $rollup);
     }
 
     #[Route('/planning/roadmap', name: 'app_planning_roadmap_save', methods: ['POST'])]

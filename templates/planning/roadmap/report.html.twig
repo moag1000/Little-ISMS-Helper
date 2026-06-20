@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'planning' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
 
 {% block title %}{{ 'planning.report.title'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
 
@@ -9,54 +13,142 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.planning'|trans({}, 'nav'), url: path('app_planning_admin') },
+            { label: 'planning.roadmap.title'|trans({}, 'planning'), url: path('app_planning_roadmap') },
             { label: 'planning.report.title'|trans({}, 'planning') }
         ]
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'bar-chart-line', label: 'Cl. 9.3' },
+        badge: { icon: 'bar-chart-line', label: 'Cl. 9.3 · Cl. 7.1' },
         title: 'planning.report.title'|trans({}, 'planning'),
-        subtitle: 'planning.report.subtitle'|trans({ '%weeks%': weeks }, 'planning')
+        subtitle: 'planning.report.subtitle'|trans({ '%weeks%': horizonWeeks }, 'planning')
     }) }}
 
+    {# ── KPI tiles ─────────────────────────────────────────────────────────── #}
     <div class="row g-3 mb-4">
         <div class="col-sm-4">
-            <div class="card"><div class="card-body">
-                <div class="text-muted small">{{ 'planning.report.total_planned'|trans({}, 'planning') }}</div>
-                <div class="h4 mb-0">{{ totalPlanned }} PT</div>
-            </div></div>
+            {{ _fa_feature_card.render({
+                icon:    'person-lines-fill',
+                label:   'planning.report.total_capacity'|trans({}, 'planning'),
+                value:   totalCapacityPt,
+                unit:    'PT',
+                variant: 'primary'
+            }) }}
         </div>
         <div class="col-sm-4">
-            <div class="card"><div class="card-body">
-                <div class="text-muted small">{{ 'planning.report.total_capacity'|trans({}, 'planning') }}</div>
-                <div class="h4 mb-0">{{ totalCapacity }} PT</div>
-            </div></div>
+            {{ _fa_feature_card.render({
+                icon:    'calendar-check',
+                label:   'planning.report.total_load'|trans({}, 'planning'),
+                value:   totalLoadPt,
+                unit:    'PT',
+                variant: overbooked ? 'danger' : 'success'
+            }) }}
         </div>
         <div class="col-sm-4">
-            <div class="card"><div class="card-body">
-                <div class="text-muted small">{{ 'planning.report.utilisation'|trans({}, 'planning') }}</div>
-                <div class="h4 mb-0 {{ totalCapacity > 0 and totalPlanned > totalCapacity ? 'text-danger' : '' }}">
-                    {{ totalCapacity > 0 ? (totalPlanned / totalCapacity * 100)|round : 0 }}%
-                </div>
-            </div></div>
+            {{ _fa_feature_card.render({
+                icon:    overbooked ? 'exclamation-triangle-fill' : 'speedometer2',
+                label:   'planning.report.utilization'|trans({}, 'planning'),
+                value:   utilizationPct is not null ? utilizationPct : '—',
+                unit:    utilizationPct is not null ? '%' : '',
+                variant: overbooked ? 'danger' : (utilizationPct is not null and utilizationPct >= 80 ? 'warning' : 'success'),
+                hint:    overbooked
+                    ? 'planning.report.overbooked_hint'|trans({ '%threshold%': overbookingThresholdPct }, 'planning')
+                    : null
+            }) }}
         </div>
     </div>
 
-    <table class="table fa-table align-middle">
-        <thead><tr>
-            <th scope="col">{{ 'planning.report.col.domain'|trans({}, 'planning') }}</th>
-            <th scope="col" class="text-end">{{ 'planning.report.col.planned_pt'|trans({}, 'planning') }}</th>
-        </tr></thead>
-        <tbody>
-        {% for domain, pt in byDomain %}
-            <tr>
-                <th scope="row" class="fw-normal">{{ domain }}</th>
-                <td class="text-end">{{ pt|round(1) }}</td>
-            </tr>
+    {# ── Utilization bar ───────────────────────────────────────────────────── #}
+    {% if utilizationPct is not null %}
+    <div class="mb-4">
+        <div class="d-flex justify-content-between small text-muted mb-1">
+            <span>0 PT</span>
+            <span>{{ 'planning.report.threshold_label'|trans({ '%threshold%': overbookingThresholdPct }, 'planning') }}</span>
+            <span>{{ totalCapacityPt }} PT</span>
+        </div>
+        {{ _fa_progress.render({
+            value:     totalLoadPt,
+            max:       totalCapacityPt,
+            tone:      overbooked ? 'danger' : (utilizationPct >= 80 ? 'warning' : 'primary'),
+            label:     'planning.report.utilization'|trans({}, 'planning'),
+            showText:  true,
+            size:      'lg'
+        }) }}
+    </div>
+    {% endif %}
+
+    {# ── By roadmap-group breakdown ────────────────────────────────────────── #}
+    {% set groupSectionBody %}
+        {% if byGroup is empty %}
+            <p class="text-muted py-3">{{ 'planning.report.empty'|trans({}, 'planning') }}</p>
         {% else %}
-            <tr><td colspan="2" class="text-muted">{{ 'planning.report.empty'|trans({}, 'planning') }}</td></tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            {% embed '_components/_fa_table.html.twig' with { id: 'report-by-group', stickyHead: false } %}
+                {% block table_head %}
+                    <tr>
+                        <th class="fa-table__th">{{ 'planning.report.col.group'|trans({}, 'planning') }}</th>
+                        <th class="fa-table__th fa-table__th--numeric">{{ 'planning.report.col.planned_pt'|trans({}, 'planning') }}</th>
+                        <th class="fa-table__th fa-table__th--numeric">{{ 'planning.report.col.share_pct'|trans({}, 'planning') }}</th>
+                        <th class="fa-table__th" style="width:30%">{{ 'planning.report.col.share_bar'|trans({}, 'planning') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+                    {% for row in byGroup %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">{{ row.label }}</td>
+                            <td class="fa-table__cell fa-table__cell--numeric">{{ row.plannedPt }}</td>
+                            <td class="fa-table__cell fa-table__cell--numeric">{{ row.sharePct }}%</td>
+                            <td class="fa-table__cell">
+                                {{ _fa_progress.render({
+                                    value: row.sharePct,
+                                    max:   100,
+                                    tone:  'primary',
+                                    size:  'sm',
+                                    label: row.label
+                                }) }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
+    {% endset %}
+
+    {{ _fa_section.render({
+        title: 'planning.report.by_group'|trans({}, 'planning'),
+        body:  groupSectionBody
+    }) }}
+
+    {# ── By ISMS scope breakdown (only when ActionItems carry scope tags) ─── #}
+    {% if byScope is not empty %}
+    {% set scopeSectionBody %}
+        {% embed '_components/_fa_table.html.twig' with { id: 'report-by-scope', stickyHead: false } %}
+            {% block table_head %}
+                <tr>
+                    <th class="fa-table__th">{{ 'planning.report.col.scope'|trans({}, 'planning') }}</th>
+                    <th class="fa-table__th fa-table__th--numeric">{{ 'planning.report.col.effort_pt'|trans({}, 'planning') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for row in byScope %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">{{ row.scope }}</td>
+                        <td class="fa-table__cell fa-table__cell--numeric">{{ row.plannedEffortPt }}</td>
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+    {% endset %}
+
+    {{ _fa_section.render({
+        title: 'planning.report.by_scope'|trans({}, 'planning'),
+        body:  scopeSectionBody
+    }) }}
+    {% endif %}
+
+    {# ── Norm reference note ───────────────────────────────────────────────── #}
+    <p class="text-muted small mt-4">
+        {{ 'planning.report.norm_note'|trans({}, 'planning') }}
+    </p>
 </div>
 {% endblock %}

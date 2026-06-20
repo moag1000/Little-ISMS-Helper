@@ -220,12 +220,21 @@ planning:
         success:
             saved: 'Settings saved.'
     report:
-        title: 'Resource demand (Cl. 9.3)'
-        subtitle: 'Planned PD per ISMS domain over %weeks% weeks — management-review input'
-        total_planned: 'Total planned'
+        title: 'Capacity report (Cl. 9.3)'
+        subtitle: 'Σ available capacity vs Σ planned load over %weeks% weeks — management-review input (Cl. 7.1 + Cl. 9.3)'
         total_capacity: 'Total capacity'
-        utilisation: Utilisation
+        total_load: 'Total load'
+        utilization: Utilisation
+        overbooked_hint: 'Overbooked — threshold of %threshold% % exceeded'
+        threshold_label: 'Threshold %threshold% %'
+        by_group: 'Load by roadmap group'
+        by_scope: 'Effort by ISMS scope'
+        norm_note: 'This report provides a quantified resource-need statement for the management review per ISO 27001 Cl. 9.3 (resource provision Cl. 7.1). Planned PD reflects roadmap allocations; effort by scope is based on measure estimates.'
         col:
-            domain: 'ISMS domain'
+            group: 'Roadmap group'
             planned_pt: 'Planned (PD)'
+            share_pct: 'Share'
+            share_bar: 'Distribution'
+            scope: Scope
+            effort_pt: 'Effort (PD)'
         empty: 'No plan recorded yet.'

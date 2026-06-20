@@ -220,12 +220,21 @@ planning:
         success:
             saved: 'Einstellungen gespeichert.'
     report:
-        title: 'Ressourcenbedarf (Cl. 9.3)'
-        subtitle: 'Geplante PT je ISMS-Domäne über %weeks% Wochen — Input fürs Management-Review'
-        total_planned: 'Geplant gesamt'
+        title: 'Kapazitäts-Report (Cl. 9.3)'
+        subtitle: 'Σ verfügbare Kapazität vs. Σ geplante Last über %weeks% Wochen — Input fürs Management-Review (Cl. 7.1 + Cl. 9.3)'
         total_capacity: 'Kapazität gesamt'
-        utilisation: Auslastung
+        total_load: 'Last gesamt'
+        utilization: Auslastung
+        overbooked_hint: 'Überbuchung — Schwelle %threshold% % überschritten'
+        threshold_label: 'Schwelle %threshold% %'
+        by_group: 'Aufwand je Roadmap-Gruppe'
+        by_scope: 'Aufwand je Geltungsbereich'
+        norm_note: 'Dieser Report dient als quantifizierter Ressourcenbedarf-Input für das Management-Review nach ISO 27001 Cl. 9.3 (Ressourcenbereitstellung Cl. 7.1). Geplante PT spiegeln Roadmap-Allokationen wider; Aufwand je Geltungsbereich basiert auf Maßnahmen-Schätzungen.'
         col:
-            domain: 'ISMS-Domäne'
+            group: 'Roadmap-Gruppe'
             planned_pt: 'Geplant (PT)'
+            share_pct: 'Anteil'
+            share_bar: 'Verteilung'
+            scope: Geltungsbereich
+            effort_pt: 'Aufwand (PT)'
         empty: 'Noch keine Planung erfasst.'

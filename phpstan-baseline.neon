@@ -4613,3 +4613,9 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: src/Service/Bsi/IsoToBsiGapService.php
+
+		-
+			message: '#^Property App\\Controller\\RoadmapController\:\:\$moduleService is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Controller/RoadmapController.php
