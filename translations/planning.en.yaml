@@ -212,6 +212,8 @@ planning:
             default_recurrence_months: 'Default recurrence (months)'
             roadmap_horizon_weeks: 'Roadmap horizon (weeks)'
             overbooking_threshold_pct: 'Over-booking threshold (%)'
+            full_time_hours_per_week: 'Full-time hours per week'
+            hours_per_day: 'Working hours per day'
             scopes: Scopes
         help:
             scopes: 'One scope per line (e.g. org units, sites).'

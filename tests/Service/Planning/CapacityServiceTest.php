@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\Service\Planning;
 
 use App\Entity\Person;
+use App\Entity\PlanningSettings;
 use App\Entity\Team;
 use App\Entity\Tenant;
 use App\Entity\UnavailabilityCalendar;
 use App\Entity\UnavailabilityPeriod;
+use App\Repository\PlanningSettingsRepository;
 use App\Repository\UnavailabilityCalendarRepository;
 use App\Service\Planning\CapacityService;
 use PHPUnit\Framework\Attributes\Test;
@@ -16,11 +18,15 @@ use PHPUnit\Framework\TestCase;
 
 final class CapacityServiceTest extends TestCase
 {
-    private function serviceWithCalendar(?UnavailabilityCalendar $calendar): CapacityService
+    private function serviceWithCalendar(?UnavailabilityCalendar $calendar, ?PlanningSettings $planningSettings = null): CapacityService
     {
-        $repo = $this->createStub(UnavailabilityCalendarRepository::class);
-        $repo->method('findForTenant')->willReturn($calendar);
-        return new CapacityService($repo);
+        $calendarRepo = $this->createStub(UnavailabilityCalendarRepository::class);
+        $calendarRepo->method('findForTenant')->willReturn($calendar);
+
+        $settingsRepo = $this->createStub(PlanningSettingsRepository::class);
+        $settingsRepo->method('getOrCreate')->willReturn($planningSettings ?? new PlanningSettings());
+
+        return new CapacityService($calendarRepo, $settingsRepo);
     }
 
     private function person(float $pct): Person
@@ -90,5 +96,30 @@ final class CapacityServiceTest extends TestCase
         $team->addMember($this->person(1.0));  // 5.0
 
         $this->assertEqualsWithDelta(7.0, $service->teamAvailablePt($team, new Tenant(), 2026, 10), 0.001);
+    }
+
+    #[Test]
+    public function tenantSettingsHalfTimeYieldsHalfPtPerWeek(): void
+    {
+        // A tenant configured with 20 h/week full-time (÷ 8 h/day = 2.5 PT) should
+        // yield exactly half the capacity of the default (40 h/week = 5.0 PT).
+        $settings = (new PlanningSettings())->setFullTimeHoursPerWeek(20.0);
+
+        $service = $this->serviceWithCalendar(null, $settings);
+        $tenant  = new Tenant();
+
+        $this->assertEqualsWithDelta(2.5, $service->fullTimePtPerWeek($tenant), 0.001);
+        // a person at 100 % availability should reflect the halved baseline
+        $this->assertEqualsWithDelta(2.5, $service->personAvailablePt($this->person(1.0), $tenant, 2026, 10), 0.001);
+    }
+
+    #[Test]
+    public function defaultSettingsYieldFivePtPerWeek(): void
+    {
+        // PlanningSettings with both fields null must fall back to 40/8 = 5.
+        $settings = new PlanningSettings(); // fullTimeHoursPerWeek = null, hoursPerDay = null
+
+        $service = $this->serviceWithCalendar(null, $settings);
+        $this->assertEqualsWithDelta(5.0, $service->fullTimePtPerWeek(new Tenant()), 0.001);
     }
 }

@@ -212,6 +212,8 @@ planning:
             default_recurrence_months: 'Standard-Wiederholung (Monate)'
             roadmap_horizon_weeks: 'Roadmap-Horizont (Wochen)'
             overbooking_threshold_pct: 'Überbuchungs-Schwelle (%)'
+            full_time_hours_per_week: 'Vollzeit-Stunden pro Woche'
+            hours_per_day: 'Arbeitsstunden pro Tag'
             scopes: Geltungsbereiche
         help:
             scopes: 'Ein Geltungsbereich pro Zeile (z. B. Organisationseinheiten, Standorte).'

@@ -36,6 +36,22 @@ class PlanningSettings
     #[Assert\Range(min: 1, max: 500)]
     private int $overbookingThresholdPct = 100;
 
+    /**
+     * Full-time working hours per week used for PT derivation (Spec §8).
+     * Null means "use the system default" (40.0 h).
+     */
+    #[ORM\Column(type: Types::FLOAT, nullable: true, options: ['default' => null])]
+    #[Assert\Positive]
+    private ?float $fullTimeHoursPerWeek = null;
+
+    /**
+     * Working hours per day used for PT derivation (Spec §8).
+     * Null means "use the system default" (8.0 h).
+     */
+    #[ORM\Column(type: Types::FLOAT, nullable: true, options: ['default' => null])]
+    #[Assert\Positive]
+    private ?float $hoursPerDay = null;
+
     /** @var list<string> Configurable Geltungsbereich list. */
     #[ORM\Column(type: Types::JSON)]
     private array $scopes = [];
@@ -79,6 +95,28 @@ class PlanningSettings
     public function setOverbookingThresholdPct(int $pct): static
     {
         $this->overbookingThresholdPct = $pct;
+        return $this;
+    }
+
+    public function getFullTimeHoursPerWeek(): ?float
+    {
+        return $this->fullTimeHoursPerWeek;
+    }
+
+    public function setFullTimeHoursPerWeek(?float $hours): static
+    {
+        $this->fullTimeHoursPerWeek = $hours;
+        return $this;
+    }
+
+    public function getHoursPerDay(): ?float
+    {
+        return $this->hoursPerDay;
+    }
+
+    public function setHoursPerDay(?float $hours): static
+    {
+        $this->hoursPerDay = $hours;
         return $this;
     }
 
