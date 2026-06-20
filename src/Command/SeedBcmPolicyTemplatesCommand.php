@@ -18,6 +18,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Policy-Wizard W5-B — seed the 14 BCM PolicyTemplate rows.
  *
+ * @deprecated [DEPRECATED — superseded by BcmSectionCatalogue]
+ *   Since the introduction of {@see \App\Service\PolicyWizard\SectionExtension\BcmSectionCatalogue}
+ *   (token 'bcm', framework code 'ISO-22301'), ISO 22301 clause-level body extensions
+ *   are injected dynamically by the registry into ISO 27001 baseline topic policies.
+ *   This DB-seeding command is no longer the canonical mechanism for BCM policy content.
+ *
+ *   MIGRATION: Existing PolicyTemplate rows seeded by this command remain valid and
+ *   functional — do NOT delete them. The BcmSectionCatalogue adds clause-level prose
+ *   extensions to the ISO 27001 topic policies; the standalone BCM template rows
+ *   (bcms_top_level, bia_methodology, bc_plans, etc.) produced by this seeder serve a
+ *   different purpose (standalone BCMS governance documents) and are kept for backward
+ *   compatibility. New BCM policy section content should be authored as
+ *   BcmSectionCatalogue entries + translations/policy_bcm.{de,en}.yaml, not as new
+ *   rows via this command.
+ *
  * Per `docs/plans/policy-wizard/04-bcm-input.md` §1 + §2.1-§2.13 the
  * BCM addon contributes 14 governance-level documents:
  *
@@ -41,7 +56,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * already exist. With `--force` existing rows are updated in place
  * (mirrors the SQL ON DUPLICATE KEY UPDATE pattern).
  *
- * Run as one-off after deploy:
+ * Run as one-off after deploy (legacy path only):
  *   php bin/console app:policy-wizard:seed-bcm
  *   php bin/console app:policy-wizard:seed-bcm --force
  */
