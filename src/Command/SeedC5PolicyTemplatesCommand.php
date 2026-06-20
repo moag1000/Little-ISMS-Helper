@@ -47,10 +47,19 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * Mirrors {@see SeedBsiPolicyTemplatesCommand} (W5-A) in shape so the
  * downstream wizard tooling can treat both BSI standards uniformly.
+ *
+ * @deprecated since 3.12 — superseded by {@see \App\Service\PolicyWizard\SectionExtension\C5SectionCatalogue}.
+ *
+ * The C5SectionCatalogue provides mapping-grounded C5:2020 section extensions via
+ * the StandardSectionCatalogueInterface / SectionExtensionRegistry pipeline and
+ * does not require a separate seeder command.
+ *
+ * // MIGRATION: Replace with C5SectionCatalogue (autowired via app.policy_section_catalogue tag).
+ * // Existing DB rows created by this command remain valid; no row deletion needed.
  */
 #[AsCommand(
     name: 'app:policy-wizard:seed-c5',
-    description: 'Seeds the 12 BSI C5:2026 cloud-security policy templates.',
+    description: '[DEPRECATED — superseded by C5SectionCatalogue] Seeds the 12 BSI C5:2026 cloud-security policy templates.',
 )]
 final class SeedC5PolicyTemplatesCommand extends Command
 {
