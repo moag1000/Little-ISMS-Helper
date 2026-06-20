@@ -122,6 +122,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         private readonly ?SoaAutoUpdateService $soaAutoUpdateService = null,
         private readonly ?PolicyParameterAnnexRenderer $policyParameterAnnexRenderer = null,
         private readonly ?SectionExtensionRegistry $sectionExtensionRegistry = null,
+        private readonly ?PolicyFulfillmentSyncService $policyFulfillmentSync = null,
     ) {
     }
 
@@ -1376,6 +1377,8 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         if ($this->soaAutoUpdateService !== null) {
             $this->soaAutoUpdateService->propagateForDocument($document, $run);
         }
+
+        $this->policyFulfillmentSync?->syncForDocument($document, $run);
 
         $wizardRank = self::STATUS_RANK[self::WIZARD_STATUS_LABEL];
 
