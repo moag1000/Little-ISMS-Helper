@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -76,11 +77,13 @@ final class PlanningSettingsController extends AbstractController
                 'label' => 'planning.settings.field.full_time_hours_per_week',
                 'scale' => 1,
                 'attr' => ['min' => 1, 'step' => 0.5],
+                'constraints' => [new Assert\Positive()],
             ])
             ->add('hoursPerDay', NumberType::class, [
                 'label' => 'planning.settings.field.hours_per_day',
                 'scale' => 1,
                 'attr' => ['min' => 1, 'step' => 0.5],
+                'constraints' => [new Assert\Positive()],
             ])
             ->add('scopes', TextareaType::class, [
                 'label' => 'planning.settings.field.scopes',
