@@ -61,7 +61,7 @@ library:
       - { state: 'published', date: '2024-12-01', actor: 'ciso-signoff' }
 
 mappings:
-  - source: 'ISMS.1'
+  - source: 'ISMS.1.A1'
     target: 'A.5.1'
     relationship: 'superset'
     confidence: 'high'
@@ -71,9 +71,10 @@ mappings:
       'Policies for information security' — der Baustein deckt die ISO-Anforderung
       vollständig ab und enthält darüber hinaus Leitlinien-Aufbau, Management-
       Verantwortung, Ressourcenbereitstellung und ISMS-Steuerung.
+      (Modul ISMS.1 → repräsentative Anforderung ISMS.1.A1)
     audit_evidence_hint: 'IT-Grundschutz-Profil mit ISMS.1-Bausteinabdeckung, Leitlinie zur Informationssicherheit, ISO-Mapping-Tabelle pro Baustein.'
 
-  - source: 'ORP.1'
+  - source: 'ORP.1.A1'
     target: 'A.5.2'
     relationship: 'superset'
     confidence: 'high'
@@ -83,10 +84,11 @@ mappings:
       security roles and responsibilities' — der Baustein definiert über die
       ISO-Rollenfestlegung hinaus auch Funktionstrennung, Vertretungsregelungen
       und organisatorische Verankerung.
+      (Modul ORP.1 → repräsentative Anforderung ORP.1.A1)
     cross_refs: ['ISMS.1']
     audit_evidence_hint: 'Organigramm mit Sicherheitsrollen, Stellenbeschreibungen, RACI-Matrix gem. ORP.1.A2.'
 
-  - source: 'DER.1'
+  - source: 'DER.1.A1'
     target: 'A.5.7'
     relationship: 'equivalent'
     confidence: 'high'
@@ -96,10 +98,11 @@ mappings:
       Intelligence' den gleichen Funktionsumfang ab — Sammeln, Analysieren und
       Verteilen von Bedrohungsinformationen sind in beiden Frameworks zentrale
       Teilaufgaben.
+      (Modul DER.1 → repräsentative Anforderung DER.1.A1)
     cross_refs: ['A.8.16']
     audit_evidence_hint: 'Threat-Intel-Quellen-Liste (CERT-Bund, BSI-CERT), DER.1.A4 SIEM-Korrelationsregeln, Sharing-Protokolle der letzten 12 Monate.'
 
-  - source: 'OPS.2.3'
+  - source: 'OPS.2.3.A1'
     target: 'A.5.19'
     relationship: 'superset'
     confidence: 'high'
@@ -108,10 +111,11 @@ mappings:
       Inverse Sicht: OPS.2.1 'Outsourcing für Kunden' ist 'superset' von A.5.19
       'Information security in supplier relationships' — der Baustein adressiert
       darüber hinaus Steuerung, Monitoring und Beendigung der Outsourcing-Beziehung.
+      (Modul OPS.2.3 → repräsentative Anforderung OPS.2.3.A1)
     cross_refs: ['OPS.2.3', 'A.5.20', 'A.5.22']
     audit_evidence_hint: 'Supplier-Register mit Risk-Tier, Outsourcing-Steuerungs-Konzept gem. OPS.2.1.A1, Audit-Reports der letzten 24 Monate.'
 
-  - source: 'OPS.2.2'
+  - source: 'OPS.2.2.A1'
     target: 'A.5.23'
     relationship: 'equivalent'
     confidence: 'high'
@@ -121,9 +125,10 @@ mappings:
       cloud services' den gleichen Funktionsumfang ab — Cloud-Strategie,
       Anbieter-Auswahl, Vertragsgestaltung und Exit-Strategie sind in beiden
       Frameworks adressiert.
+      (Modul OPS.2.2 → repräsentative Anforderung OPS.2.2.A1)
     audit_evidence_hint: 'Cloud-Nutzungs-Konzept gem. OPS.2.2.A1, Cloud-Provider-Bewertung, Exit-Strategie pro Cloud-Service.'
 
-  - source: 'DER.2.1'
+  - source: 'DER.2.1.A1'
     target: 'A.5.24'
     relationship: 'superset'
     confidence: 'high'
@@ -133,10 +138,11 @@ mappings:
       vorfällen' ist 'superset' von A.5.24 'Incident management planning and
       preparation' — der Baustein deckt zusätzlich Bewertung, Reaktion und
       Lessons-Learned ab.
+      (Modul DER.2.1 → repräsentative Anforderung DER.2.1.A1)
     cross_refs: ['A.5.25', 'A.5.26', 'A.5.27', 'A.6.8']
     audit_evidence_hint: 'Incident-Response-Plan, IR-Übungen, IR-Reports, DER.2.1.A1 Definition Sicherheitsvorfall.'
 
-  - source: 'DER.4'
+  - source: 'DER.4.A1'
     target: 'A.5.30'
     relationship: 'equivalent'
     confidence: 'high'
@@ -145,13 +151,14 @@ mappings:
       'Notfallmanagement' deckt mit A.5.30 'ICT readiness for business continuity'
       ICT-Notfallvorsorge auf gleichem Abstraktionsniveau ab. Vollständige BCM-
       Abdeckung gem. ISO 22301 erfordert allerdings BSI 200-4.
+      (Modul DER.4 → repräsentative Anforderung DER.4.A1)
     cross_refs: ['A.5.29']
     gap_warning: |
       DER.4 deckt ICT-Notfall-Aspekte ab. Für vollständigen BCM-Nachweis (Krisen-
       management, Behörden-Kommunikation) ergänzend BSI 200-4 heranziehen.
     audit_evidence_hint: 'BC-Pläne mit ICT-Notfall-Teil, DER.4.A1 Notfallhandbuch, dokumentierte Tabletop-Übungen.'
 
-  - source: 'CON.2'
+  - source: 'CON.2.A1'
     target: 'A.5.34'
     relationship: 'equivalent'
     confidence: 'high'
@@ -161,10 +168,11 @@ mappings:
       Datenschutz-Anteil im ISMS ab — DSGVO-Konformität, technisch-organisatorische
       Maßnahmen und Datenschutz-Folgenabschätzungen sind in beiden Frameworks
       adressiert.
+      (Modul CON.2 → repräsentative Anforderung CON.2.A1)
     cross_refs: ['ORP.5']
     audit_evidence_hint: 'Verzeichnis von Verarbeitungstätigkeiten, DSFA-Dokumente, CON.2.A1 Umsetzung der Datenschutz-Grundsätze.'
 
-  - source: 'ORP.4'
+  - source: 'ORP.4.A1'
     target: 'A.5.15'
     relationship: 'superset'
     confidence: 'high'
@@ -173,10 +181,11 @@ mappings:
       Inverse Sicht: ORP.4 'Identitäts- und Berechtigungsmanagement' ist 'superset'
       von A.5.15 'Access control' — der Baustein deckt zusätzlich Identity-
       Lifecycle, Berechtigungs-Rezertifizierung und privilegierte Zugänge ab.
+      (Modul ORP.4 → repräsentative Anforderung ORP.4.A1)
     cross_refs: ['A.5.16', 'A.5.17', 'A.5.18', 'A.8.2', 'A.8.5']
     audit_evidence_hint: 'IAM-Konzept gem. ORP.4.A1, Berechtigungs-Reviews der letzten 12 Monate, Rollen-/Rechte-Matrix.'
 
-  - source: 'ORP.3'
+  - source: 'ORP.3.A1'
     target: 'A.6.3'
     relationship: 'equivalent'
     confidence: 'high'
@@ -185,9 +194,10 @@ mappings:
       'Sensibilisierung und Schulung' deckt mit A.6.3 'Information security
       awareness, education and training' den Awareness-Anteil auf gleichem
       Abstraktionsniveau ab.
+      (Modul ORP.3 → repräsentative Anforderung ORP.3.A1)
     audit_evidence_hint: 'Schulungsplan gem. ORP.3.A3, Schulungs-Quote, Phishing-Drill-Ergebnisse, Onboarding-Curriculum.'
 
-  - source: 'INF.1'
+  - source: 'INF.1.A1'
     target: 'A.7.1'
     relationship: 'superset'
     confidence: 'high'
@@ -196,10 +206,11 @@ mappings:
       Inverse Sicht: INF.1 'Allgemeines Gebäude' ist 'superset' von A.7.1
       'Physical security perimeters' — der Baustein deckt zusätzlich Zutritt,
       Brandschutz und physische Überwachung gem. A.7.2/A.7.4/A.7.5 ab.
+      (Modul INF.1 → repräsentative Anforderung INF.1.A1)
     cross_refs: ['A.7.2', 'A.7.4', 'A.7.5']
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittskontroll-Logs, Brandschutzgutachten gem. INF.1.A2.'
 
-  - source: 'OPS.1.1.4'
+  - source: 'OPS.1.1.4.A1'
     target: 'A.8.7'
     relationship: 'equivalent'
     confidence: 'high'
@@ -208,9 +219,10 @@ mappings:
       OPS.1.1.4 'Schutz vor Schadprogrammen' deckt mit A.8.7 'Protection against
       malware' den gleichen Funktionsumfang ab — AV/EDR, Schadprogramm-Erkennung
       und Reaktion sind in beiden Frameworks zentrale Maßnahmen.
+      (Modul OPS.1.1.4 → repräsentative Anforderung OPS.1.1.4.A1)
     audit_evidence_hint: 'AV/EDR-Reports, OPS.1.1.4.A1 Schutzkonzept, Patch-Compliance-Dashboards.'
 
-  - source: 'OPS.1.1.3'
+  - source: 'OPS.1.1.3.A1'
     target: 'A.8.8'
     relationship: 'equivalent'
     confidence: 'high'
@@ -220,10 +232,11 @@ mappings:
       technical vulnerabilities' den gleichen Funktionsumfang ab — Schwachstellen-
       Erkennung, Bewertung und Patch-Bereitstellung sind in beiden Frameworks
       adressiert.
+      (Modul OPS.1.1.3 → repräsentative Anforderung OPS.1.1.3.A1)
     cross_refs: ['A.8.32']
     audit_evidence_hint: 'Vulnerability-Scan-Reports, OPS.1.1.3.A4 Patchprozess, CVSS-Bewertungen, Patch-SLAs.'
 
-  - source: 'CON.3'
+  - source: 'CON.3.A1'
     target: 'A.8.13'
     relationship: 'equivalent'
     confidence: 'high'
@@ -232,9 +245,10 @@ mappings:
       'Datensicherungskonzept' deckt mit A.8.13 'Information backup' den
       gleichen Funktionsumfang ab — Backup-Strategie, Restore-Tests und
       Aufbewahrung sind in beiden Frameworks zentrale Anforderungen.
+      (Modul CON.3 → repräsentative Anforderung CON.3.A1)
     audit_evidence_hint: 'Datensicherungskonzept gem. CON.3.A1, Restore-Test-Protokolle, Backup-Logs der letzten 12 Monate.'
 
-  - source: 'NET.1.1'
+  - source: 'NET.1.1.A1'
     target: 'A.8.20'
     relationship: 'superset'
     confidence: 'high'
@@ -243,1174 +257,1342 @@ mappings:
       Inverse Sicht: NET.1.1 'Netzarchitektur und -design' ist 'superset' von
       A.8.20 'Networks security' — der Baustein deckt zusätzlich Netzsegmentierung
       (A.8.22) und Netzdienste-Sicherheit (A.8.21) ab.
+      (Modul NET.1.1 → repräsentative Anforderung NET.1.1.A1)
     cross_refs: ['A.8.21', 'A.8.22']
     audit_evidence_hint: 'Netzarchitektur-Diagramm gem. NET.1.1.A1, Segmentierungs-Konzept, Firewall-Regelwerk-Reviews.'
-  - source: 'ORP.2'
+  - source: 'ORP.2.A1'
     target: 'A.6.1'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       ORP.2 'Personal' bündelt personelle Sicherheit (Einstellung, Vertraulichkeitsvereinbarung, Beendigung) und ist Obermenge zu A.6.1 'Screening', A.6.2 'Terms and conditions of employment' und A.6.5 'Responsibilities after termination or change of employment'.
+      (Modul ORP.2 → repräsentative Anforderung ORP.2.A1)
     audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; konkrete Baustein-Anforderungen aus ORP.2.'
-  - source: 'ORP.2'
+  - source: 'ORP.2.A1'
     target: 'A.6.2'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       ORP.2 'Personal' bündelt personelle Sicherheit (Einstellung, Vertraulichkeitsvereinbarung, Beendigung) und ist Obermenge zu A.6.1 'Screening', A.6.2 'Terms and conditions of employment' und A.6.5 'Responsibilities after termination or change of employment'.
+      (Modul ORP.2 → repräsentative Anforderung ORP.2.A1)
     audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; konkrete Baustein-Anforderungen aus ORP.2.'
-  - source: 'ORP.2'
+  - source: 'ORP.2.A1'
     target: 'A.6.5'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       ORP.2 'Personal' bündelt personelle Sicherheit (Einstellung, Vertraulichkeitsvereinbarung, Beendigung) und ist Obermenge zu A.6.1 'Screening', A.6.2 'Terms and conditions of employment' und A.6.5 'Responsibilities after termination or change of employment'.
+      (Modul ORP.2 → repräsentative Anforderung ORP.2.A1)
     audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; konkrete Baustein-Anforderungen aus ORP.2.'
-  - source: 'ORP.5'
+  - source: 'ORP.5.A1'
     target: 'A.5.31'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       ORP.5 'Compliance Management' bündelt rechtliche/regulatorische Anforderungs-Identifikation und ist Obermenge zu A.5.31 'Legal/contractual requirements', A.5.32 'IPR', A.5.33 'Records', A.5.34 'Privacy/PII', A.5.36 'Compliance with policies'.
+      (Modul ORP.5 → repräsentative Anforderung ORP.5.A1)
     audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; konkrete Baustein-Anforderungen aus ORP.5.'
-  - source: 'ORP.5'
+  - source: 'ORP.5.A1'
     target: 'A.5.32'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       ORP.5 'Compliance Management' bündelt rechtliche/regulatorische Anforderungs-Identifikation und ist Obermenge zu A.5.31 'Legal/contractual requirements', A.5.32 'IPR', A.5.33 'Records', A.5.34 'Privacy/PII', A.5.36 'Compliance with policies'.
+      (Modul ORP.5 → repräsentative Anforderung ORP.5.A1)
     audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; konkrete Baustein-Anforderungen aus ORP.5.'
-  - source: 'ORP.5'
+  - source: 'ORP.5.A1'
     target: 'A.5.33'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       ORP.5 'Compliance Management' bündelt rechtliche/regulatorische Anforderungs-Identifikation und ist Obermenge zu A.5.31 'Legal/contractual requirements', A.5.32 'IPR', A.5.33 'Records', A.5.34 'Privacy/PII', A.5.36 'Compliance with policies'.
+      (Modul ORP.5 → repräsentative Anforderung ORP.5.A1)
     audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; konkrete Baustein-Anforderungen aus ORP.5.'
-  - source: 'ORP.5'
+  - source: 'ORP.5.A1'
     target: 'A.5.34'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       ORP.5 'Compliance Management' bündelt rechtliche/regulatorische Anforderungs-Identifikation und ist Obermenge zu A.5.31 'Legal/contractual requirements', A.5.32 'IPR', A.5.33 'Records', A.5.34 'Privacy/PII', A.5.36 'Compliance with policies'.
+      (Modul ORP.5 → repräsentative Anforderung ORP.5.A1)
     audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; konkrete Baustein-Anforderungen aus ORP.5.'
-  - source: 'ORP.5'
+  - source: 'ORP.5.A1'
     target: 'A.5.36'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       ORP.5 'Compliance Management' bündelt rechtliche/regulatorische Anforderungs-Identifikation und ist Obermenge zu A.5.31 'Legal/contractual requirements', A.5.32 'IPR', A.5.33 'Records', A.5.34 'Privacy/PII', A.5.36 'Compliance with policies'.
+      (Modul ORP.5 → repräsentative Anforderung ORP.5.A1)
     audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; konkrete Baustein-Anforderungen aus ORP.5.'
-  - source: 'CON.1'
+  - source: 'CON.1.A1'
     target: 'A.8.24'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       CON.1 'Kryptokonzept' verlangt dokumentiertes Krypto-Konzept mit Algorithmenwahl nach BSI TR-02102 und Schlüsselmanagement; entspricht direkt A.8.24 'Use of cryptography'.
+      (Modul CON.1 → repräsentative Anforderung CON.1.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.1.'
-  - source: 'CON.6'
+  - source: 'CON.6.A1'
     target: 'A.8.10'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       CON.6 'Löschen und Vernichten' deckt das geregelte Löschen/Vernichten von Informationen ab — direkte Entsprechung zu A.8.10 'Information deletion'.
+      (Modul CON.6 → repräsentative Anforderung CON.6.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.6.'
-  - source: 'CON.7'
+  - source: 'CON.7.A1'
     target: 'A.7.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       CON.7 'Sicherheit auf Auslandsreisen' bündelt Risiken mobiler Verarbeitung im Ausland; überschneidet mit A.7.9 'Security of assets off-premises' und A.6.7 'Remote working'.
+      (Modul CON.7 → repräsentative Anforderung CON.7.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.7.'
-  - source: 'CON.7'
+  - source: 'CON.7.A1'
     target: 'A.6.7'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       CON.7 'Sicherheit auf Auslandsreisen' bündelt Risiken mobiler Verarbeitung im Ausland; überschneidet mit A.7.9 'Security of assets off-premises' und A.6.7 'Remote working'.
+      (Modul CON.7 → repräsentative Anforderung CON.7.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.7.'
-  - source: 'CON.8'
+  - source: 'CON.8.A1'
     target: 'A.8.25'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       CON.8 'Software-Entwicklung' deckt den Secure-Development-Lifecycle ab und bündelt A.8.25 'Secure development life cycle', A.8.27 'Secure system architecture', A.8.28 'Secure coding' und A.8.30 'Outsourced development'.
+      (Modul CON.8 → repräsentative Anforderung CON.8.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.8.'
-  - source: 'CON.8'
+  - source: 'CON.8.A1'
     target: 'A.8.27'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       CON.8 'Software-Entwicklung' deckt den Secure-Development-Lifecycle ab und bündelt A.8.25 'Secure development life cycle', A.8.27 'Secure system architecture', A.8.28 'Secure coding' und A.8.30 'Outsourced development'.
+      (Modul CON.8 → repräsentative Anforderung CON.8.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.8.'
-  - source: 'CON.8'
+  - source: 'CON.8.A1'
     target: 'A.8.28'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       CON.8 'Software-Entwicklung' deckt den Secure-Development-Lifecycle ab und bündelt A.8.25 'Secure development life cycle', A.8.27 'Secure system architecture', A.8.28 'Secure coding' und A.8.30 'Outsourced development'.
+      (Modul CON.8 → repräsentative Anforderung CON.8.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.8.'
-  - source: 'CON.8'
+  - source: 'CON.8.A1'
     target: 'A.8.30'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       CON.8 'Software-Entwicklung' deckt den Secure-Development-Lifecycle ab und bündelt A.8.25 'Secure development life cycle', A.8.27 'Secure system architecture', A.8.28 'Secure coding' und A.8.30 'Outsourced development'.
+      (Modul CON.8 → repräsentative Anforderung CON.8.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.8.'
-  - source: 'CON.9'
+  - source: 'CON.9.A1'
     target: 'A.5.14'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       CON.9 'Informationsaustausch' regelt Austausch mit externen Partnern — direkte Entsprechung zu A.5.14 'Information transfer'.
+      (Modul CON.9 → repräsentative Anforderung CON.9.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.9.'
-  - source: 'CON.10'
+  - source: 'CON.10.A1'
     target: 'A.8.26'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       CON.10 'Entwicklung von Webanwendungen' deckt Web-spezifische Sicherheits-Anforderungen ab und überschneidet mit A.8.26 'Application security requirements' und A.8.28 'Secure coding'.
+      (Modul CON.10 → repräsentative Anforderung CON.10.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.10.'
-  - source: 'CON.10'
+  - source: 'CON.10.A1'
     target: 'A.8.28'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       CON.10 'Entwicklung von Webanwendungen' deckt Web-spezifische Sicherheits-Anforderungen ab und überschneidet mit A.8.26 'Application security requirements' und A.8.28 'Secure coding'.
+      (Modul CON.10 → repräsentative Anforderung CON.10.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.10.'
-  - source: 'CON.11.1'
+  - source: 'CON.11.1.A1'
     target: 'A.5.12'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       CON.11 'Geheimschutz' adressiert den Schutz von Verschlusssachen; überschneidet mit A.5.12 'Classification of information' und A.5.13 'Labelling of information'.
+      (Modul CON.11.1 → repräsentative Anforderung CON.11.1.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.11.'
-  - source: 'CON.11.1'
+  - source: 'CON.11.1.A1'
     target: 'A.5.13'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       CON.11 'Geheimschutz' adressiert den Schutz von Verschlusssachen; überschneidet mit A.5.12 'Classification of information' und A.5.13 'Labelling of information'.
+      (Modul CON.11.1 → repräsentative Anforderung CON.11.1.A1)
     audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; konkrete Baustein-Anforderungen aus CON.11.'
-  - source: 'OPS.1.1.1'
+  - source: 'OPS.1.1.1.A1'
     target: 'A.5.37'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       OPS.1.1.1 'Allgemeiner IT-Betrieb' regelt übergeordnete Planung des IT-Betriebs; überschneidet mit A.5.37 'Documented operating procedures'.
+      (Modul OPS.1.1.1 → repräsentative Anforderung OPS.1.1.1.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.1.1.'
-  - source: 'OPS.1.1.2'
+  - source: 'OPS.1.1.2.A2'
     target: 'A.8.2'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       OPS.1.1.2 'Ordnungsgemäße IT-Administration' bündelt privilegierte Zugriffe und Adminverfahren; überschneidet mit A.8.2 'Privileged access rights' und A.8.5 'Secure authentication'.
+      (Modul OPS.1.1.2 → repräsentative Anforderung OPS.1.1.2.A2)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.1.2.'
-  - source: 'OPS.1.1.2'
+  - source: 'OPS.1.1.2.A2'
     target: 'A.8.5'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       OPS.1.1.2 'Ordnungsgemäße IT-Administration' bündelt privilegierte Zugriffe und Adminverfahren; überschneidet mit A.8.2 'Privileged access rights' und A.8.5 'Secure authentication'.
+      (Modul OPS.1.1.2 → repräsentative Anforderung OPS.1.1.2.A2)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.1.2.'
-  - source: 'OPS.1.1.5'
+  - source: 'OPS.1.1.5.A1'
     target: 'A.8.15'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       OPS.1.1.5 'Protokollierung' deckt Logging-Strategie, Aufbewahrung und Auswertung ab; bündelt A.8.15 'Logging' und A.8.17 'Clock synchronisation'.
+      (Modul OPS.1.1.5 → repräsentative Anforderung OPS.1.1.5.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.1.5.'
-  - source: 'OPS.1.1.5'
+  - source: 'OPS.1.1.5.A1'
     target: 'A.8.17'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       OPS.1.1.5 'Protokollierung' deckt Logging-Strategie, Aufbewahrung und Auswertung ab; bündelt A.8.15 'Logging' und A.8.17 'Clock synchronisation'.
+      (Modul OPS.1.1.5 → repräsentative Anforderung OPS.1.1.5.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.1.5.'
-  - source: 'OPS.1.1.6'
+  - source: 'OPS.1.1.6.A1'
     target: 'A.8.29'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       OPS.1.1.6 'Software-Tests und -Freigaben' regelt Tests vor Produktivsetzung; überschneidet mit A.8.29 'Security testing' und A.8.31 'Separation of dev/test/prod'.
+      (Modul OPS.1.1.6 → repräsentative Anforderung OPS.1.1.6.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.1.6.'
-  - source: 'OPS.1.1.6'
+  - source: 'OPS.1.1.6.A1'
     target: 'A.8.31'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       OPS.1.1.6 'Software-Tests und -Freigaben' regelt Tests vor Produktivsetzung; überschneidet mit A.8.29 'Security testing' und A.8.31 'Separation of dev/test/prod'.
+      (Modul OPS.1.1.6 → repräsentative Anforderung OPS.1.1.6.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.1.6.'
-  - source: 'OPS.1.2.2'
+  - source: 'OPS.1.2.2.A1'
     target: 'A.5.33'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       OPS.1.2.2 'Archivierung' regelt revisionssichere Langzeit-Archivierung; überschneidet mit A.5.33 'Protection of records' und A.8.10 'Information deletion'.
+      (Modul OPS.1.2.2 → repräsentative Anforderung OPS.1.2.2.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.2.2.'
-  - source: 'OPS.1.2.2'
+  - source: 'OPS.1.2.2.A1'
     target: 'A.8.10'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       OPS.1.2.2 'Archivierung' regelt revisionssichere Langzeit-Archivierung; überschneidet mit A.5.33 'Protection of records' und A.8.10 'Information deletion'.
+      (Modul OPS.1.2.2 → repräsentative Anforderung OPS.1.2.2.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.2.2.'
-  - source: 'OPS.1.2.4'
+  - source: 'OPS.1.2.4.A1'
     target: 'A.6.7'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       OPS.1.2.4 'Telearbeit' deckt Konzeption und Sicherheit der Heim-/mobilen Arbeit ab — direkte Entsprechung zu A.6.7 'Remote working'.
+      (Modul OPS.1.2.4 → repräsentative Anforderung OPS.1.2.4.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.2.4.'
-  - source: 'OPS.1.2.5'
+  - source: 'OPS.1.2.5.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       OPS.1.2.5 'Fernwartung' regelt sichere Remote-Maintenance-Zugriffe; überschneidet mit A.8.21 'Security of network services' und A.8.2 'Privileged access'.
+      (Modul OPS.1.2.5 → repräsentative Anforderung OPS.1.2.5.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.2.5.'
-  - source: 'OPS.1.2.5'
+  - source: 'OPS.1.2.5.A1'
     target: 'A.8.2'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       OPS.1.2.5 'Fernwartung' regelt sichere Remote-Maintenance-Zugriffe; überschneidet mit A.8.21 'Security of network services' und A.8.2 'Privileged access'.
+      (Modul OPS.1.2.5 → repräsentative Anforderung OPS.1.2.5.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.2.5.'
-  - source: 'OPS.1.2.6'
+  - source: 'OPS.1.2.6.A1'
     target: 'A.8.17'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       OPS.1.2.6 'NTP-Zeitsynchronisation' deckt zentrale Zeitsynchronisation ab — direkte Entsprechung zu A.8.17 'Clock synchronisation'.
+      (Modul OPS.1.2.6 → repräsentative Anforderung OPS.1.2.6.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.1.2.6.'
-  - source: 'OPS.2.3'
+  - source: 'OPS.2.3.A1'
     target: 'A.5.19'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       OPS.2.3 'Nutzung von Outsourcing' bündelt Steuerung von Outsourcing-Dienstleistern aus Auftraggebersicht; Obermenge zu A.5.19-A.5.22 (Supplier-Beziehungen, ICT supply chain, Monitoring).
+      (Modul OPS.2.3 → repräsentative Anforderung OPS.2.3.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.2.3.'
-  - source: 'OPS.2.3'
+  - source: 'OPS.2.3.A1'
     target: 'A.5.20'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       OPS.2.3 'Nutzung von Outsourcing' bündelt Steuerung von Outsourcing-Dienstleistern aus Auftraggebersicht; Obermenge zu A.5.19-A.5.22 (Supplier-Beziehungen, ICT supply chain, Monitoring).
+      (Modul OPS.2.3 → repräsentative Anforderung OPS.2.3.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.2.3.'
-  - source: 'OPS.2.3'
+  - source: 'OPS.2.3.A1'
     target: 'A.5.21'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       OPS.2.3 'Nutzung von Outsourcing' bündelt Steuerung von Outsourcing-Dienstleistern aus Auftraggebersicht; Obermenge zu A.5.19-A.5.22 (Supplier-Beziehungen, ICT supply chain, Monitoring).
+      (Modul OPS.2.3 → repräsentative Anforderung OPS.2.3.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.2.3.'
-  - source: 'OPS.2.3'
+  - source: 'OPS.2.3.A1'
     target: 'A.5.22'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       OPS.2.3 'Nutzung von Outsourcing' bündelt Steuerung von Outsourcing-Dienstleistern aus Auftraggebersicht; Obermenge zu A.5.19-A.5.22 (Supplier-Beziehungen, ICT supply chain, Monitoring).
+      (Modul OPS.2.3 → repräsentative Anforderung OPS.2.3.A1)
     audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; konkrete Baustein-Anforderungen aus OPS.2.3.'
-  - source: 'DER.2.2'
+  - source: 'DER.2.2.A1'
     target: 'A.5.28'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       DER.2.2 'Vorsorge für die IT-Forensik' deckt forensische Beweissicherung ab — direkte Entsprechung zu A.5.28 'Collection of evidence'.
+      (Modul DER.2.2 → repräsentative Anforderung DER.2.2.A1)
     audit_evidence_hint: 'Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm; konkrete Baustein-Anforderungen aus DER.2.2.'
-  - source: 'DER.3.1'
+  - source: 'DER.3.1.A1'
     target: 'A.5.35'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       DER.3.1 'Audits und Revisionen' regelt interne ISMS-Audits — direkte Entsprechung zu A.5.35 'Independent review of information security'.
+      (Modul DER.3.1 → repräsentative Anforderung DER.3.1.A1)
     audit_evidence_hint: 'Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm; konkrete Baustein-Anforderungen aus DER.3.1.'
-  - source: 'DER.3.2'
+  - source: 'DER.3.2.A1'
     target: 'A.5.35'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       DER.3.2 'IS-Revisionen nach BSI-Leitfaden' deckt strukturierte unabhängige Reviews ab — direkte Entsprechung zu A.5.35 'Independent review of information security'.
+      (Modul DER.3.2 → repräsentative Anforderung DER.3.2.A1)
     audit_evidence_hint: 'Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm; konkrete Baustein-Anforderungen aus DER.3.2.'
-  - source: 'APP.1.1'
+  - source: 'APP.1.1.A2'
     target: 'A.8.19'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.1.1 'Office-Produkte' regelt sichere Konfiguration von Office-Software; überschneidet mit A.8.19 'Installation of software on operational systems'.
+      (Modul APP.1.1 → repräsentative Anforderung APP.1.1.A2)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.1.1.'
-  - source: 'APP.1.2'
+  - source: 'APP.1.2.A1'
     target: 'A.8.19'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.1.2 'Webbrowser' deckt Browser-Härtung und Web-Filtering ab; überschneidet mit A.8.19 'Software installation' und A.8.23 'Web filtering'.
+      (Modul APP.1.2 → repräsentative Anforderung APP.1.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.1.2.'
-  - source: 'APP.1.2'
+  - source: 'APP.1.2.A1'
     target: 'A.8.23'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.1.2 'Webbrowser' deckt Browser-Härtung und Web-Filtering ab; überschneidet mit A.8.19 'Software installation' und A.8.23 'Web filtering'.
+      (Modul APP.1.2 → repräsentative Anforderung APP.1.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.1.2.'
-  - source: 'APP.1.4'
+  - source: 'APP.1.4.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.1.4 'Mobile Anwendungen' regelt Auswahl/Betrieb mobiler Apps; überschneidet mit A.8.1 'User endpoint devices' und A.8.19 'Software installation'.
+      (Modul APP.1.4 → repräsentative Anforderung APP.1.4.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.1.4.'
-  - source: 'APP.1.4'
+  - source: 'APP.1.4.A1'
     target: 'A.8.19'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.1.4 'Mobile Anwendungen' regelt Auswahl/Betrieb mobiler Apps; überschneidet mit A.8.1 'User endpoint devices' und A.8.19 'Software installation'.
+      (Modul APP.1.4 → repräsentative Anforderung APP.1.4.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.1.4.'
-  - source: 'APP.2.1'
+  - source: 'APP.2.1.A1'
     target: 'A.5.16'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.2.1 'Allgemeiner Verzeichnisdienst' deckt zentrale Identitätsspeicher ab; überschneidet mit A.5.16 'Identity management' und A.5.17 'Authentication information'.
+      (Modul APP.2.1 → repräsentative Anforderung APP.2.1.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.2.1.'
-  - source: 'APP.2.1'
+  - source: 'APP.2.1.A1'
     target: 'A.5.17'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.2.1 'Allgemeiner Verzeichnisdienst' deckt zentrale Identitätsspeicher ab; überschneidet mit A.5.16 'Identity management' und A.5.17 'Authentication information'.
+      (Modul APP.2.1 → repräsentative Anforderung APP.2.1.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.2.1.'
-  - source: 'APP.2.2'
+  - source: 'APP.2.2.A1'
     target: 'A.5.16'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.2.2 'Active Directory Domain Services' regelt sichere AD-Planung/-Betrieb; überschneidet mit A.5.16 'Identity management', A.5.17 'Authentication information' und A.8.5 'Secure authentication'.
+      (Modul APP.2.2 → repräsentative Anforderung APP.2.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.2.2.'
-  - source: 'APP.2.2'
+  - source: 'APP.2.2.A1'
     target: 'A.5.17'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.2.2 'Active Directory Domain Services' regelt sichere AD-Planung/-Betrieb; überschneidet mit A.5.16 'Identity management', A.5.17 'Authentication information' und A.8.5 'Secure authentication'.
+      (Modul APP.2.2 → repräsentative Anforderung APP.2.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.2.2.'
-  - source: 'APP.2.2'
+  - source: 'APP.2.2.A1'
     target: 'A.8.5'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.2.2 'Active Directory Domain Services' regelt sichere AD-Planung/-Betrieb; überschneidet mit A.5.16 'Identity management', A.5.17 'Authentication information' und A.8.5 'Secure authentication'.
+      (Modul APP.2.2 → repräsentative Anforderung APP.2.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.2.2.'
-  - source: 'APP.2.3'
+  - source: 'APP.2.3.A1'
     target: 'A.5.16'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.2.3 'OpenLDAP' deckt sicheren Betrieb von OpenLDAP-Verzeichnissen ab; überschneidet mit A.5.16 'Identity management' und A.5.17 'Authentication information'.
+      (Modul APP.2.3 → repräsentative Anforderung APP.2.3.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.2.3.'
-  - source: 'APP.2.3'
+  - source: 'APP.2.3.A1'
     target: 'A.5.17'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.2.3 'OpenLDAP' deckt sicheren Betrieb von OpenLDAP-Verzeichnissen ab; überschneidet mit A.5.16 'Identity management' und A.5.17 'Authentication information'.
+      (Modul APP.2.3 → repräsentative Anforderung APP.2.3.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.2.3.'
-  - source: 'APP.3.1'
+  - source: 'APP.3.1.A1'
     target: 'A.8.26'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       APP.3.1 'Webanwendungen und Webservices' regelt sichere Entwicklung und Betrieb; überschneidet mit A.8.26 'Application security requirements' und A.8.28 'Secure coding'.
+      (Modul APP.3.1 → repräsentative Anforderung APP.3.1.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.3.1.'
-  - source: 'APP.3.1'
+  - source: 'APP.3.1.A1'
     target: 'A.8.28'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       APP.3.1 'Webanwendungen und Webservices' regelt sichere Entwicklung und Betrieb; überschneidet mit A.8.26 'Application security requirements' und A.8.28 'Secure coding'.
+      (Modul APP.3.1 → repräsentative Anforderung APP.3.1.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.3.1.'
-  - source: 'APP.3.2'
+  - source: 'APP.3.2.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.3.2 'Webserver' deckt sichere Webserver-Konfiguration ab; überschneidet mit A.8.21 'Network services security' und A.8.23 'Web filtering'.
+      (Modul APP.3.2 → repräsentative Anforderung APP.3.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.3.2.'
-  - source: 'APP.3.2'
+  - source: 'APP.3.2.A1'
     target: 'A.8.23'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.3.2 'Webserver' deckt sichere Webserver-Konfiguration ab; überschneidet mit A.8.21 'Network services security' und A.8.23 'Web filtering'.
+      (Modul APP.3.2 → repräsentative Anforderung APP.3.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.3.2.'
-  - source: 'APP.3.4'
+  - source: 'APP.3.4.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.3.4 'Samba' regelt sichere SMB-Datei-/Druckdienste; überschneidet mit A.8.21 'Security of network services'.
+      (Modul APP.3.4 → repräsentative Anforderung APP.3.4.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.3.4.'
-  - source: 'APP.3.6'
+  - source: 'APP.3.6.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.3.6 'DNS-Server' deckt sichere DNS-Konfiguration ab; überschneidet mit A.8.21 'Security of network services'.
+      (Modul APP.3.6 → repräsentative Anforderung APP.3.6.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.3.6.'
-  - source: 'APP.4.2'
+  - source: 'APP.4.2.A1'
     target: 'A.8.4'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.4.2 'SAP-ERP-System' regelt sichere ERP-Planung/-Betrieb; überschneidet mit A.8.4 'Access to source code' und A.8.26 'Application security requirements'.
+      (Modul APP.4.2 → repräsentative Anforderung APP.4.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.4.2.'
-  - source: 'APP.4.2'
+  - source: 'APP.4.2.A1'
     target: 'A.8.26'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.4.2 'SAP-ERP-System' regelt sichere ERP-Planung/-Betrieb; überschneidet mit A.8.4 'Access to source code' und A.8.26 'Application security requirements'.
+      (Modul APP.4.2 → repräsentative Anforderung APP.4.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.4.2.'
-  - source: 'APP.4.3'
+  - source: 'APP.4.3.A1'
     target: 'A.8.3'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.4.3 'Relationale Datenbanksysteme' deckt DB-Planung/-Betrieb ab; überschneidet mit A.8.3 'Information access restriction' und A.8.21 'Network services security'.
+      (Modul APP.4.3 → repräsentative Anforderung APP.4.3.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.4.3.'
-  - source: 'APP.4.3'
+  - source: 'APP.4.3.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.4.3 'Relationale Datenbanksysteme' deckt DB-Planung/-Betrieb ab; überschneidet mit A.8.3 'Information access restriction' und A.8.21 'Network services security'.
+      (Modul APP.4.3 → repräsentative Anforderung APP.4.3.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.4.3.'
-  - source: 'APP.4.4'
+  - source: 'APP.4.4.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.4.4 'Kubernetes' regelt sichere Container-Cluster; überschneidet mit A.8.21 'Network services security' und A.8.22 'Segregation of networks'.
+      (Modul APP.4.4 → repräsentative Anforderung APP.4.4.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.4.4.'
-  - source: 'APP.4.4'
+  - source: 'APP.4.4.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.4.4 'Kubernetes' regelt sichere Container-Cluster; überschneidet mit A.8.21 'Network services security' und A.8.22 'Segregation of networks'.
+      (Modul APP.4.4 → repräsentative Anforderung APP.4.4.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.4.4.'
-  - source: 'APP.4.6'
+  - source: 'APP.4.6.A1'
     target: 'A.8.28'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.4.6 'SAP ABAP-Programmierung' deckt sichere ABAP-Code-Entwicklung ab; überschneidet mit A.8.28 'Secure coding' und A.8.4 'Access to source code'.
+      (Modul APP.4.6 → repräsentative Anforderung APP.4.6.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.4.6.'
-  - source: 'APP.4.6'
+  - source: 'APP.4.6.A1'
     target: 'A.8.4'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.4.6 'SAP ABAP-Programmierung' deckt sichere ABAP-Code-Entwicklung ab; überschneidet mit A.8.28 'Secure coding' und A.8.4 'Access to source code'.
+      (Modul APP.4.6 → repräsentative Anforderung APP.4.6.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.4.6.'
-  - source: 'APP.5.2'
+  - source: 'APP.5.2.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.5.2 'Microsoft Exchange/Outlook' regelt sicheren E-Mail-Betrieb; überschneidet mit A.8.21 'Security of network services'.
+      (Modul APP.5.2 → repräsentative Anforderung APP.5.2.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.5.2.'
-  - source: 'APP.5.3'
+  - source: 'APP.5.3.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.5.3 'Allgemeiner E-Mail-Client/-Server' regelt E-Mail-Sicherheit; überschneidet mit A.8.21 'Network services security' und A.5.14 'Information transfer'.
+      (Modul APP.5.3 → repräsentative Anforderung APP.5.3.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.5.3.'
-  - source: 'APP.5.3'
+  - source: 'APP.5.3.A1'
     target: 'A.5.14'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.5.3 'Allgemeiner E-Mail-Client/-Server' regelt E-Mail-Sicherheit; überschneidet mit A.8.21 'Network services security' und A.5.14 'Information transfer'.
+      (Modul APP.5.3 → repräsentative Anforderung APP.5.3.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.5.3.'
-  - source: 'APP.5.4'
+  - source: 'APP.5.4.A1'
     target: 'A.5.14'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.5.4 'Unified Communications und Collaboration' deckt UCC-Sicherheit ab; überschneidet mit A.5.14 'Information transfer' und A.8.21 'Network services security'.
+      (Modul APP.5.4 → repräsentative Anforderung APP.5.4.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.5.4.'
-  - source: 'APP.5.4'
+  - source: 'APP.5.4.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.5.4 'Unified Communications und Collaboration' deckt UCC-Sicherheit ab; überschneidet mit A.5.14 'Information transfer' und A.8.21 'Network services security'.
+      (Modul APP.5.4 → repräsentative Anforderung APP.5.4.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.5.4.'
-  - source: 'APP.6'
+  - source: 'APP.6.A1'
     target: 'A.8.19'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.6 'Allgemeine Software' regelt Auswahl/Beschaffung/Betrieb von Standardsoftware; überschneidet mit A.8.19 'Installation of software' und A.5.37 'Documented operating procedures'.
+      (Modul APP.6 → repräsentative Anforderung APP.6.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.6.'
-  - source: 'APP.6'
+  - source: 'APP.6.A1'
     target: 'A.5.37'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       APP.6 'Allgemeine Software' regelt Auswahl/Beschaffung/Betrieb von Standardsoftware; überschneidet mit A.8.19 'Installation of software' und A.5.37 'Documented operating procedures'.
+      (Modul APP.6 → repräsentative Anforderung APP.6.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.6.'
-  - source: 'APP.7'
+  - source: 'APP.7.A1'
     target: 'A.8.25'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       APP.7 'Entwicklung von Individualsoftware' bündelt sichere Eigen-/Auftrags-Entwicklung; Obermenge zu A.8.25-A.8.30 (SDLC, Architektur, Coding, Outsourced Dev).
+      (Modul APP.7 → repräsentative Anforderung APP.7.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.7.'
-  - source: 'APP.7'
+  - source: 'APP.7.A1'
     target: 'A.8.27'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       APP.7 'Entwicklung von Individualsoftware' bündelt sichere Eigen-/Auftrags-Entwicklung; Obermenge zu A.8.25-A.8.30 (SDLC, Architektur, Coding, Outsourced Dev).
+      (Modul APP.7 → repräsentative Anforderung APP.7.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.7.'
-  - source: 'APP.7'
+  - source: 'APP.7.A1'
     target: 'A.8.28'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       APP.7 'Entwicklung von Individualsoftware' bündelt sichere Eigen-/Auftrags-Entwicklung; Obermenge zu A.8.25-A.8.30 (SDLC, Architektur, Coding, Outsourced Dev).
+      (Modul APP.7 → repräsentative Anforderung APP.7.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.7.'
-  - source: 'APP.7'
+  - source: 'APP.7.A1'
     target: 'A.8.30'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       APP.7 'Entwicklung von Individualsoftware' bündelt sichere Eigen-/Auftrags-Entwicklung; Obermenge zu A.8.25-A.8.30 (SDLC, Architektur, Coding, Outsourced Dev).
+      (Modul APP.7 → repräsentative Anforderung APP.7.A1)
     audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; konkrete Baustein-Anforderungen aus APP.7.'
-  - source: 'SYS.1.1'
+  - source: 'SYS.1.1.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.1 'Allgemeiner Server' regelt Server-Härtung unabhängig vom OS; überschneidet mit A.8.1 'User endpoint devices' (servers as endpoints) und A.8.9 'Configuration management'.
+      (Modul SYS.1.1 → repräsentative Anforderung SYS.1.1.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.1.'
-  - source: 'SYS.1.1'
+  - source: 'SYS.1.1.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.1 'Allgemeiner Server' regelt Server-Härtung unabhängig vom OS; überschneidet mit A.8.1 'User endpoint devices' (servers as endpoints) und A.8.9 'Configuration management'.
+      (Modul SYS.1.1 → repräsentative Anforderung SYS.1.1.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.1.'
-  - source: 'SYS.1.2.2'
+  - source: 'SYS.1.2.2.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |
       SYS.1.2.2 'Windows Server 2012' deckt Legacy-Windows-Server ab; überschneidet mit A.8.9 'Configuration management' und A.8.19 'Software installation' — Hinweis: Mainstream-EOL Oct 2023.
+      (Modul SYS.1.2.2 → repräsentative Anforderung SYS.1.2.2.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.2.2.'
-  - source: 'SYS.1.2.2'
+  - source: 'SYS.1.2.2.A1'
     target: 'A.8.19'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |
       SYS.1.2.2 'Windows Server 2012' deckt Legacy-Windows-Server ab; überschneidet mit A.8.9 'Configuration management' und A.8.19 'Software installation' — Hinweis: Mainstream-EOL Oct 2023.
+      (Modul SYS.1.2.2 → repräsentative Anforderung SYS.1.2.2.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.2.2.'
-  - source: 'SYS.1.2.3'
+  - source: 'SYS.1.2.3.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.2.3 'Windows Server' regelt aktuelle Windows-Server-Konfiguration; überschneidet mit A.8.9 'Configuration management'.
+      (Modul SYS.1.2.3 → repräsentative Anforderung SYS.1.2.3.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.2.3.'
-  - source: 'SYS.1.3'
+  - source: 'SYS.1.3.A2'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.3 'Server unter Linux und Unix' deckt Linux/Unix-Härtung ab; überschneidet mit A.8.9 'Configuration management'.
+      (Modul SYS.1.3 → repräsentative Anforderung SYS.1.3.A2)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.3.'
-  - source: 'SYS.1.5'
+  - source: 'SYS.1.5.A2'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.5 'Virtualisierung' regelt sicheren Hypervisor-Betrieb; überschneidet mit A.8.22 'Segregation of networks' und A.8.32 'Change management'.
+      (Modul SYS.1.5 → repräsentative Anforderung SYS.1.5.A2)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.5.'
-  - source: 'SYS.1.5'
+  - source: 'SYS.1.5.A2'
     target: 'A.8.32'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.5 'Virtualisierung' regelt sicheren Hypervisor-Betrieb; überschneidet mit A.8.22 'Segregation of networks' und A.8.32 'Change management'.
+      (Modul SYS.1.5 → repräsentative Anforderung SYS.1.5.A2)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.5.'
-  - source: 'SYS.1.6'
+  - source: 'SYS.1.6.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.6 'Containerisierung' deckt sichere Container-Plattformen ab; überschneidet mit A.8.22 'Segregation of networks' und A.8.9 'Configuration management'.
+      (Modul SYS.1.6 → repräsentative Anforderung SYS.1.6.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.6.'
-  - source: 'SYS.1.6'
+  - source: 'SYS.1.6.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.6 'Containerisierung' deckt sichere Container-Plattformen ab; überschneidet mit A.8.22 'Segregation of networks' und A.8.9 'Configuration management'.
+      (Modul SYS.1.6 → repräsentative Anforderung SYS.1.6.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.6.'
-  - source: 'SYS.1.7'
+  - source: 'SYS.1.7.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.7 'IBM Z' regelt Mainframe-Sicherheit; überschneidet mit A.8.9 'Configuration management' und A.8.2 'Privileged access'.
+      (Modul SYS.1.7 → repräsentative Anforderung SYS.1.7.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.7.'
-  - source: 'SYS.1.8'
+  - source: 'SYS.1.8.A1'
     target: 'A.8.6'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.8 'Speicherlösungen' deckt zentrale Storage-Plattformen ab; überschneidet mit A.8.6 'Capacity management' und A.8.13 'Information backup'.
+      (Modul SYS.1.8 → repräsentative Anforderung SYS.1.8.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.8.'
-  - source: 'SYS.1.8'
+  - source: 'SYS.1.8.A1'
     target: 'A.8.13'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.8 'Speicherlösungen' deckt zentrale Storage-Plattformen ab; überschneidet mit A.8.6 'Capacity management' und A.8.13 'Information backup'.
+      (Modul SYS.1.8 → repräsentative Anforderung SYS.1.8.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.8.'
-  - source: 'SYS.1.9'
+  - source: 'SYS.1.9.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.1.9 'Terminalserver' regelt sicheren Terminal-Server-Betrieb; überschneidet mit A.8.1 'User endpoint devices'.
+      (Modul SYS.1.9 → repräsentative Anforderung SYS.1.9.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.1.9.'
-  - source: 'SYS.2.1'
+  - source: 'SYS.2.1.A1'
     target: 'A.8.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       SYS.2.1 'Allgemeiner Client' deckt Client-Härtung unabhängig vom OS — direkte Entsprechung zu A.8.1 'User endpoint devices'.
+      (Modul SYS.2.1 → repräsentative Anforderung SYS.2.1.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.1.'
-  - source: 'SYS.2.2.3'
+  - source: 'SYS.2.2.3.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.2.3 'Clients unter Windows' regelt Windows-Client-Sicherheit; überschneidet mit A.8.1 'User endpoint devices' und A.8.9 'Configuration management'.
+      (Modul SYS.2.2.3 → repräsentative Anforderung SYS.2.2.3.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.2.3.'
-  - source: 'SYS.2.2.3'
+  - source: 'SYS.2.2.3.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.2.3 'Clients unter Windows' regelt Windows-Client-Sicherheit; überschneidet mit A.8.1 'User endpoint devices' und A.8.9 'Configuration management'.
+      (Modul SYS.2.2.3 → repräsentative Anforderung SYS.2.2.3.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.2.3.'
-  - source: 'SYS.2.3'
+  - source: 'SYS.2.3.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.3 'Clients unter Linux und Unix' deckt Linux-Clients ab; überschneidet mit A.8.1 'User endpoint devices' und A.8.9 'Configuration management'.
+      (Modul SYS.2.3 → repräsentative Anforderung SYS.2.3.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.3.'
-  - source: 'SYS.2.3'
+  - source: 'SYS.2.3.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.3 'Clients unter Linux und Unix' deckt Linux-Clients ab; überschneidet mit A.8.1 'User endpoint devices' und A.8.9 'Configuration management'.
+      (Modul SYS.2.3 → repräsentative Anforderung SYS.2.3.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.3.'
-  - source: 'SYS.2.4'
+  - source: 'SYS.2.4.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.4 'Clients unter macOS' regelt macOS-Client-Sicherheit; überschneidet mit A.8.1 'User endpoint devices' und A.8.9 'Configuration management'.
+      (Modul SYS.2.4 → repräsentative Anforderung SYS.2.4.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.4.'
-  - source: 'SYS.2.4'
+  - source: 'SYS.2.4.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.4 'Clients unter macOS' regelt macOS-Client-Sicherheit; überschneidet mit A.8.1 'User endpoint devices' und A.8.9 'Configuration management'.
+      (Modul SYS.2.4 → repräsentative Anforderung SYS.2.4.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.4.'
-  - source: 'SYS.2.5'
+  - source: 'SYS.2.5.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.5 'Client-Virtualisierung' deckt VDI-/lokale Virtualisierung ab; überschneidet mit A.8.1 'User endpoint devices' und A.8.22 'Segregation of networks'.
+      (Modul SYS.2.5 → repräsentative Anforderung SYS.2.5.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.5.'
-  - source: 'SYS.2.5'
+  - source: 'SYS.2.5.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.5 'Client-Virtualisierung' deckt VDI-/lokale Virtualisierung ab; überschneidet mit A.8.1 'User endpoint devices' und A.8.22 'Segregation of networks'.
+      (Modul SYS.2.5 → repräsentative Anforderung SYS.2.5.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.5.'
-  - source: 'SYS.2.6'
+  - source: 'SYS.2.6.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.6 'Virtual Desktop Infrastructure' regelt VDI-Plattformen; überschneidet mit A.8.1 'User endpoint devices' und A.8.22 'Segregation of networks'.
+      (Modul SYS.2.6 → repräsentative Anforderung SYS.2.6.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.6.'
-  - source: 'SYS.2.6'
+  - source: 'SYS.2.6.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.2.6 'Virtual Desktop Infrastructure' regelt VDI-Plattformen; überschneidet mit A.8.1 'User endpoint devices' und A.8.22 'Segregation of networks'.
+      (Modul SYS.2.6 → repräsentative Anforderung SYS.2.6.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.2.6.'
-  - source: 'SYS.3.1'
+  - source: 'SYS.3.1.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.3.1 'Laptops' deckt mobile Endgeräte ab; überschneidet mit A.8.1 'User endpoint devices' und A.7.9 'Security of assets off-premises'.
+      (Modul SYS.3.1 → repräsentative Anforderung SYS.3.1.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.3.1.'
-  - source: 'SYS.3.1'
+  - source: 'SYS.3.1.A1'
     target: 'A.7.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.3.1 'Laptops' deckt mobile Endgeräte ab; überschneidet mit A.8.1 'User endpoint devices' und A.7.9 'Security of assets off-premises'.
+      (Modul SYS.3.1 → repräsentative Anforderung SYS.3.1.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.3.1.'
-  - source: 'SYS.3.2.1'
+  - source: 'SYS.3.2.1.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.3.2.1 'Allgemeine Smartphones und Tablets' regelt mobile Endgeräte; überschneidet mit A.8.1 'User endpoint devices' und A.7.9 'Security of assets off-premises'.
+      (Modul SYS.3.2.1 → repräsentative Anforderung SYS.3.2.1.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.3.2.1.'
-  - source: 'SYS.3.2.1'
+  - source: 'SYS.3.2.1.A1'
     target: 'A.7.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.3.2.1 'Allgemeine Smartphones und Tablets' regelt mobile Endgeräte; überschneidet mit A.8.1 'User endpoint devices' und A.7.9 'Security of assets off-premises'.
+      (Modul SYS.3.2.1 → repräsentative Anforderung SYS.3.2.1.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.3.2.1.'
-  - source: 'SYS.3.2.2'
+  - source: 'SYS.3.2.2.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       SYS.3.2.2 'Mobile Device Management (MDM)' deckt zentrales MDM ab — direkte Verbindung zu A.8.1 'User endpoint devices' (Management-Component).
+      (Modul SYS.3.2.2 → repräsentative Anforderung SYS.3.2.2.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.3.2.2.'
-  - source: 'SYS.3.2.3'
+  - source: 'SYS.3.2.3.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.3.2.3 'iOS (for Enterprise)' regelt iOS-Geräte im Unternehmen; überschneidet mit A.8.1 'User endpoint devices'.
+      (Modul SYS.3.2.3 → repräsentative Anforderung SYS.3.2.3.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.3.2.3.'
-  - source: 'SYS.3.2.4'
+  - source: 'SYS.3.2.4.A2'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.3.2.4 'Android' regelt Android-Geräte im Unternehmen; überschneidet mit A.8.1 'User endpoint devices'.
+      (Modul SYS.3.2.4 → repräsentative Anforderung SYS.3.2.4.A2)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.3.2.4.'
-  - source: 'SYS.4.1'
+  - source: 'SYS.4.1.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.4.1 'Drucker, Kopierer, Multifunktionsgeräte' deckt Peripheriegeräte-Sicherheit ab; überschneidet mit A.8.1 'User endpoint devices' und A.7.10 'Storage media'.
+      (Modul SYS.4.1 → repräsentative Anforderung SYS.4.1.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.4.1.'
-  - source: 'SYS.4.1'
+  - source: 'SYS.4.1.A1'
     target: 'A.7.10'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.4.1 'Drucker, Kopierer, Multifunktionsgeräte' deckt Peripheriegeräte-Sicherheit ab; überschneidet mit A.8.1 'User endpoint devices' und A.7.10 'Storage media'.
+      (Modul SYS.4.1 → repräsentative Anforderung SYS.4.1.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.4.1.'
-  - source: 'SYS.4.3'
+  - source: 'SYS.4.3.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.4.3 'Eingebettete Systeme' regelt Embedded-Geräte-Sicherheit; überschneidet mit A.8.1 'User endpoint devices'.
+      (Modul SYS.4.3 → repräsentative Anforderung SYS.4.3.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.4.3.'
-  - source: 'SYS.4.4'
+  - source: 'SYS.4.4.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.4.4 'Allgemeines IoT-Gerät' deckt IoT-Sicherheit ab; überschneidet mit A.8.1 'User endpoint devices' und A.8.22 'Segregation of networks'.
+      (Modul SYS.4.4 → repräsentative Anforderung SYS.4.4.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.4.4.'
-  - source: 'SYS.4.4'
+  - source: 'SYS.4.4.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       SYS.4.4 'Allgemeines IoT-Gerät' deckt IoT-Sicherheit ab; überschneidet mit A.8.1 'User endpoint devices' und A.8.22 'Segregation of networks'.
+      (Modul SYS.4.4 → repräsentative Anforderung SYS.4.4.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.4.4.'
-  - source: 'SYS.4.5'
+  - source: 'SYS.4.5.A1'
     target: 'A.7.10'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       SYS.4.5 'Wechseldatenträger' deckt geregelte Nutzung von Removable Media ab — direkte Entsprechung zu A.7.10 'Storage media'.
+      (Modul SYS.4.5 → repräsentative Anforderung SYS.4.5.A1)
     audit_evidence_hint: 'System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports; konkrete Baustein-Anforderungen aus SYS.4.5.'
-  - source: 'IND.1'
+  - source: 'IND.1.A1'
     target: 'A.8.22'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
       IND.1 'Prozessleit- und Automatisierungstechnik' bündelt OT/ICS-Sicherheit; Obermenge zu A.8.22 'Segregation of networks' und A.8.20 'Networks security' für ICS-Zonen.
+      (Modul IND.1 → repräsentative Anforderung IND.1.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.1.'
-  - source: 'IND.1'
+  - source: 'IND.1.A1'
     target: 'A.8.20'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
       IND.1 'Prozessleit- und Automatisierungstechnik' bündelt OT/ICS-Sicherheit; Obermenge zu A.8.22 'Segregation of networks' und A.8.20 'Networks security' für ICS-Zonen.
+      (Modul IND.1 → repräsentative Anforderung IND.1.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.1.'
-  - source: 'IND.2.1'
+  - source: 'IND.2.1.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       IND.2.1 'Allgemeine ICS-Komponente' regelt ICS-Komponenten-Härtung; überschneidet mit A.8.9 'Configuration management' und A.8.22 'Segregation of networks'.
+      (Modul IND.2.1 → repräsentative Anforderung IND.2.1.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.2.1.'
-  - source: 'IND.2.1'
+  - source: 'IND.2.1.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       IND.2.1 'Allgemeine ICS-Komponente' regelt ICS-Komponenten-Härtung; überschneidet mit A.8.9 'Configuration management' und A.8.22 'Segregation of networks'.
+      (Modul IND.2.1 → repräsentative Anforderung IND.2.1.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.2.1.'
-  - source: 'IND.2.2'
+  - source: 'IND.2.2.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       IND.2.2 'Speicherprogrammierbare Steuerung (SPS)' regelt SPS-Sicherheit; überschneidet mit A.8.9 'Configuration management'.
+      (Modul IND.2.2 → repräsentative Anforderung IND.2.2.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.2.2.'
-  - source: 'IND.2.3'
+  - source: 'IND.2.3.A1'
     target: 'A.8.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       IND.2.3 'Sensoren und Aktoren' deckt Feldgeräte-Sicherheit ab; überschneidet mit A.8.9 'Configuration management'.
+      (Modul IND.2.3 → repräsentative Anforderung IND.2.3.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.2.3.'
-  - source: 'IND.2.4'
+  - source: 'IND.2.4.A1'
     target: 'A.7.4'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       IND.2.4 'Maschine' regelt Integration vernetzter Produktionsmaschinen; überschneidet mit A.7.4 'Physical security monitoring' und A.8.22 'Segregation of networks'.
+      (Modul IND.2.4 → repräsentative Anforderung IND.2.4.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.2.4.'
-  - source: 'IND.2.4'
+  - source: 'IND.2.4.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       IND.2.4 'Maschine' regelt Integration vernetzter Produktionsmaschinen; überschneidet mit A.7.4 'Physical security monitoring' und A.8.22 'Segregation of networks'.
+      (Modul IND.2.4 → repräsentative Anforderung IND.2.4.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.2.4.'
-  - source: 'IND.2.7'
+  - source: 'IND.2.7.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       IND.2.7 'Safety-Instrumented Systems' deckt SIS-Sicherheit ab; überschneidet mit A.8.22 'Segregation of networks' (SIS muss segregiert sein).
+      (Modul IND.2.7 → repräsentative Anforderung IND.2.7.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.2.7.'
-  - source: 'IND.3.2'
+  - source: 'IND.3.2.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       IND.3.2 'Fernwartung im industriellen Umfeld' regelt sichere OT-Fernwartung; überschneidet mit A.8.21 'Security of network services' und A.8.2 'Privileged access'.
+      (Modul IND.3.2 → repräsentative Anforderung IND.3.2.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.3.2.'
-  - source: 'IND.3.2'
+  - source: 'IND.3.2.A1'
     target: 'A.8.2'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       IND.3.2 'Fernwartung im industriellen Umfeld' regelt sichere OT-Fernwartung; überschneidet mit A.8.21 'Security of network services' und A.8.2 'Privileged access'.
+      (Modul IND.3.2 → repräsentative Anforderung IND.3.2.A1)
     audit_evidence_hint: 'OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle; konkrete Baustein-Anforderungen aus IND.3.2.'
-  - source: 'NET.1.2'
+  - source: 'NET.1.2.A1'
     target: 'A.8.20'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       NET.1.2 'Netzmanagement' bündelt sicheren Betrieb des Netzmanagements; Obermenge zu A.8.20 'Networks security' und A.8.21 'Security of network services'.
+      (Modul NET.1.2 → repräsentative Anforderung NET.1.2.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.1.2.'
-  - source: 'NET.1.2'
+  - source: 'NET.1.2.A1'
     target: 'A.8.21'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       NET.1.2 'Netzmanagement' bündelt sicheren Betrieb des Netzmanagements; Obermenge zu A.8.20 'Networks security' und A.8.21 'Security of network services'.
+      (Modul NET.1.2 → repräsentative Anforderung NET.1.2.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.1.2.'
-  - source: 'NET.2.1'
+  - source: 'NET.2.1.A1'
     target: 'A.8.20'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.2.1 'WLAN-Betrieb' regelt WLAN-Infrastruktur-Sicherheit; überschneidet mit A.8.20 'Networks security' und A.8.21 'Security of network services'.
+      (Modul NET.2.1 → repräsentative Anforderung NET.2.1.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.2.1.'
-  - source: 'NET.2.1'
+  - source: 'NET.2.1.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.2.1 'WLAN-Betrieb' regelt WLAN-Infrastruktur-Sicherheit; überschneidet mit A.8.20 'Networks security' und A.8.21 'Security of network services'.
+      (Modul NET.2.1 → repräsentative Anforderung NET.2.1.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.2.1.'
-  - source: 'NET.2.2'
+  - source: 'NET.2.2.A1'
     target: 'A.8.1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.2.2 'WLAN-Nutzung' deckt sichere WLAN-Nutzung durch Endbenutzer ab; überschneidet mit A.8.1 'User endpoint devices' und A.8.20 'Networks security'.
+      (Modul NET.2.2 → repräsentative Anforderung NET.2.2.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.2.2.'
-  - source: 'NET.2.2'
+  - source: 'NET.2.2.A1'
     target: 'A.8.20'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.2.2 'WLAN-Nutzung' deckt sichere WLAN-Nutzung durch Endbenutzer ab; überschneidet mit A.8.1 'User endpoint devices' und A.8.20 'Networks security'.
+      (Modul NET.2.2 → repräsentative Anforderung NET.2.2.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.2.2.'
-  - source: 'NET.3.1'
+  - source: 'NET.3.1.A1'
     target: 'A.8.20'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       NET.3.1 'Router und Switches' regelt sichere L2/L3-Geräte-Konfiguration; überschneidet mit A.8.20 'Networks security' und A.8.21 'Security of network services'.
+      (Modul NET.3.1 → repräsentative Anforderung NET.3.1.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.3.1.'
-  - source: 'NET.3.1'
+  - source: 'NET.3.1.A1'
     target: 'A.8.21'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       NET.3.1 'Router und Switches' regelt sichere L2/L3-Geräte-Konfiguration; überschneidet mit A.8.20 'Networks security' und A.8.21 'Security of network services'.
+      (Modul NET.3.1 → repräsentative Anforderung NET.3.1.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.3.1.'
-  - source: 'NET.3.2'
+  - source: 'NET.3.2.A1'
     target: 'A.8.20'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       NET.3.2 'Firewall' deckt Firewall-Planung/-Betrieb ab; überschneidet mit A.8.20 'Networks security' und A.8.22 'Segregation of networks'.
+      (Modul NET.3.2 → repräsentative Anforderung NET.3.2.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.3.2.'
-  - source: 'NET.3.2'
+  - source: 'NET.3.2.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       NET.3.2 'Firewall' deckt Firewall-Planung/-Betrieb ab; überschneidet mit A.8.20 'Networks security' und A.8.22 'Segregation of networks'.
+      (Modul NET.3.2 → repräsentative Anforderung NET.3.2.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.3.2.'
-  - source: 'NET.3.3'
+  - source: 'NET.3.3.A1'
     target: 'A.8.20'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       NET.3.3 'VPN' regelt sichere VPN-Lösungen; überschneidet mit A.8.20 'Networks security' und A.5.14 'Information transfer'.
+      (Modul NET.3.3 → repräsentative Anforderung NET.3.3.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.3.3.'
-  - source: 'NET.3.3'
+  - source: 'NET.3.3.A1'
     target: 'A.5.14'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       NET.3.3 'VPN' regelt sichere VPN-Lösungen; überschneidet mit A.8.20 'Networks security' und A.5.14 'Information transfer'.
+      (Modul NET.3.3 → repräsentative Anforderung NET.3.3.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.3.3.'
-  - source: 'NET.3.4'
+  - source: 'NET.3.4.A1'
     target: 'A.5.15'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.3.4 'Network Access Control' deckt NAC-Lösungen ab; überschneidet mit A.5.15 'Access control' und A.8.20 'Networks security'.
+      (Modul NET.3.4 → repräsentative Anforderung NET.3.4.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.3.4.'
-  - source: 'NET.3.4'
+  - source: 'NET.3.4.A1'
     target: 'A.8.20'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.3.4 'Network Access Control' deckt NAC-Lösungen ab; überschneidet mit A.5.15 'Access control' und A.8.20 'Networks security'.
+      (Modul NET.3.4 → repräsentative Anforderung NET.3.4.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.3.4.'
-  - source: 'NET.4.1'
+  - source: 'NET.4.1.A1'
     target: 'A.5.14'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.4.1 'TK-Anlagen' regelt sichere Telefonanlagen-Konfiguration; überschneidet mit A.5.14 'Information transfer' und A.8.20 'Networks security'.
+      (Modul NET.4.1 → repräsentative Anforderung NET.4.1.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.4.1.'
-  - source: 'NET.4.1'
+  - source: 'NET.4.1.A1'
     target: 'A.8.20'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.4.1 'TK-Anlagen' regelt sichere Telefonanlagen-Konfiguration; überschneidet mit A.5.14 'Information transfer' und A.8.20 'Networks security'.
+      (Modul NET.4.1 → repräsentative Anforderung NET.4.1.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.4.1.'
-  - source: 'NET.4.2'
+  - source: 'NET.4.2.A1'
     target: 'A.5.14'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.4.2 'VoIP' deckt VoIP-Sicherheit ab; überschneidet mit A.5.14 'Information transfer' und A.8.20 'Networks security'.
+      (Modul NET.4.2 → repräsentative Anforderung NET.4.2.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.4.2.'
-  - source: 'NET.4.2'
+  - source: 'NET.4.2.A1'
     target: 'A.8.20'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       NET.4.2 'VoIP' deckt VoIP-Sicherheit ab; überschneidet mit A.5.14 'Information transfer' und A.8.20 'Networks security'.
+      (Modul NET.4.2 → repräsentative Anforderung NET.4.2.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.4.2.'
-  - source: 'NET.4.3'
+  - source: 'NET.4.3.A1'
     target: 'A.5.14'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |
       NET.4.3 'Faxgeräte und Faxserver' regelt Fax-Sicherheit; überschneidet mit A.5.14 'Information transfer'.
+      (Modul NET.4.3 → repräsentative Anforderung NET.4.3.A1)
     audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; konkrete Baustein-Anforderungen aus NET.4.3.'
-  - source: 'INF.2'
+  - source: 'INF.2.A1'
     target: 'A.7.5'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       INF.2 'Rechenzentrum sowie Serverraum' bündelt RZ-/Serverraum-Anforderungen; Obermenge zu A.7.5 'Physical security monitoring', A.7.8 'Equipment siting', A.7.11 'Supporting utilities' und A.7.12 'Cabling security'.
+      (Modul INF.2 → repräsentative Anforderung INF.2.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.2.'
-  - source: 'INF.2'
+  - source: 'INF.2.A1'
     target: 'A.7.8'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       INF.2 'Rechenzentrum sowie Serverraum' bündelt RZ-/Serverraum-Anforderungen; Obermenge zu A.7.5 'Physical security monitoring', A.7.8 'Equipment siting', A.7.11 'Supporting utilities' und A.7.12 'Cabling security'.
+      (Modul INF.2 → repräsentative Anforderung INF.2.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.2.'
-  - source: 'INF.2'
+  - source: 'INF.2.A1'
     target: 'A.7.11'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       INF.2 'Rechenzentrum sowie Serverraum' bündelt RZ-/Serverraum-Anforderungen; Obermenge zu A.7.5 'Physical security monitoring', A.7.8 'Equipment siting', A.7.11 'Supporting utilities' und A.7.12 'Cabling security'.
+      (Modul INF.2 → repräsentative Anforderung INF.2.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.2.'
-  - source: 'INF.2'
+  - source: 'INF.2.A1'
     target: 'A.7.12'
     relationship: 'superset'
     confidence: 'high'
     rationale: |
       INF.2 'Rechenzentrum sowie Serverraum' bündelt RZ-/Serverraum-Anforderungen; Obermenge zu A.7.5 'Physical security monitoring', A.7.8 'Equipment siting', A.7.11 'Supporting utilities' und A.7.12 'Cabling security'.
+      (Modul INF.2 → repräsentative Anforderung INF.2.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.2.'
-  - source: 'INF.5'
+  - source: 'INF.5.A1'
     target: 'A.7.8'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.5 'Raum sowie Schrank für technische Infrastruktur' regelt Patch-/Technik-Räume; überschneidet mit A.7.8 'Equipment siting' und A.7.12 'Cabling security'.
+      (Modul INF.5 → repräsentative Anforderung INF.5.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.5.'
-  - source: 'INF.5'
+  - source: 'INF.5.A1'
     target: 'A.7.12'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.5 'Raum sowie Schrank für technische Infrastruktur' regelt Patch-/Technik-Räume; überschneidet mit A.7.8 'Equipment siting' und A.7.12 'Cabling security'.
+      (Modul INF.5 → repräsentative Anforderung INF.5.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.5.'
-  - source: 'INF.6'
+  - source: 'INF.6.A1'
     target: 'A.7.10'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.6 'Datenträgerarchiv' deckt Datenträger-Archivierung ab; überschneidet mit A.7.10 'Storage media' und A.5.33 'Protection of records'.
+      (Modul INF.6 → repräsentative Anforderung INF.6.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.6.'
-  - source: 'INF.6'
+  - source: 'INF.6.A1'
     target: 'A.5.33'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.6 'Datenträgerarchiv' deckt Datenträger-Archivierung ab; überschneidet mit A.7.10 'Storage media' und A.5.33 'Protection of records'.
+      (Modul INF.6 → repräsentative Anforderung INF.6.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.6.'
-  - source: 'INF.7'
+  - source: 'INF.7.A1'
     target: 'A.7.7'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.7 'Büroarbeitsplatz' regelt Sicherheit am Büroarbeitsplatz; überschneidet mit A.7.7 'Clear desk and clear screen' und A.7.8 'Equipment siting'.
+      (Modul INF.7 → repräsentative Anforderung INF.7.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.7.'
-  - source: 'INF.7'
+  - source: 'INF.7.A1'
     target: 'A.7.8'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.7 'Büroarbeitsplatz' regelt Sicherheit am Büroarbeitsplatz; überschneidet mit A.7.7 'Clear desk and clear screen' und A.7.8 'Equipment siting'.
+      (Modul INF.7 → repräsentative Anforderung INF.7.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.7.'
-  - source: 'INF.8'
+  - source: 'INF.8.A1'
     target: 'A.6.7'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       INF.8 'Häuslicher Arbeitsplatz' deckt Home-Office-Sicherheit ab; überschneidet mit A.6.7 'Remote working' und A.7.9 'Security of assets off-premises'.
+      (Modul INF.8 → repräsentative Anforderung INF.8.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.8.'
-  - source: 'INF.8'
+  - source: 'INF.8.A1'
     target: 'A.7.9'
     relationship: 'partial_overlap'
     confidence: 'high'
     rationale: |
       INF.8 'Häuslicher Arbeitsplatz' deckt Home-Office-Sicherheit ab; überschneidet mit A.6.7 'Remote working' und A.7.9 'Security of assets off-premises'.
+      (Modul INF.8 → repräsentative Anforderung INF.8.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.8.'
-  - source: 'INF.9'
+  - source: 'INF.9.A1'
     target: 'A.6.7'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.9 'Mobiler Arbeitsplatz' regelt mobile Arbeit (Hotel, Bahn etc.); überschneidet mit A.6.7 'Remote working' und A.7.9 'Security of assets off-premises'.
+      (Modul INF.9 → repräsentative Anforderung INF.9.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.9.'
-  - source: 'INF.9'
+  - source: 'INF.9.A1'
     target: 'A.7.9'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.9 'Mobiler Arbeitsplatz' regelt mobile Arbeit (Hotel, Bahn etc.); überschneidet mit A.6.7 'Remote working' und A.7.9 'Security of assets off-premises'.
+      (Modul INF.9 → repräsentative Anforderung INF.9.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.9.'
-  - source: 'INF.10'
+  - source: 'INF.10.A1'
     target: 'A.7.4'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.10 'Besprechungs-, Veranstaltungs-, Schulungsräume' regelt Sicherheit dieser Räume; überschneidet mit A.7.4 'Physical security monitoring' und A.7.6 'Working in secure areas'.
+      (Modul INF.10 → repräsentative Anforderung INF.10.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.10.'
-  - source: 'INF.10'
+  - source: 'INF.10.A1'
     target: 'A.7.6'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.10 'Besprechungs-, Veranstaltungs-, Schulungsräume' regelt Sicherheit dieser Räume; überschneidet mit A.7.4 'Physical security monitoring' und A.7.6 'Working in secure areas'.
+      (Modul INF.10 → repräsentative Anforderung INF.10.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.10.'
-  - source: 'INF.12'
+  - source: 'INF.12.A1'
     target: 'A.7.12'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       INF.12 'Verkabelung' deckt Auswahl/Verlegung/Schutz der IT-Verkabelung ab — direkte Entsprechung zu A.7.12 'Cabling security'.
+      (Modul INF.12 → repräsentative Anforderung INF.12.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.12.'
-  - source: 'INF.13'
+  - source: 'INF.13.A1'
     target: 'A.7.11'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.13 'Technisches Gebäudemanagement' deckt TGM-Sicherheit ab; überschneidet mit A.7.11 'Supporting utilities' und A.7.4 'Physical security monitoring'.
+      (Modul INF.13 → repräsentative Anforderung INF.13.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.13.'
-  - source: 'INF.13'
+  - source: 'INF.13.A1'
     target: 'A.7.4'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.13 'Technisches Gebäudemanagement' deckt TGM-Sicherheit ab; überschneidet mit A.7.11 'Supporting utilities' und A.7.4 'Physical security monitoring'.
+      (Modul INF.13 → repräsentative Anforderung INF.13.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.13.'
-  - source: 'INF.14'
+  - source: 'INF.14.A1'
     target: 'A.7.11'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.14 'Gebäudeautomation' regelt BAS/OT-Sicherheit; überschneidet mit A.7.11 'Supporting utilities' und A.8.22 'Segregation of networks'.
+      (Modul INF.14 → repräsentative Anforderung INF.14.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.14.'
-  - source: 'INF.14'
+  - source: 'INF.14.A1'
     target: 'A.8.22'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       INF.14 'Gebäudeautomation' regelt BAS/OT-Sicherheit; überschneidet mit A.7.11 'Supporting utilities' und A.8.22 'Segregation of networks'.
+      (Modul INF.14 → repräsentative Anforderung INF.14.A1)
     audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; konkrete Baustein-Anforderungen aus INF.14.'
