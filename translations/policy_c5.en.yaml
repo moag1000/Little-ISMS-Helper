@@ -1060,3 +1060,74 @@ policy:
 
                     ---
                     *Cross-ref: BSI C5:2020 COM-01 to COM-05, C5:2026 incl. EUCS Substantial, ISO/IEC 27001:2022 A.5.31-A.5.36, ISO/IEC 27017:2015, ISO/IEC 27018:2019, GDPR Art. 28 / Art. 32 / Art. 33-34 / Art. 44-49, DORA Art. 6 / Art. 28-30, IDW PS 860, ISAE 3000 / 3402.*
+    iso27001:
+        top_level:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (OPS-01):** C5 OPS-01 'Information Security Policy' requires a cloud security policy approved by top management, covering scope, objectives and a commitment to continual improvement under the shared responsibility model. Evidence: approved cloud InfoSec policy with sign-off date and distribution record.
+        asset_management:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (AM-01):** C5 AM-01 'Asset Inventory' requires a complete cloud asset register with ownership, data classification and a point-in-time reconciliation between CMDB and cloud provisioning state. Evidence: asset inventory with owner field and CMDB reconciliation record.
+        supplier_relationships:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (SSO-01, SSO-04):** C5 SSO-01 governs contractual InfoSec obligations towards subprocessors; SSO-04 requires comprehensive sub-provider stewardship including audit rights and documented risk assessment for engaged third parties. Evidence: supplier contracts with InfoSec clauses, sub-provider list with risk assessment, DPA per GDPR Art. 28.
+        threat_intelligence:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (OIS-05):** C5 OIS-05 'Vulnerability and Threat Identification' requires sourcing, analysing and distributing threat intelligence and tracking vulnerabilities in the cloud context (BSI-CERT, CERT-Bund). Evidence: threat-intel source list, evaluated threat reports for the last 12 months.
+        incident_management:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (SIM-01):** C5 SIM-01 'Incident Management Policies' requires a documented cloud-specific IR process with defined roles, escalation paths and runbooks. Evidence: IR plan with roles/escalation, IR runbooks, exercise reports for the last 12 months.
+        continuity:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (BCM-01):** C5 BCM-01 'Business Continuity Strategy' requires top-management commitment, a business impact analysis and a documented BC strategy for the cloud provider; strategic and governance elements go beyond ISO A.5.30. Evidence: ICT DR plans, RTO/RPO definitions, documented DR tests.
+        hr_security:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (HR-03):** C5 HR-03 'Training and Awareness' requires regular cloud-specific awareness training for all staff including role-based deep-dives for privileged users such as platform administrators. Evidence: training coverage (≥ 95 %), phishing drill results, role-specific curricula.
+        access_control:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (IDM-02, IDM-09):** C5 IDM-02 governs the formal identity lifecycle (provisioning, change, deprovisioning); IDM-09 requires phishing-resistant MFA for privileged cloud management access. Evidence: entitlement concept, provisioning workflow samples, MFA coverage report.
+        identity_management:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (IDM-02):** C5 IDM-02 'User Registration', together with IDM-03, governs the formal identity lifecycle for cloud platform accounts; joiner/mover/leaver workflows and entitlement concepts align with A.5.15. Evidence: IAM process documentation, sample joiner/mover/leaver records.
+        authentication_information:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (IDM-09):** C5 IDM-09 'Authentication Mechanisms' requires MFA for administrative cloud management access using cryptographically strong methods per BSI guidance; SMS OTP is prohibited. Evidence: MFA coverage report for admin accounts (target: 100 %), authentication methods inventory.
+        malware:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (OPS-15):** C5 OPS-15 'Malware Protection Concept' requires a documented protection concept at cloud platform level including EDR/CWPP, container image scanning and runtime protection. Evidence: AV/EDR coverage report, image-scan results, documented protection concept.
+        patch_management:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (OPS-18):** C5 OPS-18 'Vulnerability and Defect Management' requires vulnerability identification, assessment and patch management with defined SLAs for critical patches in the cloud context. Evidence: vulnerability scan reports, patch compliance dashboard with SLA adherence, CVE tracking for the last 90 days.
+        logging:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (OPS-10):** C5 OPS-10 'Logging and Monitoring Responsibilities' governs logging and monitoring at cloud platform level — all provider API calls, IAM events, KMS key-use logs — with central SIEM and 24/7 SOC coverage. Evidence: SIEM use-case catalogue, alert MTTR statistics, log retention configuration.
+        cryptography:
+            v1:
+                c5_extension:
+                    body: >-
+                        **BSI C5:2020 Extension (CRY-01):** C5 CRY-01 'Cryptographic Policy and Key Management' requires a documented crypto policy with an algorithm allowlist per BSI TR-02102 and complete key lifecycle management with HSM. Evidence: crypto policy, algorithm allowlist (BSI TR-02102 compliant), key management procedures.
