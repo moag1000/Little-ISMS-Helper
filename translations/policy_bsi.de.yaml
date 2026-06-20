@@ -1,0 +1,102 @@
+policy:
+    iso27001:
+        top_level:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (ISMS.1):** Der Baustein ISMS.1 legt fest, dass eine dokumentierte Informationssicherheitsleitlinie (A.4/A.5) zu erstellen, durch die Leitungsebene zu genehmigen und allen Beteiligten bekanntzumachen ist. Die Leitlinie muss einen expliziten Geltungsbereich, Sicherheitsziele sowie eine Verpflichtung zur kontinuierlichen Verbesserung enthalten. Verantwortlich: Informationssicherheitsbeauftragter (ISB). Nachweis: Aktuelles Leitliniendokument mit Genehmigungsvermerk und Kommunikationsnachweis.
+        access_control:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (ORP.4):** ORP.4 "Identitäts- und Berechtigungsmanagement" fordert die Einführung eines geregelten IAM-Prozesses mit Rollenkonzept, Berechtigungsrezertifizierung (mindestens jährlich), Least-Privilege-Prinzip, Kontrolle privilegierter Konten und zeitnaher Deaktivierung beim Ausscheiden (ORP.4.A1-A9). Verantwortlich: IT-Betrieb / CISO. Nachweis: IAM-Konzept, aktuelle Berechtigungsübersicht, Rezertifizierungsprotokoll.
+        identity_management:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (ORP.4):** ORP.4 verlangt die vollständige Dokumentation des Identitäts-Lebenszyklus (Anlage, Änderung, Sperrung, Löschung), den Einsatz eines zentralen Identitätsspeichers sowie regelmäßige Überprüfung aktiver Konten. Für privilegierte Identitäten gilt das Vier-Augen-Prinzip bei der Vergabe (ORP.4.A22). Nachweis: IAM-Prozessdokumentation, Audit-Trail der letzten Kontoänderungen.
+        authentication_information:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (ORP.4):** ORP.4 schreibt sichere Authentisierungsverfahren vor: Kennwörter mindestens nach BSI-TR-02102-1, Multi-Faktor-Authentifizierung für Remote-Zugänge und privilegierte Konten (ORP.4.A9), Passwort-Manager-Einsatz sowie Verbot von Standardpasswörtern. Nachweis: Kennwortrichtlinie, MFA-Aktivierungsbericht, Pentest-Befunde zu Authentisierung.
+        cryptography:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (CON.1):** CON.1 "Kryptokonzept" fordert ein dokumentiertes Krypto-Konzept mit Algorithmenwahl gemäß BSI TR-02102 (symmetrisch: AES-256; asymmetrisch: RSA ≥3072 Bit oder ECC ≥256 Bit; Hash: SHA-256 oder stärker), Schlüsselmanagement (Erzeugung, Verteilung, Speicherung, Ablauf, Vernichtung) und Verschlüsselung sensibler Daten at rest und in transit (CON.1.A1-A6). Nachweis: Krypto-Konzept-Dokument, Algorithmenliste, Schlüsselverwaltungsprotokoll.
+        information_transfer:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (CON.9):** CON.9 "Informationsaustausch" regelt den gesicherten Datenaustausch mit externen Partnern: Vertraulichkeitsvereinbarungen vor Datenweitergabe, Transportverschlüsselung (TLS 1.2+), Protokollierung von Übertragungen sensibler Informationen (CON.9.A1-A3). Nachweis: Informationsaustausch-Verzeichnis, NDAs, TLS-Konfigurationsprüfung.
+        secure_development:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (CON.8):** CON.8 "Software-Entwicklung" schreibt einen Secure-SDLC vor: Security-Anforderungen in der Designphase, Threat Modeling, Secure-Coding-Standards (OWASP ASVS / BSI-Empfehlungen), SAST/DAST vor Produktivnahme, Code-Reviews sowie Beachtung von Supply-Chain-Risiken bei Drittkomponenten (CON.8.A1-A6). Nachweis: SSDLC-Dokument, Scan-Reports (SAST/DAST), Code-Review-Protokolle.
+        backup:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (CON.3):** CON.3 "Datensicherungskonzept" fordert ein dokumentiertes Backup-Konzept nach dem 3-2-1-Prinzip (3 Kopien, 2 Medientypen, 1 Offsite/offline), RPO/RTO-Definition pro Systemkategorie, regelmäßige Restore-Tests (mindestens jährlich Vollwiederherstellungstest) und Verschlüsselung der Backup-Medien (CON.3.A1-A6). Nachweis: Datensicherungskonzept, Restore-Test-Protokolle, Backup-Monitoring-Reports.
+        malware:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (OPS.1.1.4):** OPS.1.1.4 "Schutz vor Schadprogrammen" fordert flächendeckenden Einsatz von AV/EDR auf Clients und Servern, zentrale Verwaltung der Schutzsoftware, automatische Signatur-Updates, Scan-Protokollierung und ein definiertes Reaktionsverfahren bei Malware-Fund (OPS.1.1.4.A1-A7). Nachweis: AV-Verwaltungskonsole, Scan-Reports, Incident-Aufzeichnungen.
+        patch_management:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (OPS.1.1.3):** OPS.1.1.3 "Patch- und Änderungsmanagement" verlangt einen definierten Patchprozess mit SLA-Vorgaben (kritisch ≤7 Tage, hoch ≤30 Tage), Schwachstellen-Scanning (mindestens monatlich), Change-Advisory-Board-Freigabe, Rollback-Konzept und Dokumentation aller durchgeführten Patches (OPS.1.1.3.A1-A6). Nachweis: Patch-Compliance-Dashboard, Vulnerability-Scan-Reports, Change-Protokolle.
+        logging:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (OPS.1.1.5):** OPS.1.1.5 "Protokollierung" fordert die zentrale Erfassung sicherheitsrelevanter Ereignisse (Authentication, Privilegiennutzung, Systemfehler), eine Mindest-Aufbewahrungsdauer von 6 Monaten online / 3 Jahren offline, Integritätsschutz der Logs (tamper-proof), Zeitsynchronisation (NTP) und regelmäßige Auswertung (OPS.1.1.5.A1-A4). Nachweis: SIEM-Konfiguration, Aufbewahrungskonzept, Log-Review-Protokolle.
+        supplier_relationships:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (OPS.2.3):** OPS.2.3 "Nutzung von Outsourcing" schreibt vor: Risikoeinstufung von Dienstleistern, vertraglich verankerte Sicherheitsanforderungen (inkl. Vorfallsmeldepflicht innerhalb 24h), Auditrecht, jährliche Dienstleister-Bewertung und ein geregeltes Exit-Management (OPS.2.3.A1-A5). Nachweis: Lieferantenregister mit Risikoklassen, Vertragsanlage Sicherheitsanforderungen, Bewertungsberichte.
+        incident_management:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (DER.2.1):** DER.2.1 "Behandlung von Sicherheitsvorfällen" fordert eine dokumentierte Incident-Response-Richtlinie mit Schweregrad-Schema, definiertem Eskalationspfad, Krisenstab-Aktivierungskriterien, forensischer Beweissicherung (DER.2.2) und obligatorischen Post-Incident-Reviews (DER.2.1.A1-A6). Nachweis: IR-Richtlinie, Vorfallsregistrierung, Post-Incident-Reports der letzten 12 Monate.
+        continuity:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (DER.4):** DER.4 "Notfallmanagement" fordert ein dokumentiertes Notfallhandbuch mit Wiederanlaufreihenfolge, RPO/RTO-Vorgaben, halbmindestens jährliche Tabletop-Übungen, Krisenmanagement-Struktur und explizite Betrachtung des Ausfalls kritischer Dienstleister (DER.4.A1-A4). Nachweis: Notfallhandbuch, Übungsberichte, BIA-Dokument.
+        threat_intelligence:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (DER.1):** DER.1 "Detektion von sicherheitsrelevanten Ereignissen" verlangt Abonnement einschlägiger Threat-Intelligence-Quellen (CERT-Bund, BSI-CERT, MITRE ATT&CK), Integration in SIEM-Korrelationsregeln und einen definierten Prozess zur Bewertung und Verteilung von Bedrohungsinformationen (DER.1.A4). Nachweis: TI-Quellen-Abonnements, SIEM-Korrelationsregeln, Threat-Briefing-Protokolle.
+        network_security:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (NET.1.1):** NET.1.1 "Netzarchitektur und -design" schreibt eine dokumentierte Netzarchitektur mit Sicherheitszonen-Konzept, Perimeter-Firewall, Netzsegmentierung (DMZ, Produktiv-, Management-Netz), Firewall-Regelwerk-Reviews (mindestens jährlich) und Anomalie-Erkennung vor (NET.1.1.A1). Nachweis: Netzarchitektur-Diagramm, Segmentierungskonzept, Firewall-Review-Protokoll.
+        physical_security:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (INF.1):** INF.1 "Allgemeines Gebäude" fordert definierte Sicherheitsbereiche mit Zutrittskontrolle, Besuchermanagement, Brandschutz gemäß ASR A2.2, unterbrechungsfreie Stromversorgung für kritische Systeme und regelmäßige Sicherheitsbegehungen (INF.1.A2-A5). Nachweis: Sicherheitsbereichskonzept, Zutrittskontroll-Logs, Brandschutzgutachten.
+        hr_security:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (ORP.2):** ORP.2 "Personal" fordert Sicherheitsüberprüfung vor Einstellung (soweit rechtlich zulässig), Unterzeichnung einer Vertraulichkeitsvereinbarung, Sicherheitsunterweisungen bei Eintritt und Ausscheiden, sofortige Sperrung aller Zugänge bei Beendigung des Arbeitsverhältnisses (ORP.2.A1-A5). Nachweis: Einarbeitungs-Checklisten, Vertraulichkeitserklärungen, Offboarding-Protokolle.
+        privacy_pii:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (CON.2):** CON.2 "Datenschutz" fordert die Führung eines Verzeichnisses von Verarbeitungstätigkeiten (VVT), die Durchführung von Datenschutz-Folgenabschätzungen (DSFA) für risikoreiche Verarbeitungen, technisch-organisatorische Maßnahmen nach Art. 32 DSGVO und ggf. Bestellung eines Datenschutzbeauftragten (CON.2.A1-A2). Nachweis: VVT, DSFA-Dokumente, TOMs-Liste, DSB-Bestellungsurkunde.
+        asset_management:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz-Erweiterung (ISMS.1):** ISMS.1 erfordert ein vollständiges, aktuelles Asset-Inventar als Grundlage der Schutzbedarfsfeststellung (BSI 200-2 Kap. 6). Alle informationsverarbeitenden Assets sind zu erfassen, einem Verantwortlichen zuzuordnen und nach Schutzbedarf (normal/hoch/sehr hoch) zu klassifizieren. Nachweis: Asset-Inventar mit Schutzbedarfseinstufung, letzter Überprüfungsnachweis.

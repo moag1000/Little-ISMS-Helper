@@ -243,6 +243,8 @@ translations/policy_bcm_batch1.de.yaml:1:policy
 translations/policy_bcm_batch1.en.yaml:1:policy
 translations/policy_bcm_batch2.de.yaml:1:policy
 translations/policy_bcm_batch2.en.yaml:1:policy
+translations/policy_bsi.de.yaml:1:policy
+translations/policy_bsi.en.yaml:1:policy
 translations/policy_bsi_batch1.de.yaml:1:policy
 translations/policy_bsi_batch1.en.yaml:1:policy
 translations/policy_bsi_batch2.de.yaml:1:policy

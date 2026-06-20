@@ -1,0 +1,102 @@
+policy:
+    iso27001:
+        top_level:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (ISMS.1):** Module ISMS.1 requires a documented information security policy (A.4/A.5) approved by senior management and communicated to all stakeholders. The policy must define an explicit scope, security objectives and commitment to continual improvement. Responsible: Information Security Officer (ISB). Evidence: Current policy document with approval signature and distribution proof.
+        access_control:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (ORP.4):** ORP.4 "Identity and Access Management" requires an established IAM process with role concept, access recertification (at least annually), least-privilege principle, control of privileged accounts and timely deactivation upon termination (ORP.4.A1-A9). Responsible: IT Operations / CISO. Evidence: IAM concept, current access matrix, recertification records.
+        identity_management:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (ORP.4):** ORP.4 requires full documentation of the identity lifecycle (provisioning, modification, suspension, deletion), use of a central identity store and regular review of active accounts. For privileged identities, the four-eyes principle applies during assignment (ORP.4.A22). Evidence: IAM process documentation, audit trail of recent account changes.
+        authentication_information:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (ORP.4):** ORP.4 mandates secure authentication: passwords meeting BSI TR-02102-1 minimum requirements, multi-factor authentication for remote access and privileged accounts (ORP.4.A9), password manager use and prohibition of default credentials. Evidence: Password policy, MFA activation report, penetration test findings on authentication.
+        cryptography:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (CON.1):** CON.1 "Cryptographic Concept" requires a documented cryptographic concept with algorithm selection per BSI TR-02102 (symmetric: AES-256; asymmetric: RSA >=3072-bit or ECC >=256-bit; hash: SHA-256 or stronger), key management lifecycle (generation, distribution, storage, expiry, destruction) and encryption of sensitive data at rest and in transit (CON.1.A1-A6). Evidence: Cryptographic concept document, algorithm register, key management log.
+        information_transfer:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (CON.9):** CON.9 "Information Exchange" governs secure data exchange with external parties: non-disclosure agreements before data sharing, transport encryption (TLS 1.2+), and logging of sensitive information transfers (CON.9.A1-A3). Evidence: Information exchange register, NDAs, TLS configuration review.
+        secure_development:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (CON.8):** CON.8 "Software Development" prescribes a Secure SDLC: security requirements in the design phase, threat modeling, secure coding standards (OWASP ASVS / BSI recommendations), SAST/DAST before go-live, code reviews and consideration of supply-chain risks for third-party components (CON.8.A1-A6). Evidence: SSDLC documentation, scan reports (SAST/DAST), code review records.
+        backup:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (CON.3):** CON.3 "Data Backup Concept" requires a documented backup concept following the 3-2-1 principle (3 copies, 2 media types, 1 offsite/offline), RPO/RTO definition per system category, regular restore tests (at least annual full-restore test) and encryption of backup media (CON.3.A1-A6). Evidence: Data backup concept, restore test records, backup monitoring reports.
+        malware:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (OPS.1.1.4):** OPS.1.1.4 "Protection against malware" requires comprehensive AV/EDR deployment on clients and servers, centralized management, automatic signature updates, scan logging and a defined response procedure upon malware detection (OPS.1.1.4.A1-A7). Evidence: AV management console, scan reports, incident records.
+        patch_management:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (OPS.1.1.3):** OPS.1.1.3 "Patch and Change Management" mandates a defined patching process with SLA targets (critical <=7 days, high <=30 days), vulnerability scanning (at least monthly), change advisory board approval, rollback concept and documentation of all applied patches (OPS.1.1.3.A1-A6). Evidence: Patch compliance dashboard, vulnerability scan reports, change records.
+        logging:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (OPS.1.1.5):** OPS.1.1.5 "Logging" requires centralised capture of security-relevant events (authentication, privilege use, system errors), minimum retention of 6 months online / 3 years archived, tamper-proof log integrity, NTP time synchronisation and regular review (OPS.1.1.5.A1-A4). Evidence: SIEM configuration, retention concept, log review records.
+        supplier_relationships:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (OPS.2.3):** OPS.2.3 "Use of Outsourcing" requires risk classification of service providers, contractually embedded security requirements (including incident reporting obligation within 24h), audit rights, annual supplier assessment and a governed exit management process (OPS.2.3.A1-A5). Evidence: Supplier register with risk classes, security requirements annex, assessment reports.
+        incident_management:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (DER.2.1):** DER.2.1 "Incident Management" requires a documented incident response policy with severity classification, defined escalation path, crisis team activation criteria, forensic evidence preservation (DER.2.2) and mandatory post-incident reviews (DER.2.1.A1-A6). Evidence: IR policy, incident register, post-incident reports for the last 12 months.
+        continuity:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (DER.4):** DER.4 "Emergency Management" requires a documented emergency handbook with recovery priority sequence, RPO/RTO targets, at least annual tabletop exercises, crisis management structure and explicit consideration of critical service provider failures (DER.4.A1-A4). Evidence: Emergency handbook, exercise reports, BIA document.
+        threat_intelligence:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (DER.1):** DER.1 "Detection of security-relevant events" requires subscriptions to relevant threat intelligence sources (CERT-Bund, BSI-CERT, MITRE ATT&CK), integration into SIEM correlation rules and a defined process for evaluating and distributing threat information (DER.1.A4). Evidence: TI source subscriptions, SIEM correlation rules, threat briefing records.
+        network_security:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (NET.1.1):** NET.1.1 "Network architecture and design" prescribes a documented network architecture with security zone concept, perimeter firewall, network segmentation (DMZ, production, management networks), firewall rule set reviews (at least annually) and anomaly detection (NET.1.1.A1). Evidence: Network architecture diagram, segmentation concept, firewall review records.
+        physical_security:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (INF.1):** INF.1 "General Building" requires defined security areas with access control, visitor management, fire protection per applicable regulations, uninterruptible power supply for critical systems and regular security inspections (INF.1.A2-A5). Evidence: Security zone concept, access control logs, fire protection assessment.
+        hr_security:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (ORP.2):** ORP.2 "Personnel" requires background checks before hiring (as legally permissible), signing of confidentiality agreements, security briefings at onboarding and offboarding, and immediate revocation of all access upon termination (ORP.2.A1-A5). Evidence: Onboarding checklists, confidentiality declarations, offboarding records.
+        privacy_pii:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (CON.2):** CON.2 "Data Protection" requires maintaining a record of processing activities (RoPA), conducting Data Protection Impact Assessments (DPIA) for high-risk processing, implementing technical and organisational measures per Art. 32 GDPR and appointing a Data Protection Officer where required (CON.2.A1-A2). Evidence: RoPA, DPIA documents, TOMs register, DPO appointment letter.
+        asset_management:
+            v1:
+                bsi_extension:
+                    body: >-
+                        **BSI IT-Grundschutz Extension (ISMS.1):** ISMS.1 requires a complete, up-to-date asset inventory as the basis for the protection needs assessment (BSI 200-2 Chapter 6). All information-processing assets must be recorded, assigned to an owner and classified by protection need (normal/high/very high). Evidence: Asset inventory with protection need classification, last review record.
