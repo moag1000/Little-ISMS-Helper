@@ -194,6 +194,16 @@ services:
         # collects them for the auto-conversion pipeline (Maßnahmen intake).
         App\Service\Planning\Source\SourceAdapter:
             tags: ['app.source_adapter']
+        # Policy-Wizard — per-standard section catalogues auto-register so
+        # SectionExtensionRegistry's !tagged_iterator collects all implementations.
+        App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface:
+            tags: ['app.policy_section_catalogue']
+
+    # Policy-Wizard — SectionExtensionRegistry: receives all catalogues tagged
+    # via the _instanceof rule for StandardSectionCatalogueInterface above.
+    App\Service\PolicyWizard\SectionExtension\SectionExtensionRegistry:
+        arguments:
+            $catalogues: !tagged_iterator app.policy_section_catalogue
 
     # S-2 Compliance-Framework-Loader registry: receives all tagged loaders.
     App\Service\Compliance\FrameworkLoaderRegistry:
