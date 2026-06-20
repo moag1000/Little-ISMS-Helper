@@ -109,6 +109,7 @@ final class ProcessCertificateOcrJob implements AsyncJobInterface
         $filePath = $document?->getFilePath();
 
         if ($filePath === null || $filePath === '') {
+            // @intentional-assertion: invariant — OCR job is only dispatched for certs that have an uploaded document
             throw new \RuntimeException(sprintf(
                 'Certificate #%d has no stored document file to OCR.',
                 (int) $cert->getId(),
