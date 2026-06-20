@@ -60,32 +60,6 @@ class MappingSeedService
     }
 
     /**
-     * Seed a single cross-framework pair, identified by source/target code.
-     *
-     * Returns {seeded, skipped}: `seeded` = newly created mappings,
-     * `skipped` = pre-existing mappings left untouched (idempotency proof on
-     * re-run). Returns {0, 0} with `ran=false` when the pair is unknown or one
-     * of the two frameworks is not loaded.
-     *
-     * @param list<string> $loadedCodes Framework codes currently loaded
-     * @return array{seeded: int, skipped: int, ran: bool}
-     */
-    public function seedPair(string $sourceCode, string $targetCode, array $loadedCodes): array
-    {
-        foreach (self::PAIRS as $pair) {
-            if ($pair['source'] === $sourceCode && $pair['target'] === $targetCode) {
-                if (!in_array($sourceCode, $loadedCodes, true) || !in_array($targetCode, $loadedCodes, true)) {
-                    return ['seeded' => 0, 'skipped' => 0, 'ran' => false];
-                }
-
-                return $this->runSeedCommand($pair['command']) + ['ran' => true];
-            }
-        }
-
-        return ['seeded' => 0, 'skipped' => 0, 'ran' => false];
-    }
-
-    /**
      * Seed every known pair whose BOTH frameworks are present in $loadedCodes.
      *
      * @param list<string> $loadedCodes Framework codes currently loaded

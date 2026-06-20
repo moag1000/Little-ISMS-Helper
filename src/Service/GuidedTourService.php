@@ -436,7 +436,7 @@ final class GuidedTourService
         $quality    = $this->urlFor('app_mapping_quality_dashboard');
         $gaps       = $this->urlFor('app_mapping_quality_gaps');
         $cross      = $this->urlFor('app_compliance_cross_framework');
-        $inheritance = $this->urlFor('app_compliance_inheritance_pending_count');
+        $inheritance = $this->urlFor('app_data_reuse_hub');
 
         return [
             [
