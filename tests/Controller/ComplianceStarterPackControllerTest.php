@@ -7,10 +7,7 @@ namespace App\Tests\Controller;
 use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
 use App\Entity\User;
-use App\Job\LoadStarterPackJob;
-use App\Service\Compliance\MappingSeedService;
-use App\Service\ComplianceFrameworkLoaderService;
-use App\Service\ModuleConfigurationService;
+use App\Service\Job\InRequestJobRunner;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -27,12 +24,16 @@ use Symfony\Component\HttpFoundation\Response;
  *  - ROLE_MANAGER POST → dispatch happens → 303 redirect to progress page
  *  - empty-state CTA renders only when 0 frameworks are loaded
  *
- * The actual job collaborators ({@see ComplianceFrameworkLoaderService},
- * {@see MappingSeedService}) are replaced with no-op stubs for the dispatch
- * test: in the test (CLI) SAPI the in-request runner executes the job
- * synchronously, and running the real framework loaders would take minutes and
- * pollute the global catalogue. The dispatch wiring + redirect is what this
- * test asserts; the job's real behaviour is covered by
+ * The async-job RUNNER ({@see InRequestJobRunner}) is replaced with a no-op
+ * stub for the dispatch test: in the test (CLI) SAPI the in-request runner
+ * would execute the dispatched job synchronously, and the runner resolves the
+ * job from the `app.async_job` tagged locator (so stubbing the controller's
+ * job/collaborator services in the test container does NOT reach it — the real
+ * loaders would run for minutes and pollute the global catalogue). Stubbing the
+ * runner is the correct seam: it returns the rendered response unchanged
+ * without resolving or executing any job. This keeps the controller test
+ * focused on what it owns — dispatch wiring + PRG redirect + RBAC + CTA
+ * rendering. The job's real behaviour is covered by
  * {@see \App\Tests\Job\LoadStarterPackJobTest}.
  */
 class ComplianceStarterPackControllerTest extends WebTestCase
@@ -128,31 +129,19 @@ class ComplianceStarterPackControllerTest extends WebTestCase
     {
         $this->purgeFrameworks();
 
-        // Replace the slow/global collaborators with no-op stubs so the
-        // synchronous in-request runner returns instantly.
-        $loaderStub = $this->createStub(ComplianceFrameworkLoaderService::class);
-        $loaderStub->method('loadFramework')->willReturn([
-            'success' => true,
-            'message' => 'stub',
-        ]);
-        $loaderStub->method('isFrameworkLoaded')->willReturn(true);
+        // Replace the in-request runner with a stub that returns the rendered
+        // response WITHOUT resolving or executing the dispatched job. This is
+        // the correct seam: the real runner resolves the job from the
+        // `app.async_job` locator (bypassing any test-container service
+        // override), so the real catalogue load would otherwise run here.
+        $runnerStub = $this->createStub(InRequestJobRunner::class);
+        $runnerStub->method('dispatch')->willReturnArgument(3); // $response
 
-        $seedStub = $this->createStub(MappingSeedService::class);
-        $seedStub->method('seedAvailablePairs')->willReturn([
-            'seeded' => 0,
-            'skipped' => 0,
-            'pairs' => [],
-        ]);
-
-        $moduleStub = $this->createStub(ModuleConfigurationService::class);
-        $moduleStub->method('isModuleActive')->willReturn(false);
-
-        $container = static::getContainer();
-        // The job is autowired from these services; overriding them in the
-        // test container makes the dispatched job a no-op.
-        $container->set(ComplianceFrameworkLoaderService::class, $loaderStub);
-        $container->set(MappingSeedService::class, $seedStub);
-        $container->set(LoadStarterPackJob::class, new LoadStarterPackJob($loaderStub, $seedStub, $moduleStub));
+        // KernelBrowser reboots the kernel before every request by default,
+        // which would discard the container override below. Disable reboot so
+        // the stubbed runner survives into the POST request.
+        $this->client->disableReboot();
+        static::getContainer()->set(InRequestJobRunner::class, $runnerStub);
 
         $this->client->loginUser($this->managerUser);
 

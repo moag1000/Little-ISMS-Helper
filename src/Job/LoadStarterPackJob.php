@@ -38,22 +38,23 @@ use App\Service\ModuleConfigurationService;
  */
 final class LoadStarterPackJob implements AsyncJobInterface
 {
-    /** Frameworks always part of the starter pack. */
-    private const BASE_CODES = ['ISO27001', 'BSI_GRUNDSCHUTZ'];
-
-    /** Framework loaded only when its gating module is active. */
-    private const GDPR_CODE = 'GDPR';
-
+    /**
+     * @param list<string> $baseCodes frameworks always part of the starter pack
+     *                                 (default = production pack: ISO 27001 + BSI Grundschutz)
+     * @param string       $gdprCode  framework loaded only when the `privacy` module is active
+     */
     public function __construct(
         private readonly ComplianceFrameworkLoaderService $loaderService,
         private readonly MappingSeedService $mappingSeedService,
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly array $baseCodes = ['ISO27001', 'BSI_GRUNDSCHUTZ'],
+        private readonly string $gdprCode = 'GDPR',
     ) {
     }
 
     public function run(JobContext $ctx): void
     {
-        $codes = $this->packComposition();
+        $codes = $this->resolvePackCodes();
         $total = count($codes) + 1; // frameworks + 1 mapping-seed step
         $step = 0;
 
@@ -97,16 +98,21 @@ final class LoadStarterPackJob implements AsyncJobInterface
 
     /**
      * Resolve the framework codes that make up the pack for the current tenant.
-     * GDPR is module-gated; ISO 27001 + BSI are always included.
+     * GDPR is module-gated; the base codes (ISO 27001 + BSI by default) are
+     * always included.
+     *
+     * Exposed at internal visibility so the composition logic (base + the
+     * module-gated GDPR addition) can be unit-tested without loading the heavy
+     * framework catalogues.
      *
      * @return list<string>
      */
-    private function packComposition(): array
+    public function resolvePackCodes(): array
     {
-        $codes = self::BASE_CODES;
+        $codes = $this->baseCodes;
 
         if ($this->moduleConfiguration->isModuleActive('privacy')) {
-            $codes[] = self::GDPR_CODE;
+            $codes[] = $this->gdprCode;
         }
 
         return $codes;
