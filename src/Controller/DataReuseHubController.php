@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\ComplianceInheritanceService;
 use App\Service\DataReuseHubService;
 use App\Service\InheritanceMetricsService;
 use App\Service\TenantContext;
@@ -29,13 +30,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Tab-basiert — beide Listen passen auf einen Screen und der Junior
  * sieht das ganze Bild ohne Click-Through.
  */
-#[IsGranted('ROLE_MANAGER')]
+#[IsGranted('ROLE_USER')]
 class DataReuseHubController extends AbstractController
 {
     public function __construct(
         private readonly DataReuseHubService $hubService,
         private readonly InheritanceMetricsService $inheritanceMetricsService,
         private readonly TenantContext $tenantContext,
+        private readonly ComplianceInheritanceService $complianceInheritanceService,
     ) {
     }
 
@@ -48,6 +50,14 @@ class DataReuseHubController extends AbstractController
             ? $this->inheritanceMetricsService->fteSavedForTenant($tenant)
             : 0.0;
 
+        $pendingInheritanceCount = $tenant !== null
+            ? $this->complianceInheritanceService->getPendingReviewCount($tenant)
+            : 0;
+
+        $pendingFrameworkCode = ($tenant !== null && $pendingInheritanceCount > 0)
+            ? $this->complianceInheritanceService->getFirstPendingFrameworkCode($tenant)
+            : null;
+
         $stats = $this->hubService->portfolioStats($tenant);
         $documents = $this->hubService->topDocumentsByReuse($tenant);
         $suppliers = $this->hubService->topSuppliersByReuse($tenant);
@@ -55,6 +65,8 @@ class DataReuseHubController extends AbstractController
         return $this->render('data_reuse_hub/index.html.twig', [
             'tenant' => $tenant,
             'fte_saved' => $fteSaved,
+            'pending_inheritance_count' => $pendingInheritanceCount,
+            'pending_framework_code' => $pendingFrameworkCode,
             'stats' => $stats,
             'top_documents' => $documents,
             'top_suppliers' => $suppliers,

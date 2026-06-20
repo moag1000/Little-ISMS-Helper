@@ -27,7 +27,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * die auf `requiresReview=true` filtert und die meisten Seed-Einträge
  * nicht zeigt.
  */
-#[IsGranted('ROLE_MANAGER')]
+// Class gate is ROLE_USER (read-only access to the seed-review queue for audit
+// transparency). The approve/reject WRITE actions add an explicit ROLE_MANAGER
+// gate below to preserve the 4-eyes principle.
+#[IsGranted('ROLE_USER')]
 class SeedReviewQueueController extends AbstractController
 {
     private const SEED_ORIGIN_PATTERNS = [
@@ -60,12 +63,14 @@ class SeedReviewQueueController extends AbstractController
     }
 
     #[Route('/compliance/mapping/seed-review/{id}/approve', name: 'app_compliance_mapping_seed_review_approve', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function approve(int $id, Request $request): Response
     {
         return $this->transition($id, $request, 'approved');
     }
 
     #[Route('/compliance/mapping/seed-review/{id}/reject', name: 'app_compliance_mapping_seed_review_reject', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function reject(int $id, Request $request): Response
     {
         return $this->transition($id, $request, 'rejected');

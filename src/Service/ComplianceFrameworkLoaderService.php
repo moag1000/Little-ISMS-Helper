@@ -508,6 +508,21 @@ class ComplianceFrameworkLoaderService
     }
 
     /**
+     * Whether a framework is present AND already populated with requirements.
+     *
+     * Mirrors the idempotency check inside {@see loadFramework()}: a framework
+     * row with at least one requirement counts as "loaded". Used by callers
+     * (e.g. the Starter-Pack job) that need to distinguish the benign
+     * "already loaded" skip from a genuine load failure.
+     */
+    public function isFrameworkLoaded(string $code): bool
+    {
+        $framework = $this->complianceFrameworkRepository->findOneBy(['code' => $code]);
+
+        return $framework !== null && $framework->requirements->count() > 0;
+    }
+
+    /**
      * Load a specific framework by code
      */
     public function loadFramework(string $code): array

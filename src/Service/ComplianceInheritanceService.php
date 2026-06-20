@@ -285,6 +285,16 @@ class ComplianceInheritanceService
     }
 
     /**
+     * Returns the framework code of the first framework that has pending
+     * inheritance suggestions for the given tenant, or null when there are none.
+     * Used by DataReuseHubController to build a targeted CTA deep-link.
+     */
+    public function getFirstPendingFrameworkCode(Tenant $tenant): ?string
+    {
+        return $this->inheritanceRepository->findFirstFrameworkCodeWithPending($tenant);
+    }
+
+    /**
      * Bulk-confirm a batch of pending suggestions. Same confidence level required,
      * shared reviewer comment (≥20 chars). Items not in pending state are skipped.
      *

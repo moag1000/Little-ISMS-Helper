@@ -3,6 +3,7 @@
 {% block title %}{{ 'compliance_inheritance.queue.title'|trans({ '%framework%': framework.code }, 'compliance_inheritance') }}{% endblock %}
 
 {% block body %}
+{% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
@@ -29,6 +30,13 @@
             </a>
         </div>
     </div>
+
+    {% if not is_granted('ROLE_MANAGER') %}
+        <div class="fa-alert fa-alert--info mb-3" role="note">
+            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
+            {{ 'compliance_inheritance.queue.manager_hint'|trans({}, 'compliance_inheritance') }}
+        </div>
+    {% endif %}
 
     <div aria-live="polite" class="visually-hidden"
          data-controller="inheritance-queue"
@@ -59,8 +67,8 @@
                             <div class="small text-muted">
                                 {{ 'compliance_inheritance.queue.from'|trans({}, 'compliance_inheritance') }}
                                 {{ source.framework.code }} {{ source.requirementId }}
-                                · {{ 'compliance_inheritance.queue.mapping'|trans({}, 'compliance_inheritance') }} {{ log.derivedFromMapping.mappingPercentage }}%
-                                · {{ ('compliance_inheritance.confidence.' ~ log.derivedFromMapping.confidence)|trans({}, 'compliance_inheritance') }}
+                                · {{ 'compliance_inheritance.queue.mapping'|trans({}, 'compliance_inheritance') }} {{ fa_glossary_tooltip({ acronym: 'MappingPercentage', fullText: 'Zuordnungsgrad / Mapping Percentage' }) }} {{ log.derivedFromMapping.mappingPercentage }}%
+                                · {{ ('compliance_inheritance.confidence.' ~ log.derivedFromMapping.confidence)|trans({}, 'compliance_inheritance') }} {{ fa_glossary_tooltip({ acronym: 'MappingConfidence', fullText: 'Vertrauensgrad / Confidence' }) }}
                             </div>
                         </div>
                         <div class="text-end">

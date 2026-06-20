@@ -15,7 +15,7 @@
 
     {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ 'compliance_inheritance.panel.suggested'|trans({}, 'compliance_inheritance') ~ ':</strong> ' ~ log.suggestedPercentage ~ '%' }) }}
 
-    {% if log.isPendingReview() %}
+    {% if is_granted('ROLE_MANAGER') and log.isPendingReview() %}
     <form method="post"
           action="{{ path('app_compliance_inheritance_confirm', { id: log.id, _locale: app.request.locale }) }}"
           data-inheritance-review-target="confirmForm">
@@ -87,6 +87,14 @@
             </button>
         </div>
     </form>
+    {% elseif log.isPendingReview() %}
+        {# Read-only view for non-managers: show pending status + 4-eyes hint. #}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', class: 'mb-0' } } %}
+            {% block alert_body %}
+            <strong>{{ ('compliance_inheritance.status.' ~ log.reviewStatus)|trans({}, 'compliance_inheritance') }}</strong>
+            · {{ 'compliance_inheritance.panel.manager_hint'|trans({}, 'compliance_inheritance') }}
+            {% endblock %}
+        {% endembed %}
     {% else %}
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0' } } %}
             {% block alert_body %}
@@ -100,6 +108,7 @@
     {% endif %}
 </section>
 
+{% if is_granted('ROLE_MANAGER') and log.isPendingReview() %}
 {# Reject modal #}
 <div class="fa-modal fa-modal--confirm fa-modal--danger" id="reject-modal-{{ log.id }}"
      data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
@@ -173,3 +182,4 @@
             </footer>
         </form></div>
 </div>
+{% endif %}

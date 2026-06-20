@@ -267,6 +267,7 @@ compliance:
             subtitle: 'Review and approve machine-created mappings (seeds, CSV import, wizard, migration).'
             queue_heading: 'Unreviewed mappings (%count%)'
             empty: 'All machine-created mappings are reviewed. Good job!'
+            manager_hint: 'Approval is performed by a manager role (four-eyes principle).'
             filter:
                 all: 'All'
             col:
@@ -275,6 +276,8 @@ compliance:
                 type: 'Type'
                 origin: 'Origin'
                 actions: 'Actions'
+            status:
+                unreviewed: 'Unreviewed'
             action:
                 approve: 'Approve'
                 reject: 'Reject'
@@ -778,6 +781,17 @@ compliance:
     no_frameworks_loaded: __compliance.no_frameworks_loaded
     add_frameworks: __compliance.add_frameworks
     contact_admin_to_add_frameworks: __compliance.contact_admin_to_add_frameworks
+    starter_pack:
+        title: 'Quick start: load standard frameworks + mappings'
+        body: 'You are starting with an empty area. With one click we load the most common frameworks and automatically link them together — so you immediately see which requirements overlap and never have to maintain anything twice.'
+        item_iso: 'ISO/IEC 27001:2022 (information security)'
+        item_bsi: 'BSI IT-Grundschutz'
+        item_gdpr: 'GDPR (loaded because the privacy module is active)'
+        item_mappings: 'Cross-framework mappings between the frameworks'
+        cta: 'Load standard frameworks now'
+        hint: 'Loading runs in the background and can be safely repeated at any time — no duplicates are created.'
+        progress_label: 'Quick start: loading standard frameworks'
+        progress_subtitle: 'ISO 27001, BSI IT-Grundschutz and cross-framework mappings'
     benefits:
         title: __compliance.benefits.title
         data_reuse:

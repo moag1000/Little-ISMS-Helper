@@ -63,6 +63,21 @@
         {% endblock %}
     {% endembed %}
 
+    {# Inheritance-Queue-CTA — nur wenn offene Vorschläge vorhanden und Framework bekannt #}
+    {% if pending_inheritance_count > 0 and pending_framework_code is not null %}
+    <div class="alert alert-info d-flex align-items-center gap-2 mb-4 small" role="alert">
+        <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+        <div class="flex-grow-1">
+            <strong>{{ 'reuse.inheritance_cta.title'|trans({}, 'messages') }}</strong>
+            {{ 'reuse.inheritance_cta.body'|trans({'%count%': pending_inheritance_count}, 'messages') }}
+        </div>
+        <a href="{{ path('app_compliance_inheritance_queue', {_locale: app.request.locale, frameworkCode: pending_framework_code}) }}"
+           class="btn btn-sm btn-outline-primary ms-2 text-nowrap">
+            {{ 'reuse.inheritance_cta.link'|trans({}, 'messages') }}
+        </a>
+    </div>
+    {% endif %}
+
     {# 9001-Brücke für Junior-Einstieg #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'ui-lightbulb', class: 'small mb-4' } } %}
         {% block alert_body %}<strong>{{ 'reuse.iso9001_bridge.title'|trans({}, 'messages') }}</strong> {{ 'reuse.iso9001_bridge.text'|trans({}, 'messages') }}{% endblock %}

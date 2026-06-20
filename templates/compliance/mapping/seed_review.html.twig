@@ -24,6 +24,13 @@
         </div>
     </div>
 
+    {% if not is_granted('ROLE_MANAGER') %}
+        <div class="fa-alert fa-alert--info mb-3" role="note">
+            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
+            {{ 'compliance.mapping.seed_review.manager_hint'|trans({}, 'compliance') }}
+        </div>
+    {% endif %}
+
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'quality' } %}
 
     {# Filter-Buttons nach Herkunft #}
@@ -90,6 +97,7 @@
                                 <code class="small">{{ m.verifiedBy|default('—') }}</code>
                             </td>
                             <td class="fa-table__cell fa-table__cell--actions">
+                                {% if is_granted('ROLE_MANAGER') %}
                                 <form method="post"
                                       action="{{ path('app_compliance_mapping_seed_review_approve', {id: m.id}) }}"
                                       class="d-inline">
@@ -108,6 +116,9 @@
                                         <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                     </button>
                                 </form>
+                                {% else %}
+                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'compliance.mapping.seed_review.status.unreviewed'|trans({}, 'compliance') }}</span>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

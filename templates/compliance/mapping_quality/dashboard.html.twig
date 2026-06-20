@@ -112,8 +112,9 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
+                    {% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
                     <div class="card-header">
-                        <h3 class="mb-0"><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'compliance.mapping_quality.avg_confidence'|trans({}, 'compliance') }}</h3>
+                        <h3 class="mb-0"><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'compliance.mapping_quality.avg_confidence'|trans({}, 'compliance') }} {{ fa_glossary_tooltip({ acronym: 'MappingConfidence', fullText: 'Vertrauensgrad / Confidence' }) }}</h3>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -377,6 +378,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
             <div class="row">
                 <div class="col-md-4">
                     <p class="fw-bold fs-5"><i class="fa-icon fa-icon--nav-bullseye" aria-hidden="true"></i> {{ 'compliance.mapping_quality.help.confidence_score.title'|trans({}, 'compliance') }}</p>
@@ -388,7 +390,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <p class="fw-bold fs-5">{{ 'compliance.mapping_quality.help.quality_score.title'|trans({}, 'compliance') }}</p>
+                    <p class="fw-bold fs-5">{{ 'compliance.mapping_quality.help.quality_score.title'|trans({}, 'compliance') }} {{ fa_glossary_tooltip({ acronym: 'MappingQualityScore', fullText: 'Mapping Quality Score (MQS)' }) }}</p>
                     <p class="small">{{ 'compliance.mapping_quality.help.quality_score.desc'|trans({}, 'compliance') }}</p>
                     <ul class="small">
                         <li>{{ 'compliance.mapping_quality.help.quality_score.confidence'|trans({}, 'compliance') }}</li>

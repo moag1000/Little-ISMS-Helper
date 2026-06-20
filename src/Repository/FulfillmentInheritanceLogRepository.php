@@ -87,6 +87,33 @@ class FulfillmentInheritanceLogRepository extends ServiceEntityRepository
     }
 
     /**
+     * Returns the code of the first ComplianceFramework that has at least one
+     * pending-review inheritance suggestion for the given tenant, or null when
+     * none exist. Used by DataReuseHubController to build a deep-link CTA.
+     */
+    public function findFirstFrameworkCodeWithPending(Tenant $tenant): ?string
+    {
+        $result = $this->createQueryBuilder('l')
+            ->select('fw.code')
+            ->innerJoin('l.fulfillment', 'f')
+            ->innerJoin('f.requirement', 'r')
+            ->innerJoin('r.framework', 'fw')
+            ->where('l.tenant = :tenant')
+            ->andWhere('l.reviewStatus IN (:pending)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('pending', [
+                FulfillmentInheritanceLog::STATUS_PENDING_REVIEW,
+                FulfillmentInheritanceLog::STATUS_SOURCE_UPDATED,
+            ])
+            ->orderBy('fw.code', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result !== null ? (string) $result['code'] : null;
+    }
+
+    /**
      * Logs for fulfillments derived from a specific source-fulfillment.
      * Used by NotifyDerivedFulfillmentsListener when source changes.
      *

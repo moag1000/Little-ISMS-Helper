@@ -193,9 +193,11 @@
             <a href="{{ path('app_data_reuse_hub') }}" class="text-decoration-none" data-tour="mapping-where-used">
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
+                        {% from '_components/_fa_glossary_tooltip.html.twig' import fa_glossary_tooltip %}
                         <div class="h5">
                             <i class="fa-icon fa-icon--nav-collapse text-success" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.reuse.title'|trans({}, 'compliance') }}
+                            {{ fa_glossary_tooltip({ acronym: 'MappingInheritance', fullText: 'Vererbung / Inheritance' }) }}
                         </div>
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.reuse.desc'|trans({}, 'compliance') }}
