@@ -337,21 +337,15 @@ class ComplianceCertificateControllerTest extends WebTestCase
         StubOcrCapabilityDetector::setAvailable(false);
         $this->client->loginUser($this->managerUser);
 
-        // GET first to mint a valid cert_new CSRF token.
+        // Submit the rendered form so the CSRF token + session cookie align
+        // (a hand-built _token does not match the client session under CI).
         $crawler = $this->client->request('GET', '/en/compliance/certificates/new');
         $this->assertResponseIsSuccessful();
-        $token = $crawler->filter('input[name="_token"]')->attr('value');
-
-        $this->client->request(
-            'POST',
-            '/en/compliance/certificates/new',
-            [
-                '_token' => $token,
-                'frameworkCode' => $this->frameworkCode,
-                'certBody' => 'Manual CB',
-            ],
-            ['certificate_file' => $this->makePdfUpload()],
-        );
+        $form = $crawler->filter('form[action*="/new"]')->form();
+        $form['frameworkCode'] = $this->frameworkCode;
+        $form['certBody'] = 'Manual CB';
+        $form['certificate_file']->upload($this->makePdfPath());
+        $this->client->submit($form);
 
         $this->assertResponseRedirects();
         $location = (string) $this->client->getResponse()->headers->get('Location');
@@ -373,20 +367,12 @@ class ComplianceCertificateControllerTest extends WebTestCase
         StubOcrCapabilityDetector::setAvailable(true);
         $this->client->loginUser($this->managerUser);
 
+        // OCR path renders an upload-only form (no metadata fields). Submit it.
         $crawler = $this->client->request('GET', '/en/compliance/certificates/new');
         $this->assertResponseIsSuccessful();
-        $token = $crawler->filter('input[name="_token"]')->attr('value');
-
-        $this->client->request(
-            'POST',
-            '/en/compliance/certificates/new',
-            [
-                '_token' => $token,
-                'frameworkCode' => $this->frameworkCode,
-                'certBody' => 'OCR CB',
-            ],
-            ['certificate_file' => $this->makePdfUpload()],
-        );
+        $form = $crawler->filter('form[action*="/new"]')->form();
+        $form['certificate_file']->upload($this->makePdfPath());
+        $this->client->submit($form);
 
         $this->assertResponseRedirects();
         $location = (string) $this->client->getResponse()->headers->get('Location');
@@ -438,18 +424,11 @@ class ComplianceCertificateControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/en/compliance/certificates/' . $draftId . '/confirm-draft');
         $this->assertResponseIsSuccessful();
-        $token = $crawler->filter('input[name="_token"]')->attr('value');
-
-        $this->client->request(
-            'POST',
-            '/en/compliance/certificates/' . $draftId . '/confirm-draft',
-            [
-                '_token' => $token,
-                'frameworkCode' => $this->frameworkCode,
-                'certBody' => 'Corrected CB',
-                'certNumber' => 'CORRECTED-123',
-            ],
-        );
+        $form = $crawler->filter('form[action*="/confirm-draft"]')->form();
+        $form['frameworkCode'] = $this->frameworkCode;
+        $form['certBody'] = 'Corrected CB';
+        $form['certNumber'] = 'CORRECTED-123';
+        $this->client->submit($form);
 
         $this->assertResponseRedirects();
         self::assertStringContainsString('/preview', (string) $this->client->getResponse()->headers->get('Location'));
@@ -525,19 +504,13 @@ class ComplianceCertificateControllerTest extends WebTestCase
     /**
      * A minimal, magic-byte-valid PDF wrapped as an UploadedFile (test mode).
      */
-    private function makePdfUpload(): \Symfony\Component\HttpFoundation\File\UploadedFile
+    private function makePdfPath(): string
     {
         $tmp = tempnam(sys_get_temp_dir(), 'cert_test_') . '.pdf';
         // %PDF magic bytes + minimal trailer so the security validator passes.
         file_put_contents($tmp, "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n");
 
-        return new \Symfony\Component\HttpFoundation\File\UploadedFile(
-            $tmp,
-            'cert.pdf',
-            'application/pdf',
-            null,
-            true, // test mode — bypasses is_uploaded_file()
-        );
+        return $tmp;
     }
 
     /**
