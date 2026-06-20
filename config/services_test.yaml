@@ -1,0 +1,18 @@
+# Test-environment service overrides.
+#
+# Loaded by MicroKernelTrait::configureContainer() AFTER config/services.yaml,
+# so aliases redefined here win over the production bindings (which is exactly
+# why the OCR capability override below cannot live in config/packages/test/ —
+# that directory is imported BEFORE services.yaml and would be overwritten).
+
+services:
+    # Compliance-Certificate OCR (Task 12): swap the capability verdict for a
+    # hermetic stub so functional tests can drive BOTH the OCR-available and the
+    # manual-fallback controller branches deterministically — without depending
+    # on pdftotext/tesseract being installed on the CI host.
+    App\Tests\Stub\StubOcrCapabilityDetector:
+        public: true
+
+    App\Service\Certificate\OcrCapabilityInterface:
+        alias: App\Tests\Stub\StubOcrCapabilityDetector
+        public: true

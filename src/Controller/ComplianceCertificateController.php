@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+// @em-write-allowed: CSRF-guarded single-row writes only — delete() removes one
+// tenant-scoped certificate, confirmDraft() flushes user-confirmed OCR fields
+// back onto an already-persisted certificate. No business logic to extract.
 use App\Entity\ComplianceCertificate;
 use App\Entity\User;
+use App\Job\ProcessCertificateOcrJob;
 use App\Repository\ComplianceCertificateRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Security\Voter\ComplianceCertificateVoter;
 use App\Service\Certificate\CertificateBulkFulfillmentService;
 use App\Service\Certificate\CertificateCoverageResolver;
 use App\Service\Certificate\CertificateUploadService;
+use App\Service\Certificate\OcrCapabilityInterface;
+use App\Service\Job\AsyncJobDispatcher;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,8 +32,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * ComplianceCertificateController
  *
- * @em-write-allowed: trivial CSRF-guarded delete of a single tenant-scoped
- *   certificate row in delete() — no business logic to extract into a service.
+ * @em-write-allowed: trivial CSRF-guarded single-row writes — delete() removes
+ *   one tenant-scoped certificate; confirmDraft() flushes user-confirmed OCR
+ *   fields onto an already-persisted certificate. No business logic to extract.
  *
  * User-facing layer for the Compliance-Certificate feature. Lets a manager
  * upload an external certificate (ISO 27001, SOC 2, TISAX, …), preview which
@@ -50,6 +57,8 @@ class ComplianceCertificateController extends AbstractController
         private readonly CertificateUploadService $uploadService,
         private readonly CertificateCoverageResolver $coverageResolver,
         private readonly CertificateBulkFulfillmentService $bulkFulfillmentService,
+        private readonly OcrCapabilityInterface $ocrDetector,
+        private readonly AsyncJobDispatcher $asyncJobDispatcher,
         private readonly TenantContext $tenantContext,
         private readonly EntityManagerInterface $em,
         private readonly TranslatorInterface $translator,
@@ -107,6 +116,28 @@ class ComplianceCertificateController extends AbstractController
                 ]);
             }
 
+            // OCR path — when the pipeline is available, run the heuristic
+            // extraction asynchronously and land the user on the confirm-draft
+            // form (pre-filled by the job). The shared progress page polls the
+            // job, then redirects to `returnUrl` on completion.
+            if ($this->ocrDetector->isAvailable()) {
+                return $this->asyncJobDispatcher->dispatchWithProgress(
+                    request: $request,
+                    jobClass: ProcessCertificateOcrJob::class,
+                    jobArgs: ['certificateId' => $cert->getId()],
+                    jobName: 'cert.ocr_extract',
+                    payload: [
+                        '_label' => $this->trans('compliance.certificate.ocr.job_label'),
+                        '_subtitle' => $this->trans('compliance.certificate.ocr.job_subtitle'),
+                    ],
+                    returnUrl: $this->generateUrl('app_compliance_certificate_confirm_draft', [
+                        '_locale' => $request->getLocale(),
+                        'id' => $cert->getId(),
+                    ]),
+                );
+            }
+
+            // Manual path — unchanged: straight to coverage preview.
             $this->addFlash('success', $this->trans('compliance.certificate.flash.created'));
 
             return $this->redirectToRoute('app_compliance_certificate_preview', [
@@ -116,6 +147,57 @@ class ComplianceCertificateController extends AbstractController
         }
 
         return $this->render('compliance/certificate/new.html.twig', [
+            'frameworks' => $this->frameworkRepository->findActiveFrameworks(),
+            'ocrAvailable' => $this->ocrDetector->isAvailable(),
+        ]);
+    }
+
+    /**
+     * Editable confirm-draft form (OCR path). GET renders the form pre-filled
+     * from the certificate's CURRENT fields — which the async OCR job populated
+     * — with a confidence indicator and a "please review & correct" notice.
+     * POST maps the corrected fields back onto the certificate and continues to
+     * the normal coverage preview.
+     */
+    #[Route('/{id}/confirm-draft', name: 'confirm_draft', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted(ComplianceCertificateVoter::CERT_MANAGE)]
+    public function confirmDraft(int $id, Request $request): Response
+    {
+        $cert = $this->requireCertificate($id);
+
+        if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('cert_confirm_draft', (string) $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Invalid CSRF token.');
+            }
+
+            $fields = $this->extractFields($request);
+
+            $cert->setFrameworkCode((string) ($fields['frameworkCode'] ?? ''))
+                ->setCertBody((string) ($fields['certBody'] ?? ''))
+                ->setCertNumber($fields['certNumber'] !== null ? (string) $fields['certNumber'] : null)
+                ->setScopeText($fields['scopeText'] !== null ? (string) $fields['scopeText'] : null)
+                ->setScopeTags(is_array($fields['scopeTags']) ? $fields['scopeTags'] : [])
+                ->setCertClass($fields['certClass'] !== null ? (string) $fields['certClass'] : null)
+                ->setIssueDate($fields['issueDate'])
+                ->setValidUntil($fields['validUntil'])
+                ->setHolder($fields['holder'] !== null ? (string) $fields['holder'] : null)
+                // The user has reviewed & corrected the OCR draft — record the
+                // provenance so downstream consumers know it is human-confirmed
+                // rather than a raw machine guess.
+                ->setExtractionSource('ocr+confirmed');
+
+            $this->em->flush();
+
+            $this->addFlash('success', $this->trans('compliance.certificate.flash.draft_confirmed'));
+
+            return $this->redirectToRoute('app_compliance_certificate_preview', [
+                '_locale' => $request->getLocale(),
+                'id' => $cert->getId(),
+            ]);
+        }
+
+        return $this->render('compliance/certificate/confirm_draft.html.twig', [
+            'certificate' => $cert,
             'frameworks' => $this->frameworkRepository->findActiveFrameworks(),
         ]);
     }

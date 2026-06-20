@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'compliance.certificate.confirm_draft.title'|trans({}, 'compliance') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index', {_locale: app.request.locale}) },
+            { label: 'compliance.certificate.index.title'|trans({}, 'compliance'), url: path('app_compliance_certificate_index', {_locale: app.request.locale}) },
+            { label: 'compliance.certificate.confirm_draft.title'|trans({}, 'compliance') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'file-earmark-text', label: 'OCR' },
+        title: 'compliance.certificate.confirm_draft.title'|trans({}, 'compliance'),
+        subtitle: 'compliance.certificate.confirm_draft.subtitle'|trans({}, 'compliance')
+    }) }}
+
+    {% set confidence = certificate.extractionConfidence %}
+    <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2" role="status">
+        <span>
+            <i class="fa-icon fa-icon--exclamation-triangle me-1" aria-hidden="true"></i>
+            {{ 'compliance.certificate.confirm_draft.review_notice'|trans({}, 'compliance') }}
+        </span>
+        {% if confidence is not null %}
+            {% set pct = (confidence * 100)|round %}
+            {% set tone = pct >= 75 ? 'success' : (pct >= 40 ? 'warning' : 'danger') %}
+            <span class="badge bg-{{ tone }}" data-testid="ocr-confidence">
+                {{ 'compliance.certificate.confirm_draft.confidence'|trans({}, 'compliance') }}: {{ pct }}%
+            </span>
+        {% endif %}
+    </div>
+
+    <section class="fa-section mb-4">
+        <div class="fa-section__body">
+            <form method="post"
+                  action="{{ path('app_compliance_certificate_confirm_draft', {_locale: app.request.locale, id: certificate.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('cert_confirm_draft') }}">
+
+                {{ include('compliance/certificate/_certificate_fields.html.twig', { frameworks: frameworks, certificate: certificate }) }}
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        <span class="fa-cyber-btn__label">{{ 'compliance.certificate.confirm_draft.confirm_and_preview'|trans({}, 'compliance') }}</span>
+                    </button>
+                    <a href="{{ path('app_compliance_certificate_index', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                        <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}

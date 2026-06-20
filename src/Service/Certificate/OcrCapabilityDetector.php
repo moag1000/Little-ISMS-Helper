@@ -19,7 +19,7 @@ use Symfony\Component\Process\ExecutableFinder;
  * stub without touching the filesystem. Production code uses Symfony's
  * {@see ExecutableFinder} by default.
  */
-final class OcrCapabilityDetector
+final class OcrCapabilityDetector implements OcrCapabilityInterface
 {
     public function __construct(
         private readonly ModuleConfigurationService $modules,

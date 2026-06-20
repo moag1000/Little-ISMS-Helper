@@ -12,6 +12,7 @@ use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Enum\ComplianceRequirementFulfillmentStatus;
+use App\Tests\Stub\StubOcrCapabilityDetector;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -52,6 +53,9 @@ class ComplianceCertificateControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        // Never let an OCR-available verdict leak into a sibling test class.
+        StubOcrCapabilityDetector::reset();
+
         $this->safeRemove(ComplianceRequirementFulfillment::class, fn () => $this->em->getRepository(ComplianceRequirementFulfillment::class)->findBy(['tenant' => $this->tenant]));
         $this->safeRemoveOne($this->otherCert);
         $this->safeRemoveOne($this->otherTenant);
@@ -318,5 +322,215 @@ class ComplianceCertificateControllerTest extends WebTestCase
         $this->client->request('GET', '/en/compliance/certificates/' . $this->otherCert->getId());
 
         self::assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+    }
+
+    // ── OCR-assisted upload (Task 12) ─────────────────────────────────────────
+
+    /**
+     * Detector reports UNAVAILABLE (default stub verdict, mirrors a host
+     * without pdftotext/tesseract) → the upload follows the unchanged manual
+     * path: straight to coverage preview, no async job, no confirm-draft.
+     */
+    #[Test]
+    public function uploadWithoutOcrGoesToManualPreview(): void
+    {
+        StubOcrCapabilityDetector::setAvailable(false);
+        $this->client->loginUser($this->managerUser);
+
+        // GET first to mint a valid cert_new CSRF token.
+        $crawler = $this->client->request('GET', '/en/compliance/certificates/new');
+        $this->assertResponseIsSuccessful();
+        $token = $crawler->filter('input[name="_token"]')->attr('value');
+
+        $this->client->request(
+            'POST',
+            '/en/compliance/certificates/new',
+            [
+                '_token' => $token,
+                'frameworkCode' => $this->frameworkCode,
+                'certBody' => 'Manual CB',
+            ],
+            ['certificate_file' => $this->makePdfUpload()],
+        );
+
+        $this->assertResponseRedirects();
+        $location = (string) $this->client->getResponse()->headers->get('Location');
+        // Manual path → preview, NOT the async progress page.
+        self::assertStringContainsString('/preview', $location);
+        self::assertStringNotContainsString('/admin/jobs/', $location);
+
+        $this->removeCertsByFrameworkCode($this->frameworkCode, exceptId: (int) $this->cert->getId());
+    }
+
+    /**
+     * Detector reports AVAILABLE (stub flipped on) → the upload dispatches the
+     * OCR job and redirects to the shared async progress page, whose `return`
+     * URL points at the confirm-draft form.
+     */
+    #[Test]
+    public function uploadWithOcrDispatchesJobAndRedirectsToProgressThenConfirmDraft(): void
+    {
+        StubOcrCapabilityDetector::setAvailable(true);
+        $this->client->loginUser($this->managerUser);
+
+        $crawler = $this->client->request('GET', '/en/compliance/certificates/new');
+        $this->assertResponseIsSuccessful();
+        $token = $crawler->filter('input[name="_token"]')->attr('value');
+
+        $this->client->request(
+            'POST',
+            '/en/compliance/certificates/new',
+            [
+                '_token' => $token,
+                'frameworkCode' => $this->frameworkCode,
+                'certBody' => 'OCR CB',
+            ],
+            ['certificate_file' => $this->makePdfUpload()],
+        );
+
+        $this->assertResponseRedirects();
+        $location = (string) $this->client->getResponse()->headers->get('Location');
+        // Lands on the shared async progress page (PRG), and its return URL is
+        // the confirm-draft form for the freshly-created certificate.
+        self::assertStringContainsString('/admin/jobs/', $location);
+        self::assertStringContainsString('confirm-draft', urldecode($location));
+
+        $this->removeCertsByFrameworkCode($this->frameworkCode, exceptId: (int) $this->cert->getId());
+    }
+
+    /**
+     * The confirm-draft GET form renders pre-filled from the certificate's
+     * CURRENT fields (which the OCR job populated) and surfaces the confidence.
+     */
+    #[Test]
+    public function confirmDraftFormRendersPrefilled(): void
+    {
+        $this->client->loginUser($this->managerUser);
+
+        $draftCert = $this->makeOcrDraftCert();
+        $crawler = $this->client->request('GET', '/en/compliance/certificates/' . $draftCert->getId() . '/confirm-draft');
+        $this->assertResponseIsSuccessful();
+
+        $body = (string) $this->client->getResponse()->getContent();
+        // Pre-filled OCR cert body value present in an input value attribute.
+        self::assertStringContainsString('OCR Extracted CB', $body);
+        // Confidence indicator rendered (82% rounded from 0.82).
+        self::assertStringContainsString('82%', $body);
+        self::assertSelectorExists('[data-testid="ocr-confidence"]');
+        // CSRF token field for the confirm-draft POST.
+        self::assertSelectorExists('input[name="_token"]');
+
+        $this->safeRemoveOne($draftCert);
+        $this->em->flush();
+    }
+
+    /**
+     * Posting the confirm-draft form maps the corrected fields onto the cert,
+     * flips extractionSource to 'ocr+confirmed', and redirects to preview.
+     */
+    #[Test]
+    public function confirmDraftPostUpdatesCertAndRedirectsToPreview(): void
+    {
+        $this->client->loginUser($this->managerUser);
+
+        $draftCert = $this->makeOcrDraftCert();
+        $draftId = (int) $draftCert->getId();
+
+        $crawler = $this->client->request('GET', '/en/compliance/certificates/' . $draftId . '/confirm-draft');
+        $this->assertResponseIsSuccessful();
+        $token = $crawler->filter('input[name="_token"]')->attr('value');
+
+        $this->client->request(
+            'POST',
+            '/en/compliance/certificates/' . $draftId . '/confirm-draft',
+            [
+                '_token' => $token,
+                'frameworkCode' => $this->frameworkCode,
+                'certBody' => 'Corrected CB',
+                'certNumber' => 'CORRECTED-123',
+            ],
+        );
+
+        $this->assertResponseRedirects();
+        self::assertStringContainsString('/preview', (string) $this->client->getResponse()->headers->get('Location'));
+
+        $this->em->clear();
+        $fresh = $this->em->find(ComplianceCertificate::class, $draftId);
+        self::assertInstanceOf(ComplianceCertificate::class, $fresh);
+        self::assertSame('Corrected CB', $fresh->getCertBody());
+        self::assertSame('CORRECTED-123', $fresh->getCertNumber());
+        self::assertSame('ocr+confirmed', $fresh->getExtractionSource());
+
+        $this->safeRemoveOne($fresh);
+        $this->em->flush();
+    }
+
+    /**
+     * RBAC: a plain ROLE_USER may not reach the confirm-draft form (CERT_MANAGE).
+     */
+    #[Test]
+    public function confirmDraftIsForbiddenForPlainUser(): void
+    {
+        $this->client->loginUser($this->plainUser);
+        $this->client->request('GET', '/en/compliance/certificates/' . $this->cert->getId() . '/confirm-draft');
+
+        self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+    }
+
+    // ── OCR test helpers ──────────────────────────────────────────────────────
+
+    /**
+     * A minimal, magic-byte-valid PDF wrapped as an UploadedFile (test mode).
+     */
+    private function makePdfUpload(): \Symfony\Component\HttpFoundation\File\UploadedFile
+    {
+        $tmp = tempnam(sys_get_temp_dir(), 'cert_test_') . '.pdf';
+        // %PDF magic bytes + minimal trailer so the security validator passes.
+        file_put_contents($tmp, "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n");
+
+        return new \Symfony\Component\HttpFoundation\File\UploadedFile(
+            $tmp,
+            'cert.pdf',
+            'application/pdf',
+            null,
+            true, // test mode — bypasses is_uploaded_file()
+        );
+    }
+
+    /**
+     * A certificate already populated as if the OCR job had run (source='ocr',
+     * a confidence score, and extracted field values).
+     */
+    private function makeOcrDraftCert(): ComplianceCertificate
+    {
+        $uid = uniqid('ocr_', true);
+        $cert = new ComplianceCertificate();
+        $cert->setTenant($this->tenant)
+            ->setFrameworkCode($this->frameworkCode)
+            ->setCertBody('OCR Extracted CB')
+            ->setCertNumber('OCR-' . $uid)
+            ->setHolder('OCR Holder')
+            ->setValidUntil(new \DateTimeImmutable('+1 year'))
+            ->setStatus('active')
+            ->setExtractionSource('ocr')
+            ->setExtractionConfidence(0.82);
+        $this->em->persist($cert);
+        $this->em->flush();
+
+        return $cert;
+    }
+
+    private function removeCertsByFrameworkCode(string $code, int $exceptId): void
+    {
+        try {
+            $this->em->clear();
+            foreach ($this->em->getRepository(ComplianceCertificate::class)->findBy(['frameworkCode' => $code]) as $c) {
+                if ((int) $c->getId() !== $exceptId) {
+                    $this->em->remove($c);
+                }
+            }
+            $this->em->flush();
+        } catch (\Throwable) {
+        }
     }
 }
