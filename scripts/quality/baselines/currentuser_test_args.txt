@@ -38,6 +38,7 @@ tests/Controller/PolicyExportControllerTest.php:177
 tests/Controller/PolicyWizardBestandsaufnahmeFlowTest.php:179
 tests/Controller/PolicyWizardControllerTest.php:162
 tests/Controller/PolicyWizardTargetedFlowTest.php:169
+tests/Controller/PolicyWizardTargetedRerunTest.php:188
 tests/Controller/PolicyWizardWarningAcknowledgementTest.php:154
 tests/Controller/QuickFixControllerTest.php:114
 tests/Controller/Tisax/TisaxImportWizardE2ETest.php:291
