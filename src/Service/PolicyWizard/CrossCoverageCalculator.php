@@ -60,6 +60,7 @@ final readonly class CrossCoverageCalculator
         'DORA'            => ['label' => 'EU-DORA', 'total' => 45],
         'GDPR'            => ['label' => 'EU-GDPR (Wizard-Schwerpunkte)', 'total' => 10],
         'ISO27701'        => ['label' => 'ISO/IEC 27701 (PIMS)', 'total' => 49],
+        'NIS2'            => ['label' => 'EU-NIS2 (Art. 21)', 'total' => 10],
     ];
 
     /**
@@ -93,6 +94,7 @@ final readonly class CrossCoverageCalculator
      */
     private const array SECTION_EXTENSION_FRAMEWORK_MAP = [
         'dora' => 'DORA',
+        'nis2' => 'NIS2',
     ];
 
     public function __construct(
@@ -126,6 +128,17 @@ final readonly class CrossCoverageCalculator
             $coveredRefsByFramework[$code] = [];
         }
         $coveredRefsByFramework['GDPR'] = [];
+
+        // Pre-populate slots for standards whose coverage comes exclusively
+        // from section-extension catalogues (i.e. not from FIELD_ACCESSORS).
+        // Without this, the first array_merge below would trigger an
+        // "Undefined array key" warning and the coverage loop would skip the code.
+        foreach ($run->getStandardsAdopted() ?? [] as $standardToken) {
+            $frameworkCode = self::SECTION_EXTENSION_FRAMEWORK_MAP[$standardToken] ?? null;
+            if ($frameworkCode !== null && !isset($coveredRefsByFramework[$frameworkCode])) {
+                $coveredRefsByFramework[$frameworkCode] = [];
+            }
+        }
 
         $documentToFrameworks = [];
 
