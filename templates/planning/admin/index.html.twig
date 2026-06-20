@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'planning' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 
 {% block title %}{{ 'planning.admin.title'|trans({}, 'planning') }} - Little ISMS Helper{% endblock %}
 
@@ -24,6 +25,13 @@
         { label: 'planning.task.action.create'|trans({}, 'planning'), variant: 'primary', icon: 'plus', href: path('app_planning_task_new') }
     ]
 }) }}
+
+{% set _global_hints = alva_hints('planning_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
 
 <main class="fa-aurora-surface">
 <div class="container">
