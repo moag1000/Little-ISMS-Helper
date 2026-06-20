@@ -16,17 +16,17 @@
   },
   "candidates": [
     {
-      "target": "A16-1",
+      "target": "CO-01",
       "mappingPercentage": 60,
       "rationale": "BSI-C5 COM-04 — The existing COM-04->OIS-04 entry itself states COM-04's compliance-review and reporting-function parts are NOT covered by SoD (OIS-04) and instead live in EUCS A16 'Compliance and Information Security Reviews'; it even carries cross_refs:['A16-1'] but no actual mapping row. The inverse file confirms A16-1->COM-04 as partial_overlap. COM-04 is the Beauftragten-/Berichtswesen-Funktion (compliance steering + reporting + internal review), which is precisely the A16 review-program scope. This is a strongly defensible, currently-missing partial_overlap correspondence."
     },
     {
-      "target": "A18-1",
+      "target": "INQ-01",
       "mappingPercentage": 25,
       "rationale": "BSI-C5 COM-04 — The inverse mapping A18-1 (Investigative Requests from Government Agencies) explicitly cross-refs COM-04 ('regulatorische Steuerung' fragments existed under COM-04 before C5:2026 INQ existed). Since COM-04 carried the fragmentary regulatory/authority-handling content, a low-confidence partial_overlap COM-04->A18-1 is defensible and currently absent. Kept low because C5:2020 had no dedicated authority-request criterion; the bulk of A18 has no C5:2020 home (EUCS superset)."
     },
     {
-      "target": "A18-1",
+      "target": "INQ-01",
       "mappingPercentage": 25,
       "rationale": "BSI-C5 SSO-01 — The inverse mapping A18-1 (Investigative Requests from Government Agencies) explicitly cross-refs SSO-01, because C5:2020 captured authority-request handling only fragmentarily inside sub-provider/third-party contract clauses governed by SSO-01 ('Richtlinien fuer Beziehungen zu Dritten'). A low-confidence partial_overlap SSO-01->A18-1 is therefore defensible and currently missing. Kept low: SSO-01 is primarily a third-party-relationship policy, and A18 is largely a EUCS superset with no real C5:2020 counterpart."
     },

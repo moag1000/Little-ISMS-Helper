@@ -27,7 +27,7 @@ claim the same code the container fails to compile.
 | DORA             | `app:load-dora-requirements`               | `LoadDoraRequirementsCommand`             |
 | EU-AI-ACT        | `app:load-eu-ai-act-full`                  | `LoadEuAiActFullCommand`                  |
 | EU-CRA           | `app:load-eu-cra-full`                      | `LoadEuCraFullCommand`                    |
-| EUCS             | `app:load-eucs`                            | `LoadEucsFullCommand`                     |
+| EUCS             | `app:load-eucs-full`                       | `LoadEucsFullCommand`                     |
 | GDPR             | `app:load-gdpr-requirements`               | `LoadGdprRequirementsCommand`             |
 | GXP              | `app:load-gxp-requirements`                | `LoadGxpRequirementsCommand`              |
 | ISO-22301        | `app:load-iso22301-requirements`           | `LoadIso22301RequirementsCommand`         |

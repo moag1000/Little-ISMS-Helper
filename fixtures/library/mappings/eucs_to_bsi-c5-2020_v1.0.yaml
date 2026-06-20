@@ -96,7 +96,7 @@ mappings:
     audit_evidence_hint: 'SoD-Matrix für kritische Prozesse, Konflikt-Reviews, Rollen-Trennungs-Nachweise.'
 
   # ===== A2 — Information Security Policies =====
-  - source: 'A2-1'
+  - source: 'ISP-01'
     target: 'OPS-01'
     relationship: 'equivalent'
     confidence: 'high'
@@ -156,7 +156,7 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit Owner-Feld, Klassifikation, Stichtagsabgleich CMDB ↔ Cloud-Provisioning, mandanten-relevante Assets.'
 
   # ===== A5 — Physical Security =====
-  - source: 'A5-1'
+  - source: 'PS-01'
     target: null
     relationship: 'superset'
     confidence: 'low'
@@ -175,7 +175,7 @@ mappings:
     audit_evidence_hint: 'TIER-Zertifizierung des RZ, Perimeter-Dokumentation, Zutrittskontroll-Logs, Umwelt-Monitoring (Brand/Wasser/Klima).'
 
   # ===== A6 — Operational Security =====
-  - source: 'OS-01'
+  - source: 'OPS-04'
     target: 'OPS-15'
     relationship: 'equivalent'
     confidence: 'high'
@@ -188,7 +188,7 @@ mappings:
     cross_refs: ['OPS-10']
     audit_evidence_hint: 'AV/EDR-Coverage-Report, Update-Frequenz-Nachweise, Quarantäne-Statistiken, dokumentiertes Schutz-Konzept.'
 
-  - source: 'OS-02'
+  - source: 'OPS-10'
     target: 'OPS-10'
     relationship: 'equivalent'
     confidence: 'high'
@@ -200,7 +200,7 @@ mappings:
     cross_refs: ['OPS-11']
     audit_evidence_hint: 'SIEM-Use-Case-Katalog, Alert-MTTR-Statistik, 24/7-Coverage-Nachweis (SOC), Log-Retention-Konfiguration.'
 
-  - source: 'OS-03'
+  - source: 'OPS-17'
     target: 'OPS-18'
     relationship: 'equivalent'
     confidence: 'high'
@@ -288,7 +288,7 @@ mappings:
     audit_evidence_hint: 'API-Dokumentation, Datenexport-Funktionalität, Input-Validation, Daten-Lösch-Konzept.'
 
   # ===== A11 — Change and Configuration Management =====
-  - source: 'A11-1'
+  - source: 'CCM-01'
     target: 'OPS-06'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -390,7 +390,7 @@ mappings:
     audit_evidence_hint: 'BC-Strategie, Top-Management-Freigabe, BIA, BC-Plans, Übungs-Reports der letzten 12 Monate.'
 
   # ===== A16 — Compliance and Information Security Reviews =====
-  - source: 'A16-1'
+  - source: 'CO-01'
     target: 'COM-04'
     relationship: 'partial_overlap'
     confidence: 'low'
@@ -410,7 +410,7 @@ mappings:
     audit_evidence_hint: 'Compliance-Anforderungs-Register, Audit-Plan, Audit-Reports letzte 24 Monate, Maßnahmen-Tracking aus Findings.'
 
   # ===== A17 — User Documentation =====
-  - source: 'A17-1'
+  - source: 'DOC-01'
     target: null
     relationship: 'superset'
     confidence: 'low'
@@ -431,7 +431,7 @@ mappings:
     audit_evidence_hint: 'Shared-Responsibility-Matrix, Customer-Hardening-Guides, Security-Bulletin-Archiv, Onboarding-Schulungs-Material.'
 
   # ===== A18 — Investigative Requests from Government Agencies =====
-  - source: 'A18-1'
+  - source: 'INQ-01'
     target: null
     relationship: 'superset'
     confidence: 'low'
@@ -453,7 +453,7 @@ mappings:
     audit_evidence_hint: 'Behördenanfrage-Prozess-Dokumentation, Legal-Review-Protokolle, Transparenzbericht, MLAT-Verfahren-Liste.'
 
   # ===== A19 — Product Safety and Security =====
-  - source: 'A19-1'
+  - source: 'PSS-01'
     target: 'DEV-01'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -472,7 +472,7 @@ mappings:
     audit_evidence_hint: 'Produkt-Sicherheits-Konzept, Hardening-Berichte, Image-Signing-Nachweise, SBOM pro Release.'
 
   # ===== A20 — Awareness and Training =====
-  - source: 'AT-01'
+  - source: 'HR-04'
     target: 'HR-03'
     relationship: 'equivalent'
     confidence: 'high'
@@ -487,7 +487,7 @@ mappings:
     cross_refs: ['HR-01']
     audit_evidence_hint: 'Schulungs-Quote (≥95%), Phishing-Drill-Ergebnisse, rollenspezifische Curricula für Privileged Users, Onboarding-Nachweise.'
 
-  - source: 'AT-02'
+  - source: 'HR-01'
     target: 'HR-01'
     relationship: 'partial_overlap'
     confidence: 'medium'

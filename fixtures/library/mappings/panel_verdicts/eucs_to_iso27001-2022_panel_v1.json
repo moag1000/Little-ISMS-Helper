@@ -22,140 +22,140 @@
   },
   "verdicts": [
     {
-      "eucs": "EUCS-A1",
+      "eucs": "OIS-01",
       "iso": "A.5.2",
       "state": "ki_validiert",
       "mappingPercentage": 70,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A2",
+      "eucs": "ISP-01",
       "iso": "A.5.1",
       "state": "ki_validiert",
       "mappingPercentage": 95,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A3",
+      "eucs": "RM-01",
       "iso": "A.5.4",
       "state": "reject",
       "mappingPercentage": 0,
       "realVotes": 0
     },
     {
-      "eucs": "EUCS-A4",
+      "eucs": "AM-01",
       "iso": "A.5.9",
       "state": "ki_validiert",
       "mappingPercentage": 90,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A5",
+      "eucs": "PS-01",
       "iso": "A.7.1",
       "state": "ki_validiert",
       "mappingPercentage": 75,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A6",
+      "eucs": "OPS-01",
       "iso": "A.8.16",
       "state": "ki_validiert",
       "mappingPercentage": 55,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A7",
+      "eucs": "IAM-01",
       "iso": "A.5.15",
       "state": "ki_validiert",
       "mappingPercentage": 85,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A8",
+      "eucs": "CKM-01",
       "iso": "A.8.24",
       "state": "ki_validiert",
       "mappingPercentage": 92,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A9",
+      "eucs": "CS-01",
       "iso": "A.8.20",
       "state": "ki_validiert",
       "mappingPercentage": 72,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A10",
+      "eucs": "PI-01",
       "iso": "A.5.23",
       "state": "ki_validiert",
       "mappingPercentage": 55,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A11",
+      "eucs": "CCM-01",
       "iso": "A.8.32",
       "state": "ki_validiert",
       "mappingPercentage": 75,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A12",
+      "eucs": "DEV-01",
       "iso": "A.8.25",
       "state": "ki_validiert",
       "mappingPercentage": 85,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A13",
+      "eucs": "PM-01",
       "iso": "A.5.19",
       "state": "ki_validiert",
       "mappingPercentage": 88,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A14",
+      "eucs": "IM-01",
       "iso": "A.5.24",
       "state": "ki_validiert",
       "mappingPercentage": 85,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A15",
+      "eucs": "BC-01",
       "iso": "A.5.29",
       "state": "ki_validiert",
       "mappingPercentage": 80,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A16",
+      "eucs": "CO-01",
       "iso": "A.5.35",
       "state": "ki_validiert",
       "mappingPercentage": 70,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A17",
+      "eucs": "DOC-01",
       "iso": "A.5.37",
       "state": "ki_validiert",
       "mappingPercentage": 45,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A18",
+      "eucs": "INQ-01",
       "iso": "A.5.34",
       "state": "reject",
       "mappingPercentage": 50,
       "realVotes": 1
     },
     {
-      "eucs": "EUCS-A19",
+      "eucs": "PSS-01",
       "iso": "A.8.25",
       "state": "ki_validiert",
       "mappingPercentage": 70,
       "realVotes": 4
     },
     {
-      "eucs": "EUCS-A20",
+      "eucs": "HR-04",
       "iso": "A.6.3",
       "state": "ki_validiert",
       "mappingPercentage": 95,

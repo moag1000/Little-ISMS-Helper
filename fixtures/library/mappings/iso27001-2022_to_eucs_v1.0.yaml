@@ -1,4 +1,3 @@
-# TODO: EUCS-A1.. ids are a non-authentic scheme; remap to real EUCS control ids (OIS-01 etc.) using an authoritative EUCS<->ISO27001 crosswalk.
 schema_version: '1.1'
 library:
   type: mapping
@@ -57,7 +56,7 @@ library:
 mappings:
   # === EUCS A1 Organization of Information Security ===
   - source: 'A.5.2'
-    target: 'EUCS-A1'
+    target: 'OIS-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -68,7 +67,7 @@ mappings:
     audit_evidence_hint: 'Organigramm mit ISMS-Rollen, Stellenbeschreibungen mit Sicherheitsverantwortlichkeiten, RACI-Matrix.'
 
   - source: 'A.5.3'
-    target: 'EUCS-A1'
+    target: 'OIS-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -80,7 +79,7 @@ mappings:
 
   # === EUCS A2 Information Security Policies ===
   - source: 'A.5.1'
-    target: 'EUCS-A2'
+    target: 'ISP-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -92,7 +91,7 @@ mappings:
 
   # === EUCS A3 Risk Management ===
   - source: 'A.5.4'
-    target: 'EUCS-A3'
+    target: 'RM-01'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -104,7 +103,7 @@ mappings:
 
   # === EUCS A4 Asset Management ===
   - source: 'A.5.9'
-    target: 'EUCS-A4'
+    target: 'AM-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -115,7 +114,7 @@ mappings:
     audit_evidence_hint: 'Asset-Register mit Owner, Klassifikation, Retention. CMDB-Auszug.'
 
   - source: 'A.5.10'
-    target: 'EUCS-A4'
+    target: 'AM-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -124,7 +123,7 @@ mappings:
       Cloud-Tenant-AUP ist eigenständig zu definieren.
 
   - source: 'A.5.12'
-    target: 'EUCS-A4'
+    target: 'AM-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -134,7 +133,7 @@ mappings:
 
   # === EUCS A5 Physical Security ===
   - source: 'A.7.1'
-    target: 'EUCS-A5'
+    target: 'PS-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -144,7 +143,7 @@ mappings:
     audit_evidence_hint: 'Datacenter-Audit-Report, Perimeter-Sicherungsbericht, Tier-Zertifikat (z.B. TIA-942).'
 
   - source: 'A.7.4'
-    target: 'EUCS-A5'
+    target: 'PS-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -152,7 +151,7 @@ mappings:
       als Teilaspekt von EUCS A5 ab; nur einer von mehreren Pflichtaspekten.
 
   - source: 'A.7.11'
-    target: 'EUCS-A5'
+    target: 'PS-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -161,7 +160,7 @@ mappings:
 
   # === EUCS A6 Operational Security ===
   - source: 'A.5.7'
-    target: 'EUCS-A6'
+    target: 'OPS-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -171,7 +170,7 @@ mappings:
     audit_evidence_hint: 'Threat-Intel-Quellen-Liste, Sharing-Protokolle (CERT, ISACs), TI-Reports.'
 
   - source: 'A.8.7'
-    target: 'EUCS-A6'
+    target: 'OPS-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -180,7 +179,7 @@ mappings:
     audit_evidence_hint: 'AV/EDR-Coverage-Report, Malware-IR-Protokolle.'
 
   - source: 'A.8.8'
-    target: 'EUCS-A6'
+    target: 'OPS-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -189,7 +188,7 @@ mappings:
     audit_evidence_hint: 'Patch-Compliance-Dashboard, Vuln-Scan-Reports, Remediation-Tracking.'
 
   - source: 'A.8.16'
-    target: 'EUCS-A6'
+    target: 'OPS-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -198,7 +197,7 @@ mappings:
     audit_evidence_hint: 'SIEM-Use-Cases, Alert-Statistiken, SOC-Schichtprotokolle.'
 
   - source: 'A.8.15'
-    target: 'EUCS-A6'
+    target: 'OPS-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -207,7 +206,7 @@ mappings:
       Tenant-Log-Trennung in ISO nicht explizit gefordert.
 
   - source: 'A.8.6'
-    target: 'EUCS-A6'
+    target: 'OPS-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -216,7 +215,7 @@ mappings:
 
   # === EUCS A7 Identity, Authentication and Access Control ===
   - source: 'A.5.15'
-    target: 'EUCS-A7'
+    target: 'IAM-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -226,7 +225,7 @@ mappings:
     audit_evidence_hint: 'Access-Control-Policy, Berechtigungsmatrix, Joiner/Mover/Leaver-Prozess.'
 
   - source: 'A.5.16'
-    target: 'EUCS-A7'
+    target: 'IAM-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -235,7 +234,7 @@ mappings:
       nicht explizit verlangt.
 
   - source: 'A.5.17'
-    target: 'EUCS-A7'
+    target: 'IAM-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -243,7 +242,7 @@ mappings:
       (Passwort-Policy, Token-Mgmt) Teil von EUCS A7; nur ein Aspekt.
 
   - source: 'A.5.18'
-    target: 'EUCS-A7'
+    target: 'IAM-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -252,7 +251,7 @@ mappings:
     audit_evidence_hint: 'Access-Review-Reports (mind. 6-monatlich), Rezertifizierungsnachweise.'
 
   - source: 'A.8.2'
-    target: 'EUCS-A7'
+    target: 'IAM-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -261,7 +260,7 @@ mappings:
     audit_evidence_hint: 'PAM-Tool-Logs, Just-in-Time-Access-Protokolle, Session-Recording.'
 
   - source: 'A.8.3'
-    target: 'EUCS-A7'
+    target: 'IAM-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -271,7 +270,7 @@ mappings:
     gap_warning: 'Tenant-Isolation auf Storage/Network/Compute-Ebene ist Cloud-spezifisch und benötigt zusätzliche EUCS-Kriterien.'
 
   - source: 'A.8.5'
-    target: 'EUCS-A7'
+    target: 'IAM-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -281,7 +280,7 @@ mappings:
 
   # === EUCS A8 Cryptography and Key Management ===
   - source: 'A.8.24'
-    target: 'EUCS-A8'
+    target: 'CKM-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -292,7 +291,7 @@ mappings:
 
   # === EUCS A9 Communication Security ===
   - source: 'A.8.20'
-    target: 'EUCS-A9'
+    target: 'CS-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -302,7 +301,7 @@ mappings:
     audit_evidence_hint: 'Netzwerkdiagramm, Firewall-Ruleset-Review, Segmentierungs-Audit.'
 
   - source: 'A.8.21'
-    target: 'EUCS-A9'
+    target: 'CS-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -310,7 +309,7 @@ mappings:
       (DNS, NTP, Mail) Teil von EUCS A9; nur ein Aspekt.
 
   - source: 'A.8.22'
-    target: 'EUCS-A9'
+    target: 'CS-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -319,7 +318,7 @@ mappings:
     audit_evidence_hint: 'VLAN/VPC-Topologie, Segregations-Audit-Report.'
 
   - source: 'A.8.23'
-    target: 'EUCS-A9'
+    target: 'CS-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -328,7 +327,7 @@ mappings:
 
   # === EUCS A11 Change and Configuration Management ===
   - source: 'A.8.32'
-    target: 'EUCS-A11'
+    target: 'CCM-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -337,7 +336,7 @@ mappings:
     audit_evidence_hint: 'CAB-Protokolle, Change-Tickets mit Approval-Trail, Rollback-Plaene.'
 
   - source: 'A.8.9'
-    target: 'EUCS-A11'
+    target: 'CCM-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -347,7 +346,7 @@ mappings:
 
   # === EUCS A12 Development of Information Systems ===
   - source: 'A.8.25'
-    target: 'EUCS-A12'
+    target: 'DEV-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -356,7 +355,7 @@ mappings:
     cross_refs: ['A.8.26', 'A.8.27', 'A.8.28']
 
   - source: 'A.8.26'
-    target: 'EUCS-A12'
+    target: 'DEV-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -364,7 +363,7 @@ mappings:
       SDLC-Eingangsphase, Teil von EUCS A12; nur Eingangsphase.
 
   - source: 'A.8.28'
-    target: 'EUCS-A12'
+    target: 'DEV-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -373,7 +372,7 @@ mappings:
     audit_evidence_hint: 'Secure-Coding-Guidelines, SAST/DAST-Reports, Code-Review-Protokolle.'
 
   - source: 'A.8.29'
-    target: 'EUCS-A12'
+    target: 'DEV-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -381,7 +380,7 @@ mappings:
       Testing (SAST/DAST/IAST/Pentest) Pflicht in EUCS A12.
 
   - source: 'A.8.31'
-    target: 'EUCS-A12'
+    target: 'DEV-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -390,7 +389,7 @@ mappings:
 
   # === EUCS A13 Procurement and Suppliers ===
   - source: 'A.5.19'
-    target: 'EUCS-A13'
+    target: 'PM-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -401,7 +400,7 @@ mappings:
     audit_evidence_hint: 'Supplier-Register mit Risk-Tier, AVV-Verträge, Audit-Reports.'
 
   - source: 'A.5.20'
-    target: 'EUCS-A13'
+    target: 'PM-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -409,7 +408,7 @@ mappings:
       — Vertragsklauseln mit Security-SLAs Teil von EUCS A13.
 
   - source: 'A.5.21'
-    target: 'EUCS-A13'
+    target: 'PM-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -417,7 +416,7 @@ mappings:
       Supply-Chain-Risk besonders Cloud-relevant (EUCS A13).
 
   - source: 'A.5.22'
-    target: 'EUCS-A13'
+    target: 'PM-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -426,7 +425,7 @@ mappings:
     audit_evidence_hint: 'Supplier-KPI-Dashboards, Audit-Schedule, Vertragsänderungs-Logs.'
 
   - source: 'A.5.23'
-    target: 'EUCS-A13'
+    target: 'PM-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -435,7 +434,7 @@ mappings:
 
   # === EUCS A14 Incident Management ===
   - source: 'A.5.24'
-    target: 'EUCS-A14'
+    target: 'IM-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -445,7 +444,7 @@ mappings:
     audit_evidence_hint: 'IR-Plan, IR-Übungen (mind. jährlich), IR-Reports.'
 
   - source: 'A.5.25'
-    target: 'EUCS-A14'
+    target: 'IM-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -453,7 +452,7 @@ mappings:
       Event-Triage als Teilaspekt von EUCS A14.
 
   - source: 'A.5.26'
-    target: 'EUCS-A14'
+    target: 'IM-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -461,7 +460,7 @@ mappings:
       Phase Teil von EUCS A14 mit Tenant-Notifizierung.
 
   - source: 'A.5.27'
-    target: 'EUCS-A14'
+    target: 'IM-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -469,7 +468,7 @@ mappings:
       für kontinuierliche Verbesserung in EUCS A14.
 
   - source: 'A.5.28'
-    target: 'EUCS-A14'
+    target: 'IM-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -479,7 +478,7 @@ mappings:
 
   # === EUCS A15 Business Continuity ===
   - source: 'A.5.29'
-    target: 'EUCS-A15'
+    target: 'BC-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -489,7 +488,7 @@ mappings:
     audit_evidence_hint: 'BC-Pläne, BIA, RTO/RPO-Definitionen, Übungsprotokolle.'
 
   - source: 'A.5.30'
-    target: 'EUCS-A15'
+    target: 'BC-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -497,7 +496,7 @@ mappings:
       Pflicht in EUCS A15 (Cloud: Multi-Region-DR-Strategien).
 
   - source: 'A.8.13'
-    target: 'EUCS-A15'
+    target: 'BC-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -506,7 +505,7 @@ mappings:
     audit_evidence_hint: 'Backup-Logs, Restore-Test-Protokolle (mind. quartalsweise), Offsite-Replikations-Nachweise.'
 
   - source: 'A.8.14'
-    target: 'EUCS-A15'
+    target: 'BC-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -515,7 +514,7 @@ mappings:
 
   # === EUCS A16 Compliance and Information Security Reviews ===
   - source: 'A.5.31'
-    target: 'EUCS-A16'
+    target: 'CO-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -525,7 +524,7 @@ mappings:
     audit_evidence_hint: 'Compliance-Register, Rechts-Monitoring, Anwaltsmeinungen bei DSGVO/Schrems-II.'
 
   - source: 'A.5.32'
-    target: 'EUCS-A16'
+    target: 'CO-01'
     relationship: 'subset'
     confidence: 'low'
     rationale: |
@@ -533,7 +532,7 @@ mappings:
       aber peripher; Cloud-Compliance fokussiert primär auf Datenschutz/Recht.
 
   - source: 'A.5.33'
-    target: 'EUCS-A16'
+    target: 'CO-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -541,7 +540,7 @@ mappings:
       für Records Teil von EUCS A16.
 
   - source: 'A.5.34'
-    target: 'EUCS-A16'
+    target: 'CO-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -550,7 +549,7 @@ mappings:
     audit_evidence_hint: 'Auftragsverarbeitungsverträge, TIA (Schrems-II), DSFAs.'
 
   - source: 'A.5.35'
-    target: 'EUCS-A16'
+    target: 'CO-01'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
@@ -558,7 +557,7 @@ mappings:
       (z.B. C5, ISO, SOC2) Pflicht in EUCS A16.
 
   - source: 'A.5.36'
-    target: 'EUCS-A16'
+    target: 'CO-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -566,7 +565,7 @@ mappings:
       security" — interne Compliance-Reviews Teil von EUCS A16.
 
   - source: 'A.8.34'
-    target: 'EUCS-A16'
+    target: 'CO-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
@@ -575,7 +574,7 @@ mappings:
 
   # === EUCS A20 Awareness and Training ===
   - source: 'A.6.3'
-    target: 'EUCS-A20'
+    target: 'HR-04'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -585,7 +584,7 @@ mappings:
     audit_evidence_hint: 'Schulungs-Quote, Curriculum, Phishing-Drill-Ergebnisse, Onboarding-Protokolle.'
 
   - source: 'A.6.1'
-    target: 'EUCS-A20'
+    target: 'HR-04'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -594,7 +593,7 @@ mappings:
     cross_refs: ['A.6.2']
 
   - source: 'A.6.5'
-    target: 'EUCS-A20'
+    target: 'HR-04'
     relationship: 'related'
     confidence: 'medium'
     rationale: |

@@ -172,7 +172,7 @@ mappings:
 
   # ===== HR / PSC — Personal =====
   - source: 'HR-03'
-    target: 'AT-01'
+    target: 'HR-04'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -185,7 +185,7 @@ mappings:
     audit_evidence_hint: 'Schulungs-Quote (≥95%), Phishing-Drill-Ergebnisse, rollenspezifische Curricula für Privileged Users.'
 
   - source: 'HR-01'
-    target: 'AT-02'
+    target: 'HR-01'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -237,7 +237,7 @@ mappings:
 
   # ===== OPS — Betrieb =====
   - source: 'OPS-01'
-    target: 'A2-1'
+    target: 'ISP-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -249,7 +249,7 @@ mappings:
     audit_evidence_hint: 'Verabschiedete InfoSec-Leitlinie mit Management-Freigabe-Datum, jährliche Review-Protokolle.'
 
   - source: 'OPS-10'
-    target: 'OS-02'
+    target: 'OPS-10'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -261,7 +261,7 @@ mappings:
     audit_evidence_hint: 'SIEM-Use-Case-Katalog, Alert-MTTR-Statistik, 24/7-Coverage-Nachweis (SOC), Log-Retention-Konfiguration.'
 
   - source: 'OPS-15'
-    target: 'OS-01'
+    target: 'OPS-04'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -272,7 +272,7 @@ mappings:
     audit_evidence_hint: 'AV/EDR-Coverage-Report, Update-Frequenz-Nachweise, Quarantäne-Statistiken, dokumentiertes Schutz-Konzept.'
 
   - source: 'OPS-18'
-    target: 'OS-03'
+    target: 'OPS-17'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
@@ -299,7 +299,7 @@ mappings:
 
   # ===== RB — Regelbetrieb =====
   - source: 'OPS-06'
-    target: 'A11-1'
+    target: 'CCM-01'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
