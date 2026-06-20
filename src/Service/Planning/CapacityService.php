@@ -8,6 +8,7 @@ use App\Entity\Person;
 use App\Entity\Team;
 use App\Entity\Tenant;
 use App\Entity\UnavailabilityPeriod;
+use App\Repository\PlanningSettingsRepository;
 use App\Repository\UnavailabilityCalendarRepository;
 use DateTimeImmutable;
 
@@ -32,12 +33,29 @@ final class CapacityService
 
     public function __construct(
         private readonly UnavailabilityCalendarRepository $calendarRepository,
+        private readonly PlanningSettingsRepository $planningSettingsRepository,
     ) {
     }
 
-    public function fullTimePtPerWeek(): float
+    /**
+     * Full-time person-days per week for the given tenant.
+     *
+     * Resolves the two constants from the tenant's PlanningSettings when
+     * available; falls back to the class constants (40 h/week ÷ 8 h/day = 5)
+     * when no settings row exists or when either field is null.
+     */
+    public function fullTimePtPerWeek(?Tenant $tenant = null): float
     {
-        return self::DEFAULT_FULLTIME_HOURS_PER_WEEK / self::DEFAULT_HOURS_PER_DAY;
+        $hoursPerWeek = self::DEFAULT_FULLTIME_HOURS_PER_WEEK;
+        $hoursPerDay  = self::DEFAULT_HOURS_PER_DAY;
+
+        if ($tenant !== null) {
+            $settings = $this->planningSettingsRepository->getOrCreate($tenant);
+            $hoursPerWeek = $settings->getFullTimeHoursPerWeek() ?? self::DEFAULT_FULLTIME_HOURS_PER_WEEK;
+            $hoursPerDay  = $settings->getHoursPerDay()          ?? self::DEFAULT_HOURS_PER_DAY;
+        }
+
+        return $hoursPerWeek / $hoursPerDay;
     }
 
     /**
@@ -78,7 +96,7 @@ final class CapacityService
     /** Available person-days for one person in one ISO week. */
     public function personAvailablePt(Person $person, Tenant $tenant, int $isoYear, int $isoWeek): float
     {
-        $baseline = $person->getBaselinePtPerWeek($this->fullTimePtPerWeek());
+        $baseline = $person->getBaselinePtPerWeek($this->fullTimePtPerWeek($tenant));
         $unavailableFraction = $this->unavailableWorkdays($tenant, $isoYear, $isoWeek) / self::WORKDAYS_PER_WEEK;
 
         return round($baseline * (1.0 - $unavailableFraction), 2);

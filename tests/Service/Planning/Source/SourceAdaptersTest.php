@@ -25,14 +25,43 @@ use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\ManagementReviewRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Entity\DataBreach;
+use App\Entity\DataProtectionImpactAssessment;
+use App\Entity\DataSubjectRequest;
+use App\Entity\FourEyesApprovalRequest;
+use App\Entity\PolicyAcknowledgement;
+use App\Entity\Risk;
+use App\Entity\TrainingParticipation;
+use App\Entity\WorkflowInstance;
+use App\Enum\DataBreachStatus;
+use App\Enum\DpiaStatus;
+use App\Enum\RiskStatus;
+use App\Enum\TreatmentStrategy;
+use App\Enum\WorkflowInstanceStatus;
+use App\Repository\DataBreachRepository;
+use App\Repository\DataProtectionImpactAssessmentRepository;
+use App\Repository\DataSubjectRequestRepository;
+use App\Repository\FourEyesApprovalRequestRepository;
+use App\Repository\PolicyAcknowledgementRepository;
+use App\Repository\RiskRepository;
+use App\Repository\TrainingParticipationRepository;
+use App\Repository\WorkflowInstanceRepository;
 use App\Service\Planning\Source\Adapter\AuditFindingAdapter;
 use App\Service\Planning\Source\Adapter\ChangeRequestAdapter;
 use App\Service\Planning\Source\Adapter\CorrectiveActionAdapter;
+use App\Service\Planning\Source\Adapter\DataBreachAdapter;
+use App\Service\Planning\Source\Adapter\DataSubjectRequestAdapter;
 use App\Service\Planning\Source\Adapter\DocumentReviewAdapter;
+use App\Service\Planning\Source\Adapter\DpiaAdapter;
+use App\Service\Planning\Source\Adapter\FourEyesAdapter;
 use App\Service\Planning\Source\Adapter\IncidentAdapter;
 use App\Service\Planning\Source\Adapter\InternalAuditAdapter;
 use App\Service\Planning\Source\Adapter\ManagementReviewAdapter;
+use App\Service\Planning\Source\Adapter\PolicyAckAdapter;
+use App\Service\Planning\Source\Adapter\RiskTreatmentAdapter;
+use App\Service\Planning\Source\Adapter\TrainingParticipationAdapter;
 use App\Service\Planning\Source\Adapter\VulnerabilityAdapter;
+use App\Service\Planning\Source\Adapter\WorkflowInstanceAdapter;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
@@ -628,5 +657,513 @@ final class SourceAdaptersTest extends TestCase
         // regardless of document lifecycle status (draft, published, archived…)
         $item = new Document();
         self::assertFalse($adapter->isCompleted($item));
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // RiskTreatmentAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testRiskTreatmentAdapterMeta(): void
+    {
+        $adapter = new RiskTreatmentAdapter(
+            $this->createStub(RiskRepository::class),
+        );
+
+        self::assertSame('risk_treatment', $adapter->slug());
+        self::assertNull($adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testRiskTreatmentAdapterDueDateAndTitle(): void
+    {
+        $adapter = new RiskTreatmentAdapter(
+            $this->createStub(RiskRepository::class),
+        );
+
+        $expiry = new DateTimeImmutable('2027-01-31');
+        $item = (new Risk())
+            ->setTitle('Outdated SaaS contract')
+            ->setAcceptanceExpiryDate($expiry)
+            ->setTreatmentStrategy(TreatmentStrategy::Accept)
+            ->setStatus(RiskStatus::Accepted);
+
+        self::assertSame($expiry, $adapter->dueDateOf($item));
+        self::assertSame('Outdated SaaS contract', $adapter->titleOf($item));
+    }
+
+    public function testRiskTreatmentAdapterIsCompletedFalseForOpenStatuses(): void
+    {
+        $adapter = new RiskTreatmentAdapter(
+            $this->createStub(RiskRepository::class),
+        );
+
+        foreach ([
+            RiskStatus::Identified,
+            RiskStatus::Assessed,
+            RiskStatus::InTreatment,
+            RiskStatus::Accepted,
+        ] as $openStatus) {
+            $item = (new Risk())->setStatus($openStatus);
+            self::assertFalse(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=false for status={$openStatus->value}",
+            );
+        }
+    }
+
+    public function testRiskTreatmentAdapterIsCompletedTrueForTerminalStatuses(): void
+    {
+        $adapter = new RiskTreatmentAdapter(
+            $this->createStub(RiskRepository::class),
+        );
+
+        foreach ([RiskStatus::Closed, RiskStatus::Monitored] as $terminalStatus) {
+            $item = (new Risk())->setStatus($terminalStatus);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminalStatus->value}",
+            );
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // DataSubjectRequestAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testDsrAdapterMeta(): void
+    {
+        $adapter = new DataSubjectRequestAdapter(
+            $this->createStub(DataSubjectRequestRepository::class),
+        );
+
+        self::assertSame('dsr', $adapter->slug());
+        self::assertSame('privacy', $adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testDsrAdapterDueDateAndTitle(): void
+    {
+        $adapter = new DataSubjectRequestAdapter(
+            $this->createStub(DataSubjectRequestRepository::class),
+        );
+
+        $deadline = new DateTimeImmutable('2026-09-30');
+        $item = (new DataSubjectRequest())
+            ->setRequestType('access')
+            ->setDeadlineAt($deadline);
+
+        self::assertSame($deadline, $adapter->dueDateOf($item));
+        self::assertStringContainsString('access', $adapter->titleOf($item));
+    }
+
+    public function testDsrAdapterIsCompletedFalseForOpenStatuses(): void
+    {
+        $adapter = new DataSubjectRequestAdapter(
+            $this->createStub(DataSubjectRequestRepository::class),
+        );
+
+        foreach (['received', 'identity_verification', 'in_progress', 'extended'] as $open) {
+            $item = (new DataSubjectRequest())->setStatus($open);
+            self::assertFalse(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=false for status={$open}",
+            );
+        }
+    }
+
+    public function testDsrAdapterIsCompletedTrueForTerminalStatuses(): void
+    {
+        $adapter = new DataSubjectRequestAdapter(
+            $this->createStub(DataSubjectRequestRepository::class),
+        );
+
+        foreach (['completed', 'rejected'] as $terminal) {
+            $item = (new DataSubjectRequest())->setStatus($terminal);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminal}",
+            );
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // DataBreachAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testDataBreachAdapterMeta(): void
+    {
+        $adapter = new DataBreachAdapter(
+            $this->createStub(DataBreachRepository::class),
+        );
+
+        self::assertSame('data_breach', $adapter->slug());
+        self::assertSame('privacy', $adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testDataBreachAdapterDueDateDerived72h(): void
+    {
+        $adapter = new DataBreachAdapter(
+            $this->createStub(DataBreachRepository::class),
+        );
+
+        $detectedAt = new DateTimeImmutable('2026-10-01 10:00:00');
+        $item = (new DataBreach())
+            ->setTitle('Email leak')
+            ->setReferenceNumber('BREACH-2026-001')
+            ->setDetectedAt($detectedAt);
+
+        $due = $adapter->dueDateOf($item);
+        self::assertNotNull($due);
+        // Derived: +72 hours = 2026-10-04 10:00:00
+        self::assertSame('2026-10-04 10:00:00', $due->format('Y-m-d H:i:s'));
+    }
+
+    public function testDataBreachAdapterDueDateIsSetOnFreshEntity(): void
+    {
+        $adapter = new DataBreachAdapter(
+            $this->createStub(DataBreachRepository::class),
+        );
+
+        // DataBreach constructor pre-fills detectedAt = now, so dueDateOf is never null
+        $item = new DataBreach();
+        // The due date is +72h from detectedAt (which is auto-set in constructor)
+        self::assertNotNull($adapter->dueDateOf($item));
+    }
+
+    public function testDataBreachAdapterIsCompletedFalseForOpenStatuses(): void
+    {
+        $adapter = new DataBreachAdapter(
+            $this->createStub(DataBreachRepository::class),
+        );
+
+        foreach ([DataBreachStatus::Draft, DataBreachStatus::UnderAssessment] as $open) {
+            $item = (new DataBreach())->setStatus($open);
+            self::assertFalse(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=false for status={$open->value}",
+            );
+        }
+    }
+
+    public function testDataBreachAdapterIsCompletedTrueForTerminalStatuses(): void
+    {
+        $adapter = new DataBreachAdapter(
+            $this->createStub(DataBreachRepository::class),
+        );
+
+        foreach ([
+            DataBreachStatus::AuthorityNotified,
+            DataBreachStatus::SubjectsNotified,
+            DataBreachStatus::Closed,
+        ] as $terminal) {
+            $item = (new DataBreach())->setStatus($terminal);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminal->value}",
+            );
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // PolicyAckAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testPolicyAckAdapterMeta(): void
+    {
+        $adapter = new PolicyAckAdapter(
+            $this->createStub(PolicyAcknowledgementRepository::class),
+        );
+
+        self::assertSame('policy_ack', $adapter->slug());
+        self::assertNull($adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testPolicyAckAdapterDueDateAlwaysNull(): void
+    {
+        $adapter = new PolicyAckAdapter(
+            $this->createStub(PolicyAcknowledgementRepository::class),
+        );
+
+        $item = new PolicyAcknowledgement();
+        self::assertNull($adapter->dueDateOf($item));
+    }
+
+    public function testPolicyAckAdapterIsCompletedFalseForPending(): void
+    {
+        $adapter = new PolicyAckAdapter(
+            $this->createStub(PolicyAcknowledgementRepository::class),
+        );
+
+        $item = (new PolicyAcknowledgement())->setStatus(PolicyAcknowledgement::STATUS_PENDING);
+        self::assertFalse($adapter->isCompleted($item));
+    }
+
+    public function testPolicyAckAdapterIsCompletedTrueForAcknowledged(): void
+    {
+        $adapter = new PolicyAckAdapter(
+            $this->createStub(PolicyAcknowledgementRepository::class),
+        );
+
+        $item = (new PolicyAcknowledgement())->setStatus(PolicyAcknowledgement::STATUS_ACKNOWLEDGED);
+        self::assertTrue($adapter->isCompleted($item));
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // TrainingParticipationAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testTrainingParticipationAdapterMeta(): void
+    {
+        $adapter = new TrainingParticipationAdapter(
+            $this->createStub(TrainingParticipationRepository::class),
+        );
+
+        self::assertSame('training', $adapter->slug());
+        self::assertSame('training', $adapter->requiredModule());
+        self::assertTrue($adapter->ownsRecurrence());
+    }
+
+    public function testTrainingParticipationAdapterDueDateAndTitle(): void
+    {
+        $adapter = new TrainingParticipationAdapter(
+            $this->createStub(TrainingParticipationRepository::class),
+        );
+
+        $item = new TrainingParticipation();
+        $assigned = $item->getAssignedAt(); // set in constructor
+        self::assertSame($assigned, $adapter->dueDateOf($item));
+    }
+
+    public function testTrainingParticipationAdapterIsCompletedFalseForOpen(): void
+    {
+        $adapter = new TrainingParticipationAdapter(
+            $this->createStub(TrainingParticipationRepository::class),
+        );
+
+        foreach ([
+            TrainingParticipation::STATUS_PENDING,
+            TrainingParticipation::STATUS_IN_PROGRESS,
+        ] as $open) {
+            $item = (new TrainingParticipation())->setStatus($open);
+            self::assertFalse(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=false for status={$open}",
+            );
+        }
+    }
+
+    public function testTrainingParticipationAdapterIsCompletedTrueForTerminal(): void
+    {
+        $adapter = new TrainingParticipationAdapter(
+            $this->createStub(TrainingParticipationRepository::class),
+        );
+
+        foreach ([
+            TrainingParticipation::STATUS_COMPLETED,
+            TrainingParticipation::STATUS_FAILED,
+            TrainingParticipation::STATUS_WAIVED,
+        ] as $terminal) {
+            $item = (new TrainingParticipation())->setStatus($terminal);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminal}",
+            );
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // WorkflowInstanceAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testWorkflowInstanceAdapterMeta(): void
+    {
+        $adapter = new WorkflowInstanceAdapter(
+            $this->createStub(WorkflowInstanceRepository::class),
+        );
+
+        self::assertSame('workflow', $adapter->slug());
+        self::assertSame('workflows', $adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testWorkflowInstanceAdapterDueDateAndTitle(): void
+    {
+        $adapter = new WorkflowInstanceAdapter(
+            $this->createStub(WorkflowInstanceRepository::class),
+        );
+
+        $due = new DateTimeImmutable('2026-11-15');
+        $item = (new WorkflowInstance())
+            ->setDueDate($due)
+            ->setStatus('pending');
+
+        self::assertSame($due, $adapter->dueDateOf($item));
+        self::assertStringStartsWith('Workflow #', $adapter->titleOf($item));
+    }
+
+    public function testWorkflowInstanceAdapterIsCompletedFalseForOpen(): void
+    {
+        $adapter = new WorkflowInstanceAdapter(
+            $this->createStub(WorkflowInstanceRepository::class),
+        );
+
+        foreach ([
+            WorkflowInstanceStatus::Pending,
+            WorkflowInstanceStatus::InProgress,
+        ] as $open) {
+            $item = (new WorkflowInstance())->setStatus($open->value);
+            self::assertFalse(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=false for status={$open->value}",
+            );
+        }
+    }
+
+    public function testWorkflowInstanceAdapterIsCompletedTrueForTerminal(): void
+    {
+        $adapter = new WorkflowInstanceAdapter(
+            $this->createStub(WorkflowInstanceRepository::class),
+        );
+
+        foreach ([
+            WorkflowInstanceStatus::Approved,
+            WorkflowInstanceStatus::Rejected,
+            WorkflowInstanceStatus::Cancelled,
+        ] as $terminal) {
+            $item = (new WorkflowInstance())->setStatus($terminal->value);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminal->value}",
+            );
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // FourEyesAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testFourEyesAdapterMeta(): void
+    {
+        $adapter = new FourEyesAdapter(
+            $this->createStub(FourEyesApprovalRequestRepository::class),
+        );
+
+        self::assertSame('four_eyes', $adapter->slug());
+        self::assertNull($adapter->requiredModule());
+        self::assertFalse($adapter->ownsRecurrence());
+    }
+
+    public function testFourEyesAdapterDueDateAndTitle(): void
+    {
+        $adapter = new FourEyesAdapter(
+            $this->createStub(FourEyesApprovalRequestRepository::class),
+        );
+
+        $item = new FourEyesApprovalRequest(); // expiresAt set in constructor to +7 days
+        $due = $adapter->dueDateOf($item);
+        self::assertNotNull($due);
+        self::assertSame(FourEyesApprovalRequest::ACTION_INHERITANCE_IMPLEMENT, $adapter->titleOf(
+            (new FourEyesApprovalRequest())->setActionType(FourEyesApprovalRequest::ACTION_INHERITANCE_IMPLEMENT),
+        ));
+    }
+
+    public function testFourEyesAdapterIsCompletedFalseForPending(): void
+    {
+        $adapter = new FourEyesAdapter(
+            $this->createStub(FourEyesApprovalRequestRepository::class),
+        );
+
+        $item = new FourEyesApprovalRequest(); // default status = pending
+        self::assertFalse($adapter->isCompleted($item));
+    }
+
+    public function testFourEyesAdapterIsCompletedTrueForNonPending(): void
+    {
+        $adapter = new FourEyesAdapter(
+            $this->createStub(FourEyesApprovalRequestRepository::class),
+        );
+
+        foreach ([
+            FourEyesApprovalRequest::STATUS_APPROVED,
+            FourEyesApprovalRequest::STATUS_REJECTED,
+            FourEyesApprovalRequest::STATUS_EXPIRED,
+        ] as $terminal) {
+            $item = (new FourEyesApprovalRequest())->setStatus($terminal);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminal}",
+            );
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // DpiaAdapter
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testDpiaAdapterMeta(): void
+    {
+        $adapter = new DpiaAdapter(
+            $this->createStub(DataProtectionImpactAssessmentRepository::class),
+        );
+
+        self::assertSame('dpia', $adapter->slug());
+        self::assertSame('privacy', $adapter->requiredModule());
+        self::assertTrue($adapter->ownsRecurrence());
+    }
+
+    public function testDpiaAdapterDueDateAndTitle(): void
+    {
+        $adapter = new DpiaAdapter(
+            $this->createStub(DataProtectionImpactAssessmentRepository::class),
+        );
+
+        $nextReview = new DateTimeImmutable('2027-03-01');
+        $item = (new DataProtectionImpactAssessment())
+            ->setTitle('DPIA — Customer Analytics')
+            ->setReferenceNumber('DPIA-2026-001')
+            ->setNextReviewDate($nextReview);
+
+        self::assertSame($nextReview, $adapter->dueDateOf($item));
+        self::assertSame('DPIA — Customer Analytics', $adapter->titleOf($item));
+    }
+
+    public function testDpiaAdapterIsCompletedFalseForOpenStatuses(): void
+    {
+        $adapter = new DpiaAdapter(
+            $this->createStub(DataProtectionImpactAssessmentRepository::class),
+        );
+
+        foreach ([
+            DpiaStatus::Draft,
+            DpiaStatus::InReview,
+            DpiaStatus::RequiresRevision,
+        ] as $open) {
+            $item = (new DataProtectionImpactAssessment())
+                ->setReferenceNumber('DPIA-X')
+                ->setStatus($open->value);
+            self::assertFalse(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=false for status={$open->value}",
+            );
+        }
+    }
+
+    public function testDpiaAdapterIsCompletedTrueForTerminalStatuses(): void
+    {
+        $adapter = new DpiaAdapter(
+            $this->createStub(DataProtectionImpactAssessmentRepository::class),
+        );
+
+        foreach ([DpiaStatus::Approved, DpiaStatus::Rejected] as $terminal) {
+            $item = (new DataProtectionImpactAssessment())
+                ->setReferenceNumber('DPIA-X')
+                ->setStatus($terminal->value);
+            self::assertTrue(
+                $adapter->isCompleted($item),
+                "Expected isCompleted=true for status={$terminal->value}",
+            );
+        }
     }
 }

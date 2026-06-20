@@ -4,6 +4,7 @@ nav:
     planning: 'Resource Planning'
     planning_measures: Measures
     planning_roadmap: 'Capacity roadmap'
+    planning_capacity_report: 'Capacity report'
     planning_admin: 'Planning master data'
     my_profile: 'My Profile'
     my_day: 'My Day'
@@ -182,6 +183,7 @@ nav:
         desc:
             planning_measures: 'CIP/PDCA measures with due date & evidence'
             planning_roadmap: 'Plan effort per calendar week'
+            planning_capacity_report: 'Σ capacity vs load — management-review input'
             planning_admin: 'Teams, roadmap tasks & person capacity'
             # Wave 5 — Prominent-Hero short-descriptions
             my_day_short: 'Today''s tasks and deadlines'

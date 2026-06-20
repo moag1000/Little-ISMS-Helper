@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,6 +56,8 @@ final class PlanningSettingsController extends AbstractController
                 'defaultRecurrenceMonths' => $settings->getDefaultRecurrenceMonths(),
                 'roadmapHorizonWeeks' => $settings->getRoadmapHorizonWeeks(),
                 'overbookingThresholdPct' => $settings->getOverbookingThresholdPct(),
+                'fullTimeHoursPerWeek' => $settings->getFullTimeHoursPerWeek() ?? 40.0,
+                'hoursPerDay' => $settings->getHoursPerDay() ?? 8.0,
                 'scopes' => implode("\n", $settings->getScopes()),
             ], ['translation_domain' => 'planning'])
             ->add('defaultRecurrenceMonths', IntegerType::class, [
@@ -68,6 +71,16 @@ final class PlanningSettingsController extends AbstractController
             ->add('overbookingThresholdPct', IntegerType::class, [
                 'label' => 'planning.settings.field.overbooking_threshold_pct',
                 'attr' => ['min' => 1, 'max' => 500],
+            ])
+            ->add('fullTimeHoursPerWeek', NumberType::class, [
+                'label' => 'planning.settings.field.full_time_hours_per_week',
+                'scale' => 1,
+                'attr' => ['min' => 1, 'step' => 0.5],
+            ])
+            ->add('hoursPerDay', NumberType::class, [
+                'label' => 'planning.settings.field.hours_per_day',
+                'scale' => 1,
+                'attr' => ['min' => 1, 'step' => 0.5],
             ])
             ->add('scopes', TextareaType::class, [
                 'label' => 'planning.settings.field.scopes',
@@ -86,6 +99,8 @@ final class PlanningSettingsController extends AbstractController
             $settings->setDefaultRecurrenceMonths((int) $data['defaultRecurrenceMonths']);
             $settings->setRoadmapHorizonWeeks((int) $data['roadmapHorizonWeeks']);
             $settings->setOverbookingThresholdPct((int) $data['overbookingThresholdPct']);
+            $settings->setFullTimeHoursPerWeek($data['fullTimeHoursPerWeek'] !== null ? (float) $data['fullTimeHoursPerWeek'] : null);
+            $settings->setHoursPerDay($data['hoursPerDay'] !== null ? (float) $data['hoursPerDay'] : null);
 
             $scopes = array_values(array_filter(array_map(
                 static fn (string $l): string => trim($l),
