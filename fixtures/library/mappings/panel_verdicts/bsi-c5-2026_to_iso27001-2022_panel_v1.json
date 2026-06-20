@@ -14,8 +14,8 @@
     "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
     "completeness": "127 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
     "verdict_counts": {
-      "total": 96,
-      "ki_validiert": 77,
+      "total": 123,
+      "ki_validiert": 104,
       "needs_review": 15,
       "reject": 4
     }
@@ -692,6 +692,222 @@
       "state": "needs_review",
       "mappingPercentage": 45,
       "realVotes": 2
+    },
+    {
+      "c5": "AM-07",
+      "iso": "A.8.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "AM-09",
+      "iso": "A.5.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "IAM-02",
+      "iso": "A.5.18",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "IAM-04",
+      "iso": "A.8.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 95,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "IAM-06",
+      "iso": "A.5.17",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "IAM-06",
+      "iso": "A.8.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "IAM-07",
+      "iso": "A.8.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "IAM-08",
+      "iso": "A.5.17",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "IAM-09",
+      "iso": "A.8.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "COS-01",
+      "iso": "A.8.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "COS-02",
+      "iso": "A.8.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "OPS-10",
+      "iso": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "OPS-14",
+      "iso": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "OPS-15",
+      "iso": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "OPS-30",
+      "iso": "A.5.12",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "SIM-02",
+      "iso": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "SIM-03",
+      "iso": "A.6.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "SIM-04",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "SIM-05",
+      "iso": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "BCM-01",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "BCM-02",
+      "iso": "A.5.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "BCM-03",
+      "iso": "A.5.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "BCM-04",
+      "iso": "A.5.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "DEV-02",
+      "iso": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "DEV-05",
+      "iso": "A.8.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 45,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "DEV-12",
+      "iso": "A.8.33",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "PSS-12",
+      "iso": "A.8.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
     }
   ]
 }
