@@ -23,10 +23,13 @@ use App\Service\PolicyWizard\Step\TargetedFindingReferenceStep;
 use App\Service\PolicyWizard\Step\TargetedGenerateStep;
 use App\Service\PolicyWizard\Step\TargetedPickTopicsStep;
 use App\Service\PolicyWizard\Step\WelcomeStandardsStep;
+use App\Service\PolicyWizard\Mode\ModeRegistry;
+use App\Service\PolicyWizard\Mode\TargetedRerunModeHandler;
 use App\Service\PolicyWizard\StepEvaluator;
 use App\Service\PolicyWizard\StepValidationException;
 use App\Service\PolicyWizard\WizardOrchestrator;
 use App\Service\PolicyWizard\WizardStepKeys;
+use App\Service\TenantSettingResolver\TenantSettingResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -59,6 +62,15 @@ final class WizardOrchestratorTest extends TestCase
         ]);
     }
 
+    private function makeModeRegistry(): ModeRegistry
+    {
+        $repository = $this->createStub(WizardRunRepository::class);
+        $resolver = $this->createStub(TenantSettingResolver::class);
+        return new ModeRegistry([
+            new TargetedRerunModeHandler($repository, $resolver),
+        ]);
+    }
+
     private function makeOrchestrator(
         ?EntityManagerInterface $em = null,
         ?DocumentGeneratorInterface $generator = null,
@@ -75,6 +87,7 @@ final class WizardOrchestratorTest extends TestCase
             $this->makeStepEvaluator(),
             $generator,
             $validator,
+            $this->makeModeRegistry(),
         );
     }
 
@@ -131,8 +144,13 @@ final class WizardOrchestratorTest extends TestCase
     }
 
     #[Test]
-    public function startInTargetedModeStartsAtWelcomeAndPicksTopicsNext(): void
+    public function startInTargetedModeJumpsDirectlyToPickTopicsStep(): void
     {
+        // TargetedRerunModeHandler::onStart() overrides the initial step
+        // pointer from STEP_WELCOME to STEP_TARGETED_PICK so the user
+        // skips the shared welcome screen and lands directly on the topic
+        // selection step. This is the regression test for the onStart()
+        // hook being wired through WizardOrchestrator::start().
         $orchestrator = $this->makeOrchestrator();
         $run = $orchestrator->start(
             $this->makeTenant(),
@@ -141,7 +159,7 @@ final class WizardOrchestratorTest extends TestCase
             WizardStepKeys::MODE_TARGETED,
             'NCR-2026-04',
         );
-        self::assertSame(WizardStepKeys::STEP_WELCOME, $run->getStep());
+        self::assertSame(WizardStepKeys::STEP_TARGETED_PICK, $run->getStep());
         self::assertSame('NCR-2026-04', $run->getFindingReference());
     }
 
