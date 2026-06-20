@@ -35,7 +35,6 @@ final class MappingFrameworkCodeResolutionTest extends TestCase
         'BAIT',              // superseded by DORA (kept for legacy reference)
         'ISO27002',          // ISO 27002 not registered as a standalone framework loader yet
         'iec-isa-62443',     // IEC/ISA 62443 not loaded
-        'nist-csf-1.1',      // only NIST-CSF-2.0 is loaded
         'nist-sp800-53r5',   // NIST SP 800-53r5 not loaded
     ];
 

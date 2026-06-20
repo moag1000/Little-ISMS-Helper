@@ -64,6 +64,12 @@ final class MappingLibraryLoader
             if (($library['target_framework'] ?? null) !== $targetFrameworkCode) {
                 continue;
             }
+            // Skip deprecated mappings — they are provenance-only and must not
+            // appear in the UI's "import from library" list.
+            if (($library['lifecycle']['state'] ?? null) === 'deprecated') {
+                continue;
+            }
+
             $sourceCode = (string) ($library['source_framework'] ?? '');
             if ($sourceCode === '') {
                 continue;

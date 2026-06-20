@@ -37,7 +37,7 @@ final class LibraryMappingResolutionTest extends TestCase
             'tisax_to_bsi-grundschutz_v1.0.yaml',
             'tisax_to_nist-sp800-53r5_v1.0.yaml',
             'tisax_to_iec-isa-62443_v1.0.yaml',
-            'tisax_to_nist-csf-1.1_v1.0.yaml',
+            'tisax_to_nist-csf-2.0_v1.0.yaml',
             'bsi-grundschutz-2024_to_tisax_v1.0.yaml',
             'iso27001-2022_to_tisax_v1.0.yaml',
         ];

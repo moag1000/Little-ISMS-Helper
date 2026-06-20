@@ -175,6 +175,14 @@ final class AuditCatalogMappingsCommand extends Command
                 continue;
             }
             $lib = $data['library'] ?? [];
+
+            // Skip deprecated mappings — they are provenance-only and must not
+            // appear in the dangling-reference inventory.
+            if (($lib['lifecycle']['state'] ?? null) === 'deprecated') {
+                $out['files'][basename($file)] = ['skipped' => 'deprecated'];
+                continue;
+            }
+
             $srcFw = (string) ($lib['source_framework'] ?? '');
             $tgtFw = (string) ($lib['target_framework'] ?? '');
             $srcCode = $this->resolve($srcFw, $byCode, $normToCode);

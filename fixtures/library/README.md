@@ -157,7 +157,7 @@ mappings:
 | TISAX ↔ BSI IT-Grundschutz 2024 | both | `tisax_to_bsi-grundschutz_v1.0.yaml` + reverse |
 | TISAX → NIST SP800-53r5 | one-way | `tisax_to_nist-sp800-53r5_v1.0.yaml` |
 | TISAX → IEC/ISA-62443 | one-way | `tisax_to_iec-isa-62443_v1.0.yaml` |
-| TISAX → NIST CSF 1.1 | one-way | `tisax_to_nist-csf-1.1_v1.0.yaml` |
+| TISAX → NIST CSF 2.0 | one-way | `tisax_to_nist-csf-2.0_v1.0.yaml` |
 | ISO 27001:2022 → TISAX | one-way | `iso27001-2022_to_tisax_v1.0.yaml` |
 
 ---

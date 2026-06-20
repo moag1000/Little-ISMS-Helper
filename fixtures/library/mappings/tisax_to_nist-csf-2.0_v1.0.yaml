@@ -1,0 +1,328 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: tisax_to_nist-csf-2.0_v1.0
+  source_framework: TISAX
+  target_framework: NIST-CSF-2.0
+  version: 1
+  effective_from: '2024-04-01'
+  effective_until: null
+  provenance:
+    primary_source: 'VDA ISA Version 6.0 — Reference to other standards (col P)'
+    primary_source_url: 'https://portal.enx.com/isa6-de.xlsx'
+    secondary_sources:
+      - 'ENX ISA 6 English workbook (identical anchors verified)'
+    publisher: 'Little ISMS Helper Maintainers'
+    extraction_note: 'Only control-ID to framework-anchor pairs. No question text. Compliant with ENX licensing.'
+    extraction_script: scripts/import/extract_vda_isa_all_mappings.php
+    generated_at: '2026-05-28'
+  methodology:
+    type: published_official_mapping
+    description: |
+      Direct extraction from ENX VDA-ISA 6 workbook Reference to other standards
+      column (originally NIST CSF v1.1 anchors). Targets re-homed to NIST CSF 2.0
+      subcategory ids using NIST's official CSF 1.1->2.0 informative reference,
+      verified against the loaded NIST-CSF-2.0 catalogue (106 subcategories).
+      Anchor format: 2.0 zero-padded subcategory e.g. ID.AM-01, GV.SC-04.
+  lifecycle:
+    state: published
+    state_history:
+      -
+        state: draft
+        date: '2026-05-28'
+        actor: extract_vda_isa_all_mappings.php
+      -
+        state: published
+        date: '2026-05-28'
+        actor: maintainer
+mappings:
+  -
+    source: 1.1.1
+    targets:
+      - GV.PO-01
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 1.2.2
+    targets:
+      - GV.RR-02
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 1.2.3
+    targets:
+      - GV.OC-01
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 1.3.1
+    targets:
+      - GV.OC-02
+      - ID.AM-01
+      - ID.AM-02
+      - ID.AM-04
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 1.3.2
+    targets:
+      - GV.OC-04
+      - GV.OC-05
+      - ID.AM-05
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 1.3.4
+    targets:
+      - DE.CM-09
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 1.4.1
+    targets:
+      - GV.RM-01
+      - GV.RM-02
+      - GV.RM-03
+      - GV.SC-01
+      - ID.RA-04
+      - ID.RA-05
+      - ID.RA-06
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 1.5.1
+    targets:
+      - GV.OC-03
+      - ID.IM-02
+      - ID.IM-03
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 1.6.2
+    targets:
+      - RC.CO-03
+      - RC.CO-04
+      - RS.CO-02
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 1.6.3
+    targets:
+      - GV.OC-01
+      - GV.SC-08
+      - ID.IM-01
+      - ID.IM-02
+      - ID.IM-03
+      - ID.IM-04
+      - RC.RP-01
+      - RS.AN-03
+      - RS.CO-03
+      - RS.MA-01
+      - RS.MA-02
+      - RS.MA-03
+      - RS.MI-01
+      - RS.MI-02
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 2.1.1
+    targets:
+      - GV.RR-04
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 2.1.3
+    targets:
+      - GV.RR-02
+      - GV.RR-04
+      - PR.AT-01
+      - PR.AT-02
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 3.1.1
+    targets:
+      - DE.CM-02
+      - DE.CM-03
+      - ID.AM-04
+      - PR.AA-06
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 3.1.4
+    targets:
+      - PR.PS-01
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 4.1.1
+    targets:
+      - PR.AA-01
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 4.1.2
+    targets:
+      - PR.AA-03
+      - PR.AA-05
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 4.1.3
+    targets:
+      - PR.AA-03
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 4.2.1
+    targets:
+      - PR.AA-05
+      - PR.PS-02
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.1.1
+    targets:
+      - PR.DS-01
+      - PR.DS-02
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.1.2
+    targets:
+      - PR.DS-01
+      - PR.DS-02
+      - PR.IR-01
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.2.1
+    targets:
+      - ID.AM-08
+      - PR.AA-05
+      - PR.PS-01
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.2.2
+    targets:
+      - PR.IR-01
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.2.4
+    targets:
+      - DE.AE-02
+      - DE.AE-03
+      - DE.AE-04
+      - DE.AE-06
+      - DE.AE-08
+      - DE.CM-01
+      - DE.CM-03
+      - ID.IM-03
+      - PR.PS-04
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.2.5
+    targets:
+      - ID.RA-01
+      - ID.RA-08
+      - RS.CO-03
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.2.6
+    targets:
+      - PR.DS-01
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.2.7
+    targets:
+      - ID.AM-03
+      - PR.IR-01
+      - PR.IR-03
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.2.9
+    targets:
+      - PR.DS-11
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.3.1
+    targets:
+      - PR.PS-01
+      - PR.PS-06
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.3.2
+    targets:
+      - PR.IR-04
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.3.3
+    targets:
+      - GV.RR-04
+      - ID.AM-08
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 5.3.4
+    targets:
+      - DE.CM-01
+      - DE.CM-03
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 6.1.1
+    targets:
+      - GV.SC-04
+      - GV.SC-05
+      - GV.SC-07
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'
+  -
+    source: 7.1.1
+    targets:
+      - GV.OC-03
+      - PR.IR-02
+    relationship: related
+    confidence: high
+    rationale: 'ENX ISA 6 official cross-reference column; targets re-homed from NIST CSF 1.1 to CSF 2.0 per NIST official 1.1->2.0 crosswalk.'

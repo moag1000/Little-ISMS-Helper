@@ -6,7 +6,7 @@ library:
   target_framework: 'ISO27002'
   version: 1
   effective_from: '2024-04-01'
-  effective_until: null
+  effective_until: '2026-06-20'
 
   provenance:
     primary_source: 'VDA ISA Version 6.0 — Reference to other standards (col P)'
@@ -24,11 +24,19 @@ library:
       Direct extraction from ENX VDA-ISA 6 workbook Reference to other standards
       column. Target: ISO/IEC 27002. Anchor format: Annex A notation.
 
+  # TOMBSTONE: ISO27002 is not a standalone loaded framework in this application.
+  # VDA ISA 6.0 cross-references ISO/IEC 27002:2013 (three-level Annex-A IDs
+  # A.7.2.1 / A.7.2.2) which do not exist in the ISO 27001:2022 Annex A catalogue
+  # (restructured to two-level A.X.Y in the 2022 edition).
+  # The authoritative TISAX-to-ISO27001-2022 mapping is tisax_to_iso27001-2022_v1.0.yaml.
+  # This file is kept for provenance only.
   lifecycle:
-    state: 'published'
+    state: 'deprecated'
+    deprecated_reason: 'ISO27002 is not a standalone loaded framework; control IDs use superseded 2013 three-level notation; use tisax_to_iso27001-2022_v1.0.yaml'
     state_history:
-      - { state: 'draft',     date: '2026-05-28', actor: 'extract_vda_isa_all_mappings.php' }
-      - { state: 'published', date: '2026-05-28', actor: 'maintainer' }
+      - { state: 'draft',      date: '2026-05-28', actor: 'extract_vda_isa_all_mappings.php' }
+      - { state: 'published',  date: '2026-05-28', actor: 'maintainer' }
+      - { state: 'deprecated', date: '2026-06-20', actor: 'maintainer', reason: 'ISO27002 not a standalone loaded framework; 2013 IDs superseded; use tisax_to_iso27001-2022_v1.0.yaml' }
 
 mappings:
   - source: '2.1.3'

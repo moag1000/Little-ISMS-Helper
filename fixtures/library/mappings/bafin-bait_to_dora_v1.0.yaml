@@ -6,7 +6,7 @@ library:
   target_framework: 'DORA'
   version: 1
   effective_from: '2025-01-17'
-  effective_until: null
+  effective_until: '2025-01-17'
 
   provenance:
     primary_source: 'BaFin Auslegungshinweise zu BAIT (Bankaufsichtliche Anforderungen an die IT) Q4/2024 + EBA RTS Crosswalk-Analyse (inverse Richtung)'
@@ -28,13 +28,20 @@ library:
       BAIT-Sicht neu verfasst (BaFin-Aufsichtsperspektive deutscher Banken
       vs. EU-DORA-Verordnung).
 
+  # TOMBSTONE: BAIT superseded by DORA (BaFin, 2025-01-17).
+  # BaFin formally replaced BAIT with DORA as the binding ICT-risk framework
+  # for German financial institutions effective 2025-01-17.
+  # This mapping is kept for provenance only — do NOT use for active gap analysis.
+  # Use dora_to_iso27001-2022_v1.0.yaml or dora_to_nis2-art21_v1.0.yaml instead.
   lifecycle:
-    state: 'published'
+    state: 'deprecated'
+    deprecated_reason: 'BAIT superseded by DORA (BaFin, 2025-01-17); use dora_to_* mappings'
     state_history:
-      - { state: 'draft',     date: '2024-10-01', actor: 'maintainer' }
-      - { state: 'review',    date: '2024-11-15', actor: 'maintainer' }
-      - { state: 'approved',  date: '2024-12-10', actor: 'reviewer-2' }
-      - { state: 'published', date: '2025-01-15', actor: 'ciso-signoff' }
+      - { state: 'draft',      date: '2024-10-01', actor: 'maintainer' }
+      - { state: 'review',     date: '2024-11-15', actor: 'maintainer' }
+      - { state: 'approved',   date: '2024-12-10', actor: 'reviewer-2' }
+      - { state: 'published',  date: '2025-01-15', actor: 'ciso-signoff' }
+      - { state: 'deprecated', date: '2026-06-20', actor: 'maintainer', reason: 'BAIT superseded by DORA (BaFin, 2025-01-17); use dora_to_* mappings' }
 
 mappings:
   - source: 'BAIT 1'

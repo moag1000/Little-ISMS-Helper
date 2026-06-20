@@ -175,12 +175,13 @@ mappings:
     audit_evidence_hint: 'Kryptokonzept, Kryptorichtlinie, Liste zugelassener Algorithmen.'
 
   - source: 'A.8.24'
-    target: 'CON.1.A3'
+    target: 'CON.1.A4'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
-      CON.1.A3 (Schluesselmanagement — erhoeht) geht ueber ISO 27001 A.8.24
+      CON.1.A4 (Geeignetes Schluesselmanagement) geht ueber ISO 27001 A.8.24
       hinaus, da BSI ausfuehrliche Key-Lifecycle-Prozesse fordert.
+      (Anforderung CON.1.A3 im Katalog 2024 umnummeriert auf CON.1.A4 — Geeignetes Schluesselmanagement)
     audit_evidence_hint: 'Schluesselmanagement-Konzept, HSM-Dokumentation, Schluessel-Rotationsplan.'
 
   # --- ISO 27001:2022 Operations ---
