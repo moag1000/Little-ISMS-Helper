@@ -61,6 +61,10 @@ final readonly class CrossCoverageCalculator
         'GDPR'            => ['label' => 'EU-GDPR (Wizard-Schwerpunkte)', 'total' => 10],
         'ISO27701'        => ['label' => 'ISO/IEC 27701 (PIMS)', 'total' => 49],
         'NIS2'            => ['label' => 'EU-NIS2 (Art. 21)', 'total' => 10],
+        'BSI-C5'          => ['label' => 'BSI C5:2020', 'total' => 114],
+        'TISAX'           => ['label' => 'TISAX / VDA-ISA', 'total' => 80],
+        'SOC2'            => ['label' => 'SOC 2 (TSC)', 'total' => 33],
+        'ISO-22301'       => ['label' => 'ISO 22301 (BCMS)', 'total' => 30],
     ];
 
     /**
@@ -93,8 +97,14 @@ final readonly class CrossCoverageCalculator
      * @var array<string, string> standard_token => framework_code
      */
     private const array SECTION_EXTENSION_FRAMEWORK_MAP = [
-        'dora' => 'DORA',
-        'nis2' => 'NIS2',
+        'dora'     => 'DORA',
+        'nis2'     => 'NIS2',
+        'bsi'      => 'BSI_GRUNDSCHUTZ',
+        'c5'       => 'BSI-C5',
+        'iso27701' => 'ISO27701',
+        'tisax'    => 'TISAX',
+        'soc2'     => 'SOC2',
+        'bcm'      => 'ISO-22301',
     ];
 
     public function __construct(
