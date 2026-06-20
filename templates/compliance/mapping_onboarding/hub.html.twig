@@ -55,6 +55,17 @@
                     { label: 'onboarding.mapping.step.wiederverwenden.label'|trans }
                 ], stepIndex, { ariaLabel: 'onboarding.mapping.title'|trans }) }}
             </div>
+
+            <div class="mt-3 text-center"
+                 data-controller="guided-tour"
+                 data-guided-tour-steps-url-value="{{ path('app_guided_tour_steps', {role: 'mapping'}) }}"
+                 data-guided-tour-complete-url-value="{{ path('app_guided_tour_complete', {role: 'mapping'}) }}">
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                        data-action="click->guided-tour#start"
+                        data-guided-tour-role-param="mapping">
+                    {{ 'onboarding.mapping.show_me'|trans }}
+                </button>
+            </div>
         </aside>
 
         {# ── Right panel: current-step intro + action buttons ── #}

@@ -225,6 +225,15 @@ guided_tour:
             lifecycle:
                 title: 'Lifecycle: draft vs. published'
                 body: 'A mapping in "draft" status is not yet reviewed and does NOT count towards coverage. Only after the review gate — i.e. "published" — does it become operational. Lots of drafts? That is your review pile. ISO 9001 analogy: a document in draft only applies once approved.'
+            seeds:
+                title: 'Seed review: checking machine mappings'
+                body: 'Under Seed Review you find all machine-generated mappings (verified_by=app:seed-*). Work through these once and approve or reject — relevant when an auditor asks "who created this mapping?".'
+            gaps:
+                title: 'Closing gaps'
+                body: 'The Gaps page shows all requirements that do not yet have a valid mapping. This is your action plan: at a glance you see where connections are missing and which frameworks are affected.'
+            cross_framework:
+                title: 'Cross-framework usage'
+                body: 'The cross-framework view shows how your mapping network connects frameworks — which requirements are shared across multiple standards and what the transitivity chains look like. Here you see the value of your entire mapping effort.'
             where_used:
                 title: 'Where do I use it?'
                 body: 'Three places: the coverage / transitive matrix (the big % picture), the inheritance suggestions (data-reuse hub: "this evidence fits here too") and the quality dashboard (reviews, confidence/MQS, gaps). Tour finished — you can restart it any time via "Start tour" on the mapping page.'

@@ -1507,6 +1507,7 @@ onboarding:
         check_done: 'Check step'
         step_done: 'done'
         all_done: 'All four steps done — your framework mapping is in place.'
+        show_me: 'Show me how'
         banner:
             title: 'Start your mapping workflow'
             body: 'Alva guides you through Load, Review, Map and Reuse.'
