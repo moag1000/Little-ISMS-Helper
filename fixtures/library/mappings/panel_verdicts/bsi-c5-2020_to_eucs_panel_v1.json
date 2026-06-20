@@ -72,14 +72,14 @@
     },
     {
       "c5": "HR-03",
-      "target": "AT-01",
+      "target": "HR-04",
       "state": "needs_review",
       "mappingPercentage": 65,
       "realVotes": 3
     },
     {
       "c5": "HR-01",
-      "target": "AT-02",
+      "target": "HR-01",
       "state": "reject",
       "mappingPercentage": 0,
       "realVotes": 0
@@ -107,28 +107,28 @@
     },
     {
       "c5": "OPS-01",
-      "target": "A2-1",
+      "target": "ISP-01",
       "state": "reject",
       "mappingPercentage": 0,
       "realVotes": 0
     },
     {
       "c5": "OPS-10",
-      "target": "OS-02",
+      "target": "OPS-10",
       "state": "ki_validiert",
       "mappingPercentage": 50,
       "realVotes": 3
     },
     {
       "c5": "OPS-15",
-      "target": "OS-01",
+      "target": "OPS-04",
       "state": "needs_review",
       "mappingPercentage": 50,
       "realVotes": 2
     },
     {
       "c5": "OPS-18",
-      "target": "OS-03",
+      "target": "OPS-17",
       "state": "needs_review",
       "mappingPercentage": 50,
       "realVotes": 2
@@ -142,7 +142,7 @@
     },
     {
       "c5": "OPS-06",
-      "target": "A11-1",
+      "target": "CCM-01",
       "state": "reject",
       "mappingPercentage": 0,
       "realVotes": 0
