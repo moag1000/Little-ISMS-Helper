@@ -590,3 +590,88 @@ policy:
 
                     ## 10. Freigabe
                     Freigegeben durch {{ approval.chain }}; Pruefung alle 12 Monate sowie nach jedem Major-Incident-Lessons-Learned-Zyklus.
+
+# SOC 2 Trust Services Criteria — ISO 27001 Themen-Body-Erweiterungen (DE)
+# Schluessel: policy.iso27001.<topic>.v1.soc2_extension.body
+# Verwendet von Soc2SectionCatalogue zur Ergaenzung der ISO-Basis-Richtlinien um TSC-spezifische Prosa.
+iso27001:
+    top_level:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC1.3, CC3.1, CC3.2): Diese Richtlinie ist das Spitzendokument des SOC-2-Kontrollprogramms (AICPA SSAE 18). CC1.3 verpflichtet die Geschaeftsleitung, Strukturen, Berichtswege und Verantwortlichkeiten festzulegen; der CISO berichtet unabhaengig von der Entwicklungsorganisation und hat direkten Board-Zugang bei wesentlichen Risiken. CC3.1 erfordert, dass Sicherheitsziele jaehrlich definiert und genehmigt werden; CC3.2 erfordert, dass Risiken fuer diese Ziele mindestens jaehrlich und bei ausloesenden Ereignissen identifiziert und analysiert werden. Alle nachgeordneten Sicherheitsrichtlinien leiten sich aus dieser Richtlinie ab und muessen mit ihr konsistent sein.'
+    asset_management:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC3.2): Das Asset-Inventar ist die Grundlage der SOC-2-Risikoidentifikation. CC3.2 verpflichtet {{ tenant.legal_name }}, Assets zu identifizieren, die fuer die Erreichung von Service-Commitments relevant sind, und Bedrohungen sowie Risiken zu bewerten. Ein vollstaendiges, klassifiziertes Asset-Register — mit Systemen, Datenspeichern, Netzwerkkomponenten und Drittparteidiensten im SOC-2-Scope — ist zu fuehren und mindestens jaehrlich zu pruefen.'
+    hr_security:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC1.4): CC1.4 verpflichtet die Geschaeftsleitung, Richtlinien und Verfahren sicherzustellen, dass Personal die zur Aufgabenerfuellung erforderliche Kompetenz besitzt. Hintergrundpruefungen, rollenspezifische Sicherheitsschulungen und dokumentierte Kompetenznachweise sind fuer alle Mitarbeitenden mit Zugang zu in-scope Systemen erforderlich. Schulungsnachweise muessen als SOC-2-Audit-Evidenz aufbewahrt werden.'
+    access_control:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC6.1, CC6.2, CC6.3): CC6.1 verpflichtet dazu, den logischen Zugang zu in-scope Systemen auf autorisierte Benutzer durch Identifikations-, Authentifizierungs- und Autorisierungsmechanismen zu beschraenken. CC6.2 erfordert zeitnahe Provisioning- und Deprovisioning-Prozesse (Joiner-Mover-Leaver). CC6.3 erfordert rollenbasierten Zugang nach Need-to-Know und Least-Privilege mit periodischen, evidenzierten Access Reviews. Zugriffsaenderungen muessen fuer das gesamte SOC-2-Audit-Fenster aufbewahrt werden.'
+    identity_management:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC6.1, CC6.2, CC6.3): Identitaets-Lifecycle-Management erfuellt direkt CC6.1 (eindeutige Benutzeridentifikation), CC6.2 (zeitnahes Provisioning und Deprovisioning) und CC6.3 (Autorisierung auf Need-to-Know beschraenkt). Der Identity Provider (IdP) muss die einzige Quelle der Wahrheit fuer alle in-scope Systemidentitaeten sein. Lokale Konten sind ausser fuer dokumentierte Break-Glass-Szenarien unzulaessig. Periodische User-Access-Reviews muessen unterzeichnet und als Evidenz aufbewahrt werden.'
+    authentication_information:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC6.1, CC6.6): CC6.1 verlangt, dass Authentifizierungsmechanismen den Zugang durch unberechtigte Benutzer verhindern. CC6.6 verlangt Multi-Factor-Authentifizierung (MFA) fuer alle Benutzerkonten mit Zugang zu in-scope Systemen, insbesondere administrative Zugriffe und Produktionsdaten. Phishing-resistente Faktoren (FIDO2/WebAuthn oder Plattform-Authenticators) sind fuer privilegierte Rollen Pflicht. Passwort-Standards folgen NIST SP 800-63B; Breach-Korpora-Abgleich ist erforderlich.'
+    physical_security:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC6.4, CC6.5): CC6.4 verlangt physische Sicherheitsperimeter und Zugangskontrollen zum Schutz vor unbefugtem physischen Zugang zu in-scope Systemen und Daten. CC6.5 verlangt, dass der physische Zugang auf autorisierte Personen beschraenkt und bei Wegfall des Bedarfs entzogen wird. Fuer Colocation- und Cloud-Infrastruktur werden physische Zugangskontrollen als Subdienstleister-Carve-Out behandelt; der Anbieter-SOC-2-Bericht wird jaehrlich geprueft, um die Complementary Subservice Organisation Controls (CSOCs) zu validieren.'
+    logging:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC7.2): CC7.2 verpflichtet {{ tenant.legal_name }}, Systemkomponenten und deren Betrieb auf Anomalien zu ueberwachen, die auf Schadsoftware, Naturkatastrophen oder Fehler hinweisen, die die Zielerreichung gefaehrden. Alle in-scope Systeme muessen sicherheitsrelevante Ereignisse (Authentifizierung, Autorisierungsaenderungen, privilegierte Befehle, Netzwerk-Flows, Anwendungs-Sicherheitsereignisse) an die zentrale Log-Plattform mit manipulationssicherem Speicher weiterleiten. Log-Aufbewahrung muss das gesamte SOC-2-Audit-Fenster abdecken.'
+    malware:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC7.1): CC7.1 verlangt, dass neue Schwachstellen identifiziert und bewertet sowie Schwachstellen-Mitigations-Aktivitaeten durchgefuehrt werden. Endpoint Detection and Response (EDR), Anti-Malware-Kontrollen und Konfigurations-Baseline-Durchsetzung erfuellen dieses Kriterium. Alle in-scope Endpunkte muessen verwaltetes Anti-Malware mit Echtzeit-Schutz betreiben; Signatur- und Engine-Updates muessen automatisiert werden. Malware-Erkennungen muessen protokolliert, triagiert und bis zur Behebung verfolgt werden.'
+    patch_management:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC7.1): CC7.1 verlangt laufende Identifikation und Bewertung neuer Schwachstellen. Patch-Management ist die primaere operative Kontrolle. Patch-SLAs: Critical (CVSS 9,0+) binnen 7 Tagen, High (CVSS 7,0-8,9) binnen 30 Tagen, Medium binnen 90 Tagen, Low im naechsten Wartungsfenster. Ausnahmen erfordern CISO-Freigabe mit dokumentierter Kompensierungskontrolle und festem Behebungstermin. Patch-Compliance-Raten und offene Ausnahmen werden monatlich durch den CISO ueberprueft.'
+    incident_management:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC7.3, CC7.4): CC7.3 verlangt, dass erkannte Ereignisse bewertet und als Events, Security Events oder Security Incidents klassifiziert werden. CC7.4 verlangt, dass identifizierte Security Incidents gemaess dokumentiertem Incident-Response-Verfahren behandelt werden, Incident-Remediation-Aktivitaeten zur Zielerreichung durchgefuehrt werden und die Ergebnisse an betroffene Parteien kommuniziert werden. Post-Incident-Reviews muessen binnen 14 Kalendertagen (5 Geschaeftstagen bei Major Incidents) abgeschlossen und als Audit-Evidenz aufbewahrt werden.'
+    threat_intelligence:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC3.1, CC3.2): Threat Intelligence fliesst direkt in den SOC-2-Risikoidentifikationsprozess (CC3.2) ein. Quellen: Anbieter-Advisories, ISAC-Threat-Feeds, Schwachstellen-Scanner-Output, vergangene Incident-Analysen und Red-Team-Erkenntnisse. Intelligence-Outputs muessen dokumentiert, priorisiert und mit dem Risikoregister verknuepft werden. Wesentliche neue Bedrohungen loesen ein ausserordentliches Risiko-Reassessment aus. Der Threat-Intelligence-Prozess wird quartalsweise ueberprueft.'
+    secure_development:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC8.1): CC8.1 verpflichtet {{ tenant.legal_name }}, Kontrollen fuer Infrastruktur, Daten und Software zu autorisieren, entwerfen, entwickeln oder beschaffen, implementieren, betreiben, genehmigen, pflegen und ueberwachen. Alle Code-Aenderungen an in-scope Systemen muessen SAST, SCA, Unit-Tests, Integrationstests und Infrastruktur-Sicherheits-Scans vor dem Produktions-Deployment bestehen. Funktionstrennung zwischen Code-Autor und Aenderungs-Genehmiger muss durchgesetzt werden. Alle Deployments muessen mit Operator-Identitaet, Artefakt-Version und Zeitstempel protokolliert werden.'
+    network_security:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC6.6, CC6.7): CC6.6 verlangt, dass vor der Vergabe von Anmeldedaten und der Genehmigung des Zugangs neue interne und externe Benutzer registriert und autorisiert werden. CC6.7 verlangt, dass die Uebermittlung, Verschiebung und Entfernung von Informationen auf autorisierte interne und externe Benutzer und Prozesse beschraenkt wird. Netzwerksegmentierung, Firewall-Regelwerke, TLS-Durchsetzung und Intrusion-Detection-Systeme erfuellen diese Kriterien. Netzwerkzugangs-Kontroll-Regeln muessen mindestens jaehrlich ueberprueft werden; Ausnahmen benoetigen dokumentierte Genehmigung.'
+    supplier_relationships:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC9.2): CC9.2 verpflichtet das Unternehmen, Risiken aus Beziehungen zu Lieferanten und Geschaeftspartnern, die Gueter oder Dienstleistungen fuer die Erreichung von Service-Commitments liefern, zu bewerten und zu steuern. Alle Tier-1-Lieferanten (mit Zugang zu in-scope Daten oder Systemen oder deren Ausfall eine Verfuegbarkeitszusage verletzen wuerde) werden jaehrlich bewertet: Security-Fragebogen geprueft, SOC-2-/ISO-27001-Attestierung geprueft, CSOCs validiert, Risk Score aktualisiert. Tier-1-Lieferantenvertraege muessen Breach-Notification-Fristen (bevorzugt ≤72 Stunden), Audit-Rechte und Sub-Auftragsverarbeiter-Offenlegungspflichten enthalten.'
+    continuity:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (A1.3): Wenn Verfuegbarkeit eine angenommene TSC-Kategorie ist, verlangt A1.3, dass {{ tenant.legal_name }} einen Plan zur Wiederherstellung und Wiederaufnahme des Betriebs nach einer Betriebsunterbrechung hat. Der Business Continuity Plan (BCP) und der Disaster Recovery Plan (DRP) muessen das Krisenmanagement-Team nennen, das Kommunikationsprotokoll definieren, Wiederherstellungsaktivitaeten sequenzieren und Entscheidungsbefugnisse dokumentieren. Tabletop-Uebungen muessen halbjaehrlich stattfinden; ein Live-Failover-Test mindestens eines Tier-1-Dienstes muss jaehrlich durchgefuehrt und die Ergebnisse als SOC-2-Evidenz aufbewahrt werden.'
+    backup:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (A1.2): Wenn Verfuegbarkeit eine angenommene TSC-Kategorie ist, verlangt A1.2, dass Backup- und Wiederherstellungskapazitaeten zur Unterstuetzung der Recovery Time Objectives (RTO) und Recovery Point Objectives (RPO) existieren. Jeder in-scope Datenspeicher muss eine dokumentierte Backup-Spezifikation haben (Frequenz, Aufbewahrung, Verschluesselung, geografische Verteilung und Integritaetsverifikation). Live-Restore-Tests muessen mindestens quartalsweise je Datenklasse durchgefuehrt werden; Testergebnisse muessen als SOC-2-Evidenz aufbewahrt werden.'
+    cryptography:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (C1.1, CC6.7): Wenn Vertraulichkeit eine angenommene TSC-Kategorie ist, verpflichtet C1.1 {{ tenant.legal_name }}, vertrauliche Informationen zu identifizieren und zu pflegen. Kryptografie ist die primaere technische Kontrolle. Zugelassene Algorithmen: AES-256-GCM oder ChaCha20-Poly1305 (symmetrisch); RSA-3072+, ECDSA P-256+, Ed25519 (asymmetrisch); SHA-256+ (Hashing). Veraltete Algorithmen (MD5, SHA-1, 3DES, RC4, TLS 1.0/1.1) sind verboten. Verschluesselungsschluessel muessen in einem HSM oder Cloud-KMS mit FIPS-140-2-Level-2+-Validierung verwaltet werden; Kundendaten-Verschluesselungsschluessel muessen mindestens jaehrlich rotiert werden.'
+    privacy_pii:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (P1, P4): Wenn Datenschutz (Privacy) eine angenommene TSC-Kategorie ist, verlangt P1, dass betroffene Personen vor oder bei der Erhebung ueber Datenschutzpraktiken informiert werden. P4 verlangt, dass personenbezogene Informationen nur gemaess der Datenschutzerklaerung und geltendem Recht genutzt, aufbewahrt und entsorgt werden. Aufbewahrungsplaene muessen jaehrlich durch den DSB ueberprueft werden; Loeschung muss nachgewiesen werden (logische Loeschung verifiziert, Vernichtungszertifikate fuer physische Medien 3 Jahre aufbewahrt). Loeschanfragen von Kunden muessen innerhalb der vertraglich vereinbarten und gesetzlich vorgeschriebenen Fristen nachverfolgt und erfuellt werden.'
+    information_transfer:
+        v1:
+            soc2_extension:
+                body: 'SOC-2-Erweiterung (CC6.6): CC6.6 verlangt, dass Uebermittlung, Verschiebung und Entfernung von Informationen auf autorisierte interne und externe Benutzer und Prozesse beschraenkt wird. Alle Informationsuebertragungen muessen ueber verschluesselte Kanaele erfolgen (TLS 1.2+ fuer allgemeine Daten; mTLS fuer eingestufte Daten zwischen internen Diensten). Externe Weitergaben von vertraulichen oder eingestuften Daten erfordern eine NDA und einen genehmigten Weitergabekanal. Uebertragungsprotokolle muessen fuer das SOC-2-Audit-Fenster aufbewahrt werden.'

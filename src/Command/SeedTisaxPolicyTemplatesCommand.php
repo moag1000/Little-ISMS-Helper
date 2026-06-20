@@ -16,6 +16,23 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
+ * @deprecated since 2026-06-20, superseded by {@see \App\Service\PolicyWizard\SectionExtension\TisaxSectionCatalogue}.
+ *
+ * [DEPRECATED — superseded by TisaxSectionCatalogue]
+ *
+ * This command seeded stand-alone TISAX PolicyTemplate rows. The section-extension
+ * catalogue pattern (TisaxSectionCatalogue registered via `app.policy_section_catalogue`
+ * service tag) now delivers TISAX-specific prose as body_extension blocks on the existing
+ * ISO 27001 baseline topics without requiring separate DB rows per standard.
+ *
+ * MIGRATION: Existing rows seeded by this command remain in the database and
+ * continue to function (no row deletion is performed by the new catalogue).
+ * New deployments should NOT run this command; TisaxSectionCatalogue is registered
+ * automatically via the service tag and requires no explicit seeding step.
+ *
+ * Remove this command in a future major release once all existing TISAX-specific
+ * PolicyTemplate rows have been migrated to the extension-catalogue pattern.
+ *
  * Policy-Wizard W7-A — seed the 10 TISAX (VDA ISA 5.x) Pflicht-
  * Richtlinien for the Automotive Supply Chain TISAX Pruefkatalog.
  *

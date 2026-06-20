@@ -1042,3 +1042,131 @@ policy:
                     ---
 
                     *Approved by DPO + CISO | Approval chain: {{ approval.chain }}*
+
+# ─── ISO 27701 Section-Extension Keys ──────────────────────────────────────────
+# Keys appended by Iso27701SectionCatalogue (2026-06-20).
+# Namespace: policy.iso27001.<topic>.v1.iso27701_extension.body
+# These keys augment ISO 27001 host-topic policies with PIMS prose when a
+# tenant has adopted iso27701 via the Policy Wizard. DPO-owned body_extension.
+    iso27001:
+        privacy_pii:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Extension (Clauses A.7.2.1, A.7.3.1, A.7.4.1):** ISO 27701 extends the
+                        ISO 27001 privacy baseline (A.5.34) with a full PII lifecycle framework.
+                        Clause A.7.2.1 "Identify and document purpose" requires a purpose register per processing activity
+                        with documented lawful basis per GDPR Art. 5(1)(b) (purpose limitation).
+                        Clause A.7.3.1 "Limit collection" mandates data minimisation (GDPR Art. 5(1)(c)) and
+                        Privacy-by-Default configuration (GDPR Art. 25(2)): only genuinely required data categories
+                        are collected.
+                        Clause A.7.4.1 "Return, transfer or disposal of PII" requires a documented erasure and
+                        disposal procedure including a retention schedule per processing purpose (GDPR Art. 5(1)(e),
+                        storage limitation). Responsible: DPO.
+                        Evidence: PIMS purpose register, data-category inventory, erasure concept, RoPA extract.
+        information_classification:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Extension (Clauses A.7.2.1, A.7.3.4):** The PIMS extends the
+                        ISO 27001 information classification scheme (A.5.12, A.5.13) with a privacy-specific
+                        sensitivity layer. Clause A.7.2.1 requires purpose documentation per data category —
+                        special categories of personal data (GDPR Art. 9: health, ethnicity, biometric data,
+                        political opinions, trade union membership, sexual life, genetic data) must be explicitly
+                        flagged as "Art. 9 data" in the classification scheme and protected at a higher tier.
+                        Clause A.7.3.4 "Records related to processing PII" requires a PIMS-internal processing
+                        register (GDPR Art. 30 RoPA) per data category, including categories, retention periods
+                        and recipients. DPO determines classification levels for Art. 9 data in coordination
+                        with the CISO. Evidence: data-category matrix with GDPR classification, RoPA extract.
+        supplier_relationships:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Extension (Clauses B.8.2.1, B.8.5.3):** ISO 27701 extends the
+                        ISO 27001 supplier management framework (A.5.19-A.5.22) with the GDPR processor chain.
+                        Clause B.8.2.1 "Customer agreements and responsibilities" requires, for each controller,
+                        a GDPR-compliant Data Processing Agreement (DPA) per Art. 28 GDPR with mandatory content:
+                        instruction binding, confidentiality of processors, security measures, sub-processor
+                        regulation, support for data subject rights and authority requests, data return/erasure
+                        obligation and audit rights.
+                        Clause B.8.5.3 "Sub-processors" requires an up-to-date sub-processor register, prior
+                        written authorisation by the controller and pass-through security obligations.
+                        DPO reviews all DPAs and sub-processor chains.
+                        Evidence: DPA register, approved sub-processor list, DPO review record.
+        access_control:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Extension (Clauses A.7.2.2, A.7.2.5):** The PIMS extension links
+                        the ISO 27001 access control framework (A.8.2-A.8.6) to GDPR lawfulness obligations.
+                        Clause A.7.2.2 "Identify lawful basis" requires that every access authorisation concept
+                        entry is justified by a lawful basis under GDPR Art. 6 (and Art. 9 for special categories):
+                        contract, legitimate interests, legal obligation or consent.
+                        Clause A.7.2.5 "Provide mechanism to modify or withdraw consent" requires technical and
+                        organisational procedures for promptly fulfilling DSR requests (GDPR Art. 15-22): access,
+                        rectification, erasure, restriction, objection. Access permissions must be revoked promptly
+                        upon withdrawal or objection.
+                        DPO approves the lawful-basis framework; CISO implements the technical revocation mechanisms.
+                        Evidence: lawful-basis register, DSR procedure, access log with revocation records.
+        incident_management:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Extension (Clauses A.7.5.1, B.8.4.2):** The PIMS extends the
+                        ISO 27001 incident management framework (A.5.24-A.5.28) with GDPR breach notification
+                        obligations. Clause A.7.5.1 "Notification of PII breach" requires, as controller:
+                        a maintained internal breach register and notification to the competent supervisory authority
+                        (GDPR Art. 33, 72-hour deadline from awareness). The internal escalation procedure must
+                        immediately involve the DPO.
+                        Clause B.8.4.2 "Notification of PII breach to customer" (processor obligation): personal
+                        data breaches must be reported promptly (target: 24h) to the controller so that the
+                        72-hour deadline can be met (GDPR Art. 33(2)).
+                        DPO coordinates breach assessment and authority notification; CISO ensures technical detection.
+                        Evidence: breach register, authority notification records, processor notification protocol.
+        hr_security:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Extension (Clauses A.7.2.4, A.7.2.3, 5.3):** The PIMS extension
+                        augments ISO 27001 HR security (A.6.1-A.6.6) with data protection obligations.
+                        Clause A.7.2.4 "Provide privacy notices" requires that employees are informed before or at
+                        the point of hiring about the nature, scope and purpose of processing their personal data
+                        (GDPR Art. 13 — information obligation at point of direct collection).
+                        Clause A.7.2.3 clarifies that in an employment relationship, consent is rarely freely given
+                        due to structural power imbalance; preferred lawful bases are contract (Art. 6(1)(b)) or
+                        legal obligation (Art. 6(1)(c)).
+                        Clause 5.3 requires the designation of a DPO per GDPR Art. 37-39 — independent,
+                        not combined with the CISO role, reporting directly to senior management.
+                        Evidence: employee privacy notice, DPO appointment document, training records.
+        acceptable_use:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Extension (Clauses A.7.2.2, A.7.3.6):** The PIMS extends the
+                        acceptable use policy with lawful-basis transparency and data subject rights.
+                        Clause A.7.2.2 "Identify lawful basis" requires: every monitoring or logging measure
+                        (email monitoring, web proxy logs, CCTV, GPS tracking) must be based on a lawful basis
+                        under GDPR Art. 6 and clearly communicated to employees. Covert surveillance is unlawful.
+                        Clause A.7.3.6 "Correction and erasure" requires: employees may request correction of
+                        inaccurate personal data (GDPR Art. 16) and may request erasure where the processing is
+                        unlawful or the purpose has ceased to apply (GDPR Art. 17).
+                        DPO establishes the lawful-basis framework for monitoring measures; works council
+                        involvement required where applicable.
+                        Evidence: acceptable use policy with lawful basis, DSR procedure for employees.
+        top_level:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Extension (Clauses 5.2, 6.1.1, 6.1.2):** ISO 27701 extends the
+                        ISO 27001 top-level policy (A.5.1) with the PIMS commitment of senior management.
+                        Clause 5.2 "Privacy policy" requires a PIMS policy (standalone or integrated) that
+                        anchors personal data protection as a strategic corporate objective, names roles (DPO,
+                        controller, processor) and documents the accountability commitment per GDPR Art. 5(2).
+                        Clause 6.1.1 extends the ISMS risk assessment to cover PII-specific privacy risks:
+                        the risk assessment must explicitly include privacy risks (unlawful disclosure, loss
+                        of data subject rights, lawful-basis lapse).
+                        Clause 6.1.2 "PII protection impact assessment" requires a structured DPIA for
+                        high-risk processing (GDPR Art. 35): mandatory before going live, DPO opinion
+                        required, consultation with supervisory authority where necessary (Art. 36 GDPR).
+                        DPO authors the DPIA methodology; CISO supports technical risk analysis.
+                        Evidence: PIMS policy, risk assessment with privacy scope, DPIA register.

@@ -239,10 +239,14 @@ translations/patches.de.yaml:1:patch
 translations/patches.en.yaml:1:patch
 translations/people.de.yaml:1:person
 translations/people.en.yaml:1:person
+translations/policy_bcm.de.yaml:1:policy
+translations/policy_bcm.en.yaml:1:policy
 translations/policy_bcm_batch1.de.yaml:1:policy
 translations/policy_bcm_batch1.en.yaml:1:policy
 translations/policy_bcm_batch2.de.yaml:1:policy
 translations/policy_bcm_batch2.en.yaml:1:policy
+translations/policy_bsi.de.yaml:1:policy
+translations/policy_bsi.en.yaml:1:policy
 translations/policy_bsi_batch1.de.yaml:1:policy
 translations/policy_bsi_batch1.en.yaml:1:policy
 translations/policy_bsi_batch2.de.yaml:1:policy
@@ -278,7 +282,9 @@ translations/policy_privacy_batch1.en.yaml:1:policy
 translations/policy_privacy_sections.de.yaml:1:policy
 translations/policy_privacy_sections.en.yaml:1:policy
 translations/policy_soc2.de.yaml:1:policy
+translations/policy_soc2.de.yaml:597:iso27001
 translations/policy_soc2.en.yaml:1:policy
+translations/policy_soc2.en.yaml:637:iso27001
 translations/policy_tisax.de.yaml:1:policy
 translations/policy_tisax.en.yaml:1:policy
 translations/policy_wizard.de.yaml:1524:policy_ack

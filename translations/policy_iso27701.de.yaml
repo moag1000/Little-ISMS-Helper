@@ -1042,3 +1042,124 @@ policy:
                     ---
 
                     *Genehmigt durch DPO + CISO | Genehmigungskette: {{ approval.chain }}*
+
+# ─── ISO 27701 Section-Extension Keys ──────────────────────────────────────────
+# Keys appended by Iso27701SectionCatalogue (2026-06-20).
+# Namespace: policy.iso27001.<topic>.v1.iso27701_extension.body
+# These keys augment ISO 27001 host-topic policies with PIMS prose when a
+# tenant has adopted iso27701 via the Policy Wizard. DPO-owned body_extension.
+    iso27001:
+        privacy_pii:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Erweiterung (Klauseln A.7.2.1, A.7.3.1, A.7.4.1):** ISO 27701 verlangt als
+                        Ergaenzung der ISO-27001-Datenschutzregeln (A.5.34) den Aufbau eines vollstaendigen PII-Lebenszyklus.
+                        Klausel A.7.2.1 "Identify and document purpose" fordert ein Zweckverzeichnis pro Verarbeitungsaktivitaet
+                        mit dokumentierter Rechtsgrundlage gemaess Art. 5 Abs. 1 lit. b DSGVO (Zweckbindung).
+                        Klausel A.7.3.1 "Limit collection" schreibt Datenminimierung (Art. 5 Abs. 1 lit. c DSGVO) und
+                        Privacy-by-Default-Konfiguration (Art. 25 Abs. 2 DSGVO) vor.
+                        Klausel A.7.4.1 "Return, transfer or disposal of PII" fordert ein dokumentiertes Loesch- und
+                        Entsorgungskonzept inkl. Speicherfristen-Register je Verarbeitungszweck (Art. 5 Abs. 1 lit. e DSGVO,
+                        Speicherbegrenzung). Verantwortlich: DSB (DPO).
+                        Nachweis: PIMS-Zweckverzeichnis, Datenkategorien-Inventar, Loeschkonzept, ROPA-Auszug.
+        information_classification:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Erweiterung (Klauseln A.7.2.1, A.7.3.4):** Das PIMS ergaenzt die
+                        ISO-27001-Informationsklassifizierung (A.5.12, A.5.13) um eine datenschutzspezifische
+                        Schutzkategorie-Ebene. Klausel A.7.2.1 fordert die Dokumentation des Verarbeitungszwecks
+                        pro Datenkategorie — besondere Kategorien personenbezogener Daten (Art. 9 DSGVO: Gesundheit,
+                        Ethnie, biometrische Daten, politische Ansichten, Gewerkschaftszugehoerigkeit, Sexualleben,
+                        genetische Daten) muessen im Klassifikationsschema explizit als "Art-9-Daten" gekennzeichnet
+                        und hoeher geschuetzt werden. Klausel A.7.3.4 "Records related to processing PII" verlangt
+                        ein PIMS-internes Verarbeitungsverzeichnis (Art. 30 DSGVO RoPA) je Datenkategorie.
+                        DSB bestimmt die Klassifizierungsstufen fuer Art.-9-Daten in Abstimmung mit dem ISB.
+                        Nachweis: Datenkategorien-Matrix mit DSGVO-Klassifizierung, RoPA-Auszug.
+        supplier_relationships:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Erweiterung (Klauseln B.8.2.1, B.8.5.3):** ISO 27701 ergaenzt das
+                        ISO-27001-Lieferantenmanagement (A.5.19-A.5.22) um die DSGVO-Auftragsverarbeitungskette.
+                        Klausel B.8.2.1 "Customer agreements and responsibilities" verlangt fuer jeden Verantwortlichen
+                        einen rechtskonformen Auftragsverarbeitungsvertrag (AVV) gemaess Art. 28 DSGVO mit Pflichtinhalten:
+                        Weisungsbindung, Vertraulichkeit, Sicherheitsmassnahmen, Sub-AV-Regelung, Unterstuetzung bei
+                        Betroffenenrechten, Datenloesch-/Rueckgabepflicht und Audit-Recht.
+                        Klausel B.8.5.3 "Sub-processors" fordert ein aktuelles Sub-Auftragsverarbeiterverzeichnis,
+                        vorangehende schriftliche Genehmigung durch den Verantwortlichen und Pass-Through-Sicherheitsverpflichtungen.
+                        DSB prueft alle AVVs und Sub-AV-Ketten. Nachweis: AVV-Register, genehmigte Sub-AV-Liste.
+        access_control:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Erweiterung (Klauseln A.7.2.2, A.7.2.5):** Die PIMS-Erweiterung
+                        verknuepft die ISO-27001-Zugangskontrolle (A.8.2-A.8.6) mit den DSGVO-Rechtmaessigkeitspflichten.
+                        Klausel A.7.2.2 "Identify lawful basis" verlangt, dass jeder Zugriffsberechtigungskonzept-Eintrag
+                        mit der Rechtsgrundlage nach Art. 6 DSGVO (und Art. 9 fuer besondere Kategorien) begruendet wird:
+                        Vertrag, berechtigte Interessen, gesetzliche Pflicht oder Einwilligung.
+                        Klausel A.7.2.5 "Provide mechanism to modify or withdraw consent" fordert technische und
+                        organisatorische Verfahren zur Umsetzung von DSR-Anfragen (Art. 15-22 DSGVO): Auskunft, Berichtigung,
+                        Loeschung, Einschraenkung, Widerspruch. Zugriffsberechtigungen muessen beim Widerruf zeitnah gesperrt werden.
+                        DSB genehmigt Lawful-Basis-Rahmen; ISB implementiert Sperrmechanismen.
+                        Nachweis: Rechtsgrundlagen-Register, DSR-Verfahren, Zugriffsprotokoll.
+        incident_management:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Erweiterung (Klauseln A.7.5.1, B.8.4.2):** Das PIMS ergaenzt das
+                        ISO-27001-Vorfallsmanagement (A.5.24-A.5.28) um DSGVO-Meldepflichten bei Datenschutzverletzungen.
+                        Klausel A.7.5.1 "Notification of PII breach" verlangt als Verantwortlicher: Fuehren eines
+                        internen Breach-Registers und Meldung an die zustaendige Aufsichtsbehoerde (Art. 33 DSGVO,
+                        72-Stunden-Frist ab Kenntnis). Das interne Eskalationsverfahren muss den DSB unverzueglich einbeziehen.
+                        Klausel B.8.4.2 "Notification of PII breach to customer" (Processor-Pflicht): Datenschutzverletzungen
+                        muessen unverzueglich (Richtwert: 24h) an den Verantwortlichen gemeldet werden (Art. 33 Abs. 2 DSGVO).
+                        DSB koordiniert Breach-Assessment + Behördenmeldung; ISB stellt technische Erkennung sicher.
+                        Nachweis: Breach-Register, Meldenachweise Aufsichtsbehoerde, Processor-Notification-Protokoll.
+        hr_security:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Erweiterung (Klauseln A.7.2.4, A.7.2.3, 5.3):** Die PIMS-Erweiterung
+                        ergaenzt die ISO-27001-Personalsicherheit (A.6.1-A.6.6) um datenschutzrechtliche Pflichten.
+                        Klausel A.7.2.4 "Provide privacy notices" verlangt, dass Beschaeftigte vor oder bei Einstellung
+                        ueber Art, Umfang und Zweck der Verarbeitung ihrer Daten informiert werden (Art. 13 DSGVO).
+                        Klausel A.7.2.3 stellt klar, dass im Beschaeftigungsverhaeltnis Einwilligung wegen strukturellem
+                        Machtungleichgewicht selten freiwillig erfolgen kann; bevorzugte Rechtsgrundlagen sind Vertrag
+                        (Art. 6 Abs. 1 lit. b) oder gesetzliche Pflicht (lit. c).
+                        Klausel 5.3 verpflichtet zur Benennung eines DSB gemaess Art. 37-39 DSGVO — weisungsfrei,
+                        nicht in Personalunion mit dem ISB, direktes Berichtsrecht zur Leitung.
+                        Nachweis: Beschaeftigten-Datenschutzinformation, DSB-Bestellungsurkunde, Schulungsnachweis.
+        acceptable_use:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Erweiterung (Klauseln A.7.2.2, A.7.3.6):** Das PIMS ergaenzt die
+                        Richtlinie zur akzeptablen Nutzung um Rechtsgrundlagen-Transparenz und Betroffenenrechte.
+                        Klausel A.7.2.2 "Identify lawful basis" fordert: Jede Ueberwachungs- oder Protokollierungsmassnahme
+                        (E-Mail-Monitoring, Webproxy-Logs, CCTV, GPS-Tracking) muss einer Rechtsgrundlage nach Art. 6 DSGVO
+                        entsprechen und Beschaeftigten klar kommuniziert werden. Heimliche Ueberwachung ist unzulaessig.
+                        Klausel A.7.3.6 "Correction and erasure" verlangt: Beschaeftigte koennen unrichtige
+                        personenbezogene Daten berichtigen lassen (Art. 16 DSGVO) und ggf. Loeschung verlangen,
+                        wenn die Verarbeitung unrechtmaessig ist oder der Zweck entfallen ist (Art. 17 DSGVO).
+                        DSB legt Rechtsgrundlagen-Rahmen fuer Monitoring-Massnahmen fest; Betriebsrat ggf. einzubeziehen.
+                        Nachweis: Nutzungsrichtlinie mit Rechtsgrundlagen-Angabe, DSR-Verfahren fuer Beschaeftigte.
+        top_level:
+            v1:
+                iso27701_extension:
+                    body: >-
+                        **ISO/IEC 27701 (PIMS) Erweiterung (Klauseln 5.2, 6.1.1, 6.1.2):** ISO 27701 ergaenzt die
+                        ISO-27001-Leitlinie (A.5.1) um das PIMS-Bekenntnis der obersten Leitung.
+                        Klausel 5.2 "Privacy policy" verlangt eine PIMS-Leitlinie, die den Schutz personenbezogener
+                        Daten als strategisches Unternehmensziel verankert, Rollen (DSB, Verantwortlicher,
+                        Auftragsverarbeiter) benennt und die Verpflichtung zur Rechenschaftspflicht nach Art. 5
+                        Abs. 2 DSGVO dokumentiert.
+                        Klausel 6.1.1 weitet die ISMS-Risikobeurteilung auf PII-Datenschutzrisiken aus:
+                        Risikobewertung muss explizit Privacy-Risiken (unrechtmaessige Offenlegung, Verlust der
+                        Betroffenenrechte, Rechtsgrundlagenwegfall) einschliessen.
+                        Klausel 6.1.2 "PII protection impact assessment" verlangt eine DSFA/DPIA fuer risikoreiche
+                        Verarbeitungen (Art. 35 DSGVO): Erstattungspflicht vor Inbetriebnahme, DSB-Stellungnahme,
+                        ggf. Konsultation Aufsichtsbehoerde (Art. 36 DSGVO).
+                        DSB erstellt DSFA-Methodik; CISO unterstuetzt technische Risikoanalyse.
+                        Nachweis: PIMS-Leitlinie, Risikobeurteilung mit Privacy-Scope, DSFA-Register.

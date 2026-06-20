@@ -630,3 +630,88 @@ policy:
                     ---
                     ### Anhang DE — Incident-Response- und Stakeholder-Kommunikations-Richtlinie der {{ tenant.legal_name }}
                     Diese Richtlinie regelt Vorbereitung, Erkennung, Reaktion, Wiederherstellung und Lessons Learned bei Sicherheitsvorfaellen sowie die Kommunikation an interne und externe Stakeholder gemaess SOC 2 CC7.4 und CC2.3. Lifecycle: Preparation (dokumentiert, besetzt, getoolt, halbjaehrlich geuebt), Identification (SIEM, EDR, Kunden- und Forschermeldungen, Monitoring-Anomalien), Containment (kurzfristig + langfristig), Eradication, Recovery, Lessons Learned (Post-Incident-Review binnen 14 Kalendertagen normal, binnen 5 Geschaeftstagen Major). Severity-Stufen SEV1-SEV3 mit definierten Initialreaktionszeiten und Eskalationspfaden (SEV1 = Major, 15 Minuten, CISO + CEO). Kommunikations-Kadenz: SEV1 alle 30 Minuten intern, Kunden ueber Status-Page/Banner/Account-Team/Support-Portal. Regulatorische Meldungen (DSGVO Art. 33 — 72 Stunden ab Kenntnis eines personenbezogenen Datenschutzverstosses) durch Legal-Team, DSB beraet. Beweissicherung mit Chain-of-Custody, Hashing zur Integritaetspruefung, Retention gemaess Legal-Hold. Veroeffentlichte Vulnerability-Disclosure-Policy fuer Forschermeldungen mit Safe-Harbour. Halbjaehrliche Tabletop-Uebungen mit rotierenden Szenarien.
+
+# SOC 2 Trust Services Criteria — ISO 27001 topic body extensions
+# Keys: policy.iso27001.<topic>.v1.soc2_extension.body
+# Used by Soc2SectionCatalogue to append TSC-specific prose to ISO baseline policies.
+iso27001:
+    top_level:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC1.3, CC3.1, CC3.2): This policy constitutes the apex document of the SOC 2 control programme (AICPA SSAE 18). CC1.3 requires management to establish structures, reporting lines and responsibilities; the CISO reports independently of engineering and has direct Board access on material risks. CC3.1 requires security objectives to be defined and approved annually; CC3.2 requires risks to those objectives to be identified and analysed at least annually and on triggering events. All subordinate security policies derive from and must be consistent with this policy.'
+    asset_management:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC3.2): Asset inventory is the foundation of SOC 2 risk identification. CC3.2 requires {{ tenant.legal_name }} to identify assets relevant to the achievement of service commitments, assess threats and risks associated with those assets, and document the analysis. A complete, classified asset register — covering systems, data stores, network components and third-party services in scope of the SOC 2 examination — must be maintained and reviewed at least annually.'
+    hr_security:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC1.4): CC1.4 requires that management establish policies and procedures to ensure that personnel possess the competence necessary to perform their assigned duties. Background screening, role-specific security training, and documented competency assessments are required for all staff with access to in-scope systems. Security training completion must be evidenced for inclusion in the SOC 2 audit population.'
+    access_control:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC6.1, CC6.2, CC6.3): CC6.1 requires logical access to in-scope systems to be restricted to authorised users through the use of identification, authentication and authorisation mechanisms. CC6.2 requires that user access is added, removed or modified in a timely manner following Joiner-Mover-Leaver events. CC6.3 requires that role-based access is granted based on need-to-know and least-privilege principles, with periodic access reviews evidenced. Access-change records must be retained for the full SOC 2 audit window.'
+    identity_management:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC6.1, CC6.2, CC6.3): Identity lifecycle management directly satisfies CC6.1 (unique identification of users), CC6.2 (timely provisioning and deprovisioning) and CC6.3 (authorisation restricted to need-to-know). The identity provider (IdP) must be the single source of truth for all in-scope system identities. Local accounts are prohibited except for documented break-glass scenarios. Periodic User Access Reviews must be signed off and retained as evidence.'
+    authentication_information:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC6.1, CC6.6): CC6.1 requires that authentication mechanisms prevent access by unauthorised users. CC6.6 requires implementation of multi-factor authentication (MFA) for all user accounts accessing in-scope systems, particularly administrative access and production data. Phishing-resistant factors (FIDO2/WebAuthn or platform authenticators) are required for privileged roles. Password standards must follow NIST SP 800-63B; breach-corpus checking is required.'
+    physical_security:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC6.4, CC6.5): CC6.4 requires physical security perimeters and access controls to prevent unauthorised physical access to in-scope systems and data. CC6.5 requires that physical access is restricted to authorised individuals and that access is removed when no longer required. For colocation and cloud infrastructure, physical access controls are treated as a subservice organisation carve-out; the provider SOC 2 report is reviewed annually to validate Complementary Subservice Organisation Controls (CSOCs).'
+    logging:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC7.2): CC7.2 requires {{ tenant.legal_name }} to monitor system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters and errors affecting the entity''s ability to meet its objectives. All in-scope systems must forward security-relevant events (authentication, authorisation changes, privileged commands, network flows, application security events) to the central log platform with tamper-evident storage. Log retention must cover the full SOC 2 audit window.'
+    malware:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC7.1): CC7.1 requires that new vulnerabilities are identified and evaluated, and that vulnerability-mitigation activities are performed to meet the entity''s objectives. Endpoint detection and response (EDR), anti-malware controls and configuration-baseline enforcement satisfy this criterion. All in-scope endpoints must run managed anti-malware with real-time protection; signature and engine updates must be automated. Malware detections must be logged, triaged and tracked to remediation.'
+    patch_management:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC7.1): CC7.1 requires identification and evaluation of new vulnerabilities on an ongoing basis. Patch management is the primary operational control satisfying this requirement. Patch SLAs are: Critical (CVSS 9.0+) within 7 days, High (CVSS 7.0-8.9) within 30 days, Medium within 90 days, Low at next maintenance window. Exceptions require CISO sign-off with a documented compensating control and fixed remediation date. Patch compliance rates and open exceptions are reviewed by the CISO monthly.'
+    incident_management:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC7.3, CC7.4): CC7.3 requires that detected events are evaluated and classified as events, security events or security incidents. CC7.4 requires that identified security incidents are responded to in accordance with a documented incident response procedure, that incident remediation activities are carried out to meet the entity''s objectives, and that the results of incident-response activities are communicated to affected parties. Post-incident reviews must be completed within 14 calendar days (5 business days for Major Incidents) and the results retained as audit evidence.'
+    threat_intelligence:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC3.1, CC3.2): Threat intelligence feeds directly into the SOC 2 risk identification process (CC3.2). Sources include vendor advisories, ISAC threat feeds, vulnerability scanner output, past incident analysis, and red-team findings. Intelligence outputs must be documented, prioritised and linked to the risk register. Significant new threats trigger an out-of-cycle risk reassessment. The threat-intelligence process is reviewed quarterly.'
+    secure_development:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC8.1): CC8.1 requires {{ tenant.legal_name }} to authorise, design, develop or acquire, implement, operate, approve, maintain and monitor controls related to infrastructure, data and software to meet the entity''s objectives. All code changes traversing in-scope systems must pass SAST, SCA, unit tests, integration tests and infrastructure-security scanning before production deployment. Separation of duties between code author and change approver must be enforced. All deployments must be logged with operator identity, artefact version and timestamp.'
+    network_security:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC6.6, CC6.7): CC6.6 requires that prior to issuing credentials and granting access, the entity registers and authorises new internal and external users. CC6.7 requires that the transmission, movement and removal of information is restricted to authorised internal and external users and processes. Network segmentation, firewall rule sets, TLS enforcement and intrusion-detection systems all contribute to these criteria. Network access control rules must be reviewed at least annually; exceptions require documented approval.'
+    supplier_relationships:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC9.2): CC9.2 requires that the entity assesses and manages risks associated with vendors and business partners who provide goods or services that are relevant to the achievement of service commitments. All Tier 1 vendors (those with access to in-scope data or systems, or whose outage would breach an availability commitment) must be assessed annually: security questionnaire reviewed, SOC 2 / ISO 27001 attestation reviewed, CSOCs validated, risk score updated. Tier 1 vendor contracts must include breach-notification timelines (≤72 hours), audit rights and sub-processor disclosure obligations.'
+    continuity:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (A1.3): Where Availability is an adopted TSC category, A1.3 requires {{ tenant.legal_name }} to have a plan to recover and resume its operations in the event of a business disruption. The Business Continuity Plan (BCP) and Disaster Recovery Plan (DRP) must name the Crisis Management Team, define the communications protocol, sequence recovery activities and document decision authorities. Tabletop exercises must be conducted semi-annually; a live failover test of at least one Tier-1 service must be performed annually and the results retained as SOC 2 evidence.'
+    backup:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (A1.2): Where Availability is an adopted TSC category, A1.2 requires that backup and recovery capabilities exist to support the entity''s recovery time objectives (RTO) and recovery point objectives (RPO). Each in-scope data store must have a documented backup specification covering frequency, retention, encryption, geographic distribution and integrity verification. Live restore tests must be performed at least quarterly for each data class; test results must be retained as SOC 2 evidence.'
+    cryptography:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (C1.1, CC6.7): Where Confidentiality is an adopted TSC category, C1.1 requires {{ tenant.legal_name }} to identify and maintain confidential information to meet the entity''s objectives. Cryptography is the primary technical control. Approved algorithms: AES-256-GCM or ChaCha20-Poly1305 (symmetric); RSA-3072+, ECDSA P-256+, Ed25519 (asymmetric); SHA-256+ (hashing). Deprecated algorithms (MD5, SHA-1, 3DES, RC4, TLS 1.0/1.1) are prohibited. Encryption keys must be managed in an HSM or cloud KMS with FIPS 140-2 Level 2+ validation; customer data encryption keys must be rotated at least annually.'
+    privacy_pii:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (P1, P4): Where Privacy is an adopted TSC category, P1 requires that notice of privacy practices is communicated to data subjects at or before the point of collection. P4 requires that personal information is used, retained and disposed of in accordance with the entity''s privacy notice and applicable law. Retention schedules must be reviewed annually by the DPO; disposal must be evidenced (logical deletion verified, certificates of destruction for physical media retained 3 years). Customer deletion requests must be tracked and fulfilled within the contractually agreed and legally required timelines.'
+    information_transfer:
+        v1:
+            soc2_extension:
+                body: 'SOC 2 extension (CC6.6): CC6.6 requires that transmission, movement and removal of information be restricted to authorised internal and external users and processes. All information transfers must use encrypted channels (TLS 1.2+ for general data; mTLS for Restricted data between internal services). External transfers of Confidential or Restricted data require an NDA and an approved sharing channel. Transfer logs must be retained for the SOC 2 audit window.'

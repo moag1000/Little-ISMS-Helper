@@ -54,8 +54,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 #[AsCommand(
     name: 'app:policy-wizard:seed-iso27701',
-    description: 'Seeds the 10 ISO 27701:2025 PIMS-Pflicht-Policy-Templates.',
+    description: '[DEPRECATED — superseded by Iso27701SectionCatalogue] Seeds the 10 ISO 27701:2025 PIMS-Pflicht-Policy-Templates.',
 )]
+/**
+ * @deprecated since 2026-06-20 — superseded by {@see \App\Service\PolicyWizard\SectionExtension\Iso27701SectionCatalogue}.
+ *
+ * The section-extension catalogue provides mapping-grounded ISO 27701 PIMS
+ * body-extension sections that augment ISO 27001 host-topic policies via the
+ * Policy Wizard's SectionExtensionRegistry. No standalone seeding of
+ * PolicyTemplate rows is required for the cross-standard extension workflow.
+ *
+ * MIGRATION: Existing rows seeded by this command are NOT deleted (idempotent).
+ * Tenants with previously seeded iso27701 standalone templates retain them.
+ * New tenants will receive iso27701 coverage exclusively via Iso27701SectionCatalogue.
+ * This command may be removed in a future major release once all tenants have
+ * been migrated to the section-extension workflow.
+ */
 final class SeedIso27701PolicyTemplatesCommand extends Command
 {
     public const string STANDARD = 'iso27701';

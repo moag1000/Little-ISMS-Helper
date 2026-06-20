@@ -1,0 +1,27 @@
+policy:
+    iso27001:
+        top_level:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS Extension (Cl. 5.1 + 5.2):** ISO 22301:2019 Clause 5.2 requires a documented Business Continuity Policy approved, communicated and maintained by top management. The policy must include BCMS objectives and a commitment to continual improvement (Cl. 5.2 a-f). Top management bears non-delegable accountability for resource provision, role assignment and effectiveness review (Cl. 5.1). Evidence: current BC Policy with top management approval signature, communication record.
+        continuity:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS Extension (Cl. 8.2 – 8.5):** ISO 22301:2019 mandates a fully operational BCMS. Clause 8.2 requires a Business Impact Analysis (BIA) identifying critical processes with RTO, RPO and MTPD per process and dependency mapping (people, IT, suppliers, sites). Clause 8.3 demands documented BC strategies per critical process (alternate site, personnel reserves, IT failover). Clause 8.4 requires Business Continuity Plans (BCPs) with activation criteria, escalation structures, crisis team organisation (BSI 200-4 Ch. 6.2) and recovery procedures. Clause 8.5 mandates an annual exercise programme (tabletop, walkthrough, full simulation); results must be documented and fed into plan maintenance (lessons-learned loop). Responsible: BCM Manager / Emergency Officer. Evidence: current BIA report, BC strategy document, BCPs per process, exercise reports for the last 12 months.
+        backup:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS Extension (Cl. 8.3 + 8.4):** Backup procedures must be anchored in the BC strategy (Cl. 8.3) as a recovery resource: RPO-aligned backup frequency, retention periods, offsite/offline storage (3-2-1 principle) and encryption of sensitive data at rest. Business Continuity Plans (Cl. 8.4) must document restore steps, responsible parties, prioritisation order and expected recovery times. Restore tests are conducted at least quarterly (part of the exercise programme under Cl. 8.5). Evidence: BC strategy with backup section, BCP restore section, quarterly restore test records.
+        incident_management:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS Extension (Cl. 8.4):** ISO 22301 Clause 8.4 requires structured incident response plans as part of BC procedures: clear activation triggers for BCM emergency mode, defined crisis team composition and escalation rules (8.4.2), warning and communication procedures for internal and external stakeholders (8.4.3), and a BC plan activation sequence upon occurrence of a disruption scenario. The interface between ISO 27001 incident response (A.5.24-5.28) and ISO 22301 continuity activation is documented and tested annually via tabletop exercise. Evidence: BCP activation procedure, crisis team charter, communication plan, exercise record.
+        supplier_relationships:
+            v1:
+                bcm_extension:
+                    body: >-
+                        **ISO 22301 BCMS Extension (Cl. 8.3):** The BC strategy (ISO 22301 Cl. 8.3) requires a supplier dependency analysis as a BIA input: which critical business processes depend on which supplier, with which RTOs? Continuity requirements must be contractually anchored for each critically dependent supplier (uptime guarantees, mandatory BCP evidence, escalation hotline). Alternative suppliers or manual fallback procedures are documented in the BC strategy. Concentration risks (single points of failure in the supply chain) are reported to risk management. Evidence: supplier dependency matrix in BIA, BC strategy section on third parties, supplier contracts with continuity clauses.
