@@ -267,6 +267,7 @@ compliance:
             subtitle: 'Maschinell erstellte Mappings (Seeds, CSV-Import, Wizard, Migration) prüfen und freigeben.'
             queue_heading: 'Ungeprüfte Mappings (%count%)'
             empty: 'Alle maschinell erstellten Mappings sind geprüft. Gute Arbeit!'
+            manager_hint: 'Freigabe erfolgt durch eine Manager-Rolle (4-Augen-Prinzip).'
             filter:
                 all: 'Alle'
             col:
@@ -275,6 +276,8 @@ compliance:
                 type: 'Typ'
                 origin: 'Herkunft'
                 actions: 'Aktionen'
+            status:
+                unreviewed: 'Ungeprüft'
             action:
                 approve: 'Freigeben'
                 reject: 'Ablehnen'

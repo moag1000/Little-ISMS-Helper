@@ -23,9 +23,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// Class gate is ROLE_USER (read-only access to the queue + pending-count) so the
+// reuse payoff is visible to juniors. EVERY write action below adds an explicit
+// ROLE_MANAGER gate (or a MANAGER-only voter attribute) to preserve 4-eyes.
 // @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/compliance/inheritance', name: 'app_compliance_inheritance_')]
-#[IsGranted('ROLE_MANAGER')]
+#[IsGranted('ROLE_USER')]
 final class ComplianceInheritanceController extends AbstractController
 {
     public function __construct(
@@ -91,6 +94,7 @@ final class ComplianceInheritanceController extends AbstractController
     }
 
     #[Route('/activate/{frameworkCode}', name: 'activate', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     #[IsGranted(ComplianceInheritanceVoter::CREATE_SUGGESTIONS)]
     public function activate(string $frameworkCode): Response
     {
@@ -117,6 +121,7 @@ final class ComplianceInheritanceController extends AbstractController
     }
 
     #[Route('/bulk-confirm/{frameworkCode}', name: 'bulk_confirm', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     #[IsGranted(ComplianceInheritanceVoter::CONFIRM)]
     public function bulkConfirm(string $frameworkCode, Request $request): Response
     {
@@ -159,6 +164,7 @@ final class ComplianceInheritanceController extends AbstractController
     }
 
     #[Route('/{id}/confirm', name: 'confirm', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function confirm(FulfillmentInheritanceLog $log, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('inheritance_confirm_' . $log->getId(), $request->request->get('_token', ''))) {
@@ -190,6 +196,7 @@ final class ComplianceInheritanceController extends AbstractController
     }
 
     #[Route('/{id}/reject', name: 'reject', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function reject(FulfillmentInheritanceLog $log, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('inheritance_reject_' . $log->getId(), $request->request->get('_token', ''))) {
@@ -213,6 +220,7 @@ final class ComplianceInheritanceController extends AbstractController
     }
 
     #[Route('/{id}/override', name: 'override', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function override(FulfillmentInheritanceLog $log, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('inheritance_override_' . $log->getId(), $request->request->get('_token', ''))) {

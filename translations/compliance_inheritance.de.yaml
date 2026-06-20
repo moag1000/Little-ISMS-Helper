@@ -12,6 +12,7 @@ compliance_inheritance:
         mapping: 'Mapping'
         suggested: 'Vorschlag'
         open_review: 'Prüfpanel öffnen'
+        manager_hint: 'Bestätigung erfolgt durch eine Manager-Rolle (4-Augen-Prinzip).'
     panel:
         title: 'Ableitungsvorschlag prüfen'
         suggested: 'Vorgeschlagener Wert'
@@ -25,6 +26,7 @@ compliance_inheritance:
         override: 'Überschreiben'
         reject: 'Ablehnen'
         final_state: 'Status: %status%'
+        manager_hint: 'Bestätigung erfolgt durch eine Manager-Rolle (4-Augen-Prinzip).'
     reject:
         title: 'Ableitungsvorschlag ablehnen'
         reason_label: 'Grund der Ablehnung'

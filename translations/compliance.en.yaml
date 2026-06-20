@@ -267,6 +267,7 @@ compliance:
             subtitle: 'Review and approve machine-created mappings (seeds, CSV import, wizard, migration).'
             queue_heading: 'Unreviewed mappings (%count%)'
             empty: 'All machine-created mappings are reviewed. Good job!'
+            manager_hint: 'Approval is performed by a manager role (four-eyes principle).'
             filter:
                 all: 'All'
             col:
@@ -275,6 +276,8 @@ compliance:
                 type: 'Type'
                 origin: 'Origin'
                 actions: 'Actions'
+            status:
+                unreviewed: 'Unreviewed'
             action:
                 approve: 'Approve'
                 reject: 'Reject'

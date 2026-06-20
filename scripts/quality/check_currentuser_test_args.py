@@ -177,6 +177,11 @@ def scan_tests(actions: dict[str, int]) -> list[tuple[Path, int, str]]:
             recv_match = re.search(r"(\$?\w+)\s*->\s*$", text[line_start:m.start()])
             if recv_match and "lifecycleservice" in recv_match.group(1).lower():
                 continue
+            # Skip `$session->save()` — HttpFoundation Session API (no-arg save),
+            # not a controller action carrying a #[CurrentUser] parameter.
+            recv_tail = re.search(r"(\$?\w+)\s*$", text[line_start:m.start()])
+            if recv_tail and recv_tail.group(1).lstrip("$").lower() == "session":
+                continue
             args_text = text[open_paren + 1:close].strip()
             if not args_text:
                 actual = 0

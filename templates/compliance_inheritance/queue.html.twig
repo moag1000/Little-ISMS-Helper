@@ -31,6 +31,13 @@
         </div>
     </div>
 
+    {% if not is_granted('ROLE_MANAGER') %}
+        <div class="fa-alert fa-alert--info mb-3" role="note">
+            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
+            {{ 'compliance_inheritance.queue.manager_hint'|trans({}, 'compliance_inheritance') }}
+        </div>
+    {% endif %}
+
     <div aria-live="polite" class="visually-hidden"
          data-controller="inheritance-queue"
          data-inheritance-queue-count-value="{{ pending_count }}"
