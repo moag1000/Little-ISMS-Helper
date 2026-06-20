@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Job\LoadStarterPackJob;
 use App\Service\ComplianceFrameworkLoaderService;
+use App\Service\Job\AsyncJobDispatcher;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * ComplianceFrameworkLibraryController
@@ -33,6 +37,7 @@ class ComplianceFrameworkLibraryController extends AbstractController
         private readonly ComplianceFrameworkLoaderService $complianceFrameworkLoaderService,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly ModuleConfigurationService $moduleConfigurationService,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     /**
@@ -83,5 +88,45 @@ class ComplianceFrameworkLibraryController extends AbstractController
         }
 
         return new JsonResponse($result);
+    }
+
+    /**
+     * Starter-Pack — opt-in, one-click load of the baseline framework
+     * catalogue + their cross-framework mappings, via an async job.
+     *
+     * Designed for a fresh tenant whose compliance/mapping area is still empty:
+     * loads ISO 27001 + BSI IT-Grundschutz (always) and GDPR (only when the
+     * `privacy` module is active), then seeds the applicable mappings. Idempotent
+     * and reversible-by-design (data only) — safe to re-trigger.
+     */
+    #[Route('/compliance/frameworks/load-starter-pack', name: 'app_compliance_load_starter_pack', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function loadStarterPack(
+        Request $request,
+        AsyncJobDispatcher $asyncJobDispatcher,
+    ): Response {
+        if (!$this->isCsrfTokenValid('load_starter_pack', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
+
+            return $this->redirectToRoute('app_compliance_framework_library');
+        }
+
+        $user = $this->getUser();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+
+        return $asyncJobDispatcher->dispatchWithProgress(
+            request: $request,
+            jobClass: LoadStarterPackJob::class,
+            jobArgs: [
+                'tenantId' => $tenant?->getId(),
+                'userId' => $user instanceof User ? $user->getId() : null,
+            ],
+            jobName: 'compliance.starter_pack',
+            payload: [
+                '_label' => $this->translator->trans('compliance.starter_pack.progress_label', [], 'compliance'),
+                '_subtitle' => $this->translator->trans('compliance.starter_pack.progress_subtitle', [], 'compliance'),
+            ],
+            returnUrl: $this->generateUrl('app_compliance_index'),
+        );
     }
 }

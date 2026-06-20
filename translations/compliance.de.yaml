@@ -781,6 +781,17 @@ compliance:
     no_frameworks_loaded: 'Keine Compliance-Frameworks geladen'
     add_frameworks: 'Frameworks hinzufügen'
     contact_admin_to_add_frameworks: 'Kontaktieren Sie Ihren Administrator, um Compliance-Frameworks hinzuzufügen'
+    starter_pack:
+        title: 'Schnellstart: Standard-Frameworks + Zuordnungen laden'
+        body: 'Sie starten mit einem leeren Bereich. Mit einem Klick laden wir die gängigsten Frameworks und verknüpfen sie automatisch miteinander – so sehen Sie sofort, welche Anforderungen sich überschneiden, und müssen nichts doppelt pflegen.'
+        item_iso: 'ISO/IEC 27001:2022 (Informationssicherheit)'
+        item_bsi: 'BSI IT-Grundschutz'
+        item_gdpr: 'DSGVO (wird geladen, weil das Datenschutz-Modul aktiv ist)'
+        item_mappings: 'Cross-Framework-Zuordnungen (Mappings) zwischen den Frameworks'
+        cta: 'Standard-Frameworks jetzt laden'
+        hint: 'Das Laden läuft im Hintergrund und kann jederzeit gefahrlos wiederholt werden – es entstehen keine Duplikate.'
+        progress_label: 'Schnellstart: Standard-Frameworks werden geladen'
+        progress_subtitle: 'ISO 27001, BSI IT-Grundschutz und Cross-Framework-Zuordnungen'
     benefits:
         title: 'Vorteile des Compliance-Managements'
         data_reuse:

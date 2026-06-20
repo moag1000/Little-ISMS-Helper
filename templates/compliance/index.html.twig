@@ -182,12 +182,45 @@
             </div>
         {% else %}
             <div class="col-span-all text-center p-xl">
+                {# Opt-in Schnellstart — Junior-freundlicher Starter-Pack (nur ROLE_MANAGER, nur wenn 0 Frameworks) #}
+                {% if is_granted('ROLE_MANAGER') %}
+                    {% embed '_components/_card.html.twig' with { class: 'border-primary text-start mb-4' } %}
+                        {% block card_body %}
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="flex-shrink-0">
+                                    <i class="fa-icon fa-icon--ui-stars text-primary" aria-hidden="true" style="font-size: 2rem;"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="fw-bold fs-5 mb-1">{{ 'compliance.starter_pack.title'|trans({}, 'compliance') }}</p>
+                                    <p class="text-muted mb-2">{{ 'compliance.starter_pack.body'|trans({}, 'compliance') }}</p>
+                                    <ul class="text-muted small mb-3">
+                                        <li>{{ 'compliance.starter_pack.item_iso'|trans({}, 'compliance') }}</li>
+                                        <li>{{ 'compliance.starter_pack.item_bsi'|trans({}, 'compliance') }}</li>
+                                        {% if is_module_active('privacy') %}
+                                            <li>{{ 'compliance.starter_pack.item_gdpr'|trans({}, 'compliance') }}</li>
+                                        {% endif %}
+                                        <li>{{ 'compliance.starter_pack.item_mappings'|trans({}, 'compliance') }}</li>
+                                    </ul>
+                                    <form method="post" action="{{ path('app_compliance_load_starter_pack') }}" data-turbo="false">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('load_starter_pack') }}">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
+                                            <span class="icon"><i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i></span>
+                                            {{ 'compliance.starter_pack.cta'|trans({}, 'compliance') }}
+                                        </button>
+                                    </form>
+                                    <p class="text-muted mt-2 mb-0"><small>{{ 'compliance.starter_pack.hint'|trans({}, 'compliance') }}</small></p>
+                                </div>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
+                {% endif %}
+
                 <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans({}, 'compliance') }}</p>
                 {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                     <span class="icon"><i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i></span> {{ 'compliance.add_frameworks'|trans({}, 'compliance') }}
                 </a>
-                {% else %}
+                {% elseif not is_granted('ROLE_MANAGER') %}
                 <p class="text-muted"><small>{{ 'compliance.contact_admin_to_add_frameworks'|trans({}, 'compliance') }}</small></p>
                 {% endif %}
             </div>

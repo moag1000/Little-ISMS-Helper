@@ -35,6 +35,7 @@ class ComplianceFrameworkLibraryControllerTest extends TestCase
     private MockObject $complianceFrameworkLoaderService;
     private MockObject $csrfTokenManager;
     private MockObject $moduleConfigurationService;
+    private MockObject $translator;
     private ComplianceFrameworkLibraryController $controller;
 
     protected function setUp(): void
@@ -42,11 +43,13 @@ class ComplianceFrameworkLibraryControllerTest extends TestCase
         $this->complianceFrameworkLoaderService = $this->createMock(ComplianceFrameworkLoaderService::class);
         $this->csrfTokenManager = $this->createMock(CsrfTokenManagerInterface::class);
         $this->moduleConfigurationService = $this->createMock(ModuleConfigurationService::class);
+        $this->translator = $this->createMock(\Symfony\Contracts\Translation\TranslatorInterface::class);
 
         $this->controller = new ComplianceFrameworkLibraryController(
             $this->complianceFrameworkLoaderService,
             $this->csrfTokenManager,
             $this->moduleConfigurationService,
+            $this->translator,
         );
 
         $this->setupControllerContainer();
