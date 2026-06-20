@@ -2170,6 +2170,10 @@ reuse:
     cta:
         portfolio: 'Trend and portfolio report'
         heatmap: 'Reuse heatmap'
+    inheritance_cta:
+        title: 'Inheritance suggestions pending confirmation'
+        body: '%count% suggestion(s) were generated automatically — please review and confirm them in the queue.'
+        link: 'Go to inheritance queue'
     heatmap:
         title: 'Reuse heatmap'
         description: 'Which documents and suppliers carry the ISMS? Light tiles = low reuse, red tiles = load-bearing.'

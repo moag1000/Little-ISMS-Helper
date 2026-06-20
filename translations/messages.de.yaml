@@ -2229,6 +2229,10 @@ reuse:
     cta:
         portfolio: 'Trend und Portfolio-Report'
         heatmap: 'Reuse-Heatmap'
+    inheritance_cta:
+        title: 'Vererbungs-Vorschläge warten auf Bestätigung'
+        body: '%count% Vorschlag(e) wurden automatisch generiert — bitte in der Queue prüfen und bestätigen.'
+        link: 'Zur Vererbungs-Queue'
     heatmap:
         title: 'Reuse-Heatmap'
         description: 'Welche Dokumente und Lieferanten tragen das ISMS? Helle Kacheln = geringe Wiederverwendung, rote Kacheln = Load-Bearing.'

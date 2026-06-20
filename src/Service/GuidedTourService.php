@@ -431,11 +431,12 @@ final class GuidedTourService
      */
     private function mappingSteps(): array
     {
-        $hub     = $this->urlFor('app_compliance_mapping_hub');
-        $seeds   = $this->urlFor('app_compliance_mapping_seeds_index');
-        $quality = $this->urlFor('app_mapping_quality_dashboard');
-        $gaps    = $this->urlFor('app_mapping_quality_gaps');
-        $cross   = $this->urlFor('app_compliance_cross_framework');
+        $hub        = $this->urlFor('app_compliance_mapping_hub');
+        $seeds      = $this->urlFor('app_compliance_mapping_seeds_index');
+        $quality    = $this->urlFor('app_mapping_quality_dashboard');
+        $gaps       = $this->urlFor('app_mapping_quality_gaps');
+        $cross      = $this->urlFor('app_compliance_cross_framework');
+        $inheritance = $this->urlFor('app_compliance_inheritance_pending_count');
 
         return [
             [
@@ -451,6 +452,13 @@ final class GuidedTourService
                 'title_key' => 'guided_tour.mapping.step.why_reuse.title',
                 'body_key' => 'guided_tour.mapping.step.why_reuse.body',
                 'url' => $hub, 'placement' => 'center',
+            ],
+            [
+                'id' => 'inheritance-suggest', 'module' => 'compliance', 'icon' => 'nav-collapse',
+                'target' => null,
+                'title_key' => 'guided_tour.mapping.step.inheritance_suggest.title',
+                'body_key' => 'guided_tour.mapping.step.inheritance_suggest.body',
+                'url' => $inheritance, 'placement' => 'center',
             ],
             [
                 'id' => 'seeds', 'module' => 'compliance', 'icon' => 'ui-check',
