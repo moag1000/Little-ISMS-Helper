@@ -141,15 +141,12 @@ final class WizardOrchestratorBcmIntegrationTest extends TestCase
         [$seeder, $persisted] = $this->makeRealSeeder();
 
         $orchestrator = new WizardOrchestrator(
-            $em,
-            $this->createStub(WizardRunRepository::class),
-            $this->makeStepEvaluator(),
-            $this->makeNoopGenerator(),
-            $this->makeNullValidator(),
-            null, // approvalKickoff
-            null, // documentRepo
-            new \Psr\Log\NullLogger(),
-            $seeder,
+            entityManager: $em,
+            wizardRunRepository: $this->createStub(WizardRunRepository::class),
+            stepEvaluator: $this->makeStepEvaluator(),
+            documentGenerator: $this->makeNoopGenerator(),
+            hierarchyValidator: $this->makeNullValidator(),
+            bcExerciseAutoSeeder: $seeder,
         );
 
         $tenant = $this->makeTenant();
@@ -175,15 +172,12 @@ final class WizardOrchestratorBcmIntegrationTest extends TestCase
         [$seeder, $persisted] = $this->makeRealSeeder();
 
         $orchestrator = new WizardOrchestrator(
-            $em,
-            $this->createStub(WizardRunRepository::class),
-            $this->makeStepEvaluator(),
-            $this->makeNoopGenerator(),
-            $this->makeNullValidator(),
-            null,
-            null,
-            new \Psr\Log\NullLogger(),
-            $seeder,
+            entityManager: $em,
+            wizardRunRepository: $this->createStub(WizardRunRepository::class),
+            stepEvaluator: $this->makeStepEvaluator(),
+            documentGenerator: $this->makeNoopGenerator(),
+            hierarchyValidator: $this->makeNullValidator(),
+            bcExerciseAutoSeeder: $seeder,
         );
 
         $tenant = $this->makeTenant();

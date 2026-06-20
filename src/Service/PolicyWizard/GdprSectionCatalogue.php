@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service\PolicyWizard;
 
 use App\Entity\DocumentSection;
+use App\Service\PolicyWizard\SectionExtension\SectionExtension;
+use App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface;
 
 /**
  * Policy-Wizard W6-C — GDPR section catalogue.
@@ -47,7 +49,7 @@ use App\Entity\DocumentSection;
  *  | incident_management     | gdpr_breach_72h                   | Art. 33                 | dpo           |
  *  | physical_security       | gdpr_premises_processing          | Art. 32                 | ciso          |
  */
-final class GdprSectionCatalogue
+final class GdprSectionCatalogue implements StandardSectionCatalogueInterface
 {
     /**
      * Catalogue rows. Each entry binds an ISO topic key to a unique
@@ -167,5 +169,45 @@ final class GdprSectionCatalogue
     public function all(): array
     {
         return self::SECTIONS;
+    }
+
+    // -------------------------------------------------------------------------
+    // StandardSectionCatalogueInterface
+    // -------------------------------------------------------------------------
+
+    public function getStandard(): string
+    {
+        return 'gdpr';
+    }
+
+    /**
+     * Maps each matching catalogue row to a {@see SectionExtension} DTO.
+     *
+     * Translation-key convention (W6-F): `policy_wizard.gdpr_section.<section_key>.body`
+     * (authored alongside the W6-C addon sections — kept as a static pattern here
+     * so consumers do not need to know the domain layout).
+     *
+     * @return list<SectionExtension>
+     */
+    public function sectionsForTopic(string $isoTopic): array
+    {
+        $rows = $this->getSectionsFor($isoTopic);
+        if ($rows === []) {
+            return [];
+        }
+
+        $extensions = [];
+        foreach ($rows as $row) {
+            $extensions[] = new SectionExtension(
+                sectionKey:          $row['section_key'],
+                standard:            'gdpr',
+                controlRefs:         $row['gdpr_articles'],
+                approvalRole:        $row['approval_role'],
+                bodyTranslationKey:  'policy_wizard.gdpr_section.' . $row['section_key'] . '.body',
+                renderMode:          'document_section',
+            );
+        }
+
+        return $extensions;
     }
 }

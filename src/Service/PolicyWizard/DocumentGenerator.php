@@ -22,6 +22,7 @@ use App\Service\PolicyParameter\PolicyParameterAnnexRenderer;
 use App\Repository\DocumentSectionRepository;
 use App\Repository\PolicyTemplateRepository;
 use App\Repository\TagRepository;
+use App\Service\PolicyWizard\SectionExtension\SectionExtensionRegistry;
 use App\Service\TenantSettingResolver\PolicySettingProvider;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -120,6 +121,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         private readonly ?GdprSectionCatalogue $gdprSectionCatalogue = null,
         private readonly ?SoaAutoUpdateService $soaAutoUpdateService = null,
         private readonly ?PolicyParameterAnnexRenderer $policyParameterAnnexRenderer = null,
+        private readonly ?SectionExtensionRegistry $sectionExtensionRegistry = null,
     ) {
     }
 
@@ -218,7 +220,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             }
 
             $body = $this->renderBody($template, $variables);
-            $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
+            $body = $this->dispatchBodyExtensions($template, $body, $run);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
             $body = $this->appendPolicyParameterAnnexIfApplicable($body, $run);
 
@@ -293,7 +295,9 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             // tenant adopted GDPR scope. Each section carries an
             // `approval_role` per W6-A so the DPO can sign off / reject
             // independently of the host CISO content.
-            $this->appendGdprSectionsIfApplicable($document, $run);
+            // Registry-driven generic dispatch (when registry wired) or
+            // legacy hard-coded call (when not wired).
+            $this->dispatchDocumentSectionExtensions($document, $run);
 
             // W4-C — action='merge_into_topic': append the legacy
             // document's content as a `legacy_merge` section.
@@ -438,7 +442,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $previews = [];
         foreach ($templates as $template) {
             $body = $this->renderBody($template, $variables);
-            $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
+            $body = $this->dispatchBodyExtensions($template, $body, $run);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
             $body = $this->appendPolicyParameterAnnexIfApplicable($body, $run);
             $body = $this->prependNormAnkerHeader($template, $body);
@@ -695,6 +699,92 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         // Fallback: try messages domain (legacy) so behaviour stays the
         // same when no candidate matches.
         return $this->translator->trans($key);
+    }
+
+    // =========================================================================
+    // Registry-driven generic extension dispatch (SectionExtensionRegistry)
+    // =========================================================================
+
+    /**
+     * Generic body-extension dispatch.
+     *
+     * When {@see SectionExtensionRegistry} is wired, iterates every catalogue
+     * registered under the `app.policy_section_catalogue` tag and applies all
+     * extensions with `renderMode = 'body_extension'` to the rendered body.
+     * Currently this covers DORA (`appendDoraExtensionIfApplicable`).
+     *
+     * Fall-back: when the registry is not wired (legacy unit tests instantiate
+     * `DocumentGenerator` without it) the old hard-coded DORA method is called
+     * directly so output is byte-identical to pre-registry runs.
+     *
+     * Skip rules (per catalogue):
+     *  - The template standard is not 'iso27001' (body extensions only
+     *    target ISO host policies — DORA-only templates are standalone).
+     *  - The standard token is not in `run.standardsAdopted` (for 'dora';
+     *    'gdpr' uses isGdprScopeActive because of the iso27701 alias).
+     *
+     * The GDPR standard is registered with `renderMode = 'document_section'`
+     * and is therefore NOT processed here; it goes through
+     * {@see dispatchDocumentSectionExtensions} instead.
+     */
+    private function dispatchBodyExtensions(
+        PolicyTemplate $template,
+        string $body,
+        WizardRun $run,
+    ): string {
+        if ($this->sectionExtensionRegistry === null) {
+            // Legacy path — no registry wired. Call the hard-coded method directly.
+            return $this->appendDoraExtensionIfApplicable($template, $body, $run);
+        }
+
+        // Registry path — iterate all catalogues; apply body_extension entries.
+        foreach ($this->sectionExtensionRegistry->all() as $catalogue) {
+            if ($catalogue->getStandard() === 'dora') {
+                // DORA body extension — delegate to the existing method
+                // so the $doraExtensionApplied side-effect fires (drives tag emission).
+                $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
+            }
+            // Other body_extension catalogues can be dispatched generically here in future.
+        }
+
+        return $body;
+    }
+
+    /**
+     * Generic document-section extension dispatch.
+     *
+     * When {@see SectionExtensionRegistry} is wired, iterates every catalogue
+     * registered under the `app.policy_section_catalogue` tag and applies all
+     * extensions with `renderMode = 'document_section'` by persisting
+     * {@see DocumentSection} rows. Currently this covers GDPR
+     * (`appendGdprSectionsIfApplicable`).
+     *
+     * Fall-back: when the registry is not wired the old hard-coded GDPR method
+     * is called directly so output is byte-identical to pre-registry runs.
+     *
+     * The 'gdpr' standard uses {@see isGdprScopeActive} instead of a plain
+     * `in_array('gdpr', $standards)` check because GDPR scope is also triggered
+     * by `'iso27701'` (PIMS overlay). This alias is preserved by delegating to
+     * the existing method rather than replacing its guard logic.
+     */
+    private function dispatchDocumentSectionExtensions(Document $document, WizardRun $run): void
+    {
+        if ($this->sectionExtensionRegistry === null) {
+            // Legacy path — no registry wired. Call the hard-coded method directly.
+            $this->appendGdprSectionsIfApplicable($document, $run);
+            return;
+        }
+
+        // Registry path — iterate all catalogues; apply document_section entries.
+        foreach ($this->sectionExtensionRegistry->all() as $catalogue) {
+            if ($catalogue->getStandard() === 'gdpr') {
+                // GDPR document-section injection — delegate to the existing
+                // method so the isGdprScopeActive + iso27701 alias guard fires
+                // and all idempotency / tenant-null guards remain intact.
+                $this->appendGdprSectionsIfApplicable($document, $run);
+            }
+            // Other document_section catalogues can be dispatched generically here in future.
+        }
     }
 
     /**

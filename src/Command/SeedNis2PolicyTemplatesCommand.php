@@ -40,6 +40,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Mirrors {@see SeedDoraPolicyTemplatesCommand} (W4-A) and
  * {@see SeedBsiPolicyTemplatesCommand} (W5-A) in shape so downstream
  * wizard tooling can treat all four standards uniformly.
+ *
+ * @deprecated since policy-wizard section-extension catalogue was introduced.
+ *             Use {@see \App\Service\PolicyWizard\SectionExtension\Nis2SectionCatalogue}
+ *             for NIS2 section extensions on ISO 27001 topic policies.
+ *             [DEPRECATED — superseded by Nis2SectionCatalogue]
+ *             This command remains for data-safety (existing DB rows are preserved).
  */
 #[AsCommand(
     name: 'app:policy-wizard:seed-nis2',
@@ -48,6 +54,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class SeedNis2PolicyTemplatesCommand extends Command
 {
     public const string STANDARD = 'nis2';
+
+    // MIGRATION: The 12 standalone NIS2 templates seeded here remain valid as
+    // standalone policy documents. What IS superseded by Nis2SectionCatalogue
+    // is the silo pattern of generating NIS2 policies in isolation. The catalogue
+    // approach instead enriches ISO 27001 topic policies with NIS2 extension
+    // sections when a run adopts both standards.
+    // Follow-up: consider whether these 12 standalone templates should be
+    // converted to wizard-topic aliases pointing to ISO equivalent topics +
+    // the NIS2 extension sections. Do not force-migrate now (data-safety).
 
     /**
      * Canonical 12-row catalogue. Body / title translation keys folgen

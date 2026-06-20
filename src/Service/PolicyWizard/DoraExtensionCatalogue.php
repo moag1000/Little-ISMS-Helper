@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service\PolicyWizard;
 
+use App\Service\PolicyWizard\SectionExtension\SectionExtension;
+use App\Service\PolicyWizard\SectionExtension\StandardSectionCatalogueInterface;
+
 /**
  * Policy-Wizard W4-A — DORA extension catalogue.
  *
@@ -26,7 +29,7 @@ namespace App\Service\PolicyWizard;
  * render time. The translation key follows
  * `policy.iso27001.<topic>.v1.dora_extension.body` (authored in W4-E).
  */
-final class DoraExtensionCatalogue
+final class DoraExtensionCatalogue implements StandardSectionCatalogueInterface
 {
     /**
      * Static mapping `iso_topic_key` → `dora_article_refs`.
@@ -132,5 +135,50 @@ final class DoraExtensionCatalogue
     public function all(): array
     {
         return self::EXTENSIONS;
+    }
+
+    // -------------------------------------------------------------------------
+    // StandardSectionCatalogueInterface
+    // -------------------------------------------------------------------------
+
+    public function getStandard(): string
+    {
+        return 'dora';
+    }
+
+    /**
+     * Wraps the DORA extension entry for the given ISO topic in a single
+     * {@see SectionExtension} DTO, or returns an empty list when no extension
+     * applies (mirrors the null-vs-empty distinction in {@see getExtensionFor()}).
+     *
+     * The `sectionKey` is fixed to `'dora_extension'` because DORA appends a
+     * single prose block (`## DORA-Erweiterung`) rather than N discrete
+     * {@see \App\Entity\DocumentSection} rows.
+     *
+     * The `bodyTranslationKey` follows the W4-E convention:
+     * `policy.iso27001.<topic>.v1.dora_extension.body`
+     * (v1 placeholder — consumers that need a version-aware key should call
+     * {@see getExtensionFor()} directly and build the key from the template
+     * version, as {@see \App\Service\PolicyWizard\DocumentGenerator} does).
+     *
+     * @return list<SectionExtension>
+     */
+    public function sectionsForTopic(string $isoTopic): array
+    {
+        $articles = $this->getExtensionFor($isoTopic);
+        if ($articles === null) {
+            return [];
+        }
+
+        return [
+            new SectionExtension(
+                sectionKey:         'dora_extension',
+                standard:           'dora',
+                controlRefs:        $articles,
+                approvalRole:       'ciso',
+                bodyTranslationKey: 'policy.iso27001.' . $isoTopic . '.v1.dora_extension.body',
+                renderMode:         'body_extension',
+            ),
+        ];
     }
 }

@@ -11,6 +11,7 @@ use App\Entity\WizardRun;
 use App\Repository\DocumentRepository;
 use App\Repository\WizardRunRepository;
 use App\Service\AuditLogger;
+use App\Service\PolicyWizard\Mode\ModeRegistry;
 use App\Service\PolicyWizard\Step\TargetedFindingReferenceStep;
 use BadMethodCallException;
 use DateTimeImmutable;
@@ -49,6 +50,7 @@ final class WizardOrchestrator
         private readonly StepEvaluator $stepEvaluator,
         private readonly DocumentGeneratorInterface $documentGenerator,
         private readonly HierarchyOverrideValidator $hierarchyValidator,
+        private readonly ?ModeRegistry $modeRegistry = null,
         private readonly ?ApprovalKickoffService $approvalKickoffService = null,
         private readonly ?DocumentRepository $documentRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
@@ -132,6 +134,11 @@ final class WizardOrchestrator
         $first = $this->stepEvaluator->firstStepFor($run) ?? WizardStepKeys::STEP_WELCOME;
         $run->setStep($first);
         $run->setInputs([]);
+
+        // Allow mode handlers (e.g. TargetedRerunModeHandler) to
+        // override the initial step pointer set above — targeted mode
+        // skips straight to STEP_TARGETED_PICK, bypassing STEP_WELCOME.
+        $this->modeRegistry?->forRun($run)?->onStart($run);
 
         $this->entityManager->persist($run);
         $this->entityManager->flush();

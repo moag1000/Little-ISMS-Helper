@@ -718,3 +718,86 @@ policy:
 
                     ---
                     *Cross-Ref ISO/IEC 27001:2022 Annex A 5.5 (Contact with authorities), 5.6 (Contact with special interest groups), 5.24 (Incident planning), 5.25 (Incident assessment), 5.26 (Incident response), 6.8 (Reporting); DSGVO Art. 33-34; DORA Art. 17-23 (fuer Finanzentitaeten).*
+
+# ---------------------------------------------------------------------------
+# NIS2 Art. 21(2) section-extension bodies — appended to ISO 27001 topic
+# policies when a tenant adopts both iso27001 + nis2.
+# Translation key pattern: policy.iso27001.<topic>.v1.nis2_extension.body
+# Source: Nis2SectionCatalogue (src/Service/PolicyWizard/SectionExtension/)
+# ---------------------------------------------------------------------------
+    iso27001:
+        top_level:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Informationssicherheits-Leitlinie um die Anforderungen aus Art. 21 Abs. 2 lit. a Richtlinie (EU) 2022/2555 (NIS2): Die {{ tenant.legal_name }} betreibt ein dokumentiertes Konzept für die Risikoanalyse und die Sicherheit von Netz- und Informationssystemen. Das Konzept wird mindestens jährlich sowie nach wesentlichen Änderungen oder Sicherheitsvorfällen überprüft. Die Geschäftsleitung trägt die Gesamtverantwortung gemäß Art. 20 NIS2-Richtlinie.
+        incident_management:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt das Incident-Management um die Anforderungen aus Art. 21 Abs. 2 lit. b sowie Art. 23 Richtlinie (EU) 2022/2555 (NIS2): Erhebliche Sicherheitsvorfälle sind unverzüglich – spätestens innerhalb von 24 Stunden nach Bekanntwerden – als Frühwarnung an die zuständige nationale Behörde (in Deutschland: BSI) zu melden. Die vollständige Meldung folgt innerhalb von 72 Stunden, der Abschlussbericht innerhalb von einem Monat. Erheblichkeit bestimmt sich nach den Schwellenwerten des Art. 23 Abs. 3 NIS2-Richtlinie.
+        continuity:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Business-Continuity-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. c Richtlinie (EU) 2022/2555 (NIS2): Die {{ tenant.legal_name }} verfügt über dokumentierte Notfallpläne, Krisenmanagement-Strukturen und Kommunikationswege zu zuständigen Behörden. BCM-Übungen werden mindestens jährlich durchgeführt. Backup-Daten und Wiederherstellungsfähigkeiten werden regelmäßig getestet und gegen Korrumpierung geschützt.
+        backup:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Backup-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. c Richtlinie (EU) 2022/2555 (NIS2): Datensicherungen kritischer Systeme und Dienste werden räumlich und logisch getrennt von Produktivsystemen aufbewahrt. Die Integrität und Verfügbarkeit der Backups werden regelmäßig geprüft. Wiederherstellungszeiten (RTO) und Wiederherstellungspunkte (RPO) werden in Abhängigkeit der Kritikalität der Dienste festgelegt und dokumentiert.
+        supplier_relationships:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Lieferanten-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. d Richtlinie (EU) 2022/2555 (NIS2): Die {{ tenant.legal_name }} bewertet Sicherheitsrisiken in der IKT-Lieferkette und verankert Sicherheitsanforderungen vertraglich bei Lieferanten und Dienstleistern. Lieferketten-Risiken werden im Risikomanagement erfasst. Lieferanten werden nach Sicherheitsniveau tier-klassifiziert.
+        secure_development:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Secure-Development-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. e Richtlinie (EU) 2022/2555 (NIS2): Sicherheit wird von der Anforderungsanalyse bis zum Betrieb und zur Wartung berücksichtigt. Beschaffungsprozesse schließen Sicherheitskriterien ein. Schwachstellen-Management und Patch-Prozesse sind Bestandteil des Software-Lebenszyklus.
+        threat_intelligence:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Threat-Intelligence-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. f Richtlinie (EU) 2022/2555 (NIS2): Die {{ tenant.legal_name }} bewertet regelmäßig die Wirksamkeit ihrer Cybersicherheits-Risikomanagement-Maßnahmen. Ergebnisse fließen in den Management-Review und die kontinuierliche Verbesserung ein. Threat-Intelligence wird zur Kalibrierung der Maßnahmen genutzt.
+        malware:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Malware-Schutz-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. g Richtlinie (EU) 2022/2555 (NIS2): Grundlegende Cyberhygiene-Praktiken (Passworthygiene, regelmäßige Updates, Netzwerksegmentierung) sind für alle Beschäftigten verbindlich. Schulungen zur Cyberhygiene sind Bestandteil des jährlichen Security-Awareness-Programms.
+        patch_management:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt das Patch-Management um die Anforderungen aus Art. 21 Abs. 2 lit. g Richtlinie (EU) 2022/2555 (NIS2): Patch-Management ist Kernbestandteil der Cyberhygiene-Verpflichtungen nach NIS2. Kritische Patches werden gemäß definierter SLA eingespielt. Nicht-patchbare Systeme werden durch kompensierende Maßnahmen abgesichert.
+        cryptography:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Kryptografie-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. h Richtlinie (EU) 2022/2555 (NIS2): Der Einsatz von Kryptografie und Verschlüsselung ist bei der Übertragung und Speicherung schutzbedürftiger Daten in Netz- und Informationssystemen verbindlich. Kryptografische Algorithmen und Schlüssellängen entsprechen den aktuellen BSI-Empfehlungen (TR-02102).
+        access_control:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Zugangssteuerungs-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. i Richtlinie (EU) 2022/2555 (NIS2): Zugangskontrolle basiert auf dem Prinzip der minimalen Rechte (Least Privilege). Privilegierte Konten unterliegen verstärkter Überwachung. Regelmäßige Zugriffsrechte-Reviews stellen sicher, dass Berechtigungen aktuell und angemessen sind.
+        asset_management:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt das Asset-Management um die Anforderungen aus Art. 21 Abs. 2 lit. i Richtlinie (EU) 2022/2555 (NIS2): Ein vollständiges Inventar aller Netz- und Informationssysteme (Hardware, Software, Cloud-Dienste) ist zu führen und aktuell zu halten. Das Inventar bildet die Grundlage für Risikobewertung, Patch-Management und Zugangskontrolle.
+        hr_security:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die HR-Security-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. i Richtlinie (EU) 2022/2555 (NIS2): Sicherheitsüberprüfungen vor Einstellung, klare Sicherheitsverantwortlichkeiten im Beschäftigungsverhältnis sowie ein geordnetes Offboarding mit sofortiger Sperrung aller Zugänge sind verbindliche Anforderungen. Vertraulichkeitsverpflichtungen werden dokumentiert.
+        authentication_information:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Authentifizierungs-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. j Richtlinie (EU) 2022/2555 (NIS2): Multi-Faktor-Authentifizierung (MFA) oder kontinuierliche Authentifizierung ist für den Zugang zu Netz- und Informationssystemen verbindlich, soweit technisch möglich. Sichere Kommunikationskanäle (verschlüsselte Sprach-, Video- und Textkommunikation) werden für sicherheitsrelevante Abstimmungen genutzt.
+        identity_management:
+            v1:
+                nis2_extension:
+                    body: |-
+                        Diese Erweiterung ergänzt die Identity-Management-Richtlinie um die Anforderungen aus Art. 21 Abs. 2 lit. j Richtlinie (EU) 2022/2555 (NIS2): Identitätsverwaltung und Authentifizierungssysteme müssen MFA oder gleichwertige kontinuierliche Authentifizierungsverfahren unterstützen. Identitäten werden zentral verwaltet, regelmäßig überprüft und bei Austritt unverzüglich deaktiviert.

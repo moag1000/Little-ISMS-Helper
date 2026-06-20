@@ -107,16 +107,12 @@ final class TargetedFindingReferenceStepIntegrationTest extends TestCase
         $em->expects(self::once())->method('flush');
 
         $orchestrator = new WizardOrchestrator(
-            $em,
-            $this->createMock(WizardRunRepository::class),
-            $stepEvaluator,
-            $this->createMock(DocumentGeneratorInterface::class),
-            $this->createMock(HierarchyOverrideValidator::class),
-            null,
-            null,
-            new \Psr\Log\NullLogger(),
-            null,
-            $auditLogger,
+            entityManager: $em,
+            wizardRunRepository: $this->createMock(WizardRunRepository::class),
+            stepEvaluator: $stepEvaluator,
+            documentGenerator: $this->createMock(DocumentGeneratorInterface::class),
+            hierarchyValidator: $this->createMock(HierarchyOverrideValidator::class),
+            auditLogger: $auditLogger,
         );
 
         // -- Act -----------------------------------------------------------
