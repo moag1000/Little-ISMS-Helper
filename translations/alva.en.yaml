@@ -386,6 +386,10 @@ global:
         title: 'IdP without role mapping — privilege gap'
         body: '%count% identity provider(s) have active logins but no role mapping configured. JIT-provisioned users only receive the fallback role. Configuring role mapping in ~5 minutes prevents silent privilege drift.'
         action: 'Configure role mapping'
+    planning_due_action_items:
+        title: 'Action items due soon'
+        body: '%count% action item(s) due within the next 14 days.'
+        action: 'View due items'
 
 inbox:
     title: 'Alva Inbox'

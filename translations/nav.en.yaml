@@ -6,6 +6,7 @@ nav:
     planning_roadmap: 'Capacity roadmap'
     planning_capacity_report: 'Capacity report'
     planning_admin: 'Planning master data'
+    planning_teams: Teams
     my_profile: 'My Profile'
     my_day: 'My Day'
     activity: 'Activity'
@@ -185,6 +186,7 @@ nav:
             planning_roadmap: 'Plan effort per calendar week'
             planning_capacity_report: 'Σ capacity vs load — management-review input'
             planning_admin: 'Teams, roadmap tasks & person capacity'
+            planning_teams: 'Manage teams & members'
             # Wave 5 — Prominent-Hero short-descriptions
             my_day_short: 'Today''s tasks and deadlines'
             activity_short: 'Recent system activity'

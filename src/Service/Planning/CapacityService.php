@@ -55,6 +55,13 @@ final class CapacityService
             $hoursPerDay  = $settings->getHoursPerDay()          ?? self::DEFAULT_HOURS_PER_DAY;
         }
 
+        // Defensive: legacy/invalid stored values must never divide-by-zero (the
+        // settings form rejects <= 0, but pre-existing rows are not re-validated).
+        if ($hoursPerWeek <= 0.0 || $hoursPerDay <= 0.0) {
+            $hoursPerWeek = self::DEFAULT_FULLTIME_HOURS_PER_WEEK;
+            $hoursPerDay  = self::DEFAULT_HOURS_PER_DAY;
+        }
+
         return $hoursPerWeek / $hoursPerDay;
     }
 

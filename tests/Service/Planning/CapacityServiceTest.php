@@ -122,4 +122,15 @@ final class CapacityServiceTest extends TestCase
         $service = $this->serviceWithCalendar(null, $settings);
         $this->assertEqualsWithDelta(5.0, $service->fullTimePtPerWeek(new Tenant()), 0.001);
     }
+
+    #[Test]
+    public function nonPositiveStoredHoursFallBackInsteadOfDividingByZero(): void
+    {
+        // Pre-existing rows are not re-validated; a stored 0 must NOT 500 the
+        // capacity views — it falls back to the 40/8 = 5 default.
+        $settings = (new PlanningSettings())->setFullTimeHoursPerWeek(40.0)->setHoursPerDay(0.0);
+
+        $service = $this->serviceWithCalendar(null, $settings);
+        $this->assertEqualsWithDelta(5.0, $service->fullTimePtPerWeek(new Tenant()), 0.001);
+    }
 }

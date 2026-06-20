@@ -386,6 +386,10 @@ global:
         title: 'IdP ohne Rollen-Mapping — Privilegienlücke'
         body: '%count% Identity-Provider haben aktive Logins, aber kein konfiguriertes Rollen-Mapping. JIT-provisionierte Nutzer erhalten nur die Fallback-Rolle. Rollen-Mapping in ~5 Minuten konfigurieren verhindert stille Privilegienprobleme.'
         action: 'Rollen-Mapping konfigurieren'
+    planning_due_action_items:
+        title: 'Fällige Maßnahmen'
+        body: '%count% Maßnahme(n) in den nächsten 14 Tagen fällig.'
+        action: 'Fällige ansehen'
 
 inbox:
     title: 'Alva-Inbox'
