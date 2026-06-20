@@ -608,6 +608,16 @@ modules:
     dependencies:
       - core
 
+  ocr_processing:
+    name: 'OCR-Verarbeitung (Compliance-Zertifikate)'
+    description: 'Automatische Texterkennung (OCR) für hochgeladene Compliance-Zertifikate — extrahiert Gültigkeitsdaten, Norm-Referenzen und Aussteller-Informationen per pdftotext + Tesseract. Erfordert poppler-utils und tesseract-ocr auf dem Server.'
+    required: false
+    icon: 'file-earmark-text'
+    entities: []
+    routes: []
+    dependencies:
+      - compliance
+
 # Basis-Daten die immer importiert werden
 base_data:
   - name: 'ISO 27001 Annex A Controls'

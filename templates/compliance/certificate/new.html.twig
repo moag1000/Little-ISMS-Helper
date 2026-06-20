@@ -20,80 +20,71 @@
         subtitle: 'compliance.certificate.new.subtitle'|trans({}, 'compliance')
     }) }}
 
-    <section class="fa-section mb-4">
-        <div class="fa-section__body">
-            <form method="post"
-                  action="{{ path('app_compliance_certificate_new', {_locale: app.request.locale}) }}"
-                  enctype="multipart/form-data">
-                <input type="hidden" name="_token" value="{{ csrf_token('cert_new') }}">
-
-                <div class="mb-3">
-                    <label for="cert_framework" class="form-label">{{ 'compliance.certificate.field.framework'|trans({}, 'compliance') }}</label>
-                    <select id="cert_framework" name="frameworkCode" class="form-select" required>
-                        <option value="">{{ 'compliance.certificate.new.select_framework'|trans({}, 'compliance') }}</option>
-                        {% for fw in frameworks %}
-                            <option value="{{ fw.code }}">{{ fw.name }} ({{ fw.code }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="cert_body" class="form-label">{{ 'compliance.certificate.field.cert_body'|trans({}, 'compliance') }}</label>
-                    <input type="text" id="cert_body" name="certBody" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="cert_number" class="form-label">{{ 'compliance.certificate.field.cert_number'|trans({}, 'compliance') }}</label>
-                    <input type="text" id="cert_number" name="certNumber" class="form-control">
-                </div>
-
-                <div class="mb-3">
-                    <label for="cert_holder" class="form-label">{{ 'compliance.certificate.field.holder'|trans({}, 'compliance') }}</label>
-                    <input type="text" id="cert_holder" name="holder" class="form-control">
-                </div>
-
-                <div class="mb-3">
-                    <label for="cert_class" class="form-label">{{ 'compliance.certificate.field.cert_class'|trans({}, 'compliance') }}</label>
-                    <input type="text" id="cert_class" name="certClass" class="form-control">
-                </div>
-
-                <div class="mb-3">
-                    <label for="cert_scope_tags" class="form-label">{{ 'compliance.certificate.field.scope_tags'|trans({}, 'compliance') }}</label>
-                    <input type="text" id="cert_scope_tags" name="scopeTags" class="form-control"
-                           placeholder="{{ 'compliance.certificate.new.scope_tags_hint'|trans({}, 'compliance') }}">
-                </div>
-
-                <div class="mb-3">
-                    <label for="cert_scope_text" class="form-label">{{ 'compliance.certificate.field.scope_text'|trans({}, 'compliance') }}</label>
-                    <textarea id="cert_scope_text" name="scopeText" class="form-control" rows="3"></textarea>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="cert_issue_date" class="form-label">{{ 'compliance.certificate.field.issue_date'|trans({}, 'compliance') }}</label>
-                        <input type="date" id="cert_issue_date" name="issueDate" class="form-control">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="cert_valid_until" class="form-label">{{ 'compliance.certificate.field.valid_until'|trans({}, 'compliance') }}</label>
-                        <input type="date" id="cert_valid_until" name="validUntil" class="form-control">
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label for="cert_file" class="form-label">{{ 'compliance.certificate.field.file'|trans({}, 'compliance') }}</label>
-                    <input type="file" id="cert_file" name="certificate_file" class="form-control" required>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.upload_and_preview'|trans({}, 'compliance') }}</span>
-                    </button>
-                    <a href="{{ path('app_compliance_certificate_index', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
-                    </a>
-                </div>
-            </form>
+    {% if ocrAvailable|default(false) %}
+        {# ── OCR path: upload-only form ──────────────────────────────────────────
+           When the OCR pipeline is available the user uploads the file ONLY.
+           The async OCR job extracts the metadata and the confirm-draft form lets
+           the user review and correct every field before the certificate is saved.
+           Do NOT render _certificate_fields.html.twig here — any values entered
+           would be silently discarded by ProcessCertificateOcrJob::applyDraft.
+        #}
+        <div class="alert alert-info d-flex align-items-center gap-2" role="status">
+            <i class="fa-icon fa-icon--file-earmark-text" aria-hidden="true"></i>
+            <span>{{ 'compliance.certificate.ocr.available_hint'|trans({}, 'compliance') }}</span>
         </div>
-    </section>
+
+        <section class="fa-section mb-4">
+            <div class="fa-section__body">
+                <form method="post"
+                      action="{{ path('app_compliance_certificate_new', {_locale: app.request.locale}) }}"
+                      enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cert_new') }}">
+
+                    <div class="mb-4">
+                        <label for="cert_file" class="form-label">{{ 'compliance.certificate.field.file'|trans({}, 'compliance') }}</label>
+                        <input type="file" id="cert_file" name="certificate_file" class="form-control" required>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.upload_and_preview'|trans({}, 'compliance') }}</span>
+                        </button>
+                        <a href="{{ path('app_compliance_certificate_index', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    {% else %}
+        {# ── Manual path: full metadata form ─────────────────────────────────────
+           No OCR available — the user fills in all metadata fields plus the file.
+        #}
+        <section class="fa-section mb-4">
+            <div class="fa-section__body">
+                <form method="post"
+                      action="{{ path('app_compliance_certificate_new', {_locale: app.request.locale}) }}"
+                      enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cert_new') }}">
+
+                    {{ include('compliance/certificate/_certificate_fields.html.twig', { frameworks: frameworks, certificate: null }) }}
+
+                    <div class="mb-4">
+                        <label for="cert_file" class="form-label">{{ 'compliance.certificate.field.file'|trans({}, 'compliance') }}</label>
+                        <input type="file" id="cert_file" name="certificate_file" class="form-control" required>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <span class="fa-cyber-btn__label">{{ 'compliance.certificate.actions.upload_and_preview'|trans({}, 'compliance') }}</span>
+                        </button>
+                        <a href="{{ path('app_compliance_certificate_index', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    {% endif %}
 </div>
 {% endblock %}

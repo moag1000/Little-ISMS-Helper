@@ -133,6 +133,52 @@ aktivieren:
 | `bcm` | Business-Continuity-Pläne, Krisenteam, BC-Übungen (ISO 22301) |
 | `compliance` | Multi-Framework-Compliance-Import, Framework-Bibliothek |
 | `bsi_grundschutz` | BSI IT-Grundschutz-Bausteine und Maßnahmen |
+| `ocr_processing` | Server-seitige OCR für Compliance-Zertifikate — extrahiert Felder automatisch aus hochgeladenen PDFs/Scans (pdftotext + Tesseract) |
+
+---
+
+## Modul `ocr_processing` — OCR für Compliance-Zertifikate
+
+Das Modul `ocr_processing` aktiviert die server-seitige Texterkennung (OCR)
+beim Upload von Compliance-Zertifikaten (ISO 27001, BSI, TISAX u.ä.).
+Erkannte Felder (Ausstellende Stelle, Zertifikatsnummer, Gültigkeitszeitraum,
+Zertifikatsinhaber, Norm-Referenz) werden als **Entwurf** in das
+Upload-Formular vorausgefüllt — der Nutzer prüft und korrigiert die Felder
+vor dem Speichern.
+
+**Wichtig:** Das OCR-Ergebnis ist eine Arbeitshilfe, kein autoritativer
+Datensatz. Die menschliche Prüfung vor dem Speichern ist Pflicht
+(`extractionSource = 'ocr+confirmed'` wird erst nach Bestätigung gesetzt).
+Alle Daten verbleiben auf dem Server — es werden keine externen APIs oder
+Cloud-OCR-Dienste genutzt.
+
+### Voraussetzungen
+
+| Voraussetzung | Details |
+|---|---|
+| Modul aktiv | `ocr_processing` muss unter `Admin → Tenant-Einstellungen → Module` aktiviert sein |
+| `pdftotext` | Aus dem Paket `poppler-utils` (Debian/Ubuntu) — wandelt PDF in Klartext um |
+| `tesseract` | Aus dem Paket `tesseract-ocr` + Sprachpaket `tesseract-ocr-deu` (Deutsch) + `tesseract-ocr-eng` (Englisch) — Bilderkennung für eingescannte Zertifikate |
+| `ghostscript` | Aus dem Paket `ghostscript` — PDF-Vorverarbeitung für Scan-Qualität |
+
+**Docker-Installation (offizielles Image):** Alle vier Pakete sind im
+offiziellen Docker-Image vorinstalliert. Sobald das Modul aktiviert ist,
+steht OCR sofort zur Verfügung — kein weiterer Einrichtungsaufwand.
+
+**Shared-Hosting / eigener Server ohne diese Binaries:** Fehlen die Binaries,
+bleibt OCR automatisch deaktiviert. Das Zertifikat-Upload-Formular funktioniert
+vollständig weiter — Nutzer geben die Felder manuell ein. Es erscheint kein
+Fehler; nur die automatische Vorausfüllung entfällt.
+
+### Aktivierung
+
+1. Navigieren Sie zu `Admin → Tenant-Einstellungen → Module`
+2. Aktivieren Sie das Toggle bei `ocr_processing`
+3. Speichern — die Erkennung ist sofort aktiv für neue Zertifikat-Uploads
+
+Ob OCR auf Ihrem Server verfügbar ist, zeigt die Zertifikat-Upload-Seite:
+erscheint kein OCR-Hinweis, fehlen entweder die Binaries oder das Modul ist
+nicht aktiviert.
 
 ---
 

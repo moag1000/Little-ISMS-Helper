@@ -42,7 +42,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     supervisor \
     python3-pip \
     curl \
-    gosu
+    gosu \
+    poppler-utils \
+    tesseract-ocr \
+    tesseract-ocr-deu \
+    ghostscript
 
 # Install PHP extensions via mlocati/install-php-extensions:
 #  - handles all apt build-deps internally and removes them after compile

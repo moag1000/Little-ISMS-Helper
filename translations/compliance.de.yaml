@@ -1055,6 +1055,16 @@ compliance:
             no_coverage: 'Dieses Zertifikat deckt keine Anforderungen ab.'
         show:
             title: 'Zertifikat-Details'
+        ocr:
+            available_hint: 'OCR ist verfügbar — nach dem Hochladen werden die Zertifikatsfelder automatisch extrahiert, damit Sie sie prüfen und bestätigen können.'
+            job_label: 'Zertifikatsfelder werden extrahiert'
+            job_subtitle: 'OCR-Verarbeitung des hochgeladenen Zertifikats läuft…'
+        confirm_draft:
+            title: 'Extrahierte Felder bestätigen'
+            subtitle: 'OCR hat die folgenden Felder aus Ihrem hochgeladenen Zertifikat vorbefüllt.'
+            review_notice: 'Bitte prüfen & korrigieren Sie die automatisch extrahierten Werte, bevor Sie fortfahren.'
+            confidence: 'Erkennungssicherheit'
+            confirm_and_preview: 'Bestätigen & Abdeckung anzeigen'
         field:
             framework: 'Framework'
             cert_body: 'Zertifizierungsstelle'
@@ -1086,6 +1096,7 @@ compliance:
             nothing_applied: 'Keine Anforderung wurde abgedeckt — für dieses Zertifikat existiert keine passende Abdeckungsregel.'
             fallback_used: 'Es wurde die Framework-weite Fallback-Abdeckung verwendet, da keine Regel griff.'
             deleted: 'Zertifikat gelöscht.'
+            draft_confirmed: 'Extrahierte Felder bestätigt — prüfen Sie die Abdeckung unten.'
 compliance_mapping:
     mapping_type:
         weak: 'Schwach (0-49%)'

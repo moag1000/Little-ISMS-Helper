@@ -1055,6 +1055,16 @@ compliance:
             no_coverage: 'This certificate covers no requirements.'
         show:
             title: 'Certificate Details'
+        ocr:
+            available_hint: 'OCR is available — after upload the certificate fields will be auto-extracted for you to review and confirm.'
+            job_label: 'Extracting certificate fields'
+            job_subtitle: 'Running OCR on the uploaded certificate…'
+        confirm_draft:
+            title: 'Confirm Extracted Fields'
+            subtitle: 'OCR pre-filled the fields below from your uploaded certificate.'
+            review_notice: 'Please review & correct the auto-extracted values before continuing.'
+            confidence: 'Extraction confidence'
+            confirm_and_preview: 'Confirm & Preview Coverage'
         field:
             framework: 'Framework'
             cert_body: 'Certification Body'
@@ -1086,6 +1096,7 @@ compliance:
             nothing_applied: 'No requirement was covered — no matching coverage rule exists for this certificate.'
             fallback_used: 'Framework-wide fallback coverage was used because no rule matched.'
             deleted: 'Certificate deleted.'
+            draft_confirmed: 'Extracted fields confirmed — review the coverage below.'
 compliance_mapping:
     mapping_type:
         weak: 'Weak (0-49%)'

@@ -390,6 +390,12 @@ services:
         arguments:
             $inheritanceEnabled: '%app.compliance.mapping_inheritance.enabled%'
 
+    # ── Compliance-Certificate OCR (Task 12) — capability seam ───────────────
+    # Production binds the availability verdict to the real detector; the test
+    # env overrides this alias with a hermetic stub (config/packages/test).
+    App\Service\Certificate\OcrCapabilityInterface:
+        alias: App\Service\Certificate\OcrCapabilityDetector
+
     # Policy-Wizard W1-C — generic tenant-setting resolver. SettingProviderInterface
     # is satisfied by SystemSettingsBackedProvider until W1-A's TenantPolicySetting
     # repository lands; ChangeAttemptLoggerInterface defaults to a null logger
