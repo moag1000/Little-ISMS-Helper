@@ -334,8 +334,8 @@ src/Controller/PersonController.php:134
 src/Controller/PersonController.php:154
 src/Controller/PersonController.php:155
 src/Controller/PlanningAdminController.php:168
-src/Controller/PlanningSettingsController.php:97
-src/Controller/PlanningSettingsController.php:99
+src/Controller/PlanningSettingsController.php:112
+src/Controller/PlanningSettingsController.php:114
 src/Controller/ProcessingActivityController.php:724
 src/Controller/ProfileController.php:106
 src/Controller/ProfileController.php:174
@@ -385,9 +385,9 @@ src/Controller/RiskTreatmentPlanController.php:107
 src/Controller/RiskTreatmentPlanController.php:163
 src/Controller/RiskTreatmentPlanController.php:203
 src/Controller/RiskTreatmentPlanController.php:204
-src/Controller/RoadmapController.php:214
-src/Controller/RoadmapController.php:221
-src/Controller/RoadmapController.php:227
+src/Controller/RoadmapController.php:180
+src/Controller/RoadmapController.php:187
+src/Controller/RoadmapController.php:193
 src/Controller/RoadmapGroupController.php:63
 src/Controller/RoadmapGroupController.php:64
 src/Controller/RoadmapGroupController.php:90
