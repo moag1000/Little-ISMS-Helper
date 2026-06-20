@@ -518,3 +518,151 @@ policy:
 
                     ## 14. Pruefung und Aktualisierung
                     Dieser Anhang wird mindestens alle 12 Monate sowie anlassbezogen (regulatorische Aenderung, neue Verarbeitungstaetigkeit, schwerwiegender Vorfall) ueberprueft.
+    iso27001:
+        top_level:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: IS-Leitlinie (VDA ISA 1.1.1, 1.2.2)
+
+                        Ergaenzend zur ISO-27001-Grundanforderung schreibt TISAX (VDA ISA 1.1.1) vor, dass die Leitungsebene die Informationssicherheits-Leitlinie in einer fuer alle Beschaeftigten und beauftragten Dritten verbindlichen Form in Kraft setzt und mindestens jaehrlich auf Aktualitaet prueft. VDA ISA 1.2.2 fordert die explizite Zuweisung von Rollen und Verantwortlichkeiten an benannte Personen (ISB / CISO, Datenschutzbeauftragter, ggf. Prototypenschutz-Beauftragter) mit direktem Berichtspfad zur Leitungsebene. Das TISAX-Reifegradmodell (0-5) gilt als Massstab fuer die Wirksamkeitsmessung; der Mindestziel-Reifegrad fuer diese Leitlinie betraegt 3 (Etabliert).
+        asset_management:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Asset-Management (VDA ISA 1.3.1, 1.3.2)
+
+                        VDA ISA 1.3.1 verlangt ein vollstaendiges Inventar aller informationsverarbeitenden Zielobjekte (IT-Systeme, Anwendungen, Datenspeicher) mit Zuordnung eines Zielobjekt-Verantwortlichen. VDA ISA 1.3.2 ergaenzt die Pflicht zur Klassifikation aller Informationen nach den TISAX-Schutzbedarfsstufen (normal, hoch, sehr hoch) und die Umsetzung geeigneter Handhabungsregeln je Stufe (Kennzeichnung, Uebertragung, Aufbewahrung, Vernichtung). Inventar und Klassifikationsentscheidungen sind dokumentiert und mindestens jaehrlich zu pruefen.
+        access_control:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Zugriffskontrolle (VDA ISA 4.1.1, 4.1.2)
+
+                        VDA ISA 4.1.1 praezisiert den Grundsatz der minimalen Berechtigung fuer den automobilen Kontext: Berechtigungen sind schriftlich zu beantragen, durch einen Zielobjekt-Verantwortlichen zu genehmigen und mindestens halbjaehrlich zu rezertifizieren. VDA ISA 4.1.2 fordert technisch erzwungene Zugriffskontrolle auf Anwendungs- und Betriebssystemebene, einen dokumentierten Identitaetslebenszyklus (Anlage, Aenderung, Loeschung) sowie eine Nachweisbarkeit jeder Berechtigungsaenderung im Audit-Log.
+        identity_management:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Identitaetsmanagement (VDA ISA 4.1.3)
+
+                        VDA ISA 4.1.3 verlangt, dass jede digitale Identitaet eindeutig einer natuerlichen Person zugeordnet ist. Sammelkonten sind unzulaessig, soweit nicht durch Kompensationsmassnahmen (vollstaendige Protokollierung, Vier-Augen-Prinzip) gerechtfertigt. Der Lebenszyklus (Anlage auf Basis freigegebener HR-Stammdaten, Aenderung bei Stellenwechsel, Deaktivierung bei Ausscheiden) wird verfahrensgesteuert mit Nachweispflicht abgebildet. Provisorische Rechte sind mit Ablaufdatum zu versehen.
+        authentication_information:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Authentisierung (VDA ISA 4.1.3, 5.2.4)
+
+                        VDA ISA 4.1.3 schreibt Mehrfaktor-Authentisierung fuer den Zugriff auf Informationen mit Schutzbedarf hoch / sehr hoch sowie fuer alle Remote-Zugaenge vor. VDA ISA 5.2.4 fordert revisionssichere Protokollierung aller Authentisierungsereignisse (Erfolg, Fehlversuch, Sperrung, Passwortaenderung) mit Aufbewahrung gemaess der betrieblichen Protokollierungsrichtlinie. Phishing-resistente MFA (FIDO2, Smartcard) ist gegenueber SMS-OTP bevorzugt.
+        hr_security:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Personalsicherheit (VDA ISA 2.1.1, 2.1.2)
+
+                        VDA ISA 2.1.1 verlangt vor Beschaeftigungsbeginn eine identitaetsbezogene Sicherheitsueberpruefung; bei Stellen mit Zugriff auf hoch oder sehr hoch klassifizierte Informationen sind erweiterte Pruefungen (Verifikation von Zeugnissen und Lebenslauf, Referenzabfrage, ggf. erweitertes Fuehrungszeugnis soweit gesetzlich zulaessig) durchzufuehren. VDA ISA 2.1.2 fordert eine vertragliche Verpflichtung aller Beschaeftigten auf Sicherheitsanforderungen (Geheimhaltung, Einhaltung interner Richtlinien) und ein dokumentiertes Offboarding-Verfahren mit revisionssicherer Nachweisfuehrung der Zugangsentziehung.
+        physical_security:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Physische Sicherheit (VDA ISA 3.1.1, 3.1.4)
+
+                        VDA ISA 3.1.1 fordert ein nachvollziehbares Sicherheitszonenkonzept mit physischer Abgrenzung und elektronisch protokollierten Zutrittskontrollen fuer alle Bereiche, in denen hoch oder sehr hoch klassifizierte Informationen verarbeitet werden. VDA ISA 3.1.4 praezisiert Anforderungen an mobile Endgeraete und Heimarbeitsplaetze: Transportverschluesselung, physischer Sichtschutz und Sperrung bei Inaktivitaet sind obligatorisch; Heimarbeitsplaetze werden durch eine separate Genehmigung freigegeben.
+        incident_management:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Vorfallsmanagement (VDA ISA 1.6.1, 1.6.2)
+
+                        VDA ISA 1.6.1 ergaenzt die ISO-27001-Anforderung um einen klar definierten Meldeweg fuer alle Beschaeftigten mit namentlich benannten Anlaufstellen und messbaren Eingangsbestaertigungs-Fristen. VDA ISA 1.6.2 verlangt eine dokumentierte Einstufungsmatrix fuer Sicherheitsvorfaelle (Schweregrade) sowie nachweislich erprobte Response-Verfahren. Fuer Lieferantenvorfaelle mit Bezug zu TISAX-relevanten Informationen gilt eine gesonderte Meldepflicht des Lieferanten an die {{ tenant.legal_name }} binnen 24 Stunden.
+        continuity:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Notfallmanagement / Geschaeftskontinuitaet (VDA ISA 1.6.3, 5.2.8)
+
+                        VDA ISA 1.6.3 fordert fuer alle Zielobjekte mit Schutzbedarf hoch / sehr hoch die Festlegung von Recovery-Time-Objectives (RTO) und Recovery-Point-Objectives (RPO) sowie die Dokumentation und periodische Erprobung von Wiederanlaufplaenen. VDA ISA 5.2.8 verlangt ergaenzend, dass Notfallplaene die Versorgung kritischer Geschaeftsprozesse im Automobilumfeld (Produktionsunterstuetzung, Engineering-Kontinuitaet) explizit adressieren und mindestens jaehrlich getestet werden.
+        backup:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Datensicherung (VDA ISA 5.2.9)
+
+                        VDA ISA 5.2.9 verlangt einen Datensicherungsplan, der Geltungsbereich, Haeufigkeit, Aufbewahrungsdauer und Lagerort der Sicherungen festlegt. Sicherungen muessen verschluesselt aufbewahrt werden; mindestens eine Kopie ist geografisch getrennt oder offline (Air-Gap) zu verwahren. Wiederherstellbarkeit ist in regelmässigen Restore-Tests nachzuweisen und zu dokumentieren; Ergebnisse sind an die Leitungsebene zu berichten.
+        supplier_relationships:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Lieferantensicherheit (VDA ISA 1.3.4, 6.1.1, 5.3.3)
+
+                        VDA ISA 1.3.4 schreibt vor, dass vertragliche Regelungen mit Lieferanten die Weitergabe von Informationen der {{ tenant.legal_name }} nur in dem Umfang erlauben, der fuer die Leistungserbringung erforderlich ist; Weitergabe an Unterlieferanten bedarf schriftlicher Zustimmung. VDA ISA 6.1.1 verlangt eine Risikobewertung vor Beauftragung sicherheitsrelevanter Lieferanten und jaehrliche Re-Assessments. VDA ISA 5.3.3 verpflichtet die {{ tenant.legal_name }}, Lieferanten, die Cloud-Dienste erbringen, auf TISAX-konforme oder gleichwertige Sicherheitsanforderungen zu verpflichten und deren Einhaltung regelmaessig zu pruefen.
+        information_transfer:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Informationsweitergabe (VDA ISA 5.1.2, 6.1.2)
+
+                        VDA ISA 5.1.2 verpflichtet zur Verschluesselung von Informationen mit Schutzbedarf hoch / sehr hoch bei der Uebertragung (E-Mail, Dateitransfer, VPN) und legt Mindestanforderungen an Verschluesselungsverfahren und Schluessellaengen fest. VDA ISA 6.1.2 ergaenzt Regelungen fuer die Weitergabe von Informationen an Drittparteien: Vor jeder Weitergabe ist die Schutzbedarfsstufe zu pruefen; bei Weitergabe an Lieferanten im Ausland sind Drittland-Transfer-Risiken zu beruecksichtigen.
+        secure_development:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Sichere Softwareentwicklung (VDA ISA 5.3.1, 5.2.1, 5.2.2)
+
+                        VDA ISA 5.3.1 schreibt die Integration von Sicherheitsanforderungen in den Entwicklungsprozess vor (Secure-by-Design, Bedrohungsmodellierung, Security-Testing vor Produktivsetzung). VDA ISA 5.2.1 und 5.2.2 praezisieren Change-Management-Anforderungen: Aenderungen an produktiven Systemen werden geplant, getestet, genehmigt und dokumentiert; Notfallaenderungen durchlaufen ein verkuerztes Verfahren mit nachgelagerter Genehmigung. Softwareschwachstellen aus der Entwicklung sind im Schwachstellen-Register zu tracken.
+        logging:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Protokollierung (VDA ISA 5.2.4)
+
+                        VDA ISA 5.2.4 verpflichtet zur revisionssicheren Aufzeichnung sicherheitsrelevanter Ereignisse (Anmeldung, Fehlversuch, Sperrung, Berechtigungsaenderung, administrative Aktionen, Datenzugriffe auf hochsensible Objekte). Protokolle sind vor unbefugter Aenderung zu schuetzen und fuer mindestens 6 Monate aufzubewahren, fuer privilegierte Aktivitaeten fuer mindestens 12 Monate. Auswertung erfolgt durch das zustaendige Security-Operations-Team.
+        network_security:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Netzwerksicherheit (VDA ISA 5.2.7, 5.3.2)
+
+                        VDA ISA 5.2.7 fordert eine netzwerkbasierte Segmentierung, die Office-, Engineering-, Produktions- und OT-Netze getrennt haelt und Inter-Zonen-Verkehr durch kontrollierte Uebergaenge (Firewalls, DMZ, Zero-Trust-Zugang) fuehrt. VDA ISA 5.3.2 ergaenzt Mindestanforderungen an drahtlose Netzwerke (WPA3 / 802.1X) und an den Fernzugang (MFA-gesicherter VPN oder Zero-Trust-Architektur). Netzwerktopologie und Firewall-Regelwerke sind dokumentiert und mindestens jaehrlich zu pruefen.
+        cryptography:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Kryptographie (VDA ISA 5.1.1)
+
+                        VDA ISA 5.1.1 fordert ein Kryptokonzept, das die eingesetzten Verschluesselungsverfahren, Schluessellaengen und Schluessel-Lebenszyklus-Prozesse (Generierung, Verteilung, Aufbewahrung, Widerruf, Vernichtung) festlegt. Zugelassene Verfahren umfassen mindestens: AES-256 fuer symmetrische Verschluesselung, RSA >= 3072 Bit oder ECC >= 256 Bit fuer asymmetrische Verfahren, TLS 1.2 oder hoeher fuer Transportverschluesselung. Krypto-Agilitaet (Austauschbarkeit bei Schwachstellen-Bekanntwerden) ist als Anforderung in neuen Systemen zu beruecksichtigen.
+        patch_management:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Schwachstellen- und Patch-Management (VDA ISA 5.2.5)
+
+                        VDA ISA 5.2.5 verlangt einen dokumentierten Prozess zur Identifikation, Bewertung und zeitgerechten Behebung von Schwachstellen in allen IT-Systemen des TISAX-Scopes. Bekannte Schwachstellen mit kritischem oder hohem CVSS-Score sind binnen definierter Fristen zu beheben oder durch kompensierende Massnahmen zu mitigieren; Ausnahmen sind mit Risikoakzeptanz zu dokumentieren. Automatisierte Scanning-Tools werden regelmaessig eingesetzt und Reports an die zustaendige Sicherheitsfunktion weitergeleitet.
+        malware:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Schadcode-Schutz (VDA ISA 5.2.5)
+
+                        VDA ISA 5.2.5 verpflichtet zum Einsatz von Endpoint-Detection-and-Response-Technologie (EDR) auf allen unterstuetzten Endgeraeten und Servern im TISAX-Scope. Schutzfunktionen (Signaturen, Verhaltensanalyse) sind mit automatischem Update zu betreiben. Wechseldatentraeger duerfen nur nach automatisiertem Scan genutzt werden; nicht autorisierte Wechseldatentraeger sind technisch zu unterbinden. Erkannte Schadcode-Vorfaelle werden unverzueglich an den ISB gemeldet und im Incident-Response-Verfahren behandelt.
+        threat_intelligence:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Bedrohungsbeobachtung und Compliance-Monitoring (VDA ISA 1.5.1, 5.2.6)
+
+                        VDA ISA 1.5.1 verlangt die regelmaessige Pruefung der Wirksamkeit des ISMS durch geeignete interne oder externe Massnahmen (interne Audits, Penetrationstests, Reifegradmessungen) und die Dokumentation der Ergebnisse. VDA ISA 5.2.6 ergaenzt die Pflicht, aufsichtsrechtliche und vertragliche Anforderungen sowie relevante Bedrohungslagen aktiv zu beobachten (z. B. BSI-Warnmeldungen, ENX-Sicherheitshinweise) und Erkenntnisse in das Risikomanagement einzubeziehen.
+        prototype_protection:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Prototypenschutz — ch.8 (VDA ISA 8.1.1, 8.1.2, 8.2.1, 8.3.1, 8.4.1, 8.5.1)
+
+                        Das TISAX-Pruefziel Prototypenschutz (VDA ISA ch.8) gilt, wenn die {{ tenant.legal_name }} Prototypeninformationen oder physische Prototypen von Automobilherstellern oder Tier-1-Zulieferern verarbeitet, lagert oder transportiert. Kapitel 8.1 regelt die Klassifikation und Kennzeichnung von Prototypeninformationen; 8.2 und 8.3 schreiben bauliche und organisatorische Schutzmassnahmen fuer Entwicklungs- und Fertigungsbereiche vor. Kapitel 8.4 adressiert den Transport physischer Prototypen (gesicherte Logistik, Tarnungspflicht, Track-and-Trace). Kapitel 8.5 regelt die Weitergabe an externe Werkstaetten und Erprobungspartner inklusive Auditierungspflicht. Diese Anforderungen ergaenzen die ISO-27001-Baseline ohne direkten ISO-Annex-A-Anker und sind ausschliesslich durch den TISAX-Scope vorgegeben.
+        privacy_pii:
+            v1:
+                tisax_extension:
+                    body: |-
+                        ### TISAX-Erweiterung: Datenschutz-Anhang — ch.9 (VDA ISA 9.1.1, 9.2.1, 9.5.1, 9.7.1)
+
+                        Das TISAX-Pruefziel Datenschutz (VDA ISA ch.9) gilt bei Verarbeitung personenbezogener Daten im Auftrag eines Automobilkunden (DSGVO Art. 28). VDA ISA 9.1.1 verpflichtet zur Bestellung eines Datenschutzbeauftragten und zur Fuehrung eines Verzeichnisses von Verarbeitungstaetigkeiten (Art. 30 DSGVO). VDA ISA 9.2.1 fordert die Einhaltung der Grundsaetze der Datenminimierung und Zweckbindung. VDA ISA 9.5.1 schreibt den Abschluss von Auftragsverarbeitungsvertraegen (AVV) mit allen Sub-Auftragsverarbeitern vor. VDA ISA 9.7.1 verlangt die nachweisliche Loeschung oder Rueckgabe personenbezogener Daten bei Vertragsende. Diese Anforderungen ergaenzen die ISO-27001-Baseline und sind DSGVO-spezifisch ohne direkten ISO-Annex-A-Anker im TISAX-Mapping.
