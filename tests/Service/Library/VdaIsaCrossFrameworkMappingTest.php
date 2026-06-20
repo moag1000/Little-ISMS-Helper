@@ -15,7 +15,7 @@ final class VdaIsaCrossFrameworkMappingTest extends TestCase
         return [
             // Col P (Verweisung auf andere Normen) — extracted by extract_vda_isa_all_mappings.php
             'ISA/IEC 62443'     => ['tisax_to_iec-isa-62443_v1.0.yaml',   20, '/^\d+\.\d+(\.\d+)?$/'],
-            'NIST CSF 1.1'      => ['tisax_to_nist-csf-1.1_v1.0.yaml',    25, '/^[A-Z]{2,3}[.\-][A-Z]{2,4}-\d+$/'],
+            'NIST CSF 2.0'      => ['tisax_to_nist-csf-2.0_v1.0.yaml',    25, '/^[A-Z]{2,3}[.\-][A-Z]{2,4}-\d+$/'],
             'ISO 27017'         => ['tisax_to_iso27017_v1.0.yaml',          3, '/^(CLD\.\d+\.\d+(\.\d+)?|\d+\.\d+\.\d+)$/'],
             'ISO 27002'         => ['tisax_to_iso27002_v1.0.yaml',          1, '/^A\.\d+\.\d+(\.\d+)?$/'],
             // Col Q (Verweisung auf Implementierungsanleitung) — extracted by extract_vda_isa_col_q_mappings.php
