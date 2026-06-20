@@ -219,16 +219,6 @@ final class DocumentGeneratorSectionCharacterizationTest extends TestCase
         ));
     }
 
-    private function lastDocument(): Document
-    {
-        $docs = array_values(array_filter(
-            $this->persisted,
-            static fn (object $o): bool => $o instanceof Document,
-        ));
-        self::assertNotEmpty($docs, 'Expected at least one persisted Document');
-        return $docs[count($docs) - 1];
-    }
-
     // =========================================================================
     // (a) DORA characterization — body_extension render mode
     // =========================================================================

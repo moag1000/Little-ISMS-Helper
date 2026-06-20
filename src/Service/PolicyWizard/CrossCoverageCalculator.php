@@ -226,7 +226,7 @@ final readonly class CrossCoverageCalculator
 
             $coverageByFramework[$code] = [
                 'code'                 => $code,
-                'label'                => self::FRAMEWORK_DEFAULTS[$code]['label'] ?? $code,
+                'label'                => self::FRAMEWORK_DEFAULTS[$code]['label'],
                 'total_requirements'   => $total,
                 'covered_requirements' => $covered,
                 'coverage_percent'     => (float) $percent,
