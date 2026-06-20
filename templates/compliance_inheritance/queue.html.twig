@@ -60,8 +60,8 @@
                             <div class="small text-muted">
                                 {{ 'compliance_inheritance.queue.from'|trans({}, 'compliance_inheritance') }}
                                 {{ source.framework.code }} {{ source.requirementId }}
-                                · {{ fa_glossary_tooltip({ acronym: 'MappingPercentage', fullText: 'Zuordnungsgrad / Mapping Percentage' }) }} {{ log.derivedFromMapping.mappingPercentage }}%
-                                · {{ fa_glossary_tooltip({ acronym: 'MappingConfidence', fullText: 'Vertrauensgrad / Confidence' }) }} {{ ('compliance_inheritance.confidence.' ~ log.derivedFromMapping.confidence)|trans({}, 'compliance_inheritance') }}
+                                · {{ 'compliance_inheritance.queue.mapping'|trans({}, 'compliance_inheritance') }} {{ fa_glossary_tooltip({ acronym: 'MappingPercentage', fullText: 'Zuordnungsgrad / Mapping Percentage' }) }} {{ log.derivedFromMapping.mappingPercentage }}%
+                                · {{ ('compliance_inheritance.confidence.' ~ log.derivedFromMapping.confidence)|trans({}, 'compliance_inheritance') }} {{ fa_glossary_tooltip({ acronym: 'MappingConfidence', fullText: 'Vertrauensgrad / Confidence' }) }}
                             </div>
                         </div>
                         <div class="text-end">
