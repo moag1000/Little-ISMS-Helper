@@ -89,3 +89,33 @@ terms:
         definition:
             de: 'Eine Abweichung von einer Anforderung (Norm, Richtlinie, Gesetz), meist als Audit-Befund. Erfordert eine Korrekturmaßnahme (CAPA).'
             en: 'A deviation from a requirement (standard, policy, law), usually raised as an audit finding. Requires a corrective action (CAPA).'
+    MappingPercentage:
+        term: { de: 'Zuordnungsgrad', en: 'Mapping Percentage' }
+        norm_ref: 'Custom'
+        definition:
+            de: 'Zu wie viel Prozent eine Anforderung eine andere abdeckt (0–100 %). Wie bei 9001, wenn eine Maßnahme mehrere Forderungen teilweise erfüllt.'
+            en: 'How much of one requirement is covered by another (0–100 %). Like ISO 9001 where one measure can partially satisfy several requirements.'
+    MappingConfidence:
+        term: { de: 'Vertrauensgrad', en: 'Confidence' }
+        norm_ref: 'Custom'
+        definition:
+            de: 'Wie sicher die Zuordnung belegt ist (z. B. fachlich geprüft vs. automatisch vorgeschlagen).'
+            en: 'How well-evidenced the mapping is — e.g. expert-reviewed versus auto-suggested.'
+    TransitiveCoverage:
+        term: { de: 'Transitive Abdeckung', en: 'Transitive Coverage' }
+        norm_ref: 'Custom'
+        definition:
+            de: 'Abdeckung über eine Kette: A→B und B→C ⇒ A deckt C indirekt mit ab.'
+            en: 'Coverage through a chain: A→B and B→C means A indirectly covers C.'
+    MappingInheritance:
+        term: { de: 'Vererbung', en: 'Inheritance' }
+        norm_ref: 'Custom'
+        definition:
+            de: 'Wird Anforderung A als erfüllt markiert, wird der Erfüllungsgrad einer zugeordneten Anforderung B vorgeschlagen — Arbeit einmal machen, mehrfach zählen.'
+            en: 'When requirement A is marked fulfilled, the fulfilment level of a mapped requirement B is suggested automatically — do the work once, count it multiple times.'
+    MappingQualityScore:
+        term: { de: 'Mapping-Qualitätsscore (MQS)', en: 'Mapping Quality Score (MQS)' }
+        norm_ref: 'Custom'
+        definition:
+            de: 'Kennzahl 0–100 für die Güte/Belegtheit einer Zuordnung.'
+            en: 'Score 0–100 representing the quality and evidence level of a mapping.'
