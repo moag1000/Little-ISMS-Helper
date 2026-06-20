@@ -66,7 +66,7 @@
     {# Inheritance-Queue-CTA — nur wenn offene Vorschläge vorhanden und Framework bekannt #}
     {% if pending_inheritance_count > 0 and pending_framework_code is not null %}
     <div class="alert alert-info d-flex align-items-center gap-2 mb-4 small" role="alert">
-        <i class="fa-icon fa-icon--nav-refresh" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
         <div class="flex-grow-1">
             <strong>{{ 'reuse.inheritance_cta.title'|trans({}, 'messages') }}</strong>
             {{ 'reuse.inheritance_cta.body'|trans({'%count%': pending_inheritance_count}, 'messages') }}
