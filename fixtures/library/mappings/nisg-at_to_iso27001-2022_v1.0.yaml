@@ -35,7 +35,7 @@ library:
       nur Annex-A-Kurzreferenzen (Normreferenzen), kein vollständiger Normtext.
 
   methodology:
-    type: 'standard_mapping'
+    type: 'text_comparison_with_expert_review'
     description: |
       Dieses Mapping verbindet die verpflichtenden Cybersicherheitspflichten
       des NISG 2026 mit den korrespondierenden ISO/IEC 27001:2022 Annex-A-
