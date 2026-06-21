@@ -23,56 +23,56 @@
   "verdicts": [
     {
       "kritis": "§ 5",
-      "target": "§ 30",
+      "target": "§30",
       "state": "needs_review",
       "mappingPercentage": 35,
       "realVotes": 3
     },
     {
       "kritis": "§ 6",
-      "target": "§ 30 Abs. 2 Nr. 1",
+      "target": "§30",
       "state": "reject",
       "mappingPercentage": 45,
       "realVotes": 1
     },
     {
       "kritis": "§ 7",
-      "target": "§ 32",
+      "target": "§32",
       "state": "ki_validiert",
       "mappingPercentage": 40,
       "realVotes": 4
     },
     {
       "kritis": "§ 9",
-      "target": "§ 30 Abs. 2 Nr. 3",
+      "target": "§30",
       "state": "reject",
       "mappingPercentage": 0,
       "realVotes": 0
     },
     {
       "kritis": "§ 10",
-      "target": "§ 33",
+      "target": "§33",
       "state": "needs_review",
       "mappingPercentage": 45,
       "realVotes": 3
     },
     {
       "kritis": "§ 11",
-      "target": "§ 28",
+      "target": "§28",
       "state": "reject",
       "mappingPercentage": 50,
       "realVotes": 1
     },
     {
       "kritis": "§ 8",
-      "target": "§ 31",
+      "target": "§31",
       "state": "needs_review",
       "mappingPercentage": 60,
       "realVotes": 2
     },
     {
       "kritis": "§ 5",
-      "target": "§ 30 Abs. 2 Nr. 4",
+      "target": "§30",
       "state": "reject",
       "mappingPercentage": 0,
       "realVotes": 0

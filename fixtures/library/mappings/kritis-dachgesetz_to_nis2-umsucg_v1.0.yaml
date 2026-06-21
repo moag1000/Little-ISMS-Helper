@@ -47,7 +47,7 @@ library:
 
 mappings:
   - source: '§ 5'
-    target: '§ 30'
+    target: '§30'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -67,7 +67,7 @@ mappings:
     audit_evidence_hint: 'Resilienzkonzept mit All-Hazards-Risikoanalyse, physische Sicherheitsmaßnahmen-Katalog, Cyber-Risikomanagement-Doku, Trennung der Zuständigkeiten zwischen physischer Sicherheit und ISB.'
 
   - source: '§ 6'
-    target: '§ 30 Abs. 2 Nr. 1'
+    target: '§30'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -87,7 +87,7 @@ mappings:
     audit_evidence_hint: 'Integrierte Risikobewertung mit physischen + cyberbezogenen Szenarien, BBK-Sektor-Risikoanalyse-Bezug, dokumentierte 4-jährige Aktualisierung gemäß CER-Vorgabe.'
 
   - source: '§ 7'
-    target: '§ 32'
+    target: '§32'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -107,7 +107,7 @@ mappings:
     audit_evidence_hint: 'Meldeprozess-Doku mit Eskalationsmatrix BBK/BSI, dokumentierte Meldungen der letzten 12 Monate, Trainingsnachweise für Meldepflichtige, Single-Point-of-Contact-Benennung.'
 
   - source: '§ 9'
-    target: '§ 30 Abs. 2 Nr. 3'
+    target: '§30'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
@@ -126,7 +126,7 @@ mappings:
     audit_evidence_hint: 'B3S-Konformitätsnachweis (sofern für Sektor verfügbar), BC-Plan mit physischen + cyber-bezogenen Szenarien, BIA-Dokumentation, dokumentierte BC-Übung der letzten 24 Monate.'
 
   - source: '§ 10'
-    target: '§ 33'
+    target: '§33'
     relationship: 'related'
     confidence: 'high'
     rationale: |
@@ -146,7 +146,7 @@ mappings:
     audit_evidence_hint: 'Audit-Plan mit getrennter Sicht KRITIS/NIS2, Auditberichte der letzten 3 Jahre, Maßnahmen-Tracking aus Audit-Findings, Akkreditierungs-Nachweis der Prüfstelle.'
 
   - source: '§ 11'
-    target: '§ 28'
+    target: '§28'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -166,7 +166,7 @@ mappings:
     audit_evidence_hint: 'Rechtsgutachten zur Anwendbarkeit beider Gesetze, KRITIS-Verordnungs-Schwellwert-Berechnung, NIS2-Größenklassen-Einstufung, dokumentierter Selbst-Identifizierungs-Prozess.'
 
   - source: '§ 8'
-    target: '§ 31'
+    target: '§31'
     relationship: 'related'
     confidence: 'medium'
     rationale: |
@@ -185,7 +185,7 @@ mappings:
     audit_evidence_hint: 'Krisenkommunikationsplan mit Stakeholder-Matrix, Pressesprecher-Benennung, Vorbereitete Kommunikationstemplates, Übungsnachweis Krisenstab letzte 24 Monate.'
 
   - source: '§ 5'
-    target: '§ 30 Abs. 2 Nr. 4'
+    target: '§30'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |

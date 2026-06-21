@@ -6,7 +6,6 @@ namespace App\Command;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
-use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -15,20 +14,24 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Partial NIS2UmsuCG loader producing NIS2UMSUCG-N delta ids with ISO 27001
+ * control mappings. NOT registry-bound: the single registry loader for code
+ * NIS2UMSUCG is {@see LoadNis2UmsuCGFullCommand} (§N ids), because the
+ * cross-framework mappings reference §N requirement ids. Registry-binding this
+ * partial loader instead would make every § mapping pair silent-skip
+ * (#951/#952-class wiring defect). This command remains available standalone
+ * via `app:load-nis2umsucg-requirements`.
+ */
 #[AsCommand(
     name: 'app:load-nis2umsucg-requirements',
     description: 'Load NIS-2-Umsetzungs- und Cybersicherheitsstaerkungsgesetz (BGBl. 2025 I Nr. 301) requirements with ISO 27001 control mappings'
 )]
-class LoadNis2UmsuCGRequirementsCommand extends Command implements FrameworkLoaderInterface
+class LoadNis2UmsuCGRequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
-    }
-
-    public function getFrameworkCode(): string
-    {
-        return 'NIS2UMSUCG';
     }
 
     #[\Override]

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\Compliance\FrameworkLoaderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -14,15 +16,23 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * NIS-2-Umsetzungs- und Cybersicherheitsstaerkungsgesetz (NIS2UmsuCG)
- * full §§-catalogue. Source: BGBl. 2025 I Nr. 301 (NIS2UmsuCG-Stamm) +
- * BSI-Mindestanforderungen-Konsultation 2024-12.
+ * Registry-bound loader (`app.framework_loader`, code NIS2UMSUCG) for the FULL
+ * NIS-2-Umsetzungs- und Cybersicherheitsstaerkungsgesetz (NIS2UmsuCG) §§-catalogue.
+ * Source: BGBl. 2025 I Nr. 301 (NIS2UmsuCG-Stamm) + BSI-Mindestanforderungen-
+ * Konsultation 2024-12.
+ *
+ * This is the single registry loader for code NIS2UMSUCG: the cross-framework
+ * mappings (nis2-umsucg_to_dora, dora_to_nis2-umsucg, nis2-umsucg_to_nis2,
+ * nis2_to_nis2-umsucg, nis2-umsucg_to_kritis-dachgesetz, …) reference §N
+ * requirement ids, so the partial LoadNis2UmsuCGRequirementsCommand
+ * (NIS2UMSUCG-N ISO-mapping delta ids) must NOT be registry-bound or those
+ * mappings silent-skip 100 % of their § pairs (#951/#952-class wiring defect).
  */
 #[AsCommand(
     name: 'app:load-nis2-umsucg-full',
     description: 'Load NIS-2-Umsetzungs- und Cybersicherheitsstaerkungsgesetz (BGBl. 2025 I Nr. 301) §§ as ComplianceRequirement rows.'
 )]
-final class LoadNis2UmsuCGFullCommand extends Command
+final class LoadNis2UmsuCGFullCommand extends Command implements FrameworkLoaderInterface
 {
     /** @var array<string, string> */
     private const PARAGRAPHS = [
@@ -82,15 +92,37 @@ final class LoadNis2UmsuCGFullCommand extends Command
         parent::__construct();
     }
 
+    public function getFrameworkCode(): string
+    {
+        return 'NIS2UMSUCG';
+    }
+
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        return $this->loadRequirements(false, new SymfonyStyle($input, $output));
+    }
+
+    public function loadRequirements(bool $update = false, ?SymfonyStyle $io = null): int
+    {
+        $io ??= new SymfonyStyle(new \Symfony\Component\Console\Input\ArrayInput([]), new \Symfony\Component\Console\Output\NullOutput());
         $framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2UMSUCG'])
             ?? $this->frameworkRepository->findOneBy(['name' => 'NIS2-Umsetzungs- und Cybersicherheitsstärkungsgesetz']);
         if ($framework === null) {
-            $io->error('Framework NIS2UMSUCG not in DB.');
-            return Command::FAILURE;
+            // Standalone: create the framework row so the loader works on a fresh
+            // schema:create DB without relying on a separate seeding step.
+            $framework = new ComplianceFramework();
+            $framework->setCode('NIS2UMSUCG')
+                ->setName('NIS-2-Umsetzungs- und Cybersicherheitsstärkungsgesetz')
+                ->setDescription('German implementation of EU NIS2 directive - Gesetz zur Umsetzung der NIS-2-Richtlinie und zur Staerkung der Cybersicherheit (BGBl. 2025 I Nr. 301)')
+                ->setVersion('2025')
+                ->setApplicableIndustry('all_sectors')
+                ->setRegulatoryBody('BSI / BMI')
+                ->setMandatory(true)
+                ->setScopeDescription('German implementation of EU NIS2 directive. Applies to besonders wichtige Einrichtungen and wichtige Einrichtungen in critical and important sectors in Germany.')
+                ->setActive(true);
+            $this->em->persist($framework);
+            $this->em->flush();
         }
         $reqRepo = $this->em->getRepository(ComplianceRequirement::class);
         $created = 0; $updated = 0;
