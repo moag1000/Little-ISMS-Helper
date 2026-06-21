@@ -550,19 +550,42 @@ final class AuditCatalogMappingsCommand extends Command
         $totalMappings = 0;
         $totalDanglingSrc = 0;
         $totalDanglingTgt = 0;
+        $errorFiles = 0;
+        $skippedFiles = 0;
+        $countedFiles = 0;
         $fullyDangling = [];
         foreach ($report['files'] as $name => $f) {
+            // Short entries — error / deprecated-skip — do NOT carry the count
+            // keys (mappings/dangling_*). Tally them in their own buckets and
+            // exclude them from the dangling sum so the totals stay trustworthy
+            // (and no "Undefined array key" warnings leak from the summary).
             if (isset($f['error'])) {
+                $errorFiles++;
                 continue;
             }
-            $totalMappings += $f['mappings'];
-            $totalDanglingSrc += $f['dangling_source'];
-            $totalDanglingTgt += $f['dangling_target'];
-            if ($f['mappings'] > 0 && ($f['dangling_source'] + $f['dangling_target']) >= 2 * $f['mappings']) {
+            if (isset($f['skipped'])) {
+                $skippedFiles++;
+                continue;
+            }
+            $countedFiles++;
+            $mappings = $f['mappings'] ?? 0;
+            $danglingSrc = $f['dangling_source'] ?? 0;
+            $danglingTgt = $f['dangling_target'] ?? 0;
+            $totalMappings += $mappings;
+            $totalDanglingSrc += $danglingSrc;
+            $totalDanglingTgt += $danglingTgt;
+            if ($mappings > 0 && ($danglingSrc + $danglingTgt) >= 2 * $mappings) {
                 $fullyDangling[] = $name;
             }
         }
-        $io->writeln(sprintf('Files: %d | Mappings: %d', $report['file_count'], $totalMappings));
+        $io->writeln(sprintf(
+            'Files: %d (counted: %d | deprecated-skipped: %d | parse-errors: %d) | Mappings: %d',
+            $report['file_count'],
+            $countedFiles,
+            $skippedFiles,
+            $errorFiles,
+            $totalMappings,
+        ));
         $io->writeln(sprintf('Dangling source-IDs: %d | Dangling target-IDs: %d', $totalDanglingSrc, $totalDanglingTgt));
         if ($report['unresolved_frameworks'] !== []) {
             $io->warning('Unresolved framework refs (no loaded framework matches): ' . implode(', ', $report['unresolved_frameworks']));

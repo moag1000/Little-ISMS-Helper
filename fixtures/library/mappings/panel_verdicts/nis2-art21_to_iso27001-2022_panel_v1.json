@@ -22,119 +22,119 @@
   },
   "verdicts": [
     {
-      "nis2": "NIS2-ART21-A",
+      "nis2": "Art.21.2.a",
       "iso": "A.5.1",
       "state": "ki_validiert",
       "mappingPercentage": 65,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-B",
+      "nis2": "Art.21.2.b",
       "iso": "A.5.24",
       "state": "ki_validiert",
       "mappingPercentage": 80,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-C",
+      "nis2": "Art.21.2.c",
       "iso": "A.5.30",
       "state": "ki_validiert",
       "mappingPercentage": 75,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-C",
+      "nis2": "Art.21.2.c",
       "iso": "A.5.29",
       "state": "ki_validiert",
       "mappingPercentage": 72,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-D",
+      "nis2": "Art.21.2.d",
       "iso": "A.5.20",
       "state": "ki_validiert",
       "mappingPercentage": 70,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-E",
+      "nis2": "Art.21.2.e",
       "iso": "A.8.25",
       "state": "ki_validiert",
       "mappingPercentage": 75,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-G",
+      "nis2": "Art.21.2.g",
       "iso": "A.6.3",
       "state": "ki_validiert",
       "mappingPercentage": 70,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-G",
+      "nis2": "Art.21.2.g",
       "iso": "A.8.7",
       "state": "ki_validiert",
       "mappingPercentage": 55,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-H",
+      "nis2": "Art.21.2.h",
       "iso": "A.8.24",
       "state": "ki_validiert",
       "mappingPercentage": 90,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-I",
+      "nis2": "Art.21.2.i",
       "iso": "A.6.1",
       "state": "ki_validiert",
       "mappingPercentage": 55,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-I",
+      "nis2": "Art.21.2.i",
       "iso": "A.5.15",
       "state": "ki_validiert",
       "mappingPercentage": 75,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-I",
+      "nis2": "Art.21.2.i",
       "iso": "A.5.9",
       "state": "ki_validiert",
       "mappingPercentage": 70,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-J",
+      "nis2": "Art.21.2.j",
       "iso": "A.8.5",
       "state": "ki_validiert",
       "mappingPercentage": 80,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-F",
+      "nis2": "Art.21.2.f",
       "iso": "A.5.36",
       "state": "ki_validiert",
       "mappingPercentage": 40,
       "realVotes": 3
     },
     {
-      "nis2": "NIS2-ART21-F",
+      "nis2": "Art.21.2.f",
       "iso": "A.8.16",
       "state": "reject",
       "mappingPercentage": 0,
       "realVotes": 0
     },
     {
-      "nis2": "NIS2-ART21-J",
+      "nis2": "Art.21.2.j",
       "iso": "A.5.14",
       "state": "ki_validiert",
       "mappingPercentage": 55,
       "realVotes": 4
     },
     {
-      "nis2": "NIS2-ART21-E",
+      "nis2": "Art.21.2.e",
       "iso": "A.8.8",
       "state": "ki_validiert",
       "mappingPercentage": 80,
