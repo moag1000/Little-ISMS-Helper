@@ -14,8 +14,8 @@
     "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
     "completeness": "29 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
     "verdict_counts": {
-      "total": 47,
-      "ki_validiert": 45,
+      "total": 49,
+      "ki_validiert": 47,
       "needs_review": 0,
       "reject": 2
     }
@@ -349,6 +349,22 @@
       "state": "ki_validiert",
       "mappingPercentage": 70,
       "realVotes": 4
+    },
+    {
+      "eu": "Art.27",
+      "target": "A.5.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "eu": "Art.55",
+      "target": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
     }
   ]
 }

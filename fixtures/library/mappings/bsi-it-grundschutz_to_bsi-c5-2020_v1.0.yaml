@@ -445,3 +445,15 @@ mappings:
     confidence: 'medium'
     rationale: |
       Panel-validated additional correspondence (4-expert consensus + adversarial refutation, round-2 depth pass, 68%).
+
+  # === DACH Phase-3 long-tail: panel-graded promotions (1 AI-judge + 1 survived refuter) ===
+  - source: 'ORP.4.A8'
+    target: 'IDM-02'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 88%). ORP.4.A8 = regulated setup/removal of user accounts and groups; C5 IDM-02 (Benutzerregistrierung) is the precise requirement-level counterpart. Strong.'
+  - source: 'CON.2'
+    target: 'COM-02'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 85%). CON.2 (Datenschutz) maps directly to C5 COM-02 (Datenschutz) in the Compliance domain. Strong topical and semantic correspondence.'

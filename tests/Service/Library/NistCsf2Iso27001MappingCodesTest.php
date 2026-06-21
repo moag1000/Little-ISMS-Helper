@@ -331,8 +331,11 @@ final class NistCsf2Iso27001MappingCodesTest extends TestCase
             }
             // Annex A: A.5.1 - A.8.34
             $isAnnexA = (bool) preg_match('/^A\.[5-8]\.\d+$/', $id);
-            // Normative clauses: 4.1, 5.1, 6.1.1, 7.5.3, 8.1, 9.2, 10.1, etc.
-            $isClause = (bool) preg_match('/^\d+(\.\d+)+$/', $id);
+            // Normative clauses: bare 4.1, 5.1, 6.1.1, 7.5.3 OR the canonical
+            // DB-stored prefixed form ISO27001-4.1 (LoadIso27001AnnexAFullCommand
+            // stores clauses as 'ISO27001-{clause}'; bare ids do NOT resolve at
+            // runtime, so clause targets must use the prefixed form).
+            $isClause = (bool) preg_match('/^(ISO27001-)?\d+(\.\d+)+$/', $id);
 
             if (!$isAnnexA && !$isClause) {
                 $invalidIds[] = $id;

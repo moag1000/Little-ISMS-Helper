@@ -813,3 +813,15 @@ mappings:
     relationship: 'related'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 45%; inverse of forward eu-ai-act_to_iso42001 entry).'
+
+  # === DACH Phase-3 long-tail: inverse entries for panel-graded forward promotions ===
+  - source: 'A.5.3'
+    target: 'Art.27'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (inverse of AI-Act Art.27 -> ISO 42001 A.5.3, 1 AI-judge + survived 1 adversarial refuter). ISO 42001 A.5.3 (AI system impact assessment) is the management-system anchor for the fundamental-rights impact assessment required by AI Act Art. 27 for high-risk AI deployers.'
+  - source: 'A.5.2'
+    target: 'Art.55'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-graded depth-round correspondence (inverse of AI-Act Art.55 -> ISO 42001 A.5.2, 1 AI-judge + survived 1 adversarial refuter). ISO 42001 A.5.2 (AI risk assessment) provides the systematic risk-assessment process underpinning the systemic-risk obligations AI Act Art. 55 places on GPAI providers.'

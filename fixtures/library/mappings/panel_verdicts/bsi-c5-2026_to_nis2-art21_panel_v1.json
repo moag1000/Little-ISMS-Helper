@@ -14,8 +14,8 @@
     "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
     "completeness": "38 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
     "verdict_counts": {
-      "total": 74,
-      "ki_validiert": 51,
+      "total": 79,
+      "ki_validiert": 56,
       "needs_review": 9,
       "reject": 14
     }
@@ -538,6 +538,46 @@
       "state": "reject",
       "mappingPercentage": 0,
       "realVotes": 0
+    },
+    {
+      "c5": "SSO-06",
+      "target": "21.2.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "OPS-10",
+      "target": "21.2.b",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "OPS-18",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "OPS-26",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "c5": "OPS-27",
+      "target": "21.2.e",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
     }
   ]
 }

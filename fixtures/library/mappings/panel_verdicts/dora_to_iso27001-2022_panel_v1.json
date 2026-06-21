@@ -14,8 +14,8 @@
     "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
     "completeness": "72 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
     "verdict_counts": {
-      "total": 32,
-      "ki_validiert": 19,
+      "total": 59,
+      "ki_validiert": 46,
       "needs_review": 7,
       "reject": 6
     }
@@ -244,6 +244,222 @@
       "state": "ki_validiert",
       "mappingPercentage": 60,
       "realVotes": 4
+    },
+    {
+      "dora": "DORA-7",
+      "iso": "A.8.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-9.1",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 100,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-9.2",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 95,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-9.3",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 95,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-9.4",
+      "iso": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-9.4",
+      "iso": "A.5.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-9.4",
+      "iso": "A.5.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-10.1",
+      "iso": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-10.1",
+      "iso": "A.5.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-10.1",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-11.1",
+      "iso": "A.5.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-11.1",
+      "iso": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-13.1",
+      "iso": "A.5.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-13.1",
+      "iso": "A.8.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-13.1",
+      "iso": "A.8.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-13.2",
+      "iso": "A.8.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 95,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-13.3",
+      "iso": "A.8.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-13.5",
+      "iso": "A.8.16",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-14.1",
+      "iso": "A.7.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 100,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-14.1",
+      "iso": "A.7.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-14.1",
+      "iso": "A.7.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-14.1",
+      "iso": "A.7.11",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-14.1",
+      "iso": "A.7.1",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-14.1",
+      "iso": "A.7.12",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-30.1",
+      "iso": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-24.1",
+      "iso": "A.8.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "DORA-24.2",
+      "iso": "A.8.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
     }
   ]
 }

@@ -395,3 +395,10 @@ mappings:
     relationship: 'equivalent'
     confidence: 'high'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 72%).'
+
+  # === DACH Phase-3 long-tail: panel-graded promotions (1 AI-judge + 1 survived refuter) ===
+  - source: 'OPS-06'
+    target: 'OPS-21'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 90%). OPS-06 Datensicherung is the direct functional equivalent of EUCS OPS-21 Data Backup (backup concept, scope, frequency, protection). Missing direct mapping.'

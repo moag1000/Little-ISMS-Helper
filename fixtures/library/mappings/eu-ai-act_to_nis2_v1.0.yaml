@@ -541,3 +541,15 @@ mappings:
       Adressaten- + Fristen-Mismatch: AI-Act-Endbericht (Provider an Markt-
       ueberwachungsbehoerde) vs. NIS2-Abschlussbericht 23(3) (Betreiber an
       BSI/CSIRT, 1 Monat). Beide separat fuehren.
+
+  # === DACH Phase-3 long-tail: panel-graded promotions (1 AI-judge + 1 survived refuter) ===
+  - source: 'Art.15'
+    target: '21.2.e'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 80%). Art.15 resilience vs unauthorised alteration, anti-poisoning/adversarial and vuln exploitation maps directly to 21.2.e security in development/maintenance incl. vulnerability handling.'
+  - source: 'Art.73'
+    target: 'Art.23.6'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 80%). Both mandate a conclusive external report to the authority bearing root cause + applied mitigation. AI-Act follow-up/final serious-incident report substantively matches NIS2 Art.23(6) final report. Direct correspondence.'

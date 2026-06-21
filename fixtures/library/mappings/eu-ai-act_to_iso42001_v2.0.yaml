@@ -899,3 +899,15 @@ mappings:
     relationship: 'related'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 45%).'
+
+  # === DACH Phase-3 long-tail: panel-graded promotions (1 AI-judge + 1 survived refuter) ===
+  - source: 'Art.27'
+    target: 'A.5.3'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 75%). Art.27 requires documenting/recording the fundamental-rights impact assessment; A.5.3 documentation of AI impact assessments is the direct missing control. Strong correspondence.'
+  - source: 'Art.55'
+    target: 'A.5.2'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 65%). Art.55(1)(b) assess/mitigate systemic risk maps to A.5.2 impact assessment process. Defensible assessment-duty correspondence for GPAI systemic-risk obligation.'
