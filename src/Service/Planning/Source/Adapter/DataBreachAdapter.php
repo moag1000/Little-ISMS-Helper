@@ -44,7 +44,7 @@ final class DataBreachAdapter implements SourceAdapter
     /** @return iterable<DataBreach> */
     public function findConvertible(Tenant $tenant): iterable
     {
-        return $this->repository->findBy(['tenant' => $tenant]);
+        return $this->repository->findConvertibleForTenant($tenant);
     }
 
     public function dueDateOf(object $item): ?DateTimeInterface

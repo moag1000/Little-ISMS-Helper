@@ -46,7 +46,7 @@ final class TrainingParticipationAdapter implements SourceAdapter
     /** @return iterable<TrainingParticipation> */
     public function findConvertible(Tenant $tenant): iterable
     {
-        return $this->repository->findBy(['tenant' => $tenant]);
+        return $this->repository->findConvertibleForTenant($tenant);
     }
 
     public function dueDateOf(object $item): ?DateTimeInterface

@@ -56,6 +56,33 @@ class TrainingParticipationRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find non-terminal training participations for a tenant.
+     *
+     * Used by TrainingParticipationAdapter::findConvertible() to avoid loading
+     * the full tenant set and discarding terminal rows in PHP.
+     *
+     * Terminal statuses (isCompleted=true in the adapter):
+     *   completed, failed, waived
+     *
+     * @return TrainingParticipation[]
+     */
+    public function findConvertibleForTenant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('tp')
+            ->andWhere('tp.tenant = :tenant')
+            ->andWhere('tp.status NOT IN (:terminal)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('terminal', [
+                TrainingParticipation::STATUS_COMPLETED,
+                TrainingParticipation::STATUS_FAILED,
+                TrainingParticipation::STATUS_WAIVED,
+            ])
+            ->orderBy('tp.assignedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return TrainingParticipation[]
      */
     public function findByTraining(Training $training): array

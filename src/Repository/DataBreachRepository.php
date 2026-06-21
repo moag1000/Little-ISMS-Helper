@@ -409,6 +409,29 @@ class DataBreachRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find non-terminal data breaches for a tenant.
+     *
+     * Used by DataBreachAdapter::findConvertible() to avoid loading the full
+     * tenant set and then discarding terminal rows in PHP.
+     *
+     * Terminal statuses (isCompleted=true in the adapter):
+     *   authority_notified, subjects_notified, closed
+     *
+     * @return DataBreach[]
+     */
+    public function findConvertibleForTenant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('db')
+            ->where('db.tenant = :tenant')
+            ->andWhere('db.status NOT IN (:terminal)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('terminal', ['authority_notified', 'subjects_notified', 'closed'])
+            ->orderBy('db.detectedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find recent data breaches (last 30 days)
      */
     public function findRecent(Tenant $tenant, int $days = 30): array
