@@ -33,8 +33,8 @@ final class NistIsoQualityTest extends TestCase
     private const PANEL_FIXTURE = __DIR__ . '/../../../fixtures/library/mappings/panel_verdicts/nist-csf-2-0_to_iso27001-2022_panel_v1.json';
     private const CANDIDATES_FIXTURE = __DIR__ . '/../../../fixtures/library/mappings/panel_verdicts/nist-csf-2-0_to_iso27001-2022_completeness_candidates_v1.json';
 
-    /** Expected verdict counts per the panel run */
-    private const EXPECTED_KI_VALIDIERT = 90;
+    /** Expected verdict counts per the panel run (90 first-pass + 81 depth-round-2 promotions) */
+    private const EXPECTED_KI_VALIDIERT = 171;
     private const EXPECTED_REJECT = 9;
     private const EXPECTED_NEEDS_REVIEW = 7;
 
@@ -404,9 +404,10 @@ final class NistIsoQualityTest extends TestCase
         $invalid = [];
         foreach ($verdicts as $v) {
             $baustein = (string) ($v['baustein'] ?? '');
-            // Accept: A.5.1 - A.8.34 (Annex A) or clause N.M (ISO main body)
+            // Accept: A.5.1 - A.8.34 (Annex A) or clause N.M (ISO main body, optionally
+            // in the DB-resolvable "ISO27001-N.M" form used for clause-level targets)
             $isAnnexA = (bool) preg_match('/^A\.[5-8]\.\d+$/', $baustein);
-            $isClause = (bool) preg_match('/^\d+(\.\d+)+$/', $baustein);
+            $isClause = (bool) preg_match('/^(ISO27001-)?\d+(\.\d+)+$/', $baustein);
             if (!$isAnnexA && !$isClause) {
                 $invalid[] = $baustein;
             }
