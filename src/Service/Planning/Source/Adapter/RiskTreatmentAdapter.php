@@ -7,7 +7,6 @@ namespace App\Service\Planning\Source\Adapter;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Enum\RiskStatus;
-use App\Enum\TreatmentStrategy;
 use App\Repository\RiskRepository;
 use App\Service\Planning\Source\SourceAdapter;
 use DateTimeInterface;
@@ -46,12 +45,7 @@ final class RiskTreatmentAdapter implements SourceAdapter
     /** @return iterable<Risk> */
     public function findConvertible(Tenant $tenant): iterable
     {
-        return array_filter(
-            $this->repository->findBy(['tenant' => $tenant]),
-            static fn (Risk $risk): bool =>
-                $risk->getTreatmentStrategy() === TreatmentStrategy::Accept
-                && $risk->getAcceptanceExpiryDate() !== null,
-        );
+        return $this->repository->findConvertibleForTenant($tenant);
     }
 
     public function dueDateOf(object $item): ?DateTimeInterface

@@ -267,6 +267,34 @@ class RiskRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find risks eligible for planning-action conversion for a tenant.
+     *
+     * Used by RiskTreatmentAdapter::findConvertible() to avoid loading the full
+     * tenant risk set and then filtering in PHP.
+     *
+     * Convertible means:
+     *   - treatmentStrategy = Accept (risk has been formally accepted)
+     *   - acceptanceExpiryDate IS NOT NULL (acceptance has an expiry SLA)
+     *   - status NOT IN [Closed, Monitored] (not terminal per isCompleted())
+     *
+     * @return Risk[] Sorted by acceptanceExpiryDate ASC (most urgent first)
+     */
+    public function findConvertibleForTenant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.tenant = :tenant')
+            ->andWhere('r.treatmentStrategy = :accept')
+            ->andWhere('r.acceptanceExpiryDate IS NOT NULL')
+            ->andWhere('r.status NOT IN (:terminal)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('accept', \App\Enum\TreatmentStrategy::Accept)
+            ->setParameter('terminal', [\App\Enum\RiskStatus::Closed, \App\Enum\RiskStatus::Monitored])
+            ->orderBy('r.acceptanceExpiryDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find tenant-less (orphaned) risks — tenant_id IS NULL.
      *
      * TenantFilter is disabled during the query; otherwise Doctrine combines

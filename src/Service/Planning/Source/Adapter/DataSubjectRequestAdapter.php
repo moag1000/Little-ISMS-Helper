@@ -42,7 +42,7 @@ final class DataSubjectRequestAdapter implements SourceAdapter
     /** @return iterable<DataSubjectRequest> */
     public function findConvertible(Tenant $tenant): iterable
     {
-        return $this->repository->findByTenant($tenant);
+        return $this->repository->findConvertibleForTenant($tenant);
     }
 
     public function dueDateOf(object $item): ?DateTimeInterface

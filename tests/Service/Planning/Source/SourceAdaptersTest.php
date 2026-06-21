@@ -11,6 +11,7 @@ use App\Entity\Document;
 use App\Entity\Incident;
 use App\Entity\InternalAudit;
 use App\Entity\ManagementReview;
+use App\Entity\Tenant;
 use App\Entity\Vulnerability;
 use App\Enum\ChangeRequestStatus;
 use App\Enum\IncidentStatus;
@@ -1165,5 +1166,131 @@ final class SourceAdaptersTest extends TestCase
                 "Expected isCompleted=true for status={$terminal->value}",
             );
         }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // findConvertible() delegation tests (new focused repo methods)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function testDataBreachAdapterFindConvertibleDelegatesToFocusedMethod(): void
+    {
+        $tenant = new Tenant();
+        $open   = (new DataBreach())->setStatus(DataBreachStatus::Draft);
+        $closed = (new DataBreach())->setStatus(DataBreachStatus::Closed);
+
+        $repo = $this->createMock(DataBreachRepository::class);
+        $repo->expects(self::once())
+            ->method('findConvertibleForTenant')
+            ->with($tenant)
+            ->willReturn([$open]);
+
+        $adapter = new DataBreachAdapter($repo);
+        $result  = iterator_to_array($adapter->findConvertible($tenant));
+
+        self::assertSame([$open], $result);
+        self::assertNotContains($closed, $result);
+    }
+
+    public function testDsrAdapterFindConvertibleDelegatesToFocusedMethod(): void
+    {
+        $tenant = new Tenant();
+        $open   = (new DataSubjectRequest())->setStatus('in_progress');
+        $done   = (new DataSubjectRequest())->setStatus('completed');
+
+        $repo = $this->createMock(DataSubjectRequestRepository::class);
+        $repo->expects(self::once())
+            ->method('findConvertibleForTenant')
+            ->with($tenant)
+            ->willReturn([$open]);
+
+        $adapter = new DataSubjectRequestAdapter($repo);
+        $result  = iterator_to_array($adapter->findConvertible($tenant));
+
+        self::assertSame([$open], $result);
+        self::assertNotContains($done, $result);
+    }
+
+    public function testDpiaAdapterFindConvertibleDelegatesToFocusedMethod(): void
+    {
+        $tenant = new Tenant();
+        $open   = (new DataProtectionImpactAssessment())
+            ->setReferenceNumber('DPIA-1')
+            ->setStatus(DpiaStatus::Draft->value);
+        $done   = (new DataProtectionImpactAssessment())
+            ->setReferenceNumber('DPIA-2')
+            ->setStatus(DpiaStatus::Approved->value);
+
+        $repo = $this->createMock(DataProtectionImpactAssessmentRepository::class);
+        $repo->expects(self::once())
+            ->method('findConvertibleForTenant')
+            ->with($tenant)
+            ->willReturn([$open]);
+
+        $adapter = new DpiaAdapter($repo);
+        $result  = iterator_to_array($adapter->findConvertible($tenant));
+
+        self::assertSame([$open], $result);
+        self::assertNotContains($done, $result);
+    }
+
+    public function testWorkflowInstanceAdapterFindConvertibleDelegatesToFindActiveForTenant(): void
+    {
+        $tenant  = new Tenant();
+        $active  = (new WorkflowInstance())->setStatus(WorkflowInstanceStatus::Pending->value);
+        $done    = (new WorkflowInstance())->setStatus(WorkflowInstanceStatus::Approved->value);
+
+        $repo = $this->createMock(WorkflowInstanceRepository::class);
+        $repo->expects(self::once())
+            ->method('findActiveForTenant')
+            ->with($tenant)
+            ->willReturn([$active]);
+
+        $adapter = new WorkflowInstanceAdapter($repo);
+        $result  = iterator_to_array($adapter->findConvertible($tenant));
+
+        self::assertSame([$active], $result);
+        self::assertNotContains($done, $result);
+    }
+
+    public function testTrainingParticipationAdapterFindConvertibleDelegatesToFocusedMethod(): void
+    {
+        $tenant  = new Tenant();
+        $pending = (new TrainingParticipation())->setStatus(TrainingParticipation::STATUS_PENDING);
+        $done    = (new TrainingParticipation())->setStatus(TrainingParticipation::STATUS_COMPLETED);
+
+        $repo = $this->createMock(TrainingParticipationRepository::class);
+        $repo->expects(self::once())
+            ->method('findConvertibleForTenant')
+            ->with($tenant)
+            ->willReturn([$pending]);
+
+        $adapter = new TrainingParticipationAdapter($repo);
+        $result  = iterator_to_array($adapter->findConvertible($tenant));
+
+        self::assertSame([$pending], $result);
+        self::assertNotContains($done, $result);
+    }
+
+    public function testRiskTreatmentAdapterFindConvertibleDelegatesToFocusedMethod(): void
+    {
+        $tenant    = new Tenant();
+        $expiry    = new DateTimeImmutable('2027-06-30');
+        $eligible  = (new Risk())
+            ->setTreatmentStrategy(TreatmentStrategy::Accept)
+            ->setAcceptanceExpiryDate($expiry)
+            ->setStatus(RiskStatus::Accepted);
+        $closed    = (new Risk())->setStatus(RiskStatus::Closed);
+
+        $repo = $this->createMock(RiskRepository::class);
+        $repo->expects(self::once())
+            ->method('findConvertibleForTenant')
+            ->with($tenant)
+            ->willReturn([$eligible]);
+
+        $adapter = new RiskTreatmentAdapter($repo);
+        $result  = iterator_to_array($adapter->findConvertible($tenant));
+
+        self::assertSame([$eligible], $result);
+        self::assertNotContains($closed, $result);
     }
 }

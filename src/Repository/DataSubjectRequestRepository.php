@@ -76,6 +76,29 @@ class DataSubjectRequestRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find non-terminal data subject requests for a tenant.
+     *
+     * Used by DataSubjectRequestAdapter::findConvertible() to avoid loading
+     * the full tenant set and then discarding terminal rows in PHP.
+     *
+     * Terminal statuses (isCompleted=true in the adapter):
+     *   completed, rejected
+     *
+     * @return DataSubjectRequest[]
+     */
+    public function findConvertibleForTenant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('dsr')
+            ->where('dsr.tenant = :tenant')
+            ->andWhere('dsr.status NOT IN (:terminal)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('terminal', ['completed', 'rejected'])
+            ->orderBy('dsr.receivedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Count requests grouped by type for dashboard
      *
      * @return array<string, int>

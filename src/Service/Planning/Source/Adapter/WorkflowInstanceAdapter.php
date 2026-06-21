@@ -42,7 +42,7 @@ final class WorkflowInstanceAdapter implements SourceAdapter
     /** @return iterable<WorkflowInstance> */
     public function findConvertible(Tenant $tenant): iterable
     {
-        return $this->repository->findBy(['tenant' => $tenant]);
+        return $this->repository->findActiveForTenant($tenant);
     }
 
     public function dueDateOf(object $item): ?DateTimeInterface

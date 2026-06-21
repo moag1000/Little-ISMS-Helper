@@ -188,6 +188,29 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find non-terminal DPIAs for a tenant.
+     *
+     * Used by DpiaAdapter::findConvertible() to avoid loading the full tenant
+     * set and discarding terminal rows in PHP.
+     *
+     * Terminal statuses (isCompleted=true in the adapter):
+     *   approved, rejected
+     *
+     * @return DataProtectionImpactAssessment[]
+     */
+    public function findConvertibleForTenant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('dpia')
+            ->where('dpia.tenant = :tenant')
+            ->andWhere('dpia.status NOT IN (:terminal)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('terminal', [DpiaStatus::Approved->value, DpiaStatus::Rejected->value])
+            ->orderBy('dpia.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find DPIA by processing activity
      */
     public function findByProcessingActivity(ProcessingActivity $processingActivity): ?DataProtectionImpactAssessment
