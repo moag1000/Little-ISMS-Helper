@@ -38,7 +38,7 @@ library:
       - { state: 'published', date: '2025-02-01', actor: 'ciso-signoff' }
 
 mappings:
-  - source: '§ 30'
+  - source: '§30'
     target: '§ 5'
     relationship: 'related'
     confidence: 'medium'
@@ -58,7 +58,7 @@ mappings:
     cross_refs: ['§ 31', '§ 32']
     audit_evidence_hint: 'Cyber-Risikomanagement-Doku nach NIS2 § 30, Resilienzkonzept mit All-Hazards-Risikoanalyse nach KRITIS, physische Sicherheitsmaßnahmen-Katalog, Trennung der Zuständigkeiten zwischen ISB und physischer Sicherheit.'
 
-  - source: '§ 30 Abs. 2 Nr. 1'
+  - source: '§30'
     target: '§ 6'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -79,7 +79,7 @@ mappings:
     cross_refs: ['§ 30', '§ 30 Abs. 2 Nr. 3']
     audit_evidence_hint: 'NIS2-Cyber-Risikoanalyse-Doku, integrierte Risikobewertung mit physischen + cyberbezogenen Szenarien, BBK-Sektor-Risikoanalyse-Bezug, dokumentierte 4-jährige Aktualisierung gemäß CER-Vorgabe.'
 
-  - source: '§ 32'
+  - source: '§32'
     target: '§ 7'
     relationship: 'related'
     confidence: 'high'
@@ -100,7 +100,7 @@ mappings:
     cross_refs: ['§ 31']
     audit_evidence_hint: 'NIS2-Meldungen an BSI der letzten 12 Monate, KRITIS-Meldungen an BBK, Meldeprozess-Doku mit Eskalationsmatrix BSI/BBK, Trainingsnachweise für Meldepflichtige, Single-Point-of-Contact-Benennung.'
 
-  - source: '§ 30 Abs. 2 Nr. 3'
+  - source: '§30'
     target: '§ 9'
     relationship: 'partial_overlap'
     confidence: 'medium'
@@ -119,7 +119,7 @@ mappings:
     cross_refs: ['§ 30', '§ 33']
     audit_evidence_hint: 'NIS2-Backup- und Wiederherstellungs-Konzept, B3S-Konformitätsnachweis (sofern für Sektor verfügbar), BC-Plan mit physischen + cyber-bezogenen Szenarien, BIA-Dokumentation, dokumentierte BC-Übung der letzten 24 Monate.'
 
-  - source: '§ 33'
+  - source: '§33'
     target: '§ 10'
     relationship: 'related'
     confidence: 'high'
@@ -140,7 +140,7 @@ mappings:
     cross_refs: ['§ 30 Abs. 2 Nr. 3']
     audit_evidence_hint: 'NIS2-Audit-Berichte der letzten 3 Jahre, KRITIS-Audit-Berichte, Audit-Plan mit getrennter Sicht NIS2/KRITIS, Maßnahmen-Tracking aus Audit-Findings, Akkreditierungs-Nachweis der Prüfstelle.'
 
-  - source: '§ 28'
+  - source: '§28'
     target: '§ 11'
     relationship: 'related'
     confidence: 'medium'
@@ -160,7 +160,7 @@ mappings:
     cross_refs: []
     audit_evidence_hint: 'NIS2-Größenklassen-Einstufung, KRITIS-Verordnungs-Schwellwert-Berechnung, Rechtsgutachten zur Anwendbarkeit beider Gesetze, dokumentierter Selbst-Identifizierungs-Prozess.'
 
-  - source: '§ 31'
+  - source: '§31'
     target: '§ 8'
     relationship: 'related'
     confidence: 'medium'
@@ -179,7 +179,7 @@ mappings:
     cross_refs: ['§ 32']
     audit_evidence_hint: 'NIS2-CSIRT-Kommunikationsprozesse, Krisenkommunikationsplan mit Stakeholder-Matrix, Pressesprecher-Benennung, vorbereitete Kommunikationstemplates, Übungsnachweis Krisenstab letzte 24 Monate.'
 
-  - source: '§ 30 Abs. 2 Nr. 4'
+  - source: '§30'
     target: '§ 5'
     relationship: 'partial_overlap'
     confidence: 'low'

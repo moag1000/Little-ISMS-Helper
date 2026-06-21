@@ -1,23 +1,26 @@
 # Cross-Framework Mapping NIS2UmsuCG (DE-Umsetzung) <-> NIS2 (EU 2022/2555)
 # License: CC-BY 4.0
 # Source: NIS-2-Umsetzungs- und Cybersicherheitsstärkungsgesetz — Referentenentwurf 2024 + Kabinettsbeschluss 2025.
-# Curator: Senior-GRC-Consultant (rewritten 2026-04-17 for loader-native IDs; NIS2UMSUCG loader uses generic numeric IDs).
-# Note: High-level cross-reference; exact DE section numbers are abstracted in the loader as NIS2UMSUCG-N.
+# Curator: Senior-GRC-Consultant (rewritten 2026-04-17; re-targeted 2026-06-21 to §N loader-native IDs).
+# Note: High-level cross-reference. Source IDs are the NIS2UmsuCG §§ produced by the registry-bound
+#       full §§-loader (LoadNis2UmsuCGFullCommand); each row's § is the law paragraph for that topic
+#       per BGBl. 2025 I Nr. 301 (e.g. Risikomanagement -> §30, Meldepflichten -> §32, Schulung/Billigung
+#       -> §34, Registrierung -> §29, Aufsicht -> §60, Bussgeld -> §66).
 #
 source_framework,source_requirement_id,target_framework,target_requirement_id,mapping_percentage,mapping_type,confidence,bidirectional,rationale,source_catalog,validated_at,validated_by,provenance_url
-NIS2UMSUCG,NIS2UMSUCG-1,NIS2,NIS2-21.1,95,full,high,true,Risk management obligation — direct transposition of NIS2 Art.21.1 into BSIG new.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-2,NIS2,NIS2-21.2.a,90,partial,high,true,Risk management policies — NIS2 Art.21.2.a.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-3,NIS2,NIS2-21.2.b,90,partial,high,true,Incident handling — NIS2 Art.21.2.b.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-4,NIS2,NIS2-21.2.c,90,partial,high,true,Business continuity — NIS2 Art.21.2.c.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-5,NIS2,NIS2-21.2.d,90,partial,high,true,Supply chain security — NIS2 Art.21.2.d.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-6,NIS2,NIS2-20.1,95,full,high,true,Management body accountability — NIS2 Art.20.1 billigung.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-7,NIS2,NIS2-20.2,95,full,high,true,Management training obligation — NIS2 Art.20.2 Schulungspflicht.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-8,NIS2,NIS2-23.1,95,full,high,true,24h early warning — NIS2 Art.23.1.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-9,NIS2,NIS2-23.2,95,full,high,true,72h incident report — NIS2 Art.23.2.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-10,NIS2,NIS2-23.3,95,full,high,true,Final report — NIS2 Art.23.3.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-11,NIS2,NIS2-24.1,75,partial,high,true,Registration obligation — NIS2 Art.24.,audit_2026_05_30_adjusted,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-12,NIS2,NIS2-32.1,85,partial,high,true,"NIS2UmsuCG Aufsichtsbefugnisse BSI -> NIS2 Art.32 (Supervisory measures, essential entities); war faelschlich auf Art.25 (Standardisierung). Audit 2026-05-30.",audit_2026_05_30_retargeted,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-13,NIS2,NIS2-34,80,partial,high,false,NIS2UmsuCG Bussgelder -> NIS2 Art.34 (Administrative fines); war faelschlich auf Art.25. Audit 2026-05-30.,audit_2026_05_30_retargeted,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-14,NIS2,NIS2-21.2.f,85,partial,high,true,Effectiveness assessment — NIS2 Art.21.2.f.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-16,NIS2,NIS2-21.2.g,90,partial,high,false,"NIS2UmsuCG Basis-Cyberhygiene+Schulung -> NIS2 Art.21(2)(g)+(i)+(j). Gap-Fill, Audit 2026-05-30.",audit_2026_05_30_verified,2026-05-30,EU-Mapping-Audit,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
-NIS2UMSUCG,NIS2UMSUCG-17,NIS2,NIS2-21.2.e,90,partial,high,false,"NIS2UmsuCG Lieferkette/Vuln-Handling -> NIS2 Art.21(2)(e)+(h). Gap-Fill, Audit 2026-05-30.",audit_2026_05_30_verified,2026-05-30,EU-Mapping-Audit,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§30,NIS2,NIS2-21.1,95,full,high,true,Risk management obligation — direct transposition of NIS2 Art.21.1 into BSIG new.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§30,NIS2,NIS2-21.2.a,90,partial,high,true,Risk management policies — NIS2 Art.21.2.a.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§30,NIS2,NIS2-21.2.b,90,partial,high,true,Incident handling — NIS2 Art.21.2.b.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§30,NIS2,NIS2-21.2.c,90,partial,high,true,Business continuity — NIS2 Art.21.2.c.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§30,NIS2,NIS2-21.2.d,90,partial,high,true,Supply chain security — NIS2 Art.21.2.d.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§34,NIS2,NIS2-20.1,95,full,high,true,Management body accountability — NIS2 Art.20.1 billigung.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§34,NIS2,NIS2-20.2,95,full,high,true,Management training obligation — NIS2 Art.20.2 Schulungspflicht.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§32,NIS2,NIS2-23.1,95,full,high,true,24h early warning — NIS2 Art.23.1.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§32,NIS2,NIS2-23.2,95,full,high,true,72h incident report — NIS2 Art.23.2.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§32,NIS2,NIS2-23.3,95,full,high,true,Final report — NIS2 Art.23.3.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§29,NIS2,NIS2-24.1,75,partial,high,true,Registration obligation — NIS2 Art.24.,audit_2026_05_30_adjusted,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§60,NIS2,NIS2-32.1,85,partial,high,true,"NIS2UmsuCG Aufsichtsbefugnisse BSI -> NIS2 Art.32 (Supervisory measures, essential entities); war faelschlich auf Art.25 (Standardisierung). Audit 2026-05-30.",audit_2026_05_30_retargeted,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§66,NIS2,NIS2-34,80,partial,high,false,NIS2UmsuCG Bussgelder -> NIS2 Art.34 (Administrative fines); war faelschlich auf Art.25. Audit 2026-05-30.,audit_2026_05_30_retargeted,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§30,NIS2,NIS2-21.2.f,85,partial,high,true,Effectiveness assessment — NIS2 Art.21.2.f.,nis2umsucg_referentenentwurf_2024,2026-04-17,Senior-GRC-Consultant,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§30,NIS2,NIS2-21.2.g,90,partial,high,false,"NIS2UmsuCG Basis-Cyberhygiene+Schulung -> NIS2 Art.21(2)(g)+(i)+(j). Gap-Fill, Audit 2026-05-30.",audit_2026_05_30_verified,2026-05-30,EU-Mapping-Audit,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
+NIS2UMSUCG,§30,NIS2,NIS2-21.2.e,90,partial,high,false,"NIS2UmsuCG Lieferkette/Vuln-Handling -> NIS2 Art.21(2)(e)+(h). Gap-Fill, Audit 2026-05-30.",audit_2026_05_30_verified,2026-05-30,EU-Mapping-Audit,https://eur-lex.europa.eu/eli/dir/2022/2555/oj
