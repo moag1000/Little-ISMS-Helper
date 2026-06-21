@@ -22,7 +22,7 @@ library:
       verwendet. Das Mapping ist ein abgeleitetes Werk (AGPL-3.0).
 
   methodology:
-    type: 'expert_derived'
+    type: 'text_comparison_with_expert_review'
     description: |
       Das IKT-Minimalstandard-Dokument selbst enthaelt in jeder Tabelle (Abschnitt 2.2–2.6)
       eine offizielle Spalte "ISO 27001:2022" mit Referenzen auf Annex-A-Controls und

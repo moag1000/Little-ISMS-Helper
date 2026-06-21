@@ -21,6 +21,7 @@ class MappingValidatorService
         'text_comparison_with_expert_review',
         'tag_based',
         'published_official_mapping',
+        'official_published_crosswalk',
         'community_consensus',
         'machine_assisted_with_review',
     ];

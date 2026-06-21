@@ -186,7 +186,7 @@ class ComplianceMapping
      * "BSI-Crosswalk-Tabelle 2024", "Eigene Recherche"). Pflichtfeld
      * für Lifecycle ≥ approved.
      */
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $provenanceSource = null;
 
     #[ORM\Column(length: 500, nullable: true)]

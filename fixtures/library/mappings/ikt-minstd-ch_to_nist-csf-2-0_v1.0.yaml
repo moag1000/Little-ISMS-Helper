@@ -22,7 +22,7 @@ library:
       Das Mapping ist ein abgeleitetes Werk (AGPL-3.0).
 
   methodology:
-    type: 'expert_derived'
+    type: 'text_comparison_with_expert_review'
     description: |
       Der IKT-Minimalstandard 2023 basiert explizit auf dem NIST Cybersecurity Framework
       und verwendet dieselbe Strukturierung in fuenf Funktionen (Identifizieren, Schuetzen,

@@ -35,7 +35,7 @@ library:
       © Europäische Union — public-domain-equivalent (Amtliches Werk).
 
   methodology:
-    type: 'transposition_mapping'
+    type: 'published_official_mapping'
     description: |
       Das NISG 2026 ist die österreichische Umsetzung der NIS-2-Richtlinie
       (EU) 2022/2555 gemäß Art. 41 der Richtlinie. Die Umsetzungspflicht
