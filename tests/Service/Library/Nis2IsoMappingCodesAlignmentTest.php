@@ -16,16 +16,16 @@ use Symfony\Component\Yaml\Yaml;
  * requirement-ID alignment.
  *
  * Bug context (#924-pattern extended): the NIS2↔ISO mapping YAMLs previously used
- * shorthand notation '21.2.a' through '21.2.j' as NIS2 requirement IDs. However,
- * LoadNis2Art21RequirementsCommand stores the DB requirementId as the controlId from
- * fixtures/library/frameworks/nis2-art21_v1.0.yaml — i.e. 'NIS2-ART21-A' through
- * 'NIS2-ART21-J'. MappingLibraryLoader performs an exact findOneBy(['requirementId' => ...])
- * lookup, so '21.2.a' != 'NIS2-ART21-A' causes ALL pairs to be silently skipped at
- * import time with no error message.
+ * shorthand notation '21.2.a' through '21.2.j' as NIS2 requirement IDs, then were
+ * changed to 'NIS2-ART21-X' synthetic IDs. After catalog-form normalization
+ * (2026-06-21) the canonical form is 'Art.21.2.x' (lowercase letter), matching the
+ * requirementId stored by app:load-nis2-full (LoadNis2FullCommand). MappingLibraryLoader
+ * performs an exact findOneBy(['requirementId' => ...]) lookup — any non-canonical
+ * form causes ALL pairs to be silently skipped at import time with no error message.
  *
  * These tests verify:
  *  1. Framework codes match DB codes: 'NIS2' and 'ISO27001'
- *  2. NIS2 requirement IDs use the 'NIS2-ART21-' prefix (not shorthand '21.2.x')
+ *  2. NIS2 requirement IDs use the 'Art.21.2.' prefix (catalog-canonical form)
  *  3. ISO 27001 requirement IDs use the 'A.N.M' Annex-A pattern (matching
  *     LoadIso27001AnnexAFullCommand's CONTROLS map keys)
  *  4. Minimum pair counts (guards against accidental truncation)
@@ -54,26 +54,28 @@ final class Nis2IsoMappingCodesAlignmentTest extends TestCase
     }
 
     /**
-     * NIS2 Art. 21(2) requirement ID prefix as stored in DB by
-     * LoadNis2Art21RequirementsCommand (uses controlId from the framework YAML).
-     * Verified from: fixtures/library/frameworks/nis2-art21_v1.0.yaml controlId fields.
+     * NIS2 Art. 21(2) requirement ID prefix as stored in DB by app:load-nis2-full
+     * (LoadNis2FullCommand). After catalog-form normalization (2026-06-21) the
+     * canonical form is 'Art.21.2.x' (lowercase letter a-j).
      */
-    private const NIS2_REQUIREMENT_PREFIX = 'NIS2-ART21-';
+    private const NIS2_REQUIREMENT_PREFIX = 'Art.21.2.';
 
     /**
-     * Valid NIS2 Art. 21(2) requirementId values (a-j, uppercase) as stored in DB.
+     * Valid NIS2 Art. 21(2) requirementId values (Art.21.2.a-j) as stored in DB
+     * by app:load-nis2-full. These match what MappingLibraryLoader looks up via
+     * findOneBy(['requirementId' => ...]).
      */
     private const VALID_NIS2_REQUIREMENT_IDS = [
-        'NIS2-ART21-A',
-        'NIS2-ART21-B',
-        'NIS2-ART21-C',
-        'NIS2-ART21-D',
-        'NIS2-ART21-E',
-        'NIS2-ART21-F',
-        'NIS2-ART21-G',
-        'NIS2-ART21-H',
-        'NIS2-ART21-I',
-        'NIS2-ART21-J',
+        'Art.21.2.a',
+        'Art.21.2.b',
+        'Art.21.2.c',
+        'Art.21.2.d',
+        'Art.21.2.e',
+        'Art.21.2.f',
+        'Art.21.2.g',
+        'Art.21.2.h',
+        'Art.21.2.i',
+        'Art.21.2.j',
     ];
 
     // ────────────────────────────────────────────────────────────────────────────
@@ -227,15 +229,14 @@ final class Nis2IsoMappingCodesAlignmentTest extends TestCase
     // ────────────────────────────────────────────────────────────────────────────
 
     /**
-     * CRITICAL: NIS2 requirement IDs must use the 'NIS2-ART21-X' format (uppercase
-     * letter suffix), NOT the shorthand '21.2.x' notation.
+     * CRITICAL: NIS2 requirement IDs must use the 'Art.21.2.x' format (lowercase
+     * letter a-j), matching the requirementId stored by app:load-nis2-full.
      *
-     * Root cause: LoadNis2Art21RequirementsCommand stores the framework YAML
-     * controlId field ('NIS2-ART21-A' through 'NIS2-ART21-J') as the DB
-     * requirementId. MappingLibraryLoader calls
+     * Root cause: MappingLibraryLoader calls
      * findOneBy(['framework' => ..., 'requirementId' => entry[nis2Side]]).
-     * If entry[nis2Side] is '21.2.a', the lookup returns null and the pair is
-     * silently skipped — zero mappings load without any error.
+     * If entry[nis2Side] is '21.2.a' or 'NIS2-ART21-A', the lookup returns null
+     * and the pair is silently skipped — zero mappings load without any error.
+     * After catalog-form normalization (2026-06-21) only 'Art.21.2.x' is valid.
      *
      * @param 'source'|'target' $nis2Side
      * @param 'source'|'target' $isoSide
@@ -265,10 +266,9 @@ final class Nis2IsoMappingCodesAlignmentTest extends TestCase
             $invalid,
             sprintf(
                 '[requirementId-mismatch] %s: found %d NIS2 IDs not starting with "%s". '
-                . 'DB stores requirementId from framework controlId field (e.g. "NIS2-ART21-A"), '
-                . 'NOT shorthand "21.2.a" — wrong IDs cause MappingLibraryLoader to silently '
-                . 'skip ALL pairs. Fix by prefixing with "NIS2-ART21-" and uppercasing the letter. '
-                . 'Invalid IDs: %s',
+                . 'DB stores requirementId as "Art.21.2.a"-"Art.21.2.j" (app:load-nis2-full). '
+                . 'Wrong IDs cause MappingLibraryLoader to silently skip ALL pairs. '
+                . 'Fix by using the catalog-canonical "Art.21.2.x" form. Invalid IDs: %s',
                 basename($file),
                 count($invalid),
                 self::NIS2_REQUIREMENT_PREFIX,
@@ -321,8 +321,9 @@ final class Nis2IsoMappingCodesAlignmentTest extends TestCase
     }
 
     /**
-     * Belt-and-suspenders: the old shorthand '21.2.x' format must NOT appear in
-     * any NIS2 source/target field after the DB-alignment fix.
+     * Belt-and-suspenders: the old shorthand '21.2.x' format and the synthetic
+     * 'NIS2-ART21-X' format must NOT appear in any NIS2 source/target field.
+     * Only the catalog-canonical 'Art.21.2.x' form is valid after 2026-06-21.
      *
      * @param 'source'|'target' $nis2Side
      * @param 'source'|'target' $isoSide
@@ -340,8 +341,12 @@ final class Nis2IsoMappingCodesAlignmentTest extends TestCase
 
         foreach ($data['mappings'] ?? [] as $entry) {
             $id = (string) ($entry[$nis2Side] ?? '');
-            // Match shorthand: 21.2.a through 21.2.j (with or without surrounding quotes)
+            // Match shorthand: 21.2.a through 21.2.j
             if (preg_match('/^21\.\d+\.[a-z]$/', $id)) {
+                $legacy[] = $id;
+            }
+            // Match synthetic form: NIS2-ART21-A through NIS2-ART21-J
+            if (preg_match('/^NIS2-ART21-[A-J]$/', $id)) {
                 $legacy[] = $id;
             }
         }
@@ -349,10 +354,10 @@ final class Nis2IsoMappingCodesAlignmentTest extends TestCase
         self::assertEmpty(
             $legacy,
             sprintf(
-                '[legacy-shorthand guard] %s: found %d NIS2 IDs still in old shorthand format '
-                . '(e.g. "21.2.a"). These were replaced by "NIS2-ART21-A" in the DB-alignment '
-                . 'fix (2026-06-13). Revert is not permitted — old format silently breaks import. '
-                . 'Legacy IDs found: %s',
+                '[legacy-form guard] %s: found %d NIS2 IDs in non-canonical format '
+                . '("21.2.x" shorthand or "NIS2-ART21-X" synthetic). '
+                . 'Only "Art.21.2.x" (catalog-canonical) is valid since 2026-06-21. '
+                . 'Non-canonical IDs found: %s',
                 basename($file),
                 count($legacy),
                 implode(', ', array_unique($legacy)),
@@ -483,8 +488,9 @@ final class Nis2IsoMappingCodesAlignmentTest extends TestCase
     }
 
     /**
-     * All NIS2 Art. 21(2) measures (a)-(j) must appear at least once on the NIS2 side.
-     * A mapping that drops one of the 10 mandatory measures is incomplete.
+     * All NIS2 Art. 21(2) measures (a)-(j) must appear at least once on the NIS2 side
+     * using the catalog-canonical 'Art.21.2.x' form. A mapping that drops one of the
+     * 10 mandatory measures is incomplete.
      *
      * @param 'source'|'target' $nis2Side
      * @param 'source'|'target' $isoSide
