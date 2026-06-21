@@ -1,0 +1,431 @@
+{
+    "library": {
+        "source_framework": "NISG-AT",
+        "target_framework": "NIS2",
+        "panel": [
+            "isms-specialist",
+            "risk-management-specialist",
+            "persona-consultant-senior",
+            "persona-auditor-external"
+        ],
+        "method": "judge-refute over existing rows (AT/CH grading)",
+        "amtlich_source": "NISG 2026 (BGBl. I Nr. 94/2025) ↔ NIS-2-Richtlinie (EU 2022/2555, CELEX:32022L2555). NISG ist die amtliche österreichische Transposition; Artikelkorrespondenz ist gesetzlich determiniert.",
+        "run_date": "2026-06-21",
+        "verdict_counts": {
+            "total": 51,
+            "ki_validiert": 46,
+            "reject": 0,
+            "needs_review": 5
+        }
+    },
+    "verdicts": [
+        {
+            "source": "NISG-§2",
+            "target": "Art.1",
+            "state": "ki_validiert",
+            "mappingPercentage": 90,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§3",
+            "target": "Art.6",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§24",
+            "target": "Art.2",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§25",
+            "target": "Art.2",
+            "state": "ki_validiert",
+            "mappingPercentage": 75,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§26",
+            "target": "Art.2",
+            "state": "ki_validiert",
+            "mappingPercentage": 72,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§27",
+            "target": "Art.4",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§3a",
+            "target": "Art.8",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§4",
+            "target": "Art.8",
+            "state": "ki_validiert",
+            "mappingPercentage": 80,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§5",
+            "target": "Art.8",
+            "state": "ki_validiert",
+            "mappingPercentage": 82,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§8",
+            "target": "Art.10",
+            "state": "ki_validiert",
+            "mappingPercentage": 90,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§9",
+            "target": "Art.10",
+            "state": "ki_validiert",
+            "mappingPercentage": 82,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§11",
+            "target": "Art.12",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§15",
+            "target": "Art.7",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§16",
+            "target": "Art.9",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§31",
+            "target": "Art.20",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§31",
+            "target": "Art.20.1",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§31",
+            "target": "Art.20.2",
+            "state": "ki_validiert",
+            "mappingPercentage": 90,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.1",
+            "state": "ki_validiert",
+            "mappingPercentage": 90,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.a",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.b",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.c",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.d",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.e",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.f",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.g",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.h",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.i",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§32",
+            "target": "Art.21.2.j",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§33",
+            "target": "Art.21.2.f",
+            "state": "ki_validiert",
+            "mappingPercentage": 80,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§40",
+            "target": "Art.24",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§34",
+            "target": "Art.23",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§34",
+            "target": "Art.23.1",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§34",
+            "target": "Art.23.2",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§34",
+            "target": "Art.23.3",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§34",
+            "target": "Art.23.4",
+            "state": "ki_validiert",
+            "mappingPercentage": 92,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§35",
+            "target": "Art.23.1",
+            "state": "ki_validiert",
+            "mappingPercentage": 90,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§36",
+            "target": "Art.29",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§37",
+            "target": "Art.30",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§29",
+            "target": "Art.27",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§38",
+            "target": "Art.32",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§38",
+            "target": "Art.33",
+            "state": "needs_review",
+            "mappingPercentage": 55,
+            "realVotes": 2,
+            "refutationSurvived": false
+        },
+        {
+            "source": "NISG-§39",
+            "target": "Art.32",
+            "state": "ki_validiert",
+            "mappingPercentage": 82,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§39",
+            "target": "Art.33",
+            "state": "needs_review",
+            "mappingPercentage": 55,
+            "realVotes": 2,
+            "refutationSurvived": false
+        },
+        {
+            "source": "NISG-§44",
+            "target": "Art.34",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§45",
+            "target": "Art.36",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§20",
+            "target": "Art.11",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§22",
+            "target": "Art.17",
+            "state": "ki_validiert",
+            "mappingPercentage": 82,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "NISG-§7",
+            "target": "Art.21.2.f",
+            "state": "needs_review",
+            "mappingPercentage": 50,
+            "realVotes": 2,
+            "refutationSurvived": false
+        },
+        {
+            "source": "NISG-§42",
+            "target": "Art.32",
+            "state": "needs_review",
+            "mappingPercentage": 45,
+            "realVotes": 2,
+            "refutationSurvived": false
+        },
+        {
+            "source": "NISG-§17",
+            "target": "Art.21.2.a",
+            "state": "needs_review",
+            "mappingPercentage": 45,
+            "realVotes": 2,
+            "refutationSurvived": false
+        }
+    ]
+}

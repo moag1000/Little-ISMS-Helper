@@ -1,0 +1,231 @@
+{
+    "library": {
+        "source_framework": "REVDSG-CH",
+        "target_framework": "GDPR",
+        "panel": [
+            "isms-specialist",
+            "risk-management-specialist",
+            "persona-consultant-senior",
+            "persona-auditor-external"
+        ],
+        "method": "judge-refute over existing rows (AT/CH grading)",
+        "amtlich_source": "revDSG/nDSG (SR 235.1, in Kraft 2023-09-01) ↔ DSGVO (EU 2016/679). revDSG wurde bewusst GDPR-aligned konzipiert (Botschaft 2017, BBl 2017 6941).",
+        "run_date": "2026-06-21",
+        "verdict_counts": {
+            "total": 26,
+            "ki_validiert": 20,
+            "reject": 2,
+            "needs_review": 4
+        }
+    },
+    "verdicts": [
+        {
+            "source": "REVDSG-Art.1",
+            "target": "Art.1",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.2",
+            "target": "Art.2",
+            "state": "ki_validiert",
+            "mappingPercentage": 75,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.3",
+            "target": "Art.3",
+            "state": "ki_validiert",
+            "mappingPercentage": 80,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.5",
+            "target": "Art.4",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.6",
+            "target": "Art.5",
+            "state": "ki_validiert",
+            "mappingPercentage": 90,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.7",
+            "target": "Art.25",
+            "state": "ki_validiert",
+            "mappingPercentage": 90,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.8",
+            "target": "Art.32",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.9",
+            "target": "Art.28",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.12",
+            "target": "Art.30",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.16",
+            "target": "Art.44",
+            "state": "ki_validiert",
+            "mappingPercentage": 82,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.17",
+            "target": "Art.46",
+            "state": "ki_validiert",
+            "mappingPercentage": 78,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.19",
+            "target": "Art.13",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.21",
+            "target": "Art.22",
+            "state": "ki_validiert",
+            "mappingPercentage": 82,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.22",
+            "target": "Art.35",
+            "state": "ki_validiert",
+            "mappingPercentage": 88,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.23",
+            "target": "Art.36",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.24",
+            "target": "Art.33",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.25",
+            "target": "Art.15",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.26",
+            "target": "Art.23",
+            "state": "needs_review",
+            "mappingPercentage": 55,
+            "realVotes": 2,
+            "refutationSurvived": false
+        },
+        {
+            "source": "REVDSG-Art.28",
+            "target": "Art.20",
+            "state": "ki_validiert",
+            "mappingPercentage": 85,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.30",
+            "target": "Art.17",
+            "state": "needs_review",
+            "mappingPercentage": 50,
+            "realVotes": 2,
+            "refutationSurvived": false
+        },
+        {
+            "source": "REVDSG-Art.33",
+            "target": "Art.26",
+            "state": "ki_validiert",
+            "mappingPercentage": 62,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.49",
+            "target": "Art.58",
+            "state": "ki_validiert",
+            "mappingPercentage": 75,
+            "realVotes": 2,
+            "refutationSurvived": true
+        },
+        {
+            "source": "REVDSG-Art.50",
+            "target": "Art.58",
+            "state": "needs_review",
+            "mappingPercentage": 55,
+            "realVotes": 2,
+            "refutationSurvived": false
+        },
+        {
+            "source": "REVDSG-Art.51",
+            "target": "Art.58",
+            "state": "needs_review",
+            "mappingPercentage": 45,
+            "realVotes": 2,
+            "refutationSurvived": false
+        },
+        {
+            "source": "REVDSG-Art.60",
+            "target": "Art.84",
+            "state": "reject",
+            "mappingPercentage": 25,
+            "realVotes": 2,
+            "refutationSurvived": false
+        },
+        {
+            "source": "REVDSG-Art.61",
+            "target": "Art.83",
+            "state": "reject",
+            "mappingPercentage": 30,
+            "realVotes": 2,
+            "refutationSurvived": false
+        }
+    ]
+}
