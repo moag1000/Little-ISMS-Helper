@@ -461,3 +461,10 @@ mappings:
     relationship: 'related'
     confidence: 'high'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 70%).'
+
+  # === DACH Phase-3 long-tail: panel-graded promotions (1 AI-judge + 1 survived refuter) ===
+  - source: 'NIS2-ART21-E'
+    target: 'A.8.8'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 80%). Art.21(e) covers security in acquisition/development/maintenance incl. vulnerability handling and disclosure; A.8.8 management of technical vulnerabilities is a direct, defensible correspondence.'

@@ -14,8 +14,8 @@
     "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review/reject)",
     "completeness": "14 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
     "verdict_counts": {
-      "total": 22,
-      "ki_validiert": 17,
+      "total": 25,
+      "ki_validiert": 20,
       "needs_review": 3,
       "reject": 2
     }
@@ -174,6 +174,30 @@
       "state": "ki_validiert",
       "mappingPercentage": 55,
       "realVotes": 4
+    },
+    {
+      "eu": "Art.10",
+      "target": "GDPR-5.1.d",
+      "state": "ki_validiert",
+      "mappingPercentage": 72,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "eu": "Art.15",
+      "target": "GDPR-5.1.f",
+      "state": "ki_validiert",
+      "mappingPercentage": 58,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "eu": "Art.26",
+      "target": "GDPR-35",
+      "state": "ki_validiert",
+      "mappingPercentage": 88,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
     }
   ]
 }

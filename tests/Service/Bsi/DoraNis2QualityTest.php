@@ -26,7 +26,7 @@ use Psr\Log\NullLogger;
  * 1. FIXTURE INTEGRITY
  *    - dora_to_nis2_panel_v1.json exists and has provenance header.
  *    - dora_to_nis2_completeness_candidates_v1.json exists and has provenance header.
- *    - Exactly 49 ki_validiert, 28 reject, 34 needs_review verdicts.
+ *    - Exactly 63 ki_validiert, 28 reject, 34 needs_review verdicts.
  *    - Exactly 59 completeness candidates.
  *
  * 2. APPLIER: ki_validiert → panel/approved + trustOf returns ki_validiert.
@@ -34,7 +34,7 @@ use Psr\Log\NullLogger;
  *    needs_review → reviewStatus='needs_review' + requiresReview=true.
  *
  * 3. ACCEPTANCE
- *    - 49 ki_validiert are operational after apply.
+ *    - 63 ki_validiert are operational after apply.
  *    - 28 reject are deprecated and NOT in OPERATIONAL_STATES.
  *    - Completeness candidates are NOT operational (NOT applied).
  *    - lex_specialis_candidate provenance resolves to TIER_HEURISTISCH (NOT amtlich — integrity fix).
@@ -158,10 +158,10 @@ final class DoraNis2QualityTest extends TestCase
         $reject   = array_filter($verdicts, static fn (array $v): bool => $v['state'] === 'reject');
         $review   = array_filter($verdicts, static fn (array $v): bool => $v['state'] === 'needs_review');
 
-        self::assertCount(49, $ki,     'Panel must have exactly 49 ki_validiert verdicts');
+        self::assertCount(63, $ki,     'Panel must have exactly 63 ki_validiert verdicts');
         self::assertCount(28, $reject, 'Panel must have exactly 28 reject verdicts');
         self::assertCount(34, $review, 'Panel must have exactly 34 needs_review verdicts');
-        self::assertCount(111, $verdicts, 'Panel must have exactly 111 total verdicts');
+        self::assertCount(125, $verdicts, 'Panel must have exactly 125 total verdicts');
     }
 
     #[Test]
@@ -453,13 +453,13 @@ final class DoraNis2QualityTest extends TestCase
     // ── ACCEPTANCE: panel fixture verdicts after apply ─────────────────────
 
     #[Test]
-    public function fixtureHas49KiValidiertVerdicts(): void
+    public function fixtureHas63KiValidiertVerdicts(): void
     {
         $data     = json_decode((string) file_get_contents(self::FIXTURE_PANEL), true, 512, JSON_THROW_ON_ERROR);
         $verdicts = $data['verdicts'] ?? [];
         $ki       = array_filter($verdicts, static fn (array $v): bool => $v['state'] === 'ki_validiert');
 
-        self::assertCount(49, $ki, '49 panel-validated pairings must be ki_validiert');
+        self::assertCount(63, $ki, '63 panel-validated pairings must be ki_validiert');
     }
 
     #[Test]

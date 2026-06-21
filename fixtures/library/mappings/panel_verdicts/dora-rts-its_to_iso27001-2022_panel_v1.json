@@ -14,8 +14,8 @@
     "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review/reject)",
     "completeness": "124 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
     "verdict_counts": {
-      "total": 92,
-      "ki_validiert": 55,
+      "total": 133,
+      "ki_validiert": 96,
       "needs_review": 26,
       "reject": 11
     }
@@ -664,6 +664,334 @@
       "state": "needs_review",
       "mappingPercentage": 22,
       "realVotes": 3
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.1",
+      "iso": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.2",
+      "iso": "A.5.4",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.3",
+      "iso": "A.5.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.4",
+      "iso": "A.5.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.5",
+      "iso": "A.8.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 95,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.7",
+      "iso": "A.8.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.9",
+      "iso": "A.5.37",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.10",
+      "iso": "A.8.32",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.12",
+      "iso": "A.8.17",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.13",
+      "iso": "A.8.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.14",
+      "iso": "A.8.24",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.15",
+      "iso": "A.5.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.16",
+      "iso": "A.8.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.17",
+      "iso": "A.7.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.18",
+      "iso": "A.6.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.20",
+      "iso": "A.5.18",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.21",
+      "iso": "A.5.26",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.24",
+      "iso": "A.5.29",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.27",
+      "iso": "A.8.14",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.28",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.28",
+      "iso": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-Art.29",
+      "iso": "A.5.22",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.8",
+      "iso": "A.6.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.12",
+      "iso": "A.8.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-ICT-RMF-SIMPL-Art.13",
+      "iso": "A.5.30",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.1",
+      "iso": "A.5.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.2",
+      "iso": "A.5.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.5",
+      "iso": "A.5.27",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-INC-REPORT-Art.7",
+      "iso": "A.5.25",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.1",
+      "iso": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.2",
+      "iso": "A.5.22",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.3",
+      "iso": "A.5.22",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-Subcontracting-Art.3",
+      "iso": "A.5.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-TLPT-Art.6",
+      "iso": "A.5.3",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-TLPT-Art.8",
+      "iso": "A.5.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-TLPT-Art.10",
+      "iso": "A.8.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-TLPT-Art.11",
+      "iso": "A.5.5",
+      "state": "ki_validiert",
+      "mappingPercentage": 50,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-TLPT-Art.12",
+      "iso": "A.6.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 60,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-TLPT-Art.12",
+      "iso": "A.5.19",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.1",
+      "iso": "A.5.2",
+      "state": "ki_validiert",
+      "mappingPercentage": 55,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "dora": "RTS-TPP-Policy-Art.6",
+      "iso": "A.5.21",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
     }
   ]
 }

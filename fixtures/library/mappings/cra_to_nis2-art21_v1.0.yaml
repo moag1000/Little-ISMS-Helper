@@ -417,3 +417,15 @@ mappings:
     relationship: 'related'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 60%).'
+
+  # === DACH Phase-3 long-tail: panel-graded promotions (1 AI-judge + 1 survived refuter) ===
+  - source: 'CRA-Annex-I-1.3.a'
+    target: '21.2.g'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 70%). Secure-by-default config maps directly to 21.2.g, which explicitly names secure configuration among basic cyber-hygiene practices. Strong manufacturer/operator counterpart.'
+  - source: 'CRA-Annex-I-1.3.g'
+    target: '21.2.h'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 90%). Confidentiality via encryption at rest/in transit maps directly to 21.2.h (cryptography/encryption). Primary, strongly defensible correspondence.'

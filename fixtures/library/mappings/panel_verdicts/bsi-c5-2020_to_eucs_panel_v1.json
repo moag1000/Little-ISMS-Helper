@@ -14,8 +14,8 @@
     "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
     "completeness": "8 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
     "verdict_counts": {
-      "total": 23,
-      "ki_validiert": 12,
+      "total": 24,
+      "ki_validiert": 13,
       "needs_review": 6,
       "reject": 5
     }
@@ -181,6 +181,14 @@
       "state": "ki_validiert",
       "mappingPercentage": 65,
       "realVotes": 4
+    },
+    {
+      "c5": "OPS-06",
+      "target": "OPS-21",
+      "state": "ki_validiert",
+      "mappingPercentage": 90,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
     }
   ]
 }

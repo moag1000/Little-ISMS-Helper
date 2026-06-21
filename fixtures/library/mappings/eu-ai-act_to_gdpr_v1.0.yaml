@@ -479,3 +479,20 @@ mappings:
       mit DPIA-Listen abgleichen, FRIA+DPIA häufig parallel notwendig.
     cross_refs: ['Art.27']
     audit_evidence_hint: 'Annex-III-Klassifikation mit FRIA-Trigger, Abgleich mit DPIA-Pflichtliste der zuständigen Aufsichtsbehörde.'
+
+  # === DACH Phase-3 long-tail: panel-graded promotions (1 AI-judge + 1 survived refuter) ===
+  - source: 'Art.10'
+    target: 'GDPR-5.1.d'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 72%). Art.10(2)-(3) data must be error-free/complete/relevant = GDPR accuracy principle Art.5(1)(d). Same normative content. Defensible direct correspondence.'
+  - source: 'Art.15'
+    target: 'GDPR-5.1.f'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 58%). Art.15 robustness/cybersecurity/protection against unauthorised alteration = integrity-and-confidentiality principle Art.5(1)(f). Defensible substantive match.'
+  - source: 'Art.26'
+    target: 'GDPR-35'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 88%). Art.26(9) explicitly cross-references the Art.35 GDPR DPIA for deployers. Direct textual correspondence; clearly missing and should be mapped.'

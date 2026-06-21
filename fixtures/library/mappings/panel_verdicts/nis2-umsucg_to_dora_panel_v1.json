@@ -14,8 +14,8 @@
     "refutation_summary": "adversarial refutation folded into states (refuted ki_validiert downgraded to needs_review)",
     "completeness": "35 panel_discovered candidates — see completeness_candidates file (logged for human review, NOT auto-applied)",
     "verdict_counts": {
-      "total": 54,
-      "ki_validiert": 45,
+      "total": 69,
+      "ki_validiert": 60,
       "needs_review": 1,
       "reject": 8
     }
@@ -398,6 +398,126 @@
       "state": "reject",
       "mappingPercentage": 0,
       "realVotes": 0
+    },
+    {
+      "nis2": "§35",
+      "target": "Art.6",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§35",
+      "target": "Art.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§35",
+      "target": "Art.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§35",
+      "target": "Art.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§35",
+      "target": "Art.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§35",
+      "target": "Art.11",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§35",
+      "target": "Art.28",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§41",
+      "target": "Art.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§42",
+      "target": "Art.13",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§61",
+      "target": "Art.7",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§61",
+      "target": "Art.8",
+      "state": "ki_validiert",
+      "mappingPercentage": 80,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§61",
+      "target": "Art.9",
+      "state": "ki_validiert",
+      "mappingPercentage": 65,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§61",
+      "target": "Art.10",
+      "state": "ki_validiert",
+      "mappingPercentage": 75,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§61",
+      "target": "Art.28",
+      "state": "ki_validiert",
+      "mappingPercentage": 70,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
+    },
+    {
+      "nis2": "§65",
+      "target": "Art.20",
+      "state": "ki_validiert",
+      "mappingPercentage": 85,
+      "realVotes": 2,
+      "method": "depth-round-2 (1 AI-judge + survived 1 adversarial refuter)"
     }
   ]
 }

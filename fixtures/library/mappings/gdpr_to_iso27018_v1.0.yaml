@@ -592,3 +592,10 @@ mappings:
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: 'Panel-validated additional correspondence (AI 4-expert consensus + adversarial refutation, round-2 depth pass, 45%).'
+
+  # === DACH Phase-3 long-tail: panel-graded promotions (1 AI-judge + 1 survived refuter) ===
+  - source: 'GDPR-33'
+    target: 'A.9.1'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: 'Panel-graded depth-round correspondence (1 AI-judge + survived 1 adversarial refuter, 90%). A.9.1 (notification of a data breach involving PII) is the dedicated processor breach-notification control directly counterpart to Art.33''s 72h notification duty. Strong, specific correspondence vs generic A.8.1.'
