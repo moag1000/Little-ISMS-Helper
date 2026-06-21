@@ -3,6 +3,47 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.13.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.12.0...v3.13.0) (2026-06-21)
+
+
+### Added
+
+* **compliance:** Compliance-Certificate object — bulk-fulfill controls from external certs (B1 core) ([#982](https://github.com/moag1000/Little-ISMS-Helper/issues/982)) ([9b552af](https://github.com/moag1000/Little-ISMS-Helper/commit/9b552af528e7c104ed4a989a9cc933cc52a3e804))
+* **compliance:** Compliance-Certificate OCR — capability-gated cert-field pre-fill (B2) ([#984](https://github.com/moag1000/Little-ISMS-Helper/issues/984)) ([f988023](https://github.com/moag1000/Little-ISMS-Helper/commit/f988023b005679ff26aa1da7a920a7ca19cbd2ba))
+* **compliance:** hover-title on control-ids in lists so non-experts see what they mean ([#972](https://github.com/moag1000/Little-ISMS-Helper/issues/972)) ([0f6f009](https://github.com/moag1000/Little-ISMS-Helper/commit/0f6f009307fc7a8ee81b7ffcc1f15f5678c66e60))
+* **compliance:** Junior-Mapping-Profit — Reuse-Payoff für Nicht-Experten sichtbar+nutzbar ([#989](https://github.com/moag1000/Little-ISMS-Helper/issues/989)) ([8bca322](https://github.com/moag1000/Little-ISMS-Helper/commit/8bca322d06f605764ef4e1c9a0903def0db112a4))
+* **compliance:** make framework loading manager-accessible + explain loading + fix i18n ([#973](https://github.com/moag1000/Little-ISMS-Helper/issues/973)) ([1203e03](https://github.com/moag1000/Little-ISMS-Helper/commit/1203e036c6db77ec3710499838d959fcdd577804))
+* **compliance:** manager-accessible framework loading (non-admin route) ([#978](https://github.com/moag1000/Little-ISMS-Helper/issues/978)) ([57f10c1](https://github.com/moag1000/Little-ISMS-Helper/commit/57f10c123221203b39252c8280f14ac43ed69feb))
+* **mapping:** completeness restrunde — promote 137 validated correspondences (NIST↔ISO) ([#987](https://github.com/moag1000/Little-ISMS-Helper/issues/987)) ([94a9cb8](https://github.com/moag1000/Little-ISMS-Helper/commit/94a9cb84cc84809ec8a0050e7eb8c0cee6ed900f))
+* **mapping:** DACH Phase 3 panel-grading — 227 promoted correspondences (NIST/C5 batch-1 + 14-pair long-tail) ([#994](https://github.com/moag1000/Little-ISMS-Helper/issues/994)) ([ad4303b](https://github.com/moag1000/Little-ISMS-Helper/commit/ad4303b90f5b36dc33251ac8c4366a4b33b6ae8a))
+* **mapping:** EUCS full-catalogue loader + unify EUCS mapping ID schemes (166 dangling rows resolve) ([#993](https://github.com/moag1000/Little-ISMS-Helper/issues/993)) ([9bf9cf9](https://github.com/moag1000/Little-ISMS-Helper/commit/9bf9cf941d835a47ad9aafe191afbb7bfbd56bd1))
+* **mapping:** panel-grade AT/CH mappings (NISG-AT, IKT-MINSTD-CH, revDSG-CH) — trust-tier verdicts ([#997](https://github.com/moag1000/Little-ISMS-Helper/issues/997)) ([9424f66](https://github.com/moag1000/Little-ISMS-Helper/commit/9424f66353caa253f355762135cdbaa7d294800d))
+* **onboarding:** guided Alva-led mapping workflow (Laden→Reviewen→Mappen→Wiederverwenden) ([#981](https://github.com/moag1000/Little-ISMS-Helper/issues/981)) ([c8c7193](https://github.com/moag1000/Little-ISMS-Helper/commit/c8c7193aff5589f22352de6250d5cd6338f7b30d))
+* **onboarding:** wire mapping-workflow guided tour (in-page pointer) ([#985](https://github.com/moag1000/Little-ISMS-Helper/issues/985)) ([7d28537](https://github.com/moag1000/Little-ISMS-Helper/commit/7d28537896be809c8e94048e6d9d94676e2ad93b))
+* **planning:** finish resource_planning — 16/16 source adapters + configurable capacity + Cl. 9.3 rollup report ([#995](https://github.com/moag1000/Little-ISMS-Helper/issues/995)) ([0998ce4](https://github.com/moag1000/Little-ISMS-Helper/commit/0998ce4c36a5079ff2f0ca46a2ec5836c6033afc))
+* **planning:** gated Teams menu entry + Alva due-action-items hint ([#996](https://github.com/moag1000/Little-ISMS-Helper/issues/996)) ([2d8a5bf](https://github.com/moag1000/Little-ISMS-Helper/commit/2d8a5bfc496f4240d3067439c6384ed4efea3499))
+* **policy-wizard:** fix targeted re-run + canonical topic-policies with per-standard section-extensions (NIS2 first) ([#988](https://github.com/moag1000/Little-ISMS-Helper/issues/988)) ([81897dd](https://github.com/moag1000/Little-ISMS-Helper/commit/81897dd5b88628213ce3143ff6f678dc15acaa9b))
+* **policy-wizard:** section-extension catalogues for 6 standards (BSI, C5, ISO27701, TISAX, SOC2, BCM) ([#990](https://github.com/moag1000/Little-ISMS-Helper/issues/990)) ([1f3c786](https://github.com/moag1000/Little-ISMS-Helper/commit/1f3c78611f5ea80e9270574451a061e1312cb475))
+* **policy-wizard:** sync ComplianceRequirementFulfillment from generated policies ([#992](https://github.com/moag1000/Little-ISMS-Helper/issues/992)) ([1c45cc0](https://github.com/moag1000/Little-ISMS-Helper/commit/1c45cc0d80a76e532dc629c173f1215e819cdd18))
+* **security:** enforce Tenant.ssoEnforced (force SSO login, anti-lockout fail-open) ([#986](https://github.com/moag1000/Little-ISMS-Helper/issues/986)) ([0fe8008](https://github.com/moag1000/Little-ISMS-Helper/commit/0fe80080ea48bc03aa372764cf3f8104c49f1e4f))
+
+
+### Fixed
+
+* **audit:** count list-schema (targets/sources) mappings correctly — kills TISAX false dangling ([#977](https://github.com/moag1000/Little-ISMS-Helper/issues/977)) ([9f0f16f](https://github.com/moag1000/Little-ISMS-Helper/commit/9f0f16f554aff6b8bd249b747d0469a48c7162a9))
+* **catalog:** resolve §-mapping + ISO27017 dangling via loader wiring (357 of 437 cluster) ([#1002](https://github.com/moag1000/Little-ISMS-Helper/issues/1002)) ([f021152](https://github.com/moag1000/Little-ISMS-Helper/commit/f021152004cbe1028942bddc7a8e8928c1a63907))
+* **catalog:** trustworthy dangling audit + NIS2-ART21 id normalization (remediation WS-2.2) ([#1000](https://github.com/moag1000/Little-ISMS-Helper/issues/1000)) ([f9aff5f](https://github.com/moag1000/Little-ISMS-Helper/commit/f9aff5f3df9a76502b87d05324aeb2b6de2fd46c))
+* **deps:** patch jwt-library, guzzle, psr7, otphp security advisories ([#983](https://github.com/moag1000/Little-ISMS-Helper/issues/983)) ([f1cd264](https://github.com/moag1000/Little-ISMS-Helper/commit/f1cd264fc1015bf4217dfd8940faeb8c492d8272))
+* **mapping:** close runtime-dangling — BSI modules, TISAX→NIST-CSF-2.0, BAIT/ISO27002 deprecate (DACH Phase 1) ([#991](https://github.com/moag1000/Little-ISMS-Helper/issues/991)) ([b87729e](https://github.com/moag1000/Little-ISMS-Helper/commit/b87729e8969dd62793d2e44e86766615abd94346))
+* **mapping:** import-blocking methodology-type + provenance_source width (255→TEXT) ([#999](https://github.com/moag1000/Little-ISMS-Helper/issues/999)) ([7a88c6b](https://github.com/moag1000/Little-ISMS-Helper/commit/7a88c6ba92930b47f5bb4b42b09e0f6172a46ceb))
+* **mappings:** remove superseded AI-Act v1.0 dupes + blank-target TISAX rows ([#974](https://github.com/moag1000/Little-ISMS-Helper/issues/974)) ([b78bdac](https://github.com/moag1000/Little-ISMS-Helper/commit/b78bdac4b142911a680bb2f2757bc6a6afd95b90))
+* **mappings:** resolve CSV prefix scheme + canonical framework codes (~200 dangling) ([#975](https://github.com/moag1000/Little-ISMS-Helper/issues/975)) ([4f4ab3e](https://github.com/moag1000/Little-ISMS-Helper/commit/4f4ab3e13ede06551ef1c36e8c2d15ed8f8b789e))
+
+
+### Performance
+
+* **planning:** status-scoped source-adapter queries (L-1) — stop hydrating terminal rows ([#1001](https://github.com/moag1000/Little-ISMS-Helper/issues/1001)) ([94d05da](https://github.com/moag1000/Little-ISMS-Helper/commit/94d05daaa7ac5b196a4cd4547a40eaa171c64a2d))
+
 ## [3.12.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.11.0...v3.12.0) (2026-06-14)
 
 
