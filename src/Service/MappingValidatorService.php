@@ -38,6 +38,38 @@ class MappingValidatorService
      * @param array $payload Geparste YAML (top-level keys: schema_version, library, mappings)
      * @return array{errors: list<string>, warnings: list<string>}
      */
+    /**
+     * Normalises mapping entries to one source→target pair each.
+     *
+     * Most library fixtures write a singular `target:`. The tisax_to_* family
+     * writes a plural `targets: [...]` list instead, which neither this
+     * validator nor MappingLibraryLoader could read — those mappings were
+     * silently unimportable. Rows whose `targets` list is empty carry no
+     * mapping fact (the source control has no anchor in the target framework)
+     * and are dropped rather than treated as null-target gap markers.
+     *
+     * @param  array<int|string, mixed> $mappings
+     * @return list<array<string, mixed>>
+     */
+    public static function expandEntries(array $mappings): array
+    {
+        $out = [];
+        foreach ($mappings as $entry) {
+            if (!is_array($entry) || !array_key_exists('targets', $entry) || array_key_exists('target', $entry)) {
+                $out[] = $entry;
+                continue;
+            }
+
+            $targets = $entry['targets'];
+            unset($entry['targets']);
+            foreach ((array) $targets as $target) {
+                $out[] = ['target' => $target] + $entry;
+            }
+        }
+
+        return $out;
+    }
+
     public function validate(array $payload): array
     {
         $errors = [];
@@ -49,6 +81,9 @@ class MappingValidatorService
         }
         $library = $payload['library'] ?? null;
         $mappings = $payload['mappings'] ?? null;
+        if (is_array($mappings)) {
+            $mappings = self::expandEntries($mappings);
+        }
         if (!is_array($library)) {
             $errors[] = "Missing or non-array 'library' block.";
             return ['errors' => $errors, 'warnings' => $warnings];

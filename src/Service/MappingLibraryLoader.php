@@ -113,7 +113,9 @@ final class MappingLibraryLoader
         }
 
         $library = $payload['library'];
-        $entries = $payload['mappings'] ?? [];
+        // Fixtures may write a plural `targets: [...]` list instead of a single
+        // `target:` — expand those to one entry per pair before importing.
+        $entries = MappingValidatorService::expandEntries($payload['mappings'] ?? []);
 
         $sourceFw = $this->frameworkRepository->findOneBy(['code' => $library['source_framework']])
             ?? $this->frameworkRepository->findOneBy(['name' => $library['source_framework']]);

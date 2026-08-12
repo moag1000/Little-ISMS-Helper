@@ -1,0 +1,228 @@
+# -----------------------------------------------------------------
+# AUTHORITATIVE MAPPING -- extracted from the official ENX analysis
+# "Abdeckung NIS-2 durch TISAX" (ENX doc ID 260, v1, 2025-04-24,
+# classification: public).
+#
+# Only the mapping FACTS are shipped: ISA6 control numbers paired with
+# the NIS-2 article they help fulfil. The ENX prose (Kontrollfragen,
+# Anforderungstexte, Bewertungen) is copyrighted and NOT redistributed --
+# same premise as fixtures/library/frameworks/vda-isa-tisax-v6.yaml.
+# -----------------------------------------------------------------
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'tisax_to_nis2_v1.0'
+  source_framework: 'TISAX'
+  target_framework: 'NIS2'
+  version: 1
+  effective_from: '2025-04-24'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ENX Association -- Abdeckung NIS-2 durch TISAX (Prüfkatalog ISA6), ENX doc ID 260, Version 1'
+    primary_source_url: 'https://enx.com/en-US/TISAX/'
+    confidence: 'authoritative_enx_source'
+    publisher: 'Little ISMS Helper Maintainers'
+    extracted: '2026-08-12'
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      Per NIS-2 article the ENX analysis names the ISA6 controls an auditor
+      checks ("Anwendbare Kontrollfragen des ISA6"). Those control numbers
+      were extracted and inverted to control -> NIS-2 requirement.
+      Targets use the NIS2-ART21-A..J codes of
+      fixtures/library/frameworks/nis2-art21_v1.0.yaml, which only covers
+      Art. 21(2)(a)-(j); coverage of the remaining articles is recorded
+      below under article_coverage instead of inventing requirement codes.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'published', date: '2026-08-12', actor: 'maintainer' }
+
+  stats:
+    isa6_controls_with_nis2_relevance: 39
+    nis2_art21_requirements_covered: 10
+    total_control_requirement_pairs: 79
+
+mappings:
+  - source: '1.1.1'
+    targets: ['NIS2-ART21-G']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.2.1'
+    targets: ['NIS2-ART21-F']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.2.3'
+    targets: ['NIS2-ART21-E']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.2.4'
+    targets: ['NIS2-ART21-D', 'NIS2-ART21-E']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.3.1'
+    targets: ['NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.3.2'
+    targets: ['NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.3.3'
+    targets: ['NIS2-ART21-D', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.3.4'
+    targets: ['NIS2-ART21-E']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.4.1'
+    targets: ['NIS2-ART21-A', 'NIS2-ART21-F']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.5.1'
+    targets: ['NIS2-ART21-F']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.5.2'
+    targets: ['NIS2-ART21-F']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.6.1'
+    targets: ['NIS2-ART21-B', 'NIS2-ART21-D']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.6.2'
+    targets: ['NIS2-ART21-B', 'NIS2-ART21-D', 'NIS2-ART21-F']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '1.6.3'
+    targets: ['NIS2-ART21-C', 'NIS2-ART21-J']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '2.1.1'
+    targets: ['NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '2.1.2'
+    targets: ['NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '2.1.3'
+    targets: ['NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '2.1.4'
+    targets: ['NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '4.1.1'
+    targets: ['NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '4.1.2'
+    targets: ['NIS2-ART21-I', 'NIS2-ART21-J']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '4.1.3'
+    targets: ['NIS2-ART21-G', 'NIS2-ART21-I', 'NIS2-ART21-J']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '4.2.1'
+    targets: ['NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.1.1'
+    targets: ['NIS2-ART21-G', 'NIS2-ART21-H']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.1.2'
+    targets: ['NIS2-ART21-G', 'NIS2-ART21-H', 'NIS2-ART21-J']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.2.1'
+    targets: ['NIS2-ART21-E', 'NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.2.2'
+    targets: ['NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.2.3'
+    targets: ['NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.2.4'
+    targets: ['NIS2-ART21-E', 'NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.2.5'
+    targets: ['NIS2-ART21-E', 'NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.2.6'
+    targets: ['NIS2-ART21-E', 'NIS2-ART21-F', 'NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.2.7'
+    targets: ['NIS2-ART21-A', 'NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.2.8'
+    targets: ['NIS2-ART21-C', 'NIS2-ART21-G', 'NIS2-ART21-I', 'NIS2-ART21-J']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.2.9'
+    targets: ['NIS2-ART21-C', 'NIS2-ART21-G', 'NIS2-ART21-I']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.3.1'
+    targets: ['NIS2-ART21-A', 'NIS2-ART21-E', 'NIS2-ART21-G']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.3.2'
+    targets: ['NIS2-ART21-E', 'NIS2-ART21-G']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.3.3'
+    targets: ['NIS2-ART21-D', 'NIS2-ART21-E', 'NIS2-ART21-G']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '5.3.4'
+    targets: ['NIS2-ART21-E', 'NIS2-ART21-G']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '6.1.1'
+    targets: ['NIS2-ART21-D']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+  - source: '6.1.2'
+    targets: ['NIS2-ART21-D']
+    category: 'information_security'
+    rationale: 'Named as applicable ISA6 control for this NIS-2 requirement in the ENX coverage analysis (authoritative).'
+
+# NIS-2 articles outside Art. 21(2)(a)-(j): no requirement rows exist in the
+# NIS2 catalogue yet, so coverage is recorded here rather than dropped.
+article_coverage:
+  - article: 'Artikel 20 (1)'
+    isa6_controls: ['1.2.1', '1.2.2', '1.4.1', '1.5.1', '1.5.2', '7.1.1']
+  - article: 'Artikel 20 (2)'
+    isa6_controls: ['2.1.3']
+  - article: 'Artikel 21 (1)'
+    isa6_controls: ['1.2.1', '1.4.1']
+  - article: 'Artikel 21 (4)'
+    isa6_controls: ['1.5.1', '1.5.2']
+  - article: 'Artikel 23 (1)'
+    isa6_controls: ['1.6.1', '1.6.2']
+  - article: 'Artikel 23 (2)'
+    isa6_controls: ['1.6.2']
+  - article: 'Artikel 23 (4)'
+    isa6_controls: ['1.6.1', '1.6.2', '1.6.3']
+
+# ENX explicitly rates these as informative / not auditable -> no controls:
+#   Artikel 21 (2)
+#   Artikel 23 (3)
+#   Artikel 23 (5-11)
